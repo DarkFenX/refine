@@ -1,0 +1,1 @@
+type Val = f64;

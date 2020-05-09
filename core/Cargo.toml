@@ -1,0 +1,13 @@
+[package]
+name = "reefast"
+version = "0.1.0"
+authors = ["DarkPhoenix <phoenix@mail.ru>"]
+edition = "2018"
+
+[lib]
+name = "reefast"
+path = "src/lib.rs"
+
+[[bin]]
+name = "playground"
+path = "src/bin/playground.rs"
