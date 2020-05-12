@@ -8,3 +8,21 @@ pub enum EffectCategory {
     Dungeon,
     System
 }
+
+pub enum ModDomain {
+    Ship,
+    Char,
+    Item
+}
+
+pub enum ModOperator {
+    PreAssign,
+    PreMul,
+    PreDiv,
+    Add,
+    Sub,
+    PostMul,
+    PostDiv,
+    PostPercent,
+    PostAssign
+}
