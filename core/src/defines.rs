@@ -1,2 +1,2 @@
 pub type Id = i32;
-pub type Val = f64;
+pub type AttrVal = f64;

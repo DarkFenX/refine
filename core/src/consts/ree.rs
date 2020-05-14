@@ -2,7 +2,7 @@ enum State {
     Offline,
     Online,
     Active,
-    Overheat
+    Overheat,
 }
 
 enum EffectMode {
@@ -20,5 +20,5 @@ enum EffectMode {
     // Effects in this mode are always running no matter what
     ForceRun,
     // Effects in this mode are never running no matter what
-    ForceStop
+    ForceStop,
 }

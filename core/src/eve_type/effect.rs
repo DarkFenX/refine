@@ -12,7 +12,7 @@ pub struct Effect {
     pub falloff_attr_id: Option<Id>,
     pub tracking_speed_attr_id: Option<Id>,
     pub fitting_usage_chance_attr_id: Option<Id>,
-    pub resist_attr_id: Option<Id>
+    pub resist_attr_id: Option<Id>,
 }
 
 impl Effect {
@@ -27,7 +27,7 @@ impl Effect {
         falloff_attr_id: Option<Id>,
         tracking_speed_attr_id: Option<Id>,
         fitting_usage_chance_attr_id: Option<Id>,
-        resist_attr_id: Option<Id>
+        resist_attr_id: Option<Id>,
     ) -> Effect {
         Effect {
             id,
@@ -40,7 +40,7 @@ impl Effect {
             falloff_attr_id,
             tracking_speed_attr_id,
             fitting_usage_chance_attr_id,
-            resist_attr_id
+            resist_attr_id,
         }
     }
 }

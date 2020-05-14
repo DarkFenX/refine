@@ -6,13 +6,13 @@ pub enum EffectCategory {
     Online,
     Overheat,
     Dungeon,
-    System
+    System,
 }
 
 pub enum ModDomain {
     Ship,
     Char,
-    Item
+    Item,
 }
 
 pub enum ModOperator {
@@ -24,5 +24,5 @@ pub enum ModOperator {
     PostMul,
     PostDiv,
     PostPercent,
-    PostAssign
+    PostAssign,
 }
