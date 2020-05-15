@@ -1,17 +1,17 @@
+use chrono;
 use std::collections::HashMap;
 use std::path::PathBuf;
-use chrono;
 
-use reefast::{DataHandler, PhobosDataHandler};
 use reefast::consts::{EveEffectCategory, EveModDomain, EveModOperator};
 use reefast::eve_type::{Attribute, Effect, Item, ItemModifier};
+use reefast::{DataHandler, PhobosDataHandler};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
         .format(|out, message, record| {
             out.finish(format_args!(
                 "{}[{}][{}] {}",
-                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                chrono::Local::now().format("[%H:%M:%S]"),
                 record.target(),
                 record.level(),
                 message

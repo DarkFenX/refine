@@ -5,4 +5,3 @@ mod data_handler;
 pub mod defines;
 pub mod eve_type;
 pub mod prelude;
-

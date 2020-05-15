@@ -1,24 +1,24 @@
 use std::collections::HashMap;
 
-use crate::defines::{Id, AttrVal};
+use crate::defines::{ReeFloat, ReeInt};
 use crate::eve_type::Effect;
 
 pub struct Item {
-    pub id: Id,
-    pub group_id: Id,
-    pub category_id: Id,
-    pub attrs: HashMap<Id, AttrVal>,
-    pub effects: HashMap<Id, AttrVal>,
+    pub id: ReeInt,
+    pub group_id: ReeInt,
+    pub category_id: ReeInt,
+    pub attrs: HashMap<ReeInt, ReeFloat>,
+    pub effects: HashMap<ReeInt, ReeFloat>,
     pub default_effect: Option<Effect>,
 }
 
 impl Item {
     pub fn new(
-        id: Id,
-        group_id: Id,
-        category_id: Id,
-        attrs: HashMap<Id, AttrVal>,
-        effects: HashMap<Id, AttrVal>,
+        id: ReeInt,
+        group_id: ReeInt,
+        category_id: ReeInt,
+        attrs: HashMap<ReeInt, ReeFloat>,
+        effects: HashMap<ReeInt, ReeFloat>,
         default_effect: Option<Effect>,
     ) -> Item {
         Item {

@@ -1,2 +1,2 @@
-pub type Id = i32;
-pub type AttrVal = f64;
+pub type ReeInt = i32;
+pub type ReeFloat = f64;
