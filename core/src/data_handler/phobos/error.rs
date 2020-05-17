@@ -4,8 +4,6 @@ use std::fmt;
 use std::io;
 use std::result::Result;
 
-pub(super) type PhobosHandlerResult<T> = Result<T, PhobosHandlerError>;
-
 pub(super) trait FromPathErr<T> {
     fn from_path_err<P: Into<String>>(err: T, path: P) -> Self;
 }

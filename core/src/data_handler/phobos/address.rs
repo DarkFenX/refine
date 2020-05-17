@@ -7,10 +7,7 @@ pub(super) struct PhobosAddress {
 
 impl PhobosAddress {
     pub(super) fn new(folder: &'static str, file: &'static str) -> PhobosAddress {
-        PhobosAddress {
-            folder: folder,
-            file: file,
-        }
+        PhobosAddress { folder, file }
     }
     pub(super) fn get_full_path(&self, base: &PathBuf) -> PathBuf {
         base.join(self.get_part_path())
