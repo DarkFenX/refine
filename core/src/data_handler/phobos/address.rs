@@ -17,8 +17,8 @@ impl PhobosAddress {
     }
     fn path_to_str(path: &PathBuf) -> String {
         match path.to_str() {
-            Some(s) => s.into(),
-            None => "<unable to decode path>".into(),
+            Some(s) => s.to_owned(),
+            None => "<unable to decode path>".to_owned(),
         }
     }
 }

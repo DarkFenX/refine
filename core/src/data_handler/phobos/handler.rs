@@ -2,8 +2,8 @@ use std::fs::File;
 use std::io::{self, Read};
 use std::path::PathBuf;
 
-use log::{error, info};
-use serde_json::Value;
+use log::info;
+use serde_json::Value as JsonValue;
 
 use crate::data_handler::common::{DataHandler, DataHandlerResult, DataRow};
 
@@ -27,29 +27,25 @@ impl PhobosDataHandler {
         Ok(bytes)
     }
 
-    fn _read_json(&self, addr: &PhobosAddress) -> PhobosHandlerResult<Value> {
+    fn _read_json(&self, addr: &PhobosAddress) -> PhobosHandlerResult<JsonValue> {
         let bytes = match self._read_file(addr) {
             Ok(bytes) => bytes,
             Err(e) => {
-                let err = PhobosHandlerError {
-                    msg: format!("{} read failed: {}", addr.get_full_str(&self.base_path), e),
-                };
-                error!("{}", err);
-                return Err(err);
+                return Err(PhobosHandlerError::new(format!(
+                    "{} read failed: {}",
+                    addr.get_full_str(&self.base_path),
+                    e
+                )))
             }
         };
         let data = match serde_json::from_slice(&bytes) {
             Ok(data) => data,
             Err(e) => {
-                let err = PhobosHandlerError {
-                    msg: format!(
-                        "{} decode failed: {}",
-                        addr.get_full_str(&self.base_path),
-                        e
-                    ),
-                };
-                error!("{}", err);
-                return Err(err);
+                return Err(PhobosHandlerError::new(format!(
+                    "{} parsing failed: {}",
+                    addr.get_full_str(&self.base_path),
+                    e
+                )))
             }
         };
         Ok(data)
@@ -63,8 +59,18 @@ impl DataHandler for PhobosDataHandler {
             file: "evetypes",
         };
         info!("processing {}", addr.get_full_str(&self.base_path));
-        let _json = self._read_json(&addr)?;
+        let json = self._read_json(&addr)?;
         let data = Vec::new();
+        match json.as_array() {
+            Some(json) => {}
+            None => {
+                let err = PhobosHandlerError::new(format!(
+                    "{} conversion failed: highest-level structure is not a mapping",
+                    addr.get_full_str(&self.base_path)
+                ));
+                return Err(err.into());
+            }
+        }
         Ok(data)
     }
 }

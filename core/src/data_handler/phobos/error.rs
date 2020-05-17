@@ -9,6 +9,12 @@ pub(super) struct PhobosHandlerError {
     pub(super) msg: String,
 }
 
+impl PhobosHandlerError {
+    pub fn new<P: Into<String>>(msg: P) -> PhobosHandlerError {
+        PhobosHandlerError { msg: msg.into() }
+    }
+}
+
 impl Error for PhobosHandlerError {}
 
 impl fmt::Display for PhobosHandlerError {
