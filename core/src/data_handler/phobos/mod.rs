@@ -1,4 +1,5 @@
-pub mod address;
-pub mod handler;
+mod address;
+mod error;
+mod handler;
 
 pub use handler::PhobosDataHandler;

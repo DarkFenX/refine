@@ -44,5 +44,5 @@ fn main() {
     let _item = Item::new(1, 2, 3, HashMap::new(), HashMap::new(), None);
 
     let dh = PhobosDataHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
-    dh.get_evetypes();
+    dh.get_evetypes().unwrap();
 }
