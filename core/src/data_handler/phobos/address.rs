@@ -1,11 +1,17 @@
 use std::path::PathBuf;
 
-pub struct PhobosAddress {
-    pub folder: &'static str,
-    pub file: &'static str,
+pub(super) struct PhobosAddress {
+    folder: &'static str,
+    file: &'static str,
 }
 
 impl PhobosAddress {
+    pub(super) fn new(folder: &'static str, file: &'static str) -> PhobosAddress {
+        PhobosAddress {
+            folder: folder,
+            file: file,
+        }
+    }
     pub(super) fn get_full_path(&self, base: &PathBuf) -> PathBuf {
         base.join(self.get_part_path())
     }

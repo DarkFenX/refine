@@ -46,6 +46,6 @@ fn main() {
     let dh = PhobosDataHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
     match dh.get_evetypes() {
         Ok(_) => println!("success"),
-        Err(_) => println!("failure")
+        Err(e) => println!("failure: {}", e),
     }
 }
