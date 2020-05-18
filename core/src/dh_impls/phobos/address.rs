@@ -1,13 +1,13 @@
 use std::path::PathBuf;
 
-pub(super) struct PhobosAddress {
+pub(super) struct Address {
     folder: &'static str,
     file: &'static str,
 }
 
-impl PhobosAddress {
-    pub(super) fn new(folder: &'static str, file: &'static str) -> PhobosAddress {
-        PhobosAddress { folder, file }
+impl Address {
+    pub(super) fn new(folder: &'static str, file: &'static str) -> Address {
+        Address { folder, file }
     }
     pub(super) fn get_full_path(&self, base: &PathBuf) -> PathBuf {
         base.join(self.get_part_path())
@@ -16,7 +16,7 @@ impl PhobosAddress {
         PathBuf::from(self.folder).join(format!("{}.json", self.file))
     }
     pub(super) fn get_full_str(&self, base: &PathBuf) -> String {
-        PhobosAddress::path_to_str(&self.get_full_path(base))
+        Address::path_to_str(&self.get_full_path(base))
     }
     fn path_to_str(path: &PathBuf) -> String {
         match path.to_str() {
