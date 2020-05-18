@@ -38,9 +38,7 @@ impl Handler {
     }
     fn decompose_fsdlite(&self, addr: &Address, json: serde_json::Value) -> Result<Vec<serde_json::Value>> {
         match json {
-            serde_json::Value::Object(mut map) => {
-                Ok(map.values_mut().map(|v| v.take()).collect())
-            }
+            serde_json::Value::Object(mut map) => Ok(map.values_mut().map(|v| v.take()).collect()),
             _ => Err(Error::new(format!(
                 "{} FSD Lite decomposition failed: highest-level structure is not a map",
                 addr.get_full_str(&self.base_path)

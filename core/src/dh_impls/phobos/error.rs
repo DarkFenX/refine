@@ -1,7 +1,8 @@
-use serde_json;
 use std::error;
 use std::fmt;
 use std::io;
+
+use serde_json;
 
 pub(super) trait FromPathErr<T> {
     fn from_path_err<U: Into<String>>(err: T, path: U) -> Self;

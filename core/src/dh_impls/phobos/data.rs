@@ -1,6 +1,7 @@
+use serde;
+
 use crate::defines::ReeInt;
 use crate::dh;
-use serde;
 
 #[allow(non_snake_case)]
 #[derive(Debug, serde::Deserialize)]
