@@ -3,7 +3,7 @@ use std::io::{self, Read};
 use std::path::PathBuf;
 
 use log::info;
-use serde_json::Value as JsonValue;
+use serde_json::{Map as JsonMap, Value as JsonValue};
 
 use crate::data_handler::common::{DataHandler, DataHandlerResult, DataItem, DataRow, DataTable, DataValue};
 
@@ -35,28 +35,33 @@ impl PhobosDataHandler {
         Ok(data)
     }
     fn decompose_map(&self, addr: &PhobosAddress, json: JsonValue) -> PhobosResult<DataTable> {
-        let mut data: DataTable = Vec::new();
-        match json.as_object() {
-            Some(json) => {
-                for v in json.values() {
-                    let datarow = self.map_to_datarow(v).unwrap();
-                    data.push(datarow);
-                }
-            },
-            None => return Err(PhobosHandlerError::new(format!(
-                "{} conversion failed: highest-level structure is not a map",
-                addr.get_full_str(&self.base_path)
-            ))),
+        let mut rows: Vec<DataRow> = Vec::new();
+        let mut errors: u32 = 0;
+        for v in self.check_map(&addr, &json)?.values() {
+            match self.map_to_datarow(v) {
+                Some(row) => rows.push(row),
+                None => errors += 1,
+            }
         }
-        Ok(data)
+        Ok(DataTable::new(rows, errors))
     }
-    fn map_to_datarow(&self, json_row: &JsonValue) -> PhobosResult<DataRow> {
+    fn check_map<'a>(&self, addr: &PhobosAddress, json: &'a JsonValue) -> PhobosResult<&'a JsonMap<String, JsonValue>> {
+        match json.as_object() {
+            Some(json) => Ok(json),
+            None => {
+                Err(PhobosHandlerError::new(format!(
+                    "{} conversion failed: highest-level structure is not a map",
+                    addr.get_full_str(&self.base_path)
+                )))
+            }
+        }
+    }
+    fn map_to_datarow(&self, json_row: &JsonValue) -> Option<DataRow> {
         let mut row: DataRow = Vec::new();
-        let item = DataItem::new("name", DataValue::String(json_row["typeName"].as_str().unwrap().to_string()));
+        let item = DataItem::new("name", DataValue::String(json_row["typeName"].as_str()?.to_string()));
         row.push(item);
-        Ok(row)
+        Some(row)
     }
-
 }
 
 impl DataHandler for PhobosDataHandler {

@@ -1,7 +1,5 @@
-pub use data::{DataItem, DataValue, DataRow, DataTable};
-pub use error::DataHandlerResult;
-pub use handler::DataHandler;
+pub use data::{DataItem, DataRow, DataTable, DataValue};
+pub use handler::{DataHandler, DataHandlerResult};
 
 mod data;
-mod error;
 mod handler;

@@ -1,6 +1,16 @@
 use crate::defines::{ReeFloat, ReeInt};
 
-pub type DataTable = Vec<DataRow>;
+#[derive(Debug)]
+pub struct DataTable {
+    pub data: Vec<DataRow>,
+    pub failed_rows: u32,
+}
+
+impl DataTable {
+    pub fn new(data: Vec<DataRow>, failed_rows: u32) -> DataTable {
+        DataTable { data, failed_rows }
+    }
+}
 
 pub type DataRow = Vec<DataItem>;
 
@@ -12,7 +22,10 @@ pub struct DataItem {
 
 impl DataItem {
     pub fn new<P: Into<String>>(name: P, value: DataValue) -> DataItem {
-        DataItem{name: name.into(), value}
+        DataItem {
+            name: name.into(),
+            value,
+        }
     }
 }
 
