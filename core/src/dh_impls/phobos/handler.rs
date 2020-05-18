@@ -6,6 +6,7 @@ use std::result;
 use log;
 use serde_json::{Map as JsonMap, Value as JsonValue};
 
+use crate::defines::{ReeFloat, ReeInt};
 use crate::dh;
 
 use super::address::Address;
@@ -62,21 +63,29 @@ impl Handler {
     fn map_to_datarow(json_row: &JsonValue, fields: &Vec<&str>) -> Option<dh::Row> {
         let mut row: dh::Row = Vec::new();
         for &field in fields {
-            let item = dh::Item::new("name", dh::Value::String(json_row[field].as_str()?.to_string()));
+            let item = dh::Item::new(field, Handler::convert_value(&json_row[field])?);
             row.push(item);
         }
         Some(row)
     }
-    // fn convert_value(json: &JsonValue) -> Option<DataValue> {
-    //     match json {
-    //         JsonValue::Null => Some(DataValue::Null),
-    //         JsonValue::Bool(&v) => Some(DataValue::Bool(v)),
-    //         JsonValue::Number(&v) => Some(DataValue::Null),
-    //         JsonValue::String(&v) => Some(DataValue::Null),
-    //         JsonValue::Array => Some(DataValue::Null),
-    //         JsonValue::Object(&v) => Some(DataValue::Null),
-    //     }
-    // }
+    fn convert_value(json: &JsonValue) -> Option<dh::Value> {
+        match json {
+            JsonValue::Null => Some(dh::Value::Null),
+            JsonValue::Bool(_) => Some(dh::Value::Bool(json.as_bool()?)),
+            JsonValue::Number(_) => {
+                if json.is_i64() {
+                    Some(dh::Value::Int(json.as_i64()? as ReeInt))
+                } else if json.is_f64() {
+                    Some(dh::Value::Float(json.as_f64()? as ReeFloat))
+                } else {
+                    None
+                }
+            }
+            JsonValue::String(_) => Some(dh::Value::String(json.as_str()?.to_owned())),
+            JsonValue::Array(_) => Some(dh::Value::Null),
+            JsonValue::Object(_) => Some(dh::Value::Null),
+        }
+    }
 }
 
 impl dh::Handler for Handler {
@@ -84,7 +93,7 @@ impl dh::Handler for Handler {
         let addr = Address::new("fsd_lite", "evetypes");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        let data = self.decompose_map(&addr, json, vec!["typeName"])?;
+        let data = self.decompose_map(&addr, json, vec!["typeID", "typeName"])?;
         Ok(data)
     }
 }
