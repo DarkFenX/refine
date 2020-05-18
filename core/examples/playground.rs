@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 
 use reefast::consts::{EveEffectCategory, EveModDomain, EveModOperator};
-use reefast::eve_type::{Attribute, Effect, Item, ItemModifier};
 use reefast::dh::Handler;
 use reefast::dh_impls::phobos;
+use reefast::eve_type::{Attribute, Effect, Item, ItemModifier};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -46,7 +46,7 @@ fn main() {
 
     let dh = phobos::Handler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
     match dh.get_evetypes() {
-        Ok(r) => println!("success with {} failed rows", r.failed_rows),
-        Err(e) => println!("failure: {}", e),
+        Ok(r) => println!("evetypes: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("evetypes failed: {}", e),
     }
 }

@@ -4,7 +4,7 @@ use std::fmt;
 use std::io;
 
 pub(super) trait FromPathErr<T> {
-    fn from_path_err<P: Into<String>>(err: T, path: P) -> Self;
+    fn from_path_err<U: Into<String>>(err: T, path: U) -> Self;
 }
 
 #[derive(Debug)]
@@ -13,7 +13,7 @@ pub(super) struct Error {
 }
 
 impl Error {
-    pub fn new<P: Into<String>>(msg: P) -> Error {
+    pub fn new<T: Into<String>>(msg: T) -> Error {
         Error { msg: msg.into() }
     }
 }
@@ -27,13 +27,13 @@ impl fmt::Display for Error {
 }
 
 impl FromPathErr<io::Error> for Error {
-    fn from_path_err<P: Into<String>>(err: io::Error, path: P) -> Self {
+    fn from_path_err<T: Into<String>>(err: io::Error, path: T) -> Self {
         Error::new(format!("{} reading failed: {}", path.into(), err))
     }
 }
 
 impl FromPathErr<serde_json::Error> for Error {
-    fn from_path_err<P: Into<String>>(err: serde_json::Error, path: P) -> Self {
+    fn from_path_err<T: Into<String>>(err: serde_json::Error, path: T) -> Self {
         Error::new(format!("{} parsing failed: {}", path.into(), err))
     }
 }

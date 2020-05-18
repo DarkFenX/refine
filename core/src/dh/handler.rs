@@ -1,9 +1,9 @@
-use super::data::Table;
+use super::data::{Container, EveType};
 use std::error;
 use std::result;
 
-pub type Result = result::Result<Table, Box<dyn error::Error>>;
+pub type Result<T> = result::Result<Container<T>, Box<dyn error::Error>>;
 
 pub trait Handler {
-    fn get_evetypes(&self) -> Result;
+    fn get_evetypes(&self) -> Result<EveType>;
 }

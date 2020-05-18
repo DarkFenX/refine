@@ -1,40 +1,25 @@
-use crate::defines::{ReeFloat, ReeInt};
+use crate::defines::ReeInt;
 
 #[derive(Debug)]
-pub struct Table {
-    pub data: Vec<Row>,
-    pub failed_rows: u32,
+pub struct Container<T> {
+    pub data: Vec<T>,
+    pub failed: u32,
 }
 
-impl Table {
-    pub fn new(data: Vec<Row>, failed_rows: u32) -> Table {
-        Table { data, failed_rows }
-    }
-}
-
-pub type Row = Vec<Item>;
-
-#[derive(Debug)]
-pub struct Item {
-    pub name: String,
-    pub value: Value,
-}
-
-impl Item {
-    pub fn new<P: Into<String>>(name: P, value: Value) -> Item {
-        Item {
-            name: name.into(),
-            value,
-        }
+impl<T> Container<T> {
+    pub fn new(data: Vec<T>, failed: u32) -> Container<T> {
+        Container { data, failed }
     }
 }
 
 #[derive(Debug)]
-pub enum Value {
-    Null,
-    Bool(bool),
-    Int(ReeInt),
-    Float(ReeFloat),
-    String(String),
-    Yaml(String),
+pub struct EveType {
+    pub id: ReeInt,
+    pub group_id: ReeInt,
+}
+
+impl EveType {
+    pub fn new(id: ReeInt, group_id: ReeInt) -> EveType {
+        EveType { id, group_id }
+    }
 }
