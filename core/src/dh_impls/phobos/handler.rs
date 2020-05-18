@@ -4,11 +4,12 @@ use std::path::PathBuf;
 use std::result;
 
 use log;
-use serde_json::Value;
+use serde_json;
 
 use crate::dh;
 
 use super::address::Address;
+use super::data::EveType;
 use super::error::{Error, FromPathErr};
 
 type Result<T> = result::Result<T, Error>;
@@ -27,7 +28,7 @@ impl Handler {
         File::open(full_path)?.read_to_end(&mut bytes)?;
         Ok(bytes)
     }
-    fn read_json(&self, addr: &Address) -> Result<Value> {
+    fn read_json(&self, addr: &Address) -> Result<serde_json::Value> {
         let bytes = self
             .read_file(addr)
             .map_err(|e| Error::from_path_err(e, addr.get_full_str(&self.base_path)))?;
@@ -35,16 +36,16 @@ impl Handler {
             serde_json::from_slice(&bytes).map_err(|e| Error::from_path_err(e, addr.get_full_str(&self.base_path)))?;
         Ok(data)
     }
-    fn decompose_fsdlite<'a>(&self, addr: &Address, json: &'a Value) -> Result<Vec<&'a Value>> {
-        match json.as_object() {
-            Some(json) => {
-                let mut vals = Vec::new();
-                for val in json.values() {
-                    vals.push(val);
+    fn decompose_fsdlite(&self, addr: &Address, json: serde_json::Value) -> Result<Vec<serde_json::Value>> {
+        match json {
+            serde_json::Value::Object(mut map) => {
+                let mut vals: Vec<serde_json::Value> = Vec::new();
+                for val in map.values_mut() {
+                    vals.push(val.take());
                 }
                 Ok(vals)
             }
-            None => Err(Error::new(format!(
+            _ => Err(Error::new(format!(
                 "{} FSD Lite decomposition failed: highest-level structure is not a map",
                 addr.get_full_str(&self.base_path)
             ))),
@@ -57,9 +58,15 @@ impl dh::Handler for Handler {
         let addr = Address::new("fsd_lite", "evetypes");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let unprocessed = self.read_json(&addr)?;
-        let _decomposed = self.decompose_fsdlite(&addr, &unprocessed)?;
-        let tmp_vec: Vec<dh::EveType> = Vec::new();
-        let tmp_cont = dh::Container::new(tmp_vec, 0);
-        Ok(tmp_cont)
+        let decomposed = self.decompose_fsdlite(&addr, unprocessed)?;
+        let mut data = Vec::new();
+        let mut errors: u32 = 0;
+        for value in decomposed {
+            match serde_json::from_value::<EveType>(value) {
+                Ok(v) => data.push(v.into()),
+                Err(_) => errors += 1,
+            }
+        }
+        Ok(dh::Container::new(data, errors))
     }
 }
