@@ -86,7 +86,7 @@ impl dh::Handler for Handler {
         let unprocessed = self.read_json(&addr)?;
         let metadatas: Vec<Metadata> =
             serde_json::from_value(unprocessed).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
-        let mut version: Option<u32> = None;
+        let mut version = None;
         for metadata in metadatas {
             if metadata.field_name == "client_build" {
                 version = Some(metadata.field_value);
