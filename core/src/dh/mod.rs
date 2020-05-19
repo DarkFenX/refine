@@ -1,4 +1,4 @@
-pub use data::{Container, EveGroup, EveType, FighterAbil};
+pub use data::{AbilChargeExtras, AbilExtras, Container, EveGroup, EveType, FighterAbil, TypeFighterAbil};
 pub use handler::{Handler, Result};
 
 mod data;

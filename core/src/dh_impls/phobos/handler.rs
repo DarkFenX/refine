@@ -11,7 +11,7 @@ use crate::defines::ReeInt;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{Assemble, EveGroup, EveType, FighterAbil, FsdItem, Metadata};
+use super::data::{Assemble, EveGroup, EveType, FighterAbil, FsdItem, Metadata, TypeFighterAbil};
 use super::error::{Error, FromPath};
 
 type Result<T> = result::Result<T, Error>;
@@ -88,6 +88,11 @@ impl dh::Handler for Handler {
         let addr = Address::new("fsd_lite", "fighterabilities");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         self.handle_fsdlite::<FighterAbil, dh::FighterAbil>(&addr)
+    }
+    fn get_typefighterabils(&self) -> dh::Result<dh::Container<dh::TypeFighterAbil>> {
+        let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
+        log::info!("processing {}", addr.get_full_str(&self.base_path));
+        self.handle_fsdlite::<TypeFighterAbil, dh::TypeFighterAbil>(&addr)
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");

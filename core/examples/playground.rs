@@ -59,6 +59,10 @@ fn main() {
         Ok(r) => println!("fighterabils: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("fighterabils failed: {}", e),
     }
+    match dh.get_typefighterabils() {
+        Ok(r) => println!("typefighterabils: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("typefighterabils failed: {}", e),
+    }
     match dh.get_version() {
         Ok(r) => println!("data version: {}", r),
         Err(e) => println!("version failed: {}", e),

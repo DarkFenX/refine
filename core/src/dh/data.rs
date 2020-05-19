@@ -1,4 +1,4 @@
-use crate::defines::ReeInt;
+use crate::defines::{ReeFloat, ReeInt};
 
 #[derive(Debug)]
 pub struct Container<T> {
@@ -53,5 +53,49 @@ impl FighterAbil {
             disallow_hisec,
             disallow_lowsec,
         }
+    }
+}
+
+#[derive(Debug)]
+pub struct TypeFighterAbil {
+    pub type_id: ReeInt,
+    pub abil0: Option<AbilExtras>,
+    pub abil1: Option<AbilExtras>,
+    pub abil2: Option<AbilExtras>,
+}
+impl TypeFighterAbil {
+    pub fn new(
+        type_id: ReeInt,
+        abil0: Option<AbilExtras>,
+        abil1: Option<AbilExtras>,
+        abil2: Option<AbilExtras>,
+    ) -> TypeFighterAbil {
+        TypeFighterAbil {
+            type_id,
+            abil0,
+            abil1,
+            abil2,
+        }
+    }
+}
+#[derive(Debug)]
+pub struct AbilExtras {
+    pub id: ReeInt,
+    pub cooldown: Option<ReeFloat>,
+    pub charges: Option<AbilChargeExtras>,
+}
+impl AbilExtras {
+    pub fn new(id: ReeInt, cooldown: Option<ReeFloat>, charges: Option<AbilChargeExtras>) -> AbilExtras {
+        AbilExtras { id, cooldown, charges }
+    }
+}
+#[derive(Debug)]
+pub struct AbilChargeExtras {
+    pub count: ReeInt,
+    pub rearm_time: ReeFloat,
+}
+impl AbilChargeExtras {
+    pub fn new(count: ReeInt, rearm_time: ReeFloat) -> AbilChargeExtras {
+        AbilChargeExtras { count, rearm_time }
     }
 }
