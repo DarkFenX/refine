@@ -11,7 +11,7 @@ use crate::defines::ReeInt;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{Assemble, EveGroup, EveType, FighterAbil, FsdItem, Metadata, TypeFighterAbil};
+use super::data::{EveGroup, EveType, FighterAbil, FsdItem, FsdMerge, Metadata, TypeFighterAbil};
 use super::error::{Error, FromPath};
 
 type Result<T> = result::Result<T, Error>;
@@ -40,7 +40,7 @@ impl Handler {
     // FSD Lite methods
     fn handle_fsdlite<T, U>(&self, addr: &Address) -> dh::Result<dh::Container<U>>
     where
-        T: serde::de::DeserializeOwned + Assemble<U>,
+        T: serde::de::DeserializeOwned + FsdMerge<U>,
     {
         let unprocessed = self.read_json(&addr)?;
         let decomposed = Handler::decompose_fsdlite(&addr, unprocessed)?;
@@ -57,7 +57,7 @@ impl Handler {
     }
     fn convert_fsdlite<T, U>(decomposed: Vec<FsdItem>) -> dh::Result<dh::Container<U>>
     where
-        T: serde::de::DeserializeOwned + Assemble<U>,
+        T: serde::de::DeserializeOwned + FsdMerge<U>,
     {
         let mut data = Vec::new();
         let mut errors: u32 = 0;
@@ -66,7 +66,7 @@ impl Handler {
                 fsd_item.id.parse::<ReeInt>(),
                 serde_json::from_value::<T>(fsd_item.item),
             ) {
-                (Ok(id), Ok(item)) => data.push(item.assemble(id)),
+                (Ok(id), Ok(item)) => data.push(item.fsd_merge(id)),
                 _ => errors += 1,
             }
         }
