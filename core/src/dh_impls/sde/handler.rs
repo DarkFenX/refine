@@ -62,18 +62,12 @@ impl Handler {
         let mut data = Vec::new();
         let mut errors: u32 = 0;
         for fsd_item in decomposed {
-            match serde_yaml::from_value::<ReeInt>(fsd_item.id) {
-                Ok(id) => match serde_yaml::from_value::<T>(fsd_item.item) {
-                    Ok(item) => data.push(item.assemble(id)),
-                    Err(_) => {
-                        errors += 1;
-                        continue;
-                    }
-                },
-                Err(_) => {
-                    errors += 1;
-                    continue;
-                }
+            match (
+                serde_yaml::from_value::<ReeInt>(fsd_item.id),
+                serde_yaml::from_value::<T>(fsd_item.item),
+            ) {
+                (Ok(id), Ok(item)) => data.push(item.assemble(id)),
+                _ => errors += 1,
             }
         }
         Ok(dh::Container::new(data, errors))

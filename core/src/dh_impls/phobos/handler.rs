@@ -7,10 +7,11 @@ use log;
 use serde;
 use serde_json;
 
+use crate::defines::ReeInt;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{EveGroup, EveType, Metadata};
+use super::data::{Assemble, EveGroup, EveType, FsdItem, Metadata};
 use super::error::{Error, FromPath};
 
 type Result<T> = result::Result<T, Error>;
@@ -39,31 +40,34 @@ impl Handler {
     // FSD Lite methods
     fn handle_fsdlite<T, U>(&self, addr: &Address) -> dh::Result<dh::Container<U>>
     where
-        T: serde::de::DeserializeOwned + Into<U>,
+        T: serde::de::DeserializeOwned + Assemble<U>,
     {
         let unprocessed = self.read_json(&addr)?;
         let decomposed = Handler::decompose_fsdlite(&addr, unprocessed)?;
         Handler::convert_fsdlite::<T, U>(decomposed)
     }
-    fn decompose_fsdlite(addr: &Address, json: serde_json::Value) -> Result<Vec<serde_json::Value>> {
+    fn decompose_fsdlite(addr: &Address, json: serde_json::Value) -> Result<Vec<FsdItem>> {
         match json {
-            serde_json::Value::Object(mut map) => Ok(map.values_mut().map(|v| v.take()).collect()),
+            serde_json::Value::Object(map) => Ok(map.into_iter().map(|(k, v)| FsdItem::new(k, v)).collect()),
             _ => Err(Error::new(format!(
                 "{} FSD Lite decomposition failed: highest-level structure is not a map",
                 addr.get_part_str()
             ))),
         }
     }
-    fn convert_fsdlite<T, U>(decomposed: Vec<serde_json::Value>) -> dh::Result<dh::Container<U>>
+    fn convert_fsdlite<T, U>(decomposed: Vec<FsdItem>) -> dh::Result<dh::Container<U>>
     where
-        T: serde::de::DeserializeOwned + Into<U>,
+        T: serde::de::DeserializeOwned + Assemble<U>,
     {
         let mut data = Vec::new();
         let mut errors: u32 = 0;
-        for value in decomposed {
-            match serde_json::from_value::<T>(value) {
-                Ok(v) => data.push(v.into()),
-                Err(_) => errors += 1,
+        for fsd_item in decomposed {
+            match (
+                fsd_item.id.parse::<ReeInt>(),
+                serde_json::from_value::<T>(fsd_item.item),
+            ) {
+                (Ok(id), Ok(item)) => data.push(item.assemble(id)),
+                _ => errors += 1,
             }
         }
         Ok(dh::Container::new(data, errors))
