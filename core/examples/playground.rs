@@ -46,6 +46,7 @@ fn main() {
     let _item = Item::new(1, 2, 3, HashMap::new(), HashMap::new(), None);
 
     let dh = phobos::Handler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
+    println!("using {:?}", dh);
     match dh.get_evetypes() {
         Ok(r) => println!("evetypes: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("evetypes failed: {}", e),
