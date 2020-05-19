@@ -5,7 +5,7 @@ use chrono;
 
 use reefast::consts::{EveEffectCategory, EveModDomain, EveModOperator};
 use reefast::dh::Handler;
-use reefast::dh_impls::{phobos, sde};
+use reefast::dh_impls::phobos;
 use reefast::eve_type::{Attribute, Effect, Item, ItemModifier};
 
 fn setup_logger() -> Result<(), fern::InitError> {
@@ -45,9 +45,7 @@ fn main() {
     let _mod = ItemModifier::new(EveModDomain::Ship, 0, EveModOperator::PostPercent, 0);
     let _item = Item::new(1, 2, 3, HashMap::new(), HashMap::new(), None);
 
-    let dhsde = sde::Handler::new(PathBuf::from("/home/dfx/Desktop/sde"));
-    //let dhphb = phobos::Handler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
-    let dh = dhsde;
+    let dh = phobos::Handler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
     println!("using {:?}", dh);
     match dh.get_evetypes() {
         Ok(r) => println!("evetypes: {} returned, {} failed", r.data.len(), r.failed),
