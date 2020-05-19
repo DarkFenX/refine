@@ -26,3 +26,9 @@ impl Into<dh::EveGroup> for EveGroup {
         dh::EveGroup::new(self.groupID, self.categoryID)
     }
 }
+
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct Metadata {
+    pub(super) field_name: String,
+    pub(super) field_value: u32,
+}

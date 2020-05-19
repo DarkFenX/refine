@@ -4,8 +4,8 @@ use std::io;
 
 use serde_json;
 
-pub(super) trait FromPathErr<T> {
-    fn from_path_err<U: Into<String>>(err: T, path: U) -> Self;
+pub(super) trait FromPath<T> {
+    fn from_path<U: Into<String>>(err: T, path: U) -> Self;
 }
 
 #[derive(Debug)]
@@ -27,14 +27,14 @@ impl fmt::Display for Error {
     }
 }
 
-impl FromPathErr<io::Error> for Error {
-    fn from_path_err<T: Into<String>>(err: io::Error, path: T) -> Self {
+impl FromPath<io::Error> for Error {
+    fn from_path<T: Into<String>>(err: io::Error, path: T) -> Self {
         Error::new(format!("{} reading failed: {}", path.into(), err))
     }
 }
 
-impl FromPathErr<serde_json::Error> for Error {
-    fn from_path_err<T: Into<String>>(err: serde_json::Error, path: T) -> Self {
+impl FromPath<serde_json::Error> for Error {
+    fn from_path<T: Into<String>>(err: serde_json::Error, path: T) -> Self {
         Error::new(format!("{} parsing failed: {}", path.into(), err))
     }
 }

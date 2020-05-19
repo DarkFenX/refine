@@ -10,8 +10,8 @@ use serde_json;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{EveGroup, EveType};
-use super::error::{Error, FromPathErr};
+use super::data::{EveGroup, EveType, Metadata};
+use super::error::{Error, FromPath};
 
 type Result<T> = result::Result<T, Error>;
 
@@ -25,19 +25,19 @@ impl Handler {
     }
     fn read_file(&self, addr: &Address) -> io::Result<Vec<u8>> {
         let full_path = addr.get_full_path(&self.base_path);
-        let mut bytes: Vec<u8> = Vec::new();
+        let mut bytes = Vec::new();
         File::open(full_path)?.read_to_end(&mut bytes)?;
         Ok(bytes)
     }
     fn read_json(&self, addr: &Address) -> Result<serde_json::Value> {
         let bytes = self
             .read_file(addr)
-            .map_err(|e| Error::from_path_err(e, addr.get_part_str()))?;
-        let data = serde_json::from_slice(&bytes).map_err(|e| Error::from_path_err(e, addr.get_part_str()))?;
+            .map_err(|e| Error::from_path(e, addr.get_part_str()))?;
+        let data = serde_json::from_slice(&bytes).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
         Ok(data)
     }
     // FSD Lite methods
-    fn handle_fsdlite<T, U>(&self, addr: &Address) -> dh::Result<U>
+    fn handle_fsdlite<T, U>(&self, addr: &Address) -> dh::Result<dh::Container<U>>
     where
         T: serde::de::DeserializeOwned + Into<U>,
     {
@@ -54,7 +54,7 @@ impl Handler {
             ))),
         }
     }
-    fn convert_fsdlite<T, U>(decomposed: Vec<serde_json::Value>) -> dh::Result<U>
+    fn convert_fsdlite<T, U>(decomposed: Vec<serde_json::Value>) -> dh::Result<dh::Container<U>>
     where
         T: serde::de::DeserializeOwned + Into<U>,
     {
@@ -70,14 +70,32 @@ impl Handler {
     }
 }
 impl dh::Handler for Handler {
-    fn get_evetypes(&self) -> dh::Result<dh::EveType> {
+    fn get_evetypes(&self) -> dh::Result<dh::Container<dh::EveType>> {
         let addr = Address::new("fsd_lite", "evetypes");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         self.handle_fsdlite::<EveType, dh::EveType>(&addr)
     }
-    fn get_evegroups(&self) -> dh::Result<dh::EveGroup> {
+    fn get_evegroups(&self) -> dh::Result<dh::Container<dh::EveGroup>> {
         let addr = Address::new("fsd_lite", "evegroups");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         self.handle_fsdlite::<EveGroup, dh::EveGroup>(&addr)
+    }
+    fn get_version(&self) -> dh::Result<String> {
+        let addr = Address::new("phobos", "metadata");
+        log::info!("processing {}", addr.get_full_str(&self.base_path));
+        let unprocessed = self.read_json(&addr)?;
+        let metadatas: Vec<Metadata> =
+            serde_json::from_value(unprocessed).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
+        let mut version: Option<u32> = None;
+        for metadata in metadatas {
+            if metadata.field_name == "client_build" {
+                version = Some(metadata.field_value);
+                break;
+            }
+        }
+        match version {
+            Some(v) => Ok(v.to_string()),
+            None => Err(Error::new("version fetch failed: unable to find client build").into()),
+        }
     }
 }
