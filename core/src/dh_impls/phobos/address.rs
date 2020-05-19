@@ -4,7 +4,6 @@ pub(super) struct Address {
     folder: &'static str,
     file: &'static str,
 }
-
 impl Address {
     pub(super) fn new(folder: &'static str, file: &'static str) -> Address {
         Address { folder, file }

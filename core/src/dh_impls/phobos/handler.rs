@@ -11,13 +11,13 @@ use crate::dh;
 use super::address::Address;
 use super::data::EveType;
 use super::error::{Error, FromPathErr};
+use crate::dh_impls::phobos::data::EveGroup;
 
 type Result<T> = result::Result<T, Error>;
 
 pub struct Handler {
     base_path: PathBuf,
 }
-
 impl Handler {
     pub fn new<P: Into<PathBuf>>(path: P) -> Handler {
         Handler { base_path: path.into() }
@@ -46,7 +46,6 @@ impl Handler {
         }
     }
 }
-
 impl dh::Handler for Handler {
     fn get_evetypes(&self) -> dh::Result<dh::EveType> {
         let addr = Address::new("fsd_lite", "evetypes");
@@ -57,6 +56,21 @@ impl dh::Handler for Handler {
         let mut errors: u32 = 0;
         for value in decomposed {
             match serde_json::from_value::<EveType>(value) {
+                Ok(v) => data.push(v.into()),
+                Err(_) => errors += 1,
+            }
+        }
+        Ok(dh::Container::new(data, errors))
+    }
+    fn get_evegroups(&self) -> dh::Result<dh::EveGroup> {
+        let addr = Address::new("fsd_lite", "evegroups");
+        log::info!("processing {}", addr.get_full_str(&self.base_path));
+        let unprocessed = self.read_json(&addr)?;
+        let decomposed = self.decompose_fsdlite(&addr, unprocessed)?;
+        let mut data = Vec::new();
+        let mut errors: u32 = 0;
+        for value in decomposed {
+            match serde_json::from_value::<EveGroup>(value) {
                 Ok(v) => data.push(v.into()),
                 Err(_) => errors += 1,
             }
