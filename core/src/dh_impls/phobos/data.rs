@@ -19,84 +19,97 @@ impl FsdItem {
     }
 }
 
-#[allow(non_snake_case)]
+/////////////////////////////////////////////////////////////////////////////
+// Inventory data
+/////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct EveType {
-    pub(super) typeID: ReeInt,
-    pub(super) groupID: ReeInt,
+    #[serde(rename = "groupID")]
+    pub(super) group_id: ReeInt,
 }
 impl Assemble<dh::EveType> for EveType {
     fn assemble(self, id: ReeInt) -> dh::EveType {
-        dh::EveType::new(id, self.groupID)
+        dh::EveType::new(id, self.group_id)
     }
 }
 
-#[allow(non_snake_case)]
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct EveGroup {
-    pub(super) groupID: ReeInt,
-    pub(super) categoryID: ReeInt,
+    #[serde(rename = "categoryID")]
+    pub(super) category_id: ReeInt,
 }
 impl Assemble<dh::EveGroup> for EveGroup {
     fn assemble(self, id: ReeInt) -> dh::EveGroup {
-        dh::EveGroup::new(id, self.categoryID)
+        dh::EveGroup::new(id, self.category_id)
     }
 }
 
-#[allow(non_snake_case)]
+/////////////////////////////////////////////////////////////////////////////
+// Fighter ability data
+/////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct FighterAbil {
-    pub(super) targetMode: String,
-    pub(super) disallowInHighSec: bool,
-    pub(super) disallowInLowSec: bool,
+    #[serde(rename = "targetMode")]
+    pub(super) target_mode: String,
+    #[serde(rename = "disallowInHighSec")]
+    pub(super) disallow_hisec: bool,
+    #[serde(rename = "disallowInLowSec")]
+    pub(super) disallow_lowsec: bool,
 }
 impl Assemble<dh::FighterAbil> for FighterAbil {
     fn assemble(self, id: ReeInt) -> dh::FighterAbil {
-        dh::FighterAbil::new(id, &self.targetMode, self.disallowInHighSec, self.disallowInLowSec)
+        dh::FighterAbil::new(id, &self.target_mode, self.disallow_hisec, self.disallow_lowsec)
     }
 }
 
-#[allow(non_snake_case)]
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct TypeFighterAbil {
-    pub(super) abilitySlot0: Option<AbilExtras>,
-    pub(super) abilitySlot1: Option<AbilExtras>,
-    pub(super) abilitySlot2: Option<AbilExtras>,
+    #[serde(rename = "abilitySlot0")]
+    pub(super) abil0: Option<AbilExtras>,
+    #[serde(rename = "abilitySlot1")]
+    pub(super) abil1: Option<AbilExtras>,
+    #[serde(rename = "abilitySlot2")]
+    pub(super) abil2: Option<AbilExtras>,
 }
 impl Assemble<dh::TypeFighterAbil> for TypeFighterAbil {
     fn assemble(self, id: ReeInt) -> dh::TypeFighterAbil {
         dh::TypeFighterAbil::new(
             id,
-            self.abilitySlot0.map(Into::into),
-            self.abilitySlot1.map(Into::into),
-            self.abilitySlot2.map(Into::into),
+            self.abil0.map(Into::into),
+            self.abil1.map(Into::into),
+            self.abil2.map(Into::into),
         )
     }
 }
-#[allow(non_snake_case)]
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct AbilExtras {
-    pub(super) abilityID: ReeInt,
-    pub(super) cooldownSeconds: Option<ReeFloat>,
+    #[serde(rename = "abilityID")]
+    pub(super) ability_id: ReeInt,
+    #[serde(rename = "cooldownSeconds")]
+    pub(super) cooldown: Option<ReeFloat>,
     pub(super) charges: Option<AbilChargeExtras>,
 }
 impl Into<dh::AbilExtras> for AbilExtras {
     fn into(self) -> dh::AbilExtras {
-        dh::AbilExtras::new(self.abilityID, self.cooldownSeconds, self.charges.map(Into::into))
+        dh::AbilExtras::new(self.ability_id, self.cooldown, self.charges.map(Into::into))
     }
 }
-#[allow(non_snake_case)]
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct AbilChargeExtras {
-    pub(super) chargeCount: ReeInt,
-    pub(super) rearmTimeSeconds: ReeFloat,
+    #[serde(rename = "chargeCount")]
+    pub(super) count: ReeInt,
+    #[serde(rename = "rearmTimeSeconds")]
+    pub(super) rearm_time: ReeFloat,
 }
 impl Into<dh::AbilChargeExtras> for AbilChargeExtras {
     fn into(self) -> dh::AbilChargeExtras {
-        dh::AbilChargeExtras::new(self.chargeCount, self.rearmTimeSeconds)
+        dh::AbilChargeExtras::new(self.count, self.rearm_time)
     }
 }
 
+/////////////////////////////////////////////////////////////////////////////
+// Misc data
+/////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct Metadata {
     pub(super) field_name: String,
