@@ -32,3 +32,26 @@ impl EveGroup {
         EveGroup { id, category_id }
     }
 }
+
+#[derive(Debug)]
+pub struct FighterAbil {
+    pub id: ReeInt,
+    pub target_mode: String,
+    pub disallow_hisec: bool,
+    pub disallow_lowsec: bool,
+}
+impl FighterAbil {
+    pub fn new<T: Into<String>>(
+        id: ReeInt,
+        target_mode: T,
+        disallow_hisec: bool,
+        disallow_lowsec: bool,
+    ) -> FighterAbil {
+        FighterAbil {
+            id,
+            target_mode: target_mode.into(),
+            disallow_hisec,
+            disallow_lowsec,
+        }
+    }
+}

@@ -43,6 +43,19 @@ impl Assemble<dh::EveGroup> for EveGroup {
     }
 }
 
+#[allow(non_snake_case)]
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct FighterAbil {
+    pub(super) targetMode: String,
+    pub(super) disallowInHighSec: bool,
+    pub(super) disallowInLowSec: bool,
+}
+impl Assemble<dh::FighterAbil> for FighterAbil {
+    fn assemble(&self, id: ReeInt) -> dh::FighterAbil {
+        dh::FighterAbil::new(id, &self.targetMode, self.disallowInHighSec, self.disallowInLowSec)
+    }
+}
+
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct Metadata {
     pub(super) field_name: String,

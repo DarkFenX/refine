@@ -11,7 +11,7 @@ use crate::defines::ReeInt;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{Assemble, EveGroup, EveType, FsdItem, Metadata};
+use super::data::{Assemble, EveGroup, EveType, FighterAbil, FsdItem, Metadata};
 use super::error::{Error, FromPath};
 
 type Result<T> = result::Result<T, Error>;
@@ -21,7 +21,7 @@ pub struct Handler {
     base_path: PathBuf,
 }
 impl Handler {
-    pub fn new<P: Into<PathBuf>>(path: P) -> Handler {
+    pub fn new<T: Into<PathBuf>>(path: T) -> Handler {
         Handler { base_path: path.into() }
     }
     fn read_file(&self, addr: &Address) -> io::Result<Vec<u8>> {
@@ -83,6 +83,11 @@ impl dh::Handler for Handler {
         let addr = Address::new("fsd_lite", "evegroups");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         self.handle_fsdlite::<EveGroup, dh::EveGroup>(&addr)
+    }
+    fn get_fighterabils(&self) -> dh::Result<dh::Container<dh::FighterAbil>> {
+        let addr = Address::new("fsd_lite", "fighterabilities");
+        log::info!("processing {}", addr.get_full_str(&self.base_path));
+        self.handle_fsdlite::<FighterAbil, dh::FighterAbil>(&addr)
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");
