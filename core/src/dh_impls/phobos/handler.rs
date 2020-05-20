@@ -1,20 +1,16 @@
 use std::fs::File;
 use std::io::{self, Read};
 use std::path::PathBuf;
-use std::result;
 
 use log;
-use serde;
 use serde_json;
 
-use crate::defines::ReeInt;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{EveGroup, EveType, FighterAbil, FsdItem, FsdMerge, Metadata, TypeFighterAbil};
-use super::error::{Error, FromPath};
-
-type Result<T> = result::Result<T, Error>;
+use super::data::{EveGroup, EveType, FighterAbil, Metadata, TypeFighterAbil};
+use super::error::{Error, FromPath, Result};
+use super::fsdlite;
 
 #[derive(Debug)]
 pub struct Handler {
@@ -37,62 +33,31 @@ impl Handler {
         let data = serde_json::from_slice(&bytes).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
         Ok(data)
     }
-    // FSD Lite methods
-    fn handle_fsdlite<T, U>(&self, addr: &Address) -> dh::Result<dh::Container<U>>
-    where
-        T: serde::de::DeserializeOwned + FsdMerge<U>,
-    {
-        let unprocessed = self.read_json(&addr)?;
-        let decomposed = Handler::decompose_fsdlite(&addr, unprocessed)?;
-        Handler::convert_fsdlite::<T, U>(decomposed)
-    }
-    fn decompose_fsdlite(addr: &Address, json: serde_json::Value) -> Result<Vec<FsdItem>> {
-        match json {
-            serde_json::Value::Object(map) => Ok(map.into_iter().map(|(k, v)| FsdItem::new(k, v)).collect()),
-            _ => Err(Error::new(format!(
-                "{} FSD Lite decomposition failed: highest-level structure is not a map",
-                addr.get_part_str()
-            ))),
-        }
-    }
-    fn convert_fsdlite<T, U>(decomposed: Vec<FsdItem>) -> dh::Result<dh::Container<U>>
-    where
-        T: serde::de::DeserializeOwned + FsdMerge<U>,
-    {
-        let mut data = Vec::new();
-        let mut errors: u32 = 0;
-        for fsd_item in decomposed {
-            match (
-                fsd_item.id.parse::<ReeInt>(),
-                serde_json::from_value::<T>(fsd_item.item),
-            ) {
-                (Ok(id), Ok(item)) => data.push(item.fsd_merge(id)),
-                _ => errors += 1,
-            }
-        }
-        Ok(dh::Container::new(data, errors))
-    }
 }
 impl dh::Handler for Handler {
     fn get_evetypes(&self) -> dh::Result<dh::Container<dh::EveType>> {
         let addr = Address::new("fsd_lite", "evetypes");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
-        self.handle_fsdlite::<EveType, dh::EveType>(&addr)
+        let json = self.read_json(&addr)?;
+        fsdlite::handle::<EveType, dh::EveType>(json)
     }
     fn get_evegroups(&self) -> dh::Result<dh::Container<dh::EveGroup>> {
         let addr = Address::new("fsd_lite", "evegroups");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
-        self.handle_fsdlite::<EveGroup, dh::EveGroup>(&addr)
+        let json = self.read_json(&addr)?;
+        fsdlite::handle::<EveGroup, dh::EveGroup>(json)
     }
     fn get_fighterabils(&self) -> dh::Result<dh::Container<dh::FighterAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilities");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
-        self.handle_fsdlite::<FighterAbil, dh::FighterAbil>(&addr)
+        let json = self.read_json(&addr)?;
+        fsdlite::handle::<FighterAbil, dh::FighterAbil>(json)
     }
     fn get_typefighterabils(&self) -> dh::Result<dh::Container<dh::TypeFighterAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
-        self.handle_fsdlite::<TypeFighterAbil, dh::TypeFighterAbil>(&addr)
+        let json = self.read_json(&addr)?;
+        fsdlite::handle::<TypeFighterAbil, dh::TypeFighterAbil>(json)
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");

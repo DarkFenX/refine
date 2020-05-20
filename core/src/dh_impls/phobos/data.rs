@@ -1,23 +1,9 @@
 use serde;
-use serde_json;
 
 use crate::defines::{ReeFloat, ReeInt};
 use crate::dh;
 
-pub(super) trait FsdMerge<T> {
-    fn fsd_merge(self, id: ReeInt) -> T;
-}
-
-#[derive(Debug)]
-pub(super) struct FsdItem {
-    pub(super) id: String,
-    pub(super) item: serde_json::Value,
-}
-impl FsdItem {
-    pub(super) fn new<T: Into<String>>(id: T, item: serde_json::Value) -> FsdItem {
-        FsdItem { id: id.into(), item }
-    }
-}
+use super::fsdlite::FsdMerge;
 
 /////////////////////////////////////////////////////////////////////////////
 // Inventory data
