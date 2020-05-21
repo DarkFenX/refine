@@ -39,25 +39,25 @@ impl dh::Handler for Handler {
         let addr = Address::new("fsd_lite", "evetypes");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        fsdlite::handle::<EveType, dh::EveType>(json)
+        fsdlite::handle::<EveType, dh::EveType>(json, "id")
     }
     fn get_evegroups(&self) -> dh::Result<dh::Container<dh::EveGroup>> {
         let addr = Address::new("fsd_lite", "evegroups");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        fsdlite::handle::<EveGroup, dh::EveGroup>(json)
+        fsdlite::handle::<EveGroup, dh::EveGroup>(json, "id")
     }
     fn get_fighterabils(&self) -> dh::Result<dh::Container<dh::FighterAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilities");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        fsdlite::handle::<FighterAbil, dh::FighterAbil>(json)
+        fsdlite::handle::<FighterAbil, dh::FighterAbil>(json, "id")
     }
     fn get_typefighterabils(&self) -> dh::Result<dh::Container<dh::TypeFighterAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        fsdlite::handle::<TypeFighterAbil, dh::TypeFighterAbil>(json)
+        fsdlite::handle::<TypeFighterAbil, dh::TypeFighterAbil>(json, "type_id")
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");

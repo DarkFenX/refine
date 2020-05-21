@@ -3,30 +3,30 @@ use serde;
 use crate::defines::{ReeFloat, ReeInt};
 use crate::dh;
 
-use super::fsdlite::FsdMerge;
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inventory data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct EveType {
+    pub(super) id: ReeInt,
     #[serde(rename = "groupID")]
     pub(super) group_id: ReeInt,
 }
-impl FsdMerge<dh::EveType> for EveType {
-    fn fsd_merge(self, id: ReeInt) -> dh::EveType {
-        dh::EveType::new(id, self.group_id)
+impl Into<dh::EveType> for EveType {
+    fn into(self) -> dh::EveType {
+        dh::EveType::new(self.id, self.group_id)
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct EveGroup {
+    pub(super) id: ReeInt,
     #[serde(rename = "categoryID")]
     pub(super) category_id: ReeInt,
 }
-impl FsdMerge<dh::EveGroup> for EveGroup {
-    fn fsd_merge(self, id: ReeInt) -> dh::EveGroup {
-        dh::EveGroup::new(id, self.category_id)
+impl Into<dh::EveGroup> for EveGroup {
+    fn into(self) -> dh::EveGroup {
+        dh::EveGroup::new(self.id, self.category_id)
     }
 }
 
@@ -35,6 +35,7 @@ impl FsdMerge<dh::EveGroup> for EveGroup {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct FighterAbil {
+    pub(super) id: ReeInt,
     #[serde(rename = "targetMode")]
     pub(super) target_mode: String,
     #[serde(rename = "disallowInHighSec")]
@@ -42,14 +43,15 @@ pub(super) struct FighterAbil {
     #[serde(rename = "disallowInLowSec")]
     pub(super) disallow_lowsec: bool,
 }
-impl FsdMerge<dh::FighterAbil> for FighterAbil {
-    fn fsd_merge(self, id: ReeInt) -> dh::FighterAbil {
-        dh::FighterAbil::new(id, &self.target_mode, self.disallow_hisec, self.disallow_lowsec)
+impl Into<dh::FighterAbil> for FighterAbil {
+    fn into(self) -> dh::FighterAbil {
+        dh::FighterAbil::new(self.id, &self.target_mode, self.disallow_hisec, self.disallow_lowsec)
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct TypeFighterAbil {
+    pub(super) type_id: ReeInt,
     #[serde(rename = "abilitySlot0")]
     pub(super) abil0: Option<AbilExtras>,
     #[serde(rename = "abilitySlot1")]
@@ -57,10 +59,10 @@ pub(super) struct TypeFighterAbil {
     #[serde(rename = "abilitySlot2")]
     pub(super) abil2: Option<AbilExtras>,
 }
-impl FsdMerge<dh::TypeFighterAbil> for TypeFighterAbil {
-    fn fsd_merge(self, id: ReeInt) -> dh::TypeFighterAbil {
+impl Into<dh::TypeFighterAbil> for TypeFighterAbil {
+    fn into(self) -> dh::TypeFighterAbil {
         dh::TypeFighterAbil::new(
-            id,
+            self.type_id,
             self.abil0.map(Into::into),
             self.abil1.map(Into::into),
             self.abil2.map(Into::into),

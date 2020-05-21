@@ -100,13 +100,13 @@ impl TypeFighterAbil {
 }
 #[derive(Debug)]
 pub struct AbilExtras {
-    pub id: ReeInt,
+    pub ability_id: ReeInt,
     pub cooldown: Option<ReeFloat>,
     pub charges: Option<AbilChargeExtras>,
 }
 impl AbilExtras {
-    pub fn new(id: ReeInt, cooldown: Option<ReeFloat>, charges: Option<AbilChargeExtras>) -> AbilExtras {
-        AbilExtras { id, cooldown, charges }
+    pub fn new(ability_id: ReeInt, cooldown: Option<ReeFloat>, charges: Option<AbilChargeExtras>) -> AbilExtras {
+        AbilExtras { ability_id, cooldown, charges }
     }
 }
 #[derive(Debug)]
