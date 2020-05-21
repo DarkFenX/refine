@@ -59,6 +59,10 @@ fn main() {
         Ok(r) => println!("dgmattrs: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("dgmattrs failed: {}", e),
     }
+    match dh.get_dgmeffects() {
+        Ok(r) => println!("dgmeffects: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("dgmeffects failed: {}", e),
+    }
     match dh.get_buffs() {
         Ok(r) => println!("buffs: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("buffs failed: {}", e),

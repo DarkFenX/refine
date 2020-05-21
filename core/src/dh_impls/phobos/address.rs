@@ -14,9 +14,6 @@ impl Address {
     pub(super) fn get_part_path(&self) -> PathBuf {
         PathBuf::from(self.folder).join(format!("{}.json", self.file))
     }
-    pub(super) fn get_full_str(&self, base: &PathBuf) -> String {
-        Address::path_to_str(&self.get_full_path(base))
-    }
     pub(super) fn get_part_str(&self) -> String {
         Address::path_to_str(&self.get_part_path())
     }

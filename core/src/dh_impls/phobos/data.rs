@@ -55,6 +55,81 @@ impl Into<dh::DgmAttr> for DgmAttr {
     }
 }
 
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmEffect {
+    pub(super) id: ReeInt,
+    #[serde(rename = "effectCategory")]
+    pub(super) category_id: ReeInt,
+    #[serde(rename = "isAssistance")]
+    pub(super) is_assistance: ReeInt,
+    #[serde(rename = "isOffensive")]
+    pub(super) is_offensive: ReeInt,
+    #[serde(rename = "isWarpSafe")]
+    pub(super) is_warp_safe: ReeInt,
+    #[serde(rename = "dischargeAttributeID")]
+    pub(super) discharge_attr_id: Option<ReeInt>,
+    #[serde(rename = "durationAttributeID")]
+    pub(super) duration_attr_id: Option<ReeInt>,
+    #[serde(rename = "rangeAttributeID")]
+    pub(super) range_attr_id: Option<ReeInt>,
+    #[serde(rename = "falloffAttributeID")]
+    pub(super) falloff_attr_id: Option<ReeInt>,
+    #[serde(rename = "trackingSpeedAttributeID")]
+    pub(super) tracking_attr_id: Option<ReeInt>,
+    #[serde(rename = "fittingUsageChanceAttributeID")]
+    pub(super) usage_chance_attr_id: Option<ReeInt>,
+    #[serde(rename = "resistanceAttributeID")]
+    pub(super) resist_attr_id: Option<ReeInt>,
+    #[serde(rename = "modifierInfo")]
+    pub(super) mods: Option<Vec<DgmEffectMod>>,
+}
+impl Into<dh::DgmEffect> for DgmEffect {
+    fn into(self) -> dh::DgmEffect {
+        dh::DgmEffect::new(
+            self.id,
+            self.category_id,
+            self.is_assistance != 0,
+            self.is_offensive != 0,
+            self.is_warp_safe != 0,
+            into_opt(self.discharge_attr_id),
+            into_opt(self.duration_attr_id),
+            into_opt(self.range_attr_id),
+            into_opt(self.falloff_attr_id),
+            into_opt(self.tracking_attr_id),
+            into_opt(self.usage_chance_attr_id),
+            into_opt(self.resist_attr_id),
+            self.mods.unwrap_or_default().into_iter().map(|v| v.into()).collect(),
+        )
+    }
+}
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmEffectMod {
+    pub(super) func: String,
+    pub(super) domain: String,
+    #[serde(rename = "modifyingAttributeID")]
+    pub(super) src_attr_id: ReeInt,
+    pub(super) operation: ReeInt,
+    #[serde(rename = "modifiedAttributeID")]
+    pub(super) tgt_attr_id: ReeInt,
+    #[serde(rename = "groupID")]
+    pub(super) group_id: Option<ReeInt>,
+    #[serde(rename = "skillTypeID")]
+    pub(super) skill_id: Option<ReeInt>,
+}
+impl Into<dh::DgmEffectMod> for DgmEffectMod {
+    fn into(self) -> dh::DgmEffectMod {
+        dh::DgmEffectMod::new(
+            self.func,
+            self.domain,
+            self.src_attr_id,
+            self.operation,
+            self.tgt_attr_id,
+            self.group_id,
+            self.skill_id,
+        )
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Buffs
 ////////////////////////////////////////////////////////////////////////////////////////////////////

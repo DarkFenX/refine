@@ -57,6 +57,87 @@ impl DgmAttr {
     }
 }
 
+#[derive(Debug)]
+pub struct DgmEffect {
+    pub id: ReeInt,
+    pub category_id: ReeInt,
+    pub is_assistance: bool,
+    pub is_offensive: bool,
+    pub is_warp_safe: bool,
+    pub discharge_attr_id: Option<ReeInt>,
+    pub duration_attr_id: Option<ReeInt>,
+    pub range_attr_id: Option<ReeInt>,
+    pub falloff_attr_id: Option<ReeInt>,
+    pub tracking_attr_id: Option<ReeInt>,
+    pub usage_chance_attr_id: Option<ReeInt>,
+    pub resist_attr_id: Option<ReeInt>,
+    pub mods: Vec<DgmEffectMod>,
+}
+impl DgmEffect {
+    pub fn new(
+        id: ReeInt,
+        category_id: ReeInt,
+        is_assistance: bool,
+        is_offensive: bool,
+        is_warp_safe: bool,
+        discharge_attr_id: Option<ReeInt>,
+        duration_attr_id: Option<ReeInt>,
+        range_attr_id: Option<ReeInt>,
+        falloff_attr_id: Option<ReeInt>,
+        tracking_attr_id: Option<ReeInt>,
+        usage_chance_attr_id: Option<ReeInt>,
+        resist_attr_id: Option<ReeInt>,
+        mods: Vec<DgmEffectMod>,
+    ) -> DgmEffect {
+        DgmEffect {
+            id,
+            category_id,
+            is_assistance,
+            is_offensive,
+            is_warp_safe,
+            discharge_attr_id,
+            duration_attr_id,
+            range_attr_id,
+            falloff_attr_id,
+            tracking_attr_id,
+            usage_chance_attr_id,
+            resist_attr_id,
+            mods,
+        }
+    }
+}
+#[derive(Debug)]
+pub struct DgmEffectMod {
+    pub func: String,
+    pub domain: String,
+    pub src_attr_id: ReeInt,
+    pub operation: ReeInt,
+    pub tgt_attr_id: ReeInt,
+    pub group_id: Option<ReeInt>,
+    pub skill_id: Option<ReeInt>,
+}
+impl DgmEffectMod {
+    pub fn new<T: Into<String>, U: Into<String>>(
+        func: T,
+        domain: U,
+        src_attr_id: ReeInt,
+        operation: ReeInt,
+        tgt_attr_id: ReeInt,
+        group_id: Option<ReeInt>,
+        skill_id: Option<ReeInt>,
+    ) -> DgmEffectMod {
+        DgmEffectMod {
+            func: func.into(),
+            domain: domain.into(),
+            src_attr_id,
+            operation,
+            tgt_attr_id,
+            group_id,
+            skill_id,
+        }
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Buffs
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,10 +152,10 @@ pub struct Buff {
     pub locsrq_mods: Vec<BuffLocSrqMod>,
 }
 impl Buff {
-    pub fn new(
+    pub fn new<T: Into<String>, U: Into<String>>(
         id: ReeInt,
-        aggregate: String,
-        operation: String,
+        aggregate: T,
+        operation: U,
         item_mods: Vec<BuffItemMod>,
         loc_mods: Vec<BuffLocMod>,
         locgroup_mods: Vec<BuffLocGroupMod>,
@@ -82,8 +163,8 @@ impl Buff {
     ) -> Buff {
         Buff {
             id,
-            aggregate,
-            operation,
+            aggregate: aggregate.into(),
+            operation: operation.into(),
             item_mods,
             loc_mods,
             locgroup_mods,
