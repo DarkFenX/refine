@@ -8,9 +8,9 @@ use serde_json;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{Buff, EveGroup, EveType, FighterAbil, Metadata, TypeFighterAbil};
+use super::data::{Buff, DgmAttr, EveGroup, EveType, FighterAbil, Metadata, TypeFighterAbil};
 use super::error::{Error, FromPath, Result};
-use super::fsdlite;
+use super::fsd;
 
 #[derive(Debug)]
 pub struct Handler {
@@ -39,31 +39,37 @@ impl dh::Handler for Handler {
         let addr = Address::new("fsd_lite", "evetypes");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        fsdlite::handle::<EveType, dh::EveType>(json, "id")
+        fsd::handle::<EveType, dh::EveType>(json, "id")
     }
     fn get_evegroups(&self) -> dh::Result<dh::Container<dh::EveGroup>> {
         let addr = Address::new("fsd_lite", "evegroups");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        fsdlite::handle::<EveGroup, dh::EveGroup>(json, "id")
+        fsd::handle::<EveGroup, dh::EveGroup>(json, "id")
+    }
+    fn get_dgmattrs(&self) -> dh::Result<dh::Container<dh::DgmAttr>> {
+        let addr = Address::new("fsd_binary", "dogmaattributes");
+        log::info!("processing {}", addr.get_full_str(&self.base_path));
+        let json = self.read_json(&addr)?;
+        fsd::handle::<DgmAttr, dh::DgmAttr>(json, "id")
     }
     fn get_buffs(&self) -> dh::Result<dh::Container<dh::Buff>> {
         let addr = Address::new("fsd_lite", "dbuffcollections");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        fsdlite::handle::<Buff, dh::Buff>(json, "id")
+        fsd::handle::<Buff, dh::Buff>(json, "id")
     }
     fn get_fighterabils(&self) -> dh::Result<dh::Container<dh::FighterAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilities");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        fsdlite::handle::<FighterAbil, dh::FighterAbil>(json, "id")
+        fsd::handle::<FighterAbil, dh::FighterAbil>(json, "id")
     }
     fn get_typefighterabils(&self) -> dh::Result<dh::Container<dh::TypeFighterAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
-        fsdlite::handle::<TypeFighterAbil, dh::TypeFighterAbil>(json, "type_id")
+        fsd::handle::<TypeFighterAbil, dh::TypeFighterAbil>(json, "type_id")
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");
