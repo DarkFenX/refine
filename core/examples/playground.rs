@@ -55,6 +55,10 @@ fn main() {
         Ok(r) => println!("evegroups: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("evegroups failed: {}", e),
     }
+    match dh.get_buffs() {
+        Ok(r) => println!("buffs: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("buffs failed: {}", e),
+    }
     match dh.get_fighterabils() {
         Ok(r) => println!("fighterabils: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("fighterabils failed: {}", e),

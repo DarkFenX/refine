@@ -8,7 +8,7 @@ use serde_json;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{EveGroup, EveType, FighterAbil, Metadata, TypeFighterAbil};
+use super::data::{Buff, EveGroup, EveType, FighterAbil, Metadata, TypeFighterAbil};
 use super::error::{Error, FromPath, Result};
 use super::fsdlite;
 
@@ -46,6 +46,12 @@ impl dh::Handler for Handler {
         log::info!("processing {}", addr.get_full_str(&self.base_path));
         let json = self.read_json(&addr)?;
         fsdlite::handle::<EveGroup, dh::EveGroup>(json, "id")
+    }
+    fn get_buffs(&self) -> dh::Result<dh::Container<dh::Buff>> {
+        let addr = Address::new("fsd_lite", "dbuffcollections");
+        log::info!("processing {}", addr.get_full_str(&self.base_path));
+        let json = self.read_json(&addr)?;
+        fsdlite::handle::<Buff, dh::Buff>(json, "id")
     }
     fn get_fighterabils(&self) -> dh::Result<dh::Container<dh::FighterAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilities");

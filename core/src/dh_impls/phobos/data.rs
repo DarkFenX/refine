@@ -3,8 +3,15 @@ use serde;
 use crate::defines::{ReeFloat, ReeInt};
 use crate::dh;
 
+fn into_opt<T: Into<U>, U>(v: Option<T>) -> Option<U> {
+    v.map(Into::into)
+}
+fn into_vec<T: Into<U>, U>(v: Vec<T>) -> Vec<U> {
+    v.into_iter().map(|v| v.into()).collect()
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Inventory data
+// Inventory
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct EveType {
@@ -31,7 +38,84 @@ impl Into<dh::EveGroup> for EveGroup {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fighter ability data
+// Buffs
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct Buff {
+    pub(super) id: ReeInt,
+    #[serde(rename = "aggregateMode")]
+    pub(super) aggregate: String,
+    #[serde(rename = "operationName")]
+    pub(super) operation: String,
+    #[serde(rename = "itemModifiers")]
+    pub(super) item_mods: Vec<BuffItemMod>,
+    #[serde(rename = "locationModifiers")]
+    pub(super) loc_mods: Vec<BuffLocMod>,
+    #[serde(rename = "locationGroupModifiers")]
+    pub(super) locgroup_mods: Vec<BuffLocGroupMod>,
+    #[serde(rename = "locationRequiredSkillModifiers")]
+    pub(super) locsrq_mods: Vec<BuffLocSrqMod>,
+}
+impl Into<dh::Buff> for Buff {
+    fn into(self) -> dh::Buff {
+        dh::Buff::new(
+            self.id,
+            self.aggregate,
+            self.operation,
+            into_vec(self.item_mods),
+            into_vec(self.loc_mods),
+            into_vec(self.locgroup_mods),
+            into_vec(self.locsrq_mods),
+        )
+    }
+}
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct BuffItemMod {
+    #[serde(rename = "dogmaAttributeID")]
+    pub(super) attr_id: ReeInt,
+}
+impl Into<dh::BuffItemMod> for BuffItemMod {
+    fn into(self) -> dh::BuffItemMod {
+        dh::BuffItemMod::new(self.attr_id)
+    }
+}
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct BuffLocMod {
+    #[serde(rename = "dogmaAttributeID")]
+    pub(super) attr_id: ReeInt,
+}
+impl Into<dh::BuffLocMod> for BuffLocMod {
+    fn into(self) -> dh::BuffLocMod {
+        dh::BuffLocMod::new(self.attr_id)
+    }
+}
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct BuffLocGroupMod {
+    #[serde(rename = "dogmaAttributeID")]
+    pub(super) attr_id: ReeInt,
+    #[serde(rename = "groupID")]
+    pub(super) group_id: ReeInt,
+}
+impl Into<dh::BuffLocGroupMod> for BuffLocGroupMod {
+    fn into(self) -> dh::BuffLocGroupMod {
+        dh::BuffLocGroupMod::new(self.attr_id, self.group_id)
+    }
+}
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct BuffLocSrqMod {
+    #[serde(rename = "dogmaAttributeID")]
+    pub(super) attr_id: ReeInt,
+    #[serde(rename = "skillID")]
+    pub(super) skill_id: ReeInt,
+}
+impl Into<dh::BuffLocSrqMod> for BuffLocSrqMod {
+    fn into(self) -> dh::BuffLocSrqMod {
+        dh::BuffLocSrqMod::new(self.attr_id, self.skill_id)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fighter abilities
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct FighterAbil {
@@ -63,9 +147,9 @@ impl Into<dh::TypeFighterAbil> for TypeFighterAbil {
     fn into(self) -> dh::TypeFighterAbil {
         dh::TypeFighterAbil::new(
             self.type_id,
-            self.abil0.map(Into::into),
-            self.abil1.map(Into::into),
-            self.abil2.map(Into::into),
+            into_opt(self.abil0),
+            into_opt(self.abil1),
+            into_opt(self.abil2),
         )
     }
 }
@@ -79,7 +163,7 @@ pub(super) struct AbilExtras {
 }
 impl Into<dh::AbilExtras> for AbilExtras {
     fn into(self) -> dh::AbilExtras {
-        dh::AbilExtras::new(self.ability_id, self.cooldown, self.charges.map(Into::into))
+        dh::AbilExtras::new(self.ability_id, self.cooldown, into_opt(self.charges))
     }
 }
 #[derive(Debug, serde::Deserialize)]
@@ -96,7 +180,7 @@ impl Into<dh::AbilChargeExtras> for AbilChargeExtras {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Misc data
+// Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct Metadata {

@@ -12,7 +12,7 @@ impl<T> Container<T> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Inventory data
+// Inventory
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug)]
 pub struct EveType {
@@ -37,21 +37,80 @@ impl EveGroup {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Buff data
+// Buffs
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug)]
 pub struct Buff {
     pub id: ReeInt,
     pub aggregate: String,
     pub operation: String,
-    pub item_mods: Vec<bool>,
-    pub loc_mods: Vec<bool>,
-    pub locgroup_mods: Vec<bool>,
-    pub locsrq_mods: Vec<bool>,
+    pub item_mods: Vec<BuffItemMod>,
+    pub loc_mods: Vec<BuffLocMod>,
+    pub locgroup_mods: Vec<BuffLocGroupMod>,
+    pub locsrq_mods: Vec<BuffLocSrqMod>,
+}
+impl Buff {
+    pub fn new(
+        id: ReeInt,
+        aggregate: String,
+        operation: String,
+        item_mods: Vec<BuffItemMod>,
+        loc_mods: Vec<BuffLocMod>,
+        locgroup_mods: Vec<BuffLocGroupMod>,
+        locsrq_mods: Vec<BuffLocSrqMod>,
+    ) -> Buff {
+        Buff {
+            id,
+            aggregate,
+            operation,
+            item_mods,
+            loc_mods,
+            locgroup_mods,
+            locsrq_mods,
+        }
+    }
+}
+#[derive(Debug)]
+pub struct BuffItemMod {
+    pub attr_id: ReeInt,
+}
+impl BuffItemMod {
+    pub fn new(attr_id: ReeInt) -> BuffItemMod {
+        BuffItemMod { attr_id }
+    }
+}
+#[derive(Debug)]
+pub struct BuffLocMod {
+    pub attr_id: ReeInt,
+}
+impl BuffLocMod {
+    pub fn new(attr_id: ReeInt) -> BuffLocMod {
+        BuffLocMod { attr_id }
+    }
+}
+#[derive(Debug)]
+pub struct BuffLocGroupMod {
+    pub attr_id: ReeInt,
+    pub group_id: ReeInt,
+}
+impl BuffLocGroupMod {
+    pub fn new(attr_id: ReeInt, group_id: ReeInt) -> BuffLocGroupMod {
+        BuffLocGroupMod { attr_id, group_id }
+    }
+}
+#[derive(Debug)]
+pub struct BuffLocSrqMod {
+    pub attr_id: ReeInt,
+    pub skill_id: ReeInt,
+}
+impl BuffLocSrqMod {
+    pub fn new(attr_id: ReeInt, skill_id: ReeInt) -> BuffLocSrqMod {
+        BuffLocSrqMod { attr_id, skill_id }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fighter ability data
+// Fighter abilities
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug)]
 pub struct FighterAbil {
@@ -106,7 +165,11 @@ pub struct AbilExtras {
 }
 impl AbilExtras {
     pub fn new(ability_id: ReeInt, cooldown: Option<ReeFloat>, charges: Option<AbilChargeExtras>) -> AbilExtras {
-        AbilExtras { ability_id, cooldown, charges }
+        AbilExtras {
+            ability_id,
+            cooldown,
+            charges,
+        }
     }
 }
 #[derive(Debug)]
