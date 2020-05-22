@@ -3,7 +3,6 @@ use std::fmt;
 use std::io;
 use std::result;
 
-use serde_json;
 
 pub(super) type Result<T> = result::Result<T, Error>;
 

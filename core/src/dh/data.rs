@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::defines::{ReeFloat, ReeInt};
 
 #[derive(Debug)]
@@ -9,6 +11,15 @@ impl<T> Container<T> {
     pub fn new(data: Vec<T>, failed: u32) -> Container<T> {
         Container { data, failed }
     }
+}
+
+#[derive(Debug)]
+pub enum Primitive {
+    Null,
+    Bool(bool),
+    Int(ReeInt),
+    Float(ReeFloat),
+    String(String),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,31 +120,13 @@ impl DgmEffect {
 #[derive(Debug)]
 pub struct DgmEffectMod {
     pub func: String,
-    pub domain: String,
-    pub src_attr_id: ReeInt,
-    pub operation: ReeInt,
-    pub tgt_attr_id: ReeInt,
-    pub group_id: Option<ReeInt>,
-    pub skill_id: Option<ReeInt>,
+    pub args: HashMap<String, Primitive>,
 }
 impl DgmEffectMod {
-    pub fn new<T: Into<String>, U: Into<String>>(
-        func: T,
-        domain: U,
-        src_attr_id: ReeInt,
-        operation: ReeInt,
-        tgt_attr_id: ReeInt,
-        group_id: Option<ReeInt>,
-        skill_id: Option<ReeInt>,
-    ) -> DgmEffectMod {
+    pub fn new<T: Into<String>>(func: T, args: HashMap<String, Primitive>) -> DgmEffectMod {
         DgmEffectMod {
             func: func.into(),
-            domain: domain.into(),
-            src_attr_id,
-            operation,
-            tgt_attr_id,
-            group_id,
-            skill_id,
+            args,
         }
     }
 }
