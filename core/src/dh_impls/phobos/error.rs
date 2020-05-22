@@ -3,7 +3,6 @@ use std::fmt;
 use std::io;
 use std::result;
 
-
 pub(super) type Result<T> = result::Result<T, Error>;
 
 pub(super) trait FromPath<T> {

@@ -164,27 +164,27 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Buffs
+// Dogma Buffs
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, Deserialize)]
-pub(super) struct Buff {
+pub(super) struct DgmBuff {
     pub(super) id: ReeInt,
     #[serde(rename = "aggregateMode")]
     pub(super) aggregate: String,
     #[serde(rename = "operationName")]
     pub(super) operation: String,
     #[serde(rename = "itemModifiers")]
-    pub(super) item_mods: Vec<BuffItemMod>,
+    pub(super) item_mods: Vec<DgmBuffIM>,
     #[serde(rename = "locationModifiers")]
-    pub(super) loc_mods: Vec<BuffLocMod>,
+    pub(super) loc_mods: Vec<DgmBuffLM>,
     #[serde(rename = "locationGroupModifiers")]
-    pub(super) locgroup_mods: Vec<BuffLocGroupMod>,
+    pub(super) locgroup_mods: Vec<DgmBuffLGM>,
     #[serde(rename = "locationRequiredSkillModifiers")]
-    pub(super) locsrq_mods: Vec<BuffLocSrqMod>,
+    pub(super) locsrq_mods: Vec<DgmBuffLRSM>,
 }
-impl Into<dh::Buff> for Buff {
-    fn into(self) -> dh::Buff {
-        dh::Buff::new(
+impl Into<dh::DgmBuff> for DgmBuff {
+    fn into(self) -> dh::DgmBuff {
+        dh::DgmBuff::new(
             self.id,
             self.aggregate,
             self.operation,
@@ -196,47 +196,47 @@ impl Into<dh::Buff> for Buff {
     }
 }
 #[derive(Debug, Deserialize)]
-pub(super) struct BuffItemMod {
+pub(super) struct DgmBuffIM {
     #[serde(rename = "dogmaAttributeID")]
     pub(super) attr_id: ReeInt,
 }
-impl Into<dh::BuffItemMod> for BuffItemMod {
-    fn into(self) -> dh::BuffItemMod {
-        dh::BuffItemMod::new(self.attr_id)
+impl Into<dh::DgmBuffIM> for DgmBuffIM {
+    fn into(self) -> dh::DgmBuffIM {
+        dh::DgmBuffIM::new(self.attr_id)
     }
 }
 #[derive(Debug, Deserialize)]
-pub(super) struct BuffLocMod {
+pub(super) struct DgmBuffLM {
     #[serde(rename = "dogmaAttributeID")]
     pub(super) attr_id: ReeInt,
 }
-impl Into<dh::BuffLocMod> for BuffLocMod {
-    fn into(self) -> dh::BuffLocMod {
-        dh::BuffLocMod::new(self.attr_id)
+impl Into<dh::DgmBuffLM> for DgmBuffLM {
+    fn into(self) -> dh::DgmBuffLM {
+        dh::DgmBuffLM::new(self.attr_id)
     }
 }
 #[derive(Debug, Deserialize)]
-pub(super) struct BuffLocGroupMod {
+pub(super) struct DgmBuffLGM {
     #[serde(rename = "dogmaAttributeID")]
     pub(super) attr_id: ReeInt,
     #[serde(rename = "groupID")]
     pub(super) group_id: ReeInt,
 }
-impl Into<dh::BuffLocGroupMod> for BuffLocGroupMod {
-    fn into(self) -> dh::BuffLocGroupMod {
-        dh::BuffLocGroupMod::new(self.attr_id, self.group_id)
+impl Into<dh::DgmBuffLGM> for DgmBuffLGM {
+    fn into(self) -> dh::DgmBuffLGM {
+        dh::DgmBuffLGM::new(self.attr_id, self.group_id)
     }
 }
 #[derive(Debug, Deserialize)]
-pub(super) struct BuffLocSrqMod {
+pub(super) struct DgmBuffLRSM {
     #[serde(rename = "dogmaAttributeID")]
     pub(super) attr_id: ReeInt,
     #[serde(rename = "skillID")]
     pub(super) skill_id: ReeInt,
 }
-impl Into<dh::BuffLocSrqMod> for BuffLocSrqMod {
-    fn into(self) -> dh::BuffLocSrqMod {
-        dh::BuffLocSrqMod::new(self.attr_id, self.skill_id)
+impl Into<dh::DgmBuffLRSM> for DgmBuffLRSM {
+    fn into(self) -> dh::DgmBuffLRSM {
+        dh::DgmBuffLRSM::new(self.attr_id, self.skill_id)
     }
 }
 

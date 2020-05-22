@@ -63,7 +63,7 @@ fn main() {
         Ok(r) => println!("dgmeffects: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("dgmeffects failed: {}", e),
     }
-    match dh.get_buffs() {
+    match dh.get_dgmbuffs() {
         Ok(r) => println!("buffs: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("buffs failed: {}", e),
     }

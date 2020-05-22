@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{Buff, DgmAttr, DgmEffect, EveGroup, EveType, FighterAbil, Metadata, TypeFighterAbil};
+use super::data::{DgmAttr, DgmBuff, DgmEffect, EveGroup, EveType, FighterAbil, Metadata, TypeFighterAbil};
 use super::error::{Error, FromPath, Result};
 use super::fsd;
 
@@ -52,10 +52,10 @@ impl dh::Handler for Handler {
         let json = self.read_json(&addr)?;
         fsd::handle::<DgmEffect, dh::DgmEffect>(json, "id")
     }
-    fn get_buffs(&self) -> dh::Result<dh::Container<dh::Buff>> {
+    fn get_dgmbuffs(&self) -> dh::Result<dh::Container<dh::DgmBuff>> {
         let addr = Address::new("fsd_lite", "dbuffcollections");
         let json = self.read_json(&addr)?;
-        fsd::handle::<Buff, dh::Buff>(json, "id")
+        fsd::handle::<DgmBuff, dh::DgmBuff>(json, "id")
     }
     fn get_fighterabils(&self) -> dh::Result<dh::Container<dh::FighterAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilities");

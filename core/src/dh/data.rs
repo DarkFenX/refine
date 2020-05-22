@@ -132,29 +132,29 @@ impl DgmEffectMod {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Buffs
+// Dogma Buffs
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug)]
-pub struct Buff {
+pub struct DgmBuff {
     pub id: ReeInt,
     pub aggregate: String,
     pub operation: String,
-    pub item_mods: Vec<BuffItemMod>,
-    pub loc_mods: Vec<BuffLocMod>,
-    pub locgroup_mods: Vec<BuffLocGroupMod>,
-    pub locsrq_mods: Vec<BuffLocSrqMod>,
+    pub item_mods: Vec<DgmBuffIM>,
+    pub loc_mods: Vec<DgmBuffLM>,
+    pub locgroup_mods: Vec<DgmBuffLGM>,
+    pub locsrq_mods: Vec<DgmBuffLRSM>,
 }
-impl Buff {
+impl DgmBuff {
     pub fn new<T: Into<String>, U: Into<String>>(
         id: ReeInt,
         aggregate: T,
         operation: U,
-        item_mods: Vec<BuffItemMod>,
-        loc_mods: Vec<BuffLocMod>,
-        locgroup_mods: Vec<BuffLocGroupMod>,
-        locsrq_mods: Vec<BuffLocSrqMod>,
-    ) -> Buff {
-        Buff {
+        item_mods: Vec<DgmBuffIM>,
+        loc_mods: Vec<DgmBuffLM>,
+        locgroup_mods: Vec<DgmBuffLGM>,
+        locsrq_mods: Vec<DgmBuffLRSM>,
+    ) -> DgmBuff {
+        DgmBuff {
             id,
             aggregate: aggregate.into(),
             operation: operation.into(),
@@ -166,41 +166,41 @@ impl Buff {
     }
 }
 #[derive(Debug)]
-pub struct BuffItemMod {
+pub struct DgmBuffIM {
     pub attr_id: ReeInt,
 }
-impl BuffItemMod {
-    pub fn new(attr_id: ReeInt) -> BuffItemMod {
-        BuffItemMod { attr_id }
+impl DgmBuffIM {
+    pub fn new(attr_id: ReeInt) -> DgmBuffIM {
+        DgmBuffIM { attr_id }
     }
 }
 #[derive(Debug)]
-pub struct BuffLocMod {
+pub struct DgmBuffLM {
     pub attr_id: ReeInt,
 }
-impl BuffLocMod {
-    pub fn new(attr_id: ReeInt) -> BuffLocMod {
-        BuffLocMod { attr_id }
+impl DgmBuffLM {
+    pub fn new(attr_id: ReeInt) -> DgmBuffLM {
+        DgmBuffLM { attr_id }
     }
 }
 #[derive(Debug)]
-pub struct BuffLocGroupMod {
+pub struct DgmBuffLGM {
     pub attr_id: ReeInt,
     pub group_id: ReeInt,
 }
-impl BuffLocGroupMod {
-    pub fn new(attr_id: ReeInt, group_id: ReeInt) -> BuffLocGroupMod {
-        BuffLocGroupMod { attr_id, group_id }
+impl DgmBuffLGM {
+    pub fn new(attr_id: ReeInt, group_id: ReeInt) -> DgmBuffLGM {
+        DgmBuffLGM { attr_id, group_id }
     }
 }
 #[derive(Debug)]
-pub struct BuffLocSrqMod {
+pub struct DgmBuffLRSM {
     pub attr_id: ReeInt,
     pub skill_id: ReeInt,
 }
-impl BuffLocSrqMod {
-    pub fn new(attr_id: ReeInt, skill_id: ReeInt) -> BuffLocSrqMod {
-        BuffLocSrqMod { attr_id, skill_id }
+impl DgmBuffLRSM {
+    pub fn new(attr_id: ReeInt, skill_id: ReeInt) -> DgmBuffLRSM {
+        DgmBuffLRSM { attr_id, skill_id }
     }
 }
 
