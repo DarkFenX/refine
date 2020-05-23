@@ -1,7 +1,4 @@
 use std::collections::HashMap;
-use std::result;
-
-use serde::{de::Error as DeError, Deserialize};
 
 use crate::defines::{ReeFloat, ReeInt};
 use crate::dh;
@@ -16,7 +13,7 @@ fn into_vec<T: Into<U>, U>(v: Vec<T>) -> Vec<U> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inventory
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct EveType {
     pub(super) id: ReeInt,
     #[serde(rename = "groupID")]
@@ -28,7 +25,7 @@ impl Into<dh::EveType> for EveType {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct EveGroup {
     pub(super) id: ReeInt,
     #[serde(rename = "categoryID")]
@@ -43,7 +40,7 @@ impl Into<dh::EveGroup> for EveGroup {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dogma
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmAttr {
     pub(super) id: ReeInt,
     pub(super) stackable: ReeInt,
@@ -58,7 +55,7 @@ impl Into<dh::DgmAttr> for DgmAttr {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmEffect {
     pub(super) id: ReeInt,
     #[serde(rename = "effectCategory")]
@@ -83,7 +80,7 @@ pub(super) struct DgmEffect {
     pub(super) usage_chance_attr_id: Option<ReeInt>,
     #[serde(rename = "resistanceAttributeID")]
     pub(super) resist_attr_id: Option<ReeInt>,
-    #[serde(rename = "modifierInfo", deserialize_with = "deserialize_dgmeffectmods", default)]
+    #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
     pub(super) mods: Vec<DgmEffectMod>,
 }
 impl Into<dh::DgmEffect> for DgmEffect {
@@ -115,58 +112,74 @@ impl Into<dh::DgmEffectMod> for DgmEffectMod {
         dh::DgmEffectMod::new(self.func, self.args)
     }
 }
-fn deserialize_dgmeffectmods<'de, D>(json_mods: D) -> result::Result<Vec<DgmEffectMod>, D::Error>
-where
-    D: serde::Deserializer<'de>,
-{
-    let func_field = "func";
-    let mut mods = Vec::new();
-    for json_mod in <Vec<serde_json::Value>>::deserialize(json_mods)?.into_iter() {
-        let mut json_mod_map =
-            <serde_json::Map<String, serde_json::Value>>::deserialize(json_mod).map_err(DeError::custom)?;
-        // Process function name
-        let func = match json_mod_map.remove(func_field) {
-            Some(v) => v,
-            None => return Err(DeError::missing_field(func_field)),
-        };
-        let func = match func {
-            serde_json::Value::String(s) => s.to_owned(),
-            _ => return Err(DeError::custom(format!("unexpected type of {} value", func_field))),
-        };
-        // Process arguments
-        let mut argmap = HashMap::new();
-        for (argname, v) in json_mod_map.into_iter() {
-            let argval = match v {
-                serde_json::Value::Null => dh::Primitive::Null,
-                serde_json::Value::Bool(b) => dh::Primitive::Bool(b),
-                serde_json::Value::Number(n) => {
-                    if n.is_i64() {
-                        dh::Primitive::Int(n.as_i64().unwrap() as ReeInt)
-                    } else if n.is_f64() {
-                        dh::Primitive::Float(n.as_f64().unwrap())
-                    } else {
-                        return Err(DeError::custom("unexpected number type"));
-                    }
-                }
-                serde_json::Value::String(s) => dh::Primitive::String(s),
-                _ => {
-                    return Err(DeError::custom(format!(
-                        "unexpected type of argument \"{}\" value",
-                        argname
-                    )))
-                }
-            };
-            argmap.insert(argname, argval);
+mod dgmmod {
+    use std::collections::HashMap;
+    use std::result::Result;
+
+    use serde::{de::Error, Deserialize};
+    use serde_json::{Map, Value};
+
+    use crate::dh::Primitive;
+
+    use super::{dh, DgmEffectMod, ReeInt};
+
+    pub(super) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<DgmEffectMod>, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let func_field = "func";
+        let mut mods = Vec::new();
+        for json_mod in <Vec<Value>>::deserialize(json_mods)?.into_iter() {
+            let mut json_mod_map = <Map<String, Value>>::deserialize(json_mod).map_err(Error::custom)?;
+            let func = extract_string(&mut json_mod_map, func_field)?;
+            let mut argmap = HashMap::new();
+            for (argname, v) in json_mod_map.into_iter() {
+                let argval = primitivize::<D::Error>(v)
+                    .map_err(|e| Error::custom(format!("failed to parse argument \"{}\" value: {}", argname, e)))?;
+                argmap.insert(argname, argval);
+            }
+            mods.push(DgmEffectMod { func, args: argmap })
         }
-        mods.push(DgmEffectMod { func, args: argmap })
+        Ok(mods)
     }
-    Ok(mods)
+
+    fn extract_string<E>(map: &mut Map<String, Value>, key: &'static str) -> Result<String, E>
+    where
+        E: Error,
+    {
+        let func = match map.remove(key) {
+            Some(v) => v,
+            None => return Err(Error::missing_field(key)),
+        };
+        match func {
+            Value::String(s) => Ok(s.to_owned()),
+            _ => return Err(Error::custom(format!("unexpected type of {} value", key))),
+        }
+    }
+
+    fn primitivize<E: Error>(json: Value) -> Result<Primitive, E> {
+        match json {
+            Value::Null => Ok(dh::Primitive::Null),
+            Value::Bool(b) => Ok(dh::Primitive::Bool(b)),
+            Value::Number(n) => {
+                if n.is_i64() {
+                    Ok(dh::Primitive::Int(n.as_i64().unwrap() as ReeInt))
+                } else if n.is_f64() {
+                    Ok(dh::Primitive::Float(n.as_f64().unwrap()))
+                } else {
+                    Err(Error::custom("unexpected number type"))
+                }
+            }
+            Value::String(s) => Ok(dh::Primitive::String(s)),
+            _ => Err(Error::custom("unexpected type")),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dogma Buffs
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmBuff {
     pub(super) id: ReeInt,
     #[serde(rename = "aggregateMode")]
@@ -195,7 +208,7 @@ impl Into<dh::DgmBuff> for DgmBuff {
         )
     }
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmBuffIM {
     #[serde(rename = "dogmaAttributeID")]
     pub(super) attr_id: ReeInt,
@@ -205,7 +218,7 @@ impl Into<dh::DgmBuffIM> for DgmBuffIM {
         dh::DgmBuffIM::new(self.attr_id)
     }
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmBuffLM {
     #[serde(rename = "dogmaAttributeID")]
     pub(super) attr_id: ReeInt,
@@ -215,7 +228,7 @@ impl Into<dh::DgmBuffLM> for DgmBuffLM {
         dh::DgmBuffLM::new(self.attr_id)
     }
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmBuffLGM {
     #[serde(rename = "dogmaAttributeID")]
     pub(super) attr_id: ReeInt,
@@ -227,7 +240,7 @@ impl Into<dh::DgmBuffLGM> for DgmBuffLGM {
         dh::DgmBuffLGM::new(self.attr_id, self.group_id)
     }
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmBuffLRSM {
     #[serde(rename = "dogmaAttributeID")]
     pub(super) attr_id: ReeInt,
@@ -243,7 +256,7 @@ impl Into<dh::DgmBuffLRSM> for DgmBuffLRSM {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fighter abilities
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct FighterAbil {
     pub(super) id: ReeInt,
     #[serde(rename = "targetMode")]
@@ -259,7 +272,7 @@ impl Into<dh::FighterAbil> for FighterAbil {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct TypeFighterAbil {
     pub(super) type_id: ReeInt,
     #[serde(rename = "abilitySlot0")]
@@ -279,7 +292,7 @@ impl Into<dh::TypeFighterAbil> for TypeFighterAbil {
         )
     }
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct AbilExtras {
     #[serde(rename = "abilityID")]
     pub(super) ability_id: ReeInt,
@@ -292,7 +305,7 @@ impl Into<dh::AbilExtras> for AbilExtras {
         dh::AbilExtras::new(self.ability_id, self.cooldown, into_opt(self.charges))
     }
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct AbilChargeExtras {
     #[serde(rename = "chargeCount")]
     pub(super) count: ReeInt,
@@ -308,7 +321,7 @@ impl Into<dh::AbilChargeExtras> for AbilChargeExtras {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct Metadata {
     pub(super) field_name: String,
     pub(super) field_value: u32,

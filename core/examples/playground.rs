@@ -64,8 +64,8 @@ fn main() {
         Err(e) => println!("dgmeffects failed: {}", e),
     }
     match dh.get_dgmbuffs() {
-        Ok(r) => println!("buffs: {} returned, {} failed", r.data.len(), r.failed),
-        Err(e) => println!("buffs failed: {}", e),
+        Ok(r) => println!("dgmbuffs: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("dgmbuffs failed: {}", e),
     }
     match dh.get_fighterabils() {
         Ok(r) => println!("fighterabils: {} returned, {} failed", r.data.len(), r.failed),
