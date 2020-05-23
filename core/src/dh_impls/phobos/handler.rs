@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{DgmAttr, DgmBuff, DgmEffect, EveGroup, EveType, FighterAbil, Metadata, TypeFighterAbil};
+use super::data::{DgmAttr, DgmBuff, DgmEffect, InvGroup, InvType, FtrAbil, Metadata, FtrTypeAbil};
 use super::error::{Error, FromPath, Result};
 use super::fsd;
 
@@ -32,15 +32,15 @@ impl Handler {
     }
 }
 impl dh::Handler for Handler {
-    fn get_evetypes(&self) -> dh::Result<dh::Container<dh::EveType>> {
+    fn get_invtypes(&self) -> dh::Result<dh::Container<dh::InvType>> {
         let addr = Address::new("fsd_lite", "evetypes");
         let json = self.read_json(&addr)?;
-        fsd::handle::<EveType, dh::EveType>(json, "id")
+        fsd::handle::<InvType, dh::InvType>(json, "id")
     }
-    fn get_evegroups(&self) -> dh::Result<dh::Container<dh::EveGroup>> {
+    fn get_invgroups(&self) -> dh::Result<dh::Container<dh::InvGroup>> {
         let addr = Address::new("fsd_lite", "evegroups");
         let json = self.read_json(&addr)?;
-        fsd::handle::<EveGroup, dh::EveGroup>(json, "id")
+        fsd::handle::<InvGroup, dh::InvGroup>(json, "id")
     }
     fn get_dgmattrs(&self) -> dh::Result<dh::Container<dh::DgmAttr>> {
         let addr = Address::new("fsd_binary", "dogmaattributes");
@@ -57,31 +57,26 @@ impl dh::Handler for Handler {
         let json = self.read_json(&addr)?;
         fsd::handle::<DgmBuff, dh::DgmBuff>(json, "id")
     }
-    fn get_fighterabils(&self) -> dh::Result<dh::Container<dh::FighterAbil>> {
+    fn get_ftrabils(&self) -> dh::Result<dh::Container<dh::FtrAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilities");
         let json = self.read_json(&addr)?;
-        fsd::handle::<FighterAbil, dh::FighterAbil>(json, "id")
+        fsd::handle::<FtrAbil, dh::FtrAbil>(json, "id")
     }
-    fn get_typefighterabils(&self) -> dh::Result<dh::Container<dh::TypeFighterAbil>> {
+    fn get_ftrtypeabils(&self) -> dh::Result<dh::Container<dh::FtrTypeAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
         let json = self.read_json(&addr)?;
-        fsd::handle::<TypeFighterAbil, dh::TypeFighterAbil>(json, "type_id")
+        fsd::handle::<FtrTypeAbil, dh::FtrTypeAbil>(json, "type_id")
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");
         let unprocessed = self.read_json(&addr)?;
         let metadatas: Vec<Metadata> =
             serde_json::from_value(unprocessed).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
-        let mut version = None;
         for metadata in metadatas {
             if metadata.field_name == "client_build" {
-                version = Some(metadata.field_value);
-                break;
+                return Ok(metadata.field_value.to_string());
             }
         }
-        match version {
-            Some(v) => Ok(v.to_string()),
-            None => Err(Error::new("version fetch failed: unable to find client build").into()),
-        }
+        Err(Error::new("version fetch failed: unable to find client build").into())
     }
 }

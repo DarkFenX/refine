@@ -14,26 +14,26 @@ fn into_vec<T: Into<U>, U>(v: Vec<T>) -> Vec<U> {
 // Inventory
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct EveType {
+pub(super) struct InvType {
     pub(super) id: ReeInt,
     #[serde(rename = "groupID")]
     pub(super) group_id: ReeInt,
 }
-impl Into<dh::EveType> for EveType {
-    fn into(self) -> dh::EveType {
-        dh::EveType::new(self.id, self.group_id)
+impl Into<dh::InvType> for InvType {
+    fn into(self) -> dh::InvType {
+        dh::InvType::new(self.id, self.group_id)
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct EveGroup {
+pub(super) struct InvGroup {
     pub(super) id: ReeInt,
     #[serde(rename = "categoryID")]
     pub(super) category_id: ReeInt,
 }
-impl Into<dh::EveGroup> for EveGroup {
-    fn into(self) -> dh::EveGroup {
-        dh::EveGroup::new(self.id, self.category_id)
+impl Into<dh::InvGroup> for InvGroup {
+    fn into(self) -> dh::InvGroup {
+        dh::InvGroup::new(self.id, self.category_id)
     }
 }
 
@@ -119,10 +119,10 @@ mod dgmmod {
     use serde::{de::Error, Deserialize};
     use serde_json::{Map, Value};
 
+    use crate::defines::ReeFloat;
     use crate::dh::Primitive;
 
-    use super::{dh, DgmEffectMod, ReeInt};
-    use crate::defines::ReeFloat;
+    use super::{DgmEffectMod, dh, ReeInt};
 
     pub(super) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<DgmEffectMod>, D::Error>
     where
@@ -258,7 +258,7 @@ impl Into<dh::DgmBuffLRSM> for DgmBuffLRSM {
 // Fighter abilities
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct FighterAbil {
+pub(super) struct FtrAbil {
     pub(super) id: ReeInt,
     #[serde(rename = "targetMode")]
     pub(super) target_mode: String,
@@ -267,25 +267,25 @@ pub(super) struct FighterAbil {
     #[serde(rename = "disallowInLowSec")]
     pub(super) disallow_lowsec: bool,
 }
-impl Into<dh::FighterAbil> for FighterAbil {
-    fn into(self) -> dh::FighterAbil {
-        dh::FighterAbil::new(self.id, &self.target_mode, self.disallow_hisec, self.disallow_lowsec)
+impl Into<dh::FtrAbil> for FtrAbil {
+    fn into(self) -> dh::FtrAbil {
+        dh::FtrAbil::new(self.id, &self.target_mode, self.disallow_hisec, self.disallow_lowsec)
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct TypeFighterAbil {
+pub(super) struct FtrTypeAbil {
     pub(super) type_id: ReeInt,
     #[serde(rename = "abilitySlot0")]
-    pub(super) abil0: Option<AbilExtras>,
+    pub(super) abil0: Option<FtrTypeAbilExtras>,
     #[serde(rename = "abilitySlot1")]
-    pub(super) abil1: Option<AbilExtras>,
+    pub(super) abil1: Option<FtrTypeAbilExtras>,
     #[serde(rename = "abilitySlot2")]
-    pub(super) abil2: Option<AbilExtras>,
+    pub(super) abil2: Option<FtrTypeAbilExtras>,
 }
-impl Into<dh::TypeFighterAbil> for TypeFighterAbil {
-    fn into(self) -> dh::TypeFighterAbil {
-        dh::TypeFighterAbil::new(
+impl Into<dh::FtrTypeAbil> for FtrTypeAbil {
+    fn into(self) -> dh::FtrTypeAbil {
+        dh::FtrTypeAbil::new(
             self.type_id,
             into_opt(self.abil0),
             into_opt(self.abil1),
@@ -294,28 +294,28 @@ impl Into<dh::TypeFighterAbil> for TypeFighterAbil {
     }
 }
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct AbilExtras {
+pub(super) struct FtrTypeAbilExtras {
     #[serde(rename = "abilityID")]
     pub(super) ability_id: ReeInt,
     #[serde(rename = "cooldownSeconds")]
     pub(super) cooldown: Option<ReeFloat>,
-    pub(super) charges: Option<AbilChargeExtras>,
+    pub(super) charges: Option<FtrTypeAbilChargeExtras>,
 }
-impl Into<dh::AbilExtras> for AbilExtras {
-    fn into(self) -> dh::AbilExtras {
-        dh::AbilExtras::new(self.ability_id, self.cooldown, into_opt(self.charges))
+impl Into<dh::FtrTypeAbilExtras> for FtrTypeAbilExtras {
+    fn into(self) -> dh::FtrTypeAbilExtras {
+        dh::FtrTypeAbilExtras::new(self.ability_id, self.cooldown, into_opt(self.charges))
     }
 }
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct AbilChargeExtras {
+pub(super) struct FtrTypeAbilChargeExtras {
     #[serde(rename = "chargeCount")]
     pub(super) count: ReeInt,
     #[serde(rename = "rearmTimeSeconds")]
     pub(super) rearm_time: ReeFloat,
 }
-impl Into<dh::AbilChargeExtras> for AbilChargeExtras {
-    fn into(self) -> dh::AbilChargeExtras {
-        dh::AbilChargeExtras::new(self.count, self.rearm_time)
+impl Into<dh::FtrTypeAbilChargeExtras> for FtrTypeAbilChargeExtras {
+    fn into(self) -> dh::FtrTypeAbilChargeExtras {
+        dh::FtrTypeAbilChargeExtras::new(self.count, self.rearm_time)
     }
 }
 

@@ -47,13 +47,13 @@ fn main() {
 
     let dh = phobos::Handler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
     println!("using {:?}", dh);
-    match dh.get_evetypes() {
-        Ok(r) => println!("evetypes: {} returned, {} failed", r.data.len(), r.failed),
-        Err(e) => println!("evetypes failed: {}", e),
+    match dh.get_invtypes() {
+        Ok(r) => println!("invtypes: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("invtypes failed: {}", e),
     }
-    match dh.get_evegroups() {
-        Ok(r) => println!("evegroups: {} returned, {} failed", r.data.len(), r.failed),
-        Err(e) => println!("evegroups failed: {}", e),
+    match dh.get_invgroups() {
+        Ok(r) => println!("invgroups: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("invgroups failed: {}", e),
     }
     match dh.get_dgmattrs() {
         Ok(r) => println!("dgmattrs: {} returned, {} failed", r.data.len(), r.failed),
@@ -67,13 +67,13 @@ fn main() {
         Ok(r) => println!("dgmbuffs: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("dgmbuffs failed: {}", e),
     }
-    match dh.get_fighterabils() {
-        Ok(r) => println!("fighterabils: {} returned, {} failed", r.data.len(), r.failed),
-        Err(e) => println!("fighterabils failed: {}", e),
+    match dh.get_ftrabils() {
+        Ok(r) => println!("ftrabils: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("ftrabils failed: {}", e),
     }
-    match dh.get_typefighterabils() {
-        Ok(r) => println!("typefighterabils: {} returned, {} failed", r.data.len(), r.failed),
-        Err(e) => println!("typefighterabils failed: {}", e),
+    match dh.get_ftrtypeabils() {
+        Ok(r) => println!("ftrtypeabils: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("ftrtypeabils failed: {}", e),
     }
     match dh.get_version() {
         Ok(r) => println!("data version: {}", r),

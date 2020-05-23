@@ -1,6 +1,6 @@
 pub use data::{
-    AbilChargeExtras, AbilExtras, Container, DgmAttr, DgmBuff, DgmBuffIM, DgmBuffLGM, DgmBuffLM, DgmBuffLRSM,
-    DgmEffect, DgmEffectMod, EveGroup, EveType, FighterAbil, Primitive, TypeFighterAbil,
+    Container, DgmAttr, DgmBuff, DgmBuffIM, DgmBuffLGM, DgmBuffLM, DgmBuffLRSM, DgmEffect, DgmEffectMod, InvGroup,
+    InvType, FtrAbil, FtrTypeAbil, FtrTypeAbilChargeExtras, FtrTypeAbilExtras, Primitive,
 };
 pub use handler::{Handler, Result};
 

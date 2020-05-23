@@ -26,24 +26,24 @@ pub enum Primitive {
 // Inventory
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug)]
-pub struct EveType {
+pub struct InvType {
     pub id: ReeInt,
     pub group_id: ReeInt,
 }
-impl EveType {
-    pub fn new(id: ReeInt, group_id: ReeInt) -> EveType {
-        EveType { id, group_id }
+impl InvType {
+    pub fn new(id: ReeInt, group_id: ReeInt) -> InvType {
+        InvType { id, group_id }
     }
 }
 
 #[derive(Debug)]
-pub struct EveGroup {
+pub struct InvGroup {
     pub id: ReeInt,
     pub category_id: ReeInt,
 }
-impl EveGroup {
-    pub fn new(id: ReeInt, category_id: ReeInt) -> EveGroup {
-        EveGroup { id, category_id }
+impl InvGroup {
+    pub fn new(id: ReeInt, category_id: ReeInt) -> InvGroup {
+        InvGroup { id, category_id }
     }
 }
 
@@ -208,20 +208,15 @@ impl DgmBuffLRSM {
 // Fighter abilities
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug)]
-pub struct FighterAbil {
+pub struct FtrAbil {
     pub id: ReeInt,
     pub target_mode: String,
     pub disallow_hisec: bool,
     pub disallow_lowsec: bool,
 }
-impl FighterAbil {
-    pub fn new<T: Into<String>>(
-        id: ReeInt,
-        target_mode: T,
-        disallow_hisec: bool,
-        disallow_lowsec: bool,
-    ) -> FighterAbil {
-        FighterAbil {
+impl FtrAbil {
+    pub fn new<T: Into<String>>(id: ReeInt, target_mode: T, disallow_hisec: bool, disallow_lowsec: bool) -> FtrAbil {
+        FtrAbil {
             id,
             target_mode: target_mode.into(),
             disallow_hisec,
@@ -231,20 +226,20 @@ impl FighterAbil {
 }
 
 #[derive(Debug)]
-pub struct TypeFighterAbil {
+pub struct FtrTypeAbil {
     pub type_id: ReeInt,
-    pub abil0: Option<AbilExtras>,
-    pub abil1: Option<AbilExtras>,
-    pub abil2: Option<AbilExtras>,
+    pub abil0: Option<FtrTypeAbilExtras>,
+    pub abil1: Option<FtrTypeAbilExtras>,
+    pub abil2: Option<FtrTypeAbilExtras>,
 }
-impl TypeFighterAbil {
+impl FtrTypeAbil {
     pub fn new(
         type_id: ReeInt,
-        abil0: Option<AbilExtras>,
-        abil1: Option<AbilExtras>,
-        abil2: Option<AbilExtras>,
-    ) -> TypeFighterAbil {
-        TypeFighterAbil {
+        abil0: Option<FtrTypeAbilExtras>,
+        abil1: Option<FtrTypeAbilExtras>,
+        abil2: Option<FtrTypeAbilExtras>,
+    ) -> FtrTypeAbil {
+        FtrTypeAbil {
             type_id,
             abil0,
             abil1,
@@ -253,14 +248,18 @@ impl TypeFighterAbil {
     }
 }
 #[derive(Debug)]
-pub struct AbilExtras {
+pub struct FtrTypeAbilExtras {
     pub ability_id: ReeInt,
     pub cooldown: Option<ReeFloat>,
-    pub charges: Option<AbilChargeExtras>,
+    pub charges: Option<FtrTypeAbilChargeExtras>,
 }
-impl AbilExtras {
-    pub fn new(ability_id: ReeInt, cooldown: Option<ReeFloat>, charges: Option<AbilChargeExtras>) -> AbilExtras {
-        AbilExtras {
+impl FtrTypeAbilExtras {
+    pub fn new(
+        ability_id: ReeInt,
+        cooldown: Option<ReeFloat>,
+        charges: Option<FtrTypeAbilChargeExtras>,
+    ) -> FtrTypeAbilExtras {
+        FtrTypeAbilExtras {
             ability_id,
             cooldown,
             charges,
@@ -268,12 +267,12 @@ impl AbilExtras {
     }
 }
 #[derive(Debug)]
-pub struct AbilChargeExtras {
+pub struct FtrTypeAbilChargeExtras {
     pub count: ReeInt,
     pub rearm_time: ReeFloat,
 }
-impl AbilChargeExtras {
-    pub fn new(count: ReeInt, rearm_time: ReeFloat) -> AbilChargeExtras {
-        AbilChargeExtras { count, rearm_time }
+impl FtrTypeAbilChargeExtras {
+    pub fn new(count: ReeInt, rearm_time: ReeFloat) -> FtrTypeAbilChargeExtras {
+        FtrTypeAbilChargeExtras { count, rearm_time }
     }
 }
