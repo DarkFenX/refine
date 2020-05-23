@@ -122,6 +122,7 @@ mod dgmmod {
     use crate::dh::Primitive;
 
     use super::{dh, DgmEffectMod, ReeInt};
+    use crate::defines::ReeFloat;
 
     pub(super) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<DgmEffectMod>, D::Error>
     where
@@ -162,10 +163,10 @@ mod dgmmod {
             Value::Null => Ok(dh::Primitive::Null),
             Value::Bool(b) => Ok(dh::Primitive::Bool(b)),
             Value::Number(n) => {
-                if n.is_i64() {
-                    Ok(dh::Primitive::Int(n.as_i64().unwrap() as ReeInt))
-                } else if n.is_f64() {
-                    Ok(dh::Primitive::Float(n.as_f64().unwrap()))
+                if let Some(n) = n.as_i64() {
+                    Ok(dh::Primitive::Int(n as ReeInt))
+                } else if let Some(n) = n.as_f64() {
+                    Ok(dh::Primitive::Float(n as ReeFloat))
                 } else {
                     Err(Error::custom("unexpected number type"))
                 }
