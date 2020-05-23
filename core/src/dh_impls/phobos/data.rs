@@ -56,6 +56,19 @@ impl Into<dh::DgmAttr> for DgmAttr {
 }
 
 #[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmTypeAttr {
+    pub(super) type_id: ReeInt,
+    #[serde(rename = "attributeID")]
+    pub(super) attr_id: ReeInt,
+    pub(super) value: ReeFloat,
+}
+impl Into<dh::DgmTypeAttr> for DgmTypeAttr {
+    fn into(self) -> dh::DgmTypeAttr {
+        dh::DgmTypeAttr::new(self.type_id, self.attr_id, self.value)
+    }
+}
+
+#[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmEffect {
     pub(super) id: ReeInt,
     #[serde(rename = "effectCategory")]
@@ -122,7 +135,7 @@ mod dgmmod {
     use crate::defines::ReeFloat;
     use crate::dh::Primitive;
 
-    use super::{DgmEffectMod, dh, ReeInt};
+    use super::{dh, DgmEffectMod, ReeInt};
 
     pub(super) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<DgmEffectMod>, D::Error>
     where
@@ -174,6 +187,20 @@ mod dgmmod {
             Value::String(s) => Ok(dh::Primitive::String(s)),
             _ => Err(Error::custom("unexpected type")),
         }
+    }
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmTypeEffect {
+    pub(super) type_id: ReeInt,
+    #[serde(rename = "effectID")]
+    pub(super) effect_id: ReeInt,
+    #[serde(rename = "isDefault")]
+    pub(super) default: ReeInt,
+}
+impl Into<dh::DgmTypeEffect> for DgmTypeEffect {
+    fn into(self) -> dh::DgmTypeEffect {
+        dh::DgmTypeEffect::new(self.type_id, self.effect_id, self.default != 0)
     }
 }
 

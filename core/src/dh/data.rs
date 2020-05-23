@@ -69,6 +69,22 @@ impl DgmAttr {
 }
 
 #[derive(Debug)]
+pub struct DgmTypeAttr {
+    pub type_id: ReeInt,
+    pub attr_id: ReeInt,
+    pub value: ReeFloat,
+}
+impl DgmTypeAttr {
+    pub fn new(type_id: ReeInt, attr_id: ReeInt, value: ReeFloat) -> DgmTypeAttr {
+        DgmTypeAttr {
+            type_id,
+            attr_id,
+            value,
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct DgmEffect {
     pub id: ReeInt,
     pub category_id: ReeInt,
@@ -127,6 +143,22 @@ impl DgmEffectMod {
         DgmEffectMod {
             func: func.into(),
             args,
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct DgmTypeEffect {
+    pub type_id: ReeInt,
+    pub effect_id: ReeInt,
+    pub default: bool,
+}
+impl DgmTypeEffect {
+    pub fn new(type_id: ReeInt, effect_id: ReeInt, default: bool) -> DgmTypeEffect {
+        DgmTypeEffect {
+            type_id,
+            effect_id,
+            default,
         }
     }
 }

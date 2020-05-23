@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use crate::dh;
 
 use super::address::Address;
-use super::data::{DgmAttr, DgmBuff, DgmEffect, InvGroup, InvType, FtrAbil, Metadata, FtrTypeAbil};
+use super::data::{DgmAttr, DgmBuff, DgmEffect, FtrAbil, FtrTypeAbil, InvGroup, InvType, Metadata};
 use super::error::{Error, FromPath, Result};
 use super::fsd;
 
@@ -47,10 +47,16 @@ impl dh::Handler for Handler {
         let json = self.read_json(&addr)?;
         fsd::handle::<DgmAttr, dh::DgmAttr>(json, "id")
     }
+    fn get_dgmtypeattrs(&self) -> dh::Result<dh::Container<dh::DgmTypeAttr>> {
+        Ok(dh::Container::new(vec![], 0))
+    }
     fn get_dgmeffects(&self) -> dh::Result<dh::Container<dh::DgmEffect>> {
         let addr = Address::new("fsd_binary", "dogmaeffects");
         let json = self.read_json(&addr)?;
         fsd::handle::<DgmEffect, dh::DgmEffect>(json, "id")
+    }
+    fn get_dgmtypeeffects(&self) -> dh::Result<dh::Container<dh::DgmTypeEffect>> {
+        Ok(dh::Container::new(vec![], 0))
     }
     fn get_dgmbuffs(&self) -> dh::Result<dh::Container<dh::DgmBuff>> {
         let addr = Address::new("fsd_lite", "dbuffcollections");

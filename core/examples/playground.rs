@@ -59,9 +59,17 @@ fn main() {
         Ok(r) => println!("dgmattrs: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("dgmattrs failed: {}", e),
     }
+    match dh.get_dgmtypeattrs() {
+        Ok(r) => println!("dgmtypeattrs: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("dgmtypeattrs failed: {}", e),
+    }
     match dh.get_dgmeffects() {
         Ok(r) => println!("dgmeffects: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("dgmeffects failed: {}", e),
+    }
+    match dh.get_dgmtypeeffects() {
+        Ok(r) => println!("dgmtypeeffects: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("dgmtypeeffects failed: {}", e),
     }
     match dh.get_dgmbuffs() {
         Ok(r) => println!("dgmbuffs: {} returned, {} failed", r.data.len(), r.failed),

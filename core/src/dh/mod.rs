@@ -1,6 +1,6 @@
 pub use data::{
-    Container, DgmAttr, DgmBuff, DgmBuffIM, DgmBuffLGM, DgmBuffLM, DgmBuffLRSM, DgmEffect, DgmEffectMod, InvGroup,
-    InvType, FtrAbil, FtrTypeAbil, FtrTypeAbilChargeExtras, FtrTypeAbilExtras, Primitive,
+    Container, DgmAttr, DgmBuff, DgmBuffIM, DgmBuffLGM, DgmBuffLM, DgmBuffLRSM, DgmEffect, DgmEffectMod, DgmTypeAttr,
+    DgmTypeEffect, FtrAbil, FtrTypeAbil, FtrTypeAbilChargeExtras, FtrTypeAbilExtras, InvGroup, InvType, Primitive,
 };
 pub use handler::{Handler, Result};
 
