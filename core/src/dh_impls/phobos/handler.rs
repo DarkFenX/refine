@@ -3,10 +3,12 @@ use std::io::{self, Read};
 use std::path::PathBuf;
 
 use crate::dh;
-use crate::dh_impls::phobos::data::DgmTypeEffects;
 
 use super::address::Address;
-use super::data::{DgmAttr, DgmBuff, DgmEffect, DgmTypeAttrs, FtrAbil, FtrTypeAbil, InvGroup, InvType, Metadata};
+use super::data::{
+    DgmAttr, DgmBuff, DgmEffect, DgmTypeAttrs, DgmTypeEffects, FtrAbil, FtrTypeAbil, InvGroup, InvType, Metadata,
+    SkillReq,
+};
 use super::error::{Error, FromPath, Result};
 use super::fsd;
 
@@ -77,6 +79,11 @@ impl dh::Handler for Handler {
         let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
         let json = self.read_json(&addr)?;
         fsd::handle::<FtrTypeAbil, dh::FtrTypeAbil>(json)
+    }
+    fn get_skillreqs(&self) -> dh::Result<dh::Container<dh::SkillReq>> {
+        let addr = Address::new("fsd_binary", "requiredskillsfortypes");
+        let json = self.read_json(&addr)?;
+        fsd::handle::<SkillReq, dh::SkillReq>(json)
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");

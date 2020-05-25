@@ -308,3 +308,22 @@ impl FtrTypeAbilChargeData {
         FtrTypeAbilChargeData { count, rearm_time }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Misc
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Debug)]
+pub struct SkillReq {
+    pub type_id: ReeInt,
+    pub skill_id: ReeInt,
+    pub level: ReeInt,
+}
+impl SkillReq {
+    pub fn new(type_id: ReeInt, skill_id: ReeInt, level: ReeInt) -> SkillReq {
+        SkillReq {
+            type_id,
+            skill_id,
+            level,
+        }
+    }
+}

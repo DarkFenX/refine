@@ -4,6 +4,7 @@ use std::result;
 
 use super::data::{
     Container, DgmAttr, DgmBuff, DgmEffect, DgmTypeAttr, DgmTypeEffect, FtrAbil, FtrTypeAbil, InvGroup, InvType,
+    SkillReq,
 };
 
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
@@ -18,5 +19,6 @@ pub trait Handler: fmt::Debug {
     fn get_dgmbuffs(&self) -> Result<Container<DgmBuff>>;
     fn get_ftrabils(&self) -> Result<Container<FtrAbil>>;
     fn get_ftrtypeabils(&self) -> Result<Container<FtrTypeAbil>>;
+    fn get_skillreqs(&self) -> Result<Container<SkillReq>>;
     fn get_version(&self) -> Result<String>;
 }

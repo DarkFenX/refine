@@ -83,6 +83,10 @@ fn main() {
         Ok(r) => println!("ftrtypeabils: {} returned, {} failed", r.data.len(), r.failed),
         Err(e) => println!("ftrtypeabils failed: {}", e),
     }
+    match dh.get_skillreqs() {
+        Ok(r) => println!("skillreqs: {} returned, {} failed", r.data.len(), r.failed),
+        Err(e) => println!("skillreqs failed: {}", e),
+    }
     match dh.get_version() {
         Ok(r) => println!("data version: {}", r),
         Err(e) => println!("version failed: {}", e),

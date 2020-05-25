@@ -368,6 +368,19 @@ impl Into<dh::FtrTypeAbilChargeData> for FtrTypeAbilChargeData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(super) type SkillReq = HashMap<ReeInt, Vec<ReeInt>>;
+impl FsdMerge<dh::SkillReq> for SkillReq {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::SkillReq> {
+        let mut vec = Vec::new();
+        for (skill_id, levels) in self.into_iter() {
+            if let Some(level) = levels.first() {
+                vec.push(dh::SkillReq::new(id, skill_id, *level))
+            }
+        }
+        vec
+    }
+}
+
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct Metadata {
     pub(super) field_name: String,
