@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use chrono;
 
 use reefast::consts::{EveEffectCategory, EveModDomain, EveModOperator};
-use reefast::dh::Handler;
+use reefast::dh::{self, Handler};
 use reefast::dh_impls::phobos;
 use reefast::eve_type::{Attribute, Effect, Item, ItemModifier};
 
@@ -24,6 +24,18 @@ fn setup_logger() -> Result<(), fern::InitError> {
         .chain(fern::log_file("output.log")?)
         .apply()?;
     Ok(())
+}
+
+fn print_data<T>(name: &'static str, data: dh::Result<dh::Container<T>>) {
+    match data {
+        Ok(r) => {
+            println!("{}: {} returned, {} failed", name, r.data.len(), r.errors.len());
+            for e in r.errors.iter() {
+                println!("  error: {}", e)
+            }
+        }
+        Err(e) => println!("{} failed: {}", name, e),
+    }
 }
 
 fn main() {
@@ -47,54 +59,18 @@ fn main() {
 
     let dh = phobos::Handler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
     println!("using {:?}", dh);
-    match dh.get_invtypes() {
-        Ok(r) => println!("invtypes: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("invtypes failed: {}", e),
-    }
-    match dh.get_invgroups() {
-        Ok(r) => println!("invgroups: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("invgroups failed: {}", e),
-    }
-    match dh.get_dgmattrs() {
-        Ok(r) => println!("dgmattrs: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("dgmattrs failed: {}", e),
-    }
-    match dh.get_dgmtypeattrs() {
-        Ok(r) => println!("dgmtypeattrs: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("dgmtypeattrs failed: {}", e),
-    }
-    match dh.get_dgmeffects() {
-        Ok(r) => println!("dgmeffects: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("dgmeffects failed: {}", e),
-    }
-    match dh.get_dgmtypeeffects() {
-        Ok(r) => println!("dgmtypeeffects: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("dgmtypeeffects failed: {}", e),
-    }
-    match dh.get_dgmmutatypes() {
-        Ok(r) => println!("dgmmutatypes: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("dgmmutatypes failed: {}", e),
-    }
-    match dh.get_dgmmutaattrs() {
-        Ok(r) => println!("dgmmutaattrs: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("dgmmutaattrs failed: {}", e),
-    }
-    match dh.get_dgmbuffs() {
-        Ok(r) => println!("dgmbuffs: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("dgmbuffs failed: {}", e),
-    }
-    match dh.get_ftrabils() {
-        Ok(r) => println!("ftrabils: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("ftrabils failed: {}", e),
-    }
-    match dh.get_ftrtypeabils() {
-        Ok(r) => println!("ftrtypeabils: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("ftrtypeabils failed: {}", e),
-    }
-    match dh.get_skillreqs() {
-        Ok(r) => println!("skillreqs: {} returned, {} failed", r.data.len(), r.errors),
-        Err(e) => println!("skillreqs failed: {}", e),
-    }
+    print_data("invtypes", dh.get_invtypes());
+    print_data("invgroups", dh.get_invgroups());
+    print_data("dgmattrs", dh.get_dgmattrs());
+    print_data("dgmtypeattrs", dh.get_dgmtypeattrs());
+    print_data("dgmeffects", dh.get_dgmeffects());
+    print_data("dgmtypeeffects", dh.get_dgmtypeeffects());
+    print_data("dgmmutatypes", dh.get_dgmmutatypes());
+    print_data("dgmmutaattrs", dh.get_dgmmutaattrs());
+    print_data("dgmbuffs", dh.get_dgmbuffs());
+    print_data("ftrabils", dh.get_ftrabils());
+    print_data("ftrtypeabils", dh.get_ftrtypeabils());
+    print_data("skillreqs", dh.get_skillreqs());
     match dh.get_version() {
         Ok(r) => println!("data version: {}", r),
         Err(e) => println!("version failed: {}", e),

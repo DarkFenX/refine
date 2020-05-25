@@ -5,10 +5,10 @@ use crate::defines::{ReeFloat, ReeInt};
 #[derive(Debug)]
 pub struct Container<T> {
     pub data: Vec<T>,
-    pub errors: u32,
+    pub errors: Vec<String>,
 }
 impl<T> Container<T> {
-    pub fn new(data: Vec<T>, errors: u32) -> Container<T> {
+    pub fn new(data: Vec<T>, errors: Vec<String>) -> Container<T> {
         Container { data, errors }
     }
 }
