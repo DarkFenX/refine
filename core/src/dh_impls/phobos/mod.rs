@@ -1,4 +1,4 @@
-pub use handler::Handler;
+pub use handler::PhobosHandler;
 
 mod address;
 mod data;

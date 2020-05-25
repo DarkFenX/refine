@@ -9,7 +9,7 @@ use super::data::{
 
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 
-pub trait Handler: fmt::Debug {
+pub trait DataHandler: fmt::Debug {
     fn get_invtypes(&self) -> Result<Container<InvType>>;
     fn get_invgroups(&self) -> Result<Container<InvGroup>>;
     fn get_dgmattrs(&self) -> Result<Container<DgmAttr>>;

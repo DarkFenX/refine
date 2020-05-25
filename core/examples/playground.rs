@@ -4,7 +4,7 @@ use std::path::PathBuf;
 use chrono;
 
 use reefast::consts::{EveEffectCategory, EveModDomain, EveModOperator};
-use reefast::dh::{self, Handler};
+use reefast::dh::{self, DataHandler};
 use reefast::dh_impls::phobos;
 use reefast::eve_type::{Attribute, Effect, Item, ItemModifier};
 
@@ -57,7 +57,7 @@ fn main() {
     let _mod = ItemModifier::new(EveModDomain::Ship, 0, EveModOperator::PostPercent, 0);
     let _item = Item::new(1, 2, 3, HashMap::new(), HashMap::new(), None);
 
-    let dh = phobos::Handler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
+    let dh = phobos::PhobosHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
     println!("using {:?}", dh);
     print_data("invtypes", dh.get_invtypes());
     print_data("invgroups", dh.get_invgroups());

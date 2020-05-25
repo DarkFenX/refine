@@ -1,3 +1,4 @@
+use std::fmt;
 use std::fs::File;
 use std::io::{self, Read};
 use std::path::PathBuf;
@@ -12,13 +13,12 @@ use super::data::{
 use super::error::{Error, FromPath, Result};
 use super::fsd;
 
-#[derive(Debug)]
-pub struct Handler {
+pub struct PhobosHandler {
     base_path: PathBuf,
 }
-impl Handler {
-    pub fn new<T: Into<PathBuf>>(path: T) -> Handler {
-        Handler { base_path: path.into() }
+impl PhobosHandler {
+    pub fn new<T: Into<PathBuf>>(path: T) -> PhobosHandler {
+        PhobosHandler { base_path: path.into() }
     }
     fn read_file(&self, addr: &Address) -> io::Result<Vec<u8>> {
         let full_path = addr.get_full_path(&self.base_path);
@@ -42,7 +42,12 @@ impl Handler {
         fsd::handle::<T, U>(json)
     }
 }
-impl dh::Handler for Handler {
+impl fmt::Debug for PhobosHandler {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "PhobosHandler(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
+    }
+}
+impl dh::DataHandler for PhobosHandler {
     fn get_invtypes(&self) -> dh::Result<dh::Container<dh::InvType>> {
         self.process_fsd::<InvType, dh::InvType>("fsd_lite", "evetypes")
     }
@@ -89,6 +94,6 @@ impl dh::Handler for Handler {
                 return Ok(metadata.field_value.to_string());
             }
         }
-        Err(Error::new("version fetch failed: unable to find client build").into())
+        Err(Error::new("unable to find client build").into())
     }
 }
