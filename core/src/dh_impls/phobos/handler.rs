@@ -6,8 +6,8 @@ use crate::dh;
 
 use super::address::Address;
 use super::data::{
-    DgmAttr, DgmBuff, DgmEffect, DgmTypeAttrs, DgmTypeEffects, FtrAbil, FtrTypeAbil, InvGroup, InvType, Metadata,
-    SkillReq,
+    DgmAttr, DgmBuff, DgmEffect, DgmMutaAttrs, DgmMutaTypes, DgmTypeAttrs, DgmTypeEffects, FtrAbil, FtrTypeAbil,
+    InvGroup, InvType, Metadata, SkillReq,
 };
 use super::error::{Error, FromPath, Result};
 use super::fsd;
@@ -33,57 +33,51 @@ impl Handler {
         let data = serde_json::from_slice(&bytes).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
         Ok(data)
     }
+    fn process_fsd<T, U>(&self, folder: &'static str, file: &'static str) -> dh::Result<dh::Container<U>>
+    where
+        T: serde::de::DeserializeOwned + fsd::FsdMerge<U>,
+    {
+        let addr = Address::new(folder, file);
+        let json = self.read_json(&addr)?;
+        fsd::handle::<T, U>(json)
+    }
 }
 impl dh::Handler for Handler {
     fn get_invtypes(&self) -> dh::Result<dh::Container<dh::InvType>> {
-        let addr = Address::new("fsd_lite", "evetypes");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<InvType, dh::InvType>(json)
+        self.process_fsd::<InvType, dh::InvType>("fsd_lite", "evetypes")
     }
     fn get_invgroups(&self) -> dh::Result<dh::Container<dh::InvGroup>> {
-        let addr = Address::new("fsd_lite", "evegroups");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<InvGroup, dh::InvGroup>(json)
+        self.process_fsd::<InvGroup, dh::InvGroup>("fsd_lite", "evegroups")
     }
     fn get_dgmattrs(&self) -> dh::Result<dh::Container<dh::DgmAttr>> {
-        let addr = Address::new("fsd_binary", "dogmaattributes");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<DgmAttr, dh::DgmAttr>(json)
+        self.process_fsd::<DgmAttr, dh::DgmAttr>("fsd_binary", "dogmaattributes")
     }
     fn get_dgmtypeattrs(&self) -> dh::Result<dh::Container<dh::DgmTypeAttr>> {
-        let addr = Address::new("fsd_binary", "typedogma");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<DgmTypeAttrs, dh::DgmTypeAttr>(json)
+        self.process_fsd::<DgmTypeAttrs, dh::DgmTypeAttr>("fsd_binary", "typedogma")
     }
     fn get_dgmeffects(&self) -> dh::Result<dh::Container<dh::DgmEffect>> {
-        let addr = Address::new("fsd_binary", "dogmaeffects");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<DgmEffect, dh::DgmEffect>(json)
+        self.process_fsd::<DgmEffect, dh::DgmEffect>("fsd_binary", "dogmaeffects")
     }
     fn get_dgmtypeeffects(&self) -> dh::Result<dh::Container<dh::DgmTypeEffect>> {
-        let addr = Address::new("fsd_binary", "typedogma");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<DgmTypeEffects, dh::DgmTypeEffect>(json)
+        self.process_fsd::<DgmTypeEffects, dh::DgmTypeEffect>("fsd_binary", "typedogma")
+    }
+    fn get_dgmmutatypes(&self) -> dh::Result<dh::Container<dh::DgmMutaType>> {
+        self.process_fsd::<DgmMutaTypes, dh::DgmMutaType>("fsd_binary", "dynamicitemattributes")
+    }
+    fn get_dgmmutaattrs(&self) -> dh::Result<dh::Container<dh::DgmMutaAttr>> {
+        self.process_fsd::<DgmMutaAttrs, dh::DgmMutaAttr>("fsd_binary", "dynamicitemattributes")
     }
     fn get_dgmbuffs(&self) -> dh::Result<dh::Container<dh::DgmBuff>> {
-        let addr = Address::new("fsd_lite", "dbuffcollections");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<DgmBuff, dh::DgmBuff>(json)
+        self.process_fsd::<DgmBuff, dh::DgmBuff>("fsd_lite", "dbuffcollections")
     }
     fn get_ftrabils(&self) -> dh::Result<dh::Container<dh::FtrAbil>> {
-        let addr = Address::new("fsd_lite", "fighterabilities");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<FtrAbil, dh::FtrAbil>(json)
+        self.process_fsd::<FtrAbil, dh::FtrAbil>("fsd_lite", "fighterabilities")
     }
     fn get_ftrtypeabils(&self) -> dh::Result<dh::Container<dh::FtrTypeAbil>> {
-        let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<FtrTypeAbil, dh::FtrTypeAbil>(json)
+        self.process_fsd::<FtrTypeAbil, dh::FtrTypeAbil>("fsd_lite", "fighterabilitiesbytype")
     }
     fn get_skillreqs(&self) -> dh::Result<dh::Container<dh::SkillReq>> {
-        let addr = Address::new("fsd_binary", "requiredskillsfortypes");
-        let json = self.read_json(&addr)?;
-        fsd::handle::<SkillReq, dh::SkillReq>(json)
+        self.process_fsd::<SkillReq, dh::SkillReq>("fsd_binary", "requiredskillsfortypes")
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");

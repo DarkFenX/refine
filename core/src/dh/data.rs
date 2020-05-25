@@ -5,11 +5,11 @@ use crate::defines::{ReeFloat, ReeInt};
 #[derive(Debug)]
 pub struct Container<T> {
     pub data: Vec<T>,
-    pub failed: u32,
+    pub errors: u32,
 }
 impl<T> Container<T> {
-    pub fn new(data: Vec<T>, failed: u32) -> Container<T> {
-        Container { data, failed }
+    pub fn new(data: Vec<T>, errors: u32) -> Container<T> {
+        Container { data, errors }
     }
 }
 
@@ -159,6 +159,40 @@ impl DgmTypeEffect {
             type_id,
             effect_id,
             default,
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct DgmMutaType {
+    pub muta_id: ReeInt,
+    pub in_type_id: ReeInt,
+    pub out_type_id: ReeInt,
+}
+impl DgmMutaType {
+    pub fn new(muta_id: ReeInt, in_type_id: ReeInt, out_type_id: ReeInt) -> DgmMutaType {
+        DgmMutaType {
+            muta_id,
+            in_type_id,
+            out_type_id,
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct DgmMutaAttr {
+    pub muta_id: ReeInt,
+    pub attr_id: ReeInt,
+    pub min_mult: ReeFloat,
+    pub max_mult: ReeFloat,
+}
+impl DgmMutaAttr {
+    pub fn new(muta_id: ReeInt, attr_id: ReeInt, min_mult: ReeFloat, max_mult: ReeFloat) -> DgmMutaAttr {
+        DgmMutaAttr {
+            muta_id,
+            attr_id,
+            min_mult,
+            max_mult,
         }
     }
 }

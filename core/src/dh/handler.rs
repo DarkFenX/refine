@@ -3,8 +3,8 @@ use std::fmt;
 use std::result;
 
 use super::data::{
-    Container, DgmAttr, DgmBuff, DgmEffect, DgmTypeAttr, DgmTypeEffect, FtrAbil, FtrTypeAbil, InvGroup, InvType,
-    SkillReq,
+    Container, DgmAttr, DgmBuff, DgmEffect, DgmMutaAttr, DgmMutaType, DgmTypeAttr, DgmTypeEffect, FtrAbil, FtrTypeAbil,
+    InvGroup, InvType, SkillReq,
 };
 
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
@@ -16,6 +16,8 @@ pub trait Handler: fmt::Debug {
     fn get_dgmtypeattrs(&self) -> Result<Container<DgmTypeAttr>>;
     fn get_dgmeffects(&self) -> Result<Container<DgmEffect>>;
     fn get_dgmtypeeffects(&self) -> Result<Container<DgmTypeEffect>>;
+    fn get_dgmmutatypes(&self) -> Result<Container<DgmMutaType>>;
+    fn get_dgmmutaattrs(&self) -> Result<Container<DgmMutaAttr>>;
     fn get_dgmbuffs(&self) -> Result<Container<DgmBuff>>;
     fn get_ftrabils(&self) -> Result<Container<FtrAbil>>;
     fn get_ftrtypeabils(&self) -> Result<Container<FtrTypeAbil>>;

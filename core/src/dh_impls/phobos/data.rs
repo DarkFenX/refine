@@ -221,6 +221,49 @@ pub(super) struct DgmTypeEffectData {
     pub(super) default: ReeInt,
 }
 
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmMutaTypes {
+    #[serde(rename = "inputOutputMapping")]
+    pub(super) type_maps: Vec<DgmMutaTypeData>,
+}
+impl FsdMerge<dh::DgmMutaType> for DgmMutaTypes {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::DgmMutaType> {
+        let mut vec = Vec::new();
+        for type_map in self.type_maps {
+            for applicable_type in type_map.applicable {
+                vec.push(dh::DgmMutaType::new(id, applicable_type, type_map.result))
+            }
+        }
+        vec
+    }
+}
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmMutaTypeData {
+    #[serde(rename = "applicableTypes")]
+    pub(super) applicable: Vec<ReeInt>,
+    #[serde(rename = "resultingType")]
+    pub(super) result: ReeInt,
+}
+
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmMutaAttrs {
+    #[serde(rename = "attributeIDs")]
+    pub(super) attrs: HashMap<ReeInt, DgmMutaAttrsRange>,
+}
+impl FsdMerge<dh::DgmMutaAttr> for DgmMutaAttrs {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::DgmMutaAttr> {
+        self.attrs
+            .into_iter()
+            .map(|(attr_id, range)| dh::DgmMutaAttr::new(id, attr_id, range.min, range.max))
+            .collect()
+    }
+}
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmMutaAttrsRange {
+    pub(super) min: ReeFloat,
+    pub(super) max: ReeFloat,
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dogma Buffs
 ////////////////////////////////////////////////////////////////////////////////////////////////////
