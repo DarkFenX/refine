@@ -260,16 +260,16 @@ impl FtrAbil {
 #[derive(Debug)]
 pub struct FtrTypeAbil {
     pub type_id: ReeInt,
-    pub abil0: Option<FtrTypeAbilExtras>,
-    pub abil1: Option<FtrTypeAbilExtras>,
-    pub abil2: Option<FtrTypeAbilExtras>,
+    pub abil0: Option<FtrTypeAbilData>,
+    pub abil1: Option<FtrTypeAbilData>,
+    pub abil2: Option<FtrTypeAbilData>,
 }
 impl FtrTypeAbil {
     pub fn new(
         type_id: ReeInt,
-        abil0: Option<FtrTypeAbilExtras>,
-        abil1: Option<FtrTypeAbilExtras>,
-        abil2: Option<FtrTypeAbilExtras>,
+        abil0: Option<FtrTypeAbilData>,
+        abil1: Option<FtrTypeAbilData>,
+        abil2: Option<FtrTypeAbilData>,
     ) -> FtrTypeAbil {
         FtrTypeAbil {
             type_id,
@@ -280,18 +280,18 @@ impl FtrTypeAbil {
     }
 }
 #[derive(Debug)]
-pub struct FtrTypeAbilExtras {
+pub struct FtrTypeAbilData {
     pub ability_id: ReeInt,
     pub cooldown: Option<ReeFloat>,
-    pub charges: Option<FtrTypeAbilChargeExtras>,
+    pub charges: Option<FtrTypeAbilChargeData>,
 }
-impl FtrTypeAbilExtras {
+impl FtrTypeAbilData {
     pub fn new(
         ability_id: ReeInt,
         cooldown: Option<ReeFloat>,
-        charges: Option<FtrTypeAbilChargeExtras>,
-    ) -> FtrTypeAbilExtras {
-        FtrTypeAbilExtras {
+        charges: Option<FtrTypeAbilChargeData>,
+    ) -> FtrTypeAbilData {
+        FtrTypeAbilData {
             ability_id,
             cooldown,
             charges,
@@ -299,12 +299,12 @@ impl FtrTypeAbilExtras {
     }
 }
 #[derive(Debug)]
-pub struct FtrTypeAbilChargeExtras {
+pub struct FtrTypeAbilChargeData {
     pub count: ReeInt,
     pub rearm_time: ReeFloat,
 }
-impl FtrTypeAbilChargeExtras {
-    pub fn new(count: ReeInt, rearm_time: ReeFloat) -> FtrTypeAbilChargeExtras {
-        FtrTypeAbilChargeExtras { count, rearm_time }
+impl FtrTypeAbilChargeData {
+    pub fn new(count: ReeInt, rearm_time: ReeFloat) -> FtrTypeAbilChargeData {
+        FtrTypeAbilChargeData { count, rearm_time }
     }
 }

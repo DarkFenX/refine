@@ -3,9 +3,10 @@ use std::io::{self, Read};
 use std::path::PathBuf;
 
 use crate::dh;
+use crate::dh_impls::phobos::data::DgmTypeEffects;
 
 use super::address::Address;
-use super::data::{DgmAttr, DgmBuff, DgmEffect, FtrAbil, FtrTypeAbil, InvGroup, InvType, Metadata};
+use super::data::{DgmAttr, DgmBuff, DgmEffect, DgmTypeAttrs, FtrAbil, FtrTypeAbil, InvGroup, InvType, Metadata};
 use super::error::{Error, FromPath, Result};
 use super::fsd;
 
@@ -35,43 +36,47 @@ impl dh::Handler for Handler {
     fn get_invtypes(&self) -> dh::Result<dh::Container<dh::InvType>> {
         let addr = Address::new("fsd_lite", "evetypes");
         let json = self.read_json(&addr)?;
-        fsd::handle::<InvType, dh::InvType>(json, "id")
+        fsd::handle::<InvType, dh::InvType>(json)
     }
     fn get_invgroups(&self) -> dh::Result<dh::Container<dh::InvGroup>> {
         let addr = Address::new("fsd_lite", "evegroups");
         let json = self.read_json(&addr)?;
-        fsd::handle::<InvGroup, dh::InvGroup>(json, "id")
+        fsd::handle::<InvGroup, dh::InvGroup>(json)
     }
     fn get_dgmattrs(&self) -> dh::Result<dh::Container<dh::DgmAttr>> {
         let addr = Address::new("fsd_binary", "dogmaattributes");
         let json = self.read_json(&addr)?;
-        fsd::handle::<DgmAttr, dh::DgmAttr>(json, "id")
+        fsd::handle::<DgmAttr, dh::DgmAttr>(json)
     }
     fn get_dgmtypeattrs(&self) -> dh::Result<dh::Container<dh::DgmTypeAttr>> {
-        Ok(dh::Container::new(vec![], 0))
+        let addr = Address::new("fsd_binary", "typedogma");
+        let json = self.read_json(&addr)?;
+        fsd::handle::<DgmTypeAttrs, dh::DgmTypeAttr>(json)
     }
     fn get_dgmeffects(&self) -> dh::Result<dh::Container<dh::DgmEffect>> {
         let addr = Address::new("fsd_binary", "dogmaeffects");
         let json = self.read_json(&addr)?;
-        fsd::handle::<DgmEffect, dh::DgmEffect>(json, "id")
+        fsd::handle::<DgmEffect, dh::DgmEffect>(json)
     }
     fn get_dgmtypeeffects(&self) -> dh::Result<dh::Container<dh::DgmTypeEffect>> {
-        Ok(dh::Container::new(vec![], 0))
+        let addr = Address::new("fsd_binary", "typedogma");
+        let json = self.read_json(&addr)?;
+        fsd::handle::<DgmTypeEffects, dh::DgmTypeEffect>(json)
     }
     fn get_dgmbuffs(&self) -> dh::Result<dh::Container<dh::DgmBuff>> {
         let addr = Address::new("fsd_lite", "dbuffcollections");
         let json = self.read_json(&addr)?;
-        fsd::handle::<DgmBuff, dh::DgmBuff>(json, "id")
+        fsd::handle::<DgmBuff, dh::DgmBuff>(json)
     }
     fn get_ftrabils(&self) -> dh::Result<dh::Container<dh::FtrAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilities");
         let json = self.read_json(&addr)?;
-        fsd::handle::<FtrAbil, dh::FtrAbil>(json, "id")
+        fsd::handle::<FtrAbil, dh::FtrAbil>(json)
     }
     fn get_ftrtypeabils(&self) -> dh::Result<dh::Container<dh::FtrTypeAbil>> {
         let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
         let json = self.read_json(&addr)?;
-        fsd::handle::<FtrTypeAbil, dh::FtrTypeAbil>(json, "type_id")
+        fsd::handle::<FtrTypeAbil, dh::FtrTypeAbil>(json)
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");

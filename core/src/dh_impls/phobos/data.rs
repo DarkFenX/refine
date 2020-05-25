@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use crate::defines::{ReeFloat, ReeInt};
 use crate::dh;
 
+use super::fsd::FsdMerge;
+
 fn into_opt<T: Into<U>, U>(v: Option<T>) -> Option<U> {
     v.map(Into::into)
 }
@@ -15,25 +17,23 @@ fn into_vec<T: Into<U>, U>(v: Vec<T>) -> Vec<U> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct InvType {
-    pub(super) id: ReeInt,
     #[serde(rename = "groupID")]
     pub(super) group_id: ReeInt,
 }
-impl Into<dh::InvType> for InvType {
-    fn into(self) -> dh::InvType {
-        dh::InvType::new(self.id, self.group_id)
+impl FsdMerge<dh::InvType> for InvType {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::InvType> {
+        vec![dh::InvType::new(id, self.group_id)]
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct InvGroup {
-    pub(super) id: ReeInt,
     #[serde(rename = "categoryID")]
     pub(super) category_id: ReeInt,
 }
-impl Into<dh::InvGroup> for InvGroup {
-    fn into(self) -> dh::InvGroup {
-        dh::InvGroup::new(self.id, self.category_id)
+impl FsdMerge<dh::InvGroup> for InvGroup {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::InvGroup> {
+        vec![dh::InvGroup::new(id, self.category_id)]
     }
 }
 
@@ -42,35 +42,45 @@ impl Into<dh::InvGroup> for InvGroup {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmAttr {
-    pub(super) id: ReeInt,
     pub(super) stackable: ReeInt,
     #[serde(rename = "highIsGood")]
     pub(super) high_is_good: ReeInt,
     #[serde(rename = "defaultValue")]
     pub(super) default: ReeFloat,
 }
-impl Into<dh::DgmAttr> for DgmAttr {
-    fn into(self) -> dh::DgmAttr {
-        dh::DgmAttr::new(self.id, self.stackable != 0, self.high_is_good != 0, self.default)
+impl FsdMerge<dh::DgmAttr> for DgmAttr {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::DgmAttr> {
+        vec![dh::DgmAttr::new(
+            id,
+            self.stackable != 0,
+            self.high_is_good != 0,
+            self.default,
+        )]
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct DgmTypeAttr {
-    pub(super) type_id: ReeInt,
+pub(super) struct DgmTypeAttrs {
+    #[serde(rename = "dogmaAttributes", default)]
+    pub(super) attrs: Vec<DgmTypeAttrData>,
+}
+impl FsdMerge<dh::DgmTypeAttr> for DgmTypeAttrs {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::DgmTypeAttr> {
+        self.attrs
+            .into_iter()
+            .map(|v| dh::DgmTypeAttr::new(id, v.attr_id, v.value))
+            .collect()
+    }
+}
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmTypeAttrData {
     #[serde(rename = "attributeID")]
     pub(super) attr_id: ReeInt,
     pub(super) value: ReeFloat,
 }
-impl Into<dh::DgmTypeAttr> for DgmTypeAttr {
-    fn into(self) -> dh::DgmTypeAttr {
-        dh::DgmTypeAttr::new(self.type_id, self.attr_id, self.value)
-    }
-}
 
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmEffect {
-    pub(super) id: ReeInt,
     #[serde(rename = "effectCategory")]
     pub(super) category_id: ReeInt,
     #[serde(rename = "isAssistance")]
@@ -96,10 +106,10 @@ pub(super) struct DgmEffect {
     #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
     pub(super) mods: Vec<DgmEffectMod>,
 }
-impl Into<dh::DgmEffect> for DgmEffect {
-    fn into(self) -> dh::DgmEffect {
-        dh::DgmEffect::new(
-            self.id,
+impl FsdMerge<dh::DgmEffect> for DgmEffect {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::DgmEffect> {
+        vec![dh::DgmEffect::new(
+            id,
             self.category_id,
             self.is_assistance != 0,
             self.is_offensive != 0,
@@ -112,7 +122,7 @@ impl Into<dh::DgmEffect> for DgmEffect {
             into_opt(self.usage_chance_attr_id),
             into_opt(self.resist_attr_id),
             self.mods.into_iter().map(|v| v.into()).collect(),
-        )
+        )]
     }
 }
 #[derive(Debug)]
@@ -191,17 +201,24 @@ mod dgmmod {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct DgmTypeEffect {
-    pub(super) type_id: ReeInt,
+pub(super) struct DgmTypeEffects {
+    #[serde(rename = "dogmaEffects", default)]
+    pub(super) effects: Vec<DgmTypeEffectData>,
+}
+impl FsdMerge<dh::DgmTypeEffect> for DgmTypeEffects {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::DgmTypeEffect> {
+        self.effects
+            .into_iter()
+            .map(|v| dh::DgmTypeEffect::new(id, v.effect_id, v.default != 0))
+            .collect()
+    }
+}
+#[derive(Debug, serde::Deserialize)]
+pub(super) struct DgmTypeEffectData {
     #[serde(rename = "effectID")]
     pub(super) effect_id: ReeInt,
     #[serde(rename = "isDefault")]
     pub(super) default: ReeInt,
-}
-impl Into<dh::DgmTypeEffect> for DgmTypeEffect {
-    fn into(self) -> dh::DgmTypeEffect {
-        dh::DgmTypeEffect::new(self.type_id, self.effect_id, self.default != 0)
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,7 +226,6 @@ impl Into<dh::DgmTypeEffect> for DgmTypeEffect {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct DgmBuff {
-    pub(super) id: ReeInt,
     #[serde(rename = "aggregateMode")]
     pub(super) aggregate: String,
     #[serde(rename = "operationName")]
@@ -223,17 +239,17 @@ pub(super) struct DgmBuff {
     #[serde(rename = "locationRequiredSkillModifiers")]
     pub(super) locsrq_mods: Vec<DgmBuffLRSM>,
 }
-impl Into<dh::DgmBuff> for DgmBuff {
-    fn into(self) -> dh::DgmBuff {
-        dh::DgmBuff::new(
-            self.id,
+impl FsdMerge<dh::DgmBuff> for DgmBuff {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::DgmBuff> {
+        vec![dh::DgmBuff::new(
+            id,
             self.aggregate,
             self.operation,
             into_vec(self.item_mods),
             into_vec(self.loc_mods),
             into_vec(self.locgroup_mods),
             into_vec(self.locsrq_mods),
-        )
+        )]
     }
 }
 #[derive(Debug, serde::Deserialize)]
@@ -286,7 +302,6 @@ impl Into<dh::DgmBuffLRSM> for DgmBuffLRSM {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct FtrAbil {
-    pub(super) id: ReeInt,
     #[serde(rename = "targetMode")]
     pub(super) target_mode: String,
     #[serde(rename = "disallowInHighSec")]
@@ -294,55 +309,59 @@ pub(super) struct FtrAbil {
     #[serde(rename = "disallowInLowSec")]
     pub(super) disallow_lowsec: bool,
 }
-impl Into<dh::FtrAbil> for FtrAbil {
-    fn into(self) -> dh::FtrAbil {
-        dh::FtrAbil::new(self.id, &self.target_mode, self.disallow_hisec, self.disallow_lowsec)
+impl FsdMerge<dh::FtrAbil> for FtrAbil {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::FtrAbil> {
+        vec![dh::FtrAbil::new(
+            id,
+            &self.target_mode,
+            self.disallow_hisec,
+            self.disallow_lowsec,
+        )]
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
 pub(super) struct FtrTypeAbil {
-    pub(super) type_id: ReeInt,
     #[serde(rename = "abilitySlot0")]
-    pub(super) abil0: Option<FtrTypeAbilExtras>,
+    pub(super) abil0: Option<FtrTypeAbilData>,
     #[serde(rename = "abilitySlot1")]
-    pub(super) abil1: Option<FtrTypeAbilExtras>,
+    pub(super) abil1: Option<FtrTypeAbilData>,
     #[serde(rename = "abilitySlot2")]
-    pub(super) abil2: Option<FtrTypeAbilExtras>,
+    pub(super) abil2: Option<FtrTypeAbilData>,
 }
-impl Into<dh::FtrTypeAbil> for FtrTypeAbil {
-    fn into(self) -> dh::FtrTypeAbil {
-        dh::FtrTypeAbil::new(
-            self.type_id,
+impl FsdMerge<dh::FtrTypeAbil> for FtrTypeAbil {
+    fn fsd_merge(self, id: ReeInt) -> Vec<dh::FtrTypeAbil> {
+        vec![dh::FtrTypeAbil::new(
+            id,
             into_opt(self.abil0),
             into_opt(self.abil1),
             into_opt(self.abil2),
-        )
+        )]
     }
 }
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct FtrTypeAbilExtras {
+pub(super) struct FtrTypeAbilData {
     #[serde(rename = "abilityID")]
     pub(super) ability_id: ReeInt,
     #[serde(rename = "cooldownSeconds")]
     pub(super) cooldown: Option<ReeFloat>,
-    pub(super) charges: Option<FtrTypeAbilChargeExtras>,
+    pub(super) charges: Option<FtrTypeAbilChargeData>,
 }
-impl Into<dh::FtrTypeAbilExtras> for FtrTypeAbilExtras {
-    fn into(self) -> dh::FtrTypeAbilExtras {
-        dh::FtrTypeAbilExtras::new(self.ability_id, self.cooldown, into_opt(self.charges))
+impl Into<dh::FtrTypeAbilData> for FtrTypeAbilData {
+    fn into(self) -> dh::FtrTypeAbilData {
+        dh::FtrTypeAbilData::new(self.ability_id, self.cooldown, into_opt(self.charges))
     }
 }
 #[derive(Debug, serde::Deserialize)]
-pub(super) struct FtrTypeAbilChargeExtras {
+pub(super) struct FtrTypeAbilChargeData {
     #[serde(rename = "chargeCount")]
     pub(super) count: ReeInt,
     #[serde(rename = "rearmTimeSeconds")]
     pub(super) rearm_time: ReeFloat,
 }
-impl Into<dh::FtrTypeAbilChargeExtras> for FtrTypeAbilChargeExtras {
-    fn into(self) -> dh::FtrTypeAbilChargeExtras {
-        dh::FtrTypeAbilChargeExtras::new(self.count, self.rearm_time)
+impl Into<dh::FtrTypeAbilChargeData> for FtrTypeAbilChargeData {
+    fn into(self) -> dh::FtrTypeAbilChargeData {
+        dh::FtrTypeAbilChargeData::new(self.count, self.rearm_time)
     }
 }
 
