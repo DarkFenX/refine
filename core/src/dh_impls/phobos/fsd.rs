@@ -39,16 +39,19 @@ fn convert<T, U>(decomposed: Vec<FsdItem>) -> dh::Result<dh::Container<U>>
 where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
-    let mut data = Vec::new();
-    let mut errors = Vec::new();
+    let mut cont = dh::Container::new();
     for fsd_item in decomposed {
         match fsd_item.id.parse::<ReeInt>() {
             Ok(id) => match serde_json::from_value::<T>(fsd_item.item) {
-                Ok(item) => data.extend(item.fsd_merge(id)),
-                Err(e) => errors.push(format!("failed to parse FSD item with key \"{}\": {}", id, e)),
+                Ok(item) => cont.data.extend(item.fsd_merge(id)),
+                Err(e) => cont
+                    .errors
+                    .push(format!("failed to parse FSD item with key \"{}\": {}", id, e)),
             },
-            Err(_) => errors.push(format!("failed to cast FSD key \"{}\" to integer", fsd_item.id)),
+            Err(_) => cont
+                .errors
+                .push(format!("failed to cast FSD key \"{}\" to integer", fsd_item.id)),
         }
     }
-    Ok(dh::Container::new(data, errors))
+    Ok(cont)
 }

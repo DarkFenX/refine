@@ -11,8 +11,12 @@ pub struct Container<T> {
     pub errors: Vec<String>,
 }
 impl<T> Container<T> {
-    /// Make a new Container out of passed data.
-    pub fn new(data: Vec<T>, errors: Vec<String>) -> Container<T> {
+    /// Make a new empty container.
+    pub fn new() -> Container<T> {
+        Container { data: Vec::new(), errors: Vec::new() }
+    }
+    /// Make a new container out of passed data.
+    pub fn new_with_data(data: Vec<T>, errors: Vec<String>) -> Container<T> {
         Container { data, errors }
     }
 }
