@@ -46,7 +46,9 @@ pub(super) struct Attr {
     #[serde(rename = "highIsGood")]
     pub(super) high_is_good: ReeInt,
     #[serde(rename = "defaultValue")]
-    pub(super) default_value: ReeFloat,
+    pub(super) default_value: Option<ReeFloat>,
+    #[serde(rename = "maxAttributeID")]
+    pub(super) max_attr_id: Option<ReeInt>,
 }
 impl FsdMerge<dh::Attr> for Attr {
     fn fsd_merge(self, id: ReeInt) -> Vec<dh::Attr> {
@@ -55,6 +57,7 @@ impl FsdMerge<dh::Attr> for Attr {
             self.stackable != 0,
             self.high_is_good != 0,
             self.default_value,
+            self.max_attr_id,
         )]
     }
 }

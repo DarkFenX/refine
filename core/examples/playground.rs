@@ -4,9 +4,9 @@ use std::path::PathBuf;
 use chrono;
 
 use reefast::consts::{EveEffectCategory, EveModDomain, EveModOperator};
+use reefast::ct::{Attr, Effect, Item, ItemModifier};
 use reefast::dh::{self, DataHandler};
 use reefast::dh_impls::phobos;
-use reefast::eve_type::{Attribute, Effect, Item, ItemModifier};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -40,23 +40,6 @@ fn print_data<T>(name: &'static str, data: dh::Result<dh::Container<T>>) {
 
 fn main() {
     setup_logger().unwrap();
-    let _attr = Attribute::new(0, Some(5), Some(50.0), false, false);
-    let _eff = Effect::new(
-        0,
-        EveEffectCategory::Active,
-        false,
-        false,
-        Some(0),
-        Some(0),
-        Some(0),
-        Some(0),
-        Some(0),
-        Some(0),
-        Some(0),
-    );
-    let _mod = ItemModifier::new(EveModDomain::Ship, 0, EveModOperator::PostPercent, 0);
-    let _item = Item::new(1, 2, 3, HashMap::new(), HashMap::new(), None);
-
     let dh = phobos::PhobosHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
     println!("using {:?}", dh);
     print_data("items", dh.get_items());

@@ -13,7 +13,10 @@ pub struct Container<T> {
 impl<T> Container<T> {
     /// Make a new empty container.
     pub fn new() -> Container<T> {
-        Container { data: Vec::new(), errors: Vec::new() }
+        Container {
+            data: Vec::new(),
+            errors: Vec::new(),
+        }
     }
     /// Make a new container out of passed data.
     pub fn new_with_data(data: Vec<T>, errors: Vec<String>) -> Container<T> {
@@ -77,21 +80,31 @@ impl ItemGroup {
 pub struct Attr {
     /// Dogma attribute ID.
     pub id: ReeInt,
-    /// Defines if modifications applied to the attribute's values stack with penalty (false) or not (true).
+    /// Defines if modifications applied to the attribute's values stack with penalty (false) or not
+    /// (true).
     pub stackable: bool,
     /// Defines if higher value of the attribute is considered good or not.
     pub high_is_good: bool,
-    /// Default value of the attribute, if not provided by an item type.
-    pub default_value: ReeFloat,
+    /// Default value of the attribute, used if not provided by an item type.
+    pub default_value: Option<ReeFloat>,
+    /// Refers another attribute, whose value limits value of this attribute.
+    pub max_attr_id: Option<ReeInt>,
 }
 impl Attr {
     /// Make a new dogma attribute out of passed data.
-    pub fn new(id: ReeInt, stackable: bool, high_is_good: bool, default_value: ReeFloat) -> Attr {
+    pub fn new(
+        id: ReeInt,
+        stackable: bool,
+        high_is_good: bool,
+        default_value: Option<ReeFloat>,
+        max_attr_id: Option<ReeInt>,
+    ) -> Attr {
         Attr {
             id,
             stackable,
             high_is_good,
             default_value,
+            max_attr_id,
         }
     }
 }
@@ -140,7 +153,8 @@ pub struct Effect {
     pub falloff_attr_id: Option<ReeInt>,
     /// Refers an attribute value which defines tracking speed of the effect.
     pub tracking_attr_id: Option<ReeInt>,
-    /// Refers an attribute value which defines chance of the effect to run when its parent item is fitted.
+    /// Refers an attribute value which defines chance of the effect to run when its parent item is
+    /// fitted.
     pub usage_chance_attr_id: Option<ReeInt>,
     /// Refers an attribute value which defines resistance strength to the effect.
     pub resist_attr_id: Option<ReeInt>,
@@ -337,8 +351,8 @@ impl BuffLM {
 pub struct BuffLGM {
     /// Refers an attribute which is the target of the modification.
     pub attr_id: ReeInt,
-    /// Refers an item group for a modification filter. Only items belonging to this group are eligible for the
-    /// modification.
+    /// Refers an item group for a modification filter. Only items belonging to this group are
+    /// eligible for the modification.
     pub group_id: ReeInt,
 }
 impl BuffLGM {
@@ -347,13 +361,14 @@ impl BuffLGM {
         BuffLGM { attr_id, group_id }
     }
 }
-/// Auxiliary data needed to apply a dogma buff modification to location- and skill requirement-filtered items.
+/// Auxiliary data needed to apply a dogma buff modification to location- and skill
+/// requirement-filtered items.
 #[derive(Debug)]
 pub struct BuffLRSM {
     /// Refers an attribute which is the target of the modification.
     pub attr_id: ReeInt,
-    /// Refers a skill item for a modification filter. Only items having this skill requirement will be eligible for the
-    /// modification.
+    /// Refers a skill item for a modification filter. Only items having this skill requirement will
+    /// be eligible for the modification.
     pub skill_id: ReeInt,
 }
 impl BuffLRSM {
