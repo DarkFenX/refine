@@ -412,16 +412,12 @@ pub(super) struct ItemFighterAbilChargeData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(super) type ItemSkillMap = HashMap<ReeInt, Vec<ReeInt>>;
+pub(super) type ItemSkillMap = HashMap<ReeInt, ReeInt>;
 impl FsdMerge<dh::ItemSkillReq> for ItemSkillMap {
     fn fsd_merge(self, id: ReeInt) -> Vec<dh::ItemSkillReq> {
-        let mut vec = Vec::new();
-        for (skill_id, levels) in self.into_iter() {
-            if let Some(level) = levels.first() {
-                vec.push(dh::ItemSkillReq::new(id, skill_id, *level))
-            }
-        }
-        vec
+        self.into_iter()
+            .map(|(sid, lvl)| dh::ItemSkillReq::new(id, sid, lvl))
+            .collect()
     }
 }
 
