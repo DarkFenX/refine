@@ -7,8 +7,8 @@ use crate::dh;
 
 use super::address::Address;
 use super::data::{
-    DgmAttr, DgmBuff, DgmEffect, DgmMutaAttrs, DgmMutaTypes, DgmTypeAttrs, DgmTypeEffects, FtrAbil, FtrTypeAbil,
-    InvGroup, InvType, Metadata, SkillReq,
+    Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap, Metadata,
+    MutaAttrMods, MutaItemConvs,
 };
 use super::error::{Error, FromPath, Result};
 use super::fsd;
@@ -48,41 +48,41 @@ impl fmt::Debug for PhobosHandler {
     }
 }
 impl dh::DataHandler for PhobosHandler {
-    fn get_invtypes(&self) -> dh::Result<dh::Container<dh::InvType>> {
-        self.process_fsd::<InvType, dh::InvType>("fsd_lite", "evetypes")
+    fn get_items(&self) -> dh::Result<dh::Container<dh::Item>> {
+        self.process_fsd::<Item, dh::Item>("fsd_lite", "evetypes")
     }
-    fn get_invgroups(&self) -> dh::Result<dh::Container<dh::InvGroup>> {
-        self.process_fsd::<InvGroup, dh::InvGroup>("fsd_lite", "evegroups")
+    fn get_item_groups(&self) -> dh::Result<dh::Container<dh::ItemGroup>> {
+        self.process_fsd::<ItemGroup, dh::ItemGroup>("fsd_lite", "evegroups")
     }
-    fn get_dgmattrs(&self) -> dh::Result<dh::Container<dh::DgmAttr>> {
-        self.process_fsd::<DgmAttr, dh::DgmAttr>("fsd_binary", "dogmaattributes")
+    fn get_attrs(&self) -> dh::Result<dh::Container<dh::Attr>> {
+        self.process_fsd::<Attr, dh::Attr>("fsd_binary", "dogmaattributes")
     }
-    fn get_dgmtypeattrs(&self) -> dh::Result<dh::Container<dh::DgmTypeAttr>> {
-        self.process_fsd::<DgmTypeAttrs, dh::DgmTypeAttr>("fsd_binary", "typedogma")
+    fn get_item_attrs(&self) -> dh::Result<dh::Container<dh::ItemAttr>> {
+        self.process_fsd::<ItemAttrs, dh::ItemAttr>("fsd_binary", "typedogma")
     }
-    fn get_dgmeffects(&self) -> dh::Result<dh::Container<dh::DgmEffect>> {
-        self.process_fsd::<DgmEffect, dh::DgmEffect>("fsd_binary", "dogmaeffects")
+    fn get_effects(&self) -> dh::Result<dh::Container<dh::Effect>> {
+        self.process_fsd::<Effect, dh::Effect>("fsd_binary", "dogmaeffects")
     }
-    fn get_dgmtypeeffects(&self) -> dh::Result<dh::Container<dh::DgmTypeEffect>> {
-        self.process_fsd::<DgmTypeEffects, dh::DgmTypeEffect>("fsd_binary", "typedogma")
+    fn get_item_effects(&self) -> dh::Result<dh::Container<dh::ItemEffect>> {
+        self.process_fsd::<ItemEffects, dh::ItemEffect>("fsd_binary", "typedogma")
     }
-    fn get_dgmmutatypes(&self) -> dh::Result<dh::Container<dh::DgmMutaType>> {
-        self.process_fsd::<DgmMutaTypes, dh::DgmMutaType>("fsd_binary", "dynamicitemattributes")
+    fn get_fighter_abils(&self) -> dh::Result<dh::Container<dh::FighterAbil>> {
+        self.process_fsd::<FighterAbil, dh::FighterAbil>("fsd_lite", "fighterabilities")
     }
-    fn get_dgmmutaattrs(&self) -> dh::Result<dh::Container<dh::DgmMutaAttr>> {
-        self.process_fsd::<DgmMutaAttrs, dh::DgmMutaAttr>("fsd_binary", "dynamicitemattributes")
+    fn get_item_fighter_abils(&self) -> dh::Result<dh::Container<dh::ItemFighterAbil>> {
+        self.process_fsd::<ItemFighterAbils, dh::ItemFighterAbil>("fsd_lite", "fighterabilitiesbytype")
     }
-    fn get_dgmbuffs(&self) -> dh::Result<dh::Container<dh::DgmBuff>> {
-        self.process_fsd::<DgmBuff, dh::DgmBuff>("fsd_lite", "dbuffcollections")
+    fn get_buffs(&self) -> dh::Result<dh::Container<dh::Buff>> {
+        self.process_fsd::<Buff, dh::Buff>("fsd_lite", "dbuffcollections")
     }
-    fn get_ftrabils(&self) -> dh::Result<dh::Container<dh::FtrAbil>> {
-        self.process_fsd::<FtrAbil, dh::FtrAbil>("fsd_lite", "fighterabilities")
+    fn get_item_skill_reqs(&self) -> dh::Result<dh::Container<dh::ItemSkillReq>> {
+        self.process_fsd::<ItemSkillMap, dh::ItemSkillReq>("fsd_binary", "requiredskillsfortypes")
     }
-    fn get_ftrtypeabils(&self) -> dh::Result<dh::Container<dh::FtrTypeAbil>> {
-        self.process_fsd::<FtrTypeAbil, dh::FtrTypeAbil>("fsd_lite", "fighterabilitiesbytype")
+    fn get_muta_item_convs(&self) -> dh::Result<dh::Container<dh::MutaItemConv>> {
+        self.process_fsd::<MutaItemConvs, dh::MutaItemConv>("fsd_binary", "dynamicitemattributes")
     }
-    fn get_skillreqs(&self) -> dh::Result<dh::Container<dh::SkillReq>> {
-        self.process_fsd::<SkillReq, dh::SkillReq>("fsd_binary", "requiredskillsfortypes")
+    fn get_muta_attr_mods(&self) -> dh::Result<dh::Container<dh::MutaAttrMod>> {
+        self.process_fsd::<MutaAttrMods, dh::MutaAttrMod>("fsd_binary", "dynamicitemattributes")
     }
     fn get_version(&self) -> dh::Result<String> {
         let addr = Address::new("phobos", "metadata");

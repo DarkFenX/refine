@@ -59,18 +59,18 @@ fn main() {
 
     let dh = phobos::PhobosHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
     println!("using {:?}", dh);
-    print_data("invtypes", dh.get_invtypes());
-    print_data("invgroups", dh.get_invgroups());
-    print_data("dgmattrs", dh.get_dgmattrs());
-    print_data("dgmtypeattrs", dh.get_dgmtypeattrs());
-    print_data("dgmeffects", dh.get_dgmeffects());
-    print_data("dgmtypeeffects", dh.get_dgmtypeeffects());
-    print_data("dgmmutatypes", dh.get_dgmmutatypes());
-    print_data("dgmmutaattrs", dh.get_dgmmutaattrs());
-    print_data("dgmbuffs", dh.get_dgmbuffs());
-    print_data("ftrabils", dh.get_ftrabils());
-    print_data("ftrtypeabils", dh.get_ftrtypeabils());
-    print_data("skillreqs", dh.get_skillreqs());
+    print_data("items", dh.get_items());
+    print_data("item groups", dh.get_item_groups());
+    print_data("attributes", dh.get_attrs());
+    print_data("item-attribute rels", dh.get_item_attrs());
+    print_data("effects", dh.get_effects());
+    print_data("item-effect rels", dh.get_item_effects());
+    print_data("mutaplasmid item convs", dh.get_muta_item_convs());
+    print_data("mutaplasmid attr mods", dh.get_muta_attr_mods());
+    print_data("buffs", dh.get_buffs());
+    print_data("fighter abilities", dh.get_fighter_abils());
+    print_data("item-fighter ability rels", dh.get_item_fighter_abils());
+    print_data("item skill requirements", dh.get_item_skill_reqs());
     match dh.get_version() {
         Ok(r) => println!("data version: {}", r),
         Err(e) => println!("version failed: {}", e),

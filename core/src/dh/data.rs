@@ -2,17 +2,20 @@ use std::collections::HashMap;
 
 use crate::defines::{ReeFloat, ReeInt};
 
+/// A type which is used by [`DataHandler`](super::DataHandler) to pass data and accumulated errors to the caller.
 #[derive(Debug)]
 pub struct Container<T> {
     pub data: Vec<T>,
     pub errors: Vec<String>,
 }
 impl<T> Container<T> {
+    /// Make a new Container out of passed data.
     pub fn new(data: Vec<T>, errors: Vec<String>) -> Container<T> {
         Container { data, errors }
     }
 }
 
+/// An auxiliary entity for "primitive" data.
 #[derive(Debug)]
 pub enum Primitive {
     Null,
@@ -25,67 +28,76 @@ pub enum Primitive {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inventory
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Item type data.
 #[derive(Debug)]
-pub struct InvType {
+pub struct Item {
     pub id: ReeInt,
     pub group_id: ReeInt,
 }
-impl InvType {
-    pub fn new(id: ReeInt, group_id: ReeInt) -> InvType {
-        InvType { id, group_id }
+impl Item {
+    /// Make a new item type out of passed data.
+    pub fn new(id: ReeInt, group_id: ReeInt) -> Item {
+        Item { id, group_id }
     }
 }
 
+/// Item group data.
 #[derive(Debug)]
-pub struct InvGroup {
+pub struct ItemGroup {
     pub id: ReeInt,
     pub category_id: ReeInt,
 }
-impl InvGroup {
-    pub fn new(id: ReeInt, category_id: ReeInt) -> InvGroup {
-        InvGroup { id, category_id }
+impl ItemGroup {
+    /// Make a new item group out of passed data.
+    pub fn new(id: ReeInt, category_id: ReeInt) -> ItemGroup {
+        ItemGroup { id, category_id }
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dogma
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Dogma attribute data.
 #[derive(Debug)]
-pub struct DgmAttr {
+pub struct Attr {
     pub id: ReeInt,
     pub stackable: bool,
     pub high_is_good: bool,
-    pub default: ReeFloat,
+    pub default_value: ReeFloat,
 }
-impl DgmAttr {
-    pub fn new(id: ReeInt, stackable: bool, high_is_good: bool, default: ReeFloat) -> DgmAttr {
-        DgmAttr {
+impl Attr {
+    /// Make a new dogma attribute out of passed data.
+    pub fn new(id: ReeInt, stackable: bool, high_is_good: bool, default_value: ReeFloat) -> Attr {
+        Attr {
             id,
             stackable,
             high_is_good,
-            default,
+            default_value,
         }
     }
 }
 
+/// An item type - dogma attribute relation.
 #[derive(Debug)]
-pub struct DgmTypeAttr {
-    pub type_id: ReeInt,
+pub struct ItemAttr {
+    pub item_id: ReeInt,
     pub attr_id: ReeInt,
     pub value: ReeFloat,
 }
-impl DgmTypeAttr {
-    pub fn new(type_id: ReeInt, attr_id: ReeInt, value: ReeFloat) -> DgmTypeAttr {
-        DgmTypeAttr {
-            type_id,
+impl ItemAttr {
+    /// Make a new item-attribute relation out of passed data.
+    pub fn new(item_id: ReeInt, attr_id: ReeInt, value: ReeFloat) -> ItemAttr {
+        ItemAttr {
+            item_id,
             attr_id,
             value,
         }
     }
 }
 
+/// Dogma effect data.
 #[derive(Debug)]
-pub struct DgmEffect {
+pub struct Effect {
     pub id: ReeInt,
     pub category_id: ReeInt,
     pub is_assistance: bool,
@@ -98,9 +110,10 @@ pub struct DgmEffect {
     pub tracking_attr_id: Option<ReeInt>,
     pub usage_chance_attr_id: Option<ReeInt>,
     pub resist_attr_id: Option<ReeInt>,
-    pub mods: Vec<DgmEffectMod>,
+    pub mods: Vec<EffectMod>,
 }
-impl DgmEffect {
+impl Effect {
+    /// Make a new dogma effect out of passed data.
     pub fn new(
         id: ReeInt,
         category_id: ReeInt,
@@ -114,9 +127,9 @@ impl DgmEffect {
         tracking_attr_id: Option<ReeInt>,
         usage_chance_attr_id: Option<ReeInt>,
         resist_attr_id: Option<ReeInt>,
-        mods: Vec<DgmEffectMod>,
-    ) -> DgmEffect {
-        DgmEffect {
+        mods: Vec<EffectMod>,
+    ) -> Effect {
+        Effect {
             id,
             category_id,
             is_assistance,
@@ -133,66 +146,74 @@ impl DgmEffect {
         }
     }
 }
+/// Dogma effect modifier data.
 #[derive(Debug)]
-pub struct DgmEffectMod {
+pub struct EffectMod {
     pub func: String,
     pub args: HashMap<String, Primitive>,
 }
-impl DgmEffectMod {
-    pub fn new<T: Into<String>>(func: T, args: HashMap<String, Primitive>) -> DgmEffectMod {
-        DgmEffectMod {
+impl EffectMod {
+    /// Make a new dogma effect modifier out of passed data.
+    pub fn new<T: Into<String>>(func: T, args: HashMap<String, Primitive>) -> EffectMod {
+        EffectMod {
             func: func.into(),
             args,
         }
     }
 }
 
+/// An item type - dogma effect relation.
 #[derive(Debug)]
-pub struct DgmTypeEffect {
-    pub type_id: ReeInt,
+pub struct ItemEffect {
+    pub item_id: ReeInt,
     pub effect_id: ReeInt,
-    pub default: bool,
+    pub is_default: bool,
 }
-impl DgmTypeEffect {
-    pub fn new(type_id: ReeInt, effect_id: ReeInt, default: bool) -> DgmTypeEffect {
-        DgmTypeEffect {
-            type_id,
+impl ItemEffect {
+    /// Make a new item-effect relation out of passed data.
+    pub fn new(item_id: ReeInt, effect_id: ReeInt, is_default: bool) -> ItemEffect {
+        ItemEffect {
+            item_id,
             effect_id,
-            default,
+            is_default,
         }
     }
 }
 
+/// Mutaplasmid item type conversion data.
 #[derive(Debug)]
-pub struct DgmMutaType {
+pub struct MutaItemConv {
     pub muta_id: ReeInt,
-    pub in_type_id: ReeInt,
-    pub out_type_id: ReeInt,
+    pub in_item_id: ReeInt,
+    pub out_item_id: ReeInt,
 }
-impl DgmMutaType {
-    pub fn new(muta_id: ReeInt, in_type_id: ReeInt, out_type_id: ReeInt) -> DgmMutaType {
-        DgmMutaType {
+impl MutaItemConv {
+    /// Make a new mutaplasmid item type conversion.
+    pub fn new(muta_id: ReeInt, in_item_id: ReeInt, out_item_id: ReeInt) -> MutaItemConv {
+        MutaItemConv {
             muta_id,
-            in_type_id,
-            out_type_id,
+            in_item_id,
+            out_item_id,
         }
     }
 }
 
+/// Mutaplasmid attribute modification data.
 #[derive(Debug)]
-pub struct DgmMutaAttr {
+pub struct MutaAttrMod {
     pub muta_id: ReeInt,
     pub attr_id: ReeInt,
-    pub min_mult: ReeFloat,
-    pub max_mult: ReeFloat,
+    pub min_attr_mult: ReeFloat,
+    pub max_attr_mult: ReeFloat,
 }
-impl DgmMutaAttr {
-    pub fn new(muta_id: ReeInt, attr_id: ReeInt, min_mult: ReeFloat, max_mult: ReeFloat) -> DgmMutaAttr {
-        DgmMutaAttr {
+impl MutaAttrMod {
+    /// Make a new mutaplasmid attribute conversion.
+    pub fn new(muta_id: ReeInt, attr_id: ReeInt, min_attr_mult: ReeFloat, max_attr_mult: ReeFloat) -> MutaAttrMod {
+        MutaAttrMod {
             muta_id,
             attr_id,
-            min_mult,
-            max_mult,
+            min_attr_mult,
+            max_attr_mult,
         }
     }
 }
@@ -200,29 +221,31 @@ impl DgmMutaAttr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Dogma Buffs
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Dogma buff data.
 #[derive(Debug)]
-pub struct DgmBuff {
+pub struct Buff {
     pub id: ReeInt,
-    pub aggregate: String,
+    pub aggregate_mode: String,
     pub operation: String,
-    pub item_mods: Vec<DgmBuffIM>,
-    pub loc_mods: Vec<DgmBuffLM>,
-    pub locgroup_mods: Vec<DgmBuffLGM>,
-    pub locsrq_mods: Vec<DgmBuffLRSM>,
+    pub item_mods: Vec<BuffIM>,
+    pub loc_mods: Vec<BuffLM>,
+    pub locgroup_mods: Vec<BuffLGM>,
+    pub locsrq_mods: Vec<BuffLRSM>,
 }
-impl DgmBuff {
+impl Buff {
+    /// Make a new dogma buff out of passed data.
     pub fn new<T: Into<String>, U: Into<String>>(
         id: ReeInt,
-        aggregate: T,
+        aggregate_mode: T,
         operation: U,
-        item_mods: Vec<DgmBuffIM>,
-        loc_mods: Vec<DgmBuffLM>,
-        locgroup_mods: Vec<DgmBuffLGM>,
-        locsrq_mods: Vec<DgmBuffLRSM>,
-    ) -> DgmBuff {
-        DgmBuff {
+        item_mods: Vec<BuffIM>,
+        loc_mods: Vec<BuffLM>,
+        locgroup_mods: Vec<BuffLGM>,
+        locsrq_mods: Vec<BuffLRSM>,
+    ) -> Buff {
+        Buff {
             id,
-            aggregate: aggregate.into(),
+            aggregate_mode: aggregate_mode.into(),
             operation: operation.into(),
             item_mods,
             loc_mods,
@@ -231,58 +254,73 @@ impl DgmBuff {
         }
     }
 }
+/// Auxiliary data needed to apply a dogma buff modification directly to some item.
 #[derive(Debug)]
-pub struct DgmBuffIM {
+pub struct BuffIM {
     pub attr_id: ReeInt,
 }
-impl DgmBuffIM {
-    pub fn new(attr_id: ReeInt) -> DgmBuffIM {
-        DgmBuffIM { attr_id }
+impl BuffIM {
+    /// Make a new dogma buff auxiliary modifier out of passed data.
+    pub fn new(attr_id: ReeInt) -> BuffIM {
+        BuffIM { attr_id }
     }
 }
+/// Auxiliary data needed to apply a dogma buff modification to location-filtered items.
 #[derive(Debug)]
-pub struct DgmBuffLM {
+pub struct BuffLM {
     pub attr_id: ReeInt,
 }
-impl DgmBuffLM {
-    pub fn new(attr_id: ReeInt) -> DgmBuffLM {
-        DgmBuffLM { attr_id }
+impl BuffLM {
+    /// Make a new dogma buff auxiliary modifier out of passed data.
+    pub fn new(attr_id: ReeInt) -> BuffLM {
+        BuffLM { attr_id }
     }
 }
+/// Auxiliary data needed to apply a dogma buff modification to location- and group-filtered items.
 #[derive(Debug)]
-pub struct DgmBuffLGM {
+pub struct BuffLGM {
     pub attr_id: ReeInt,
     pub group_id: ReeInt,
 }
-impl DgmBuffLGM {
-    pub fn new(attr_id: ReeInt, group_id: ReeInt) -> DgmBuffLGM {
-        DgmBuffLGM { attr_id, group_id }
+impl BuffLGM {
+    /// Make a new dogma buff auxiliary modifier out of passed data.
+    pub fn new(attr_id: ReeInt, group_id: ReeInt) -> BuffLGM {
+        BuffLGM { attr_id, group_id }
     }
 }
+/// Auxiliary data needed to apply a dogma buff modification to location- and skill requirement-filtered items.
 #[derive(Debug)]
-pub struct DgmBuffLRSM {
+pub struct BuffLRSM {
     pub attr_id: ReeInt,
     pub skill_id: ReeInt,
 }
-impl DgmBuffLRSM {
-    pub fn new(attr_id: ReeInt, skill_id: ReeInt) -> DgmBuffLRSM {
-        DgmBuffLRSM { attr_id, skill_id }
+impl BuffLRSM {
+    /// Make a new dogma buff auxiliary modifier out of passed data.
+    pub fn new(attr_id: ReeInt, skill_id: ReeInt) -> BuffLRSM {
+        BuffLRSM { attr_id, skill_id }
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fighter abilities
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Fighter ability data.
 #[derive(Debug)]
-pub struct FtrAbil {
+pub struct FighterAbil {
     pub id: ReeInt,
     pub target_mode: String,
     pub disallow_hisec: bool,
     pub disallow_lowsec: bool,
 }
-impl FtrAbil {
-    pub fn new<T: Into<String>>(id: ReeInt, target_mode: T, disallow_hisec: bool, disallow_lowsec: bool) -> FtrAbil {
-        FtrAbil {
+impl FighterAbil {
+    /// Make a new fighter ability out of passed data.
+    pub fn new<T: Into<String>>(
+        id: ReeInt,
+        target_mode: T,
+        disallow_hisec: bool,
+        disallow_lowsec: bool,
+    ) -> FighterAbil {
+        FighterAbil {
             id,
             target_mode: target_mode.into(),
             disallow_hisec,
@@ -291,71 +329,49 @@ impl FtrAbil {
     }
 }
 
+/// An item type - fighter ability relation.
 #[derive(Debug)]
-pub struct FtrTypeAbil {
-    pub type_id: ReeInt,
-    pub abil0: Option<FtrTypeAbilData>,
-    pub abil1: Option<FtrTypeAbilData>,
-    pub abil2: Option<FtrTypeAbilData>,
-}
-impl FtrTypeAbil {
-    pub fn new(
-        type_id: ReeInt,
-        abil0: Option<FtrTypeAbilData>,
-        abil1: Option<FtrTypeAbilData>,
-        abil2: Option<FtrTypeAbilData>,
-    ) -> FtrTypeAbil {
-        FtrTypeAbil {
-            type_id,
-            abil0,
-            abil1,
-            abil2,
-        }
-    }
-}
-#[derive(Debug)]
-pub struct FtrTypeAbilData {
-    pub ability_id: ReeInt,
+pub struct ItemFighterAbil {
+    pub item_id: ReeInt,
+    pub abil_id: ReeInt,
     pub cooldown: Option<ReeFloat>,
-    pub charges: Option<FtrTypeAbilChargeData>,
+    pub charge_count: Option<ReeInt>,
+    pub charge_rearm_time: Option<ReeFloat>,
 }
-impl FtrTypeAbilData {
+impl ItemFighterAbil {
+    /// Makes a new item-ability relation out of passed data.
     pub fn new(
-        ability_id: ReeInt,
+        item_id: ReeInt,
+        abil_id: ReeInt,
         cooldown: Option<ReeFloat>,
-        charges: Option<FtrTypeAbilChargeData>,
-    ) -> FtrTypeAbilData {
-        FtrTypeAbilData {
-            ability_id,
+        charge_count: Option<ReeInt>,
+        charge_rearm_time: Option<ReeFloat>,
+    ) -> ItemFighterAbil {
+        ItemFighterAbil {
+            item_id,
+            abil_id,
             cooldown,
-            charges,
+            charge_count,
+            charge_rearm_time,
         }
-    }
-}
-#[derive(Debug)]
-pub struct FtrTypeAbilChargeData {
-    pub count: ReeInt,
-    pub rearm_time: ReeFloat,
-}
-impl FtrTypeAbilChargeData {
-    pub fn new(count: ReeInt, rearm_time: ReeFloat) -> FtrTypeAbilChargeData {
-        FtrTypeAbilChargeData { count, rearm_time }
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Item type skill requirement.
 #[derive(Debug)]
-pub struct SkillReq {
-    pub type_id: ReeInt,
+pub struct ItemSkillReq {
+    pub item_id: ReeInt,
     pub skill_id: ReeInt,
     pub level: ReeInt,
 }
-impl SkillReq {
-    pub fn new(type_id: ReeInt, skill_id: ReeInt, level: ReeInt) -> SkillReq {
-        SkillReq {
-            type_id,
+impl ItemSkillReq {
+    /// Make a new item type skill requirement out of passed data.
+    pub fn new(item_id: ReeInt, skill_id: ReeInt, level: ReeInt) -> ItemSkillReq {
+        ItemSkillReq {
+            item_id,
             skill_id,
             level,
         }
