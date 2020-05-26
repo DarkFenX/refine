@@ -2,10 +2,12 @@ use std::collections::HashMap;
 
 use crate::defines::{ReeFloat, ReeInt};
 
-/// A type which is used by [`DataHandler`](super::DataHandler) to pass data and accumulated errors to the caller.
+/// Convenience type to pass data and accumulated errors to the caller.
 #[derive(Debug)]
 pub struct Container<T> {
+    /// Vector with actual data.
     pub data: Vec<T>,
+    /// Vector with strings which represent non-critical errors during data generation.
     pub errors: Vec<String>,
 }
 impl<T> Container<T> {
@@ -15,13 +17,18 @@ impl<T> Container<T> {
     }
 }
 
-/// An auxiliary entity for "primitive" data.
+/// Auxiliary entity for "primitive" data.
 #[derive(Debug)]
 pub enum Primitive {
+    /// Represents absence of a value.
     Null,
+    /// Represents a boolean value.
     Bool(bool),
+    /// Represents an integer number value.
     Int(ReeInt),
+    /// Represents a float number value.
     Float(ReeFloat),
+    /// Represents a string value.
     String(String),
 }
 
@@ -31,7 +38,9 @@ pub enum Primitive {
 /// Item type data.
 #[derive(Debug)]
 pub struct Item {
+    /// Item type ID.
     pub id: ReeInt,
+    /// Refers an item group the item type belongs to.
     pub group_id: ReeInt,
 }
 impl Item {
@@ -44,7 +53,9 @@ impl Item {
 /// Item group data.
 #[derive(Debug)]
 pub struct ItemGroup {
+    /// Item group ID.
     pub id: ReeInt,
+    /// Refers an item category the item group belongs to.
     pub category_id: ReeInt,
 }
 impl ItemGroup {
@@ -60,9 +71,13 @@ impl ItemGroup {
 /// Dogma attribute data.
 #[derive(Debug)]
 pub struct Attr {
+    /// Dogma attribute ID.
     pub id: ReeInt,
+    /// Defines if modifications applied to the attribute's values stack with penalty (false) or not (true).
     pub stackable: bool,
+    /// Defines if higher value of the attribute is considered good or not.
     pub high_is_good: bool,
+    /// Default value of the attribute, if not provided by an item type.
     pub default_value: ReeFloat,
 }
 impl Attr {
@@ -80,8 +95,11 @@ impl Attr {
 /// An item type - dogma attribute relation.
 #[derive(Debug)]
 pub struct ItemAttr {
+    /// Refers an item type involved in the relation.
     pub item_id: ReeInt,
+    /// Refers a dogma attribute involved in the relation.
     pub attr_id: ReeInt,
+    /// Value of the attribute.
     pub value: ReeFloat,
 }
 impl ItemAttr {
@@ -98,18 +116,31 @@ impl ItemAttr {
 /// Dogma effect data.
 #[derive(Debug)]
 pub struct Effect {
+    /// Dogma effect ID.
     pub id: ReeInt,
+    /// Refers an effect category the effect belongs to.
     pub category_id: ReeInt,
+    /// Defines if the effect is considered as an assistance.
     pub is_assistance: bool,
+    /// Defines if the effect is offensive or not.
     pub is_offensive: bool,
+    /// Defines if the effect can be used while in warp.
     pub is_warp_safe: bool,
+    /// Refers an attribute value which defines capacitor cost to run the effect.
     pub discharge_attr_id: Option<ReeInt>,
+    /// Refers an attribute value which defines how long an effect cycle would take in milliseconds.
     pub duration_attr_id: Option<ReeInt>,
+    /// Refers an attribute value which defines optimal range of the effect in meters.
     pub range_attr_id: Option<ReeInt>,
+    /// Refers an attribute value which defines falloff range of the effect in meters.
     pub falloff_attr_id: Option<ReeInt>,
+    /// Refers an attribute value which defines tracking speed of the effect.
     pub tracking_attr_id: Option<ReeInt>,
+    /// Refers an attribute value which defines chance of the effect to run when its parent item is fitted.
     pub usage_chance_attr_id: Option<ReeInt>,
+    /// Refers an attribute value which defines resistance strength to the effect.
     pub resist_attr_id: Option<ReeInt>,
+    /// Modifiers of the effect.
     pub mods: Vec<EffectMod>,
 }
 impl Effect {
@@ -149,7 +180,9 @@ impl Effect {
 /// Dogma effect modifier data.
 #[derive(Debug)]
 pub struct EffectMod {
+    /// Function which the effect modifier calls to apply its modification.
     pub func: String,
+    /// Arguments to the function call.
     pub args: HashMap<String, Primitive>,
 }
 impl EffectMod {
@@ -165,8 +198,11 @@ impl EffectMod {
 /// An item type - dogma effect relation.
 #[derive(Debug)]
 pub struct ItemEffect {
+    /// Refers an item type involved in the relation.
     pub item_id: ReeInt,
+    /// Refers a dogma effect involved in the relation.
     pub effect_id: ReeInt,
+    /// Defines if the effect is default to the item or not.
     pub is_default: bool,
 }
 impl ItemEffect {
@@ -183,8 +219,11 @@ impl ItemEffect {
 /// Mutaplasmid item type conversion data.
 #[derive(Debug)]
 pub struct MutaItemConv {
+    /// Mutaplasmid item type ID.
     pub muta_id: ReeInt,
+    /// Refers an item type the mutaplasmid can be applied to.
     pub in_item_id: ReeInt,
+    /// Refers an item type, which is the outcome of the conversion.
     pub out_item_id: ReeInt,
 }
 impl MutaItemConv {
@@ -201,9 +240,13 @@ impl MutaItemConv {
 /// Mutaplasmid attribute modification data.
 #[derive(Debug)]
 pub struct MutaAttrMod {
+    /// Mutaplasmid item type ID.
     pub muta_id: ReeInt,
+    /// Refers an attribute being modified by the mutaplasmid.
     pub attr_id: ReeInt,
+    /// Lower boundary of the modification range.
     pub min_attr_mult: ReeFloat,
+    /// Upper boundary of the modification range.
     pub max_attr_mult: ReeFloat,
 }
 impl MutaAttrMod {
@@ -224,12 +267,19 @@ impl MutaAttrMod {
 /// Dogma buff data.
 #[derive(Debug)]
 pub struct Buff {
+    /// Dogma buff ID.
     pub id: ReeInt,
+    /// Defines how multiple buffs of the same type are aggregated.
     pub aggregate_mode: String,
+    /// Name of the operation applied to attributes targeted by the buff.
     pub operation: String,
+    /// Modifiers which apply some modification to some item directly.
     pub item_mods: Vec<BuffIM>,
+    /// Modifiers which apply some modification to location-filtered items.
     pub loc_mods: Vec<BuffLM>,
+    /// Modifiers which apply some modification to location- and group-filtered items.
     pub locgroup_mods: Vec<BuffLGM>,
+    /// Modifiers which apply some modification to location- and skill requirement-filtered items.
     pub locsrq_mods: Vec<BuffLRSM>,
 }
 impl Buff {
@@ -257,6 +307,7 @@ impl Buff {
 /// Auxiliary data needed to apply a dogma buff modification directly to some item.
 #[derive(Debug)]
 pub struct BuffIM {
+    /// Refers an attribute which is the target of the modification.
     pub attr_id: ReeInt,
 }
 impl BuffIM {
@@ -268,6 +319,7 @@ impl BuffIM {
 /// Auxiliary data needed to apply a dogma buff modification to location-filtered items.
 #[derive(Debug)]
 pub struct BuffLM {
+    /// Refers an attribute which is the target of the modification.
     pub attr_id: ReeInt,
 }
 impl BuffLM {
@@ -279,7 +331,10 @@ impl BuffLM {
 /// Auxiliary data needed to apply a dogma buff modification to location- and group-filtered items.
 #[derive(Debug)]
 pub struct BuffLGM {
+    /// Refers an attribute which is the target of the modification.
     pub attr_id: ReeInt,
+    /// Refers an item group for a modification filter. Only items belonging to this group are eligible for the
+    /// modification.
     pub group_id: ReeInt,
 }
 impl BuffLGM {
@@ -291,7 +346,10 @@ impl BuffLGM {
 /// Auxiliary data needed to apply a dogma buff modification to location- and skill requirement-filtered items.
 #[derive(Debug)]
 pub struct BuffLRSM {
+    /// Refers an attribute which is the target of the modification.
     pub attr_id: ReeInt,
+    /// Refers a skill item for a modification filter. Only items having this skill requirement will be eligible for the
+    /// modification.
     pub skill_id: ReeInt,
 }
 impl BuffLRSM {
@@ -307,9 +365,13 @@ impl BuffLRSM {
 /// Fighter ability data.
 #[derive(Debug)]
 pub struct FighterAbil {
+    /// Fighter ability ID.
     pub id: ReeInt,
+    /// Fighter ability target mode name.
     pub target_mode: String,
+    /// Defines if the ability can be used in hisec.
     pub disallow_hisec: bool,
+    /// Defines if the ability can be used in lowsec.
     pub disallow_lowsec: bool,
 }
 impl FighterAbil {
@@ -332,10 +394,15 @@ impl FighterAbil {
 /// An item type - fighter ability relation.
 #[derive(Debug)]
 pub struct ItemFighterAbil {
+    /// Refers an item type involved in the relation.
     pub item_id: ReeInt,
+    /// Refers a fighter ability involved in the relation.
     pub abil_id: ReeInt,
+    /// Defines cooldown of the ability in seconds.
     pub cooldown: Option<ReeFloat>,
+    /// Defines how many times the ability can be used before fighter has to rearm.
     pub charge_count: Option<ReeInt>,
+    /// Defines how long each charge of the ability takes to rearm.
     pub charge_rearm_time: Option<ReeFloat>,
 }
 impl ItemFighterAbil {
@@ -363,8 +430,11 @@ impl ItemFighterAbil {
 /// Item type skill requirement.
 #[derive(Debug)]
 pub struct ItemSkillReq {
+    /// Refers an item type for which this skill requirement is defined.
     pub item_id: ReeInt,
+    /// Refers a skill item type which is needed to meet the skill requirement.
     pub skill_id: ReeInt,
+    /// Defines skill level which is needed to meet the skill requirement.
     pub level: ReeInt,
 }
 impl ItemSkillReq {

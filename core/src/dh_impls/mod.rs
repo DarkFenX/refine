@@ -1,3 +1,3 @@
-//! Implementations of data handling interface
+//! Data handler implementations
 
 pub mod phobos;

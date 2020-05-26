@@ -1,6 +1,4 @@
-#![warn(missing_docs)]
-
-//! Definition of data handling interface
+//! Data handling interface
 
 pub use data::{
     Attr, Buff, BuffIM, BuffLGM, BuffLM, BuffLRSM, Container, Effect, EffectMod, FighterAbil, Item, ItemAttr,
