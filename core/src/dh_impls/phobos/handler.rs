@@ -13,10 +13,15 @@ use super::data::{
 use super::error::{Error, FromPath, Result};
 use super::fsd;
 
+/// A structure for extracting data from [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
 pub struct PhobosHandler {
     base_path: PathBuf,
 }
 impl PhobosHandler {
+    /// Constructs new `PhobosHandler` using provided path.
+    ///
+    /// Path should point to the top-level folder of a data dump, e.g. `/phobos_en-us` and not
+    /// `/phobos_en-us/fsd_binary`.
     pub fn new<T: Into<PathBuf>>(path: T) -> PhobosHandler {
         PhobosHandler { base_path: path.into() }
     }
