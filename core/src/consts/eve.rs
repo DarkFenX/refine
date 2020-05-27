@@ -1,3 +1,6 @@
+use crate::defines::ReeInt;
+
+#[derive(Debug)]
 pub enum EffectCategory {
     Passive,
     Active,
@@ -9,13 +12,31 @@ pub enum EffectCategory {
     System,
 }
 
+#[derive(Debug)]
+pub enum ModAfeeFilter {
+    Direct(ModDomain),
+    Loc(ModDomain),
+    LogGrp(ModDomain, ReeInt),
+    LocSrq(ModDomain, ReeInt),
+    OwnSrq(ModDomain, ReeInt),
+}
+
+#[derive(Debug)]
 pub enum ModDomain {
     Ship,
     Char,
     Item,
 }
 
-pub enum ModOperator {
+#[derive(Debug)]
+pub enum ModAggrMode {
+    Stack,
+    Min(ReeInt),
+    Max(ReeInt),
+}
+
+#[derive(Debug)]
+pub enum ModOperation {
     PreAssign,
     PreMul,
     PreDiv,

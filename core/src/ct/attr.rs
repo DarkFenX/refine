@@ -4,6 +4,7 @@ use crate::defines::{ReeFloat, ReeInt};
 ///
 /// An attribute carries just attribute properties which govern how modified attribute values are
 /// calculated. Values themselves are stored on various items as plain numbers.
+#[derive(Debug)]
 pub struct Attr {
     // Attribute ID.
     pub id: ReeInt,

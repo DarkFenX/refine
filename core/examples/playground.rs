@@ -1,10 +1,7 @@
-use std::collections::HashMap;
 use std::path::PathBuf;
 
 use chrono;
 
-use reefast::consts::{EveEffectCategory, EveModDomain, EveModOperator};
-use reefast::ct::{Attr, Effect, Item, ItemModifier};
 use reefast::dh::{self, DataHandler};
 use reefast::dh_impls::phobos;
 

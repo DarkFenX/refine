@@ -6,7 +6,7 @@
 pub use attr::Attr;
 pub use effect::Effect;
 pub use item::Item;
-pub use modifier::ItemModifier;
+pub use modifier::StdAttrMod;
 
 mod attr;
 mod effect;
