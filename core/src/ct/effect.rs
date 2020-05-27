@@ -1,4 +1,4 @@
-use crate::consts::EffectCategory;
+use crate::consts::State;
 use crate::defines::ReeInt;
 
 use super::StdAttrMod;
@@ -12,8 +12,8 @@ use super::StdAttrMod;
 pub struct Effect {
     // Effect ID.
     pub id: ReeInt,
-    // Effect category.
-    pub category: EffectCategory,
+    // Effect state dictates when the effect is activated.
+    pub state: State,
     /// Defines if the effect is considered as an assistance.
     pub is_assistance: bool,
     /// Defines if the effect is offensive or not.
@@ -40,7 +40,7 @@ impl Effect {
     /// Make a new dogma effect out of passed data.
     pub fn new(
         id: ReeInt,
-        category: EffectCategory,
+        state: State,
         is_assistance: bool,
         is_offensive: bool,
         discharge_attr_id: Option<ReeInt>,
@@ -54,7 +54,7 @@ impl Effect {
     ) -> Effect {
         Effect {
             id,
-            category,
+            state,
             is_assistance,
             is_offensive,
             discharge_attr_id,

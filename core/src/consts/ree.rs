@@ -1,9 +1,13 @@
-// enum State {
-//     Offline,
-//     Online,
-//     Active,
-//     Overheat,
-// }
+use crate::defines::ReeInt;
+
+/// Contains states which can be assigned to several entities.
+#[derive(Debug)]
+pub enum State {
+    Offline,
+    Online,
+    Active,
+    Overload,
+}
 //
 // enum EffectMode {
 //     // In this mode rules vary, depending on effect category:
@@ -22,3 +26,66 @@
 //     // Effects in this mode are never running no matter what
 //     ForceStop,
 // }
+
+/// Defines which items will be affected by a modifier.
+#[derive(Debug)]
+pub enum ModAfeeFilter {
+    /// Single item modified, as specified by the domain.
+    Direct(ModDomain),
+    /// All items belonging to the domain are affected.
+    Loc(ModDomain),
+    /// All items located in the domain and belonging to the group are affected.
+    LogGrp(ModDomain, ReeInt),
+    /// All items located in the domain and having specified skill requirement are affected.
+    LocSrq(ModDomain, ReeInt),
+    /// All items belonging to the domain and having specified skill requirement are affected.
+    OwnSrq(ModDomain, ReeInt),
+}
+
+#[derive(Debug)]
+pub enum ModDomain {
+    Ship,
+    Char,
+    Item,
+}
+
+/// Defines how a modification will be aggregated.
+///
+/// When in the non-stack mode, multiple values which share the same aggregation mode and the same
+/// aggregation key (the mode argument) are converted into a single value.
+#[derive(Debug)]
+pub enum ModAggrMode {
+    /// No aggregation.
+    Stack,
+    /// Min value will be used.
+    Min(ReeInt),
+    /// Max value will be used.
+    Max(ReeInt),
+}
+
+/// Defines what kind of operation will be applied to a target attribute.
+///
+/// All the operations are applied in the order they are defined in this enum.
+#[derive(Debug)]
+pub enum ModOperation {
+    /// Assigns modification value to the target item attribute before all other operations are
+    /// applied.
+    PreAssign,
+    /// Early multiplication.
+    PreMul,
+    /// Early division.
+    PreDiv,
+    /// Addition.
+    Add,
+    /// Subtraction.
+    Sub,
+    /// Late multiplication.
+    PostMul,
+    /// Late division.
+    PostDiv,
+    /// Late percent-alike modification, e.g. 2 + 20% = 2.4.
+    PostPercent,
+    /// The same as forcing attribute to modification value. When there is at least one such
+    /// modification, all other modification operations are ignored.
+    PostAssign,
+}
