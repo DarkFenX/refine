@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::ct::{Effect};
+use crate::ct::Effect;
 use crate::defines::{ReeFloat, ReeInt};
 
 pub struct Item<'a> {
@@ -29,7 +29,7 @@ impl<'a> Item<'a> {
             attrs,
             effects,
             default_effect,
-            skillreqs
+            skillreqs,
         }
     }
 }

@@ -4,7 +4,7 @@
 pub use handler::PhobosHandler;
 
 mod address;
+mod aux;
 mod data;
-mod error;
 mod fsd;
 mod handler;

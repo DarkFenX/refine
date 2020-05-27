@@ -6,11 +6,11 @@ use std::path::PathBuf;
 use crate::dh;
 
 use super::address::Address;
+use super::aux::{Error, FromPath, Result};
 use super::data::{
     Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap, Metadata,
     MutaAttrMods, MutaItemConvs,
 };
-use super::error::{Error, FromPath, Result};
 use super::fsd;
 
 /// A structure for extracting data from [Phobos](https://github.com/pyfa-org/Phobos) JSON dump

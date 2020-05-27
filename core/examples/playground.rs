@@ -1,7 +1,11 @@
+#![allow(dead_code)]
+#![allow(unused_imports)]
+
 use std::path::PathBuf;
 
 use chrono;
 
+use reefast::cg;
 use reefast::dh::{self, DataHandler};
 use reefast::dh_impls::phobos;
 
@@ -38,21 +42,22 @@ fn print_data<T>(name: &'static str, data: dh::Result<dh::Container<T>>) {
 fn main() {
     setup_logger().unwrap();
     let dh = phobos::PhobosHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
-    println!("using {:?}", dh);
-    print_data("items", dh.get_items());
-    print_data("item groups", dh.get_item_groups());
-    print_data("attributes", dh.get_attrs());
-    print_data("item attributes", dh.get_item_attrs());
-    print_data("effects", dh.get_effects());
-    print_data("item effects", dh.get_item_effects());
-    print_data("mutaplasmid item conversions", dh.get_muta_item_convs());
-    print_data("mutaplasmid attr modifications", dh.get_muta_attr_mods());
-    print_data("buffs", dh.get_buffs());
-    print_data("fighter abilities", dh.get_fighter_abils());
-    print_data("item fighter abilities", dh.get_item_fighter_abils());
-    print_data("item skill requirements", dh.get_item_skill_reqs());
-    match dh.get_version() {
-        Ok(r) => println!("data version: {}", r),
-        Err(e) => println!("version failed: {}", e),
-    }
+    cg::generate_cache(&dh);
+    // println!("using {:?}", dh);
+    // print_data("items", dh.get_items());
+    // print_data("item groups", dh.get_item_groups());
+    // print_data("attributes", dh.get_attrs());
+    // print_data("item attributes", dh.get_item_attrs());
+    // print_data("effects", dh.get_effects());
+    // print_data("item effects", dh.get_item_effects());
+    // print_data("mutaplasmid item conversions", dh.get_muta_item_convs());
+    // print_data("mutaplasmid attr modifications", dh.get_muta_attr_mods());
+    // print_data("buffs", dh.get_buffs());
+    // print_data("fighter abilities", dh.get_fighter_abils());
+    // print_data("item fighter abilities", dh.get_item_fighter_abils());
+    // print_data("item skill requirements", dh.get_item_skill_reqs());
+    // match dh.get_version() {
+    //     Ok(r) => println!("data version: {}", r),
+    //     Err(e) => println!("version failed: {}", e),
+    // }
 }

@@ -1,14 +1,10 @@
-use std::error;
 use std::fmt;
-use std::result;
 
+use super::aux::{Container, Result};
 use super::data::{
-    Attr, Buff, Container, Effect, FighterAbil, Item, ItemAttr, ItemEffect, ItemFighterAbil, ItemGroup, ItemSkillReq,
-    MutaAttrMod, MutaItemConv,
+    Attr, Buff, Effect, FighterAbil, Item, ItemAttr, ItemEffect, ItemFighterAbil, ItemGroup, ItemSkillReq, MutaAttrMod,
+    MutaItemConv,
 };
-
-/// Alias for a `Result` which accepts any error type
-pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 
 /// Data handler interface definition.
 ///

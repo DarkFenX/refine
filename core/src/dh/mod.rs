@@ -1,10 +1,12 @@
 //! Data handling interface
 
+pub use aux::{Container, Result};
 pub use data::{
-    Attr, Buff, BuffIM, BuffLGM, BuffLM, BuffLRSM, Container, Effect, EffectMod, FighterAbil, Item, ItemAttr,
-    ItemEffect, ItemFighterAbil, ItemGroup, ItemSkillReq, MutaAttrMod, MutaItemConv, Primitive,
+    Attr, Buff, BuffIM, BuffLGM, BuffLM, BuffLRSM, Effect, EffectMod, FighterAbil, Item, ItemAttr, ItemEffect,
+    ItemFighterAbil, ItemGroup, ItemSkillReq, MutaAttrMod, MutaItemConv, Primitive,
 };
-pub use handler::{DataHandler, Result};
+pub use handler::DataHandler;
 
+mod aux;
 mod data;
 mod handler;

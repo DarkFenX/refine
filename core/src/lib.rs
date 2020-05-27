@@ -8,9 +8,11 @@
 //! - the engine converts the data into optimized internal format
 //! - you compose fit objects and fetch data from there
 
+pub mod cg;
 pub mod consts;
 pub mod ct;
 pub mod defines;
 pub mod dh;
 pub mod dh_impls;
 pub mod prelude;
+pub mod util;
