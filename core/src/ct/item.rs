@@ -1,7 +1,9 @@
 use std::collections::HashMap;
 
-use crate::ct::Effect;
-use crate::defines::{ReeFloat, ReeInt};
+use crate::{
+    ct::Effect,
+    defines::{ReeFloat, ReeInt},
+};
 
 pub struct Item<'a> {
     pub id: ReeInt,

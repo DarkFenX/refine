@@ -1,5 +1,7 @@
-use crate::defines::{ReeFloat, ReeInt};
-use crate::util::Named;
+use crate::{
+    defines::{ReeFloat, ReeInt},
+    util::Named,
+};
 
 /// An item type - dogma attribute relation.
 #[derive(Debug)]

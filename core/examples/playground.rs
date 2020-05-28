@@ -5,9 +5,11 @@ use std::path::PathBuf;
 
 use chrono;
 
-use reefast::cg;
-use reefast::dh::{self, DataHandler};
-use reefast::dh_impls::phobos;
+use reefast::{
+    cg,
+    dh::{self, DataHandler},
+    dh_impls::phobos,
+};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()

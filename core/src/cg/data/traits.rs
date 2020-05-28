@@ -11,5 +11,4 @@ pub(in super::super) trait Fk {
     fn get_effect_fks(&self) -> Vec<ReeInt>;
     fn get_fighter_abil_fks(&self) -> Vec<ReeInt>;
     fn get_buff_fks(&self) -> Vec<ReeInt>;
-    fn is_mn_map() -> bool;
 }

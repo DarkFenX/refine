@@ -8,13 +8,13 @@ pub enum State {
     Active,
     Overload,
 }
-//
+
 // enum EffectMode {
 //     // In this mode rules vary, depending on effect category:
-//     // - Offline: effects from this category are run when item is in offline+ state, and when they
-//     // do not have fitting usage chance specified
-//     // - Online: effects from this category are run when item is in online+ state, and when item has
-//     // runnable 'online' effect
+//     // - Offline: effects from this category are run when item is in offline+ state, and when
+// they     // do not have fitting usage chance specified
+//     // - Online: effects from this category are run when item is in online+ state, and when item
+// has     // runnable 'online' effect
 //     // - Active: effects from this category are run when item is in active+ state, and only when
 //     // effect is default item effect
 //     // - Overload: effects from this category are run when item is in overload+ state

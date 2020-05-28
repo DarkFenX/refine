@@ -1,5 +1,4 @@
-use crate::defines::ReeInt;
-use crate::dh;
+use crate::{defines::ReeInt, dh};
 
 use super::{Fk, Pk};
 
@@ -27,8 +26,5 @@ impl Fk for dh::Item {
     }
     fn get_buff_fks(&self) -> Vec<ReeInt> {
         Vec::new()
-    }
-    fn is_mn_map() -> bool {
-        false
     }
 }

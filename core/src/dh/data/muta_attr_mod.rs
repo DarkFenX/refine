@@ -1,5 +1,7 @@
-use crate::defines::{ReeFloat, ReeInt};
-use crate::util::Named;
+use crate::{
+    defines::{ReeFloat, ReeInt},
+    util::Named,
+};
 
 /// Mutaplasmid attribute modification data.
 #[derive(Debug)]

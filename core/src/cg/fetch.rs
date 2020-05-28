@@ -3,8 +3,10 @@
 
 use log;
 
-use crate::dh::{self, DataHandler};
-use crate::util::{Error, Named, Result};
+use crate::{
+    dh::{self, DataHandler},
+    util::{Error, Named, Result},
+};
 
 use super::data::Data;
 

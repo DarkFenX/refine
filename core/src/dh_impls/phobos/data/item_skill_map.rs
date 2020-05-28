@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
-use crate::defines::ReeInt;
-use crate::dh;
+use crate::{defines::ReeInt, dh};
 
 use super::super::fsd::FsdMerge;
 

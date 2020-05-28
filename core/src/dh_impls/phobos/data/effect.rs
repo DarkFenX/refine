@@ -1,10 +1,8 @@
 use std::collections::HashMap;
 
-use crate::defines::ReeInt;
-use crate::dh;
+use crate::{defines::ReeInt, dh};
 
-use super::super::fsd::FsdMerge;
-use super::aux::into_opt;
+use super::{super::fsd::FsdMerge, aux::into_opt};
 
 #[derive(Debug, serde::Deserialize)]
 pub(in super::super) struct Effect {
@@ -65,14 +63,15 @@ impl Into<dh::EffectMod> for EffectMod {
 }
 
 mod dgmmod {
-    use std::collections::HashMap;
-    use std::result::Result;
+    use std::{collections::HashMap, result::Result};
 
     use serde::{de::Error, Deserialize};
     use serde_json::{Map, Value};
 
-    use crate::defines::{ReeFloat, ReeInt};
-    use crate::dh::{self, Primitive};
+    use crate::{
+        defines::{ReeFloat, ReeInt},
+        dh::{self, Primitive},
+    };
 
     use super::EffectMod;
 

@@ -1,5 +1,7 @@
-use crate::consts::{ModAfeeFilter, ModAggrMode, ModOperation};
-use crate::defines::ReeInt;
+use crate::{
+    consts::{ModAfeeFilter, ModAggrMode, ModOperation},
+    defines::ReeInt,
+};
 
 /// A standard attribute modifier.
 ///
@@ -8,15 +10,15 @@ use crate::defines::ReeInt;
 /// (the item which carries the effect with the modifier) as modification value.
 #[derive(Debug)]
 pub struct StdAttrMod {
-    /// Refers an attribute on the affector, which should be used as modification value
+    /// Refers an attribute on the affector, which should be used as modification value.
     pub afor_attr_id: ReeInt,
-    /// Defines how multiple modifications applied to the same attribute value are aggregated
+    /// Defines how multiple modifications applied to the same attribute value are aggregated.
     pub aggr_mode: ModAggrMode,
-    /// Operation to apply during the modification
+    /// Operation to apply during the modification.
     pub operation: ModOperation,
-    /// Defines an affectee filter, that is a filter which defines which items will be affected
+    /// Defines an affectee filter, that is a filter which defines which items will be affected.
     pub afee_filter: ModAfeeFilter,
-    /// Refers an attribute, whose value will be affected on the affectee
+    /// Refers an attribute, whose value will be affected on the affectee.
     pub afee_attr_id: ReeInt,
 }
 impl StdAttrMod {

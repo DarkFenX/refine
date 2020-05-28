@@ -1,5 +1,4 @@
-use crate::consts::State;
-use crate::defines::ReeInt;
+use crate::{consts::State, defines::ReeInt};
 
 use super::StdAttrMod;
 

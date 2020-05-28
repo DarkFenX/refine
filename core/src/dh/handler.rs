@@ -1,9 +1,11 @@
 use std::fmt;
 
-use super::aux::{Container, Result};
-use super::data::{
-    Attr, Buff, Effect, FighterAbil, Item, ItemAttr, ItemEffect, ItemFighterAbil, ItemGroup, ItemSkillReq, MutaAttrMod,
-    MutaItemConv,
+use super::{
+    aux::{Container, Result},
+    data::{
+        Attr, Buff, Effect, FighterAbil, Item, ItemAttr, ItemEffect, ItemFighterAbil, ItemGroup, ItemSkillReq,
+        MutaAttrMod, MutaItemConv,
+    },
 };
 
 /// Data handler interface definition.

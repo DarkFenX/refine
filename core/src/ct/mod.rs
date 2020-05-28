@@ -1,7 +1,7 @@
 //! Cached types.
 //!
-//! Cached types are built from the EVE data provided by a data handler and are optimized for ease of use by various
-//! REEFAST components.
+//! Cached types are built from the EVE data provided by a data handler and are optimized for ease
+//! of use by various REEFAST components.
 
 pub use attr::Attr;
 pub use effect::Effect;

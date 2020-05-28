@@ -1,17 +1,21 @@
-use std::fmt;
-use std::fs::File;
-use std::io::{self, Read};
-use std::path::PathBuf;
+use std::{
+    fmt,
+    fs::File,
+    io::{self, Read},
+    path::PathBuf,
+};
 
 use crate::dh;
 
-use super::address::Address;
-use super::aux::{Error, FromPath, Result};
-use super::data::{
-    Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap, Metadata,
-    MutaAttrMods, MutaItemConvs,
+use super::{
+    address::Address,
+    aux::{Error, FromPath, Result},
+    data::{
+        Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
+        Metadata, MutaAttrMods, MutaItemConvs,
+    },
+    fsd,
 };
-use super::fsd;
 
 /// A structure for extracting data from [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
 pub struct PhobosHandler {

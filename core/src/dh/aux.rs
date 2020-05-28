@@ -1,5 +1,4 @@
-use std::error;
-use std::result;
+use std::{error, result};
 
 /// Alias for a `Result` which accepts any error type
 pub type Result<T> = result::Result<T, Box<dyn error::Error>>;

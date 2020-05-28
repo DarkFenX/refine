@@ -1,7 +1,4 @@
-use std::error;
-use std::fmt;
-use std::io;
-use std::result;
+use std::{error, fmt, io, result};
 
 pub(super) type Result<T> = result::Result<T, Error>;
 

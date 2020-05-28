@@ -8,7 +8,8 @@ use crate::defines::{ReeFloat, ReeInt};
 pub struct Attr {
     // Attribute ID.
     pub id: ReeInt,
-    /// Defines if modifications applied to the attribute's values are immune to stacking penalties or not.
+    /// Defines if modifications applied to the attribute's values are immune to stacking penalties
+    /// or not.
     pub penalizable: bool,
     /// Defines if higher value of the attribute is considered good or not.
     pub high_is_good: bool,

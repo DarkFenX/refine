@@ -1,8 +1,6 @@
-use crate::defines::ReeInt;
-use crate::dh;
+use crate::{defines::ReeInt, dh};
 
-use super::super::fsd::FsdMerge;
-use super::aux::into_vec;
+use super::{super::fsd::FsdMerge, aux::into_vec};
 
 #[derive(Debug, serde::Deserialize)]
 pub(in super::super) struct Buff {

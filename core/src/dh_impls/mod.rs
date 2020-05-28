@@ -1,3 +1,3 @@
-//! Data handler implementations
+//! Data handler implementations.
 
 pub mod phobos;

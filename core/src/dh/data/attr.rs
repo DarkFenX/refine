@@ -1,5 +1,7 @@
-use crate::defines::{ReeFloat, ReeInt};
-use crate::util::Named;
+use crate::{
+    defines::{ReeFloat, ReeInt},
+    util::Named,
+};
 
 /// Dogma attribute data.
 #[derive(Debug)]
@@ -15,6 +17,10 @@ pub struct Attr {
     pub default_value: Option<ReeFloat>,
     /// Refers another attribute, whose value limits value of this attribute.
     pub max_attr_id: Option<ReeInt>,
+    /// Defines what kind of unit is used for the attribute's value. Used during cache generation
+    /// process during cleanup, since this field defines if value of the attribute refers another
+    /// attribute, group or something else.
+    pub unit_id: Option<ReeInt>,
 }
 impl Attr {
     /// Make a new dogma attribute out of passed data.
@@ -24,6 +30,7 @@ impl Attr {
         high_is_good: bool,
         default_value: Option<ReeFloat>,
         max_attr_id: Option<ReeInt>,
+        unit_id: Option<ReeInt>,
     ) -> Attr {
         Attr {
             id,
@@ -31,6 +38,7 @@ impl Attr {
             high_is_good,
             default_value,
             max_attr_id,
+            unit_id,
         }
     }
 }

@@ -2,8 +2,7 @@
 
 use data::Data;
 
-use crate::dh::DataHandler;
-use crate::util::Result;
+use crate::{dh::DataHandler, util::Result};
 
 mod clean;
 mod data;
