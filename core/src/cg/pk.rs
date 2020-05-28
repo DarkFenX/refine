@@ -2,75 +2,9 @@
 
 use std::collections::HashSet;
 
-use crate::defines::ReeInt;
-use crate::dh;
 use crate::util::Named;
 
-use super::Data;
-
-trait Pk {
-    fn get_pk(&self) -> Vec<ReeInt>;
-}
-impl Pk for dh::Item {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.id]
-    }
-}
-impl Pk for dh::ItemGroup {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.id]
-    }
-}
-impl Pk for dh::Attr {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.id]
-    }
-}
-impl Pk for dh::ItemAttr {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.item_id, self.attr_id]
-    }
-}
-impl Pk for dh::Effect {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.id]
-    }
-}
-impl Pk for dh::ItemEffect {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.item_id, self.effect_id]
-    }
-}
-impl Pk for dh::FighterAbil {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.id]
-    }
-}
-impl Pk for dh::ItemFighterAbil {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.item_id, self.abil_id]
-    }
-}
-impl Pk for dh::Buff {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.id]
-    }
-}
-impl Pk for dh::ItemSkillReq {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.item_id, self.skill_id]
-    }
-}
-impl Pk for dh::MutaItemConv {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.muta_id, self.in_item_id]
-    }
-}
-impl Pk for dh::MutaAttrMod {
-    fn get_pk(&self) -> Vec<ReeInt> {
-        vec![self.muta_id, self.attr_id]
-    }
-}
+use super::data::{Data, Pk};
 
 fn dedup_pks_vec<T>(vec: &mut Vec<T>, errs: &mut Vec<String>)
 where

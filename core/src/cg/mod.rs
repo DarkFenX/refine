@@ -5,6 +5,7 @@ use data::Data;
 use crate::dh::DataHandler;
 use crate::util::Result;
 
+mod clean;
 mod data;
 mod fetch;
 mod pk;
