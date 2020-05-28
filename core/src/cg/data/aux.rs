@@ -35,8 +35,19 @@ impl Data {
             attr_unit_map: HashMap::new(),
         }
     }
-    pub(in super::super) fn generate_aux_data(&mut self) {
-        for attr in self.attrs.iter() {
+}
+
+pub(in super::super) struct Support {
+    pub(in super::super) attr_unit_map: HashMap<ReeInt, ReeInt>,
+}
+impl Support {
+    pub(in super::super) fn new() -> Support {
+        Support {
+            attr_unit_map: HashMap::new(),
+        }
+    }
+    pub(in super::super) fn post_pk(&mut self, data: &Data) {
+        for attr in data.attrs.iter() {
             if let Some(unit) = attr.unit_id {
                 self.attr_unit_map.insert(attr.id, unit);
             }

@@ -1,6 +1,6 @@
 use crate::{defines::ReeInt, dh, util};
 
-use super::{Data, Fk, Pk};
+use super::{Fk, Pk, Support};
 
 impl Pk for dh::Effect {
     fn get_pk(&self) -> Vec<ReeInt> {
@@ -9,13 +9,13 @@ impl Pk for dh::Effect {
 }
 
 impl Fk for dh::Effect {
-    fn get_item_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_item_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.get_fks_from_mod_args("skillTypeID")
     }
-    fn get_item_group_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_item_group_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.get_fks_from_mod_args("groupID")
     }
-    fn get_attr_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_attr_fks(&self, _: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
         util::vec_push_opt(&mut vec, self.discharge_attr_id);
         util::vec_push_opt(&mut vec, self.duration_attr_id);
@@ -28,14 +28,14 @@ impl Fk for dh::Effect {
         vec.extend(self.get_fks_from_mod_args("modifiedAttributeID"));
         vec
     }
-    fn get_effect_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_effect_fks(&self, _: &Support) -> Vec<ReeInt> {
         // EffectStopper modifier type uses this argument
         self.get_fks_from_mod_args("effectID")
     }
-    fn get_fighter_abil_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_fighter_abil_fks(&self, _: &Support) -> Vec<ReeInt> {
         Vec::new()
     }
-    fn get_buff_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_buff_fks(&self, _: &Support) -> Vec<ReeInt> {
         Vec::new()
     }
 }

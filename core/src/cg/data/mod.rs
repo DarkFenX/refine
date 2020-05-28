@@ -1,4 +1,4 @@
-pub(super) use aux::Data;
+pub(super) use aux::{Data, Support};
 pub(super) use traits::{Fk, Pk};
 
 mod attr;

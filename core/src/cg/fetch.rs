@@ -63,6 +63,5 @@ pub(super) fn fetch_data(data_handler: &dyn DataHandler, data: &mut Data) -> Res
         &mut data.muta_item_convs,
     )?;
     fetch_data_vec(data_handler, DataHandler::get_muta_attr_mods, &mut data.muta_attr_mods)?;
-    data.generate_aux_data();
     Ok(())
 }

@@ -1,6 +1,6 @@
 use crate::{defines::ReeInt, dh};
 
-use super::{Data, Fk, Pk};
+use super::{Fk, Pk, Support};
 
 impl Pk for dh::Buff {
     fn get_pk(&self) -> Vec<ReeInt> {
@@ -9,13 +9,13 @@ impl Pk for dh::Buff {
 }
 
 impl Fk for dh::Buff {
-    fn get_item_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_item_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.locsrq_mods.iter().map(|v| v.skill_id).collect()
     }
-    fn get_item_group_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_item_group_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.locgroup_mods.iter().map(|v| v.group_id).collect()
     }
-    fn get_attr_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_attr_fks(&self, _: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
         vec.extend(self.item_mods.iter().map(|v| v.attr_id));
         vec.extend(self.loc_mods.iter().map(|v| v.attr_id));
@@ -23,13 +23,13 @@ impl Fk for dh::Buff {
         vec.extend(self.locsrq_mods.iter().map(|v| v.attr_id));
         vec
     }
-    fn get_effect_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_effect_fks(&self, _: &Support) -> Vec<ReeInt> {
         Vec::new()
     }
-    fn get_fighter_abil_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_fighter_abil_fks(&self, _: &Support) -> Vec<ReeInt> {
         Vec::new()
     }
-    fn get_buff_fks(&self, _: &Data) -> Vec<ReeInt> {
+    fn get_buff_fks(&self, _: &Support) -> Vec<ReeInt> {
         Vec::new()
     }
 }
