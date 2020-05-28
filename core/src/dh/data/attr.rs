@@ -41,6 +41,11 @@ impl Attr {
             unit_id,
         }
     }
+    /// Default value seems to be initialized to 0.0, which stands for "no default value" in some
+    /// contexts. Here we just return None instead of it, should the context need that.
+    pub(crate) fn get_nonzero_defval(&self) -> Option<ReeFloat> {
+        self.default_value.and_then(|v| if v == 0.0 { None } else { Some(v) })
+    }
 }
 impl Named for Attr {
     fn get_name() -> &'static str {

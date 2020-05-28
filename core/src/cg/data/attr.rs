@@ -12,15 +12,6 @@ impl Pk for dh::Attr {
     }
 }
 
-impl dh::Attr {
-    fn push_defval_id(&self, vec: &mut Vec<ReeInt>, unit: ReeInt) {
-        if let (Some(u), Some(dv)) = (self.unit_id, self.default_value) {
-            if u == unit {
-                vec.push(dv.round() as ReeInt)
-            }
-        }
-    }
-}
 impl Fk for dh::Attr {
     fn get_item_fks(&self) -> Vec<ReeInt> {
         let mut vec = Vec::new();
@@ -49,9 +40,19 @@ impl Fk for dh::Attr {
     }
     fn get_buff_fks(&self) -> Vec<ReeInt> {
         let mut vec = Vec::new();
-        if let (true, Some(dv)) = (attrs::BUFF_ID_ATTRS.contains(&self.id), self.default_value) {
+        if let (true, Some(dv)) = (attrs::BUFF_ID_ATTRS.contains(&self.id), self.get_nonzero_defval()) {
             vec.push(dv.round() as ReeInt)
         }
         vec
+    }
+}
+impl dh::Attr {
+    fn push_defval_id(&self, vec: &mut Vec<ReeInt>, unit: ReeInt) {
+        if let (Some(u), Some(dv)) = (self.unit_id, self.get_nonzero_defval()) {
+            // Ignore default values of 0.0, since that's the placeholder value for the field
+            if u == unit {
+                vec.push(dv.round() as ReeInt)
+            }
+        }
     }
 }
