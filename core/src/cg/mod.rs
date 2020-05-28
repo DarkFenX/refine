@@ -16,5 +16,6 @@ pub fn generate_cache(data_handler: &dyn DataHandler) -> Result<()> {
     fetch::fetch_data(data_handler, &mut data)?;
     pk::dedup_pks(&mut data, &mut errs);
     support.post_pk(&data);
+    clean::clean_unused(&mut data, &support);
     Ok(())
 }

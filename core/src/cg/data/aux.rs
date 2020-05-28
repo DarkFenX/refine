@@ -15,7 +15,6 @@ pub(in super::super) struct Data {
     pub(in super::super) item_skill_reqs: Vec<dh::ItemSkillReq>,
     pub(in super::super) muta_item_convs: Vec<dh::MutaItemConv>,
     pub(in super::super) muta_attr_mods: Vec<dh::MutaAttrMod>,
-    pub(in super::super) attr_unit_map: HashMap<ReeInt, ReeInt>,
 }
 impl Data {
     pub(in super::super) fn new() -> Data {
@@ -32,25 +31,35 @@ impl Data {
             item_skill_reqs: Vec::new(),
             muta_item_convs: Vec::new(),
             muta_attr_mods: Vec::new(),
-            attr_unit_map: HashMap::new(),
         }
     }
 }
 
 pub(in super::super) struct Support {
     pub(in super::super) attr_unit_map: HashMap<ReeInt, ReeInt>,
+    pub(in super::super) grp_cat_map: HashMap<ReeInt, ReeInt>,
 }
 impl Support {
     pub(in super::super) fn new() -> Support {
         Support {
             attr_unit_map: HashMap::new(),
+            grp_cat_map: HashMap::new(),
         }
     }
     pub(in super::super) fn post_pk(&mut self, data: &Data) {
+        self.fill_attr_unit_map(&data);
+        self.fill_grp_cat_map(&data);
+    }
+    fn fill_attr_unit_map(&mut self, data: &Data) {
         for attr in data.attrs.iter() {
             if let Some(unit) = attr.unit_id {
                 self.attr_unit_map.insert(attr.id, unit);
             }
+        }
+    }
+    fn fill_grp_cat_map(&mut self, data: &Data) {
+        for grp in data.item_groups.iter() {
+            self.grp_cat_map.insert(grp.id, grp.category_id);
         }
     }
 }

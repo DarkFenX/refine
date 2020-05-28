@@ -1,3 +1,23 @@
+pub(crate) mod itemgrps {
+    use crate::defines::ReeInt;
+
+    pub(crate) const CHARACTER: ReeInt = 1;
+    pub(crate) const EFFECT_BEACON: ReeInt = 920;
+}
+
+pub(crate) mod itemcats {
+    use crate::defines::ReeInt;
+
+    pub(crate) const CHARGE: ReeInt = 8;
+    pub(crate) const DRONE: ReeInt = 18;
+    pub(crate) const FIGHTER: ReeInt = 87;
+    pub(crate) const IMPLANT: ReeInt = 20;
+    pub(crate) const MODULE: ReeInt = 7;
+    pub(crate) const SHIP: ReeInt = 6;
+    pub(crate) const SKILL: ReeInt = 16;
+    pub(crate) const SUBSYSTEM: ReeInt = 32;
+}
+
 pub(crate) mod attrs {
     use crate::defines::ReeInt;
 
