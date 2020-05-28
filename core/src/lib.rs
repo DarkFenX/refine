@@ -1,3 +1,5 @@
+#![feature(drain_filter)]
+
 //! # REEFAST
 //! REEFAST is an engine built to simulate EVE Online ship and structure fits.
 //!

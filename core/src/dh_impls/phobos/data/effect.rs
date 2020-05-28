@@ -96,10 +96,7 @@ mod dgmmod {
         Ok(mods)
     }
 
-    fn extract_string<E>(map: &mut Map<String, Value>, key: &'static str) -> Result<String, E>
-    where
-        E: Error,
-    {
+    fn extract_string<E: Error>(map: &mut Map<String, Value>, key: &'static str) -> Result<String, E> {
         let func = match map.remove(key) {
             Some(v) => v,
             None => return Err(Error::missing_field(key)),
