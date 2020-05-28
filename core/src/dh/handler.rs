@@ -11,12 +11,12 @@ use super::{
 /// Data handler interface definition.
 ///
 /// Please be aware that this interface is not expected to be stable. Whenever CCP significantly
-/// change EVE data format, this interface has to change as well.
+/// change the EVE data format, the interface has to change as well.
 ///
 /// All the methods required by this trait should return an error only when it is impossible to
-/// fetch data altogether. In case of a less impactful error (such as inability to deserialize one
-/// specific item within big array of data), the error should be recorded as a meaningful message
-/// and stored in [`Container.errors`](self::Container::errors).
+/// fetch the data altogether. In case of a less impactful error (such as inability to deserialize
+/// one specific item within a big array of data), the error should be recorded as a meaningful
+/// message and stored in [`Container::errors`](self::Container::errors).
 pub trait DataHandler: fmt::Debug {
     /// Get item types.
     fn get_items(&self) -> Result<Container<Item>>;
