@@ -42,7 +42,7 @@ fn print_data<T>(name: &'static str, data: dh::Result<dh::Container<T>>) {
 fn main() {
     setup_logger().unwrap();
     let dh = phobos::PhobosHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
-    cg::generate_cache(&dh);
+    cg::generate_cache(&dh).unwrap();
     // println!("using {:?}", dh);
     // print_data("items", dh.get_items());
     // print_data("item groups", dh.get_item_groups());

@@ -8,7 +8,7 @@ use crate::util::{Error, Named, Result};
 
 use super::data::Data;
 
-const MAX_ERRORS: u32 = 5;
+const MAX_ERRORS: usize = 5;
 
 /// Fetch data from a data handler into a data vec, and report errors, if any were encountered
 fn fetch_data_vec<S, F, T>(handler: &S, func: F, vec: &mut Vec<T>) -> Result<()>
@@ -28,7 +28,7 @@ where
             T::get_name(),
             MAX_ERRORS
         );
-        for err_msg in cont.errors.iter().take(MAX_ERRORS as usize) {
+        for err_msg in cont.errors.iter().take(MAX_ERRORS) {
             log::warn!("{}", err_msg);
         }
     }
