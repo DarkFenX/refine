@@ -10,13 +10,13 @@ impl Pk for dh::MutaAttrMod {
 
 impl Fk for dh::MutaAttrMod {
     fn get_item_fks(&self) -> Vec<ReeInt> {
-        Vec::new()
+        vec![self.muta_id]
     }
     fn get_item_group_fks(&self) -> Vec<ReeInt> {
         Vec::new()
     }
     fn get_attr_fks(&self) -> Vec<ReeInt> {
-        Vec::new()
+        vec![self.attr_id]
     }
     fn get_effect_fks(&self) -> Vec<ReeInt> {
         Vec::new()

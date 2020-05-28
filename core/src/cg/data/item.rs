@@ -13,7 +13,7 @@ impl Fk for dh::Item {
         Vec::new()
     }
     fn get_item_group_fks(&self) -> Vec<ReeInt> {
-        Vec::new()
+        vec![self.group_id]
     }
     fn get_attr_fks(&self) -> Vec<ReeInt> {
         Vec::new()

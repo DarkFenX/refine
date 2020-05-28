@@ -10,7 +10,7 @@ impl Pk for dh::ItemEffect {
 
 impl Fk for dh::ItemEffect {
     fn get_item_fks(&self) -> Vec<ReeInt> {
-        Vec::new()
+        vec![self.item_id]
     }
     fn get_item_group_fks(&self) -> Vec<ReeInt> {
         Vec::new()
@@ -19,7 +19,7 @@ impl Fk for dh::ItemEffect {
         Vec::new()
     }
     fn get_effect_fks(&self) -> Vec<ReeInt> {
-        Vec::new()
+        vec![self.effect_id]
     }
     fn get_fighter_abil_fks(&self) -> Vec<ReeInt> {
         Vec::new()

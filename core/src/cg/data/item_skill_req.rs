@@ -10,7 +10,7 @@ impl Pk for dh::ItemSkillReq {
 
 impl Fk for dh::ItemSkillReq {
     fn get_item_fks(&self) -> Vec<ReeInt> {
-        Vec::new()
+        vec![self.item_id, self.skill_id]
     }
     fn get_item_group_fks(&self) -> Vec<ReeInt> {
         Vec::new()

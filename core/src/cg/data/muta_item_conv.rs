@@ -10,7 +10,7 @@ impl Pk for dh::MutaItemConv {
 
 impl Fk for dh::MutaItemConv {
     fn get_item_fks(&self) -> Vec<ReeInt> {
-        Vec::new()
+        vec![self.muta_id, self.in_item_id, self.out_item_id]
     }
     fn get_item_group_fks(&self) -> Vec<ReeInt> {
         Vec::new()
