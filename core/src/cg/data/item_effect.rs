@@ -1,6 +1,6 @@
 use crate::{defines::ReeInt, dh};
 
-use super::{Fk, Pk};
+use super::{Data, Fk, Pk};
 
 impl Pk for dh::ItemEffect {
     fn get_pk(&self) -> Vec<ReeInt> {
@@ -9,22 +9,22 @@ impl Pk for dh::ItemEffect {
 }
 
 impl Fk for dh::ItemEffect {
-    fn get_item_fks(&self) -> Vec<ReeInt> {
+    fn get_item_fks(&self, _: &Data) -> Vec<ReeInt> {
         vec![self.item_id]
     }
-    fn get_item_group_fks(&self) -> Vec<ReeInt> {
+    fn get_item_group_fks(&self, _: &Data) -> Vec<ReeInt> {
         Vec::new()
     }
-    fn get_attr_fks(&self) -> Vec<ReeInt> {
+    fn get_attr_fks(&self, _: &Data) -> Vec<ReeInt> {
         Vec::new()
     }
-    fn get_effect_fks(&self) -> Vec<ReeInt> {
+    fn get_effect_fks(&self, _: &Data) -> Vec<ReeInt> {
         vec![self.effect_id]
     }
-    fn get_fighter_abil_fks(&self) -> Vec<ReeInt> {
+    fn get_fighter_abil_fks(&self, _: &Data) -> Vec<ReeInt> {
         Vec::new()
     }
-    fn get_buff_fks(&self) -> Vec<ReeInt> {
+    fn get_buff_fks(&self, _: &Data) -> Vec<ReeInt> {
         Vec::new()
     }
 }

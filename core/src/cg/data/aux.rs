@@ -1,4 +1,5 @@
-use crate::dh;
+use crate::{defines::ReeInt, dh};
+use std::collections::HashMap;
 
 /// Container for data, used internally by cache generator.
 pub(in super::super) struct Data {
@@ -14,6 +15,7 @@ pub(in super::super) struct Data {
     pub(in super::super) item_skill_reqs: Vec<dh::ItemSkillReq>,
     pub(in super::super) muta_item_convs: Vec<dh::MutaItemConv>,
     pub(in super::super) muta_attr_mods: Vec<dh::MutaAttrMod>,
+    pub(in super::super) attr_unit_map: HashMap<ReeInt, ReeInt>,
 }
 impl Data {
     pub(in super::super) fn new() -> Data {
@@ -30,6 +32,14 @@ impl Data {
             item_skill_reqs: Vec::new(),
             muta_item_convs: Vec::new(),
             muta_attr_mods: Vec::new(),
+            attr_unit_map: HashMap::new(),
+        }
+    }
+    pub(in super::super) fn generate_aux_data(&mut self) {
+        for attr in self.attrs.iter() {
+            if let Some(unit) = attr.unit_id {
+                self.attr_unit_map.insert(attr.id, unit);
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ impl FsdMerge<dh::ItemFighterAbil> for ItemFighterAbils {
                     abil_data.cooldown,
                     charge_count,
                     charge_rearm_time,
-                ))
+                ));
             }
         }
         vec

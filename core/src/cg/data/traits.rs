@@ -1,3 +1,4 @@
+use super::Data;
 use crate::defines::ReeInt;
 
 pub(in super::super) trait Pk {
@@ -5,10 +6,10 @@ pub(in super::super) trait Pk {
 }
 
 pub(in super::super) trait Fk {
-    fn get_item_fks(&self) -> Vec<ReeInt>;
-    fn get_item_group_fks(&self) -> Vec<ReeInt>;
-    fn get_attr_fks(&self) -> Vec<ReeInt>;
-    fn get_effect_fks(&self) -> Vec<ReeInt>;
-    fn get_fighter_abil_fks(&self) -> Vec<ReeInt>;
-    fn get_buff_fks(&self) -> Vec<ReeInt>;
+    fn get_item_fks(&self, data: &Data) -> Vec<ReeInt>;
+    fn get_item_group_fks(&self, data: &Data) -> Vec<ReeInt>;
+    fn get_attr_fks(&self, data: &Data) -> Vec<ReeInt>;
+    fn get_effect_fks(&self, data: &Data) -> Vec<ReeInt>;
+    fn get_fighter_abil_fks(&self, data: &Data) -> Vec<ReeInt>;
+    fn get_buff_fks(&self, data: &Data) -> Vec<ReeInt>;
 }
