@@ -32,12 +32,6 @@ impl Fk for dh::Effect {
         // EffectStopper modifier type uses this argument
         self.get_fks_from_mod_args("effectID")
     }
-    fn get_fighter_abil_fks(&self, _: &Support) -> Vec<ReeInt> {
-        Vec::new()
-    }
-    fn get_buff_fks(&self, _: &Support) -> Vec<ReeInt> {
-        Vec::new()
-    }
 }
 impl dh::Effect {
     fn get_fks_from_mod_args(&self, field: &'static str) -> Vec<ReeInt> {

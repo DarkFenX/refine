@@ -36,12 +36,6 @@ impl Fk for dh::ItemAttr {
         }
         vec
     }
-    fn get_effect_fks(&self, _: &Support) -> Vec<ReeInt> {
-        Vec::new()
-    }
-    fn get_fighter_abil_fks(&self, _: &Support) -> Vec<ReeInt> {
-        Vec::new()
-    }
     fn get_buff_fks(&self, _: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
         if attrs::BUFF_ID_ATTRS.contains(&self.attr_id) {

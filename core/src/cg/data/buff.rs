@@ -23,13 +23,4 @@ impl Fk for dh::Buff {
         vec.extend(self.locsrq_mods.iter().map(|v| v.attr_id));
         vec
     }
-    fn get_effect_fks(&self, _: &Support) -> Vec<ReeInt> {
-        Vec::new()
-    }
-    fn get_fighter_abil_fks(&self, _: &Support) -> Vec<ReeInt> {
-        Vec::new()
-    }
-    fn get_buff_fks(&self, _: &Support) -> Vec<ReeInt> {
-        Vec::new()
-    }
 }
