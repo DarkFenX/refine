@@ -20,7 +20,7 @@ impl Fk for dh::Attr {
         }
         vec
     }
-    fn get_item_group_fks(&self, _: &Support) -> Vec<ReeInt> {
+    fn get_group_fks(&self, _: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
         if let Some(v) = self.get_fk_from_defval(units::GROUP_ID) {
             vec.push(v);

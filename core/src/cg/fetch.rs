@@ -12,7 +12,7 @@ use super::data::Data;
 
 const MAX_ERRORS: usize = 5;
 
-/// Fetch data from a data handler into a data vec, and report errors, if any were encountered
+/// Fetch data from a data handler into a data vec, and report errors, if any were encountered.
 fn fetch_data_vec<S, F, T>(handler: &S, func: F, vec: &mut Vec<T>) -> Result<()>
 where
     S: ?Sized + DataHandler,

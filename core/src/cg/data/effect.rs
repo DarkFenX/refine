@@ -12,7 +12,7 @@ impl Fk for dh::Effect {
     fn get_item_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.get_fks_from_mod_args("skillTypeID")
     }
-    fn get_item_group_fks(&self, _: &Support) -> Vec<ReeInt> {
+    fn get_group_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.get_fks_from_mod_args("groupID")
     }
     fn get_attr_fks(&self, _: &Support) -> Vec<ReeInt> {

@@ -13,25 +13,25 @@ impl Pk for dh::ItemAttr {
 }
 
 impl Fk for dh::ItemAttr {
-    fn get_item_fks(&self, support: &Support) -> Vec<ReeInt> {
+    fn get_item_fks(&self, supp: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
         vec.push(self.item_id);
-        if let Some(v) = self.get_fk_from_val(units::ITEM_ID, &support) {
+        if let Some(v) = self.get_fk_from_val(units::ITEM_ID, &supp) {
             vec.push(v);
         }
         vec
     }
-    fn get_item_group_fks(&self, support: &Support) -> Vec<ReeInt> {
+    fn get_group_fks(&self, supp: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
-        if let Some(v) = self.get_fk_from_val(units::GROUP_ID, &support) {
+        if let Some(v) = self.get_fk_from_val(units::GROUP_ID, &supp) {
             vec.push(v);
         }
         vec
     }
-    fn get_attr_fks(&self, support: &Support) -> Vec<ReeInt> {
+    fn get_attr_fks(&self, supp: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
         vec.push(self.attr_id);
-        if let Some(v) = self.get_fk_from_val(units::ATTR_ID, &support) {
+        if let Some(v) = self.get_fk_from_val(units::ATTR_ID, &supp) {
             vec.push(v);
         }
         vec
@@ -46,8 +46,8 @@ impl Fk for dh::ItemAttr {
 }
 impl dh::ItemAttr {
     /// Receive unit ID, and if the attribute has such unit ID - return attribute value.
-    fn get_fk_from_val(&self, unit: ReeInt, support: &Support) -> Option<ReeInt> {
-        match support.attr_unit_map.get(&unit) {
+    fn get_fk_from_val(&self, unit: ReeInt, supp: &Support) -> Option<ReeInt> {
+        match supp.attr_unit_map.get(&self.attr_id) {
             Some(&u) if u == unit => Some(self.value.round() as ReeInt),
             _ => None,
         }

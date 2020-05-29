@@ -8,7 +8,8 @@ pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
 pub struct Container<T> {
     /// Vector with actual data.
     pub data: Vec<T>,
-    /// Vector with strings which represent non-critical errors during data generation.
+    /// Vector with strings which represent non-critical errors during data
+    /// generation.
     pub errors: Vec<String>,
 }
 impl<T> Container<T> {

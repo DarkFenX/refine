@@ -9,7 +9,7 @@ impl Pk for dh::Item {
 }
 
 impl Fk for dh::Item {
-    fn get_item_group_fks(&self, _: &Support) -> Vec<ReeInt> {
+    fn get_group_fks(&self, _: &Support) -> Vec<ReeInt> {
         vec![self.group_id]
     }
 }

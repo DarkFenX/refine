@@ -3,19 +3,19 @@ use std::collections::HashSet;
 use log;
 
 use crate::{
-    cg::data::{Fk, Pk},
+    cg::data::Pk,
     consts::{itemcats, itemgrps},
     util::{Error, Named, Result},
 };
 
-use super::data::{Data, KeyContainer, Support};
+use super::data::{Data, KeyDb, Support};
 
 const MAX_CYCLES: i32 = 100;
 
-pub(super) fn clean_unused(alive: &mut Data, support: &Support) -> Result<()> {
+pub(super) fn clean_unused(alive: &mut Data, supp: &Support) -> Result<()> {
     let mut trash = Data::new();
     trash_all(alive, &mut trash);
-    restore_core_items(alive, &mut trash, &support);
+    restore_core_items(alive, &mut trash, &supp);
 
     let mut counter = 0;
     let mut changes = true;
@@ -26,7 +26,7 @@ pub(super) fn clean_unused(alive: &mut Data, support: &Support) -> Result<()> {
             log::error!("{}", msg);
             return Err(Error::new(msg));
         }
-        changes = restore_item_data(alive, &mut trash) | restore_fk_tgts(alive, &mut trash, &support);
+        changes = restore_item_data(alive, &mut trash) | restore_fk_tgts(alive, &mut trash, &supp);
     }
     cleanup_report(alive, &trash);
     Ok(())
@@ -60,7 +60,7 @@ fn trash_all(alive: &mut Data, trash: &mut Data) {
     move_data(&mut alive.muta_attrs, &mut trash.muta_attrs, |_| true);
 }
 
-fn restore_core_items(alive: &mut Data, trash: &mut Data, support: &Support) {
+fn restore_core_items(alive: &mut Data, trash: &mut Data, supp: &Support) {
     let cats = vec![
         itemcats::CHARGE,
         itemcats::DRONE,
@@ -72,7 +72,7 @@ fn restore_core_items(alive: &mut Data, trash: &mut Data, support: &Support) {
         itemcats::SUBSYSTEM,
     ];
     let mut grps = vec![itemgrps::CHARACTER, itemgrps::EFFECT_BEACON];
-    for (&grp, cat) in support.grp_cat_map.iter() {
+    for (&grp, cat) in supp.grp_cat_map.iter() {
         if cats.contains(cat) {
             grps.push(grp);
         }
@@ -110,37 +110,14 @@ fn restore_item_data(alive: &mut Data, trash: &mut Data) -> bool {
     })
 }
 
-fn restore_fk_tgts(alive: &mut Data, trash: &mut Data, support: &Support) -> bool {
-    let mut cont = KeyContainer::new();
-    fill_keys(&alive.items, &mut cont, &support);
-    fill_keys(&alive.groups, &mut cont, &support);
-    fill_keys(&alive.attrs, &mut cont, &support);
-    fill_keys(&alive.item_attrs, &mut cont, &support);
-    fill_keys(&alive.effects, &mut cont, &support);
-    fill_keys(&alive.item_effects, &mut cont, &support);
-    fill_keys(&alive.abils, &mut cont, &support);
-    fill_keys(&alive.item_abils, &mut cont, &support);
-    fill_keys(&alive.buffs, &mut cont, &support);
-    fill_keys(&alive.item_srqs, &mut cont, &support);
-    fill_keys(&alive.muta_items, &mut cont, &support);
-    fill_keys(&alive.muta_attrs, &mut cont, &support);
-    move_data(&mut trash.items, &mut alive.items, |v| cont.items.contains(&v.id))
-        | move_data(&mut trash.groups, &mut alive.groups, |v| cont.groups.contains(&v.id))
-        | move_data(&mut trash.attrs, &mut alive.attrs, |v| cont.attrs.contains(&v.id))
-        | move_data(&mut trash.effects, &mut alive.effects, |v| cont.effects.contains(&v.id))
-        | move_data(&mut trash.abils, &mut alive.abils, |v| cont.abils.contains(&v.id))
-        | move_data(&mut trash.buffs, &mut alive.buffs, |v| cont.buffs.contains(&v.id))
-}
-
-fn fill_keys<T: Fk>(vec: &Vec<T>, cont: &mut KeyContainer, support: &Support) {
-    for v in vec.iter() {
-        cont.items.extend(v.get_item_fks(&support));
-        cont.groups.extend(v.get_item_group_fks(&support));
-        cont.attrs.extend(v.get_attr_fks(&support));
-        cont.effects.extend(v.get_effect_fks(&support));
-        cont.abils.extend(v.get_fighter_abil_fks(&support));
-        cont.buffs.extend(v.get_buff_fks(&support));
-    }
+fn restore_fk_tgts(alive: &mut Data, trash: &mut Data, supp: &Support) -> bool {
+    let fkdb = KeyDb::new_fkdb(alive, supp);
+    move_data(&mut trash.items, &mut alive.items, |v| fkdb.items.contains(&v.id))
+        | move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
+        | move_data(&mut trash.attrs, &mut alive.attrs, |v| fkdb.attrs.contains(&v.id))
+        | move_data(&mut trash.effects, &mut alive.effects, |v| fkdb.effects.contains(&v.id))
+        | move_data(&mut trash.abils, &mut alive.abils, |v| fkdb.abils.contains(&v.id))
+        | move_data(&mut trash.buffs, &mut alive.buffs, |v| fkdb.buffs.contains(&v.id))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

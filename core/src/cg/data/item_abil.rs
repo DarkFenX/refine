@@ -12,7 +12,7 @@ impl Fk for dh::ItemFighterAbil {
     fn get_item_fks(&self, _: &Support) -> Vec<ReeInt> {
         vec![self.item_id]
     }
-    fn get_fighter_abil_fks(&self, _: &Support) -> Vec<ReeInt> {
+    fn get_abil_fks(&self, _: &Support) -> Vec<ReeInt> {
         vec![self.abil_id]
     }
 }

@@ -1,5 +1,8 @@
-use crate::{defines::ReeInt, dh};
 use std::collections::{HashMap, HashSet};
+
+use crate::{defines::ReeInt, dh};
+
+use super::{Fk, Pk};
 
 /// Container for data, used internally by cache generator.
 pub(in super::super) struct Data {
@@ -64,7 +67,7 @@ impl Support {
     }
 }
 
-pub(in super::super) struct KeyContainer {
+pub(in super::super) struct KeyDb {
     pub(in super::super) items: HashSet<ReeInt>,
     pub(in super::super) groups: HashSet<ReeInt>,
     pub(in super::super) attrs: HashSet<ReeInt>,
@@ -72,15 +75,58 @@ pub(in super::super) struct KeyContainer {
     pub(in super::super) abils: HashSet<ReeInt>,
     pub(in super::super) buffs: HashSet<ReeInt>,
 }
-impl KeyContainer {
-    pub(in super::super) fn new() -> KeyContainer {
-        KeyContainer {
+impl KeyDb {
+    pub(in super::super) fn new() -> KeyDb {
+        KeyDb {
             items: HashSet::new(),
             groups: HashSet::new(),
             attrs: HashSet::new(),
             effects: HashSet::new(),
             abils: HashSet::new(),
             buffs: HashSet::new(),
+        }
+    }
+    // Primary keys
+    pub(in super::super) fn new_pkdb(data: &Data) -> KeyDb {
+        let mut pkdb = KeyDb::new();
+        KeyDb::extend_pk_vec(&mut pkdb.items, &data.items);
+        KeyDb::extend_pk_vec(&mut pkdb.groups, &data.groups);
+        KeyDb::extend_pk_vec(&mut pkdb.attrs, &data.attrs);
+        KeyDb::extend_pk_vec(&mut pkdb.effects, &data.effects);
+        KeyDb::extend_pk_vec(&mut pkdb.abils, &data.abils);
+        KeyDb::extend_pk_vec(&mut pkdb.buffs, &data.buffs);
+        pkdb
+    }
+    fn extend_pk_vec<T: Pk>(set: &mut HashSet<ReeInt>, vec: &Vec<T>) {
+        for i in vec.iter() {
+            set.extend(i.get_pk())
+        }
+    }
+    // Foreign keys
+    pub(in super::super) fn new_fkdb(data: &Data, supp: &Support) -> KeyDb {
+        let mut fkdb = KeyDb::new();
+        fkdb.extend_fk_vec(&data.items, &supp);
+        fkdb.extend_fk_vec(&data.groups, &supp);
+        fkdb.extend_fk_vec(&data.attrs, &supp);
+        fkdb.extend_fk_vec(&data.item_attrs, &supp);
+        fkdb.extend_fk_vec(&data.effects, &supp);
+        fkdb.extend_fk_vec(&data.item_effects, &supp);
+        fkdb.extend_fk_vec(&data.abils, &supp);
+        fkdb.extend_fk_vec(&data.item_abils, &supp);
+        fkdb.extend_fk_vec(&data.buffs, &supp);
+        fkdb.extend_fk_vec(&data.item_srqs, &supp);
+        fkdb.extend_fk_vec(&data.muta_items, &supp);
+        fkdb.extend_fk_vec(&data.muta_attrs, &supp);
+        fkdb
+    }
+    fn extend_fk_vec<T: Fk>(&mut self, vec: &Vec<T>, supp: &Support) {
+        for v in vec.iter() {
+            self.items.extend(v.get_item_fks(supp));
+            self.groups.extend(v.get_group_fks(supp));
+            self.attrs.extend(v.get_attr_fks(supp));
+            self.effects.extend(v.get_effect_fks(supp));
+            self.abils.extend(v.get_abil_fks(supp));
+            self.buffs.extend(v.get_buff_fks(supp));
         }
     }
 }

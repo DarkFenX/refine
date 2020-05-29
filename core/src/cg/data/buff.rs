@@ -12,7 +12,7 @@ impl Fk for dh::Buff {
     fn get_item_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.locsrq_mods.iter().map(|v| v.skill_id).collect()
     }
-    fn get_item_group_fks(&self, _: &Support) -> Vec<ReeInt> {
+    fn get_group_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.locgroup_mods.iter().map(|v| v.group_id).collect()
     }
     fn get_attr_fks(&self, _: &Support) -> Vec<ReeInt> {
