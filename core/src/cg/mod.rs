@@ -18,5 +18,6 @@ pub fn generate_cache(data_handler: &dyn DataHandler) -> Result<()> {
     pk::dedup_pks(&mut data, &mut errs);
     support.post_pk(&data);
     clean::clean_unused(&mut data, &support)?;
+    valid::validate(&mut data, &mut errs);
     Ok(())
 }
