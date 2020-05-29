@@ -4,7 +4,7 @@ use crate::{
     dh, util,
 };
 
-use super::{Fk, Pk, Support};
+use super::{aux, Fk, Pk, Support};
 
 impl Pk for dh::Attr {
     fn get_pk(&self) -> Vec<ReeInt> {
@@ -37,8 +37,11 @@ impl Fk for dh::Attr {
     }
     fn get_buff_fks(&self, _: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
-        if let (true, Some(dv)) = (attrs::BUFF_ID_ATTRS.contains(&self.id), self.get_nonzero_defval()) {
-            vec.push(dv.round() as ReeInt);
+        if let (true, Some(dv_fk)) = (
+            attrs::BUFF_ID_ATTRS.contains(&self.id),
+            aux::attrval_to_fk(self.default_value),
+        ) {
+            vec.push(dv_fk);
         }
         vec
     }
@@ -47,8 +50,8 @@ impl dh::Attr {
     /// Receive unit ID, and if the attribute has such unit ID - push its default value to the
     /// vector.
     fn get_fk_from_defval(&self, unit: ReeInt) -> Option<ReeInt> {
-        match (self.unit_id, self.get_nonzero_defval()) {
-            (Some(u), Some(dv)) if u == unit => Some(dv.round() as ReeInt),
+        match (self.unit_id, aux::attrval_to_fk(self.default_value)) {
+            (Some(u), Some(dv_fk)) if u == unit => Some(dv_fk),
             _ => None,
         }
     }

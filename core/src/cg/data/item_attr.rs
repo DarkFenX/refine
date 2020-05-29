@@ -4,7 +4,7 @@ use crate::{
     dh,
 };
 
-use super::{Fk, Pk, Support};
+use super::{aux, Fk, Pk, Support};
 
 impl Pk for dh::ItemAttr {
     fn get_pk(&self) -> Vec<ReeInt> {
@@ -38,8 +38,11 @@ impl Fk for dh::ItemAttr {
     }
     fn get_buff_fks(&self, _: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
-        if attrs::BUFF_ID_ATTRS.contains(&self.attr_id) {
-            vec.push(self.value.round() as ReeInt);
+        if let (true, Some(v_fk)) = (
+            attrs::BUFF_ID_ATTRS.contains(&self.attr_id),
+            aux::attrval_to_fk(Some(self.value)),
+        ) {
+            vec.push(v_fk);
         }
         vec
     }
@@ -47,8 +50,11 @@ impl Fk for dh::ItemAttr {
 impl dh::ItemAttr {
     /// Receive unit ID, and if the attribute has such unit ID - return attribute value.
     fn get_fk_from_val(&self, unit: ReeInt, supp: &Support) -> Option<ReeInt> {
-        match supp.attr_unit_map.get(&self.attr_id) {
-            Some(&u) if u == unit => Some(self.value.round() as ReeInt),
+        match (
+            supp.attr_unit_map.get(&self.attr_id),
+            aux::attrval_to_fk(Some(self.value)),
+        ) {
+            (Some(&u), Some(v_fk)) if u == unit => Some(v_fk),
             _ => None,
         }
     }
