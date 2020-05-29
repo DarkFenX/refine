@@ -4,11 +4,15 @@ use crate::cg::data::Pk;
 
 use super::Data;
 
+/// Ensure that assumptions the crate makes about the data are true.
+///
+/// Cachable type generation and the crate operation relies on several assumptions, which are
+/// possible to break with the data handling format the crate exposes.
 pub(super) fn validate(data: &mut Data, errs: &mut Vec<String>) {
     default_effects(data, errs);
 }
 
-// Ensure that no item has more than one default effect
+/// Ensure that no item has more than one default effect.
 fn default_effects(data: &mut Data, errs: &mut Vec<String>) {
     let mut unsets = 0;
     let mut seen_des = HashSet::new();
