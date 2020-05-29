@@ -1,8 +1,11 @@
 use std::collections::HashSet;
 
+use log;
+
 use crate::{
     cg::data::{Fk, Pk},
     consts::{itemcats, itemgrps},
+    util::Named,
 };
 
 use super::data::{Data, KeyContainer, Support};
@@ -24,28 +27,7 @@ pub(super) fn clean_unused(mut alive: &mut Data, support: &Support) {
         }
         changes = restore_item_data(&mut alive, &mut trash) | restore_fk_tgts(&mut alive, &mut trash, &support);
     }
-    println!("cycles: {}", counter);
-
-    println!("items: {} {}", alive.items.len(), trash.items.len());
-    println!("item_groups: {} {}", alive.groups.len(), trash.groups.len());
-    println!("attrs: {} {}", alive.attrs.len(), trash.attrs.len());
-    println!("item_attrs: {} {}", alive.item_attrs.len(), trash.item_attrs.len());
-    println!("effects: {} {}", alive.effects.len(), trash.effects.len());
-    println!(
-        "item_effects: {} {}",
-        alive.item_effects.len(),
-        trash.item_effects.len()
-    );
-    println!("fighter_abils: {} {}", alive.abils.len(), trash.abils.len());
-    println!(
-        "item_fighter_abils: {} {}",
-        alive.item_abils.len(),
-        trash.item_abils.len()
-    );
-    println!("buffs: {} {}", alive.buffs.len(), trash.buffs.len());
-    println!("item_skill_reqs: {} {}", alive.item_srqs.len(), trash.item_srqs.len());
-    println!("muta_item_convs: {} {}", alive.muta_items.len(), trash.muta_items.len());
-    println!("muta_attr_mods: {} {}", alive.muta_attrs.len(), trash.muta_attrs.len());
+    cleanup_report(alive, &trash);
 }
 
 fn move_data<T, F>(src_vec: &mut Vec<T>, dst_vec: &mut Vec<T>, filter: F) -> bool
@@ -106,8 +88,10 @@ fn restore_item_data(alive: &mut Data, trash: &mut Data) -> bool {
     }
     // We need the data which describes our items directly, so FKs are avoided deliberately. For
     // instance, having an item-attribute mapping entry restored just because its value refers some
-    // item which is already "alive" is undesired. Extra notes on specific entities:
-    // - Mutaplasmid item conversions are restored for alive input items
+    // item which is already "alive" is undesired.
+    //
+    // Extra notes on specific entities:
+    // - Mutaplasmid item conversions are restored for input items which are alive
     // - Mutaplasmid attribute modifications are restored for alive mutaplasmids
     move_data(&mut trash.item_attrs, &mut alive.item_attrs, |v| {
         item_ids.contains(&v.item_id)
@@ -154,5 +138,34 @@ fn fill_keys<T: Fk>(vec: &Vec<T>, cont: &mut KeyContainer, support: &Support) {
         cont.effects.extend(v.get_effect_fks(&support));
         cont.abils.extend(v.get_fighter_abil_fks(&support));
         cont.buffs.extend(v.get_buff_fks(&support));
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Reporting
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn cleanup_report(alive: &Data, trash: &Data) {
+    vec_report(&alive.items, &trash.items);
+    vec_report(&alive.groups, &trash.groups);
+    vec_report(&alive.attrs, &trash.attrs);
+    vec_report(&alive.item_attrs, &trash.item_attrs);
+    vec_report(&alive.effects, &trash.effects);
+    vec_report(&alive.item_effects, &trash.item_effects);
+    vec_report(&alive.abils, &trash.abils);
+    vec_report(&alive.item_abils, &trash.item_abils);
+    vec_report(&alive.buffs, &trash.buffs);
+    vec_report(&alive.item_srqs, &trash.item_srqs);
+    vec_report(&alive.muta_items, &trash.muta_items);
+    vec_report(&alive.muta_attrs, &trash.muta_attrs);
+}
+
+fn vec_report<T: Named>(alive: &Vec<T>, trash: &Vec<T>) {
+    let total = alive.len() + trash.len();
+    if total == 0 {
+        return;
+    }
+    let perc = trash.len() as f64 / total as f64 * 100.0;
+    if perc > 0.0 {
+        log::info!("cleaned {:.1}% of {}", perc, T::get_name());
     }
 }
