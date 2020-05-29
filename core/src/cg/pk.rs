@@ -30,15 +30,15 @@ where
 
 pub(super) fn dedup_pks(data: &mut Data, errs: &mut Vec<String>) {
     dedup_pks_vec(&mut data.items, errs);
-    dedup_pks_vec(&mut data.item_groups, errs);
+    dedup_pks_vec(&mut data.groups, errs);
     dedup_pks_vec(&mut data.attrs, errs);
     dedup_pks_vec(&mut data.item_attrs, errs);
     dedup_pks_vec(&mut data.effects, errs);
     dedup_pks_vec(&mut data.item_effects, errs);
-    dedup_pks_vec(&mut data.fighter_abils, errs);
-    dedup_pks_vec(&mut data.item_fighter_abils, errs);
+    dedup_pks_vec(&mut data.abils, errs);
+    dedup_pks_vec(&mut data.item_abils, errs);
     dedup_pks_vec(&mut data.buffs, errs);
-    dedup_pks_vec(&mut data.item_skill_reqs, errs);
-    dedup_pks_vec(&mut data.muta_item_convs, errs);
-    dedup_pks_vec(&mut data.muta_attr_mods, errs);
+    dedup_pks_vec(&mut data.item_srqs, errs);
+    dedup_pks_vec(&mut data.muta_items, errs);
+    dedup_pks_vec(&mut data.muta_attrs, errs);
 }
