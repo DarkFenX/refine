@@ -8,6 +8,7 @@ mod clean;
 mod data;
 mod fetch;
 mod pk;
+mod valid;
 
 pub fn generate_cache(data_handler: &dyn DataHandler) -> Result<()> {
     let mut data = Data::new();
@@ -16,6 +17,6 @@ pub fn generate_cache(data_handler: &dyn DataHandler) -> Result<()> {
     fetch::fetch_data(data_handler, &mut data)?;
     pk::dedup_pks(&mut data, &mut errs);
     support.post_pk(&data);
-    clean::clean_unused(&mut data, &support);
+    clean::clean_unused(&mut data, &support)?;
     Ok(())
 }

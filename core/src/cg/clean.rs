@@ -5,14 +5,14 @@ use log;
 use crate::{
     cg::data::{Fk, Pk},
     consts::{itemcats, itemgrps},
-    util::Named,
+    util::{Error, Named, Result},
 };
 
 use super::data::{Data, KeyContainer, Support};
 
 const MAX_CYCLES: i32 = 100;
 
-pub(super) fn clean_unused(mut alive: &mut Data, support: &Support) {
+pub(super) fn clean_unused(mut alive: &mut Data, support: &Support) -> Result<()> {
     let mut trash = Data::new();
     trash_all(&mut alive, &mut trash);
     restore_core_items(&mut alive, &mut trash, &support);
@@ -22,12 +22,14 @@ pub(super) fn clean_unused(mut alive: &mut Data, support: &Support) {
     while changes {
         counter += 1;
         if counter > MAX_CYCLES {
-            // TODO: throw an error
-            break;
+            let msg = format!("reached limit of {} cycles during cleanup", MAX_CYCLES);
+            log::error!("{}", msg);
+            return Err(Error::new(msg));
         }
         changes = restore_item_data(&mut alive, &mut trash) | restore_fk_tgts(&mut alive, &mut trash, &support);
     }
     cleanup_report(alive, &trash);
+    Ok(())
 }
 
 fn move_data<T, F>(src_vec: &mut Vec<T>, dst_vec: &mut Vec<T>, filter: F) -> bool
