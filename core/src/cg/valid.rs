@@ -5,11 +5,11 @@ use crate::cg::data::Pk;
 use super::Data;
 
 pub(super) fn validate(data: &mut Data, errs: &mut Vec<String>) {
-    validate_default_effects(data, errs);
+    default_effects(data, errs);
 }
 
 // Ensure that no item has more than one default effect
-fn validate_default_effects(data: &mut Data, errs: &mut Vec<String>) {
+fn default_effects(data: &mut Data, errs: &mut Vec<String>) {
     let mut unsets = 0;
     let mut seen_des = HashSet::new();
     for item_effect in data.item_effects.iter_mut() {

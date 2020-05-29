@@ -12,10 +12,10 @@ use super::data::{Data, KeyContainer, Support};
 
 const MAX_CYCLES: i32 = 100;
 
-pub(super) fn clean_unused(mut alive: &mut Data, support: &Support) -> Result<()> {
+pub(super) fn clean_unused(alive: &mut Data, support: &Support) -> Result<()> {
     let mut trash = Data::new();
-    trash_all(&mut alive, &mut trash);
-    restore_core_items(&mut alive, &mut trash, &support);
+    trash_all(alive, &mut trash);
+    restore_core_items(alive, &mut trash, &support);
 
     let mut counter = 0;
     let mut changes = true;
@@ -26,7 +26,7 @@ pub(super) fn clean_unused(mut alive: &mut Data, support: &Support) -> Result<()
             log::error!("{}", msg);
             return Err(Error::new(msg));
         }
-        changes = restore_item_data(&mut alive, &mut trash) | restore_fk_tgts(&mut alive, &mut trash, &support);
+        changes = restore_item_data(alive, &mut trash) | restore_fk_tgts(alive, &mut trash, &support);
     }
     cleanup_report(alive, &trash);
     Ok(())
