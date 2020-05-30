@@ -1,6 +1,6 @@
 use crate::{consts::State, defines::ReeInt};
 
-use super::StdAttrMod;
+use super::AttrMod;
 
 /// Represents a dogma effect.
 ///
@@ -9,14 +9,16 @@ use super::StdAttrMod;
 /// extra effect-wide properties.
 #[derive(Debug)]
 pub struct Effect {
-    // Effect ID.
+    /// Effect ID.
     pub id: ReeInt,
-    // Effect state dictates when the effect is activated.
+    /// Effect state dictates which state of parent item is needed for the effect to run.
     pub state: State,
+    /// Does the effect need a target or not to run.
+    pub tgtd: bool,
     /// Defines if the effect is considered as an assistance.
-    pub is_assistance: bool,
+    pub is_assist: bool,
     /// Defines if the effect is offensive or not.
-    pub is_offensive: bool,
+    pub is_offense: bool,
     /// Refers an attribute value which defines capacitor cost to run the effect.
     pub discharge_attr_id: Option<ReeInt>,
     /// Refers an attribute value which defines how long an effect cycle would take in milliseconds.
@@ -26,44 +28,50 @@ pub struct Effect {
     /// Refers an attribute value which defines falloff range of the effect in meters.
     pub falloff_attr_id: Option<ReeInt>,
     /// Refers an attribute value which defines tracking speed of the effect.
-    pub tracking_speed_attr_id: Option<ReeInt>,
+    pub track_attr_id: Option<ReeInt>,
     /// Refers an attribute value which defines chance of the effect to run when its parent item is
     /// fitted.
-    pub fitting_usage_chance_attr_id: Option<ReeInt>,
+    pub chance_attr_id: Option<ReeInt>,
     /// Refers an attribute value which defines resistance strength to the effect.
     pub resist_attr_id: Option<ReeInt>,
     /// Standard attribute modifiers carried by the effect
-    pub mods: Vec<StdAttrMod>,
+    pub mods: Vec<AttrMod>,
+    /// Refers effects this effect stops.
+    pub stop_ids: Vec<ReeInt>,
 }
 impl Effect {
     /// Make a new dogma effect out of passed data.
     pub fn new(
         id: ReeInt,
         state: State,
-        is_assistance: bool,
-        is_offensive: bool,
+        tgtd: bool,
+        is_assist: bool,
+        is_offense: bool,
         discharge_attr_id: Option<ReeInt>,
         duration_attr_id: Option<ReeInt>,
         range_attr_id: Option<ReeInt>,
         falloff_attr_id: Option<ReeInt>,
-        tracking_speed_attr_id: Option<ReeInt>,
-        fitting_usage_chance_attr_id: Option<ReeInt>,
+        track_attr_id: Option<ReeInt>,
+        chance_attr_id: Option<ReeInt>,
         resist_attr_id: Option<ReeInt>,
-        mods: Vec<StdAttrMod>,
+        mods: Vec<AttrMod>,
+        stop_ids: Vec<ReeInt>,
     ) -> Effect {
         Effect {
             id,
             state,
-            is_assistance,
-            is_offensive,
+            tgtd,
+            is_assist,
+            is_offense,
             discharge_attr_id,
             duration_attr_id,
             range_attr_id,
             falloff_attr_id,
-            tracking_speed_attr_id,
-            fitting_usage_chance_attr_id,
+            track_attr_id,
+            chance_attr_id,
             resist_attr_id,
             mods,
+            stop_ids,
         }
     }
 }

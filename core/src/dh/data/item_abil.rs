@@ -12,9 +12,9 @@ pub struct ItemFighterAbil {
     pub abil_id: ReeInt,
     /// Defines cooldown of the ability in seconds.
     pub cooldown: Option<ReeFloat>,
-    /// Defines how many times the ability can be used before fighter has to rearm.
+    /// Defines how many times the ability can be used before the fighter has to rearm.
     pub charge_count: Option<ReeInt>,
-    /// Defines how long each charge of the ability takes to rearm.
+    /// Defines how long each charge of the ability takes to rearm, in seconds.
     pub charge_rearm_time: Option<ReeFloat>,
 }
 impl ItemFighterAbil {

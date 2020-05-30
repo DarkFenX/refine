@@ -9,6 +9,12 @@ pub enum State {
     Overload,
 }
 
+/// Contains list of item types.
+pub enum ItemType {
+    /// High-slot module.
+    ModHigh,
+}
+
 // enum EffectMode {
 //     // In this mode rules vary, depending on effect category:
 //     // - Offline: effects from this category are run when item is in offline+ state, and when
@@ -67,7 +73,7 @@ pub enum ModAggrMode {
 ///
 /// All the operations are applied in the order they are defined in this enum.
 #[derive(Debug)]
-pub enum ModOperation {
+pub enum ModOp {
     /// Assigns modification value to the target item attribute before all other operations are
     /// applied.
     PreAssign,
@@ -84,8 +90,18 @@ pub enum ModOperation {
     /// Late division.
     PostDiv,
     /// Late percent-alike modification, e.g. 2 + 20% = 2.4.
-    PostPercent,
+    PostPerc,
     /// The same as forcing attribute to modification value. When there is at least one such
     /// modification, all other modification operations are ignored.
     PostAssign,
+}
+
+/// Defines how how fighter abilities are targeted.
+pub enum TgtMode {
+    /// No target needed.
+    None,
+    /// Specific item is needed for the ability to activate.
+    Item,
+    /// Specific point in space is needed for the ability to activate.
+    Point,
 }
