@@ -6,12 +6,14 @@
 
 pub use abil::FighterAbil;
 pub use attr::Attr;
+pub use buff::{Buff, BuffAttrMod};
 pub use effect::{AttrMod, Effect};
 pub use item::{FighterAbilData, Item};
 pub use muta::{Muta, MutaAttrRange};
 
 mod abil;
 mod attr;
+mod buff;
 mod effect;
 mod item;
 mod muta;

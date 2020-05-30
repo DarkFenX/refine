@@ -77,16 +77,15 @@ impl Effect {
     }
 }
 
-/// A standard attribute modifier.
+/// An attribute modifier.
 ///
 /// A modifier is an entity which specifies in detail which attributes on which items are going to
-/// be affected, and how. A standard modifier always uses an attribute value stored on the affector
-/// (the item which carries the effect with the modifier) as modification value.
+/// be affected, and how.
 #[derive(Debug)]
 pub struct AttrMod {
     /// Refers an attribute on the affector, which should be used as modification value.
     pub afor_attr_id: ReeInt,
-    /// Defines how multiple modifications applied to the same attribute value are aggregated.
+    /// Defines how multiple modifications of the same attribute value are aggregated.
     pub aggr_mode: ModAggrMode,
     /// Operation to apply during the modification.
     pub op: ModOp,
@@ -96,7 +95,7 @@ pub struct AttrMod {
     pub afee_attr_id: ReeInt,
 }
 impl AttrMod {
-    /// Make a new standard attribute modifier out of passed data.
+    /// Make a new attribute modifier out of passed data.
     pub fn new(
         afor_attr_id: ReeInt,
         aggr_mode: ModAggrMode,
