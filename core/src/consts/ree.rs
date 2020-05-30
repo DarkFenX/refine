@@ -10,6 +10,7 @@ pub enum State {
 }
 
 /// Contains list of item types.
+#[derive(Debug)]
 pub enum ItemType {
     /// High-slot module.
     ModHigh,
@@ -97,6 +98,7 @@ pub enum ModOp {
 }
 
 /// Defines how how fighter abilities are targeted.
+#[derive(Debug)]
 pub enum TgtMode {
     /// No target needed.
     None,

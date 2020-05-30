@@ -57,7 +57,7 @@ impl Item {
     }
 }
 
-/// Auxiliary entity which stores item-specific ability data.
+/// Stores item-specific fighter ability data.
 #[derive(Debug)]
 pub struct FighterAbilData {
     /// Defines cooldown of the ability in seconds.
@@ -68,7 +68,7 @@ pub struct FighterAbilData {
     pub rearm_time: Option<ReeFloat>,
 }
 impl FighterAbilData {
-    /// Make a new per-item ability data container out of passed data.
+    /// Make a new per-item fighter ability data container out of passed data.
     pub fn new(cd: Option<ReeFloat>, charges: Option<ReeInt>, rearm_time: Option<ReeFloat>) -> FighterAbilData {
         FighterAbilData {
             cd,
