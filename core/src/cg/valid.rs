@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use log;
 
@@ -18,9 +18,11 @@ use super::Data;
 pub(super) fn validate(data: &mut Data, supp: &Support, errs: &mut Vec<String>) {
     fk_check(data, errs, supp);
     default_effects(data, errs);
+    item_dynamics(data, errs);
 }
 
-/// Verify that all FKs point to entities which actually exist.
+/// FK validity. Strictly speaking, not needed for the engine, but reporting data consistency errors
+/// is a good idea since it can help trace down the case when something fails to load from cache.
 fn fk_check(data: &Data, errs: &mut Vec<String>, supp: &Support) {
     let pkdb = KeyDb::new_pkdb(data);
     fk_check_referer(&data.items, &pkdb, supp, errs);
@@ -100,7 +102,7 @@ fn fk_check_referee<T, F>(
     }
 }
 
-/// Ensure that no item has more than one default effect.
+/// One default effect per item max. Needed for Item generation.
 fn default_effects(data: &mut Data, errs: &mut Vec<String>) {
     let mut unsets = 0;
     let mut seen_des = HashSet::new();
@@ -114,6 +116,28 @@ fn default_effects(data: &mut Data, errs: &mut Vec<String>) {
     }
     if unsets > 0 {
         let msg = format!("set {} excessive default effects as non-default", unsets);
+        log::warn!("{}", &msg);
+        errs.push(msg);
+    }
+}
+
+/// All mutaplasmids are non-dynamic, take non-dynamic items and produce dynamic items.
+fn item_dynamics(data: &mut Data, errs: &mut Vec<String>) {
+    let mut dynmap = HashMap::new();
+    data.items
+        .iter()
+        .map(|v| dynmap.insert(v.id, v.is_dynamic))
+        .for_each(drop);
+    let getdyn = |id| dynmap.get(&id).unwrap_or(&false).to_owned();
+    let removed = data
+        .muta_items
+        .drain_filter(|v| getdyn(v.muta_id) || getdyn(v.in_item_id) || !getdyn(v.out_item_id))
+        .count();
+    if removed > 0 {
+        let msg = format!(
+            "removed {} mutaplasmid item conversions due to wrong \"dynamic\" flag on referenced item",
+            removed
+        );
         log::warn!("{}", &msg);
         errs.push(msg);
     }

@@ -11,18 +11,19 @@ where
     T: Pk + Named,
 {
     let mut seen_pks = HashSet::new();
-    let invalid_iter = vec.drain_filter(|v| {
-        let pk = v.get_pk();
-        if seen_pks.contains(&pk) {
-            true
-        } else {
-            seen_pks.insert(pk);
-            false
-        }
-    });
-    let invalid_len = invalid_iter.count();
-    if invalid_len > 0 {
-        let msg = format!("cleaned up {} PK duplicates for {}", invalid_len, T::get_name());
+    let removed = vec
+        .drain_filter(|v| {
+            let pk = v.get_pk();
+            if seen_pks.contains(&pk) {
+                true
+            } else {
+                seen_pks.insert(pk);
+                false
+            }
+        })
+        .count();
+    if removed > 0 {
+        let msg = format!("cleaned up {} PK duplicates for {}", removed, T::get_name());
         log::warn!("{}", &msg);
         errs.push(msg);
     }
