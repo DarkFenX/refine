@@ -6,11 +6,9 @@ use super::super::fsd::FsdMerge;
 pub(in super::super) struct Item {
     #[serde(rename = "groupID")]
     pub(in super::super) group_id: ReeInt,
-    #[serde(rename = "isDynamicType")]
-    pub(in super::super) is_dynamic: Option<bool>,
 }
 impl FsdMerge<dh::Item> for Item {
     fn fsd_merge(self, id: ReeInt) -> Vec<dh::Item> {
-        vec![dh::Item::new(id, self.group_id, self.is_dynamic.unwrap_or(false))]
+        vec![dh::Item::new(id, self.group_id)]
     }
 }

@@ -1,9 +1,10 @@
-use std::collections::{HashMap, HashSet};
+use std::{collections::HashSet, iter::FromIterator};
 
 use log;
 
 use crate::{
     cg::data::{Fk, KeyDb, Pk, Support},
+    consts,
     defines::ReeInt,
     dh,
     util::Named,
@@ -11,18 +12,18 @@ use crate::{
 
 use super::Data;
 
-/// Ensure that assumptions the crate makes about the data are true.
+/// Ensure that assumptions REEFAST makes about the data are true.
 ///
-/// Cachable type generation and the crate operation relies on several assumptions, which are
-/// possible to break with the data handling format the crate exposes.
+/// See documentation for [`dh`](crate::dh) module about assumptions.
 pub(super) fn validate(data: &mut Data, supp: &Support, errs: &mut Vec<String>) {
     fk_check(data, errs, supp);
     default_effects(data, errs);
-    item_dynamics(data, errs);
+    known_fighter_abilities(data, errs);
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data consistency errors
-/// is a good idea since it can help trace down the case when something fails to load from cache.
+/// is a good idea, since it can help trace down the case when something fails to load from cache
+/// later.
 fn fk_check(data: &Data, errs: &mut Vec<String>, supp: &Support) {
     let pkdb = KeyDb::new_pkdb(data);
     fk_check_referer(&data.items, &pkdb, supp, errs);
@@ -91,11 +92,7 @@ fn fk_check_referee<T, F>(
             T::get_name(),
             missing.len(),
             ree_name,
-            missing
-                .into_iter()
-                .map(|v| v.to_string())
-                .collect::<Vec<String>>()
-                .join(", ")
+            itertools::join(missing, ", ")
         );
         log::warn!("{}", &msg);
         errs.push(msg);
@@ -121,19 +118,35 @@ fn default_effects(data: &mut Data, errs: &mut Vec<String>) {
     }
 }
 
-/// All mutaplasmids are non-dynamic, take non-dynamic items and produce dynamic items.
-fn item_dynamics(data: &mut Data, errs: &mut Vec<String>) {
-    let mut dynmap = HashMap::new();
-    data.items.iter().for_each(|v| drop(dynmap.insert(v.id, v.is_dynamic)));
-    let getdyn = |id| dynmap.get(&id).unwrap_or(&false).to_owned();
-    let removed = data
-        .muta_items
-        .drain_filter(|v| getdyn(v.muta_id) || getdyn(v.in_item_id) || !getdyn(v.out_item_id))
+/// Remove unknown fighter abilities.
+fn known_fighter_abilities(data: &mut Data, errs: &mut Vec<String>) {
+    let mut unknown_ids = HashSet::new();
+    let abils = data
+        .abils
+        .drain_filter(|v| consts::get_abil_effect(v.id).is_none())
+        .map(|v| {
+            unknown_ids.insert(v.id);
+            v
+        })
         .count();
-    if removed > 0 {
+    let item_abils = data
+        .item_abils
+        .drain_filter(|v| consts::get_abil_effect(v.abil_id).is_none())
+        .map(|v| {
+            unknown_ids.insert(v.abil_id);
+            v
+        })
+        .count();
+    if abils > 0 || item_abils > 0 {
+        let mut unknown_ids = Vec::from_iter(unknown_ids.into_iter());
+        unknown_ids.sort_unstable();
         let msg = format!(
-            "removed {} mutaplasmid item conversions due to wrong \"dynamic\" flag on referenced item",
-            removed
+            "removed {} {} and {} {} with unknown fighter ability IDs: {}",
+            abils,
+            dh::FighterAbil::get_name(),
+            item_abils,
+            dh::ItemFighterAbil::get_name(),
+            itertools::join(unknown_ids, ", ")
         );
         log::warn!("{}", &msg);
         errs.push(msg);
