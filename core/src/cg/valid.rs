@@ -82,7 +82,7 @@ fn fk_check_referee<T, F>(
     F: Fn(&T, &Support) -> Vec<ReeInt>,
 {
     let mut fks = HashSet::new();
-    rer_vec.iter().map(|v| fks.extend(func(v, supp))).for_each(drop);
+    rer_vec.iter().for_each(|v| fks.extend(func(v, supp)));
     let mut missing: Vec<_> = fks.difference(ree_pks).collect();
     if missing.len() > 0 {
         missing.sort_unstable();
@@ -124,10 +124,7 @@ fn default_effects(data: &mut Data, errs: &mut Vec<String>) {
 /// All mutaplasmids are non-dynamic, take non-dynamic items and produce dynamic items.
 fn item_dynamics(data: &mut Data, errs: &mut Vec<String>) {
     let mut dynmap = HashMap::new();
-    data.items
-        .iter()
-        .map(|v| dynmap.insert(v.id, v.is_dynamic))
-        .for_each(drop);
+    data.items.iter().for_each(|v| drop(dynmap.insert(v.id, v.is_dynamic)));
     let getdyn = |id| dynmap.get(&id).unwrap_or(&false).to_owned();
     let removed = data
         .muta_items
