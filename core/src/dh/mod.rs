@@ -23,8 +23,8 @@
 //! corresponding entry in the map are removed, and all
 //! [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil) related to them are removed too.
 //!
-//! Also, for every [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil), there has to be non-default
-//! effect on the item it points to, otherwise it will be removed.
+//! Also, for every [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil), on its item there has to be
+//! non-default effect the ability points to, otherwise the ability for the item will be removed.
 //!
 //! ### Multi-run effects
 //! Another assumption REEFAST makes is that any item can have only one instance of its effect

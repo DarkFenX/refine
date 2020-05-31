@@ -1,5 +1,6 @@
-use std::{collections::HashSet, iter::FromIterator};
+use std::collections::HashSet;
 
+use itertools::Itertools;
 use log;
 
 use crate::{
@@ -84,15 +85,14 @@ fn fk_check_referee<T, F>(
 {
     let mut fks = HashSet::new();
     rer_vec.iter().for_each(|v| fks.extend(func(v, supp)));
-    let mut missing: Vec<_> = fks.difference(ree_pks).collect();
+    let missing: Vec<_> = fks.difference(ree_pks).collect();
     if missing.len() > 0 {
-        missing.sort_unstable();
         let msg = format!(
             "{} refers to {} missing {}: {}",
             T::get_name(),
             missing.len(),
             ree_name,
-            itertools::join(missing, ", ")
+            missing.iter().sorted().join(", ")
         );
         log::warn!("{}", &msg);
         errs.push(msg);
@@ -138,15 +138,13 @@ fn known_fighter_abilities(data: &mut Data, errs: &mut Vec<String>) {
         })
         .count();
     if abils > 0 || item_abils > 0 {
-        let mut unknown_ids = Vec::from_iter(unknown_ids.into_iter());
-        unknown_ids.sort_unstable();
         let msg = format!(
             "removed {} {} and {} {} with unknown fighter ability IDs: {}",
             abils,
             dh::FighterAbil::get_name(),
             item_abils,
             dh::ItemFighterAbil::get_name(),
-            itertools::join(unknown_ids, ", ")
+            unknown_ids.iter().sorted().join(", ")
         );
         log::warn!("{}", &msg);
         errs.push(msg);
