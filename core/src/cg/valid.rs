@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use itertools::Itertools;
 use log;
@@ -20,6 +20,7 @@ pub(super) fn validate(data: &mut Data, supp: &Support, errs: &mut Vec<String>) 
     fk_check(data, errs, supp);
     default_effects(data, errs);
     known_fighter_abilities(data, errs);
+    fighter_ability_effect(data, errs);
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data consistency errors
@@ -143,6 +144,45 @@ fn known_fighter_abilities(data: &mut Data, errs: &mut Vec<String>) {
             item_abils,
             dh::ItemFighterAbil::get_name(),
             unknown_ids.iter().sorted().join(", ")
+        );
+        log::warn!("{}", &msg);
+        errs.push(msg);
+    }
+}
+
+/// Remove item abilities which have no effects to handle them.
+fn fighter_ability_effect(data: &mut Data, errs: &mut Vec<String>) {
+    let mut item_eff_map = HashMap::new();
+    for item_eff in data.item_effects.iter() {
+        item_eff_map
+            .entry(item_eff.item_id)
+            .or_insert_with(|| HashSet::new())
+            .insert(item_eff.effect_id);
+    }
+    let mut invalids = HashSet::new();
+    data.item_abils
+        .drain_filter(|v| match consts::get_abil_effect(v.abil_id) {
+            Some(eid) => match item_eff_map.get(&v.item_id) {
+                Some(eids) => !eids.contains(&eid),
+                None => true,
+            },
+            None => true,
+        })
+        .for_each(|v| {
+            invalids.insert((v.item_id, v.abil_id));
+        });
+    if invalids.len() > 0 {
+        let max_errors = 5;
+        let msg = format!(
+            "removed {} {} with references to missing effects, showing up to {}: {}",
+            invalids.len(),
+            dh::ItemFighterAbil::get_name(),
+            max_errors,
+            invalids
+                .iter()
+                .sorted()
+                .take(max_errors)
+                .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))
         );
         log::warn!("{}", &msg);
         errs.push(msg);
