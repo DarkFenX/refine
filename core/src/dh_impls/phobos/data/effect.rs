@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use itertools::Itertools;
+
 use crate::{defines::ReeInt, dh};
 
 use super::{super::fsd::FsdMerge, aux::into_opt};
@@ -46,7 +48,7 @@ impl FsdMerge<dh::Effect> for Effect {
             into_opt(self.tracking_attr_id),
             into_opt(self.usage_chance_attr_id),
             into_opt(self.resist_attr_id),
-            self.mods.into_iter().map(|v| v.into()).collect(),
+            self.mods.into_iter().map_into().collect(),
         )]
     }
 }

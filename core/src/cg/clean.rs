@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use itertools::Itertools;
 use log;
 
 use crate::{
@@ -36,7 +37,7 @@ fn move_data<T, F>(src_vec: &mut Vec<T>, dst_vec: &mut Vec<T>, filter: F) -> boo
 where
     F: FnMut(&mut T) -> bool,
 {
-    let drained: Vec<T> = src_vec.drain_filter(filter).collect();
+    let drained = src_vec.drain_filter(filter).collect_vec();
     let changes = drained.len() > 0;
     dst_vec.extend(drained);
     changes

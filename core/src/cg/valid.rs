@@ -85,7 +85,7 @@ fn fk_check_referee<T, F>(
 {
     let mut fks = HashSet::new();
     rer_vec.iter().for_each(|v| fks.extend(func(v, supp)));
-    let missing: Vec<_> = fks.difference(ree_pks).collect();
+    let missing = fks.difference(ree_pks).collect_vec();
     if missing.len() > 0 {
         let msg = format!(
             "{} refers to {} missing {}: {}",
@@ -124,17 +124,15 @@ fn known_fighter_abilities(data: &mut Data, errs: &mut Vec<String>) {
     let abils = data
         .abils
         .drain_filter(|v| consts::get_abil_effect(v.id).is_none())
-        .map(|v| {
+        .update(|v| {
             unknown_ids.insert(v.id);
-            v
         })
         .count();
     let item_abils = data
         .item_abils
         .drain_filter(|v| consts::get_abil_effect(v.abil_id).is_none())
-        .map(|v| {
+        .update(|v| {
             unknown_ids.insert(v.abil_id);
-            v
         })
         .count();
     if abils > 0 || item_abils > 0 {
