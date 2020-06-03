@@ -13,12 +13,12 @@ mod valid;
 
 pub fn generate_cache(data_handler: &dyn DataHandler) -> Result<()> {
     let mut data = Data::new();
-    let mut errs = Vec::new();
+    let mut warns = Vec::new();
     let mut supp = Support::new();
     fetch::fetch_data(data_handler, &mut data)?;
-    pk::dedup_pks(&mut data, &mut errs);
+    pk::dedup_pks(&mut data, &mut warns);
     supp.post_pk(&data);
     clean::clean_unused(&mut data, &supp)?;
-    valid::validate(&mut data, &supp, &mut errs);
+    valid::validate(&mut data, &supp, &mut warns);
     Ok(())
 }

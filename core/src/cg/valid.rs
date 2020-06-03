@@ -16,52 +16,52 @@ use super::Data;
 /// Ensure that assumptions REEFAST makes about the data are true.
 ///
 /// See documentation for [`dh`](crate::dh) module about assumptions.
-pub(super) fn validate(data: &mut Data, supp: &Support, errs: &mut Vec<String>) {
-    fk_check(data, errs, supp);
-    default_effects(data, errs);
-    known_fighter_abilities(data, errs);
-    fighter_ability_effect(data, errs);
+pub(super) fn validate(data: &mut Data, supp: &Support, warns: &mut Vec<String>) {
+    fk_check(data, warns, supp);
+    default_effects(data, warns);
+    known_fighter_abilities(data, warns);
+    fighter_ability_effect(data, warns);
 }
 
-/// FK validity. Strictly speaking, not needed for the engine, but reporting data consistency errors
-/// is a good idea, since it can help trace down the case when something fails to load from cache
+/// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
+/// a good idea, since it can help trace down the case when something fails to load from cache
 /// later.
-fn fk_check(data: &Data, errs: &mut Vec<String>, supp: &Support) {
+fn fk_check(data: &Data, warns: &mut Vec<String>, supp: &Support) {
     let pkdb = KeyDb::new_pkdb(data);
-    fk_check_referer(&data.items, &pkdb, supp, errs);
-    fk_check_referer(&data.groups, &pkdb, supp, errs);
-    fk_check_referer(&data.attrs, &pkdb, supp, errs);
-    fk_check_referer(&data.item_attrs, &pkdb, supp, errs);
-    fk_check_referer(&data.effects, &pkdb, supp, errs);
-    fk_check_referer(&data.item_effects, &pkdb, supp, errs);
-    fk_check_referer(&data.abils, &pkdb, supp, errs);
-    fk_check_referer(&data.item_abils, &pkdb, supp, errs);
-    fk_check_referer(&data.buffs, &pkdb, supp, errs);
-    fk_check_referer(&data.item_srqs, &pkdb, supp, errs);
-    fk_check_referer(&data.muta_items, &pkdb, supp, errs);
-    fk_check_referer(&data.muta_attrs, &pkdb, supp, errs);
+    fk_check_referer(&data.items, &pkdb, supp, warns);
+    fk_check_referer(&data.groups, &pkdb, supp, warns);
+    fk_check_referer(&data.attrs, &pkdb, supp, warns);
+    fk_check_referer(&data.item_attrs, &pkdb, supp, warns);
+    fk_check_referer(&data.effects, &pkdb, supp, warns);
+    fk_check_referer(&data.item_effects, &pkdb, supp, warns);
+    fk_check_referer(&data.abils, &pkdb, supp, warns);
+    fk_check_referer(&data.item_abils, &pkdb, supp, warns);
+    fk_check_referer(&data.buffs, &pkdb, supp, warns);
+    fk_check_referer(&data.item_srqs, &pkdb, supp, warns);
+    fk_check_referer(&data.muta_items, &pkdb, supp, warns);
+    fk_check_referer(&data.muta_attrs, &pkdb, supp, warns);
 }
-fn fk_check_referer<T>(rer_vec: &Vec<T>, pkdb: &KeyDb, supp: &Support, errs: &mut Vec<String>)
+fn fk_check_referer<T>(rer_vec: &Vec<T>, pkdb: &KeyDb, supp: &Support, warns: &mut Vec<String>)
 where
     T: Fk + Named,
 {
-    fk_check_referee(rer_vec, &pkdb.items, supp, T::get_item_fks, dh::Item::get_name(), errs);
+    fk_check_referee(rer_vec, &pkdb.items, supp, T::get_item_fks, dh::Item::get_name(), warns);
     fk_check_referee(
         rer_vec,
         &pkdb.groups,
         supp,
         T::get_group_fks,
         dh::ItemGroup::get_name(),
-        errs,
+        warns,
     );
-    fk_check_referee(rer_vec, &pkdb.attrs, supp, T::get_attr_fks, dh::Attr::get_name(), errs);
+    fk_check_referee(rer_vec, &pkdb.attrs, supp, T::get_attr_fks, dh::Attr::get_name(), warns);
     fk_check_referee(
         rer_vec,
         &pkdb.effects,
         supp,
         T::get_effect_fks,
         dh::Effect::get_name(),
-        errs,
+        warns,
     );
     fk_check_referee(
         rer_vec,
@@ -69,9 +69,9 @@ where
         supp,
         T::get_abil_fks,
         dh::FighterAbil::get_name(),
-        errs,
+        warns,
     );
-    fk_check_referee(rer_vec, &pkdb.buffs, supp, T::get_buff_fks, dh::Buff::get_name(), errs);
+    fk_check_referee(rer_vec, &pkdb.buffs, supp, T::get_buff_fks, dh::Buff::get_name(), warns);
 }
 fn fk_check_referee<T, F>(
     rer_vec: &Vec<T>,
@@ -79,7 +79,7 @@ fn fk_check_referee<T, F>(
     supp: &Support,
     func: F,
     ree_name: &str,
-    errs: &mut Vec<String>,
+    warns: &mut Vec<String>,
 ) where
     T: Fk + Named,
     F: Fn(&T, &Support) -> Vec<ReeInt>,
@@ -96,12 +96,12 @@ fn fk_check_referee<T, F>(
             missing.iter().sorted().join(", ")
         );
         log::warn!("{}", &msg);
-        errs.push(msg);
+        warns.push(msg);
     }
 }
 
 /// One default effect per item max. Needed for Item generation.
-fn default_effects(data: &mut Data, errs: &mut Vec<String>) {
+fn default_effects(data: &mut Data, warns: &mut Vec<String>) {
     let mut unsets = 0;
     let mut seen_des = HashSet::new();
     for item_effect in data.item_effects.iter_mut() {
@@ -115,12 +115,12 @@ fn default_effects(data: &mut Data, errs: &mut Vec<String>) {
     if unsets > 0 {
         let msg = format!("set {} excessive default effects as non-default", unsets);
         log::warn!("{}", &msg);
-        errs.push(msg);
+        warns.push(msg);
     }
 }
 
 /// Remove unknown fighter abilities.
-fn known_fighter_abilities(data: &mut Data, errs: &mut Vec<String>) {
+fn known_fighter_abilities(data: &mut Data, warns: &mut Vec<String>) {
     let mut unknown_ids = HashSet::new();
     let abils = data
         .abils
@@ -146,12 +146,12 @@ fn known_fighter_abilities(data: &mut Data, errs: &mut Vec<String>) {
             unknown_ids.iter().sorted().join(", ")
         );
         log::warn!("{}", &msg);
-        errs.push(msg);
+        warns.push(msg);
     }
 }
 
 /// Remove item abilities which have no effects to handle them.
-fn fighter_ability_effect(data: &mut Data, errs: &mut Vec<String>) {
+fn fighter_ability_effect(data: &mut Data, warns: &mut Vec<String>) {
     let mut item_eff_map = HashMap::new();
     for item_eff in data.item_effects.iter() {
         item_eff_map
@@ -172,19 +172,19 @@ fn fighter_ability_effect(data: &mut Data, errs: &mut Vec<String>) {
             invalids.insert((v.item_id, v.abil_id));
         });
     if invalids.len() > 0 {
-        let max_errors = 5;
+        let max_logged = 5;
         let msg = format!(
             "removed {} {} with references to missing effects, showing up to {}: {}",
             invalids.len(),
             dh::ItemFighterAbil::get_name(),
-            max_errors,
+            max_logged,
             invalids
                 .iter()
                 .sorted()
-                .take(max_errors)
+                .take(max_logged)
                 .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))
         );
         log::warn!("{}", &msg);
-        errs.push(msg);
+        warns.push(msg);
     }
 }

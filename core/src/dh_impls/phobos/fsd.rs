@@ -44,11 +44,11 @@ where
             Ok(id) => match serde_json::from_value::<T>(fsd_item.item) {
                 Ok(item) => cont.data.extend(item.fsd_merge(id)),
                 Err(e) => cont
-                    .errors
+                    .warns
                     .push(format!("failed to parse FSD item with key \"{}\": {}", id, e)),
             },
             Err(_) => cont
-                .errors
+                .warns
                 .push(format!("failed to cast FSD key \"{}\" to integer", fsd_item.id)),
         }
     }

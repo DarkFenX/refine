@@ -32,8 +32,8 @@ fn setup_logger() -> Result<(), fern::InitError> {
 fn print_data<T>(name: &'static str, data: dh::Result<dh::Container<T>>) {
     match data {
         Ok(r) => {
-            println!("{}: {} returned, {} failed", name, r.data.len(), r.errors.len());
-            for e in r.errors.iter() {
+            println!("{}: {} returned, {} failed", name, r.data.len(), r.warns.len());
+            for e in r.warns.iter() {
                 println!("  error: {}", e)
             }
         }

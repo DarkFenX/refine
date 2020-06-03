@@ -10,9 +10,9 @@ use crate::{
 
 use super::data::Data;
 
-const MAX_ERRORS: usize = 5;
+const MAX_WARNS: usize = 5;
 
-/// Fetch data from a data handler into a data vec, and report errors, if any were encountered.
+/// Fetch data from a data handler into a data vec, and report warnings, if any were encountered.
 fn fetch_data_vec<S, F, T>(handler: &S, func: F, vec: &mut Vec<T>) -> Result<()>
 where
     S: ?Sized + DataHandler,
@@ -22,16 +22,16 @@ where
     log::debug!("fetching {}", T::get_name());
     let cont = func(handler).map_err(|e| Error::new(format!("{}", e)))?;
     vec.extend(cont.data);
-    let err_amt = cont.errors.len();
-    if err_amt > 0 {
+    let warn_amt = cont.warns.len();
+    if warn_amt > 0 {
         log::warn!(
-            "{} errors encountered during fetching of {}, showing up to {}:",
-            err_amt,
+            "{} warnings encountered during fetching of {}, showing up to {}:",
+            warn_amt,
             T::get_name(),
-            MAX_ERRORS
+            MAX_WARNS
         );
-        for err_msg in cont.errors.iter().take(MAX_ERRORS) {
-            log::warn!("{}", err_msg);
+        for warn_msg in cont.warns.iter().take(MAX_WARNS) {
+            log::warn!("{}", warn_msg);
         }
     }
     Ok(())
