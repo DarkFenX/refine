@@ -19,19 +19,22 @@
 //! ### Ability-to-effect mapping
 //! When a player activates a fighter ability in EVE, it runs an effect mapped to it. EVE client
 //! exposes no data on which fighter ability runs which effect - it is hardcoded into the client.
-//! We have to hardcode the map as well, thus [`dh::FighterAbil`](crate::dh::FighterAbil) without
+//! REEFAST hardcodes the map as well, thus [`dh::FighterAbil`](crate::dh::FighterAbil) without
 //! corresponding entry in the map are removed, and all
 //! [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil) related to them are removed too.
 //!
-//! Also, for every item's [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil), there has to be an
-//! [`dh::ItemEffect`](crate::dh::ItemEffect) this ability points to, otherwise the ability for the
-//! item will be removed.
+//! ### Ability-to-effect data transfer
+//! REEFAST assumes that effects which power fighter abilities are used only by those abilities and
+//! nothing else. During cache generation, this assumption allows to move all the fighter ability
+//! data to data structures related to effects.
 //!
-//! ### Multi-run effects
-//! Another assumption REEFAST makes is that any item can have only one instance of its effect
-//! running at any given time. So far, the only way to go around this assumption would be having
-//! several [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil) which point to different abilities,
-//! which map to the same effect. To eliminate that, excessive entries are removed.
+//! - Data defined on [`dh::FighterAbil`](crate::dh::FighterAbil) is moved to cached effects.
+//! - Data defined on [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil) is moved to objects which
+//!   are stored on cached items and describe per-effect properties.
+//!
+//! Since multiple abilities can map to the same effect, collisions are possible. In case of
+//! collisions, data from colliding abilities is compared. If there are any mismatches, warnings are
+//! logged, and data from the first seen entry is used.
 
 pub use aux::{Container, Result};
 pub use data::{

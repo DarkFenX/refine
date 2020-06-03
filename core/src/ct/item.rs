@@ -22,11 +22,9 @@ pub struct Item {
     /// Attribute values of the item.
     pub attr_vals: HashMap<ReeInt, ReeFloat>,
     /// Refers effects of the item.
-    pub effect_ids: Vec<ReeInt>,
+    pub effect_datas: HashMap<ReeInt, EffectData>,
     /// Refers an effect which is default for the item.
     pub defeff_id: Option<ReeInt>,
-    /// Fighter ability properties specific to the item.
-    pub abil_data: HashMap<ReeInt, FighterAbilData>,
     /// Skill requirement map.
     pub srqs: HashMap<ReeInt, ReeInt>,
 }
@@ -38,9 +36,8 @@ impl Item {
         grp_id: ReeInt,
         cat_id: ReeInt,
         attr_vals: HashMap<ReeInt, ReeFloat>,
-        effect_ids: Vec<ReeInt>,
+        effect_datas: HashMap<ReeInt, EffectData>,
         defeff_id: Option<ReeInt>,
-        abil_data: HashMap<ReeInt, FighterAbilData>,
         srqs: HashMap<ReeInt, ReeInt>,
     ) -> Item {
         Item {
@@ -49,31 +46,30 @@ impl Item {
             grp_id,
             cat_id,
             attr_vals,
-            effect_ids,
+            effect_datas,
             defeff_id,
-            abil_data,
             srqs,
         }
     }
 }
 
-/// Stores item-specific fighter ability data.
+/// Stores item-specific effect data.
 #[derive(Debug)]
-pub struct FighterAbilData {
-    /// Defines cooldown of the ability in seconds.
+pub struct EffectData {
+    /// Defines cooldown of the effect in seconds.
     pub cd: Option<ReeFloat>,
-    /// Defines how many times the ability can be used before the fighter has to rearm.
+    /// Defines how many times the effect can be used before its parent item has to reload.
     pub charges: Option<ReeInt>,
-    /// Defines how long each charge of the ability takes to rearm, in seconds.
-    pub rearm_time: Option<ReeFloat>,
+    /// Defines how much time each charge of the effect takes to reload, in seconds.
+    pub charge_reload_time: Option<ReeFloat>,
 }
-impl FighterAbilData {
-    /// Make a new per-item fighter ability data container out of passed data.
-    pub fn new(cd: Option<ReeFloat>, charges: Option<ReeInt>, rearm_time: Option<ReeFloat>) -> FighterAbilData {
-        FighterAbilData {
+impl EffectData {
+    /// Make a new per-item effect data container out of passed data.
+    pub fn new(cd: Option<ReeFloat>, charges: Option<ReeInt>, charge_reload_time: Option<ReeFloat>) -> EffectData {
+        EffectData {
             cd,
             charges,
-            rearm_time,
+            charge_reload_time,
         }
     }
 }

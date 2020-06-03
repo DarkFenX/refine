@@ -1,5 +1,5 @@
 use crate::{
-    consts::{ModAfeeFilter, ModAggrMode, ModOp, State},
+    consts::{ModAfeeFilter, ModAggrMode, ModOp, State, TgtMode},
     defines::ReeInt,
 };
 
@@ -14,12 +14,16 @@ pub struct Effect {
     pub id: ReeInt,
     /// Effect state dictates which state of parent item is needed for the effect to run.
     pub state: State,
-    /// Does the effect need a target or not to run.
-    pub tgtd: bool,
+    /// Defines what kind of target you need to run the effect.
+    pub tgt_mode: TgtMode,
     /// Defines if the effect is considered as an assistance.
     pub is_assist: bool,
     /// Defines if the effect is offensive or not.
     pub is_offense: bool,
+    /// Defines if the effect can be used in hisec.
+    pub hisec: Option<bool>,
+    /// Defines if the effect can be used in lowsec.
+    pub lowsec: Option<bool>,
     /// Refers an attribute value which defines capacitor cost to run the effect.
     pub discharge_attr_id: Option<ReeInt>,
     /// Refers an attribute value which defines how long an effect cycle would take in milliseconds.
@@ -45,9 +49,11 @@ impl Effect {
     pub fn new(
         id: ReeInt,
         state: State,
-        tgtd: bool,
+        tgt_mode: TgtMode,
         is_assist: bool,
         is_offense: bool,
+        hisec: Option<bool>,
+        lowsec: Option<bool>,
         discharge_attr_id: Option<ReeInt>,
         duration_attr_id: Option<ReeInt>,
         range_attr_id: Option<ReeInt>,
@@ -61,9 +67,11 @@ impl Effect {
         Effect {
             id,
             state,
-            tgtd,
+            tgt_mode,
             is_assist,
             is_offense,
+            hisec,
+            lowsec,
             discharge_attr_id,
             duration_attr_id,
             range_attr_id,
