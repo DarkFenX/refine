@@ -1,9 +1,9 @@
 //! Data handling interface.
 //!
 //! # Assumptions about data
-//! REEFAST makes several assumptions about data. It verifies them during cache generation, and if
-//! those assumptions are broken, offending entries will be adjusted or removed during cache
-//! generation (conversion of data into [cached types](crate::ct)).
+//! REEFAST verifies data integrity and makes several assumptions about data. If those assumptions
+//! are broken, offending entries will be adjusted or removed during cache generation (conversion of
+//! data into [cached types](crate::ct)).
 //!
 //! ### Primary keys
 //! Almost every data entry provided by a `DataHandler` implementation has a private PK getter
@@ -16,21 +16,16 @@
 //! [`dh::ItemEffect`](crate::dh::ItemEffect) which is marked as default will be marked as
 //! non-default past first seen entry.
 //!
-//! ### Ability-to-effect mapping
-//! When a player activates a fighter ability in EVE, it runs an effect mapped to it. EVE client
-//! exposes no data on which fighter ability runs which effect - it is hardcoded into the client.
-//! REEFAST hardcodes the map as well, thus [`dh::FighterAbil`](crate::dh::FighterAbil) without
-//! corresponding entry in the map are removed, and all
-//! [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil) related to them are removed too.
-//!
 //! ### Ability-to-effect data transfer
 //! REEFAST assumes that effects which power fighter abilities are used only by those abilities and
 //! nothing else. During cache generation, this assumption allows to move all the fighter ability
 //! data to data structures related to effects.
 //!
-//! - Data defined on [`dh::FighterAbil`](crate::dh::FighterAbil) is moved to cached effects.
-//! - Data defined on [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil) is moved to objects which
-//!   are stored on cached items and describe per-effect properties.
+//! - Data defined on [`dh::FighterAbil`](crate::dh::FighterAbil) is moved to
+//!   [`ct::Effect`](crate::ct::Effect).
+//! - Data defined on [`dh::ItemFighterAbil`](crate::dh::ItemFighterAbil) is moved to
+//!   [`ct::ItemEffData`](crate::ct::ItemEffData), which describe effect properties specific to
+//!   parent [`ct::Item`](crate::ct::Item).
 //!
 //! Since multiple abilities can map to the same effect, collisions are possible. In case of
 //! collisions, data from colliding abilities is compared. If there are any mismatches, warnings are

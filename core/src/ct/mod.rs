@@ -7,7 +7,7 @@
 pub use attr::Attr;
 pub use buff::{Buff, BuffAttrMod};
 pub use effect::{AttrMod, Effect};
-pub use item::{EffectData, Item};
+pub use item::{Item, ItemEffData};
 pub use muta::{Muta, MutaAttrRange};
 
 mod attr;

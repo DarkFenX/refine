@@ -22,7 +22,7 @@ pub struct Item {
     /// Attribute values of the item.
     pub attr_vals: HashMap<ReeInt, ReeFloat>,
     /// Refers effects of the item.
-    pub effect_datas: HashMap<ReeInt, EffectData>,
+    pub effect_datas: HashMap<ReeInt, ItemEffData>,
     /// Refers an effect which is default for the item.
     pub defeff_id: Option<ReeInt>,
     /// Skill requirement map.
@@ -36,7 +36,7 @@ impl Item {
         grp_id: ReeInt,
         cat_id: ReeInt,
         attr_vals: HashMap<ReeInt, ReeFloat>,
-        effect_datas: HashMap<ReeInt, EffectData>,
+        effect_datas: HashMap<ReeInt, ItemEffData>,
         defeff_id: Option<ReeInt>,
         srqs: HashMap<ReeInt, ReeInt>,
     ) -> Item {
@@ -55,7 +55,7 @@ impl Item {
 
 /// Stores item-specific effect data.
 #[derive(Debug)]
-pub struct EffectData {
+pub struct ItemEffData {
     /// Defines cooldown of the effect in seconds.
     pub cd: Option<ReeFloat>,
     /// Defines how many times the effect can be used before its parent item has to reload.
@@ -63,10 +63,10 @@ pub struct EffectData {
     /// Defines how much time each charge of the effect takes to reload, in seconds.
     pub charge_reload_time: Option<ReeFloat>,
 }
-impl EffectData {
+impl ItemEffData {
     /// Make a new per-item effect data container out of passed data.
-    pub fn new(cd: Option<ReeFloat>, charges: Option<ReeInt>, charge_reload_time: Option<ReeFloat>) -> EffectData {
-        EffectData {
+    pub fn new(cd: Option<ReeFloat>, charges: Option<ReeInt>, charge_reload_time: Option<ReeFloat>) -> ItemEffData {
+        ItemEffData {
             cd,
             charges,
             charge_reload_time,
