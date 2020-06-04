@@ -4,12 +4,11 @@ use itertools::Itertools;
 use log;
 
 use crate::{
-    cg::data::Pk,
     consts::{itemcats, itemgrps},
     util::{Error, Named, Result},
 };
 
-use super::data::{Data, KeyDb, Support};
+use super::data::{Data, KeyDb, Pk, Support};
 
 const MAX_CYCLES: i32 = 100;
 

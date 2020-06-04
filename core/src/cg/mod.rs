@@ -20,5 +20,6 @@ pub fn generate_cache(data_handler: &dyn DataHandler) -> Result<()> {
     supp.post_pk(&data);
     clean::clean_unused(&mut data, &supp)?;
     valid::validate(&mut data, &supp, &mut warns);
+    conv::convert(&data);
     Ok(())
 }

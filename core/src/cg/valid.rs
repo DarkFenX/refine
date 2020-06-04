@@ -3,15 +3,12 @@ use std::collections::{HashMap, HashSet};
 use itertools::Itertools;
 use log;
 
-use crate::{
-    cg::data::{Fk, KeyDb, Pk, Support},
-    consts,
-    defines::ReeInt,
-    dh,
-    util::Named,
-};
+use crate::{consts, defines::ReeInt, dh, util::Named};
 
-use super::Data;
+use super::{
+    data::{Fk, KeyDb, Pk, Support},
+    Data,
+};
 
 /// Ensure that assumptions REEFAST makes about the data are true.
 ///

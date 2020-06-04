@@ -16,11 +16,11 @@ pub struct Muta {
 }
 impl Muta {
     /// Make a new mutaplasmid out of passed data.
-    pub fn new(id: ReeInt, item_map: HashMap<ReeInt, ReeInt>, attr_mods: HashMap<ReeInt, MutaAttrRange>) -> Muta {
+    pub fn new(id: ReeInt) -> Muta {
         Muta {
             id,
-            item_map,
-            attr_mods,
+            item_map: HashMap::new(),
+            attr_mods: HashMap::new(),
         }
     }
 }
