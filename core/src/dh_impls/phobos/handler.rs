@@ -58,10 +58,10 @@ impl fmt::Debug for PhobosHandler {
 }
 impl dh::DataHandler for PhobosHandler {
     fn get_items(&self) -> dh::Result<dh::Container<dh::Item>> {
-        self.process_fsd::<Item, dh::Item>("fsd_lite", "evetypes")
+        self.process_fsd::<Item, dh::Item>("fsd_binary", "types")
     }
     fn get_item_groups(&self) -> dh::Result<dh::Container<dh::ItemGroup>> {
-        self.process_fsd::<ItemGroup, dh::ItemGroup>("fsd_lite", "evegroups")
+        self.process_fsd::<ItemGroup, dh::ItemGroup>("fsd_binary", "groups")
     }
     fn get_attrs(&self) -> dh::Result<dh::Container<dh::Attr>> {
         self.process_fsd::<Attr, dh::Attr>("fsd_binary", "dogmaattributes")
