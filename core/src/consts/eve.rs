@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::defines::ReeInt;
 
 pub(crate) mod itemgrps {

@@ -1,9 +1,9 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use itertools::Itertools;
 use log;
 
-use crate::{consts, defines::ReeInt, dh, util::Named};
+use crate::{defines::ReeInt, dh, util::Named};
 
 use super::{
     data::{Fk, KeyDb, Pk, Support},
