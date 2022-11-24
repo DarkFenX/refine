@@ -18,16 +18,16 @@ use super::{
 };
 
 /// A structure for extracting data from [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
-pub struct PhobosHandler {
+pub struct PhbFileHandler {
     base_path: PathBuf,
 }
-impl PhobosHandler {
-    /// Constructs new `PhobosHandler` using provided path.
+impl PhbFileHandler {
+    /// Constructs new `PhbFileHandler` using provided path.
     ///
     /// Path should point to the top-level folder of a data dump, e.g. `/phobos_en-us` and not
     /// `/phobos_en-us/fsd_binary`.
-    pub fn new<T: Into<PathBuf>>(path: T) -> PhobosHandler {
-        PhobosHandler { base_path: path.into() }
+    pub fn new<T: Into<PathBuf>>(path: T) -> PhbFileHandler {
+        PhbFileHandler { base_path: path.into() }
     }
     fn read_file(&self, addr: &Address) -> io::Result<Vec<u8>> {
         let full_path = addr.get_full_path(&self.base_path);
@@ -51,12 +51,12 @@ impl PhobosHandler {
         fsd::handle::<T, U>(json)
     }
 }
-impl fmt::Debug for PhobosHandler {
+impl fmt::Debug for PhbFileHandler {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "PhobosHandler(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
+        write!(f, "PhbFileHandler(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
     }
 }
-impl dh::DataHandler for PhobosHandler {
+impl dh::DataHandler for PhbFileHandler {
     fn get_items(&self) -> dh::Result<dh::Container<dh::Item>> {
         self.process_fsd::<Item, dh::Item>("fsd_binary", "types")
     }
@@ -94,7 +94,7 @@ impl dh::DataHandler for PhobosHandler {
         self.process_fsd::<MutaAttrMods, dh::MutaAttrMod>("fsd_binary", "dynamicitemattributes")
     }
     fn get_version(&self) -> dh::Result<String> {
-        let addr = Address::new("phobos", "metadata");
+        let addr = Address::new("phb_file", "metadata");
         let unprocessed = self.read_json(&addr)?;
         let metadatas: Vec<Metadata> =
             serde_json::from_value(unprocessed).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
