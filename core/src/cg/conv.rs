@@ -6,7 +6,7 @@ use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
     ct,
     defines::ReeInt,
-    util::{Error, Result}
+    util::{Error, Result},
 };
 
 use super::Data;
@@ -24,13 +24,7 @@ pub(super) fn convert(data: &Data, warns: &mut Vec<String>) {
 fn conv_attrs(data: &Data) -> Vec<ct::Attr> {
     data.attrs
         .iter()
-        .map(|v| ct::Attr::new(
-            v.id,
-            !v.stackable,
-            v.high_is_good,
-            v.default_value,
-            v.max_attr_id
-        ))
+        .map(|v| ct::Attr::new(v.id, !v.stackable, v.high_is_good, v.default_value, v.max_attr_id))
         .collect()
 }
 
@@ -88,7 +82,7 @@ fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
                 let msg = format!("buff {}: {}", buff_data.id, e.msg);
                 log::warn!("{}", &msg);
                 warns.push(msg);
-                continue
+                continue;
             }
         };
         let aggr_mode = match conv_aggr_mode(&buff_data.aggregate_mode, buff_data.id) {
@@ -97,7 +91,7 @@ fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
                 let msg = format!("buff {}: {}", buff_data.id, e.msg);
                 log::warn!("{}", &msg);
                 warns.push(msg);
-                continue
+                continue;
             }
         };
         let mut mods = vec![];
@@ -135,7 +129,7 @@ fn conv_aggr_mode(aggr_mode: &str, key: ReeInt) -> Result<ModAggrMode> {
     match aggr_mode {
         "Maximum" => Ok(ModAggrMode::Max(key)),
         "Minimum" => Ok(ModAggrMode::Min(key)),
-        _ => Err(Error::new(format!("unexpected aggregate mode \"{}\"", aggr_mode)))
+        _ => Err(Error::new(format!("unexpected aggregate mode \"{}\"", aggr_mode))),
     }
 }
 
@@ -145,6 +139,6 @@ fn conv_op(operation: &str) -> Result<ModOp> {
         "PostMul" => Ok(ModOp::PostMul),
         "PostPercent" => Ok(ModOp::PostPerc),
         "PostAssignment" => Ok(ModOp::PostAssign),
-        _ => Err(Error::new(format!("unexpected operation \"{}\"", operation)))
+        _ => Err(Error::new(format!("unexpected operation \"{}\"", operation))),
     }
 }
