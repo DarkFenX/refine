@@ -42,7 +42,7 @@ pub enum ModAfeeFilter {
     /// All items belonging to the domain are affected.
     Loc(ModDomain),
     /// All items located in the domain and belonging to the group are affected.
-    LogGrp(ModDomain, ReeInt),
+    LocGrp(ModDomain, ReeInt),
     /// All items located in the domain and having specified skill requirement are affected.
     LocSrq(ModDomain, ReeInt),
     /// All items belonging to the domain and having specified skill requirement are affected.
