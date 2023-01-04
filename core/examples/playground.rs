@@ -9,6 +9,7 @@ use reefast::{
     cg,
     dh::{self, DataHandler},
     dh_impls::phb_file,
+    ch_impls::json_file,
 };
 
 fn setup_logger() -> Result<(), fern::InitError> {
@@ -43,6 +44,7 @@ fn print_data<T>(name: &'static str, data: dh::Result<dh::Container<T>>) {
 
 fn main() {
     setup_logger().unwrap();
-    let dh = phb_file::PhbFileHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
+    let dh = phb_file::PhbFileDHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
     cg::generate_cache(&dh).unwrap();
+    let ch = json_file::JsonFileCHandler::new(PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/tq.json.bz2"));
 }

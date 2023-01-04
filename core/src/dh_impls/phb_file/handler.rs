@@ -17,17 +17,17 @@ use super::{
     fsd,
 };
 
-/// A structure for extracting data from [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
-pub struct PhbFileHandler {
+/// A struct for extracting data from [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
+pub struct PhbFileDHandler {
     base_path: PathBuf,
 }
-impl PhbFileHandler {
-    /// Constructs new `PhbFileHandler` using provided path.
+impl PhbFileDHandler {
+    /// Constructs new `PhbFileDHandler` using provided path.
     ///
     /// Path should point to the top-level folder of a data dump, e.g. `/phobos_en-us` and not
     /// `/phobos_en-us/fsd_binary`.
-    pub fn new<T: Into<PathBuf>>(path: T) -> PhbFileHandler {
-        PhbFileHandler { base_path: path.into() }
+    pub fn new<T: Into<PathBuf>>(path: T) -> PhbFileDHandler {
+        PhbFileDHandler { base_path: path.into() }
     }
     fn read_file(&self, addr: &Address) -> io::Result<Vec<u8>> {
         let full_path = addr.get_full_path(&self.base_path);
@@ -51,12 +51,12 @@ impl PhbFileHandler {
         fsd::handle::<T, U>(json)
     }
 }
-impl fmt::Debug for PhbFileHandler {
+impl fmt::Debug for PhbFileDHandler {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "PhbFileHandler(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
+        write!(f, "PhbFileDHandler(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
     }
 }
-impl dh::DataHandler for PhbFileHandler {
+impl dh::DataHandler for PhbFileDHandler {
     fn get_items(&self) -> dh::Result<dh::Container<dh::Item>> {
         self.process_fsd::<Item, dh::Item>("fsd_binary", "types")
     }

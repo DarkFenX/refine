@@ -8,8 +8,8 @@ use super::Data;
 
 // Convert data handler-provided entities into cacheable types.
 pub(super) fn convert(data: &Data) {
-    conv_attrs(data);
-    conv_mutas(data);
+    let attrs = conv_attrs(data);
+    let mutas = conv_mutas(data);
 }
 
 fn conv_attrs(data: &Data) -> Vec<ct::Attr> {
