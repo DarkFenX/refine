@@ -2,7 +2,12 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::{ct, consts};
+use crate::{
+    consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
+    ct,
+    defines::ReeInt,
+    util::{Error, Result}
+};
 
 use super::Data;
 
@@ -34,8 +39,8 @@ fn conv_attrs(data: &Data) -> Vec<ct::Attr> {
 //         .iter()
 //         .map(|v| ct::Effect::new(
 //             v.id,
-//             consts::State::Active,
-//             consts::TgtMode::None,
+//             State::Active,
+//             TgtMode::None,
 //             v.is_assistance,
 //             v.is_offensive,
 //             Some(True),
@@ -75,29 +80,21 @@ fn conv_mutas(data: &Data) -> Vec<ct::Muta> {
 }
 
 fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
-    let mut converted = HashMap::new();
-    for buff_data in data.buffs.iter() {
-        let aggr_mode = match buff_data.aggregate_mode.as_str() {
-            "Maximum" => consts::ModAggrMode::Max(buff_data.id),
-            "Minimum" => consts::ModAggrMode::Min(buff_data.id),
-            _ => {
-                let msg = format!(
-                    "unknown aggregate mode \"{}\" for buff {}",
-                    buff_data.aggregate_mode, buff_data.id);
+    let mut converted = vec![];
+    for buff_data in data.buffs.iter().sorted_by_key(|v| v.id) {
+        let op = match conv_op(&buff_data.operation) {
+            Ok(op) => op,
+            Err(e) => {
+                let msg = format!("buff {}: {}", buff_data.id, e.msg);
                 log::warn!("{}", &msg);
                 warns.push(msg);
                 continue
             }
         };
-        let op = match buff_data.operation.as_str() {
-            "ModAdd" => consts::ModOp::Add,
-            "PostMul" => consts::ModOp::PostMul,
-            "PostPercent" => consts::ModOp::PostPerc,
-            "PostAssignment" => consts::ModOp::PostAssign,
-            _ => {
-                let msg = format!(
-                    "unknown operation \"{}\" for buff {}",
-                    buff_data.operation, buff_data.id);
+        let aggr_mode = match conv_aggr_mode(&buff_data.aggregate_mode, buff_data.id) {
+            Ok(am) => am,
+            Err(e) => {
+                let msg = format!("buff {}: {}", buff_data.id, e.msg);
                 log::warn!("{}", &msg);
                 warns.push(msg);
                 continue
@@ -106,31 +103,48 @@ fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
         let mut mods = vec![];
         for item_mod in buff_data.item_mods.iter() {
             mods.push(ct::BuffAttrMod::new(
-                consts::ModAfeeFilter::Direct(consts::ModDomain::Ship),
+                ModAfeeFilter::Direct(ModDomain::Ship),
                 item_mod.attr_id,
             ));
         }
         for loc_mod in buff_data.loc_mods.iter() {
             mods.push(ct::BuffAttrMod::new(
-                consts::ModAfeeFilter::Loc(consts::ModDomain::Ship),
+                ModAfeeFilter::Loc(ModDomain::Ship),
                 loc_mod.attr_id,
             ));
         }
         for locgroup_mod in buff_data.locgroup_mods.iter() {
             mods.push(ct::BuffAttrMod::new(
-                consts::ModAfeeFilter::LocGrp(consts::ModDomain::Ship, locgroup_mod.group_id),
+                ModAfeeFilter::LocGrp(ModDomain::Ship, locgroup_mod.group_id),
                 locgroup_mod.attr_id,
             ));
         }
         for locsrq_mod in buff_data.locsrq_mods.iter() {
             mods.push(ct::BuffAttrMod::new(
-                consts::ModAfeeFilter::LocSrq(consts::ModDomain::Ship, locsrq_mod.skill_id),
+                ModAfeeFilter::LocSrq(ModDomain::Ship, locsrq_mod.skill_id),
                 locsrq_mod.attr_id,
             ));
         }
         let buff = ct::Buff::new(buff_data.id, aggr_mode, op, mods);
-        converted.insert(buff.id, buff);
+        converted.push(buff);
     }
-    converted.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id).collect()
+    converted
 }
 
+fn conv_aggr_mode(aggr_mode: &str, key: ReeInt) -> Result<ModAggrMode> {
+    match aggr_mode {
+        "Maximum" => Ok(ModAggrMode::Max(key)),
+        "Minimum" => Ok(ModAggrMode::Min(key)),
+        _ => Err(Error::new(format!("unexpected aggregate mode \"{}\"", aggr_mode)))
+    }
+}
+
+fn conv_op(operation: &str) -> Result<ModOp> {
+    match operation {
+        "ModAdd" => Ok(ModOp::Add),
+        "PostMul" => Ok(ModOp::PostMul),
+        "PostPercent" => Ok(ModOp::PostPerc),
+        "PostAssignment" => Ok(ModOp::PostAssign),
+        _ => Err(Error::new(format!("unexpected operation \"{}\"", operation)))
+    }
+}
