@@ -144,6 +144,9 @@ fn get_item_types(item: &ct::Item) -> Vec<ItemType> {
     if item.cat_id == itemcats::MODULE && item.effect_datas.contains_key(&effects::RIG_SLOT) {
         types.push(ItemType::Rig);
     };
+    if item.grp_id == itemgrps::MUTAPLASMID {
+        types.push(ItemType::Mutaplasmid);
+    };
     if item.cat_id == itemcats::SHIP {
         types.push(ItemType::Ship);
     };

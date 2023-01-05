@@ -22,6 +22,7 @@ pub enum ItemType {
     ModHigh,
     ModLow,
     ModMid,
+    Mutaplasmid,
     Rig,
     Ship,
     Skill,

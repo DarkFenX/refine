@@ -7,6 +7,7 @@ pub(crate) mod itemgrps {
 
     pub(crate) const CHARACTER: ReeInt = 1;
     pub(crate) const EFFECT_BEACON: ReeInt = 920;
+    pub(crate) const MUTAPLASMID: ReeInt = 1964;
     pub(crate) const SHIP_MOD: ReeInt = 1306;
 }
 
