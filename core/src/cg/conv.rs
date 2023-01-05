@@ -3,7 +3,9 @@ use std::collections::HashMap;
 use itertools::Itertools;
 
 use crate::{
-    consts::{get_abil_effect, ItemType, ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
+    consts::{
+        attrs, effects, get_abil_effect, itemcats, itemgrps, ItemType, ModAfeeFilter, ModAggrMode, ModDomain, ModOp,
+    },
     ct,
     defines::ReeInt,
     util::{Error, Result},
@@ -47,8 +49,7 @@ fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -> Vec<ct::I
         // Item construction
         let item = ct::Item::new(
             item_data.id,
-            // TODO: needs proper processing
-            ItemType::ModHigh,
+            None,
             item_data.group_id,
             cat_id,
             HashMap::new(),
@@ -64,7 +65,7 @@ fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -> Vec<ct::I
             .get_mut(&item_attr.item_id)
             .and_then(|v| v.attr_vals.insert(item_attr.attr_id, item_attr.value));
     }
-    // Item effects
+    // Item effects & extended effect data from abilities
     for item_effect in data.item_effects.iter() {
         item_map.get_mut(&item_effect.item_id).and_then(|v| {
             v.effect_datas
@@ -93,7 +94,80 @@ fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -> Vec<ct::I
             .get_mut(&item_srq.item_id)
             .and_then(|v| v.srqs.insert(item_srq.skill_id, item_srq.level));
     }
-    item_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id).collect()
+    // Item type
+    let mut items = Vec::new();
+    for mut item in item_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id) {
+        let mut item_types = get_item_types(&item);
+        match item_types.len() {
+            0 => {
+                items.push(item);
+            }
+            1 => {
+                item.itype = Some(item_types.pop().unwrap());
+                items.push(item);
+            }
+            _ => {
+                let msg = format!("item {} is eligible for {} item types", item.id, item_types.len());
+                log::warn!("{}", &msg);
+                warns.push(msg);
+                continue;
+            }
+        }
+    }
+    items
+}
+fn get_item_types(item: &ct::Item) -> Vec<ItemType> {
+    let mut types = Vec::new();
+    if item.cat_id == itemcats::IMPLANT && item.attr_vals.contains_key(&attrs::BOOSTERNESS) {
+        types.push(ItemType::Booster);
+    };
+    if item.grp_id == itemgrps::CHARACTER {
+        types.push(ItemType::Character);
+    };
+    if item.cat_id == itemcats::CHARGE {
+        types.push(ItemType::Charge);
+    };
+    if item.cat_id == itemcats::DRONE {
+        types.push(ItemType::Drone);
+    };
+    if item.grp_id == itemgrps::EFFECT_BEACON {
+        types.push(ItemType::EffectBeacon);
+    };
+    if item.cat_id == itemcats::FIGHTER
+        && (item.attr_vals.contains_key(&attrs::FTR_SQ_IS_HEAVY)
+            || item.attr_vals.contains_key(&attrs::FTR_SQ_IS_LIGHT)
+            || item.attr_vals.contains_key(&attrs::FTR_SQ_IS_SUPPORT))
+    {
+        types.push(ItemType::FighterSquad);
+    };
+    if item.cat_id == itemcats::IMPLANT && item.attr_vals.contains_key(&attrs::IMPLANTNESS) {
+        types.push(ItemType::Implant);
+    };
+    if item.cat_id == itemcats::MODULE && item.effect_datas.contains_key(&effects::HI_POWER) {
+        types.push(ItemType::ModHigh);
+    };
+    if item.cat_id == itemcats::MODULE && item.effect_datas.contains_key(&effects::LO_POWER) {
+        types.push(ItemType::ModLow);
+    };
+    if item.cat_id == itemcats::MODULE && item.effect_datas.contains_key(&effects::MED_POWER) {
+        types.push(ItemType::ModMid);
+    };
+    if item.cat_id == itemcats::MODULE && item.effect_datas.contains_key(&effects::RIG_SLOT) {
+        types.push(ItemType::Rig);
+    };
+    if item.cat_id == itemcats::SHIP {
+        types.push(ItemType::Ship);
+    };
+    if item.cat_id == itemcats::SKILL {
+        types.push(ItemType::Skill);
+    };
+    if item.grp_id == itemgrps::SHIP_MOD {
+        types.push(ItemType::Stance);
+    };
+    if item.cat_id == itemcats::SUBSYSTEM && item.effect_datas.contains_key(&effects::SUBSYSTEM) {
+        types.push(ItemType::Subsystem);
+    };
+    types
 }
 
 fn conv_attrs(data: &Data) -> Vec<ct::Attr> {
@@ -121,8 +195,8 @@ fn conv_attrs(data: &Data) -> Vec<ct::Attr> {
 //             v.tracking_attr_id,
 //             v.usage_chance_attr_id,
 //             v.resist_attr_id,
-//             vec![],
-//             vec![],
+//             Vec::new(),
+//             Vec::new(),
 //         ))
 //         .collect()
 // }
@@ -149,7 +223,7 @@ fn conv_mutas(data: &Data) -> Vec<ct::Muta> {
 }
 
 fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
-    let mut converted = vec![];
+    let mut converted = Vec::new();
     for buff_data in data.buffs.iter().sorted_by_key(|v| v.id) {
         let op = match conv_buff_op(&buff_data.operation) {
             Ok(op) => op,
@@ -169,7 +243,7 @@ fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
                 continue;
             }
         };
-        let mut mods = vec![];
+        let mut mods = Vec::new();
         for item_mod in buff_data.item_mods.iter() {
             mods.push(ct::BuffAttrMod::new(
                 ModAfeeFilter::Direct(ModDomain::Ship),

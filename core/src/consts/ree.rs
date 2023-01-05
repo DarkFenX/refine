@@ -12,21 +12,21 @@ pub enum State {
 /// Contains list of item types.
 #[derive(Debug)]
 pub enum ItemType {
+    Booster,
+    Character,
+    Charge,
+    Drone,
+    EffectBeacon,
+    FighterSquad,
+    Implant,
+    ModHigh,
+    ModLow,
+    ModMid,
+    Rig,
     Ship,
+    Skill,
     Stance,
     Subsystem,
-    ModHigh,
-    ModMid,
-    ModLow,
-    Charge,
-    Rig,
-    Drone,
-    FighterSquad,
-    Character,
-    Skill,
-    Implant,
-    Booster,
-    EffectBeacon,
 }
 
 // enum EffectMode {

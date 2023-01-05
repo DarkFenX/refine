@@ -7,6 +7,7 @@ pub(crate) mod itemgrps {
 
     pub(crate) const CHARACTER: ReeInt = 1;
     pub(crate) const EFFECT_BEACON: ReeInt = 920;
+    pub(crate) const SHIP_MOD: ReeInt = 1306;
 }
 
 pub(crate) mod itemcats {
@@ -25,6 +26,13 @@ pub(crate) mod itemcats {
 pub(crate) mod attrs {
     use crate::defines::ReeInt;
 
+    pub(crate) const BOOSTERNESS: ReeInt = 1087;
+    pub(crate) const IMPLANTNESS: ReeInt = 331;
+    // Fighter-related
+    pub(crate) const FTR_SQ_IS_HEAVY: ReeInt = 2214;
+    pub(crate) const FTR_SQ_IS_LIGHT: ReeInt = 2212;
+    pub(crate) const FTR_SQ_IS_SUPPORT: ReeInt = 2213;
+    // Buff-related
     pub(crate) const WARFARE_BUFF1_ID: ReeInt = 2468;
     pub(crate) const WARFARE_BUFF2_ID: ReeInt = 2470;
     pub(crate) const WARFARE_BUFF3_ID: ReeInt = 2472;
@@ -37,6 +45,11 @@ pub(crate) mod attrs {
 pub(crate) mod effects {
     use crate::defines::ReeInt;
 
+    pub(crate) const HI_POWER: ReeInt = 12;
+    pub(crate) const LO_POWER: ReeInt = 11;
+    pub(crate) const MED_POWER: ReeInt = 13;
+    pub(crate) const RIG_SLOT: ReeInt = 2663;
+    pub(crate) const SUBSYSTEM: ReeInt = 3772;
     // Fighter-related
     pub(crate) const FTR_ABIL_MISSILES: ReeInt = 6431;
     pub(crate) const FTR_ABIL_NEUT: ReeInt = 6434;

@@ -14,7 +14,7 @@ pub struct Item {
     /// Item ID.
     pub id: ReeInt,
     /// Item type.
-    pub itype: ItemType,
+    pub itype: Option<ItemType>,
     /// Item group ID.
     pub grp_id: ReeInt,
     /// Item category ID.
@@ -32,7 +32,7 @@ impl Item {
     /// Make a new item out of passed data.
     pub fn new(
         id: ReeInt,
-        itype: ItemType,
+        itype: Option<ItemType>,
         grp_id: ReeInt,
         cat_id: ReeInt,
         attr_vals: HashMap<ReeInt, ReeFloat>,
