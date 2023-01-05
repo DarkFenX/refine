@@ -151,7 +151,7 @@ fn conv_mutas(data: &Data) -> Vec<ct::Muta> {
 fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
     let mut converted = vec![];
     for buff_data in data.buffs.iter().sorted_by_key(|v| v.id) {
-        let op = match conv_op(&buff_data.operation) {
+        let op = match conv_buff_op(&buff_data.operation) {
             Ok(op) => op,
             Err(e) => {
                 let msg = format!("buff {}: {}", buff_data.id, e.msg);
@@ -160,7 +160,7 @@ fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
                 continue;
             }
         };
-        let aggr_mode = match conv_aggr_mode(&buff_data.aggregate_mode, buff_data.id) {
+        let aggr_mode = match conv_buff_aggr_mode(&buff_data.aggregate_mode, buff_data.id) {
             Ok(am) => am,
             Err(e) => {
                 let msg = format!("buff {}: {}", buff_data.id, e.msg);
@@ -200,7 +200,7 @@ fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
     converted
 }
 
-fn conv_aggr_mode(aggr_mode: &str, key: ReeInt) -> Result<ModAggrMode> {
+fn conv_buff_aggr_mode(aggr_mode: &str, key: ReeInt) -> Result<ModAggrMode> {
     match aggr_mode {
         "Maximum" => Ok(ModAggrMode::Max(key)),
         "Minimum" => Ok(ModAggrMode::Min(key)),
@@ -208,10 +208,15 @@ fn conv_aggr_mode(aggr_mode: &str, key: ReeInt) -> Result<ModAggrMode> {
     }
 }
 
-fn conv_op(operation: &str) -> Result<ModOp> {
+fn conv_buff_op(operation: &str) -> Result<ModOp> {
     match operation {
+        "PreAssignment" => Ok(ModOp::PreAssign),
+        "PreMul" => Ok(ModOp::PreMul),
+        "PreDiv" => Ok(ModOp::PreDiv),
         "ModAdd" => Ok(ModOp::Add),
+        "ModSub" => Ok(ModOp::Sub),
         "PostMul" => Ok(ModOp::PostMul),
+        "PostDiv" => Ok(ModOp::PostDiv),
         "PostPercent" => Ok(ModOp::PostPerc),
         "PostAssignment" => Ok(ModOp::PostAssign),
         _ => Err(Error::new(format!("unexpected operation \"{}\"", operation))),
