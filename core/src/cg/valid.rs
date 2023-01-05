@@ -1,9 +1,9 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use itertools::Itertools;
 use log;
 
-use crate::{defines::ReeInt, dh, util::Named};
+use crate::{consts, defines::ReeInt, dh, util::Named};
 
 use super::{
     data::{Fk, KeyDb, Pk, Support},
@@ -16,6 +16,8 @@ use super::{
 pub(super) fn validate(data: &mut Data, supp: &Support, warns: &mut Vec<String>) {
     fk_check(data, warns, supp);
     default_effects(data, warns);
+    known_fighter_abilities(data, warns);
+    fighter_ability_effect(data, warns);
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
@@ -109,6 +111,76 @@ fn default_effects(data: &mut Data, warns: &mut Vec<String>) {
     }
     if unsets > 0 {
         let msg = format!("set {} excessive default effects as non-default", unsets);
+        log::warn!("{}", &msg);
+        warns.push(msg);
+    }
+}
+
+/// Remove unknown fighter abilities.
+fn known_fighter_abilities(data: &mut Data, warns: &mut Vec<String>) {
+    let mut unknown_ids = HashSet::new();
+    let abils = data
+        .abils
+        .drain_filter(|v| consts::get_abil_effect(v.id).is_none())
+        .update(|v| {
+            unknown_ids.insert(v.id);
+        })
+        .count();
+    let item_abils = data
+        .item_abils
+        .drain_filter(|v| consts::get_abil_effect(v.abil_id).is_none())
+        .update(|v| {
+            unknown_ids.insert(v.abil_id);
+        })
+        .count();
+    if abils > 0 || item_abils > 0 {
+        let msg = format!(
+            "removed {} {} and {} {} with unknown fighter ability IDs: {}",
+            abils,
+            dh::FighterAbil::get_name(),
+            item_abils,
+            dh::ItemFighterAbil::get_name(),
+            unknown_ids.iter().sorted().join(", ")
+        );
+        log::warn!("{}", &msg);
+        warns.push(msg);
+    }
+}
+
+/// Remove item abilities which have no effects to handle them.
+fn fighter_ability_effect(data: &mut Data, warns: &mut Vec<String>) {
+    let mut item_eff_map = HashMap::new();
+    for item_eff in data.item_effects.iter() {
+        item_eff_map
+            .entry(item_eff.item_id)
+            .or_insert_with(|| HashSet::new())
+            .insert(item_eff.effect_id);
+    }
+    let mut invalids = HashSet::new();
+    data.item_abils
+        .drain_filter(|v| match consts::get_abil_effect(v.abil_id) {
+            Some(eid) => match item_eff_map.get(&v.item_id) {
+                Some(eids) => !eids.contains(&eid),
+                None => true,
+            },
+            None => true,
+        })
+        .for_each(|v| {
+            invalids.insert((v.item_id, v.abil_id));
+        });
+    if invalids.len() > 0 {
+        let max_logged = 5;
+        let msg = format!(
+            "removed {} {} with references to missing effects, showing up to {}: {}",
+            invalids.len(),
+            dh::ItemFighterAbil::get_name(),
+            max_logged,
+            invalids
+                .iter()
+                .sorted()
+                .take(max_logged)
+                .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))
+        );
         log::warn!("{}", &msg);
         warns.push(msg);
     }

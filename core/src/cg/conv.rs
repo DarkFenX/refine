@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use itertools::Itertools;
 
 use crate::{
-    consts::{ItemType, ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
+    consts::{get_abil_effect, ItemType, ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
     ct,
     defines::ReeInt,
     util::{Error, Result},
@@ -70,6 +70,22 @@ fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -> Vec<ct::I
             v.effect_datas
                 .insert(item_effect.effect_id, ct::ItemEffData::new(None, None, None))
         });
+    }
+    for item_abil in data.item_abils.iter() {
+        match item_map.get_mut(&item_abil.item_id) {
+            None => continue,
+            Some(item) => match get_abil_effect(item_abil.abil_id) {
+                None => continue,
+                Some(eid) => match item.effect_datas.get_mut(&eid) {
+                    None => continue,
+                    Some(edata) => {
+                        edata.cd = item_abil.cooldown;
+                        edata.charges = item_abil.charge_count;
+                        edata.charge_reload_time = item_abil.charge_rearm_time;
+                    }
+                },
+            },
+        }
     }
     // Item skill requirements
     for item_srq in data.item_srqs.iter() {
