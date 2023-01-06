@@ -67,6 +67,19 @@ pub(crate) mod effects {
     pub(crate) const FTR_ABIL_KAMIKAZE: ReeInt = 6554;
 }
 
+pub(crate) mod effcats {
+    use crate::defines::ReeInt;
+
+    pub(crate) const PASSIVE: ReeInt = 0;
+    pub(crate) const ACTIVE: ReeInt = 1;
+    pub(crate) const TARGET: ReeInt = 2;
+    pub(crate) const AREA: ReeInt = 3;
+    pub(crate) const ONLINE: ReeInt = 4;
+    pub(crate) const OVERLOAD: ReeInt = 5;
+    pub(crate) const DUNGEON: ReeInt = 6;
+    pub(crate) const SYSTEM: ReeInt = 7;
+}
+
 pub(crate) mod units {
     use crate::defines::ReeInt;
 

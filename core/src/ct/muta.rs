@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 
-use crate::defines::{ReeFloat, ReeInt};
+use crate::{
+    defines::{ReeFloat, ReeInt},
+    util::Named,
+};
 
 /// Represents a mutaplasmid.
 ///
@@ -24,6 +27,11 @@ impl Muta {
         }
     }
 }
+impl Named for Muta {
+    fn get_name() -> &'static str {
+        "ct::Muta"
+    }
+}
 
 /// Stores mutation range of specific attribute of specific mutaplasmid.
 #[derive(Debug)]
@@ -37,5 +45,10 @@ impl MutaAttrRange {
     /// Make a new attribute mutation range.
     pub fn new(min_mult: ReeFloat, max_mult: ReeFloat) -> MutaAttrRange {
         MutaAttrRange { min_mult, max_mult }
+    }
+}
+impl Named for MutaAttrRange {
+    fn get_name() -> &'static str {
+        "ct::MutaAttrRange"
     }
 }

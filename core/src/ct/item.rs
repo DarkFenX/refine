@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use crate::{
     consts::ItemType,
     defines::{ReeFloat, ReeInt},
+    util::Named,
 };
 
 /// Represents an item.
@@ -52,6 +53,11 @@ impl Item {
         }
     }
 }
+impl Named for Item {
+    fn get_name() -> &'static str {
+        "ct::Item"
+    }
+}
 
 /// Stores item-specific effect data.
 #[derive(Debug)]
@@ -71,5 +77,10 @@ impl ItemEffData {
             charges,
             charge_reload_time,
         }
+    }
+}
+impl Named for ItemEffData {
+    fn get_name() -> &'static str {
+        "ct::ItemEffData"
     }
 }

@@ -6,6 +6,8 @@ use crate::{
     consts::{attrs, effects, get_abil_effect, itemcats, itemgrps, ItemType},
     ct,
     defines::ReeInt,
+    dh,
+    util::Named,
 };
 
 use super::super::{data::Support, Data};
@@ -24,7 +26,11 @@ pub(super) fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -
         let cat_id = match supp.grp_cat_map.get(&item_data.group_id) {
             Some(&cid) => cid,
             None => {
-                let msg = format!("unable to find category ID for item {}", item_data.id);
+                let msg = format!(
+                    "unable to find category ID for {} {}",
+                    dh::Item::get_name(),
+                    item_data.id
+                );
                 log::warn!("{}", &msg);
                 warns.push(msg);
                 continue;
@@ -96,7 +102,12 @@ pub(super) fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -
                 items.push(item);
             }
             _ => {
-                let msg = format!("item {} is eligible for {} item types", item.id, item_types.len());
+                let msg = format!(
+                    "{} {} is eligible for {} item types",
+                    ct::Item::get_name(),
+                    item.id,
+                    item_types.len()
+                );
                 log::warn!("{}", &msg);
                 warns.push(msg);
                 continue;
@@ -105,6 +116,7 @@ pub(super) fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -
     }
     items
 }
+
 fn get_item_types(item: &ct::Item) -> Vec<ItemType> {
     let mut types = Vec::new();
     if item.cat_id == itemcats::IMPLANT && item.attr_vals.contains_key(&attrs::BOOSTERNESS) {

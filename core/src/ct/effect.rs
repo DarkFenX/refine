@@ -1,6 +1,7 @@
 use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModOp, State, TgtMode},
     defines::ReeInt,
+    util::Named,
 };
 
 /// Represents a dogma effect.
@@ -84,6 +85,11 @@ impl Effect {
         }
     }
 }
+impl Named for Effect {
+    fn get_name() -> &'static str {
+        "ct::Effect"
+    }
+}
 
 /// An attribute modifier.
 ///
@@ -118,5 +124,10 @@ impl AttrMod {
             afee_filter,
             afee_attr_id,
         }
+    }
+}
+impl Named for AttrMod {
+    fn get_name() -> &'static str {
+        "ct::AttrMod"
     }
 }

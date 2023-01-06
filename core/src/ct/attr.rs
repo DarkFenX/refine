@@ -1,4 +1,7 @@
-use crate::defines::{ReeFloat, ReeInt};
+use crate::{
+    defines::{ReeFloat, ReeInt},
+    util::Named,
+};
 
 /// Represents a dogma attribute.
 ///
@@ -34,5 +37,10 @@ impl Attr {
             def_val,
             max_attr_id,
         }
+    }
+}
+impl Named for Attr {
+    fn get_name() -> &'static str {
+        "ct::Attr"
     }
 }

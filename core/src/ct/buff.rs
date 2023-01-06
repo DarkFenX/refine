@@ -1,6 +1,7 @@
 use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModOp},
     defines::ReeInt,
+    util::Named,
 };
 
 /// Represents a dogma buff.
@@ -29,6 +30,11 @@ impl Buff {
         }
     }
 }
+impl Named for Buff {
+    fn get_name() -> &'static str {
+        "ct::Buff"
+    }
+}
 
 /// A buff-specific attribute modifier.
 ///
@@ -48,5 +54,10 @@ impl BuffAttrMod {
             afee_filter,
             afee_attr_id,
         }
+    }
+}
+impl Named for BuffAttrMod {
+    fn get_name() -> &'static str {
+        "ct::BuffAttrMod"
     }
 }

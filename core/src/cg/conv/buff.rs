@@ -4,7 +4,8 @@ use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
     ct,
     defines::ReeInt,
-    util::{Error, Result},
+    dh,
+    util::{Error, Named, Result},
 };
 
 use super::Data;
@@ -15,7 +16,7 @@ pub(super) fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> 
         let op = match conv_buff_op(&buff_data.operation) {
             Ok(op) => op,
             Err(e) => {
-                let msg = format!("buff {}: {}", buff_data.id, e.msg);
+                let msg = format!("{} {}: {}", dh::Buff::get_name(), buff_data.id, e.msg);
                 log::warn!("{}", &msg);
                 warns.push(msg);
                 continue;
@@ -24,7 +25,7 @@ pub(super) fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> 
         let aggr_mode = match conv_buff_aggr_mode(&buff_data.aggregate_mode, buff_data.id) {
             Ok(am) => am,
             Err(e) => {
-                let msg = format!("buff {}: {}", buff_data.id, e.msg);
+                let msg = format!("{} {}: {}", dh::Buff::get_name(), buff_data.id, e.msg);
                 log::warn!("{}", &msg);
                 warns.push(msg);
                 continue;

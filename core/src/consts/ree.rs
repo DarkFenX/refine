@@ -111,7 +111,7 @@ pub enum ModOp {
     PostAssign,
 }
 
-/// Defines how how fighter abilities are targeted.
+/// Defines how effects like fighter abilities are targeted.
 #[derive(Debug)]
 pub enum TgtMode {
     /// No target needed.
