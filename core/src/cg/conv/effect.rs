@@ -51,6 +51,28 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
             Vec::new(),
         );
         for modifier_data in effect_data.mods.iter() {
+            // Process effect stoppers first
+            match extract_stopper(modifier_data) {
+                Ok(Some(eid)) => {
+                    if !effect.stop_ids.contains(&eid) {
+                        effect.stop_ids.push(eid)
+                    };
+                    continue;
+                }
+                Err(e) => {
+                    let msg = format!(
+                        "failed to build stopper for {} {}: {}",
+                        ct::Effect::get_name(),
+                        effect.id,
+                        e.msg
+                    );
+                    log::warn!("{}", &msg);
+                    warns.push(msg);
+                    continue;
+                }
+                _ => (),
+            }
+            // Process regular attribute modifiers
             let mod_res = match modifier_data.func.as_str() {
                 "ItemModifier" => conv_item_mod(modifier_data),
                 "LocationModifier" => conv_loc_mod(modifier_data),
@@ -77,6 +99,19 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
         effects.push(effect);
     }
     effects
+}
+
+fn extract_stopper(modifier_data: &dh::EffectMod) -> Result<Option<ReeInt>> {
+    match modifier_data.func.as_str() {
+        "EffectStopper" => {
+            let domain = get_arg_str(&modifier_data.args, "domain")?;
+            if !domain.eq("target") {
+                return Err(Error::new(format!("unexpected domain \"{}\"", domain)));
+            }
+            Ok(Some(get_arg_int(&modifier_data.args, "effectID")?))
+        }
+        _ => Ok(None),
+    }
 }
 
 fn conv_item_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
