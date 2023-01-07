@@ -51,45 +51,80 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
             Vec::new(),
         );
         for modifier_data in effect_data.mods.iter() {
-            match modifier_data.func.as_str() {
-                "ItemModifier" => match conv_item_modifier(modifier_data) {
-                    Ok(modifier) => effect.mods.push(modifier),
-                    Err(e) => {
-                        let msg = format!(
-                            "failed to build modifier for {} {}: {}",
-                            ct::Effect::get_name(),
-                            effect.id,
-                            e.msg
-                        );
-                        log::warn!("{}", &msg);
-                        warns.push(msg);
-                        continue;
-                    }
-                },
-                _ => {
+            let mod_res = match modifier_data.func.as_str() {
+                "ItemModifier" => conv_item_mod(modifier_data),
+                "LocationModifier" => conv_loc_mod(modifier_data),
+                "LocationGroupModifier" => conv_locgrp_mod(modifier_data),
+                "LocationRequiredSkillModifier" => conv_locsrq_mod(modifier_data),
+                "OwnerRequiredSkillModifier" => conv_ownsrq_mod(modifier_data),
+                _ => Err(Error::new(format!("unknown function \"{}\"", modifier_data.func))),
+            };
+            match mod_res {
+                Ok(m) => effect.mods.push(m),
+                Err(e) => {
                     let msg = format!(
-                        "failed to build modifier for {} {}: unknown function \"{}\"",
+                        "failed to build modifier for {} {}: {}",
                         ct::Effect::get_name(),
                         effect.id,
-                        modifier_data.func
+                        e.msg
                     );
                     log::warn!("{}", &msg);
                     warns.push(msg);
                     continue;
                 }
-            };
+            }
         }
         effects.push(effect);
     }
     effects
 }
 
-fn conv_item_modifier(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+fn conv_item_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
         ModAfeeFilter::Direct(get_mod_domain(modifier_data)?),
+        get_mod_affectee_attr_id(modifier_data)?,
+    ))
+}
+
+fn conv_loc_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+    Ok(ct::AttrMod::new(
+        get_mod_affector_attr_id(modifier_data)?,
+        ModAggrMode::Stack,
+        get_mod_operation(modifier_data)?,
+        ModAfeeFilter::Loc(get_mod_domain(modifier_data)?),
+        get_mod_affectee_attr_id(modifier_data)?,
+    ))
+}
+
+fn conv_locgrp_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+    Ok(ct::AttrMod::new(
+        get_mod_affector_attr_id(modifier_data)?,
+        ModAggrMode::Stack,
+        get_mod_operation(modifier_data)?,
+        ModAfeeFilter::LocGrp(get_mod_domain(modifier_data)?, get_mod_grp_id(modifier_data)?),
+        get_mod_affectee_attr_id(modifier_data)?,
+    ))
+}
+
+fn conv_locsrq_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+    Ok(ct::AttrMod::new(
+        get_mod_affector_attr_id(modifier_data)?,
+        ModAggrMode::Stack,
+        get_mod_operation(modifier_data)?,
+        ModAfeeFilter::LocSrq(get_mod_domain(modifier_data)?, get_mod_skill_id(modifier_data)?),
+        get_mod_affectee_attr_id(modifier_data)?,
+    ))
+}
+
+fn conv_ownsrq_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+    Ok(ct::AttrMod::new(
+        get_mod_affector_attr_id(modifier_data)?,
+        ModAggrMode::Stack,
+        get_mod_operation(modifier_data)?,
+        ModAfeeFilter::OwnSrq(get_mod_domain(modifier_data)?, get_mod_skill_id(modifier_data)?),
         get_mod_affectee_attr_id(modifier_data)?,
     ))
 }
@@ -128,6 +163,14 @@ fn get_mod_operation(modifier_data: &dh::EffectMod) -> Result<ModOp> {
         7 => Ok(ModOp::PostAssign),
         _ => Err(Error::new(format!("unknown operation {}", op))),
     }
+}
+
+fn get_mod_grp_id(modifier_data: &dh::EffectMod) -> Result<ReeInt> {
+    get_arg_int(&modifier_data.args, "groupID")
+}
+
+fn get_mod_skill_id(modifier_data: &dh::EffectMod) -> Result<ReeInt> {
+    get_arg_int(&modifier_data.args, "skillTypeID")
 }
 
 fn get_arg_int(args: &HashMap<String, dh::Primitive>, name: &str) -> Result<ReeInt> {
