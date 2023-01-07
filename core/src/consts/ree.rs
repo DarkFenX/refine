@@ -68,6 +68,7 @@ pub enum ModDomain {
     Ship,
     Char,
     Item,
+    Other,
 }
 
 /// Defines how a modification will be aggregated.
@@ -78,9 +79,9 @@ pub enum ModDomain {
 pub enum ModAggrMode {
     /// No aggregation.
     Stack,
-    /// Min value will be used.
+    /// Min value will be used, from values with provided key.
     Min(ReeInt),
-    /// Max value will be used.
+    /// Max value will be used, from values with provided key.
     Max(ReeInt),
 }
 
