@@ -16,7 +16,7 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
         let (state, tgt_mode) = match effect_data.category_id {
             effcats::PASSIVE => (State::Offline, TgtMode::None),
             effcats::ACTIVE => (State::Active, TgtMode::None),
-            effcats::TARGET => (State::Active, TgtMode::Point),
+            effcats::TARGET => (State::Active, TgtMode::Item),
             effcats::ONLINE => (State::Online, TgtMode::None),
             effcats::OVERLOAD => (State::Overload, TgtMode::None),
             effcats::SYSTEM => (State::Offline, TgtMode::None),
@@ -74,11 +74,11 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
             }
             // Process regular attribute modifiers
             let mod_res = match modifier_data.func.as_str() {
-                "ItemModifier" => conv_item_mod(modifier_data),
-                "LocationModifier" => conv_loc_mod(modifier_data),
-                "LocationGroupModifier" => conv_locgrp_mod(modifier_data),
-                "LocationRequiredSkillModifier" => conv_locsrq_mod(modifier_data),
-                "OwnerRequiredSkillModifier" => conv_ownsrq_mod(modifier_data),
+                "ItemModifier" => conv_item_mod(modifier_data, &effect),
+                "LocationModifier" => conv_loc_mod(modifier_data, &effect),
+                "LocationGroupModifier" => conv_locgrp_mod(modifier_data, &effect),
+                "LocationRequiredSkillModifier" => conv_locsrq_mod(modifier_data, &effect),
+                "OwnerRequiredSkillModifier" => conv_ownsrq_mod(modifier_data, &effect),
                 _ => Err(Error::new(format!("unknown function \"{}\"", modifier_data.func))),
             };
             match mod_res {
@@ -105,7 +105,7 @@ fn extract_stopper(modifier_data: &dh::EffectMod) -> Result<Option<ReeInt>> {
     match modifier_data.func.as_str() {
         "EffectStopper" => {
             let domain = get_arg_str(&modifier_data.args, "domain")?;
-            if !domain.eq("target") {
+            if domain.ne("target") {
                 return Err(Error::new(format!("unexpected domain \"{}\"", domain)));
             }
             Ok(Some(get_arg_int(&modifier_data.args, "effectID")?))
@@ -114,52 +114,52 @@ fn extract_stopper(modifier_data: &dh::EffectMod) -> Result<Option<ReeInt>> {
     }
 }
 
-fn conv_item_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+fn conv_item_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
-        ModAfeeFilter::Direct(get_mod_domain(modifier_data)?),
+        ModAfeeFilter::Direct(get_mod_domain(modifier_data, effect)?),
         get_mod_affectee_attr_id(modifier_data)?,
     ))
 }
 
-fn conv_loc_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+fn conv_loc_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
-        ModAfeeFilter::Loc(get_mod_domain(modifier_data)?),
+        ModAfeeFilter::Loc(get_mod_domain(modifier_data, effect)?),
         get_mod_affectee_attr_id(modifier_data)?,
     ))
 }
 
-fn conv_locgrp_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+fn conv_locgrp_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
-        ModAfeeFilter::LocGrp(get_mod_domain(modifier_data)?, get_mod_grp_id(modifier_data)?),
+        ModAfeeFilter::LocGrp(get_mod_domain(modifier_data, effect)?, get_mod_grp_id(modifier_data)?),
         get_mod_affectee_attr_id(modifier_data)?,
     ))
 }
 
-fn conv_locsrq_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+fn conv_locsrq_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
-        ModAfeeFilter::LocSrq(get_mod_domain(modifier_data)?, get_mod_skill_id(modifier_data)?),
+        ModAfeeFilter::LocSrq(get_mod_domain(modifier_data, effect)?, get_mod_skill_id(modifier_data)?),
         get_mod_affectee_attr_id(modifier_data)?,
     ))
 }
 
-fn conv_ownsrq_mod(modifier_data: &dh::EffectMod) -> Result<ct::AttrMod> {
+fn conv_ownsrq_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
-        ModAfeeFilter::OwnSrq(get_mod_domain(modifier_data)?, get_mod_skill_id(modifier_data)?),
+        ModAfeeFilter::OwnSrq(get_mod_domain(modifier_data, effect)?, get_mod_skill_id(modifier_data)?),
         get_mod_affectee_attr_id(modifier_data)?,
     ))
 }
@@ -172,13 +172,20 @@ fn get_mod_affectee_attr_id(modifier_data: &dh::EffectMod) -> Result<ReeInt> {
     get_arg_int(&modifier_data.args, "modifiedAttributeID")
 }
 
-fn get_mod_domain(modifier_data: &dh::EffectMod) -> Result<ModDomain> {
+fn get_mod_domain(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ModDomain> {
     let domain = get_arg_str(&modifier_data.args, "domain")?;
     match domain.as_str() {
         "itemID" => Ok(ModDomain::Item),
         "charID" => Ok(ModDomain::Char),
         "shipID" => Ok(ModDomain::Ship),
-        "targetID" => Ok(ModDomain::Item),
+        "structureID" => Ok(ModDomain::Structure),
+        "targetID" => match effect.tgt_mode {
+            TgtMode::Item => Ok(ModDomain::Item),
+            _ => Err(Error::new(format!(
+                "modifier uses {} domain on untargeted effect",
+                domain
+            ))),
+        },
         "otherID" => Ok(ModDomain::Other),
         _ => Err(Error::new(format!("unknown domain {}", domain))),
     }

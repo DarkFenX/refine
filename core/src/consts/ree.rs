@@ -66,6 +66,7 @@ pub enum ModAfeeFilter {
 #[derive(Debug)]
 pub enum ModDomain {
     Ship,
+    Structure,
     Char,
     Item,
     Other,
