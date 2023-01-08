@@ -48,6 +48,16 @@ pub enum ItemType {
 //     ForceStop,
 // }
 
+/// Effect modifier build statuses.
+#[derive(Debug)]
+pub enum ModBuildStatus {
+    Unbuilt,
+    Error,
+    SuccessPartial,
+    Success,
+    Custom,
+}
+
 /// Defines which items will be affected by a modifier.
 #[derive(Debug)]
 pub enum ModAfeeFilter {

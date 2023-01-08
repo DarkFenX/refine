@@ -1,5 +1,5 @@
 use crate::{
-    consts::{ModAfeeFilter, ModAggrMode, ModOp, State, TgtMode},
+    consts::{ModAfeeFilter, ModAggrMode, ModBuildStatus, ModOp, State, TgtMode},
     defines::ReeInt,
     util::Named,
 };
@@ -40,9 +40,11 @@ pub struct Effect {
     pub chance_attr_id: Option<ReeInt>,
     /// Refers an attribute value which defines resistance strength to the effect.
     pub resist_attr_id: Option<ReeInt>,
+    /// Modifier build status.
+    pub mod_build_status: ModBuildStatus,
     /// Attribute modifiers carried by the effect
     pub mods: Vec<AttrMod>,
-    /// Refers effects this effect stops.
+    /// Refers effects this effect stops on target.
     pub stop_ids: Vec<ReeInt>,
 }
 impl Effect {
@@ -62,6 +64,7 @@ impl Effect {
         track_attr_id: Option<ReeInt>,
         chance_attr_id: Option<ReeInt>,
         resist_attr_id: Option<ReeInt>,
+        mod_build_status: ModBuildStatus,
         mods: Vec<AttrMod>,
         stop_ids: Vec<ReeInt>,
     ) -> Effect {
@@ -80,6 +83,7 @@ impl Effect {
             track_attr_id,
             chance_attr_id,
             resist_attr_id,
+            mod_build_status,
             mods,
             stop_ids,
         }

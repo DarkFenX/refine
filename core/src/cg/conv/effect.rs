@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    consts::{effcats, ModAfeeFilter, ModAggrMode, ModDomain, ModOp, State, TgtMode},
+    consts::{effcats, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
     ct,
     defines::ReeInt,
     dh,
@@ -47,9 +47,11 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
             effect_data.tracking_attr_id,
             effect_data.usage_chance_attr_id,
             effect_data.resist_attr_id,
+            ModBuildStatus::Unbuilt,
             Vec::new(),
             Vec::new(),
         );
+        let mut mod_errs = 0;
         for modifier_data in effect_data.mods.iter() {
             // Process effect stoppers first
             match extract_stopper(modifier_data) {
@@ -68,6 +70,7 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
                     );
                     log::warn!("{}", &msg);
                     warns.push(msg);
+                    mod_errs += 1;
                     continue;
                 }
                 _ => (),
@@ -92,9 +95,17 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
                     );
                     log::warn!("{}", &msg);
                     warns.push(msg);
+                    mod_errs += 1;
                     continue;
                 }
             }
+        }
+        match mod_errs {
+            0 => effect.mod_build_status = ModBuildStatus::Success,
+            _ if !effect.mods.is_empty() || !effect.stop_ids.is_empty() => {
+                effect.mod_build_status = ModBuildStatus::SuccessPartial
+            }
+            _ => effect.mod_build_status = ModBuildStatus::Error,
         }
         effects.push(effect);
     }
