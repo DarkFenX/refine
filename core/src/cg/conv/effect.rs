@@ -1,7 +1,7 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use crate::{
-    consts::{effcats, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
+    consts::{effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
     ct,
     defines::ReeInt,
     dh,
@@ -108,6 +108,79 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
             _ => effect.mod_build_status = ModBuildStatus::Error,
         }
         effects.push(effect);
+    }
+    // Transfer some data from abilities onto effects
+    let hisec_ban_map = extract_ability_map_hisec_ban_flag(data);
+    let lowsec_ban_map = extract_ability_map_lowsec_ban_flag(data);
+    let tgt_mode_map = extract_ability_map_target_mode(data);
+    for effect in effects.iter_mut() {
+        // Hisec flag
+        match hisec_ban_map.get(&effect.id) {
+            None => (),
+            Some(flags) => match flags.len() {
+                1 => {
+                    effect.hisec = Some(!*flags.iter().next().unwrap());
+                }
+                _ => {
+                    let msg = format!(
+                        "{} {} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
+                        ct::Effect::get_name(),
+                        effect.id,
+                        flags.len()
+                    );
+                    log::warn!("{}", &msg);
+                    warns.push(msg);
+                }
+            },
+        }
+        // Lowsec flag
+        match lowsec_ban_map.get(&effect.id) {
+            None => (),
+            Some(flags) => match flags.len() {
+                1 => {
+                    effect.lowsec = Some(!*flags.iter().next().unwrap());
+                }
+                _ => {
+                    let msg = format!(
+                        "{} {} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
+                        ct::Effect::get_name(),
+                        effect.id,
+                        flags.len()
+                    );
+                    log::warn!("{}", &msg);
+                    warns.push(msg);
+                }
+            },
+        }
+        // Target mode
+        match tgt_mode_map.get(&effect.id) {
+            None => (),
+            Some(modes) => match modes.len() {
+                1 => match get_abil_tgt_mode(modes.iter().next().unwrap()) {
+                    Ok(mode) => effect.tgt_mode = mode,
+                    Err(e) => {
+                        let msg = format!(
+                            "failed to update target mode for {} {}: {}",
+                            ct::Effect::get_name(),
+                            effect.id,
+                            e.msg
+                        );
+                        log::warn!("{}", &msg);
+                        warns.push(msg);
+                    }
+                },
+                _ => {
+                    let msg = format!(
+                        "{} {} has {} distinct \"target mode\" values mapped from fighter abilities",
+                        ct::Effect::get_name(),
+                        effect.id,
+                        modes.len()
+                    );
+                    log::warn!("{}", &msg);
+                    warns.push(msg);
+                }
+            },
+        }
     }
     effects
 }
@@ -239,5 +312,56 @@ fn get_arg_str(args: &HashMap<String, dh::Primitive>, name: &str) -> Result<Stri
     match primitive {
         dh::Primitive::String(s) => Ok(s.into()),
         _ => Err(Error::new(format!("expected string in \"{}\" value", name))),
+    }
+}
+
+fn extract_ability_map_hisec_ban_flag(data: &Data) -> HashMap<ReeInt, HashSet<bool>> {
+    let mut map = HashMap::new();
+    for abil_data in data.abils.iter() {
+        match get_abil_effect(abil_data.id) {
+            None => continue,
+            Some(eff_id) => map
+                .entry(eff_id)
+                .or_insert_with(|| HashSet::new())
+                .insert(abil_data.disallow_hisec),
+        };
+    }
+    map
+}
+
+fn extract_ability_map_lowsec_ban_flag(data: &Data) -> HashMap<ReeInt, HashSet<bool>> {
+    let mut map = HashMap::new();
+    for abil_data in data.abils.iter() {
+        match get_abil_effect(abil_data.id) {
+            None => continue,
+            Some(eff_id) => map
+                .entry(eff_id)
+                .or_insert_with(|| HashSet::new())
+                .insert(abil_data.disallow_lowsec),
+        };
+    }
+    map
+}
+
+fn extract_ability_map_target_mode(data: &Data) -> HashMap<ReeInt, HashSet<String>> {
+    let mut map = HashMap::new();
+    for abil_data in data.abils.iter() {
+        match get_abil_effect(abil_data.id) {
+            None => continue,
+            Some(eff_id) => map
+                .entry(eff_id)
+                .or_insert_with(|| HashSet::new())
+                .insert(abil_data.target_mode.clone()),
+        };
+    }
+    map
+}
+
+fn get_abil_tgt_mode(tgt_mode: &str) -> Result<TgtMode> {
+    match tgt_mode {
+        "untargeted" => Ok(TgtMode::None),
+        "itemTargeted" => Ok(TgtMode::Item),
+        "pointTargeted" => Ok(TgtMode::Point),
+        _ => Err(Error::new(format!("unknown ability target mode \"{}\"", tgt_mode))),
     }
 }
