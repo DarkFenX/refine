@@ -45,6 +45,6 @@ fn print_data<T>(name: &'static str, data: dh::Result<dh::Container<T>>) {
 fn main() {
     setup_logger().unwrap();
     let dh = phb_file::PhbFileDHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
-    cg::generate_cache(&dh).unwrap();
+    let cont = cg::generate_cache(&dh).unwrap();
     let ch = json_file::JsonFileCHandler::new(PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/tq.json.bz2"));
 }
