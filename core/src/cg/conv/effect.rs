@@ -1,4 +1,7 @@
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::{HashMap, HashSet},
+    hash::Hash,
+};
 
 use crate::{
     consts::{effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
@@ -9,6 +12,18 @@ use crate::{
 };
 
 use super::Data;
+
+impl dh::FighterAbil {
+    fn get_target_mode(&self) -> String {
+        self.target_mode.clone()
+    }
+    fn get_disallow_hisec(&self) -> bool {
+        self.disallow_hisec
+    }
+    fn get_disallow_lowsec(&self) -> bool {
+        self.disallow_lowsec
+    }
+}
 
 pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effect> {
     let mut effects = Vec::new();
@@ -110,9 +125,9 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
         effects.push(effect);
     }
     // Transfer some data from abilities onto effects
-    let hisec_ban_map = extract_ability_map_hisec_ban_flag(data);
-    let lowsec_ban_map = extract_ability_map_lowsec_ban_flag(data);
-    let tgt_mode_map = extract_ability_map_target_mode(data);
+    let hisec_ban_map = extract_ability_map(data, dh::FighterAbil::get_disallow_hisec);
+    let lowsec_ban_map = extract_ability_map(data, dh::FighterAbil::get_disallow_lowsec);
+    let tgt_mode_map = extract_ability_map(data, dh::FighterAbil::get_target_mode);
     for effect in effects.iter_mut() {
         // Hisec flag
         match hisec_ban_map.get(&effect.id) {
@@ -315,7 +330,11 @@ fn get_arg_str(args: &HashMap<String, dh::Primitive>, name: &str) -> Result<Stri
     }
 }
 
-fn extract_ability_map_hisec_ban_flag(data: &Data) -> HashMap<ReeInt, HashSet<bool>> {
+fn extract_ability_map<F, T>(data: &Data, getter: F) -> HashMap<ReeInt, HashSet<T>>
+where
+    F: Fn(&dh::FighterAbil) -> T,
+    T: Eq + Hash,
+{
     let mut map = HashMap::new();
     for abil_data in data.abils.iter() {
         match get_abil_effect(abil_data.id) {
@@ -323,35 +342,7 @@ fn extract_ability_map_hisec_ban_flag(data: &Data) -> HashMap<ReeInt, HashSet<bo
             Some(eff_id) => map
                 .entry(eff_id)
                 .or_insert_with(|| HashSet::new())
-                .insert(abil_data.disallow_hisec),
-        };
-    }
-    map
-}
-
-fn extract_ability_map_lowsec_ban_flag(data: &Data) -> HashMap<ReeInt, HashSet<bool>> {
-    let mut map = HashMap::new();
-    for abil_data in data.abils.iter() {
-        match get_abil_effect(abil_data.id) {
-            None => continue,
-            Some(eff_id) => map
-                .entry(eff_id)
-                .or_insert_with(|| HashSet::new())
-                .insert(abil_data.disallow_lowsec),
-        };
-    }
-    map
-}
-
-fn extract_ability_map_target_mode(data: &Data) -> HashMap<ReeInt, HashSet<String>> {
-    let mut map = HashMap::new();
-    for abil_data in data.abils.iter() {
-        match get_abil_effect(abil_data.id) {
-            None => continue,
-            Some(eff_id) => map
-                .entry(eff_id)
-                .or_insert_with(|| HashSet::new())
-                .insert(abil_data.target_mode.clone()),
+                .insert(getter(&abil_data)),
         };
     }
     map
