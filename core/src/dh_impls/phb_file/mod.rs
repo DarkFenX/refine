@@ -4,7 +4,7 @@
 pub use handler::PhbFileDHandler;
 
 mod address;
-mod aux;
+mod error;
 mod data;
 mod fsd;
 mod handler;

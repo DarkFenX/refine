@@ -11,6 +11,7 @@ use reefast::{
     dh_impls::phb_file,
     ch_impls::json_file,
 };
+use reefast::dh_impls::phb_http;
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -44,7 +45,8 @@ fn print_data<T>(name: &'static str, data: dh::Result<dh::Container<T>>) {
 
 fn main() {
     setup_logger().unwrap();
-    let dh = phb_file::PhbFileDHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
+    // let dh = phb_file::PhbFileDHandler::new(PathBuf::from("/home/dfx/Desktop/phobos_tq_en-us"));
+    let dh = phb_http::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
     let cont = cg::generate_cache(&dh).unwrap();
     let ch = json_file::JsonFileCHandler::new(PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/tq.json.bz2"));
 }
