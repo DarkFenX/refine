@@ -1,5 +1,9 @@
-use reqwest::{blocking::get, IntoUrl, Url};
-use std::fmt;
+use std::{
+    fmt,
+    fs::File,
+    io::{self, Read},
+    path::PathBuf,
+};
 
 use crate::{
     dh,
@@ -7,57 +11,61 @@ use crate::{
 };
 
 use super::{
-    data::{
-        Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
-        Metadata, MutaAttrMods, MutaItemConvs,
+    super::{
+        data::{
+            Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
+            Metadata, MutaAttrMods, MutaItemConvs,
+        },
+        fsd,
     },
-    error::FromSuffix,
-    fsd,
+    address::Address,
+    error::FromPath,
 };
 
 /// A struct for extracting data from [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
-pub struct PhbHttpDHandler {
-    base_url: Url,
+pub struct PhbFileDHandler {
+    base_path: PathBuf,
 }
-impl PhbHttpDHandler {
-    /// Constructs new `PhbHttpDHandler` using provided base URL.
+impl PhbFileDHandler {
+    /// Constructs new `PhbFileDHandler` using provided path.
     ///
-    /// URL should end with a trailing slash, and should point to the top-level directory of
-    /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_binary/`.
-    pub fn new<T: Into<String> + Copy + IntoUrl>(base_url: T) -> Result<PhbHttpDHandler> {
-        let base_url = base_url
-            .into_url()
-            .map_err(|e| Error::new(format!("failed to interpret base URL: {}", e)))?;
-        match base_url.cannot_be_a_base() {
-            true => Err(Error::new("passed URL cannot be used as base")),
-            false => Ok(PhbHttpDHandler { base_url }),
-        }
+    /// Path should point to the top-level folder of a data dump, e.g. `/phobos_en-us` and not
+    /// `/phobos_en-us/fsd_binary`.
+    pub fn new<T: Into<PathBuf>>(path: T) -> PhbFileDHandler {
+        PhbFileDHandler { base_path: path.into() }
     }
-    fn fetch_data(&self, suffix: &str) -> Result<serde_json::Value> {
-        let full_url = self.base_url.join(suffix).map_err(|e| Error::from_suffix(e, suffix))?;
-        let data = get(full_url)
-            .map_err(|e| Error::from_suffix(e, suffix))?
-            .error_for_status()
-            .map_err(|e| Error::from_suffix(e, suffix))?
-            .json()
-            .map_err(|e| Error::from_suffix(e, suffix))?;
+    fn read_file(&self, addr: &Address) -> io::Result<Vec<u8>> {
+        let full_path = addr.get_full_path(&self.base_path);
+        let mut bytes = Vec::new();
+        File::open(full_path)?.read_to_end(&mut bytes)?;
+        Ok(bytes)
+    }
+    fn read_json(&self, addr: &Address) -> Result<serde_json::Value> {
+        let bytes = self
+            .read_file(addr)
+            .map_err(|e| Error::from_path(e, addr.get_part_str()))?;
+        let data = serde_json::from_slice(&bytes).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
         Ok(data)
     }
     fn process_fsd<T, U>(&self, folder: &'static str, file: &'static str) -> dh::Result<dh::Container<U>>
     where
         T: serde::de::DeserializeOwned + fsd::FsdMerge<U>,
     {
-        let suffix = format!("{}/{}.json", folder, file);
-        let json = self.fetch_data(&suffix)?;
+        let addr = Address::new(folder, file);
+        let json = self.read_json(&addr)?;
         fsd::handle::<T, U>(json)
     }
 }
-impl fmt::Debug for PhbHttpDHandler {
+impl fmt::Debug for PhbFileDHandler {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "PhbHttpDHandler(\"{}\")", self.base_url.to_string())
+        write!(
+            f,
+            "PhbFileDHandler(\"{}\")",
+            self.base_path.to_str().unwrap_or("<error>")
+        )
     }
 }
-impl dh::DataHandler for PhbHttpDHandler {
+impl dh::DataHandler for PhbFileDHandler {
     fn get_items(&self) -> dh::Result<dh::Container<dh::Item>> {
         self.process_fsd::<Item, dh::Item>("fsd_binary", "types")
     }
@@ -95,10 +103,10 @@ impl dh::DataHandler for PhbHttpDHandler {
         self.process_fsd::<MutaAttrMods, dh::MutaAttrMod>("fsd_binary", "dynamicitemattributes")
     }
     fn get_version(&self) -> dh::Result<String> {
-        let suffix = "phobos/metadata.json";
-        let unprocessed = self.fetch_data(suffix)?;
+        let addr = Address::new("phobos", "metadata");
+        let unprocessed = self.read_json(&addr)?;
         let metadatas: Vec<Metadata> =
-            serde_json::from_value(unprocessed).map_err(|e| Error::from_suffix(e, suffix))?;
+            serde_json::from_value(unprocessed).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
         for metadata in metadatas {
             if metadata.field_name == "client_build" {
                 return Ok(metadata.field_value.to_string());

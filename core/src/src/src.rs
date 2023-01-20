@@ -1,4 +1,3 @@
-
 #[derive(Debug)]
 pub struct Src {
     /// Attribute ID.
@@ -6,11 +5,7 @@ pub struct Src {
 }
 impl Src {
     /// Make a new dogma attribute out of passed data.
-    pub fn new(
-        alias: String,
-    ) -> Src {
-        Src {
-            alias,
-        }
+    pub fn new(alias: String) -> Src {
+        Src { alias }
     }
 }

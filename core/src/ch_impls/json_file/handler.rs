@@ -39,7 +39,11 @@ impl JsonFileCHandler {
 }
 impl fmt::Debug for JsonFileCHandler {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "JsonFileCHandler(\"{}\")", self.cache_path.to_str().unwrap_or("<error>"))
+        write!(
+            f,
+            "JsonFileCHandler(\"{}\")",
+            self.cache_path.to_str().unwrap_or("<error>")
+        )
     }
 }
 impl ch::CacheHandler for JsonFileCHandler {
@@ -64,6 +68,5 @@ impl ch::CacheHandler for JsonFileCHandler {
         buffs: Vec<Buff>,
         fingerprint: String,
     ) {
-
     }
 }

@@ -1,10 +1,10 @@
+use super::{data::Support, CTContainer, Data};
+
 mod attr;
 mod buff;
 mod effect;
 mod item;
 mod muta;
-
-use super::{data::Support, Data, CTContainer};
 
 // Convert data handler-provided entities into cacheable types.
 pub(super) fn convert(data: &Data, supp: &Support, warns: &mut Vec<String>, cdcont: &mut CTContainer) {

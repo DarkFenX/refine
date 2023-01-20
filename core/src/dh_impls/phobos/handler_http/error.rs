@@ -13,7 +13,11 @@ impl FromSuffix<url::ParseError> for Error {
 impl FromSuffix<reqwest::Error> for Error {
     fn from_suffix<T: Into<String>>(err: reqwest::Error, suffix: T) -> Self {
         if err.is_decode() {
-            Error::new(format!("parsing contents of URL suffix \"{}\" failed: {}", suffix.into(), err))
+            Error::new(format!(
+                "parsing contents of URL suffix \"{}\" failed: {}",
+                suffix.into(),
+                err
+            ))
         } else {
             Error::new(format!("fetching URL suffix \"{}\" failed: {}", suffix.into(), err))
         }
