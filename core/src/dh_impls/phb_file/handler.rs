@@ -5,11 +5,14 @@ use std::{
     path::PathBuf,
 };
 
-use crate::dh;
+use crate::{
+    dh,
+    util::{Error, Result},
+};
 
 use super::{
     address::Address,
-    aux::{Error, FromPath, Result},
+    aux::FromPath,
     data::{
         Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
         Metadata, MutaAttrMods, MutaItemConvs,
@@ -53,7 +56,11 @@ impl PhbFileDHandler {
 }
 impl fmt::Debug for PhbFileDHandler {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "PhbFileDHandler(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
+        write!(
+            f,
+            "PhbFileDHandler(\"{}\")",
+            self.base_path.to_str().unwrap_or("<error>")
+        )
     }
 }
 impl dh::DataHandler for PhbFileDHandler {

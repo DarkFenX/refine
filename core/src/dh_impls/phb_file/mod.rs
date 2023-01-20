@@ -1,4 +1,4 @@
-//! Data handler implementation which uses JSON produced by
+//! Data handler implementation which uses locally stored JSON produced by
 //! [Phobos](https://github.com/pyfa-org/Phobos) as a data source.
 
 pub use handler::PhbFileDHandler;

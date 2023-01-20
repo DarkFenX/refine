@@ -1,6 +1,8 @@
-use crate::{defines::ReeInt, dh};
-
-use super::aux::{Error, Result};
+use crate::{
+    defines::ReeInt,
+    dh,
+    util::{Error, Result},
+};
 
 pub(super) trait FsdMerge<T> {
     fn fsd_merge(self, id: ReeInt) -> Vec<T>;
