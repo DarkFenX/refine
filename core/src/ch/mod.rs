@@ -1,7 +1,7 @@
 //! Cache handling interface.
 //! TODO: more docs
 
-pub use container::CTContainer;
+pub use container::Container;
 pub use handler::CacheHandler;
 
 mod container;
