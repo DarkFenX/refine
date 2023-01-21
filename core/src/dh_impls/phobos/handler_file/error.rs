@@ -12,6 +12,10 @@ impl FromPath<io::Error> for Error {
 }
 impl FromPath<serde_json::Error> for Error {
     fn from_path<T: Into<String>>(err: serde_json::Error, path: T) -> Self {
-        Error::new(format!("{} parsing failed: {}", path.into(), err))
+        if err.is_io() {
+            Error::new(format!("{} reading failed: {}", path.into(), err))
+        } else {
+            Error::new(format!("{} parsing failed: {}", path.into(), err))
+        }
     }
 }

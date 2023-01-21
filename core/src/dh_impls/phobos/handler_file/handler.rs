@@ -1,7 +1,7 @@
 use std::{
     fmt,
     fs::File,
-    io::{self, Read},
+    io::{self, BufReader, Read},
     path::PathBuf,
 };
 
@@ -34,17 +34,11 @@ impl PhbFileDHandler {
     pub fn new<T: Into<PathBuf>>(path: T) -> PhbFileDHandler {
         PhbFileDHandler { base_path: path.into() }
     }
-    fn read_file(&self, addr: &Address) -> io::Result<Vec<u8>> {
-        let full_path = addr.get_full_path(&self.base_path);
-        let mut bytes = Vec::new();
-        File::open(full_path)?.read_to_end(&mut bytes)?;
-        Ok(bytes)
-    }
     fn read_json(&self, addr: &Address) -> Result<serde_json::Value> {
-        let bytes = self
-            .read_file(addr)
-            .map_err(|e| Error::from_path(e, addr.get_part_str()))?;
-        let data = serde_json::from_slice(&bytes).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
+        let full_path = addr.get_full_path(&self.base_path);
+        let file = File::open(full_path).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
+        let reader = BufReader::new(file);
+        let data = serde_json::from_reader(reader).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
         Ok(data)
     }
     fn process_fsd<T, U>(&self, folder: &'static str, file: &'static str) -> dh::Result<dh::Container<U>>
