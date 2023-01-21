@@ -29,7 +29,7 @@
 //!
 //! Since multiple abilities can map to the same effect, collisions are possible. In case of
 //! collisions, data from colliding abilities is compared. If there are any mismatches, warnings are
-//! logged, and data from the first seen entry is used.
+//! logged, and data is not transferred to an effect.
 
 pub use aux::{Container, Result};
 pub use data::{
