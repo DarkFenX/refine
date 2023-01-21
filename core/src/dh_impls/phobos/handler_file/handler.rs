@@ -22,7 +22,7 @@ use super::{
     error::FromPath,
 };
 
-/// A struct for extracting data from [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
+/// Data handler which uses locally stored [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
 pub struct PhbFileDHandler {
     base_path: PathBuf,
 }

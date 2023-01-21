@@ -18,7 +18,7 @@ use super::{
     error::FromSuffix,
 };
 
-/// A struct for extracting data from [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
+/// Data handler which uses HTTP-served [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
 pub struct PhbHttpDHandler {
     base_url: Url,
 }
