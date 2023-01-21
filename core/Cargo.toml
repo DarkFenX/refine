@@ -17,3 +17,9 @@ url = ">=2.3.1"
 [dev-dependencies]
 chrono = ">=0.4"
 fern = ">=0.6"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
