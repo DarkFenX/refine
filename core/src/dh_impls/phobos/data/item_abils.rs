@@ -21,8 +21,7 @@ impl FsdMerge<dh::ItemFighterAbil> for ItemFighterAbils {
             if let Some(abil_data) = abil_data {
                 let (charge_count, charge_rearm_time) = abil_data
                     .charges
-                    .map(|v| (Some(v.count), Some(v.rearm_time)))
-                    .unwrap_or_default();
+                    .map_or((None, None), |v| (Some(v.count), Some(v.rearm_time)));
                 vec.push(dh::ItemFighterAbil::new(
                     id,
                     abil_data.abil_id,
