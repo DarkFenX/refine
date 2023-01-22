@@ -50,4 +50,6 @@ fn main() {
     let cont = cg::generate_cache(&dh).unwrap();
     let mut ch = json_file::JsonFileCHandler::new(PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/tq.json.bz2"));
     ch.update_cache(cont, "test".into());
+    let item = ch.get_item(11184).unwrap();
+    println!("Item with id {} fetched", item.id);
 }

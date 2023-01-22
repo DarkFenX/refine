@@ -1,9 +1,4 @@
-use std::{
-    fmt,
-    fs::File,
-    io::BufReader,
-    path::PathBuf,
-};
+use std::{fmt, fs::File, io::BufReader, path::PathBuf};
 
 use crate::{
     dh,

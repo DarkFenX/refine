@@ -49,18 +49,24 @@ impl fmt::Debug for JsonFileCHandler {
     }
 }
 impl ch::CacheHandler for JsonFileCHandler {
-    // fn get_item(&self, id: ReeInt) -> Result<Item> {
-    // }
-    // fn get_attr(&self, id: ReeInt) -> Result<Attr> {
-    // }
-    // fn get_effect(&self, id: ReeInt) -> Result<Effect> {
-    // }
-    // fn get_muta(&self, id: ReeInt) -> Result<Muta> {
-    // }
-    // fn get_buff(&self, id: ReeInt) -> Result<Buff> {
-    // }
-    // fn get_fingerprint(&self) -> Result<String> {
-    // }
+    fn get_item(&self, id: ReeInt) -> Option<&Item> {
+        self.storage_items.get(&id)
+    }
+    fn get_attr(&self, id: ReeInt) -> Option<&Attr> {
+        self.storage_attrs.get(&id)
+    }
+    fn get_effect(&self, id: ReeInt) -> Option<&Effect> {
+        self.storage_effects.get(&id)
+    }
+    fn get_muta(&self, id: ReeInt) -> Option<&Muta> {
+        self.storage_mutas.get(&id)
+    }
+    fn get_buff(&self, id: ReeInt) -> Option<&Buff> {
+        self.storage_buffs.get(&id)
+    }
+    fn get_fingerprint(&self) -> Option<&String> {
+        self.fingerprint.as_ref()
+    }
     fn update_cache(&mut self, data: ch::Container, fingerprint: String) {
         move_data(data.items, &mut self.storage_items);
         move_data(data.attrs, &mut self.storage_attrs);
