@@ -6,6 +6,8 @@ use crate::{
     util::Result,
 };
 
+use super::container::Container;
+
 /// Cache handler interface definition.
 pub trait CacheHandler: fmt::Debug {
     // /// Get cached item.
@@ -21,13 +23,5 @@ pub trait CacheHandler: fmt::Debug {
     // /// Get cached data fingerprint.
     // fn get_fingerprint(&self) -> Result<String>;
     /// Update cache.
-    fn update_cache(
-        &self,
-        items: Vec<Item>,
-        attrs: Vec<Attr>,
-        effects: Vec<Effect>,
-        mutas: Vec<Muta>,
-        buffs: Vec<Buff>,
-        fingerprint: String,
-    );
+    fn update_cache(&mut self, data: Container, fingerprint: String);
 }
