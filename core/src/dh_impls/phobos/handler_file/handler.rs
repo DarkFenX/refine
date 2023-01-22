@@ -1,7 +1,7 @@
 use std::{
     fmt,
     fs::File,
-    io::{self, BufReader, Read},
+    io::BufReader,
     path::PathBuf,
 };
 
