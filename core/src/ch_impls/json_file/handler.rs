@@ -13,7 +13,7 @@ use crate::{
     util::Result,
 };
 
-use super::key::Key;
+use super::{container::Container, key::Key};
 
 /// A struct for handling compressed JSON cache
 pub struct JsonFileCHandler {
@@ -68,12 +68,23 @@ impl ch::CacheHandler for JsonFileCHandler {
         self.fingerprint.as_ref()
     }
     fn update_cache(&mut self, data: ch::Container, fingerprint: String) {
+        // Update memory cache
         move_data(data.items, &mut self.storage_items);
         move_data(data.attrs, &mut self.storage_attrs);
         move_data(data.effects, &mut self.storage_effects);
         move_data(data.mutas, &mut self.storage_mutas);
         move_data(data.buffs, &mut self.storage_buffs);
         self.fingerprint = Some(fingerprint);
+        // Update persistent cache
+        let data = Container::new(
+            self.storage_items.values().collect(),
+            self.storage_attrs.values().collect(),
+            self.storage_mutas.values().collect(),
+            self.storage_effects.values().collect(),
+            self.storage_buffs.values().collect(),
+            self.fingerprint.as_ref().unwrap(),
+        );
+        // let json = serde_json::json!(data).to_string();
     }
 }
 
