@@ -10,7 +10,7 @@ use crate::{
 ///
 /// An item carries alot of info needed to calculate fit attributes, for example base attribute
 /// values.
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub struct Item {
     /// Item ID.
     pub id: ReeInt,
@@ -60,7 +60,7 @@ impl Named for Item {
 }
 
 /// Stores item-specific effect data.
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub struct ItemEffData {
     /// Defines cooldown of the effect in seconds.
     pub cd: Option<ReeFloat>,

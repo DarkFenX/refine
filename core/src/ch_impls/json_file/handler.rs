@@ -77,14 +77,14 @@ impl ch::CacheHandler for JsonFileCHandler {
         self.fingerprint = Some(fingerprint);
         // Update persistent cache
         let data = Container::new(
-            self.storage_items.values().collect(),
-            self.storage_attrs.values().collect(),
-            self.storage_mutas.values().collect(),
-            self.storage_effects.values().collect(),
-            self.storage_buffs.values().collect(),
-            self.fingerprint.as_ref().unwrap(),
+            self.storage_items.values().cloned().collect(),
+            self.storage_attrs.values().cloned().collect(),
+            self.storage_mutas.values().cloned().collect(),
+            self.storage_effects.values().cloned().collect(),
+            self.storage_buffs.values().cloned().collect(),
+            self.fingerprint.clone().unwrap(),
         );
-        // let json = serde_json::json!(data).to_string();
+        let json = serde_json::json!(&data).to_string();
     }
 }
 

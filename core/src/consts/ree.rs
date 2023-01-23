@@ -1,7 +1,7 @@
 use crate::defines::ReeInt;
 
 /// Contains states which can be assigned to several entities.
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum State {
     Offline,
     Online,
@@ -10,7 +10,7 @@ pub enum State {
 }
 
 /// Contains list of item types.
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum ItemType {
     Booster,
     Character,
@@ -49,7 +49,7 @@ pub enum ItemType {
 // }
 
 /// Effect modifier build statuses.
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum ModBuildStatus {
     Unbuilt,
     Error,
@@ -59,7 +59,7 @@ pub enum ModBuildStatus {
 }
 
 /// Defines which items will be affected by a modifier.
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum ModAfeeFilter {
     /// Single item modified, as specified by the domain.
     Direct(ModDomain),
@@ -73,7 +73,7 @@ pub enum ModAfeeFilter {
     OwnSrq(ModDomain, ReeInt),
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum ModDomain {
     Ship,
     Structure,
@@ -86,7 +86,7 @@ pub enum ModDomain {
 ///
 /// When in the non-stack mode, multiple values which share the same aggregation mode and the same
 /// aggregation key (the mode argument) are converted into a single value.
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum ModAggrMode {
     /// No aggregation.
     Stack,
@@ -99,7 +99,7 @@ pub enum ModAggrMode {
 /// Defines what kind of operation will be applied to a target attribute.
 ///
 /// All the operations are applied in the order they are defined in this enum.
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum ModOp {
     /// Assigns modification value to the target item attribute before all other operations are
     /// applied.
@@ -124,7 +124,7 @@ pub enum ModOp {
 }
 
 /// Defines how effects like fighter abilities are targeted.
-#[derive(Debug)]
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum TgtMode {
     /// No target needed.
     None,

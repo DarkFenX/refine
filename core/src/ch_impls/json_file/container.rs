@@ -1,23 +1,23 @@
 use crate::ct;
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
-pub(super) struct Container<'a> {
-    pub(super) items: Vec<&'a ct::Item>,
-    pub(super) attrs: Vec<&'a ct::Attr>,
-    pub(super) mutas: Vec<&'a ct::Muta>,
-    pub(super) effects: Vec<&'a ct::Effect>,
-    pub(super) buffs: Vec<&'a ct::Buff>,
-    pub(super) fingerprint: &'a str,
+pub(super) struct Container {
+    pub(super) items: Vec<ct::Item>,
+    pub(super) attrs: Vec<ct::Attr>,
+    pub(super) mutas: Vec<ct::Muta>,
+    pub(super) effects: Vec<ct::Effect>,
+    pub(super) buffs: Vec<ct::Buff>,
+    pub(super) fingerprint: String,
 }
-impl Container<'_> {
-    pub fn new<'a>(
-        items: Vec<&'a ct::Item>,
-        attrs: Vec<&'a ct::Attr>,
-        mutas: Vec<&'a ct::Muta>,
-        effects: Vec<&'a ct::Effect>,
-        buffs: Vec<&'a ct::Buff>,
-        fingerprint: &'a String,
-    ) -> Container<'a> {
+impl Container {
+    pub fn new(
+        items: Vec<ct::Item>,
+        attrs: Vec<ct::Attr>,
+        mutas: Vec<ct::Muta>,
+        effects: Vec<ct::Effect>,
+        buffs: Vec<ct::Buff>,
+        fingerprint: String,
+    ) -> Container {
         Container {
             items,
             attrs,
