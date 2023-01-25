@@ -3,6 +3,7 @@ use std::fmt;
 use crate::{
     ct::{Attr, Buff, Effect, Item, Muta},
     defines::ReeInt,
+    util::Result,
 };
 
 use super::data::CHData;
@@ -21,6 +22,8 @@ pub trait CacheHandler: fmt::Debug {
     fn get_buff(&self, id: ReeInt) -> Option<&Buff>;
     /// Get cached data fingerprint.
     fn get_fingerprint(&self) -> &String;
-    /// Update cache.
+    /// Load cache from persistent storage.
+    fn load_cache(&mut self) -> Result<()>;
+    /// Update both persistent and memory data in handler with passed data.
     fn update_cache(&mut self, data: CHData, fingerprint: String);
 }
