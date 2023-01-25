@@ -102,18 +102,25 @@ impl ch::CacheHandler for JsonFileCHandler {
             data.buffs,
             fingerprint,
         );
-        match create_dir_all(&self.folder) {
+        match create_cache_folder(&self.folder) {
             Ok(_) => write_cache(&self.folder, &self.name, &cache),
-            Err(e) => {
-                match e.kind() {
-                    // We don't really care if it already exists, so just write the cache
-                    io::ErrorKind::AlreadyExists => write_cache(&self.folder, &self.name, &cache),
-                    _ => log::error!("unable to create cache folder: {}", e),
-                };
-            }
+            Err(e) => log::error!("unable to create cache folder: {}", e),
         }
         // Update memory cache
         update_memory_cache(cache, self);
+    }
+}
+
+fn create_cache_folder(folder: &PathBuf) -> Result<()> {
+    match create_dir_all(folder) {
+        Ok(_) => Ok(()),
+        Err(e) => {
+            match e.kind() {
+                // It's fine if it already exists for our purposes
+                io::ErrorKind::AlreadyExists => Ok(()),
+                _ => Err(Error::new(format!("unable to create cache folder: {}", e))),
+            }
+        }
     }
 }
 

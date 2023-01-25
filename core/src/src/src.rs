@@ -1,11 +1,18 @@
+use crate::ch::CacheHandler;
+
 #[derive(Debug)]
-pub struct Src {
-    /// Attribute ID.
+pub(super) struct Src<T>
+where
+    T: CacheHandler,
+{
     pub alias: String,
+    pub cache_handler: T,
 }
-impl Src {
-    /// Make a new dogma attribute out of passed data.
-    pub fn new(alias: String) -> Src {
-        Src { alias }
+impl<T> Src<T>
+where
+    T: CacheHandler,
+{
+    pub(super) fn new(alias: String, cache_handler: T) -> Src<T> {
+        Src { alias, cache_handler }
     }
 }

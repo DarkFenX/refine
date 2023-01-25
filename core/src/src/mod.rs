@@ -5,3 +5,5 @@
 
 mod mgr;
 mod src;
+
+pub use mgr::SrcMgr;

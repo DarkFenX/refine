@@ -1,5 +1,4 @@
-#![allow(dead_code)]
-#![allow(unused_imports)]
+#![allow(warnings, unused)]
 
 use std::path::PathBuf;
 
@@ -12,6 +11,7 @@ use reefast::{
     defines::VERSION,
     dh::{self, DataHandler},
     dh_impls::phobos,
+    src::SrcMgr,
 };
 
 fn setup_logger() -> Result<(), fern::InitError> {
@@ -32,30 +32,17 @@ fn setup_logger() -> Result<(), fern::InitError> {
     Ok(())
 }
 
-fn print_data<T>(name: &'static str, data: dh::Result<dh::Container<T>>) {
-    match data {
-        Ok(r) => {
-            println!("{}: {} returned, {} failed", name, r.data.len(), r.warns.len());
-            for e in r.warns.iter() {
-                println!("  error: {}", e)
-            }
-        }
-        Err(e) => println!("{} failed: {}", name, e),
-    }
-}
-
 fn main() {
     setup_logger().unwrap();
+    let mut srcmgr = SrcMgr::new();
     let dh = phobos::PhbFileDHandler::new("/home/dfx/Desktop/phobos_tq_en-us");
     // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
+    let mut ch = json_file::JsonFileCHandler::new(PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"), "tq");
+    srcmgr.add("tq", dh, ch, false);
     // let cont = cg::generate_cache(&dh).unwrap();
-    let mut ch = Box::new(json_file::JsonFileCHandler::new(
-        PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
-        "tq",
-    ));
-    let fingerprint = format!("{}_{}", dh.get_version().unwrap_or("unknown".into()), VERSION);
-    ch.load_cache();
+    //let fingerprint = format!("{}_{}", dh.get_version().unwrap_or("unknown".into()), VERSION);
+    //ch.load_cache();
     //ch.update_cache(cont, fingerprint);
-    let item = ch.get_item(11184).unwrap();
-    println!("Item with id {} fetched", item.id);
+    //let item = ch.get_item(11184).unwrap();
+    //println!("Item with id {} fetched", item.id);
 }

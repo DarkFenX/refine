@@ -11,8 +11,7 @@ mod fetch;
 mod pk;
 mod valid;
 
-// TODO: remove pub, it's here only for development process
-pub fn generate_cache(data_handler: &dyn DataHandler) -> Result<ch::CHData> {
+pub(crate) fn generate_cache(data_handler: &dyn DataHandler) -> Result<ch::CHData> {
     let mut cg_data = CGData::new();
     let mut warns = Vec::new();
     let mut supp = Support::new();
