@@ -49,7 +49,7 @@ where
             Err(e) => {
                 log::info!("unable to get version: {}", e);
                 regen = true;
-                "".to_string()
+                String::new()
             }
         };
         if !regen {
@@ -75,6 +75,15 @@ where
                 .map_err(|e| Error::new(format!("failed to generate cache: {}", e)))?;
             cache_handler.update_cache(ch_data, data_fp);
         }
+        let src = Src::new(alias, cache_handler);
+        // if make_default {
+        //     self.default = Some(&src)
+        // };
+        self.sources.insert(src.alias.clone(), src);
         Ok(())
+    }
+
+    pub fn get<A: Into<String>>(&self, alias: A) -> Option<&Src<CH>> {
+        self.sources.get(alias.into().as_str())
     }
 }

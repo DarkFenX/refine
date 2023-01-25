@@ -39,10 +39,6 @@ fn main() {
     // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
     let mut ch = json_file::JsonFileCHandler::new(PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"), "tq");
     srcmgr.add("tq", dh, ch, false);
-    // let cont = cg::generate_cache(&dh).unwrap();
-    //let fingerprint = format!("{}_{}", dh.get_version().unwrap_or("unknown".into()), VERSION);
-    //ch.load_cache();
-    //ch.update_cache(cont, fingerprint);
-    //let item = ch.get_item(11184).unwrap();
-    //println!("Item with id {} fetched", item.id);
+    let item = srcmgr.get("tq").unwrap().cache_handler.get_item(11184).unwrap();
+    println!("Item with id {} fetched", item.id);
 }
