@@ -7,7 +7,7 @@ use crate::{
 ///
 /// An attribute carries just attribute properties which govern how modified attribute values are
 /// calculated. Values themselves are stored on various items as plain numbers.
-#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct Attr {
     /// Attribute ID.
     pub id: ReeInt,

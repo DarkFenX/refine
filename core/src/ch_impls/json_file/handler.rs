@@ -23,7 +23,7 @@ pub struct JsonFileCHandler {
     storage_effects: HashMap<ReeInt, Effect>,
     storage_mutas: HashMap<ReeInt, Muta>,
     storage_buffs: HashMap<ReeInt, Buff>,
-    fingerprint: Option<String>,
+    fingerprint: String,
 }
 impl JsonFileCHandler {
     /// Constructs new `JsonFileCHandler` using cache file path (path ending with .json.bz2).
@@ -35,7 +35,7 @@ impl JsonFileCHandler {
             storage_effects: HashMap::new(),
             storage_mutas: HashMap::new(),
             storage_buffs: HashMap::new(),
-            fingerprint: None,
+            fingerprint: String::new(),
         }
     }
 }
@@ -64,27 +64,27 @@ impl ch::CacheHandler for JsonFileCHandler {
     fn get_buff(&self, id: ReeInt) -> Option<&Buff> {
         self.storage_buffs.get(&id)
     }
-    fn get_fingerprint(&self) -> Option<&String> {
-        self.fingerprint.as_ref()
+    fn get_fingerprint(&self) -> &String {
+        &self.fingerprint
     }
     fn update_cache(&mut self, data: ch::Container, fingerprint: String) {
-        // Update memory cache
-        move_data(data.items, &mut self.storage_items);
-        move_data(data.attrs, &mut self.storage_attrs);
-        move_data(data.effects, &mut self.storage_effects);
-        move_data(data.mutas, &mut self.storage_mutas);
-        move_data(data.buffs, &mut self.storage_buffs);
-        self.fingerprint = Some(fingerprint);
         // Update persistent cache
-        let data = Container::new(
-            self.storage_items.values().cloned().collect(),
-            self.storage_attrs.values().cloned().collect(),
-            self.storage_mutas.values().cloned().collect(),
-            self.storage_effects.values().cloned().collect(),
-            self.storage_buffs.values().cloned().collect(),
-            self.fingerprint.clone().unwrap(),
+        let cache = Container::new(
+            data.items,
+            data.attrs,
+            data.mutas,
+            data.effects,
+            data.buffs,
+            fingerprint,
         );
-        let json = serde_json::json!(&data).to_string();
+        let json = serde_json::json!(&cache).to_string();
+        // Update memory cache
+        move_data(cache.items, &mut self.storage_items);
+        move_data(cache.attrs, &mut self.storage_attrs);
+        move_data(cache.effects, &mut self.storage_effects);
+        move_data(cache.mutas, &mut self.storage_mutas);
+        move_data(cache.buffs, &mut self.storage_buffs);
+        self.fingerprint = cache.fingerprint;
     }
 }
 

@@ -20,7 +20,7 @@ pub trait CacheHandler: fmt::Debug {
     /// Get cached warfare buff.
     fn get_buff(&self, id: ReeInt) -> Option<&Buff>;
     /// Get cached data fingerprint.
-    fn get_fingerprint(&self) -> Option<&String>;
+    fn get_fingerprint(&self) -> &String;
     /// Update cache.
     fn update_cache(&mut self, data: Container, fingerprint: String);
 }
