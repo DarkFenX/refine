@@ -49,9 +49,10 @@ fn main() {
     let dh = phobos::PhbFileDHandler::new("/home/dfx/Desktop/phobos_tq_en-us");
     // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
     let cont = cg::generate_cache(&dh).unwrap();
-    let mut ch = Box::new(json_file::JsonFileCHandler::new(PathBuf::from(
-        "/home/dfx/Workspace/eve/reefast/cache/tq.json.bz2",
-    )));
+    let mut ch = Box::new(json_file::JsonFileCHandler::new(
+        PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
+        "tq",
+    ));
     let fingerprint = format!("{}_{}", dh.get_version().unwrap_or("unknown".into()), VERSION);
     ch.update_cache(cont, fingerprint);
     let item = ch.get_item(11184).unwrap();

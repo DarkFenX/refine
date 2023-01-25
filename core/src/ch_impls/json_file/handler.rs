@@ -1,23 +1,25 @@
 use std::{
     collections::HashMap,
     fmt,
-    fs::File,
-    io::{self, Read},
+    fs::{create_dir_all, OpenOptions},
+    io,
     path::PathBuf,
 };
+
+use log;
 
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
     defines::ReeInt,
-    util::Result,
 };
 
 use super::{container::Container, key::Key};
 
 /// A struct for handling compressed JSON cache
 pub struct JsonFileCHandler {
-    cache_path: PathBuf,
+    folder: PathBuf,
+    name: String,
     storage_items: HashMap<ReeInt, Item>,
     storage_attrs: HashMap<ReeInt, Attr>,
     storage_effects: HashMap<ReeInt, Effect>,
@@ -27,9 +29,10 @@ pub struct JsonFileCHandler {
 }
 impl JsonFileCHandler {
     /// Constructs new `JsonFileCHandler` using cache file path (path ending with .json.bz2).
-    pub fn new<T: Into<PathBuf>>(path: T) -> JsonFileCHandler {
+    pub fn new<T: Into<PathBuf>, U: Into<String>>(folder: T, name: U) -> JsonFileCHandler {
         JsonFileCHandler {
-            cache_path: path.into(),
+            folder: folder.into(),
+            name: name.into(),
             storage_items: HashMap::new(),
             storage_attrs: HashMap::new(),
             storage_effects: HashMap::new(),
@@ -44,7 +47,7 @@ impl fmt::Debug for JsonFileCHandler {
         write!(
             f,
             "JsonFileCHandler(\"{}\")",
-            self.cache_path.to_str().unwrap_or("<error>")
+            get_full_path(&self.folder, &self.name).to_str().unwrap_or("<error>")
         )
     }
 }
@@ -77,7 +80,16 @@ impl ch::CacheHandler for JsonFileCHandler {
             data.buffs,
             fingerprint,
         );
-        let json = serde_json::json!(&cache).to_string();
+        match create_dir_all(&self.folder) {
+            Ok(_) => write_cache(&self.folder, &self.name, &cache),
+            Err(e) => {
+                match e.kind() {
+                    // We don't really care if it already exists, so just write the cache
+                    io::ErrorKind::AlreadyExists => write_cache(&self.folder, &self.name, &cache),
+                    _ => log::error!("unable to create cache folder: {}", e),
+                };
+            }
+        }
         // Update memory cache
         move_data(cache.items, &mut self.storage_items);
         move_data(cache.attrs, &mut self.storage_attrs);
@@ -86,6 +98,29 @@ impl ch::CacheHandler for JsonFileCHandler {
         move_data(cache.buffs, &mut self.storage_buffs);
         self.fingerprint = cache.fingerprint;
     }
+}
+
+fn get_full_path(folder: &PathBuf, name: &String) -> PathBuf {
+    folder.join(format!("{}.json.zst", name))
+}
+
+fn write_cache(folder: &PathBuf, name: &String, cache: &Container) {
+    let full_path = get_full_path(folder, name);
+    let file = match OpenOptions::new().create(true).write(true).open(full_path) {
+        Ok(f) => f,
+        Err(e) => {
+            log::error!("unable to open cache file: {}", e);
+            return;
+        }
+    };
+    let json = serde_json::json!(&cache).to_string();
+    match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
+        Ok(_) => (),
+        Err(e) => {
+            log::error!("unable to write cache file: {}", e);
+            return;
+        }
+    };
 }
 
 fn move_data<T>(vec: Vec<T>, map: &mut HashMap<ReeInt, T>)
