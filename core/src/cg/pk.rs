@@ -4,7 +4,7 @@ use std::collections::HashSet;
 
 use crate::util::Named;
 
-use super::data::{Data, Pk};
+use super::data::{CGData, Pk};
 
 fn dedup_pks_vec<T>(vec: &mut Vec<T>, warns: &mut Vec<String>)
 where
@@ -29,17 +29,17 @@ where
     }
 }
 
-pub(super) fn dedup_pks(data: &mut Data, warns: &mut Vec<String>) {
-    dedup_pks_vec(&mut data.items, warns);
-    dedup_pks_vec(&mut data.groups, warns);
-    dedup_pks_vec(&mut data.attrs, warns);
-    dedup_pks_vec(&mut data.item_attrs, warns);
-    dedup_pks_vec(&mut data.effects, warns);
-    dedup_pks_vec(&mut data.item_effects, warns);
-    dedup_pks_vec(&mut data.abils, warns);
-    dedup_pks_vec(&mut data.item_abils, warns);
-    dedup_pks_vec(&mut data.buffs, warns);
-    dedup_pks_vec(&mut data.item_srqs, warns);
-    dedup_pks_vec(&mut data.muta_items, warns);
-    dedup_pks_vec(&mut data.muta_attrs, warns);
+pub(super) fn dedup_pks(cg_data: &mut CGData, warns: &mut Vec<String>) {
+    dedup_pks_vec(&mut cg_data.items, warns);
+    dedup_pks_vec(&mut cg_data.groups, warns);
+    dedup_pks_vec(&mut cg_data.attrs, warns);
+    dedup_pks_vec(&mut cg_data.item_attrs, warns);
+    dedup_pks_vec(&mut cg_data.effects, warns);
+    dedup_pks_vec(&mut cg_data.item_effects, warns);
+    dedup_pks_vec(&mut cg_data.abils, warns);
+    dedup_pks_vec(&mut cg_data.item_abils, warns);
+    dedup_pks_vec(&mut cg_data.buffs, warns);
+    dedup_pks_vec(&mut cg_data.item_srqs, warns);
+    dedup_pks_vec(&mut cg_data.muta_items, warns);
+    dedup_pks_vec(&mut cg_data.muta_attrs, warns);
 }

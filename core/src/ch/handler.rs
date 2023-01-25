@@ -5,7 +5,7 @@ use crate::{
     defines::ReeInt,
 };
 
-use super::container::Container;
+use super::data::CHData;
 
 /// Cache handler interface definition.
 pub trait CacheHandler: fmt::Debug {
@@ -22,5 +22,5 @@ pub trait CacheHandler: fmt::Debug {
     /// Get cached data fingerprint.
     fn get_fingerprint(&self) -> &String;
     /// Update cache.
-    fn update_cache(&mut self, data: Container, fingerprint: String);
+    fn update_cache(&mut self, data: CHData, fingerprint: String);
 }

@@ -14,7 +14,7 @@ pub(super) fn attrval_to_fk(val: Option<ReeFloat>) -> Option<ReeInt> {
 }
 
 /// Container for data, used internally by cache generator.
-pub(in super::super) struct Data {
+pub(in super::super) struct CGData {
     pub(in super::super) items: Vec<dh::Item>,
     pub(in super::super) groups: Vec<dh::ItemGroup>,
     pub(in super::super) attrs: Vec<dh::Attr>,
@@ -28,9 +28,9 @@ pub(in super::super) struct Data {
     pub(in super::super) muta_items: Vec<dh::MutaItemConv>,
     pub(in super::super) muta_attrs: Vec<dh::MutaAttrMod>,
 }
-impl Data {
-    pub(in super::super) fn new() -> Data {
-        Data {
+impl CGData {
+    pub(in super::super) fn new() -> CGData {
+        CGData {
             items: Vec::new(),
             groups: Vec::new(),
             attrs: Vec::new(),
@@ -58,19 +58,19 @@ impl Support {
             grp_cat_map: HashMap::new(),
         }
     }
-    pub(in super::super) fn post_pk(&mut self, data: &Data) {
-        self.fill_attr_unit_map(&data);
-        self.fill_grp_cat_map(&data);
+    pub(in super::super) fn post_pk(&mut self, cg_data: &CGData) {
+        self.fill_attr_unit_map(&cg_data);
+        self.fill_grp_cat_map(&cg_data);
     }
-    fn fill_attr_unit_map(&mut self, data: &Data) {
-        for attr in data.attrs.iter() {
+    fn fill_attr_unit_map(&mut self, cg_data: &CGData) {
+        for attr in cg_data.attrs.iter() {
             if let Some(unit) = attr.unit_id {
                 self.attr_unit_map.insert(attr.id, unit);
             }
         }
     }
-    fn fill_grp_cat_map(&mut self, data: &Data) {
-        for grp in data.groups.iter() {
+    fn fill_grp_cat_map(&mut self, cg_data: &CGData) {
+        for grp in cg_data.groups.iter() {
             self.grp_cat_map.insert(grp.id, grp.category_id);
         }
     }
@@ -96,14 +96,14 @@ impl KeyDb {
         }
     }
     // Primary keys
-    pub(in super::super) fn new_pkdb(data: &Data) -> KeyDb {
+    pub(in super::super) fn new_pkdb(cg_data: &CGData) -> KeyDb {
         let mut pkdb = KeyDb::new();
-        KeyDb::extend_pk_vec(&mut pkdb.items, &data.items);
-        KeyDb::extend_pk_vec(&mut pkdb.groups, &data.groups);
-        KeyDb::extend_pk_vec(&mut pkdb.attrs, &data.attrs);
-        KeyDb::extend_pk_vec(&mut pkdb.effects, &data.effects);
-        KeyDb::extend_pk_vec(&mut pkdb.abils, &data.abils);
-        KeyDb::extend_pk_vec(&mut pkdb.buffs, &data.buffs);
+        KeyDb::extend_pk_vec(&mut pkdb.items, &cg_data.items);
+        KeyDb::extend_pk_vec(&mut pkdb.groups, &cg_data.groups);
+        KeyDb::extend_pk_vec(&mut pkdb.attrs, &cg_data.attrs);
+        KeyDb::extend_pk_vec(&mut pkdb.effects, &cg_data.effects);
+        KeyDb::extend_pk_vec(&mut pkdb.abils, &cg_data.abils);
+        KeyDb::extend_pk_vec(&mut pkdb.buffs, &cg_data.buffs);
         pkdb
     }
     fn extend_pk_vec<T: Pk>(set: &mut HashSet<ReeInt>, vec: &Vec<T>) {
@@ -112,20 +112,20 @@ impl KeyDb {
         }
     }
     // Foreign keys
-    pub(in super::super) fn new_fkdb(data: &Data, supp: &Support) -> KeyDb {
+    pub(in super::super) fn new_fkdb(cg_data: &CGData, supp: &Support) -> KeyDb {
         let mut fkdb = KeyDb::new();
-        fkdb.extend_fk_vec(&data.items, &supp);
-        fkdb.extend_fk_vec(&data.groups, &supp);
-        fkdb.extend_fk_vec(&data.attrs, &supp);
-        fkdb.extend_fk_vec(&data.item_attrs, &supp);
-        fkdb.extend_fk_vec(&data.effects, &supp);
-        fkdb.extend_fk_vec(&data.item_effects, &supp);
-        fkdb.extend_fk_vec(&data.abils, &supp);
-        fkdb.extend_fk_vec(&data.item_abils, &supp);
-        fkdb.extend_fk_vec(&data.buffs, &supp);
-        fkdb.extend_fk_vec(&data.item_srqs, &supp);
-        fkdb.extend_fk_vec(&data.muta_items, &supp);
-        fkdb.extend_fk_vec(&data.muta_attrs, &supp);
+        fkdb.extend_fk_vec(&cg_data.items, &supp);
+        fkdb.extend_fk_vec(&cg_data.groups, &supp);
+        fkdb.extend_fk_vec(&cg_data.attrs, &supp);
+        fkdb.extend_fk_vec(&cg_data.item_attrs, &supp);
+        fkdb.extend_fk_vec(&cg_data.effects, &supp);
+        fkdb.extend_fk_vec(&cg_data.item_effects, &supp);
+        fkdb.extend_fk_vec(&cg_data.abils, &supp);
+        fkdb.extend_fk_vec(&cg_data.item_abils, &supp);
+        fkdb.extend_fk_vec(&cg_data.buffs, &supp);
+        fkdb.extend_fk_vec(&cg_data.item_srqs, &supp);
+        fkdb.extend_fk_vec(&cg_data.muta_items, &supp);
+        fkdb.extend_fk_vec(&cg_data.muta_attrs, &supp);
         fkdb
     }
     fn extend_fk_vec<T: Fk>(&mut self, vec: &Vec<T>, supp: &Support) {

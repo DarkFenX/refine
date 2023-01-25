@@ -14,7 +14,7 @@ use crate::{
     defines::ReeInt,
 };
 
-use super::{container::Container, key::Key};
+use super::{data::CacheData, key::Key};
 
 /// A struct for handling compressed JSON cache
 pub struct JsonFileCHandler {
@@ -70,9 +70,9 @@ impl ch::CacheHandler for JsonFileCHandler {
     fn get_fingerprint(&self) -> &String {
         &self.fingerprint
     }
-    fn update_cache(&mut self, data: ch::Container, fingerprint: String) {
+    fn update_cache(&mut self, data: ch::CHData, fingerprint: String) {
         // Update persistent cache
-        let cache = Container::new(
+        let cache = CacheData::new(
             data.items,
             data.attrs,
             data.mutas,
@@ -104,7 +104,7 @@ fn get_full_path(folder: &PathBuf, name: &String) -> PathBuf {
     folder.join(format!("{}.json.zst", name))
 }
 
-fn write_cache(folder: &PathBuf, name: &String, cache: &Container) {
+fn write_cache(folder: &PathBuf, name: &String, cache: &CacheData) {
     let full_path = get_full_path(folder, name);
     let file = match OpenOptions::new().create(true).write(true).open(full_path) {
         Ok(f) => f,

@@ -10,18 +10,18 @@ use crate::{
     util::Named,
 };
 
-use super::super::{data::Support, Data};
+use super::super::{data::Support, CGData};
 
-pub(super) fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -> Vec<ct::Item> {
+pub(super) fn conv_items(cg_data: &CGData, supp: &Support, warns: &mut Vec<String>) -> Vec<ct::Item> {
     // Auxiliary maps
-    let defeff_map = data
+    let defeff_map = cg_data
         .item_effects
         .iter()
         .filter(|v| v.is_default)
         .map(|v| (v.item_id, v.effect_id))
         .collect::<HashMap<ReeInt, ReeInt>>();
     let mut item_map = HashMap::new();
-    for item_data in data.items.iter() {
+    for item_data in cg_data.items.iter() {
         // Item category ID
         let cat_id = match supp.grp_cat_map.get(&item_data.group_id) {
             Some(&cid) => cid,
@@ -55,19 +55,19 @@ pub(super) fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -
         item_map.insert(item.id, item);
     }
     // Item attributes
-    for item_attr in data.item_attrs.iter() {
+    for item_attr in cg_data.item_attrs.iter() {
         item_map
             .get_mut(&item_attr.item_id)
             .and_then(|v| v.attr_vals.insert(item_attr.attr_id, item_attr.value));
     }
     // Item effects & extended effect data from abilities
-    for item_effect in data.item_effects.iter() {
+    for item_effect in cg_data.item_effects.iter() {
         item_map.get_mut(&item_effect.item_id).and_then(|v| {
             v.effect_datas
                 .insert(item_effect.effect_id, ct::ItemEffData::new(None, None, None))
         });
     }
-    for item_abil in data.item_abils.iter() {
+    for item_abil in cg_data.item_abils.iter() {
         match item_map.get_mut(&item_abil.item_id) {
             None => continue,
             Some(item) => match get_abil_effect(item_abil.abil_id) {
@@ -84,7 +84,7 @@ pub(super) fn conv_items(data: &Data, supp: &Support, warns: &mut Vec<String>) -
         }
     }
     // Item skill requirements
-    for item_srq in data.item_srqs.iter() {
+    for item_srq in cg_data.item_srqs.iter() {
         item_map
             .get_mut(&item_srq.item_id)
             .and_then(|v| v.srqs.insert(item_srq.skill_id, item_srq.level));

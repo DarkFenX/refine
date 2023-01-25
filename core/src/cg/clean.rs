@@ -8,12 +8,12 @@ use crate::{
     util::{Error, Named, Result},
 };
 
-use super::data::{Data, KeyDb, Pk, Support};
+use super::data::{CGData, KeyDb, Pk, Support};
 
 const MAX_CYCLES: i32 = 100;
 
-pub(super) fn clean_unused(alive: &mut Data, supp: &Support) -> Result<()> {
-    let mut trash = Data::new();
+pub(super) fn clean_unused(alive: &mut CGData, supp: &Support) -> Result<()> {
+    let mut trash = CGData::new();
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, &supp);
 
@@ -45,7 +45,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initial preparation functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn trash_all(alive: &mut Data, trash: &mut Data) {
+fn trash_all(alive: &mut CGData, trash: &mut CGData) {
     move_data(&mut alive.items, &mut trash.items, |_| true);
     move_data(&mut alive.groups, &mut trash.groups, |_| true);
     move_data(&mut alive.attrs, &mut trash.attrs, |_| true);
@@ -60,7 +60,7 @@ fn trash_all(alive: &mut Data, trash: &mut Data) {
     move_data(&mut alive.muta_attrs, &mut trash.muta_attrs, |_| true);
 }
 
-fn restore_core_items(alive: &mut Data, trash: &mut Data, supp: &Support) {
+fn restore_core_items(alive: &mut CGData, trash: &mut CGData, supp: &Support) {
     let cats = vec![
         itemcats::CHARGE,
         itemcats::DRONE,
@@ -83,7 +83,7 @@ fn restore_core_items(alive: &mut Data, trash: &mut Data, supp: &Support) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cyclic restoration functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn restore_item_data(alive: &mut Data, trash: &mut Data) -> bool {
+fn restore_item_data(alive: &mut CGData, trash: &mut CGData) -> bool {
     let mut item_ids = HashSet::new();
     for item in alive.items.iter() {
         item_ids.extend(item.get_pk());
@@ -110,7 +110,7 @@ fn restore_item_data(alive: &mut Data, trash: &mut Data) -> bool {
     })
 }
 
-fn restore_fk_tgts(alive: &mut Data, trash: &mut Data, supp: &Support) -> bool {
+fn restore_fk_tgts(alive: &mut CGData, trash: &mut CGData, supp: &Support) -> bool {
     let fkdb = KeyDb::new_fkdb(alive, supp);
     move_data(&mut trash.items, &mut alive.items, |v| fkdb.items.contains(&v.id))
         | move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
@@ -123,7 +123,7 @@ fn restore_fk_tgts(alive: &mut Data, trash: &mut Data, supp: &Support) -> bool {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reporting
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn cleanup_report(alive: &Data, trash: &Data) {
+fn cleanup_report(alive: &CGData, trash: &CGData) {
     vec_report(&alive.items, &trash.items);
     vec_report(&alive.groups, &trash.groups);
     vec_report(&alive.attrs, &trash.attrs);

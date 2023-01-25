@@ -8,11 +8,11 @@ use crate::{
     util::{Error, Named, Result},
 };
 
-use super::Data;
+use super::CGData;
 
-pub(super) fn conv_buffs(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
+pub(super) fn conv_buffs(cg_data: &CGData, warns: &mut Vec<String>) -> Vec<ct::Buff> {
     let mut converted = Vec::new();
-    for buff_data in data.buffs.iter().sorted_by_key(|v| v.id) {
+    for buff_data in cg_data.buffs.iter().sorted_by_key(|v| v.id) {
         let op = match conv_buff_op(&buff_data.operation) {
             Ok(op) => op,
             Err(e) => {

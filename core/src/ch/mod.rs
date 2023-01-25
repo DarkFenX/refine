@@ -1,8 +1,8 @@
 //! Cache handling interface.
 //! TODO: more docs
 
-pub use container::Container;
+pub use data::CHData;
 pub use handler::CacheHandler;
 
-mod container;
+mod data;
 mod handler;

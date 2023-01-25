@@ -7,36 +7,36 @@ use crate::{consts, defines::ReeInt, dh, util::Named};
 
 use super::{
     data::{Fk, KeyDb, Pk, Support},
-    Data,
+    CGData,
 };
 
 /// Ensure that assumptions REEFAST makes about the data are true.
 ///
 /// See documentation for [`dh`](crate::dh) module about assumptions.
-pub(super) fn validate(data: &mut Data, supp: &Support, warns: &mut Vec<String>) {
-    fk_check(data, warns, supp);
-    default_effects(data, warns);
-    known_fighter_abilities(data, warns);
-    fighter_ability_effect(data, warns);
+pub(super) fn validate(cg_data: &mut CGData, supp: &Support, warns: &mut Vec<String>) {
+    fk_check(cg_data, warns, supp);
+    default_effects(cg_data, warns);
+    known_fighter_abilities(cg_data, warns);
+    fighter_ability_effect(cg_data, warns);
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
 /// a good idea, since it can help trace down the case when something fails to load from cache
 /// later.
-fn fk_check(data: &Data, warns: &mut Vec<String>, supp: &Support) {
-    let pkdb = KeyDb::new_pkdb(data);
-    fk_check_referer(&data.items, &pkdb, supp, warns);
-    fk_check_referer(&data.groups, &pkdb, supp, warns);
-    fk_check_referer(&data.attrs, &pkdb, supp, warns);
-    fk_check_referer(&data.item_attrs, &pkdb, supp, warns);
-    fk_check_referer(&data.effects, &pkdb, supp, warns);
-    fk_check_referer(&data.item_effects, &pkdb, supp, warns);
-    fk_check_referer(&data.abils, &pkdb, supp, warns);
-    fk_check_referer(&data.item_abils, &pkdb, supp, warns);
-    fk_check_referer(&data.buffs, &pkdb, supp, warns);
-    fk_check_referer(&data.item_srqs, &pkdb, supp, warns);
-    fk_check_referer(&data.muta_items, &pkdb, supp, warns);
-    fk_check_referer(&data.muta_attrs, &pkdb, supp, warns);
+fn fk_check(cg_data: &CGData, warns: &mut Vec<String>, supp: &Support) {
+    let pkdb = KeyDb::new_pkdb(cg_data);
+    fk_check_referer(&cg_data.items, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.groups, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.attrs, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.item_attrs, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.effects, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.item_effects, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.abils, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.item_abils, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.buffs, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.item_srqs, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.muta_items, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.muta_attrs, &pkdb, supp, warns);
 }
 fn fk_check_referer<T>(rer_vec: &Vec<T>, pkdb: &KeyDb, supp: &Support, warns: &mut Vec<String>)
 where
@@ -98,10 +98,10 @@ fn fk_check_referee<T, F>(
 }
 
 /// One default effect per item max. Needed for Item generation.
-fn default_effects(data: &mut Data, warns: &mut Vec<String>) {
+fn default_effects(cg_data: &mut CGData, warns: &mut Vec<String>) {
     let mut unsets = 0;
     let mut seen_des = HashSet::new();
-    for item_effect in data.item_effects.iter_mut() {
+    for item_effect in cg_data.item_effects.iter_mut() {
         if item_effect.is_default {
             if !seen_des.insert(item_effect.get_pk()) {
                 unsets += 1;
@@ -117,16 +117,16 @@ fn default_effects(data: &mut Data, warns: &mut Vec<String>) {
 }
 
 /// Remove unknown fighter abilities.
-fn known_fighter_abilities(data: &mut Data, warns: &mut Vec<String>) {
+fn known_fighter_abilities(cg_data: &mut CGData, warns: &mut Vec<String>) {
     let mut unknown_ids = HashSet::new();
-    let abils = data
+    let abils = cg_data
         .abils
         .drain_filter(|v| consts::get_abil_effect(v.id).is_none())
         .update(|v| {
             unknown_ids.insert(v.id);
         })
         .count();
-    let item_abils = data
+    let item_abils = cg_data
         .item_abils
         .drain_filter(|v| consts::get_abil_effect(v.abil_id).is_none())
         .update(|v| {
@@ -148,16 +148,17 @@ fn known_fighter_abilities(data: &mut Data, warns: &mut Vec<String>) {
 }
 
 /// Remove item abilities which have no effects to handle them.
-fn fighter_ability_effect(data: &mut Data, warns: &mut Vec<String>) {
+fn fighter_ability_effect(cg_data: &mut CGData, warns: &mut Vec<String>) {
     let mut item_eff_map = HashMap::new();
-    for item_eff in data.item_effects.iter() {
+    for item_eff in cg_data.item_effects.iter() {
         item_eff_map
             .entry(item_eff.item_id)
             .or_insert_with(|| HashSet::new())
             .insert(item_eff.effect_id);
     }
     let mut invalids = HashSet::new();
-    data.item_abils
+    cg_data
+        .item_abils
         .drain_filter(|v| match consts::get_abil_effect(v.abil_id) {
             Some(eid) => match item_eff_map.get(&v.item_id) {
                 Some(eids) => !eids.contains(&eid),

@@ -11,7 +11,7 @@ use crate::{
     util::{Error, Named, Result},
 };
 
-use super::Data;
+use super::CGData;
 
 impl dh::FighterAbil {
     fn get_target_mode(&self) -> String {
@@ -25,9 +25,9 @@ impl dh::FighterAbil {
     }
 }
 
-pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effect> {
+pub(super) fn conv_effects(cg_data: &CGData, warns: &mut Vec<String>) -> Vec<ct::Effect> {
     let mut effects = Vec::new();
-    for effect_data in data.effects.iter() {
+    for effect_data in cg_data.effects.iter() {
         let (state, tgt_mode) = match effect_data.category_id {
             effcats::PASSIVE => (State::Offline, TgtMode::None),
             effcats::ACTIVE => (State::Active, TgtMode::None),
@@ -125,9 +125,9 @@ pub(super) fn conv_effects(data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effe
         effects.push(effect);
     }
     // Transfer some data from abilities onto effects
-    let hisec_ban_map = extract_ability_map(data, dh::FighterAbil::get_disallow_hisec);
-    let lowsec_ban_map = extract_ability_map(data, dh::FighterAbil::get_disallow_lowsec);
-    let tgt_mode_map = extract_ability_map(data, dh::FighterAbil::get_target_mode);
+    let hisec_ban_map = extract_ability_map(cg_data, dh::FighterAbil::get_disallow_hisec);
+    let lowsec_ban_map = extract_ability_map(cg_data, dh::FighterAbil::get_disallow_lowsec);
+    let tgt_mode_map = extract_ability_map(cg_data, dh::FighterAbil::get_target_mode);
     for effect in effects.iter_mut() {
         // Hisec flag
         match hisec_ban_map.get(&effect.id) {
@@ -330,13 +330,13 @@ fn get_arg_str(args: &HashMap<String, dh::Primitive>, name: &str) -> Result<Stri
     }
 }
 
-fn extract_ability_map<F, T>(data: &Data, getter: F) -> HashMap<ReeInt, HashSet<T>>
+fn extract_ability_map<F, T>(cg_data: &CGData, getter: F) -> HashMap<ReeInt, HashSet<T>>
 where
     F: Fn(&dh::FighterAbil) -> T,
     T: Eq + Hash,
 {
     let mut map = HashMap::new();
-    for abil_data in data.abils.iter() {
+    for abil_data in cg_data.abils.iter() {
         match get_abil_effect(abil_data.id) {
             None => continue,
             Some(eff_id) => map
