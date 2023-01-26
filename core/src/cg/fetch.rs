@@ -39,7 +39,6 @@ where
 }
 
 pub(super) fn fetch_data(data_handler: &dyn DataHandler, cg_data: &mut CGData) -> Result<()> {
-    log::debug!("using {:?} to fetch data", data_handler);
     fetch_data_vec(data_handler, DataHandler::get_items, &mut cg_data.items)?;
     fetch_data_vec(data_handler, DataHandler::get_item_groups, &mut cg_data.groups)?;
     fetch_data_vec(data_handler, DataHandler::get_attrs, &mut cg_data.attrs)?;

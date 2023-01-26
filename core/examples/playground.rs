@@ -4,13 +4,7 @@ use std::{path::PathBuf, thread::sleep, time::Duration};
 
 use chrono;
 
-use reefast::{
-    ch::CacheHandler,
-    ch_impls::json_file,
-    dh::DataHandler,
-    dh_impls::phobos,
-    SrcMgr, VERSION,
-};
+use reefast::{ch::CacheHandler, ch_impls::json_file, dh::DataHandler, dh_impls::phobos, SrcMgr, VERSION};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()

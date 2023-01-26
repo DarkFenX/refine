@@ -1,7 +1,6 @@
-//! Source management.
+//! Data source management.
 //!
-//! Source is an entity which eases management of EVE static data versions.
-//! TODO more detailed description
+//! Data sources ease management of EVE static data versions.
 
 mod mgr;
 mod src;

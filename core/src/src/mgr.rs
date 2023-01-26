@@ -31,7 +31,9 @@ impl SrcMgr {
         mut cache_handler: Box<dyn CacheHandler>,
         make_default: bool,
     ) -> Result<()> {
-        log::info!("adding source with alias \"{}\"", alias);
+        log::info!("adding source with alias \"{}\", default={}", alias, make_default);
+        log::info!("using {:?} as data handler", data_handler);
+        log::info!("using {:?} as cache handler", cache_handler);
         if self.sources.contains_key(alias) {
             return Err(Error::new(format!("source with alias \"{}\" already exists", alias)));
         }
@@ -88,6 +90,7 @@ impl SrcMgr {
 
     /// Remove data source which was stored against passed alias.
     pub fn del(&mut self, alias: &str) -> Result<()> {
+        log::info!("removing source with alias \"{}\"", alias);
         self.sources
             .remove(alias)
             .ok_or(Error::new(format!("no source with alias \"{}\"", alias)))?;
