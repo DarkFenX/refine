@@ -31,7 +31,7 @@ pub struct Item {
 }
 impl Item {
     /// Make a new item out of passed data.
-    pub fn new(
+    pub(crate) fn new(
         id: ReeInt,
         itype: Option<ItemType>,
         grp_id: ReeInt,
@@ -71,7 +71,11 @@ pub struct ItemEffData {
 }
 impl ItemEffData {
     /// Make a new per-item effect data container out of passed data.
-    pub fn new(cd: Option<ReeFloat>, charges: Option<ReeInt>, charge_reload_time: Option<ReeFloat>) -> ItemEffData {
+    pub(crate) fn new(
+        cd: Option<ReeFloat>,
+        charges: Option<ReeInt>,
+        charge_reload_time: Option<ReeFloat>,
+    ) -> ItemEffData {
         ItemEffData {
             cd,
             charges,

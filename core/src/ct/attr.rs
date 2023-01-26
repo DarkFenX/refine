@@ -23,7 +23,7 @@ pub struct Attr {
 }
 impl Attr {
     /// Make a new dogma attribute out of passed data.
-    pub fn new(
+    pub(crate) fn new(
         id: ReeInt,
         penalizable: bool,
         hig: bool,

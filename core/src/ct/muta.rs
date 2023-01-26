@@ -19,7 +19,7 @@ pub struct Muta {
 }
 impl Muta {
     /// Make a new mutaplasmid out of passed data.
-    pub fn new(id: ReeInt) -> Muta {
+    pub(crate) fn new(id: ReeInt) -> Muta {
         Muta {
             id,
             item_map: HashMap::new(),
@@ -43,7 +43,7 @@ pub struct MutaAttrRange {
 }
 impl MutaAttrRange {
     /// Make a new attribute mutation range.
-    pub fn new(min_mult: ReeFloat, max_mult: ReeFloat) -> MutaAttrRange {
+    pub(crate) fn new(min_mult: ReeFloat, max_mult: ReeFloat) -> MutaAttrRange {
         MutaAttrRange { min_mult, max_mult }
     }
 }

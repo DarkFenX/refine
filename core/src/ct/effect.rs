@@ -49,7 +49,7 @@ pub struct Effect {
 }
 impl Effect {
     /// Make a new dogma effect out of passed data.
-    pub fn new(
+    pub(crate) fn new(
         id: ReeInt,
         state: State,
         tgt_mode: TgtMode,
@@ -114,7 +114,7 @@ pub struct AttrMod {
 }
 impl AttrMod {
     /// Make a new attribute modifier out of passed data.
-    pub fn new(
+    pub(crate) fn new(
         afor_attr_id: ReeInt,
         aggr_mode: ModAggrMode,
         op: ModOp,
