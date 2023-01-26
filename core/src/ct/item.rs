@@ -1,10 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{
-    consts::ItemType,
-    defines::{ReeFloat, ReeInt},
-    util::Named,
-};
+use crate::{consts::ItemType, util::Named, ReeFloat, ReeInt};
 
 /// Represents an item.
 ///

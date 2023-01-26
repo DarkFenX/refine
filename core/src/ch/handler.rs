@@ -2,8 +2,7 @@ use std::fmt;
 
 use crate::{
     ct::{Attr, Buff, Effect, Item, Muta},
-    defines::ReeInt,
-    util::Result,
+    ReeInt, Result,
 };
 
 use super::data::CHData;

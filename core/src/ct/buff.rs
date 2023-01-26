@@ -1,7 +1,7 @@
 use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModOp},
-    defines::ReeInt,
     util::Named,
+    ReeInt,
 };
 
 /// Represents a dogma buff.

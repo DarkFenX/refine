@@ -11,8 +11,7 @@ use log;
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    defines::ReeInt,
-    util::{Error, Result},
+    Error, ReeInt, Result,
 };
 
 use super::{data::CacheData, key::Key};
@@ -31,7 +30,7 @@ pub struct JsonFileCHandler {
 impl JsonFileCHandler {
     /// Constructs new `JsonFileCHandler` using full path to cache folder and file name (without
     /// extension).
-    pub fn new<T: Into<PathBuf>, U: Into<String>>(folder: T, name: U) -> JsonFileCHandler {
+    pub fn new<F: Into<PathBuf>, N: Into<String>>(folder: F, name: N) -> JsonFileCHandler {
         JsonFileCHandler {
             folder: folder.into(),
             name: name.into(),

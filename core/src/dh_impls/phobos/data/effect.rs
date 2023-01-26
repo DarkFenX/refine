@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::{defines::ReeInt, dh};
+use crate::{dh, ReeInt};
 
 use super::{super::fsd::FsdMerge, aux::into_opt};
 
@@ -71,8 +71,8 @@ mod dgmmod {
     use serde_json::{Map, Value};
 
     use crate::{
-        defines::{ReeFloat, ReeInt},
         dh::{self, Primitive},
+        ReeFloat, ReeInt,
     };
 
     use super::EffectMod;

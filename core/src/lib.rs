@@ -10,14 +10,17 @@
 //! - the engine converts the data into optimized internal format
 //! - you compose fit objects and fetch data from there
 
+pub use defines::{ReeFloat, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
+pub use util::{error::Error, result::Result};
+
 pub(crate) mod cg;
 pub mod ch;
 pub mod ch_impls;
 pub mod consts;
 pub mod ct;
-pub mod defines;
+mod defines;
 pub mod dh;
 pub mod dh_impls;
 pub mod prelude;
 pub mod src;
-pub mod util;
+mod util;

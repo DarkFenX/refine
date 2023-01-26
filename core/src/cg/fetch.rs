@@ -5,7 +5,8 @@ use log;
 
 use crate::{
     dh::{self, DataHandler},
-    util::{Error, Named, Result},
+    util::Named,
+    Error, Result,
 };
 
 use super::data::CGData;

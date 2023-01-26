@@ -5,10 +5,9 @@ use std::{
 
 use crate::{
     consts::{effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
-    ct,
-    defines::ReeInt,
-    dh,
-    util::{Error, Named, Result},
+    ct, dh,
+    util::Named,
+    Error, ReeInt, Result,
 };
 
 use super::CGData;

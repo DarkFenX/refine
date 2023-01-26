@@ -1,7 +1,6 @@
 use crate::{
     consts::{attrs, units},
-    defines::ReeInt,
-    dh, util,
+    dh, util, ReeInt,
 };
 
 use super::{aux, Fk, Pk, Support};

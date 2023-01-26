@@ -1,16 +1,16 @@
 #![allow(warnings, unused)]
 
-use std::path::PathBuf;
+use std::{path::PathBuf, thread::sleep, time::Duration};
 
 use chrono;
 
 use reefast::{
     ch::CacheHandler,
     ch_impls::json_file,
-    defines::VERSION,
     dh::{self, DataHandler},
     dh_impls::phobos,
     src::SrcMgr,
+    VERSION,
 };
 
 fn setup_logger() -> Result<(), fern::InitError> {
@@ -43,5 +43,7 @@ fn main() {
     srcmgr.add("tq", dh, ch, true);
     let item = srcmgr.get_default().unwrap().cache_handler.get_item(11184).unwrap();
     println!("Item with id {} fetched", item.id);
+    //sleep(Duration::new(10, 0));
     srcmgr.del("tq");
+    //sleep(Duration::new(10, 0));
 }

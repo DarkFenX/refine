@@ -5,7 +5,8 @@ use log;
 
 use crate::{
     consts::{itemcats, itemgrps},
-    util::{Error, Named, Result},
+    util::Named,
+    Error, Result,
 };
 
 use super::data::{CGData, KeyDb, Pk, Support};

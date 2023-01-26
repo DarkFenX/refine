@@ -1,4 +1,4 @@
-use crate::defines::{ReeFloat, ReeInt};
+use crate::{ReeFloat, ReeInt};
 
 /// Auxiliary entity for "primitive" data.
 #[derive(Debug)]

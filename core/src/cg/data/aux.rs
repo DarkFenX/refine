@@ -1,9 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::{
-    defines::{ReeFloat, ReeInt},
-    dh,
-};
+use crate::{dh, ReeFloat, ReeInt};
 
 use super::{Fk, Pk};
 

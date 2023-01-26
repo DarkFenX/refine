@@ -1,4 +1,4 @@
-use crate::{defines::ReeInt, dh, util};
+use crate::{dh, util, ReeInt};
 
 use super::{Fk, Pk, Support};
 

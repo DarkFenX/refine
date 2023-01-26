@@ -2,13 +2,7 @@ use std::{collections::HashMap, rc::Rc};
 
 use log;
 
-use crate::{
-    cg,
-    ch::CacheHandler,
-    defines::VERSION,
-    dh::DataHandler,
-    util::{Error, Result},
-};
+use crate::{cg, ch::CacheHandler, dh::DataHandler, Error, Result, VERSION};
 
 use super::src::Src;
 

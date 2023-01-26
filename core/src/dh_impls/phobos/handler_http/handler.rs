@@ -2,10 +2,7 @@ use std::fmt;
 
 use reqwest::{blocking::get, IntoUrl, Url};
 
-use crate::{
-    dh,
-    util::{Error, Result},
-};
+use crate::{dh, Error, Result};
 
 use super::{
     super::{

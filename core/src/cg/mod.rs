@@ -2,7 +2,7 @@
 
 use data::{CGData, Support};
 
-use crate::{ch, dh::DataHandler, util::Result};
+use crate::{ch, dh::DataHandler, Result};
 
 mod clean;
 mod conv;

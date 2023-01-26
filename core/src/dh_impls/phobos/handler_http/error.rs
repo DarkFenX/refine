@@ -1,6 +1,6 @@
 use url;
 
-use crate::util::Error;
+use crate::Error;
 
 pub(super) trait FromSuffix<T> {
     fn from_suffix<U: Into<String>>(err: T, suffix: U) -> Self;

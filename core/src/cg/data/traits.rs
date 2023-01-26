@@ -1,5 +1,6 @@
+use crate::ReeInt;
+
 use super::Support;
-use crate::defines::ReeInt;
 
 pub(in super::super) trait Pk {
     fn get_pk(&self) -> Vec<ReeInt>;

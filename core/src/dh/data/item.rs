@@ -1,4 +1,4 @@
-use crate::{defines::ReeInt, util::Named};
+use crate::{util::Named, ReeInt};
 
 /// Item type data.
 #[derive(Debug)]

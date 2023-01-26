@@ -1,9 +1,9 @@
-pub use error::Error;
+//! Various helper entities used throughout the library.
+
 pub(crate) use funcs::vec_push_opt;
-pub use result::Result;
 pub(crate) use traits::Named;
 
-mod error;
+pub(crate) mod error;
 mod funcs;
-mod result;
+pub(crate) mod result;
 mod traits;

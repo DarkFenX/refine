@@ -1,4 +1,4 @@
-use crate::defines::ReeInt;
+use crate::ReeInt;
 
 /// Contains states which can be assigned to several entities.
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
