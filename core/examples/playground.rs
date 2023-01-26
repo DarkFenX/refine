@@ -41,7 +41,8 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
         "tq",
     ));
-    srcmgr.add("tq".into(), dh, ch, true);
+    srcmgr.add("tq", dh, ch, true);
     let item = srcmgr.get_default().unwrap().cache_handler.get_item(11184).unwrap();
     println!("Item with id {} fetched", item.id);
+    srcmgr.del("tq");
 }

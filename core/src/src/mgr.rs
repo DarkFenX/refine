@@ -26,13 +26,13 @@ impl SrcMgr {
 
     pub fn add(
         &mut self,
-        alias: String,
+        alias: &str,
         data_handler: Box<dyn DataHandler>,
         mut cache_handler: Box<dyn CacheHandler>,
         make_default: bool,
     ) -> Result<()> {
         log::info!("adding source with alias \"{}\"", alias);
-        if self.sources.contains_key(&alias) {
+        if self.sources.contains_key(alias) {
             return Err(Error::new(format!("source with alias \"{}\" already exists", alias)));
         }
         let mut regen = false;
@@ -40,7 +40,7 @@ impl SrcMgr {
         let data_version = match data_handler.get_version() {
             Ok(v) => v,
             Err(e) => {
-                log::info!("unable to get version: {}", e);
+                log::info!("unable to get data version: {}", e);
                 regen = true;
                 String::new()
             }
@@ -59,16 +59,18 @@ impl SrcMgr {
         if !regen {
             let cache_fp = cache_handler.get_fingerprint();
             if &data_fp != cache_fp {
+                log::info!("fingerprint mismatch: {} data vs {} cache", data_fp, cache_fp);
                 regen = true
             };
         }
         if regen {
+            log::info!("regenerating cache...");
             // If we have to regenerate cache, failure to generate one is fatal
             let ch_data = cg::generate_cache(data_handler.as_ref())
                 .map_err(|e| Error::new(format!("failed to generate cache: {}", e)))?;
             cache_handler.update_cache(ch_data, data_fp);
         }
-        let src = Rc::new(Src::new(alias, cache_handler));
+        let src = Rc::new(Src::new(alias.into(), cache_handler));
         if make_default {
             self.default = Some(src.clone());
         };
@@ -76,11 +78,22 @@ impl SrcMgr {
         Ok(())
     }
 
-    pub fn get<A: Into<String>>(&self, alias: A) -> Option<&Rc<Src>> {
-        self.sources.get(alias.into().as_str())
+    pub fn get(&self, alias: &str) -> Option<&Rc<Src>> {
+        self.sources.get(alias)
     }
 
     pub fn get_default(&self) -> Option<&Rc<Src>> {
         self.default.as_ref()
+    }
+
+    pub fn del(&mut self, alias: &str) -> Result<()> {
+        self.sources
+            .remove(alias)
+            .ok_or(Error::new(format!("no source with alias \"{}\"", alias)))?;
+        match &self.default {
+            Some(s) if s.alias == alias => self.default = None,
+            _ => (),
+        };
+        Ok(())
     }
 }
