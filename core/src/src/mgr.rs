@@ -30,14 +30,13 @@ where
         }
     }
 
-    pub fn add<A: Into<String>, DH: DataHandler>(
+    pub fn add(
         &mut self,
-        alias: A,
-        data_handler: DH,
+        alias: String,
+        data_handler: Box<dyn DataHandler>,
         mut cache_handler: CH,
         make_default: bool,
     ) -> Result<()> {
-        let alias = alias.into();
         log::info!("adding source with alias \"{}\"", alias);
         if self.sources.contains_key(&alias) {
             return Err(Error::new(format!("source with alias \"{}\" already exists", alias)));
@@ -71,7 +70,7 @@ where
         }
         if regen {
             // If we have to regenerate cache, failure to generate one is fatal
-            let ch_data = cg::generate_cache(&data_handler)
+            let ch_data = cg::generate_cache(data_handler.as_ref())
                 .map_err(|e| Error::new(format!("failed to generate cache: {}", e)))?;
             cache_handler.update_cache(ch_data, data_fp);
         }
