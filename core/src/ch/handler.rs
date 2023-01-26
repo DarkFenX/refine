@@ -8,7 +8,7 @@ use crate::{
 use super::data::CHData;
 
 /// Cache handler interface definition.
-pub trait CacheHandler: fmt::Debug {
+pub trait CacheHandler: fmt::Debug + Send + Sync {
     /// Get cached item.
     fn get_item(&self, id: ReeInt) -> Option<&Item>;
     /// Get cached attribute.
