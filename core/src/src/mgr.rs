@@ -1,4 +1,4 @@
-use std::{collections::HashMap, rc::Rc};
+use std::{collections::HashMap, sync::Arc};
 
 use log;
 
@@ -12,8 +12,8 @@ use super::src::Src;
 /// other parts of the library to conveniently switch between different data versions (for example,
 /// from Tranquility data to Singularity data).
 pub struct SrcMgr {
-    sources: HashMap<String, Rc<Src>>,
-    default: Option<Rc<Src>>,
+    sources: HashMap<String, Arc<Src>>,
+    default: Option<Arc<Src>>,
 }
 impl SrcMgr {
     /// Construct new `SrcMgr`.
@@ -72,7 +72,7 @@ impl SrcMgr {
                 .map_err(|e| Error::new(format!("failed to generate cache: {}", e)))?;
             cache_handler.update_cache(ch_data, data_fp);
         }
-        let src = Rc::new(Src::new(alias.into(), cache_handler));
+        let src = Arc::new(Src::new(alias.into(), cache_handler));
         if make_default {
             self.default = Some(src.clone());
         };
@@ -80,11 +80,11 @@ impl SrcMgr {
         Ok(())
     }
 
-    pub(crate) fn get(&self, alias: &str) -> Option<&Rc<Src>> {
+    pub(crate) fn get(&self, alias: &str) -> Option<&Arc<Src>> {
         self.sources.get(alias)
     }
 
-    pub(crate) fn get_default(&self) -> Option<&Rc<Src>> {
+    pub(crate) fn get_default(&self) -> Option<&Arc<Src>> {
         self.default.as_ref()
     }
 
