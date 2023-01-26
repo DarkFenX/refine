@@ -8,7 +8,7 @@ use super::{
     super::{
         data::{
             Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
-            Metadata, MutaAttrMods, MutaItemConvs,
+            MutaAttrMods, MutaItemConvs,
         },
         fsd,
     },
@@ -18,19 +18,26 @@ use super::{
 /// Data handler which uses HTTP-served [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
 pub struct PhbHttpDHandler {
     base_url: Url,
+    data_version: String,
 }
 impl PhbHttpDHandler {
-    /// Constructs new `PhbHttpDHandler` using provided base URL.
+    /// Constructs new `PhbHttpDHandler` using provided base URL and data version.
     ///
     /// URL should end with a trailing slash, and should point to the top-level directory of
     /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_binary/`.
-    pub fn new<T: Into<String> + Copy + IntoUrl>(base_url: T) -> Result<PhbHttpDHandler> {
+    pub fn new<U: Into<String> + Copy + IntoUrl, D: Into<String>>(
+        base_url: U,
+        data_version: D,
+    ) -> Result<PhbHttpDHandler> {
         let base_url = base_url
             .into_url()
             .map_err(|e| Error::new(format!("failed to interpret base URL: {}", e)))?;
         match base_url.cannot_be_a_base() {
             true => Err(Error::new("passed URL cannot be used as base")),
-            false => Ok(PhbHttpDHandler { base_url }),
+            false => Ok(PhbHttpDHandler {
+                base_url,
+                data_version: data_version.into(),
+            }),
         }
     }
     fn fetch_data(&self, suffix: &str) -> Result<serde_json::Value> {
@@ -108,15 +115,6 @@ impl dh::DataHandler for PhbHttpDHandler {
     }
     /// Get version of the data.
     fn get_version(&self) -> dh::Result<String> {
-        let suffix = "phobos/metadata.json";
-        let unprocessed = self.fetch_data(suffix)?;
-        let metadatas: Vec<Metadata> =
-            serde_json::from_value(unprocessed).map_err(|e| Error::from_suffix(e, suffix))?;
-        for metadata in metadatas {
-            if metadata.field_name == "client_build" {
-                return Ok(metadata.field_value.to_string());
-            }
-        }
-        Err(Error::new("unable to find client build").into())
+        Ok(self.data_version.clone())
     }
 }
