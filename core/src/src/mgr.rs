@@ -12,19 +12,13 @@ use crate::{
 
 use super::src::Src;
 
-pub struct SrcMgr<CH>
-where
-    CH: CacheHandler,
-{
-    sources: HashMap<String, Rc<Src<CH>>>,
-    default: Option<Rc<Src<CH>>>,
+pub struct SrcMgr {
+    sources: HashMap<String, Rc<Src>>,
+    default: Option<Rc<Src>>,
 }
-impl<CH> SrcMgr<CH>
-where
-    CH: CacheHandler,
-{
-    pub fn new() -> SrcMgr<CH> {
-        SrcMgr::<CH> {
+impl SrcMgr {
+    pub fn new() -> SrcMgr {
+        SrcMgr {
             sources: HashMap::new(),
             default: None,
         }
@@ -34,7 +28,7 @@ where
         &mut self,
         alias: String,
         data_handler: Box<dyn DataHandler>,
-        mut cache_handler: CH,
+        mut cache_handler: Box<dyn CacheHandler>,
         make_default: bool,
     ) -> Result<()> {
         log::info!("adding source with alias \"{}\"", alias);
@@ -82,11 +76,11 @@ where
         Ok(())
     }
 
-    pub fn get<A: Into<String>>(&self, alias: A) -> Option<&Rc<Src<CH>>> {
+    pub fn get<A: Into<String>>(&self, alias: A) -> Option<&Rc<Src>> {
         self.sources.get(alias.into().as_str())
     }
 
-    pub fn get_default(&self) -> Option<&Rc<Src<CH>>> {
+    pub fn get_default(&self) -> Option<&Rc<Src>> {
         self.default.as_ref()
     }
 }

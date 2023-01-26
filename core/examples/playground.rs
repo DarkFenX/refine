@@ -37,7 +37,10 @@ fn main() {
     let mut srcmgr = SrcMgr::new();
     let dh = Box::new(phobos::PhbFileDHandler::new("/home/dfx/Desktop/phobos_tq_en-us"));
     // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
-    let mut ch = json_file::JsonFileCHandler::new(PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"), "tq");
+    let mut ch = Box::new(json_file::JsonFileCHandler::new(
+        PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
+        "tq",
+    ));
     srcmgr.add("tq".into(), dh, ch, true);
     let item = srcmgr.get_default().unwrap().cache_handler.get_item(11184).unwrap();
     println!("Item with id {} fetched", item.id);

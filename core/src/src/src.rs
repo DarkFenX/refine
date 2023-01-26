@@ -1,18 +1,12 @@
 use crate::ch::CacheHandler;
 
 #[derive(Debug)]
-pub struct Src<T>
-where
-    T: CacheHandler,
-{
+pub struct Src {
     pub alias: String,
-    pub cache_handler: T,
+    pub cache_handler: Box<dyn CacheHandler>,
 }
-impl<T> Src<T>
-where
-    T: CacheHandler,
-{
-    pub fn new(alias: String, cache_handler: T) -> Src<T> {
+impl Src {
+    pub fn new(alias: String, cache_handler: Box<dyn CacheHandler>) -> Src {
         Src { alias, cache_handler }
     }
 }
