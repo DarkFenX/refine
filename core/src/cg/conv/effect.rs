@@ -118,9 +118,9 @@ pub(super) fn conv_effects(cg_data: &CGData, warns: &mut Vec<String>) -> Vec<ct:
         match mod_errs {
             0 => effect.mod_build_status = ModBuildStatus::Success,
             _ if !effect.mods.is_empty() || !effect.stop_ids.is_empty() => {
-                effect.mod_build_status = ModBuildStatus::SuccessPartial
+                effect.mod_build_status = ModBuildStatus::SuccessPartial(mod_errs)
             }
-            _ => effect.mod_build_status = ModBuildStatus::Error,
+            _ => effect.mod_build_status = ModBuildStatus::Error(mod_errs),
         }
         effects.push(effect);
     }

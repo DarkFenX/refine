@@ -10,7 +10,7 @@
 //! - the engine converts the data into optimized internal format
 //! - you compose fit objects and fetch data from there
 
-pub mod cg;
+pub(crate) mod cg;
 pub mod ch;
 pub mod ch_impls;
 pub mod consts;

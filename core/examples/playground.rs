@@ -5,7 +5,6 @@ use std::path::PathBuf;
 use chrono;
 
 use reefast::{
-    cg,
     ch::CacheHandler,
     ch_impls::json_file,
     defines::VERSION,

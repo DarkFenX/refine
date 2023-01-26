@@ -49,12 +49,21 @@ pub enum ItemType {
 // }
 
 /// Effect modifier build statuses.
+///
+/// During cache generation, the library converts modifiers of an effect into internal format.
+/// Some of those modifiers might not make it through conversion process due to various reasons.
+/// Variants of this enum are stored on an effect, to keep info about conversion status.
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub enum ModBuildStatus {
+    /// Modifiers haven't been built yet.
     Unbuilt,
-    Error,
-    SuccessPartial,
+    /// All modifiers failed conversion, with a failure count.
+    Error(ReeInt),
+    /// Some modifiers failed conversion, with a failure count.
+    SuccessPartial(ReeInt),
+    /// Conversion was successful.
     Success,
+    /// Modifiers on an effect were customized by the library.
     Custom,
 }
 
@@ -73,12 +82,18 @@ pub enum ModAfeeFilter {
     OwnSrq(ModDomain, ReeInt),
 }
 
+/// Defines domain (or scope) which is target for a modification.
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub enum ModDomain {
+    /// Ship or items belonging to it.
     Ship,
+    /// Structure or items belonging to it.
     Structure,
+    /// Character or items owned by it.
     Char,
+    /// Specific single item.
     Item,
+    /// Charge for module, module for charge.
     Other,
 }
 
@@ -88,7 +103,7 @@ pub enum ModDomain {
 /// aggregation key (the mode argument) are converted into a single value.
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub enum ModAggrMode {
-    /// No aggregation.
+    /// All modifications are applied.
     Stack,
     /// Min value will be used, from values with provided key.
     Min(ReeInt),
@@ -128,12 +143,12 @@ pub enum ModOp {
 pub enum TgtMode {
     /// No target needed.
     None,
-    /// Specific item is needed for the ability to activate.
+    /// Specific item is needed for the effect to activate.
     Item,
-    /// Specific point in space is needed for the ability to activate.
+    /// Specific point in space is needed for the effect to activate.
     Point,
 }
 
-/// Defines error types which are returned byy the library.
+/// Defines error types which are returned by the library.
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub enum ErrorKind {}
