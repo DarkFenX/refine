@@ -6,18 +6,24 @@ use crate::{cg, ch::CacheHandler, dh::DataHandler, Error, Result, VERSION};
 
 use super::src::Src;
 
+/// Source manager.
+///
+/// Source manager is a top-level entity which handles everything related to EVE data. It allows
+/// other parts of the library to conveniently switch between different data versions (for example,
+/// from Tranquility data to Singularity data).
 pub struct SrcMgr {
     sources: HashMap<String, Rc<Src>>,
     default: Option<Rc<Src>>,
 }
 impl SrcMgr {
+    /// Construct new `SrcMgr`.
     pub fn new() -> SrcMgr {
         SrcMgr {
             sources: HashMap::new(),
             default: None,
         }
     }
-
+    /// Add new data source with custom alias, and optionally make it default.
     pub fn add(
         &mut self,
         alias: &str,
@@ -72,14 +78,15 @@ impl SrcMgr {
         Ok(())
     }
 
-    pub fn get(&self, alias: &str) -> Option<&Rc<Src>> {
+    pub(crate) fn get(&self, alias: &str) -> Option<&Rc<Src>> {
         self.sources.get(alias)
     }
 
-    pub fn get_default(&self) -> Option<&Rc<Src>> {
+    pub(crate) fn get_default(&self) -> Option<&Rc<Src>> {
         self.default.as_ref()
     }
 
+    /// Remove data source which was stored against passed alias.
     pub fn del(&mut self, alias: &str) -> Result<()> {
         self.sources
             .remove(alias)

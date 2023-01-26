@@ -11,6 +11,7 @@
 //! - you compose fit objects and fetch data from there
 
 pub use defines::{ReeFloat, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
+pub use src::SrcMgr;
 pub use util::{error::Error, result::Result};
 
 pub(crate) mod cg;
@@ -22,5 +23,5 @@ mod defines;
 pub mod dh;
 pub mod dh_impls;
 pub mod prelude;
-pub mod src;
+mod src;
 mod util;

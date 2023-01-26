@@ -7,10 +7,9 @@ use chrono;
 use reefast::{
     ch::CacheHandler,
     ch_impls::json_file,
-    dh::{self, DataHandler},
+    dh::DataHandler,
     dh_impls::phobos,
-    src::SrcMgr,
-    VERSION,
+    SrcMgr, VERSION,
 };
 
 fn setup_logger() -> Result<(), fern::InitError> {
@@ -41,8 +40,8 @@ fn main() {
         "tq",
     ));
     srcmgr.add("tq", dh, ch, true);
-    let item = srcmgr.get_default().unwrap().cache_handler.get_item(11184).unwrap();
-    println!("Item with id {} fetched", item.id);
+    // let item = srcmgr.get_default().unwrap().cache_handler.get_item(11184).unwrap();
+    //println!("Item with id {} fetched", item.id);
     //sleep(Duration::new(10, 0));
     srcmgr.del("tq");
     //sleep(Duration::new(10, 0));
