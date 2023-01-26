@@ -1,6 +1,6 @@
 use crate::ct;
 
-/// Struct for cacheable types, used as part of cache handler interface.
+/// Struct to store cacheable types
 pub struct CHData {
     pub items: Vec<ct::Item>,
     pub attrs: Vec<ct::Attr>,
@@ -9,7 +9,7 @@ pub struct CHData {
     pub buffs: Vec<ct::Buff>,
 }
 impl CHData {
-    pub fn new() -> CHData {
+    pub(crate) fn new() -> CHData {
         CHData {
             items: Vec::new(),
             attrs: Vec::new(),

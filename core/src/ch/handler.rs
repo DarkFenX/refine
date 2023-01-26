@@ -24,6 +24,6 @@ pub trait CacheHandler: fmt::Debug {
     fn get_fingerprint(&self) -> &String;
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> Result<()>;
-    /// Update both persistent and memory data in handler with passed data.
-    fn update_cache(&mut self, data: CHData, fingerprint: String);
+    /// Update data in handler with passed data.
+    fn update_cache(&mut self, ch_data: CHData, fingerprint: String);
 }

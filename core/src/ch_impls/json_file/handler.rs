@@ -17,7 +17,7 @@ use crate::{
 
 use super::{data::CacheData, key::Key};
 
-/// A struct for handling compressed JSON cache
+/// A struct for handling compressed JSON cache.
 pub struct JsonFileCHandler {
     folder: PathBuf,
     name: String,
@@ -29,7 +29,8 @@ pub struct JsonFileCHandler {
     fingerprint: String,
 }
 impl JsonFileCHandler {
-    /// Constructs new `JsonFileCHandler` using cache file path (path ending with .json.bz2).
+    /// Constructs new `JsonFileCHandler` using full path to cache folder and file name (without
+    /// extension).
     pub fn new<T: Into<PathBuf>, U: Into<String>>(folder: T, name: U) -> JsonFileCHandler {
         JsonFileCHandler {
             folder: folder.into(),
@@ -42,43 +43,85 @@ impl JsonFileCHandler {
             fingerprint: String::new(),
         }
     }
+    fn get_full_path(&self) -> PathBuf {
+        self.folder.join(format!("{}.json.zst", self.name))
+    }
+    fn create_cache_folder(&self) -> Result<()> {
+        match create_dir_all(&self.folder) {
+            Ok(_) => Ok(()),
+            Err(e) => {
+                match e.kind() {
+                    // It's fine if it already exists for our purposes
+                    io::ErrorKind::AlreadyExists => Ok(()),
+                    _ => Err(Error::new(format!("unable to create cache folder: {}", e))),
+                }
+            }
+        }
+    }
+    fn update_memory_cache(&mut self, cache: CacheData) {
+        move_vec_to_map(cache.items, &mut self.storage_items);
+        move_vec_to_map(cache.attrs, &mut self.storage_attrs);
+        move_vec_to_map(cache.effects, &mut self.storage_effects);
+        move_vec_to_map(cache.mutas, &mut self.storage_mutas);
+        move_vec_to_map(cache.buffs, &mut self.storage_buffs);
+        self.fingerprint = cache.fingerprint;
+    }
+    fn update_persistent_cache(&self, cache: &CacheData) {
+        let full_path = self.get_full_path();
+        let file = match OpenOptions::new().create(true).write(true).open(full_path) {
+            Ok(f) => f,
+            Err(e) => {
+                log::error!("unable to open cache file for writing: {}", e);
+                return;
+            }
+        };
+        let json = serde_json::json!(&cache).to_string();
+        match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
+            Ok(_) => (),
+            Err(e) => {
+                log::error!("unable to write cache file: {}", e);
+                return;
+            }
+        };
+    }
 }
 impl fmt::Debug for JsonFileCHandler {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
             "JsonFileCHandler(\"{}\")",
-            get_full_path(&self.folder, &self.name).to_str().unwrap_or("<error>")
+            self.get_full_path().to_str().unwrap_or("<error>")
         )
     }
 }
 impl ch::CacheHandler for JsonFileCHandler {
+    /// Get cached item.
     fn get_item(&self, id: ReeInt) -> Option<&Item> {
         self.storage_items.get(&id)
     }
-
+    /// Get cached attribute.
     fn get_attr(&self, id: ReeInt) -> Option<&Attr> {
         self.storage_attrs.get(&id)
     }
-
+    /// Get cached effect.
     fn get_effect(&self, id: ReeInt) -> Option<&Effect> {
         self.storage_effects.get(&id)
     }
-
+    /// Get cached mutaplasmid.
     fn get_muta(&self, id: ReeInt) -> Option<&Muta> {
         self.storage_mutas.get(&id)
     }
-
+    /// Get cached warfare buff.
     fn get_buff(&self, id: ReeInt) -> Option<&Buff> {
         self.storage_buffs.get(&id)
     }
-
+    /// Get cached data fingerprint.
     fn get_fingerprint(&self) -> &String {
         &self.fingerprint
     }
-
+    /// Load cache from persistent storage.
     fn load_cache(&mut self) -> Result<()> {
-        let full_path = get_full_path(&self.folder, &self.name);
+        let full_path = self.get_full_path();
         let file = OpenOptions::new()
             .read(true)
             .open(full_path)
@@ -88,72 +131,27 @@ impl ch::CacheHandler for JsonFileCHandler {
             .map_err(|e| Error::new(format!("unable to decompress cache: {}", e)))?;
         let cache = serde_json::from_slice::<CacheData>(&raw)
             .map_err(|e| Error::new(format!("unable to decode cache: {}", e)))?;
-        update_memory_cache(cache, self);
+        self.update_memory_cache(cache);
         Ok(())
     }
-
-    fn update_cache(&mut self, data: ch::CHData, fingerprint: String) {
+    /// Update data in handler with passed data.
+    fn update_cache(&mut self, ch_data: ch::CHData, fingerprint: String) {
         // Update persistent cache
         let cache = CacheData::new(
-            data.items,
-            data.attrs,
-            data.mutas,
-            data.effects,
-            data.buffs,
+            ch_data.items,
+            ch_data.attrs,
+            ch_data.mutas,
+            ch_data.effects,
+            ch_data.buffs,
             fingerprint,
         );
-        match create_cache_folder(&self.folder) {
-            Ok(_) => write_cache(&self.folder, &self.name, &cache),
+        match self.create_cache_folder() {
+            Ok(_) => self.update_persistent_cache(&cache),
             Err(e) => log::error!("unable to create cache folder: {}", e),
         }
         // Update memory cache
-        update_memory_cache(cache, self);
+        self.update_memory_cache(cache);
     }
-}
-
-fn create_cache_folder(folder: &PathBuf) -> Result<()> {
-    match create_dir_all(folder) {
-        Ok(_) => Ok(()),
-        Err(e) => {
-            match e.kind() {
-                // It's fine if it already exists for our purposes
-                io::ErrorKind::AlreadyExists => Ok(()),
-                _ => Err(Error::new(format!("unable to create cache folder: {}", e))),
-            }
-        }
-    }
-}
-
-fn get_full_path(folder: &PathBuf, name: &String) -> PathBuf {
-    folder.join(format!("{}.json.zst", name))
-}
-
-fn write_cache(folder: &PathBuf, name: &String, cache: &CacheData) {
-    let full_path = get_full_path(folder, name);
-    let file = match OpenOptions::new().create(true).write(true).open(full_path) {
-        Ok(f) => f,
-        Err(e) => {
-            log::error!("unable to open cache file for writing: {}", e);
-            return;
-        }
-    };
-    let json = serde_json::json!(&cache).to_string();
-    match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
-        Ok(_) => (),
-        Err(e) => {
-            log::error!("unable to write cache file: {}", e);
-            return;
-        }
-    };
-}
-
-fn update_memory_cache(cache: CacheData, handler: &mut JsonFileCHandler) {
-    move_vec_to_map(cache.items, &mut handler.storage_items);
-    move_vec_to_map(cache.attrs, &mut handler.storage_attrs);
-    move_vec_to_map(cache.effects, &mut handler.storage_effects);
-    move_vec_to_map(cache.mutas, &mut handler.storage_mutas);
-    move_vec_to_map(cache.buffs, &mut handler.storage_buffs);
-    handler.fingerprint = cache.fingerprint;
 }
 
 fn move_vec_to_map<T>(vec: Vec<T>, map: &mut HashMap<ReeInt, T>)

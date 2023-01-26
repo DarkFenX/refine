@@ -10,7 +10,7 @@ pub(super) struct CacheData {
     pub(super) fingerprint: String,
 }
 impl CacheData {
-    pub fn new(
+    pub(super) fn new(
         items: Vec<ct::Item>,
         attrs: Vec<ct::Attr>,
         mutas: Vec<ct::Muta>,

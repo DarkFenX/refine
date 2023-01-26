@@ -1,9 +1,11 @@
 //! Data handling interface.
 //!
+//! Data handlers provide a way for the library to fetch the data it needs from external sources.
+//!
 //! # Assumptions about data
 //! REEFAST verifies data integrity and makes several assumptions about data. If those assumptions
 //! are broken, offending entries will be adjusted or removed during cache generation (conversion of
-//! data into [cached types](crate::ct)).
+//! data into [cacheable types](crate::ct)).
 //!
 //! ### Primary keys
 //! Almost every data entry provided by a `DataHandler` implementation has a private PK getter
