@@ -1,6 +1,6 @@
 use std::{fmt, fs::File, io::BufReader, path::PathBuf};
 
-use crate::{dh, Error, Result};
+use crate::{dh, IntError, IntResult};
 
 use super::{
     super::{
@@ -26,11 +26,11 @@ impl PhbFileDHandler {
     pub fn new<T: Into<PathBuf>>(path: T) -> PhbFileDHandler {
         PhbFileDHandler { base_path: path.into() }
     }
-    fn read_json(&self, addr: &Address) -> Result<serde_json::Value> {
+    fn read_json(&self, addr: &Address) -> IntResult<serde_json::Value> {
         let full_path = addr.get_full_path(&self.base_path);
-        let file = File::open(full_path).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
+        let file = File::open(full_path).map_err(|e| IntError::from_path(e, addr.get_part_str()))?;
         let reader = BufReader::new(file);
-        let data = serde_json::from_reader(reader).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
+        let data = serde_json::from_reader(reader).map_err(|e| IntError::from_path(e, addr.get_part_str()))?;
         Ok(data)
     }
     fn process_fsd<T, U>(&self, folder: &'static str, file: &'static str) -> dh::Result<dh::Container<U>>
@@ -105,12 +105,12 @@ impl dh::DataHandler for PhbFileDHandler {
         let addr = Address::new("phobos", "metadata");
         let unprocessed = self.read_json(&addr)?;
         let metadatas: Vec<Metadata> =
-            serde_json::from_value(unprocessed).map_err(|e| Error::from_path(e, addr.get_part_str()))?;
+            serde_json::from_value(unprocessed).map_err(|e| IntError::from_path(e, addr.get_part_str()))?;
         for metadata in metadatas {
             if metadata.field_name == "client_build" {
                 return Ok(metadata.field_value.to_string());
             }
         }
-        Err(Error::new("unable to find client build").into())
+        Err(IntError::new("unable to find client build").into())
     }
 }

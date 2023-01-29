@@ -6,7 +6,7 @@ use log;
 use crate::{
     dh::{self, DataHandler},
     util::Named,
-    Error, Result,
+    IntError, IntResult,
 };
 
 use super::data::CGData;
@@ -14,14 +14,14 @@ use super::data::CGData;
 const MAX_WARNS: usize = 5;
 
 /// Fetch data from a data handler into a data vec, and report warnings, if any were encountered.
-fn fetch_data_vec<S, F, T>(handler: &S, func: F, vec: &mut Vec<T>) -> Result<()>
+fn fetch_data_vec<S, F, T>(handler: &S, func: F, vec: &mut Vec<T>) -> IntResult<()>
 where
     S: ?Sized + DataHandler,
     F: Fn(&S) -> dh::Result<dh::Container<T>>,
     T: Named,
 {
     log::debug!("fetching {}", T::get_name());
-    let cont = func(handler).map_err(|e| Error::new(format!("{}", e)))?;
+    let cont = func(handler).map_err(|e| IntError::new(format!("{}", e)))?;
     vec.extend(cont.data);
     let warn_amt = cont.warns.len();
     if warn_amt > 0 {
@@ -38,7 +38,7 @@ where
     Ok(())
 }
 
-pub(super) fn fetch_data(data_handler: &dyn DataHandler, cg_data: &mut CGData) -> Result<()> {
+pub(super) fn fetch_data(data_handler: &dyn DataHandler, cg_data: &mut CGData) -> IntResult<()> {
     fetch_data_vec(data_handler, DataHandler::get_items, &mut cg_data.items)?;
     fetch_data_vec(data_handler, DataHandler::get_item_groups, &mut cg_data.groups)?;
     fetch_data_vec(data_handler, DataHandler::get_attrs, &mut cg_data.attrs)?;

@@ -148,7 +148,3 @@ pub enum TgtMode {
     /// Specific point in space is needed for the effect to activate.
     Point,
 }
-
-/// Defines error types which are returned by the library.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
-pub enum ErrorKind {}

@@ -6,14 +6,14 @@ use log;
 use crate::{
     consts::{itemcats, itemgrps},
     util::Named,
-    Error, Result,
+    IntError, IntResult,
 };
 
 use super::data::{CGData, KeyDb, Pk, Support};
 
 const MAX_CYCLES: i32 = 100;
 
-pub(super) fn clean_unused(alive: &mut CGData, supp: &Support) -> Result<()> {
+pub(super) fn clean_unused(alive: &mut CGData, supp: &Support) -> IntResult<()> {
     let mut trash = CGData::new();
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, &supp);
@@ -25,7 +25,7 @@ pub(super) fn clean_unused(alive: &mut CGData, supp: &Support) -> Result<()> {
         if counter > MAX_CYCLES {
             let msg = format!("reached limit of {} cycles during cleanup", MAX_CYCLES);
             log::error!("{}", msg);
-            return Err(Error::new(msg));
+            return Err(IntError::new(msg));
         }
         changes = restore_item_data(alive, &mut trash) | restore_fk_tgts(alive, &mut trash, &supp);
     }

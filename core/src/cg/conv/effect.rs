@@ -7,7 +7,7 @@ use crate::{
     consts::{effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
     ct, dh,
     util::Named,
-    Error, ReeInt, Result,
+    IntError, IntResult, ReeInt,
 };
 
 use super::CGData;
@@ -96,7 +96,7 @@ pub(super) fn conv_effects(cg_data: &CGData, warns: &mut Vec<String>) -> Vec<ct:
                 "LocationGroupModifier" => conv_locgrp_mod(modifier_data, &effect),
                 "LocationRequiredSkillModifier" => conv_locsrq_mod(modifier_data, &effect),
                 "OwnerRequiredSkillModifier" => conv_ownsrq_mod(modifier_data, &effect),
-                _ => Err(Error::new(format!("unknown function \"{}\"", modifier_data.func))),
+                _ => Err(IntError::new(format!("unknown function \"{}\"", modifier_data.func))),
             };
             match mod_res {
                 Ok(m) => effect.mods.push(m),
@@ -199,12 +199,12 @@ pub(super) fn conv_effects(cg_data: &CGData, warns: &mut Vec<String>) -> Vec<ct:
     effects
 }
 
-fn extract_stopper(modifier_data: &dh::EffectMod) -> Result<Option<ReeInt>> {
+fn extract_stopper(modifier_data: &dh::EffectMod) -> IntResult<Option<ReeInt>> {
     match modifier_data.func.as_str() {
         "EffectStopper" => {
             let domain = get_arg_str(&modifier_data.args, "domain")?;
             if domain.ne("target") {
-                return Err(Error::new(format!("unexpected domain \"{}\"", domain)));
+                return Err(IntError::new(format!("unexpected domain \"{}\"", domain)));
             }
             Ok(Some(get_arg_int(&modifier_data.args, "effectID")?))
         }
@@ -212,7 +212,7 @@ fn extract_stopper(modifier_data: &dh::EffectMod) -> Result<Option<ReeInt>> {
     }
 }
 
-fn conv_item_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
+fn conv_item_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> IntResult<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
@@ -222,7 +222,7 @@ fn conv_item_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<c
     ))
 }
 
-fn conv_loc_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
+fn conv_loc_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> IntResult<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
@@ -232,7 +232,7 @@ fn conv_loc_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct
     ))
 }
 
-fn conv_locgrp_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
+fn conv_locgrp_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> IntResult<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
@@ -242,7 +242,7 @@ fn conv_locgrp_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result
     ))
 }
 
-fn conv_locsrq_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
+fn conv_locsrq_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> IntResult<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
@@ -252,7 +252,7 @@ fn conv_locsrq_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result
     ))
 }
 
-fn conv_ownsrq_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ct::AttrMod> {
+fn conv_ownsrq_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> IntResult<ct::AttrMod> {
     Ok(ct::AttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
@@ -262,15 +262,15 @@ fn conv_ownsrq_mod(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result
     ))
 }
 
-fn get_mod_affector_attr_id(modifier_data: &dh::EffectMod) -> Result<ReeInt> {
+fn get_mod_affector_attr_id(modifier_data: &dh::EffectMod) -> IntResult<ReeInt> {
     get_arg_int(&modifier_data.args, "modifyingAttributeID")
 }
 
-fn get_mod_affectee_attr_id(modifier_data: &dh::EffectMod) -> Result<ReeInt> {
+fn get_mod_affectee_attr_id(modifier_data: &dh::EffectMod) -> IntResult<ReeInt> {
     get_arg_int(&modifier_data.args, "modifiedAttributeID")
 }
 
-fn get_mod_domain(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<ModDomain> {
+fn get_mod_domain(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> IntResult<ModDomain> {
     let domain = get_arg_str(&modifier_data.args, "domain")?;
     match domain.as_str() {
         "itemID" => Ok(ModDomain::Item),
@@ -279,17 +279,17 @@ fn get_mod_domain(modifier_data: &dh::EffectMod, effect: &ct::Effect) -> Result<
         "structureID" => Ok(ModDomain::Structure),
         "targetID" => match effect.tgt_mode {
             TgtMode::Item => Ok(ModDomain::Item),
-            _ => Err(Error::new(format!(
+            _ => Err(IntError::new(format!(
                 "modifier uses {} domain on untargeted effect",
                 domain
             ))),
         },
         "otherID" => Ok(ModDomain::Other),
-        _ => Err(Error::new(format!("unknown domain {}", domain))),
+        _ => Err(IntError::new(format!("unknown domain {}", domain))),
     }
 }
 
-fn get_mod_operation(modifier_data: &dh::EffectMod) -> Result<ModOp> {
+fn get_mod_operation(modifier_data: &dh::EffectMod) -> IntResult<ModOp> {
     let op = get_arg_int(&modifier_data.args, "operation")?;
     match op {
         -1 => Ok(ModOp::PreAssign),
@@ -301,31 +301,35 @@ fn get_mod_operation(modifier_data: &dh::EffectMod) -> Result<ModOp> {
         5 => Ok(ModOp::PostDiv),
         6 => Ok(ModOp::PostPerc),
         7 => Ok(ModOp::PostAssign),
-        _ => Err(Error::new(format!("unknown operation {}", op))),
+        _ => Err(IntError::new(format!("unknown operation {}", op))),
     }
 }
 
-fn get_mod_grp_id(modifier_data: &dh::EffectMod) -> Result<ReeInt> {
+fn get_mod_grp_id(modifier_data: &dh::EffectMod) -> IntResult<ReeInt> {
     get_arg_int(&modifier_data.args, "groupID")
 }
 
-fn get_mod_skill_id(modifier_data: &dh::EffectMod) -> Result<ReeInt> {
+fn get_mod_skill_id(modifier_data: &dh::EffectMod) -> IntResult<ReeInt> {
     get_arg_int(&modifier_data.args, "skillTypeID")
 }
 
-fn get_arg_int(args: &HashMap<String, dh::Primitive>, name: &str) -> Result<ReeInt> {
-    let primitive = args.get(name).ok_or(Error::new(format!("no \"{}\" in args", name)))?;
+fn get_arg_int(args: &HashMap<String, dh::Primitive>, name: &str) -> IntResult<ReeInt> {
+    let primitive = args
+        .get(name)
+        .ok_or(IntError::new(format!("no \"{}\" in args", name)))?;
     match primitive {
         dh::Primitive::Int(i) => Ok(*i),
-        _ => Err(Error::new(format!("expected int in \"{}\" value", name))),
+        _ => Err(IntError::new(format!("expected int in \"{}\" value", name))),
     }
 }
 
-fn get_arg_str(args: &HashMap<String, dh::Primitive>, name: &str) -> Result<String> {
-    let primitive = args.get(name).ok_or(Error::new(format!("no \"{}\" in args", name)))?;
+fn get_arg_str(args: &HashMap<String, dh::Primitive>, name: &str) -> IntResult<String> {
+    let primitive = args
+        .get(name)
+        .ok_or(IntError::new(format!("no \"{}\" in args", name)))?;
     match primitive {
         dh::Primitive::String(s) => Ok(s.into()),
-        _ => Err(Error::new(format!("expected string in \"{}\" value", name))),
+        _ => Err(IntError::new(format!("expected string in \"{}\" value", name))),
     }
 }
 
@@ -347,11 +351,11 @@ where
     map
 }
 
-fn get_abil_tgt_mode(tgt_mode: &str) -> Result<TgtMode> {
+fn get_abil_tgt_mode(tgt_mode: &str) -> IntResult<TgtMode> {
     match tgt_mode {
         "untargeted" => Ok(TgtMode::None),
         "itemTargeted" => Ok(TgtMode::Item),
         "pointTargeted" => Ok(TgtMode::Point),
-        _ => Err(Error::new(format!("unknown ability target mode \"{}\"", tgt_mode))),
+        _ => Err(IntError::new(format!("unknown ability target mode \"{}\"", tgt_mode))),
     }
 }

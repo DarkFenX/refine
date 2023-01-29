@@ -4,7 +4,7 @@ use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
     ct, dh,
     util::Named,
-    Error, ReeInt, Result,
+    IntError, IntResult, ReeInt,
 };
 
 use super::CGData;
@@ -61,15 +61,15 @@ pub(super) fn conv_buffs(cg_data: &CGData, warns: &mut Vec<String>) -> Vec<ct::B
     converted
 }
 
-fn conv_buff_aggr_mode(aggr_mode: &str, key: ReeInt) -> Result<ModAggrMode> {
+fn conv_buff_aggr_mode(aggr_mode: &str, key: ReeInt) -> IntResult<ModAggrMode> {
     match aggr_mode {
         "Maximum" => Ok(ModAggrMode::Max(key)),
         "Minimum" => Ok(ModAggrMode::Min(key)),
-        _ => Err(Error::new(format!("unexpected aggregate mode \"{}\"", aggr_mode))),
+        _ => Err(IntError::new(format!("unexpected aggregate mode \"{}\"", aggr_mode))),
     }
 }
 
-fn conv_buff_op(operation: &str) -> Result<ModOp> {
+fn conv_buff_op(operation: &str) -> IntResult<ModOp> {
     match operation {
         "PreAssignment" => Ok(ModOp::PreAssign),
         "PreMul" => Ok(ModOp::PreMul),
@@ -80,6 +80,6 @@ fn conv_buff_op(operation: &str) -> Result<ModOp> {
         "PostDiv" => Ok(ModOp::PostDiv),
         "PostPercent" => Ok(ModOp::PostPerc),
         "PostAssignment" => Ok(ModOp::PostAssign),
-        _ => Err(Error::new(format!("unexpected operation \"{}\"", operation))),
+        _ => Err(IntError::new(format!("unexpected operation \"{}\"", operation))),
     }
 }

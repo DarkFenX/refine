@@ -2,7 +2,7 @@ use std::fmt;
 
 use reqwest::{blocking::get, IntoUrl, Url};
 
-use crate::{dh, Error, Result};
+use crate::{dh, Error, ErrorKind, IntError, IntResult, Result};
 
 use super::{
     super::{
@@ -29,25 +29,34 @@ impl PhbHttpDHandler {
         base_url: U,
         data_version: D,
     ) -> Result<PhbHttpDHandler> {
-        let base_url = base_url
-            .into_url()
-            .map_err(|e| Error::new(format!("failed to interpret base URL: {}", e)))?;
+        let base_url = base_url.into_url().map_err(|e| {
+            Error::new(
+                ErrorKind::DhHttpInvalidBaseUrl,
+                format!("failed to interpret base URL: {}", e),
+            )
+        })?;
         match base_url.cannot_be_a_base() {
-            true => Err(Error::new("passed URL cannot be used as base")),
+            true => Err(Error::new(
+                ErrorKind::DhHttpInvalidBaseUrl,
+                "passed URL cannot be used as base",
+            )),
             false => Ok(PhbHttpDHandler {
                 base_url,
                 data_version: data_version.into(),
             }),
         }
     }
-    fn fetch_data(&self, suffix: &str) -> Result<serde_json::Value> {
-        let full_url = self.base_url.join(suffix).map_err(|e| Error::from_suffix(e, suffix))?;
+    fn fetch_data(&self, suffix: &str) -> IntResult<serde_json::Value> {
+        let full_url = self
+            .base_url
+            .join(suffix)
+            .map_err(|e| IntError::from_suffix(e, suffix))?;
         let data = get(full_url)
-            .map_err(|e| Error::from_suffix(e, suffix))?
+            .map_err(|e| IntError::from_suffix(e, suffix))?
             .error_for_status()
-            .map_err(|e| Error::from_suffix(e, suffix))?
+            .map_err(|e| IntError::from_suffix(e, suffix))?
             .json()
-            .map_err(|e| Error::from_suffix(e, suffix))?;
+            .map_err(|e| IntError::from_suffix(e, suffix))?;
         Ok(data)
     }
     fn process_fsd<T, U>(&self, folder: &'static str, file: &'static str) -> dh::Result<dh::Container<U>>

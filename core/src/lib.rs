@@ -12,7 +12,11 @@
 
 pub use defines::{ReeFloat, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::SrcMgr;
-pub use util::{error::Error, result::Result};
+pub use util::err_res::public::{Error, ErrorKind, Result};
+pub(crate) use util::err_res::{
+    internal::{IntError, IntResult},
+    public::FromKind,
+};
 
 pub(crate) mod cg;
 pub mod ch;

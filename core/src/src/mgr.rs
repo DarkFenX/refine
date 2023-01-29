@@ -9,7 +9,7 @@ use crate::{
     cg,
     ch::{CHData, CacheHandler},
     dh::DataHandler,
-    Error, Result, VERSION,
+    Error, ErrorKind, FromKind, IntError, IntResult, Result, VERSION,
 };
 
 use super::src::Src;
@@ -45,14 +45,17 @@ impl SrcMgr {
         log::info!("using {:?} as data handler", data_handler);
         log::info!("using {:?} as cache handler", cache_handler);
         if self.exists(alias) {
-            return Err(Error::new(format!("source with alias \"{}\" already exists", alias)));
+            return Err(Error::new(
+                ErrorKind::SrcAlreadyExists,
+                format!("source with alias \"{}\" already exists", alias),
+            ));
         }
         self.lock_alias(alias);
         let dv = get_data_version(&data_handler);
         if need_cache_regen(dv.clone(), &mut cache_handler) {
             let ch_data = regen_cache(&data_handler).map_err(|e| {
                 self.unlock_alias(alias);
-                e
+                Error::from_kind(e, ErrorKind::SrcCacheGenFailed)
             })?;
             update_cache(dv, &mut cache_handler, ch_data);
         }
@@ -63,11 +66,10 @@ impl SrcMgr {
     /// Remove data source which is stored against passed alias.
     pub fn del(&self, alias: &str) -> Result<()> {
         log::info!("removing source with alias \"{}\"", alias);
-        self.sources
-            .write()
-            .unwrap()
-            .remove(alias)
-            .ok_or(Error::new(format!("no source with alias \"{}\"", alias)))?;
+        self.sources.write().unwrap().remove(alias).ok_or(Error::new(
+            ErrorKind::SrcAlreadyExists,
+            format!("no source with alias \"{}\"", alias),
+        ))?;
         match self.default.read().unwrap().as_ref() {
             Some(s) if s.alias == alias => *self.default.write().unwrap() = None,
             _ => (),
@@ -141,10 +143,10 @@ fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn Ca
     false
 }
 
-fn regen_cache(data_handler: &Box<dyn DataHandler>) -> Result<CHData> {
+fn regen_cache(data_handler: &Box<dyn DataHandler>) -> IntResult<CHData> {
     log::info!("regenerating cache...");
     // If we have to regenerate cache, failure to generate one is fatal
-    cg::generate_cache(data_handler.as_ref()).map_err(|e| Error::new(format!("failed to generate cache: {}", e)))
+    cg::generate_cache(data_handler.as_ref()).map_err(|e| IntError::new(format!("failed to generate cache: {}", e)))
 }
 
 fn update_cache(data_version: Option<String>, cache_handler: &mut Box<dyn CacheHandler>, ch_data: CHData) {

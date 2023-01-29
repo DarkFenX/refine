@@ -1,4 +1,4 @@
-use crate::{dh, Error, ReeInt, Result};
+use crate::{dh, IntError, IntResult, ReeInt};
 
 pub(super) trait FsdMerge<T> {
     fn fsd_merge(self, id: ReeInt) -> Vec<T>;
@@ -23,10 +23,10 @@ where
     convert::<T, U>(decomposed)
 }
 
-fn decompose(json: serde_json::Value) -> Result<Vec<FsdItem>> {
+fn decompose(json: serde_json::Value) -> IntResult<Vec<FsdItem>> {
     match json {
         serde_json::Value::Object(map) => Ok(map.into_iter().map(|(k, v)| FsdItem::new(k, v)).collect()),
-        _ => Err(Error::new(
+        _ => Err(IntError::new(
             "FSD decomposition failed: highest-level entity is not a map",
         )),
     }

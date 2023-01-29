@@ -11,7 +11,7 @@ use log;
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    Error, ReeInt, Result,
+    Error, ErrorKind, IntError, IntResult, ReeInt, Result,
 };
 
 use super::{data::CacheData, key::Key};
@@ -45,14 +45,14 @@ impl JsonFileCHandler {
     fn get_full_path(&self) -> PathBuf {
         self.folder.join(format!("{}.json.zst", self.name))
     }
-    fn create_cache_folder(&self) -> Result<()> {
+    fn create_cache_folder(&self) -> IntResult<()> {
         match create_dir_all(&self.folder) {
             Ok(_) => Ok(()),
             Err(e) => {
                 match e.kind() {
                     // It's fine if it already exists for our purposes
                     io::ErrorKind::AlreadyExists => Ok(()),
-                    _ => Err(Error::new(format!("unable to create cache folder: {}", e))),
+                    _ => Err(IntError::new(format!("unable to create cache folder: {}", e))),
                 }
             }
         }
@@ -121,15 +121,25 @@ impl ch::CacheHandler for JsonFileCHandler {
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> Result<()> {
         let full_path = self.get_full_path();
-        let file = OpenOptions::new()
-            .read(true)
-            .open(full_path)
-            .map_err(|e| Error::new(format!("unable to open cache for reading: {}", e)))?;
+        let file = OpenOptions::new().read(true).open(full_path).map_err(|e| {
+            Error::new(
+                ErrorKind::CgCacheReadIo,
+                format!("unable to open cache for reading: {}", e),
+            )
+        })?;
         let mut raw = Vec::new();
-        zstd::stream::copy_decode(file, &mut raw)
-            .map_err(|e| Error::new(format!("unable to decompress cache: {}", e)))?;
-        let cache = serde_json::from_slice::<CacheData>(&raw)
-            .map_err(|e| Error::new(format!("unable to decode cache: {}", e)))?;
+        zstd::stream::copy_decode(file, &mut raw).map_err(|e| {
+            Error::new(
+                ErrorKind::CgCacheReadDecompress,
+                format!("unable to decompress cache: {}", e),
+            )
+        })?;
+        let cache = serde_json::from_slice::<CacheData>(&raw).map_err(|e| {
+            Error::new(
+                ErrorKind::CgCacheReadDeserialize,
+                format!("unable to deserealize cache: {}", e),
+            )
+        })?;
         self.update_memory_cache(cache);
         Ok(())
     }

@@ -1,5 +1,6 @@
 use std::result;
 
-use super::error::Error;
+use super::error::{Error, IntError};
 
-pub type Result<T> = result::Result<T, Error>;
+
+
