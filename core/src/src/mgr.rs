@@ -119,7 +119,6 @@ fn get_data_fingerprint(data_version: &str) -> String {
 }
 
 fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn CacheHandler>) -> bool {
-    let mut regen = false;
     // Failure to read version is not fatal, we just always generate cache in this case
     let data_version = match data_version {
         Some(dv) => dv,
