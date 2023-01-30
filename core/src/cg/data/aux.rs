@@ -11,7 +11,7 @@ pub(super) fn attrval_to_fk(val: Option<ReeFloat>) -> Option<ReeInt> {
 }
 
 /// Container for data, used internally by cache generator.
-pub(in super::super) struct CgData {
+pub(in super::super) struct Data {
     pub(in super::super) items: Vec<dh::Item>,
     pub(in super::super) groups: Vec<dh::ItemGroup>,
     pub(in super::super) attrs: Vec<dh::Attr>,
@@ -25,9 +25,9 @@ pub(in super::super) struct CgData {
     pub(in super::super) muta_items: Vec<dh::MutaItemConv>,
     pub(in super::super) muta_attrs: Vec<dh::MutaAttrMod>,
 }
-impl CgData {
-    pub(in super::super) fn new() -> CgData {
-        CgData {
+impl Data {
+    pub(in super::super) fn new() -> Data {
+        Data {
             items: Vec::new(),
             groups: Vec::new(),
             attrs: Vec::new(),
@@ -55,18 +55,18 @@ impl Support {
             grp_cat_map: HashMap::new(),
         }
     }
-    pub(in super::super) fn post_pk(&mut self, cg_data: &CgData) {
+    pub(in super::super) fn post_pk(&mut self, cg_data: &Data) {
         self.fill_attr_unit_map(&cg_data);
         self.fill_grp_cat_map(&cg_data);
     }
-    fn fill_attr_unit_map(&mut self, cg_data: &CgData) {
+    fn fill_attr_unit_map(&mut self, cg_data: &Data) {
         for attr in cg_data.attrs.iter() {
             if let Some(unit) = attr.unit_id {
                 self.attr_unit_map.insert(attr.id, unit);
             }
         }
     }
-    fn fill_grp_cat_map(&mut self, cg_data: &CgData) {
+    fn fill_grp_cat_map(&mut self, cg_data: &Data) {
         for grp in cg_data.groups.iter() {
             self.grp_cat_map.insert(grp.id, grp.category_id);
         }
@@ -93,7 +93,7 @@ impl KeyDb {
         }
     }
     // Primary keys
-    pub(in super::super) fn new_pkdb(cg_data: &CgData) -> KeyDb {
+    pub(in super::super) fn new_pkdb(cg_data: &Data) -> KeyDb {
         let mut pkdb = KeyDb::new();
         KeyDb::extend_pk_vec(&mut pkdb.items, &cg_data.items);
         KeyDb::extend_pk_vec(&mut pkdb.groups, &cg_data.groups);
@@ -109,7 +109,7 @@ impl KeyDb {
         }
     }
     // Foreign keys
-    pub(in super::super) fn new_fkdb(cg_data: &CgData, supp: &Support) -> KeyDb {
+    pub(in super::super) fn new_fkdb(cg_data: &Data, supp: &Support) -> KeyDb {
         let mut fkdb = KeyDb::new();
         fkdb.extend_fk_vec(&cg_data.items, &supp);
         fkdb.extend_fk_vec(&cg_data.groups, &supp);

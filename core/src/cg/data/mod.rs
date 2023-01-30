@@ -1,4 +1,4 @@
-pub(super) use aux::{CgData, KeyDb, Support};
+pub(super) use aux::{Data, KeyDb, Support};
 pub(super) use traits::{Fk, Pk};
 
 mod abil;

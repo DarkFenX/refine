@@ -1,8 +1,8 @@
 use crate::ct;
 
-use super::CgData;
+use super::Data;
 
-pub(super) fn conv_attrs(cg_data: &CgData) -> Vec<ct::Attr> {
+pub(super) fn conv_attrs(cg_data: &Data) -> Vec<ct::Attr> {
     cg_data
         .attrs
         .iter()

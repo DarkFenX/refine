@@ -9,9 +9,9 @@ use crate::{
     ReeInt,
 };
 
-use super::super::{data::Support, CgData};
+use super::super::{data::Support, Data};
 
-pub(super) fn conv_items(cg_data: &CgData, supp: &Support, warns: &mut Vec<String>) -> Vec<ct::Item> {
+pub(super) fn conv_items(cg_data: &Data, supp: &Support, warns: &mut Vec<String>) -> Vec<ct::Item> {
     // Auxiliary maps
     let defeff_map = cg_data
         .item_effects

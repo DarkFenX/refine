@@ -134,7 +134,7 @@ impl ch::CacheHandler for JsonFileCHandler {
         Ok(())
     }
     /// Update data in handler with passed data.
-    fn update_cache(&mut self, ch_data: ch::ChData, fingerprint: String) {
+    fn update_cache(&mut self, ch_data: ch::Data, fingerprint: String) {
         // Update persistent cache
         let cache = CacheData::new(
             ch_data.items,

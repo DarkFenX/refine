@@ -4,7 +4,7 @@ use std::collections::HashSet;
 
 use crate::util::Named;
 
-use super::data::{CgData, Pk};
+use super::data::{Data, Pk};
 
 fn dedup_pks_vec<T>(vec: &mut Vec<T>, warns: &mut Vec<String>)
 where
@@ -29,7 +29,7 @@ where
     }
 }
 
-pub(super) fn dedup_pks(cg_data: &mut CgData, warns: &mut Vec<String>) {
+pub(super) fn dedup_pks(cg_data: &mut Data, warns: &mut Vec<String>) {
     dedup_pks_vec(&mut cg_data.items, warns);
     dedup_pks_vec(&mut cg_data.groups, warns);
     dedup_pks_vec(&mut cg_data.attrs, warns);

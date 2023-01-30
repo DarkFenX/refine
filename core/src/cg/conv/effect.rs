@@ -10,7 +10,7 @@ use crate::{
     IntError, IntResult, ReeInt,
 };
 
-use super::CgData;
+use super::Data;
 
 impl dh::FighterAbil {
     fn get_target_mode(&self) -> String {
@@ -24,7 +24,7 @@ impl dh::FighterAbil {
     }
 }
 
-pub(super) fn conv_effects(cg_data: &CgData, warns: &mut Vec<String>) -> Vec<ct::Effect> {
+pub(super) fn conv_effects(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effect> {
     let mut effects = Vec::new();
     for effect_data in cg_data.effects.iter() {
         let (state, tgt_mode) = match effect_data.category_id {
@@ -333,7 +333,7 @@ fn get_arg_str(args: &HashMap<String, dh::Primitive>, name: &str) -> IntResult<S
     }
 }
 
-fn extract_ability_map<F, T>(cg_data: &CgData, getter: F) -> HashMap<ReeInt, HashSet<T>>
+fn extract_ability_map<F, T>(cg_data: &Data, getter: F) -> HashMap<ReeInt, HashSet<T>>
 where
     F: Fn(&dh::FighterAbil) -> T,
     T: Eq + Hash,

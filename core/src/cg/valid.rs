@@ -7,13 +7,13 @@ use crate::{consts, dh, util::Named, ReeInt};
 
 use super::{
     data::{Fk, KeyDb, Pk, Support},
-    CgData,
+    Data,
 };
 
 /// Ensure that assumptions REEFAST makes about the data are true.
 ///
 /// See documentation for [`dh`](crate::dh) module about assumptions.
-pub(super) fn validate(cg_data: &mut CgData, supp: &Support, warns: &mut Vec<String>) {
+pub(super) fn validate(cg_data: &mut Data, supp: &Support, warns: &mut Vec<String>) {
     fk_check(cg_data, warns, supp);
     default_effects(cg_data, warns);
     known_fighter_abilities(cg_data, warns);
@@ -23,7 +23,7 @@ pub(super) fn validate(cg_data: &mut CgData, supp: &Support, warns: &mut Vec<Str
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
 /// a good idea, since it can help trace down the case when something fails to load from cache
 /// later.
-fn fk_check(cg_data: &CgData, warns: &mut Vec<String>, supp: &Support) {
+fn fk_check(cg_data: &Data, warns: &mut Vec<String>, supp: &Support) {
     let pkdb = KeyDb::new_pkdb(cg_data);
     fk_check_referer(&cg_data.items, &pkdb, supp, warns);
     fk_check_referer(&cg_data.groups, &pkdb, supp, warns);
@@ -98,7 +98,7 @@ fn fk_check_referee<T, F>(
 }
 
 /// One default effect per item max. Needed for Item generation.
-fn default_effects(cg_data: &mut CgData, warns: &mut Vec<String>) {
+fn default_effects(cg_data: &mut Data, warns: &mut Vec<String>) {
     let mut unsets = 0;
     let mut seen_des = HashSet::new();
     for item_effect in cg_data.item_effects.iter_mut() {
@@ -117,7 +117,7 @@ fn default_effects(cg_data: &mut CgData, warns: &mut Vec<String>) {
 }
 
 /// Remove unknown fighter abilities.
-fn known_fighter_abilities(cg_data: &mut CgData, warns: &mut Vec<String>) {
+fn known_fighter_abilities(cg_data: &mut Data, warns: &mut Vec<String>) {
     let mut unknown_ids = HashSet::new();
     let abils = cg_data
         .abils
@@ -148,7 +148,7 @@ fn known_fighter_abilities(cg_data: &mut CgData, warns: &mut Vec<String>) {
 }
 
 /// Remove item abilities which have no effects to handle them.
-fn fighter_ability_effect(cg_data: &mut CgData, warns: &mut Vec<String>) {
+fn fighter_ability_effect(cg_data: &mut Data, warns: &mut Vec<String>) {
     let mut item_eff_map = HashMap::new();
     for item_eff in cg_data.item_effects.iter() {
         item_eff_map
