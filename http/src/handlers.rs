@@ -47,14 +47,8 @@ pub(crate) async fn create_source(
     }
 }
 
-pub(crate) async fn delete_source(
-    State(state): State<Arc<AppState>>,
-    Path(alias): Path<String>,
-) -> impl IntoResponse {
-    let r = tokio_rayon::spawn_fifo(move || {
-        state.srcmgr.del(alias.as_str())
-    })
-    .await;
+pub(crate) async fn delete_source(State(state): State<Arc<AppState>>, Path(alias): Path<String>) -> impl IntoResponse {
+    let r = tokio_rayon::spawn_fifo(move || state.srcmgr.del(alias.as_str())).await;
     match r {
         Ok(_) => StatusCode::NO_CONTENT,
         Err(e) if matches!(e.kind, reefast::ErrorKind::SrcNotFound) => StatusCode::NOT_FOUND,

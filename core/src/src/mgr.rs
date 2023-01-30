@@ -1,9 +1,10 @@
 use std::{
     collections::{HashMap, HashSet},
-    sync::{Arc, RwLock},
+    sync::Arc,
 };
 
 use log;
+use parking_lot::RwLock;
 
 use crate::{
     cg,
@@ -66,44 +67,44 @@ impl SrcMgr {
     /// Remove data source which is stored against passed alias.
     pub fn del(&self, alias: &str) -> Result<()> {
         log::info!("removing source with alias \"{}\"", alias);
-        self.sources.write().unwrap().remove(alias).ok_or(Error::new(
+        self.sources.write().remove(alias).ok_or(Error::new(
             ErrorKind::SrcNotFound,
             format!("no source with alias \"{}\"", alias),
         ))?;
-        let default = self.default.read().unwrap().clone();
+        let default = self.default.read().clone();
         match default {
-            Some(s) if s.alias == alias => *self.default.write().unwrap() = None,
+            Some(s) if s.alias == alias => *self.default.write() = None,
             _ => (),
         };
         Ok(())
     }
     // Crate methods
     pub(crate) fn get(&self, alias: &str) -> Option<Arc<Src>> {
-        self.sources.read().unwrap().get(alias).cloned()
+        self.sources.read().get(alias).cloned()
     }
     pub(crate) fn get_default(&self) -> Option<Arc<Src>> {
-        self.default.read().unwrap().clone()
+        self.default.read().clone()
     }
     // Private methods
     fn exists(&self, alias: &str) -> bool {
-        self.sources.read().unwrap().contains_key(alias) || self.locked_aliases.read().unwrap().contains(alias)
+        self.sources.read().contains_key(alias) || self.locked_aliases.read().contains(alias)
     }
     fn lock_alias(&self, alias: &str) {
         log::debug!("locking alias \"{}\"", alias);
-        self.locked_aliases.write().unwrap().insert(alias.into());
+        self.locked_aliases.write().insert(alias.into());
     }
     fn unlock_alias(&self, alias: &str) {
         log::debug!("unlocking alias \"{}\"", alias);
-        if !self.locked_aliases.write().unwrap().remove(alias) {
+        if !self.locked_aliases.write().remove(alias) {
             log::error!("attempt to unlock alias which is not locked")
         }
     }
     fn add_source(&self, alias: &str, cache_handler: Box<dyn CacheHandler>, make_default: bool) {
         let src = Arc::new(Src::new(alias.into(), cache_handler));
         if make_default {
-            *self.default.write().unwrap() = Some(src.clone());
+            *self.default.write() = Some(src.clone());
         };
-        self.sources.write().unwrap().insert(src.alias.clone(), src);
+        self.sources.write().insert(src.alias.clone(), src);
     }
 }
 
