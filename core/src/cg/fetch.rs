@@ -9,7 +9,7 @@ use crate::{
     IntError, IntResult,
 };
 
-use super::data::CGData;
+use super::data::CgData;
 
 const MAX_WARNS: usize = 5;
 
@@ -38,7 +38,7 @@ where
     Ok(())
 }
 
-pub(super) fn fetch_data(data_handler: &dyn DataHandler, cg_data: &mut CGData) -> IntResult<()> {
+pub(super) fn fetch_data(data_handler: &dyn DataHandler, cg_data: &mut CgData) -> IntResult<()> {
     fetch_data_vec(data_handler, DataHandler::get_items, &mut cg_data.items)?;
     fetch_data_vec(data_handler, DataHandler::get_item_groups, &mut cg_data.groups)?;
     fetch_data_vec(data_handler, DataHandler::get_attrs, &mut cg_data.attrs)?;

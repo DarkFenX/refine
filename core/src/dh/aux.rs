@@ -1,8 +1,3 @@
-use std::{error, result};
-
-/// Alias for a `Result` which accepts any error type
-pub type Result<T> = result::Result<T, Box<dyn error::Error>>;
-
 /// Convenience type to pass data and accumulated warnings to the caller.
 #[derive(Debug)]
 pub struct Container<T> {

@@ -1,6 +1,6 @@
 //! Cache generator.
 
-use data::{CGData, Support};
+use data::{CgData, Support};
 
 use crate::{ch, dh::DataHandler, IntResult};
 
@@ -11,11 +11,11 @@ mod fetch;
 mod pk;
 mod valid;
 
-pub(crate) fn generate_cache(data_handler: &dyn DataHandler) -> IntResult<ch::CHData> {
-    let mut cg_data = CGData::new();
+pub(crate) fn generate_cache(data_handler: &dyn DataHandler) -> IntResult<ch::ChData> {
+    let mut cg_data = CgData::new();
     let mut warns = Vec::new();
     let mut supp = Support::new();
-    let mut ch_data = ch::CHData::new();
+    let mut ch_data = ch::ChData::new();
     fetch::fetch_data(data_handler, &mut cg_data)?;
     pk::dedup_pks(&mut cg_data, &mut warns);
     supp.post_pk(&cg_data);

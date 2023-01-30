@@ -2,10 +2,10 @@ use std::fmt;
 
 use crate::{
     ct::{Attr, Buff, Effect, Item, Muta},
-    ReeInt, Result,
+    ReeInt,
 };
 
-use super::data::CHData;
+use super::{data::ChData, Result};
 
 /// Cache handler interface definition.
 pub trait CacheHandler: fmt::Debug + Send + Sync {
@@ -24,5 +24,5 @@ pub trait CacheHandler: fmt::Debug + Send + Sync {
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> Result<()>;
     /// Update data in handler with passed data.
-    fn update_cache(&mut self, ch_data: CHData, fingerprint: String);
+    fn update_cache(&mut self, ch_data: ChData, fingerprint: String);
 }

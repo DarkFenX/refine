@@ -1,11 +1,12 @@
 use std::fmt;
 
 use super::{
-    aux::{Container, Result},
+    aux::Container,
     data::{
         Attr, Buff, Effect, FighterAbil, Item, ItemAttr, ItemEffect, ItemFighterAbil, ItemGroup, ItemSkillReq,
         MutaAttrMod, MutaItemConv,
     },
+    Result,
 };
 
 /// Data handler interface definition.

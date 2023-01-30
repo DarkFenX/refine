@@ -6,9 +6,6 @@ use super::internal::IntError;
 /// Defines error types which are returned by the library.
 #[derive(Debug)]
 pub enum ErrorKind {
-    CgCacheReadIo,
-    CgCacheReadDecompress,
-    CgCacheReadDeserialize,
     DhHttpInvalidBaseUrl,
     SrcAlreadyExists,
     SrcCacheGenFailed,
@@ -32,6 +29,7 @@ impl fmt::Display for Error {
     }
 }
 
+// Alias for result which
 pub type Result<T> = result::Result<T, Error>;
 
 pub(crate) trait FromKind<T> {

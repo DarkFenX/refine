@@ -4,9 +4,9 @@ use itertools::Itertools;
 
 use crate::ct;
 
-use super::CGData;
+use super::CgData;
 
-pub(super) fn conv_mutas(cg_data: &CGData) -> Vec<ct::Muta> {
+pub(super) fn conv_mutas(cg_data: &CgData) -> Vec<ct::Muta> {
     let mut composed = HashMap::new();
     for item_data in cg_data.muta_items.iter() {
         let muta = composed

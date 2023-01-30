@@ -7,9 +7,9 @@ use crate::{
     IntError, IntResult, ReeInt,
 };
 
-use super::CGData;
+use super::CgData;
 
-pub(super) fn conv_buffs(cg_data: &CGData, warns: &mut Vec<String>) -> Vec<ct::Buff> {
+pub(super) fn conv_buffs(cg_data: &CgData, warns: &mut Vec<String>) -> Vec<ct::Buff> {
     let mut converted = Vec::new();
     for buff_data in cg_data.buffs.iter().sorted_by_key(|v| v.id) {
         let op = match conv_buff_op(&buff_data.operation) {

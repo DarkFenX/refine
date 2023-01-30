@@ -33,13 +33,15 @@
 //! collisions, data from colliding abilities is compared. If there are any mismatches, warnings are
 //! logged, and data is not transferred to an effect.
 
-pub use aux::{Container, Result};
+pub use aux::Container;
 pub use data::{
     Attr, Buff, BuffIM, BuffLGM, BuffLM, BuffLRSM, Effect, EffectMod, FighterAbil, Item, ItemAttr, ItemEffect,
     ItemFighterAbil, ItemGroup, ItemSkillReq, MutaAttrMod, MutaItemConv, Primitive,
 };
 pub use handler::DataHandler;
+pub use result::Result;
 
 mod aux;
 mod data;
 mod handler;
+mod result;

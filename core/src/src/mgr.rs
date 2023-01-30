@@ -7,7 +7,7 @@ use log;
 
 use crate::{
     cg,
-    ch::{CHData, CacheHandler},
+    ch::{CacheHandler, ChData},
     dh::DataHandler,
     Error, ErrorKind, FromKind, IntError, IntResult, Result, VERSION,
 };
@@ -143,13 +143,13 @@ fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn Ca
     false
 }
 
-fn regen_cache(data_handler: &Box<dyn DataHandler>) -> IntResult<CHData> {
+fn regen_cache(data_handler: &Box<dyn DataHandler>) -> IntResult<ChData> {
     log::info!("regenerating cache...");
     // If we have to regenerate cache, failure to generate one is fatal
     cg::generate_cache(data_handler.as_ref()).map_err(|e| IntError::new(format!("failed to generate cache: {}", e)))
 }
 
-fn update_cache(data_version: Option<String>, cache_handler: &mut Box<dyn CacheHandler>, ch_data: CHData) {
+fn update_cache(data_version: Option<String>, cache_handler: &mut Box<dyn CacheHandler>, ch_data: ChData) {
     let data_version = data_version.unwrap_or("none".into());
     let data_fp = get_data_fingerprint(&data_version);
     cache_handler.update_cache(ch_data, data_fp)

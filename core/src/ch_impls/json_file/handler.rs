@@ -11,7 +11,7 @@ use log;
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    Error, ErrorKind, IntError, IntResult, ReeInt, Result,
+    IntError, IntResult, ReeInt,
 };
 
 use super::{data::CacheData, key::Key};
@@ -119,32 +119,22 @@ impl ch::CacheHandler for JsonFileCHandler {
         &self.fingerprint
     }
     /// Load cache from persistent storage.
-    fn load_cache(&mut self) -> Result<()> {
+    fn load_cache(&mut self) -> ch::Result<()> {
         let full_path = self.get_full_path();
-        let file = OpenOptions::new().read(true).open(full_path).map_err(|e| {
-            Error::new(
-                ErrorKind::CgCacheReadIo,
-                format!("unable to open cache for reading: {}", e),
-            )
-        })?;
+        let file = OpenOptions::new()
+            .read(true)
+            .open(full_path)
+            .map_err(|e| IntError::new(format!("unable to open cache for reading: {}", e)))?;
         let mut raw = Vec::new();
-        zstd::stream::copy_decode(file, &mut raw).map_err(|e| {
-            Error::new(
-                ErrorKind::CgCacheReadDecompress,
-                format!("unable to decompress cache: {}", e),
-            )
-        })?;
-        let cache = serde_json::from_slice::<CacheData>(&raw).map_err(|e| {
-            Error::new(
-                ErrorKind::CgCacheReadDeserialize,
-                format!("unable to deserealize cache: {}", e),
-            )
-        })?;
+        zstd::stream::copy_decode(file, &mut raw)
+            .map_err(|e| IntError::new(format!("unable to decompress cache: {}", e)))?;
+        let cache = serde_json::from_slice::<CacheData>(&raw)
+            .map_err(|e| IntError::new(format!("unable to deserealize cache: {}", e)))?;
         self.update_memory_cache(cache);
         Ok(())
     }
     /// Update data in handler with passed data.
-    fn update_cache(&mut self, ch_data: ch::CHData, fingerprint: String) {
+    fn update_cache(&mut self, ch_data: ch::ChData, fingerprint: String) {
         // Update persistent cache
         let cache = CacheData::new(
             ch_data.items,
