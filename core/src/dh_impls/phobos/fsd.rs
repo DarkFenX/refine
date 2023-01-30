@@ -20,7 +20,7 @@ where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
     let decomposed = decompose(unprocessed)?;
-    convert::<T, U>(decomposed)
+    Ok(convert::<T, U>(decomposed))
 }
 
 fn decompose(json: serde_json::Value) -> IntResult<Vec<FsdItem>> {
@@ -32,7 +32,7 @@ fn decompose(json: serde_json::Value) -> IntResult<Vec<FsdItem>> {
     }
 }
 
-fn convert<T, U>(decomposed: Vec<FsdItem>) -> dh::Result<dh::Container<U>>
+fn convert<T, U>(decomposed: Vec<FsdItem>) -> dh::Container<U>
 where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
@@ -50,5 +50,5 @@ where
                 .push(format!("failed to cast FSD key \"{}\" to integer", fsd_item.id)),
         }
     }
-    Ok(cont)
+    cont
 }
