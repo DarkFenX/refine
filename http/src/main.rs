@@ -1,15 +1,13 @@
 use std::{net::SocketAddr, sync::Arc};
 
 use axum::{
-    routing::{get, post},
+    routing::{get, post, delete},
     Router,
 };
 
 use crate::state::AppState;
 
-mod glue;
 mod handlers;
-mod server;
 mod state;
 
 #[tokio::main]
@@ -23,6 +21,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(handlers::root))
         .route("/source/:alias", post(handlers::create_source))
+        .route("/source/:alias", delete(handlers::delete_source))
         .with_state(shared_state);
 
     // run our app with hyper

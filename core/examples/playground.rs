@@ -39,4 +39,11 @@ fn main() {
     //sleep(Duration::new(10, 0));
     srcmgr.del("tq");
     //sleep(Duration::new(10, 0));
+    let dh = Box::new(phobos::PhbFileDHandler::new("/home/dfx/Desktop/phobos_tq_en-us"));
+    // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
+    let mut ch = Box::new(json_file::JsonFileCHandler::new(
+        PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
+        "tq",
+    ));
+    srcmgr.add("tq", dh, ch, true);
 }

@@ -67,10 +67,11 @@ impl SrcMgr {
     pub fn del(&self, alias: &str) -> Result<()> {
         log::info!("removing source with alias \"{}\"", alias);
         self.sources.write().unwrap().remove(alias).ok_or(Error::new(
-            ErrorKind::SrcAlreadyExists,
+            ErrorKind::SrcNotFound,
             format!("no source with alias \"{}\"", alias),
         ))?;
-        match self.default.read().unwrap().as_ref() {
+        let default = self.default.read().unwrap().clone();
+        match default {
             Some(s) if s.alias == alias => *self.default.write().unwrap() = None,
             _ => (),
         };
