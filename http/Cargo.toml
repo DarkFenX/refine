@@ -11,5 +11,6 @@ rayon = ">=1.6.1"
 serde = { version = ">=1.0", features = ["derive"] }
 tokio = { version = ">=1.22", features = ["full"] }
 tokio-rayon = ">=2.1.0"
+tower = { version = ">=0.4.13", features = ["buffer", "limit", "timeout"] }
 tracing = ">=0.1"
 tracing-subscriber = ">=0.3"

@@ -1,9 +1,12 @@
-use std::{net::SocketAddr, sync::Arc};
+use std::{net::SocketAddr, sync::Arc, time::Duration};
 
 use axum::{
+    error_handling::HandleErrorLayer,
+    handler::Handler,
     routing::{delete, get, post},
     Router,
 };
+use tower::ServiceBuilder;
 
 use crate::state::AppState;
 
@@ -20,7 +23,18 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         .route("/", get(handlers::root))
-        .route("/source/:alias", post(handlers::create_source))
+        .route(
+            "/source/:alias",
+            post(
+                handlers::create_source.layer(
+                    ServiceBuilder::new()
+                        .layer(HandleErrorLayer::new(handlers::handle_error))
+                        .timeout(Duration::from_secs(30))
+                        .buffer(5)
+                        .concurrency_limit(2),
+                ),
+            ),
+        )
         .route("/source/:alias", delete(handlers::delete_source))
         .with_state(shared_state);
 
