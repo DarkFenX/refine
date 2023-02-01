@@ -56,13 +56,3 @@ pub(crate) async fn delete_source(State(state): State<Arc<AppState>>, Path(alias
         _ => StatusCode::INTERNAL_SERVER_ERROR,
     }
 }
-
-pub(crate) async fn handle_error(error: BoxError) -> impl IntoResponse {
-    if error.is::<tower::timeout::error::Elapsed>() {
-        return StatusCode::REQUEST_TIMEOUT;
-    }
-    if error.is::<tower::buffer::error::ServiceError>() {
-        return StatusCode::SERVICE_UNAVAILABLE;
-    }
-    StatusCode::INTERNAL_SERVER_ERROR
-}
