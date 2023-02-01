@@ -7,7 +7,6 @@ use axum::{
     Json,
 };
 use serde::Deserialize;
-use tower::BoxError;
 
 use crate::state::AppState;
 
@@ -19,7 +18,6 @@ pub(crate) async fn root() -> &'static str {
 pub(crate) struct CreateSource {
     data_version: String,
     data_base_url: String,
-    callback_base_url: String,
 }
 
 pub(crate) async fn create_source(
@@ -29,7 +27,6 @@ pub(crate) async fn create_source(
 ) -> impl IntoResponse {
     let data_version = payload.data_version;
     let data_base_url = payload.data_base_url;
-    // let callback_base_url = payload.callback_base_url;
     let r = tokio_rayon::spawn_fifo(move || {
         let dh =
             Box::new(reefast::dh_impls::phobos::PhbHttpDHandler::new(data_base_url.as_str(), data_version).unwrap());
