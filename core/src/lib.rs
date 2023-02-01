@@ -12,6 +12,7 @@
 
 pub use defines::{ReeFloat, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::SrcMgr;
+pub use ss::SolarSystem;
 pub use util::err_res::public::{Error, ErrorKind, Result};
 pub(crate) use util::err_res::{
     internal::{IntError, IntResult},
@@ -28,4 +29,5 @@ pub mod dh;
 pub mod dh_impls;
 pub mod prelude;
 mod src;
+mod ss;
 mod util;
