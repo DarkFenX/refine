@@ -53,3 +53,25 @@ pub(crate) async fn delete_source(State(state): State<Arc<AppState>>, Path(alias
         _ => StatusCode::INTERNAL_SERVER_ERROR,
     }
 }
+
+#[derive(Deserialize)]
+pub(crate) struct CreateSystem {
+    src_alias: Option<String>,
+}
+
+pub(crate) async fn create_system(
+    State(state): State<Arc<AppState>>,
+    Json(payload): Json<CreateSystem>,
+) -> impl IntoResponse {
+    let src_alias = payload.src_alias;
+    let r = tokio_rayon::spawn_fifo(move || match src_alias {
+        None => reefast::SolarSystem::new(state.srcmgr.clone()),
+        Some(a) => reefast::SolarSystem::new_with_alias(state.srcmgr.clone(), &a),
+    })
+    .await;
+    match r {
+        Ok(_) => StatusCode::CREATED,
+        Err(e) if matches!(e.kind, reefast::ErrorKind::SrcNotFound) => StatusCode::UNPROCESSABLE_ENTITY,
+        _ => StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}

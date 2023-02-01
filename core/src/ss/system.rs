@@ -6,17 +6,17 @@ use crate::{
 };
 
 pub struct SolarSystem {
-    srcmgr: SrcMgr,
+    srcmgr: Arc<SrcMgr>,
     src: Arc<Src>,
 }
 impl SolarSystem {
-    pub fn new(srcmgr: SrcMgr) -> Result<SolarSystem> {
+    pub fn new(srcmgr: Arc<SrcMgr>) -> Result<SolarSystem> {
         let src = srcmgr
             .get_default()
             .ok_or_else(|| Error::new(ErrorKind::SrcNotFound, "default source is not found"))?;
         Ok(SolarSystem { srcmgr, src })
     }
-    pub fn new_with_alias(srcmgr: SrcMgr, alias: &str) -> Result<SolarSystem> {
+    pub fn new_with_alias(srcmgr: Arc<SrcMgr>, alias: &str) -> Result<SolarSystem> {
         let src = srcmgr.get(alias).ok_or_else(|| {
             Error::new(
                 ErrorKind::SrcNotFound,

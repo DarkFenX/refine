@@ -22,6 +22,7 @@ async fn main() {
         .route("/", get(handlers::root))
         .route("/source/:alias", post(handlers::create_source))
         .route("/source/:alias", delete(handlers::delete_source))
+        .route("/system/create", post(handlers::create_system))
         .with_state(shared_state);
 
     // run our app with hyper
