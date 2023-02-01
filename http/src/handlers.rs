@@ -18,6 +18,7 @@ pub(crate) async fn root() -> &'static str {
 pub(crate) struct CreateSource {
     data_version: String,
     data_base_url: String,
+    make_default: Option<bool>,
 }
 
 pub(crate) async fn create_source(
@@ -27,6 +28,7 @@ pub(crate) async fn create_source(
 ) -> impl IntoResponse {
     let data_version = payload.data_version;
     let data_base_url = payload.data_base_url;
+    let mkdef = payload.make_default.unwrap_or(false);
     let r = tokio_rayon::spawn_fifo(move || {
         let dh =
             Box::new(reefast::dh_impls::phobos::PhbHttpDHandler::new(data_base_url.as_str(), data_version).unwrap());
@@ -34,7 +36,7 @@ pub(crate) async fn create_source(
             "/home/dfx/Workspace/eve/reefast/cache",
             alias.as_str(),
         ));
-        state.srcmgr.add(alias.as_str(), dh, ch, false)
+        state.srcmgr.add(alias.as_str(), dh, ch, mkdef)
     })
     .await;
     match r {
