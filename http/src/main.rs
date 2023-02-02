@@ -8,6 +8,7 @@ use axum::{
 use crate::state::AppState;
 
 mod handlers;
+mod session;
 mod state;
 
 #[tokio::main]

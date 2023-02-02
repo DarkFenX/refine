@@ -36,7 +36,7 @@ pub(crate) async fn create_source(
             "/home/dfx/Workspace/eve/reefast/cache",
             alias.as_str(),
         ));
-        state.srcmgr.add(alias.as_str(), dh, ch, mkdef)
+        state.source.add(alias.as_str(), dh, ch, mkdef)
     })
     .await;
     match r {
@@ -48,7 +48,7 @@ pub(crate) async fn create_source(
 }
 
 pub(crate) async fn delete_source(State(state): State<Arc<AppState>>, Path(alias): Path<String>) -> impl IntoResponse {
-    let r = tokio_rayon::spawn_fifo(move || state.srcmgr.del(alias.as_str())).await;
+    let r = tokio_rayon::spawn_fifo(move || state.source.del(alias.as_str())).await;
     match r {
         Ok(_) => StatusCode::NO_CONTENT,
         Err(e) if matches!(e.kind, reefast::ErrorKind::SrcNotFound) => StatusCode::NOT_FOUND,
@@ -67,8 +67,8 @@ pub(crate) async fn create_system(
 ) -> impl IntoResponse {
     let src_alias = payload.src_alias;
     let r = tokio_rayon::spawn_fifo(move || match src_alias {
-        None => reefast::SolarSystem::new(state.srcmgr.clone()),
-        Some(a) => reefast::SolarSystem::new_with_alias(state.srcmgr.clone(), &a),
+        None => reefast::SolarSystem::new(state.source.clone()),
+        Some(a) => reefast::SolarSystem::new_with_alias(state.source.clone(), &a),
     })
     .await;
     match r {
