@@ -6,6 +6,7 @@ use axum::{
     routing::{delete, get, post},
     Router,
 };
+use tokio::time::{interval, Duration};
 
 use crate::state::AppState;
 
@@ -19,6 +20,14 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     let shared_state = Arc::new(AppState::new());
+    let ssc = shared_state.clone();
+    tokio::spawn(async move {
+        let mut int = interval(Duration::from_secs(1));
+        loop {
+            int.tick().await;
+            ssc.sol_sys_mgr.cleanup_sol_sys().await;
+        }
+    });
 
     // build our application with a route
     let app = Router::new()
