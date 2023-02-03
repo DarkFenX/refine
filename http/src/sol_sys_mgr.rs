@@ -33,6 +33,9 @@ impl SolSysManager {
             .insert(id.clone(), ManagedSolSys::new_with_sol_sys(sol_sys));
         id
     }
+    pub(crate) async fn delete_sol_sys(&self, id: &str) -> bool {
+        self.id_sol_sys_map.write().await.remove(id).is_some()
+    }
 }
 
 fn get_id() -> String {
