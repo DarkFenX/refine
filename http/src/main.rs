@@ -8,7 +8,7 @@ use axum::{
 use crate::state::AppState;
 
 mod handlers;
-mod session;
+mod sol_sys_mgr;
 mod state;
 
 #[tokio::main]
@@ -23,7 +23,7 @@ async fn main() {
         .route("/", get(handlers::root))
         .route("/source/:alias", post(handlers::create_source))
         .route("/source/:alias", delete(handlers::delete_source))
-        .route("/system/create", post(handlers::create_system))
+        .route("/solar_system", post(handlers::create_sol_sys))
         .with_state(shared_state);
 
     // run our app with hyper

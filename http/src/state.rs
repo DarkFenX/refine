@@ -1,16 +1,16 @@
 use std::sync::Arc;
 
-use crate::session::SessionManager;
+use crate::sol_sys_mgr::SolSysManager;
 
 pub(crate) struct AppState {
-    pub(crate) source: Arc<reefast::SrcMgr>,
-    pub(crate) session: SessionManager,
+    pub(crate) src_mgr: Arc<reefast::SrcMgr>,
+    pub(crate) sol_sys_mgr: SolSysManager,
 }
 impl AppState {
     pub(crate) fn new() -> AppState {
         AppState {
-            source: Arc::new(reefast::SrcMgr::new()),
-            session: SessionManager::new(),
+            src_mgr: Arc::new(reefast::SrcMgr::new()),
+            sol_sys_mgr: SolSysManager::new(),
         }
     }
 }
