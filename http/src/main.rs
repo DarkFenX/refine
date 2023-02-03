@@ -1,3 +1,5 @@
+#![feature(hash_drain_filter)]
+
 use std::{net::SocketAddr, sync::Arc};
 
 use axum::{
