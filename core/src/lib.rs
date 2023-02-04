@@ -11,6 +11,7 @@
 //! - you compose fit objects and fetch data from there
 
 pub use defines::{ReeFloat, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
+pub use fit::Fit;
 pub use src::SrcMgr;
 pub use ss::SolarSystem;
 pub use util::err_res::public::{Error, ErrorKind, Result};
@@ -27,6 +28,7 @@ pub mod ct;
 mod defines;
 pub mod dh;
 pub mod dh_impls;
+mod fit;
 pub mod prelude;
 mod src;
 mod ss;
