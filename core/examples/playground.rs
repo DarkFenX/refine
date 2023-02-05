@@ -1,10 +1,13 @@
 #![allow(warnings, unused)]
 
-use std::{path::PathBuf, thread::sleep, time::Duration};
+use std::{path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 
 use chrono;
 
-use reefast::{ch::CacheHandler, ch_impls::json_file, dh::DataHandler, dh_impls::phobos, SrcMgr, VERSION};
+use reefast::{
+    ch::CacheHandler, ch_impls::json_file, dh::DataHandler, dh_impls::phobos, Fit, ItemBase, Ship, SolarSystem, SrcMgr,
+    VERSION,
+};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -26,7 +29,7 @@ fn setup_logger() -> Result<(), fern::InitError> {
 
 fn main() {
     setup_logger().unwrap();
-    let mut src_mgr = SrcMgr::new();
+    let mut src_mgr = Arc::new(SrcMgr::new());
     let dh = Box::new(phobos::PhbFileDHandler::new("/home/dfx/Desktop/phobos_tq_en-us"));
     // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
     let mut ch = Box::new(json_file::JsonFileCHandler::new(
@@ -34,16 +37,9 @@ fn main() {
         "tq",
     ));
     src_mgr.add("tq", dh, ch, true);
-    // let item = src_mgr.get_default().unwrap().cache_handler.get_item(11184).unwrap();
-    //println!("Item with id {} fetched", item.id);
-    //sleep(Duration::new(10, 0));
+    let mut sol_sys = SolarSystem::new(src_mgr.clone()).unwrap();
+    let mut fit = Fit::new(Some(sol_sys));
+    fit.set_ship(Some(Ship::new(11184)));
+
     src_mgr.del("tq");
-    //sleep(Duration::new(10, 0));
-    let dh = Box::new(phobos::PhbFileDHandler::new("/home/dfx/Desktop/phobos_tq_en-us"));
-    // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
-    let mut ch = Box::new(json_file::JsonFileCHandler::new(
-        PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
-        "tq",
-    ));
-    src_mgr.add("tq", dh, ch, true);
 }
