@@ -13,7 +13,7 @@ impl SolarSystem {
     pub fn new(src_mgr: Arc<SrcMgr>) -> Result<SolarSystem> {
         let src = src_mgr
             .get_default()
-            .ok_or_else(|| Error::new(ErrorKind::SrcNotFound, "default source is not found"))?;
+            .ok_or_else(|| Error::new(ErrorKind::SrcNotFound, "no default source assigned"))?;
         Ok(SolarSystem { src_mgr, src })
     }
     pub fn new_with_alias(src_mgr: Arc<SrcMgr>, alias: &str) -> Result<SolarSystem> {

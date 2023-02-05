@@ -12,6 +12,7 @@
 
 pub use defines::{ReeFloat, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use fit::Fit;
+pub use item::{ItemBase, Ship};
 pub use src::SrcMgr;
 pub use ss::SolarSystem;
 pub use util::err_res::public::{Error, ErrorKind, Result};
@@ -29,6 +30,7 @@ mod defines;
 pub mod dh;
 pub mod dh_impls;
 mod fit;
+mod item;
 pub mod prelude;
 mod src;
 mod ss;

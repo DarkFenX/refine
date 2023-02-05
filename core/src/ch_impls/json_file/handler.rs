@@ -4,6 +4,7 @@ use std::{
     fs::{create_dir_all, OpenOptions},
     io,
     path::PathBuf,
+    sync::Arc,
 };
 
 use log;
@@ -20,11 +21,11 @@ use super::{data::CacheData, key::Key};
 pub struct JsonFileCHandler {
     folder: PathBuf,
     name: String,
-    storage_items: HashMap<ReeInt, Item>,
-    storage_attrs: HashMap<ReeInt, Attr>,
-    storage_effects: HashMap<ReeInt, Effect>,
-    storage_mutas: HashMap<ReeInt, Muta>,
-    storage_buffs: HashMap<ReeInt, Buff>,
+    storage_items: HashMap<ReeInt, Arc<Item>>,
+    storage_attrs: HashMap<ReeInt, Arc<Attr>>,
+    storage_effects: HashMap<ReeInt, Arc<Effect>>,
+    storage_mutas: HashMap<ReeInt, Arc<Muta>>,
+    storage_buffs: HashMap<ReeInt, Arc<Buff>>,
     fingerprint: String,
 }
 impl JsonFileCHandler {
@@ -95,27 +96,27 @@ impl fmt::Debug for JsonFileCHandler {
 }
 impl ch::CacheHandler for JsonFileCHandler {
     /// Get cached item.
-    fn get_item(&self, id: ReeInt) -> Option<&Item> {
-        self.storage_items.get(&id)
+    fn get_item(&self, id: ReeInt) -> Option<Arc<Item>> {
+        self.storage_items.get(&id).cloned()
     }
     /// Get cached attribute.
-    fn get_attr(&self, id: ReeInt) -> Option<&Attr> {
-        self.storage_attrs.get(&id)
+    fn get_attr(&self, id: ReeInt) -> Option<Arc<Attr>> {
+        self.storage_attrs.get(&id).cloned()
     }
     /// Get cached effect.
-    fn get_effect(&self, id: ReeInt) -> Option<&Effect> {
-        self.storage_effects.get(&id)
+    fn get_effect(&self, id: ReeInt) -> Option<Arc<Effect>> {
+        self.storage_effects.get(&id).cloned()
     }
     /// Get cached mutaplasmid.
-    fn get_muta(&self, id: ReeInt) -> Option<&Muta> {
-        self.storage_mutas.get(&id)
+    fn get_muta(&self, id: ReeInt) -> Option<Arc<Muta>> {
+        self.storage_mutas.get(&id).cloned()
     }
     /// Get cached warfare buff.
-    fn get_buff(&self, id: ReeInt) -> Option<&Buff> {
-        self.storage_buffs.get(&id)
+    fn get_buff(&self, id: ReeInt) -> Option<Arc<Buff>> {
+        self.storage_buffs.get(&id).cloned()
     }
     /// Get cached data fingerprint.
-    fn get_fingerprint(&self) -> &String {
+    fn get_fingerprint(&self) -> &str {
         &self.fingerprint
     }
     /// Load cache from persistent storage.
@@ -153,7 +154,7 @@ impl ch::CacheHandler for JsonFileCHandler {
     }
 }
 
-fn move_vec_to_map<T>(vec: Vec<T>, map: &mut HashMap<ReeInt, T>)
+fn move_vec_to_map<T>(vec: Vec<T>, map: &mut HashMap<ReeInt, Arc<T>>)
 where
     T: Key,
 {
@@ -161,6 +162,6 @@ where
     map.shrink_to_fit();
     map.reserve(vec.len());
     vec.into_iter().for_each(|v| {
-        map.insert(v.get_key(), v);
+        map.insert(v.get_key(), Arc::new(v));
     });
 }
