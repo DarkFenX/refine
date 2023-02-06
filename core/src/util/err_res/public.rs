@@ -10,6 +10,7 @@ pub enum ErrorKind {
     SrcAlreadyExists,
     SrcCacheGenFailed,
     SrcNotFound,
+    AlreadyHasParent,
 }
 
 #[derive(Debug)]

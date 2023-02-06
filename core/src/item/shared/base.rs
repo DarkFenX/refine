@@ -1,4 +1,5 @@
-use crate::{ct, ReeInt};
+use crate::{ct, Fit, ReeInt};
+use std::sync::Arc;
 
 pub trait ItemBase {
     fn get_type_id(&self) -> ReeInt;
@@ -11,6 +12,12 @@ pub trait ItemBase {
 
 pub(crate) trait IntItemBase {
     fn get_item(&self) -> Option<&ct::Item>;
+    fn load_item(&mut self);
+}
+
+pub(crate) trait FitChild {
+    fn get_fit(&self) -> Option<Arc<Fit>>;
+    fn set_fit(&mut self, fit: Option<Arc<Fit>>);
 }
 
 //     running_effect_ids: Vec<ReeInt>,

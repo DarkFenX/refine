@@ -12,6 +12,7 @@
 
 pub use defines::{ReeFloat, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use fit::Fit;
+pub(crate) use item::FitChild;
 pub use item::{ItemBase, Ship};
 pub use src::SrcMgr;
 pub use ss::SolarSystem;

@@ -7,7 +7,7 @@ use crate::{
 
 pub struct SolarSystem {
     src_mgr: Arc<SrcMgr>,
-    src: Arc<Src>,
+    pub(crate) src: Arc<Src>,
 }
 impl SolarSystem {
     pub fn new(src_mgr: Arc<SrcMgr>) -> Result<SolarSystem> {
