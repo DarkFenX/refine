@@ -4,10 +4,7 @@ use std::{path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 
 use chrono;
 
-use reefast::{
-    ch::CacheHandler, ch_impls::json_file, dh::DataHandler, dh_impls::phobos, Fit, ItemBase, Ship, SolarSystem, SrcMgr,
-    VERSION,
-};
+use reefast::{ch::CacheHandler, ch_impls::json_file, dh::DataHandler, dh_impls::phobos, SolarSystem, SrcMgr, VERSION};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -36,10 +33,14 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
         "tq",
     ));
-    src_mgr.add("tq", dh, ch, true);
-    let mut sol_sys = SolarSystem::new(src_mgr.clone()).unwrap();
-    let mut fit = Fit::new(Some(sol_sys));
-    fit.set_ship(Some(Ship::new(11184)));
+    let src = src_mgr.add("tq", dh, ch, true).unwrap();
+    let mut sol_sys = SolarSystem::new(src);
+    loop {
+        let fit = sol_sys.add_fit().unwrap();
+        println!("fit ID: {}", fit);
+    }
+    // let mut fit = Fit::new(Some(sol_sys));
+    // fit.set_ship(Some(Ship::new(11184)));
 
     src_mgr.del("tq");
 }

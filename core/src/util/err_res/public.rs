@@ -11,6 +11,9 @@ pub enum ErrorKind {
     SrcCacheGenFailed,
     SrcNotFound,
     AlreadyHasParent,
+    FitNotFound,
+    ItemNotFound,
+    IdAllocFailed,
 }
 
 #[derive(Debug)]

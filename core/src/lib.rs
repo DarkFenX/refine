@@ -1,4 +1,5 @@
 #![feature(drain_filter)]
+#![feature(hash_drain_filter)]
 
 //! # REEFAST
 //! REEFAST is an engine built to simulate EVE Online ship and structure fits.
@@ -10,10 +11,7 @@
 //! - the engine converts the data into optimized internal format
 //! - you compose fit objects and fetch data from there
 
-pub use defines::{ReeFloat, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
-pub use fit::Fit;
-pub(crate) use item::FitChild;
-pub use item::{ItemBase, Ship};
+pub use defines::{ReeFloat, ReeId, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::SrcMgr;
 pub use ss::SolarSystem;
 pub use util::err_res::public::{Error, ErrorKind, Result};
@@ -30,7 +28,6 @@ pub mod ct;
 mod defines;
 pub mod dh;
 pub mod dh_impls;
-mod fit;
 mod item;
 pub mod prelude;
 mod src;

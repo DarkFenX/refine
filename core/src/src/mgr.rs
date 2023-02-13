@@ -41,7 +41,7 @@ impl SrcMgr {
         data_handler: Box<dyn DataHandler>,
         mut cache_handler: Box<dyn CacheHandler>,
         make_default: bool,
-    ) -> Result<()> {
+    ) -> Result<Arc<Src>> {
         log::info!("adding source with alias \"{}\", default={}", alias, make_default);
         log::info!("using {:?} as data handler", data_handler);
         log::info!("using {:?} as cache handler", cache_handler);
@@ -60,9 +60,9 @@ impl SrcMgr {
             })?;
             update_cache(dv, &mut cache_handler, ch_data);
         }
-        self.add_source(alias, cache_handler, make_default);
+        let src = self.add_source(alias, cache_handler, make_default);
         self.unlock_alias(alias);
-        Ok(())
+        Ok(src)
     }
     /// Remove data source which is stored against passed alias.
     pub fn del(&self, alias: &str) -> Result<()> {
@@ -99,12 +99,13 @@ impl SrcMgr {
             log::error!("attempt to unlock alias which is not locked")
         }
     }
-    fn add_source(&self, alias: &str, cache_handler: Box<dyn CacheHandler>, make_default: bool) {
+    fn add_source(&self, alias: &str, cache_handler: Box<dyn CacheHandler>, make_default: bool) -> Arc<Src> {
         let src = Arc::new(Src::new(alias.into(), cache_handler));
         if make_default {
             *self.default.write() = Some(src.clone());
         };
-        self.sources.write().insert(src.alias.clone(), src);
+        self.sources.write().insert(src.alias.clone(), src.clone());
+        src
     }
 }
 

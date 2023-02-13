@@ -1,7 +1,7 @@
 use crate::ch;
 
 #[derive(Debug)]
-pub(crate) struct Src {
+pub struct Src {
     pub(crate) alias: String,
     pub(crate) cache_handler: Box<dyn ch::CacheHandler>,
 }
