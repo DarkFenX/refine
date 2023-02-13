@@ -38,6 +38,7 @@ impl SolarSystem {
         Ok(id)
     }
     pub fn remove_fit(&mut self, fit_id: ReeId) -> bool {
+        self.items.drain_filter(|_, v| v.get_fit_id() == fit_id);
         self.fits.remove(&fit_id)
     }
     // Ship methods

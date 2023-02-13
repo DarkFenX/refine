@@ -35,10 +35,9 @@ fn main() {
     ));
     let src = src_mgr.add("tq", dh, ch, true).unwrap();
     let mut sol_sys = SolarSystem::new(src);
-    loop {
-        let fit = sol_sys.add_fit().unwrap();
-        println!("fit ID: {}", fit);
-    }
+    let fit = sol_sys.add_fit().unwrap();
+    sol_sys.set_ship(fit, 11184).unwrap();
+    sol_sys.remove_ship(fit).unwrap();
     // let mut fit = Fit::new(Some(sol_sys));
     // fit.set_ship(Some(Ship::new(11184)));
 
