@@ -1,6 +1,6 @@
 use std::{fmt, sync::Arc};
 
-use crate::{ct, util::Named, ReeId, ReeInt};
+use crate::{ct, util::Named, ReeId, ReeInt, Src};
 
 pub(crate) struct Implant {
     pub(crate) id: ReeId,
@@ -9,12 +9,12 @@ pub(crate) struct Implant {
     pub(crate) item: Option<Arc<ct::Item>>,
 }
 impl Implant {
-    pub fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Implant {
+    pub fn new(src: Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Implant {
         Implant {
             id,
             fit_id,
             type_id,
-            item: None,
+            item: src.cache_handler.get_item(type_id),
         }
     }
 }

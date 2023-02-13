@@ -14,6 +14,8 @@ pub enum ErrorKind {
     FitNotFound,
     ItemNotFound,
     IdAllocFailed,
+    SkillLevelRange,
+    UnexpectedItemType,
 }
 
 #[derive(Debug)]

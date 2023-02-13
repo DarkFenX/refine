@@ -12,6 +12,7 @@
 //! - you compose fit objects and fetch data from there
 
 pub use defines::{ReeFloat, ReeId, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
+pub(crate) use src::Src;
 pub use src::SrcMgr;
 pub use ss::SolarSystem;
 pub use util::err_res::public::{Error, ErrorKind, Result};

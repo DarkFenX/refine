@@ -1,8 +1,10 @@
+use std::sync::Arc;
+
 pub(crate) use implant::Implant;
 pub(crate) use ship::Ship;
 pub(crate) use skill::Skill;
 
-use crate::{ReeId, ReeInt};
+use crate::{ReeId, ReeInt, Src};
 
 mod implant;
 mod ship;
@@ -33,6 +35,15 @@ impl Item {
             Item::Implant(i) => i.type_id,
             Item::Ship(i) => i.type_id,
             Item::Skill(i) => i.type_id,
+        }
+    }
+    pub(crate) fn reload_cached_item(&mut self, src: Arc<Src>) {
+        let type_id = self.get_type_id();
+        let cached_item = src.cache_handler.get_item(type_id);
+        match self {
+            Item::Implant(i) => i.item = cached_item,
+            Item::Ship(i) => i.item = cached_item,
+            Item::Skill(i) => i.item = cached_item,
         }
     }
 }

@@ -36,8 +36,9 @@ fn main() {
     let src = src_mgr.add("tq", dh, ch, true).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
-    sol_sys.set_ship(fit, 11184).unwrap();
-    sol_sys.remove_ship(fit).unwrap();
+    let ship = sol_sys.set_ship(fit, 11184).unwrap();
+    let skill = sol_sys.add_skill(fit, 12092, 5);
+    let implant = sol_sys.add_implant(fit, 19687);
     // let mut fit = Fit::new(Some(sol_sys));
     // fit.set_ship(Some(Ship::new(11184)));
 

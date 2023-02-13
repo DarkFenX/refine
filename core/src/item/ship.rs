@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::{ct, ReeId, ReeInt};
+use crate::{ct, ReeId, ReeInt, Src};
 
 pub(crate) struct Ship {
     pub(crate) id: ReeId,
@@ -9,12 +9,12 @@ pub(crate) struct Ship {
     pub(crate) item: Option<Arc<ct::Item>>,
 }
 impl Ship {
-    pub fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Ship {
+    pub fn new(src: Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Ship {
         Ship {
             id,
             fit_id,
             type_id,
-            item: None,
+            item: src.cache_handler.get_item(type_id),
         }
     }
 }

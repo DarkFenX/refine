@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::{ct, ReeId, ReeInt};
+use crate::{ct, ReeId, ReeInt, Src};
 
 pub(crate) struct Skill {
     pub(crate) id: ReeId,
@@ -10,21 +10,21 @@ pub(crate) struct Skill {
     pub(crate) level: ReeInt,
 }
 impl Skill {
-    pub fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Skill {
+    pub fn new(src: Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Skill {
         Skill {
             id,
             fit_id,
             type_id,
-            item: None,
+            item: src.cache_handler.get_item(type_id),
             level: 0,
         }
     }
-    pub fn new_with_level(id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Skill {
+    pub fn new_with_level(src: Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Skill {
         Skill {
             id,
             fit_id,
             type_id,
-            item: None,
+            item: src.cache_handler.get_item(type_id),
             level,
         }
     }
