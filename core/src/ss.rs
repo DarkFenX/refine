@@ -7,9 +7,8 @@ use std::{
 use itertools::Itertools;
 
 use crate::{
-    consts::ItemType::Character,
-    item::{Implant, Item, Ship, Skill},
     src::{Src, SrcMgr},
+    ssi::{Booster, Character, Implant, Item, Ship, Skill},
     Error, ErrorKind, ReeId, ReeInt, Result,
 };
 
@@ -40,9 +39,9 @@ impl SolarSystem {
     }
     // Fit methods
     pub fn add_fit(&mut self) -> Result<ReeId> {
-        let id = self.alloc_fit_id()?;
-        self.fits.insert(id);
-        Ok(id)
+        let fit_id = self.alloc_fit_id()?;
+        self.fits.insert(fit_id);
+        Ok(fit_id)
     }
     pub fn remove_fit(&mut self, fit_id: ReeId) -> bool {
         self.items.drain_filter(|_, v| v.get_fit_id() == fit_id);
@@ -124,6 +123,13 @@ impl SolarSystem {
         let item_id = self.alloc_item_id()?;
         let implant = Item::Implant(Implant::new(self.src.clone(), item_id, fit_id, type_id));
         self.items.insert(item_id, implant);
+        Ok(item_id)
+    }
+    // Booster methods
+    pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
+        let item_id = self.alloc_item_id()?;
+        let booster = Item::Booster(Booster::new(self.src.clone(), item_id, fit_id, type_id));
+        self.items.insert(item_id, booster);
         Ok(item_id)
     }
     // General

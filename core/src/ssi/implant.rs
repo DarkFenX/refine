@@ -29,11 +29,17 @@ impl Implant {
 }
 impl Named for Implant {
     fn get_name() -> &'static str {
-        "i:Implant"
+        "ssi:Implant"
     }
 }
 impl fmt::Display for Implant {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(type_id={})", Implant::get_name(), self.type_id)
+        write!(
+            f,
+            "{}(id={}, type_id={})",
+            Implant::get_name(),
+            self.item_id,
+            self.type_id
+        )
     }
 }

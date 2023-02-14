@@ -1,6 +1,6 @@
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
-use crate::{ct, ReeId, ReeInt, Src};
+use crate::{ct, util::Named, ReeId, ReeInt, Src};
 
 pub(crate) struct Skill {
     pub(crate) item_id: ReeId,
@@ -18,5 +18,21 @@ impl Skill {
             citem: src.cache_handler.get_item(type_id),
             level,
         }
+    }
+}
+impl Named for Skill {
+    fn get_name() -> &'static str {
+        "ssi:Skill"
+    }
+}
+impl fmt::Display for Skill {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "{}(id={}, type_id={})",
+            Skill::get_name(),
+            self.item_id,
+            self.type_id
+        )
     }
 }
