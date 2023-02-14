@@ -1,6 +1,6 @@
 use std::{fmt, sync::Arc};
 
-use crate::{ct, consts::State, util::Named, ReeId, ReeInt, Src};
+use crate::{consts::State, ct, util::Named, ReeId, ReeInt, Src};
 
 pub(crate) struct Rig {
     pub(crate) item_id: ReeId,
@@ -10,7 +10,7 @@ pub(crate) struct Rig {
     pub(crate) state: State,
 }
 impl Rig {
-    pub(crate) fn new(src: Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Rig {
+    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Rig {
         Rig {
             item_id,
             fit_id,
@@ -27,12 +27,6 @@ impl Named for Rig {
 }
 impl fmt::Display for Rig {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}(id={}, type_id={})",
-            Rig::get_name(),
-            self.item_id,
-            self.type_id
-        )
+        write!(f, "{}(id={}, type_id={})", Rig::get_name(), self.item_id, self.type_id)
     }
 }

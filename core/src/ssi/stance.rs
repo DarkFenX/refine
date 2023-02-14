@@ -9,7 +9,7 @@ pub(crate) struct Stance {
     pub(crate) citem: Option<Arc<ct::Item>>,
 }
 impl Stance {
-    pub(crate) fn new(src: Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Stance {
+    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Stance {
         Stance {
             item_id,
             fit_id,

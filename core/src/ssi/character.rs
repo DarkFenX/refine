@@ -9,7 +9,7 @@ pub(crate) struct Character {
     pub(crate) citem: Option<Arc<ct::Item>>,
 }
 impl Character {
-    pub(crate) fn new(src: Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Character {
+    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Character {
         Character {
             item_id,
             fit_id,

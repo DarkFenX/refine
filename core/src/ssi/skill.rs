@@ -10,7 +10,7 @@ pub(crate) struct Skill {
     pub(crate) level: ReeInt,
 }
 impl Skill {
-    pub(crate) fn new(src: Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Skill {
+    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Skill {
         Skill {
             item_id,
             fit_id,

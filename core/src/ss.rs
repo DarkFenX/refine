@@ -34,7 +34,7 @@ impl SolarSystem {
     }
     pub fn set_src(&mut self, src: Arc<Src>) {
         for item in self.items.values_mut() {
-            item.reload_cached_item(src.clone())
+            item.reload_cached_item(&src)
         }
         self.src = src;
     }
@@ -62,7 +62,7 @@ impl SolarSystem {
     pub fn set_character(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         self.remove_character(fit_id)?;
         let item_id = self.alloc_item_id()?;
-        let character = Item::Character(Character::new(self.src.clone(), item_id, fit_id, type_id));
+        let character = Item::Character(Character::new(&self.src, item_id, fit_id, type_id));
         self.items.insert(item_id, character);
         Ok(item_id)
     }
@@ -80,7 +80,7 @@ impl SolarSystem {
     pub fn set_ship(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         self.remove_ship(fit_id)?;
         let item_id = self.alloc_item_id()?;
-        let ship = Item::Ship(Ship::new(self.src.clone(), item_id, fit_id, type_id));
+        let ship = Item::Ship(Ship::new(&self.src, item_id, fit_id, type_id));
         self.items.insert(item_id, ship);
         Ok(item_id)
     }
@@ -98,7 +98,7 @@ impl SolarSystem {
     pub fn set_stance(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         self.remove_stance(fit_id)?;
         let item_id = self.alloc_item_id()?;
-        let stance = Item::Stance(Stance::new(self.src.clone(), item_id, fit_id, type_id));
+        let stance = Item::Stance(Stance::new(&self.src, item_id, fit_id, type_id));
         self.items.insert(item_id, stance);
         Ok(item_id)
     }
@@ -115,14 +115,14 @@ impl SolarSystem {
     // Subsystem methods
     pub fn add_subsystem(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
-        let subsystem = Item::Subsystem(Subsystem::new(self.src.clone(), item_id, fit_id, type_id));
+        let subsystem = Item::Subsystem(Subsystem::new(&self.src, item_id, fit_id, type_id));
         self.items.insert(item_id, subsystem);
         Ok(item_id)
     }
     // Rig methods
     pub fn add_rig(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
-        let rig = Item::Rig(Rig::new(self.src.clone(), item_id, fit_id, type_id));
+        let rig = Item::Rig(Rig::new(&self.src, item_id, fit_id, type_id));
         self.items.insert(item_id, rig);
         Ok(item_id)
     }
@@ -169,7 +169,7 @@ impl SolarSystem {
     pub fn add_skill(&mut self, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Result<ReeId> {
         check_skill_level(level)?;
         let item_id = self.alloc_item_id()?;
-        let skill = Item::Skill(Skill::new(self.src.clone(), item_id, fit_id, type_id, level));
+        let skill = Item::Skill(Skill::new(&self.src, item_id, fit_id, type_id, level));
         self.items.insert(item_id, skill);
         Ok(item_id)
     }
@@ -193,7 +193,7 @@ impl SolarSystem {
     // Implant methods
     pub fn add_implant(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
-        let implant = Item::Implant(Implant::new(self.src.clone(), item_id, fit_id, type_id));
+        let implant = Item::Implant(Implant::new(&self.src, item_id, fit_id, type_id));
         self.items.insert(item_id, implant);
         Ok(item_id)
     }
@@ -239,7 +239,7 @@ impl SolarSystem {
     // Booster methods
     pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
-        let booster = Item::Booster(Booster::new(self.src.clone(), item_id, fit_id, type_id));
+        let booster = Item::Booster(Booster::new(&self.src, item_id, fit_id, type_id));
         self.items.insert(item_id, booster);
         Ok(item_id)
     }

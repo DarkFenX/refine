@@ -79,7 +79,7 @@ impl Item {
             Item::Subsystem(_) => State::Offline,
         }
     }
-    pub(crate) fn reload_cached_item(&mut self, src: Arc<Src>) {
+    pub(crate) fn reload_cached_item(&mut self, src: &Arc<Src>) {
         let type_id = self.get_type_id();
         let cached_item = src.cache_handler.get_item(type_id);
         match self {

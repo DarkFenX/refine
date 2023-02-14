@@ -15,7 +15,7 @@ pub(crate) struct Implant {
     pub(crate) state: State,
 }
 impl Implant {
-    pub(crate) fn new(src: Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Implant {
+    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Implant {
         Implant {
             item_id,
             fit_id,

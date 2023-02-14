@@ -9,7 +9,7 @@ pub(crate) struct Subsystem {
     pub(crate) citem: Option<Arc<ct::Item>>,
 }
 impl Subsystem {
-    pub(crate) fn new(src: Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Subsystem {
+    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Subsystem {
         Subsystem {
             item_id,
             fit_id,

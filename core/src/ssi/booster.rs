@@ -15,7 +15,7 @@ pub(crate) struct Booster {
     pub(crate) state: State,
 }
 impl Booster {
-    pub(crate) fn new(src: Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Booster {
+    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Booster {
         Booster {
             item_id,
             fit_id,
