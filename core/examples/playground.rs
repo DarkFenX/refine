@@ -3,6 +3,7 @@
 use std::{path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 
 use chrono;
+use itertools::Itertools;
 
 use reefast::{ch::CacheHandler, ch_impls::json_file, dh::DataHandler, dh_impls::phobos, SolarSystem, SrcMgr, VERSION};
 
@@ -29,6 +30,23 @@ fn main() {
     let mut src_mgr = Arc::new(SrcMgr::new());
     let dh = Box::new(phobos::PhbFileDHandler::new("/home/dfx/Desktop/phobos_tq_en-us"));
     // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
+    // Get some data for skills
+    let grp_ids = dh
+        .get_item_groups()
+        .unwrap()
+        .data
+        .iter()
+        .filter(|v| v.category_id == 16)
+        .map(|v| v.id)
+        .collect_vec();
+    let skill_ids = dh
+        .get_items()
+        .unwrap()
+        .data
+        .iter()
+        .filter(|v| grp_ids.contains(&v.group_id))
+        .map(|v| v.id)
+        .collect_vec();
     let mut ch = Box::new(json_file::JsonFileCHandler::new(
         PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
         "tq",
@@ -37,7 +55,9 @@ fn main() {
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
     let ship = sol_sys.set_ship(fit, 11184).unwrap();
-    let skill = sol_sys.add_skill(fit, 12092, 5);
+    for skill_id in skill_ids.iter() {
+        sol_sys.add_skill(fit, skill_id.to_owned(), 5);
+    }
     let implant = sol_sys.add_implant(fit, 19687);
     // let mut fit = Fit::new(Some(sol_sys));
     // fit.set_ship(Some(Ship::new(11184)));
