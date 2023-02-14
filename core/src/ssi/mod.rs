@@ -6,6 +6,7 @@ pub(crate) use implant::Implant;
 pub(crate) use ship::Ship;
 pub(crate) use skill::Skill;
 pub(crate) use stance::Stance;
+pub(crate) use subsystem::Subsystem;
 
 use crate::{consts::State, ReeId, ReeInt, Src};
 
@@ -15,6 +16,7 @@ mod implant;
 mod ship;
 mod skill;
 mod stance;
+mod subsystem;
 
 pub(crate) enum Item {
     Booster(Booster),
@@ -23,6 +25,7 @@ pub(crate) enum Item {
     Ship(Ship),
     Skill(Skill),
     Stance(Stance),
+    Subsystem(Subsystem),
 }
 impl Item {
     pub(crate) fn get_id(&self) -> ReeId {
@@ -33,6 +36,7 @@ impl Item {
             Item::Ship(i) => i.item_id,
             Item::Skill(i) => i.item_id,
             Item::Stance(i) => i.item_id,
+            Item::Subsystem(i) => i.item_id,
         }
     }
     pub(crate) fn get_fit_id(&self) -> ReeId {
@@ -43,6 +47,7 @@ impl Item {
             Item::Ship(i) => i.fit_id,
             Item::Skill(i) => i.fit_id,
             Item::Stance(i) => i.fit_id,
+            Item::Subsystem(i) => i.fit_id,
         }
     }
     pub(crate) fn get_type_id(&self) -> ReeInt {
@@ -53,6 +58,7 @@ impl Item {
             Item::Ship(i) => i.type_id,
             Item::Skill(i) => i.type_id,
             Item::Stance(i) => i.type_id,
+            Item::Subsystem(i) => i.type_id,
         }
     }
     pub(crate) fn get_state(&self) -> State {
@@ -63,6 +69,7 @@ impl Item {
             Item::Ship(_) => State::Offline,
             Item::Skill(_) => State::Offline,
             Item::Stance(_) => State::Offline,
+            Item::Subsystem(_) => State::Offline,
         }
     }
     pub(crate) fn reload_cached_item(&mut self, src: Arc<Src>) {
@@ -75,6 +82,7 @@ impl Item {
             Item::Ship(i) => i.citem = cached_item,
             Item::Skill(i) => i.citem = cached_item,
             Item::Stance(i) => i.citem = cached_item,
+            Item::Subsystem(i) => i.citem = cached_item,
         }
     }
 }

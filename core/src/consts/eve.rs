@@ -29,6 +29,7 @@ pub(crate) mod attrs {
 
     pub(crate) const BOOSTERNESS: ReeInt = 1087;
     pub(crate) const IMPLANTNESS: ReeInt = 331;
+    pub(crate) const SUBSYSTEM_SLOT: ReeInt = 1366;
     // Fighter-related
     pub(crate) const FTR_SQ_IS_HEAVY: ReeInt = 2214;
     pub(crate) const FTR_SQ_IS_LIGHT: ReeInt = 2212;

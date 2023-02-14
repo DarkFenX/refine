@@ -9,7 +9,7 @@ use itertools::Itertools;
 use crate::{
     consts::State,
     src::{Src, SrcMgr},
-    ssi::{Booster, Character, Implant, Item, Ship, Skill, Stance},
+    ssi::{Booster, Character, Implant, Item, Ship, Skill, Stance, Subsystem},
     Error, ErrorKind, ReeId, ReeInt, Result,
 };
 
@@ -111,6 +111,13 @@ impl SolarSystem {
             .drain_filter(|_, v| matches!(v, Item::Stance(_)) && v.get_fit_id() == fit_id)
             .collect_vec();
         Ok(!removed.is_empty())
+    }
+    // Subsystem methods
+    pub fn add_subsystem(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
+        let item_id = self.alloc_item_id()?;
+        let subsystem = Item::Subsystem(Subsystem::new(self.src.clone(), item_id, fit_id, type_id));
+        self.items.insert(item_id, subsystem);
+        Ok(item_id)
     }
     // Skill methods
     pub fn add_skill(&mut self, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Result<ReeId> {
