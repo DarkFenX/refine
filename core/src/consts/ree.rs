@@ -3,6 +3,7 @@ use crate::ReeInt;
 /// Contains states which can be assigned to several entities.
 #[derive(Copy, Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub enum State {
+    Ghost,
     Offline,
     Online,
     Active,

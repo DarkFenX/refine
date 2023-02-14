@@ -21,7 +21,7 @@ impl Booster {
             fit_id,
             type_id,
             citem: src.cache_handler.get_item(type_id),
-            state: State::Online,
+            state: State::Offline,
         }
     }
     pub(crate) fn get_slot(&self) -> Option<ReeInt> {
@@ -31,6 +31,18 @@ impl Booster {
                 None => None,
                 Some(v) => Some(v.round() as ReeInt),
             },
+        }
+    }
+    pub(crate) fn get_bool_state(&self) -> bool {
+        match self.state {
+            State::Ghost => false,
+            _ => true,
+        }
+    }
+    pub(crate) fn set_bool_state(&mut self, state: bool) {
+        self.state = match state {
+            true => State::Offline,
+            false => State::Ghost,
         }
     }
 }

@@ -19,6 +19,18 @@ impl Rig {
             state: State::Offline,
         }
     }
+    pub(crate) fn get_bool_state(&self) -> bool {
+        match self.state {
+            State::Ghost => false,
+            _ => true,
+        }
+    }
+    pub(crate) fn set_bool_state(&mut self, state: bool) {
+        self.state = match state {
+            true => State::Offline,
+            false => State::Ghost,
+        }
+    }
 }
 impl Named for Rig {
     fn get_name() -> &'static str {

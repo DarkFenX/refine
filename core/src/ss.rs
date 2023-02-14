@@ -132,10 +132,7 @@ impl SolarSystem {
             .get(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
         match item {
-            Item::Rig(s) => match s.state {
-                State::Offline => Ok(false),
-                _ => Ok(true),
-            },
+            Item::Rig(r) => Ok(r.get_bool_state()),
             _ => {
                 return Err(Error::new(
                     ErrorKind::UnexpectedItemType,
@@ -150,12 +147,7 @@ impl SolarSystem {
             .get_mut(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
         match item {
-            Item::Rig(s) => {
-                s.state = match state {
-                    true => State::Online,
-                    false => State::Offline,
-                }
-            }
+            Item::Rig(r) => r.set_bool_state(state),
             _ => {
                 return Err(Error::new(
                     ErrorKind::UnexpectedItemType,
@@ -203,10 +195,7 @@ impl SolarSystem {
             .get(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
         match item {
-            Item::Implant(s) => match s.state {
-                State::Offline => Ok(false),
-                _ => Ok(true),
-            },
+            Item::Implant(i) => Ok(i.get_bool_state()),
             _ => {
                 return Err(Error::new(
                     ErrorKind::UnexpectedItemType,
@@ -221,12 +210,7 @@ impl SolarSystem {
             .get_mut(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
         match item {
-            Item::Implant(s) => {
-                s.state = match state {
-                    true => State::Online,
-                    false => State::Offline,
-                }
-            }
+            Item::Implant(i) => i.set_bool_state(state),
             _ => {
                 return Err(Error::new(
                     ErrorKind::UnexpectedItemType,
@@ -249,10 +233,7 @@ impl SolarSystem {
             .get(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
         match item {
-            Item::Booster(s) => match s.state {
-                State::Offline => Ok(false),
-                _ => Ok(true),
-            },
+            Item::Booster(b) => Ok(b.get_bool_state()),
             _ => {
                 return Err(Error::new(
                     ErrorKind::UnexpectedItemType,
@@ -267,12 +248,7 @@ impl SolarSystem {
             .get_mut(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
         match item {
-            Item::Booster(s) => {
-                s.state = match state {
-                    true => State::Online,
-                    false => State::Offline,
-                }
-            }
+            Item::Booster(b) => b.set_bool_state(state),
             _ => {
                 return Err(Error::new(
                     ErrorKind::UnexpectedItemType,
