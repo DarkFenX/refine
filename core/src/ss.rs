@@ -7,6 +7,7 @@ use std::{
 use itertools::Itertools;
 
 use crate::{
+    consts::State,
     src::{Src, SrcMgr},
     ssi::{Booster, Character, Implant, Item, Ship, Skill, Stance},
     Error, ErrorKind, ReeId, ReeInt, Result,
@@ -143,12 +144,90 @@ impl SolarSystem {
         self.items.insert(item_id, implant);
         Ok(item_id)
     }
+    pub fn get_implant_state(&self, item_id: &ReeId) -> Result<bool> {
+        let item = self
+            .items
+            .get(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::Implant(s) => match s.state {
+                State::Offline => Ok(false),
+                _ => Ok(true),
+            },
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Implant as item with ID {item_id}"),
+                ))
+            }
+        }
+    }
+    pub fn set_implant_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
+        let item = self
+            .items
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::Implant(s) => {
+                s.state = match state {
+                    true => State::Online,
+                    false => State::Offline,
+                }
+            }
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Implant as item with ID {item_id}"),
+                ))
+            }
+        }
+        Ok(())
+    }
     // Booster methods
     pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let booster = Item::Booster(Booster::new(self.src.clone(), item_id, fit_id, type_id));
         self.items.insert(item_id, booster);
         Ok(item_id)
+    }
+    pub fn get_booster_state(&self, item_id: &ReeId) -> Result<bool> {
+        let item = self
+            .items
+            .get(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::Booster(s) => match s.state {
+                State::Offline => Ok(false),
+                _ => Ok(true),
+            },
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Booster as item with ID {item_id}"),
+                ))
+            }
+        }
+    }
+    pub fn set_booster_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
+        let item = self
+            .items
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::Booster(s) => {
+                s.state = match state {
+                    true => State::Online,
+                    false => State::Offline,
+                }
+            }
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Booster as item with ID {item_id}"),
+                ))
+            }
+        }
+        Ok(())
     }
     // General
     fn alloc_item_id(&mut self) -> Result<ReeId> {

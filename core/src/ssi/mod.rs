@@ -7,7 +7,7 @@ pub(crate) use ship::Ship;
 pub(crate) use skill::Skill;
 pub(crate) use stance::Stance;
 
-use crate::{ReeId, ReeInt, Src};
+use crate::{consts::State, ReeId, ReeInt, Src};
 
 mod booster;
 mod character;
@@ -53,6 +53,16 @@ impl Item {
             Item::Ship(i) => i.type_id,
             Item::Skill(i) => i.type_id,
             Item::Stance(i) => i.type_id,
+        }
+    }
+    pub(crate) fn get_state(&self) -> State {
+        match self {
+            Item::Booster(i) => i.state,
+            Item::Character(_) => State::Offline,
+            Item::Implant(i) => i.state,
+            Item::Ship(_) => State::Offline,
+            Item::Skill(_) => State::Offline,
+            Item::Stance(_) => State::Offline,
         }
     }
     pub(crate) fn reload_cached_item(&mut self, src: Arc<Src>) {
