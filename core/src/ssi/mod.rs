@@ -5,6 +5,7 @@ pub(crate) use character::Character;
 pub(crate) use implant::Implant;
 pub(crate) use ship::Ship;
 pub(crate) use skill::Skill;
+pub(crate) use stance::Stance;
 
 use crate::{ReeId, ReeInt, Src};
 
@@ -13,6 +14,7 @@ mod character;
 mod implant;
 mod ship;
 mod skill;
+mod stance;
 
 pub(crate) enum Item {
     Booster(Booster),
@@ -20,6 +22,7 @@ pub(crate) enum Item {
     Implant(Implant),
     Ship(Ship),
     Skill(Skill),
+    Stance(Stance),
 }
 impl Item {
     pub(crate) fn get_id(&self) -> ReeId {
@@ -29,6 +32,7 @@ impl Item {
             Item::Implant(i) => i.item_id,
             Item::Ship(i) => i.item_id,
             Item::Skill(i) => i.item_id,
+            Item::Stance(i) => i.item_id,
         }
     }
     pub(crate) fn get_fit_id(&self) -> ReeId {
@@ -38,6 +42,7 @@ impl Item {
             Item::Implant(i) => i.fit_id,
             Item::Ship(i) => i.fit_id,
             Item::Skill(i) => i.fit_id,
+            Item::Stance(i) => i.fit_id,
         }
     }
     pub(crate) fn get_type_id(&self) -> ReeInt {
@@ -47,6 +52,7 @@ impl Item {
             Item::Implant(i) => i.type_id,
             Item::Ship(i) => i.type_id,
             Item::Skill(i) => i.type_id,
+            Item::Stance(i) => i.type_id,
         }
     }
     pub(crate) fn reload_cached_item(&mut self, src: Arc<Src>) {
@@ -58,6 +64,7 @@ impl Item {
             Item::Implant(i) => i.citem = cached_item,
             Item::Ship(i) => i.citem = cached_item,
             Item::Skill(i) => i.citem = cached_item,
+            Item::Stance(i) => i.citem = cached_item,
         }
     }
 }

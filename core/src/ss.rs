@@ -8,7 +8,7 @@ use itertools::Itertools;
 
 use crate::{
     src::{Src, SrcMgr},
-    ssi::{Booster, Character, Implant, Item, Ship, Skill},
+    ssi::{Booster, Character, Implant, Item, Ship, Skill, Stance},
     Error, ErrorKind, ReeId, ReeInt, Result,
 };
 
@@ -90,6 +90,24 @@ impl SolarSystem {
         let removed = self
             .items
             .drain_filter(|_, v| matches!(v, Item::Ship(_)) && v.get_fit_id() == fit_id)
+            .collect_vec();
+        Ok(!removed.is_empty())
+    }
+    // Stance methods
+    pub fn set_stance(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
+        self.remove_stance(fit_id)?;
+        let item_id = self.alloc_item_id()?;
+        let stance = Item::Stance(Stance::new(self.src.clone(), item_id, fit_id, type_id));
+        self.items.insert(item_id, stance);
+        Ok(item_id)
+    }
+    pub fn remove_stance(&mut self, fit_id: ReeId) -> Result<bool> {
+        if !self.fits.contains(&fit_id) {
+            return Err(Error::new(ErrorKind::FitNotFound, "fit not found"));
+        }
+        let removed = self
+            .items
+            .drain_filter(|_, v| matches!(v, Item::Stance(_)) && v.get_fit_id() == fit_id)
             .collect_vec();
         Ok(!removed.is_empty())
     }
