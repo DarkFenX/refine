@@ -9,7 +9,7 @@ use itertools::Itertools;
 use crate::{
     consts::State,
     src::{Src, SrcMgr},
-    ssi::{Booster, Character, Implant, Item, Ship, Skill, Stance, Subsystem},
+    ssi::{Booster, Character, Implant, Item, Rig, Ship, Skill, Stance, Subsystem},
     Error, ErrorKind, ReeId, ReeInt, Result,
 };
 
@@ -118,6 +118,52 @@ impl SolarSystem {
         let subsystem = Item::Subsystem(Subsystem::new(self.src.clone(), item_id, fit_id, type_id));
         self.items.insert(item_id, subsystem);
         Ok(item_id)
+    }
+    // Rig methods
+    pub fn add_rig(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
+        let item_id = self.alloc_item_id()?;
+        let rig = Item::Rig(Rig::new(self.src.clone(), item_id, fit_id, type_id));
+        self.items.insert(item_id, rig);
+        Ok(item_id)
+    }
+    pub fn get_rig_state(&self, item_id: &ReeId) -> Result<bool> {
+        let item = self
+            .items
+            .get(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::Rig(s) => match s.state {
+                State::Offline => Ok(false),
+                _ => Ok(true),
+            },
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Rig as item with ID {item_id}"),
+                ))
+            }
+        }
+    }
+    pub fn set_rig_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
+        let item = self
+            .items
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::Rig(s) => {
+                s.state = match state {
+                    true => State::Online,
+                    false => State::Offline,
+                }
+            }
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Rig as item with ID {item_id}"),
+                ))
+            }
+        }
+        Ok(())
     }
     // Skill methods
     pub fn add_skill(&mut self, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Result<ReeId> {
