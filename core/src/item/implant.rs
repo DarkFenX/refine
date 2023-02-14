@@ -1,20 +1,29 @@
 use std::{fmt, sync::Arc};
 
-use crate::{ct, util::Named, ReeId, ReeInt, Src};
+use crate::{consts::attrs, ct, util::Named, ReeId, ReeInt, Src};
 
 pub(crate) struct Implant {
-    pub(crate) id: ReeId,
+    pub(crate) item_id: ReeId,
     pub(crate) fit_id: ReeId,
     pub(crate) type_id: ReeInt,
-    pub(crate) item: Option<Arc<ct::Item>>,
+    pub(crate) citem: Option<Arc<ct::Item>>,
 }
 impl Implant {
-    pub fn new(src: Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Implant {
+    pub(crate) fn new(src: Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Implant {
         Implant {
-            id,
+            item_id,
             fit_id,
             type_id,
-            item: src.cache_handler.get_item(type_id),
+            citem: src.cache_handler.get_item(type_id),
+        }
+    }
+    pub(crate) fn get_slot(&self) -> Option<ReeInt> {
+        match &self.citem {
+            None => None,
+            Some(i) => match i.attr_vals.get(&attrs::IMPLANTNESS) {
+                None => None,
+                Some(v) => Some(v.round() as ReeInt),
+            },
         }
     }
 }

@@ -79,7 +79,7 @@ impl SolarSystem {
     pub fn add_skill(&mut self, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Result<ReeId> {
         check_skill_level(level)?;
         let item_id = self.alloc_item_id()?;
-        let skill = Item::Skill(Skill::new_with_level(self.src.clone(), item_id, fit_id, type_id, level));
+        let skill = Item::Skill(Skill::new(self.src.clone(), item_id, fit_id, type_id, level));
         self.items.insert(item_id, skill);
         Ok(item_id)
     }

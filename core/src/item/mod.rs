@@ -18,9 +18,9 @@ pub(crate) enum Item {
 impl Item {
     pub(crate) fn get_id(&self) -> ReeId {
         match self {
-            Item::Implant(i) => i.id,
-            Item::Ship(i) => i.id,
-            Item::Skill(i) => i.id,
+            Item::Implant(i) => i.item_id,
+            Item::Ship(i) => i.item_id,
+            Item::Skill(i) => i.item_id,
         }
     }
     pub(crate) fn get_fit_id(&self) -> ReeId {
@@ -41,9 +41,9 @@ impl Item {
         let type_id = self.get_type_id();
         let cached_item = src.cache_handler.get_item(type_id);
         match self {
-            Item::Implant(i) => i.item = cached_item,
-            Item::Ship(i) => i.item = cached_item,
-            Item::Skill(i) => i.item = cached_item,
+            Item::Implant(i) => i.citem = cached_item,
+            Item::Ship(i) => i.citem = cached_item,
+            Item::Skill(i) => i.citem = cached_item,
         }
     }
 }
