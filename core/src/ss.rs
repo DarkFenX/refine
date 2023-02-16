@@ -62,7 +62,7 @@ impl SolarSystem {
         self.items
             .values()
             .find_or_first(|v| match v {
-                Item::Character(c) => c.fit_id == fit_id,
+                Item::Character(c) if c.fit_id == fit_id => true,
                 _ => false,
             })
             .map(|v| v.get_id())
@@ -89,7 +89,7 @@ impl SolarSystem {
         self.items
             .values()
             .find_or_first(|v| match v {
-                Item::Ship(s) => s.fit_id == fit_id,
+                Item::Ship(s) if s.fit_id == fit_id => true,
                 _ => false,
             })
             .map(|v| v.get_id())
@@ -116,7 +116,7 @@ impl SolarSystem {
         self.items
             .values()
             .find_or_first(|v| match v {
-                Item::Stance(s) => s.fit_id == fit_id,
+                Item::Stance(s) if s.fit_id == fit_id => true,
                 _ => false,
             })
             .map(|v| v.get_id())
@@ -139,6 +139,15 @@ impl SolarSystem {
         Ok(!removed.is_empty())
     }
     // Subsystem methods
+    pub fn get_subsystems(&self, fit_id: ReeId) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::Subsystem(s) if s.fit_id == fit_id => Some(s.item_id),
+                _ => None,
+            })
+            .collect()
+    }
     pub fn add_subsystem(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let subsystem = Item::Subsystem(Subsystem::new(&self.src, item_id, fit_id, type_id));
@@ -146,6 +155,15 @@ impl SolarSystem {
         Ok(item_id)
     }
     // Rig methods
+    pub fn get_rigs(&self, fit_id: ReeId) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::Rig(r) if r.fit_id == fit_id => Some(r.item_id),
+                _ => None,
+            })
+            .collect()
+    }
     pub fn add_rig(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let rig = Item::Rig(Rig::new(&self.src, item_id, fit_id, type_id));
@@ -184,6 +202,15 @@ impl SolarSystem {
         Ok(())
     }
     // Skill methods
+    pub fn get_skills(&self, fit_id: ReeId) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::Skill(s) if s.fit_id == fit_id => Some(s.item_id),
+                _ => None,
+            })
+            .collect()
+    }
     pub fn add_skill(&mut self, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Result<ReeId> {
         check_skill_level(level)?;
         let item_id = self.alloc_item_id()?;
@@ -209,6 +236,15 @@ impl SolarSystem {
         Ok(())
     }
     // Implant methods
+    pub fn get_implants(&self, fit_id: ReeId) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::Implant(i) if i.fit_id == fit_id => Some(i.item_id),
+                _ => None,
+            })
+            .collect()
+    }
     pub fn add_implant(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let implant = Item::Implant(Implant::new(&self.src, item_id, fit_id, type_id));
@@ -247,6 +283,15 @@ impl SolarSystem {
         Ok(())
     }
     // Booster methods
+    pub fn get_boosters(&self, fit_id: ReeId) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::Booster(b) if b.fit_id == fit_id => Some(b.item_id),
+                _ => None,
+            })
+            .collect()
+    }
     pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let booster = Item::Booster(Booster::new(&self.src, item_id, fit_id, type_id));
@@ -285,6 +330,15 @@ impl SolarSystem {
         Ok(())
     }
     // System-wide effect methods
+    pub fn get_sw_effects(&self) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::SwEffect(e) => Some(e.item_id),
+                _ => None,
+            })
+            .collect()
+    }
     pub fn add_sw_effect(&mut self, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let sw_effect = Item::SwEffect(SwEffect::new(&self.src, item_id, type_id));
