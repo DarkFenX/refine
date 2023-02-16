@@ -80,7 +80,10 @@ impl SolarSystem {
         }
         let removed = self
             .items
-            .drain_filter(|_, v| matches!(v, Item::Character(_)) && v.get_fit_id() == Some(fit_id))
+            .drain_filter(|_, v| match v {
+                Item::Character(c) if c.fit_id == fit_id => true,
+                _ => false,
+            })
             .collect_vec();
         Ok(!removed.is_empty())
     }
@@ -107,7 +110,10 @@ impl SolarSystem {
         }
         let removed = self
             .items
-            .drain_filter(|_, v| matches!(v, Item::Ship(_)) && v.get_fit_id() == Some(fit_id))
+            .drain_filter(|_, v| match v {
+                Item::Ship(s) if s.fit_id == fit_id => true,
+                _ => false,
+            })
             .collect_vec();
         Ok(!removed.is_empty())
     }
@@ -134,7 +140,10 @@ impl SolarSystem {
         }
         let removed = self
             .items
-            .drain_filter(|_, v| matches!(v, Item::Stance(_)) && v.get_fit_id() == Some(fit_id))
+            .drain_filter(|_, v| match v {
+                Item::Stance(s) if s.fit_id == fit_id => true,
+                _ => false,
+            })
             .collect_vec();
         Ok(!removed.is_empty())
     }
