@@ -58,6 +58,15 @@ impl SolarSystem {
         Ok(self.fit_cnt.0)
     }
     // Character methods
+    pub fn get_character(&self, fit_id: ReeId) -> Option<ReeId> {
+        self.items
+            .values()
+            .find_or_first(|v| match v {
+                Item::Character(c) => c.fit_id == fit_id,
+                _ => false,
+            })
+            .map(|v| v.get_id())
+    }
     pub fn set_character(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         self.remove_character(fit_id)?;
         let item_id = self.alloc_item_id()?;
@@ -76,6 +85,15 @@ impl SolarSystem {
         Ok(!removed.is_empty())
     }
     // Ship methods
+    pub fn get_ship(&self, fit_id: ReeId) -> Option<ReeId> {
+        self.items
+            .values()
+            .find_or_first(|v| match v {
+                Item::Ship(s) => s.fit_id == fit_id,
+                _ => false,
+            })
+            .map(|v| v.get_id())
+    }
     pub fn set_ship(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         self.remove_ship(fit_id)?;
         let item_id = self.alloc_item_id()?;
@@ -94,6 +112,15 @@ impl SolarSystem {
         Ok(!removed.is_empty())
     }
     // Stance methods
+    pub fn get_stance(&self, fit_id: ReeId) -> Option<ReeId> {
+        self.items
+            .values()
+            .find_or_first(|v| match v {
+                Item::Stance(s) => s.fit_id == fit_id,
+                _ => false,
+            })
+            .map(|v| v.get_id())
+    }
     pub fn set_stance(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         self.remove_stance(fit_id)?;
         let item_id = self.alloc_item_id()?;
