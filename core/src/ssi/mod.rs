@@ -2,7 +2,9 @@ use std::sync::Arc;
 
 pub(crate) use booster::Booster;
 pub(crate) use character::Character;
+pub(crate) use charge::Charge;
 pub(crate) use implant::Implant;
+pub(crate) use module::Module;
 pub(crate) use rig::Rig;
 pub(crate) use ship::Ship;
 pub(crate) use skill::Skill;
@@ -14,7 +16,9 @@ use crate::{consts::State, ReeId, ReeInt, Src};
 
 mod booster;
 mod character;
+mod charge;
 mod implant;
+mod module;
 mod rig;
 mod ship;
 mod skill;
@@ -25,7 +29,11 @@ mod sw_effect;
 pub(crate) enum Item {
     Booster(Booster),
     Character(Character),
+    Charge(Charge),
     Implant(Implant),
+    ModuleHigh(Module),
+    ModuleLow(Module),
+    ModuleMid(Module),
     Rig(Rig),
     Ship(Ship),
     Skill(Skill),
@@ -38,7 +46,11 @@ impl Item {
         match self {
             Item::Booster(i) => i.item_id,
             Item::Character(i) => i.item_id,
+            Item::Charge(i) => i.item_id,
             Item::Implant(i) => i.item_id,
+            Item::ModuleHigh(i) => i.item_id,
+            Item::ModuleLow(i) => i.item_id,
+            Item::ModuleMid(i) => i.item_id,
             Item::Rig(i) => i.item_id,
             Item::Ship(i) => i.item_id,
             Item::Skill(i) => i.item_id,
@@ -51,20 +63,28 @@ impl Item {
         match self {
             Item::Booster(i) => Some(i.fit_id),
             Item::Character(i) => Some(i.fit_id),
+            Item::Charge(i) => Some(i.fit_id),
             Item::Implant(i) => Some(i.fit_id),
+            Item::ModuleHigh(i) => Some(i.fit_id),
+            Item::ModuleLow(i) => Some(i.fit_id),
+            Item::ModuleMid(i) => Some(i.fit_id),
             Item::Rig(i) => Some(i.fit_id),
             Item::Ship(i) => Some(i.fit_id),
             Item::Skill(i) => Some(i.fit_id),
             Item::Stance(i) => Some(i.fit_id),
             Item::Subsystem(i) => Some(i.fit_id),
-            Item::SwEffect(i) => None,
+            Item::SwEffect(_) => None,
         }
     }
     pub(crate) fn get_type_id(&self) -> ReeInt {
         match self {
             Item::Booster(i) => i.type_id,
             Item::Character(i) => i.type_id,
+            Item::Charge(i) => i.type_id,
             Item::Implant(i) => i.type_id,
+            Item::ModuleHigh(i) => i.type_id,
+            Item::ModuleLow(i) => i.type_id,
+            Item::ModuleMid(i) => i.type_id,
             Item::Rig(i) => i.type_id,
             Item::Ship(i) => i.type_id,
             Item::Skill(i) => i.type_id,
@@ -77,8 +97,12 @@ impl Item {
         match self {
             Item::Booster(i) => i.state,
             Item::Character(_) => State::Offline,
+            Item::Charge(_) => State::Offline,
             Item::Implant(i) => i.state,
-            Item::Rig(_) => State::Offline,
+            Item::ModuleHigh(i) => i.state,
+            Item::ModuleLow(i) => i.state,
+            Item::ModuleMid(i) => i.state,
+            Item::Rig(i) => i.state,
             Item::Ship(_) => State::Offline,
             Item::Skill(_) => State::Offline,
             Item::Stance(_) => State::Offline,
@@ -92,7 +116,11 @@ impl Item {
         match self {
             Item::Booster(i) => i.citem = cached_item,
             Item::Character(i) => i.citem = cached_item,
+            Item::Charge(i) => i.citem = cached_item,
             Item::Implant(i) => i.citem = cached_item,
+            Item::ModuleHigh(i) => i.citem = cached_item,
+            Item::ModuleLow(i) => i.citem = cached_item,
+            Item::ModuleMid(i) => i.citem = cached_item,
             Item::Rig(i) => i.citem = cached_item,
             Item::Ship(i) => i.citem = cached_item,
             Item::Skill(i) => i.citem = cached_item,
