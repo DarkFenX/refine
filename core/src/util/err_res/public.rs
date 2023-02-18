@@ -16,6 +16,7 @@ pub enum ErrorKind {
     IdAllocFailed,
     SkillLevelRange,
     UnexpectedItemType,
+    SlotTaken,
 }
 
 #[derive(Debug)]

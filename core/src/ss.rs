@@ -7,9 +7,10 @@ use std::{
 use itertools::Itertools;
 
 use crate::{
+    consts::State,
     src::Src,
-    ssi::{Booster, Character, Implant, Item, Rig, Ship, Skill, Stance, Subsystem, SwEffect},
-    Error, ErrorKind, ReeId, ReeInt, Result,
+    ssi::{Booster, Character, Charge, Implant, Item, Module, Rig, Ship, Skill, Stance, Subsystem, SwEffect},
+    Error, ErrorKind, ReeId, ReeIdx, ReeInt, Result,
 };
 
 pub struct SolarSystem {
@@ -162,6 +163,50 @@ impl SolarSystem {
         let subsystem = Item::Subsystem(Subsystem::new(&self.src, item_id, fit_id, type_id));
         self.items.insert(item_id, subsystem);
         Ok(item_id)
+    }
+    // Module methods
+    pub fn get_modules_high(&self, fit_id: ReeId) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::ModuleHigh(m) if m.fit_id == fit_id => Some(m.item_id),
+                _ => None,
+            })
+            .collect()
+    }
+    pub fn add_module_high(
+        &mut self,
+        fit_id: ReeId,
+        type_id: ReeInt,
+        state: State,
+        pos: ReeIdx,
+        charge_type_id: Option<ReeInt>,
+    ) -> Result<(ReeId, Option<ReeId>)> {
+        match self.items.values().find_or_first(|v| match v {
+            Item::ModuleHigh(m) if m.fit_id == fit_id && m.pos == pos => true,
+            _ => false,
+        }) {
+            Some(i) => {
+                return Err(Error::new(
+                    ErrorKind::SlotTaken,
+                    format!("high slot position {} is taken by item ID {}", pos, i.get_id()),
+                ))
+            }
+            _ => (),
+        }
+        let item_id = self.alloc_item_id()?;
+        let charge_id = match charge_type_id {
+            Some(i) => {
+                let charge_id = self.alloc_item_id()?;
+                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, i, item_id));
+                self.items.insert(charge_id, charge);
+                Some(charge_id)
+            }
+            None => None,
+        };
+        let module = Item::ModuleHigh(Module::new(&self.src, item_id, fit_id, type_id, state, pos, charge_id));
+        self.items.insert(item_id, module);
+        Ok((item_id, charge_id))
     }
     // Rig methods
     pub fn get_rigs(&self, fit_id: ReeId) -> Vec<ReeId> {
@@ -397,7 +442,47 @@ impl SolarSystem {
         Ok(self.item_cnt.0)
     }
     pub fn remove_item(&mut self, item_id: &ReeId) -> bool {
-        self.items.remove(item_id).is_some()
+        match self.items.remove(item_id) {
+            None => false,
+            Some(main) => {
+                match main {
+                    // Remove reference to charge if it's charge which we're removing
+                    Item::Charge(c) => match self.items.get_mut(&c.cont) {
+                        None => return true,
+                        Some(other) => match other {
+                            Item::ModuleHigh(m) => m.charge = None,
+                            Item::ModuleMid(m) => m.charge = None,
+                            Item::ModuleLow(m) => m.charge = None,
+                            _ => (),
+                        },
+                    },
+                    // Remove charge if we're removing a module, charges cannot exist without their carrier
+                    Item::ModuleHigh(m) => match m.charge {
+                        None => (),
+                        Some(other_id) => {
+                            self.items.remove(&other_id);
+                            ()
+                        }
+                    },
+                    Item::ModuleMid(m) => match m.charge {
+                        None => (),
+                        Some(other_id) => {
+                            self.items.remove(&other_id);
+                            ()
+                        }
+                    },
+                    Item::ModuleLow(m) => match m.charge {
+                        None => (),
+                        Some(other_id) => {
+                            self.items.remove(&other_id);
+                            ()
+                        }
+                    },
+                    _ => (),
+                };
+                true
+            }
+        }
     }
 }
 
