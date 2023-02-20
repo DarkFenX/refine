@@ -174,6 +174,24 @@ impl SolarSystem {
             })
             .collect()
     }
+    pub fn get_modules_mid(&self, fit_id: ReeId) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::ModuleMid(m) if m.fit_id == fit_id => Some(m.item_id),
+                _ => None,
+            })
+            .collect()
+    }
+    pub fn get_modules_low(&self, fit_id: ReeId) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::ModuleLow(m) if m.fit_id == fit_id => Some(m.item_id),
+                _ => None,
+            })
+            .collect()
+    }
     pub fn add_module_high(
         &mut self,
         fit_id: ReeId,
@@ -207,6 +225,161 @@ impl SolarSystem {
         let module = Item::ModuleHigh(Module::new(&self.src, item_id, fit_id, type_id, state, pos, charge_id));
         self.items.insert(item_id, module);
         Ok((item_id, charge_id))
+    }
+    pub fn add_module_mid(
+        &mut self,
+        fit_id: ReeId,
+        type_id: ReeInt,
+        state: State,
+        pos: ReeIdx,
+        charge_type_id: Option<ReeInt>,
+    ) -> Result<(ReeId, Option<ReeId>)> {
+        match self.items.values().find_or_first(|v| match v {
+            Item::ModuleMid(m) if m.fit_id == fit_id && m.pos == pos => true,
+            _ => false,
+        }) {
+            Some(i) => {
+                return Err(Error::new(
+                    ErrorKind::SlotTaken,
+                    format!("mid slot position {} is taken by item ID {}", pos, i.get_id()),
+                ))
+            }
+            _ => (),
+        }
+        let item_id = self.alloc_item_id()?;
+        let charge_id = match charge_type_id {
+            Some(i) => {
+                let charge_id = self.alloc_item_id()?;
+                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, i, item_id));
+                self.items.insert(charge_id, charge);
+                Some(charge_id)
+            }
+            None => None,
+        };
+        let module = Item::ModuleMid(Module::new(&self.src, item_id, fit_id, type_id, state, pos, charge_id));
+        self.items.insert(item_id, module);
+        Ok((item_id, charge_id))
+    }
+    pub fn add_module_low(
+        &mut self,
+        fit_id: ReeId,
+        type_id: ReeInt,
+        state: State,
+        pos: ReeIdx,
+        charge_type_id: Option<ReeInt>,
+    ) -> Result<(ReeId, Option<ReeId>)> {
+        match self.items.values().find_or_first(|v| match v {
+            Item::ModuleLow(m) if m.fit_id == fit_id && m.pos == pos => true,
+            _ => false,
+        }) {
+            Some(i) => {
+                return Err(Error::new(
+                    ErrorKind::SlotTaken,
+                    format!("low slot position {} is taken by item ID {}", pos, i.get_id()),
+                ))
+            }
+            _ => (),
+        }
+        let item_id = self.alloc_item_id()?;
+        let charge_id = match charge_type_id {
+            Some(i) => {
+                let charge_id = self.alloc_item_id()?;
+                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, i, item_id));
+                self.items.insert(charge_id, charge);
+                Some(charge_id)
+            }
+            None => None,
+        };
+        let module = Item::ModuleLow(Module::new(&self.src, item_id, fit_id, type_id, state, pos, charge_id));
+        self.items.insert(item_id, module);
+        Ok((item_id, charge_id))
+    }
+    pub fn set_module_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
+        let item = self
+            .items
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::ModuleHigh(m) => m.state = state,
+            Item::ModuleMid(m) => m.state = state,
+            Item::ModuleLow(m) => m.state = state,
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Module as item with ID {item_id}"),
+                ))
+            }
+        }
+        Ok(())
+    }
+    pub fn set_module_charge(&mut self, item_id: &ReeId, charge_type_id: ReeInt) -> Result<ReeId> {
+        self.remove_module_charge(item_id)?;
+        let module = self
+            .items
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match module {
+            Item::ModuleHigh(m) => {
+                let fit_id = m.fit_id;
+                let new_charge_id = self.alloc_item_id()?;
+                let new_charge = Item::Charge(Charge::new(&self.src, new_charge_id, fit_id, charge_type_id, *item_id));
+                self.items.insert(new_charge_id, new_charge);
+                Ok(new_charge_id)
+            }
+            Item::ModuleMid(m) => {
+                let fit_id = m.fit_id;
+                let charge_id = self.alloc_item_id()?;
+                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, charge_type_id, *item_id));
+                self.items.insert(charge_id, charge);
+                Ok(charge_id)
+            }
+            Item::ModuleLow(m) => {
+                let fit_id = m.fit_id;
+                let charge_id = self.alloc_item_id()?;
+                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, charge_type_id, *item_id));
+                self.items.insert(charge_id, charge);
+                Ok(charge_id)
+            }
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("item with ID {item_id} is not a module"),
+                ))
+            }
+        }
+    }
+    pub fn remove_module_charge(&mut self, item_id: &ReeId) -> Result<bool> {
+        let item = self
+            .items
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        let charge_id = match item {
+            Item::ModuleHigh(m) => {
+                let charge_id = m.charge;
+                m.charge = None;
+                charge_id
+            }
+            Item::ModuleMid(m) => {
+                let charge_id = m.charge;
+                m.charge = None;
+                charge_id
+            }
+            Item::ModuleLow(m) => {
+                let charge_id = m.charge;
+                m.charge = None;
+                charge_id
+            }
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("item with ID {item_id} is not a module"),
+                ))
+            }
+        };
+        match charge_id {
+            None => Ok(false),
+            Some(i) => Ok(self.items.remove(&i).is_some()),
+        }
     }
     // Rig methods
     pub fn get_rigs(&self, fit_id: ReeId) -> Vec<ReeId> {
