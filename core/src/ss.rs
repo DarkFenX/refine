@@ -9,7 +9,7 @@ use itertools::Itertools;
 use crate::{
     consts::State,
     src::Src,
-    ssi::{Booster, Character, Charge, Implant, Item, Module, Rig, Ship, Skill, Stance, Subsystem, SwEffect},
+    ssi::{Booster, Character, Charge, Drone, Implant, Item, Module, Rig, Ship, Skill, Stance, Subsystem, SwEffect},
     Error, ErrorKind, ReeId, ReeIdx, ReeInt, Result,
 };
 
@@ -426,6 +426,53 @@ impl SolarSystem {
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
         match item {
             Item::Rig(r) => r.set_bool_state(state),
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Rig as item with ID {item_id}"),
+                ))
+            }
+        }
+        Ok(())
+    }
+    // Drone methods
+    pub fn get_drones(&self, fit_id: ReeId) -> Vec<ReeId> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::Drone(r) if r.fit_id == fit_id => Some(r.item_id),
+                _ => None,
+            })
+            .collect()
+    }
+    pub fn add_drone(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<ReeId> {
+        let item_id = self.alloc_item_id()?;
+        let rig = Item::Drone(Drone::new(&self.src, item_id, fit_id, type_id, state));
+        self.items.insert(item_id, rig);
+        Ok(item_id)
+    }
+    pub fn get_drone_state(&self, item_id: &ReeId) -> Result<State> {
+        let item = self
+            .items
+            .get(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::Drone(d) => Ok(d.state),
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Drone as item with ID {item_id}"),
+                ))
+            }
+        }
+    }
+    pub fn set_drone_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
+        let item = self
+            .items
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::Drone(d) => d.state = state,
             _ => {
                 return Err(Error::new(
                     ErrorKind::UnexpectedItemType,
