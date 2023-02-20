@@ -212,19 +212,13 @@ impl SolarSystem {
             }
             _ => (),
         }
-        let item_id = self.alloc_item_id()?;
-        let charge_id = match charge_type_id {
-            Some(i) => {
-                let charge_id = self.alloc_item_id()?;
-                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, i, item_id));
-                self.items.insert(charge_id, charge);
-                Some(charge_id)
-            }
-            None => None,
-        };
-        let module = Item::ModuleHigh(Module::new(&self.src, item_id, fit_id, type_id, state, pos, charge_id));
-        self.items.insert(item_id, module);
-        Ok((item_id, charge_id))
+        let module_id = self.alloc_item_id()?;
+        let charge_id = self.add_charge(fit_id, module_id, charge_type_id)?;
+        let module = Item::ModuleHigh(Module::new(
+            &self.src, module_id, fit_id, type_id, state, pos, charge_id,
+        ));
+        self.items.insert(module_id, module);
+        Ok((module_id, charge_id))
     }
     pub fn add_module_mid(
         &mut self,
@@ -246,19 +240,13 @@ impl SolarSystem {
             }
             _ => (),
         }
-        let item_id = self.alloc_item_id()?;
-        let charge_id = match charge_type_id {
-            Some(i) => {
-                let charge_id = self.alloc_item_id()?;
-                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, i, item_id));
-                self.items.insert(charge_id, charge);
-                Some(charge_id)
-            }
-            None => None,
-        };
-        let module = Item::ModuleMid(Module::new(&self.src, item_id, fit_id, type_id, state, pos, charge_id));
-        self.items.insert(item_id, module);
-        Ok((item_id, charge_id))
+        let module_id = self.alloc_item_id()?;
+        let charge_id = self.add_charge(fit_id, module_id, charge_type_id)?;
+        let module = Item::ModuleMid(Module::new(
+            &self.src, module_id, fit_id, type_id, state, pos, charge_id,
+        ));
+        self.items.insert(module_id, module);
+        Ok((module_id, charge_id))
     }
     pub fn add_module_low(
         &mut self,
@@ -280,19 +268,13 @@ impl SolarSystem {
             }
             _ => (),
         }
-        let item_id = self.alloc_item_id()?;
-        let charge_id = match charge_type_id {
-            Some(i) => {
-                let charge_id = self.alloc_item_id()?;
-                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, i, item_id));
-                self.items.insert(charge_id, charge);
-                Some(charge_id)
-            }
-            None => None,
-        };
-        let module = Item::ModuleLow(Module::new(&self.src, item_id, fit_id, type_id, state, pos, charge_id));
-        self.items.insert(item_id, module);
-        Ok((item_id, charge_id))
+        let module_id = self.alloc_item_id()?;
+        let charge_id = self.add_charge(fit_id, module_id, charge_type_id)?;
+        let module = Item::ModuleLow(Module::new(
+            &self.src, module_id, fit_id, type_id, state, pos, charge_id,
+        ));
+        self.items.insert(module_id, module);
+        Ok((module_id, charge_id))
     }
     pub fn set_module_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
         let item = self
@@ -316,29 +298,26 @@ impl SolarSystem {
         self.remove_module_charge(item_id)?;
         let module = self
             .items
-            .get_mut(item_id)
+            .get(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        match module {
+        let (charge_id, charge) = match module {
             Item::ModuleHigh(m) => {
                 let fit_id = m.fit_id;
-                let new_charge_id = self.alloc_item_id()?;
-                let new_charge = Item::Charge(Charge::new(&self.src, new_charge_id, fit_id, charge_type_id, *item_id));
-                self.items.insert(new_charge_id, new_charge);
-                Ok(new_charge_id)
+                let charge_id = self.alloc_item_id()?;
+                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, charge_type_id, *item_id));
+                (charge_id, charge)
             }
             Item::ModuleMid(m) => {
                 let fit_id = m.fit_id;
                 let charge_id = self.alloc_item_id()?;
                 let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, charge_type_id, *item_id));
-                self.items.insert(charge_id, charge);
-                Ok(charge_id)
+                (charge_id, charge)
             }
             Item::ModuleLow(m) => {
                 let fit_id = m.fit_id;
                 let charge_id = self.alloc_item_id()?;
                 let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, charge_type_id, *item_id));
-                self.items.insert(charge_id, charge);
-                Ok(charge_id)
+                (charge_id, charge)
             }
             _ => {
                 return Err(Error::new(
@@ -346,7 +325,24 @@ impl SolarSystem {
                     format!("item with ID {item_id} is not a module"),
                 ))
             }
-        }
+        };
+        self.items.insert(charge_id, charge);
+        let module = self
+            .items
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match module {
+            Item::ModuleHigh(m) => m.charge = Some(charge_id),
+            Item::ModuleMid(m) => m.charge = Some(charge_id),
+            Item::ModuleLow(m) => m.charge = Some(charge_id),
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("item with ID {item_id} is not a module"),
+                ))
+            }
+        };
+        Ok(charge_id)
     }
     pub fn remove_module_charge(&mut self, item_id: &ReeId) -> Result<bool> {
         let item = self
@@ -379,6 +375,17 @@ impl SolarSystem {
         match charge_id {
             None => Ok(false),
             Some(i) => Ok(self.items.remove(&i).is_some()),
+        }
+    }
+    fn add_charge(&mut self, fit_id: ReeId, module_id: ReeId, charge_type_id: Option<ReeInt>) -> Result<Option<ReeId>> {
+        match charge_type_id {
+            Some(i) => {
+                let charge_id = self.alloc_item_id()?;
+                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, i, module_id));
+                self.items.insert(charge_id, charge);
+                Ok(Some(charge_id))
+            }
+            None => Ok(None),
         }
     }
     // Rig methods
