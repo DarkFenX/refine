@@ -1,10 +1,10 @@
-use std::{fmt, sync::Arc};
+use std::{collections::HashMap, fmt, sync::Arc};
 
 use crate::{
     consts::{attrs, State},
     ct,
     util::Named,
-    ReeId, ReeInt, Src,
+    ReeFloat, ReeId, ReeInt, Src,
 };
 
 pub(crate) struct Implant {
@@ -12,6 +12,7 @@ pub(crate) struct Implant {
     pub(crate) fit_id: ReeId,
     pub(crate) type_id: ReeInt,
     pub(crate) citem: Option<Arc<ct::Item>>,
+    pub(crate) mod_attrs: HashMap<ReeInt, ReeFloat>,
     pub(crate) state: State,
 }
 impl Implant {
@@ -21,6 +22,7 @@ impl Implant {
             fit_id,
             type_id,
             citem: src.cache_handler.get_item(type_id),
+            mod_attrs: HashMap::new(),
             state: State::Offline,
         }
     }

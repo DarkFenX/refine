@@ -1,11 +1,12 @@
-use std::{fmt, sync::Arc};
+use std::{collections::HashMap, fmt, sync::Arc};
 
-use crate::{consts::State, ct, util::Named, ReeId, ReeInt, Src};
+use crate::{consts::State, ct, util::Named, ReeFloat, ReeId, ReeInt, Src};
 
 pub(crate) struct SwEffect {
     pub(crate) item_id: ReeId,
     pub(crate) type_id: ReeInt,
     pub(crate) citem: Option<Arc<ct::Item>>,
+    pub(crate) mod_attrs: HashMap<ReeInt, ReeFloat>,
     pub(crate) state: State,
 }
 impl SwEffect {
@@ -14,6 +15,7 @@ impl SwEffect {
             item_id,
             type_id,
             citem: src.cache_handler.get_item(type_id),
+            mod_attrs: HashMap::new(),
             state: State::Offline,
         }
     }

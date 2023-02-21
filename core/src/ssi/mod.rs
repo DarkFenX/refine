@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
 pub(crate) use booster::Booster;
 pub(crate) use character::Character;
@@ -14,7 +14,7 @@ pub(crate) use stance::Stance;
 pub(crate) use subsystem::Subsystem;
 pub(crate) use sw_effect::SwEffect;
 
-use crate::{consts::State, ReeId, ReeInt, Src};
+use crate::{consts::State, ct, ReeFloat, ReeId, ReeInt, Src};
 
 mod booster;
 mod character;
@@ -143,6 +143,66 @@ impl Item {
             Item::Stance(i) => i.citem = cached_item,
             Item::Subsystem(i) => i.citem = cached_item,
             Item::SwEffect(i) => i.citem = cached_item,
+        }
+    }
+    pub(crate) fn get_citem(&self) -> Option<&Arc<ct::Item>> {
+        match self {
+            Item::Booster(i) => i.citem.as_ref(),
+            Item::Character(i) => i.citem.as_ref(),
+            Item::Charge(i) => i.citem.as_ref(),
+            Item::Drone(i) => i.citem.as_ref(),
+            Item::Fighter(i) => i.citem.as_ref(),
+            Item::Implant(i) => i.citem.as_ref(),
+            Item::ModuleHigh(i) => i.citem.as_ref(),
+            Item::ModuleLow(i) => i.citem.as_ref(),
+            Item::ModuleMid(i) => i.citem.as_ref(),
+            Item::Rig(i) => i.citem.as_ref(),
+            Item::Ship(i) => i.citem.as_ref(),
+            Item::Skill(i) => i.citem.as_ref(),
+            Item::Stance(i) => i.citem.as_ref(),
+            Item::Subsystem(i) => i.citem.as_ref(),
+            Item::SwEffect(i) => i.citem.as_ref(),
+        }
+    }
+    pub(crate) fn get_orig_attrs(&self) -> Option<&HashMap<ReeInt, ReeFloat>> {
+        self.get_citem().map(|v| &v.attr_vals)
+    }
+    pub(crate) fn get_mod_attrs(&self) -> &HashMap<ReeInt, ReeFloat> {
+        match self {
+            Item::Booster(i) => &i.mod_attrs,
+            Item::Character(i) => &i.mod_attrs,
+            Item::Charge(i) => &i.mod_attrs,
+            Item::Drone(i) => &i.mod_attrs,
+            Item::Fighter(i) => &i.mod_attrs,
+            Item::Implant(i) => &i.mod_attrs,
+            Item::ModuleHigh(i) => &i.mod_attrs,
+            Item::ModuleLow(i) => &i.mod_attrs,
+            Item::ModuleMid(i) => &i.mod_attrs,
+            Item::Rig(i) => &i.mod_attrs,
+            Item::Ship(i) => &i.mod_attrs,
+            Item::Skill(i) => &i.mod_attrs,
+            Item::Stance(i) => &i.mod_attrs,
+            Item::Subsystem(i) => &i.mod_attrs,
+            Item::SwEffect(i) => &i.mod_attrs,
+        }
+    }
+    pub(crate) fn get_mod_attrs_mut(&mut self) -> &mut HashMap<ReeInt, ReeFloat> {
+        match self {
+            Item::Booster(i) => &mut i.mod_attrs,
+            Item::Character(i) => &mut i.mod_attrs,
+            Item::Charge(i) => &mut i.mod_attrs,
+            Item::Drone(i) => &mut i.mod_attrs,
+            Item::Fighter(i) => &mut i.mod_attrs,
+            Item::Implant(i) => &mut i.mod_attrs,
+            Item::ModuleHigh(i) => &mut i.mod_attrs,
+            Item::ModuleLow(i) => &mut i.mod_attrs,
+            Item::ModuleMid(i) => &mut i.mod_attrs,
+            Item::Rig(i) => &mut i.mod_attrs,
+            Item::Ship(i) => &mut i.mod_attrs,
+            Item::Skill(i) => &mut i.mod_attrs,
+            Item::Stance(i) => &mut i.mod_attrs,
+            Item::Subsystem(i) => &mut i.mod_attrs,
+            Item::SwEffect(i) => &mut i.mod_attrs,
         }
     }
 }
