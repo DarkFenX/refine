@@ -31,5 +31,4 @@ pub mod dh_impls;
 pub mod prelude;
 mod src;
 mod ss;
-mod ssi;
 mod util;

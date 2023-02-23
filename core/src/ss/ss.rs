@@ -6,14 +6,10 @@ use std::{
 
 use itertools::Itertools;
 
-use crate::{
-    consts::State,
-    src::Src,
-    ssi::{
-        Booster, Character, Charge, Drone, Fighter, Implant, Item, Module, Rig, Ship, Skill, Stance, Subsystem,
-        SwEffect,
-    },
-    Error, ErrorKind, ReeId, ReeIdx, ReeInt, Result,
+use crate::{consts::State, Error, ErrorKind, ReeFloat, ReeId, ReeIdx, ReeInt, Result, src::Src};
+
+use super::item::{
+    Booster, Character, Charge, Drone, Fighter, Implant, Item, Module, Rig, Ship, Skill, Stance, Subsystem, SwEffect,
 };
 
 pub struct SolarSystem {
@@ -760,6 +756,9 @@ impl SolarSystem {
                 true
             }
         }
+    }
+    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: ReeInt) -> Result<ReeFloat> {
+        Ok(0.0)
     }
 }
 
