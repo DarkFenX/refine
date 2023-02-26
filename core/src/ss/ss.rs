@@ -6,10 +6,14 @@ use std::{
 
 use itertools::Itertools;
 
-use crate::{consts::State, Error, ErrorKind, ReeFloat, ReeId, ReeIdx, ReeInt, Result, src::Src};
+use crate::{consts::State, src::Src, Error, ErrorKind, ReeFloat, ReeId, ReeIdx, ReeInt, Result};
 
-use super::item::{
-    Booster, Character, Charge, Drone, Fighter, Implant, Item, Module, Rig, Ship, Skill, Stance, Subsystem, SwEffect,
+use super::{
+    calc::CalcSvc,
+    item::{
+        Booster, Character, Charge, Drone, Fighter, Implant, Item, Module, Rig, Ship, Skill, Stance, Subsystem,
+        SwEffect,
+    },
 };
 
 pub struct SolarSystem {
@@ -20,6 +24,7 @@ pub struct SolarSystem {
     // fleets: HashMap<ReeId, Fleet>,
     item_cnt: Wrapping<ReeId>,
     items: HashMap<ReeId, Item>,
+    calc: CalcSvc,
 }
 impl SolarSystem {
     pub fn new(src: Arc<Src>) -> SolarSystem {
@@ -29,6 +34,7 @@ impl SolarSystem {
             fits: HashSet::new(),
             item_cnt: Wrapping(0),
             items: HashMap::new(),
+            calc: CalcSvc::new(),
         }
     }
     pub fn set_src(&mut self, src: Arc<Src>) {
@@ -71,7 +77,7 @@ impl SolarSystem {
         self.remove_character(fit_id)?;
         let item_id = self.alloc_item_id()?;
         let character = Item::Character(Character::new(&self.src, item_id, fit_id, type_id));
-        self.items.insert(item_id, character);
+        self.l1_add_item(character);
         Ok(item_id)
     }
     pub fn remove_character(&mut self, fit_id: ReeId) -> Result<bool> {
@@ -101,7 +107,7 @@ impl SolarSystem {
         self.remove_ship(fit_id)?;
         let item_id = self.alloc_item_id()?;
         let ship = Item::Ship(Ship::new(&self.src, item_id, fit_id, type_id));
-        self.items.insert(item_id, ship);
+        self.l1_add_item(ship);
         Ok(item_id)
     }
     pub fn remove_ship(&mut self, fit_id: ReeId) -> Result<bool> {
@@ -131,7 +137,7 @@ impl SolarSystem {
         self.remove_stance(fit_id)?;
         let item_id = self.alloc_item_id()?;
         let stance = Item::Stance(Stance::new(&self.src, item_id, fit_id, type_id));
-        self.items.insert(item_id, stance);
+        self.l1_add_item(stance);
         Ok(item_id)
     }
     pub fn remove_stance(&mut self, fit_id: ReeId) -> Result<bool> {
@@ -160,7 +166,7 @@ impl SolarSystem {
     pub fn add_subsystem(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let subsystem = Item::Subsystem(Subsystem::new(&self.src, item_id, fit_id, type_id));
-        self.items.insert(item_id, subsystem);
+        self.l1_add_item(subsystem);
         Ok(item_id)
     }
     // Module methods
@@ -216,7 +222,7 @@ impl SolarSystem {
         let module = Item::ModuleHigh(Module::new(
             &self.src, module_id, fit_id, type_id, state, pos, charge_id,
         ));
-        self.items.insert(module_id, module);
+        self.l1_add_item(module);
         Ok((module_id, charge_id))
     }
     pub fn add_module_mid(
@@ -244,7 +250,7 @@ impl SolarSystem {
         let module = Item::ModuleMid(Module::new(
             &self.src, module_id, fit_id, type_id, state, pos, charge_id,
         ));
-        self.items.insert(module_id, module);
+        self.l1_add_item(module);
         Ok((module_id, charge_id))
     }
     pub fn add_module_low(
@@ -272,7 +278,7 @@ impl SolarSystem {
         let module = Item::ModuleLow(Module::new(
             &self.src, module_id, fit_id, type_id, state, pos, charge_id,
         ));
-        self.items.insert(module_id, module);
+        self.l1_add_item(module);
         Ok((module_id, charge_id))
     }
     pub fn set_module_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
@@ -325,7 +331,7 @@ impl SolarSystem {
                 ))
             }
         };
-        self.items.insert(charge_id, charge);
+        self.l1_add_item(charge);
         let module = self
             .items
             .get_mut(item_id)
@@ -381,7 +387,7 @@ impl SolarSystem {
             Some(i) => {
                 let charge_id = self.alloc_item_id()?;
                 let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, i, module_id));
-                self.items.insert(charge_id, charge);
+                self.l1_add_item(charge);
                 Ok(Some(charge_id))
             }
             None => Ok(None),
@@ -400,7 +406,7 @@ impl SolarSystem {
     pub fn add_rig(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let rig = Item::Rig(Rig::new(&self.src, item_id, fit_id, type_id));
-        self.items.insert(item_id, rig);
+        self.l1_add_item(rig);
         Ok(item_id)
     }
     pub fn get_rig_state(&self, item_id: &ReeId) -> Result<bool> {
@@ -446,8 +452,8 @@ impl SolarSystem {
     }
     pub fn add_drone(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
-        let rig = Item::Drone(Drone::new(&self.src, item_id, fit_id, type_id, state));
-        self.items.insert(item_id, rig);
+        let drone = Item::Drone(Drone::new(&self.src, item_id, fit_id, type_id, state));
+        self.l1_add_item(drone);
         Ok(item_id)
     }
     pub fn get_drone_state(&self, item_id: &ReeId) -> Result<State> {
@@ -493,8 +499,8 @@ impl SolarSystem {
     }
     pub fn add_fighter(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
-        let rig = Item::Fighter(Fighter::new(&self.src, item_id, fit_id, type_id, state));
-        self.items.insert(item_id, rig);
+        let fighter = Item::Fighter(Fighter::new(&self.src, item_id, fit_id, type_id, state));
+        self.l1_add_item(fighter);
         Ok(item_id)
     }
     pub fn get_fighter_state(&self, item_id: &ReeId) -> Result<State> {
@@ -542,7 +548,7 @@ impl SolarSystem {
         check_skill_level(level)?;
         let item_id = self.alloc_item_id()?;
         let skill = Item::Skill(Skill::new(&self.src, item_id, fit_id, type_id, level));
-        self.items.insert(item_id, skill);
+        self.l1_add_item(skill);
         Ok(item_id)
     }
     pub fn set_skill_level(&mut self, item_id: &ReeId, level: ReeInt) -> Result<()> {
@@ -575,7 +581,7 @@ impl SolarSystem {
     pub fn add_implant(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let implant = Item::Implant(Implant::new(&self.src, item_id, fit_id, type_id));
-        self.items.insert(item_id, implant);
+        self.l1_add_item(implant);
         Ok(item_id)
     }
     pub fn get_implant_state(&self, item_id: &ReeId) -> Result<bool> {
@@ -622,7 +628,7 @@ impl SolarSystem {
     pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let booster = Item::Booster(Booster::new(&self.src, item_id, fit_id, type_id));
-        self.items.insert(item_id, booster);
+        self.l1_add_item(booster);
         Ok(item_id)
     }
     pub fn get_booster_state(&self, item_id: &ReeId) -> Result<bool> {
@@ -669,7 +675,7 @@ impl SolarSystem {
     pub fn add_sw_effect(&mut self, type_id: ReeInt) -> Result<ReeId> {
         let item_id = self.alloc_item_id()?;
         let sw_effect = Item::SwEffect(SwEffect::new(&self.src, item_id, type_id));
-        self.items.insert(item_id, sw_effect);
+        self.l1_add_item(sw_effect);
         Ok(item_id)
     }
     pub fn get_sw_effect_state(&self, item_id: &ReeId) -> Result<bool> {
@@ -704,6 +710,62 @@ impl SolarSystem {
         Ok(())
     }
     // General
+    fn l1_add_item(&mut self, item: Item) {
+        let item_id = item.get_id();
+        let item_state = item.get_state();
+        self.items.insert(item_id, item);
+        let item = self.items.get(&item_id).unwrap();
+        l2_add_item(&item, &mut self.calc);
+        match item_state {
+            State::Offline => l2_activate_item_state(&item, State::Offline, &mut self.calc),
+            State::Online => {
+                l2_activate_item_state(&item, State::Offline, &mut self.calc);
+                l2_activate_item_state(&item, State::Online, &mut self.calc);
+            }
+            State::Active => {
+                l2_activate_item_state(&item, State::Offline, &mut self.calc);
+                l2_activate_item_state(&item, State::Online, &mut self.calc);
+                l2_activate_item_state(&item, State::Active, &mut self.calc);
+            }
+            State::Overload => {
+                l2_activate_item_state(&item, State::Offline, &mut self.calc);
+                l2_activate_item_state(&item, State::Online, &mut self.calc);
+                l2_activate_item_state(&item, State::Active, &mut self.calc);
+                l2_activate_item_state(&item, State::Overload, &mut self.calc);
+            }
+            _ => (),
+        }
+    }
+    fn l1_remove_item(&mut self, item_id: ReeId) {
+        match self.items.remove(&item_id) {
+            None => (),
+            Some(item) => match item.get_state() {
+                State::Offline => {
+                    l2_deactivate_item_state(&item, State::Offline, &mut self.calc);
+                    l2_remove_item(&item, &mut self.calc);
+                }
+                State::Online => {
+                    l2_deactivate_item_state(&item, State::Offline, &mut self.calc);
+                    l2_deactivate_item_state(&item, State::Online, &mut self.calc);
+                    l2_remove_item(&item, &mut self.calc);
+                }
+                State::Active => {
+                    l2_deactivate_item_state(&item, State::Offline, &mut self.calc);
+                    l2_deactivate_item_state(&item, State::Online, &mut self.calc);
+                    l2_deactivate_item_state(&item, State::Active, &mut self.calc);
+                    l2_remove_item(&item, &mut self.calc);
+                }
+                State::Overload => {
+                    l2_deactivate_item_state(&item, State::Offline, &mut self.calc);
+                    l2_deactivate_item_state(&item, State::Online, &mut self.calc);
+                    l2_deactivate_item_state(&item, State::Active, &mut self.calc);
+                    l2_deactivate_item_state(&item, State::Overload, &mut self.calc);
+                    l2_remove_item(&item, &mut self.calc);
+                }
+                _ => (),
+            },
+        };
+    }
     fn alloc_item_id(&mut self) -> Result<ReeId> {
         let start = self.item_cnt;
         while self.items.contains_key(&self.item_cnt.0) {
@@ -757,9 +819,11 @@ impl SolarSystem {
             }
         }
     }
+    // Attribute calculator
     pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: ReeInt) -> Result<ReeFloat> {
         Ok(0.0)
     }
+    fn calc_get_modifications(&self, affectee: ReeId, attr_id: ReeInt) {}
 }
 
 fn check_skill_level(level: ReeInt) -> Result<()> {
@@ -770,4 +834,16 @@ fn check_skill_level(level: ReeInt) -> Result<()> {
         ));
     };
     Ok(())
+}
+fn l2_add_item(item: &Item, calc: &mut CalcSvc) {
+    calc.add_item(item);
+}
+fn l2_remove_item(item: &Item, calc: &mut CalcSvc) {
+    calc.rm_item(item);
+}
+fn l2_activate_item_state(item: &Item, state: State, calc: &mut CalcSvc) {
+    calc.activate_item_state(item, state);
+}
+fn l2_deactivate_item_state(item: &Item, state: State, calc: &mut CalcSvc) {
+    calc.deactivate_item_state(item, state);
 }
