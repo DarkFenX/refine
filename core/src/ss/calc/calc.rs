@@ -20,10 +20,10 @@ impl CalcSvc {
     // Maintenance methods
     pub(in crate::ss) fn add_item(&mut self, item: &Item) {
         self.attrs.insert(item.get_id(), HashMap::new());
-        self.affection.add_item(item);
+        self.affection.reg_afee(item);
     }
     pub(in crate::ss) fn rm_item(&mut self, item: &Item) {
-        self.affection.rm_item(item);
+        self.affection.unreg_afee(item);
         self.attrs.remove(&item.get_id());
     }
     pub(in crate::ss) fn activate_item_state(&mut self, item: &Item, state: State) {

@@ -29,7 +29,7 @@ impl AffectionRegister {
     pub(in crate::ss::calc) fn get_projected_affectee_items(&mut self, affector_spec: ReeId, tgt_items: ReeId) {}
     pub(in crate::ss::calc) fn get_affector_specs(&mut self, affectee_item: ReeId) {}
     // Maintenance methods
-    pub(in crate::ss::calc) fn add_item(&mut self, item: &Item) {
+    pub(in crate::ss::calc) fn reg_afee(&mut self, item: &Item) {
         let item_id = item.get_id();
         self.afees.insert(item_id);
         match item.get_fit_id() {
@@ -69,7 +69,7 @@ impl AffectionRegister {
             _ => (),
         };
     }
-    pub(in crate::ss::calc) fn rm_item(&mut self, item: &Item) {
+    pub(in crate::ss::calc) fn unreg_afee(&mut self, item: &Item) {
         let item_id = item.get_id();
         self.afees.remove(&item_id);
         match item.get_fit_id() {
