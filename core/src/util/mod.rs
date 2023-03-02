@@ -5,4 +5,5 @@ pub(crate) use traits::Named;
 
 pub(crate) mod err_res;
 mod funcs;
+mod keyed_storage;
 mod traits;
