@@ -1,10 +1,10 @@
-use std::{collections::HashMap, fmt, sync::Arc};
+use std::{fmt, sync::Arc};
 
 use crate::{
     consts::{attrs, State},
     ct,
     util::Named,
-    ReeFloat, ReeId, ReeInt, Src,
+    ReeId, ReeInt, Src,
 };
 
 pub(crate) struct Booster {
@@ -13,7 +13,6 @@ pub(crate) struct Booster {
     pub(crate) type_id: ReeInt,
     pub(crate) citem: Option<Arc<ct::Item>>,
     pub(crate) state: State,
-    pub(crate) mod_attrs: HashMap<ReeInt, ReeFloat>,
 }
 impl Booster {
     pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Booster {
@@ -22,7 +21,6 @@ impl Booster {
             fit_id,
             type_id,
             citem: src.cache_handler.get_item(type_id),
-            mod_attrs: HashMap::new(),
             state: State::Offline,
         }
     }

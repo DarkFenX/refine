@@ -14,7 +14,10 @@ pub(crate) use stance::Stance;
 pub(crate) use subsystem::Subsystem;
 pub(crate) use sw_effect::SwEffect;
 
-use crate::{consts::State, ct, ReeFloat, ReeId, ReeInt, Src};
+use crate::{
+    consts::{ModDomain, State},
+    ct, ReeFloat, ReeId, ReeInt, Src,
+};
 
 mod booster;
 mod character;
@@ -164,45 +167,52 @@ impl Item {
             Item::SwEffect(i) => i.citem.as_ref(),
         }
     }
+    // Calculator-specific getters
     pub(crate) fn get_orig_attrs(&self) -> Option<&HashMap<ReeInt, ReeFloat>> {
         self.get_citem().map(|v| &v.attr_vals)
     }
-    pub(crate) fn get_mod_attrs(&self) -> &HashMap<ReeInt, ReeFloat> {
+    pub(crate) fn get_domain(&self) -> Option<ModDomain> {
         match self {
-            Item::Booster(i) => &i.mod_attrs,
-            Item::Character(i) => &i.mod_attrs,
-            Item::Charge(i) => &i.mod_attrs,
-            Item::Drone(i) => &i.mod_attrs,
-            Item::Fighter(i) => &i.mod_attrs,
-            Item::Implant(i) => &i.mod_attrs,
-            Item::ModuleHigh(i) => &i.mod_attrs,
-            Item::ModuleLow(i) => &i.mod_attrs,
-            Item::ModuleMid(i) => &i.mod_attrs,
-            Item::Rig(i) => &i.mod_attrs,
-            Item::Ship(i) => &i.mod_attrs,
-            Item::Skill(i) => &i.mod_attrs,
-            Item::Stance(i) => &i.mod_attrs,
-            Item::Subsystem(i) => &i.mod_attrs,
-            Item::SwEffect(i) => &i.mod_attrs,
+            Item::Booster(_) => Some(ModDomain::Char),
+            Item::Character(_) => None,
+            Item::Charge(_) => Some(ModDomain::Ship),
+            Item::Drone(_) => None,
+            Item::Fighter(_) => None,
+            Item::Implant(_) => Some(ModDomain::Char),
+            Item::ModuleHigh(_) => Some(ModDomain::Ship),
+            Item::ModuleLow(_) => Some(ModDomain::Ship),
+            Item::ModuleMid(_) => Some(ModDomain::Ship),
+            Item::Rig(_) => Some(ModDomain::Ship),
+            Item::Ship(_) => None,
+            Item::Skill(_) => Some(ModDomain::Char),
+            Item::Stance(_) => Some(ModDomain::Ship),
+            Item::Subsystem(_) => Some(ModDomain::Ship),
+            Item::SwEffect(_) => None,
         }
     }
-    pub(crate) fn get_mod_attrs_mut(&mut self) -> &mut HashMap<ReeInt, ReeFloat> {
+    pub(crate) fn get_group_id(&self) -> Option<ReeInt> {
+        self.get_citem().map(|v| v.grp_id)
+    }
+    pub(crate) fn get_skill_reqs(&self) -> Option<&HashMap<ReeInt, ReeInt>> {
+        self.get_citem().map(|v| &v.srqs)
+    }
+    pub(crate) fn is_owner_modifiable(&self) -> bool {
         match self {
-            Item::Booster(i) => &mut i.mod_attrs,
-            Item::Character(i) => &mut i.mod_attrs,
-            Item::Charge(i) => &mut i.mod_attrs,
-            Item::Drone(i) => &mut i.mod_attrs,
-            Item::Fighter(i) => &mut i.mod_attrs,
-            Item::Implant(i) => &mut i.mod_attrs,
-            Item::ModuleHigh(i) => &mut i.mod_attrs,
-            Item::ModuleLow(i) => &mut i.mod_attrs,
-            Item::ModuleMid(i) => &mut i.mod_attrs,
-            Item::Rig(i) => &mut i.mod_attrs,
-            Item::Ship(i) => &mut i.mod_attrs,
-            Item::Skill(i) => &mut i.mod_attrs,
-            Item::Stance(i) => &mut i.mod_attrs,
-            Item::Subsystem(i) => &mut i.mod_attrs,
-            Item::SwEffect(i) => &mut i.mod_attrs,
+            Item::Booster(_) => false,
+            Item::Character(_) => false,
+            Item::Charge(_) => true,
+            Item::Drone(_) => true,
+            Item::Fighter(_) => true,
+            Item::Implant(_) => false,
+            Item::ModuleHigh(_) => false,
+            Item::ModuleLow(_) => false,
+            Item::ModuleMid(_) => false,
+            Item::Rig(_) => false,
+            Item::Ship(_) => false,
+            Item::Skill(_) => false,
+            Item::Stance(_) => false,
+            Item::Subsystem(_) => false,
+            Item::SwEffect(_) => false,
         }
     }
 }

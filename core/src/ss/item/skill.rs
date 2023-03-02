@@ -1,13 +1,12 @@
-use std::{collections::HashMap, fmt, sync::Arc};
+use std::{fmt, sync::Arc};
 
-use crate::{ct, util::Named, ReeFloat, ReeId, ReeInt, Src};
+use crate::{ct, util::Named, ReeId, ReeInt, Src};
 
 pub(crate) struct Skill {
     pub(crate) item_id: ReeId,
     pub(crate) fit_id: ReeId,
     pub(crate) type_id: ReeInt,
     pub(crate) citem: Option<Arc<ct::Item>>,
-    pub(crate) mod_attrs: HashMap<ReeInt, ReeFloat>,
     pub(crate) level: ReeInt,
 }
 impl Skill {
@@ -17,7 +16,6 @@ impl Skill {
             fit_id,
             type_id,
             citem: src.cache_handler.get_item(type_id),
-            mod_attrs: HashMap::new(),
             level,
         }
     }

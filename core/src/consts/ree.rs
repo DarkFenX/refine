@@ -84,7 +84,7 @@ pub enum ModAfeeFilter {
 }
 
 /// Defines domain (or scope) which is target for a modification.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum ModDomain {
     /// Ship or items belonging to it.
     Ship,

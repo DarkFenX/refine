@@ -5,7 +5,7 @@ use crate::{consts::State, ss::item::Item, ReeFloat, ReeId, ReeInt};
 use super::affection_reg::AffectionRegister;
 
 pub(in crate::ss) struct CalcSvc {
-    attrs: HashMap<ReeId, ReeFloat>,
+    attrs: HashMap<ReeId, HashMap<ReeInt, ReeFloat>>,
     affection: AffectionRegister,
 }
 impl CalcSvc {
@@ -19,10 +19,12 @@ impl CalcSvc {
     pub(in crate::ss) fn get_modifications(&mut self, afectee_item: &Item, afectee_attr_id: ReeInt) {}
     // Maintenance methods
     pub(in crate::ss) fn add_item(&mut self, item: &Item) {
+        self.attrs.insert(item.get_id(), HashMap::new());
         self.affection.add_item(item);
     }
     pub(in crate::ss) fn rm_item(&mut self, item: &Item) {
         self.affection.rm_item(item);
+        self.attrs.remove(&item.get_id());
     }
     pub(in crate::ss) fn activate_item_state(&mut self, item: &Item, state: State) {
         self.affection.activate_item_state(item, state);

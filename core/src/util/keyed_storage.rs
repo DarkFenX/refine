@@ -3,7 +3,7 @@ use std::{
     hash::Hash,
 };
 
-struct KeyedStorage<K, V> {
+pub(crate) struct KeyedStorage<K, V> {
     data: HashMap<K, HashSet<V>>,
 }
 impl<K, V> KeyedStorage<K, V>
@@ -18,10 +18,10 @@ where
         let values = self.data.entry(key).or_insert_with(|| HashSet::new());
         values.insert(entry);
     }
-    pub(crate) fn rm_entry(&mut self, key: K, entry: V) {
+    pub(crate) fn rm_entry(&mut self, key: K, entry: &V) {
         match self.data.get_mut(&key) {
             None => return,
-            Some(v) => v.remove(&entry),
+            Some(v) => v.remove(entry),
         };
     }
 }
