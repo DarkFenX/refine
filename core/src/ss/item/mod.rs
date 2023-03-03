@@ -129,7 +129,7 @@ impl Item {
     }
     pub(crate) fn reload_cached_item(&mut self, src: &Arc<Src>) {
         let type_id = self.get_type_id();
-        let cached_item = src.cache_handler.get_item(type_id);
+        let cached_item = src.cache_handler.get_item(&type_id);
         match self {
             Item::Booster(i) => i.citem = cached_item,
             Item::Character(i) => i.citem = cached_item,
@@ -167,9 +167,15 @@ impl Item {
             Item::SwEffect(i) => i.citem.as_ref(),
         }
     }
+    pub(crate) fn is_loaded(&self) -> bool {
+        self.get_citem().is_some()
+    }
     // Calculator-specific getters
     pub(crate) fn get_orig_attrs(&self) -> Option<&HashMap<ReeInt, ReeFloat>> {
         self.get_citem().map(|v| &v.attr_vals)
+    }
+    pub(crate) fn get_effect_datas(&self) -> Option<&HashMap<ReeInt, ct::ItemEffData>> {
+        self.get_citem().map(|v| &v.effect_datas)
     }
     pub(crate) fn get_domain(&self) -> Option<ModDomain> {
         match self {

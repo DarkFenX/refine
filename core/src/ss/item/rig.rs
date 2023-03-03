@@ -15,7 +15,7 @@ impl Rig {
             item_id,
             fit_id,
             type_id,
-            citem: src.cache_handler.get_item(type_id),
+            citem: src.cache_handler.get_item(&type_id),
             state: State::Offline,
         }
     }

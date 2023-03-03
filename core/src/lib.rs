@@ -11,6 +11,8 @@
 //! - the engine converts the data into optimized internal format
 //! - you compose fit objects and fetch data from there
 
+extern crate core;
+
 pub use defines::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::{Src, SrcMgr};
 pub use ss::SolarSystem;

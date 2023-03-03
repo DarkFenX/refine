@@ -96,23 +96,23 @@ impl fmt::Debug for JsonFileCHandler {
 }
 impl ch::CacheHandler for JsonFileCHandler {
     /// Get cached item.
-    fn get_item(&self, id: ReeInt) -> Option<Arc<Item>> {
+    fn get_item(&self, id: &ReeInt) -> Option<Arc<Item>> {
         self.storage_items.get(&id).cloned()
     }
     /// Get cached attribute.
-    fn get_attr(&self, id: ReeInt) -> Option<Arc<Attr>> {
+    fn get_attr(&self, id: &ReeInt) -> Option<Arc<Attr>> {
         self.storage_attrs.get(&id).cloned()
     }
     /// Get cached effect.
-    fn get_effect(&self, id: ReeInt) -> Option<Arc<Effect>> {
+    fn get_effect(&self, id: &ReeInt) -> Option<Arc<Effect>> {
         self.storage_effects.get(&id).cloned()
     }
     /// Get cached mutaplasmid.
-    fn get_muta(&self, id: ReeInt) -> Option<Arc<Muta>> {
+    fn get_muta(&self, id: &ReeInt) -> Option<Arc<Muta>> {
         self.storage_mutas.get(&id).cloned()
     }
     /// Get cached warfare buff.
-    fn get_buff(&self, id: ReeInt) -> Option<Arc<Buff>> {
+    fn get_buff(&self, id: &ReeInt) -> Option<Arc<Buff>> {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get cached data fingerprint.

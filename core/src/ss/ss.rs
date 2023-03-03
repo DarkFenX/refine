@@ -6,7 +6,7 @@ use std::{
 
 use itertools::Itertools;
 
-use crate::{consts::State, src::Src, Error, ErrorKind, ReeFloat, ReeId, ReeIdx, ReeInt, Result};
+use crate::{consts::State, ct, src::Src, Error, ErrorKind, ReeFloat, ReeId, ReeIdx, ReeInt, Result};
 
 use super::{
     calc::CalcSvc,
@@ -710,62 +710,6 @@ impl SolarSystem {
         Ok(())
     }
     // General
-    fn l1_add_item(&mut self, item: Item) {
-        let item_id = item.get_id();
-        let item_state = item.get_state();
-        self.items.insert(item_id, item);
-        let item = self.items.get(&item_id).unwrap();
-        l2_add_item(&item, &mut self.calc);
-        match item_state {
-            State::Offline => l2_activate_item_state(&item, State::Offline, &mut self.calc),
-            State::Online => {
-                l2_activate_item_state(&item, State::Offline, &mut self.calc);
-                l2_activate_item_state(&item, State::Online, &mut self.calc);
-            }
-            State::Active => {
-                l2_activate_item_state(&item, State::Offline, &mut self.calc);
-                l2_activate_item_state(&item, State::Online, &mut self.calc);
-                l2_activate_item_state(&item, State::Active, &mut self.calc);
-            }
-            State::Overload => {
-                l2_activate_item_state(&item, State::Offline, &mut self.calc);
-                l2_activate_item_state(&item, State::Online, &mut self.calc);
-                l2_activate_item_state(&item, State::Active, &mut self.calc);
-                l2_activate_item_state(&item, State::Overload, &mut self.calc);
-            }
-            _ => (),
-        }
-    }
-    fn l1_remove_item(&mut self, item_id: ReeId) {
-        match self.items.remove(&item_id) {
-            None => (),
-            Some(item) => match item.get_state() {
-                State::Offline => {
-                    l2_deactivate_item_state(&item, State::Offline, &mut self.calc);
-                    l2_remove_item(&item, &mut self.calc);
-                }
-                State::Online => {
-                    l2_deactivate_item_state(&item, State::Offline, &mut self.calc);
-                    l2_deactivate_item_state(&item, State::Online, &mut self.calc);
-                    l2_remove_item(&item, &mut self.calc);
-                }
-                State::Active => {
-                    l2_deactivate_item_state(&item, State::Offline, &mut self.calc);
-                    l2_deactivate_item_state(&item, State::Online, &mut self.calc);
-                    l2_deactivate_item_state(&item, State::Active, &mut self.calc);
-                    l2_remove_item(&item, &mut self.calc);
-                }
-                State::Overload => {
-                    l2_deactivate_item_state(&item, State::Offline, &mut self.calc);
-                    l2_deactivate_item_state(&item, State::Online, &mut self.calc);
-                    l2_deactivate_item_state(&item, State::Active, &mut self.calc);
-                    l2_deactivate_item_state(&item, State::Overload, &mut self.calc);
-                    l2_remove_item(&item, &mut self.calc);
-                }
-                _ => (),
-            },
-        };
-    }
     fn alloc_item_id(&mut self) -> Result<ReeId> {
         let start = self.item_cnt;
         while self.items.contains_key(&self.item_cnt.0) {
@@ -780,6 +724,7 @@ impl SolarSystem {
         match self.items.remove(item_id) {
             None => false,
             Some(main) => {
+                self.l1_remove_item(&main);
                 match main {
                     // Remove reference to charge if it's charge which we're removing
                     Item::Charge(c) => match self.items.get_mut(&c.cont) {
@@ -793,31 +738,86 @@ impl SolarSystem {
                     },
                     // Remove charge if we're removing a module, charges cannot exist without their carrier
                     Item::ModuleHigh(m) => match m.charge {
-                        None => (),
-                        Some(other_id) => {
-                            self.items.remove(&other_id);
-                            ()
-                        }
+                        Some(other_id) => match self.items.remove(&other_id) {
+                            Some(charge) => self.l1_remove_item(&charge),
+                            _ => (),
+                        },
+                        _ => (),
                     },
                     Item::ModuleMid(m) => match m.charge {
+                        Some(other_id) => match self.items.remove(&other_id) {
+                            Some(charge) => self.l1_remove_item(&charge),
+                            _ => (),
+                        },
                         None => (),
-                        Some(other_id) => {
-                            self.items.remove(&other_id);
-                            ()
-                        }
                     },
                     Item::ModuleLow(m) => match m.charge {
+                        Some(other_id) => match self.items.remove(&other_id) {
+                            Some(charge) => self.l1_remove_item(&charge),
+                            _ => (),
+                        },
                         None => (),
-                        Some(other_id) => {
-                            self.items.remove(&other_id);
-                            ()
-                        }
                     },
                     _ => (),
                 };
                 true
             }
         }
+    }
+    fn l1_add_item(&mut self, item: Item) {
+        let item_id = item.get_id();
+        let item_state = item.get_state();
+        self.items.insert(item_id, item);
+        let item = self.items.get(&item_id).unwrap();
+        let is_citem_loaded = item.is_loaded();
+        notify_item_added(&item);
+        if is_citem_loaded {
+            notify_item_loaded(&item, &mut self.calc)
+        }
+        match item_state {
+            State::Offline => {
+                let states = vec![State::Offline];
+                l1_add_item_states(item, states, &self.src, &mut self.calc);
+            }
+            State::Online => {
+                let states = vec![State::Offline, State::Online];
+                l1_add_item_states(item, states, &self.src, &mut self.calc);
+            }
+            State::Active => {
+                let states = vec![State::Offline, State::Online, State::Active];
+                l1_add_item_states(item, states, &self.src, &mut self.calc);
+            }
+            State::Overload => {
+                let states = vec![State::Offline, State::Online, State::Active, State::Overload];
+                l1_add_item_states(item, states, &self.src, &mut self.calc);
+            }
+            _ => (),
+        }
+    }
+    fn l1_remove_item(&mut self, item: &Item) {
+        match item.get_state() {
+            State::Offline => {
+                let states = vec![State::Offline];
+                l1_remove_item_states(&item, states, &self.src, &mut self.calc);
+            }
+            State::Online => {
+                let states = vec![State::Online, State::Offline];
+                l1_remove_item_states(&item, states, &self.src, &mut self.calc);
+            }
+            State::Active => {
+                let states = vec![State::Active, State::Online, State::Offline];
+                l1_remove_item_states(&item, states, &self.src, &mut self.calc);
+            }
+            State::Overload => {
+                let states = vec![State::Overload, State::Active, State::Online, State::Offline];
+                l1_remove_item_states(&item, states, &self.src, &mut self.calc);
+            }
+            _ => (),
+        }
+        if item.is_loaded() {
+            notify_item_unloaded(&item, &mut self.calc)
+        }
+        notify_item_removed(&item);
     }
     // Attribute calculator
     pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: ReeInt) -> Result<ReeFloat> {
@@ -835,15 +835,65 @@ fn check_skill_level(level: ReeInt) -> Result<()> {
     };
     Ok(())
 }
-fn l2_add_item(item: &Item, calc: &mut CalcSvc) {
-    calc.add_item(item);
+
+fn l1_add_item_states(item: &Item, states: Vec<State>, src: &Src, calc: &mut CalcSvc) {
+    for state in states.iter() {
+        notify_state_activated(&item, state);
+    }
+    if item.is_loaded() {
+        for state in states.iter() {
+            notify_state_activated_loaded(&item, state);
+        }
+        let item_effect_datas = item.get_effect_datas().unwrap();
+        for eff_id in item_effect_datas.keys() {
+            let mut starting_effects = Vec::with_capacity(item_effect_datas.len());
+            match src.cache_handler.get_effect(eff_id) {
+                Some(e) if states.contains(&e.state) => starting_effects.push(e.clone()),
+                _ => (),
+            }
+            if !starting_effects.is_empty() {
+                notify_effects_started(item, &starting_effects, calc);
+            }
+        }
+    };
 }
-fn l2_remove_item(item: &Item, calc: &mut CalcSvc) {
-    calc.rm_item(item);
+fn l1_remove_item_states(item: &Item, states: Vec<State>, src: &Src, calc: &mut CalcSvc) {
+    if item.is_loaded() {
+        let item_effect_datas = item.get_effect_datas().unwrap();
+        for eff_id in item_effect_datas.keys() {
+            let mut stopping_effects = Vec::with_capacity(item_effect_datas.len());
+            match src.cache_handler.get_effect(eff_id) {
+                Some(e) if states.contains(&e.state) => stopping_effects.push(e.clone()),
+                _ => (),
+            }
+            if !stopping_effects.is_empty() {
+                notify_effects_stopped(item, &stopping_effects, calc);
+            }
+        }
+        for state in states.iter() {
+            notify_state_deactivated_loaded(&item, state);
+        }
+    };
+    for state in states.iter() {
+        notify_state_deactivated(&item, state);
+    }
 }
-fn l2_activate_item_state(item: &Item, state: State, calc: &mut CalcSvc) {
-    calc.activate_item_state(item, state);
+// Notifications to services
+fn notify_item_added(item: &Item) {}
+fn notify_item_removed(item: &Item) {}
+fn notify_state_activated(item: &Item, state: &State) {}
+fn notify_state_deactivated(item: &Item, state: &State) {}
+fn notify_item_loaded(item: &Item, calc: &mut CalcSvc) {
+    calc.item_loaded(item);
 }
-fn l2_deactivate_item_state(item: &Item, state: State, calc: &mut CalcSvc) {
-    calc.deactivate_item_state(item, state);
+fn notify_item_unloaded(item: &Item, calc: &mut CalcSvc) {
+    calc.item_unloaded(item);
+}
+fn notify_state_activated_loaded(item: &Item, state: &State) {}
+fn notify_state_deactivated_loaded(item: &Item, state: &State) {}
+fn notify_effects_started(item: &Item, effects: &Vec<Arc<ct::Effect>>, calc: &mut CalcSvc) {
+    //calc.effects_started(item, state);
+}
+fn notify_effects_stopped(item: &Item, effect: &Vec<Arc<ct::Effect>>, calc: &mut CalcSvc) {
+    //calc.effects_stopped(item, state);
 }

@@ -14,7 +14,7 @@ impl Subsystem {
             item_id,
             fit_id,
             type_id,
-            citem: src.cache_handler.get_item(type_id),
+            citem: src.cache_handler.get_item(&type_id),
         }
     }
     pub(crate) fn get_slot(&self) -> Option<ReeInt> {

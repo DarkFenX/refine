@@ -13,7 +13,7 @@ impl SwEffect {
         SwEffect {
             item_id,
             type_id,
-            citem: src.cache_handler.get_item(type_id),
+            citem: src.cache_handler.get_item(&type_id),
             state: State::Offline,
         }
     }
