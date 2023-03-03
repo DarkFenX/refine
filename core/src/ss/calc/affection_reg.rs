@@ -5,11 +5,45 @@ use crate::{consts::ModDomain, ss::item::Item, util::KeyedStorage, ReeId, ReeInt
 use super::affector::AffectorSpec;
 
 pub(in crate::ss::calc) struct AffectionRegister {
+    // All known affectee items
+    // Contains: HashSet<affectee item IDs>
     afees: HashSet<ReeId>,
+    // Items belonging to certain fit and domain
+    // Contains: KeyedStorage<(affectee fit ID, affectee domain), affectee item IDs>
     afees_dom: KeyedStorage<(ReeId, ModDomain), ReeId>,
+    // Items belonging to certain fit, domain and group
+    // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affectee item IDs>
     afees_dom_grp: KeyedStorage<(ReeId, ModDomain, ReeInt), ReeId>,
+    // Items belonging to certain fit and domain, and having certain skill requirement
+    // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affectee item IDs>
     afees_dom_srq: KeyedStorage<(ReeId, ModDomain, ReeInt), ReeId>,
+    // Owner-modifiable items which belong to certain fit and have certain skill requirement
+    // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affectee item IDs>
     afees_own_srq: KeyedStorage<(ReeId, ReeInt), ReeId>,
+    // Affector specs with modifiers which affect 'other' location are always
+    // stored here, regardless if they actually affect something or not
+    // Contains: KeyedStorage<affector item ID, affector specs>
+    afors_item_other: KeyedStorage<ReeId, AffectorSpec>,
+    // Affector specs which should affect only one item (ship, character or
+    // self), when this item is not registered as affectee
+    // Contains: KeyedStorage<affectee fit ID, affector specs>
+    afors_item_await: KeyedStorage<ReeId, AffectorSpec>,
+    // All active affector specs which affect one specific item (via ship,
+    // character, other reference or self) are kept here
+    // Contains: KeyedStorage<affectee item ID, affector specs>
+    afors_item_active: KeyedStorage<ReeId, AffectorSpec>,
+    // Affector specs influencing all items belonging to certain fit and domain
+    // Contains: KeyedStorage<(affectee fit ID, affectee domain), affector specs>
+    afors_dom: KeyedStorage<(ReeId, ModDomain), AffectorSpec>,
+    // Affector specs influencing items belonging to certain fit, domain and group
+    // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affector specs>
+    afors_dom_grp: KeyedStorage<(ReeId, ModDomain, ReeInt), AffectorSpec>,
+    // Affector specs influencing items belonging to certain fit and domain, and having certain skill requirement
+    // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affector specs>
+    afors_dom_srq: KeyedStorage<(ReeId, ModDomain, ReeInt), AffectorSpec>,
+    // Affector specs influencing owner-modifiable items belonging to certain fit and having certain skill requirement
+    // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affector specs>
+    afors_own_srq: KeyedStorage<(ReeId, ReeInt), AffectorSpec>,
 }
 impl AffectionRegister {
     pub(in crate::ss::calc) fn new() -> AffectionRegister {
@@ -19,6 +53,13 @@ impl AffectionRegister {
             afees_dom_grp: KeyedStorage::new(),
             afees_dom_srq: KeyedStorage::new(),
             afees_own_srq: KeyedStorage::new(),
+            afors_item_other: KeyedStorage::new(),
+            afors_item_await: KeyedStorage::new(),
+            afors_item_active: KeyedStorage::new(),
+            afors_dom: KeyedStorage::new(),
+            afors_dom_grp: KeyedStorage::new(),
+            afors_dom_srq: KeyedStorage::new(),
+            afors_own_srq: KeyedStorage::new(),
         }
     }
     // Query methods
