@@ -1,11 +1,8 @@
 use std::collections::HashSet;
 
-use crate::{
-    consts::{ModDomain, State},
-    ss::item::Item,
-    util::KeyedStorage,
-    ReeId, ReeInt,
-};
+use crate::{consts::ModDomain, ss::item::Item, util::KeyedStorage, ReeId, ReeInt};
+
+use super::affector::AffectorSpec;
 
 pub(in crate::ss::calc) struct AffectionRegister {
     afees: HashSet<ReeId>,
@@ -109,6 +106,6 @@ impl AffectionRegister {
             _ => (),
         };
     }
-    pub(in crate::ss::calc) fn activate_item_state(&mut self, item: &Item, state: State) {}
-    pub(in crate::ss::calc) fn deactivate_item_state(&mut self, item: &Item, state: State) {}
+    pub(in crate::ss::calc) fn reg_local_afor_spec(&mut self, afor_spec: AffectorSpec) {}
+    pub(in crate::ss::calc) fn unreg_local_afor_spec(&mut self, afor_spec: AffectorSpec) {}
 }

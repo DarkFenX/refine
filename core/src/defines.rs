@@ -1,7 +1,7 @@
 pub type ReeInt = i32;
 pub type ReeFloat = f64;
 pub type ReeId = u32;
-pub type ReeIdx = u16;
+pub type ReeIdx = usize;
 
 pub const REEINT_MAX: ReeInt = ReeInt::MAX;
 pub const REEINT_MIN: ReeInt = ReeInt::MIN;

@@ -1,8 +1,8 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
 
-use crate::{consts::State, ss::item::Item, ReeFloat, ReeId, ReeInt};
+use crate::{ct, ss::item::Item, ReeFloat, ReeId, ReeInt};
 
-use super::affection_reg::AffectionRegister;
+use super::{affection_reg::AffectionRegister, affector::AffectorSpec};
 
 pub(in crate::ss) struct CalcSvc {
     attrs: HashMap<ReeId, HashMap<ReeInt, ReeFloat>>,
@@ -26,10 +26,20 @@ impl CalcSvc {
         self.affection.unreg_afee(item);
         self.attrs.remove(&item.get_id());
     }
-    pub(in crate::ss) fn effects_started(&mut self, item: &Item, state: State) {
-        self.affection.activate_item_state(item, state);
+    pub(in crate::ss) fn effects_started(&mut self, item: &Item, effects: &Vec<Arc<ct::Effect>>) {
+        for effect in effects.iter() {
+            for (i, modifier) in effect.mods.iter().enumerate() {
+                let afor_spec = AffectorSpec::new(item.get_id(), effect.id, i);
+                self.affection.reg_local_afor_spec(afor_spec);
+            }
+        }
     }
-    pub(in crate::ss) fn effects_stopped(&mut self, item: &Item, state: State) {
-        self.affection.deactivate_item_state(item, state);
+    pub(in crate::ss) fn effects_stopped(&mut self, item: &Item, effects: &Vec<Arc<ct::Effect>>) {
+        for effect in effects.iter() {
+            for (i, modifier) in effect.mods.iter().enumerate() {
+                let afor_spec = AffectorSpec::new(item.get_id(), effect.id, i);
+                self.affection.unreg_local_afor_spec(afor_spec);
+            }
+        }
     }
 }
