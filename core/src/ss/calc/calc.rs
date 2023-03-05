@@ -70,5 +70,9 @@ fn calc_attr(item: &Item, attr_id: &ReeInt, src: &Src) -> Option<ReeFloat> {
         },
         None => return None,
     };
+    // let stacked = Vec::new();
+    // let stacked_penalized = Vec::new();
+    // let aggregate_min = Vec::new();
+    // let aggregate_max = Vec::new();
     Some(0.0)
 }
