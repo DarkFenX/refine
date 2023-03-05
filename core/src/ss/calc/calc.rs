@@ -1,6 +1,6 @@
 use std::{collections::HashMap, sync::Arc};
 
-use crate::{consts::TgtMode, ct, ss::item::Item, ReeFloat, ReeId, ReeInt};
+use crate::{consts::TgtMode, ct, ss::item::Item, ReeFloat, ReeId, ReeInt, Src};
 
 use super::affection_reg::AffectionRegister;
 
@@ -16,7 +16,21 @@ impl CalcSvc {
         }
     }
     // Query methods
-    pub(in crate::ss) fn get_modifications(&mut self, afectee_item: &Item, afectee_attr_id: ReeInt) {}
+    pub(in crate::ss) fn get_attr_val(&mut self, item: &Item, attr_id: &ReeInt, src: &Src) -> Option<ReeFloat> {
+        match self.attrs.get_mut(&item.get_id()) {
+            Some(attrs) => match attrs.get(attr_id) {
+                Some(v) => Some(*v),
+                None => match calc_attr(item, attr_id, src) {
+                    Some(v) => {
+                        attrs.insert(*attr_id, v);
+                        Some(v)
+                    }
+                    None => None,
+                },
+            },
+            None => None,
+        }
+    }
     // Maintenance methods
     pub(in crate::ss) fn item_loaded(&mut self, item: &Item) {
         self.attrs.insert(item.get_id(), HashMap::new());
@@ -36,4 +50,25 @@ impl CalcSvc {
             self.affection.unreg_local_effect(item, effect);
         }
     }
+    // Private methods
+}
+
+fn calc_attr(item: &Item, attr_id: &ReeInt, src: &Src) -> Option<ReeFloat> {
+    let attr = match src.cache_handler.get_attr(attr_id) {
+        Some(attr) => attr,
+        None => return None,
+    };
+    // Get base value; use on-iteme original attributes, or, if not specified, default attribute value.
+    // If both can't be fetched, consider it a failure
+    let val = match item.get_orig_attrs() {
+        Some(orig_attrs) => match orig_attrs.get(attr_id) {
+            Some(orig_val) => *orig_val,
+            None => match attr.def_val {
+                Some(def_val) => def_val,
+                None => return None,
+            },
+        },
+        None => return None,
+    };
+    Some(0.0)
 }

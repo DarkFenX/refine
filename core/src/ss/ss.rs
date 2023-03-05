@@ -770,8 +770,12 @@ impl SolarSystem {
         }
     }
     // Attribute calculator
-    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: ReeInt) -> Result<ReeFloat> {
-        Ok(0.0)
+    // TODO: refo this and child functions into Result<>
+    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Option<ReeFloat> {
+        match self.items.get(item_id) {
+            Some(i) => self.calc.get_attr_val(i, attr_id, &self.src),
+            None => None,
+        }
     }
 }
 
