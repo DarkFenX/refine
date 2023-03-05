@@ -177,7 +177,7 @@ impl Item {
     pub(crate) fn get_effect_datas(&self) -> Option<&HashMap<ReeInt, ct::ItemEffData>> {
         self.get_citem().map(|v| &v.effect_datas)
     }
-    pub(crate) fn get_domain(&self) -> Option<ModDomain> {
+    pub(crate) fn get_parent_domain(&self) -> Option<ModDomain> {
         match self {
             Item::Booster(_) => Some(ModDomain::Char),
             Item::Character(_) => None,
