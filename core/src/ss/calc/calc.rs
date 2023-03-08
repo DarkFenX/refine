@@ -17,19 +17,26 @@ impl CalcSvc {
     }
     // Query methods
     pub(in crate::ss) fn get_attr_val(&mut self, item: &Item, attr_id: &ReeInt, src: &Src) -> Option<ReeFloat> {
-        match self.attrs.get_mut(&item.get_id()) {
+        let item_id = item.get_id();
+        match self.attrs.get(&item_id) {
             Some(attrs) => match attrs.get(attr_id) {
-                Some(v) => Some(*v),
-                None => match calc_attr(item, attr_id, src) {
-                    Some(v) => {
-                        attrs.insert(*attr_id, v);
-                        Some(v)
-                    }
-                    None => None,
-                },
+                Some(v) => return Some(*v),
+                _ => (),
             },
-            None => None,
-        }
+            _ => (),
+        };
+        let val = match self.calc_attr(item, attr_id, src) {
+            Some(v) => v,
+            _ => return None,
+        };
+        match self.attrs.get_mut(&item_id) {
+            Some(attrs) => {
+                attrs.insert(*attr_id, val);
+                ();
+            }
+            _ => (),
+        };
+        Some(val)
     }
     // Maintenance methods
     pub(in crate::ss) fn item_loaded(&mut self, item: &Item) {
@@ -51,28 +58,28 @@ impl CalcSvc {
         }
     }
     // Private methods
-}
-
-fn calc_attr(item: &Item, attr_id: &ReeInt, src: &Src) -> Option<ReeFloat> {
-    let attr = match src.cache_handler.get_attr(attr_id) {
-        Some(attr) => attr,
-        None => return None,
-    };
-    // Get base value; use on-iteme original attributes, or, if not specified, default attribute value.
-    // If both can't be fetched, consider it a failure
-    let val = match item.get_orig_attrs() {
-        Some(orig_attrs) => match orig_attrs.get(attr_id) {
-            Some(orig_val) => *orig_val,
-            None => match attr.def_val {
-                Some(def_val) => def_val,
-                None => return None,
+    fn calc_attr(&mut self, item: &Item, attr_id: &ReeInt, src: &Src) -> Option<ReeFloat> {
+        let attr = match src.cache_handler.get_attr(attr_id) {
+            Some(attr) => attr,
+            None => return None,
+        };
+        // Get base value; use on-iteme original attributes, or, if not specified, default attribute value.
+        // If both can't be fetched, consider it a failure
+        let val = match item.get_orig_attrs() {
+            Some(orig_attrs) => match orig_attrs.get(attr_id) {
+                Some(orig_val) => *orig_val,
+                None => match attr.def_val {
+                    Some(def_val) => def_val,
+                    None => return None,
+                },
             },
-        },
-        None => return None,
-    };
-    // let stacked = Vec::new();
-    // let stacked_penalized = Vec::new();
-    // let aggregate_min = Vec::new();
-    // let aggregate_max = Vec::new();
-    Some(0.0)
+            None => return None,
+        };
+        // let stacked = Vec::new();
+        // let stacked_penalized = Vec::new();
+        // let aggregate_min = Vec::new();
+        // let aggregate_max = Vec::new();
+        Some(0.0)
+    }
+    //fn get_modifications
 }
