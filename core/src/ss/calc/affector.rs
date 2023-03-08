@@ -1,6 +1,6 @@
 use crate::{ReeId, ReeIdx, ReeInt};
 
-#[derive(Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Eq, Hash, PartialEq)]
 pub(in crate::ss::calc) struct AffectorSpec {
     item_id: ReeId,
     effect_id: ReeInt,

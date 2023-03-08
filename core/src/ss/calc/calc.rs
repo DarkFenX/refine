@@ -1,6 +1,11 @@
 use std::{collections::HashMap, sync::Arc};
 
-use crate::{consts::TgtMode, ct, ss::item::Item, ReeFloat, ReeId, ReeInt, Src};
+use crate::{
+    consts::TgtMode,
+    ct,
+    ss::{calc::modification::Modification, item::Item},
+    ReeFloat, ReeId, ReeInt, Src,
+};
 
 use super::affection_reg::AffectionRegister;
 
@@ -81,5 +86,9 @@ impl CalcSvc {
         // let aggregate_max = Vec::new();
         Some(0.0)
     }
-    //fn get_modifications
+    fn get_modifications(&mut self, item: &Item, attr_id: ReeInt) -> Vec<Modification> {
+        let mut mods = Vec::new();
+        //let specs = self.affection.get_affector_specs()
+        mods
+    }
 }

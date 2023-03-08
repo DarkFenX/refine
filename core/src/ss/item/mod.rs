@@ -177,6 +177,25 @@ impl Item {
     pub(crate) fn get_effect_datas(&self) -> Option<&HashMap<ReeInt, ct::ItemEffData>> {
         self.get_citem().map(|v| &v.effect_datas)
     }
+    pub(crate) fn get_top_domain(&self) -> Option<ModDomain> {
+        match self {
+            Item::Booster(_) => None,
+            Item::Character(_) => Some(ModDomain::Char),
+            Item::Charge(_) => None,
+            Item::Drone(_) => None,
+            Item::Fighter(_) => None,
+            Item::Implant(_) => None,
+            Item::ModuleHigh(_) => None,
+            Item::ModuleLow(_) => None,
+            Item::ModuleMid(_) => None,
+            Item::Rig(_) => None,
+            Item::Ship(_) => Some(ModDomain::Ship),
+            Item::Skill(_) => None,
+            Item::Stance(_) => None,
+            Item::Subsystem(_) => None,
+            Item::SwEffect(_) => None,
+        }
+    }
     pub(crate) fn get_parent_domain(&self) -> Option<ModDomain> {
         match self {
             Item::Booster(_) => Some(ModDomain::Char),
