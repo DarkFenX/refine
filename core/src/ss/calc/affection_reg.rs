@@ -118,95 +118,87 @@ impl AffectionRegister {
         ret_specs
     }
     // Maintenance methods
-    pub(in crate::ss::calc) fn reg_afee(&mut self, item: &Item) {
-        let item_id = item.get_id();
-        self.afees.insert(item_id);
-        match item {
-            Item::Ship(s) => self.afees_topdom.add_entry((s.fit_id, ModDomain::Ship), item_id),
-            Item::Character(c) => self.afees_topdom.add_entry((c.fit_id, ModDomain::Char), item_id),
+    pub(in crate::ss::calc) fn reg_afee(&mut self, afee_item: &Item) {
+        let afee_item_id = afee_item.get_id();
+        let afee_fit_id = afee_item.get_fit_id();
+        let afee_topdom = afee_item.get_top_domain();
+        let afee_pardom = afee_item.get_parent_domain();
+        let afee_grp_id = afee_item.get_group_id();
+        let afee_srqs = afee_item.get_skill_reqs();
+        self.afees.insert(afee_item_id);
+        match (afee_fit_id, afee_topdom) {
+            (Some(fid), Some(td)) => self.afees_topdom.add_entry((fid, td), afee_item_id),
             _ => (),
         }
-        match item.get_fit_id() {
-            Some(fit_id) => {
-                let domain = item.get_parent_domain();
-                let group_id = item.get_group_id();
-                let skill_reqs = item.get_skill_reqs();
-                match domain {
-                    Some(d) => {
-                        self.afees_pardom.add_entry((fit_id, d), item_id);
-                        match group_id {
-                            Some(gid) => self.afees_pardom_grp.add_entry((fit_id, d, gid), item_id),
-                            _ => (),
-                        };
-                        match skill_reqs {
-                            Some(srq) => {
-                                for skill_id in srq.keys() {
-                                    self.afees_pardom_srq.add_entry((fit_id, d, *skill_id), item_id)
-                                }
-                            }
-                            _ => (),
-                        };
-                    }
-                    _ => (),
-                };
-                if item.is_owner_modifiable() {
-                    match skill_reqs {
-                        Some(srq) => {
-                            for skill_id in srq.keys() {
-                                self.afees_own_srq.add_entry((fit_id, *skill_id), item_id)
-                            }
-                        }
-                        _ => (),
-                    };
+        match (afee_fit_id, afee_pardom) {
+            (Some(fid), Some(pd)) => self.afees_pardom.add_entry((fid, pd), afee_item_id),
+            _ => (),
+        }
+        match (afee_fit_id, afee_pardom, afee_grp_id) {
+            (Some(fid), Some(pd), Some(gid)) => {
+                self.afees_pardom_grp.add_entry((fid, pd, gid), afee_item_id);
+            }
+            _ => (),
+        }
+        match (afee_fit_id, afee_pardom, afee_srqs) {
+            (Some(fid), Some(pd), Some(srqs)) => {
+                for skill_type_id in srqs.keys() {
+                    self.afees_pardom_srq.add_entry((fid, pd, *skill_type_id), afee_item_id);
                 }
             }
             _ => (),
-        };
+        }
+        if afee_item.is_owner_modifiable() {
+            match (afee_fit_id, afee_srqs) {
+                (Some(fid), Some(srqs)) => {
+                    for skill_type_id in srqs.keys() {
+                        self.afees_own_srq.add_entry((fid, *skill_type_id), afee_item_id);
+                    }
+                }
+                _ => (),
+            }
+        }
     }
-    pub(in crate::ss::calc) fn unreg_afee(&mut self, item: &Item) {
-        let item_id = item.get_id();
-        self.afees.remove(&item_id);
-        match item {
-            Item::Ship(s) => self.afees_topdom.rm_entry(&(s.fit_id, ModDomain::Ship), &item_id),
-            Item::Character(c) => self.afees_topdom.rm_entry(&(c.fit_id, ModDomain::Char), &item_id),
+    pub(in crate::ss::calc) fn unreg_afee(&mut self, afee_item: &Item) {
+        let afee_item_id = afee_item.get_id();
+        let afee_fit_id = afee_item.get_fit_id();
+        let afee_topdom = afee_item.get_top_domain();
+        let afee_pardom = afee_item.get_parent_domain();
+        let afee_grp_id = afee_item.get_group_id();
+        let afee_srqs = afee_item.get_skill_reqs();
+        self.afees.insert(afee_item_id);
+        match (afee_fit_id, afee_topdom) {
+            (Some(fid), Some(td)) => self.afees_topdom.rm_entry(&(fid, td), &afee_item_id),
             _ => (),
         }
-        match item.get_fit_id() {
-            Some(fit_id) => {
-                let domain = item.get_parent_domain();
-                let group_id = item.get_group_id();
-                let skill_reqs = item.get_skill_reqs();
-                match domain {
-                    Some(d) => {
-                        self.afees_pardom.rm_entry(&(fit_id, d), &item_id);
-                        match group_id {
-                            Some(gid) => self.afees_pardom_grp.rm_entry(&(fit_id, d, gid), &item_id),
-                            _ => (),
-                        };
-                        match skill_reqs {
-                            Some(srq) => {
-                                for skill_id in srq.keys() {
-                                    self.afees_pardom_srq.rm_entry(&(fit_id, d, *skill_id), &item_id)
-                                }
-                            }
-                            _ => (),
-                        };
-                    }
-                    _ => (),
-                };
-                if item.is_owner_modifiable() {
-                    match skill_reqs {
-                        Some(srq) => {
-                            for skill_id in srq.keys() {
-                                self.afees_own_srq.rm_entry(&(fit_id, *skill_id), &item_id)
-                            }
-                        }
-                        _ => (),
-                    };
+        match (afee_fit_id, afee_pardom) {
+            (Some(fid), Some(pd)) => self.afees_pardom.rm_entry(&(fid, pd), &afee_item_id),
+            _ => (),
+        }
+        match (afee_fit_id, afee_pardom, afee_grp_id) {
+            (Some(fid), Some(pd), Some(gid)) => {
+                self.afees_pardom_grp.rm_entry(&(fid, pd, gid), &afee_item_id);
+            }
+            _ => (),
+        }
+        match (afee_fit_id, afee_pardom, afee_srqs) {
+            (Some(fid), Some(pd), Some(srqs)) => {
+                for skill_type_id in srqs.keys() {
+                    self.afees_pardom_srq.rm_entry(&(fid, pd, *skill_type_id), &afee_item_id);
                 }
             }
             _ => (),
-        };
+        }
+        if afee_item.is_owner_modifiable() {
+            match (afee_fit_id, afee_srqs) {
+                (Some(fid), Some(srqs)) => {
+                    for skill_type_id in srqs.keys() {
+                        self.afees_own_srq.rm_entry(&(fid, *skill_type_id), &afee_item_id);
+                    }
+                }
+                _ => (),
+            }
+        }
     }
     pub(in crate::ss::calc) fn reg_local_effect(&mut self, item: &Item, effect: &ct::Effect) {
         for (i, modifier) in effect.mods.iter().enumerate() {
