@@ -1,4 +1,8 @@
-use std::{collections::HashSet, hash::Hash};
+use std::{
+    collections::{HashMap, HashSet},
+    hash::Hash,
+    sync::Arc,
+};
 
 use crate::{
     consts::{ModAfeeFilter, ModDomain},
@@ -71,9 +75,52 @@ impl AffectionRegister {
         }
     }
     // Query methods
-    pub(in crate::ss::calc) fn get_local_affectee_items(&mut self, affector_spec: ReeId) {}
-    pub(in crate::ss::calc) fn get_projected_affectee_items(&mut self, affector_spec: ReeId, tgt_items: ReeId) {}
-    pub(in crate::ss::calc) fn get_affector_specs(&self, afee_item: &Item) -> Vec<AffectorSpec> {
+    pub(in crate::ss::calc) fn get_local_afee_items(
+        &mut self,
+        afor_spec: &AffectorSpec,
+        items: &HashMap<ReeId, Item>,
+    ) -> Option<Vec<ReeId>> {
+        let afor_item = match items.get(&afor_spec.item_id) {
+            Some(i) => i,
+            None => return None,
+        };
+        let afor_fit_id = afor_item.get_fit_id();
+        let afor_mod = match afor_spec.get_modifier() {
+            Some(am) => am,
+            None => return None,
+        };
+        let mut afees = Vec::new();
+        match (&afor_mod.afee_filter, afor_fit_id) {
+            (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
+                (ModDomain::Item, _) => afees.push(afor_spec.item_id),
+                (ModDomain::Char, Some(fid)) => {
+                    extend_vec_from_storage(&mut afees, &self.afees_topdom, &(fid, ModDomain::Char))
+                }
+                (ModDomain::Ship, Some(fid)) => {
+                    extend_vec_from_storage(&mut afees, &self.afees_topdom, &(fid, ModDomain::Ship))
+                }
+                (ModDomain::Other, _) => match afor_item.get_other() {
+                    Some(oid) => afees.push(oid),
+                    _ => (),
+                },
+                _ => (),
+            },
+            (ModAfeeFilter::Loc(d), Some(fid)) => extend_vec_from_storage(&mut afees, &self.afees_pardom, &(fid, *d)),
+            (ModAfeeFilter::LocGrp(d, gid), Some(fid)) => {
+                extend_vec_from_storage(&mut afees, &self.afees_pardom_grp, &(fid, *d, *gid))
+            }
+            (ModAfeeFilter::LocSrq(d, sid), Some(fid)) => {
+                extend_vec_from_storage(&mut afees, &self.afees_pardom_srq, &(fid, *d, *sid))
+            }
+            (ModAfeeFilter::OwnSrq(_, sid), Some(fid)) => {
+                extend_vec_from_storage(&mut afees, &self.afees_own_srq, &(fid, *sid))
+            }
+            _ => (),
+        }
+        Some(afees)
+    }
+    pub(in crate::ss::calc) fn get_projected_afee_items(&mut self, afor_spec: ReeId, tgt_items: ReeId) {}
+    pub(in crate::ss::calc) fn get_afor_specs(&self, afee_item: &Item) -> Vec<AffectorSpec> {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
         let afee_topdom = afee_item.get_top_domain();
@@ -81,29 +128,29 @@ impl AffectionRegister {
         let afee_grp_id = afee_item.get_group_id();
         let afee_srqs = afee_item.get_skill_reqs();
         let mut afors = Vec::new();
-        extend_afor_vec(&mut afors, &self.afors_direct, &afee_item_id);
+        extend_vec_from_storage(&mut afors, &self.afors_direct, &afee_item_id);
         match (afee_fit_id, afee_topdom) {
-            (Some(fid), Some(td)) => extend_afor_vec(&mut afors, &self.afors_topdom, &(fid, td)),
+            (Some(fid), Some(td)) => extend_vec_from_storage(&mut afors, &self.afors_topdom, &(fid, td)),
             _ => (),
         }
         match afee_item.get_other() {
-            Some(o) => extend_afor_vec(&mut afors, &self.afors_other, &o),
+            Some(o) => extend_vec_from_storage(&mut afors, &self.afors_other, &o),
             _ => (),
         }
         match (afee_fit_id, afee_pardom) {
-            (Some(fid), Some(pd)) => extend_afor_vec(&mut afors, &self.afors_pardom, &(fid, pd)),
+            (Some(fid), Some(pd)) => extend_vec_from_storage(&mut afors, &self.afors_pardom, &(fid, pd)),
             _ => (),
         }
         match (afee_fit_id, afee_pardom, afee_grp_id) {
             (Some(fid), Some(pd), Some(gid)) => {
-                extend_afor_vec(&mut afors, &self.afors_pardom_grp, &(fid, pd, gid));
+                extend_vec_from_storage(&mut afors, &self.afors_pardom_grp, &(fid, pd, gid));
             }
             _ => (),
         }
         match (afee_fit_id, afee_pardom, afee_srqs) {
             (Some(fid), Some(pd), Some(srqs)) => {
                 for skill_type_id in srqs.keys() {
-                    extend_afor_vec(&mut afors, &self.afors_pardom_srq, &(fid, pd, *skill_type_id));
+                    extend_vec_from_storage(&mut afors, &self.afors_pardom_srq, &(fid, pd, *skill_type_id));
                 }
             }
             _ => (),
@@ -112,7 +159,7 @@ impl AffectionRegister {
             match (afee_fit_id, afee_srqs) {
                 (Some(fid), Some(srqs)) => {
                     for skill_type_id in srqs.keys() {
-                        extend_afor_vec(&mut afors, &self.afors_own_srq, &(fid, *skill_type_id));
+                        extend_vec_from_storage(&mut afors, &self.afors_own_srq, &(fid, *skill_type_id));
                     }
                 }
                 _ => (),
@@ -204,12 +251,12 @@ impl AffectionRegister {
             }
         }
     }
-    pub(in crate::ss::calc) fn reg_local_effect(&mut self, afor_item: &Item, effect: &ct::Effect) {
-        for (i, modifier) in effect.mods.iter().enumerate() {
+    pub(in crate::ss::calc) fn reg_local_effect(&mut self, afor_item: &Item, effect: &Arc<ct::Effect>) {
+        for (i, afor_mod) in effect.mods.iter().enumerate() {
             let afor_item_id = afor_item.get_id();
             let afor_fit_id = afor_item.get_fit_id();
-            let afor_spec = AffectorSpec::new(afor_item_id, effect.id, i);
-            match (&modifier.afee_filter, afor_fit_id) {
+            let afor_spec = AffectorSpec::new(afor_item_id, effect.clone(), i);
+            match (&afor_mod.afee_filter, afor_fit_id) {
                 (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
                     (ModDomain::Item, _) => self.afors_direct.add_entry(afor_item_id, afor_spec),
                     (ModDomain::Char, Some(fid)) => self.afors_topdom.add_entry((fid, ModDomain::Char), afor_spec),
@@ -229,12 +276,12 @@ impl AffectionRegister {
             }
         }
     }
-    pub(in crate::ss::calc) fn unreg_local_effect(&mut self, afor_item: &Item, effect: &ct::Effect) {
-        for (i, modifier) in effect.mods.iter().enumerate() {
+    pub(in crate::ss::calc) fn unreg_local_effect(&mut self, afor_item: &Item, effect: &Arc<ct::Effect>) {
+        for (i, afor_mod) in effect.mods.iter().enumerate() {
             let afor_item_id = afor_item.get_id();
             let afor_fit_id = afor_item.get_fit_id();
-            let afor_spec = AffectorSpec::new(afor_item_id, effect.id, i);
-            match (&modifier.afee_filter, afor_fit_id) {
+            let afor_spec = AffectorSpec::new(afor_item_id, effect.clone(), i);
+            match (&afor_mod.afee_filter, afor_fit_id) {
                 (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
                     (ModDomain::Item, _) => self.afors_direct.rm_entry(&afor_item_id, &afor_spec),
                     (ModDomain::Char, Some(fid)) => self.afors_topdom.rm_entry(&(fid, ModDomain::Char), &afor_spec),
@@ -256,12 +303,13 @@ impl AffectionRegister {
     }
 }
 
-fn extend_afor_vec<K>(vec: &mut Vec<AffectorSpec>, storage: &KeyedStorage<K, AffectorSpec>, key: &K)
+fn extend_vec_from_storage<K, V>(vec: &mut Vec<V>, storage: &KeyedStorage<K, V>, key: &K)
 where
     K: Eq + Hash,
+    V: Eq + Hash + Clone,
 {
     match storage.get(key) {
-        Some(v) => vec.extend(v.iter()),
+        Some(v) => vec.extend(v.iter().map(|v| v.clone())),
         _ => (),
     }
 }
