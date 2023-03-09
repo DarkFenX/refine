@@ -221,6 +221,25 @@ impl Item {
     pub(in crate::ss) fn get_skill_reqs(&self) -> Option<&HashMap<ReeInt, ReeInt>> {
         self.get_citem().map(|v| &v.srqs)
     }
+    pub(in crate::ss) fn get_other(&self) -> Option<ReeId> {
+        match self {
+            Item::Booster(_) => None,
+            Item::Character(_) => None,
+            Item::Charge(i) => Some(i.cont),
+            Item::Drone(_) => None,
+            Item::Fighter(_) => None,
+            Item::Implant(_) => None,
+            Item::ModuleHigh(i) => i.charge,
+            Item::ModuleLow(i) => i.charge,
+            Item::ModuleMid(i) => i.charge,
+            Item::Rig(_) => None,
+            Item::Ship(_) => None,
+            Item::Skill(_) => None,
+            Item::Stance(_) => None,
+            Item::Subsystem(_) => None,
+            Item::SwEffect(_) => None,
+        }
+    }
     pub(in crate::ss) fn is_owner_modifiable(&self) -> bool {
         match self {
             Item::Booster(_) => false,

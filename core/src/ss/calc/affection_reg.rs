@@ -80,27 +80,30 @@ impl AffectionRegister {
         let afee_pardom = afee_item.get_parent_domain();
         let afee_grp_id = afee_item.get_group_id();
         let afee_srqs = afee_item.get_skill_reqs();
-        let mut ret_specs = Vec::new();
-        extend_afor_vec(&mut ret_specs, &self.afors_direct, &afee_item_id);
+        let mut afors = Vec::new();
+        extend_afor_vec(&mut afors, &self.afors_direct, &afee_item_id);
         match (afee_fit_id, afee_topdom) {
-            (Some(fid), Some(td)) => extend_afor_vec(&mut ret_specs, &self.afors_topdom, &(fid, td)),
+            (Some(fid), Some(td)) => extend_afor_vec(&mut afors, &self.afors_topdom, &(fid, td)),
             _ => (),
         }
-        // TODO: add afors_other fetching
+        match afee_item.get_other() {
+            Some(o) => extend_afor_vec(&mut afors, &self.afors_other, &o),
+            _ => (),
+        }
         match (afee_fit_id, afee_pardom) {
-            (Some(fid), Some(pd)) => extend_afor_vec(&mut ret_specs, &self.afors_pardom, &(fid, pd)),
+            (Some(fid), Some(pd)) => extend_afor_vec(&mut afors, &self.afors_pardom, &(fid, pd)),
             _ => (),
         }
         match (afee_fit_id, afee_pardom, afee_grp_id) {
             (Some(fid), Some(pd), Some(gid)) => {
-                extend_afor_vec(&mut ret_specs, &self.afors_pardom_grp, &(fid, pd, gid));
+                extend_afor_vec(&mut afors, &self.afors_pardom_grp, &(fid, pd, gid));
             }
             _ => (),
         }
         match (afee_fit_id, afee_pardom, afee_srqs) {
             (Some(fid), Some(pd), Some(srqs)) => {
                 for skill_type_id in srqs.keys() {
-                    extend_afor_vec(&mut ret_specs, &self.afors_pardom_srq, &(fid, pd, *skill_type_id));
+                    extend_afor_vec(&mut afors, &self.afors_pardom_srq, &(fid, pd, *skill_type_id));
                 }
             }
             _ => (),
@@ -109,13 +112,13 @@ impl AffectionRegister {
             match (afee_fit_id, afee_srqs) {
                 (Some(fid), Some(srqs)) => {
                     for skill_type_id in srqs.keys() {
-                        extend_afor_vec(&mut ret_specs, &self.afors_own_srq, &(fid, *skill_type_id));
+                        extend_afor_vec(&mut afors, &self.afors_own_srq, &(fid, *skill_type_id));
                     }
                 }
                 _ => (),
             }
         }
-        ret_specs
+        afors
     }
     // Maintenance methods
     pub(in crate::ss::calc) fn reg_afee(&mut self, afee_item: &Item) {
@@ -184,7 +187,8 @@ impl AffectionRegister {
         match (afee_fit_id, afee_pardom, afee_srqs) {
             (Some(fid), Some(pd), Some(srqs)) => {
                 for skill_type_id in srqs.keys() {
-                    self.afees_pardom_srq.rm_entry(&(fid, pd, *skill_type_id), &afee_item_id);
+                    self.afees_pardom_srq
+                        .rm_entry(&(fid, pd, *skill_type_id), &afee_item_id);
                 }
             }
             _ => (),
