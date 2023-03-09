@@ -2,14 +2,14 @@ use std::{fmt, sync::Arc};
 
 use crate::{ct, util::Named, ReeId, ReeInt, Src};
 
-pub(crate) struct Stance {
-    pub(crate) item_id: ReeId,
-    pub(crate) fit_id: ReeId,
-    pub(crate) type_id: ReeInt,
-    pub(crate) citem: Option<Arc<ct::Item>>,
+pub(in crate::ss) struct Stance {
+    pub(in crate::ss) item_id: ReeId,
+    pub(in crate::ss) fit_id: ReeId,
+    pub(in crate::ss) type_id: ReeInt,
+    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
 }
 impl Stance {
-    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Stance {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Stance {
         Stance {
             item_id,
             fit_id,

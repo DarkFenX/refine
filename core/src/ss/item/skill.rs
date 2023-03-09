@@ -2,15 +2,15 @@ use std::{fmt, sync::Arc};
 
 use crate::{ct, util::Named, ReeId, ReeInt, Src};
 
-pub(crate) struct Skill {
-    pub(crate) item_id: ReeId,
-    pub(crate) fit_id: ReeId,
-    pub(crate) type_id: ReeInt,
-    pub(crate) citem: Option<Arc<ct::Item>>,
-    pub(crate) level: ReeInt,
+pub(in crate::ss) struct Skill {
+    pub(in crate::ss) item_id: ReeId,
+    pub(in crate::ss) fit_id: ReeId,
+    pub(in crate::ss) type_id: ReeInt,
+    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
+    pub(in crate::ss) level: ReeInt,
 }
 impl Skill {
-    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Skill {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Skill {
         Skill {
             item_id,
             fit_id,

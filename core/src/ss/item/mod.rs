@@ -1,18 +1,18 @@
 use std::{collections::HashMap, sync::Arc};
 
-pub(crate) use booster::Booster;
-pub(crate) use character::Character;
-pub(crate) use charge::Charge;
-pub(crate) use drone::Drone;
-pub(crate) use fighter::Fighter;
-pub(crate) use implant::Implant;
-pub(crate) use module::Module;
-pub(crate) use rig::Rig;
-pub(crate) use ship::Ship;
-pub(crate) use skill::Skill;
-pub(crate) use stance::Stance;
-pub(crate) use subsystem::Subsystem;
-pub(crate) use sw_effect::SwEffect;
+pub(in crate::ss) use booster::Booster;
+pub(in crate::ss) use character::Character;
+pub(in crate::ss) use charge::Charge;
+pub(in crate::ss) use drone::Drone;
+pub(in crate::ss) use fighter::Fighter;
+pub(in crate::ss) use implant::Implant;
+pub(in crate::ss) use module::Module;
+pub(in crate::ss) use rig::Rig;
+pub(in crate::ss) use ship::Ship;
+pub(in crate::ss) use skill::Skill;
+pub(in crate::ss) use stance::Stance;
+pub(in crate::ss) use subsystem::Subsystem;
+pub(in crate::ss) use sw_effect::SwEffect;
 
 use crate::{
     consts::{ModDomain, State},
@@ -33,7 +33,7 @@ mod stance;
 mod subsystem;
 mod sw_effect;
 
-pub(crate) enum Item {
+pub(in crate::ss) enum Item {
     Booster(Booster),
     Character(Character),
     Charge(Charge),
@@ -51,7 +51,7 @@ pub(crate) enum Item {
     SwEffect(SwEffect),
 }
 impl Item {
-    pub(crate) fn get_id(&self) -> ReeId {
+    pub(in crate::ss) fn get_id(&self) -> ReeId {
         match self {
             Item::Booster(i) => i.item_id,
             Item::Character(i) => i.item_id,
@@ -70,7 +70,7 @@ impl Item {
             Item::SwEffect(i) => i.item_id,
         }
     }
-    pub(crate) fn get_fit_id(&self) -> Option<ReeId> {
+    pub(in crate::ss) fn get_fit_id(&self) -> Option<ReeId> {
         match self {
             Item::Booster(i) => Some(i.fit_id),
             Item::Character(i) => Some(i.fit_id),
@@ -89,7 +89,7 @@ impl Item {
             Item::SwEffect(_) => None,
         }
     }
-    pub(crate) fn get_type_id(&self) -> ReeInt {
+    pub(in crate::ss) fn get_type_id(&self) -> ReeInt {
         match self {
             Item::Booster(i) => i.type_id,
             Item::Character(i) => i.type_id,
@@ -108,7 +108,7 @@ impl Item {
             Item::SwEffect(i) => i.type_id,
         }
     }
-    pub(crate) fn get_state(&self) -> State {
+    pub(in crate::ss) fn get_state(&self) -> State {
         match self {
             Item::Booster(i) => i.state,
             Item::Character(_) => State::Offline,
@@ -127,7 +127,7 @@ impl Item {
             Item::SwEffect(_) => State::Offline,
         }
     }
-    pub(crate) fn reload_cached_item(&mut self, src: &Arc<Src>) {
+    pub(in crate::ss) fn reload_cached_item(&mut self, src: &Arc<Src>) {
         let type_id = self.get_type_id();
         let cached_item = src.cache_handler.get_item(&type_id);
         match self {
@@ -148,7 +148,7 @@ impl Item {
             Item::SwEffect(i) => i.citem = cached_item,
         }
     }
-    pub(crate) fn get_citem(&self) -> Option<&Arc<ct::Item>> {
+    pub(in crate::ss) fn get_citem(&self) -> Option<&Arc<ct::Item>> {
         match self {
             Item::Booster(i) => i.citem.as_ref(),
             Item::Character(i) => i.citem.as_ref(),
@@ -167,17 +167,17 @@ impl Item {
             Item::SwEffect(i) => i.citem.as_ref(),
         }
     }
-    pub(crate) fn is_loaded(&self) -> bool {
+    pub(in crate::ss) fn is_loaded(&self) -> bool {
         self.get_citem().is_some()
     }
     // Calculator-specific getters
-    pub(crate) fn get_orig_attrs(&self) -> Option<&HashMap<ReeInt, ReeFloat>> {
+    pub(in crate::ss) fn get_orig_attrs(&self) -> Option<&HashMap<ReeInt, ReeFloat>> {
         self.get_citem().map(|v| &v.attr_vals)
     }
-    pub(crate) fn get_effect_datas(&self) -> Option<&HashMap<ReeInt, ct::ItemEffData>> {
+    pub(in crate::ss) fn get_effect_datas(&self) -> Option<&HashMap<ReeInt, ct::ItemEffData>> {
         self.get_citem().map(|v| &v.effect_datas)
     }
-    pub(crate) fn get_top_domain(&self) -> Option<ModDomain> {
+    pub(in crate::ss) fn get_top_domain(&self) -> Option<ModDomain> {
         match self {
             Item::Booster(_) => None,
             Item::Character(_) => Some(ModDomain::Char),
@@ -196,7 +196,7 @@ impl Item {
             Item::SwEffect(_) => None,
         }
     }
-    pub(crate) fn get_parent_domain(&self) -> Option<ModDomain> {
+    pub(in crate::ss) fn get_parent_domain(&self) -> Option<ModDomain> {
         match self {
             Item::Booster(_) => Some(ModDomain::Char),
             Item::Character(_) => None,
@@ -215,13 +215,13 @@ impl Item {
             Item::SwEffect(_) => None,
         }
     }
-    pub(crate) fn get_group_id(&self) -> Option<ReeInt> {
+    pub(in crate::ss) fn get_group_id(&self) -> Option<ReeInt> {
         self.get_citem().map(|v| v.grp_id)
     }
-    pub(crate) fn get_skill_reqs(&self) -> Option<&HashMap<ReeInt, ReeInt>> {
+    pub(in crate::ss) fn get_skill_reqs(&self) -> Option<&HashMap<ReeInt, ReeInt>> {
         self.get_citem().map(|v| &v.srqs)
     }
-    pub(crate) fn is_owner_modifiable(&self) -> bool {
+    pub(in crate::ss) fn is_owner_modifiable(&self) -> bool {
         match self {
             Item::Booster(_) => false,
             Item::Character(_) => false,

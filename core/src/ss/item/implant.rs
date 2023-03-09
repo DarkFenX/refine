@@ -7,15 +7,15 @@ use crate::{
     ReeId, ReeInt, Src,
 };
 
-pub(crate) struct Implant {
-    pub(crate) item_id: ReeId,
-    pub(crate) fit_id: ReeId,
-    pub(crate) type_id: ReeInt,
-    pub(crate) citem: Option<Arc<ct::Item>>,
-    pub(crate) state: State,
+pub(in crate::ss) struct Implant {
+    pub(in crate::ss) item_id: ReeId,
+    pub(in crate::ss) fit_id: ReeId,
+    pub(in crate::ss) type_id: ReeInt,
+    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
+    pub(in crate::ss) state: State,
 }
 impl Implant {
-    pub(crate) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Implant {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Implant {
         Implant {
             item_id,
             fit_id,
@@ -24,7 +24,7 @@ impl Implant {
             state: State::Offline,
         }
     }
-    pub(crate) fn get_slot(&self) -> Option<ReeInt> {
+    pub(in crate::ss) fn get_slot(&self) -> Option<ReeInt> {
         match &self.citem {
             None => None,
             Some(i) => match i.attr_vals.get(&attrs::IMPLANTNESS) {
@@ -33,13 +33,13 @@ impl Implant {
             },
         }
     }
-    pub(crate) fn get_bool_state(&self) -> bool {
+    pub(in crate::ss) fn get_bool_state(&self) -> bool {
         match self.state {
             State::Ghost => false,
             _ => true,
         }
     }
-    pub(crate) fn set_bool_state(&mut self, state: bool) {
+    pub(in crate::ss) fn set_bool_state(&mut self, state: bool) {
         self.state = match state {
             true => State::Offline,
             false => State::Ghost,
