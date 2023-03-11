@@ -27,6 +27,12 @@ pub(crate) mod itemcats {
 pub(crate) mod attrs {
     use crate::ReeInt;
 
+    // Fitting resource-related
+    pub(crate) const CPU: ReeInt = 50;
+    pub(crate) const CPU_OUTPUT: ReeInt = 48;
+    pub(crate) const POWER: ReeInt = 30;
+    pub(crate) const POWER_OUTPUT: ReeInt = 11;
+    // Slot-related
     pub(crate) const BOOSTERNESS: ReeInt = 1087;
     pub(crate) const IMPLANTNESS: ReeInt = 331;
     pub(crate) const SUBSYSTEM_SLOT: ReeInt = 1366;

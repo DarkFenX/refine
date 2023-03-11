@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 use crate::ReeInt;
 
 /// Contains states which can be assigned to several entities.
@@ -115,7 +117,7 @@ pub enum ModAggrMode {
 /// Defines what kind of operation will be applied to a target attribute.
 ///
 /// All the operations are applied in the order they are defined in this enum.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq, serde::Deserialize, serde::Serialize)]
 pub enum ModOp {
     /// Assigns modification value to the target item attribute before all other operations are
     /// applied.

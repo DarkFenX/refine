@@ -15,7 +15,7 @@ where
         KeyedStorage { data: HashMap::new() }
     }
     pub(crate) fn get(&self, key: &K) -> Option<&HashSet<V>> {
-        self.get(key)
+        self.data.get(key)
     }
     pub(crate) fn add_entry(&mut self, key: K, entry: V) {
         let values = self.data.entry(key).or_insert_with(|| HashSet::new());

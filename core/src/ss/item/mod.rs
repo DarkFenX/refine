@@ -218,6 +218,9 @@ impl Item {
     pub(in crate::ss) fn get_group_id(&self) -> Option<ReeInt> {
         self.get_citem().map(|v| v.grp_id)
     }
+    pub(in crate::ss) fn get_category_id(&self) -> Option<ReeInt> {
+        self.get_citem().map(|v| v.cat_id)
+    }
     pub(in crate::ss) fn get_skill_reqs(&self) -> Option<&HashMap<ReeInt, ReeInt>> {
         self.get_citem().map(|v| &v.srqs)
     }

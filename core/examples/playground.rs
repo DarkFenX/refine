@@ -59,8 +59,7 @@ fn main() {
         sol_sys.add_skill(fit, skill_id.to_owned(), 5);
     }
     let implant = sol_sys.add_implant(fit, 19687);
-    // let mut fit = Fit::new(Some(sol_sys));
-    // fit.set_ship(Some(Ship::new(11184)));
-
+    let maxvel = sol_sys.get_item_attr(&ship, &37).unwrap();
+    println!("{maxvel}");
     src_mgr.del("tq");
 }

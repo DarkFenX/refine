@@ -3,7 +3,7 @@ use std::{
     sync::Arc,
 };
 
-use crate::{ct, ReeId, ReeIdx, ReeInt};
+use crate::{ct, ReeId, ReeIdx};
 
 #[derive(Clone)]
 pub(in crate::ss::calc) struct AffectorSpec {
