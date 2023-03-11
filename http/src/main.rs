@@ -3,7 +3,7 @@
 use std::{net::SocketAddr, sync::Arc};
 
 use axum::{
-    routing::{delete, get, post},
+    routing::{delete, get, patch, post},
     Router,
 };
 
@@ -32,6 +32,7 @@ async fn main() {
         .route("/source/:alias", delete(handlers::delete_source))
         .route("/solar_system", post(handlers::create_sol_sys))
         .route("/solar_system/:id", delete(handlers::delete_sol_sys))
+        .route("/solar_system/:id", patch(handlers::change_sol_sys))
         .with_state(state);
 
     // run our app with hyper

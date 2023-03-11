@@ -14,6 +14,7 @@ pub(crate) struct SrcMgr {
     locked_aliases: RwLock<HashSet<String>>,
 }
 impl SrcMgr {
+    // Crate-wide methods
     pub(crate) fn new() -> SrcMgr {
         SrcMgr {
             alias_src_map: RwLock::new(HashMap::new()),
@@ -59,7 +60,6 @@ impl SrcMgr {
             }
         }
     }
-    /// Remove data source which is stored against passed alias.
     pub(crate) async fn del(&self, alias: &str) -> Result<()> {
         event!(Level::INFO, "removing source with alias \"{}\"", alias);
         self.alias_src_map
@@ -74,7 +74,6 @@ impl SrcMgr {
         };
         Ok(())
     }
-    // Crate methods
     pub(crate) async fn get(&self, alias: &str) -> Option<Arc<reefast::Src>> {
         self.alias_src_map.read().await.get(alias).cloned()
     }
