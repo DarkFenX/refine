@@ -770,9 +770,12 @@ impl SolarSystem {
         }
     }
     // Attribute calculator
-    // TODO: refo this and child functions into Result<>
+    // TODO: refactor this and child functions into Result<>
     pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Option<ReeFloat> {
         self.calc.get_attr_val(item_id, attr_id, &self.src, &self.items)
+    }
+    pub fn get_item_attrs(&mut self, item_id: &ReeId) -> Option<HashMap<ReeInt, ReeFloat>> {
+        self.calc.get_attr_vals(item_id, &self.src, &self.items)
     }
 }
 

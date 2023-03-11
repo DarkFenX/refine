@@ -79,6 +79,38 @@ impl CalcSvc {
         };
         Some(val)
     }
+    pub(in crate::ss) fn get_attr_vals(
+        &mut self,
+        item_id: &ReeId,
+        src: &Src,
+        items: &HashMap<ReeId, Item>,
+    ) -> Option<HashMap<ReeInt, ReeFloat>> {
+        // Item can have attributes which are not defined on the original EVE item. This happens when
+        // something requested an attr value and it was calculated using base attribute value. Here,
+        // we get already calculated attributes, which includes attributes absent on the EVE item
+        let mut vals = match self.attrs.get(item_id) {
+            Some(m) => m.clone(),
+            // All items known to calculator are in attrs map, if it's not there - just abort early
+            None => return None,
+        };
+        // Calculate & store attributes which are not calculated yet,
+        // but are defined on the EVE item
+        match items.get(item_id) {
+            Some(i) => match i.get_orig_attrs() {
+                Some(m) => {
+                    for attr_id in m.keys() {
+                        match self.get_attr_val(item_id, attr_id, src, items) {
+                            Some(v) => vals.entry(*attr_id).or_insert(v),
+                            None => continue,
+                        };
+                    }
+                }
+                None => (),
+            },
+            None => (),
+        }
+        Some(vals)
+    }
     // Maintenance methods
     pub(in crate::ss) fn item_loaded(&mut self, item: &Item) {
         self.attrs.insert(item.get_id(), HashMap::new());
