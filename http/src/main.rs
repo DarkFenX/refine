@@ -6,14 +6,15 @@ use axum::{
     routing::{delete, get, post},
     Router,
 };
-use tokio::time::{interval, Duration};
 
 use crate::state::AppState;
 
 mod config;
 mod handlers;
-mod sol_sys_mgr;
+mod src_mgr;
+mod ss_mgr;
 mod state;
+mod util;
 
 #[tokio::main]
 async fn main() {
@@ -22,7 +23,7 @@ async fn main() {
 
     let state = Arc::new(AppState::new());
     let state_cleanup = state.clone();
-    tokio::spawn(async move { state_cleanup.sol_sys_mgr.periodic_cleanup().await });
+    tokio::spawn(async move { state_cleanup.ss_mgr.periodic_cleanup().await });
 
     // build our application with a route
     let app = Router::new()

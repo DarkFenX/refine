@@ -10,6 +10,11 @@ pub struct Src {
 }
 impl Src {
     pub fn new(data_handler: Box<dyn dh::DataHandler>, mut cache_handler: Box<dyn ch::CacheHandler>) -> Result<Src> {
+        log::info!(
+            "initializing new source with {:?} and {:?}",
+            data_handler,
+            cache_handler
+        );
         let dv = get_data_version(&data_handler);
         if need_cache_regen(dv.clone(), &mut cache_handler) {
             let ch_data = regen_cache(&data_handler).map_err(|e| Error::from_kind(e, ErrorKind::SrcCacheGenFailed))?;

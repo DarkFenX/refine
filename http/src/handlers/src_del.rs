@@ -6,13 +6,12 @@ use axum::{
     response::IntoResponse,
 };
 
-use crate::state::AppState;
+use crate::{state::AppState, util::ErrorKind};
 
 pub(crate) async fn delete_source(State(state): State<Arc<AppState>>, Path(alias): Path<String>) -> impl IntoResponse {
-    let r = tokio_rayon::spawn_fifo(move || state.src_mgr.del(alias.as_str())).await;
-    match r {
+    match state.src_mgr.del(&alias).await {
         Ok(_) => StatusCode::NO_CONTENT,
-        Err(e) if matches!(e.kind, reefast::ErrorKind::SrcNotFound) => StatusCode::NOT_FOUND,
+        Err(e) if matches!(e.kind, ErrorKind::SrcNotFound) => StatusCode::NOT_FOUND,
         _ => StatusCode::INTERNAL_SERVER_ERROR,
     }
 }

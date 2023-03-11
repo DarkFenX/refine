@@ -7,7 +7,6 @@ use super::internal::IntError;
 #[derive(Debug)]
 pub enum ErrorKind {
     DhHttpInvalidBaseUrl,
-    SrcAlreadyExists,
     SrcCacheGenFailed,
     SrcNotFound,
     AlreadyHasParent,
@@ -36,7 +35,6 @@ impl fmt::Display for Error {
     }
 }
 
-// Alias for result which
 pub type Result<T> = result::Result<T, Error>;
 
 pub(crate) trait FromKind<T> {
