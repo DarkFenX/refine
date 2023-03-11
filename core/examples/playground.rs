@@ -5,7 +5,7 @@ use std::{path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 use chrono;
 use itertools::Itertools;
 
-use reefast::{ch::CacheHandler, ch_impls::json_file, dh::DataHandler, dh_impls::phobos, SolarSystem, SrcMgr, VERSION};
+use reefast::{ch::CacheHandler, ch_impls::json_file, dh::DataHandler, dh_impls::phobos, SolarSystem, Src, VERSION};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -27,7 +27,6 @@ fn setup_logger() -> Result<(), fern::InitError> {
 
 fn main() {
     setup_logger().unwrap();
-    let mut src_mgr = Arc::new(SrcMgr::new());
     let dh = Box::new(phobos::PhbFileDHandler::new("/home/dfx/Desktop/phobos_tq_en-us"));
     // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
     // Get some data for skills
@@ -51,7 +50,7 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
         "tq",
     ));
-    let src = src_mgr.add("tq", dh, ch, true).unwrap();
+    let src = Arc::new(Src::new(dh, ch).unwrap());
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
     let ship = sol_sys.set_ship(fit, 11184).unwrap();
@@ -61,5 +60,4 @@ fn main() {
     let implant = sol_sys.add_implant(fit, 19687);
     let attrs = sol_sys.get_item_attrs(&ship).unwrap();
     println!("{attrs:?}");
-    src_mgr.del("tq");
 }

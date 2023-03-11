@@ -295,7 +295,7 @@ fn process_assigns(assigns: &Vec<ReeFloat>, attr: &ct::Attr) -> ReeFloat {
 }
 fn process_mults(mults: &Vec<ReeFloat>) -> ReeFloat {
     let mut val = 1.0;
-    mults.iter().for_each(|v| val *= (1.0 + v));
+    mults.iter().for_each(|v| val *= 1.0 + v);
     val
 }
 fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {

@@ -14,7 +14,7 @@
 extern crate core;
 
 pub use defines::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
-pub use src::{Src, SrcMgr};
+pub use src::Src;
 pub use ss::SolarSystem;
 pub use util::err_res::public::{Error, ErrorKind, Result};
 pub(crate) use util::err_res::{
