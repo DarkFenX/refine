@@ -12,5 +12,4 @@ class BuildError(Exception):
 
 if __name__ == '__main__':
     with reefast_running(PROJECT_ROOT):
-        import time
-        time.sleep(10)
+        pass
