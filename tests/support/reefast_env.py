@@ -1,6 +1,5 @@
 import os
 import subprocess
-from contextlib import contextmanager
 from signal import SIGKILL
 
 
@@ -23,16 +22,3 @@ def run_reefast(proj_root):
 
 def kill_reefast(pid):
     os.kill(pid, SIGKILL)
-
-
-@contextmanager
-def reefast_running(proj_root):
-    build_reefast(proj_root)
-    pid = run_reefast(proj_root)
-    try:
-        yield
-    except Exception:
-        kill_reefast(pid)
-        raise
-    else:
-        kill_reefast(pid)
