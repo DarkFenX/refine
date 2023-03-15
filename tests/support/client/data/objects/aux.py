@@ -1,4 +1,4 @@
-from util import Default
+from ....util import Absent
 
 
 class TestDataConsistencyError(Exception):
@@ -6,5 +6,5 @@ class TestDataConsistencyError(Exception):
 
 
 def conditional_insert(container, key, value):
-    if value is not Default:
+    if value is not Absent:
         container[key] = value

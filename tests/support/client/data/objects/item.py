@@ -1,20 +1,20 @@
-from util import Default
 from .aux import TestDataConsistencyError, conditional_insert
+from ....util import Default
 
 
 class Item:
 
     def __init__(
             self,
-            type_id,
-            group_id=Default,
-            category_id=Default,
-            attributes=Default,
-            effect_ids=Default,
-            default_effect_id=Default,
-            skill_reqs=Default,
+            id,
+            group_id,
+            category_id,
+            attributes,
+            effect_ids,
+            default_effect_id,
+            skill_reqs,
     ):
-        self.type_id = type_id
+        self.id = id
         self.group_id = group_id
         self.category_id = category_id
         self.attributes = attributes
@@ -23,13 +23,13 @@ class Item:
         self.skill_reqs = skill_reqs
 
     def to_primitives(self, primitive_data):
-        item_entry = {'typeID': self.type_id}
+        item_entry = {'typeID': self.id}
         conditional_insert(item_entry, 'groupID', self.group_id)
-        primitive_data.types[self.type_id] = item_entry
+        primitive_data.types[self.id] = item_entry
         self.__add_primitive_group(primitive_data)
         self.__add_primitive_attributes(primitive_data)
         self.__add_primitive_effects(primitive_data)
-        conditional_insert(primitive_data.requiredskillsfortypes, self.skill_reqs, self.type_id)
+        conditional_insert(primitive_data.requiredskillsfortypes, self.skill_reqs, self.id)
 
     def __add_primitive_group(self, primitive_data):
         if self.group_id is Default:
@@ -42,7 +42,7 @@ class Item:
     def __add_primitive_attributes(self, primitive_data):
         if self.attributes is Default:
             return
-        item_entry = primitive_data.typedogma.setdefault(self.type_id, {})
+        item_entry = primitive_data.typedogma.setdefault(self.id, {})
         if isinstance(self.attributes, dict):
             attrs_entry = item_entry['dogmaAttributes'] = []
             for attr_id, attr_val in self.attributes.items():
@@ -53,7 +53,7 @@ class Item:
     def __add_primitive_effects(self, primitive_data):
         if self.effect_ids is Default:
             return
-        item_entry = primitive_data.typedogma.setdefault(self.type_id, {})
+        item_entry = primitive_data.typedogma.setdefault(self.id, {})
         if isinstance(self.effect_ids, (tuple, list, set)):
             effects_entry = item_entry['dogmaEffects'] = []
             for effect_id in self.effect_ids:

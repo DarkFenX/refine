@@ -2,13 +2,15 @@ import os
 
 import pytest
 
-from .support.reefast_env import build_reefast, kill_reefast, run_reefast
+from .support import consts as eve_consts
+from .support.client import TestClient
+from .support.reefast import build_reefast, kill_reefast, run_reefast
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 
 @pytest.fixture(scope='session', autouse=True)
-def server():
+def reefast_server():
     build_reefast(PROJECT_ROOT)
     pid = run_reefast(PROJECT_ROOT)
     try:
@@ -20,6 +22,12 @@ def server():
         kill_reefast(pid)
 
 
-@pytest.fixture(scope='session')
-def client():
-    yield None
+
+@pytest.fixture()
+def client(httpserver):
+    yield TestClient(httpserver)
+
+
+@pytest.fixture()
+def consts():
+    yield eve_consts

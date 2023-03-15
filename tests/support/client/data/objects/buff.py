@@ -1,19 +1,16 @@
-from util import Default
-
-
 class Buff:
 
     def __init__(
             self,
-            buff_id,
-            aggregate_mode=Default,
-            operation_name=Default,
-            item_modifiers=Default,
-            location_modifiers=Default,
-            location_group_modifiers=Default,
-            location_skillreq_modifiers=Default,
+            id,
+            aggregate_mode,
+            operation_name,
+            item_modifiers,
+            location_modifiers,
+            location_group_modifiers,
+            location_skillreq_modifiers,
     ):
-        self.buff_id = buff_id
+        self.id = id
         self.aggregate_mode = aggregate_mode
         self.operation_name = operation_name
         self.item_modifiers = item_modifiers

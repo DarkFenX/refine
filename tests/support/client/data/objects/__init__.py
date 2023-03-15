@@ -1,4 +1,4 @@
-from .attribute import Attribute
+from .attr import Attribute
 from .aux import TestDataConsistencyError
 from .buff import Buff
 from .effect import Effect
