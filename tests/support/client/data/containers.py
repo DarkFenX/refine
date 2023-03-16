@@ -21,7 +21,7 @@ class TestObjects:
         self.effect_id = ID_START
         self.buff_id = ID_START
 
-    def add_item(self, id, group_id, category_id, *args, **kwargs):
+    def mk_item(self, id, group_id, category_id, *args, **kwargs):
         if id is Default:
             id = self.item_id
             self.item_id += 1
@@ -35,7 +35,7 @@ class TestObjects:
         self.items.append(item)
         return item
 
-    def add_attr(self, id, *args, **kwargs):
+    def mk_attr(self, id, *args, **kwargs):
         if id is Default:
             id = self.attr_id
             self.attr_id += 1
@@ -43,7 +43,7 @@ class TestObjects:
         self.attributes.append(attr)
         return attr
 
-    def add_effect(self, id, *args, **kwargs):
+    def mk_effect(self, id, *args, **kwargs):
         if id is Default:
             id = self.effect_id
             self.effect_id += 1
@@ -51,7 +51,7 @@ class TestObjects:
         self.effects.append(effect)
         return effect
 
-    def add_buff(self, id, *args, **kwargs):
+    def mk_buff(self, id, *args, **kwargs):
         if id is Default:
             id = self.buff_id
             self.buff_id += 1

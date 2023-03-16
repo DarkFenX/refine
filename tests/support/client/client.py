@@ -1,3 +1,4 @@
+import inspect
 from collections import defaultdict
 
 from .data import TestObjects
@@ -5,11 +6,43 @@ from ..consts import EffectCategory
 from ..util import Absent, Default
 
 
+data_id = 10000000
+
+
+def frame_to_primitive(frame, ignore_local_context=False):
+    if ignore_local_context:
+        return (
+            frame.filename,
+            frame.function)
+    else:
+        pos = frame.positions
+        return (
+            frame.filename,
+            frame.lineno,
+            frame.function,
+            pos.lineno,
+            pos.end_lineno,
+            pos.col_offset,
+            pos.end_col_offset)
+
+
+def stack_to_key():
+    stack = inspect.stack(context=0)
+    # Filter out stack entries for entities from client file
+    stack = [f for f in stack if f.filename != __file__]
+    # For method which tried to retrieve data, ignore all its local context,
+    # to refer to the same data on different calls
+    key = [frame_to_primitive(stack[0], ignore_local_context=True)]
+    key += [frame_to_primitive(f) for f in stack[1:]]
+    return tuple(key)
+
+
 class TestClient:
 
     def __init__(self, data_server):
         self.__data = defaultdict(lambda: TestObjects())
         self.__data_server = data_server
+        self.__stack_alias_map = {}
 
     @property
     def data(self):
@@ -17,9 +50,17 @@ class TestClient:
 
     @property
     def __default_data(self):
-        return self.data['tq']
+        global data_id
+        key = stack_to_key()
+        if key in self.__stack_alias_map:
+            alias = self.__stack_alias_map[key]
+            return self.data[alias]
+        alias = str(data_id)
+        self.__stack_alias_map[key] = alias
+        data_id += 1
+        return self.data[alias]
 
-    def add_item(
+    def mk_item(
             self,
             data=Default,
             id=Default,
@@ -32,7 +73,7 @@ class TestClient:
     ):
         if data is Default:
             data = self.__default_data
-        return data.add_item(
+        return data.mk_item(
             id=id,
             group_id=grp_id,
             category_id=cat_id,
@@ -41,7 +82,7 @@ class TestClient:
             default_effect_id=defeff_id,
             skill_reqs={} if srqs is Default else srqs)
 
-    def add_attr(
+    def mk_attr(
             self,
             data=Default,
             id=Default,
@@ -52,14 +93,14 @@ class TestClient:
     ):
         if data is Default:
             data = self.__default_data
-        return data.add_attr(
+        return data.mk_attr(
             id=id,
             stackable=stackable,
             high_is_good=high_is_good,
             default_value=def_val,
             max_attribute_id=max_attr_id)
 
-    def add_effect(
+    def mk_effect(
             self,
             data=Default,
             id=Default,
@@ -77,7 +118,7 @@ class TestClient:
     ):
         if data is Default:
             data = self.__default_data
-        return data.add_effect(
+        return data.mk_effect(
             id=id,
             category_id=cat_id,
             is_assistance=is_assistance,
@@ -91,7 +132,7 @@ class TestClient:
             resist_attribute_id=resist_attr_id,
             modifier_info=mod_info)
 
-    def add_buff(
+    def mk_buff(
             self,
             data=Default,
             id=Default,
@@ -104,7 +145,7 @@ class TestClient:
     ):
         if data is Default:
             data = self.__default_data
-        return data.add_buff(
+        return data.mk_buff(
             id=id,
             aggregate_mode=aggr_mode,
             operation_name=op,
