@@ -9,7 +9,8 @@ ID_START = 1000000
 
 class TestObjects:
 
-    def __init__(self):
+    def __init__(self, alias):
+        self.alias = alias
         self.items = []
         self.attributes = []
         self.effects = []
@@ -65,7 +66,7 @@ class TestObjects:
         return strings
 
     def to_primitives(self):
-        primitive_data = TestPrimitives()
+        primitive_data = TestPrimitives(self.alias)
         for item in self.items:
             item.to_primitives(primitive_data)
         for attr in self.attributes:
@@ -79,7 +80,8 @@ class TestObjects:
 
 class TestPrimitives:
 
-    def __init__(self):
+    def __init__(self, alias):
+        self.alias = alias
         self.types = {}
         self.groups = {}
         self.typedogma = {}
@@ -92,7 +94,7 @@ class TestPrimitives:
         self.dynamicitemattributes = {}
 
     def to_strings(self):
-        string_data = TestStrings()
+        string_data = TestStrings(self.alias)
         string_data.types = json.dumps(self.types)
         string_data.groups = json.dumps(self.groups)
         string_data.typedogma = json.dumps(self.typedogma)
@@ -103,11 +105,13 @@ class TestPrimitives:
         string_data.dbuffcollections = json.dumps(self.dbuffcollections)
         string_data.requiredskillsfortypes = json.dumps(self.requiredskillsfortypes)
         string_data.dynamicitemattributes = json.dumps(self.dynamicitemattributes)
+        return string_data
 
 
 class TestStrings:
 
-    def __init__(self):
+    def __init__(self, alias):
+        self.alias = alias
         self.types = ''
         self.groups = ''
         self.typedogma = ''

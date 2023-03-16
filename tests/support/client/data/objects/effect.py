@@ -18,7 +18,7 @@ class Effect:
             resist_attribute_id,
             modifier_info,
     ):
-        self.id = id,
+        self.id = id
         self.category_id = category_id
         self.is_assistance = is_assistance
         self.is_offensive = is_offensive

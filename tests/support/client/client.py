@@ -1,5 +1,6 @@
 import inspect
-from collections import defaultdict
+
+import requests
 
 from .data import TestObjects
 from ..consts import EffectCategory
@@ -26,7 +27,7 @@ def frame_to_primitive(frame, ignore_local_context=False):
             pos.end_col_offset)
 
 
-def stack_to_key():
+def get_stack_key():
     stack = inspect.stack(context=0)
     # Filter out stack entries for entities from client file
     stack = [f for f in stack if f.filename != __file__]
@@ -40,25 +41,27 @@ def stack_to_key():
 class TestClient:
 
     def __init__(self, data_server):
-        self.__data = defaultdict(lambda: TestObjects())
+        self.__datas = {}
         self.__data_server = data_server
         self.__stack_alias_map = {}
+        self.__session = requests.Session()
 
-    @property
-    def data(self):
-        return self.__data
+    def mk_data(self):
+        global data_id
+        alias = str(data_id)
+        data = self.__datas[alias] = TestObjects(alias)
+        data_id += 1
+        return data
 
     @property
     def __default_data(self):
-        global data_id
-        key = stack_to_key()
+        key = get_stack_key()
         if key in self.__stack_alias_map:
             alias = self.__stack_alias_map[key]
-            return self.data[alias]
-        alias = str(data_id)
-        self.__stack_alias_map[key] = alias
-        data_id += 1
-        return self.data[alias]
+            return self.__datas[alias]
+        data = self.mk_data()
+        self.__stack_alias_map[key] = data.alias
+        return data
 
     def mk_item(
             self,
@@ -153,3 +156,36 @@ class TestClient:
             location_modifiers=loc_mods,
             location_group_modifiers=loc_grp_mods,
             location_skillreq_modifiers=loc_srq_mods)
+
+    def create_source_request(self, data=Default):
+        if data is Default:
+            data = self.__default_data
+        req = requests.Request('POST', f'http://localhost:8000/source/{data.alias}', json={
+            'data_version': '1',
+            'data_base_url': f'http://localhost:{self.__data_server.port}/'})
+        return req
+
+    def create_source(self, data=Default):
+        if data is Default:
+            data = self.__default_data
+        # Set up server with local data
+        string_data = data.render()
+        self.__data_server.expect_request('/fsd_binary/types.json').respond_with_data(string_data.types)
+        self.__data_server.expect_request('/fsd_binary/groups.json').respond_with_data(string_data.groups)
+        self.__data_server.expect_request('/fsd_binary/dogmaattributes.json').respond_with_data(string_data.dogmaattributes)
+        self.__data_server.expect_request('/fsd_binary/typedogma.json').respond_with_data(string_data.typedogma)
+        self.__data_server.expect_request('/fsd_binary/dogmaeffects.json').respond_with_data(string_data.dogmaeffects)
+        self.__data_server.expect_request('/fsd_lite/fighterabilities.json').respond_with_data(string_data.fighterabilities)
+        self.__data_server.expect_request('/fsd_lite/fighterabilitiesbytype.json').respond_with_data(string_data.fighterabilitiesbytype)
+        self.__data_server.expect_request('/fsd_lite/dbuffcollections.json').respond_with_data(string_data.dbuffcollections)
+        self.__data_server.expect_request('/fsd_binary/requiredskillsfortypes.json').respond_with_data(string_data.requiredskillsfortypes)
+        self.__data_server.expect_request('/fsd_binary/dynamicitemattributes.json').respond_with_data(string_data.dynamicitemattributes)
+        # Get request and send it
+        req = self.create_source_request(data=data)
+        resp = self.__session.send(req.prepare())
+        assert resp.status_code == 201
+
+
+    def create_sources(self):
+        for data in self.__datas.values():
+            self.create_source(data)
