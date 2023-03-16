@@ -162,7 +162,7 @@ class TestClient:
             data = self.__default_data
         req = requests.Request('POST', f'http://localhost:8000/source/{data.alias}', json={
             'data_version': '1',
-            'data_base_url': f'http://localhost:{self.__data_server.port}/'})
+            'data_base_url': f'http://localhost:{self.__data_server.port}/{data.alias}/'})
         return req
 
     def create_source(self, data=Default):
@@ -170,16 +170,16 @@ class TestClient:
             data = self.__default_data
         # Set up server with local data
         string_data = data.render()
-        self.__data_server.expect_request('/fsd_binary/types.json').respond_with_data(string_data.types)
-        self.__data_server.expect_request('/fsd_binary/groups.json').respond_with_data(string_data.groups)
-        self.__data_server.expect_request('/fsd_binary/dogmaattributes.json').respond_with_data(string_data.dogmaattributes)
-        self.__data_server.expect_request('/fsd_binary/typedogma.json').respond_with_data(string_data.typedogma)
-        self.__data_server.expect_request('/fsd_binary/dogmaeffects.json').respond_with_data(string_data.dogmaeffects)
-        self.__data_server.expect_request('/fsd_lite/fighterabilities.json').respond_with_data(string_data.fighterabilities)
-        self.__data_server.expect_request('/fsd_lite/fighterabilitiesbytype.json').respond_with_data(string_data.fighterabilitiesbytype)
-        self.__data_server.expect_request('/fsd_lite/dbuffcollections.json').respond_with_data(string_data.dbuffcollections)
-        self.__data_server.expect_request('/fsd_binary/requiredskillsfortypes.json').respond_with_data(string_data.requiredskillsfortypes)
-        self.__data_server.expect_request('/fsd_binary/dynamicitemattributes.json').respond_with_data(string_data.dynamicitemattributes)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_binary/types.json').respond_with_data(string_data.types)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_binary/groups.json').respond_with_data(string_data.groups)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_binary/dogmaattributes.json').respond_with_data(string_data.dogmaattributes)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_binary/typedogma.json').respond_with_data(string_data.typedogma)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_binary/dogmaeffects.json').respond_with_data(string_data.dogmaeffects)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_lite/fighterabilities.json').respond_with_data(string_data.fighterabilities)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_lite/fighterabilitiesbytype.json').respond_with_data(string_data.fighterabilitiesbytype)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_lite/dbuffcollections.json').respond_with_data(string_data.dbuffcollections)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_binary/requiredskillsfortypes.json').respond_with_data(string_data.requiredskillsfortypes)
+        self.__data_server.expect_request(f'/{data.alias}/fsd_binary/dynamicitemattributes.json').respond_with_data(string_data.dynamicitemattributes)
         # Get request and send it
         req = self.create_source_request(data=data)
         resp = self.__session.send(req.prepare())
