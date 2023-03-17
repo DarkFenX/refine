@@ -54,8 +54,8 @@ impl ch::CacheHandler for RamOnlyCHandler {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get cached data fingerprint.
-    fn get_fingerprint(&self) -> &str {
-        ""
+    fn get_fingerprint(&self) -> Option<&str> {
+        None
     }
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> ch::Result<()> {

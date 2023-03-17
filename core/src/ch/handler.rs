@@ -20,7 +20,7 @@ pub trait CacheHandler: fmt::Debug + Send + Sync {
     /// Get cached warfare buff.
     fn get_buff(&self, id: &ReeInt) -> Option<Arc<Buff>>;
     /// Get cached data fingerprint.
-    fn get_fingerprint(&self) -> &str;
+    fn get_fingerprint(&self) -> Option<&str>;
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> Result<()>;
     /// Update data in handler with passed data.

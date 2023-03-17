@@ -5,9 +5,9 @@ pub(crate) struct AppState {
     pub(crate) ss_mgr: SolSysManager,
 }
 impl AppState {
-    pub(crate) fn new() -> AppState {
+    pub(crate) fn new(cache_folder: Option<String>) -> AppState {
         AppState {
-            src_mgr: SrcMgr::new(),
+            src_mgr: SrcMgr::new(cache_folder),
             ss_mgr: SolSysManager::new(),
         }
     }

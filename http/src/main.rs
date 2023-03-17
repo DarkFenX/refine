@@ -23,7 +23,7 @@ async fn main() {
 
     let config_path = env::args().nth(1);
     let settings = Settings::new(config_path).unwrap();
-    let state = Arc::new(AppState::new());
+    let state = Arc::new(AppState::new(settings.server.cache_folder));
 
     let state_cleanup = state.clone();
     tokio::spawn(async move {

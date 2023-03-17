@@ -9,14 +9,16 @@ use tracing::{event, Level};
 use crate::util::{Error, ErrorKind, Result};
 
 pub(crate) struct SrcMgr {
+    cache_folder: Option<String>,
     alias_src_map: RwLock<HashMap<String, Arc<reefast::Src>>>,
     default_alias: RwLock<Option<String>>,
     locked_aliases: RwLock<HashSet<String>>,
 }
 impl SrcMgr {
     // Crate-wide methods
-    pub(crate) fn new() -> SrcMgr {
+    pub(crate) fn new(cache_folder: Option<String>) -> SrcMgr {
         SrcMgr {
+            cache_folder,
             alias_src_map: RwLock::new(HashMap::new()),
             default_alias: RwLock::new(None),
             locked_aliases: RwLock::new(HashSet::new()),
@@ -44,7 +46,12 @@ impl SrcMgr {
         }
         self.lock_alias(&alias).await;
         let alias_cloned = alias.clone();
-        match tokio_rayon::spawn_fifo(move || create_src(alias_cloned, data_base_url, data_version)).await {
+        let cache_folder_cloned = self.cache_folder.clone();
+        match tokio_rayon::spawn_fifo(move || {
+            create_src(alias_cloned, data_base_url, data_version, cache_folder_cloned)
+        })
+        .await
+        {
             Ok(src) => {
                 let src = Arc::new(src);
                 if make_default {
@@ -99,14 +106,24 @@ impl SrcMgr {
     }
 }
 
-fn create_src(alias: String, data_base_url: String, data_version: String) -> Result<reefast::Src> {
+fn create_src(
+    alias: String,
+    data_base_url: String,
+    data_version: String,
+    cache_folder: Option<String>,
+) -> Result<reefast::Src> {
     let dh = Box::new(
         reefast::dh_impls::PhbHttpDHandler::new(data_base_url.as_str(), data_version)
             .map_err(|e| Error::new(ErrorKind::DhInitFailed, e.msg))?,
     );
-    let ch = Box::new(reefast::ch_impls::JsonFileCHandler::new(
-        "/home/dfx/Workspace/eve/reefast/cache",
-        alias,
-    ));
+    let ch: Box<dyn reefast::ch::CacheHandler> = match cache_folder {
+        // Use cache handler with persistent storage if cache path is specified
+        Some(cf) => Box::new(reefast::ch_impls::JsonFileCHandler::new(
+            "/home/dfx/Workspace/eve/reefast/cache",
+            alias,
+        )),
+        // Use RAM-only cache handler if path is not specified
+        None => Box::new(reefast::ch_impls::RamOnlyCHandler::new()),
+    };
     reefast::Src::new(dh, ch).map_err(|e| Error::new(ErrorKind::SrcInitFailed, e.msg))
 }

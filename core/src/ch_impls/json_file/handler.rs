@@ -26,7 +26,7 @@ pub struct JsonFileCHandler {
     storage_effects: HashMap<ReeInt, Arc<Effect>>,
     storage_mutas: HashMap<ReeInt, Arc<Muta>>,
     storage_buffs: HashMap<ReeInt, Arc<Buff>>,
-    fingerprint: String,
+    fingerprint: Option<String>,
 }
 impl JsonFileCHandler {
     /// Constructs new `JsonFileCHandler` using full path to cache folder and file name (without
@@ -40,7 +40,7 @@ impl JsonFileCHandler {
             storage_effects: HashMap::new(),
             storage_mutas: HashMap::new(),
             storage_buffs: HashMap::new(),
-            fingerprint: String::new(),
+            fingerprint: None,
         }
     }
     fn get_full_path(&self) -> PathBuf {
@@ -64,7 +64,7 @@ impl JsonFileCHandler {
         move_vec_to_map(cache.effects, &mut self.storage_effects);
         move_vec_to_map(cache.mutas, &mut self.storage_mutas);
         move_vec_to_map(cache.buffs, &mut self.storage_buffs);
-        self.fingerprint = cache.fingerprint;
+        self.fingerprint = Some(cache.fingerprint);
     }
     fn update_persistent_cache(&self, cache: &CacheData) {
         let full_path = self.get_full_path();
@@ -116,8 +116,8 @@ impl ch::CacheHandler for JsonFileCHandler {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get cached data fingerprint.
-    fn get_fingerprint(&self) -> &str {
-        &self.fingerprint
+    fn get_fingerprint(&self) -> Option<&str> {
+        self.fingerprint.as_deref()
     }
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> ch::Result<()> {

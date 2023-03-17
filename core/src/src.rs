@@ -54,10 +54,18 @@ fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn ch
     }
     let data_fp = get_data_fingerprint(&data_version);
     let cache_fp = cache_handler.get_fingerprint();
-    if &data_fp != cache_fp {
-        log::info!("fingerprint mismatch: {} data vs {} cache", data_fp, cache_fp);
-        return true;
-    };
+    match cache_fp {
+        Some(f) => {
+            if &data_fp != f {
+                log::info!("fingerprint mismatch: {} data vs {} cache", data_fp, f);
+                return true;
+            };
+        }
+        None => {
+            log::info!("cache returned no data fingerprint");
+            return true;
+        }
+    }
     false
 }
 
