@@ -1,10 +1,6 @@
 use std::collections::HashMap;
 
-use crate::config;
-use tokio::{
-    sync::RwLock,
-    time::{interval, Duration},
-};
+use tokio::{sync::RwLock, time};
 use uuid::Uuid;
 
 struct ManagedSolSys {
@@ -42,9 +38,9 @@ impl SolSysManager {
         self.id_ss_map.write().await.remove(id).is_some()
     }
     // Cleanup methods
-    pub(crate) async fn cleanup_sol_sys(&self) {
+    pub(crate) async fn cleanup_sol_sys(&self, lifetime: u64) {
         let now = chrono::Utc::now();
-        let lifetime = chrono::Duration::seconds(config::SOL_SYS_LIFETIME);
+        let lifetime = chrono::Duration::seconds(lifetime as i64);
         let to_clean: Vec<_> = self
             .id_ss_map
             .read()
@@ -58,11 +54,11 @@ impl SolSysManager {
         }
         self.id_ss_map.write().await.drain_filter(|k, _| to_clean.contains(k));
     }
-    pub(crate) async fn periodic_cleanup(&self) {
-        let mut timer = interval(Duration::from_secs(config::CLEANUP_INTERVAL));
+    pub(crate) async fn periodic_cleanup(&self, interval: u64, lifetime: u64) {
+        let mut timer = time::interval(time::Duration::from_secs(interval));
         loop {
             timer.tick().await;
-            self.cleanup_sol_sys().await;
+            self.cleanup_sol_sys(lifetime).await;
         }
     }
 }

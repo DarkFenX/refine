@@ -7,12 +7,8 @@ use axum::{
     Router,
 };
 
-use crate::{
-    settings::Settings,
-    state::AppState,
-};
+use crate::{settings::Settings, state::AppState};
 
-mod config;
 mod handlers;
 mod settings;
 mod src_mgr;
@@ -30,7 +26,12 @@ async fn main() {
     let state = Arc::new(AppState::new());
 
     let state_cleanup = state.clone();
-    tokio::spawn(async move { state_cleanup.ss_mgr.periodic_cleanup().await });
+    tokio::spawn(async move {
+        state_cleanup
+            .ss_mgr
+            .periodic_cleanup(settings.server.solsys_cleanup_interval, settings.server.solsys_lifetime)
+            .await
+    });
 
     // build our application with a route
     let app = Router::new()
@@ -44,7 +45,7 @@ async fn main() {
 
     // run our app with hyper
     // `axum::Server` is a re-export of `hyper::Server`
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8000));
+    let addr = SocketAddr::from(([127, 0, 0, 1], settings.server.port));
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr).serve(app.into_make_service()).await.unwrap();
 }

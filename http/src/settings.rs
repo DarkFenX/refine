@@ -2,7 +2,7 @@ use crate::util::{Error, ErrorKind, Result};
 
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct Server {
-    pub(crate) port: u64,
+    pub(crate) port: u16,
     pub(crate) solsys_lifetime: u64,
     pub(crate) solsys_cleanup_interval: u64,
     pub(crate) cache_path: String,
