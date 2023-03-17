@@ -101,10 +101,10 @@ impl SrcMgr {
 
 fn create_src(alias: String, data_base_url: String, data_version: String) -> Result<reefast::Src> {
     let dh = Box::new(
-        reefast::dh_impls::phobos::PhbHttpDHandler::new(data_base_url.as_str(), data_version)
+        reefast::dh_impls::PhbHttpDHandler::new(data_base_url.as_str(), data_version)
             .map_err(|e| Error::new(ErrorKind::DhInitFailed, e.msg))?,
     );
-    let ch = Box::new(reefast::ch_impls::json_file::JsonFileCHandler::new(
+    let ch = Box::new(reefast::ch_impls::JsonFileCHandler::new(
         "/home/dfx/Workspace/eve/reefast/cache",
         alias,
     ));

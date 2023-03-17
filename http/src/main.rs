@@ -1,16 +1,20 @@
 #![feature(hash_drain_filter)]
 
-use std::{net::SocketAddr, sync::Arc};
+use std::{env, net::SocketAddr, sync::Arc};
 
 use axum::{
     routing::{delete, get, patch, post},
     Router,
 };
 
-use crate::state::AppState;
+use crate::{
+    settings::Settings,
+    state::AppState,
+};
 
 mod config;
 mod handlers;
+mod settings;
 mod src_mgr;
 mod ss_mgr;
 mod state;
@@ -21,7 +25,10 @@ async fn main() {
     // initialize tracing
     tracing_subscriber::fmt::init();
 
+    let config_path = env::args().nth(1);
+    let settings = Settings::new(config_path).unwrap();
     let state = Arc::new(AppState::new());
+
     let state_cleanup = state.clone();
     tokio::spawn(async move { state_cleanup.ss_mgr.periodic_cleanup().await });
 

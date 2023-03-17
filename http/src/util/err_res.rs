@@ -6,6 +6,7 @@ pub(crate) enum ErrorKind {
     SrcAliasNotAvailable,
     DhInitFailed,
     SrcInitFailed,
+    SettingsInitFailed,
 }
 
 #[derive(Debug)]
