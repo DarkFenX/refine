@@ -1,3 +1,5 @@
 //! Data handler implementations.
 
-pub mod phobos;
+pub use phobos::{PhbFileDHandler, PhbHttpDHandler};
+
+mod phobos;

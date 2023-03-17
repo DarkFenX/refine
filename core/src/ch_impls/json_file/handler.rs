@@ -15,7 +15,7 @@ use crate::{
     IntError, IntResult, ReeInt,
 };
 
-use super::{data::CacheData, key::Key};
+use super::{super::common::move_vec_to_map, data::CacheData};
 
 /// A struct for handling compressed JSON cache.
 pub struct JsonFileCHandler {
@@ -152,16 +152,4 @@ impl ch::CacheHandler for JsonFileCHandler {
         // Update memory cache
         self.update_memory_cache(cache);
     }
-}
-
-fn move_vec_to_map<T>(vec: Vec<T>, map: &mut HashMap<ReeInt, Arc<T>>)
-where
-    T: Key,
-{
-    map.clear();
-    map.shrink_to_fit();
-    map.reserve(vec.len());
-    vec.into_iter().for_each(|v| {
-        map.insert(v.get_key(), Arc::new(v));
-    });
 }
