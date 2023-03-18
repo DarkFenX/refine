@@ -17,7 +17,6 @@ class TestObjects:
         self.buffs = []
         self.item_id = ID_START
         self.item_group_id = ID_START
-        self.item_category_id = ID_START
         self.attr_id = ID_START
         self.effect_id = ID_START
         self.buff_id = ID_START
@@ -29,9 +28,6 @@ class TestObjects:
         if group_id is Default:
             group_id = self.item_group_id
             self.item_group_id += 1
-        if category_id is Default:
-            category_id = self.item_category_id
-            self.item_category_id += 1
         item = Item(id=id, group_id=group_id, category_id=category_id, *args, **kwargs)
         self.items.append(item)
         return item

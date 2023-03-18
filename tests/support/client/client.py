@@ -3,7 +3,7 @@ import inspect
 import requests
 
 from .data import TestObjects
-from ..consts import EffectCategory
+from ..consts import ItemCategory, EffectCategory
 from ..util import Absent, Default
 
 
@@ -68,7 +68,7 @@ class TestClient:
             data=Default,
             id=Default,
             grp_id=Default,
-            cat_id=Default,
+            cat_id=ItemCategory.module,
             attrs=Default,
             eff_ids=Default,
             defeff_id=None,
@@ -108,8 +108,8 @@ class TestClient:
             data=Default,
             id=Default,
             cat_id=EffectCategory.passive,
-            is_assistance=False,
-            is_offensive=False,
+            is_assistance=0,
+            is_offensive=0,
             discharge_attr_id=Absent,
             duration_attr_id=Absent,
             range_attr_id=Absent,

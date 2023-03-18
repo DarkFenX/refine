@@ -60,6 +60,6 @@ class Item:
         if isinstance(self.effect_ids, (tuple, list, set)):
             effects_entry = item_entry['dogmaEffects'] = []
             for effect_id in self.effect_ids:
-                effects_entry.append({'effectID': effect_id, 'value': int(effect_id == self.default_effect_id)})
+                effects_entry.append({'effectID': effect_id, 'isDefault': int(effect_id == self.default_effect_id)})
         else:
             item_entry['dogmaEffects'] = self.effect_ids
