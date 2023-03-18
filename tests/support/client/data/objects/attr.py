@@ -19,8 +19,8 @@ class Attribute:
 
     def to_primitives(self, primitive_data):
         attr_entry = {'attributeID': self.id}
-        conditional_insert(attr_entry, 'stackable', self.stackable)
-        conditional_insert(attr_entry, 'highIsGood', self.high_is_good)
-        conditional_insert(attr_entry, 'defaultValue', self.default_value)
-        conditional_insert(attr_entry, 'maxAttributeID', self.max_attribute_id)
+        conditional_insert(attr_entry, 'stackable', self.stackable, cast_to=int)
+        conditional_insert(attr_entry, 'highIsGood', self.high_is_good, cast_to=int)
+        conditional_insert(attr_entry, 'defaultValue', self.default_value, cast_to=float)
+        conditional_insert(attr_entry, 'maxAttributeID', self.max_attribute_id, cast_to=int)
         primitive_data.dogmaattributes[self.id] = attr_entry

@@ -33,14 +33,14 @@ class Effect:
 
     def to_primitives(self, primitive_data):
         effect_entry = {'effectID': self.id}
-        conditional_insert(effect_entry, 'effectCategory', self.category_id)
-        conditional_insert(effect_entry, 'isAssistance', self.is_assistance)
-        conditional_insert(effect_entry, 'isOffensive', self.is_offensive)
-        conditional_insert(effect_entry, 'dischargeAttributeID', self.discharge_attribute_id)
-        conditional_insert(effect_entry, 'durationAttributeID', self.duration_attribute_id)
-        conditional_insert(effect_entry, 'rangeAttributeID', self.range_attribute_id)
-        conditional_insert(effect_entry, 'falloffAttributeID', self.falloff_attribute_id)
-        conditional_insert(effect_entry, 'trackingSpeedAttributeID', self.tracking_attribute_id)
-        conditional_insert(effect_entry, 'fittingUsageChanceAttributeID', self.usage_chance_attribute_id)
-        conditional_insert(effect_entry, 'resistanceAttributeID', self.resist_attribute_id)
+        conditional_insert(effect_entry, 'effectCategory', self.category_id, cast_to=int)
+        conditional_insert(effect_entry, 'isAssistance', self.is_assistance, cast_to=int)
+        conditional_insert(effect_entry, 'isOffensive', self.is_offensive, cast_to=int)
+        conditional_insert(effect_entry, 'dischargeAttributeID', self.discharge_attribute_id, cast_to=int)
+        conditional_insert(effect_entry, 'durationAttributeID', self.duration_attribute_id, cast_to=int)
+        conditional_insert(effect_entry, 'rangeAttributeID', self.range_attribute_id, cast_to=int)
+        conditional_insert(effect_entry, 'falloffAttributeID', self.falloff_attribute_id, cast_to=int)
+        conditional_insert(effect_entry, 'trackingSpeedAttributeID', self.tracking_attribute_id, cast_to=int)
+        conditional_insert(effect_entry, 'fittingUsageChanceAttributeID', self.usage_chance_attribute_id, cast_to=int)
+        conditional_insert(effect_entry, 'resistanceAttributeID', self.resist_attribute_id, cast_to=int)
         primitive_data.dogmaeffects[self.id] = effect_entry
