@@ -14,8 +14,6 @@ pub(in super::super) struct Effect {
     pub(in super::super) is_assistance: ReeInt,
     #[serde(rename = "isOffensive")]
     pub(in super::super) is_offensive: ReeInt,
-    #[serde(rename = "isWarpSafe")]
-    pub(in super::super) is_warp_safe: ReeInt,
     #[serde(rename = "dischargeAttributeID")]
     pub(in super::super) discharge_attr_id: Option<ReeInt>,
     #[serde(rename = "durationAttributeID")]
@@ -40,7 +38,6 @@ impl FsdMerge<dh::Effect> for Effect {
             self.category_id,
             self.is_assistance != 0,
             self.is_offensive != 0,
-            self.is_warp_safe != 0,
             into_opt(self.discharge_attr_id),
             into_opt(self.duration_attr_id),
             into_opt(self.range_attr_id),

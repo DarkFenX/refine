@@ -15,8 +15,6 @@ pub struct Effect {
     pub is_assistance: bool,
     /// Defines if the effect is offensive or not.
     pub is_offensive: bool,
-    /// Defines if the effect can be used while in warp.
-    pub is_warp_safe: bool,
     /// Refers an attribute value which defines capacitor cost to run the effect.
     pub discharge_attr_id: Option<ReeInt>,
     /// Refers an attribute value which defines how long an effect cycle would take in milliseconds.
@@ -42,7 +40,6 @@ impl Effect {
         category_id: ReeInt,
         is_assistance: bool,
         is_offensive: bool,
-        is_warp_safe: bool,
         discharge_attr_id: Option<ReeInt>,
         duration_attr_id: Option<ReeInt>,
         range_attr_id: Option<ReeInt>,
@@ -57,7 +54,6 @@ impl Effect {
             category_id,
             is_assistance,
             is_offensive,
-            is_warp_safe,
             discharge_attr_id,
             duration_attr_id,
             range_attr_id,
