@@ -43,4 +43,9 @@ class Effect:
         conditional_insert(effect_entry, 'trackingSpeedAttributeID', self.tracking_attribute_id, cast_to=int)
         conditional_insert(effect_entry, 'fittingUsageChanceAttributeID', self.usage_chance_attribute_id, cast_to=int)
         conditional_insert(effect_entry, 'resistanceAttributeID', self.resist_attribute_id, cast_to=int)
+        if isinstance(self.modifier_info, (list, tuple)):
+            modifier_info = [m.to_primitives() for m in self.modifier_info]
+        else:
+            modifier_info = self.modifier_info
+        conditional_insert(effect_entry, 'modifierInfo', modifier_info)
         primitive_data.dogmaeffects[self.id] = effect_entry

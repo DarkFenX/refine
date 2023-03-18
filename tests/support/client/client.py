@@ -3,9 +3,9 @@ import inspect
 import requests
 
 from .data import TestObjects
-from ..consts import ItemCategory, EffectCategory
+from .data.objects import Modifier
+from ..consts import EffCat, ItemCat
 from ..util import Absent, Default
-
 
 data_id = 10000000
 
@@ -68,7 +68,7 @@ class TestClient:
             data=Default,
             id=Default,
             grp_id=Default,
-            cat_id=ItemCategory.module,
+            cat_id=ItemCat.module,
             attrs=Default,
             eff_ids=Default,
             defeff_id=None,
@@ -107,7 +107,7 @@ class TestClient:
             self,
             data=Default,
             id=Default,
-            cat_id=EffectCategory.passive,
+            cat_id=EffCat.passive,
             is_assistance=False,
             is_offensive=False,
             discharge_attr_id=Absent,
@@ -156,6 +156,21 @@ class TestClient:
             location_modifiers=loc_mods,
             location_group_modifiers=loc_grp_mods,
             location_skillreq_modifiers=loc_srq_mods)
+
+    def mk_mod(
+            self,
+            func=Absent,
+            dom=Absent,
+            src_attr_id=Absent,
+            tgt_attr_id=Absent,
+            op=Absent
+    ):
+        return Modifier(
+            func=func,
+            domain=dom,
+            src_attr_id=src_attr_id,
+            tgt_attr_id=tgt_attr_id,
+            operation=op)
 
     def create_source_request(self, data=Default):
         if data is Default:
