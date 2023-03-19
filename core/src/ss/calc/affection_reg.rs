@@ -303,11 +303,11 @@ impl AffectionRegister {
     }
 }
 
-fn extend_vec_from_storage<K, V>(vec: &mut Vec<V>, storage: &KeyedStorage<K, V>, key: &K)
-where
-    K: Eq + Hash,
-    V: Eq + Hash + Clone,
-{
+fn extend_vec_from_storage<K: Eq + Hash, V: Eq + Hash + Clone>(
+    vec: &mut Vec<V>,
+    storage: &KeyedStorage<K, V>,
+    key: &K,
+) {
     match storage.get(key) {
         Some(v) => vec.extend(v.iter().map(|v| v.clone())),
         _ => (),

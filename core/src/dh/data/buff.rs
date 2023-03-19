@@ -20,7 +20,7 @@ pub struct Buff {
 }
 impl Buff {
     /// Make a new dogma buff out of passed data.
-    pub fn new<T, U>(
+    pub fn new<T: Into<String>, U: Into<String>>(
         id: ReeInt,
         aggregate_mode: T,
         operation: U,
@@ -28,11 +28,7 @@ impl Buff {
         loc_mods: Vec<BuffLM>,
         locgroup_mods: Vec<BuffLGM>,
         locsrq_mods: Vec<BuffLRSM>,
-    ) -> Self
-    where
-        T: Into<String>,
-        U: Into<String>,
-    {
+    ) -> Self {
         Self {
             id,
             aggregate_mode: aggregate_mode.into(),

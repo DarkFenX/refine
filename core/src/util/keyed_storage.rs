@@ -6,11 +6,7 @@ use std::{
 pub(crate) struct KeyedStorage<K, V> {
     data: HashMap<K, HashSet<V>>,
 }
-impl<K, V> KeyedStorage<K, V>
-where
-    K: Eq + Hash,
-    V: Eq + Hash,
-{
+impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage<K, V> {
     pub(crate) fn new() -> KeyedStorage<K, V> {
         KeyedStorage { data: HashMap::new() }
     }

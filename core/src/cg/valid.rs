@@ -38,10 +38,7 @@ fn fk_check(cg_data: &Data, warns: &mut Vec<String>, supp: &Support) {
     fk_check_referer(&cg_data.muta_items, &pkdb, supp, warns);
     fk_check_referer(&cg_data.muta_attrs, &pkdb, supp, warns);
 }
-fn fk_check_referer<T>(rer_vec: &Vec<T>, pkdb: &KeyDb, supp: &Support, warns: &mut Vec<String>)
-where
-    T: Fk + Named,
-{
+fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, supp: &Support, warns: &mut Vec<String>) {
     fk_check_referee(rer_vec, &pkdb.items, supp, T::get_item_fks, dh::Item::get_name(), warns);
     fk_check_referee(
         rer_vec,

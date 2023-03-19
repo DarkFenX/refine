@@ -6,10 +6,7 @@ use crate::util::Named;
 
 use super::data::{Data, Pk};
 
-fn dedup_pks_vec<T>(vec: &mut Vec<T>, warns: &mut Vec<String>)
-where
-    T: Pk + Named,
-{
+fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>, warns: &mut Vec<String>) {
     let mut seen_pks = HashSet::new();
     let removed = vec
         .drain_filter(|v| {

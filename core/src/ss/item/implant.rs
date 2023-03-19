@@ -53,12 +53,6 @@ impl Named for Implant {
 }
 impl fmt::Display for Implant {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "{}(id={}, type_id={})",
-            Self::get_name(),
-            self.item_id,
-            self.type_id
-        )
+        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.item_id, self.type_id)
     }
 }

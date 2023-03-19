@@ -34,10 +34,7 @@ impl Key for Buff {
     }
 }
 
-pub(in crate::ch_impls) fn move_vec_to_map<T>(vec: Vec<T>, map: &mut HashMap<ReeInt, Arc<T>>)
-where
-    T: Key,
-{
+pub(in crate::ch_impls) fn move_vec_to_map<T: Key>(vec: Vec<T>, map: &mut HashMap<ReeInt, Arc<T>>) {
     map.clear();
     map.shrink_to_fit();
     map.reserve(vec.len());

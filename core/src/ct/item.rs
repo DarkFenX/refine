@@ -67,11 +67,7 @@ pub struct ItemEffData {
 }
 impl ItemEffData {
     /// Make a new per-item effect data container out of passed data.
-    pub(crate) fn new(
-        cd: Option<ReeFloat>,
-        charges: Option<ReeInt>,
-        charge_reload_time: Option<ReeFloat>,
-    ) -> Self {
+    pub(crate) fn new(cd: Option<ReeFloat>, charges: Option<ReeInt>, charge_reload_time: Option<ReeFloat>) -> Self {
         Self {
             cd,
             charges,
