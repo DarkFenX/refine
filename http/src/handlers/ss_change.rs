@@ -7,5 +7,5 @@ pub(crate) struct ChangeSolSysReq {}
 pub(crate) struct ChangeSolSysResp {}
 
 pub(crate) async fn change_sol_sys() -> impl IntoResponse {
-    StatusCode::INTERNAL_SERVER_ERROR
+    StatusCode::NOT_IMPLEMENTED
 }
