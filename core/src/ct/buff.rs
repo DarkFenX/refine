@@ -21,8 +21,8 @@ pub struct Buff {
 }
 impl Buff {
     /// Make a new dogma buff out of passed data.
-    pub(crate) fn new(id: ReeInt, aggr_mode: ModAggrMode, op: ModOp, mods: Vec<BuffAttrMod>) -> Buff {
-        Buff {
+    pub(crate) fn new(id: ReeInt, aggr_mode: ModAggrMode, op: ModOp, mods: Vec<BuffAttrMod>) -> Self {
+        Self {
             id,
             aggr_mode,
             op,
@@ -49,8 +49,8 @@ pub struct BuffAttrMod {
 }
 impl BuffAttrMod {
     /// Make a new buff-specific attribute modifier out of passed data.
-    pub(crate) fn new(afee_filter: ModAfeeFilter, afee_attr_id: ReeInt) -> BuffAttrMod {
-        BuffAttrMod {
+    pub(crate) fn new(afee_filter: ModAfeeFilter, afee_attr_id: ReeInt) -> Self {
+        Self {
             afee_filter,
             afee_attr_id,
         }

@@ -67,8 +67,8 @@ impl Effect {
         mod_build_status: ModBuildStatus,
         mods: Vec<AttrMod>,
         stop_ids: Vec<ReeInt>,
-    ) -> Effect {
-        Effect {
+    ) -> Self {
+        Self {
             id,
             state,
             tgt_mode,
@@ -120,8 +120,8 @@ impl AttrMod {
         op: ModOp,
         afee_filter: ModAfeeFilter,
         afee_attr_id: ReeInt,
-    ) -> AttrMod {
-        AttrMod {
+    ) -> Self {
+        Self {
             afor_attr_id,
             aggr_mode,
             op,

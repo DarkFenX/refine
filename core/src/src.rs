@@ -9,7 +9,7 @@ pub struct Src {
     pub(crate) cache_handler: Box<dyn ch::CacheHandler>,
 }
 impl Src {
-    pub fn new(data_handler: Box<dyn dh::DataHandler>, mut cache_handler: Box<dyn ch::CacheHandler>) -> Result<Src> {
+    pub fn new(data_handler: Box<dyn dh::DataHandler>, mut cache_handler: Box<dyn ch::CacheHandler>) -> Result<Self> {
         log::info!(
             "initializing new source with {:?} and {:?}",
             data_handler,
@@ -20,7 +20,7 @@ impl Src {
             let ch_data = regen_cache(&data_handler).map_err(|e| Error::from_kind(e, ErrorKind::SrcCacheGenFailed))?;
             update_cache(dv, &mut cache_handler, ch_data);
         }
-        Ok(Src { cache_handler })
+        Ok(Self { cache_handler })
     }
 }
 

@@ -10,8 +10,8 @@ pub(in crate::ss) struct Rig {
     pub(in crate::ss) state: State,
 }
 impl Rig {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Rig {
-        Rig {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
+        Self {
             item_id,
             fit_id,
             type_id,
@@ -39,6 +39,6 @@ impl Named for Rig {
 }
 impl fmt::Display for Rig {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Rig::get_name(), self.item_id, self.type_id)
+        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.item_id, self.type_id)
     }
 }

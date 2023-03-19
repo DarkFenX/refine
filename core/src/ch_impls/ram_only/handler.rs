@@ -17,8 +17,8 @@ pub struct RamOnlyCHandler {
     storage_buffs: HashMap<ReeInt, Arc<Buff>>,
 }
 impl RamOnlyCHandler {
-    pub fn new() -> RamOnlyCHandler {
-        RamOnlyCHandler {
+    pub fn new() -> Self {
+        Self {
             storage_items: HashMap::new(),
             storage_attrs: HashMap::new(),
             storage_effects: HashMap::new(),

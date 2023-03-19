@@ -10,8 +10,8 @@ pub(in crate::ss) struct Charge {
     pub(in crate::ss) cont: ReeId,
 }
 impl Charge {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, cont: ReeId) -> Charge {
-        Charge {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, cont: ReeId) -> Self {
+        Self {
             item_id,
             fit_id,
             type_id,
@@ -30,7 +30,7 @@ impl fmt::Display for Charge {
         write!(
             f,
             "{}(id={}, type_id={})",
-            Charge::get_name(),
+            Self::get_name(),
             self.item_id,
             self.type_id
         )

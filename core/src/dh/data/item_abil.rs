@@ -22,8 +22,8 @@ impl ItemFighterAbil {
         cooldown: Option<ReeFloat>,
         charge_count: Option<ReeInt>,
         charge_rearm_time: Option<ReeFloat>,
-    ) -> ItemFighterAbil {
-        ItemFighterAbil {
+    ) -> Self {
+        Self {
             item_id,
             abil_id,
             cooldown,

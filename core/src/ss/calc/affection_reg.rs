@@ -57,8 +57,8 @@ pub(in crate::ss::calc) struct AffectionRegister {
     afors_own_srq: KeyedStorage<(ReeId, ReeInt), AffectorSpec>,
 }
 impl AffectionRegister {
-    pub(in crate::ss::calc) fn new() -> AffectionRegister {
-        AffectionRegister {
+    pub(in crate::ss::calc) fn new() -> Self {
+        Self {
             afees: HashSet::new(),
             afees_topdom: KeyedStorage::new(),
             afees_pardom: KeyedStorage::new(),

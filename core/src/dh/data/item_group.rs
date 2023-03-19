@@ -10,8 +10,8 @@ pub struct ItemGroup {
 }
 impl ItemGroup {
     /// Make a new item group out of passed data.
-    pub fn new(id: ReeInt, category_id: ReeInt) -> ItemGroup {
-        ItemGroup { id, category_id }
+    pub fn new(id: ReeInt, category_id: ReeInt) -> Self {
+        Self { id, category_id }
     }
 }
 impl Named for ItemGroup {

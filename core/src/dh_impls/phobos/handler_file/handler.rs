@@ -23,8 +23,8 @@ impl PhbFileDHandler {
     ///
     /// Path should point to the top-level folder of a data dump, e.g. `/phobos_en-us` and not
     /// `/phobos_en-us/fsd_binary`.
-    pub fn new<T: Into<PathBuf>>(path: T) -> PhbFileDHandler {
-        PhbFileDHandler { base_path: path.into() }
+    pub fn new<T: Into<PathBuf>>(path: T) -> Self {
+        Self { base_path: path.into() }
     }
     fn read_json(&self, addr: &Address) -> IntResult<serde_json::Value> {
         let full_path = addr.get_full_path(&self.base_path);

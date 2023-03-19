@@ -28,12 +28,12 @@ impl Buff {
         loc_mods: Vec<BuffLM>,
         locgroup_mods: Vec<BuffLGM>,
         locsrq_mods: Vec<BuffLRSM>,
-    ) -> Buff
+    ) -> Self
     where
         T: Into<String>,
         U: Into<String>,
     {
-        Buff {
+        Self {
             id,
             aggregate_mode: aggregate_mode.into(),
             operation: operation.into(),
@@ -58,8 +58,8 @@ pub struct BuffIM {
 }
 impl BuffIM {
     /// Make a new dogma buff auxiliary modifier out of passed data.
-    pub fn new(attr_id: ReeInt) -> BuffIM {
-        BuffIM { attr_id }
+    pub fn new(attr_id: ReeInt) -> Self {
+        Self { attr_id }
     }
 }
 
@@ -71,8 +71,8 @@ pub struct BuffLM {
 }
 impl BuffLM {
     /// Make a new dogma buff auxiliary modifier out of passed data.
-    pub fn new(attr_id: ReeInt) -> BuffLM {
-        BuffLM { attr_id }
+    pub fn new(attr_id: ReeInt) -> Self {
+        Self { attr_id }
     }
 }
 
@@ -87,8 +87,8 @@ pub struct BuffLGM {
 }
 impl BuffLGM {
     /// Make a new dogma buff auxiliary modifier out of passed data.
-    pub fn new(attr_id: ReeInt, group_id: ReeInt) -> BuffLGM {
-        BuffLGM { attr_id, group_id }
+    pub fn new(attr_id: ReeInt, group_id: ReeInt) -> Self {
+        Self { attr_id, group_id }
     }
 }
 
@@ -104,7 +104,7 @@ pub struct BuffLRSM {
 }
 impl BuffLRSM {
     /// Make a new dogma buff auxiliary modifier out of passed data.
-    pub fn new(attr_id: ReeInt, skill_id: ReeInt) -> BuffLRSM {
-        BuffLRSM { attr_id, skill_id }
+    pub fn new(attr_id: ReeInt, skill_id: ReeInt) -> Self {
+        Self { attr_id, skill_id }
     }
 }

@@ -9,8 +9,8 @@ pub struct Data {
     pub buffs: Vec<ct::Buff>,
 }
 impl Data {
-    pub(crate) fn new() -> Data {
-        Data {
+    pub(crate) fn new() -> Self {
+        Self {
             items: Vec::new(),
             attrs: Vec::new(),
             mutas: Vec::new(),

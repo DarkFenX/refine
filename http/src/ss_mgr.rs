@@ -8,8 +8,8 @@ struct ManagedSolSys {
     accessed: chrono::DateTime<chrono::Utc>,
 }
 impl ManagedSolSys {
-    fn new(sol_sys: reefast::SolarSystem) -> ManagedSolSys {
-        ManagedSolSys {
+    fn new(sol_sys: reefast::SolarSystem) -> Self {
+        Self {
             sol_sys,
             accessed: chrono::Utc::now(),
         }
@@ -20,8 +20,8 @@ pub(crate) struct SolSysManager {
     id_ss_map: RwLock<HashMap<String, ManagedSolSys>>,
 }
 impl SolSysManager {
-    pub(crate) fn new() -> SolSysManager {
-        SolSysManager {
+    pub(crate) fn new() -> Self {
+        Self {
             id_ss_map: RwLock::new(HashMap::new()),
         }
     }

@@ -9,8 +9,8 @@ pub(in crate::ss) struct Stance {
     pub(in crate::ss) citem: Option<Arc<ct::Item>>,
 }
 impl Stance {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Stance {
-        Stance {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
+        Self {
             item_id,
             fit_id,
             type_id,
@@ -28,7 +28,7 @@ impl fmt::Display for Stance {
         write!(
             f,
             "{}(id={}, type_id={})",
-            Stance::get_name(),
+            Self::get_name(),
             self.item_id,
             self.type_id
         )

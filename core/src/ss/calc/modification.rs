@@ -17,8 +17,8 @@ impl Modification {
         res_val: ReeFloat,
         aggr_mode: ModAggrMode,
         afor_pen_immune: bool,
-    ) -> Modification {
-        Modification {
+    ) -> Self {
+        Self {
             op,
             val,
             res_val,

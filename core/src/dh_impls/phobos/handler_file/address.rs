@@ -5,8 +5,8 @@ pub(super) struct Address {
     file: &'static str,
 }
 impl Address {
-    pub(super) fn new(folder: &'static str, file: &'static str) -> Address {
-        Address { folder, file }
+    pub(super) fn new(folder: &'static str, file: &'static str) -> Self {
+        Self { folder, file }
     }
     pub(super) fn get_full_path(&self, base: &PathBuf) -> PathBuf {
         base.join(self.get_part_path())
@@ -15,7 +15,7 @@ impl Address {
         PathBuf::from(self.folder).join(format!("{}.json", self.file))
     }
     pub(super) fn get_part_str(&self) -> String {
-        Address::path_to_str(&self.get_part_path())
+        Self::path_to_str(&self.get_part_path())
     }
     fn path_to_str(path: &PathBuf) -> String {
         match path.to_str() {

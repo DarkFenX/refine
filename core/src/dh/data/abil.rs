@@ -19,8 +19,8 @@ impl FighterAbil {
         target_mode: T,
         disallow_hisec: bool,
         disallow_lowsec: bool,
-    ) -> FighterAbil {
-        FighterAbil {
+    ) -> Self {
+        Self {
             id,
             target_mode: target_mode.into(),
             disallow_hisec,

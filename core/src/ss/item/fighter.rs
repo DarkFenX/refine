@@ -11,8 +11,8 @@ pub(in crate::ss) struct Fighter {
     pub(in crate::ss) amt_override: Option<ReeInt>,
 }
 impl Fighter {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Fighter {
-        Fighter {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
+        Self {
             item_id,
             fit_id,
             type_id,
@@ -32,7 +32,7 @@ impl fmt::Display for Fighter {
         write!(
             f,
             "{}(id={}, type_id={})",
-            Fighter::get_name(),
+            Self::get_name(),
             self.item_id,
             self.type_id
         )

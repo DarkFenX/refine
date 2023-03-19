@@ -12,8 +12,8 @@ pub struct ItemAttr {
 }
 impl ItemAttr {
     /// Make a new item-attribute relation out of passed data.
-    pub fn new(item_id: ReeInt, attr_id: ReeInt, value: ReeFloat) -> ItemAttr {
-        ItemAttr {
+    pub fn new(item_id: ReeInt, attr_id: ReeInt, value: ReeFloat) -> Self {
+        Self {
             item_id,
             attr_id,
             value,

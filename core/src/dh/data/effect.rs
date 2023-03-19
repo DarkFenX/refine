@@ -48,8 +48,8 @@ impl Effect {
         usage_chance_attr_id: Option<ReeInt>,
         resist_attr_id: Option<ReeInt>,
         mods: Vec<EffectMod>,
-    ) -> Effect {
-        Effect {
+    ) -> Self {
+        Self {
             id,
             category_id,
             is_assistance,
@@ -81,8 +81,8 @@ pub struct EffectMod {
 }
 impl EffectMod {
     /// Make a new dogma effect modifier out of passed data.
-    pub fn new<T: Into<String>>(func: T, args: HashMap<String, Primitive>) -> EffectMod {
-        EffectMod {
+    pub fn new<T: Into<String>>(func: T, args: HashMap<String, Primitive>) -> Self {
+        Self {
             func: func.into(),
             args,
         }

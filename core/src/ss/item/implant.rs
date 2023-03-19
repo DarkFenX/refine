@@ -15,8 +15,8 @@ pub(in crate::ss) struct Implant {
     pub(in crate::ss) state: State,
 }
 impl Implant {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Implant {
-        Implant {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
+        Self {
             item_id,
             fit_id,
             type_id,
@@ -56,7 +56,7 @@ impl fmt::Display for Implant {
         write!(
             f,
             "{}(id={}, type_id={})",
-            Implant::get_name(),
+            Self::get_name(),
             self.item_id,
             self.type_id
         )

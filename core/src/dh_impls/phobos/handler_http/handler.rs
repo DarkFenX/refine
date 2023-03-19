@@ -25,10 +25,7 @@ impl PhbHttpDHandler {
     ///
     /// URL should end with a trailing slash, and should point to the top-level directory of
     /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_binary/`.
-    pub fn new<U: Into<String> + Copy + IntoUrl, D: Into<String>>(
-        base_url: U,
-        data_version: D,
-    ) -> Result<PhbHttpDHandler> {
+    pub fn new<U: Into<String> + Copy + IntoUrl, D: Into<String>>(base_url: U, data_version: D) -> Result<Self> {
         let base_url = base_url.into_url().map_err(|e| {
             Error::new(
                 ErrorKind::DhHttpInvalidBaseUrl,
@@ -40,7 +37,7 @@ impl PhbHttpDHandler {
                 ErrorKind::DhHttpInvalidBaseUrl,
                 "passed URL cannot be used as base",
             )),
-            false => Ok(PhbHttpDHandler {
+            false => Ok(Self {
                 base_url,
                 data_version: data_version.into(),
             }),

@@ -12,8 +12,8 @@ pub struct ItemSkillReq {
 }
 impl ItemSkillReq {
     /// Make a new item type skill requirement out of passed data.
-    pub fn new(item_id: ReeInt, skill_id: ReeInt, level: ReeInt) -> ItemSkillReq {
-        ItemSkillReq {
+    pub fn new(item_id: ReeInt, skill_id: ReeInt, level: ReeInt) -> Self {
+        Self {
             item_id,
             skill_id,
             level,

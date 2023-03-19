@@ -14,8 +14,8 @@ pub struct MutaAttrMod {
 }
 impl MutaAttrMod {
     /// Make a new mutaplasmid attribute conversion.
-    pub fn new(muta_id: ReeInt, attr_id: ReeInt, min_attr_mult: ReeFloat, max_attr_mult: ReeFloat) -> MutaAttrMod {
-        MutaAttrMod {
+    pub fn new(muta_id: ReeInt, attr_id: ReeInt, min_attr_mult: ReeFloat, max_attr_mult: ReeFloat) -> Self {
+        Self {
             muta_id,
             attr_id,
             min_attr_mult,

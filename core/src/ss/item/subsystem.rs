@@ -9,8 +9,8 @@ pub(in crate::ss) struct Subsystem {
     pub(in crate::ss) citem: Option<Arc<ct::Item>>,
 }
 impl Subsystem {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Subsystem {
-        Subsystem {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
+        Self {
             item_id,
             fit_id,
             type_id,
@@ -37,7 +37,7 @@ impl fmt::Display for Subsystem {
         write!(
             f,
             "{}(id={}, type_id={})",
-            Subsystem::get_name(),
+            Self::get_name(),
             self.item_id,
             self.type_id
         )

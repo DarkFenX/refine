@@ -26,8 +26,8 @@ pub(in super::super) struct Data {
     pub(in super::super) muta_attrs: Vec<dh::MutaAttrMod>,
 }
 impl Data {
-    pub(in super::super) fn new() -> Data {
-        Data {
+    pub(in super::super) fn new() -> Self {
+        Self {
             items: Vec::new(),
             groups: Vec::new(),
             attrs: Vec::new(),
@@ -49,8 +49,8 @@ pub(in super::super) struct Support {
     pub(in super::super) grp_cat_map: HashMap<ReeInt, ReeInt>,
 }
 impl Support {
-    pub(in super::super) fn new() -> Support {
-        Support {
+    pub(in super::super) fn new() -> Self {
+        Self {
             attr_unit_map: HashMap::new(),
             grp_cat_map: HashMap::new(),
         }
@@ -82,8 +82,8 @@ pub(in super::super) struct KeyDb {
     pub(in super::super) buffs: HashSet<ReeInt>,
 }
 impl KeyDb {
-    pub(in super::super) fn new() -> KeyDb {
-        KeyDb {
+    pub(in super::super) fn new() -> Self {
+        Self {
             items: HashSet::new(),
             groups: HashSet::new(),
             attrs: HashSet::new(),
@@ -93,14 +93,14 @@ impl KeyDb {
         }
     }
     // Primary keys
-    pub(in super::super) fn new_pkdb(cg_data: &Data) -> KeyDb {
-        let mut pkdb = KeyDb::new();
-        KeyDb::extend_pk_vec(&mut pkdb.items, &cg_data.items);
-        KeyDb::extend_pk_vec(&mut pkdb.groups, &cg_data.groups);
-        KeyDb::extend_pk_vec(&mut pkdb.attrs, &cg_data.attrs);
-        KeyDb::extend_pk_vec(&mut pkdb.effects, &cg_data.effects);
-        KeyDb::extend_pk_vec(&mut pkdb.abils, &cg_data.abils);
-        KeyDb::extend_pk_vec(&mut pkdb.buffs, &cg_data.buffs);
+    pub(in super::super) fn new_pkdb(cg_data: &Data) -> Self {
+        let mut pkdb = Self::new();
+        Self::extend_pk_vec(&mut pkdb.items, &cg_data.items);
+        Self::extend_pk_vec(&mut pkdb.groups, &cg_data.groups);
+        Self::extend_pk_vec(&mut pkdb.attrs, &cg_data.attrs);
+        Self::extend_pk_vec(&mut pkdb.effects, &cg_data.effects);
+        Self::extend_pk_vec(&mut pkdb.abils, &cg_data.abils);
+        Self::extend_pk_vec(&mut pkdb.buffs, &cg_data.buffs);
         pkdb
     }
     fn extend_pk_vec<T: Pk>(set: &mut HashSet<ReeInt>, vec: &Vec<T>) {
@@ -109,8 +109,8 @@ impl KeyDb {
         }
     }
     // Foreign keys
-    pub(in super::super) fn new_fkdb(cg_data: &Data, supp: &Support) -> KeyDb {
-        let mut fkdb = KeyDb::new();
+    pub(in super::super) fn new_fkdb(cg_data: &Data, supp: &Support) -> Self {
+        let mut fkdb = Self::new();
         fkdb.extend_fk_vec(&cg_data.items, &supp);
         fkdb.extend_fk_vec(&cg_data.groups, &supp);
         fkdb.extend_fk_vec(&cg_data.attrs, &supp);

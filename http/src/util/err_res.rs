@@ -15,8 +15,8 @@ pub(crate) struct Error {
     pub msg: String,
 }
 impl Error {
-    pub(crate) fn new<T: Into<String>>(kind: ErrorKind, msg: T) -> Error {
-        Error { kind, msg: msg.into() }
+    pub(crate) fn new<T: Into<String>>(kind: ErrorKind, msg: T) -> Self {
+        Self { kind, msg: msg.into() }
     }
 }
 impl error::Error for Error {}

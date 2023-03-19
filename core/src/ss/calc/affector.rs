@@ -12,8 +12,8 @@ pub(in crate::ss::calc) struct AffectorSpec {
     pub(in crate::ss::calc) modifier_idx: ReeIdx,
 }
 impl AffectorSpec {
-    pub(in crate::ss::calc) fn new(item_id: ReeId, effect: Arc<ct::Effect>, modifier_idx: ReeIdx) -> AffectorSpec {
-        AffectorSpec {
+    pub(in crate::ss::calc) fn new(item_id: ReeId, effect: Arc<ct::Effect>, modifier_idx: ReeIdx) -> Self {
+        Self {
             item_id,
             effect,
             modifier_idx,

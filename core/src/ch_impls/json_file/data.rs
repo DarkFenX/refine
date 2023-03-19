@@ -17,8 +17,8 @@ impl CacheData {
         effects: Vec<ct::Effect>,
         buffs: Vec<ct::Buff>,
         fingerprint: String,
-    ) -> CacheData {
-        CacheData {
+    ) -> Self {
+        Self {
             items,
             attrs,
             mutas,

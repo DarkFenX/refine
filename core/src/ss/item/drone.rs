@@ -10,8 +10,8 @@ pub(in crate::ss) struct Drone {
     pub(in crate::ss) state: State,
 }
 impl Drone {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Drone {
-        Drone {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
+        Self {
             item_id,
             fit_id,
             type_id,
@@ -30,7 +30,7 @@ impl fmt::Display for Drone {
         write!(
             f,
             "{}(id={}, type_id={})",
-            Drone::get_name(),
+            Self::get_name(),
             self.item_id,
             self.type_id
         )

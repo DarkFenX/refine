@@ -36,8 +36,8 @@ impl Item {
         effect_datas: HashMap<ReeInt, ItemEffData>,
         defeff_id: Option<ReeInt>,
         srqs: HashMap<ReeInt, ReeInt>,
-    ) -> Item {
-        Item {
+    ) -> Self {
+        Self {
             id,
             itype,
             grp_id,
@@ -71,8 +71,8 @@ impl ItemEffData {
         cd: Option<ReeFloat>,
         charges: Option<ReeInt>,
         charge_reload_time: Option<ReeFloat>,
-    ) -> ItemEffData {
-        ItemEffData {
+    ) -> Self {
+        Self {
             cd,
             charges,
             charge_reload_time,

@@ -12,8 +12,8 @@ pub struct ItemEffect {
 }
 impl ItemEffect {
     /// Make a new item-effect relation out of passed data.
-    pub fn new(item_id: ReeInt, effect_id: ReeInt, is_default: bool) -> ItemEffect {
-        ItemEffect {
+    pub fn new(item_id: ReeInt, effect_id: ReeInt, is_default: bool) -> Self {
+        Self {
             item_id,
             effect_id,
             is_default,

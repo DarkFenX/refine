@@ -26,8 +26,8 @@ impl Attr {
         hig: bool,
         def_val: Option<ReeFloat>,
         max_attr_id: Option<ReeInt>,
-    ) -> Attr {
-        Attr {
+    ) -> Self {
+        Self {
             id,
             penalizable,
             hig,

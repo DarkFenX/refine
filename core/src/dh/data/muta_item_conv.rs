@@ -12,8 +12,8 @@ pub struct MutaItemConv {
 }
 impl MutaItemConv {
     /// Make a new mutaplasmid item type conversion.
-    pub fn new(muta_id: ReeInt, in_item_id: ReeInt, out_item_id: ReeInt) -> MutaItemConv {
-        MutaItemConv {
+    pub fn new(muta_id: ReeInt, in_item_id: ReeInt, out_item_id: ReeInt) -> Self {
+        Self {
             muta_id,
             in_item_id,
             out_item_id,

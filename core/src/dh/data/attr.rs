@@ -28,8 +28,8 @@ impl Attr {
         default_value: Option<ReeFloat>,
         max_attr_id: Option<ReeInt>,
         unit_id: Option<ReeInt>,
-    ) -> Attr {
-        Attr {
+    ) -> Self {
+        Self {
             id,
             stackable,
             high_is_good,

@@ -10,8 +10,8 @@ pub struct Item {
 }
 impl Item {
     /// Make a new item type out of passed data.
-    pub fn new(id: ReeInt, group_id: ReeInt) -> Item {
-        Item { id, group_id }
+    pub fn new(id: ReeInt, group_id: ReeInt) -> Self {
+        Self { id, group_id }
     }
 }
 impl Named for Item {

@@ -16,8 +16,8 @@ pub(crate) struct SrcMgr {
 }
 impl SrcMgr {
     // Crate-wide methods
-    pub(crate) fn new(cache_folder: Option<String>) -> SrcMgr {
-        SrcMgr {
+    pub(crate) fn new(cache_folder: Option<String>) -> Self {
+        Self {
             cache_folder,
             alias_src_map: RwLock::new(HashMap::new()),
             default_alias: RwLock::new(None),

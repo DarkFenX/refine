@@ -9,8 +9,8 @@ pub(in crate::ss) struct Ship {
     pub(in crate::ss) citem: Option<Arc<ct::Item>>,
 }
 impl Ship {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Ship {
-        Ship {
+    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
+        Self {
             item_id,
             fit_id,
             type_id,
@@ -25,6 +25,6 @@ impl Named for Ship {
 }
 impl fmt::Display for Ship {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Ship::get_name(), self.item_id, self.type_id)
+        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.item_id, self.type_id)
     }
 }

@@ -28,8 +28,8 @@ pub struct SolarSystem {
     calc: CalcSvc,
 }
 impl SolarSystem {
-    pub fn new(src: Arc<Src>) -> SolarSystem {
-        SolarSystem {
+    pub fn new(src: Arc<Src>) -> Self {
+        Self {
             src,
             fit_cnt: Wrapping(0),
             fits: HashSet::new(),

@@ -45,8 +45,8 @@ pub(in crate::ss) struct CalcSvc {
     affection: AffectionRegister,
 }
 impl CalcSvc {
-    pub(in crate::ss) fn new() -> CalcSvc {
-        CalcSvc {
+    pub(in crate::ss) fn new() -> Self {
+        Self {
             attrs: HashMap::new(),
             affection: AffectionRegister::new(),
         }

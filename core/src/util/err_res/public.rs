@@ -24,8 +24,8 @@ pub struct Error {
     pub msg: String,
 }
 impl Error {
-    pub fn new<T: Into<String>>(kind: ErrorKind, msg: T) -> Error {
-        Error { kind, msg: msg.into() }
+    pub fn new<T: Into<String>>(kind: ErrorKind, msg: T) -> Self {
+        Self { kind, msg: msg.into() }
     }
 }
 impl error::Error for Error {}
@@ -42,7 +42,7 @@ pub(crate) trait FromKind<T> {
 }
 impl FromKind<IntError> for Error {
     fn from_kind(src: IntError, kind: ErrorKind) -> Self {
-        Error::new(kind, src.msg)
+        Self::new(kind, src.msg)
     }
 }
 impl<T> FromKind<IntResult<T>> for Result<T> {

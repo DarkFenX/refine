@@ -20,8 +20,8 @@ impl Module {
         state: State,
         pos: ReeIdx,
         charge: Option<ReeId>,
-    ) -> Module {
-        Module {
+    ) -> Self {
+        Self {
             item_id,
             fit_id,
             type_id,
@@ -42,7 +42,7 @@ impl fmt::Display for Module {
         write!(
             f,
             "{}(id={}, type_id={})",
-            Module::get_name(),
+            Self::get_name(),
             self.item_id,
             self.type_id
         )

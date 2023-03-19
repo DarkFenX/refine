@@ -10,8 +10,8 @@ pub(super) struct FsdItem {
     pub(super) item: serde_json::Value,
 }
 impl FsdItem {
-    pub(super) fn new<T: Into<String>>(id: T, item: serde_json::Value) -> FsdItem {
-        FsdItem { id: id.into(), item }
+    pub(super) fn new<T: Into<String>>(id: T, item: serde_json::Value) -> Self {
+        Self { id: id.into(), item }
     }
 }
 
