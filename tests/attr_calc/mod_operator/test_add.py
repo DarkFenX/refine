@@ -9,6 +9,7 @@ def test_penalized(client, consts):
     effect = client.mk_effect(mod_info=[mod])
     item = client.mk_item(attrs={src_attr.id: 5.2, tgt_attr.id: 3.1}, eff_ids=[effect.id])
     client.create_sources()
+    ss = client.create_ss()
 
 
 def test_non_penalized(client, consts):
@@ -20,3 +21,4 @@ def test_non_penalized(client, consts):
     effect = client.mk_effect()
     item = client.mk_item(attrs={src_attr.id: 5.2, tgt_attr.id: 3.1}, eff_ids=[effect.id])
     client.create_sources()
+    ss = client.create_ss()

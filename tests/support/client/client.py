@@ -46,6 +46,7 @@ class TestClient:
         self.__stack_alias_map = {}
         self.__session = requests.Session()
 
+    # Data-related methods
     def mk_data(self):
         global data_id
         alias = str(data_id)
@@ -206,3 +207,21 @@ class TestClient:
     def create_sources(self):
         for data in self.__datas.values():
             self.create_source(data)
+
+    # Solar system-related methods
+    def create_ss_request(self, data=Default):
+        if data is Default:
+            data = self.__default_data
+        payload = {}
+        if data is not Absent:
+            payload['src_alias'] = data.alias
+        req = requests.Request('POST', f'http://localhost:8000/solar_system', json=payload)
+        return req
+
+    def create_ss(self, data=Default):
+        if data is Default:
+            data = self.__default_data
+        req = self.create_ss_request(data=data)
+        resp = self.__session.send(req.prepare())
+        assert resp.status_code == 201
+        return resp.json()['id']
