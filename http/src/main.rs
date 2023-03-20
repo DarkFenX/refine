@@ -4,8 +4,10 @@ use std::{env, net::SocketAddr, sync::Arc};
 
 use axum::{
     routing::{delete, get, patch, post},
-    Router,
+    Router, ServiceExt,
 };
+use tower::Layer;
+use tower_http::normalize_path::NormalizePathLayer;
 
 use crate::{settings::Settings, state::AppState};
 
@@ -34,23 +36,25 @@ async fn main() {
     });
 
     // build our application with a route
-    let app = Router::new()
-        .route("/", get(handlers::root))
-        .route("/source/:alias", post(handlers::create_source))
-        .route("/source/:alias", delete(handlers::delete_source))
-        .route("/solar_system", post(handlers::create_sol_sys))
-        .route("/solar_system/:ssid", get(handlers::get_sol_sys))
-        .route("/solar_system/:ssid", patch(handlers::change_sol_sys))
-        .route("/solar_system/:ssid", delete(handlers::delete_sol_sys))
-        .route("/solar_system/:ssid/fit", post(handlers::create_fit))
-        .route("/solar_system/:ssid/fit/:fid", get(handlers::get_fit))
-        .route("/solar_system/:ssid/fit/:fid", patch(handlers::change_fit))
-        .route("/solar_system/:ssid/fit/:fid", delete(handlers::delete_fit))
-        .route("/solar_system/:ssid/fleet", post(handlers::create_fleet))
-        .route("/solar_system/:ssid/fleet/:fid", get(handlers::get_fleet))
-        .route("/solar_system/:ssid/fleet/:fid", patch(handlers::change_fleet))
-        .route("/solar_system/:ssid/fleet/:fid", delete(handlers::delete_fleet))
-        .with_state(state);
+    let app = NormalizePathLayer::trim_trailing_slash().layer(
+        Router::new()
+            .route("/", get(handlers::root))
+            .route("/source/:alias", post(handlers::create_source))
+            .route("/source/:alias", delete(handlers::delete_source))
+            .route("/solar_system", post(handlers::create_sol_sys))
+            .route("/solar_system/:ssid", get(handlers::get_sol_sys))
+            .route("/solar_system/:ssid", patch(handlers::change_sol_sys))
+            .route("/solar_system/:ssid", delete(handlers::delete_sol_sys))
+            .route("/solar_system/:ssid/fit", post(handlers::create_fit))
+            .route("/solar_system/:ssid/fit/:fid", get(handlers::get_fit))
+            .route("/solar_system/:ssid/fit/:fid", patch(handlers::change_fit))
+            .route("/solar_system/:ssid/fit/:fid", delete(handlers::delete_fit))
+            .route("/solar_system/:ssid/fleet", post(handlers::create_fleet))
+            .route("/solar_system/:ssid/fleet/:fid", get(handlers::get_fleet))
+            .route("/solar_system/:ssid/fleet/:fid", patch(handlers::change_fleet))
+            .route("/solar_system/:ssid/fleet/:fid", delete(handlers::delete_fleet))
+            .with_state(state),
+    );
 
     // run our app with hyper
     // `axum::Server` is a re-export of `hyper::Server`
