@@ -10,6 +10,7 @@ def test_penalized(client, consts):
     item = client.mk_item(attrs={src_attr.id: 5.2, tgt_attr.id: 3.1}, eff_ids=[effect.id])
     client.create_sources()
     ss = client.create_ss()
+    fit = client.create_fit(ss)
 
 
 def test_non_penalized(client, consts):
@@ -22,3 +23,4 @@ def test_non_penalized(client, consts):
     item = client.mk_item(attrs={src_attr.id: 5.2, tgt_attr.id: 3.1}, eff_ids=[effect.id])
     client.create_sources()
     ss = client.create_ss()
+    fit = client.create_fit(ss)

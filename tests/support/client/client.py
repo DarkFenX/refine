@@ -215,13 +215,24 @@ class TestClient:
         payload = {}
         if data is not Absent:
             payload['src_alias'] = data.alias
-        req = requests.Request('POST', f'http://localhost:8000/solar_system', json=payload)
+        req = requests.Request('POST', 'http://localhost:8000/solar_system', json=payload)
         return req
 
     def create_ss(self, data=Default):
         if data is Default:
             data = self.__default_data
         req = self.create_ss_request(data=data)
+        resp = self.__session.send(req.prepare())
+        assert resp.status_code == 201
+        return resp.json()['id']
+
+    def create_fit_request(self, ss):
+        payload = {}
+        req = requests.Request('POST', f'http://localhost:8000/solar_system/{ss}/fit', json=payload)
+        return req
+
+    def create_fit(self, ss):
+        req = self.create_fit_request(ss=ss)
         resp = self.__session.send(req.prepare())
         assert resp.status_code == 201
         return resp.json()['id']
