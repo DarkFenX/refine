@@ -1,4 +1,4 @@
-use crate::{src_mgr::SrcMgr, ss_mgr::SolSysManager};
+use crate::{src_mgr::SrcMgr, ss::SolSysManager};
 
 pub(crate) struct AppState {
     pub(crate) src_mgr: SrcMgr,

@@ -3,18 +3,7 @@ use std::collections::HashMap;
 use tokio::{sync::RwLock, time};
 use uuid::Uuid;
 
-struct ManagedSolSys {
-    sol_sys: reefast::SolarSystem,
-    accessed: chrono::DateTime<chrono::Utc>,
-}
-impl ManagedSolSys {
-    fn new(sol_sys: reefast::SolarSystem) -> Self {
-        Self {
-            sol_sys,
-            accessed: chrono::Utc::now(),
-        }
-    }
-}
+use super::ss::ManagedSolSys;
 
 pub(crate) struct SolSysManager {
     id_ss_map: RwLock<HashMap<String, ManagedSolSys>>,
@@ -46,7 +35,7 @@ impl SolSysManager {
             .read()
             .await
             .iter()
-            .filter(|(_, v)| v.accessed + lifetime < now)
+            .filter(|(_, v)| *v.last_accessed() + lifetime < now)
             .map(|(k, _)| k.clone())
             .collect();
         if to_clean.is_empty() {
