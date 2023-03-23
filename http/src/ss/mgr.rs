@@ -35,7 +35,7 @@ impl SolSysManager {
             .read()
             .await
             .iter()
-            .filter(|(_, v)| *v.last_accessed() + lifetime < now)
+            .filter(|(_, v)| !v.is_busy() && *v.last_accessed() + lifetime < now)
             .map(|(k, _)| k.clone())
             .collect();
         if to_clean.is_empty() {
