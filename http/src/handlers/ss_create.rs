@@ -16,34 +16,26 @@ pub(crate) struct CreateSolSysResp {
 
 #[derive(serde::Serialize)]
 pub(crate) struct CreateSolSysErr {
-    error: String,
+    code: String,
+    message: String,
 }
 
 pub(crate) async fn create_sol_sys(
     State(state): State<Arc<AppState>>,
     Json(payload): Json<CreateSolSysReq>,
 ) -> impl IntoResponse {
-    let src = match payload.src_alias {
-        Some(a) => match state.src_mgr.get(&a).await {
-            Some(s) => s,
-            None => {
-                return (
-                    StatusCode::UNPROCESSABLE_ENTITY,
-                    Json(format!("requested source \"{a}\" not found")),
-                )
-                    .into_response()
-            }
-        },
-        None => match state.src_mgr.get_default().await {
-            Some(s) => s,
-            None => {
-                return (
-                    StatusCode::UNPROCESSABLE_ENTITY,
-                    Json("source name is not specified, default source is not defined"),
-                )
-                    .into_response()
-            }
-        },
+    let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
+        Ok(s) => s,
+        Err(e) => {
+            return (
+                StatusCode::UNPROCESSABLE_ENTITY,
+                Json(CreateSolSysErr {
+                    code: e.get_code(),
+                    message: e.msg,
+                }),
+            )
+                .into_response()
+        }
     };
     let sol_sys = tokio_rayon::spawn_fifo(move || reefast::SolarSystem::new(src)).await;
     let sol_sys_id = state.ss_mgr.add_sol_sys(sol_sys).await;

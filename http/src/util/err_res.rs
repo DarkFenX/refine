@@ -3,11 +3,12 @@ use std::{error, fmt, result};
 #[derive(Debug)]
 pub(crate) enum ErrorKind {
     SrcNotFound,
+    NoDefaultSrc,
     SrcAliasNotAvailable,
-    DhInitFailed,
-    SrcInitFailed,
-    SettingsInitFailed,
     NoCoreSolSys,
+    SettingsInitFailed,
+    DhInitFailed(reefast::ErrorKind),
+    SrcInitFailed(reefast::ErrorKind),
     CoreError(reefast::ErrorKind),
 }
 
@@ -19,6 +20,14 @@ pub(crate) struct Error {
 impl Error {
     pub(crate) fn new<T: Into<String>>(kind: ErrorKind, msg: T) -> Self {
         Self { kind, msg: msg.into() }
+    }
+    pub(crate) fn get_code(&self) -> String {
+        let code = match self.kind {
+            ErrorKind::SrcNotFound => "SRC-001",
+            ErrorKind::SrcAliasNotAvailable => "SRC-002",
+            _ => "XXX-000",
+        };
+        code.to_string()
     }
 }
 impl From<reefast::Error> for Error {
