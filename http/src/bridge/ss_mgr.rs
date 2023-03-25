@@ -8,10 +8,10 @@ use uuid::Uuid;
 
 use super::ss::SolarSystem;
 
-pub(crate) struct SolSysManager {
+pub(crate) struct SolSysMgr {
     id_ss_map: RwLock<HashMap<String, Arc<Mutex<SolarSystem>>>>,
 }
-impl SolSysManager {
+impl SolSysMgr {
     pub(crate) fn new() -> Self {
         Self {
             id_ss_map: RwLock::new(HashMap::new()),

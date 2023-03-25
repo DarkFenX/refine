@@ -14,8 +14,7 @@ pub(crate) struct Settings {
 }
 impl Settings {
     pub(crate) fn new(conf_path: Option<String>) -> Result<Self> {
-        Self::new_internal(conf_path)
-            .map_err(|e| Error::new(ErrorKind::SettingsInitFailed(e.to_string())))
+        Self::new_internal(conf_path).map_err(|e| Error::new(ErrorKind::SettingsInitFailed(e.to_string())))
     }
     fn new_internal(conf_path: Option<String>) -> std::result::Result<Self, config::ConfigError> {
         // Set defaults - in quite a cumbersome way, mostly because config crate does not expose
