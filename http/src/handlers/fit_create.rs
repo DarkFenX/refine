@@ -26,7 +26,7 @@ pub(crate) async fn create_fit(State(state): State<Arc<AppState>>, Path(ssid): P
     };
     let fit_id = match guarded_ss.lock().await.add_fit().await {
         Ok(fid) => fid,
-        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(e.msg)).into_response(),
+        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(e.to_string())).into_response(),
     };
     (StatusCode::CREATED, Json(CreateFitResp { id: fit_id.to_string() })).into_response()
 }

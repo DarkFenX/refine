@@ -31,7 +31,7 @@ pub(crate) async fn create_sol_sys(
                 StatusCode::UNPROCESSABLE_ENTITY,
                 Json(CreateSolSysErr {
                     code: e.get_code(),
-                    message: e.msg,
+                    message: e.to_string(),
                 }),
             )
                 .into_response()

@@ -39,10 +39,7 @@ impl SrcMgr {
         );
 
         if !self.check_alias_availability(&alias).await {
-            return Err(Error::new(
-                ErrorKind::SrcAliasNotAvailable,
-                format!("source alias \"{}\" is not available", alias),
-            ));
+            return Err(Error::new(ErrorKind::SrcAliasNotAvailable(alias)));
         }
         self.lock_alias(&alias).await;
         let alias_cloned = alias.clone();
@@ -79,7 +76,7 @@ impl SrcMgr {
             .write()
             .await
             .remove(alias)
-            .ok_or_else(|| Error::new(ErrorKind::SrcNotFound, format!("no source with alias \"{}\"", alias)))?;
+            .ok_or_else(|| Error::new(ErrorKind::SrcNotFound(alias.to_string())))?;
         let default_alias = self.default_alias.read().await.clone();
         match default_alias {
             Some(a) if a == alias => *self.default_alias.write().await = None,
@@ -102,17 +99,17 @@ impl SrcMgr {
         }
     }
     async fn get_by_alias(&self, alias: &str) -> Result<Arc<reefast::Src>> {
-        self.alias_src_map.read().await.get(alias).cloned().ok_or_else(|| {
-            Error::new(
-                ErrorKind::SrcNotFound,
-                format!("source with alias \"{alias}\" not found"),
-            )
-        })
+        self.alias_src_map
+            .read()
+            .await
+            .get(alias)
+            .cloned()
+            .ok_or_else(|| Error::new(ErrorKind::SrcNotFound(alias.to_string())))
     }
     async fn get_default(&self) -> Result<Arc<reefast::Src>> {
         match self.default_alias.read().await.as_ref() {
             Some(a) => self.get_by_alias(a).await,
-            None => Err(Error::new(ErrorKind::NoDefaultSrc, "default source is not defined")),
+            None => Err(Error::new(ErrorKind::NoDefaultSrc)),
         }
     }
 }
@@ -125,7 +122,7 @@ fn create_src(
 ) -> Result<reefast::Src> {
     let dh = Box::new(
         reefast::dh_impls::PhbHttpDHandler::new(data_base_url.as_str(), data_version)
-            .map_err(|e| Error::new(ErrorKind::DhInitFailed(e.kind), e.msg))?,
+            .map_err(|e| Error::new(ErrorKind::DhInitFailed(e.kind, e.msg)))?,
     );
     let ch: Box<dyn reefast::ch::CacheHandler> = match cache_folder {
         // Use cache handler with persistent storage if cache path is specified
@@ -133,5 +130,5 @@ fn create_src(
         // Use RAM-only cache handler if path is not specified
         None => Box::new(reefast::ch_impls::RamOnlyCHandler::new()),
     };
-    reefast::Src::new(dh, ch).map_err(|e| Error::new(ErrorKind::SrcInitFailed(e.kind), e.msg))
+    reefast::Src::new(dh, ch).map_err(|e| Error::new(ErrorKind::SrcInitFailed(e.kind, e.msg)))
 }

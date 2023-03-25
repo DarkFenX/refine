@@ -18,7 +18,7 @@ impl SolarSystem {
     pub(crate) async fn add_fit(&mut self) -> Result<reefast::ReeId> {
         let mut ss = match self.sol_sys.take() {
             Some(ss) => ss,
-            None => return Err(Error::new(ErrorKind::NoCoreSolSys, "unable to take core solar system")),
+            None => return Err(Error::new(ErrorKind::NoCoreSolSys)),
         };
         let (res, ss) = tokio_rayon::spawn_fifo(move || {
             let res = ss.add_fit();

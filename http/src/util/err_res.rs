@@ -2,29 +2,28 @@ use std::{error, fmt, result};
 
 #[derive(Debug)]
 pub(crate) enum ErrorKind {
-    SrcNotFound,
+    SrcAliasNotAvailable(String),
+    SrcNotFound(String),
     NoDefaultSrc,
-    SrcAliasNotAvailable,
     NoCoreSolSys,
-    SettingsInitFailed,
-    DhInitFailed(reefast::ErrorKind),
-    SrcInitFailed(reefast::ErrorKind),
-    CoreError(reefast::ErrorKind),
+    SettingsInitFailed(String),
+    DhInitFailed(reefast::ErrorKind, String),
+    SrcInitFailed(reefast::ErrorKind, String),
+    CoreError(reefast::ErrorKind, String),
 }
 
 #[derive(Debug)]
 pub(crate) struct Error {
     pub(crate) kind: ErrorKind,
-    pub(crate) msg: String,
 }
 impl Error {
-    pub(crate) fn new<T: Into<String>>(kind: ErrorKind, msg: T) -> Self {
-        Self { kind, msg: msg.into() }
+    pub(crate) fn new(kind: ErrorKind) -> Self {
+        Self { kind }
     }
     pub(crate) fn get_code(&self) -> String {
         let code = match self.kind {
-            ErrorKind::SrcNotFound => "SRC-001",
-            ErrorKind::SrcAliasNotAvailable => "SRC-002",
+            ErrorKind::SrcNotFound(_) => "SRC-001",
+            ErrorKind::SrcAliasNotAvailable(_) => "SRC-002",
             _ => "XXX-000",
         };
         code.to_string()
@@ -32,13 +31,22 @@ impl Error {
 }
 impl From<reefast::Error> for Error {
     fn from(err: reefast::Error) -> Self {
-        Self::new(ErrorKind::CoreError(err.kind), err.msg)
+        Self::new(ErrorKind::CoreError(err.kind, err.msg))
     }
 }
 impl error::Error for Error {}
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.msg)
+        match &self.kind {
+            ErrorKind::SrcAliasNotAvailable(alias) => write!(f, "source alias \"{alias}\" is not available"),
+            ErrorKind::SrcNotFound(alias) => write!(f, "source with alias \"{alias}\" not found"),
+            ErrorKind::NoDefaultSrc => write!(f, "default source is not defined"),
+            ErrorKind::NoCoreSolSys => write!(f, "unable to take core solar system"),
+            ErrorKind::SettingsInitFailed(reason) => write!(f, "config initialization failed: {reason}"),
+            ErrorKind::DhInitFailed(_, reason) => write!(f, "data handler initialization failed: {reason}"),
+            ErrorKind::SrcInitFailed(_, reason) => write!(f, "source initialization failed: {reason}"),
+            ErrorKind::CoreError(_, reason) => write!(f, "core library error: {reason}"),
+        }
     }
 }
 
