@@ -1,12 +1,15 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
 
-use tokio::{sync::RwLock, time};
+use tokio::{
+    sync::{Mutex, RwLock},
+    time,
+};
 use uuid::Uuid;
 
-use super::ss::ManagedSolSys;
+use super::ss::SolarSystem;
 
 pub(crate) struct SolSysManager {
-    id_ss_map: RwLock<HashMap<String, ManagedSolSys>>,
+    id_ss_map: RwLock<HashMap<String, Arc<Mutex<SolarSystem>>>>,
 }
 impl SolSysManager {
     pub(crate) fn new() -> Self {
@@ -20,8 +23,11 @@ impl SolSysManager {
         self.id_ss_map
             .write()
             .await
-            .insert(id.clone(), ManagedSolSys::new(sol_sys));
+            .insert(id.clone(), Arc::new(Mutex::new(SolarSystem::new(sol_sys))));
         id
+    }
+    pub(crate) async fn get_sol_sys(&self, id: &str) -> Option<Arc<Mutex<SolarSystem>>> {
+        self.id_ss_map.read().await.get(id).cloned()
     }
     pub(crate) async fn delete_sol_sys(&self, id: &str) -> bool {
         self.id_ss_map.write().await.remove(id).is_some()
@@ -35,7 +41,11 @@ impl SolSysManager {
             .read()
             .await
             .iter()
-            .filter(|(_, v)| *v.last_accessed() + lifetime < now)
+            .filter(|(_, v)| match v.try_lock() {
+                Ok(ss) => *ss.last_accessed() + lifetime < now,
+                // If it's locked - it means it's being worked on, we don't touch that
+                Err(_) => false,
+            })
             .map(|(k, _)| k.clone())
             .collect();
         if to_clean.is_empty() {

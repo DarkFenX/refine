@@ -7,16 +7,23 @@ pub(crate) enum ErrorKind {
     DhInitFailed,
     SrcInitFailed,
     SettingsInitFailed,
+    NoCoreSolSys,
+    CoreError(reefast::ErrorKind),
 }
 
 #[derive(Debug)]
 pub(crate) struct Error {
-    pub kind: ErrorKind,
-    pub msg: String,
+    pub(crate) kind: ErrorKind,
+    pub(crate) msg: String,
 }
 impl Error {
     pub(crate) fn new<T: Into<String>>(kind: ErrorKind, msg: T) -> Self {
         Self { kind, msg: msg.into() }
+    }
+}
+impl From<reefast::Error> for Error {
+    fn from(err: reefast::Error) -> Self {
+        Self::new(ErrorKind::CoreError(err.kind), err.msg)
     }
 }
 impl error::Error for Error {}
