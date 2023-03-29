@@ -3,7 +3,7 @@ use std::{collections::HashMap, fmt, sync::Arc};
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    IntError, ReeFloat, ReeInt,
+    IntError, ReeInt,
 };
 
 use super::super::common::move_vec_to_map;
@@ -15,8 +15,6 @@ pub struct RamOnlyCHandler {
     storage_effects: HashMap<ReeInt, Arc<Effect>>,
     storage_mutas: HashMap<ReeInt, Arc<Muta>>,
     storage_buffs: HashMap<ReeInt, Arc<Buff>>,
-    cg_warns: Vec<String>,
-    cg_cleanup: HashMap<String, ReeFloat>,
 }
 impl RamOnlyCHandler {
     pub fn new() -> Self {
@@ -26,8 +24,6 @@ impl RamOnlyCHandler {
             storage_effects: HashMap::new(),
             storage_mutas: HashMap::new(),
             storage_buffs: HashMap::new(),
-            cg_warns: Vec::new(),
-            cg_cleanup: HashMap::new(),
         }
     }
 }
@@ -61,14 +57,6 @@ impl ch::CacheHandler for RamOnlyCHandler {
     fn get_fingerprint(&self) -> Option<&str> {
         None
     }
-    /// Get cache generation warnings.
-    fn get_cg_warns(&self) -> &Vec<String> {
-        &self.cg_warns
-    }
-    /// Get cache generation cleanup stats.
-    fn get_cg_cleanup_stats(&self) -> &HashMap<String, ReeFloat> {
-        &self.cg_cleanup
-    }
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> ch::Result<()> {
         Err(Box::new(IntError::new(
@@ -82,7 +70,5 @@ impl ch::CacheHandler for RamOnlyCHandler {
         move_vec_to_map(ch_data.effects, &mut self.storage_effects);
         move_vec_to_map(ch_data.mutas, &mut self.storage_mutas);
         move_vec_to_map(ch_data.buffs, &mut self.storage_buffs);
-        self.cg_warns = ch_data.cg_warns;
-        self.cg_cleanup = ch_data.cg_cleanup;
     }
 }

@@ -12,7 +12,7 @@ use log;
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    IntError, IntResult, ReeFloat, ReeInt,
+    IntError, IntResult, ReeInt,
 };
 
 use super::{super::common::move_vec_to_map, data::CacheData};
@@ -27,8 +27,6 @@ pub struct JsonFileCHandler {
     storage_mutas: HashMap<ReeInt, Arc<Muta>>,
     storage_buffs: HashMap<ReeInt, Arc<Buff>>,
     fingerprint: Option<String>,
-    cg_warns: Vec<String>,
-    cg_cleanup: HashMap<String, ReeFloat>,
 }
 impl JsonFileCHandler {
     /// Constructs new `JsonFileCHandler` using full path to cache folder and file name (without
@@ -43,8 +41,6 @@ impl JsonFileCHandler {
             storage_mutas: HashMap::new(),
             storage_buffs: HashMap::new(),
             fingerprint: None,
-            cg_warns: Vec::new(),
-            cg_cleanup: HashMap::new(),
         }
     }
     fn get_full_path(&self) -> PathBuf {
@@ -69,8 +65,6 @@ impl JsonFileCHandler {
         move_vec_to_map(ch_data.mutas, &mut self.storage_mutas);
         move_vec_to_map(ch_data.buffs, &mut self.storage_buffs);
         self.fingerprint = Some(ch_data.fingerprint);
-        self.cg_warns = ch_data.cg_warns;
-        self.cg_cleanup = ch_data.cg_cleanup;
     }
     fn update_persistent_cache(&self, ch_data: &CacheData) {
         let full_path = self.get_full_path();
@@ -125,14 +119,6 @@ impl ch::CacheHandler for JsonFileCHandler {
     fn get_fingerprint(&self) -> Option<&str> {
         self.fingerprint.as_deref()
     }
-    /// Get cache generation warnings.
-    fn get_cg_warns(&self) -> &Vec<String> {
-        &self.cg_warns
-    }
-    /// Get cache generation cleanup stats.
-    fn get_cg_cleanup_stats(&self) -> &HashMap<String, ReeFloat> {
-        &self.cg_cleanup
-    }
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> ch::Result<()> {
         let full_path = self.get_full_path();
@@ -158,8 +144,6 @@ impl ch::CacheHandler for JsonFileCHandler {
             ch_data.effects,
             ch_data.buffs,
             fingerprint,
-            ch_data.cg_warns,
-            ch_data.cg_cleanup,
         );
         match self.create_cache_folder() {
             Ok(_) => self.update_persistent_cache(&cache),

@@ -9,15 +9,14 @@ use crate::{
 
 use super::Data;
 
-pub(super) fn conv_buffs(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buff> {
+pub(super) fn conv_buffs(cg_data: &Data) -> Vec<ct::Buff> {
     let mut converted = Vec::new();
     for buff_data in cg_data.buffs.iter().sorted_by_key(|v| v.id) {
         let op = match conv_buff_op(&buff_data.operation) {
             Ok(op) => op,
             Err(e) => {
                 let msg = format!("{} {}: {}", dh::Buff::get_name(), buff_data.id, e.msg);
-                log::warn!("{}", &msg);
-                warns.push(msg);
+                log::warn!("{}", msg);
                 continue;
             }
         };
@@ -25,8 +24,7 @@ pub(super) fn conv_buffs(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::Buf
             Ok(am) => am,
             Err(e) => {
                 let msg = format!("{} {}: {}", dh::Buff::get_name(), buff_data.id, e.msg);
-                log::warn!("{}", &msg);
-                warns.push(msg);
+                log::warn!("{}", msg);
                 continue;
             }
         };

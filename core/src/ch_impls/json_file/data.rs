@@ -1,6 +1,4 @@
-use std::collections::HashMap;
-
-use crate::{ct, ReeFloat};
+use crate::ct;
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub(super) struct CacheData {
@@ -10,8 +8,6 @@ pub(super) struct CacheData {
     pub(super) effects: Vec<ct::Effect>,
     pub(super) buffs: Vec<ct::Buff>,
     pub(super) fingerprint: String,
-    pub(super) cg_warns: Vec<String>,
-    pub(super) cg_cleanup: HashMap<String, ReeFloat>,
 }
 impl CacheData {
     pub(super) fn new(
@@ -21,8 +17,6 @@ impl CacheData {
         effects: Vec<ct::Effect>,
         buffs: Vec<ct::Buff>,
         fingerprint: String,
-        cg_warns: Vec<String>,
-        cg_cleanup: HashMap<String, ReeFloat>,
     ) -> Self {
         Self {
             items,
@@ -31,8 +25,6 @@ impl CacheData {
             effects,
             buffs,
             fingerprint,
-            cg_warns,
-            cg_cleanup,
         }
     }
 }

@@ -13,68 +13,41 @@ use super::{
 /// Ensure that assumptions REEFAST makes about the data are true.
 ///
 /// See documentation for [`dh`](crate::dh) module about assumptions.
-pub(super) fn validate(cg_data: &mut Data, supp: &Support, warns: &mut Vec<String>) {
-    fk_check(cg_data, warns, supp);
-    default_effects(cg_data, warns);
-    known_fighter_abilities(cg_data, warns);
-    fighter_ability_effect(cg_data, warns);
+pub(super) fn validate(cg_data: &mut Data, supp: &Support) {
+    fk_check(cg_data, supp);
+    default_effects(cg_data);
+    known_fighter_abilities(cg_data);
+    fighter_ability_effect(cg_data);
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
 /// a good idea, since it can help trace down the case when something fails to load from cache
 /// later.
-fn fk_check(cg_data: &Data, warns: &mut Vec<String>, supp: &Support) {
+fn fk_check(cg_data: &Data, supp: &Support) {
     let pkdb = KeyDb::new_pkdb(cg_data);
-    fk_check_referer(&cg_data.items, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.groups, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.attrs, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.item_attrs, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.effects, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.item_effects, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.abils, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.item_abils, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.buffs, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.item_srqs, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.muta_items, &pkdb, supp, warns);
-    fk_check_referer(&cg_data.muta_attrs, &pkdb, supp, warns);
+    fk_check_referer(&cg_data.items, &pkdb, supp);
+    fk_check_referer(&cg_data.groups, &pkdb, supp);
+    fk_check_referer(&cg_data.attrs, &pkdb, supp);
+    fk_check_referer(&cg_data.item_attrs, &pkdb, supp);
+    fk_check_referer(&cg_data.effects, &pkdb, supp);
+    fk_check_referer(&cg_data.item_effects, &pkdb, supp);
+    fk_check_referer(&cg_data.abils, &pkdb, supp);
+    fk_check_referer(&cg_data.item_abils, &pkdb, supp);
+    fk_check_referer(&cg_data.buffs, &pkdb, supp);
+    fk_check_referer(&cg_data.item_srqs, &pkdb, supp);
+    fk_check_referer(&cg_data.muta_items, &pkdb, supp);
+    fk_check_referer(&cg_data.muta_attrs, &pkdb, supp);
 }
-fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, supp: &Support, warns: &mut Vec<String>) {
-    fk_check_referee(rer_vec, &pkdb.items, supp, T::get_item_fks, dh::Item::get_name(), warns);
-    fk_check_referee(
-        rer_vec,
-        &pkdb.groups,
-        supp,
-        T::get_group_fks,
-        dh::ItemGroup::get_name(),
-        warns,
-    );
-    fk_check_referee(rer_vec, &pkdb.attrs, supp, T::get_attr_fks, dh::Attr::get_name(), warns);
-    fk_check_referee(
-        rer_vec,
-        &pkdb.effects,
-        supp,
-        T::get_effect_fks,
-        dh::Effect::get_name(),
-        warns,
-    );
-    fk_check_referee(
-        rer_vec,
-        &pkdb.abils,
-        supp,
-        T::get_abil_fks,
-        dh::FighterAbil::get_name(),
-        warns,
-    );
-    fk_check_referee(rer_vec, &pkdb.buffs, supp, T::get_buff_fks, dh::Buff::get_name(), warns);
+fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, supp: &Support) {
+    fk_check_referee(rer_vec, &pkdb.items, supp, T::get_item_fks, dh::Item::get_name());
+    fk_check_referee(rer_vec, &pkdb.groups, supp, T::get_group_fks, dh::ItemGroup::get_name());
+    fk_check_referee(rer_vec, &pkdb.attrs, supp, T::get_attr_fks, dh::Attr::get_name());
+    fk_check_referee(rer_vec, &pkdb.effects, supp, T::get_effect_fks, dh::Effect::get_name());
+    fk_check_referee(rer_vec, &pkdb.abils, supp, T::get_abil_fks, dh::FighterAbil::get_name());
+    fk_check_referee(rer_vec, &pkdb.buffs, supp, T::get_buff_fks, dh::Buff::get_name());
 }
-fn fk_check_referee<T, F>(
-    rer_vec: &Vec<T>,
-    ree_pks: &HashSet<ReeInt>,
-    supp: &Support,
-    func: F,
-    ree_name: &str,
-    warns: &mut Vec<String>,
-) where
+fn fk_check_referee<T, F>(rer_vec: &Vec<T>, ree_pks: &HashSet<ReeInt>, supp: &Support, func: F, ree_name: &str)
+where
     T: Fk + Named,
     F: Fn(&T, &Support) -> Vec<ReeInt>,
 {
@@ -89,13 +62,12 @@ fn fk_check_referee<T, F>(
             ree_name,
             missing.iter().sorted().join(", ")
         );
-        log::warn!("{}", &msg);
-        warns.push(msg);
+        log::warn!("{}", msg);
     }
 }
 
 /// One default effect per item max. Needed for Item generation.
-fn default_effects(cg_data: &mut Data, warns: &mut Vec<String>) {
+fn default_effects(cg_data: &mut Data) {
     let mut unsets = 0;
     let mut seen_des = HashSet::new();
     for item_effect in cg_data.item_effects.iter_mut() {
@@ -108,13 +80,12 @@ fn default_effects(cg_data: &mut Data, warns: &mut Vec<String>) {
     }
     if unsets > 0 {
         let msg = format!("set {} excessive default effects as non-default", unsets);
-        log::warn!("{}", &msg);
-        warns.push(msg);
+        log::warn!("{}", msg);
     }
 }
 
 /// Remove unknown fighter abilities.
-fn known_fighter_abilities(cg_data: &mut Data, warns: &mut Vec<String>) {
+fn known_fighter_abilities(cg_data: &mut Data) {
     let mut unknown_ids = HashSet::new();
     let abils = cg_data
         .abils
@@ -139,13 +110,12 @@ fn known_fighter_abilities(cg_data: &mut Data, warns: &mut Vec<String>) {
             dh::ItemFighterAbil::get_name(),
             unknown_ids.iter().sorted().join(", ")
         );
-        log::warn!("{}", &msg);
-        warns.push(msg);
+        log::warn!("{}", msg);
     }
 }
 
 /// Remove item abilities which have no effects to handle them.
-fn fighter_ability_effect(cg_data: &mut Data, warns: &mut Vec<String>) {
+fn fighter_ability_effect(cg_data: &mut Data) {
     let mut item_eff_map = HashMap::new();
     for item_eff in cg_data.item_effects.iter() {
         item_eff_map
@@ -179,7 +149,6 @@ fn fighter_ability_effect(cg_data: &mut Data, warns: &mut Vec<String>) {
                 .take(max_logged)
                 .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))
         );
-        log::warn!("{}", &msg);
-        warns.push(msg);
+        log::warn!("{}", msg);
     }
 }

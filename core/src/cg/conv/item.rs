@@ -11,7 +11,7 @@ use crate::{
 
 use super::super::{data::Support, Data};
 
-pub(super) fn conv_items(cg_data: &Data, supp: &Support, warns: &mut Vec<String>) -> Vec<ct::Item> {
+pub(super) fn conv_items(cg_data: &Data, supp: &Support) -> Vec<ct::Item> {
     // Auxiliary maps
     let defeff_map = cg_data
         .item_effects
@@ -30,8 +30,7 @@ pub(super) fn conv_items(cg_data: &Data, supp: &Support, warns: &mut Vec<String>
                     dh::Item::get_name(),
                     item_data.id
                 );
-                log::warn!("{}", &msg);
-                warns.push(msg);
+                log::warn!("{}", msg);
                 continue;
             }
         };
@@ -107,8 +106,7 @@ pub(super) fn conv_items(cg_data: &Data, supp: &Support, warns: &mut Vec<String>
                     item.id,
                     item_types.len()
                 );
-                log::warn!("{}", &msg);
-                warns.push(msg);
+                log::warn!("{}", msg);
                 continue;
             }
         }

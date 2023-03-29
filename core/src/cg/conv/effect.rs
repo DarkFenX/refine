@@ -24,7 +24,7 @@ impl dh::FighterAbil {
     }
 }
 
-pub(super) fn conv_effects(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::Effect> {
+pub(super) fn conv_effects(cg_data: &Data) -> Vec<ct::Effect> {
     let mut effects = Vec::new();
     for effect_data in cg_data.effects.iter() {
         let (state, tgt_mode) = match effect_data.category_id {
@@ -41,8 +41,7 @@ pub(super) fn conv_effects(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::E
                     effect_data.id,
                     effect_data.category_id
                 );
-                log::warn!("{}", &msg);
-                warns.push(msg);
+                log::warn!("{}", msg);
                 continue;
             }
         };
@@ -82,8 +81,7 @@ pub(super) fn conv_effects(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::E
                         effect.id,
                         e.msg
                     );
-                    log::warn!("{}", &msg);
-                    warns.push(msg);
+                    log::warn!("{}", msg);
                     mod_errs += 1;
                     continue;
                 }
@@ -107,8 +105,7 @@ pub(super) fn conv_effects(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::E
                         effect.id,
                         e.msg
                     );
-                    log::warn!("{}", &msg);
-                    warns.push(msg);
+                    log::warn!("{}", msg);
                     mod_errs += 1;
                     continue;
                 }
@@ -142,8 +139,7 @@ pub(super) fn conv_effects(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::E
                         effect.id,
                         flags.len()
                     );
-                    log::warn!("{}", &msg);
-                    warns.push(msg);
+                    log::warn!("{}", msg);
                 }
             },
         }
@@ -161,8 +157,7 @@ pub(super) fn conv_effects(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::E
                         effect.id,
                         flags.len()
                     );
-                    log::warn!("{}", &msg);
-                    warns.push(msg);
+                    log::warn!("{}", msg);
                 }
             },
         }
@@ -179,8 +174,7 @@ pub(super) fn conv_effects(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::E
                             effect.id,
                             e.msg
                         );
-                        log::warn!("{}", &msg);
-                        warns.push(msg);
+                        log::warn!("{}", msg);
                     }
                 },
                 _ => {
@@ -190,8 +184,7 @@ pub(super) fn conv_effects(cg_data: &Data, warns: &mut Vec<String>) -> Vec<ct::E
                         effect.id,
                         modes.len()
                     );
-                    log::warn!("{}", &msg);
-                    warns.push(msg);
+                    log::warn!("{}", msg);
                 }
             },
         }
