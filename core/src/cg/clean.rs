@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use itertools::Itertools;
 use log;
@@ -6,14 +6,18 @@ use log;
 use crate::{
     consts::{itemcats, itemgrps},
     util::Named,
-    IntError, IntResult,
+    IntError, IntResult, ReeFloat,
 };
 
 use super::data::{Data, KeyDb, Pk, Support};
 
 const MAX_CYCLES: i32 = 100;
 
-pub(super) fn clean_unused(alive: &mut Data, supp: &Support) -> IntResult<()> {
+pub(super) fn clean_unused(
+    alive: &mut Data,
+    supp: &Support,
+    cleanup_stats: &mut HashMap<String, ReeFloat>,
+) -> IntResult<()> {
     let mut trash = Data::new();
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, &supp);
@@ -29,7 +33,7 @@ pub(super) fn clean_unused(alive: &mut Data, supp: &Support) -> IntResult<()> {
         }
         changes = restore_item_data(alive, &mut trash) | restore_fk_tgts(alive, &mut trash, &supp);
     }
-    cleanup_report(alive, &trash);
+    cleanup_report(alive, &trash, cleanup_stats);
     Ok(())
 }
 
@@ -124,28 +128,29 @@ fn restore_fk_tgts(alive: &mut Data, trash: &mut Data, supp: &Support) -> bool {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reporting
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn cleanup_report(alive: &Data, trash: &Data) {
-    vec_report(&alive.items, &trash.items);
-    vec_report(&alive.groups, &trash.groups);
-    vec_report(&alive.attrs, &trash.attrs);
-    vec_report(&alive.item_attrs, &trash.item_attrs);
-    vec_report(&alive.effects, &trash.effects);
-    vec_report(&alive.item_effects, &trash.item_effects);
-    vec_report(&alive.abils, &trash.abils);
-    vec_report(&alive.item_abils, &trash.item_abils);
-    vec_report(&alive.buffs, &trash.buffs);
-    vec_report(&alive.item_srqs, &trash.item_srqs);
-    vec_report(&alive.muta_items, &trash.muta_items);
-    vec_report(&alive.muta_attrs, &trash.muta_attrs);
+fn cleanup_report(alive: &Data, trash: &Data, cleanup_stats: &mut HashMap<String, ReeFloat>) {
+    vec_report(&alive.items, &trash.items, cleanup_stats);
+    vec_report(&alive.groups, &trash.groups, cleanup_stats);
+    vec_report(&alive.attrs, &trash.attrs, cleanup_stats);
+    vec_report(&alive.item_attrs, &trash.item_attrs, cleanup_stats);
+    vec_report(&alive.effects, &trash.effects, cleanup_stats);
+    vec_report(&alive.item_effects, &trash.item_effects, cleanup_stats);
+    vec_report(&alive.abils, &trash.abils, cleanup_stats);
+    vec_report(&alive.item_abils, &trash.item_abils, cleanup_stats);
+    vec_report(&alive.buffs, &trash.buffs, cleanup_stats);
+    vec_report(&alive.item_srqs, &trash.item_srqs, cleanup_stats);
+    vec_report(&alive.muta_items, &trash.muta_items, cleanup_stats);
+    vec_report(&alive.muta_attrs, &trash.muta_attrs, cleanup_stats);
 }
 
-fn vec_report<T: Named>(alive: &Vec<T>, trash: &Vec<T>) {
+fn vec_report<T: Named>(alive: &Vec<T>, trash: &Vec<T>, cleanup_stats: &mut HashMap<String, ReeFloat>) {
     let total = alive.len() + trash.len();
     if total == 0 {
         return;
     }
-    let perc = trash.len() as f64 / total as f64 * 100.0;
-    if perc > 0.0 {
-        log::info!("cleaned {:.1}% of {}", perc, T::get_name());
+    let ratio = trash.len() as f64 / total as f64;
+    if ratio > 0.0 {
+        cleanup_stats.insert(T::get_name().to_string(), ratio);
+        log::info!("cleaned {:.1}% of {}", ratio * 100.0, T::get_name());
     }
 }

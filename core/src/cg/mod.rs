@@ -13,14 +13,13 @@ mod valid;
 
 pub(crate) fn generate_cache(data_handler: &dyn dh::DataHandler) -> IntResult<ch::Data> {
     let mut cg_data = Data::new();
-    let mut warns = Vec::new();
     let mut supp = Support::new();
     let mut ch_data = ch::Data::new();
     fetch::fetch_data(data_handler, &mut cg_data)?;
-    pk::dedup_pks(&mut cg_data, &mut warns);
+    pk::dedup_pks(&mut cg_data, &mut ch_data.cg_warns);
     supp.post_pk(&cg_data);
-    clean::clean_unused(&mut cg_data, &supp)?;
-    valid::validate(&mut cg_data, &supp, &mut warns);
-    conv::convert(&cg_data, &supp, &mut warns, &mut ch_data);
+    clean::clean_unused(&mut cg_data, &supp, &mut ch_data.cg_cleanup)?;
+    valid::validate(&mut cg_data, &supp, &mut ch_data.cg_warns);
+    conv::convert(&cg_data, &supp, &mut ch_data);
     Ok(ch_data)
 }
