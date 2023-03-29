@@ -1,8 +1,8 @@
-use std::{fmt, sync::Arc};
+use std::{collections::HashMap, fmt, sync::Arc};
 
 use crate::{
     ct::{Attr, Buff, Effect, Item, Muta},
-    ReeInt,
+    ReeFloat, ReeInt,
 };
 
 use super::{data::Data, Result};
@@ -21,6 +21,10 @@ pub trait CacheHandler: fmt::Debug + Send + Sync {
     fn get_buff(&self, id: &ReeInt) -> Option<Arc<Buff>>;
     /// Get cached data fingerprint.
     fn get_fingerprint(&self) -> Option<&str>;
+    /// Get cache generation warnings.
+    fn get_cg_warns(&self) -> &Vec<String>;
+    /// Get cache generation cleanup stats.
+    fn get_cg_cleanup_stats(&self) -> &HashMap<String, ReeFloat>;
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> Result<()>;
     /// Update data in handler with passed data.

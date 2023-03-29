@@ -12,7 +12,7 @@ use log;
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    IntError, IntResult, ReeInt,
+    IntError, IntResult, ReeFloat, ReeInt,
 };
 
 use super::{super::common::move_vec_to_map, data::CacheData};
@@ -27,6 +27,8 @@ pub struct JsonFileCHandler {
     storage_mutas: HashMap<ReeInt, Arc<Muta>>,
     storage_buffs: HashMap<ReeInt, Arc<Buff>>,
     fingerprint: Option<String>,
+    cg_warns: Vec<String>,
+    cg_cleanup: HashMap<String, ReeFloat>,
 }
 impl JsonFileCHandler {
     /// Constructs new `JsonFileCHandler` using full path to cache folder and file name (without
@@ -41,6 +43,8 @@ impl JsonFileCHandler {
             storage_mutas: HashMap::new(),
             storage_buffs: HashMap::new(),
             fingerprint: None,
+            cg_warns: Vec::new(),
+            cg_cleanup: HashMap::new(),
         }
     }
     fn get_full_path(&self) -> PathBuf {
@@ -58,15 +62,17 @@ impl JsonFileCHandler {
             }
         }
     }
-    fn update_memory_cache(&mut self, cache: CacheData) {
-        move_vec_to_map(cache.items, &mut self.storage_items);
-        move_vec_to_map(cache.attrs, &mut self.storage_attrs);
-        move_vec_to_map(cache.effects, &mut self.storage_effects);
-        move_vec_to_map(cache.mutas, &mut self.storage_mutas);
-        move_vec_to_map(cache.buffs, &mut self.storage_buffs);
-        self.fingerprint = Some(cache.fingerprint);
+    fn update_memory_cache(&mut self, ch_data: CacheData) {
+        move_vec_to_map(ch_data.items, &mut self.storage_items);
+        move_vec_to_map(ch_data.attrs, &mut self.storage_attrs);
+        move_vec_to_map(ch_data.effects, &mut self.storage_effects);
+        move_vec_to_map(ch_data.mutas, &mut self.storage_mutas);
+        move_vec_to_map(ch_data.buffs, &mut self.storage_buffs);
+        self.fingerprint = Some(ch_data.fingerprint);
+        self.cg_warns = ch_data.cg_warns;
+        self.cg_cleanup = ch_data.cg_cleanup;
     }
-    fn update_persistent_cache(&self, cache: &CacheData) {
+    fn update_persistent_cache(&self, ch_data: &CacheData) {
         let full_path = self.get_full_path();
         let file = match OpenOptions::new().create(true).write(true).open(full_path) {
             Ok(f) => f,
@@ -75,7 +81,7 @@ impl JsonFileCHandler {
                 return;
             }
         };
-        let json = serde_json::json!(&cache).to_string();
+        let json = serde_json::json!(&ch_data).to_string();
         match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
             Ok(_) => (),
             Err(e) => {
@@ -118,6 +124,14 @@ impl ch::CacheHandler for JsonFileCHandler {
     /// Get cached data fingerprint.
     fn get_fingerprint(&self) -> Option<&str> {
         self.fingerprint.as_deref()
+    }
+    /// Get cache generation warnings.
+    fn get_cg_warns(&self) -> &Vec<String> {
+        &self.cg_warns
+    }
+    /// Get cache generation cleanup stats.
+    fn get_cg_cleanup_stats(&self) -> &HashMap<String, ReeFloat> {
+        &self.cg_cleanup
     }
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> ch::Result<()> {
