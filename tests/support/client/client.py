@@ -199,7 +199,7 @@ class TestClient:
         # Get request and send it
         req = self.create_source_request(data=data)
         resp = self.__session.send(req.prepare())
-        assert resp.status_code == 201
+        assert resp.status_code == 204
 
     def __setup_handler(self, url, data):
         self.__data_server.expect_request(url).respond_with_data(data)

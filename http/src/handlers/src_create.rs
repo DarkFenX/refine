@@ -31,7 +31,7 @@ pub(crate) async fn create_source(
         .add(alias, data_version, data_base_url, make_default)
         .await
     {
-        Ok(_) => StatusCode::CREATED.into_response(),
+        Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(e) => {
             let code = match e.kind {
                 ErrorKind::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
