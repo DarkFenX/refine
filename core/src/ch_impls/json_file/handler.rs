@@ -144,6 +144,8 @@ impl ch::CacheHandler for JsonFileCHandler {
             ch_data.effects,
             ch_data.buffs,
             fingerprint,
+            ch_data.cg_warns,
+            ch_data.cg_cleanup,
         );
         match self.create_cache_folder() {
             Ok(_) => self.update_persistent_cache(&cache),
