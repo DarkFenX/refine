@@ -9,6 +9,8 @@ use axum::{
 
 use crate::{state::AppState, util::ErrorKind};
 
+use super::SingleErr;
+
 #[derive(serde::Deserialize)]
 pub(crate) struct CreateSource {
     data_version: String,
@@ -29,10 +31,15 @@ pub(crate) async fn create_source(
         .add(alias, data_version, data_base_url, make_default)
         .await
     {
-        Ok(_) => StatusCode::CREATED,
-        Err(e) if matches!(e.kind, ErrorKind::SrcAliasNotAvailable(_)) => StatusCode::FORBIDDEN,
-        Err(e) if matches!(e.kind, ErrorKind::DhInitFailed(_, _)) => StatusCode::BAD_REQUEST,
-        Err(e) if matches!(e.kind, ErrorKind::SrcInitFailed(_, _)) => StatusCode::UNPROCESSABLE_ENTITY,
-        _ => StatusCode::INTERNAL_SERVER_ERROR,
+        Ok(_) => StatusCode::CREATED.into_response(),
+        Err(e) => {
+            let code = match e.kind {
+                ErrorKind::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
+                ErrorKind::DhInitFailed(_, _) => StatusCode::BAD_REQUEST,
+                ErrorKind::SrcInitFailed(_, _) => StatusCode::UNPROCESSABLE_ENTITY,
+                _ => StatusCode::INTERNAL_SERVER_ERROR,
+            };
+            (code, Json(SingleErr::from(e))).into_response()
+        }
     }
 }

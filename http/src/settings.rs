@@ -18,7 +18,7 @@ impl Settings {
     }
     fn new_internal(conf_path: Option<String>) -> std::result::Result<Self, config::ConfigError> {
         // Set defaults - in quite a cumbersome way, mostly because config crate does not expose
-        // a good way to set defaults for values deeper first level
+        // a good way to set defaults for values residing on a level deeper first one
         let mut server_defaults = config::Map::new();
         server_defaults.insert("port".to_string(), config::ValueKind::U64(8000));
         server_defaults.insert("solsys_lifetime".to_string(), config::ValueKind::U64(900));

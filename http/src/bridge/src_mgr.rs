@@ -66,8 +66,8 @@ impl SrcMgr {
     }
     pub(crate) async fn get(&self, alias: Option<&str>) -> Result<Arc<reefast::Src>> {
         match alias {
-            Some(a) => self.get_by_alias(a).await,
-            None => self.get_default().await,
+            Some(a) => self.get_src_by_alias(a).await,
+            None => self.get_default_src().await,
         }
     }
     pub(crate) async fn del(&self, alias: &str) -> Result<()> {
@@ -98,7 +98,7 @@ impl SrcMgr {
             event!(Level::ERROR, "attempt to unlock alias which is not locked")
         }
     }
-    async fn get_by_alias(&self, alias: &str) -> Result<Arc<reefast::Src>> {
+    async fn get_src_by_alias(&self, alias: &str) -> Result<Arc<reefast::Src>> {
         self.alias_src_map
             .read()
             .await
@@ -106,9 +106,9 @@ impl SrcMgr {
             .cloned()
             .ok_or_else(|| Error::new(ErrorKind::SrcNotFound(alias.to_string())))
     }
-    async fn get_default(&self) -> Result<Arc<reefast::Src>> {
+    async fn get_default_src(&self) -> Result<Arc<reefast::Src>> {
         match self.default_alias.read().await.as_ref() {
-            Some(a) => self.get_by_alias(a).await,
+            Some(a) => self.get_src_by_alias(a).await,
             None => Err(Error::new(ErrorKind::NoDefaultSrc)),
         }
     }
