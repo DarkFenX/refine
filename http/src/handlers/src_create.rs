@@ -12,7 +12,7 @@ use crate::{state::AppState, util::ErrorKind};
 use super::SingleErr;
 
 #[derive(serde::Deserialize)]
-pub(crate) struct CreateSource {
+pub(crate) struct CreateSrcReq {
     data_version: String,
     data_base_url: String,
     make_default: Option<bool>,
@@ -21,7 +21,7 @@ pub(crate) struct CreateSource {
 pub(crate) async fn create_source(
     State(state): State<Arc<AppState>>,
     Path(alias): Path<String>,
-    Json(payload): Json<CreateSource>,
+    Json(payload): Json<CreateSrcReq>,
 ) -> impl IntoResponse {
     let data_version = payload.data_version;
     let data_base_url = payload.data_base_url;

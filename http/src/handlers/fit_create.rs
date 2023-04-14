@@ -12,7 +12,7 @@ use crate::{state::AppState, util::ErrorKind};
 use super::SingleErr;
 
 #[derive(serde::Serialize)]
-pub(crate) struct CreateFitResp {
+struct CreateFitResp {
     id: String,
 }
 impl CreateFitResp {

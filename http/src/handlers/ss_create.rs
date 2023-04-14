@@ -12,7 +12,7 @@ pub(crate) struct CreateSolSysReq {
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct CreateSolSysResp {
+struct CreateSolSysResp {
     id: String,
 }
 impl CreateSolSysResp {
