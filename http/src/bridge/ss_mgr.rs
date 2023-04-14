@@ -6,6 +6,8 @@ use tokio::{
 };
 use uuid::Uuid;
 
+use crate::util::{Error, ErrorKind, Result};
+
 use super::ss::SolarSystem;
 
 pub(crate) struct SolSysMgr {
@@ -26,8 +28,13 @@ impl SolSysMgr {
             .insert(id.clone(), Arc::new(Mutex::new(SolarSystem::new(sol_sys))));
         id
     }
-    pub(crate) async fn get_sol_sys(&self, id: &str) -> Option<Arc<Mutex<SolarSystem>>> {
-        self.id_ss_map.read().await.get(id).cloned()
+    pub(crate) async fn get_sol_sys(&self, id: &str) -> Result<Arc<Mutex<SolarSystem>>> {
+        self.id_ss_map
+            .read()
+            .await
+            .get(id)
+            .ok_or_else(|| Error::new(ErrorKind::SolSysNotFound(id.to_string())))
+            .cloned()
     }
     pub(crate) async fn delete_sol_sys(&self, id: &str) -> bool {
         self.id_ss_map.write().await.remove(id).is_some()

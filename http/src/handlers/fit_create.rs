@@ -7,26 +7,40 @@ use axum::{
     Json,
 };
 
-use crate::state::AppState;
+use crate::{state::AppState, util::ErrorKind};
+
+use super::SingleErr;
 
 #[derive(serde::Serialize)]
 pub(crate) struct CreateFitResp {
     id: String,
 }
-
-#[derive(serde::Serialize)]
-pub(crate) struct CreateFitErr {
-    error: String,
+impl CreateFitResp {
+    fn new(id: reefast::ReeId) -> Self {
+        Self { id: id.to_string() }
+    }
 }
 
 pub(crate) async fn create_fit(State(state): State<Arc<AppState>>, Path(ssid): Path<String>) -> impl IntoResponse {
     let guarded_ss = match state.ss_mgr.get_sol_sys(&ssid).await {
-        Some(ss) => ss,
-        None => return (StatusCode::NOT_FOUND, Json(format!("solar system not found"))).into_response(),
+        Ok(ss) => ss,
+        Err(e) => {
+            let code = match e.kind {
+                ErrorKind::SolSysNotFound(_) => StatusCode::NOT_FOUND,
+                _ => StatusCode::INTERNAL_SERVER_ERROR,
+            };
+            return (code, Json(SingleErr::from(e))).into_response();
+        }
     };
     let fit_id = match guarded_ss.lock().await.add_fit().await {
         Ok(fid) => fid,
-        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(e.to_string())).into_response(),
+        Err(e) => {
+            let code = match e.kind {
+                ErrorKind::CoreError(reefast::ErrorKind::IdAllocFailed, _) => StatusCode::SERVICE_UNAVAILABLE,
+                _ => StatusCode::INTERNAL_SERVER_ERROR,
+            };
+            return (code, Json(e.to_string())).into_response();
+        }
     };
-    (StatusCode::CREATED, Json(CreateFitResp { id: fit_id.to_string() })).into_response()
+    (StatusCode::CREATED, Json(CreateFitResp::new(fit_id))).into_response()
 }

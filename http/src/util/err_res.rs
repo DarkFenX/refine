@@ -5,6 +5,7 @@ pub(crate) enum ErrorKind {
     SrcAliasNotAvailable(String),
     SrcNotFound(String),
     NoDefaultSrc,
+    SolSysNotFound(String),
     NoCoreSolSys,
     SettingsInitFailed(String),
     DhInitFailed(reefast::ErrorKind, String),
@@ -21,10 +22,27 @@ impl Error {
         Self { kind }
     }
     pub(crate) fn get_code(&self) -> String {
-        let code = match self.kind {
-            ErrorKind::SrcNotFound(_) => "SRC-001",
-            ErrorKind::SrcAliasNotAvailable(_) => "SRC-002",
-            _ => "XXX-000",
+        let code = match &self.kind {
+            ErrorKind::SrcAliasNotAvailable(_) => "SRC-001",
+            ErrorKind::SrcNotFound(_) => "SRC-002",
+            ErrorKind::NoDefaultSrc => "SRC-003",
+            ErrorKind::SolSysNotFound(_) => "SOL-001",
+            ErrorKind::NoCoreSolSys => "SOL-002",
+            ErrorKind::SettingsInitFailed(_) => "SET-001",
+            ErrorKind::DhInitFailed(_, _) => "DHR-001",
+            ErrorKind::SrcInitFailed(_, _) => "SIN-001",
+            ErrorKind::CoreError(k, _) => match k {
+                reefast::ErrorKind::DhHttpInvalidBaseUrl => "COR-001",
+                reefast::ErrorKind::SrcCacheGenFailed => "COR-002",
+                reefast::ErrorKind::SrcNotFound => "COR-003",
+                reefast::ErrorKind::AlreadyHasParent => "COR-004",
+                reefast::ErrorKind::FitNotFound => "COR-005",
+                reefast::ErrorKind::ItemNotFound => "COR-006",
+                reefast::ErrorKind::IdAllocFailed => "COR-007",
+                reefast::ErrorKind::SkillLevelRange => "COR-008",
+                reefast::ErrorKind::UnexpectedItemType => "COR-009",
+                reefast::ErrorKind::SlotTaken => "COR-010",
+            },
         };
         code.to_string()
     }
@@ -41,6 +59,7 @@ impl fmt::Display for Error {
             ErrorKind::SrcAliasNotAvailable(alias) => write!(f, "source alias \"{alias}\" is not available"),
             ErrorKind::SrcNotFound(alias) => write!(f, "source with alias \"{alias}\" not found"),
             ErrorKind::NoDefaultSrc => write!(f, "default source is not defined"),
+            ErrorKind::SolSysNotFound(id) => write!(f, "no solar system with ID \"{id}\""),
             ErrorKind::NoCoreSolSys => write!(f, "unable to take core solar system"),
             ErrorKind::SettingsInitFailed(reason) => write!(f, "config initialization failed: {reason}"),
             ErrorKind::DhInitFailed(_, reason) => write!(f, "data handler initialization failed: {reason}"),
