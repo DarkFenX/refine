@@ -36,7 +36,6 @@ pub(crate) async fn create_sol_sys(
             return (code, Json(SingleErr::from(e))).into_response();
         }
     };
-    let sol_sys = tokio_rayon::spawn_fifo(move || reefast::SolarSystem::new(src)).await;
-    let sol_sys_id = state.ss_mgr.add_sol_sys(sol_sys).await;
+    let sol_sys_id = state.ss_mgr.add_sol_sys(src).await;
     (StatusCode::CREATED, Json(CreateSolSysResp::new(sol_sys_id))).into_response()
 }
