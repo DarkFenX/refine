@@ -37,8 +37,11 @@ impl SolSysMgr {
             .ok_or_else(|| Error::new(ErrorKind::SolSysNotFound(id.to_string())))
             .cloned()
     }
-    pub(crate) async fn delete_sol_sys(&self, id: &str) -> bool {
-        self.id_ss_map.write().await.remove(id).is_some()
+    pub(crate) async fn delete_sol_sys(&self, id: &str) -> Result<()> {
+        match self.id_ss_map.write().await.remove(id) {
+            Some(_) => Ok(()),
+            None => Err(Error::new(ErrorKind::SolSysNotFound(id.to_string()))),
+        }
     }
     // Cleanup methods
     pub(crate) async fn cleanup_sol_sys(&self, lifetime: u64) {
