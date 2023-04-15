@@ -9,7 +9,7 @@ use axum::{
 
 use crate::{state::AppState, util::ErrorKind};
 
-use super::{get_guarded_ss, GSsRes};
+use super::super::{get_guarded_ss, GSsRes};
 
 #[derive(serde::Serialize)]
 struct CreateFitResp {

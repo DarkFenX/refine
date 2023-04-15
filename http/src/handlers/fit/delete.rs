@@ -9,7 +9,7 @@ use axum::{
 
 use crate::{state::AppState, util::ErrorKind};
 
-use super::{get_guarded_ss, GSsRes, SingleErr};
+use super::super::{get_guarded_ss, GSsRes, SingleErr};
 
 pub(crate) async fn delete_fit(
     State(state): State<Arc<AppState>>,

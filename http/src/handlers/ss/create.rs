@@ -4,7 +4,7 @@ use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 
 use crate::{state::AppState, util::ErrorKind};
 
-use super::SingleErr;
+use super::super::SingleErr;
 
 #[derive(serde::Deserialize)]
 pub(crate) struct CreateSolSysReq {

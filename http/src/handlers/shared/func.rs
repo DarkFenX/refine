@@ -12,7 +12,7 @@ use crate::{
     util::ErrorKind,
 };
 
-use super::SingleErr;
+use super::super::SingleErr;
 
 pub(in super::super) enum GSsRes {
     SolSys(Arc<Mutex<SolarSystem>>),
