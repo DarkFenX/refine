@@ -7,7 +7,7 @@ pub(crate) use fleet_create::create_fleet;
 pub(crate) use fleet_delete::delete_fleet;
 pub(crate) use fleet_get::get_fleet;
 pub(crate) use root::root;
-use shared::SingleErr;
+use shared::{get_guarded_ss, GSsRes, SingleErr};
 pub(crate) use src_create::create_source;
 pub(crate) use src_delete::delete_source;
 pub(crate) use ss_change::change_sol_sys;
