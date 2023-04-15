@@ -19,10 +19,7 @@ impl SolarSystem {
     }
     // Fit methods
     pub(crate) async fn add_fit(&mut self) -> Result<String> {
-        let mut ss = match self.sol_sys.take() {
-            Some(ss) => ss,
-            None => return Err(Error::new(ErrorKind::NoCoreSolSys)),
-        };
+        let mut ss = self.take_ss()?;
         let (res, ss) = tokio_rayon::spawn_fifo(move || {
             let res = ss.add_fit();
             (res, ss)
@@ -36,17 +33,8 @@ impl SolarSystem {
         }
     }
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> Result<()> {
-        let fit_id = match fit_id.parse() {
-            Ok(fid) => fid,
-            Err(_) => {
-                self.touch();
-                return Err(Error::new(ErrorKind::IdCastFailed(fit_id.to_string())));
-            }
-        };
-        let mut ss = match self.sol_sys.take() {
-            Some(ss) => ss,
-            None => return Err(Error::new(ErrorKind::NoCoreSolSys)),
-        };
+        let fit_id = self.str_to_id(fit_id)?;
+        let mut ss = self.take_ss()?;
         let (res, ss) = tokio_rayon::spawn_fifo(move || {
             let res = ss.remove_fit(fit_id);
             (res, ss)
@@ -55,5 +43,21 @@ impl SolarSystem {
         self.sol_sys = Some(ss);
         self.touch();
         res.map_err(|e| e.into())
+    }
+    // Misc methods
+    fn take_ss(&mut self) -> Result<reefast::SolarSystem> {
+        match self.sol_sys.take() {
+            Some(ss) => Ok(ss),
+            None => Err(Error::new(ErrorKind::NoCoreSolSys)),
+        }
+    }
+    fn str_to_id(&mut self, id: &str) -> Result<reefast::ReeId> {
+        match id.parse() {
+            Ok(i) => Ok(i),
+            Err(_) => {
+                self.touch();
+                Err(Error::new(ErrorKind::IdCastFailed(id.to_string())))
+            }
+        }
     }
 }
