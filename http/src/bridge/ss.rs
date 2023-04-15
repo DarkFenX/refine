@@ -11,9 +11,6 @@ impl SolarSystem {
             accessed: chrono::Utc::now(),
         }
     }
-    fn touch(&mut self) {
-        self.accessed = chrono::Utc::now();
-    }
     pub(crate) fn last_accessed(&self) -> &chrono::DateTime<chrono::Utc> {
         &self.accessed
     }
@@ -44,7 +41,20 @@ impl SolarSystem {
         self.touch();
         res.map_err(|e| e.into())
     }
-    // Misc methods
+    // Character methods
+    // Ship methods
+    // Stance methods
+    // Subsystem methods
+    // Module methods
+    // Rig methods
+    // Drone methods
+    // Fighter methods
+    // Skill methods
+    // Implant methods
+    // Booster methods
+    // System-wide effect methods
+    // General "public" methods
+    // Helper methods
     fn take_ss(&mut self) -> Result<reefast::SolarSystem> {
         match self.sol_sys.take() {
             Some(ss) => Ok(ss),
@@ -62,5 +72,8 @@ impl SolarSystem {
                 Err(Error::new(ErrorKind::IdCastFailed(id.to_string())))
             }
         }
+    }
+    fn touch(&mut self) {
+        self.accessed = chrono::Utc::now();
     }
 }
