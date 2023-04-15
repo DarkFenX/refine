@@ -44,7 +44,7 @@ impl SolSysMgr {
         }
     }
     // Cleanup methods
-    pub(crate) async fn cleanup_sol_sys(&self, lifetime: u64) {
+    async fn cleanup_sol_sys(&self, lifetime: u64) {
         let now = chrono::Utc::now();
         let lifetime = chrono::Duration::seconds(lifetime as i64);
         let to_clean: Vec<_> = self
