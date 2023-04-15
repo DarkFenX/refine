@@ -48,7 +48,10 @@ impl SolarSystem {
     fn take_ss(&mut self) -> Result<reefast::SolarSystem> {
         match self.sol_sys.take() {
             Some(ss) => Ok(ss),
-            None => Err(Error::new(ErrorKind::NoCoreSolSys)),
+            None => {
+                self.touch();
+                Err(Error::new(ErrorKind::NoCoreSolSys))
+            }
         }
     }
     fn str_to_id(&mut self, id: &str) -> Result<reefast::ReeId> {
