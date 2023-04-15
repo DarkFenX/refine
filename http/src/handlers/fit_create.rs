@@ -16,8 +16,8 @@ struct CreateFitResp {
     id: String,
 }
 impl CreateFitResp {
-    fn new(id: reefast::ReeId) -> Self {
-        Self { id: id.to_string() }
+    fn new(id: String) -> Self {
+        Self { id }
     }
 }
 
