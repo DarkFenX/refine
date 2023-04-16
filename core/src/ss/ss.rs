@@ -114,7 +114,7 @@ impl SolarSystem {
         self.add_item(ship);
         Ok(item_id)
     }
-    pub fn remove_ship(&mut self, fit_id: ReeId) -> Result<bool> {
+    pub fn remove_ship(&mut self, fit_id: ReeId) -> Result<()> {
         if !self.fits.contains(&fit_id) {
             return Err(Error::new(ErrorKind::FitNotFound, "fit not found"));
         }
@@ -125,7 +125,10 @@ impl SolarSystem {
                 _ => false,
             })
             .collect_vec();
-        Ok(!removed.is_empty())
+        match removed.is_empty() {
+            true => Err(Error::new(ErrorKind::ItemNotFound, "ship not found")),
+            false => Ok(()),
+        }
     }
     // Stance methods
     pub fn get_stance(&self, fit_id: ReeId) -> Option<ReeId> {

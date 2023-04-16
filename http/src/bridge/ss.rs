@@ -30,7 +30,7 @@ impl SolarSystem {
         }
     }
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> Result<()> {
-        let fit_id = self.str_to_id(fit_id)?;
+        let fit_id = self.str_to_fit_id(fit_id)?;
         let mut ss = self.take_ss()?;
         let (res, ss) = tokio_rayon::spawn_fifo(move || {
             let res = ss.remove_fit(fit_id);
@@ -43,6 +43,34 @@ impl SolarSystem {
     }
     // Character methods
     // Ship methods
+    pub(crate) async fn set_ship(&mut self, fit_id: &str, type_id: &str) -> Result<String> {
+        let fit_id = self.str_to_fit_id(fit_id)?;
+        let type_id = self.str_to_item_id(type_id)?;
+        let mut ss = self.take_ss()?;
+        let (res, ss) = tokio_rayon::spawn_fifo(move || {
+            let res = ss.set_ship(fit_id, type_id);
+            (res, ss)
+        })
+        .await;
+        self.sol_sys = Some(ss);
+        self.touch();
+        match res {
+            Ok(sid) => Ok(sid.to_string()),
+            Err(e) => Err(e.into()),
+        }
+    }
+    pub(crate) async fn remove_ship(&mut self, fit_id: &str) -> Result<()> {
+        let fit_id = self.str_to_fit_id(fit_id)?;
+        let mut ss = self.take_ss()?;
+        let (res, ss) = tokio_rayon::spawn_fifo(move || {
+            let res = ss.remove_ship(fit_id);
+            (res, ss)
+        })
+        .await;
+        self.sol_sys = Some(ss);
+        self.touch();
+        res.map_err(|e| e.into())
+    }
     // Stance methods
     // Subsystem methods
     // Module methods
@@ -64,12 +92,21 @@ impl SolarSystem {
             }
         }
     }
-    fn str_to_id(&mut self, id: &str) -> Result<reefast::ReeId> {
+    fn str_to_fit_id(&mut self, id: &str) -> Result<reefast::ReeId> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {
                 self.touch();
-                Err(Error::new(ErrorKind::IdCastFailed(id.to_string())))
+                Err(Error::new(ErrorKind::FitIdCastFailed(id.to_string())))
+            }
+        }
+    }
+    fn str_to_item_id(&mut self, id: &str) -> Result<reefast::ReeInt> {
+        match id.parse() {
+            Ok(i) => Ok(i),
+            Err(_) => {
+                self.touch();
+                Err(Error::new(ErrorKind::ItemIdCastFailed(id.to_string())))
             }
         }
     }

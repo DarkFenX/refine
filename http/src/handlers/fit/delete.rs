@@ -24,7 +24,7 @@ pub(crate) async fn delete_fit(
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(e) => {
             let code = match e.kind {
-                ErrorKind::IdCastFailed(_) => StatusCode::NOT_FOUND,
+                ErrorKind::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
                 ErrorKind::CoreError(reefast::ErrorKind::FitNotFound, _) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
