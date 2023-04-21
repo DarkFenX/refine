@@ -5,6 +5,7 @@ pub(crate) use src_mgr::SrcMgr;
 pub(crate) use ss::SolarSystem;
 pub(crate) use ss_mgr::SolSysMgr;
 
+mod command;
 mod src_mgr;
 mod ss;
 mod ss_mgr;
