@@ -12,6 +12,7 @@ use tower_http::normalize_path::NormalizePathLayer;
 use crate::{settings::Settings, state::AppState};
 
 mod bridge;
+mod command;
 mod handlers;
 mod settings;
 mod state;

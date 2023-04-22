@@ -1,4 +1,7 @@
-use crate::util::{Error, ErrorKind, Result};
+use crate::{
+    command::{CmdResp, FitCommand, SingleIdResp},
+    util::{Error, ErrorKind, Result},
+};
 
 pub(crate) struct SolarSystem {
     sol_sys: Option<reefast::SolarSystem>,
@@ -41,47 +44,28 @@ impl SolarSystem {
         self.touch();
         res.map_err(|e| e.into())
     }
-    // Character methods
-    // Ship methods
-    pub(crate) async fn set_ship(&mut self, fit_id: &str, type_id: &str) -> Result<String> {
+    // Command methods
+    pub(crate) async fn execute_fit_commands(
+        &mut self,
+        fit_id: &str,
+        commands: &Vec<FitCommand>,
+    ) -> Result<Vec<CmdResp>> {
         let fit_id = self.str_to_fit_id(fit_id)?;
-        let type_id = self.str_to_item_id(type_id)?;
         let mut ss = self.take_ss()?;
-        let (res, ss) = tokio_rayon::spawn_fifo(move || {
-            let res = ss.set_ship(fit_id, type_id);
-            (res, ss)
-        })
-        .await;
-        self.sol_sys = Some(ss);
-        self.touch();
-        match res {
-            Ok(sid) => Ok(sid.to_string()),
-            Err(e) => Err(e.into()),
+        let mut cmd_resps = Vec::with_capacity(commands.len());
+        for cmd in commands.iter() {
+            match cmd {
+                FitCommand::SetShip(ssc) => {
+                    let ship_id = ss.set_ship(fit_id, ssc.ship_type_id)?;
+                    let resp = CmdResp::SingleId(SingleIdResp::new(ship_id));
+                    cmd_resps.push(resp);
+                }
+            };
         }
-    }
-    pub(crate) async fn remove_ship(&mut self, fit_id: &str) -> Result<()> {
-        let fit_id = self.str_to_fit_id(fit_id)?;
-        let mut ss = self.take_ss()?;
-        let (res, ss) = tokio_rayon::spawn_fifo(move || {
-            let res = ss.remove_ship(fit_id);
-            (res, ss)
-        })
-        .await;
         self.sol_sys = Some(ss);
         self.touch();
-        res.map_err(|e| e.into())
+        Ok(cmd_resps)
     }
-    // Stance methods
-    // Subsystem methods
-    // Module methods
-    // Rig methods
-    // Drone methods
-    // Fighter methods
-    // Skill methods
-    // Implant methods
-    // Booster methods
-    // System-wide effect methods
-    // General "public" methods
     // Helper methods
     fn take_ss(&mut self) -> Result<reefast::SolarSystem> {
         match self.sol_sys.take() {

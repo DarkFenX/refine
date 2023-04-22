@@ -236,3 +236,14 @@ class TestClient:
         resp = self.__session.send(req.prepare())
         assert resp.status_code == 201
         return resp.json()['id']
+
+    def set_ship_request(self, ss, fit_id, ship_id):
+        payload = {'commands': [{'type': 'set-ship', 'ship-type-id': ship_id}]}
+        req = requests.Request('PATCH', f'http://localhost:8000/solar_system/{ss}/fit/{fit_id}', json=payload)
+        return req
+
+    def set_ship(self, ss, fit_id, ship_id):
+        req = self.set_ship_request(ss=ss, fit_id=fit_id, ship_id=ship_id)
+        resp = self.__session.send(req.prepare())
+        assert resp.status_code == 200
+        return resp.json()[0]['id']

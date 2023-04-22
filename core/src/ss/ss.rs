@@ -108,7 +108,15 @@ impl SolarSystem {
             .map(|v| v.get_id())
     }
     pub fn set_ship(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
-        self.remove_ship(fit_id)?;
+        match self.remove_ship(fit_id) {
+            Ok(_) => (),
+            // Suppress ItemNotFound error, since this method is supposed to be used
+            // even when no ship is set
+            Err(e) => match e.kind {
+                ErrorKind::ItemNotFound => (),
+                _ => return Err(e),
+            },
+        };
         let item_id = self.alloc_item_id()?;
         let ship = Item::Ship(Ship::new(&self.src, item_id, fit_id, type_id));
         self.add_item(ship);
