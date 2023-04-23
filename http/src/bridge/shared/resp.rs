@@ -7,10 +7,10 @@ pub(crate) enum CmdResp {
 
 #[derive(serde::Serialize)]
 pub(crate) struct SingleIdResp {
-    id: reefast::ReeId,
+    id: String,
 }
 impl SingleIdResp {
     pub(crate) fn new(id: reefast::ReeId) -> Self {
-        Self { id }
+        Self { id: id.to_string() }
     }
 }
