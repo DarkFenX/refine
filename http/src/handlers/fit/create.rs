@@ -9,12 +9,12 @@ use axum::{
 
 use crate::{state::AppState, util::ErrorKind};
 
-use super::super::{get_guarded_ss, GSsRes, SingleErr};
+use super::super::{get_guarded_ss, GSsResult, SingleErr};
 
 pub(crate) async fn create_fit(State(state): State<Arc<AppState>>, Path(ssid): Path<String>) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
-        GSsRes::SolSys(ss) => ss,
-        GSsRes::ErrResp(r) => return r,
+        GSsResult::SolSys(ss) => ss,
+        GSsResult::ErrResp(r) => return r,
     };
     let fit_info = match guarded_ss.lock().await.add_fit().await {
         Ok(fit_info) => fit_info,

@@ -7,11 +7,9 @@ use tokio::{
 use uuid::Uuid;
 
 use crate::{
-    info,
+    bridge::{SolSysInfo, SolarSystem},
     util::{Error, ErrorKind, Result},
 };
-
-use super::ss::SolarSystem;
 
 pub(crate) struct SolSysMgr {
     id_ss_map: RwLock<HashMap<String, Arc<Mutex<SolarSystem>>>>,
@@ -23,12 +21,12 @@ impl SolSysMgr {
         }
     }
     // Solar system methods
-    pub(crate) async fn add_sol_sys(&self, src: Arc<reefast::Src>) -> info::SolSysInfo {
+    pub(crate) async fn add_sol_sys(&self, src: Arc<reefast::Src>) -> SolSysInfo {
         let id = get_id();
         let id_mv = id.clone();
         let (core_ss, ss_info) = tokio_rayon::spawn_fifo(move || {
             let mut core_ss = reefast::SolarSystem::new(src);
-            let ss_info = info::SolSysInfo::extract(&mut core_ss, id_mv, true, false);
+            let ss_info = SolSysInfo::extract(&mut core_ss, id_mv, true, false);
             (core_ss, ss_info)
         })
         .await;

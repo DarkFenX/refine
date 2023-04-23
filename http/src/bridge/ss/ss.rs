@@ -1,6 +1,8 @@
 use crate::{
-    command::{CmdResp, FitCommand, SingleIdResp},
-    info,
+    bridge::{
+        shared::{CmdResp, SingleIdResp},
+        FitCommand, FitInfo,
+    },
     util::{Error, ErrorKind, Result},
 };
 
@@ -19,29 +21,29 @@ impl SolarSystem {
         &self.accessed
     }
     // Fit methods
-    pub(crate) async fn add_fit(&mut self) -> Result<info::FitInfo> {
-        let mut ss = self.take_ss()?;
-        let (res, ss) = tokio_rayon::spawn_fifo(move || {
-            let res = match ss.add_fit() {
-                Ok(fid) => Ok(info::FitInfo::extract(&mut ss, fid, true)),
+    pub(crate) async fn add_fit(&mut self) -> Result<FitInfo> {
+        let mut core_ss = self.take_ss()?;
+        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let res = match core_ss.add_fit() {
+                Ok(fid) => Ok(FitInfo::extract(&mut core_ss, fid, true)),
                 Err(e) => Err(e.into()),
             };
-            (res, ss)
+            (res, core_ss)
         })
         .await;
-        self.sol_sys = Some(ss);
+        self.sol_sys = Some(core_ss);
         self.touch();
         res
     }
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> Result<()> {
         let fit_id = self.str_to_fit_id(fit_id)?;
-        let mut ss = self.take_ss()?;
-        let (res, ss) = tokio_rayon::spawn_fifo(move || {
-            let res = ss.remove_fit(fit_id);
-            (res, ss)
+        let mut core_ss = self.take_ss()?;
+        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let res = core_ss.remove_fit(fit_id);
+            (res, core_ss)
         })
         .await;
-        self.sol_sys = Some(ss);
+        self.sol_sys = Some(core_ss);
         self.touch();
         res.map_err(|e| e.into())
     }
@@ -52,25 +54,25 @@ impl SolarSystem {
         commands: &Vec<FitCommand>,
     ) -> Result<Vec<CmdResp>> {
         let fit_id = self.str_to_fit_id(fit_id)?;
-        let mut ss = self.take_ss()?;
+        let mut core_ss = self.take_ss()?;
         let mut cmd_resps = Vec::with_capacity(commands.len());
         for cmd in commands.iter() {
             match cmd {
                 FitCommand::SetShip(ssc) => {
-                    let ship_id = ss.set_ship(fit_id, ssc.ship_type_id)?;
+                    let ship_id = core_ss.set_ship(fit_id, ssc.ship_type_id)?;
                     let resp = CmdResp::SingleId(SingleIdResp::new(ship_id));
                     cmd_resps.push(resp);
                 }
             };
         }
-        self.sol_sys = Some(ss);
+        self.sol_sys = Some(core_ss);
         self.touch();
         Ok(cmd_resps)
     }
     // Helper methods
     fn take_ss(&mut self) -> Result<reefast::SolarSystem> {
         match self.sol_sys.take() {
-            Some(ss) => Ok(ss),
+            Some(core_ss) => Ok(core_ss),
             None => {
                 self.touch();
                 Err(Error::new(ErrorKind::NoCoreSolSys))
