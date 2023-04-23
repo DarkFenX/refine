@@ -7,13 +7,13 @@ pub(crate) enum SolSysInfo {
 impl SolSysInfo {
     pub(crate) fn extract(
         sol_sys: &mut reefast::SolarSystem,
-        id: String,
+        ss_id: String,
         expand_solsys: bool,
         expand_fits: bool,
     ) -> Self {
         match expand_solsys {
-            true => Self::Detailed(SolSysInfoDetailed::new(id)),
-            false => Self::Id(id),
+            true => Self::Detailed(SolSysInfoDetailed::new(ss_id)),
+            false => Self::Id(ss_id),
         }
     }
 }

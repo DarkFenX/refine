@@ -3,6 +3,7 @@
 
 pub(crate) use fit::FitCommand;
 use fit::{FitCmdResp, FitInfo};
+use item::ItemInfo;
 use shared::{CmdResp, SingleIdResp};
 pub(crate) use src_mgr::SrcMgr;
 use ss::SolSysInfo;

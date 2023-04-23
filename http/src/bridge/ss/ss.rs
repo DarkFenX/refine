@@ -22,7 +22,7 @@ impl SolarSystem {
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
             let res = match core_ss.add_fit() {
-                Ok(fid) => Ok(FitInfo::extract(&mut core_ss, fid, true)),
+                Ok(fid) => Ok(FitInfo::extract(&mut core_ss, fid, true, false)),
                 Err(e) => Err(e.into()),
             };
             (res, core_ss)
@@ -59,7 +59,7 @@ impl SolarSystem {
                     }
                 };
             }
-            let info = FitInfo::extract(&mut core_ss, fit_id, true);
+            let info = FitInfo::extract(&mut core_ss, fit_id, true, false);
             let resp = FitCmdResp::new(info, cmd_results);
             (resp, core_ss)
         })
