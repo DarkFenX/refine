@@ -9,32 +9,22 @@ use axum::{
 
 use crate::{state::AppState, util::ErrorKind};
 
-use super::super::{get_guarded_ss, GSsRes};
-
-#[derive(serde::Serialize)]
-struct CreateFitResp {
-    id: String,
-}
-impl CreateFitResp {
-    fn new(id: String) -> Self {
-        Self { id }
-    }
-}
+use super::super::{get_guarded_ss, GSsRes, SingleErr};
 
 pub(crate) async fn create_fit(State(state): State<Arc<AppState>>, Path(ssid): Path<String>) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
         GSsRes::SolSys(ss) => ss,
         GSsRes::ErrResp(r) => return r,
     };
-    let fit_id = match guarded_ss.lock().await.add_fit().await {
-        Ok(fid) => fid,
+    let fit_info = match guarded_ss.lock().await.add_fit().await {
+        Ok(fit_info) => fit_info,
         Err(e) => {
             let code = match e.kind {
                 ErrorKind::CoreError(reefast::ErrorKind::IdAllocFailed, _) => StatusCode::SERVICE_UNAVAILABLE,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            return (code, Json(e.to_string())).into_response();
+            return (code, Json(SingleErr::from(e))).into_response();
         }
     };
-    (StatusCode::CREATED, Json(CreateFitResp::new(fit_id))).into_response()
+    (StatusCode::CREATED, Json(fit_info)).into_response()
 }

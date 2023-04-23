@@ -14,6 +14,7 @@ use crate::{settings::Settings, state::AppState};
 mod bridge;
 mod command;
 mod handlers;
+mod info;
 mod settings;
 mod state;
 mod util;

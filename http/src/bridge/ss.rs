@@ -1,5 +1,6 @@
 use crate::{
     command::{CmdResp, FitCommand, SingleIdResp},
+    info,
     util::{Error, ErrorKind, Result},
 };
 
@@ -18,19 +19,19 @@ impl SolarSystem {
         &self.accessed
     }
     // Fit methods
-    pub(crate) async fn add_fit(&mut self) -> Result<String> {
+    pub(crate) async fn add_fit(&mut self) -> Result<info::FitInfo> {
         let mut ss = self.take_ss()?;
         let (res, ss) = tokio_rayon::spawn_fifo(move || {
-            let res = ss.add_fit();
+            let res = match ss.add_fit() {
+                Ok(fid) => Ok(info::FitInfo::extract(&mut ss, fid, true)),
+                Err(e) => Err(e.into()),
+            };
             (res, ss)
         })
         .await;
         self.sol_sys = Some(ss);
         self.touch();
-        match res {
-            Ok(fid) => Ok(fid.to_string()),
-            Err(e) => Err(e.into()),
-        }
+        res
     }
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> Result<()> {
         let fit_id = self.str_to_fit_id(fit_id)?;

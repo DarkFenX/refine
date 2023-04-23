@@ -6,7 +6,10 @@ use tokio::{
 };
 use uuid::Uuid;
 
-use crate::util::{Error, ErrorKind, Result};
+use crate::{
+    info,
+    util::{Error, ErrorKind, Result},
+};
 
 use super::ss::SolarSystem;
 
@@ -20,14 +23,20 @@ impl SolSysMgr {
         }
     }
     // Solar system methods
-    pub(crate) async fn add_sol_sys(&self, src: Arc<reefast::Src>) -> String {
-        let core_ss = tokio_rayon::spawn_fifo(move || reefast::SolarSystem::new(src)).await;
+    pub(crate) async fn add_sol_sys(&self, src: Arc<reefast::Src>) -> info::SolSysInfo {
         let id = get_id();
+        let id_mv = id.clone();
+        let (core_ss, ss_info) = tokio_rayon::spawn_fifo(move || {
+            let mut core_ss = reefast::SolarSystem::new(src);
+            let ss_info = info::SolSysInfo::extract(&mut core_ss, id_mv, true, false);
+            (core_ss, ss_info)
+        })
+        .await;
         self.id_ss_map
             .write()
             .await
-            .insert(id.clone(), Arc::new(Mutex::new(SolarSystem::new(core_ss))));
-        id
+            .insert(id, Arc::new(Mutex::new(SolarSystem::new(core_ss))));
+        ss_info
     }
     pub(crate) async fn get_sol_sys(&self, id: &str) -> Result<Arc<Mutex<SolarSystem>>> {
         self.id_ss_map
