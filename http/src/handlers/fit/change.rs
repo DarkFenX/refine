@@ -28,7 +28,7 @@ pub(crate) async fn change_fit(
     let resp = match guarded_ss
         .lock()
         .await
-        .execute_fit_commands(&fid, &payload.commands)
+        .execute_fit_commands(&fid, payload.commands)
         .await
     {
         Ok(cmd_resps) => (StatusCode::OK, Json(cmd_resps)).into_response(),

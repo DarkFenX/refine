@@ -1,8 +1,5 @@
 use crate::{
-    bridge::{
-        shared::{CmdResp, SingleIdResp},
-        FitCommand, FitInfo,
-    },
+    bridge::{ss::SolSysInfo, CmdResp, FitCmdResp, FitCommand, FitInfo, SingleIdResp},
     util::{Error, ErrorKind, Result},
 };
 
@@ -48,26 +45,28 @@ impl SolarSystem {
         res.map_err(|e| e.into())
     }
     // Command methods
-    pub(crate) async fn execute_fit_commands(
-        &mut self,
-        fit_id: &str,
-        commands: &Vec<FitCommand>,
-    ) -> Result<Vec<CmdResp>> {
+    pub(crate) async fn execute_fit_commands(&mut self, fit_id: &str, commands: Vec<FitCommand>) -> Result<FitCmdResp> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
-        let mut cmd_resps = Vec::with_capacity(commands.len());
-        for cmd in commands.iter() {
-            match cmd {
-                FitCommand::SetShip(ssc) => {
-                    let ship_id = core_ss.set_ship(fit_id, ssc.ship_type_id)?;
-                    let resp = CmdResp::SingleId(SingleIdResp::new(ship_id));
-                    cmd_resps.push(resp);
-                }
-            };
-        }
+        let (resp, mut core_ss) = tokio_rayon::spawn_fifo(move || {
+            let mut cmd_results = Vec::with_capacity(commands.len());
+            for cmd in commands.iter() {
+                match cmd {
+                    FitCommand::SetShip(ssc) => {
+                        let ship_id = core_ss.set_ship(fit_id, ssc.ship_type_id).unwrap();
+                        let resp = CmdResp::SingleId(SingleIdResp::new(ship_id));
+                        cmd_results.push(resp);
+                    }
+                };
+            }
+            let info = FitInfo::extract(&mut core_ss, fit_id, true);
+            let resp = FitCmdResp::new(info, cmd_results);
+            (resp, core_ss)
+        })
+        .await;
         self.sol_sys = Some(core_ss);
         self.touch();
-        Ok(cmd_resps)
+        Ok(resp)
     }
     // Helper methods
     fn take_ss(&mut self) -> Result<reefast::SolarSystem> {
