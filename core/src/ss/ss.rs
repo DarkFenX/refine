@@ -6,7 +6,11 @@ use std::{
 
 use itertools::Itertools;
 
-use crate::{consts::State, src::Src, Error, ErrorKind, ReeFloat, ReeId, ReeIdx, ReeInt, Result};
+use crate::{
+    consts::{OrdAddMode, OrdRmMode, State},
+    src::Src,
+    Error, ErrorKind, ReeFloat, ReeId, ReeIdx, ReeInt, Result,
+};
 
 use super::{
     calc::CalcSvc,

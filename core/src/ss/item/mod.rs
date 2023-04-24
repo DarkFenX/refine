@@ -16,7 +16,7 @@ pub(in crate::ss) use sw_effect::SwEffect;
 
 use crate::{
     consts::{ModDomain, State},
-    ct, ReeFloat, ReeId, ReeInt, Src,
+    ct, ReeFloat, ReeId, ReeIdx, ReeInt, Src,
 };
 
 mod booster;
@@ -125,6 +125,14 @@ impl Item {
             Self::Stance(_) => State::Offline,
             Self::Subsystem(_) => State::Offline,
             Self::SwEffect(_) => State::Offline,
+        }
+    }
+    pub(in crate::ss) fn get_pos(&self) -> Option<ReeIdx> {
+        match self {
+            Self::ModuleHigh(i) => Some(i.pos),
+            Self::ModuleLow(i) => Some(i.pos),
+            Self::ModuleMid(i) => Some(i.pos),
+            _ => None,
         }
     }
     pub(in crate::ss) fn reload_cached_item(&mut self, src: &Arc<Src>) {
