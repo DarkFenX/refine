@@ -1,6 +1,4 @@
-use crate::bridge::CmdResp;
-
-use super::FitInfo;
+use crate::{cmd::CmdResp, info::FitInfo};
 
 #[derive(serde::Serialize)]
 #[serde(rename_all = "kebab-case")]

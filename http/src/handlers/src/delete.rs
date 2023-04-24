@@ -7,9 +7,7 @@ use axum::{
     Json,
 };
 
-use crate::{state::AppState, util::ErrorKind};
-
-use super::super::SingleErr;
+use crate::{handlers::SingleErr, state::AppState, util::ErrorKind};
 
 pub(crate) async fn delete_source(State(state): State<Arc<AppState>>, Path(alias): Path<String>) -> impl IntoResponse {
     match state.src_mgr.del(&alias).await {

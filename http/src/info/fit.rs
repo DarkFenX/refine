@@ -1,4 +1,4 @@
-use crate::bridge::ItemInfo;
+use crate::info::ItemInfo;
 
 #[derive(serde::Serialize)]
 #[serde(untagged)]

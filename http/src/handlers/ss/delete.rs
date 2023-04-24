@@ -7,9 +7,7 @@ use axum::{
     Json,
 };
 
-use crate::{state::AppState, util::ErrorKind};
-
-use super::super::SingleErr;
+use crate::{handlers::SingleErr, state::AppState, util::ErrorKind};
 
 pub(crate) async fn delete_sol_sys(State(state): State<Arc<AppState>>, Path(id): Path<String>) -> impl IntoResponse {
     match state.ss_mgr.delete_sol_sys(&id).await {

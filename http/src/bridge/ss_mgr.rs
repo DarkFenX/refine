@@ -7,7 +7,8 @@ use tokio::{
 use uuid::Uuid;
 
 use crate::{
-    bridge::{SolSysInfo, SolarSystem},
+    bridge::SolarSystem,
+    info::SolSysInfo,
     util::{Error, ErrorKind, Result},
 };
 

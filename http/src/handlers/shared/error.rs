@@ -1,7 +1,7 @@
 use crate::util::Error;
 
 #[derive(serde::Serialize)]
-pub(in super::super) struct SingleErr {
+pub(in crate::handlers) struct SingleErr {
     code: String,
     message: String,
 }

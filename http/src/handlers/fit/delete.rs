@@ -7,9 +7,11 @@ use axum::{
     Json,
 };
 
-use crate::{state::AppState, util::ErrorKind};
-
-use super::super::{get_guarded_ss, GSsResult, SingleErr};
+use crate::{
+    handlers::{get_guarded_ss, GSsResult, SingleErr},
+    state::AppState,
+    util::ErrorKind,
+};
 
 pub(crate) async fn delete_fit(
     State(state): State<Arc<AppState>>,

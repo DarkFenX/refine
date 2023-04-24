@@ -1,5 +1,6 @@
 use crate::{
-    bridge::{ss::SolSysInfo, CmdResp, FitCmdResp, FitCommand, FitInfo, SingleIdResp},
+    cmd::{CmdResp, FitCmdResp, FitCommand, SingleIdResp},
+    info::{FitInfo, SolSysInfo},
     util::{Error, ErrorKind, Result},
 };
 

@@ -9,17 +9,16 @@ use tokio::sync::Mutex;
 
 use crate::{
     bridge::{SolSysMgr, SolarSystem},
+    handlers::SingleErr,
     util::ErrorKind,
 };
 
-use super::super::SingleErr;
-
-pub(in super::super) enum GSsResult {
+pub(in crate::handlers) enum GSsResult {
     SolSys(Arc<Mutex<SolarSystem>>),
     ErrResp(Response),
 }
 
-pub(in super::super) async fn get_guarded_ss(ss_mgr: &SolSysMgr, solsys_id: &str) -> GSsResult {
+pub(in crate::handlers) async fn get_guarded_ss(ss_mgr: &SolSysMgr, solsys_id: &str) -> GSsResult {
     match ss_mgr.get_sol_sys(&solsys_id).await {
         Ok(ss) => GSsResult::SolSys(ss),
         Err(e) => {

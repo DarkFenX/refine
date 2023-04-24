@@ -7,9 +7,12 @@ use axum::{
     Json,
 };
 
-use crate::{bridge::FitCommand, state::AppState, util::ErrorKind};
-
-use super::super::{get_guarded_ss, GSsResult, SingleErr};
+use crate::{
+    cmd::FitCommand,
+    handlers::{get_guarded_ss, GSsResult, SingleErr},
+    state::AppState,
+    util::ErrorKind,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct FitChangeReq {

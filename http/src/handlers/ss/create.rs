@@ -2,9 +2,7 @@ use std::sync::Arc;
 
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 
-use crate::{state::AppState, util::ErrorKind};
-
-use super::super::SingleErr;
+use crate::{handlers::SingleErr, state::AppState, util::ErrorKind};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct CreateSolSysReq {
