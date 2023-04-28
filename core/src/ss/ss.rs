@@ -277,21 +277,49 @@ impl SolarSystem {
         fit_id: ReeId,
         type_id: ReeInt,
         state: State,
-        pos: ReeIdx,
+        add_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
     ) -> Result<(ReeId, Option<ReeId>)> {
-        match self.items.values().find_or_first(|v| match v {
-            Item::ModuleMid(m) if m.fit_id == fit_id && m.pos == pos => true,
-            _ => false,
-        }) {
-            Some(i) => {
-                return Err(Error::new(
-                    ErrorKind::SlotTaken,
-                    format!("mid slot position {} is taken by item ID {}", pos, i.get_id()),
-                ))
+        let item_ids = self.get_modules_mid(fit_id);
+        let pos = match add_mode {
+            OrdAddMode::Append => self.get_positions(&item_ids).iter().max().map(|v| 1 + v).unwrap_or(0),
+            OrdAddMode::Equip => {
+                let positions = self.get_positions(&item_ids);
+                first_free_pos(positions)
             }
-            _ => (),
-        }
+            OrdAddMode::Insert(pos) => {
+                for item_id in item_ids.iter() {
+                    match self.items.get_mut(item_id) {
+                        Some(Item::ModuleMid(m)) if m.pos >= pos => m.pos += 1,
+                        _ => (),
+                    }
+                }
+                pos
+            }
+            OrdAddMode::Place(pos, repl) => {
+                let mut old_item_id = None;
+                for item_id in item_ids.iter() {
+                    match self.items.get(item_id) {
+                        Some(Item::ModuleMid(m)) if m.pos == pos => old_item_id = Some(item_id),
+                        _ => (),
+                    }
+                }
+                match (old_item_id, repl) {
+                    (Some(oid), true) => {
+                        self.remove_item(oid);
+                        ()
+                    }
+                    (Some(oid), false) => {
+                        return Err(Error::new(
+                            ErrorKind::SlotTaken,
+                            format!("mid slot position {} is taken by item ID {}", pos, oid),
+                        ))
+                    }
+                    _ => (),
+                }
+                pos
+            }
+        };
         let module_id = self.alloc_item_id()?;
         let charge_id = self.add_charge(fit_id, module_id, charge_type_id)?;
         let module = Item::ModuleMid(Module::new(
@@ -305,21 +333,49 @@ impl SolarSystem {
         fit_id: ReeId,
         type_id: ReeInt,
         state: State,
-        pos: ReeIdx,
+        add_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
     ) -> Result<(ReeId, Option<ReeId>)> {
-        match self.items.values().find_or_first(|v| match v {
-            Item::ModuleLow(m) if m.fit_id == fit_id && m.pos == pos => true,
-            _ => false,
-        }) {
-            Some(i) => {
-                return Err(Error::new(
-                    ErrorKind::SlotTaken,
-                    format!("low slot position {} is taken by item ID {}", pos, i.get_id()),
-                ))
+        let item_ids = self.get_modules_low(fit_id);
+        let pos = match add_mode {
+            OrdAddMode::Append => self.get_positions(&item_ids).iter().max().map(|v| 1 + v).unwrap_or(0),
+            OrdAddMode::Equip => {
+                let positions = self.get_positions(&item_ids);
+                first_free_pos(positions)
             }
-            _ => (),
-        }
+            OrdAddMode::Insert(pos) => {
+                for item_id in item_ids.iter() {
+                    match self.items.get_mut(item_id) {
+                        Some(Item::ModuleLow(m)) if m.pos >= pos => m.pos += 1,
+                        _ => (),
+                    }
+                }
+                pos
+            }
+            OrdAddMode::Place(pos, repl) => {
+                let mut old_item_id = None;
+                for item_id in item_ids.iter() {
+                    match self.items.get(item_id) {
+                        Some(Item::ModuleLow(m)) if m.pos == pos => old_item_id = Some(item_id),
+                        _ => (),
+                    }
+                }
+                match (old_item_id, repl) {
+                    (Some(oid), true) => {
+                        self.remove_item(oid);
+                        ()
+                    }
+                    (Some(oid), false) => {
+                        return Err(Error::new(
+                            ErrorKind::SlotTaken,
+                            format!("low slot position {} is taken by item ID {}", pos, oid),
+                        ))
+                    }
+                    _ => (),
+                }
+                pos
+            }
+        };
         let module_id = self.alloc_item_id()?;
         let charge_id = self.add_charge(fit_id, module_id, charge_type_id)?;
         let module = Item::ModuleLow(Module::new(
