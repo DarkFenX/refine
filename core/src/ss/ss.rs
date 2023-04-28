@@ -221,21 +221,49 @@ impl SolarSystem {
         fit_id: ReeId,
         type_id: ReeInt,
         state: State,
-        pos: ReeIdx,
+        add_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
     ) -> Result<(ReeId, Option<ReeId>)> {
-        match self.items.values().find_or_first(|v| match v {
-            Item::ModuleHigh(m) if m.fit_id == fit_id && m.pos == pos => true,
-            _ => false,
-        }) {
-            Some(i) => {
-                return Err(Error::new(
-                    ErrorKind::SlotTaken,
-                    format!("high slot position {} is taken by item ID {}", pos, i.get_id()),
-                ))
+        let item_ids = self.get_modules_high(fit_id);
+        let pos = match add_mode {
+            OrdAddMode::Append => self.get_positions(&item_ids).iter().max().map(|v| 1 + v).unwrap_or(0),
+            OrdAddMode::Equip => {
+                let positions = self.get_positions(&item_ids);
+                first_free_pos(positions)
             }
-            _ => (),
-        }
+            OrdAddMode::Insert(pos) => {
+                for item_id in item_ids.iter() {
+                    match self.items.get_mut(item_id) {
+                        Some(Item::ModuleHigh(m)) if m.pos >= pos => m.pos += 1,
+                        _ => (),
+                    }
+                }
+                pos
+            }
+            OrdAddMode::Place(pos, repl) => {
+                let mut old_item_id = None;
+                for item_id in item_ids.iter() {
+                    match self.items.get(item_id) {
+                        Some(Item::ModuleHigh(m)) if m.pos == pos => old_item_id = Some(item_id),
+                        _ => (),
+                    }
+                }
+                match (old_item_id, repl) {
+                    (Some(oid), true) => {
+                        self.remove_item(oid);
+                        ()
+                    }
+                    (Some(oid), false) => {
+                        return Err(Error::new(
+                            ErrorKind::SlotTaken,
+                            format!("high slot position {} is taken by item ID {}", pos, oid),
+                        ))
+                    }
+                    _ => (),
+                }
+                pos
+            }
+        };
         let module_id = self.alloc_item_id()?;
         let charge_id = self.add_charge(fit_id, module_id, charge_type_id)?;
         let module = Item::ModuleHigh(Module::new(
@@ -743,6 +771,13 @@ impl SolarSystem {
         helpers::add_item(&item, &self.src, &mut self.calc);
         self.items.insert(item.get_id(), item);
     }
+    fn get_positions(&self, item_ids: &Vec<ReeId>) -> Vec<ReeIdx> {
+        item_ids
+            .iter()
+            .filter_map(|v| self.items.get(v))
+            .filter_map(|v| v.get_pos())
+            .collect_vec()
+    }
     pub fn remove_item(&mut self, item_id: &ReeId) -> bool {
         match self.items.remove(item_id) {
             None => false,
@@ -805,4 +840,22 @@ fn check_skill_level(level: ReeInt) -> Result<()> {
         ));
     };
     Ok(())
+}
+
+pub fn first_free_pos(mut positions: Vec<ReeIdx>) -> ReeIdx {
+    for i in 0..positions.len() {
+        while (positions[i] < positions.len()) && (positions[i] != i) {
+            let j = positions[i];
+            if positions[j] == positions[i] {
+                break;
+            }
+            positions.swap(i, j);
+        }
+    }
+    for i in 0..positions.len() {
+        if i != positions[i] {
+            return i;
+        }
+    }
+    positions.len()
 }
