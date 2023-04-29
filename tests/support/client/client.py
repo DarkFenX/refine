@@ -246,4 +246,4 @@ class TestClient:
         req = self.set_ship_request(ss=ss, fit_id=fit_id, ship_id=ship_id)
         resp = self.__session.send(req.prepare())
         assert resp.status_code == 200
-        return resp.json()[0]['id']
+        return resp.json()['cmd-results'][0]['id']
