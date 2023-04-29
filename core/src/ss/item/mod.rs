@@ -5,7 +5,7 @@ pub(in crate::ss) use character::Character;
 pub(in crate::ss) use charge::Charge;
 pub(in crate::ss) use drone::Drone;
 pub(in crate::ss) use fighter::Fighter;
-pub(in crate::ss) use id_data::IdData;
+pub use id_data::IdData;
 pub(in crate::ss) use implant::Implant;
 pub(in crate::ss) use module::Module;
 pub(in crate::ss) use rig::Rig;

@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{CmdResp, FitCommand, SingleIdResp},
+    cmd::{CmdResp, FitCommand, ItemIdsResp},
     info::{FitInfo, SolSysInfo},
     util::{Error, ErrorKind, Result},
 };
@@ -59,10 +59,22 @@ impl SolarSystem {
                 match cmd {
                     FitCommand::SetShip(c) => {
                         let ship_id = core_ss.set_ship(fit_id, c.ship_type_id).unwrap();
-                        let resp = CmdResp::SingleId(SingleIdResp::new(ship_id));
+                        let resp = CmdResp::ItemIds(ItemIdsResp::from(ship_id));
                         cmd_results.push(resp);
                     }
-                    FitCommand::AddModuleHigh(c) => {}
+                    FitCommand::AddModuleHigh(c) => {
+                        let id_data = core_ss
+                            .add_high_module(
+                                fit_id,
+                                c.module_type_id,
+                                c.state.into(),
+                                c.add_mode.into(),
+                                c.charge_type_id,
+                            )
+                            .unwrap();
+                        let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                        cmd_results.push(resp);
+                    }
                 };
             }
             let info = FitInfo::extract(&mut core_ss, fit_id, true, false);
