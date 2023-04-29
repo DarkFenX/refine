@@ -14,6 +14,15 @@ impl SolarSystem {
             })
             .collect()
     }
+    pub fn get_high_module_id_datas(&self, fit_id: ReeId) -> Vec<IdData> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::ModuleHigh(m) if m.fit_id == fit_id => Some(m.into()),
+                _ => None,
+            })
+            .collect()
+    }
     pub fn get_mid_module_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
         self.items
             .values()
@@ -23,11 +32,29 @@ impl SolarSystem {
             })
             .collect()
     }
+    pub fn get_mid_module_id_datas(&self, fit_id: ReeId) -> Vec<IdData> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::ModuleMid(m) if m.fit_id == fit_id => Some(m.into()),
+                _ => None,
+            })
+            .collect()
+    }
     pub fn get_low_module_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
         self.items
             .values()
             .filter_map(|v| match v {
                 Item::ModuleLow(m) if m.fit_id == fit_id => Some(m.item_id),
+                _ => None,
+            })
+            .collect()
+    }
+    pub fn get_low_module_id_datas(&self, fit_id: ReeId) -> Vec<IdData> {
+        self.items
+            .values()
+            .filter_map(|v| match v {
+                Item::ModuleLow(m) if m.fit_id == fit_id => Some(m.into()),
                 _ => None,
             })
             .collect()
@@ -314,6 +341,7 @@ impl SolarSystem {
     }
 }
 
+// Find first slot not taken by any module
 fn find_equip_pos(mut positions: Vec<ReeIdx>) -> ReeIdx {
     for i in 0..positions.len() {
         while (positions[i] < positions.len()) && (positions[i] != i) {
