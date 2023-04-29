@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{CmdResp, FitCmdResp, FitCommand, SingleIdResp},
+    cmd::{CmdResp, FitCommand, SingleIdResp},
     info::{FitInfo, SolSysInfo},
     util::{Error, ErrorKind, Result},
 };
@@ -46,10 +46,14 @@ impl SolarSystem {
         res.map_err(|e| e.into())
     }
     // Command methods
-    pub(crate) async fn execute_fit_commands(&mut self, fit_id: &str, commands: Vec<FitCommand>) -> Result<FitCmdResp> {
+    pub(crate) async fn execute_fit_commands(
+        &mut self,
+        fit_id: &str,
+        commands: Vec<FitCommand>,
+    ) -> Result<(FitInfo, Vec<CmdResp>)> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
-        let (resp, mut core_ss) = tokio_rayon::spawn_fifo(move || {
+        let (core_ss, fit_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
             let mut cmd_results = Vec::with_capacity(commands.len());
             for cmd in commands.iter() {
                 match cmd {
@@ -61,13 +65,12 @@ impl SolarSystem {
                 };
             }
             let info = FitInfo::extract(&mut core_ss, fit_id, true, false);
-            let resp = FitCmdResp::new(info, cmd_results);
-            (resp, core_ss)
+            (core_ss, info, cmd_results)
         })
         .await;
         self.sol_sys = Some(core_ss);
         self.touch();
-        Ok(resp)
+        Ok((fit_info, cmd_results))
     }
     // Helper methods
     fn take_ss(&mut self) -> Result<reefast::SolarSystem> {

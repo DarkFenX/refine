@@ -8,15 +8,27 @@ use axum::{
 };
 
 use crate::{
-    cmd::FitCommand,
+    cmd::{CmdResp, FitCommand},
     handlers::{get_guarded_ss, GSsResult, SingleErr},
+    info::FitInfo,
     state::AppState,
-    util::ErrorKind,
 };
 
 #[derive(serde::Deserialize)]
 pub(crate) struct FitChangeReq {
     commands: Vec<FitCommand>,
+}
+
+#[derive(serde::Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub(crate) struct FitChangeResp {
+    fit: FitInfo,
+    cmd_results: Vec<CmdResp>,
+}
+impl FitChangeResp {
+    pub(crate) fn new(fit: FitInfo, cmd_results: Vec<CmdResp>) -> Self {
+        Self { fit, cmd_results }
+    }
 }
 
 pub(crate) async fn change_fit(
@@ -34,7 +46,10 @@ pub(crate) async fn change_fit(
         .execute_fit_commands(&fid, payload.commands)
         .await
     {
-        Ok(cmd_resps) => (StatusCode::OK, Json(cmd_resps)).into_response(),
+        Ok((fit_info, cmd_results)) => {
+            let resp = FitChangeResp::new(fit_info, cmd_results);
+            (StatusCode::OK, Json(resp)).into_response()
+        }
         Err(e) => {
             let code = StatusCode::INTERNAL_SERVER_ERROR;
             (code, Json(SingleErr::from(e))).into_response()

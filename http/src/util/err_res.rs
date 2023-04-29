@@ -1,7 +1,5 @@
 use std::{error, fmt, result};
 
-use axum::response::IntoResponse;
-
 #[derive(Debug)]
 pub(crate) enum ErrorKind {
     SrcAliasNotAvailable(String),

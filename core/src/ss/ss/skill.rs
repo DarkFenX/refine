@@ -4,7 +4,6 @@ use crate::{
 };
 
 impl SolarSystem {
-    // Skill methods
     pub fn get_skills(&self, fit_id: ReeId) -> Vec<ReeId> {
         self.items
             .values()
