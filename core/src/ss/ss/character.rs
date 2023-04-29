@@ -9,7 +9,7 @@ impl SolarSystem {
     pub fn get_character_id(&self, fit_id: ReeId) -> Option<ReeId> {
         self.items
             .values()
-            .find_or_first(|v| match v {
+            .find(|v| match v {
                 Item::Character(c) if c.fit_id == fit_id => true,
                 _ => false,
             })

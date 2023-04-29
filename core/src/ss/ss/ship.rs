@@ -9,7 +9,7 @@ impl SolarSystem {
     pub fn get_ship_id(&self, fit_id: ReeId) -> Option<ReeId> {
         self.items
             .values()
-            .find_or_first(|v| match v {
+            .find(|v| match v {
                 Item::Ship(s) if s.fit_id == fit_id => true,
                 _ => false,
             })

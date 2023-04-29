@@ -247,3 +247,19 @@ class TestClient:
         resp = self.__session.send(req.prepare())
         assert resp.status_code == 200
         return resp.json()['cmd-results'][0]['id']
+
+    def add_high_mod_request(self, ss, fit_id, module_id, state, charge_id=None, mode='equip'):
+        command = {'type': 'add-module-high', 'add-mode': mode, 'module-type-id': module_id, 'state': state}
+        if charge_id is not None:
+            command['charge-type-id'] = charge_id
+        payload = {'commands': [command]}
+        req = requests.Request('PATCH', f'http://localhost:8000/solar_system/{ss}/fit/{fit_id}', json=payload)
+        return req
+
+    def add_high_mod(self, ss, fit_id, module_id, state, charge_id=None, mode='equip'):
+        req = self.add_high_mod_request(
+            ss=ss, fit_id=fit_id, module_id=module_id,
+            state=state, charge_id=charge_id, mode=mode)
+        resp = self.__session.send(req.prepare())
+        assert resp.status_code == 200
+        return resp.json()['cmd-results'][0]['id']
