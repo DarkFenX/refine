@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_rigs(&self, fit_id: ReeId) -> Vec<ReeId> {
+    pub fn get_rig_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
         self.items
             .values()
             .filter_map(|v| match v {

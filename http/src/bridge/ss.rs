@@ -57,11 +57,12 @@ impl SolarSystem {
             let mut cmd_results = Vec::with_capacity(commands.len());
             for cmd in commands.iter() {
                 match cmd {
-                    FitCommand::SetShip(ssc) => {
-                        let ship_id = core_ss.set_ship(fit_id, ssc.ship_type_id).unwrap();
+                    FitCommand::SetShip(c) => {
+                        let ship_id = core_ss.set_ship(fit_id, c.ship_type_id).unwrap();
                         let resp = CmdResp::SingleId(SingleIdResp::new(ship_id));
                         cmd_results.push(resp);
                     }
+                    FitCommand::AddModuleHigh(c) => {}
                 };
             }
             let info = FitInfo::extract(&mut core_ss, fit_id, true, false);

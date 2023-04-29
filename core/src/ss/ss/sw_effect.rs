@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_sw_effects(&self) -> Vec<ReeId> {
+    pub fn get_sw_effect_ids(&self) -> Vec<ReeId> {
         self.items
             .values()
             .filter_map(|v| match v {

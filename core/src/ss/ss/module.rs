@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_modules_high(&self, fit_id: ReeId) -> Vec<ReeId> {
+    pub fn get_high_module_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
         self.items
             .values()
             .filter_map(|v| match v {
@@ -14,7 +14,7 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn get_modules_mid(&self, fit_id: ReeId) -> Vec<ReeId> {
+    pub fn get_mid_module_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
         self.items
             .values()
             .filter_map(|v| match v {
@@ -23,7 +23,7 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn get_modules_low(&self, fit_id: ReeId) -> Vec<ReeId> {
+    pub fn get_low_module_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
         self.items
             .values()
             .filter_map(|v| match v {
@@ -32,7 +32,7 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_module_high(
+    pub fn add_high_module(
         &mut self,
         fit_id: ReeId,
         type_id: ReeInt,
@@ -40,12 +40,12 @@ impl SolarSystem {
         add_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
     ) -> Result<IdData> {
-        let item_ids = self.get_modules_high(fit_id);
+        let item_ids = self.get_high_module_ids(fit_id);
         let pos = match add_mode {
             OrdAddMode::Append => self.get_positions(&item_ids).iter().max().map(|v| 1 + v).unwrap_or(0),
             OrdAddMode::Equip => {
                 let positions = self.get_positions(&item_ids);
-                first_free_pos(positions)
+                find_equip_pos(positions)
             }
             OrdAddMode::Insert(pos) => {
                 for item_id in item_ids.iter() {
@@ -88,7 +88,7 @@ impl SolarSystem {
         self.add_item(item);
         Ok(id_data)
     }
-    pub fn add_module_mid(
+    pub fn add_mid_module(
         &mut self,
         fit_id: ReeId,
         type_id: ReeInt,
@@ -96,12 +96,12 @@ impl SolarSystem {
         add_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
     ) -> Result<IdData> {
-        let item_ids = self.get_modules_mid(fit_id);
+        let item_ids = self.get_mid_module_ids(fit_id);
         let pos = match add_mode {
             OrdAddMode::Append => self.get_positions(&item_ids).iter().max().map(|v| 1 + v).unwrap_or(0),
             OrdAddMode::Equip => {
                 let positions = self.get_positions(&item_ids);
-                first_free_pos(positions)
+                find_equip_pos(positions)
             }
             OrdAddMode::Insert(pos) => {
                 for item_id in item_ids.iter() {
@@ -144,7 +144,7 @@ impl SolarSystem {
         self.add_item(item);
         Ok(id_data)
     }
-    pub fn add_module_low(
+    pub fn add_low_module(
         &mut self,
         fit_id: ReeId,
         type_id: ReeInt,
@@ -152,12 +152,12 @@ impl SolarSystem {
         add_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
     ) -> Result<IdData> {
-        let item_ids = self.get_modules_low(fit_id);
+        let item_ids = self.get_low_module_ids(fit_id);
         let pos = match add_mode {
             OrdAddMode::Append => self.get_positions(&item_ids).iter().max().map(|v| 1 + v).unwrap_or(0),
             OrdAddMode::Equip => {
                 let positions = self.get_positions(&item_ids);
-                first_free_pos(positions)
+                find_equip_pos(positions)
             }
             OrdAddMode::Insert(pos) => {
                 for item_id in item_ids.iter() {
@@ -314,7 +314,7 @@ impl SolarSystem {
     }
 }
 
-fn first_free_pos(mut positions: Vec<ReeIdx>) -> ReeIdx {
+fn find_equip_pos(mut positions: Vec<ReeIdx>) -> ReeIdx {
     for i in 0..positions.len() {
         while (positions[i] < positions.len()) && (positions[i] != i) {
             let j = positions[i];

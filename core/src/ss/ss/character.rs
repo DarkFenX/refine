@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_character(&self, fit_id: ReeId) -> Option<ReeId> {
+    pub fn get_character_id(&self, fit_id: ReeId) -> Option<ReeId> {
         self.items
             .values()
             .find_or_first(|v| match v {

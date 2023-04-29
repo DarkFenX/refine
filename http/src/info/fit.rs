@@ -29,7 +29,7 @@ pub(crate) struct FitInfoDetailed {
 impl FitInfoDetailed {
     fn extract(core_ss: &mut reefast::SolarSystem, fit_id: reefast::ReeId, expand_items: bool) -> Self {
         let ship = core_ss
-            .get_ship(fit_id)
+            .get_ship_id(fit_id)
             .map(|v| ItemInfo::extract(core_ss, v, expand_items));
         Self {
             id: fit_id.to_string(),
