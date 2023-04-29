@@ -1,6 +1,6 @@
 use crate::{
     consts::{OrdAddMode, State},
-    ss::item::{Charge, Item, Module},
+    ss::item::{Charge, IdData, Item, Module},
     Error, ErrorKind, ReeId, ReeIdx, ReeInt, Result, SolarSystem,
 };
 
@@ -39,7 +39,7 @@ impl SolarSystem {
         state: State,
         add_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
-    ) -> Result<(ReeId, Option<ReeId>)> {
+    ) -> Result<IdData> {
         let item_ids = self.get_modules_high(fit_id);
         let pos = match add_mode {
             OrdAddMode::Append => self.get_positions(&item_ids).iter().max().map(|v| 1 + v).unwrap_or(0),
@@ -82,11 +82,11 @@ impl SolarSystem {
         };
         let module_id = self.alloc_item_id()?;
         let charge_id = self.add_charge(fit_id, module_id, charge_type_id)?;
-        let module = Item::ModuleHigh(Module::new(
-            &self.src, module_id, fit_id, type_id, state, pos, charge_id,
-        ));
-        self.add_item(module);
-        Ok((module_id, charge_id))
+        let module = Module::new(&self.src, module_id, fit_id, type_id, state, pos, charge_id);
+        let id_data = IdData::from(&module);
+        let item = Item::ModuleHigh(module);
+        self.add_item(item);
+        Ok(id_data)
     }
     pub fn add_module_mid(
         &mut self,
@@ -95,7 +95,7 @@ impl SolarSystem {
         state: State,
         add_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
-    ) -> Result<(ReeId, Option<ReeId>)> {
+    ) -> Result<IdData> {
         let item_ids = self.get_modules_mid(fit_id);
         let pos = match add_mode {
             OrdAddMode::Append => self.get_positions(&item_ids).iter().max().map(|v| 1 + v).unwrap_or(0),
@@ -138,11 +138,11 @@ impl SolarSystem {
         };
         let module_id = self.alloc_item_id()?;
         let charge_id = self.add_charge(fit_id, module_id, charge_type_id)?;
-        let module = Item::ModuleMid(Module::new(
-            &self.src, module_id, fit_id, type_id, state, pos, charge_id,
-        ));
-        self.add_item(module);
-        Ok((module_id, charge_id))
+        let module = Module::new(&self.src, module_id, fit_id, type_id, state, pos, charge_id);
+        let id_data = IdData::from(&module);
+        let item = Item::ModuleMid(module);
+        self.add_item(item);
+        Ok(id_data)
     }
     pub fn add_module_low(
         &mut self,
@@ -151,7 +151,7 @@ impl SolarSystem {
         state: State,
         add_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
-    ) -> Result<(ReeId, Option<ReeId>)> {
+    ) -> Result<IdData> {
         let item_ids = self.get_modules_low(fit_id);
         let pos = match add_mode {
             OrdAddMode::Append => self.get_positions(&item_ids).iter().max().map(|v| 1 + v).unwrap_or(0),
@@ -194,11 +194,11 @@ impl SolarSystem {
         };
         let module_id = self.alloc_item_id()?;
         let charge_id = self.add_charge(fit_id, module_id, charge_type_id)?;
-        let module = Item::ModuleLow(Module::new(
-            &self.src, module_id, fit_id, type_id, state, pos, charge_id,
-        ));
-        self.add_item(module);
-        Ok((module_id, charge_id))
+        let module = Module::new(&self.src, module_id, fit_id, type_id, state, pos, charge_id);
+        let id_data = IdData::from(&module);
+        let item = Item::ModuleLow(module);
+        self.add_item(item);
+        Ok(id_data)
     }
     pub fn set_module_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
         let item = self

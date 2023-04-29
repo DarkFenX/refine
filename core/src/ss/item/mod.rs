@@ -5,6 +5,7 @@ pub(in crate::ss) use character::Character;
 pub(in crate::ss) use charge::Charge;
 pub(in crate::ss) use drone::Drone;
 pub(in crate::ss) use fighter::Fighter;
+pub(in crate::ss) use id_data::IdData;
 pub(in crate::ss) use implant::Implant;
 pub(in crate::ss) use module::Module;
 pub(in crate::ss) use rig::Rig;
@@ -24,6 +25,7 @@ mod character;
 mod charge;
 mod drone;
 mod fighter;
+mod id_data;
 mod implant;
 mod module;
 mod rig;
@@ -68,6 +70,25 @@ impl Item {
             Self::Stance(i) => i.item_id,
             Self::Subsystem(i) => i.item_id,
             Self::SwEffect(i) => i.item_id,
+        }
+    }
+    pub(in crate::ss) fn get_id_data(&self) -> IdData {
+        match self {
+            Self::Booster(i) => i.into(),
+            Self::Character(i) => i.into(),
+            Self::Charge(i) => i.into(),
+            Self::Drone(i) => i.into(),
+            Self::Fighter(i) => i.into(),
+            Self::Implant(i) => i.into(),
+            Self::ModuleHigh(i) => i.into(),
+            Self::ModuleLow(i) => i.into(),
+            Self::ModuleMid(i) => i.into(),
+            Self::Rig(i) => i.into(),
+            Self::Ship(i) => i.into(),
+            Self::Skill(i) => i.into(),
+            Self::Stance(i) => i.into(),
+            Self::Subsystem(i) => i.into(),
+            Self::SwEffect(i) => i.into(),
         }
     }
     pub(in crate::ss) fn get_fit_id(&self) -> Option<ReeId> {
