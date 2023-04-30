@@ -42,7 +42,7 @@ impl SolarSystem {
             src,
             fit_cnt: Wrapping(0),
             fits: HashSet::new(),
-            item_cnt: Wrapping(2),
+            item_cnt: Wrapping(0),
             items: HashMap::new(),
             calc: CalcSvc::new(),
         }

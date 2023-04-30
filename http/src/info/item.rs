@@ -7,7 +7,7 @@ pub(crate) enum ItemInfo {
     Detailed(ItemInfoDetailed),
 }
 impl ItemInfo {
-    pub(crate) fn extract(core_ss: &mut reefast::SolarSystem, item_id: reefast::ReeId, expand_items: bool) -> Self {
+    pub(crate) fn extract(core_ss: &mut reefast::SolarSystem, item_id: &reefast::ReeId, expand_items: bool) -> Self {
         match expand_items {
             true => Self::Detailed(ItemInfoDetailed::extract(core_ss, item_id)),
             false => Self::Id(item_id.to_string()),
@@ -22,7 +22,7 @@ pub(crate) struct ItemInfoDetailed {
     pub(crate) modified_attrs: HashMap<reefast::ReeInt, reefast::ReeFloat>,
 }
 impl ItemInfoDetailed {
-    fn extract(core_ss: &mut reefast::SolarSystem, item_id: reefast::ReeId) -> Self {
+    fn extract(core_ss: &mut reefast::SolarSystem, item_id: &reefast::ReeId) -> Self {
         Self {
             id: item_id.to_string(),
             original_attrs: HashMap::new(),
