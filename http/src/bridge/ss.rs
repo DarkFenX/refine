@@ -75,6 +75,32 @@ impl SolarSystem {
                         let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
                         cmd_results.push(resp);
                     }
+                    FitCommand::AddModuleMid(c) => {
+                        let id_data = core_ss
+                            .add_mid_module(
+                                fit_id,
+                                c.module_type_id,
+                                c.state.into(),
+                                c.add_mode.into(),
+                                c.charge_type_id,
+                            )
+                            .unwrap();
+                        let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                        cmd_results.push(resp);
+                    }
+                    FitCommand::AddModuleLow(c) => {
+                        let id_data = core_ss
+                            .add_low_module(
+                                fit_id,
+                                c.module_type_id,
+                                c.state.into(),
+                                c.add_mode.into(),
+                                c.charge_type_id,
+                            )
+                            .unwrap();
+                        let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                        cmd_results.push(resp);
+                    }
                 };
             }
             let info = FitInfo::extract(&mut core_ss, fit_id, true, false);

@@ -3,8 +3,8 @@
 pub(crate) enum FitCommand {
     SetShip(SetShipCmd),
     AddModuleHigh(AddModule),
-    // AddModuleMid(AddModule),
-    // AddModuleLow(AddModule),
+    AddModuleMid(AddModule),
+    AddModuleLow(AddModule),
 }
 
 #[derive(serde::Deserialize)]
