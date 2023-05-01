@@ -2,10 +2,10 @@ use std::{fmt, sync::Arc};
 
 use crate::{consts::attrs, ct, util::Named, ReeId, ReeInt, Src};
 
-pub(in crate::ss) struct Subsystem {
-    pub(in crate::ss) item_id: ReeId,
-    pub(in crate::ss) fit_id: ReeId,
-    pub(in crate::ss) type_id: ReeInt,
+pub struct Subsystem {
+    pub item_id: ReeId,
+    pub fit_id: ReeId,
+    pub type_id: ReeInt,
     pub(in crate::ss) citem: Option<Arc<ct::Item>>,
 }
 impl Subsystem {

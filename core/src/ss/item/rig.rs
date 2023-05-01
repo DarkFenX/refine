@@ -2,12 +2,12 @@ use std::{fmt, sync::Arc};
 
 use crate::{consts::State, ct, util::Named, ReeId, ReeInt, Src};
 
-pub(in crate::ss) struct Rig {
-    pub(in crate::ss) item_id: ReeId,
-    pub(in crate::ss) fit_id: ReeId,
-    pub(in crate::ss) type_id: ReeInt,
-    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
+pub struct Rig {
+    pub item_id: ReeId,
+    pub fit_id: ReeId,
+    pub type_id: ReeInt,
     pub(in crate::ss) state: State,
+    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
 }
 impl Rig {
     pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
@@ -15,17 +15,17 @@ impl Rig {
             item_id,
             fit_id,
             type_id,
-            citem: src.cache_handler.get_item(&type_id),
             state: State::Offline,
+            citem: src.cache_handler.get_item(&type_id),
         }
     }
-    pub(in crate::ss) fn get_bool_state(&self) -> bool {
+    pub fn get_state(&self) -> bool {
         match self.state {
             State::Ghost => false,
             _ => true,
         }
     }
-    pub(in crate::ss) fn set_bool_state(&mut self, state: bool) {
+    pub(in crate::ss) fn set_state(&mut self, state: bool) {
         self.state = match state {
             true => State::Offline,
             false => State::Ghost,

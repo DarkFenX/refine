@@ -4,11 +4,20 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_skill_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
+    pub fn get_skill(&self, item_id: &ReeId) -> Result<&Skill> {
+        match self.get_item(item_id)? {
+            Item::Skill(s) => Ok(s),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected Skill as item with ID {item_id}"),
+            )),
+        }
+    }
+    pub fn get_skills(&self, fit_id: ReeId) -> Vec<&Skill> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::Skill(s) if s.fit_id == fit_id => Some(s.item_id),
+                Item::Skill(s) if s.fit_id == fit_id => Some(s),
                 _ => None,
             })
             .collect()

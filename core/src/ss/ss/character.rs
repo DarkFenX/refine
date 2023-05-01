@@ -6,14 +6,11 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_character_id(&self, fit_id: ReeId) -> Option<ReeId> {
-        self.items
-            .values()
-            .find(|v| match v {
-                Item::Character(c) if c.fit_id == fit_id => true,
-                _ => false,
-            })
-            .map(|v| v.get_id())
+    pub fn get_character(&self, fit_id: ReeId) -> Option<&Character> {
+        self.items.values().find_map(|v| match v {
+            Item::Character(c) if c.fit_id == fit_id => Some(c),
+            _ => None,
+        })
     }
     pub fn set_character(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         self.remove_character(fit_id)?;
