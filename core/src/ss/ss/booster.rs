@@ -26,7 +26,7 @@ impl SolarSystem {
     pub fn get_booster_info(&self, item_id: &ReeId) -> Result<BoosterInfo> {
         Ok(self.get_booster(item_id)?.into())
     }
-    pub fn get_booster_infos(&self, fit_id: ReeId) -> Vec<BoosterInfo> {
+    pub fn get_fit_booster_infos(&self, fit_id: ReeId) -> Vec<BoosterInfo> {
         self.items
             .values()
             .filter_map(|v| match v {

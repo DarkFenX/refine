@@ -1,10 +1,10 @@
 use std::{collections::HashMap, sync::Arc};
 
 pub(in crate::ss) use booster::{Booster, BoosterInfo};
-pub(in crate::ss) use character::Character;
-pub(in crate::ss) use charge::Charge;
-pub(in crate::ss) use drone::Drone;
-pub(in crate::ss) use fighter::Fighter;
+pub(in crate::ss) use character::{Character, CharacterInfo};
+pub(in crate::ss) use charge::{Charge, ChargeInfo};
+pub(in crate::ss) use drone::{Drone, DroneInfo};
+pub(in crate::ss) use fighter::{Fighter, FighterInfo};
 pub use id_data::IdData;
 pub(in crate::ss) use implant::Implant;
 pub(in crate::ss) use module::Module;

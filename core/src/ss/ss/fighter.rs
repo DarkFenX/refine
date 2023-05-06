@@ -1,15 +1,37 @@
 use crate::{
     consts::State,
-    ss::item::{Fighter, Item},
+    ss::item::{Fighter, FighterInfo, Item},
+    util::Named,
     Error, ErrorKind, ReeId, ReeInt, Result, SolarSystem,
 };
 
 impl SolarSystem {
-    pub fn get_fighter_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
+    fn get_fighter(&self, item_id: &ReeId) -> Result<&Fighter> {
+        match self.get_item(item_id)? {
+            Item::Fighter(f) => Ok(f),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Fighter::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_fighter_mut(&mut self, item_id: &ReeId) -> Result<&mut Fighter> {
+        match self.get_item_mut(item_id)? {
+            Item::Fighter(f) => Ok(f),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Fighter::get_name(), item_id),
+            )),
+        }
+    }
+    pub fn get_fighter_info(&self, item_id: &ReeId) -> Result<FighterInfo> {
+        Ok(self.get_fighter(item_id)?.into())
+    }
+    pub fn get_fit_fighter_infos(&self, fit_id: ReeId) -> Vec<FighterInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::Fighter(f) if f.fit_id == fit_id => Some(f.item_id),
+                Item::Fighter(f) if f.fit_id == fit_id => Some(f.into()),
                 _ => None,
             })
             .collect()
@@ -20,35 +42,8 @@ impl SolarSystem {
         self.add_item(fighter);
         Ok(item_id)
     }
-    pub fn get_fighter_state(&self, item_id: &ReeId) -> Result<State> {
-        let item = self
-            .items
-            .get(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        match item {
-            Item::Fighter(d) => Ok(d.state),
-            _ => {
-                return Err(Error::new(
-                    ErrorKind::UnexpectedItemType,
-                    format!("expected Fighter as item with ID {item_id}"),
-                ))
-            }
-        }
-    }
     pub fn set_fighter_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
-        let item = self
-            .items
-            .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        match item {
-            Item::Fighter(d) => d.state = state,
-            _ => {
-                return Err(Error::new(
-                    ErrorKind::UnexpectedItemType,
-                    format!("expected Fighter as item with ID {item_id}"),
-                ))
-            }
-        }
+        self.get_fighter_mut(item_id)?.state = state;
         Ok(())
     }
 }

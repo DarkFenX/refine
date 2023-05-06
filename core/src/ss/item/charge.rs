@@ -2,12 +2,34 @@ use std::{fmt, sync::Arc};
 
 use crate::{ct, util::Named, ReeId, ReeInt, Src};
 
+pub struct ChargeInfo {
+    pub item_id: ReeId,
+    pub fit_id: ReeId,
+    pub type_id: ReeInt,
+    pub cont: ReeId,
+}
+impl ChargeInfo {
+    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, cont: ReeId) -> Self {
+        Self {
+            item_id,
+            fit_id,
+            type_id,
+            cont,
+        }
+    }
+}
+impl From<&Charge> for ChargeInfo {
+    fn from(c: &Charge) -> Self {
+        ChargeInfo::new(c.item_id, c.fit_id, c.type_id, c.cont)
+    }
+}
+
 pub(in crate::ss) struct Charge {
     pub(in crate::ss) item_id: ReeId,
     pub(in crate::ss) fit_id: ReeId,
     pub(in crate::ss) type_id: ReeInt,
-    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
     pub(in crate::ss) cont: ReeId,
+    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
 }
 impl Charge {
     pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, cont: ReeId) -> Self {
@@ -15,8 +37,8 @@ impl Charge {
             item_id,
             fit_id,
             type_id,
-            citem: src.cache_handler.get_item(&type_id),
             cont,
+            citem: src.cache_handler.get_item(&type_id),
         }
     }
 }

@@ -2,6 +2,26 @@ use std::{fmt, sync::Arc};
 
 use crate::{ct, util::Named, ReeId, ReeInt, Src};
 
+pub struct CharacterInfo {
+    pub item_id: ReeId,
+    pub fit_id: ReeId,
+    pub type_id: ReeInt,
+}
+impl CharacterInfo {
+    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
+        Self {
+            item_id,
+            fit_id,
+            type_id,
+        }
+    }
+}
+impl From<&Character> for CharacterInfo {
+    fn from(c: &Character) -> Self {
+        CharacterInfo::new(c.item_id, c.fit_id, c.type_id)
+    }
+}
+
 pub(in crate::ss) struct Character {
     pub(in crate::ss) item_id: ReeId,
     pub(in crate::ss) fit_id: ReeId,
