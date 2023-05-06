@@ -74,6 +74,16 @@ impl SolarSystem {
             .filter_map(|v| v.get_pos())
             .collect_vec()
     }
+    fn get_item(&self, item_id: &ReeId) -> Result<&Item> {
+        self.items
+            .get(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))
+    }
+    fn get_item_mut(&mut self, item_id: &ReeId) -> Result<&mut Item> {
+        self.items
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))
+    }
     pub fn remove_item(&mut self, item_id: &ReeId) -> bool {
         match self.items.remove(item_id) {
             None => false,

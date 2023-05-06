@@ -1,6 +1,6 @@
 use std::{collections::HashMap, sync::Arc};
 
-pub(in crate::ss) use booster::Booster;
+pub(in crate::ss) use booster::{Booster, BoosterInfo};
 pub(in crate::ss) use character::Character;
 pub(in crate::ss) use charge::Charge;
 pub(in crate::ss) use drone::Drone;
