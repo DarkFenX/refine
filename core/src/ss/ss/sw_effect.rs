@@ -4,20 +4,11 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_sw_effect(&self, item_id: &ReeId) -> Result<&SwEffect> {
-        match self.get_item(item_id)? {
-            Item::SwEffect(e) => Ok(e),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected SwEffect as item with ID {item_id}"),
-            )),
-        }
-    }
-    pub fn get_sw_effects(&self) -> Vec<&SwEffect> {
+    pub fn get_sw_effect_ids(&self) -> Vec<ReeId> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::SwEffect(e) => Some(e),
+                Item::SwEffect(e) => Some(e.item_id),
                 _ => None,
             })
             .collect()
@@ -28,13 +19,28 @@ impl SolarSystem {
         self.add_item(sw_effect);
         Ok(item_id)
     }
+    pub fn get_sw_effect_state(&self, item_id: &ReeId) -> Result<bool> {
+        let item = self
+            .items
+            .get(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::SwEffect(e) => Ok(e.get_bool_state()),
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected SwEffect as item with ID {item_id}"),
+                ))
+            }
+        }
+    }
     pub fn set_sw_effect_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
         let item = self
             .items
             .get_mut(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
         match item {
-            Item::SwEffect(e) => e.set_state(state),
+            Item::SwEffect(e) => e.set_bool_state(state),
             _ => {
                 return Err(Error::new(
                     ErrorKind::UnexpectedItemType,

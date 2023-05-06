@@ -4,20 +4,11 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_implant(&self, item_id: &ReeId) -> Result<&Implant> {
-        match self.get_item(item_id)? {
-            Item::Implant(i) => Ok(i),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected Implant as item with ID {item_id}"),
-            )),
-        }
-    }
-    pub fn get_implants(&self, fit_id: ReeId) -> Vec<&Implant> {
+    pub fn get_implant_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::Implant(i) if i.fit_id == fit_id => Some(i),
+                Item::Implant(i) if i.fit_id == fit_id => Some(i.item_id),
                 _ => None,
             })
             .collect()
@@ -28,13 +19,28 @@ impl SolarSystem {
         self.add_item(implant);
         Ok(item_id)
     }
+    pub fn get_implant_state(&self, item_id: &ReeId) -> Result<bool> {
+        let item = self
+            .items
+            .get(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
+        match item {
+            Item::Implant(i) => Ok(i.get_bool_state()),
+            _ => {
+                return Err(Error::new(
+                    ErrorKind::UnexpectedItemType,
+                    format!("expected Implant as item with ID {item_id}"),
+                ))
+            }
+        }
+    }
     pub fn set_implant_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
         let item = self
             .items
             .get_mut(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
         match item {
-            Item::Implant(i) => i.set_state(state),
+            Item::Implant(i) => i.set_bool_state(state),
             _ => {
                 return Err(Error::new(
                     ErrorKind::UnexpectedItemType,

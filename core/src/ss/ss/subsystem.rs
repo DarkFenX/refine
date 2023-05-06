@@ -1,23 +1,14 @@
 use crate::{
     ss::item::{Item, Subsystem},
-    Error, ErrorKind, ReeId, ReeInt, Result, SolarSystem,
+    ReeId, ReeInt, Result, SolarSystem,
 };
 
 impl SolarSystem {
-    pub fn get_subsystem(&self, item_id: &ReeId) -> Result<&Subsystem> {
-        match self.get_item(item_id)? {
-            Item::Subsystem(s) => Ok(s),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected Subsystem as item with ID {item_id}"),
-            )),
-        }
-    }
-    pub fn get_subsystems(&self, fit_id: ReeId) -> Vec<&Subsystem> {
+    pub fn get_subsystem_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::Subsystem(s) if s.fit_id == fit_id => Some(s),
+                Item::Subsystem(s) if s.fit_id == fit_id => Some(s.item_id),
                 _ => None,
             })
             .collect()

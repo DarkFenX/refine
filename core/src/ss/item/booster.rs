@@ -7,12 +7,12 @@ use crate::{
     ReeId, ReeInt, Src,
 };
 
-pub struct Booster {
-    pub item_id: ReeId,
-    pub fit_id: ReeId,
-    pub type_id: ReeInt,
-    pub(in crate::ss) state: State,
+pub(in crate::ss) struct Booster {
+    pub(in crate::ss) item_id: ReeId,
+    pub(in crate::ss) fit_id: ReeId,
+    pub(in crate::ss) type_id: ReeInt,
     pub(in crate::ss) citem: Option<Arc<ct::Item>>,
+    pub(in crate::ss) state: State,
 }
 impl Booster {
     pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
@@ -20,20 +20,8 @@ impl Booster {
             item_id,
             fit_id,
             type_id,
-            state: State::Offline,
             citem: src.cache_handler.get_item(&type_id),
-        }
-    }
-    pub fn get_state(&self) -> bool {
-        match self.state {
-            State::Ghost => false,
-            _ => true,
-        }
-    }
-    pub(in crate::ss) fn set_state(&mut self, state: bool) {
-        self.state = match state {
-            true => State::Offline,
-            false => State::Ghost,
+            state: State::Offline,
         }
     }
     pub(in crate::ss) fn get_slot(&self) -> Option<ReeInt> {
@@ -43,6 +31,18 @@ impl Booster {
                 None => None,
                 Some(v) => Some(v.round() as ReeInt),
             },
+        }
+    }
+    pub(in crate::ss) fn get_bool_state(&self) -> bool {
+        match self.state {
+            State::Ghost => false,
+            _ => true,
+        }
+    }
+    pub(in crate::ss) fn set_bool_state(&mut self, state: bool) {
+        self.state = match state {
+            true => State::Offline,
+            false => State::Ghost,
         }
     }
 }

@@ -6,11 +6,14 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_stance(&self, fit_id: ReeId) -> Option<&Stance> {
-        self.items.values().find_map(|v| match v {
-            Item::Stance(s) if s.fit_id == fit_id => Some(s),
-            _ => None,
-        })
+    pub fn get_stance_id(&self, fit_id: ReeId) -> Option<ReeId> {
+        self.items
+            .values()
+            .find(|v| match v {
+                Item::Stance(s) if s.fit_id == fit_id => true,
+                _ => false,
+            })
+            .map(|v| v.get_id())
     }
     pub fn set_stance(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
         self.remove_stance(fit_id)?;
