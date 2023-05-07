@@ -27,11 +27,11 @@ impl SolarSystem {
     pub fn get_fighter_info(&self, item_id: &ReeId) -> Result<FighterInfo> {
         Ok(self.get_fighter(item_id)?.into())
     }
-    pub fn get_fit_fighter_infos(&self, fit_id: ReeId) -> Vec<FighterInfo> {
+    pub fn get_fit_fighter_infos(&self, fit_id: &ReeId) -> Vec<FighterInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::Fighter(f) if f.fit_id == fit_id => Some(f.into()),
+                Item::Fighter(f) if f.fit_id == *fit_id => Some(f.into()),
                 _ => None,
             })
             .collect()

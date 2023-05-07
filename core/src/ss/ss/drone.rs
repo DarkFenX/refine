@@ -27,11 +27,11 @@ impl SolarSystem {
     pub fn get_drone_info(&self, item_id: &ReeId) -> Result<DroneInfo> {
         Ok(self.get_drone(item_id)?.into())
     }
-    pub fn get_fit_drone_infos(&self, fit_id: ReeId) -> Vec<DroneInfo> {
+    pub fn get_fit_drone_infos(&self, fit_id: &ReeId) -> Vec<DroneInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::Drone(d) if d.fit_id == fit_id => Some(d.into()),
+                Item::Drone(d) if d.fit_id == *fit_id => Some(d.into()),
                 _ => None,
             })
             .collect()

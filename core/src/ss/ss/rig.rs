@@ -1,14 +1,36 @@
 use crate::{
-    ss::item::{Item, Rig},
+    ss::item::{Item, Rig, RigInfo},
+    util::Named,
     Error, ErrorKind, ReeId, ReeInt, Result, SolarSystem,
 };
 
 impl SolarSystem {
-    pub fn get_rig_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
+    fn get_rig(&self, item_id: &ReeId) -> Result<&Rig> {
+        match self.get_item(item_id)? {
+            Item::Rig(r) => Ok(r),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Rig::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_rig_mut(&mut self, item_id: &ReeId) -> Result<&mut Rig> {
+        match self.get_item_mut(item_id)? {
+            Item::Rig(r) => Ok(r),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Rig::get_name(), item_id),
+            )),
+        }
+    }
+    pub fn get_rig_info(&self, item_id: &ReeId) -> Result<RigInfo> {
+        Ok(self.get_rig(item_id)?.into())
+    }
+    pub fn get_fit_rig_infos(&self, fit_id: &ReeId) -> Vec<RigInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::Rig(r) if r.fit_id == fit_id => Some(r.item_id),
+                Item::Rig(r) if r.fit_id == *fit_id => Some(r.into()),
                 _ => None,
             })
             .collect()
@@ -19,35 +41,8 @@ impl SolarSystem {
         self.add_item(rig);
         Ok(item_id)
     }
-    pub fn get_rig_state(&self, item_id: &ReeId) -> Result<bool> {
-        let item = self
-            .items
-            .get(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        match item {
-            Item::Rig(r) => Ok(r.get_bool_state()),
-            _ => {
-                return Err(Error::new(
-                    ErrorKind::UnexpectedItemType,
-                    format!("expected Rig as item with ID {item_id}"),
-                ))
-            }
-        }
-    }
     pub fn set_rig_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
-        let item = self
-            .items
-            .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        match item {
-            Item::Rig(r) => r.set_bool_state(state),
-            _ => {
-                return Err(Error::new(
-                    ErrorKind::UnexpectedItemType,
-                    format!("expected Rig as item with ID {item_id}"),
-                ))
-            }
-        }
+        self.get_rig_mut(item_id)?.set_bool_state(state);
         Ok(())
     }
 }

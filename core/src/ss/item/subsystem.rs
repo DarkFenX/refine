@@ -2,6 +2,26 @@ use std::{fmt, sync::Arc};
 
 use crate::{consts::attrs, ct, util::Named, ReeId, ReeInt, Src};
 
+pub struct SubsystemInfo {
+    pub item_id: ReeId,
+    pub fit_id: ReeId,
+    pub type_id: ReeInt,
+}
+impl SubsystemInfo {
+    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
+        Self {
+            item_id,
+            fit_id,
+            type_id,
+        }
+    }
+}
+impl From<&Subsystem> for SubsystemInfo {
+    fn from(s: &Subsystem) -> Self {
+        SubsystemInfo::new(s.item_id, s.fit_id, s.type_id)
+    }
+}
+
 pub(in crate::ss) struct Subsystem {
     pub(in crate::ss) item_id: ReeId,
     pub(in crate::ss) fit_id: ReeId,

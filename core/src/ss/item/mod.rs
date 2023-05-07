@@ -6,14 +6,14 @@ pub(in crate::ss) use charge::{Charge, ChargeInfo};
 pub(in crate::ss) use drone::{Drone, DroneInfo};
 pub(in crate::ss) use fighter::{Fighter, FighterInfo};
 pub use id_data::IdData;
-pub(in crate::ss) use implant::Implant;
+pub(in crate::ss) use implant::{Implant, ImplantInfo};
 pub(in crate::ss) use module::Module;
-pub(in crate::ss) use rig::Rig;
-pub(in crate::ss) use ship::Ship;
-pub(in crate::ss) use skill::Skill;
-pub(in crate::ss) use stance::Stance;
-pub(in crate::ss) use subsystem::Subsystem;
-pub(in crate::ss) use sw_effect::SwEffect;
+pub(in crate::ss) use rig::{Rig, RigInfo};
+pub(in crate::ss) use ship::{Ship, ShipInfo};
+pub(in crate::ss) use skill::{Skill, SkillInfo};
+pub(in crate::ss) use stance::{Stance, StanceInfo};
+pub(in crate::ss) use subsystem::{Subsystem, SubsystemInfo};
+pub(in crate::ss) use sw_effect::{SwEffect, SwEffectInfo};
 
 use crate::{
     consts::{ModDomain, State},

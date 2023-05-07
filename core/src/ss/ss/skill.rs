@@ -1,14 +1,36 @@
 use crate::{
-    ss::item::{Item, Skill},
+    ss::item::{Item, Skill, SkillInfo},
+    util::Named,
     Error, ErrorKind, ReeId, ReeInt, Result, SolarSystem,
 };
 
 impl SolarSystem {
-    pub fn get_skill_ids(&self, fit_id: ReeId) -> Vec<ReeId> {
+    fn get_skill(&self, item_id: &ReeId) -> Result<&Skill> {
+        match self.get_item(item_id)? {
+            Item::Skill(s) => Ok(s),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Skill::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_skill_mut(&mut self, item_id: &ReeId) -> Result<&mut Skill> {
+        match self.get_item_mut(item_id)? {
+            Item::Skill(s) => Ok(s),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Skill::get_name(), item_id),
+            )),
+        }
+    }
+    pub fn get_skill_info(&self, item_id: &ReeId) -> Result<SkillInfo> {
+        Ok(self.get_skill(item_id)?.into())
+    }
+    pub fn get_fit_skill_infos(&self, fit_id: &ReeId) -> Vec<SkillInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::Skill(s) if s.fit_id == fit_id => Some(s.item_id),
+                Item::Skill(s) if s.fit_id == *fit_id => Some(s.into()),
                 _ => None,
             })
             .collect()
@@ -22,19 +44,7 @@ impl SolarSystem {
     }
     pub fn set_skill_level(&mut self, item_id: &ReeId, level: ReeInt) -> Result<()> {
         check_skill_level(level)?;
-        let item = self
-            .items
-            .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        match item {
-            Item::Skill(s) => s.level = level,
-            _ => {
-                return Err(Error::new(
-                    ErrorKind::UnexpectedItemType,
-                    format!("expected Skill as item with ID {item_id}"),
-                ))
-            }
-        }
+        self.get_skill_mut(item_id)?.level = level;
         Ok(())
     }
 }

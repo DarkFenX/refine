@@ -37,7 +37,7 @@ impl SolarSystem {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = core_ss.remove_fit(fit_id);
+            let res = core_ss.remove_fit(&fit_id);
             (res, core_ss)
         })
         .await;
@@ -58,7 +58,7 @@ impl SolarSystem {
             for cmd in commands.iter() {
                 match cmd {
                     FitCommand::SetShip(c) => {
-                        let ship_id = core_ss.set_ship(fit_id, c.ship_type_id).unwrap();
+                        let ship_id = core_ss.set_fit_ship(fit_id, c.ship_type_id).unwrap();
                         let resp = CmdResp::ItemIds(ItemIdsResp::from(ship_id));
                         cmd_results.push(resp);
                     }

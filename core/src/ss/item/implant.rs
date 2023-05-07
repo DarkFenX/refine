@@ -7,12 +7,34 @@ use crate::{
     ReeId, ReeInt, Src,
 };
 
+pub struct ImplantInfo {
+    pub item_id: ReeId,
+    pub fit_id: ReeId,
+    pub type_id: ReeInt,
+    pub state: bool,
+}
+impl ImplantInfo {
+    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: bool) -> Self {
+        Self {
+            item_id,
+            fit_id,
+            type_id,
+            state,
+        }
+    }
+}
+impl From<&Implant> for ImplantInfo {
+    fn from(i: &Implant) -> Self {
+        ImplantInfo::new(i.item_id, i.fit_id, i.type_id, i.get_bool_state())
+    }
+}
+
 pub(in crate::ss) struct Implant {
     pub(in crate::ss) item_id: ReeId,
     pub(in crate::ss) fit_id: ReeId,
     pub(in crate::ss) type_id: ReeInt,
-    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
     pub(in crate::ss) state: State,
+    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
 }
 impl Implant {
     pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
@@ -20,8 +42,8 @@ impl Implant {
             item_id,
             fit_id,
             type_id,
-            citem: src.cache_handler.get_item(&type_id),
             state: State::Offline,
+            citem: src.cache_handler.get_item(&type_id),
         }
     }
     pub(in crate::ss) fn get_slot(&self) -> Option<ReeInt> {

@@ -2,6 +2,26 @@ use std::{fmt, sync::Arc};
 
 use crate::{ct, util::Named, ReeId, ReeInt, Src};
 
+pub struct ShipInfo {
+    pub item_id: ReeId,
+    pub fit_id: ReeId,
+    pub type_id: ReeInt,
+}
+impl ShipInfo {
+    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
+        Self {
+            item_id,
+            fit_id,
+            type_id,
+        }
+    }
+}
+impl From<&Ship> for ShipInfo {
+    fn from(s: &Ship) -> Self {
+        ShipInfo::new(s.item_id, s.fit_id, s.type_id)
+    }
+}
+
 pub(in crate::ss) struct Ship {
     pub(in crate::ss) item_id: ReeId,
     pub(in crate::ss) fit_id: ReeId,

@@ -53,7 +53,7 @@ fn main() {
     let src = Arc::new(Src::new(dh, ch).unwrap());
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
-    let ship = sol_sys.set_ship(fit, 11184).unwrap();
+    let ship = sol_sys.set_fit_ship(fit, 11184).unwrap();
     for skill_id in skill_ids.iter() {
         sol_sys.add_skill(fit, skill_id.to_owned(), 5);
     }

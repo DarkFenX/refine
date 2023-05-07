@@ -6,9 +6,9 @@ impl SolarSystem {
         self.fits.insert(fit_id);
         Ok(fit_id)
     }
-    pub fn remove_fit(&mut self, fit_id: ReeId) -> Result<()> {
-        self.items.drain_filter(|_, v| v.get_fit_id() == Some(fit_id));
-        match self.fits.remove(&fit_id) {
+    pub fn remove_fit(&mut self, fit_id: &ReeId) -> Result<()> {
+        self.items.drain_filter(|_, v| v.get_fit_id() == Some(*fit_id));
+        match self.fits.remove(fit_id) {
             true => Ok(()),
             false => Err(Error::new(ErrorKind::FitNotFound, "fit not found")),
         }
@@ -22,5 +22,11 @@ impl SolarSystem {
             }
         }
         Ok(self.fit_cnt.0)
+    }
+    pub(in crate::ss) fn check_fit(&self, fit_id: &ReeId) -> Result<()> {
+        match self.fits.contains(&fit_id) {
+            true => Ok(()),
+            false => Err(Error::new(ErrorKind::FitNotFound, "fit not found")),
+        }
     }
 }
