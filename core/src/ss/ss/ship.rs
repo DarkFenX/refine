@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    defines::{ReeId, ReeInt},
+    defs::{ReeId, ReeInt},
     ss::{
         item::{Item, Ship, ShipInfo},
         SolarSystem,

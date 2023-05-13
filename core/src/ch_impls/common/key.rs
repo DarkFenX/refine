@@ -2,7 +2,7 @@ use std::{collections::HashMap, sync::Arc};
 
 use crate::{
     ct::{Attr, Buff, Effect, Item, Muta},
-    defines::ReeInt,
+    defs::ReeInt,
 };
 
 pub(in crate::ch_impls) trait Key {

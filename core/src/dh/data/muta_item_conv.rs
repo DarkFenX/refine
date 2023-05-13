@@ -1,4 +1,4 @@
-use crate::{defines::ReeInt, util::Named};
+use crate::{defs::ReeInt, util::Named};
 
 /// Mutaplasmid item type conversion data.
 #[derive(Debug)]

@@ -3,7 +3,7 @@ use std::{fmt, sync::Arc};
 use crate::{
     consts::attrs,
     ct,
-    defines::{ReeId, ReeInt},
+    defs::{ReeId, ReeInt},
     src::Src,
     util::Named,
 };

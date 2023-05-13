@@ -1,5 +1,5 @@
 use crate::{
-    defines::{ReeId, ReeInt},
+    defs::{ReeId, ReeInt},
     ss::{
         item::{Implant, ImplantInfo, Item},
         SolarSystem,

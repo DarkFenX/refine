@@ -30,7 +30,7 @@ pub use sw_effect::SwEffectInfo;
 use crate::{
     consts::{ModDomain, State},
     ct,
-    defines::{ReeFloat, ReeId, ReeInt},
+    defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
 };
 

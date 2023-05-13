@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
     ct,
-    defines::ReeInt,
+    defs::ReeInt,
     dh,
     util::{IntError, IntResult, Named},
 };

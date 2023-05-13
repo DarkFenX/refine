@@ -1,6 +1,6 @@
 use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModBuildStatus, ModOp, State, TgtMode},
-    defines::ReeInt,
+    defs::ReeInt,
     util::Named,
 };
 

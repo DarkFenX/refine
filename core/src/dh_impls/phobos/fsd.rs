@@ -1,5 +1,5 @@
 use crate::{
-    defines::ReeInt,
+    defs::ReeInt,
     dh,
     util::{IntError, IntResult},
 };

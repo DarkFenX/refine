@@ -1,6 +1,6 @@
 use crate::{
     consts::{OrdAddMode, State},
-    defines::{ReeId, ReeIdx, ReeInt},
+    defs::{ReeId, ReeIdx, ReeInt},
     ss::{
         item::{ChargeInfo, Item, Module, ModuleInfo},
         SolarSystem,

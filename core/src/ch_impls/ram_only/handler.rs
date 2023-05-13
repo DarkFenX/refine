@@ -3,7 +3,7 @@ use std::{collections::HashMap, fmt, sync::Arc};
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    defines::ReeInt,
+    defs::ReeInt,
     util::IntError,
 };
 

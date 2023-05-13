@@ -1,6 +1,6 @@
 use crate::{
     consts::State,
-    defines::{ReeId, ReeInt},
+    defs::{ReeId, ReeInt},
     ss::{
         item::{Fighter, FighterInfo, Item},
         SolarSystem,

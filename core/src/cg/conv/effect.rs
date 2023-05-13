@@ -6,7 +6,7 @@ use std::{
 use crate::{
     consts::{effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
     ct,
-    defines::ReeInt,
+    defs::ReeInt,
     dh,
     util::{IntError, IntResult, Named},
 };

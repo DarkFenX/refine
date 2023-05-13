@@ -5,7 +5,7 @@ use std::{
 
 use crate::{
     ct,
-    defines::{ReeId, ReeIdx},
+    defs::{ReeId, ReeIdx},
 };
 
 #[derive(Clone)]

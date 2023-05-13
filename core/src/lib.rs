@@ -14,7 +14,7 @@
 extern crate core;
 
 pub use consts::{OrdAddMode, State};
-pub use defines::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
+pub use defs::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::Src;
 pub use ss::{
     BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, ImplantInfo, ModuleInfo, RigInfo, ShipInfo,
@@ -27,7 +27,7 @@ pub mod ch;
 pub mod ch_impls;
 pub mod consts;
 pub mod ct;
-mod defines;
+mod defs;
 pub mod dh;
 pub mod dh_impls;
 pub mod prelude;

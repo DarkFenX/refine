@@ -12,7 +12,7 @@ use log;
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    defines::ReeInt,
+    defs::ReeInt,
     util::{IntError, IntResult},
 };
 

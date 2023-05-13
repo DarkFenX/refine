@@ -1,5 +1,5 @@
 use crate::{
-    defines::{ReeFloat, ReeInt},
+    defs::{ReeFloat, ReeInt},
     util::Named,
 };
 

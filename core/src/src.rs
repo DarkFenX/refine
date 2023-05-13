@@ -1,6 +1,6 @@
 use crate::{
     cg, ch,
-    defines::VERSION,
+    defs::VERSION,
     dh,
     util::{Error, ErrorKind, FromKind, IntError, IntResult, Result},
 };

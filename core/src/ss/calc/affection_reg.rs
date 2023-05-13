@@ -7,7 +7,7 @@ use std::{
 use crate::{
     consts::{ModAfeeFilter, ModDomain},
     ct,
-    defines::{ReeId, ReeInt},
+    defs::{ReeId, ReeInt},
     ss::item::Item,
     util::KeyedStorage,
 };

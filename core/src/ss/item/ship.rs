@@ -2,7 +2,7 @@ use std::{fmt, sync::Arc};
 
 use crate::{
     ct,
-    defines::{ReeId, ReeInt},
+    defs::{ReeId, ReeInt},
     src::Src,
     util::Named,
 };

@@ -1,7 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::{
-    defines::{ReeFloat, ReeInt},
+    defs::{ReeFloat, ReeInt},
     dh,
 };
 

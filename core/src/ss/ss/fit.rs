@@ -1,5 +1,5 @@
 use crate::{
-    defines::ReeId,
+    defs::ReeId,
     ss::SolarSystem,
     util::{Error, ErrorKind, Result},
 };

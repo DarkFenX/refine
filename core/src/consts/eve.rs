@@ -1,9 +1,9 @@
 #![allow(dead_code)]
 
-use crate::defines::ReeInt;
+use crate::defs::ReeInt;
 
 pub(crate) mod itemgrps {
-    use crate::defines::ReeInt;
+    use crate::defs::ReeInt;
 
     pub(crate) const CHARACTER: ReeInt = 1;
     pub(crate) const EFFECT_BEACON: ReeInt = 920;
@@ -12,7 +12,7 @@ pub(crate) mod itemgrps {
 }
 
 pub(crate) mod itemcats {
-    use crate::defines::ReeInt;
+    use crate::defs::ReeInt;
 
     pub(crate) const CHARGE: ReeInt = 8;
     pub(crate) const DRONE: ReeInt = 18;
@@ -25,7 +25,7 @@ pub(crate) mod itemcats {
 }
 
 pub(crate) mod attrs {
-    use crate::defines::ReeInt;
+    use crate::defs::ReeInt;
 
     // Fitting resource-related
     pub(crate) const CPU: ReeInt = 50;
@@ -51,7 +51,7 @@ pub(crate) mod attrs {
 }
 
 pub(crate) mod effects {
-    use crate::defines::ReeInt;
+    use crate::defs::ReeInt;
 
     pub(crate) const HI_POWER: ReeInt = 12;
     pub(crate) const LO_POWER: ReeInt = 11;
@@ -75,7 +75,7 @@ pub(crate) mod effects {
 }
 
 pub(crate) mod effcats {
-    use crate::defines::ReeInt;
+    use crate::defs::ReeInt;
 
     pub(crate) const PASSIVE: ReeInt = 0;
     pub(crate) const ACTIVE: ReeInt = 1;
@@ -88,7 +88,7 @@ pub(crate) mod effcats {
 }
 
 pub(crate) mod units {
-    use crate::defines::ReeInt;
+    use crate::defs::ReeInt;
 
     pub(crate) const GROUP_ID: ReeInt = 115;
     pub(crate) const ITEM_ID: ReeInt = 116;
@@ -96,7 +96,7 @@ pub(crate) mod units {
 }
 
 pub(crate) mod abils {
-    use crate::defines::ReeInt;
+    use crate::defs::ReeInt;
 
     pub(crate) const WEB: ReeInt = 2;
     pub(crate) const MWD: ReeInt = 4;
