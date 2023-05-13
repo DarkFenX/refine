@@ -126,8 +126,8 @@ impl Item {
     pub(in crate::ss) fn get_state(&self) -> State {
         match self {
             Self::Booster(i) => i.state,
-            Self::Character(_) => State::Offline,
-            Self::Charge(_) => State::Offline,
+            Self::Character(i) => i.state,
+            Self::Charge(i) => i.state,
             Self::Drone(i) => i.state,
             Self::Fighter(i) => i.state,
             Self::Implant(i) => i.state,
@@ -135,11 +135,11 @@ impl Item {
             Self::ModuleLow(i) => i.state,
             Self::ModuleMid(i) => i.state,
             Self::Rig(i) => i.state,
-            Self::Ship(_) => State::Offline,
-            Self::Skill(_) => State::Offline,
-            Self::Stance(_) => State::Offline,
-            Self::Subsystem(_) => State::Offline,
-            Self::SwEffect(_) => State::Offline,
+            Self::Ship(i) => i.state,
+            Self::Skill(i) => i.state,
+            Self::Stance(i) => i.state,
+            Self::Subsystem(i) => i.state,
+            Self::SwEffect(i) => i.state,
         }
     }
     pub(in crate::ss) fn reload_cached_item(&mut self, src: &Arc<Src>) {

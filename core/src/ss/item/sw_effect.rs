@@ -11,14 +11,14 @@ use crate::{
 pub struct SwEffectInfo {
     pub item_id: ReeId,
     pub type_id: ReeInt,
-    pub state: bool,
+    pub enabled: bool,
 }
 impl SwEffectInfo {
-    fn new(item_id: ReeId, type_id: ReeInt, state: bool) -> Self {
+    fn new(item_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
         Self {
             item_id,
             type_id,
-            state,
+            enabled,
         }
     }
 }

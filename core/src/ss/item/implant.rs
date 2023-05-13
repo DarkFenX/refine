@@ -12,15 +12,15 @@ pub struct ImplantInfo {
     pub item_id: ReeId,
     pub fit_id: ReeId,
     pub type_id: ReeInt,
-    pub state: bool,
+    pub enabled: bool,
 }
 impl ImplantInfo {
-    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: bool) -> Self {
+    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
         Self {
             item_id,
             fit_id,
             type_id,
-            state,
+            enabled,
         }
     }
 }
@@ -47,15 +47,6 @@ impl Implant {
             citem: src.cache_handler.get_item(&type_id),
         }
     }
-    pub(in crate::ss) fn get_slot(&self) -> Option<ReeInt> {
-        match &self.citem {
-            None => None,
-            Some(i) => match i.attr_vals.get(&attrs::IMPLANTNESS) {
-                None => None,
-                Some(v) => Some(v.round() as ReeInt),
-            },
-        }
-    }
     pub(in crate::ss) fn get_bool_state(&self) -> bool {
         match self.state {
             State::Ghost => false,
@@ -66,6 +57,15 @@ impl Implant {
         self.state = match state {
             true => State::Offline,
             false => State::Ghost,
+        }
+    }
+    pub(in crate::ss) fn get_slot(&self) -> Option<ReeInt> {
+        match &self.citem {
+            None => None,
+            Some(i) => match i.attr_vals.get(&attrs::IMPLANTNESS) {
+                None => None,
+                Some(v) => Some(v.round() as ReeInt),
+            },
         }
     }
 }

@@ -12,15 +12,15 @@ pub struct RigInfo {
     pub item_id: ReeId,
     pub fit_id: ReeId,
     pub type_id: ReeInt,
-    pub state: bool,
+    pub enabled: bool,
 }
 impl RigInfo {
-    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: bool) -> Self {
+    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
         Self {
             item_id,
             fit_id,
             type_id,
-            state,
+            enabled,
         }
     }
 }
