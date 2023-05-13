@@ -4,12 +4,10 @@ use std::{
     sync::Arc,
 };
 
-use itertools::Itertools;
-
 use crate::{
     src::Src,
     ss::{calc::CalcSvc, helpers, item::Item},
-    Error, ErrorKind, ReeFloat, ReeId, ReeIdx, ReeInt, Result,
+    Error, ErrorKind, ReeFloat, ReeId, ReeInt, Result,
 };
 
 mod booster;

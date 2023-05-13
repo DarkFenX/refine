@@ -1,6 +1,6 @@
 use crate::{
     consts::{OrdAddMode, State},
-    ss::item::{Charge, Item, Module, ModuleInfo},
+    ss::item::{Charge, ChargeInfo, Item, Module, ModuleInfo},
     util::Named,
     Error, ErrorKind, ReeId, ReeIdx, ReeInt, Result, SolarSystem,
 };
@@ -96,7 +96,7 @@ impl SolarSystem {
             }
         };
         // Create and register all necessary items
-        let c_info = self.add_charge_with_id(c_item_id, fit_id, charge_type_id, m_item_id);
+        let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
         let module = Module::new(&self.src, m_item_id, fit_id, type_id, state, pos, c_item_id);
         let m_info = ModuleInfo::from_mod_and_charge(&module, c_info);
         let m_item = Item::ModuleHigh(module);
@@ -162,7 +162,7 @@ impl SolarSystem {
             }
         };
         // Create and register all necessary items
-        let c_info = self.add_charge_with_id(c_item_id, fit_id, charge_type_id, m_item_id);
+        let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
         let module = Module::new(&self.src, m_item_id, fit_id, type_id, state, pos, c_item_id);
         let m_info = ModuleInfo::from_mod_and_charge(&module, c_info);
         let m_item = Item::ModuleMid(module);
@@ -228,7 +228,7 @@ impl SolarSystem {
             }
         };
         // Create and register all necessary items
-        let c_info = self.add_charge_with_id(c_item_id, fit_id, charge_type_id, m_item_id);
+        let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
         let module = Module::new(&self.src, m_item_id, fit_id, type_id, state, pos, c_item_id);
         let m_info = ModuleInfo::from_mod_and_charge(&module, c_info);
         let m_item = Item::ModuleLow(module);
@@ -239,55 +239,14 @@ impl SolarSystem {
         self.get_module_mut(item_id)?.state = state;
         Ok(())
     }
-    pub fn set_module_charge(&mut self, item_id: &ReeId, charge_type_id: ReeInt) -> Result<ReeId> {
+    pub fn set_module_charge(&mut self, item_id: &ReeId, charge_type_id: ReeInt) -> Result<ChargeInfo> {
+        let c_item_id = self.alloc_item_id()?;
         self.remove_module_charge(item_id)?;
-        let module = self
-            .items
-            .get(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        let (charge_id, charge) = match module {
-            Item::ModuleHigh(m) => {
-                let fit_id = m.fit_id;
-                let charge_id = self.alloc_item_id()?;
-                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, charge_type_id, *item_id));
-                (charge_id, charge)
-            }
-            Item::ModuleMid(m) => {
-                let fit_id = m.fit_id;
-                let charge_id = self.alloc_item_id()?;
-                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, charge_type_id, *item_id));
-                (charge_id, charge)
-            }
-            Item::ModuleLow(m) => {
-                let fit_id = m.fit_id;
-                let charge_id = self.alloc_item_id()?;
-                let charge = Item::Charge(Charge::new(&self.src, charge_id, fit_id, charge_type_id, *item_id));
-                (charge_id, charge)
-            }
-            _ => {
-                return Err(Error::new(
-                    ErrorKind::UnexpectedItemType,
-                    format!("item with ID {item_id} is not a module"),
-                ))
-            }
-        };
-        self.add_item(charge);
-        let module = self
-            .items
-            .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        match module {
-            Item::ModuleHigh(m) => m.charge = Some(charge_id),
-            Item::ModuleMid(m) => m.charge = Some(charge_id),
-            Item::ModuleLow(m) => m.charge = Some(charge_id),
-            _ => {
-                return Err(Error::new(
-                    ErrorKind::UnexpectedItemType,
-                    format!("item with ID {item_id} is not a module"),
-                ))
-            }
-        };
-        Ok(charge_id)
+        let module = self.get_module(item_id)?;
+        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_type_id, module.item_id);
+        let module = self.get_module_mut(item_id)?;
+        module.charge = Some(c_item_id);
+        Ok(c_info)
     }
     pub fn remove_module_charge(&mut self, item_id: &ReeId) -> Result<bool> {
         let module = self.get_module_mut(item_id)?;
