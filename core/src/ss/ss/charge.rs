@@ -12,9 +12,22 @@ impl SolarSystem {
     pub fn get_charge_info(&self, item_id: &ReeId) -> Result<ChargeInfo> {
         Ok(self.get_charge(item_id)?.into())
     }
+    pub fn set_charge_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
+        self.get_charge_mut(item_id)?.set_bool_state(state);
+        Ok(())
+    }
     // Non-public
     fn get_charge(&self, item_id: &ReeId) -> Result<&Charge> {
         match self.get_item(item_id)? {
+            Item::Charge(c) => Ok(c),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Charge::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_charge_mut(&mut self, item_id: &ReeId) -> Result<&mut Charge> {
+        match self.get_item_mut(item_id)? {
             Item::Charge(c) => Ok(c),
             _ => Err(Error::new(
                 ErrorKind::UnexpectedItemType,

@@ -11,7 +11,7 @@ use crate::{
 
 impl SolarSystem {
     // Public
-    pub fn get_fit_stance_info(&self, fit_id: &ReeId) -> Option<StanceInfo> {
+    pub fn get_fit_stance_info(&self, fit_id: &ReeId) -> Result<StanceInfo> {
         self.get_fit_stance(fit_id).map(|v| v.into())
     }
     pub fn set_fit_stance(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<StanceInfo> {
@@ -31,6 +31,10 @@ impl SolarSystem {
         self.add_item(item);
         Ok(info)
     }
+    pub fn set_fit_stance_state(&mut self, fit_id: &ReeId, state: bool) -> Result<()> {
+        self.get_fit_stance_mut(fit_id)?.set_bool_state(state);
+        Ok(())
+    }
     pub fn remove_fit_stance(&mut self, fit_id: &ReeId) -> Result<()> {
         self.check_fit(fit_id)?;
         let removed = self
@@ -46,10 +50,22 @@ impl SolarSystem {
         }
     }
     // Non-public
-    fn get_fit_stance(&self, fit_id: &ReeId) -> Option<&Stance> {
-        self.items.values().find_map(|v| match v {
-            Item::Stance(s) if s.fit_id == *fit_id => Some(s),
-            _ => None,
-        })
+    fn get_fit_stance(&self, fit_id: &ReeId) -> Result<&Stance> {
+        self.items
+            .values()
+            .find_map(|v| match v {
+                Item::Stance(s) if s.fit_id == *fit_id => Some(s),
+                _ => None,
+            })
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, "stance not found"))
+    }
+    fn get_fit_stance_mut(&mut self, fit_id: &ReeId) -> Result<&mut Stance> {
+        self.items
+            .values_mut()
+            .find_map(|v| match v {
+                Item::Stance(s) if s.fit_id == *fit_id => Some(s),
+                _ => None,
+            })
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, "stance not found"))
     }
 }

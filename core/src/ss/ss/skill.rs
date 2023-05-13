@@ -30,6 +30,10 @@ impl SolarSystem {
         self.add_item(item);
         Ok(info)
     }
+    pub fn set_skill_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
+        self.get_skill_mut(item_id)?.set_bool_state(state);
+        Ok(())
+    }
     pub fn set_skill_level(&mut self, item_id: &ReeId, level: ReeInt) -> Result<()> {
         check_skill_level(level)?;
         self.get_skill_mut(item_id)?.level = level;

@@ -11,7 +11,7 @@ use crate::{
 
 impl SolarSystem {
     // Public
-    pub fn get_fit_character_info(&self, fit_id: &ReeId) -> Option<CharacterInfo> {
+    pub fn get_fit_character_info(&self, fit_id: &ReeId) -> Result<CharacterInfo> {
         self.get_fit_character(fit_id).map(|v| v.into())
     }
     pub fn set_fit_character(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<CharacterInfo> {
@@ -31,6 +31,10 @@ impl SolarSystem {
         self.add_item(item);
         Ok(info)
     }
+    pub fn set_fit_character_state(&mut self, fit_id: &ReeId, state: bool) -> Result<()> {
+        self.get_fit_character_mut(fit_id)?.set_bool_state(state);
+        Ok(())
+    }
     pub fn remove_fit_character(&mut self, fit_id: &ReeId) -> Result<()> {
         self.check_fit(fit_id)?;
         let removed = self
@@ -46,10 +50,22 @@ impl SolarSystem {
         }
     }
     // Non-public
-    fn get_fit_character(&self, fit_id: &ReeId) -> Option<&Character> {
-        self.items.values().find_map(|v| match v {
-            Item::Character(c) if c.fit_id == *fit_id => Some(c),
-            _ => None,
-        })
+    fn get_fit_character(&self, fit_id: &ReeId) -> Result<&Character> {
+        self.items
+            .values()
+            .find_map(|v| match v {
+                Item::Character(c) if c.fit_id == *fit_id => Some(c),
+                _ => None,
+            })
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, "character not found"))
+    }
+    fn get_fit_character_mut(&mut self, fit_id: &ReeId) -> Result<&mut Character> {
+        self.items
+            .values_mut()
+            .find_map(|v| match v {
+                Item::Character(c) if c.fit_id == *fit_id => Some(c),
+                _ => None,
+            })
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, "character not found"))
     }
 }

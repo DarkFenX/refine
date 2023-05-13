@@ -29,6 +29,10 @@ impl SolarSystem {
         self.add_item(item);
         Ok(info)
     }
+    pub fn set_subsystem_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
+        self.get_subsystem_mut(item_id)?.set_bool_state(state);
+        Ok(())
+    }
     // Non-public
     fn get_subsystem(&self, item_id: &ReeId) -> Result<&Subsystem> {
         match self.get_item(item_id)? {
