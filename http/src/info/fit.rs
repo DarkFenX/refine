@@ -38,19 +38,19 @@ impl FitInfoDetailed {
             .get_fit_ship_info(&fit_id)
             .map(|v| ItemInfo::extract(core_ss, &v.item_id, expand_items));
         let modules_high = core_ss
-            .get_high_module_ids(fit_id)
+            .get_high_module_infos(&fit_id)
             .iter()
-            .map(|v| ItemInfo::extract(core_ss, v, expand_items))
+            .map(|v| ItemInfo::extract(core_ss, &v.item_id, expand_items))
             .collect();
         let modules_mid = core_ss
-            .get_mid_module_ids(fit_id)
+            .get_mid_module_infos(&fit_id)
             .iter()
-            .map(|v| ItemInfo::extract(core_ss, v, expand_items))
+            .map(|v| ItemInfo::extract(core_ss, &v.item_id, expand_items))
             .collect();
         let modules_low = core_ss
-            .get_low_module_ids(fit_id)
+            .get_low_module_infos(&fit_id)
             .iter()
-            .map(|v| ItemInfo::extract(core_ss, v, expand_items))
+            .map(|v| ItemInfo::extract(core_ss, &v.item_id, expand_items))
             .collect();
         Self {
             id: fit_id.to_string(),

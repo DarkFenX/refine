@@ -16,7 +16,10 @@ extern crate core;
 pub use consts::{OrdAddMode, State};
 pub use defines::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::Src;
-pub use ss::SolarSystem;
+pub use ss::{
+    BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, ImplantInfo, ModuleInfo, RigInfo, ShipInfo,
+    SkillInfo, SolarSystem, StanceInfo, SubsystemInfo, SwEffectInfo,
+};
 pub use util::err_res::public::{Error, ErrorKind, Result};
 pub(crate) use util::err_res::{
     internal::{IntError, IntResult},
