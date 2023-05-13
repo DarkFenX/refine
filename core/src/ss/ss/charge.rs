@@ -19,4 +19,22 @@ impl SolarSystem {
             )),
         }
     }
+    pub(in crate::ss::ss) fn add_charge_with_id(
+        &mut self,
+        item_id: Option<ReeId>,
+        fit_id: ReeId,
+        type_id: Option<ReeInt>,
+        cont_id: ReeId,
+    ) -> Option<ChargeInfo> {
+        match (item_id, type_id) {
+            (Some(iid), Some(tid)) => {
+                let charge = Charge::new(&self.src, iid, fit_id, tid, cont_id);
+                let info = ChargeInfo::from(&charge);
+                let item = Item::Charge(charge);
+                self.add_item(item);
+                Some(info)
+            }
+            _ => None,
+        }
+    }
 }
