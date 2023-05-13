@@ -5,24 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    fn get_implant(&self, item_id: &ReeId) -> Result<&Implant> {
-        match self.get_item(item_id)? {
-            Item::Implant(i) => Ok(i),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Implant::get_name(), item_id),
-            )),
-        }
-    }
-    fn get_implant_mut(&mut self, item_id: &ReeId) -> Result<&mut Implant> {
-        match self.get_item_mut(item_id)? {
-            Item::Implant(i) => Ok(i),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Implant::get_name(), item_id),
-            )),
-        }
-    }
+    // Public
     pub fn get_implant_info(&self, item_id: &ReeId) -> Result<ImplantInfo> {
         Ok(self.get_implant(item_id)?.into())
     }
@@ -44,5 +27,24 @@ impl SolarSystem {
     pub fn set_implant_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
         self.get_implant_mut(item_id)?.set_bool_state(state);
         Ok(())
+    }
+    // Non-public
+    fn get_implant(&self, item_id: &ReeId) -> Result<&Implant> {
+        match self.get_item(item_id)? {
+            Item::Implant(i) => Ok(i),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Implant::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_implant_mut(&mut self, item_id: &ReeId) -> Result<&mut Implant> {
+        match self.get_item_mut(item_id)? {
+            Item::Implant(i) => Ok(i),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Implant::get_name(), item_id),
+            )),
+        }
     }
 }

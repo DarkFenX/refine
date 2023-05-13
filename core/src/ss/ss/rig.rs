@@ -5,24 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    fn get_rig(&self, item_id: &ReeId) -> Result<&Rig> {
-        match self.get_item(item_id)? {
-            Item::Rig(r) => Ok(r),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Rig::get_name(), item_id),
-            )),
-        }
-    }
-    fn get_rig_mut(&mut self, item_id: &ReeId) -> Result<&mut Rig> {
-        match self.get_item_mut(item_id)? {
-            Item::Rig(r) => Ok(r),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Rig::get_name(), item_id),
-            )),
-        }
-    }
+    // Public
     pub fn get_rig_info(&self, item_id: &ReeId) -> Result<RigInfo> {
         Ok(self.get_rig(item_id)?.into())
     }
@@ -44,5 +27,24 @@ impl SolarSystem {
     pub fn set_rig_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
         self.get_rig_mut(item_id)?.set_bool_state(state);
         Ok(())
+    }
+    // Non-public
+    fn get_rig(&self, item_id: &ReeId) -> Result<&Rig> {
+        match self.get_item(item_id)? {
+            Item::Rig(r) => Ok(r),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Rig::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_rig_mut(&mut self, item_id: &ReeId) -> Result<&mut Rig> {
+        match self.get_item_mut(item_id)? {
+            Item::Rig(r) => Ok(r),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Rig::get_name(), item_id),
+            )),
+        }
     }
 }

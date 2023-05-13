@@ -6,12 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    fn get_fit_ship(&self, fit_id: &ReeId) -> Option<&Ship> {
-        self.items.values().find_map(|v| match v {
-            Item::Ship(s) if s.fit_id == *fit_id => Some(s),
-            _ => None,
-        })
-    }
+    // Public
     pub fn get_fit_ship_info(&self, fit_id: &ReeId) -> Option<ShipInfo> {
         self.get_fit_ship(fit_id).map(|v| v.into())
     }
@@ -43,5 +38,12 @@ impl SolarSystem {
             true => Err(Error::new(ErrorKind::ItemNotFound, "ship not found")),
             false => Ok(()),
         }
+    }
+    // Non-public
+    fn get_fit_ship(&self, fit_id: &ReeId) -> Option<&Ship> {
+        self.items.values().find_map(|v| match v {
+            Item::Ship(s) if s.fit_id == *fit_id => Some(s),
+            _ => None,
+        })
     }
 }

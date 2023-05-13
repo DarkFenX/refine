@@ -6,24 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    fn get_fighter(&self, item_id: &ReeId) -> Result<&Fighter> {
-        match self.get_item(item_id)? {
-            Item::Fighter(f) => Ok(f),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Fighter::get_name(), item_id),
-            )),
-        }
-    }
-    fn get_fighter_mut(&mut self, item_id: &ReeId) -> Result<&mut Fighter> {
-        match self.get_item_mut(item_id)? {
-            Item::Fighter(f) => Ok(f),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Fighter::get_name(), item_id),
-            )),
-        }
-    }
+    // Public
     pub fn get_fighter_info(&self, item_id: &ReeId) -> Result<FighterInfo> {
         Ok(self.get_fighter(item_id)?.into())
     }
@@ -45,5 +28,24 @@ impl SolarSystem {
     pub fn set_fighter_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
         self.get_fighter_mut(item_id)?.state = state;
         Ok(())
+    }
+    // Non-public
+    fn get_fighter(&self, item_id: &ReeId) -> Result<&Fighter> {
+        match self.get_item(item_id)? {
+            Item::Fighter(f) => Ok(f),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Fighter::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_fighter_mut(&mut self, item_id: &ReeId) -> Result<&mut Fighter> {
+        match self.get_item_mut(item_id)? {
+            Item::Fighter(f) => Ok(f),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Fighter::get_name(), item_id),
+            )),
+        }
     }
 }

@@ -6,12 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    fn get_fit_stance(&self, fit_id: &ReeId) -> Option<&Stance> {
-        self.items.values().find_map(|v| match v {
-            Item::Stance(s) if s.fit_id == *fit_id => Some(s),
-            _ => None,
-        })
-    }
+    // Public
     pub fn get_fit_stance_info(&self, fit_id: &ReeId) -> Option<StanceInfo> {
         self.get_fit_stance(fit_id).map(|v| v.into())
     }
@@ -43,5 +38,12 @@ impl SolarSystem {
             true => Err(Error::new(ErrorKind::ItemNotFound, "stance not found")),
             false => Ok(()),
         }
+    }
+    // Non-public
+    fn get_fit_stance(&self, fit_id: &ReeId) -> Option<&Stance> {
+        self.items.values().find_map(|v| match v {
+            Item::Stance(s) if s.fit_id == *fit_id => Some(s),
+            _ => None,
+        })
     }
 }

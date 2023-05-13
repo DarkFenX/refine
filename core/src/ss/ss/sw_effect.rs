@@ -5,24 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    fn get_sw_effect(&self, item_id: &ReeId) -> Result<&SwEffect> {
-        match self.get_item(item_id)? {
-            Item::SwEffect(e) => Ok(e),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", SwEffect::get_name(), item_id),
-            )),
-        }
-    }
-    fn get_sw_effect_mut(&mut self, item_id: &ReeId) -> Result<&mut SwEffect> {
-        match self.get_item_mut(item_id)? {
-            Item::SwEffect(e) => Ok(e),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", SwEffect::get_name(), item_id),
-            )),
-        }
-    }
+    // Public
     pub fn get_sw_effect_info(&self, item_id: &ReeId) -> Result<SwEffectInfo> {
         Ok(self.get_sw_effect(item_id)?.into())
     }
@@ -44,5 +27,24 @@ impl SolarSystem {
     pub fn set_sw_effect_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
         self.get_sw_effect_mut(item_id)?.set_bool_state(state);
         Ok(())
+    }
+    // Non-public
+    fn get_sw_effect(&self, item_id: &ReeId) -> Result<&SwEffect> {
+        match self.get_item(item_id)? {
+            Item::SwEffect(e) => Ok(e),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", SwEffect::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_sw_effect_mut(&mut self, item_id: &ReeId) -> Result<&mut SwEffect> {
+        match self.get_item_mut(item_id)? {
+            Item::SwEffect(e) => Ok(e),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", SwEffect::get_name(), item_id),
+            )),
+        }
     }
 }

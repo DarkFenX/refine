@@ -5,24 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    fn get_booster(&self, item_id: &ReeId) -> Result<&Booster> {
-        match self.get_item(item_id)? {
-            Item::Booster(b) => Ok(b),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Booster::get_name(), item_id),
-            )),
-        }
-    }
-    fn get_booster_mut(&mut self, item_id: &ReeId) -> Result<&mut Booster> {
-        match self.get_item_mut(item_id)? {
-            Item::Booster(b) => Ok(b),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Booster::get_name(), item_id),
-            )),
-        }
-    }
+    // Public
     pub fn get_booster_info(&self, item_id: &ReeId) -> Result<BoosterInfo> {
         Ok(self.get_booster(item_id)?.into())
     }
@@ -44,5 +27,24 @@ impl SolarSystem {
     pub fn set_booster_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
         self.get_booster_mut(item_id)?.set_bool_state(state);
         Ok(())
+    }
+    // Non-public
+    fn get_booster(&self, item_id: &ReeId) -> Result<&Booster> {
+        match self.get_item(item_id)? {
+            Item::Booster(b) => Ok(b),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Booster::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_booster_mut(&mut self, item_id: &ReeId) -> Result<&mut Booster> {
+        match self.get_item_mut(item_id)? {
+            Item::Booster(b) => Ok(b),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Booster::get_name(), item_id),
+            )),
+        }
     }
 }

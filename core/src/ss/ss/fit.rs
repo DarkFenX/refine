@@ -1,6 +1,7 @@
 use crate::{Error, ErrorKind, ReeId, Result, SolarSystem};
 
 impl SolarSystem {
+    // Public
     pub fn add_fit(&mut self) -> Result<ReeId> {
         let fit_id = self.alloc_fit_id()?;
         self.fits.insert(fit_id);
@@ -13,6 +14,7 @@ impl SolarSystem {
             false => Err(Error::new(ErrorKind::FitNotFound, "fit not found")),
         }
     }
+    // Non-public
     fn alloc_fit_id(&mut self) -> Result<ReeId> {
         let start = self.fit_cnt;
         while self.fits.contains(&self.fit_cnt.0) {

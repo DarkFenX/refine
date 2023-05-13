@@ -6,12 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    fn get_fit_character(&self, fit_id: &ReeId) -> Option<&Character> {
-        self.items.values().find_map(|v| match v {
-            Item::Character(c) if c.fit_id == *fit_id => Some(c),
-            _ => None,
-        })
-    }
+    // Public
     pub fn get_fit_character_info(&self, fit_id: &ReeId) -> Option<CharacterInfo> {
         self.get_fit_character(fit_id).map(|v| v.into())
     }
@@ -43,5 +38,12 @@ impl SolarSystem {
             true => Err(Error::new(ErrorKind::ItemNotFound, "character not found")),
             false => Ok(()),
         }
+    }
+    // Non-public
+    fn get_fit_character(&self, fit_id: &ReeId) -> Option<&Character> {
+        self.items.values().find_map(|v| match v {
+            Item::Character(c) if c.fit_id == *fit_id => Some(c),
+            _ => None,
+        })
     }
 }

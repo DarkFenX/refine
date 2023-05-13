@@ -5,24 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    fn get_skill(&self, item_id: &ReeId) -> Result<&Skill> {
-        match self.get_item(item_id)? {
-            Item::Skill(s) => Ok(s),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Skill::get_name(), item_id),
-            )),
-        }
-    }
-    fn get_skill_mut(&mut self, item_id: &ReeId) -> Result<&mut Skill> {
-        match self.get_item_mut(item_id)? {
-            Item::Skill(s) => Ok(s),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Skill::get_name(), item_id),
-            )),
-        }
-    }
+    // Public
     pub fn get_skill_info(&self, item_id: &ReeId) -> Result<SkillInfo> {
         Ok(self.get_skill(item_id)?.into())
     }
@@ -46,6 +29,25 @@ impl SolarSystem {
         check_skill_level(level)?;
         self.get_skill_mut(item_id)?.level = level;
         Ok(())
+    }
+    // Non-public
+    fn get_skill(&self, item_id: &ReeId) -> Result<&Skill> {
+        match self.get_item(item_id)? {
+            Item::Skill(s) => Ok(s),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Skill::get_name(), item_id),
+            )),
+        }
+    }
+    fn get_skill_mut(&mut self, item_id: &ReeId) -> Result<&mut Skill> {
+        match self.get_item_mut(item_id)? {
+            Item::Skill(s) => Ok(s),
+            _ => Err(Error::new(
+                ErrorKind::UnexpectedItemType,
+                format!("expected {} as item with ID {}", Skill::get_name(), item_id),
+            )),
+        }
     }
 }
 

@@ -14,6 +14,7 @@ use crate::{
 
 mod booster;
 mod character;
+mod charge;
 mod drone;
 mod fighter;
 mod fit;
@@ -66,13 +67,6 @@ impl SolarSystem {
     fn add_item(&mut self, item: Item) {
         helpers::add_item(&item, &self.src, &mut self.calc);
         self.items.insert(item.get_id(), item);
-    }
-    fn get_positions(&self, item_ids: &Vec<ReeId>) -> Vec<ReeIdx> {
-        item_ids
-            .iter()
-            .filter_map(|v| self.items.get(v))
-            .filter_map(|v| v.get_pos())
-            .collect_vec()
     }
     fn get_item(&self, item_id: &ReeId) -> Result<&Item> {
         self.items
