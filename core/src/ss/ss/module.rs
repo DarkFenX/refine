@@ -236,21 +236,7 @@ impl SolarSystem {
         Ok(m_info)
     }
     pub fn set_module_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
-        let item = self
-            .items
-            .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        match item {
-            Item::ModuleHigh(m) => m.state = state,
-            Item::ModuleMid(m) => m.state = state,
-            Item::ModuleLow(m) => m.state = state,
-            _ => {
-                return Err(Error::new(
-                    ErrorKind::UnexpectedItemType,
-                    format!("expected Module as item with ID {item_id}"),
-                ))
-            }
-        }
+        self.get_module_mut(item_id)?.state = state;
         Ok(())
     }
     pub fn set_module_charge(&mut self, item_id: &ReeId, charge_type_id: ReeInt) -> Result<ReeId> {
@@ -336,7 +322,6 @@ impl SolarSystem {
             Some(i) => Ok(self.items.remove(&i).is_some()),
         }
     }
-
     // Non-public
     fn get_module(&self, item_id: &ReeId) -> Result<&Module> {
         match self.get_item(item_id)? {
