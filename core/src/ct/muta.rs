@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 
-use crate::{util::Named, ReeFloat, ReeInt};
+use crate::{
+    defines::{ReeFloat, ReeInt},
+    util::Named,
+};
 
 /// Represents a mutaplasmid.
 ///

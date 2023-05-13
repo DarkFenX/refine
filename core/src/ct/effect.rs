@@ -1,7 +1,7 @@
 use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModBuildStatus, ModOp, State, TgtMode},
+    defines::ReeInt,
     util::Named,
-    ReeInt,
 };
 
 /// Represents a dogma effect.

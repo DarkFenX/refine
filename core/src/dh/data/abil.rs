@@ -1,4 +1,4 @@
-use crate::{util::Named, ReeInt};
+use crate::{defines::ReeInt, util::Named};
 
 /// Fighter ability data.
 #[derive(Debug)]

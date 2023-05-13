@@ -1,6 +1,12 @@
 use std::{fmt, sync::Arc};
 
-use crate::{consts::State, ct, util::Named, ReeId, ReeInt, Src};
+use crate::{
+    consts::State,
+    ct,
+    defines::{ReeId, ReeInt},
+    src::Src,
+    util::Named,
+};
 
 pub struct SwEffectInfo {
     pub item_id: ReeId,

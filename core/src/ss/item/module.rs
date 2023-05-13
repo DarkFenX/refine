@@ -1,6 +1,13 @@
 use std::{fmt, sync::Arc};
 
-use crate::{consts::State, ct, ss::item::ChargeInfo, util::Named, ReeId, ReeIdx, ReeInt, Src};
+use crate::{
+    consts::State,
+    ct,
+    defines::{ReeId, ReeIdx, ReeInt},
+    src::Src,
+    ss::item::ChargeInfo,
+    util::Named,
+};
 
 pub struct ModuleInfo {
     pub item_id: ReeId,

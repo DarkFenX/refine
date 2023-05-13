@@ -1,4 +1,4 @@
-use crate::{util::Named, ReeInt};
+use crate::{defines::ReeInt, util::Named};
 
 /// An item type - dogma effect relation.
 #[derive(Debug)]

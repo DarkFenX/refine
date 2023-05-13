@@ -5,8 +5,7 @@ use log;
 
 use crate::{
     dh::{self, DataHandler},
-    util::Named,
-    IntError, IntResult,
+    util::{IntError, IntResult, Named},
 };
 
 use super::data::Data;

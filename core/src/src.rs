@@ -1,4 +1,9 @@
-use crate::{cg, ch, dh, Error, ErrorKind, FromKind, IntError, IntResult, Result, VERSION};
+use crate::{
+    cg, ch,
+    defines::VERSION,
+    dh,
+    util::{Error, ErrorKind, FromKind, IntError, IntResult, Result},
+};
 
 /// Data source.
 ///

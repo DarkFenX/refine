@@ -20,11 +20,7 @@ pub use ss::{
     BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, ImplantInfo, ModuleInfo, RigInfo, ShipInfo,
     SkillInfo, SolarSystem, StanceInfo, SubsystemInfo, SwEffectInfo,
 };
-pub use util::err_res::public::{Error, ErrorKind, Result};
-pub(crate) use util::err_res::{
-    internal::{IntError, IntResult},
-    public::FromKind,
-};
+pub use util::{Error, ErrorKind, Result};
 
 pub(crate) mod cg;
 pub mod ch;

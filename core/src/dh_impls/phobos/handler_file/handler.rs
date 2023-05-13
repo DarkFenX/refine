@@ -1,6 +1,9 @@
 use std::{fmt, fs::File, io::BufReader, path::PathBuf};
 
-use crate::{dh, IntError, IntResult};
+use crate::{
+    dh,
+    util::{IntError, IntResult},
+};
 
 use super::{
     super::{

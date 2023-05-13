@@ -1,8 +1,12 @@
 use itertools::Itertools;
 
 use crate::{
-    ss::item::{Item, Stance, StanceInfo},
-    Error, ErrorKind, ReeId, ReeInt, Result, SolarSystem,
+    defines::{ReeId, ReeInt},
+    ss::{
+        item::{Item, Stance, StanceInfo},
+        SolarSystem,
+    },
+    util::{Error, ErrorKind, Result},
 };
 
 impl SolarSystem {

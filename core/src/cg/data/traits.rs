@@ -1,4 +1,4 @@
-use crate::ReeInt;
+use crate::defines::ReeInt;
 
 use super::Support;
 

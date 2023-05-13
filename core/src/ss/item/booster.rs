@@ -3,8 +3,9 @@ use std::{fmt, sync::Arc};
 use crate::{
     consts::{attrs, State},
     ct,
+    defines::{ReeId, ReeInt},
+    src::Src,
     util::Named,
-    ReeId, ReeInt, Src,
 };
 
 pub struct BoosterInfo {

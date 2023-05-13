@@ -1,4 +1,7 @@
-use crate::{util::Named, ReeFloat, ReeInt};
+use crate::{
+    defines::{ReeFloat, ReeInt},
+    util::Named,
+};
 
 /// An item type - fighter ability relation.
 #[derive(Debug)]

@@ -4,9 +4,10 @@ use itertools::Itertools;
 
 use crate::{
     consts::{attrs, effects, get_abil_effect, itemcats, itemgrps, ItemType},
-    ct, dh,
+    ct,
+    defines::ReeInt,
+    dh,
     util::Named,
-    ReeInt,
 };
 
 use super::super::{data::Support, Data};

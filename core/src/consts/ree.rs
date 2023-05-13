@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-use crate::{ReeIdx, ReeInt};
+use crate::defines::{ReeIdx, ReeInt};
 
 /// Contains states which can be assigned to several entities.
 #[derive(Copy, Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]

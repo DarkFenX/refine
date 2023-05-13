@@ -1,4 +1,8 @@
-use crate::{Error, ErrorKind, ReeId, Result, SolarSystem};
+use crate::{
+    defines::ReeId,
+    ss::SolarSystem,
+    util::{Error, ErrorKind, Result},
+};
 
 impl SolarSystem {
     // Public

@@ -5,8 +5,9 @@ use itertools::Itertools;
 use crate::{
     consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
     ct,
+    defines::{ReeFloat, ReeId, ReeInt},
+    src::Src,
     ss::item::Item,
-    ReeFloat, ReeId, ReeInt, Src,
 };
 
 use super::{affection_reg::AffectionRegister, modification::Modification};

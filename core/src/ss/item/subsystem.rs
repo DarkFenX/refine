@@ -1,6 +1,12 @@
 use std::{fmt, sync::Arc};
 
-use crate::{consts::attrs, ct, util::Named, ReeId, ReeInt, Src};
+use crate::{
+    consts::attrs,
+    ct,
+    defines::{ReeId, ReeInt},
+    src::Src,
+    util::Named,
+};
 
 pub struct SubsystemInfo {
     pub item_id: ReeId,

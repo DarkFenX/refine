@@ -3,7 +3,8 @@ use std::{collections::HashMap, fmt, sync::Arc};
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    IntError, ReeInt,
+    defines::ReeInt,
+    util::IntError,
 };
 
 use super::super::common::move_vec_to_map;

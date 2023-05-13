@@ -7,9 +7,9 @@ use std::{
 use crate::{
     consts::{ModAfeeFilter, ModDomain},
     ct,
+    defines::{ReeId, ReeInt},
     ss::item::Item,
     util::KeyedStorage,
-    ReeId, ReeInt,
 };
 
 use super::affector::AffectorSpec;

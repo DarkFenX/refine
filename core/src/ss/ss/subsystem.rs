@@ -1,7 +1,10 @@
 use crate::{
-    ss::item::{Item, Subsystem, SubsystemInfo},
-    util::Named,
-    Error, ErrorKind, ReeId, ReeInt, Result, SolarSystem,
+    defines::{ReeId, ReeInt},
+    ss::{
+        item::{Item, Subsystem, SubsystemInfo},
+        SolarSystem,
+    },
+    util::{Error, ErrorKind, Named, Result},
 };
 
 impl SolarSystem {

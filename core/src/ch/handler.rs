@@ -2,7 +2,7 @@ use std::{fmt, sync::Arc};
 
 use crate::{
     ct::{Attr, Buff, Effect, Item, Muta},
-    ReeInt,
+    defines::ReeInt,
 };
 
 use super::{data::Data, Result};

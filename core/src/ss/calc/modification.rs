@@ -1,6 +1,6 @@
 use crate::{
     consts::{ModAggrMode, ModOp},
-    ReeFloat,
+    defines::ReeFloat,
 };
 
 pub(in crate::ss::calc) struct Modification {

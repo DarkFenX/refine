@@ -1,8 +1,11 @@
 use crate::{
     consts::State,
-    ss::item::{Fighter, FighterInfo, Item},
-    util::Named,
-    Error, ErrorKind, ReeId, ReeInt, Result, SolarSystem,
+    defines::{ReeId, ReeInt},
+    ss::{
+        item::{Fighter, FighterInfo, Item},
+        SolarSystem,
+    },
+    util::{Error, ErrorKind, Named, Result},
 };
 
 impl SolarSystem {

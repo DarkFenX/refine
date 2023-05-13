@@ -1,8 +1,11 @@
 use crate::{
     consts::{OrdAddMode, State},
-    ss::item::{Charge, ChargeInfo, Item, Module, ModuleInfo},
-    util::Named,
-    Error, ErrorKind, ReeId, ReeIdx, ReeInt, Result, SolarSystem,
+    defines::{ReeId, ReeIdx, ReeInt},
+    ss::{
+        item::{ChargeInfo, Item, Module, ModuleInfo},
+        SolarSystem,
+    },
+    util::{Error, ErrorKind, Named, Result},
 };
 
 impl SolarSystem {

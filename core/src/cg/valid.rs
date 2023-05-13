@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use itertools::Itertools;
 use log;
 
-use crate::{consts, dh, util::Named, ReeInt};
+use crate::{consts, defines::ReeInt, dh, util::Named};
 
 use super::{
     data::{Fk, KeyDb, Pk, Support},

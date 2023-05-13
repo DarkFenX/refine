@@ -1,7 +1,10 @@
 use crate::{
-    ss::item::{Item, SwEffect, SwEffectInfo},
-    util::Named,
-    Error, ErrorKind, ReeId, ReeInt, Result, SolarSystem,
+    defines::{ReeId, ReeInt},
+    ss::{
+        item::{Item, SwEffect, SwEffectInfo},
+        SolarSystem,
+    },
+    util::{Error, ErrorKind, Named, Result},
 };
 
 impl SolarSystem {

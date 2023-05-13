@@ -12,7 +12,8 @@ use log;
 use crate::{
     ch,
     ct::{Attr, Buff, Effect, Item, Muta},
-    IntError, IntResult, ReeInt,
+    defines::ReeInt,
+    util::{IntError, IntResult},
 };
 
 use super::{super::common::move_vec_to_map, data::CacheData};

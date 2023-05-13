@@ -2,9 +2,10 @@ use itertools::Itertools;
 
 use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
-    ct, dh,
-    util::Named,
-    IntError, IntResult, ReeInt,
+    ct,
+    defines::ReeInt,
+    dh,
+    util::{IntError, IntResult, Named},
 };
 
 use super::Data;

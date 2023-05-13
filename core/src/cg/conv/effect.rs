@@ -5,9 +5,10 @@ use std::{
 
 use crate::{
     consts::{effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
-    ct, dh,
-    util::Named,
-    IntError, IntResult, ReeInt,
+    ct,
+    defines::ReeInt,
+    dh,
+    util::{IntError, IntResult, Named},
 };
 
 use super::Data;

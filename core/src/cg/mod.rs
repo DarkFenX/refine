@@ -2,7 +2,7 @@
 
 use data::{Data, Support};
 
-use crate::{ch, dh, IntResult};
+use crate::{ch, dh, util::IntResult};
 
 mod clean;
 mod conv;

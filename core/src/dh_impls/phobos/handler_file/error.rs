@@ -1,6 +1,6 @@
 use std::io;
 
-use crate::IntError;
+use crate::util::IntError;
 
 pub(super) trait FromPath<T> {
     fn from_path<U: Into<String>>(err: T, path: U) -> Self;

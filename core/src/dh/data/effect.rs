@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{util::Named, ReeInt};
+use crate::{defines::ReeInt, util::Named};
 
 use super::Primitive;
 

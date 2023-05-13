@@ -1,4 +1,7 @@
-use crate::{dh, ReeFloat, ReeInt};
+use crate::{
+    defines::{ReeFloat, ReeInt},
+    dh,
+};
 
 use super::super::fsd::FsdMerge;
 

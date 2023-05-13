@@ -1,6 +1,11 @@
 use std::{fmt, sync::Arc};
 
-use crate::{ct, util::Named, ReeId, ReeInt, Src};
+use crate::{
+    ct,
+    defines::{ReeId, ReeInt},
+    src::Src,
+    util::Named,
+};
 
 pub struct CharacterInfo {
     pub item_id: ReeId,
