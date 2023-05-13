@@ -290,36 +290,13 @@ impl SolarSystem {
         Ok(charge_id)
     }
     pub fn remove_module_charge(&mut self, item_id: &ReeId) -> Result<bool> {
-        let item = self
-            .items
-            .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))?;
-        let charge_id = match item {
-            Item::ModuleHigh(m) => {
-                let charge_id = m.charge;
-                m.charge = None;
-                charge_id
+        let module = self.get_module_mut(item_id)?;
+        match module.charge {
+            Some(cid) => {
+                module.charge = None;
+                Ok(self.items.remove(&cid).is_some())
             }
-            Item::ModuleMid(m) => {
-                let charge_id = m.charge;
-                m.charge = None;
-                charge_id
-            }
-            Item::ModuleLow(m) => {
-                let charge_id = m.charge;
-                m.charge = None;
-                charge_id
-            }
-            _ => {
-                return Err(Error::new(
-                    ErrorKind::UnexpectedItemType,
-                    format!("item with ID {item_id} is not a module"),
-                ))
-            }
-        };
-        match charge_id {
             None => Ok(false),
-            Some(i) => Ok(self.items.remove(&i).is_some()),
         }
     }
     // Non-public

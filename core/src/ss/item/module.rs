@@ -28,14 +28,14 @@ impl ModuleInfo {
             charge,
         }
     }
-    pub(in crate::ss) fn from_mod_and_charge(module: &Module, charge: Option<ChargeInfo>) -> Self {
+    pub(in crate::ss) fn from_mod_and_charge(module: &Module, charge_info: Option<ChargeInfo>) -> Self {
         ModuleInfo::new(
             module.item_id,
             module.fit_id,
             module.type_id,
             module.state,
             module.pos,
-            charge,
+            charge_info,
         )
     }
 }
