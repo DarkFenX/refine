@@ -18,11 +18,13 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_subsystem(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
+    pub fn add_subsystem(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<SubsystemInfo> {
         let item_id = self.alloc_item_id()?;
-        let subsystem = Item::Subsystem(Subsystem::new(&self.src, item_id, fit_id, type_id));
-        self.add_item(subsystem);
-        Ok(item_id)
+        let subsystem = Subsystem::new(&self.src, item_id, fit_id, type_id);
+        let info = SubsystemInfo::from(&subsystem);
+        let item = Item::Subsystem(subsystem);
+        self.add_item(item);
+        Ok(info)
     }
     // Non-public
     fn get_subsystem(&self, item_id: &ReeId) -> Result<&Subsystem> {

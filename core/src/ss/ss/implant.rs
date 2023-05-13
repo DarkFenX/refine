@@ -18,11 +18,13 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_implant(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
+    pub fn add_implant(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ImplantInfo> {
         let item_id = self.alloc_item_id()?;
-        let implant = Item::Implant(Implant::new(&self.src, item_id, fit_id, type_id));
-        self.add_item(implant);
-        Ok(item_id)
+        let implant = Implant::new(&self.src, item_id, fit_id, type_id);
+        let info = ImplantInfo::from(&implant);
+        let item = Item::Implant(implant);
+        self.add_item(item);
+        Ok(info)
     }
     pub fn set_implant_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
         self.get_implant_mut(item_id)?.set_bool_state(state);

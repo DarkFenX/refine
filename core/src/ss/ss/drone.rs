@@ -19,11 +19,13 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_drone(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<ReeId> {
+    pub fn add_drone(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<DroneInfo> {
         let item_id = self.alloc_item_id()?;
-        let drone = Item::Drone(Drone::new(&self.src, item_id, fit_id, type_id, state));
-        self.add_item(drone);
-        Ok(item_id)
+        let drone = Drone::new(&self.src, item_id, fit_id, type_id, state);
+        let info = DroneInfo::from(&drone);
+        let item = Item::Drone(drone);
+        self.add_item(item);
+        Ok(info)
     }
     pub fn set_drone_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
         self.get_drone_mut(item_id)?.state = state;

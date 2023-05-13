@@ -19,11 +19,13 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_fighter(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<ReeId> {
+    pub fn add_fighter(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<FighterInfo> {
         let item_id = self.alloc_item_id()?;
-        let fighter = Item::Fighter(Fighter::new(&self.src, item_id, fit_id, type_id, state));
-        self.add_item(fighter);
-        Ok(item_id)
+        let fighter = Fighter::new(&self.src, item_id, fit_id, type_id, state);
+        let info = FighterInfo::from(&fighter);
+        let item = Item::Fighter(fighter);
+        self.add_item(item);
+        Ok(info)
     }
     pub fn set_fighter_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
         self.get_fighter_mut(item_id)?.state = state;

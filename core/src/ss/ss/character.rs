@@ -10,7 +10,7 @@ impl SolarSystem {
     pub fn get_fit_character_info(&self, fit_id: &ReeId) -> Option<CharacterInfo> {
         self.get_fit_character(fit_id).map(|v| v.into())
     }
-    pub fn set_fit_character(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ReeId> {
+    pub fn set_fit_character(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<CharacterInfo> {
         match self.remove_fit_character(&fit_id) {
             Ok(_) => (),
             // Suppress ItemNotFound error, since this method is supposed to be used
@@ -21,9 +21,11 @@ impl SolarSystem {
             },
         };
         let item_id = self.alloc_item_id()?;
-        let character = Item::Character(Character::new(&self.src, item_id, fit_id, type_id));
-        self.add_item(character);
-        Ok(item_id)
+        let character = Character::new(&self.src, item_id, fit_id, type_id);
+        let info = CharacterInfo::from(&character);
+        let item = Item::Character(character);
+        self.add_item(item);
+        Ok(info)
     }
     pub fn remove_fit_character(&mut self, fit_id: &ReeId) -> Result<()> {
         self.check_fit(fit_id)?;
