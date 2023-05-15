@@ -17,8 +17,8 @@ pub use consts::{OrdAddMode, State};
 pub use defs::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::Src;
 pub use ss::{
-    BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, ImplantInfo, ModuleInfo, RigInfo, ShipInfo,
-    SkillInfo, SolarSystem, StanceInfo, SubsystemInfo, SwEffectInfo,
+    BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, ImplantInfo, ItemInfo, ModuleInfo, RigInfo,
+    ShipInfo, SkillInfo, SolarSystem, StanceInfo, SubsystemInfo, SwEffectInfo,
 };
 pub use util::{Error, ErrorKind, Result};
 

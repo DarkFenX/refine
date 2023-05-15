@@ -285,7 +285,7 @@ impl SolarSystem {
             )),
         }
     }
-    fn make_mod_info(&self, module: &Module) -> ModuleInfo {
+    pub(in crate::ss) fn make_mod_info(&self, module: &Module) -> ModuleInfo {
         let charge_info = match module.charge {
             Some(cid) => match self.get_charge_info(&cid) {
                 Ok(ci) => Some(ci),

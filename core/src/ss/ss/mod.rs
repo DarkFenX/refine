@@ -7,7 +7,7 @@ use std::{
 use crate::{
     defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
-    ss::{calc::CalcSvc, helpers, item::Item},
+    ss::{calc::CalcSvc, helpers, info::ItemInfo, item::Item},
     util::{Error, ErrorKind, Result},
 };
 
@@ -76,6 +76,9 @@ impl SolarSystem {
         self.items
             .get_mut(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))
+    }
+    pub fn get_item_info(&self, item_id: &ReeId) -> Result<ItemInfo> {
+        self.get_item(item_id).map(|v| ItemInfo::from_item(v, self))
     }
     pub fn remove_item(&mut self, item_id: &ReeId) -> bool {
         match self.items.remove(item_id) {

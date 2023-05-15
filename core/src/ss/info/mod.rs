@@ -11,6 +11,7 @@ pub use skill::SkillInfo;
 pub use stance::StanceInfo;
 pub use subsystem::SubsystemInfo;
 pub use sw_effect::SwEffectInfo;
+use crate::ss::{item::Item, SolarSystem};
 
 mod booster;
 mod character;
@@ -25,3 +26,42 @@ mod skill;
 mod stance;
 mod subsystem;
 mod sw_effect;
+
+pub enum ItemInfo {
+    Booster(BoosterInfo),
+    Character(CharacterInfo),
+    Charge(ChargeInfo),
+    Drone(DroneInfo),
+    Fighter(FighterInfo),
+    Implant(ImplantInfo),
+    ModuleHigh(ModuleInfo),
+    ModuleLow(ModuleInfo),
+    ModuleMid(ModuleInfo),
+    Rig(RigInfo),
+    Ship(ShipInfo),
+    Skill(SkillInfo),
+    Stance(StanceInfo),
+    Subsystem(SubsystemInfo),
+    SwEffect(SwEffectInfo),
+}
+impl ItemInfo {
+    pub(in crate::ss) fn from_item(item: &Item, ss: &SolarSystem) -> Self {
+        match item {
+            Item::Booster(b) => ItemInfo::Booster(b.into()),
+            Item::Character(c) => ItemInfo::Character(c.into()),
+            Item::Charge(c) => ItemInfo::Charge(c.into()),
+            Item::Drone(d) => ItemInfo::Drone(d.into()),
+            Item::Fighter(f) => ItemInfo::Fighter(f.into()),
+            Item::Implant(i) => ItemInfo::Implant(i.into()),
+            Item::ModuleHigh(m) => ItemInfo::ModuleHigh(ss.make_mod_info(m)),
+            Item::ModuleLow(m) => ItemInfo::ModuleLow(ss.make_mod_info(m)),
+            Item::ModuleMid(m) => ItemInfo::ModuleMid(ss.make_mod_info(m)),
+            Item::Rig(r) => ItemInfo::Rig(r.into()),
+            Item::Ship(s) => ItemInfo::Ship(s.into()),
+            Item::Skill(s) => ItemInfo::Skill(s.into()),
+            Item::Stance(s) => ItemInfo::Stance(s.into()),
+            Item::Subsystem(s) => ItemInfo::Subsystem(s.into()),
+            Item::SwEffect(s) => ItemInfo::SwEffect(s.into()),
+        }
+    }
+}
