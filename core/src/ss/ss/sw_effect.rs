@@ -13,7 +13,7 @@ impl SolarSystem {
     pub fn get_sw_effect_info(&self, item_id: &ReeId) -> Result<SwEffectInfo> {
         Ok(self.get_sw_effect(item_id)?.into())
     }
-    pub fn get_sw_effect_infos(&self, fit_id: &ReeId) -> Vec<SwEffectInfo> {
+    pub fn get_sw_effect_infos(&self) -> Vec<SwEffectInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
