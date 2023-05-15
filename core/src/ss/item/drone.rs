@@ -8,28 +8,6 @@ use crate::{
     util::Named,
 };
 
-pub struct DroneInfo {
-    pub item_id: ReeId,
-    pub fit_id: ReeId,
-    pub type_id: ReeInt,
-    pub state: State,
-}
-impl DroneInfo {
-    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
-        Self {
-            item_id,
-            fit_id,
-            type_id,
-            state,
-        }
-    }
-}
-impl From<&Drone> for DroneInfo {
-    fn from(d: &Drone) -> Self {
-        DroneInfo::new(d.item_id, d.fit_id, d.type_id, d.state)
-    }
-}
-
 pub(in crate::ss) struct Drone {
     pub(in crate::ss) item_id: ReeId,
     pub(in crate::ss) fit_id: ReeId,

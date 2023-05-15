@@ -1,7 +1,8 @@
 use crate::{
     defs::{ReeId, ReeInt},
     ss::{
-        item::{Item, Skill, SkillInfo},
+        info::SkillInfo,
+        item::{Item, Skill},
         SolarSystem,
     },
     util::{Error, ErrorKind, Named, Result},

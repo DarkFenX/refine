@@ -1,7 +1,8 @@
 use crate::{
     defs::{ReeId, ReeInt},
     ss::{
-        item::{Item, SwEffect, SwEffectInfo},
+        info::SwEffectInfo,
+        item::{Item, SwEffect},
         SolarSystem,
     },
     util::{Error, ErrorKind, Named, Result},

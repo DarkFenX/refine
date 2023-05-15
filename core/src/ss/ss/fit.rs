@@ -18,6 +18,9 @@ impl SolarSystem {
             false => Err(Error::new(ErrorKind::FitNotFound, "fit not found")),
         }
     }
+    pub fn get_fit_ids(&self) -> Vec<ReeId> {
+        self.fits.iter().map(|v| *v).collect()
+    }
     // Non-public
     fn alloc_fit_id(&mut self) -> Result<ReeId> {
         let start = self.fit_cnt;

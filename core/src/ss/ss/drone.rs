@@ -2,7 +2,8 @@ use crate::{
     consts::State,
     defs::{ReeId, ReeInt},
     ss::{
-        item::{Drone, DroneInfo, Item},
+        info::DroneInfo,
+        item::{Drone, Item},
         SolarSystem,
     },
     util::{Error, ErrorKind, Named, Result},

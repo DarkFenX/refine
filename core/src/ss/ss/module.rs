@@ -2,7 +2,8 @@ use crate::{
     consts::{OrdAddMode, State},
     defs::{ReeId, ReeIdx, ReeInt},
     ss::{
-        item::{ChargeInfo, Item, Module, ModuleInfo},
+        info::{ChargeInfo, ModuleInfo},
+        item::{Item, Module},
         SolarSystem,
     },
     util::{Error, ErrorKind, Named, Result},

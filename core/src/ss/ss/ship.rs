@@ -3,7 +3,8 @@ use itertools::Itertools;
 use crate::{
     defs::{ReeId, ReeInt},
     ss::{
-        item::{Item, Ship, ShipInfo},
+        info::ShipInfo,
+        item::{Item, Ship},
         SolarSystem,
     },
     util::{Error, ErrorKind, Result},
