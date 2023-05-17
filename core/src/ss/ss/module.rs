@@ -14,39 +14,22 @@ impl SolarSystem {
     pub fn get_module_info(&self, item_id: &ReeId) -> Result<ModuleInfo> {
         Ok(self.make_mod_info(self.get_module(item_id)?))
     }
-    pub fn get_high_module_infos(&self, fit_id: &ReeId) -> Vec<ModuleInfo> {
+    pub fn get_module_infos(&self, fit_id: &ReeId, rack: ModRack) -> Vec<ModuleInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::ModuleHigh(m) if m.fit_id == *fit_id => Some(self.make_mod_info(m)),
+                Item::Module(m) if m.fit_id == *fit_id && m.rack == rack => Some(self.make_mod_info(m)),
                 _ => None,
             })
             .collect()
     }
-    pub fn get_mid_module_infos(&self, fit_id: &ReeId) -> Vec<ModuleInfo> {
-        self.items
-            .values()
-            .filter_map(|v| match v {
-                Item::ModuleMid(m) if m.fit_id == *fit_id => Some(self.make_mod_info(m)),
-                _ => None,
-            })
-            .collect()
-    }
-    pub fn get_low_module_infos(&self, fit_id: &ReeId) -> Vec<ModuleInfo> {
-        self.items
-            .values()
-            .filter_map(|v| match v {
-                Item::ModuleLow(m) if m.fit_id == *fit_id => Some(self.make_mod_info(m)),
-                _ => None,
-            })
-            .collect()
-    }
-    pub fn add_high_module(
+    pub fn add_module(
         &mut self,
         fit_id: ReeId,
         type_id: ReeInt,
         state: State,
-        add_mode: OrdAddMode,
+        rack: ModRack,
+        pos_mode: OrdAddMode,
         charge_type_id: Option<ReeInt>,
     ) -> Result<ModuleInfo> {
         // Allocate resources first
@@ -56,8 +39,8 @@ impl SolarSystem {
             None => None,
         };
         // Calculate position for the module and make necessary changes to positions of other modules
-        let infos = self.get_high_module_infos(&fit_id);
-        let pos = match add_mode {
+        let infos = self.get_module_infos(&fit_id, rack);
+        let pos = match pos_mode {
             OrdAddMode::Append => infos.iter().map(|v| v.pos).max().map(|v| 1 + v).unwrap_or(0),
             OrdAddMode::Equip => {
                 let positions = infos.iter().map(|v| v.pos).collect();
@@ -66,7 +49,7 @@ impl SolarSystem {
             OrdAddMode::Insert(pos) => {
                 for info in infos.iter() {
                     match self.items.get_mut(&info.item_id) {
-                        Some(Item::ModuleHigh(m)) if m.pos >= pos => m.pos += 1,
+                        Some(Item::Module(m)) if m.rack == rack && m.pos >= pos => m.pos += 1,
                         _ => (),
                     }
                 }
@@ -76,7 +59,7 @@ impl SolarSystem {
                 let mut old_item_id = None;
                 for info in infos.iter() {
                     match self.items.get(&info.item_id) {
-                        Some(Item::ModuleHigh(m)) if m.pos == pos => {
+                        Some(Item::Module(m)) if m.rack == rack && m.pos == pos => {
                             old_item_id = Some(info.item_id);
                             break;
                         }
@@ -91,7 +74,7 @@ impl SolarSystem {
                     (Some(oid), false) => {
                         return Err(Error::new(
                             ErrorKind::SlotTaken,
-                            format!("high slot position {} is taken by item ID {}", pos, oid),
+                            format!("{} slot position {} is taken by item ID {}", rack, pos, oid),
                         ))
                     }
                     _ => (),
@@ -101,168 +84,9 @@ impl SolarSystem {
         };
         // Create and register all necessary items
         let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
-        let module = Module::new(
-            &self.src,
-            m_item_id,
-            fit_id,
-            type_id,
-            state,
-            ModRack::High,
-            pos,
-            c_item_id,
-        );
+        let module = Module::new(&self.src, m_item_id, fit_id, type_id, state, rack, pos, c_item_id);
         let m_info = ModuleInfo::from_mod_and_charge(&module, c_info);
-        let m_item = Item::ModuleHigh(module);
-        self.add_item(m_item);
-        Ok(m_info)
-    }
-    pub fn add_mid_module(
-        &mut self,
-        fit_id: ReeId,
-        type_id: ReeInt,
-        state: State,
-        add_mode: OrdAddMode,
-        charge_type_id: Option<ReeInt>,
-    ) -> Result<ModuleInfo> {
-        // Allocate resources first
-        let m_item_id = self.alloc_item_id()?;
-        let c_item_id = match charge_type_id {
-            Some(_) => Some(self.alloc_item_id()?),
-            None => None,
-        };
-        // Calculate position for the module and make necessary changes to positions of other modules
-        let infos = self.get_mid_module_infos(&fit_id);
-        let pos = match add_mode {
-            OrdAddMode::Append => infos.iter().map(|v| v.pos).max().map(|v| 1 + v).unwrap_or(0),
-            OrdAddMode::Equip => {
-                let positions = infos.iter().map(|v| v.pos).collect();
-                find_equip_pos(positions)
-            }
-            OrdAddMode::Insert(pos) => {
-                for info in infos.iter() {
-                    match self.items.get_mut(&info.item_id) {
-                        Some(Item::ModuleMid(m)) if m.pos >= pos => m.pos += 1,
-                        _ => (),
-                    }
-                }
-                pos
-            }
-            OrdAddMode::Place(pos, repl) => {
-                let mut old_item_id = None;
-                for info in infos.iter() {
-                    match self.items.get(&info.item_id) {
-                        Some(Item::ModuleMid(m)) if m.pos == pos => {
-                            old_item_id = Some(info.item_id);
-                            break;
-                        }
-                        _ => (),
-                    }
-                }
-                match (old_item_id, repl) {
-                    (Some(oid), true) => {
-                        self.remove_item(&oid);
-                        ()
-                    }
-                    (Some(oid), false) => {
-                        return Err(Error::new(
-                            ErrorKind::SlotTaken,
-                            format!("mid slot position {} is taken by item ID {}", pos, oid),
-                        ))
-                    }
-                    _ => (),
-                }
-                pos
-            }
-        };
-        // Create and register all necessary items
-        let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
-        let module = Module::new(
-            &self.src,
-            m_item_id,
-            fit_id,
-            type_id,
-            state,
-            ModRack::Mid,
-            pos,
-            c_item_id,
-        );
-        let m_info = ModuleInfo::from_mod_and_charge(&module, c_info);
-        let m_item = Item::ModuleMid(module);
-        self.add_item(m_item);
-        Ok(m_info)
-    }
-    pub fn add_low_module(
-        &mut self,
-        fit_id: ReeId,
-        type_id: ReeInt,
-        state: State,
-        add_mode: OrdAddMode,
-        charge_type_id: Option<ReeInt>,
-    ) -> Result<ModuleInfo> {
-        // Allocate resources first
-        let m_item_id = self.alloc_item_id()?;
-        let c_item_id = match charge_type_id {
-            Some(_) => Some(self.alloc_item_id()?),
-            None => None,
-        };
-        // Calculate position for the module and make necessary changes to positions of other modules
-        let infos = self.get_low_module_infos(&fit_id);
-        let pos = match add_mode {
-            OrdAddMode::Append => infos.iter().map(|v| v.pos).max().map(|v| 1 + v).unwrap_or(0),
-            OrdAddMode::Equip => {
-                let positions = infos.iter().map(|v| v.pos).collect();
-                find_equip_pos(positions)
-            }
-            OrdAddMode::Insert(pos) => {
-                for info in infos.iter() {
-                    match self.items.get_mut(&info.item_id) {
-                        Some(Item::ModuleLow(m)) if m.pos >= pos => m.pos += 1,
-                        _ => (),
-                    }
-                }
-                pos
-            }
-            OrdAddMode::Place(pos, repl) => {
-                let mut old_item_id = None;
-                for info in infos.iter() {
-                    match self.items.get(&info.item_id) {
-                        Some(Item::ModuleLow(m)) if m.pos == pos => {
-                            old_item_id = Some(info.item_id);
-                            break;
-                        }
-                        _ => (),
-                    }
-                }
-                match (old_item_id, repl) {
-                    (Some(oid), true) => {
-                        self.remove_item(&oid);
-                        ()
-                    }
-                    (Some(oid), false) => {
-                        return Err(Error::new(
-                            ErrorKind::SlotTaken,
-                            format!("low slot position {} is taken by item ID {}", pos, oid),
-                        ))
-                    }
-                    _ => (),
-                }
-                pos
-            }
-        };
-        // Create and register all necessary items
-        let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
-        let module = Module::new(
-            &self.src,
-            m_item_id,
-            fit_id,
-            type_id,
-            state,
-            ModRack::Low,
-            pos,
-            c_item_id,
-        );
-        let m_info = ModuleInfo::from_mod_and_charge(&module, c_info);
-        let m_item = Item::ModuleLow(module);
+        let m_item = Item::Module(module);
         self.add_item(m_item);
         Ok(m_info)
     }
@@ -292,9 +116,7 @@ impl SolarSystem {
     // Non-public
     fn get_module(&self, item_id: &ReeId) -> Result<&Module> {
         match self.get_item(item_id)? {
-            Item::ModuleHigh(m) => Ok(m),
-            Item::ModuleMid(m) => Ok(m),
-            Item::ModuleLow(m) => Ok(m),
+            Item::Module(m) => Ok(m),
             _ => Err(Error::new(
                 ErrorKind::UnexpectedItemType,
                 format!("expected {} as item with ID {}", Module::get_name(), item_id),
@@ -303,9 +125,7 @@ impl SolarSystem {
     }
     fn get_module_mut(&mut self, item_id: &ReeId) -> Result<&mut Module> {
         match self.get_item_mut(item_id)? {
-            Item::ModuleHigh(m) => Ok(m),
-            Item::ModuleMid(m) => Ok(m),
-            Item::ModuleLow(m) => Ok(m),
+            Item::Module(m) => Ok(m),
             _ => Err(Error::new(
                 ErrorKind::UnexpectedItemType,
                 format!("expected {} as item with ID {}", Module::get_name(), item_id),

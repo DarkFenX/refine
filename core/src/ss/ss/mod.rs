@@ -90,33 +90,17 @@ impl SolarSystem {
                     Item::Charge(c) => match self.items.get_mut(&c.cont) {
                         None => return true,
                         Some(other) => match other {
-                            Item::ModuleHigh(m) => m.charge = None,
-                            Item::ModuleMid(m) => m.charge = None,
-                            Item::ModuleLow(m) => m.charge = None,
+                            Item::Module(m) => m.charge = None,
                             _ => (),
                         },
                     },
                     // Remove charge if we're removing a module, charges cannot exist without their carrier
-                    Item::ModuleHigh(m) => match m.charge {
+                    Item::Module(m) => match m.charge {
                         Some(other_id) => match self.items.remove(&other_id) {
                             Some(charge) => helpers::remove_item(&charge, &self.src, &mut self.calc),
                             _ => (),
                         },
                         _ => (),
-                    },
-                    Item::ModuleMid(m) => match m.charge {
-                        Some(other_id) => match self.items.remove(&other_id) {
-                            Some(charge) => helpers::remove_item(&charge, &self.src, &mut self.calc),
-                            _ => (),
-                        },
-                        None => (),
-                    },
-                    Item::ModuleLow(m) => match m.charge {
-                        Some(other_id) => match self.items.remove(&other_id) {
-                            Some(charge) => helpers::remove_item(&charge, &self.src, &mut self.calc),
-                            _ => (),
-                        },
-                        None => (),
                     },
                     _ => (),
                 };
