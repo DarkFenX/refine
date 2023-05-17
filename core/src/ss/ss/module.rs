@@ -1,5 +1,5 @@
 use crate::{
-    consts::{OrdAddMode, State},
+    consts::{ModRack, OrdAddMode, State},
     defs::{ReeId, ReeIdx, ReeInt},
     ss::{
         info::{ChargeInfo, ModuleInfo},
@@ -101,7 +101,16 @@ impl SolarSystem {
         };
         // Create and register all necessary items
         let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
-        let module = Module::new(&self.src, m_item_id, fit_id, type_id, state, pos, c_item_id);
+        let module = Module::new(
+            &self.src,
+            m_item_id,
+            fit_id,
+            type_id,
+            state,
+            ModRack::High,
+            pos,
+            c_item_id,
+        );
         let m_info = ModuleInfo::from_mod_and_charge(&module, c_info);
         let m_item = Item::ModuleHigh(module);
         self.add_item(m_item);
@@ -167,7 +176,16 @@ impl SolarSystem {
         };
         // Create and register all necessary items
         let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
-        let module = Module::new(&self.src, m_item_id, fit_id, type_id, state, pos, c_item_id);
+        let module = Module::new(
+            &self.src,
+            m_item_id,
+            fit_id,
+            type_id,
+            state,
+            ModRack::Mid,
+            pos,
+            c_item_id,
+        );
         let m_info = ModuleInfo::from_mod_and_charge(&module, c_info);
         let m_item = Item::ModuleMid(module);
         self.add_item(m_item);
@@ -233,7 +251,16 @@ impl SolarSystem {
         };
         // Create and register all necessary items
         let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
-        let module = Module::new(&self.src, m_item_id, fit_id, type_id, state, pos, c_item_id);
+        let module = Module::new(
+            &self.src,
+            m_item_id,
+            fit_id,
+            type_id,
+            state,
+            ModRack::Low,
+            pos,
+            c_item_id,
+        );
         let m_info = ModuleInfo::from_mod_and_charge(&module, c_info);
         let m_item = Item::ModuleLow(module);
         self.add_item(m_item);

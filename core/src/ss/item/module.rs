@@ -1,7 +1,7 @@
 use std::{fmt, sync::Arc};
 
 use crate::{
-    consts::State,
+    consts::{ModRack, State},
     ct,
     defs::{ReeId, ReeIdx, ReeInt},
     src::Src,
@@ -13,6 +13,7 @@ pub(in crate::ss) struct Module {
     pub(in crate::ss) fit_id: ReeId,
     pub(in crate::ss) type_id: ReeInt,
     pub(in crate::ss) state: State,
+    pub(in crate::ss) rack: ModRack,
     pub(in crate::ss) pos: ReeIdx,
     pub(in crate::ss) charge: Option<ReeId>,
     pub(in crate::ss) citem: Option<Arc<ct::Item>>,
@@ -24,6 +25,7 @@ impl Module {
         fit_id: ReeId,
         type_id: ReeInt,
         state: State,
+        rack: ModRack,
         pos: ReeIdx,
         charge: Option<ReeId>,
     ) -> Self {
@@ -32,6 +34,7 @@ impl Module {
             fit_id,
             type_id,
             state,
+            rack,
             pos,
             charge,
             citem: src.cache_handler.get_item(&type_id),

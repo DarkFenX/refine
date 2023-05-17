@@ -33,6 +33,13 @@ pub enum ItemType {
     Subsystem,
 }
 
+#[derive(Copy, Clone, Debug)]
+pub enum ModRack {
+    High,
+    Mid,
+    Low,
+}
+
 // enum EffectMode {
 //     // In this mode rules vary, depending on effect category:
 //     // - Offline: effects from this category are run when item is in offline+ state, and when

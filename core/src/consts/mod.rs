@@ -2,7 +2,8 @@
 
 pub(crate) use eve::{attrs, effcats, effects, get_abil_effect, itemcats, itemgrps, units};
 pub use ree::{
-    ItemType, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, OrdAddMode, OrdRmMode, State, TgtMode,
+    ItemType, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, ModRack, OrdAddMode, OrdRmMode, State,
+    TgtMode,
 };
 
 mod eve;
