@@ -36,16 +36,16 @@ impl Error {
             ErrorKind::DhInitFailed(_, _) => "DHR-001",
             ErrorKind::SrcInitFailed(_, _) => "SIN-001",
             ErrorKind::CoreError(k, _) => match k {
-                reefast::ErrorKind::DhHttpInvalidBaseUrl => "COR-001",
-                reefast::ErrorKind::SrcCacheGenFailed => "COR-002",
-                reefast::ErrorKind::SrcNotFound => "COR-003",
-                reefast::ErrorKind::AlreadyHasParent => "COR-004",
-                reefast::ErrorKind::FitNotFound => "COR-005",
-                reefast::ErrorKind::ItemIdNotFound => "COR-006",
-                reefast::ErrorKind::IdAllocFailed => "COR-007",
-                reefast::ErrorKind::InvalidSkillLevel => "COR-008",
-                reefast::ErrorKind::UnexpectedItemType => "COR-009",
-                reefast::ErrorKind::ModuleSlotTaken => "COR-010",
+                reefast::ErrorKind::DhHttpInvalidBaseUrl(_, _) => "COR-001",
+                reefast::ErrorKind::SrcCacheGenFailed(_) => "COR-002",
+                reefast::ErrorKind::FitNotFound(_) => "COR-003",
+                reefast::ErrorKind::ItemIdNotFound(_) => "COR-004",
+                reefast::ErrorKind::ItemTypeNotFound(_) => "COR-005",
+                reefast::ErrorKind::FitIdAllocFailed => "COR-006",
+                reefast::ErrorKind::ItemIdAllocFailed => "COR-007",
+                reefast::ErrorKind::InvalidSkillLevel(_) => "COR-008",
+                reefast::ErrorKind::UnexpectedItemType(_, _, _) => "COR-009",
+                reefast::ErrorKind::ModuleSlotTaken(_, _, _) => "COR-010",
             },
         };
         code.to_string()
@@ -53,7 +53,8 @@ impl Error {
 }
 impl From<reefast::Error> for Error {
     fn from(err: reefast::Error) -> Self {
-        Self::new(ErrorKind::CoreError(err.kind, err.msg))
+        let reason = format!("{err}");
+        Self::new(ErrorKind::CoreError(err.kind, reason))
     }
 }
 impl error::Error for Error {}

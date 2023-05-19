@@ -22,7 +22,7 @@ pub(crate) async fn create_fit(State(state): State<Arc<AppState>>, Path(ssid): P
         Ok(fit_info) => fit_info,
         Err(e) => {
             let code = match e.kind {
-                ErrorKind::CoreError(reefast::ErrorKind::IdAllocFailed, _) => StatusCode::SERVICE_UNAVAILABLE,
+                ErrorKind::CoreError(reefast::ErrorKind::FitIdAllocFailed, _) => StatusCode::SERVICE_UNAVAILABLE,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             return (code, Json(SingleErr::from(e))).into_response();

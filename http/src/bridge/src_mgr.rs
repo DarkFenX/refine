@@ -121,8 +121,10 @@ fn create_src(
     cache_folder: Option<String>,
 ) -> Result<reefast::Src> {
     let dh = Box::new(
-        reefast::dh_impls::PhbHttpDHandler::new(data_base_url.as_str(), data_version)
-            .map_err(|e| Error::new(ErrorKind::DhInitFailed(e.kind, e.msg)))?,
+        reefast::dh_impls::PhbHttpDHandler::new(data_base_url.as_str(), data_version).map_err(|e| {
+            let reason = format!("{e}");
+            Error::new(ErrorKind::DhInitFailed(e.kind, reason))
+        })?,
     );
     let ch: Box<dyn reefast::ch::CacheHandler> = match cache_folder {
         // Use cache handler with persistent storage if cache path is specified
@@ -130,5 +132,8 @@ fn create_src(
         // Use RAM-only cache handler if path is not specified
         None => Box::new(reefast::ch_impls::RamOnlyCHandler::new()),
     };
-    reefast::Src::new(dh, ch).map_err(|e| Error::new(ErrorKind::SrcInitFailed(e.kind, e.msg)))
+    reefast::Src::new(dh, ch).map_err(|e| {
+        let reason = format!("{e}");
+        Error::new(ErrorKind::SrcInitFailed(e.kind, reason))
+    })
 }
