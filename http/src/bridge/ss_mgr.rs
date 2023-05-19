@@ -8,7 +8,7 @@ use uuid::Uuid;
 
 use crate::{
     bridge::SolarSystem,
-    info::SolSysInfo,
+    info::{FitInfoMode, ItemInfoMode, SolSysInfo, SolSysInfoMode},
     util::{Error, ErrorKind, Result},
 };
 
@@ -27,7 +27,13 @@ impl SolSysMgr {
         let id_mv = id.clone();
         let (core_ss, ss_info) = tokio_rayon::spawn_fifo(move || {
             let mut core_ss = reefast::SolarSystem::new(src);
-            let ss_info = SolSysInfo::extract(&mut core_ss, id_mv, true, false);
+            let ss_info = SolSysInfo::mk_info(
+                id_mv,
+                &mut core_ss,
+                SolSysInfoMode::Full,
+                FitInfoMode::Full,
+                ItemInfoMode::Basic,
+            );
             (core_ss, ss_info)
         })
         .await;

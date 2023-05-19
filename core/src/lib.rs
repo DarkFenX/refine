@@ -13,7 +13,7 @@
 
 extern crate core;
 
-pub use consts::{OrdAddMode, State};
+pub use consts::{ModRack, OrdAddMode, State};
 pub use defs::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::Src;
 pub use ss::{

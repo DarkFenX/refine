@@ -1,4 +1,4 @@
-use crate::info::ItemInfo;
+use crate::info::{FitInfoMode, ItemInfo, ItemInfoMode};
 
 #[derive(serde::Serialize)]
 #[serde(untagged)]
@@ -7,58 +7,79 @@ pub(crate) enum FitInfo {
     Detailed(FitInfoDetailed),
 }
 impl FitInfo {
-    pub(crate) fn extract(
+    pub(crate) fn mk_info(
         core_ss: &mut reefast::SolarSystem,
-        fit_id: reefast::ReeId,
-        expand_fits: bool,
-        expand_items: bool,
+        fit_id: &reefast::ReeId,
+        fit_mode: FitInfoMode,
+        item_mode: ItemInfoMode,
     ) -> Self {
-        match expand_fits {
-            true => Self::Detailed(FitInfoDetailed::extract(core_ss, fit_id, expand_items)),
-            false => Self::Id(fit_id.to_string()),
+        match fit_mode {
+            FitInfoMode::IdOnly => Self::Id(fit_id.to_string()),
+            FitInfoMode::Full => Self::Detailed(FitInfoDetailed::mk_info(core_ss, fit_id, item_mode)),
         }
     }
 }
 
 #[derive(serde::Serialize)]
+pub(crate) struct ModuleRacks {
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) high: Vec<ItemInfo>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) mid: Vec<ItemInfo>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) low: Vec<ItemInfo>,
+}
+impl ModuleRacks {
+    fn new() -> Self {
+        Self {
+            high: Vec::new(),
+            mid: Vec::new(),
+            low: Vec::new(),
+        }
+    }
+    fn is_empty(&self) -> bool {
+        self.high.is_empty() && self.mid.is_empty() && self.low.is_empty()
+    }
+}
+
+#[derive(serde::Serialize)]
+#[serde(rename_all = "kebab-case")]
 pub(crate) struct FitInfoDetailed {
     pub(crate) id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) ship: Option<ItemInfo>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) modules_high: Vec<ItemInfo>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) modules_mid: Vec<ItemInfo>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) modules_low: Vec<ItemInfo>,
+    #[serde(skip_serializing_if = "ModuleRacks::is_empty")]
+    pub(crate) modules: ModuleRacks,
 }
 impl FitInfoDetailed {
-    fn extract(core_ss: &mut reefast::SolarSystem, fit_id: reefast::ReeId, expand_items: bool) -> Self {
+    fn mk_info(core_ss: &mut reefast::SolarSystem, fit_id: &reefast::ReeId, item_mode: ItemInfoMode) -> Self {
         let ship = core_ss
             .get_fit_ship_info(&fit_id)
             .ok()
-            .map(|v| ItemInfo::extract(core_ss, &v.item_id, expand_items));
+            .map(|v| ItemInfo::mk_info(core_ss, &v, item_mode));
         let modules_high = core_ss
-            .get_high_module_infos(&fit_id)
+            .get_module_infos(&fit_id, reefast::ModRack::High)
             .iter()
-            .map(|v| ItemInfo::extract(core_ss, &v.item_id, expand_items))
+            .map(|v| ItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         let modules_mid = core_ss
-            .get_mid_module_infos(&fit_id)
+            .get_module_infos(&fit_id, reefast::ModRack::Mid)
             .iter()
-            .map(|v| ItemInfo::extract(core_ss, &v.item_id, expand_items))
+            .map(|v| ItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         let modules_low = core_ss
-            .get_low_module_infos(&fit_id)
+            .get_module_infos(&fit_id, reefast::ModRack::Low)
             .iter()
-            .map(|v| ItemInfo::extract(core_ss, &v.item_id, expand_items))
+            .map(|v| ItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         Self {
             id: fit_id.to_string(),
             ship,
-            modules_high,
-            modules_mid,
-            modules_low,
+            modules: ModuleRacks {
+                high: modules_high,
+                mid: modules_mid,
+                low: modules_low,
+            },
         }
     }
 }

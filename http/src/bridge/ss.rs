@@ -1,6 +1,6 @@
 use crate::{
     cmd::{CmdResp, FitCommand, ItemIdsResp},
-    info::{FitInfo, SolSysInfo},
+    info::{FitInfo, FitInfoMode, ItemInfoMode, SolSysInfo},
     util::{Error, ErrorKind, Result},
 };
 
@@ -23,7 +23,12 @@ impl SolarSystem {
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
             let res = match core_ss.add_fit() {
-                Ok(fid) => Ok(FitInfo::extract(&mut core_ss, fid, true, false)),
+                Ok(fid) => Ok(FitInfo::mk_info(
+                    &mut core_ss,
+                    &fid,
+                    FitInfoMode::Full,
+                    ItemInfoMode::Basic,
+                )),
                 Err(e) => Err(e.into()),
             };
             (res, core_ss)
@@ -64,10 +69,11 @@ impl SolarSystem {
                     }
                     FitCommand::AddModuleHigh(c) => {
                         let id_data = core_ss
-                            .add_high_module(
+                            .add_module(
                                 fit_id,
                                 c.module_type_id,
                                 c.state.into(),
+                                reefast::ModRack::High,
                                 c.add_mode.into(),
                                 c.charge_type_id,
                             )
@@ -77,10 +83,11 @@ impl SolarSystem {
                     }
                     FitCommand::AddModuleMid(c) => {
                         let id_data = core_ss
-                            .add_mid_module(
+                            .add_module(
                                 fit_id,
                                 c.module_type_id,
                                 c.state.into(),
+                                reefast::ModRack::Mid,
                                 c.add_mode.into(),
                                 c.charge_type_id,
                             )
@@ -90,10 +97,11 @@ impl SolarSystem {
                     }
                     FitCommand::AddModuleLow(c) => {
                         let id_data = core_ss
-                            .add_low_module(
+                            .add_module(
                                 fit_id,
                                 c.module_type_id,
                                 c.state.into(),
+                                reefast::ModRack::Low,
                                 c.add_mode.into(),
                                 c.charge_type_id,
                             )
@@ -103,7 +111,7 @@ impl SolarSystem {
                     }
                 };
             }
-            let info = FitInfo::extract(&mut core_ss, fit_id, true, false);
+            let info = FitInfo::mk_info(&mut core_ss, &fit_id, FitInfoMode::Full, ItemInfoMode::Basic);
             (core_ss, info, cmd_results)
         })
         .await;
