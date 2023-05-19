@@ -2,7 +2,7 @@ use crate::{
     cg, ch,
     defs::VERSION,
     dh,
-    util::{Error, ErrorKind, FromKind, IntError, IntResult, Result},
+    util::{Error, ErrorKind, IntError, IntResult, Result},
 };
 
 /// Data source.
@@ -22,7 +22,7 @@ impl Src {
         );
         let dv = get_data_version(&data_handler);
         if need_cache_regen(dv.clone(), &mut cache_handler) {
-            let ch_data = regen_cache(&data_handler).map_err(|e| Error::from_kind(e, ErrorKind::SrcCacheGenFailed))?;
+            let ch_data = regen_cache(&data_handler).map_err(|e| Error::new(ErrorKind::SrcCacheGenFailed(e.msg)))?;
             update_cache(dv, &mut cache_handler, ch_data);
         }
         Ok(Self { cache_handler })

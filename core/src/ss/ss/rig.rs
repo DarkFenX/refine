@@ -36,21 +36,25 @@ impl SolarSystem {
     }
     // Non-public
     fn get_rig(&self, item_id: &ReeId) -> Result<&Rig> {
-        match self.get_item(item_id)? {
-            Item::Rig(r) => Ok(r),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Rig::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::Rig(rig) => Ok(rig),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Rig::get_name(),
+            ))),
         }
     }
     fn get_rig_mut(&mut self, item_id: &ReeId) -> Result<&mut Rig> {
-        match self.get_item_mut(item_id)? {
-            Item::Rig(r) => Ok(r),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Rig::get_name(), item_id),
-            )),
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            Item::Rig(rig) => Ok(rig),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Rig::get_name(),
+            ))),
         }
     }
 }

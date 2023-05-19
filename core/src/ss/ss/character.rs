@@ -7,7 +7,7 @@ use crate::{
         item::{Character, Item},
         SolarSystem,
     },
-    util::{Error, ErrorKind, Result},
+    util::{Error, ErrorKind, Named, Result},
 };
 
 impl SolarSystem {
@@ -18,10 +18,10 @@ impl SolarSystem {
     pub fn set_fit_character(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<CharacterInfo> {
         match self.remove_fit_character(&fit_id) {
             Ok(_) => (),
-            // Suppress ItemNotFound error, since this method is supposed to be used
+            // Suppress ItemTypeNotFound error, since this method is supposed to be used
             // even when no character is set
             Err(e) => match e.kind {
-                ErrorKind::ItemNotFound => (),
+                ErrorKind::ItemTypeNotFound(_) => (),
                 _ => return Err(e),
             },
         };
@@ -46,7 +46,7 @@ impl SolarSystem {
             })
             .collect_vec();
         match removed.is_empty() {
-            true => Err(Error::new(ErrorKind::ItemNotFound, "character not found")),
+            true => Err(Error::new(ErrorKind::ItemTypeNotFound(Character::get_name()))),
             false => Ok(()),
         }
     }
@@ -58,7 +58,7 @@ impl SolarSystem {
                 Item::Character(c) if c.fit_id == *fit_id => Some(c),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, "character not found"))
+            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(Character::get_name())))
     }
     fn get_fit_character_mut(&mut self, fit_id: &ReeId) -> Result<&mut Character> {
         self.items
@@ -67,6 +67,6 @@ impl SolarSystem {
                 Item::Character(c) if c.fit_id == *fit_id => Some(c),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, "character not found"))
+            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(Character::get_name())))
     }
 }

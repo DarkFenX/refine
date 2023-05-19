@@ -81,8 +81,9 @@ pub(crate) struct ItemInfoFull {
 }
 impl ItemInfoFull {
     fn mk_info<T: Into<ItemInfoBasic>>(core_ss: &mut reefast::SolarSystem, item_identity: T) -> Self {
+        let info = item_identity.into();
         Self {
-            basic_info: item_identity.into(),
+            basic_info: info,
             orig_attrs: HashMap::new(),
             dogma_attrs: HashMap::new(),
         }

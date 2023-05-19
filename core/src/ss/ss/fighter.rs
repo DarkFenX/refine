@@ -37,21 +37,25 @@ impl SolarSystem {
     }
     // Non-public
     fn get_fighter(&self, item_id: &ReeId) -> Result<&Fighter> {
-        match self.get_item(item_id)? {
-            Item::Fighter(f) => Ok(f),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Fighter::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::Fighter(fighter) => Ok(fighter),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Fighter::get_name(),
+            ))),
         }
     }
     fn get_fighter_mut(&mut self, item_id: &ReeId) -> Result<&mut Fighter> {
-        match self.get_item_mut(item_id)? {
-            Item::Fighter(f) => Ok(f),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Fighter::get_name(), item_id),
-            )),
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            Item::Fighter(fighter) => Ok(fighter),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Fighter::get_name(),
+            ))),
         }
     }
 }

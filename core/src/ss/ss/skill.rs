@@ -42,31 +42,32 @@ impl SolarSystem {
     }
     // Non-public
     fn get_skill(&self, item_id: &ReeId) -> Result<&Skill> {
-        match self.get_item(item_id)? {
-            Item::Skill(s) => Ok(s),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Skill::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::Skill(skill) => Ok(skill),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Skill::get_name(),
+            ))),
         }
     }
     fn get_skill_mut(&mut self, item_id: &ReeId) -> Result<&mut Skill> {
-        match self.get_item_mut(item_id)? {
-            Item::Skill(s) => Ok(s),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Skill::get_name(), item_id),
-            )),
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            Item::Skill(skill) => Ok(skill),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Skill::get_name(),
+            ))),
         }
     }
 }
 
 fn check_skill_level(level: ReeInt) -> Result<()> {
     if level > 5 || level < 0 {
-        return Err(Error::new(
-            ErrorKind::SkillLevelRange,
-            format!("skill level must be 0..5, got {level}"),
-        ));
+        return Err(Error::new(ErrorKind::InvalidSkillLevel(level)));
     };
     Ok(())
 }

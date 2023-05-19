@@ -58,7 +58,7 @@ impl SolarSystem {
         while self.items.contains_key(&self.item_cnt.0) {
             self.item_cnt += 1;
             if start == self.item_cnt {
-                return Err(Error::new(ErrorKind::IdAllocFailed, "failed to allocate item ID"));
+                return Err(Error::new(ErrorKind::ItemIdAllocFailed));
             }
         }
         Ok(self.item_cnt.0)
@@ -70,12 +70,12 @@ impl SolarSystem {
     fn get_item(&self, item_id: &ReeId) -> Result<&Item> {
         self.items
             .get(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))
+            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }
     fn get_item_mut(&mut self, item_id: &ReeId) -> Result<&mut Item> {
         self.items
             .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, format!("item with ID {item_id} not found")))
+            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }
     pub fn get_item_info(&self, item_id: &ReeId) -> Result<ItemInfo> {
         self.get_item(item_id).map(|v| ItemInfo::from_item(v, self))

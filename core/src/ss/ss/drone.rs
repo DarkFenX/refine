@@ -37,21 +37,25 @@ impl SolarSystem {
     }
     // Non-public
     fn get_drone(&self, item_id: &ReeId) -> Result<&Drone> {
-        match self.get_item(item_id)? {
-            Item::Drone(d) => Ok(d),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Drone::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::Drone(drone) => Ok(drone),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Drone::get_name(),
+            ))),
         }
     }
     fn get_drone_mut(&mut self, item_id: &ReeId) -> Result<&mut Drone> {
-        match self.get_item_mut(item_id)? {
-            Item::Drone(d) => Ok(d),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Drone::get_name(), item_id),
-            )),
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            Item::Drone(drone) => Ok(drone),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Drone::get_name(),
+            ))),
         }
     }
 }

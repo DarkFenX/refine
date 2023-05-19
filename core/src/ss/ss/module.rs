@@ -71,12 +71,7 @@ impl SolarSystem {
                         self.remove_item(&oid);
                         ()
                     }
-                    (Some(oid), false) => {
-                        return Err(Error::new(
-                            ErrorKind::SlotTaken,
-                            format!("{} slot position {} is taken by item ID {}", rack, pos, oid),
-                        ))
-                    }
+                    (Some(oid), false) => return Err(Error::new(ErrorKind::ModuleSlotTaken(rack, pos, oid))),
                     _ => (),
                 }
                 pos
@@ -115,21 +110,25 @@ impl SolarSystem {
     }
     // Non-public
     fn get_module(&self, item_id: &ReeId) -> Result<&Module> {
-        match self.get_item(item_id)? {
-            Item::Module(m) => Ok(m),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Module::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::Module(module) => Ok(module),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Module::get_name(),
+            ))),
         }
     }
     fn get_module_mut(&mut self, item_id: &ReeId) -> Result<&mut Module> {
-        match self.get_item_mut(item_id)? {
-            Item::Module(m) => Ok(m),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Module::get_name(), item_id),
-            )),
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            Item::Module(module) => Ok(module),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Module::get_name(),
+            ))),
         }
     }
     pub(in crate::ss) fn make_mod_info(&self, module: &Module) -> ModuleInfo {

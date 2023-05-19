@@ -19,6 +19,7 @@ use crate::{
     ct,
     defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
+    util::Named,
 };
 
 mod booster;
@@ -51,6 +52,23 @@ pub(in crate::ss) enum Item {
     SwEffect(SwEffect),
 }
 impl Item {
+    pub(in crate::ss) fn get_name(&self) -> &'static str {
+        match self {
+            Self::Booster(_) => Booster::get_name(),
+            Self::Character(_) => Character::get_name(),
+            Self::Charge(_) => Charge::get_name(),
+            Self::Drone(_) => Drone::get_name(),
+            Self::Fighter(_) => Fighter::get_name(),
+            Self::Implant(_) => Implant::get_name(),
+            Self::Module(_) => Module::get_name(),
+            Self::Rig(_) => Rig::get_name(),
+            Self::Ship(_) => Ship::get_name(),
+            Self::Skill(_) => Skill::get_name(),
+            Self::Stance(_) => Stance::get_name(),
+            Self::Subsystem(_) => Subsystem::get_name(),
+            Self::SwEffect(_) => SwEffect::get_name(),
+        }
+    }
     pub(in crate::ss) fn get_id(&self) -> ReeId {
         match self {
             Self::Booster(i) => i.item_id,

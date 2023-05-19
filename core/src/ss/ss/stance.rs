@@ -7,7 +7,7 @@ use crate::{
         item::{Item, Stance},
         SolarSystem,
     },
-    util::{Error, ErrorKind, Result},
+    util::{Error, ErrorKind, Named, Result},
 };
 
 impl SolarSystem {
@@ -21,7 +21,7 @@ impl SolarSystem {
             // Suppress ItemNotFound error, since this method is supposed to be used
             // even when no stance is set
             Err(e) => match e.kind {
-                ErrorKind::ItemNotFound => (),
+                ErrorKind::ItemTypeNotFound(_) => (),
                 _ => return Err(e),
             },
         };
@@ -46,7 +46,7 @@ impl SolarSystem {
             })
             .collect_vec();
         match removed.is_empty() {
-            true => Err(Error::new(ErrorKind::ItemNotFound, "stance not found")),
+            true => Err(Error::new(ErrorKind::ItemTypeNotFound(Stance::get_name()))),
             false => Ok(()),
         }
     }
@@ -58,7 +58,7 @@ impl SolarSystem {
                 Item::Stance(s) if s.fit_id == *fit_id => Some(s),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, "stance not found"))
+            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(Stance::get_name())))
     }
     fn get_fit_stance_mut(&mut self, fit_id: &ReeId) -> Result<&mut Stance> {
         self.items
@@ -67,6 +67,6 @@ impl SolarSystem {
                 Item::Stance(s) if s.fit_id == *fit_id => Some(s),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound, "stance not found"))
+            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(Stance::get_name())))
     }
 }

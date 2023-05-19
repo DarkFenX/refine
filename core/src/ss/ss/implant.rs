@@ -36,21 +36,25 @@ impl SolarSystem {
     }
     // Non-public
     fn get_implant(&self, item_id: &ReeId) -> Result<&Implant> {
-        match self.get_item(item_id)? {
-            Item::Implant(i) => Ok(i),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Implant::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::Implant(implant) => Ok(implant),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Implant::get_name(),
+            ))),
         }
     }
     fn get_implant_mut(&mut self, item_id: &ReeId) -> Result<&mut Implant> {
-        match self.get_item_mut(item_id)? {
-            Item::Implant(i) => Ok(i),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Implant::get_name(), item_id),
-            )),
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            Item::Implant(implant) => Ok(implant),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Implant::get_name(),
+            ))),
         }
     }
 }

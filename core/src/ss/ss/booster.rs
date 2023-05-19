@@ -36,21 +36,25 @@ impl SolarSystem {
     }
     // Non-public
     fn get_booster(&self, item_id: &ReeId) -> Result<&Booster> {
-        match self.get_item(item_id)? {
-            Item::Booster(b) => Ok(b),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Booster::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::Booster(booster) => Ok(booster),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Booster::get_name(),
+            ))),
         }
     }
     fn get_booster_mut(&mut self, item_id: &ReeId) -> Result<&mut Booster> {
-        match self.get_item_mut(item_id)? {
+        let item = self.get_item_mut(item_id)?;
+        match item {
             Item::Booster(b) => Ok(b),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Booster::get_name(), item_id),
-            )),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Booster::get_name(),
+            ))),
         }
     }
 }

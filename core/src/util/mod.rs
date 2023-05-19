@@ -1,10 +1,7 @@
 //! Various helper entities used throughout the library.
 
+pub(crate) use err_res::internal::{IntError, IntResult};
 pub use err_res::public::{Error, ErrorKind, Result};
-pub(crate) use err_res::{
-    internal::{IntError, IntResult},
-    public::FromKind,
-};
 pub(crate) use funcs::vec_push_opt;
 pub(crate) use keyed_storage::KeyedStorage;
 pub(crate) use traits::Named;

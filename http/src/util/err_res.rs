@@ -41,11 +41,11 @@ impl Error {
                 reefast::ErrorKind::SrcNotFound => "COR-003",
                 reefast::ErrorKind::AlreadyHasParent => "COR-004",
                 reefast::ErrorKind::FitNotFound => "COR-005",
-                reefast::ErrorKind::ItemNotFound => "COR-006",
+                reefast::ErrorKind::ItemIdNotFound => "COR-006",
                 reefast::ErrorKind::IdAllocFailed => "COR-007",
-                reefast::ErrorKind::SkillLevelRange => "COR-008",
+                reefast::ErrorKind::InvalidSkillLevel => "COR-008",
                 reefast::ErrorKind::UnexpectedItemType => "COR-009",
-                reefast::ErrorKind::SlotTaken => "COR-010",
+                reefast::ErrorKind::ModuleSlotTaken => "COR-010",
             },
         };
         code.to_string()

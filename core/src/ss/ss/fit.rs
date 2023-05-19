@@ -15,7 +15,7 @@ impl SolarSystem {
         self.items.drain_filter(|_, v| v.get_fit_id() == Some(*fit_id));
         match self.fits.remove(fit_id) {
             true => Ok(()),
-            false => Err(Error::new(ErrorKind::FitNotFound, "fit not found")),
+            false => Err(Error::new(ErrorKind::FitNotFound(*fit_id))),
         }
     }
     pub fn get_fit_ids(&self) -> Vec<ReeId> {
@@ -27,7 +27,7 @@ impl SolarSystem {
         while self.fits.contains(&self.fit_cnt.0) {
             self.fit_cnt += 1;
             if start == self.fit_cnt {
-                return Err(Error::new(ErrorKind::IdAllocFailed, "failed to allocate fit ID"));
+                return Err(Error::new(ErrorKind::FitIdAllocFailed));
             }
         }
         Ok(self.fit_cnt.0)
@@ -35,7 +35,7 @@ impl SolarSystem {
     pub(in crate::ss) fn check_fit(&self, fit_id: &ReeId) -> Result<()> {
         match self.fits.contains(&fit_id) {
             true => Ok(()),
-            false => Err(Error::new(ErrorKind::FitNotFound, "fit not found")),
+            false => Err(Error::new(ErrorKind::FitNotFound(*fit_id))),
         }
     }
 }

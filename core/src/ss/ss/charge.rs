@@ -19,21 +19,25 @@ impl SolarSystem {
     }
     // Non-public
     fn get_charge(&self, item_id: &ReeId) -> Result<&Charge> {
-        match self.get_item(item_id)? {
-            Item::Charge(c) => Ok(c),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Charge::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::Charge(charge) => Ok(charge),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Charge::get_name(),
+            ))),
         }
     }
     fn get_charge_mut(&mut self, item_id: &ReeId) -> Result<&mut Charge> {
-        match self.get_item_mut(item_id)? {
-            Item::Charge(c) => Ok(c),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Charge::get_name(), item_id),
-            )),
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            Item::Charge(charge) => Ok(charge),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Charge::get_name(),
+            ))),
         }
     }
     pub(in crate::ss::ss) fn add_charge_with_id_opt(

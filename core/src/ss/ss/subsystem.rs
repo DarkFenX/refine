@@ -36,21 +36,25 @@ impl SolarSystem {
     }
     // Non-public
     fn get_subsystem(&self, item_id: &ReeId) -> Result<&Subsystem> {
-        match self.get_item(item_id)? {
-            Item::Subsystem(s) => Ok(s),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Subsystem::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::Subsystem(subsystem) => Ok(subsystem),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Subsystem::get_name(),
+            ))),
         }
     }
     fn get_subsystem_mut(&mut self, item_id: &ReeId) -> Result<&mut Subsystem> {
-        match self.get_item_mut(item_id)? {
-            Item::Subsystem(s) => Ok(s),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", Subsystem::get_name(), item_id),
-            )),
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            Item::Subsystem(subsystem) => Ok(subsystem),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                Subsystem::get_name(),
+            ))),
         }
     }
 }

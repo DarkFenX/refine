@@ -36,21 +36,25 @@ impl SolarSystem {
     }
     // Non-public
     fn get_sw_effect(&self, item_id: &ReeId) -> Result<&SwEffect> {
-        match self.get_item(item_id)? {
-            Item::SwEffect(e) => Ok(e),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", SwEffect::get_name(), item_id),
-            )),
+        let item = self.get_item(item_id)?;
+        match item {
+            Item::SwEffect(sw_effect) => Ok(sw_effect),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                SwEffect::get_name(),
+            ))),
         }
     }
     fn get_sw_effect_mut(&mut self, item_id: &ReeId) -> Result<&mut SwEffect> {
-        match self.get_item_mut(item_id)? {
-            Item::SwEffect(e) => Ok(e),
-            _ => Err(Error::new(
-                ErrorKind::UnexpectedItemType,
-                format!("expected {} as item with ID {}", SwEffect::get_name(), item_id),
-            )),
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            Item::SwEffect(sw_effect) => Ok(sw_effect),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                SwEffect::get_name(),
+            ))),
         }
     }
 }
