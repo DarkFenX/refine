@@ -13,7 +13,7 @@ pub(in crate::ss) struct Subsystem {
     pub(in crate::ss) fit_id: ReeId,
     pub(in crate::ss) type_id: ReeInt,
     pub(in crate::ss) state: State,
-    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
+    pub(in crate::ss) cached_item: Option<Arc<ct::Item>>,
 }
 impl Subsystem {
     pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt) -> Self {
@@ -22,7 +22,7 @@ impl Subsystem {
             fit_id,
             type_id,
             state: State::Offline,
-            citem: src.cache_handler.get_item(&type_id),
+            cached_item: src.cache_handler.get_item(&type_id),
         }
     }
     pub(in crate::ss) fn get_bool_state(&self) -> bool {
@@ -38,7 +38,7 @@ impl Subsystem {
         }
     }
     pub(in crate::ss) fn get_slot(&self) -> Option<ReeInt> {
-        match &self.citem {
+        match &self.cached_item {
             None => None,
             Some(i) => match i.attr_vals.get(&attrs::SUBSYSTEM_SLOT) {
                 None => None,

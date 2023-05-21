@@ -8,6 +8,7 @@ use crate::{
     defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
     ss::item::Item,
+    util::{Error, ErrorKind, Result},
 };
 
 use super::{affection_reg::AffectionRegister, modification::Modification};
@@ -42,84 +43,67 @@ const LIMITED_PRECISION_ATTR_IDS: [ReeInt; 4] = [attrs::CPU, attrs::POWER, attrs
 const PENALTY_BASE: ReeFloat = 0.86911998080039742919922218788997270166873931884765625;
 
 pub(in crate::ss) struct CalcSvc {
-    attrs: HashMap<ReeId, HashMap<ReeInt, ReeFloat>>,
+    dogma_attrs: HashMap<ReeId, HashMap<ReeInt, ReeFloat>>,
     affection: AffectionRegister,
 }
 impl CalcSvc {
     pub(in crate::ss) fn new() -> Self {
         Self {
-            attrs: HashMap::new(),
+            dogma_attrs: HashMap::new(),
             affection: AffectionRegister::new(),
         }
     }
     // Query methods
-    pub(in crate::ss) fn get_attr_val(
+    pub(in crate::ss) fn get_item_attr_dogma_val(
         &mut self,
         item_id: &ReeId,
         attr_id: &ReeInt,
         src: &Src,
         items: &HashMap<ReeId, Item>,
-    ) -> Option<ReeFloat> {
-        match self.attrs.get(item_id) {
-            Some(attrs) => match attrs.get(attr_id) {
-                Some(v) => return Some(*v),
-                _ => (),
-            },
+    ) -> Result<ReeFloat> {
+        // Try accessing cached value
+        match self.get_item_dogma_attr_map(item_id)?.get(attr_id) {
+            Some(v) => return Ok(*v),
             _ => (),
         };
-        let val = match self.calc_attr(item_id, attr_id, src, items) {
-            Some(v) => v,
-            _ => return None,
-        };
-        match self.attrs.get_mut(item_id) {
-            Some(attrs) => {
-                attrs.insert(*attr_id, val);
-                ();
-            }
-            _ => (),
-        };
-        Some(val)
+        // If it is not cached, calculate and cache it
+        let val = self.calc_item_attr_dogma_val(item_id, attr_id, src, items)?;
+        self.get_item_dogma_attrs_mut(item_id)?.insert(*attr_id, val);
+        Ok(val)
     }
-    pub(in crate::ss) fn get_attr_vals(
+    pub(in crate::ss) fn get_item_attr_dogma_vals(
         &mut self,
         item_id: &ReeId,
         src: &Src,
         items: &HashMap<ReeId, Item>,
-    ) -> Option<HashMap<ReeInt, ReeFloat>> {
+    ) -> Result<HashMap<ReeInt, ReeFloat>> {
         // Item can have attributes which are not defined on the original EVE item. This happens when
         // something requested an attr value and it was calculated using base attribute value. Here,
         // we get already calculated attributes, which includes attributes absent on the EVE item
-        let mut vals = match self.attrs.get(item_id) {
-            Some(m) => m.clone(),
-            // All items known to calculator are in attrs map, if it's not there - just abort early
-            None => return None,
-        };
+        let mut vals = self.get_item_dogma_attr_map(item_id)?.clone();
         // Calculate & store attributes which are not calculated yet,
         // but are defined on the EVE item
-        match items.get(item_id) {
-            Some(i) => match i.get_orig_attrs() {
-                Some(m) => {
-                    for attr_id in m.keys() {
-                        match self.get_attr_val(item_id, attr_id, src, items) {
-                            Some(v) => vals.entry(*attr_id).or_insert(v),
-                            None => continue,
-                        };
-                    }
-                }
-                None => (),
-            },
-            None => (),
+        for attr_id in items
+            .get(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))?
+            .get_orig_attrs()?
+            .keys()
+        {
+            match self.get_item_attr_dogma_val(item_id, attr_id, src, items) {
+                Ok(v) => vals.entry(*attr_id).or_insert(v),
+                _ => continue,
+            };
         }
-        Some(vals)
+        Ok(vals)
     }
     // Maintenance methods
     pub(in crate::ss) fn item_loaded(&mut self, item: &Item) {
-        self.attrs.insert(item.get_id(), HashMap::new());
+        self.dogma_attrs.insert(item.get_id(), HashMap::new());
         self.affection.reg_afee(item);
     }
     pub(in crate::ss) fn item_unloaded(&mut self, item: &Item) {
         self.affection.unreg_afee(item);
-        self.attrs.remove(&item.get_id());
+        self.dogma_attrs.remove(&item.get_id());
     }
     pub(in crate::ss) fn effects_started(&mut self, item: &Item, effects: &Vec<Arc<ct::Effect>>) {
         for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
@@ -132,36 +116,33 @@ impl CalcSvc {
         }
     }
     // Private methods
-    fn calc_attr(
+    fn calc_item_attr_dogma_val(
         &mut self,
         item_id: &ReeId,
         attr_id: &ReeInt,
         src: &Src,
         items: &HashMap<ReeId, Item>,
-    ) -> Option<ReeFloat> {
+    ) -> Result<ReeFloat> {
         let item = match items.get(item_id) {
             Some(i) => i,
-            None => return None,
+            None => return Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
         };
         match (attr_id, item) {
-            (280, Item::Skill(s)) => return Some(s.level as ReeFloat),
+            (280, Item::Skill(s)) => return Ok(s.level as ReeFloat),
             _ => (),
         }
         let attr = match src.cache_handler.get_attr(attr_id) {
             Some(attr) => attr,
-            None => return None,
+            None => return Err(Error::new(ErrorKind::CachedAttrNotFound(*attr_id))),
         };
-        // Get base value; use on-iteme original attributes, or, if not specified, default attribute value.
+        // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure
-        let mut val = match item.get_orig_attrs() {
-            Some(orig_attrs) => match orig_attrs.get(attr_id) {
-                Some(orig_val) => *orig_val,
-                None => match attr.def_val {
-                    Some(def_val) => def_val,
-                    None => return None,
-                },
+        let mut val = match item.get_orig_attrs()?.get(attr_id) {
+            Some(orig_val) => *orig_val,
+            None => match attr.def_val {
+                Some(def_val) => def_val,
+                None => return Err(Error::new(ErrorKind::NoAttrBaseValue(*attr_id, item.get_type_id()))),
             },
-            None => return None,
         };
         let mut stacked = HashMap::new();
         let mut stacked_penalized = HashMap::new();
@@ -222,7 +203,7 @@ impl CalcSvc {
         if LIMITED_PRECISION_ATTR_IDS.contains(attr_id) {
             val = (val * 100.0).round() / 100.0
         }
-        Some(val)
+        Ok(val)
     }
     fn get_modifications(
         &mut self,
@@ -241,23 +222,35 @@ impl CalcSvc {
             if &afor_mod.afee_attr_id != attr_id {
                 continue;
             }
-            let val = match self.get_attr_val(&afor_spec.item_id, &afor_mod.afor_attr_id, src, items) {
-                Some(v) => v,
-                None => continue,
+            let val = match self.get_item_attr_dogma_val(&afor_spec.item_id, &afor_mod.afor_attr_id, src, items) {
+                Ok(v) => v,
+                _ => continue,
             };
             let afor_item = match items.get(&afor_spec.item_id) {
                 Some(i) => i,
                 None => continue,
             };
             let pen_immune = match afor_item.get_category_id() {
-                Some(cid) => PENALTY_IMMUNE_CATS.contains(&cid),
-                None => continue,
+                Ok(cid) => PENALTY_IMMUNE_CATS.contains(&cid),
+                _ => continue,
             };
             // TODO: implement resistance support
             let modification = Modification::new(afor_mod.op, val, 1.0, ModAggrMode::Stack, pen_immune);
             mods.push(modification);
         }
         mods
+    }
+    fn get_item_dogma_attr_map(&self, item_id: &ReeId) -> Result<&HashMap<ReeInt, ReeFloat>> {
+        // All items known to calculator are in this map, so consider absence an error
+        self.dogma_attrs
+            .get(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
+    }
+    fn get_item_dogma_attrs_mut(&mut self, item_id: &ReeId) -> Result<&mut HashMap<ReeInt, ReeFloat>> {
+        // All items known to calculator are in this map, so consider absence an error
+        self.dogma_attrs
+            .get_mut(item_id)
+            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }
 }
 

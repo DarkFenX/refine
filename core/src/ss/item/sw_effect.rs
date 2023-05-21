@@ -12,7 +12,7 @@ pub(in crate::ss) struct SwEffect {
     pub(in crate::ss) item_id: ReeId,
     pub(in crate::ss) type_id: ReeInt,
     pub(in crate::ss) state: State,
-    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
+    pub(in crate::ss) cached_item: Option<Arc<ct::Item>>,
 }
 impl SwEffect {
     pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, type_id: ReeInt) -> Self {
@@ -20,7 +20,7 @@ impl SwEffect {
             item_id,
             type_id,
             state: State::Offline,
-            citem: src.cache_handler.get_item(&type_id),
+            cached_item: src.cache_handler.get_item(&type_id),
         }
     }
     pub(in crate::ss) fn get_bool_state(&self) -> bool {

@@ -87,15 +87,15 @@ impl SolarSystem {
                 helpers::remove_item(&main, &self.src, &mut self.calc);
                 match main {
                     // Remove reference to charge if it's charge which we're removing
-                    Item::Charge(c) => match self.items.get_mut(&c.cont) {
+                    Item::Charge(c) => match self.items.get_mut(&c.container_id) {
                         None => return true,
                         Some(other) => match other {
-                            Item::Module(m) => m.charge = None,
+                            Item::Module(m) => m.charge_id = None,
                             _ => (),
                         },
                     },
                     // Remove charge if we're removing a module, charges cannot exist without their carrier
-                    Item::Module(m) => match m.charge {
+                    Item::Module(m) => match m.charge_id {
                         Some(other_id) => match self.items.remove(&other_id) {
                             Some(charge) => helpers::remove_item(&charge, &self.src, &mut self.calc),
                             _ => (),
@@ -110,10 +110,11 @@ impl SolarSystem {
     }
     // Attribute calculator
     // TODO: refactor this and child functions into Result<>
-    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Option<ReeFloat> {
-        self.calc.get_attr_val(item_id, attr_id, &self.src, &self.items)
+    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<ReeFloat> {
+        self.calc
+            .get_item_attr_dogma_val(item_id, attr_id, &self.src, &self.items)
     }
-    pub fn get_item_attrs(&mut self, item_id: &ReeId) -> Option<HashMap<ReeInt, ReeFloat>> {
-        self.calc.get_attr_vals(item_id, &self.src, &self.items)
+    pub fn get_item_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, ReeFloat>> {
+        self.calc.get_item_attr_dogma_vals(item_id, &self.src, &self.items)
     }
 }

@@ -19,7 +19,7 @@ use crate::{
     ct,
     defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
-    util::Named,
+    util::{Error, ErrorKind, Named, Result},
 };
 
 mod booster;
@@ -71,117 +71,118 @@ impl Item {
     }
     pub(in crate::ss) fn get_id(&self) -> ReeId {
         match self {
-            Self::Booster(i) => i.item_id,
-            Self::Character(i) => i.item_id,
-            Self::Charge(i) => i.item_id,
-            Self::Drone(i) => i.item_id,
-            Self::Fighter(i) => i.item_id,
-            Self::Implant(i) => i.item_id,
-            Self::Module(i) => i.item_id,
-            Self::Rig(i) => i.item_id,
-            Self::Ship(i) => i.item_id,
-            Self::Skill(i) => i.item_id,
-            Self::Stance(i) => i.item_id,
-            Self::Subsystem(i) => i.item_id,
-            Self::SwEffect(i) => i.item_id,
+            Self::Booster(booster) => booster.item_id,
+            Self::Character(character) => character.item_id,
+            Self::Charge(charge) => charge.item_id,
+            Self::Drone(drone) => drone.item_id,
+            Self::Fighter(fighter) => fighter.item_id,
+            Self::Implant(implant) => implant.item_id,
+            Self::Module(module) => module.item_id,
+            Self::Rig(rig) => rig.item_id,
+            Self::Ship(ship) => ship.item_id,
+            Self::Skill(skill) => skill.item_id,
+            Self::Stance(stance) => stance.item_id,
+            Self::Subsystem(subsystem) => subsystem.item_id,
+            Self::SwEffect(sw_effect) => sw_effect.item_id,
         }
     }
     pub(in crate::ss) fn get_fit_id(&self) -> Option<ReeId> {
         match self {
-            Self::Booster(i) => Some(i.fit_id),
-            Self::Character(i) => Some(i.fit_id),
-            Self::Charge(i) => Some(i.fit_id),
-            Self::Drone(i) => Some(i.fit_id),
-            Self::Fighter(i) => Some(i.fit_id),
-            Self::Implant(i) => Some(i.fit_id),
-            Self::Module(i) => Some(i.fit_id),
-            Self::Rig(i) => Some(i.fit_id),
-            Self::Ship(i) => Some(i.fit_id),
-            Self::Skill(i) => Some(i.fit_id),
-            Self::Stance(i) => Some(i.fit_id),
-            Self::Subsystem(i) => Some(i.fit_id),
+            Self::Booster(booster) => Some(booster.fit_id),
+            Self::Character(character) => Some(character.fit_id),
+            Self::Charge(charge) => Some(charge.fit_id),
+            Self::Drone(drone) => Some(drone.fit_id),
+            Self::Fighter(fighter) => Some(fighter.fit_id),
+            Self::Implant(implant) => Some(implant.fit_id),
+            Self::Module(module) => Some(module.fit_id),
+            Self::Rig(rig) => Some(rig.fit_id),
+            Self::Ship(ship) => Some(ship.fit_id),
+            Self::Skill(skill) => Some(skill.fit_id),
+            Self::Stance(stance) => Some(stance.fit_id),
+            Self::Subsystem(subsystem) => Some(subsystem.fit_id),
             Self::SwEffect(_) => None,
         }
     }
     pub(in crate::ss) fn get_type_id(&self) -> ReeInt {
         match self {
-            Self::Booster(i) => i.type_id,
-            Self::Character(i) => i.type_id,
-            Self::Charge(i) => i.type_id,
-            Self::Drone(i) => i.type_id,
-            Self::Fighter(i) => i.type_id,
-            Self::Implant(i) => i.type_id,
-            Self::Module(i) => i.type_id,
-            Self::Rig(i) => i.type_id,
-            Self::Ship(i) => i.type_id,
-            Self::Skill(i) => i.type_id,
-            Self::Stance(i) => i.type_id,
-            Self::Subsystem(i) => i.type_id,
-            Self::SwEffect(i) => i.type_id,
+            Self::Booster(booster) => booster.type_id,
+            Self::Character(character) => character.type_id,
+            Self::Charge(charge) => charge.type_id,
+            Self::Drone(drone) => drone.type_id,
+            Self::Fighter(fighter) => fighter.type_id,
+            Self::Implant(implant) => implant.type_id,
+            Self::Module(module) => module.type_id,
+            Self::Rig(rig) => rig.type_id,
+            Self::Ship(ship) => ship.type_id,
+            Self::Skill(skill) => skill.type_id,
+            Self::Stance(stance) => stance.type_id,
+            Self::Subsystem(subsystem) => subsystem.type_id,
+            Self::SwEffect(sw_effect) => sw_effect.type_id,
         }
     }
     pub(in crate::ss) fn get_state(&self) -> State {
         match self {
-            Self::Booster(i) => i.state,
-            Self::Character(i) => i.state,
-            Self::Charge(i) => i.state,
-            Self::Drone(i) => i.state,
-            Self::Fighter(i) => i.state,
-            Self::Implant(i) => i.state,
-            Self::Module(i) => i.state,
-            Self::Rig(i) => i.state,
-            Self::Ship(i) => i.state,
-            Self::Skill(i) => i.state,
-            Self::Stance(i) => i.state,
-            Self::Subsystem(i) => i.state,
-            Self::SwEffect(i) => i.state,
+            Self::Booster(booster) => booster.state,
+            Self::Character(character) => character.state,
+            Self::Charge(charge) => charge.state,
+            Self::Drone(drone) => drone.state,
+            Self::Fighter(fighter) => fighter.state,
+            Self::Implant(implant) => implant.state,
+            Self::Module(module) => module.state,
+            Self::Rig(rig) => rig.state,
+            Self::Ship(ship) => ship.state,
+            Self::Skill(skill) => skill.state,
+            Self::Stance(stance) => stance.state,
+            Self::Subsystem(subsystem) => subsystem.state,
+            Self::SwEffect(sw_effect) => sw_effect.state,
         }
     }
     pub(in crate::ss) fn reload_cached_item(&mut self, src: &Arc<Src>) {
         let type_id = self.get_type_id();
         let cached_item = src.cache_handler.get_item(&type_id);
         match self {
-            Self::Booster(i) => i.citem = cached_item,
-            Self::Character(i) => i.citem = cached_item,
-            Self::Charge(i) => i.citem = cached_item,
-            Self::Drone(i) => i.citem = cached_item,
-            Self::Fighter(i) => i.citem = cached_item,
-            Self::Implant(i) => i.citem = cached_item,
-            Self::Module(i) => i.citem = cached_item,
-            Self::Rig(i) => i.citem = cached_item,
-            Self::Ship(i) => i.citem = cached_item,
-            Self::Skill(i) => i.citem = cached_item,
-            Self::Stance(i) => i.citem = cached_item,
-            Self::Subsystem(i) => i.citem = cached_item,
-            Self::SwEffect(i) => i.citem = cached_item,
+            Self::Booster(booster) => booster.cached_item = cached_item,
+            Self::Character(character) => character.cached_item = cached_item,
+            Self::Charge(charge) => charge.cached_item = cached_item,
+            Self::Drone(drone) => drone.cached_item = cached_item,
+            Self::Fighter(fighter) => fighter.cached_item = cached_item,
+            Self::Implant(implant) => implant.cached_item = cached_item,
+            Self::Module(module) => module.cached_item = cached_item,
+            Self::Rig(rig) => rig.cached_item = cached_item,
+            Self::Ship(ship) => ship.cached_item = cached_item,
+            Self::Skill(skill) => skill.cached_item = cached_item,
+            Self::Stance(stance) => stance.cached_item = cached_item,
+            Self::Subsystem(subsystem) => subsystem.cached_item = cached_item,
+            Self::SwEffect(sw_effect) => sw_effect.cached_item = cached_item,
         }
     }
-    pub(in crate::ss) fn get_citem(&self) -> Option<&Arc<ct::Item>> {
+    pub(in crate::ss) fn get_cached_item(&self) -> Result<&Arc<ct::Item>> {
         match self {
-            Self::Booster(i) => i.citem.as_ref(),
-            Self::Character(i) => i.citem.as_ref(),
-            Self::Charge(i) => i.citem.as_ref(),
-            Self::Drone(i) => i.citem.as_ref(),
-            Self::Fighter(i) => i.citem.as_ref(),
-            Self::Implant(i) => i.citem.as_ref(),
-            Self::Module(i) => i.citem.as_ref(),
-            Self::Rig(i) => i.citem.as_ref(),
-            Self::Ship(i) => i.citem.as_ref(),
-            Self::Skill(i) => i.citem.as_ref(),
-            Self::Stance(i) => i.citem.as_ref(),
-            Self::Subsystem(i) => i.citem.as_ref(),
-            Self::SwEffect(i) => i.citem.as_ref(),
+            Self::Booster(booster) => booster.cached_item.as_ref(),
+            Self::Character(character) => character.cached_item.as_ref(),
+            Self::Charge(charge) => charge.cached_item.as_ref(),
+            Self::Drone(drone) => drone.cached_item.as_ref(),
+            Self::Fighter(fighter) => fighter.cached_item.as_ref(),
+            Self::Implant(implant) => implant.cached_item.as_ref(),
+            Self::Module(module) => module.cached_item.as_ref(),
+            Self::Rig(rig) => rig.cached_item.as_ref(),
+            Self::Ship(ship) => ship.cached_item.as_ref(),
+            Self::Skill(skill) => skill.cached_item.as_ref(),
+            Self::Stance(stance) => stance.cached_item.as_ref(),
+            Self::Subsystem(subsystem) => subsystem.cached_item.as_ref(),
+            Self::SwEffect(sw_effect) => sw_effect.cached_item.as_ref(),
         }
+        .ok_or_else(|| Error::new(ErrorKind::CachedItemNotLoaded(self.get_type_id())))
     }
     pub(in crate::ss) fn is_loaded(&self) -> bool {
-        self.get_citem().is_some()
+        self.get_cached_item().is_ok()
     }
     // Calculator-specific getters
-    pub(in crate::ss) fn get_orig_attrs(&self) -> Option<&HashMap<ReeInt, ReeFloat>> {
-        self.get_citem().map(|v| &v.attr_vals)
+    pub(in crate::ss) fn get_orig_attrs(&self) -> Result<&HashMap<ReeInt, ReeFloat>> {
+        self.get_cached_item().map(|v| &v.attr_vals)
     }
-    pub(in crate::ss) fn get_effect_datas(&self) -> Option<&HashMap<ReeInt, ct::ItemEffData>> {
-        self.get_citem().map(|v| &v.effect_datas)
+    pub(in crate::ss) fn get_effect_datas(&self) -> Result<&HashMap<ReeInt, ct::ItemEffData>> {
+        self.get_cached_item().map(|v| &v.effect_datas)
     }
     pub(in crate::ss) fn get_top_domain(&self) -> Option<ModDomain> {
         match self {
@@ -217,24 +218,24 @@ impl Item {
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::ss) fn get_group_id(&self) -> Option<ReeInt> {
-        self.get_citem().map(|v| v.grp_id)
+    pub(in crate::ss) fn get_group_id(&self) -> Result<ReeInt> {
+        self.get_cached_item().map(|v| v.grp_id)
     }
-    pub(in crate::ss) fn get_category_id(&self) -> Option<ReeInt> {
-        self.get_citem().map(|v| v.cat_id)
+    pub(in crate::ss) fn get_category_id(&self) -> Result<ReeInt> {
+        self.get_cached_item().map(|v| v.cat_id)
     }
-    pub(in crate::ss) fn get_skill_reqs(&self) -> Option<&HashMap<ReeInt, ReeInt>> {
-        self.get_citem().map(|v| &v.srqs)
+    pub(in crate::ss) fn get_skill_reqs(&self) -> Result<&HashMap<ReeInt, ReeInt>> {
+        self.get_cached_item().map(|v| &v.srqs)
     }
     pub(in crate::ss) fn get_other(&self) -> Option<ReeId> {
         match self {
             Self::Booster(_) => None,
             Self::Character(_) => None,
-            Self::Charge(i) => Some(i.cont),
+            Self::Charge(charge) => Some(charge.container_id),
             Self::Drone(_) => None,
             Self::Fighter(_) => None,
             Self::Implant(_) => None,
-            Self::Module(i) => i.charge,
+            Self::Module(module) => module.charge_id,
             Self::Rig(_) => None,
             Self::Ship(_) => None,
             Self::Skill(_) => None,

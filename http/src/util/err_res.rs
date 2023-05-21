@@ -46,6 +46,9 @@ impl Error {
                 reefast::ErrorKind::InvalidSkillLevel(_) => "COR-008",
                 reefast::ErrorKind::UnexpectedItemType(_, _, _) => "COR-009",
                 reefast::ErrorKind::ModuleSlotTaken(_, _, _) => "COR-010",
+                reefast::ErrorKind::CachedAttrNotFound(_) => "COR-011",
+                reefast::ErrorKind::CachedItemNotLoaded(_) => "COR-012",
+                reefast::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
             },
         };
         code.to_string()

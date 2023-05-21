@@ -142,13 +142,13 @@ impl AffectionRegister {
             _ => (),
         }
         match (afee_fit_id, afee_pardom, afee_grp_id) {
-            (Some(fid), Some(pd), Some(gid)) => {
+            (Some(fid), Some(pd), Ok(gid)) => {
                 extend_vec_from_storage(&mut afors, &self.afors_pardom_grp, &(fid, pd, gid));
             }
             _ => (),
         }
-        match (afee_fit_id, afee_pardom, afee_srqs) {
-            (Some(fid), Some(pd), Some(srqs)) => {
+        match (afee_fit_id, afee_pardom, &afee_srqs) {
+            (Some(fid), Some(pd), Ok(srqs)) => {
                 for skill_type_id in srqs.keys() {
                     extend_vec_from_storage(&mut afors, &self.afors_pardom_srq, &(fid, pd, *skill_type_id));
                 }
@@ -156,8 +156,8 @@ impl AffectionRegister {
             _ => (),
         }
         if afee_item.is_owner_modifiable() {
-            match (afee_fit_id, afee_srqs) {
-                (Some(fid), Some(srqs)) => {
+            match (afee_fit_id, &afee_srqs) {
+                (Some(fid), Ok(srqs)) => {
                     for skill_type_id in srqs.keys() {
                         extend_vec_from_storage(&mut afors, &self.afors_own_srq, &(fid, *skill_type_id));
                     }
@@ -185,13 +185,13 @@ impl AffectionRegister {
             _ => (),
         }
         match (afee_fit_id, afee_pardom, afee_grp_id) {
-            (Some(fid), Some(pd), Some(gid)) => {
+            (Some(fid), Some(pd), Ok(gid)) => {
                 self.afees_pardom_grp.add_entry((fid, pd, gid), afee_item_id);
             }
             _ => (),
         }
-        match (afee_fit_id, afee_pardom, afee_srqs) {
-            (Some(fid), Some(pd), Some(srqs)) => {
+        match (afee_fit_id, afee_pardom, &afee_srqs) {
+            (Some(fid), Some(pd), Ok(srqs)) => {
                 for skill_type_id in srqs.keys() {
                     self.afees_pardom_srq.add_entry((fid, pd, *skill_type_id), afee_item_id);
                 }
@@ -199,8 +199,8 @@ impl AffectionRegister {
             _ => (),
         }
         if afee_item.is_owner_modifiable() {
-            match (afee_fit_id, afee_srqs) {
-                (Some(fid), Some(srqs)) => {
+            match (afee_fit_id, &afee_srqs) {
+                (Some(fid), Ok(srqs)) => {
                     for skill_type_id in srqs.keys() {
                         self.afees_own_srq.add_entry((fid, *skill_type_id), afee_item_id);
                     }
@@ -226,13 +226,13 @@ impl AffectionRegister {
             _ => (),
         }
         match (afee_fit_id, afee_pardom, afee_grp_id) {
-            (Some(fid), Some(pd), Some(gid)) => {
+            (Some(fid), Some(pd), Ok(gid)) => {
                 self.afees_pardom_grp.rm_entry(&(fid, pd, gid), &afee_item_id);
             }
             _ => (),
         }
-        match (afee_fit_id, afee_pardom, afee_srqs) {
-            (Some(fid), Some(pd), Some(srqs)) => {
+        match (afee_fit_id, afee_pardom, &afee_srqs) {
+            (Some(fid), Some(pd), Ok(srqs)) => {
                 for skill_type_id in srqs.keys() {
                     self.afees_pardom_srq
                         .rm_entry(&(fid, pd, *skill_type_id), &afee_item_id);
@@ -241,8 +241,8 @@ impl AffectionRegister {
             _ => (),
         }
         if afee_item.is_owner_modifiable() {
-            match (afee_fit_id, afee_srqs) {
-                (Some(fid), Some(srqs)) => {
+            match (afee_fit_id, &afee_srqs) {
+                (Some(fid), Ok(srqs)) => {
                     for skill_type_id in srqs.keys() {
                         self.afees_own_srq.rm_entry(&(fid, *skill_type_id), &afee_item_id);
                     }

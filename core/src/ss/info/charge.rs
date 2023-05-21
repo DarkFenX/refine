@@ -23,6 +23,6 @@ impl ChargeInfo {
 }
 impl From<&Charge> for ChargeInfo {
     fn from(c: &Charge) -> Self {
-        ChargeInfo::new(c.item_id, c.fit_id, c.type_id, c.cont, c.get_bool_state())
+        ChargeInfo::new(c.item_id, c.fit_id, c.type_id, c.container_id, c.get_bool_state())
     }
 }

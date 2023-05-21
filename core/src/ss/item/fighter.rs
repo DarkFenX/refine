@@ -14,7 +14,7 @@ pub(in crate::ss) struct Fighter {
     pub(in crate::ss) type_id: ReeInt,
     pub(in crate::ss) state: State,
     pub(in crate::ss) amt_override: Option<ReeInt>,
-    pub(in crate::ss) citem: Option<Arc<ct::Item>>,
+    pub(in crate::ss) cached_item: Option<Arc<ct::Item>>,
 }
 impl Fighter {
     pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
@@ -24,7 +24,7 @@ impl Fighter {
             type_id,
             state,
             amt_override: None,
-            citem: src.cache_handler.get_item(&type_id),
+            cached_item: src.cache_handler.get_item(&type_id),
         }
     }
 }

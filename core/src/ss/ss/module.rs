@@ -95,14 +95,14 @@ impl SolarSystem {
         let module = self.get_module(item_id)?;
         let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_type_id, module.item_id);
         let module = self.get_module_mut(item_id)?;
-        module.charge = Some(c_item_id);
+        module.charge_id = Some(c_item_id);
         Ok(c_info)
     }
     pub fn remove_module_charge(&mut self, item_id: &ReeId) -> Result<bool> {
         let module = self.get_module_mut(item_id)?;
-        match module.charge {
+        match module.charge_id {
             Some(cid) => {
-                module.charge = None;
+                module.charge_id = None;
                 Ok(self.items.remove(&cid).is_some())
             }
             None => Ok(false),
@@ -132,7 +132,7 @@ impl SolarSystem {
         }
     }
     pub(in crate::ss) fn make_mod_info(&self, module: &Module) -> ModuleInfo {
-        let charge_info = match module.charge {
+        let charge_info = match module.charge_id {
             Some(cid) => match self.get_charge_info(&cid) {
                 Ok(ci) => Some(ci),
                 _ => None,
