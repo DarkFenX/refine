@@ -83,7 +83,7 @@ impl ItemInfoFull {
     fn mk_info<T: Into<ItemInfoBasic>>(core_ss: &mut reefast::SolarSystem, item_identity: T) -> Self {
         let info = item_identity.into();
         let item_id = info.get_id();
-        let dogma_attrs = match core_ss.get_item_attrs(&item_id) {
+        let dogma_attrs = match core_ss.get_item_dogma_attrs(&item_id) {
             Ok(attrs) => attrs,
             _ => HashMap::new(),
         };

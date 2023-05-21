@@ -109,11 +109,11 @@ impl SolarSystem {
         }
     }
     // Attribute calculator
-    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<ReeFloat> {
+    pub fn get_item_dogma_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<ReeFloat> {
         self.calc
             .get_item_attr_dogma_val(item_id, attr_id, &self.src, &self.items)
     }
-    pub fn get_item_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, ReeFloat>> {
+    pub fn get_item_dogma_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, ReeFloat>> {
         self.calc.get_item_attr_dogma_vals(item_id, &self.src, &self.items)
     }
 }
