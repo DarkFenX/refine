@@ -39,10 +39,10 @@ pub(crate) enum ItemInfoBasic {
     Module(ModuleInfo),
 }
 impl ItemInfoBasic {
-    fn get_id(&self) -> &str {
+    fn get_id(&self) -> reefast::ReeId {
         match self {
-            Self::Ship(si) => &si.item_id,
-            Self::Module(mi) => &mi.item_id,
+            Self::Ship(si) => si.item_id,
+            Self::Module(mi) => mi.item_id,
         }
     }
 }
@@ -52,8 +52,8 @@ impl From<&reefast::ItemInfo> for ItemInfoBasic {
             reefast::ItemInfo::Ship(si) => Self::Ship(si.into()),
             reefast::ItemInfo::Module(mi) => Self::Module(mi.into()),
             _ => Self::Ship(ShipInfo {
-                item_id: "".to_string(),
-                fit_id: "".to_string(),
+                item_id: 0,
+                fit_id: 0,
                 type_id: 0,
                 enabled: false,
             }),
@@ -82,10 +82,15 @@ pub(crate) struct ItemInfoFull {
 impl ItemInfoFull {
     fn mk_info<T: Into<ItemInfoBasic>>(core_ss: &mut reefast::SolarSystem, item_identity: T) -> Self {
         let info = item_identity.into();
+        let item_id = info.get_id();
+        let dogma_attrs = match core_ss.get_item_attrs(&item_id) {
+            Ok(attrs) => attrs,
+            _ => HashMap::new(),
+        };
         Self {
             basic_info: info,
             orig_attrs: HashMap::new(),
-            dogma_attrs: HashMap::new(),
+            dogma_attrs,
         }
     }
 }

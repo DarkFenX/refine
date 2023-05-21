@@ -109,7 +109,6 @@ impl SolarSystem {
         }
     }
     // Attribute calculator
-    // TODO: refactor this and child functions into Result<>
     pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<ReeFloat> {
         self.calc
             .get_item_attr_dogma_val(item_id, attr_id, &self.src, &self.items)
