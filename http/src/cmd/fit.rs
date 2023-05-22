@@ -1,5 +1,5 @@
 #[derive(serde::Deserialize)]
-#[serde(tag = "type", rename_all = "kebab-case")]
+#[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum FitCommand {
     SetShip(SetShipCmd),
     AddModuleHigh(AddModule),
@@ -8,13 +8,11 @@ pub(crate) enum FitCommand {
 }
 
 #[derive(serde::Deserialize)]
-#[serde(rename_all = "kebab-case")]
 pub(crate) struct SetShipCmd {
     pub(crate) ship_type_id: reefast::ReeInt,
 }
 
 #[derive(serde::Deserialize)]
-#[serde(rename_all = "kebab-case")]
 pub(crate) struct AddModule {
     pub(crate) add_mode: AddMode,
     pub(crate) module_type_id: reefast::ReeInt,
@@ -23,7 +21,7 @@ pub(crate) struct AddModule {
 }
 
 #[derive(Copy, Clone, serde::Deserialize)]
-#[serde(rename_all = "kebab-case")]
+#[serde(rename_all = "snake_case")]
 pub(crate) enum State {
     Ghost,
     Offline,
@@ -44,7 +42,7 @@ impl Into<reefast::State> for State {
 }
 
 #[derive(Copy, Clone, serde::Deserialize)]
-#[serde(rename_all = "kebab-case")]
+#[serde(rename_all = "snake_case")]
 pub(crate) enum AddMode {
     Append,
     Equip,

@@ -3,7 +3,8 @@ use std::hash::Hash;
 use crate::defs::{ReeIdx, ReeInt};
 
 /// Contains states which can be assigned to several entities.
-#[derive(Copy, Clone, Debug, PartialEq, serde::Deserialize, serde::Serialize)]
+#[derive(Copy, Clone, Debug, PartialEq, serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
+#[repr(u8)]
 pub enum State {
     Ghost,
     Offline,
@@ -13,7 +14,8 @@ pub enum State {
 }
 
 /// Contains list of item types.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
+#[repr(u8)]
 pub enum ItemType {
     Booster,
     Character,
@@ -72,7 +74,8 @@ impl std::fmt::Display for ModRack {
 /// During cache generation, the library converts modifiers of an effect into internal format.
 /// Some of those modifiers might not make it through conversion process due to various reasons.
 /// Variants of this enum are stored on an effect, to keep info about conversion status.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum ModBuildStatus {
     /// Modifiers haven't been built yet.
     Unbuilt,
@@ -87,7 +90,8 @@ pub enum ModBuildStatus {
 }
 
 /// Defines which items will be affected by a modifier.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum ModAfeeFilter {
     /// Single item modified, as specified by the domain.
     Direct(ModDomain),
@@ -102,7 +106,8 @@ pub enum ModAfeeFilter {
 }
 
 /// Defines domain (or scope) which is target for a modification.
-#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq, serde::Deserialize, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq, serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
+#[repr(u8)]
 pub enum ModDomain {
     /// Ship or items belonging to it.
     Ship,
@@ -120,7 +125,8 @@ pub enum ModDomain {
 ///
 /// When in the non-stack mode, multiple values which share the same aggregation mode and the same
 /// aggregation key (the mode argument) are converted into a single value.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum ModAggrMode {
     /// All modifications are applied.
     Stack,
@@ -133,7 +139,8 @@ pub enum ModAggrMode {
 /// Defines what kind of operation will be applied to a target attribute.
 ///
 /// All the operations are applied in the order they are defined in this enum.
-#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq, serde::Deserialize, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq, serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
+#[repr(u8)]
 pub enum ModOp {
     /// Assigns modification value to the target item attribute before all other operations are
     /// applied.
@@ -158,7 +165,8 @@ pub enum ModOp {
 }
 
 /// Defines how effects like fighter abilities are targeted.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
+#[repr(u8)]
 pub enum TgtMode {
     /// No target needed.
     None,

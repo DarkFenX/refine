@@ -8,7 +8,7 @@ use crate::{
 ///
 /// A dogma buff applies modifications to multiple ships, and the modifications stick for some time.
 /// For instance, fleet effects are implemented as dogma buffs.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub struct Buff {
     /// Buff ID.
     pub id: ReeInt,
@@ -40,7 +40,7 @@ impl Named for Buff {
 ///
 /// Unlike the effect modifier, the buff modifier carries less data, since some of it resides on its
 /// parent buff and some on the entity applying the buff.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub struct BuffAttrMod {
     /// Defines an affectee filter, that is a filter which defines which items will be affected.
     pub afee_filter: ModAfeeFilter,

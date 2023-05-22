@@ -20,7 +20,6 @@ pub(crate) struct FitChangeReq {
 }
 
 #[derive(serde::Serialize)]
-#[serde(rename_all = "kebab-case")]
 pub(crate) struct FitChangeResp {
     fit: FitInfo,
     cmd_results: Vec<CmdResp>,

@@ -1,6 +1,6 @@
 use crate::ct;
 
-#[derive(Debug, serde_tuple::Deserialize_tuple, serde_tuple::Serialize_tuple)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub(super) struct CacheData {
     pub(super) items: Vec<ct::Item>,
     pub(super) attrs: Vec<ct::Attr>,

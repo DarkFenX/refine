@@ -72,7 +72,6 @@ impl From<&reefast::ShipInfo> for ItemInfoBasic {
 }
 
 #[derive(serde::Serialize)]
-#[serde(rename_all = "kebab-case")]
 pub(crate) struct ItemInfoFull {
     #[serde(flatten)]
     pub(crate) basic_info: ItemInfoBasic,

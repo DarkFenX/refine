@@ -43,7 +43,6 @@ impl ModuleRacks {
 }
 
 #[derive(serde::Serialize)]
-#[serde(rename_all = "kebab-case")]
 pub(crate) struct FitInfoDetailed {
     pub(crate) id: String,
     #[serde(skip_serializing_if = "Option::is_none")]

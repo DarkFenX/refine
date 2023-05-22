@@ -238,7 +238,7 @@ class TestClient:
         return resp.json()['id']
 
     def set_ship_request(self, ss, fit_id, ship_id):
-        payload = {'commands': [{'type': 'set-ship', 'ship-type-id': ship_id}]}
+        payload = {'commands': [{'type': 'set_ship', 'ship_type_id': ship_id}]}
         req = requests.Request('PATCH', f'http://localhost:8000/solar_system/{ss}/fit/{fit_id}', json=payload)
         return req
 
@@ -246,12 +246,12 @@ class TestClient:
         req = self.set_ship_request(ss=ss, fit_id=fit_id, ship_id=ship_id)
         resp = self.__session.send(req.prepare())
         assert resp.status_code == 200
-        return resp.json()['cmd-results'][0]['id']
+        return resp.json()['cmd_results'][0]['id']
 
     def add_high_mod_request(self, ss, fit_id, module_id, state, charge_id=None, mode='equip'):
-        command = {'type': 'add-module-high', 'add-mode': mode, 'module-type-id': module_id, 'state': state}
+        command = {'type': 'add_module_high', 'add_mode': mode, 'module_type_id': module_id, 'state': state}
         if charge_id is not None:
-            command['charge-type-id'] = charge_id
+            command['charge_type_id'] = charge_id
         payload = {'commands': [command]}
         req = requests.Request('PATCH', f'http://localhost:8000/solar_system/{ss}/fit/{fit_id}', json=payload)
         return req
@@ -262,4 +262,4 @@ class TestClient:
             state=state, charge_id=charge_id, mode=mode)
         resp = self.__session.send(req.prepare())
         assert resp.status_code == 200
-        return resp.json()['cmd-results'][0]['id']
+        return resp.json()['cmd_results'][0]['id']

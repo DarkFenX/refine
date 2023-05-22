@@ -8,7 +8,7 @@ use crate::{
 /// Represents a mutaplasmid.
 ///
 /// A mutaplasmid controls how attributes of an item it is being applied to change.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub struct Muta {
     /// Mutaplasmid ID.
     pub id: ReeInt,
@@ -34,7 +34,7 @@ impl Named for Muta {
 }
 
 /// Stores mutation range of specific attribute of specific mutaplasmid.
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub struct MutaAttrRange {
     /// Lower boundary of the modification range.
     pub min_mult: ReeFloat,
