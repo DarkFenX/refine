@@ -55,6 +55,8 @@ impl SolarSystem {
         &mut self,
         fit_id: &str,
         commands: Vec<FitCommand>,
+        fit_mode: FitInfoMode,
+        item_mode: ItemInfoMode,
     ) -> Result<(FitInfo, Vec<CmdResp>)> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
@@ -111,7 +113,7 @@ impl SolarSystem {
                     }
                 };
             }
-            let info = FitInfo::mk_info(&mut core_ss, &fit_id, FitInfoMode::Full, ItemInfoMode::Basic);
+            let info = FitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
             (core_ss, info, cmd_results)
         })
         .await;

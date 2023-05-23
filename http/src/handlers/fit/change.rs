@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use axum::{
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
     Json,
@@ -9,7 +9,7 @@ use axum::{
 
 use crate::{
     cmd::{CmdResp, FitCommand},
-    handlers::{get_guarded_ss, GSsResult, SingleErr},
+    handlers::{fit::FitInfoParams, get_guarded_ss, GSsResult, SingleErr},
     info::FitInfo,
     state::AppState,
 };
@@ -33,6 +33,7 @@ impl FitChangeResp {
 pub(crate) async fn change_fit(
     State(state): State<Arc<AppState>>,
     Path((ssid, fid)): Path<(String, String)>,
+    Query(params): Query<FitInfoParams>,
     Json(payload): Json<FitChangeReq>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
@@ -42,7 +43,7 @@ pub(crate) async fn change_fit(
     let resp = match guarded_ss
         .lock()
         .await
-        .execute_fit_commands(&fid, payload.commands)
+        .execute_fit_commands(&fid, payload.commands, params.fit.into(), params.item.into())
         .await
     {
         Ok((fit_info, cmd_results)) => {

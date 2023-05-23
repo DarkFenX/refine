@@ -8,48 +8,48 @@ mod fit;
 mod item;
 mod ss;
 
+#[derive(Copy, Clone, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub(crate) enum SolSysInfoMode {
     IdOnly,
     Full,
 }
-impl From<String> for SolSysInfoMode {
-    fn from(value: String) -> Self {
-        match value.to_lowercase().as_str() {
-            "id-only" => Self::IdOnly,
-            "full" => Self::Full,
-            _ => Self::Full,
+impl From<Option<SolSysInfoMode>> for SolSysInfoMode {
+    fn from(value: Option<SolSysInfoMode>) -> Self {
+        match value {
+            Some(v) => v,
+            None => Self::Full,
         }
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub(crate) enum FitInfoMode {
     IdOnly,
     Full,
 }
-impl From<String> for FitInfoMode {
-    fn from(value: String) -> Self {
-        match value.to_lowercase().as_str() {
-            "id-only" => Self::IdOnly,
-            "full" => Self::Full,
-            _ => Self::Full,
+impl From<Option<FitInfoMode>> for FitInfoMode {
+    fn from(value: Option<FitInfoMode>) -> Self {
+        match value {
+            Some(v) => v,
+            None => Self::Full,
         }
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub(crate) enum ItemInfoMode {
     IdOnly,
     Basic,
     Full,
 }
-impl From<String> for ItemInfoMode {
-    fn from(value: String) -> Self {
-        match value.to_lowercase().as_str() {
-            "id-only" => Self::IdOnly,
-            "basic" => Self::Basic,
-            "full" => Self::Full,
-            _ => Self::Basic,
+impl From<Option<ItemInfoMode>> for ItemInfoMode {
+    fn from(value: Option<ItemInfoMode>) -> Self {
+        match value {
+            Some(v) => v,
+            None => Self::Basic,
         }
     }
 }

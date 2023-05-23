@@ -253,7 +253,7 @@ class TestClient:
         if charge_id is not None:
             command['charge_type_id'] = charge_id
         payload = {'commands': [command]}
-        req = requests.Request('PATCH', f'http://localhost:8000/solar_system/{ss}/fit/{fit_id}', json=payload)
+        req = requests.Request('PATCH', f'http://localhost:8000/solar_system/{ss}/fit/{fit_id}?item=full', json=payload)
         return req
 
     def add_high_mod(self, ss, fit_id, module_id, state, charge_id=None, mode='equip'):
