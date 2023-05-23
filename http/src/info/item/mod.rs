@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use module::ModuleInfo;
 use ship::ShipInfo;
 
-use super::ItemInfoMode;
+use crate::info::{AttrValInfo, ItemInfoMode};
 
 mod module;
 mod ship;
@@ -75,21 +75,19 @@ impl From<&reefast::ShipInfo> for ItemInfoBasic {
 pub(crate) struct ItemInfoFull {
     #[serde(flatten)]
     pub(crate) basic_info: ItemInfoBasic,
-    pub(crate) orig_attrs: HashMap<reefast::ReeInt, reefast::ReeFloat>,
-    pub(crate) dogma_attrs: HashMap<reefast::ReeInt, reefast::ReeFloat>,
+    pub(crate) attr_vals: HashMap<reefast::ReeInt, AttrValInfo>,
 }
 impl ItemInfoFull {
     fn mk_info<T: Into<ItemInfoBasic>>(core_ss: &mut reefast::SolarSystem, item_identity: T) -> Self {
         let info = item_identity.into();
         let item_id = info.get_id();
-        let dogma_attrs = match core_ss.get_item_dogma_attrs(&item_id) {
-            Ok(attrs) => attrs,
+        let attrs = match core_ss.get_item_dogma_attrs(&item_id) {
+            Ok(attrs) => attrs.into_iter().map(|(k, v)| (k, AttrValInfo::from(&v))).collect(),
             _ => HashMap::new(),
         };
         Self {
             basic_info: info,
-            orig_attrs: HashMap::new(),
-            dogma_attrs,
+            attr_vals: attrs,
         }
     }
 }

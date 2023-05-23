@@ -7,7 +7,12 @@ use std::{
 use crate::{
     defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
-    ss::{calc::CalcSvc, helpers, info::ItemInfo, item::Item},
+    ss::{
+        calc::{AttrVal, CalcSvc},
+        helpers,
+        info::ItemInfo,
+        item::Item,
+    },
     util::{Error, ErrorKind, Result},
 };
 
@@ -109,11 +114,10 @@ impl SolarSystem {
         }
     }
     // Attribute calculator
-    pub fn get_item_dogma_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<ReeFloat> {
-        self.calc
-            .get_item_attr_dogma_val(item_id, attr_id, &self.src, &self.items)
+    pub fn get_item_dogma_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<AttrVal> {
+        self.calc.get_item_attr_val(item_id, attr_id, &self.src, &self.items)
     }
-    pub fn get_item_dogma_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, ReeFloat>> {
-        self.calc.get_item_attr_dogma_vals(item_id, &self.src, &self.items)
+    pub fn get_item_dogma_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, AttrVal>> {
+        self.calc.get_item_attr_vals(item_id, &self.src, &self.items)
     }
 }
