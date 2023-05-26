@@ -6,9 +6,7 @@ use axum::{
 };
 
 use crate::{
-    cmd::{CmdResp, FitCommand},
     handlers::{fit::FitInfoParams, get_guarded_ss, GSsResult, SingleErr},
-    info::FitInfo,
     state::AppState,
     util::ErrorKind,
 };

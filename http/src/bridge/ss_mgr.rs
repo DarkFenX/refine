@@ -22,25 +22,25 @@ impl SolSysMgr {
         }
     }
     // Solar system methods
-    pub(crate) async fn add_sol_sys(&self, src: Arc<reefast::Src>) -> SolSysInfo {
+    pub(crate) async fn add_sol_sys(
+        &self,
+        src: Arc<reefast::Src>,
+        ss_mode: SolSysInfoMode,
+        fit_mode: FitInfoMode,
+        item_mode: ItemInfoMode,
+    ) -> SolSysInfo {
         let id = get_id();
         let id_mv = id.clone();
         let (core_ss, ss_info) = tokio_rayon::spawn_fifo(move || {
             let mut core_ss = reefast::SolarSystem::new(src);
-            let ss_info = SolSysInfo::mk_info(
-                id_mv,
-                &mut core_ss,
-                SolSysInfoMode::Full,
-                FitInfoMode::Full,
-                ItemInfoMode::Basic,
-            );
+            let ss_info = SolSysInfo::mk_info(id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (core_ss, ss_info)
         })
         .await;
         self.id_ss_map
             .write()
             .await
-            .insert(id, Arc::new(Mutex::new(SolarSystem::new(core_ss))));
+            .insert(id.clone(), Arc::new(Mutex::new(SolarSystem::new(id, core_ss))));
         ss_info
     }
     pub(crate) async fn get_sol_sys(&self, id: &str) -> Result<Arc<Mutex<SolarSystem>>> {

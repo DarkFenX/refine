@@ -1,22 +1,41 @@
 use crate::{
     cmd::{CmdResp, FitCommand, ItemIdsResp},
-    info::{FitInfo, FitInfoMode, ItemInfoMode, SolSysInfo},
+    info::{FitInfo, FitInfoMode, ItemInfoMode, SolSysInfo, SolSysInfoMode},
     util::{Error, ErrorKind, Result},
 };
 
 pub(crate) struct SolarSystem {
-    sol_sys: Option<reefast::SolarSystem>,
+    id: String,
     accessed: chrono::DateTime<chrono::Utc>,
+    sol_sys: Option<reefast::SolarSystem>,
 }
 impl SolarSystem {
-    pub(crate) fn new(sol_sys: reefast::SolarSystem) -> Self {
+    pub(crate) fn new(id: String, sol_sys: reefast::SolarSystem) -> Self {
         Self {
-            sol_sys: Some(sol_sys),
+            id,
             accessed: chrono::Utc::now(),
+            sol_sys: Some(sol_sys),
         }
     }
     pub(crate) fn last_accessed(&self) -> &chrono::DateTime<chrono::Utc> {
         &self.accessed
+    }
+    pub(crate) async fn get_info(
+        &mut self,
+        ss_mode: SolSysInfoMode,
+        fit_mode: FitInfoMode,
+        item_mode: ItemInfoMode,
+    ) -> Result<SolSysInfo> {
+        let mut core_ss = self.take_ss()?;
+        let ss_id_mv = self.id.clone();
+        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let res = SolSysInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            (res, core_ss)
+        })
+        .await;
+        self.sol_sys = Some(core_ss);
+        self.touch();
+        Ok(res)
     }
     // Fit methods
     pub(crate) async fn add_fit(&mut self, fit_mode: FitInfoMode, item_mode: ItemInfoMode) -> Result<FitInfo> {
