@@ -24,7 +24,9 @@ impl SolSysInfo {
 #[derive(serde::Serialize)]
 pub(crate) struct SolSysInfoFull {
     pub(crate) id: String,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) fits: Vec<FitInfo>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) fleets: Vec<()>,
 }
 impl SolSysInfoFull {
