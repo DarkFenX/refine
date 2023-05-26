@@ -11,7 +11,10 @@ use crate::{
     util::ErrorKind,
 };
 
-pub(crate) async fn delete_fit(State(state): State<AppState>, Path((ssid, fid)): Path<String>) -> impl IntoResponse {
+pub(crate) async fn delete_fit(
+    State(state): State<AppState>,
+    Path((ssid, fid)): Path<(String, String)>,
+) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
         GSsResult::SolSys(ss) => ss,
         GSsResult::ErrResp(r) => return r,
