@@ -1,11 +1,62 @@
-use axum::{http::StatusCode, response::IntoResponse};
+use axum::{
+    extract::{Path, Query, State},
+    http::StatusCode,
+    response::IntoResponse,
+    Json,
+};
+
+use crate::{
+    cmd::{CmdResp, SsCommand},
+    handlers::{get_guarded_ss, ss::SolSysInfoParams, GSsResult, SingleErr},
+    info::SolSysInfo,
+    state::AppState,
+};
 
 #[derive(serde::Deserialize)]
-pub(crate) struct ChangeSolSysReq {}
+pub(crate) struct SsChangeReq {
+    commands: Vec<SsCommand>,
+}
 
 #[derive(serde::Serialize)]
-pub(crate) struct ChangeSolSysResp {}
+pub(crate) struct SsChangeResp {
+    solar_system: SolSysInfo,
+    cmd_results: Vec<CmdResp>,
+}
+impl SsChangeResp {
+    pub(crate) fn new(ss_info: SolSysInfo, cmd_results: Vec<CmdResp>) -> Self {
+        Self {
+            solar_system: ss_info,
+            cmd_results,
+        }
+    }
+}
 
-pub(crate) async fn change_sol_sys() -> impl IntoResponse {
-    StatusCode::NOT_IMPLEMENTED
+pub(crate) async fn change_sol_sys(
+    State(state): State<AppState>,
+    Path(ss_id): Path<String>,
+    Query(params): Query<SolSysInfoParams>,
+    Json(payload): Json<SsChangeReq>,
+) -> impl IntoResponse {
+    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
+        GSsResult::SolSys(ss) => ss,
+        GSsResult::ErrResp(r) => return r,
+    };
+    let resp = match guarded_ss
+        .lock()
+        .await
+        .execute_ss_commands(
+            payload.commands,
+            params.ss.into(),
+            params.fit.into(),
+            params.item.into(),
+        )
+        .await
+    {
+        Ok((ss_info, cmd_results)) => {
+            let resp = SsChangeResp::new(ss_info, cmd_results);
+            (StatusCode::OK, Json(resp)).into_response()
+        }
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(SingleErr::from(e))).into_response(),
+    };
+    resp
 }

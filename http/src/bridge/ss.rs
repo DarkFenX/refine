@@ -110,6 +110,25 @@ impl SolarSystem {
         res
     }
     // Command methods
+    pub(crate) async fn execute_ss_commands(
+        &mut self,
+        commands: Vec<SsCommand>,
+        ss_mode: SolSysInfoMode,
+        fit_mode: FitInfoMode,
+        item_mode: ItemInfoMode,
+    ) -> Result<(SolSysInfo, Vec<CmdResp>)> {
+        let mut core_ss = self.take_ss()?;
+        let ss_id_mv = self.id.clone();
+        let (core_ss, ss_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
+            let cmd_results = execute_commands(&mut core_ss, commands);
+            let info = SolSysInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            (core_ss, info, cmd_results)
+        })
+        .await;
+        self.sol_sys = Some(core_ss);
+        self.touch();
+        Ok((ss_info, cmd_results))
+    }
     pub(crate) async fn execute_fit_commands(
         &mut self,
         fit_id: &str,
