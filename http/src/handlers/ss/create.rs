@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 
 use crate::{handlers::SingleErr, state::AppState, util::ErrorKind};

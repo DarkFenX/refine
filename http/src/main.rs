@@ -9,10 +9,7 @@ use axum::{
 use tower::Layer;
 use tower_http::normalize_path::NormalizePathLayer;
 
-use crate::{
-    settings::Settings,
-    state::{AppState, InnerAppState},
-};
+use crate::{settings::Settings, state::InnerAppState};
 
 mod bridge;
 mod cmd;
