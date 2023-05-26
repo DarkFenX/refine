@@ -19,16 +19,11 @@ impl SolarSystem {
         &self.accessed
     }
     // Fit methods
-    pub(crate) async fn add_fit(&mut self) -> Result<FitInfo> {
+    pub(crate) async fn add_fit(&mut self, fit_mode: FitInfoMode, item_mode: ItemInfoMode) -> Result<FitInfo> {
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
             let res = match core_ss.add_fit() {
-                Ok(fid) => Ok(FitInfo::mk_info(
-                    &mut core_ss,
-                    &fid,
-                    FitInfoMode::Full,
-                    ItemInfoMode::Basic,
-                )),
+                Ok(fit_id) => Ok(FitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode)),
                 Err(e) => Err(e.into()),
             };
             (res, core_ss)
@@ -37,6 +32,23 @@ impl SolarSystem {
         self.sol_sys = Some(core_ss);
         self.touch();
         res
+    }
+    pub(crate) async fn get_fit(
+        &mut self,
+        fit_id: &str,
+        fit_mode: FitInfoMode,
+        item_mode: ItemInfoMode,
+    ) -> Result<FitInfo> {
+        let fit_id = self.str_to_fit_id(fit_id)?;
+        let mut core_ss = self.take_ss()?;
+        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let res = FitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
+            (res, core_ss)
+        })
+        .await;
+        self.sol_sys = Some(core_ss);
+        self.touch();
+        Ok(res)
     }
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> Result<()> {
         let fit_id = self.str_to_fit_id(fit_id)?;

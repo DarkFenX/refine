@@ -10,6 +10,7 @@ use crate::{
     handlers::{fit::FitInfoParams, get_guarded_ss, GSsResult, SingleErr},
     info::FitInfo,
     state::AppState,
+    util::ErrorKind,
 };
 
 #[derive(serde::Deserialize)]
@@ -49,7 +50,11 @@ pub(crate) async fn change_fit(
             (StatusCode::OK, Json(resp)).into_response()
         }
         Err(e) => {
-            let code = StatusCode::INTERNAL_SERVER_ERROR;
+            let code = match e.kind {
+                ErrorKind::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
+                ErrorKind::CoreError(reefast::ErrorKind::FitNotFound(_), _) => StatusCode::NOT_FOUND,
+                _ => StatusCode::INTERNAL_SERVER_ERROR,
+            };
             (code, Json(SingleErr::from(e))).into_response()
         }
     };
