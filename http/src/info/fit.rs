@@ -30,12 +30,8 @@ pub(crate) struct ModuleRacks {
     pub(crate) low: Vec<ItemInfo>,
 }
 impl ModuleRacks {
-    fn new() -> Self {
-        Self {
-            high: Vec::new(),
-            mid: Vec::new(),
-            low: Vec::new(),
-        }
+    fn from_infos(high: Vec<ItemInfo>, mid: Vec<ItemInfo>, low: Vec<ItemInfo>) -> Self {
+        Self { high, mid, low }
     }
     fn is_empty(&self) -> bool {
         self.high.is_empty() && self.mid.is_empty() && self.low.is_empty()
@@ -74,11 +70,7 @@ impl FitInfoDetailed {
         Self {
             id: fit_id.to_string(),
             ship,
-            modules: ModuleRacks {
-                high: modules_high,
-                mid: modules_mid,
-                low: modules_low,
-            },
+            modules: ModuleRacks::from_infos(modules_high, modules_mid, modules_low),
         }
     }
 }
