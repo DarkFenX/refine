@@ -73,13 +73,13 @@ impl SolarSystem {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = core_ss.remove_fit(&fit_id);
+            let res = core_ss.remove_fit(&fit_id).map_err(|e| e.into());
             (res, core_ss)
         })
         .await;
         self.sol_sys = Some(core_ss);
         self.touch();
-        res.map_err(|e| e.into())
+        res
     }
     // Item methods
     pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: ItemInfoMode) -> Result<ItemInfo> {
@@ -91,6 +91,18 @@ impl SolarSystem {
                 (Ok(item_info), core_ss)
             }
             Err(e) => (Err(Error::from(e)), core_ss),
+        })
+        .await;
+        self.sol_sys = Some(core_ss);
+        self.touch();
+        res
+    }
+    pub(crate) async fn remove_item(&mut self, item_id: &str) -> Result<()> {
+        let item_id = self.str_to_item_id(item_id)?;
+        let mut core_ss = self.take_ss()?;
+        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let res = core_ss.remove_item(&item_id).map_err(|v| v.into());
+            (res, core_ss)
         })
         .await;
         self.sol_sys = Some(core_ss);

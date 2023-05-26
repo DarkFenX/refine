@@ -85,15 +85,15 @@ impl SolarSystem {
     pub fn get_item_info(&self, item_id: &ReeId) -> Result<ItemInfo> {
         self.get_item(item_id).map(|v| ItemInfo::from_item(v, self))
     }
-    pub fn remove_item(&mut self, item_id: &ReeId) -> bool {
+    pub fn remove_item(&mut self, item_id: &ReeId) -> Result<()> {
         match self.items.remove(item_id) {
-            None => false,
+            None => Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
             Some(main) => {
                 helpers::remove_item(&main, &self.src, &mut self.calc);
                 match main {
                     // Remove reference to charge if it's charge which we're removing
                     Item::Charge(c) => match self.items.get_mut(&c.container_id) {
-                        None => return true,
+                        None => return Ok(()),
                         Some(other) => match other {
                             Item::Module(m) => m.charge_id = None,
                             _ => (),
@@ -109,7 +109,7 @@ impl SolarSystem {
                     },
                     _ => (),
                 };
-                true
+                Ok(())
             }
         }
     }
