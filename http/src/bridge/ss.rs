@@ -1,6 +1,6 @@
 use crate::{
     cmd::{CmdResp, FitCommand, ItemIdsResp},
-    info::{FitInfo, FitInfoMode, ItemInfoMode, SolSysInfo, SolSysInfoMode},
+    info::{FitInfo, FitInfoMode, ItemInfo, ItemInfoMode, SolSysInfo, SolSysInfoMode},
     util::{Error, ErrorKind, Result},
 };
 
@@ -80,6 +80,22 @@ impl SolarSystem {
         self.sol_sys = Some(core_ss);
         self.touch();
         res.map_err(|e| e.into())
+    }
+    // Item methods
+    pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: ItemInfoMode) -> Result<ItemInfo> {
+        let item_id = self.str_to_item_id(item_id)?;
+        let mut core_ss = self.take_ss()?;
+        let (res, core_ss) = tokio_rayon::spawn_fifo(move || match core_ss.get_item_info(&item_id) {
+            Ok(core_info) => {
+                let item_info = ItemInfo::mk_info(&mut core_ss, &core_info, item_mode);
+                (Ok(item_info), core_ss)
+            }
+            Err(e) => (Err(Error::from(e)), core_ss),
+        })
+        .await;
+        self.sol_sys = Some(core_ss);
+        self.touch();
+        res
     }
     // Command methods
     pub(crate) async fn execute_fit_commands(
@@ -171,7 +187,7 @@ impl SolarSystem {
             }
         }
     }
-    fn str_to_item_id(&mut self, id: &str) -> Result<reefast::ReeInt> {
+    fn str_to_item_id(&mut self, id: &str) -> Result<reefast::ReeId> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {
