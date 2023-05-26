@@ -31,7 +31,7 @@ impl FitChangeResp {
 }
 
 pub(crate) async fn change_fit(
-    State(state): State<Arc<AppState>>,
+    State(state): State<AppState>,
     Path((ssid, fid)): Path<(String, String)>,
     Query(params): Query<FitInfoParams>,
     Json(payload): Json<FitChangeReq>,

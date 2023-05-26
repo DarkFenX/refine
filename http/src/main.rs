@@ -9,7 +9,10 @@ use axum::{
 use tower::Layer;
 use tower_http::normalize_path::NormalizePathLayer;
 
-use crate::{settings::Settings, state::AppState};
+use crate::{
+    settings::Settings,
+    state::{AppState, InnerAppState},
+};
 
 mod bridge;
 mod cmd;
@@ -26,7 +29,7 @@ async fn main() {
 
     let config_path = env::args().nth(1);
     let settings = Settings::new(config_path).unwrap();
-    let state = Arc::new(AppState::new(settings.server.cache_folder));
+    let state = Arc::new(InnerAppState::new(settings.server.cache_folder));
 
     let state_cleanup = state.clone();
     tokio::spawn(async move {

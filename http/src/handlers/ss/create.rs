@@ -20,7 +20,7 @@ impl CreateSolSysResp {
 }
 
 pub(crate) async fn create_sol_sys(
-    State(state): State<Arc<AppState>>,
+    State(state): State<AppState>,
     Json(payload): Json<CreateSolSysReq>,
 ) -> impl IntoResponse {
     let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {

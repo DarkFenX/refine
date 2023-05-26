@@ -17,7 +17,7 @@ pub(crate) struct CreateSrcReq {
 }
 
 pub(crate) async fn create_source(
-    State(state): State<Arc<AppState>>,
+    State(state): State<AppState>,
     Path(alias): Path<String>,
     Json(payload): Json<CreateSrcReq>,
 ) -> impl IntoResponse {

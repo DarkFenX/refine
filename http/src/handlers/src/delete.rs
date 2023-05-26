@@ -9,7 +9,7 @@ use axum::{
 
 use crate::{handlers::SingleErr, state::AppState, util::ErrorKind};
 
-pub(crate) async fn delete_source(State(state): State<Arc<AppState>>, Path(alias): Path<String>) -> impl IntoResponse {
+pub(crate) async fn delete_source(State(state): State<AppState>, Path(alias): Path<String>) -> impl IntoResponse {
     match state.src_mgr.del(&alias).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(e) => {

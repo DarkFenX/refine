@@ -13,7 +13,7 @@ use crate::{
     util::ErrorKind,
 };
 
-pub(crate) async fn create_fit(State(state): State<Arc<AppState>>, Path(ssid): Path<String>) -> impl IntoResponse {
+pub(crate) async fn create_fit(State(state): State<AppState>, Path(ssid): Path<String>) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
         GSsResult::SolSys(ss) => ss,
         GSsResult::ErrResp(r) => return r,

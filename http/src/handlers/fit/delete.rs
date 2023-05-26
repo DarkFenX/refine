@@ -14,7 +14,7 @@ use crate::{
 };
 
 pub(crate) async fn delete_fit(
-    State(state): State<Arc<AppState>>,
+    State(state): State<AppState>,
     Path(ssid): Path<String>,
     Path(fid): Path<String>,
 ) -> impl IntoResponse {
