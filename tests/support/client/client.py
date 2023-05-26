@@ -262,4 +262,7 @@ class TestClient:
             state=state, charge_id=charge_id, mode=mode)
         resp = self.__session.send(req.prepare())
         assert resp.status_code == 200
-        return resp.json()['cmd_results'][0]['id']
+        item_id = resp.json()['cmd_results'][0]['id']
+        matching_items = [i for i in resp.json()['fit']['modules']['high'] if i['item_id'] == item_id]
+        assert len(matching_items) == 1
+        return matching_items[0]

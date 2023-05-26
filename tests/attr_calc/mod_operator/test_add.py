@@ -12,6 +12,7 @@ def test_penalized(client, consts):
     ss = client.create_ss()
     fit = client.create_fit(ss)
     module = client.add_high_mod(ss, fit, item.id, 'offline')
+    assert module['attr_vals'][str(tgt_attr.id)][2] == 8.3
 
 
 def test_non_penalized(client, consts):
@@ -26,3 +27,4 @@ def test_non_penalized(client, consts):
     ss = client.create_ss()
     fit = client.create_fit(ss)
     module = client.add_high_mod(ss, fit, item.id, 'offline')
+    assert module['attr_vals'][str(tgt_attr.id)][2] == 8.3
