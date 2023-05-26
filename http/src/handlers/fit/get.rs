@@ -13,17 +13,17 @@ use crate::{
 
 pub(crate) async fn get_fit(
     State(state): State<AppState>,
-    Path((ssid, fid)): Path<(String, String)>,
+    Path((ss_id, fit_id)): Path<(String, String)>,
     Query(params): Query<FitInfoParams>,
 ) -> impl IntoResponse {
-    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
+    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
         GSsResult::SolSys(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss
         .lock()
         .await
-        .get_fit(&fid, params.fit.into(), params.item.into())
+        .get_fit(&fit_id, params.fit.into(), params.item.into())
         .await
     {
         Ok(fit_info) => (StatusCode::OK, Json(fit_info)).into_response(),

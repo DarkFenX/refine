@@ -13,13 +13,13 @@ use crate::{
 
 pub(crate) async fn delete_item(
     State(state): State<AppState>,
-    Path((ssid, iid)): Path<(String, String)>,
+    Path((ss_id, item_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
-    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
+    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
         GSsResult::SolSys(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_ss.lock().await.remove_item(&iid).await {
+    let resp = match guarded_ss.lock().await.remove_item(&item_id).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(e) => {
             let code = match e.kind {

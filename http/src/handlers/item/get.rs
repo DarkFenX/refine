@@ -13,14 +13,14 @@ use crate::{
 
 pub(crate) async fn get_item(
     State(state): State<AppState>,
-    Path((ssid, iid)): Path<(String, String)>,
+    Path((ss_id, item_id)): Path<(String, String)>,
     Query(params): Query<ItemInfoParams>,
 ) -> impl IntoResponse {
-    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
+    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
         GSsResult::SolSys(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_ss.lock().await.get_item(&iid, params.item.into()).await {
+    let resp = match guarded_ss.lock().await.get_item(&item_id, params.item.into()).await {
         Ok(fit_info) => (StatusCode::OK, Json(fit_info)).into_response(),
         Err(e) => {
             let code = match e.kind {

@@ -12,10 +12,10 @@ use crate::{
 
 pub(crate) async fn get_sol_sys(
     State(state): State<AppState>,
-    Path(ssid): Path<String>,
+    Path(ss_id): Path<String>,
     Query(params): Query<SolSysInfoParams>,
 ) -> impl IntoResponse {
-    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
+    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
         GSsResult::SolSys(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };

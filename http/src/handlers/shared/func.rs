@@ -18,8 +18,8 @@ pub(in crate::handlers) enum GSsResult {
     ErrResp(Response),
 }
 
-pub(in crate::handlers) async fn get_guarded_ss(ss_mgr: &SolSysMgr, solsys_id: &str) -> GSsResult {
-    match ss_mgr.get_sol_sys(&solsys_id).await {
+pub(in crate::handlers) async fn get_guarded_ss(ss_mgr: &SolSysMgr, ss_id: &str) -> GSsResult {
+    match ss_mgr.get_sol_sys(&ss_id).await {
         Ok(ss) => GSsResult::SolSys(ss),
         Err(e) => {
             let code = match e.kind {

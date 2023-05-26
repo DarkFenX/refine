@@ -13,13 +13,13 @@ use crate::{
 
 pub(crate) async fn delete_fit(
     State(state): State<AppState>,
-    Path((ssid, fid)): Path<(String, String)>,
+    Path((ss_id, fit_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
-    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ssid).await {
+    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
         GSsResult::SolSys(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_ss.lock().await.remove_fit(&fid).await {
+    let resp = match guarded_ss.lock().await.remove_fit(&fit_id).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(e) => {
             let code = match e.kind {
