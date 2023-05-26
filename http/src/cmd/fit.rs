@@ -12,7 +12,7 @@ pub(crate) enum FitCommand {
     AddModuleLow(AddModuleCmd),
 }
 impl FitCommand {
-    fn fill_fit(self, fit_id: reefast::ReeId) -> ss::SsCommand {
+    pub(crate) fn fill_fit(self, fit_id: reefast::ReeId) -> ss::SsCommand {
         match self {
             FitCommand::SetShip(cmd) => ss::SsCommand::SetShip(cmd.fill_fit(fit_id)),
             FitCommand::AddModuleHigh(cmd) => ss::SsCommand::AddModuleHigh(cmd.fill_fit(fit_id)),

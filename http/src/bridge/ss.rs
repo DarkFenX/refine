@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{CmdResp, FitCommand, ItemIdsResp},
+    cmd::{CmdResp, FitCommand, ItemIdsResp, SsCommand},
     info::{FitInfo, FitInfoMode, ItemInfo, ItemInfoMode, SolSysInfo, SolSysInfoMode},
     util::{Error, ErrorKind, Result},
 };
@@ -120,58 +120,8 @@ impl SolarSystem {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
         let (core_ss, fit_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
-            let mut cmd_results = Vec::with_capacity(commands.len());
-            for cmd in commands.iter() {
-                match cmd {
-                    FitCommand::SetShip(c) => {
-                        let ship_id = core_ss.set_fit_ship(fit_id, c.ship_type_id).unwrap();
-                        let resp = CmdResp::ItemIds(ItemIdsResp::from(ship_id));
-                        cmd_results.push(resp);
-                    }
-                    FitCommand::AddModuleHigh(c) => {
-                        let id_data = core_ss
-                            .add_module(
-                                fit_id,
-                                c.module_type_id,
-                                c.state.into(),
-                                reefast::ModRack::High,
-                                c.add_mode.into(),
-                                c.charge_type_id,
-                            )
-                            .unwrap();
-                        let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
-                        cmd_results.push(resp);
-                    }
-                    FitCommand::AddModuleMid(c) => {
-                        let id_data = core_ss
-                            .add_module(
-                                fit_id,
-                                c.module_type_id,
-                                c.state.into(),
-                                reefast::ModRack::Mid,
-                                c.add_mode.into(),
-                                c.charge_type_id,
-                            )
-                            .unwrap();
-                        let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
-                        cmd_results.push(resp);
-                    }
-                    FitCommand::AddModuleLow(c) => {
-                        let id_data = core_ss
-                            .add_module(
-                                fit_id,
-                                c.module_type_id,
-                                c.state.into(),
-                                reefast::ModRack::Low,
-                                c.add_mode.into(),
-                                c.charge_type_id,
-                            )
-                            .unwrap();
-                        let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
-                        cmd_results.push(resp);
-                    }
-                };
-            }
+            let commands = commands.into_iter().map(|v| v.fill_fit(fit_id)).collect();
+            let cmd_results = execute_commands(&mut core_ss, commands);
             let info = FitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
             (core_ss, info, cmd_results)
         })
@@ -211,4 +161,60 @@ impl SolarSystem {
     fn touch(&mut self) {
         self.accessed = chrono::Utc::now();
     }
+}
+
+fn execute_commands(core_ss: &mut reefast::SolarSystem, commands: Vec<SsCommand>) -> Vec<CmdResp> {
+    let mut cmd_results = Vec::with_capacity(commands.len());
+    for cmd in commands.iter() {
+        match cmd {
+            SsCommand::SetShip(c) => {
+                let ship_id = core_ss.set_fit_ship(c.fit_id, c.ship_type_id).unwrap();
+                let resp = CmdResp::ItemIds(ItemIdsResp::from(ship_id));
+                cmd_results.push(resp);
+            }
+            SsCommand::AddModuleHigh(c) => {
+                let id_data = core_ss
+                    .add_module(
+                        c.fit_id,
+                        c.module_type_id,
+                        c.state.into(),
+                        reefast::ModRack::High,
+                        c.add_mode.into(),
+                        c.charge_type_id,
+                    )
+                    .unwrap();
+                let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                cmd_results.push(resp);
+            }
+            SsCommand::AddModuleMid(c) => {
+                let id_data = core_ss
+                    .add_module(
+                        c.fit_id,
+                        c.module_type_id,
+                        c.state.into(),
+                        reefast::ModRack::Mid,
+                        c.add_mode.into(),
+                        c.charge_type_id,
+                    )
+                    .unwrap();
+                let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                cmd_results.push(resp);
+            }
+            SsCommand::AddModuleLow(c) => {
+                let id_data = core_ss
+                    .add_module(
+                        c.fit_id,
+                        c.module_type_id,
+                        c.state.into(),
+                        reefast::ModRack::Low,
+                        c.add_mode.into(),
+                        c.charge_type_id,
+                    )
+                    .unwrap();
+                let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                cmd_results.push(resp);
+            }
+        };
+    }
+    cmd_results
 }
