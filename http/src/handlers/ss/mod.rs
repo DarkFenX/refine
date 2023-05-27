@@ -1,8 +1,8 @@
-pub(crate) use change::change_sol_sys;
-pub(crate) use create::create_sol_sys;
-pub(crate) use delete::delete_sol_sys;
-pub(crate) use get::get_sol_sys;
-use query::SolSysInfoParams;
+pub(crate) use change::change_ss;
+pub(crate) use create::create_ss;
+pub(crate) use delete::delete_ss;
+pub(crate) use get::get_ss;
+use query::SsInfoParams;
 
 mod change;
 mod create;

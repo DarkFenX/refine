@@ -4,7 +4,7 @@ pub(crate) use item::{change_item, create_item, delete_item, get_item};
 pub(crate) use root::root;
 use shared::{get_guarded_ss, GSsResult, SingleErr};
 pub(crate) use src::{create_source, delete_source};
-pub(crate) use ss::{change_sol_sys, create_sol_sys, delete_sol_sys, get_sol_sys};
+pub(crate) use ss::{change_ss, create_ss, delete_ss, get_ss};
 
 mod fit;
 mod fleet;

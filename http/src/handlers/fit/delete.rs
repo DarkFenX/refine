@@ -16,7 +16,7 @@ pub(crate) async fn delete_fit(
     Path((ss_id, fit_id)): Path<(String, String)>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::SolSys(ss) => ss,
+        GSsResult::Ss(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss.lock().await.remove_fit(&fit_id).await {

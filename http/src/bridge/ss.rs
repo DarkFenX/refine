@@ -1,20 +1,20 @@
 use crate::{
     cmd::{CmdResp, FitCommand, ItemIdsResp, SsCommand},
-    info::{FitInfo, FitInfoMode, ItemInfo, ItemInfoMode, SolSysInfo, SolSysInfoMode},
+    info::{FitInfo, FitInfoMode, ItemInfo, ItemInfoMode, SsInfo, SsInfoMode},
     util::{Error, ErrorKind, Result},
 };
 
 pub(crate) struct SolarSystem {
     id: String,
     accessed: chrono::DateTime<chrono::Utc>,
-    sol_sys: Option<reefast::SolarSystem>,
+    core_ss: Option<reefast::SolarSystem>,
 }
 impl SolarSystem {
-    pub(crate) fn new(id: String, sol_sys: reefast::SolarSystem) -> Self {
+    pub(crate) fn new(id: String, core_ss: reefast::SolarSystem) -> Self {
         Self {
             id,
             accessed: chrono::Utc::now(),
-            sol_sys: Some(sol_sys),
+            core_ss: Some(core_ss),
         }
     }
     pub(crate) fn last_accessed(&self) -> &chrono::DateTime<chrono::Utc> {
@@ -22,18 +22,18 @@ impl SolarSystem {
     }
     pub(crate) async fn get_info(
         &mut self,
-        ss_mode: SolSysInfoMode,
+        ss_mode: SsInfoMode,
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
-    ) -> Result<SolSysInfo> {
+    ) -> Result<SsInfo> {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = SolSysInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            let res = SsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (res, core_ss)
         })
         .await;
-        self.sol_sys = Some(core_ss);
+        self.core_ss = Some(core_ss);
         self.touch();
         Ok(res)
     }
@@ -48,7 +48,7 @@ impl SolarSystem {
             (res, core_ss)
         })
         .await;
-        self.sol_sys = Some(core_ss);
+        self.core_ss = Some(core_ss);
         self.touch();
         res
     }
@@ -65,7 +65,7 @@ impl SolarSystem {
             (res, core_ss)
         })
         .await;
-        self.sol_sys = Some(core_ss);
+        self.core_ss = Some(core_ss);
         self.touch();
         Ok(res)
     }
@@ -77,7 +77,7 @@ impl SolarSystem {
             (res, core_ss)
         })
         .await;
-        self.sol_sys = Some(core_ss);
+        self.core_ss = Some(core_ss);
         self.touch();
         res
     }
@@ -93,7 +93,7 @@ impl SolarSystem {
             Err(e) => (Err(Error::from(e)), core_ss),
         })
         .await;
-        self.sol_sys = Some(core_ss);
+        self.core_ss = Some(core_ss);
         self.touch();
         res
     }
@@ -105,7 +105,7 @@ impl SolarSystem {
             (res, core_ss)
         })
         .await;
-        self.sol_sys = Some(core_ss);
+        self.core_ss = Some(core_ss);
         self.touch();
         res
     }
@@ -113,19 +113,19 @@ impl SolarSystem {
     pub(crate) async fn execute_ss_commands(
         &mut self,
         commands: Vec<SsCommand>,
-        ss_mode: SolSysInfoMode,
+        ss_mode: SsInfoMode,
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
-    ) -> Result<(SolSysInfo, Vec<CmdResp>)> {
+    ) -> Result<(SsInfo, Vec<CmdResp>)> {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
         let (core_ss, ss_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
             let cmd_results = execute_commands(&mut core_ss, commands);
-            let info = SolSysInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            let info = SsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (core_ss, info, cmd_results)
         })
         .await;
-        self.sol_sys = Some(core_ss);
+        self.core_ss = Some(core_ss);
         self.touch();
         Ok((ss_info, cmd_results))
     }
@@ -145,17 +145,17 @@ impl SolarSystem {
             (core_ss, info, cmd_results)
         })
         .await;
-        self.sol_sys = Some(core_ss);
+        self.core_ss = Some(core_ss);
         self.touch();
         Ok((fit_info, cmd_results))
     }
     // Helper methods
     fn take_ss(&mut self) -> Result<reefast::SolarSystem> {
-        match self.sol_sys.take() {
+        match self.core_ss.take() {
             Some(core_ss) => Ok(core_ss),
             None => {
                 self.touch();
-                Err(Error::new(ErrorKind::NoCoreSolSys))
+                Err(Error::new(ErrorKind::NoCoreSs))
             }
         }
     }

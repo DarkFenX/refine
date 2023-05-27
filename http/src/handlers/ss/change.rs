@@ -7,8 +7,8 @@ use axum::{
 
 use crate::{
     cmd::{CmdResp, SsCommand},
-    handlers::{get_guarded_ss, ss::SolSysInfoParams, GSsResult, SingleErr},
-    info::SolSysInfo,
+    handlers::{get_guarded_ss, ss::SsInfoParams, GSsResult, SingleErr},
+    info::SsInfo,
     state::AppState,
 };
 
@@ -19,11 +19,11 @@ pub(crate) struct SsChangeReq {
 
 #[derive(serde::Serialize)]
 pub(crate) struct SsChangeResp {
-    solar_system: SolSysInfo,
+    solar_system: SsInfo,
     cmd_results: Vec<CmdResp>,
 }
 impl SsChangeResp {
-    pub(crate) fn new(ss_info: SolSysInfo, cmd_results: Vec<CmdResp>) -> Self {
+    pub(crate) fn new(ss_info: SsInfo, cmd_results: Vec<CmdResp>) -> Self {
         Self {
             solar_system: ss_info,
             cmd_results,
@@ -31,14 +31,14 @@ impl SsChangeResp {
     }
 }
 
-pub(crate) async fn change_sol_sys(
+pub(crate) async fn change_ss(
     State(state): State<AppState>,
     Path(ss_id): Path<String>,
-    Query(params): Query<SolSysInfoParams>,
+    Query(params): Query<SsInfoParams>,
     Json(payload): Json<SsChangeReq>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::SolSys(ss) => ss,
+        GSsResult::Ss(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss

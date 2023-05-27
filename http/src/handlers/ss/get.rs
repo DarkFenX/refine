@@ -6,17 +6,17 @@ use axum::{
 };
 
 use crate::{
-    handlers::{get_guarded_ss, ss::SolSysInfoParams, GSsResult, SingleErr},
+    handlers::{get_guarded_ss, ss::SsInfoParams, GSsResult, SingleErr},
     state::AppState,
 };
 
-pub(crate) async fn get_sol_sys(
+pub(crate) async fn get_ss(
     State(state): State<AppState>,
     Path(ss_id): Path<String>,
-    Query(params): Query<SolSysInfoParams>,
+    Query(params): Query<SsInfoParams>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::SolSys(ss) => ss,
+        GSsResult::Ss(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss

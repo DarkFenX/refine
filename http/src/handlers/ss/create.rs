@@ -6,20 +6,20 @@ use axum::{
 };
 
 use crate::{
-    handlers::{ss::SolSysInfoParams, SingleErr},
+    handlers::{ss::SsInfoParams, SingleErr},
     state::AppState,
     util::ErrorKind,
 };
 
 #[derive(serde::Deserialize)]
-pub(crate) struct CreateSolSysReq {
+pub(crate) struct CreateSsReq {
     src_alias: Option<String>,
 }
 
-pub(crate) async fn create_sol_sys(
+pub(crate) async fn create_ss(
     State(state): State<AppState>,
-    Query(params): Query<SolSysInfoParams>,
-    Json(payload): Json<CreateSolSysReq>,
+    Query(params): Query<SsInfoParams>,
+    Json(payload): Json<CreateSsReq>,
 ) -> impl IntoResponse {
     let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
         Ok(s) => s,
@@ -34,7 +34,7 @@ pub(crate) async fn create_sol_sys(
     };
     let ss_info = state
         .ss_mgr
-        .add_sol_sys(src, params.ss.into(), params.fit.into(), params.item.into())
+        .add_ss(src, params.ss.into(), params.fit.into(), params.item.into())
         .await;
     (StatusCode::CREATED, Json(ss_info)).into_response()
 }

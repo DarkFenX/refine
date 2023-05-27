@@ -1,35 +1,35 @@
-use crate::info::{FitInfo, FitInfoMode, ItemInfoMode, SolSysInfoMode};
+use crate::info::{FitInfo, FitInfoMode, ItemInfoMode, SsInfoMode};
 
 #[derive(serde::Serialize)]
 #[serde(untagged)]
-pub(crate) enum SolSysInfo {
+pub(crate) enum SsInfo {
     IdOnly(String),
-    Full(SolSysInfoFull),
+    Full(SsInfoFull),
 }
-impl SolSysInfo {
+impl SsInfo {
     pub(crate) fn mk_info(
         ss_id: String,
         core_ss: &mut reefast::SolarSystem,
-        ss_mode: SolSysInfoMode,
+        ss_mode: SsInfoMode,
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
     ) -> Self {
         match ss_mode {
-            SolSysInfoMode::IdOnly => Self::IdOnly(ss_id),
-            SolSysInfoMode::Full => Self::Full(SolSysInfoFull::mk_info(ss_id, core_ss, fit_mode, item_mode)),
+            SsInfoMode::IdOnly => Self::IdOnly(ss_id),
+            SsInfoMode::Full => Self::Full(SsInfoFull::mk_info(ss_id, core_ss, fit_mode, item_mode)),
         }
     }
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct SolSysInfoFull {
+pub(crate) struct SsInfoFull {
     pub(crate) id: String,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) fits: Vec<FitInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) fleets: Vec<()>,
 }
-impl SolSysInfoFull {
+impl SsInfoFull {
     fn mk_info(
         ss_id: String,
         core_ss: &mut reefast::SolarSystem,

@@ -17,7 +17,7 @@ pub(crate) async fn create_fit(
     Query(params): Query<FitInfoParams>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::SolSys(ss) => ss,
+        GSsResult::Ss(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };
     let fit_info = match guarded_ss

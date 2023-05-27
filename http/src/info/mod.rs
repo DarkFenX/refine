@@ -1,7 +1,7 @@
 pub(crate) use attr::AttrValInfo;
 pub(crate) use fit::FitInfo;
 pub(crate) use item::ItemInfo;
-pub(crate) use ss::SolSysInfo;
+pub(crate) use ss::SsInfo;
 
 mod attr;
 mod fit;
@@ -10,12 +10,12 @@ mod ss;
 
 #[derive(Copy, Clone, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum SolSysInfoMode {
+pub(crate) enum SsInfoMode {
     IdOnly,
     Full,
 }
-impl From<Option<SolSysInfoMode>> for SolSysInfoMode {
-    fn from(value: Option<SolSysInfoMode>) -> Self {
+impl From<Option<SsInfoMode>> for SsInfoMode {
+    fn from(value: Option<SsInfoMode>) -> Self {
         match value {
             Some(v) => v,
             None => Self::Full,

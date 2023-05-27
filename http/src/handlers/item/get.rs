@@ -17,7 +17,7 @@ pub(crate) async fn get_item(
     Query(params): Query<ItemInfoParams>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::SolSys(ss) => ss,
+        GSsResult::Ss(ss) => ss,
         GSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss.lock().await.get_item(&item_id, params.item.into()).await {

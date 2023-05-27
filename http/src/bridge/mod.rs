@@ -3,7 +3,7 @@
 
 pub(crate) use src_mgr::SrcMgr;
 pub(crate) use ss::SolarSystem;
-pub(crate) use ss_mgr::SolSysMgr;
+pub(crate) use ss_mgr::SsMgr;
 
 mod src_mgr;
 mod ss;
