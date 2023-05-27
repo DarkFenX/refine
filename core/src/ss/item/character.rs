@@ -5,6 +5,7 @@ use crate::{
     ct,
     defs::{ReeId, ReeInt},
     src::Src,
+    ss::item::{bool_to_state, state_to_bool},
     util::Named,
 };
 
@@ -26,16 +27,10 @@ impl Character {
         }
     }
     pub(in crate::ss) fn get_bool_state(&self) -> bool {
-        match self.state {
-            State::Ghost => false,
-            _ => true,
-        }
+        state_to_bool(self.state)
     }
     pub(in crate::ss) fn set_bool_state(&mut self, state: bool) {
-        self.state = match state {
-            true => State::Offline,
-            false => State::Ghost,
-        }
+        self.state = bool_to_state(state);
     }
 }
 impl Named for Character {

@@ -262,3 +262,17 @@ impl Item {
         }
     }
 }
+
+fn bool_to_state(bool_state: bool) -> State {
+    match bool_state {
+        true => State::Offline,
+        false => State::Ghost,
+    }
+}
+
+fn state_to_bool(state: State) -> bool {
+    match state {
+        State::Ghost => false,
+        _ => true,
+    }
+}
