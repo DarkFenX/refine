@@ -14,10 +14,10 @@ pub struct FighterAbil {
 }
 impl FighterAbil {
     /// Make a new fighter ability out of passed data.
-    pub fn new<T: Into<String>>(id: ReeInt, target_mode: T, disallow_hisec: bool, disallow_lowsec: bool) -> Self {
+    pub fn new(id: ReeInt, target_mode: String, disallow_hisec: bool, disallow_lowsec: bool) -> Self {
         Self {
             id,
-            target_mode: target_mode.into(),
+            target_mode,
             disallow_hisec,
             disallow_lowsec,
         }

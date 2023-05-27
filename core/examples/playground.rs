@@ -27,7 +27,9 @@ fn setup_logger() -> Result<(), fern::InitError> {
 
 fn main() {
     setup_logger().unwrap();
-    let dh = Box::new(dh_impls::PhbFileDHandler::new("/home/dfx/Desktop/phobos_tq_en-us"));
+    let dh = Box::new(dh_impls::PhbFileDHandler::new(
+        "/home/dfx/Desktop/phobos_tq_en-us".into(),
+    ));
     // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
     // Get some data for skills
     let grp_ids = dh
@@ -48,16 +50,16 @@ fn main() {
         .collect_vec();
     let mut ch = Box::new(ch_impls::JsonFileCHandler::new(
         PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
-        "tq",
+        "tq".to_string(),
     ));
     let src = Arc::new(Src::new(dh, ch).unwrap());
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
-    let ship = sol_sys.set_fit_ship(fit, 11184).unwrap();
+    let ship = sol_sys.set_fit_ship(fit, 11184, true).unwrap();
     for skill_id in skill_ids.iter() {
-        sol_sys.add_skill(fit, skill_id.to_owned(), 5);
+        sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
     }
-    let implant = sol_sys.add_implant(fit, 19687);
+    let implant = sol_sys.add_implant(fit, 19687, true);
     let attrs = sol_sys.get_item_dogma_attrs(&ship.item_id).unwrap();
     println!("{attrs:?}");
 }

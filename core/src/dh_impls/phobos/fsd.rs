@@ -14,8 +14,8 @@ pub(super) struct FsdItem {
     pub(super) item: serde_json::Value,
 }
 impl FsdItem {
-    pub(super) fn new<T: Into<String>>(id: T, item: serde_json::Value) -> Self {
-        Self { id: id.into(), item }
+    pub(super) fn new(id: String, item: serde_json::Value) -> Self {
+        Self { id, item }
     }
 }
 
@@ -31,7 +31,7 @@ fn decompose(json: serde_json::Value) -> IntResult<Vec<FsdItem>> {
     match json {
         serde_json::Value::Object(map) => Ok(map.into_iter().map(|(k, v)| FsdItem::new(k, v)).collect()),
         _ => Err(IntError::new(
-            "FSD decomposition failed: highest-level entity is not a map",
+            "FSD decomposition failed: highest-level entity is not a map".to_string(),
         )),
     }
 }

@@ -15,7 +15,7 @@ impl FsdMerge<dh::FighterAbil> for FighterAbil {
     fn fsd_merge(self, id: ReeInt) -> Vec<dh::FighterAbil> {
         vec![dh::FighterAbil::new(
             id,
-            &self.target_mode,
+            self.target_mode,
             self.disallow_hisec,
             self.disallow_lowsec,
         )]

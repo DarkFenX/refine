@@ -61,7 +61,7 @@ impl ch::CacheHandler for RamOnlyCHandler {
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> ch::Result<()> {
         Err(Box::new(IntError::new(
-            "RAM-only cache handler does not support persistent cache",
+            "RAM-only cache handler does not support persistent cache".to_string(),
         )))
     }
     /// Update data in handler with passed data.

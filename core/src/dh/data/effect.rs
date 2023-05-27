@@ -81,10 +81,7 @@ pub struct EffectMod {
 }
 impl EffectMod {
     /// Make a new dogma effect modifier out of passed data.
-    pub fn new<T: Into<String>>(func: T, args: HashMap<String, Primitive>) -> Self {
-        Self {
-            func: func.into(),
-            args,
-        }
+    pub fn new(func: String, args: HashMap<String, Primitive>) -> Self {
+        Self { func, args }
     }
 }

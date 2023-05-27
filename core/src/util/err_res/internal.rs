@@ -5,8 +5,8 @@ pub(crate) struct IntError {
     pub msg: String,
 }
 impl IntError {
-    pub(crate) fn new<T: Into<String>>(msg: T) -> Self {
-        Self { msg: msg.into() }
+    pub(crate) fn new(msg: String) -> Self {
+        Self { msg }
     }
 }
 impl error::Error for IntError {}

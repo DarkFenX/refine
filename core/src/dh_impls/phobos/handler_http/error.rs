@@ -3,24 +3,24 @@ use url;
 use crate::util::IntError;
 
 pub(super) trait FromSuffix<T> {
-    fn from_suffix<U: Into<String>>(err: T, suffix: U) -> Self;
+    fn from_suffix(err: T, suffix: &str) -> Self;
 }
 impl FromSuffix<url::ParseError> for IntError {
-    fn from_suffix<T: Into<String>>(err: url::ParseError, suffix: T) -> Self {
-        IntError::new(format!("{} is failed to be parsed as URL: {}", suffix.into(), err))
+    fn from_suffix(err: url::ParseError, suffix: &str) -> Self {
+        IntError::new(format!("{} is failed to be parsed as URL: {}", suffix, err))
     }
 }
 impl FromSuffix<reqwest::Error> for IntError {
-    fn from_suffix<T: Into<String>>(err: reqwest::Error, suffix: T) -> Self {
+    fn from_suffix(err: reqwest::Error, suffix: &str) -> Self {
         if err.is_decode() {
-            IntError::new(format!("{} parsing failed: {}", suffix.into(), err))
+            IntError::new(format!("{} parsing failed: {}", suffix, err))
         } else {
-            IntError::new(format!("{} fetching failed: {}", suffix.into(), err))
+            IntError::new(format!("{} fetching failed: {}", suffix, err))
         }
     }
 }
 impl FromSuffix<serde_json::Error> for IntError {
-    fn from_suffix<T: Into<String>>(err: serde_json::Error, suffix: T) -> Self {
-        IntError::new(format!("{} parsing failed: {}", suffix.into(), err))
+    fn from_suffix(err: serde_json::Error, suffix: &str) -> Self {
+        IntError::new(format!("{} parsing failed: {}", suffix, err))
     }
 }

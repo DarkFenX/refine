@@ -32,10 +32,10 @@ pub struct JsonFileCHandler {
 impl JsonFileCHandler {
     /// Constructs new `JsonFileCHandler` using full path to cache folder and file name (without
     /// extension).
-    pub fn new<F: Into<PathBuf>, N: Into<String>>(folder: F, name: N) -> Self {
+    pub fn new(folder: PathBuf, name: String) -> Self {
         Self {
-            folder: folder.into(),
-            name: name.into(),
+            folder: folder,
+            name: name,
             storage_items: HashMap::new(),
             storage_attrs: HashMap::new(),
             storage_effects: HashMap::new(),
