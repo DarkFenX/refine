@@ -187,7 +187,9 @@ fn execute_commands(core_ss: &mut reefast::SolarSystem, commands: Vec<SsCommand>
     for cmd in commands.iter() {
         match cmd {
             SsCommand::SetShip(c) => {
-                let ship_id = core_ss.set_fit_ship(c.fit_id, c.ship_type_id).unwrap();
+                let ship_id = core_ss
+                    .set_fit_ship(c.fit_id, c.ship_type_id, c.state.unwrap_or(true))
+                    .unwrap();
                 let resp = CmdResp::ItemIds(ItemIdsResp::from(ship_id));
                 cmd_results.push(resp);
             }

@@ -22,10 +22,10 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_skill(&mut self, fit_id: ReeId, type_id: ReeInt, level: ReeInt) -> Result<SkillInfo> {
+    pub fn add_skill(&mut self, fit_id: ReeId, type_id: ReeInt, level: ReeInt, state: bool) -> Result<SkillInfo> {
         check_skill_level(level)?;
         let item_id = self.alloc_item_id()?;
-        let skill = Skill::new(&self.src, item_id, fit_id, type_id, level);
+        let skill = Skill::new(&self.src, item_id, fit_id, type_id, level, state);
         let info = SkillInfo::from(&skill);
         let item = Item::Skill(skill);
         self.add_item(item);

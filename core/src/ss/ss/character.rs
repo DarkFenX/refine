@@ -15,7 +15,7 @@ impl SolarSystem {
     pub fn get_fit_character_info(&self, fit_id: &ReeId) -> Result<CharacterInfo> {
         self.get_fit_character(fit_id).map(|v| v.into())
     }
-    pub fn set_fit_character(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<CharacterInfo> {
+    pub fn set_fit_character(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<CharacterInfo> {
         match self.remove_fit_character(&fit_id) {
             Ok(_) => (),
             // Suppress ItemTypeNotFound error, since this method is supposed to be used
@@ -26,7 +26,7 @@ impl SolarSystem {
             },
         };
         let item_id = self.alloc_item_id()?;
-        let character = Character::new(&self.src, item_id, fit_id, type_id);
+        let character = Character::new(&self.src, item_id, fit_id, type_id, state);
         let info = CharacterInfo::from(&character);
         let item = Item::Character(character);
         self.add_item(item);

@@ -15,7 +15,7 @@ impl SolarSystem {
     pub fn get_fit_stance_info(&self, fit_id: &ReeId) -> Result<StanceInfo> {
         self.get_fit_stance(fit_id).map(|v| v.into())
     }
-    pub fn set_fit_stance(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<StanceInfo> {
+    pub fn set_fit_stance(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<StanceInfo> {
         match self.remove_fit_stance(&fit_id) {
             Ok(_) => (),
             // Suppress ItemNotFound error, since this method is supposed to be used
@@ -26,7 +26,7 @@ impl SolarSystem {
             },
         };
         let item_id = self.alloc_item_id()?;
-        let stance = Stance::new(&self.src, item_id, fit_id, type_id);
+        let stance = Stance::new(&self.src, item_id, fit_id, type_id, state);
         let info = StanceInfo::from(&stance);
         let item = Item::Stance(stance);
         self.add_item(item);

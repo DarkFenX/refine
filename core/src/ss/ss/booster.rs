@@ -22,9 +22,9 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<BoosterInfo> {
+    pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<BoosterInfo> {
         let item_id = self.alloc_item_id()?;
-        let booster = Booster::new(&self.src, item_id, fit_id, type_id);
+        let booster = Booster::new(&self.src, item_id, fit_id, type_id, state);
         let info = BoosterInfo::from(&booster);
         let item = Item::Booster(booster);
         self.add_item(item);

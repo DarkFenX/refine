@@ -13,24 +13,9 @@ impl SolarSystem {
     pub fn get_charge_info(&self, item_id: &ReeId) -> Result<ChargeInfo> {
         Ok(self.get_charge(item_id)?.into())
     }
-    pub fn set_charge_state(&mut self, item_id: &ReeId, state: bool) -> Result<()> {
-        self.get_charge_mut(item_id)?.set_bool_state(state);
-        Ok(())
-    }
     // Non-public
     fn get_charge(&self, item_id: &ReeId) -> Result<&Charge> {
         let item = self.get_item(item_id)?;
-        match item {
-            Item::Charge(charge) => Ok(charge),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
-                *item_id,
-                item.get_name(),
-                Charge::get_name(),
-            ))),
-        }
-    }
-    fn get_charge_mut(&mut self, item_id: &ReeId) -> Result<&mut Charge> {
-        let item = self.get_item_mut(item_id)?;
         match item {
             Item::Charge(charge) => Ok(charge),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(

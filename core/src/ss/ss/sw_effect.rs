@@ -22,9 +22,9 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_sw_effect(&mut self, type_id: ReeInt) -> Result<SwEffectInfo> {
+    pub fn add_sw_effect(&mut self, type_id: ReeInt, state: bool) -> Result<SwEffectInfo> {
         let item_id = self.alloc_item_id()?;
-        let sw_effect = SwEffect::new(&self.src, item_id, type_id);
+        let sw_effect = SwEffect::new(&self.src, item_id, type_id, state);
         let info = SwEffectInfo::from(&sw_effect);
         let item = Item::SwEffect(sw_effect);
         self.add_item(item);

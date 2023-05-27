@@ -22,9 +22,9 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_rig(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<RigInfo> {
+    pub fn add_rig(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<RigInfo> {
         let item_id = self.alloc_item_id()?;
-        let rig = Rig::new(&self.src, item_id, fit_id, type_id);
+        let rig = Rig::new(&self.src, item_id, fit_id, type_id, state);
         let info = RigInfo::from(&rig);
         let item = Item::Rig(rig);
         self.add_item(item);

@@ -5,7 +5,7 @@ use std::{
 };
 
 use crate::{
-    defs::{ReeFloat, ReeId, ReeInt},
+    defs::{ReeId, ReeInt},
     src::Src,
     ss::{
         calc::{AttrVal, CalcSvc},

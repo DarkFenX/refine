@@ -22,9 +22,9 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_implant(&mut self, fit_id: ReeId, type_id: ReeInt) -> Result<ImplantInfo> {
+    pub fn add_implant(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ImplantInfo> {
         let item_id = self.alloc_item_id()?;
-        let implant = Implant::new(&self.src, item_id, fit_id, type_id);
+        let implant = Implant::new(&self.src, item_id, fit_id, type_id, state);
         let info = ImplantInfo::from(&implant);
         let item = Item::Implant(implant);
         self.add_item(item);

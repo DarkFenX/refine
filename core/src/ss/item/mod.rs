@@ -124,7 +124,7 @@ impl Item {
         match self {
             Self::Booster(booster) => booster.state,
             Self::Character(character) => character.state,
-            Self::Charge(charge) => charge.state,
+            Self::Charge(charge) => State::Offline,
             Self::Drone(drone) => drone.state,
             Self::Fighter(fighter) => fighter.state,
             Self::Implant(implant) => implant.state,
