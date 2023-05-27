@@ -1,8 +1,8 @@
 #[derive(serde::Serialize)]
 pub(crate) struct ShipInfo {
-    #[serde(serialize_with = "crate::util::ser_as_str")]
+    #[serde(with = "crate::util::serde_string")]
     pub item_id: reefast::ReeId,
-    #[serde(serialize_with = "crate::util::ser_as_str")]
+    #[serde(with = "crate::util::serde_string")]
     pub fit_id: reefast::ReeId,
     pub type_id: reefast::ReeInt,
     pub enabled: bool,

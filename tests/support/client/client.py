@@ -40,6 +40,8 @@ def get_stack_key():
 
 class TestClient:
 
+    base_url = 'http://localhost:8000'
+
     def __init__(self, data_server):
         self.__datas = {}
         self.__data_server = data_server
@@ -176,7 +178,7 @@ class TestClient:
     def create_source_request(self, data=Default):
         if data is Default:
             data = self.__default_data
-        req = requests.Request('POST', f'http://localhost:8000/source/{data.alias}', json={
+        req = requests.Request('POST', f'{self.base_url}/source/{data.alias}', json={
             'data_version': '1',
             'data_base_url': f'http://localhost:{self.__data_server.port}/{data.alias}/'})
         return req
@@ -215,7 +217,7 @@ class TestClient:
         payload = {}
         if data is not Absent:
             payload['src_alias'] = data.alias
-        req = requests.Request('POST', 'http://localhost:8000/solar_system', json=payload)
+        req = requests.Request('POST', f'{self.base_url}/solar_system', json=payload)
         return req
 
     def create_ss(self, data=Default):
@@ -228,7 +230,7 @@ class TestClient:
 
     def create_fit_request(self, ss):
         payload = {}
-        req = requests.Request('POST', f'http://localhost:8000/solar_system/{ss}/fit', json=payload)
+        req = requests.Request('POST', f'{self.base_url}/solar_system/{ss}/fit', json=payload)
         return req
 
     def create_fit(self, ss):
@@ -239,7 +241,7 @@ class TestClient:
 
     def set_ship_request(self, ss, fit_id, ship_id):
         payload = {'commands': [{'type': 'set_ship', 'ship_type_id': ship_id}]}
-        req = requests.Request('PATCH', f'http://localhost:8000/solar_system/{ss}/fit/{fit_id}', json=payload)
+        req = requests.Request('PATCH', f'{self.base_url}/solar_system/{ss}/fit/{fit_id}', json=payload)
         return req
 
     def set_ship(self, ss, fit_id, ship_id):
@@ -248,21 +250,33 @@ class TestClient:
         assert resp.status_code == 200
         return resp.json()['cmd_results'][0]['id']
 
-    def add_high_mod_request(self, ss, fit_id, module_id, state, charge_id=None, mode='equip'):
-        command = {'type': 'add_module_high', 'add_mode': mode, 'module_type_id': module_id, 'state': state}
+    def add_high_mod_request(self, ss_id, fit_id, module_id, state, charge_id=None, mode='equip'):
+        command = {
+            'type': 'add_module_high',
+            'fit_id': fit_id,
+            'add_mode': mode,
+            'module_type_id': module_id,
+            'state': state}
         if charge_id is not None:
             command['charge_type_id'] = charge_id
-        payload = {'commands': [command]}
-        req = requests.Request('PATCH', f'http://localhost:8000/solar_system/{ss}/fit/{fit_id}?item=full', json=payload)
+        req = requests.Request('PATCH', f'{self.base_url}/solar_system/{ss_id}?item=full', json={'commands': [command]})
         return req
 
-    def add_high_mod(self, ss, fit_id, module_id, state, charge_id=None, mode='equip'):
+    def add_high_mod(self, ss_id, fit_id, module_id, state, charge_id=None, mode='equip'):
         req = self.add_high_mod_request(
-            ss=ss, fit_id=fit_id, module_id=module_id,
+            ss_id=ss_id, fit_id=fit_id, module_id=module_id,
             state=state, charge_id=charge_id, mode=mode)
         resp = self.__session.send(req.prepare())
         assert resp.status_code == 200
-        item_id = resp.json()['cmd_results'][0]['id']
-        matching_items = [i for i in resp.json()['fit']['modules']['high'] if i['item_id'] == item_id]
-        assert len(matching_items) == 1
-        return matching_items[0]
+        return resp.json()['cmd_results'][0]['id']
+
+    def get_item_request(self, ss, item_id):
+        req = requests.Request('GET', f'{self.base_url}/solar_system/{ss}/item/{item_id}?item=full')
+        return req
+
+    def get_item(self, ss, item_id):
+        req = requests.Request('GET', f'{self.base_url}/solar_system/{ss}/item/{item_id}?item=full')
+        resp = self.__session.send(req.prepare())
+        assert resp.status_code == 200
+        return resp.json()
+
