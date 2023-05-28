@@ -1,8 +1,7 @@
 import json
 
-from .objects import Item, Attribute, Effect, Buff
-from ...util import Default
-
+from tests.support.util import Default
+from .types import Item, Attribute, Effect, Buff
 
 ID_START = 1000000
 

@@ -1,41 +1,12 @@
-import inspect
-
 import requests
 
-from .data import TestObjects
-from .data.objects import Modifier
-from ..consts import EffCat, ItemCat
-from ..util import Absent, Default
+from tests.support.api_data import SolarSystem
+from tests.support.consts import EffCat, ItemCat
+from tests.support.eve_data import TestObjects, Modifier
+from tests.support.request import Request
+from tests.support.util import Absent, Default, get_stack_key
 
 data_id = 10000000
-
-
-def frame_to_primitive(frame, ignore_local_context=False):
-    if ignore_local_context:
-        return (
-            frame.filename,
-            frame.function)
-    else:
-        pos = frame.positions
-        return (
-            frame.filename,
-            frame.lineno,
-            frame.function,
-            pos.lineno,
-            pos.end_lineno,
-            pos.col_offset,
-            pos.end_col_offset)
-
-
-def get_stack_key():
-    stack = inspect.stack(context=0)
-    # Filter out stack entries for entities from client file
-    stack = [f for f in stack if f.filename != __file__]
-    # For method which tried to retrieve data, ignore all its local context,
-    # to refer to the same data on different calls
-    key = [frame_to_primitive(stack[0], ignore_local_context=True)]
-    key += [frame_to_primitive(f) for f in stack[1:]]
-    return tuple(key)
 
 
 class TestClient:
@@ -47,6 +18,9 @@ class TestClient:
         self.__data_server = data_server
         self.__stack_alias_map = {}
         self.__session = requests.Session()
+
+    def send_prepared(self, req):
+        return self.__session.send(req)
 
     # Data-related methods
     def mk_data(self):
@@ -178,10 +152,11 @@ class TestClient:
     def create_source_request(self, data=Default):
         if data is Default:
             data = self.__default_data
-        req = requests.Request('POST', f'{self.base_url}/source/{data.alias}', json={
-            'data_version': '1',
-            'data_base_url': f'http://localhost:{self.__data_server.port}/{data.alias}/'})
-        return req
+        return Request(
+            self,
+            method='POST',
+            url=f'{self.base_url}/source/{data.alias}',
+            json={'data_version': '1', 'data_base_url': f'http://localhost:{self.__data_server.port}/{data.alias}/'})
 
     def create_source(self, data=Default):
         if data is Default:
@@ -199,8 +174,7 @@ class TestClient:
         self.__setup_handler(f'/{data.alias}/fsd_binary/requiredskillsfortypes.json', str_data.requiredskillsfortypes)
         self.__setup_handler(f'/{data.alias}/fsd_binary/dynamicitemattributes.json', str_data.dynamicitemattributes)
         # Get request and send it
-        req = self.create_source_request(data=data)
-        resp = self.__session.send(req.prepare())
+        resp = self.create_source_request(data=data).send()
         assert resp.status_code == 204
 
     def __setup_handler(self, url, data):
@@ -214,41 +188,60 @@ class TestClient:
     def create_ss_request(self, data=Default):
         if data is Default:
             data = self.__default_data
-        payload = {}
+        body = {}
         if data is not Absent:
-            payload['src_alias'] = data.alias
-        req = requests.Request('POST', f'{self.base_url}/solar_system', json=payload)
-        return req
+            body['src_alias'] = data.alias
+        return Request(
+            self,
+            method='POST',
+            url=f'{self.base_url}/solar_system',
+            params={'ss': 'full', 'fit': 'full', 'item': 'full'},
+            json=body)
 
     def create_ss(self, data=Default):
         if data is Default:
             data = self.__default_data
-        req = self.create_ss_request(data=data)
-        resp = self.__session.send(req.prepare())
+        resp = self.create_ss_request(data=data).send()
         assert resp.status_code == 201
-        return resp.json()['id']
+        return SolarSystem(client=self, data=resp.json())
 
-    def create_fit_request(self, ss):
-        payload = {}
-        req = requests.Request('POST', f'{self.base_url}/solar_system/{ss}/fit', json=payload)
-        return req
+    def update_ss_request(self, ss_id):
+        return Request(
+            self,
+            method='GET',
+            url=f'{self.base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'full'})
 
-    def create_fit(self, ss):
-        req = self.create_fit_request(ss=ss)
-        resp = self.__session.send(req.prepare())
-        assert resp.status_code == 201
-        return resp.json()['id']
+    # Fit-related methods
+    def create_fit_request(self, ss_id):
+        return Request(
+            self,
+            method='POST',
+            url=f'{self.base_url}/solar_system/{ss_id}/fit',
+            params={'fit': 'full', 'item': 'full'})
 
-    def set_ship_request(self, ss, fit_id, ship_id):
-        payload = {'commands': [{'type': 'set_ship', 'ship_type_id': ship_id}]}
-        req = requests.Request('PATCH', f'{self.base_url}/solar_system/{ss}/fit/{fit_id}', json=payload)
-        return req
+    def update_fit_request(self, ss_id, fit_id):
+        return Request(
+            self,
+            method='GET',
+            url=f'{self.base_url}/solar_system/{ss_id}/fit/{fit_id}',
+            params={'fit': 'full', 'item': 'full'})
 
-    def set_ship(self, ss, fit_id, ship_id):
-        req = self.set_ship_request(ss=ss, fit_id=fit_id, ship_id=ship_id)
-        resp = self.__session.send(req.prepare())
-        assert resp.status_code == 200
-        return resp.json()['cmd_results'][0]['id']
+    # Item-related methods
+    def get_item_request(self, ss_id, item_id):
+        return Request(
+            self,
+            method='GET',
+            url=f'{self.base_url}/solar_system/{ss_id}/item/{item_id}',
+            params={'item': 'full'})
+
+    def set_ship_request(self, ss_id, fit_id, ship_id):
+        payload = {'commands': [{'type': 'set_ship', 'fit_id': fit_id, 'ship_type_id': ship_id}]}
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.base_url}/solar_system/{ss_id}',
+            json=payload)
 
     def add_high_mod_request(self, ss_id, fit_id, module_id, state, charge_id=None, mode='equip'):
         command = {
@@ -259,24 +252,8 @@ class TestClient:
             'state': state}
         if charge_id is not None:
             command['charge_type_id'] = charge_id
-        req = requests.Request('PATCH', f'{self.base_url}/solar_system/{ss_id}?item=full', json={'commands': [command]})
-        return req
-
-    def add_high_mod(self, ss_id, fit_id, module_id, state, charge_id=None, mode='equip'):
-        req = self.add_high_mod_request(
-            ss_id=ss_id, fit_id=fit_id, module_id=module_id,
-            state=state, charge_id=charge_id, mode=mode)
-        resp = self.__session.send(req.prepare())
-        assert resp.status_code == 200
-        return resp.json()['cmd_results'][0]['id']
-
-    def get_item_request(self, ss, item_id):
-        req = requests.Request('GET', f'{self.base_url}/solar_system/{ss}/item/{item_id}?item=full')
-        return req
-
-    def get_item(self, ss, item_id):
-        req = requests.Request('GET', f'{self.base_url}/solar_system/{ss}/item/{item_id}?item=full')
-        resp = self.__session.send(req.prepare())
-        assert resp.status_code == 200
-        return resp.json()
-
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.base_url}/solar_system/{ss_id}',
+            json={'commands': [command]})

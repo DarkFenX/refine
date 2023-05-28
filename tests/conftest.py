@@ -4,7 +4,7 @@ import pytest
 
 from .support import consts as eve_consts
 from .support.client import TestClient
-from .support.reefast import build_reefast, kill_reefast, run_reefast
+from .support.server import build_reefast, kill_reefast, run_reefast
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -20,7 +20,6 @@ def reefast_server():
         raise
     else:
         kill_reefast(pid)
-
 
 
 @pytest.fixture()

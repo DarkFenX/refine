@@ -1,4 +1,4 @@
-from ....util import Absent, Default
+from tests.support.util import Absent, Default
 
 
 class TestDataConsistencyError(Exception):
