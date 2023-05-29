@@ -29,12 +29,12 @@ class Fit(AttrDict):
         item.update()
         return item
 
-    def add_high_mod_request(self, module_id, state, charge_id=None, mode='equip'):
+    def add_high_mod_request(self, module_id, state='offline', charge_id=None, mode='equip'):
         return self._client.add_high_mod_request(
             ss_id=self._ss_id, fit_id=self.id, module_id=module_id,
             state=state, charge_id=charge_id, mode=mode)
 
-    def add_high_mod(self, module_id, state, charge_id=None, mode='equip'):
+    def add_high_mod(self, module_id, state='offline', charge_id=None, mode='equip'):
         resp = self.add_high_mod_request(module_id=module_id, state=state, charge_id=charge_id, mode=mode).send()
         assert resp.status_code == 200
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)

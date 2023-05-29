@@ -245,7 +245,7 @@ class TestClient:
             url=f'{self.__base_url}/solar_system/{ss_id}',
             json=payload)
 
-    def add_high_mod_request(self, ss_id, fit_id, module_id, state, charge_id=None, mode='equip'):
+    def add_high_mod_request(self, ss_id, fit_id, module_id, state='offline', charge_id=None, mode='equip'):
         command = {
             'type': 'add_module_high',
             'fit_id': fit_id,
