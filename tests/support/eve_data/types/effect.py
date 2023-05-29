@@ -5,7 +5,7 @@ class Effect:
 
     def __init__(
             self,
-            id,
+            id_,
             category_id,
             is_assistance,
             is_offensive,
@@ -18,7 +18,7 @@ class Effect:
             resist_attribute_id,
             modifier_info,
     ):
-        self.id = id
+        self.id = id_
         self.category_id = category_id
         self.is_assistance = is_assistance
         self.is_offensive = is_offensive

@@ -1,0 +1,12 @@
+[DESIGN]
+max-args = 15
+max-attributes = 15
+
+[FORMAT]
+max-line-length = 120
+
+[BASIC]
+good-names = id, s, op, f
+
+[MESSAGE CONTROL]
+disable = missing-docstring, too-few-public-methods

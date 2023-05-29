@@ -6,7 +6,7 @@ class Item:
 
     def __init__(
             self,
-            id,
+            id_,
             group_id,
             category_id,
             attributes,
@@ -14,7 +14,7 @@ class Item:
             default_effect_id,
             skill_reqs,
     ):
-        self.id = id
+        self.id = id_
         self.group_id = group_id
         self.category_id = category_id
         self.attributes = attributes

@@ -20,38 +20,38 @@ class TestObjects:
         self.effect_id = ID_START
         self.buff_id = ID_START
 
-    def mk_item(self, id, group_id, category_id, *args, **kwargs):
-        if id is Default:
-            id = self.item_id
+    def mk_item(self, id_, group_id, category_id, *args, **kwargs):
+        if id_ is Default:
+            id_ = self.item_id
             self.item_id += 1
         if group_id is Default:
             group_id = self.item_group_id
             self.item_group_id += 1
-        item = Item(id=id, group_id=group_id, category_id=category_id, *args, **kwargs)
+        item = Item(id_=id_, group_id=group_id, category_id=category_id, *args, **kwargs)
         self.items.append(item)
         return item
 
-    def mk_attr(self, id, *args, **kwargs):
-        if id is Default:
-            id = self.attr_id
+    def mk_attr(self, id_, *args, **kwargs):
+        if id_ is Default:
+            id_ = self.attr_id
             self.attr_id += 1
-        attr = Attribute(id, *args, **kwargs)
+        attr = Attribute(id_, *args, **kwargs)
         self.attributes.append(attr)
         return attr
 
-    def mk_effect(self, id, *args, **kwargs):
-        if id is Default:
-            id = self.effect_id
+    def mk_effect(self, id_, *args, **kwargs):
+        if id_ is Default:
+            id_ = self.effect_id
             self.effect_id += 1
-        effect = Effect(id, *args, **kwargs)
+        effect = Effect(id_, *args, **kwargs)
         self.effects.append(effect)
         return effect
 
-    def mk_buff(self, id, *args, **kwargs):
-        if id is Default:
-            id = self.buff_id
+    def mk_buff(self, id_, *args, **kwargs):
+        if id_ is Default:
+            id_ = self.buff_id
             self.buff_id += 1
-        buff = Buff(id, *args, **kwargs)
+        buff = Buff(id_, *args, **kwargs)
         self.buffs.append(buff)
         return buff
 
@@ -117,4 +117,3 @@ class TestStrings:
         self.dbuffcollections = ''
         self.requiredskillsfortypes = ''
         self.dynamicitemattributes = ''
-        

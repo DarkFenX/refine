@@ -9,16 +9,15 @@ def frame_to_primitive(frame, ignore_local_context=False):
         return (
             frame.filename,
             frame.function)
-    else:
-        pos = frame.positions
-        return (
-            frame.filename,
-            frame.lineno,
-            frame.function,
-            pos.lineno,
-            pos.end_lineno,
-            pos.col_offset,
-            pos.end_col_offset)
+    pos = frame.positions
+    return (
+        frame.filename,
+        frame.lineno,
+        frame.function,
+        pos.lineno,
+        pos.end_lineno,
+        pos.col_offset,
+        pos.end_col_offset)
 
 
 def is_support_path(path):

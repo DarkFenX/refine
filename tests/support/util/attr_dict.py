@@ -27,4 +27,4 @@ class AttrDict:
         return convert(data=val, hooks=self._hooks)
 
     def __repr__(self):
-        return '{}({})'.format(type(self).__name__, repr(self._data))
+        return f'{type(self).__name__}({repr(self._data)})'

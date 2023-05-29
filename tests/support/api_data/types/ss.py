@@ -8,7 +8,8 @@ class SolarSystem(AttrDict):
     def __init__(self, client, data):
         super().__init__(
             data=data,
-            hooks={'fits': lambda fits: {f.id: f for f in [Fit(client=client, data=fit, ss_id=self.id) for fit in fits]}})
+            hooks={
+                'fits': lambda fits: {f.id: f for f in [Fit(client=client, data=fit, ss_id=self.id) for fit in fits]}})
         self._client = client
 
     def update_request(self):
@@ -39,5 +40,3 @@ class SolarSystem(AttrDict):
         resp = self.get_item_request(item_id=item_id).send()
         assert resp.status_code == 200
         return Item(client=self, data=resp.json(), ss_id=self.id)
-
-

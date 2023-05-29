@@ -26,12 +26,11 @@ def reefast_server(tmp_path_factory):
     except Exception:
         kill_server(pid)
         raise
-    else:
-        kill_server(pid)
+    kill_server(pid)
 
 
 @pytest.fixture()
-def client(httpserver, reefast_server):
+def client(httpserver, reefast_server):  # pylint: disable=W0621
     yield TestClient(httpserver, reefast_server.port)
 
 

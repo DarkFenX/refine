@@ -5,7 +5,7 @@ import requests
 
 class Request(requests.PreparedRequest):
 
-    def __init__(self, client, *args, **kwargs):
+    def __init__(self, client, *args, **kwargs):  # pylint: disable=W0231
         prepared_request = requests.Request(*args, **kwargs).prepare()
         self.__dict__.update(prepared_request.__dict__)
         self.__client = client

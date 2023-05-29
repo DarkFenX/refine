@@ -6,7 +6,7 @@ from tests.support.eve_data import TestObjects, Modifier
 from tests.support.request import Request
 from tests.support.util import Absent, Default, get_stack_key
 
-data_id = 10000000
+data_id = 10000000  # pylint: disable=C0103
 
 
 class TestClient:
@@ -23,7 +23,7 @@ class TestClient:
 
     # Data-related methods
     def mk_eve_data(self):
-        global data_id
+        global data_id  # pylint: disable=C0103,W0603
         alias = str(data_id)
         data = self.__datas[alias] = TestObjects(alias)
         data_id += 1
@@ -42,7 +42,7 @@ class TestClient:
     def mk_eve_item(
             self,
             data=Default,
-            id=Default,
+            id_=Default,
             grp_id=Default,
             cat_id=ItemCat.module,
             attrs=Default,
@@ -53,7 +53,7 @@ class TestClient:
         if data is Default:
             data = self.__default_data
         return data.mk_item(
-            id=id,
+            id_=id_,
             group_id=grp_id,
             category_id=cat_id,
             attributes={} if attrs is Default else attrs,
@@ -64,7 +64,7 @@ class TestClient:
     def mk_eve_attr(
             self,
             data=Default,
-            id=Default,
+            id_=Default,
             stackable=True,
             high_is_good=True,
             def_val=0.0,
@@ -73,7 +73,7 @@ class TestClient:
         if data is Default:
             data = self.__default_data
         return data.mk_attr(
-            id=id,
+            id_=id_,
             stackable=stackable,
             high_is_good=high_is_good,
             default_value=def_val,
@@ -82,7 +82,7 @@ class TestClient:
     def mk_eve_effect(
             self,
             data=Default,
-            id=Default,
+            id_=Default,
             cat_id=EffCat.passive,
             is_assistance=False,
             is_offensive=False,
@@ -98,7 +98,7 @@ class TestClient:
         if data is Default:
             data = self.__default_data
         return data.mk_effect(
-            id=id,
+            id_=id_,
             category_id=cat_id,
             is_assistance=is_assistance,
             is_offensive=is_offensive,
@@ -114,7 +114,7 @@ class TestClient:
     def mk_eve_buff(
             self,
             data=Default,
-            id=Default,
+            id_=Default,
             aggr_mode=Default,
             op=Default,
             item_mods=Default,
@@ -125,7 +125,7 @@ class TestClient:
         if data is Default:
             data = self.__default_data
         return data.mk_buff(
-            id=id,
+            id_=id_,
             aggregate_mode=aggr_mode,
             operation_name=op,
             item_modifiers=item_mods,

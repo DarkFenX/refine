@@ -22,5 +22,3 @@ class Item(AttrDict):
         assert resp.status_code == 200
         self._data = resp.json()
         return resp
-
-

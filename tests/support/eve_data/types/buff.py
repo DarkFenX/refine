@@ -2,7 +2,7 @@ class Buff:
 
     def __init__(
             self,
-            id,
+            id_,
             aggregate_mode,
             operation_name,
             item_modifiers,
@@ -10,7 +10,7 @@ class Buff:
             location_group_modifiers,
             location_skillreq_modifiers,
     ):
-        self.id = id
+        self.id = id_
         self.aggregate_mode = aggregate_mode
         self.operation_name = operation_name
         self.item_modifiers = item_modifiers

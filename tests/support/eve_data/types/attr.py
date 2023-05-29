@@ -5,13 +5,13 @@ class Attribute:
 
     def __init__(
             self,
-            id,
+            id_,
             stackable,
             high_is_good,
             default_value,
             max_attribute_id
     ):
-        self.id = id
+        self.id = id_
         self.stackable = stackable
         self.high_is_good = high_is_good
         self.default_value = default_value

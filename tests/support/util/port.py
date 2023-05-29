@@ -15,5 +15,4 @@ def check_port_free(port):
             s.bind(('0.0.0.0', port))
         except OSError:
             return False
-        else:
-            return True
+        return True
