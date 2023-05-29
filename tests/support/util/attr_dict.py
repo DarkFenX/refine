@@ -9,8 +9,8 @@ def convert(data, hooks):
 class AttrDict:
 
     def __init__(self, data, hooks=None):
-        super().__setattr__('_data', data)
-        super().__setattr__('_hooks', hooks or {})
+        self._data = data
+        self._hooks = hooks or {}
 
     def __getitem__(self, index):
         return convert(data=self._data[index], hooks=self._hooks)
@@ -25,12 +25,6 @@ class AttrDict:
         if hook is not None:
             return hook(val)
         return convert(data=val, hooks=self._hooks)
-
-    def __setattr__(self, key, value):
-        if key in vars(self):
-            super().__setattr__(key, value)
-        else:
-            self._data[key] = value
 
     def __repr__(self):
         return repr(self._data)

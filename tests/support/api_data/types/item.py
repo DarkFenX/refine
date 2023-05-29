@@ -11,8 +11,8 @@ class Item(AttrDict):
         super().__init__(
             data=data,
             hooks={'attr_vals': lambda attr_vals: {int(k): AttrVals(*v) for k, v in attr_vals.items()}})
-        object.__setattr__(self, '_client', client)
-        object.__setattr__(self, '_ss_id', ss_id)
+        self._client = client
+        self._ss_id = ss_id
 
     def update_request(self):
         return self._client.get_item_request(ss_id=self._ss_id, item_id=self.id)

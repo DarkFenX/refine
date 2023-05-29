@@ -6,8 +6,8 @@ class Fit(AttrDict):
 
     def __init__(self, client, data, ss_id):
         super().__init__(data=data)
-        object.__setattr__(self, '_client', client)
-        object.__setattr__(self, '_ss_id', ss_id)
+        self._client = client
+        self._ss_id = ss_id
 
     def update_request(self):
         return self._client.update_fit_request(ss_id=self._ss_id, fit_id=self.id)

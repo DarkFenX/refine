@@ -9,7 +9,7 @@ class SolarSystem(AttrDict):
         super().__init__(
             data=data,
             hooks={'fits': lambda fits: {f.id: f for f in [Fit(client=client, data=fit, ss_id=self.id) for fit in fits]}})
-        object.__setattr__(self, '_client', client)
+        self._client = client
 
     def update_request(self):
         return self._client.update_ss_request(ss_id=self.id)
