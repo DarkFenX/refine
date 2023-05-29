@@ -1,5 +1,5 @@
 # pylint: disable=C0103
-from enum import IntEnum, unique
+from enum import StrEnum, IntEnum, unique
 
 
 @unique
@@ -24,6 +24,24 @@ class EffCat(IntEnum):
     overload = 5
     dungeon = 6
     system = 7
+
+
+@unique
+class ModFunc(StrEnum):
+    item = 'ItemModifier'
+    loc = 'LocationModifier'
+    loc_grp = 'LocationGroupModifier'
+    loc_srq = 'LocationRequiredSkillModifier'
+    own_srq = 'OwnerRequiredSkillModifier'
+
+
+@unique
+class ModDom(StrEnum):
+    item = 'itemID'
+    char = 'charID'
+    ship = 'shipID'
+    struct = 'structureID'
+    tgt = 'targetID'
 
 
 @unique

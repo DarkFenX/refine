@@ -19,7 +19,7 @@ class SolarSystem(AttrDict):
         resp = self.update_request().send()
         assert resp.status_code == 200
         self._data = resp.json
-        return resp
+        return self
 
     # Fit-related methods
     def create_fit_request(self):

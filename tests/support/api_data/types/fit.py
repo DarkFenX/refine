@@ -15,8 +15,8 @@ class Fit(AttrDict):
     def update(self):
         resp = self.update_request().send()
         assert resp.status_code == 200
-        self._data = resp.json
-        return resp
+        self._data = resp.json()
+        return self
 
     # Item-related methods
     def set_ship_request(self, ship_id):
@@ -38,5 +38,4 @@ class Fit(AttrDict):
         resp = self.add_high_mod_request(module_id=module_id, state=state, charge_id=charge_id, mode=mode).send()
         assert resp.status_code == 200
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
-        item.update()
         return item

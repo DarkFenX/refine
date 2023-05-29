@@ -21,4 +21,4 @@ class Item(AttrDict):
         resp = self.update_request().send()
         assert resp.status_code == 200
         self._data = resp.json()
-        return resp
+        return self
