@@ -11,13 +11,12 @@ data_id = 10000000
 
 class TestClient:
 
-    base_url = 'http://localhost:8000'
-
-    def __init__(self, data_server):
+    def __init__(self, data_server, port):
         self.__datas = {}
         self.__data_server = data_server
         self.__stack_alias_map = {}
         self.__session = requests.Session()
+        self.__base_url = f'http://localhost:{port}'
 
     def send_prepared(self, req):
         return self.__session.send(req)
@@ -155,7 +154,7 @@ class TestClient:
         return Request(
             self,
             method='POST',
-            url=f'{self.base_url}/source/{data.alias}',
+            url=f'{self.__base_url}/source/{data.alias}',
             json={'data_version': '1', 'data_base_url': f'http://localhost:{self.__data_server.port}/{data.alias}/'})
 
     def create_source(self, data=Default):
@@ -197,7 +196,7 @@ class TestClient:
         return Request(
             self,
             method='POST',
-            url=f'{self.base_url}/solar_system',
+            url=f'{self.__base_url}/solar_system',
             params={'ss': 'full', 'fit': 'full', 'item': 'full'},
             json=body)
 
@@ -212,7 +211,7 @@ class TestClient:
         return Request(
             self,
             method='GET',
-            url=f'{self.base_url}/solar_system/{ss_id}',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
             params={'ss': 'full', 'fit': 'full', 'item': 'full'})
 
     # Fit-related methods
@@ -220,14 +219,14 @@ class TestClient:
         return Request(
             self,
             method='POST',
-            url=f'{self.base_url}/solar_system/{ss_id}/fit',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fit',
             params={'fit': 'full', 'item': 'full'})
 
     def update_fit_request(self, ss_id, fit_id):
         return Request(
             self,
             method='GET',
-            url=f'{self.base_url}/solar_system/{ss_id}/fit/{fit_id}',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}',
             params={'fit': 'full', 'item': 'full'})
 
     # Item-related methods
@@ -235,7 +234,7 @@ class TestClient:
         return Request(
             self,
             method='GET',
-            url=f'{self.base_url}/solar_system/{ss_id}/item/{item_id}',
+            url=f'{self.__base_url}/solar_system/{ss_id}/item/{item_id}',
             params={'item': 'full'})
 
     def set_ship_request(self, ss_id, fit_id, ship_id):
@@ -243,7 +242,7 @@ class TestClient:
         return Request(
             self,
             method='PATCH',
-            url=f'{self.base_url}/solar_system/{ss_id}',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
             json=payload)
 
     def add_high_mod_request(self, ss_id, fit_id, module_id, state, charge_id=None, mode='equip'):
@@ -258,5 +257,5 @@ class TestClient:
         return Request(
             self,
             method='PATCH',
-            url=f'{self.base_url}/solar_system/{ss_id}',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
             json={'commands': [command]})

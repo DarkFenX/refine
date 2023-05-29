@@ -7,7 +7,7 @@ class BuildError(Exception):
     pass
 
 
-def build_reefast(proj_root):
+def build_server(proj_root):
     http_path = os.path.join(proj_root, 'http')
     os.chdir(http_path)
     result = subprocess.run(['cargo', 'build', '--profile=release'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -15,10 +15,16 @@ def build_reefast(proj_root):
         raise BuildError(f'expected return code 0, got {result.returncode}')
 
 
-def run_reefast(proj_root):
+def build_config(path, port):
+    contents = f"[server]\nport = {port}"
+    with open(path, 'w') as f:
+        f.write(contents)
+
+
+def run_server(proj_root, config_path):
     binary_path = os.path.join(proj_root, 'target', 'release', 'reefast-http')
-    return subprocess.Popen([binary_path]).pid
+    return subprocess.Popen([binary_path, config_path]).pid
 
 
-def kill_reefast(pid):
+def kill_server(pid):
     os.kill(pid, SIGKILL)
