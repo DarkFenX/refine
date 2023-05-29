@@ -1,0 +1,2 @@
+class TestDataConsistencyError(Exception):
+    pass

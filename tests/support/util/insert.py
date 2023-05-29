@@ -1,8 +1,4 @@
-from tests.support.util import Absent, Default
-
-
-class TestDataConsistencyError(Exception):
-    pass
+from .singletons import Absent, Default
 
 
 def conditional_insert(container, key, value, cast_to=None):

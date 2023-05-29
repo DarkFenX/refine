@@ -186,9 +186,16 @@ fn execute_commands(core_ss: &mut reefast::SolarSystem, commands: Vec<SsCommand>
     let mut cmd_results = Vec::with_capacity(commands.len());
     for cmd in commands.iter() {
         match cmd {
+            SsCommand::AddImplant(c) => {
+                let implant_id = core_ss
+                    .add_implant(c.fit_id, c.type_id, c.state.unwrap_or(true))
+                    .unwrap();
+                let resp = CmdResp::ItemIds(ItemIdsResp::from(implant_id));
+                cmd_results.push(resp);
+            }
             SsCommand::SetShip(c) => {
                 let ship_id = core_ss
-                    .set_fit_ship(c.fit_id, c.ship_type_id, c.state.unwrap_or(true))
+                    .set_fit_ship(c.fit_id, c.type_id, c.state.unwrap_or(true))
                     .unwrap();
                 let resp = CmdResp::ItemIds(ItemIdsResp::from(ship_id));
                 cmd_results.push(resp);
@@ -233,6 +240,11 @@ fn execute_commands(core_ss: &mut reefast::SolarSystem, commands: Vec<SsCommand>
                     )
                     .unwrap();
                 let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                cmd_results.push(resp);
+            }
+            SsCommand::AddRig(c) => {
+                let rig_id = core_ss.add_rig(c.fit_id, c.type_id, c.state.unwrap_or(true)).unwrap();
+                let resp = CmdResp::ItemIds(ItemIdsResp::from(rig_id));
                 cmd_results.push(resp);
             }
         };

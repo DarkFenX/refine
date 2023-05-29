@@ -1,5 +1,5 @@
-from tests.support.util import Default, Absent
-from .aux import TestDataConsistencyError, conditional_insert
+from tests.support.util import Default, Absent, conditional_insert
+from .exception import TestDataConsistencyError
 
 
 class Item:

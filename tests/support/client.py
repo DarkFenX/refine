@@ -4,7 +4,7 @@ from tests.support.api_data import SolarSystem
 from tests.support.consts import EffCat, ItemCat
 from tests.support.eve_data import TestObjects, Modifier
 from tests.support.request import Request
-from tests.support.util import Absent, Default, get_stack_key
+from tests.support.util import Absent, Default, conditional_insert, get_stack_key
 
 data_id = 10000000  # pylint: disable=C0103
 
@@ -238,23 +238,40 @@ class TestClient:
             url=f'{self.__base_url}/solar_system/{ss_id}/item/{item_id}',
             params={'item': 'full'})
 
-    def set_ship_request(self, ss_id, fit_id, ship_id):
-        payload = {'commands': [{'type': 'set_ship', 'fit_id': fit_id, 'ship_type_id': ship_id}]}
+    def add_implant_request(self, ss_id, fit_id, type_id, state=Absent):
+        return self.__add_simple_item('add_implant', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+
+    def set_ship_request(self, ss_id, fit_id, type_id):
+        payload = {'commands': [{'type': 'set_ship', 'fit_id': fit_id, 'type_id': type_id}]}
         return Request(
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
             json=payload)
 
-    def add_high_mod_request(self, ss_id, fit_id, module_id, state='offline', charge_id=None, mode='equip'):
+    def add_high_mod_request(self, ss_id, fit_id, module_type_id, state='offline', charge_type_id=Absent, mode='equip'):
         command = {
             'type': 'add_module_high',
             'fit_id': fit_id,
             'add_mode': mode,
-            'module_type_id': module_id,
+            'module_type_id': module_type_id,
             'state': state}
-        if charge_id is not None:
-            command['charge_type_id'] = charge_id
+        conditional_insert(command, 'charge_type_id', charge_type_id)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
+            json={'commands': [command]})
+
+    def add_rig_request(self, ss_id, fit_id, type_id, state=Absent):
+        return self.__add_simple_item('add_rig', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+
+    def __add_simple_item(self, cmd_name, ss_id, fit_id, type_id, state):
+        command = {
+            'type': cmd_name,
+            'fit_id': fit_id,
+            'type_id': type_id}
+        conditional_insert(command, 'state', state)
         return Request(
             self,
             method='PATCH',

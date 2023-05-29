@@ -1,4 +1,4 @@
-from tests.support.util import AttrDict
+from tests.support.util import AttrDict, Absent
 from .item import Item
 
 
@@ -19,23 +19,44 @@ class Fit(AttrDict):
         return self
 
     # Item-related methods
-    def set_ship_request(self, ship_id):
-        return self._client.set_ship_request(ss_id=self._ss_id, fit_id=self.id, ship_id=ship_id)
+    def add_implant_request(self, type_id, state=Absent):
+        return self._client.add_implant_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
 
-    def set_ship(self, ship_id):
-        resp = self.set_ship_request(ship_id=ship_id).send()
+    def add_implant(self, type_id, state=Absent):
+        resp = self.add_implant_request(type_id=type_id, state=state).send()
         assert resp.status_code == 200
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
-        item.update()
         return item
 
-    def add_high_mod_request(self, module_id, state='offline', charge_id=None, mode='equip'):
-        return self._client.add_high_mod_request(
-            ss_id=self._ss_id, fit_id=self.id, module_id=module_id,
-            state=state, charge_id=charge_id, mode=mode)
+    def set_ship_request(self, type_id):
+        return self._client.set_ship_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
 
-    def add_high_mod(self, module_id, state='offline', charge_id=None, mode='equip'):
-        resp = self.add_high_mod_request(module_id=module_id, state=state, charge_id=charge_id, mode=mode).send()
+    def set_ship(self, type_id):
+        resp = self.set_ship_request(type_id=type_id).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        return item
+
+    def add_high_mod_request(self, module_type_id, state='offline', charge_type_id=None, mode='equip'):
+        return self._client.add_high_mod_request(
+            ss_id=self._ss_id, fit_id=self.id, module_type_id=module_type_id,
+            state=state, charge_type_id=charge_type_id, mode=mode)
+
+    def add_high_mod(self, module_type_id, state='offline', charge_type_id=None, mode='equip'):
+        resp = self.add_high_mod_request(
+            module_type_id=module_type_id,
+            state=state,
+            charge_type_id=charge_type_id,
+            mode=mode).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        return item
+
+    def add_rig_request(self, type_id, state=Absent):
+        return self._client.add_rig_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+
+    def add_rig(self, type_id, state=Absent):
+        resp = self.add_rig_request(type_id=type_id, state=state).send()
         assert resp.status_code == 200
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item

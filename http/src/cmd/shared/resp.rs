@@ -19,6 +19,11 @@ impl ItemIdsResp {
         }
     }
 }
+impl From<reefast::ImplantInfo> for ItemIdsResp {
+    fn from(value: reefast::ImplantInfo) -> Self {
+        ItemIdsResp::new(value.item_id, None)
+    }
+}
 impl From<reefast::ShipInfo> for ItemIdsResp {
     fn from(value: reefast::ShipInfo) -> Self {
         ItemIdsResp::new(value.item_id, None)
@@ -27,5 +32,10 @@ impl From<reefast::ShipInfo> for ItemIdsResp {
 impl From<reefast::ModuleInfo> for ItemIdsResp {
     fn from(value: reefast::ModuleInfo) -> Self {
         ItemIdsResp::new(value.item_id, value.charge)
+    }
+}
+impl From<reefast::RigInfo> for ItemIdsResp {
+    fn from(value: reefast::RigInfo) -> Self {
+        ItemIdsResp::new(value.item_id, None)
     }
 }

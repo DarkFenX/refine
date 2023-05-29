@@ -3,26 +3,37 @@ use crate::cmd::shared::{AddMode, State};
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum SsCommand {
+    AddImplant(AddImplantCmd),
     SetShip(SetShipCmd),
     AddModuleHigh(AddModuleCmd),
     AddModuleMid(AddModuleCmd),
     AddModuleLow(AddModuleCmd),
+    AddRig(AddRigCmd),
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct AddImplantCmd {
+    #[serde(with = "crate::util::serde_string")]
+    pub(crate) fit_id: reefast::ReeId,
+    pub(crate) type_id: reefast::ReeInt,
+    pub(crate) state: Option<bool>,
+}
+impl AddImplantCmd {
+    pub(crate) fn new(fit_id: reefast::ReeId, type_id: reefast::ReeInt, state: Option<bool>) -> Self {
+        Self { fit_id, type_id, state }
+    }
 }
 
 #[derive(serde::Deserialize)]
 pub(crate) struct SetShipCmd {
     #[serde(with = "crate::util::serde_string")]
     pub(crate) fit_id: reefast::ReeId,
-    pub(crate) ship_type_id: reefast::ReeInt,
+    pub(crate) type_id: reefast::ReeInt,
     pub(crate) state: Option<bool>,
 }
 impl SetShipCmd {
-    pub(crate) fn new(fit_id: reefast::ReeId, ship_type_id: reefast::ReeInt, state: Option<bool>) -> Self {
-        Self {
-            fit_id,
-            ship_type_id,
-            state,
-        }
+    pub(crate) fn new(fit_id: reefast::ReeId, type_id: reefast::ReeInt, state: Option<bool>) -> Self {
+        Self { fit_id, type_id, state }
     }
 }
 
@@ -50,5 +61,18 @@ impl AddModuleCmd {
             charge_type_id,
             state,
         }
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct AddRigCmd {
+    #[serde(with = "crate::util::serde_string")]
+    pub(crate) fit_id: reefast::ReeId,
+    pub(crate) type_id: reefast::ReeInt,
+    pub(crate) state: Option<bool>,
+}
+impl AddRigCmd {
+    pub(crate) fn new(fit_id: reefast::ReeId, type_id: reefast::ReeInt, state: Option<bool>) -> Self {
+        Self { fit_id, type_id, state }
     }
 }

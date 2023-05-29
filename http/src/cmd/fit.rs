@@ -24,12 +24,12 @@ impl FitCommand {
 
 #[derive(serde::Deserialize)]
 pub(crate) struct SetShipCmd {
-    pub(crate) ship_type_id: reefast::ReeInt,
+    pub(crate) type_id: reefast::ReeInt,
     pub(crate) state: Option<bool>,
 }
 impl SetShipCmd {
     fn fill_fit(self, fit_id: reefast::ReeId) -> ss::SetShipCmd {
-        ss::SetShipCmd::new(fit_id, self.ship_type_id, self.state)
+        ss::SetShipCmd::new(fit_id, self.type_id, self.state)
     }
 }
 

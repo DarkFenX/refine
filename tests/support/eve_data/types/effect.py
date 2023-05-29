@@ -1,4 +1,4 @@
-from .aux import conditional_insert
+from tests.support.util import conditional_insert
 
 
 class Effect:
