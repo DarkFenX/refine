@@ -33,6 +33,15 @@ def is_support_path(path):
 
 
 def get_stack_key():
+    """
+    This function is supposed to give key (= hashable entity) which is unique
+    for each test, and stays the same for the duration of the test.
+
+    Current implementation assumes that all calls which eventually use this
+    function have to be done from the same function. This translates to need
+    to have all the EVE data set up in one function, otherwise you have to
+    explicitly specify data source to use.
+    """
     stack = inspect.stack(context=0)
     # Filter out stack entries for entities in support folder
     stack = [f for f in stack if not is_support_path(f.filename)]
