@@ -22,7 +22,7 @@ class TestClient:
         return self.__session.send(req)
 
     # Data-related methods
-    def mk_data(self):
+    def mk_eve_data(self):
         global data_id
         alias = str(data_id)
         data = self.__datas[alias] = TestObjects(alias)
@@ -35,11 +35,11 @@ class TestClient:
         if key in self.__stack_alias_map:
             alias = self.__stack_alias_map[key]
             return self.__datas[alias]
-        data = self.mk_data()
+        data = self.mk_eve_data()
         self.__stack_alias_map[key] = data.alias
         return data
 
-    def mk_item(
+    def mk_eve_item(
             self,
             data=Default,
             id=Default,
@@ -61,7 +61,7 @@ class TestClient:
             default_effect_id=defeff_id,
             skill_reqs={} if srqs is Default else srqs)
 
-    def mk_attr(
+    def mk_eve_attr(
             self,
             data=Default,
             id=Default,
@@ -79,7 +79,7 @@ class TestClient:
             default_value=def_val,
             max_attribute_id=max_attr_id)
 
-    def mk_effect(
+    def mk_eve_effect(
             self,
             data=Default,
             id=Default,
@@ -111,7 +111,7 @@ class TestClient:
             resist_attribute_id=resist_attr_id,
             modifier_info=mod_info)
 
-    def mk_buff(
+    def mk_eve_buff(
             self,
             data=Default,
             id=Default,
@@ -133,7 +133,7 @@ class TestClient:
             location_group_modifiers=loc_grp_mods,
             location_skillreq_modifiers=loc_srq_mods)
 
-    def mk_mod(
+    def mk_eve_mod(
             self,
             func=Absent,
             dom=Absent,
@@ -148,6 +148,7 @@ class TestClient:
             tgt_attr_id=tgt_attr_id,
             operation=op)
 
+    # Data source-related methods
     def create_source_request(self, data=Default):
         if data is Default:
             data = self.__default_data
