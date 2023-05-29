@@ -163,16 +163,19 @@ class TestClient:
             data = self.__default_data
         # Set up server with local data
         str_data = data.render()
-        self.__setup_handler(f'/{data.alias}/fsd_binary/types.json', str_data.types)
-        self.__setup_handler(f'/{data.alias}/fsd_binary/groups.json', str_data.groups)
-        self.__setup_handler(f'/{data.alias}/fsd_binary/dogmaattributes.json', str_data.dogmaattributes)
-        self.__setup_handler(f'/{data.alias}/fsd_binary/typedogma.json', str_data.typedogma)
-        self.__setup_handler(f'/{data.alias}/fsd_binary/dogmaeffects.json', str_data.dogmaeffects)
-        self.__setup_handler(f'/{data.alias}/fsd_lite/fighterabilities.json', str_data.fighterabilities)
-        self.__setup_handler(f'/{data.alias}/fsd_lite/fighterabilitiesbytype.json', str_data.fighterabilitiesbytype)
-        self.__setup_handler(f'/{data.alias}/fsd_lite/dbuffcollections.json', str_data.dbuffcollections)
-        self.__setup_handler(f'/{data.alias}/fsd_binary/requiredskillsfortypes.json', str_data.requiredskillsfortypes)
-        self.__setup_handler(f'/{data.alias}/fsd_binary/dynamicitemattributes.json', str_data.dynamicitemattributes)
+        suffix_cont_map = {
+            'fsd_binary/types.json': str_data.types,
+            'fsd_binary/groups.json': str_data.groups,
+            'fsd_binary/dogmaattributes.json': str_data.dogmaattributes,
+            'fsd_binary/typedogma.json': str_data.typedogma,
+            'fsd_binary/dogmaeffects.json': str_data.dogmaeffects,
+            'fsd_lite/fighterabilities.json': str_data.fighterabilities,
+            'fsd_lite/fighterabilitiesbytype.json': str_data.fighterabilitiesbytype,
+            'fsd_lite/dbuffcollections.json': str_data.dbuffcollections,
+            'fsd_binary/requiredskillsfortypes.json': str_data.requiredskillsfortypes,
+            'fsd_binary/dynamicitemattributes.json': str_data.dynamicitemattributes}
+        for suffix, container in suffix_cont_map.items():
+            self.__setup_handler(f'/{data.alias}/{suffix}', container)
         # Get request and send it
         resp = self.create_source_request(data=data).send()
         assert resp.status_code == 204
