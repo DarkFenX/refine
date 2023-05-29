@@ -25,11 +25,11 @@ def get_value(client, consts, stackable):
     return api_item_tgt.update().attr_vals[eve_tgt_attr.id].dogma
 
 
-def test_penalized(client, consts):
-    value = get_value(client, consts, stackable=0)
+def test_non_penalized(client, consts):
+    value = get_value(client, consts, stackable=True)
     assert value == approx(43.92)
 
 
-def test_non_penalized(client, consts):
-    value = get_value(client, consts, stackable=1)
+def test_penalized(client, consts):
+    value = get_value(client, consts, stackable=False)
     assert value == approx(43.92)

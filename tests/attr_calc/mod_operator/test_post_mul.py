@@ -7,15 +7,15 @@ def get_value(client, consts, stackable):
     eve_modifier = client.mk_eve_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
-        op=consts.ModOp.post_percent,
+        op=consts.ModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_modifier])
-    eve_item_src1 = client.mk_eve_item(attrs={eve_src_attr.id: 20}, eff_ids=[eve_effect.id])
-    eve_item_src2 = client.mk_eve_item(attrs={eve_src_attr.id: 50}, eff_ids=[eve_effect.id])
-    eve_item_src3 = client.mk_eve_item(attrs={eve_src_attr.id: -90}, eff_ids=[eve_effect.id])
-    eve_item_src4 = client.mk_eve_item(attrs={eve_src_attr.id: -25}, eff_ids=[eve_effect.id])
-    eve_item_src5 = client.mk_eve_item(attrs={eve_src_attr.id: 400}, eff_ids=[eve_effect.id])
+    eve_item_src1 = client.mk_eve_item(attrs={eve_src_attr.id: 1.2}, eff_ids=[eve_effect.id])
+    eve_item_src2 = client.mk_eve_item(attrs={eve_src_attr.id: 1.5}, eff_ids=[eve_effect.id])
+    eve_item_src3 = client.mk_eve_item(attrs={eve_src_attr.id: 0.1}, eff_ids=[eve_effect.id])
+    eve_item_src4 = client.mk_eve_item(attrs={eve_src_attr.id: 0.75}, eff_ids=[eve_effect.id])
+    eve_item_src5 = client.mk_eve_item(attrs={eve_src_attr.id: 5}, eff_ids=[eve_effect.id])
     eve_item_tgt = client.mk_eve_item(attrs={eve_tgt_attr.id: 100})
     client.create_sources()
     api_ss = client.create_ss()
