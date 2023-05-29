@@ -1,4 +1,4 @@
-use std::{cmp::Ordering, collections::HashMap, sync::Arc};
+use std::{collections::HashMap, sync::Arc};
 
 use itertools::Itertools;
 
@@ -153,13 +153,13 @@ impl CalcSvc {
                 attr.penalizable && !modification.afor_pen_immune && PENALIZABLE_OPS.contains(&modification.op);
             let mod_val = match modification.op {
                 ModOp::PreAssign => modification.val,
-                ModOp::PreMul => modification.val - 1.0,
-                ModOp::PreDiv => 1.0 / modification.val - 1.0,
+                ModOp::PreMul => modification.val,
+                ModOp::PreDiv => 1.0 / modification.val,
                 ModOp::Add => modification.val,
                 ModOp::Sub => -modification.val,
-                ModOp::PostMul => modification.val - 1.0,
-                ModOp::PostDiv => 1.0 / modification.val - 1.0,
-                ModOp::PostPerc => modification.val / 100.0,
+                ModOp::PostMul => modification.val,
+                ModOp::PostDiv => 1.0 / modification.val,
+                ModOp::PostPerc => 1.0 + modification.val / 100.0,
                 ModOp::PostAssign => modification.val,
             };
             match modification.aggr_mode {
@@ -259,13 +259,13 @@ fn penalize_vals(mut vals: Vec<ReeFloat>) -> ReeFloat {
     // Gather positive multipliers into one chain, negative into another, with stronger modifications
     // being first
     let positive = vals
-        .drain_filter(|v| *v > 0.0)
+        .drain_filter(|v| *v > 1.0)
         .into_iter()
-        .sorted_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Less))
+        .sorted_by(|a, b| b.partial_cmp(a).unwrap())
         .collect_vec();
     let negative = vals
         .into_iter()
-        .sorted_by(|a, b| b.partial_cmp(a).unwrap_or(Ordering::Less))
+        .sorted_by(|a, b| a.partial_cmp(b).unwrap())
         .collect_vec();
     get_chain_val(positive) * get_chain_val(negative)
 }
@@ -277,7 +277,7 @@ fn get_chain_val(vals: Vec<ReeFloat>) -> ReeFloat {
         if i > 10 {
             break;
         }
-        val *= 1.0 + mod_val * PENALTY_BASE.powi((i as i32).pow(2));
+        val *= 1.0 + (mod_val - 1.0) * PENALTY_BASE.powi((i as i32).pow(2));
     }
     val
 }
@@ -290,7 +290,7 @@ fn process_assigns(assigns: &Vec<ReeFloat>, attr: &ct::Attr) -> ReeFloat {
 }
 fn process_mults(mults: &Vec<ReeFloat>) -> ReeFloat {
     let mut val = 1.0;
-    mults.iter().for_each(|v| val *= 1.0 + v);
+    mults.iter().for_each(|v| val *= v);
     val
 }
 fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {
