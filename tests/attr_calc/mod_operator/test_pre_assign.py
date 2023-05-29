@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def get_value(client, consts, high_is_good):
+def get_dogma_value(client, consts, high_is_good):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(high_is_good=high_is_good)
     eve_modifier = client.mk_eve_mod(
@@ -26,10 +26,10 @@ def get_value(client, consts, high_is_good):
 
 
 def test_high_is_good(client, consts):
-    value = get_value(client, consts, high_is_good=True)
+    value = get_dogma_value(client, consts, high_is_good=True)
     assert value == approx(53.02)
 
 
 def test_high_is_bad(client, consts):
-    value = get_value(client, consts, high_is_good=False)
+    value = get_dogma_value(client, consts, high_is_good=False)
     assert value == approx(-20)

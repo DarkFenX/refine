@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def get_value(client, consts, stackable):
+def get_dogma_value(client, consts, stackable):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=stackable)
     eve_modifier = client.mk_eve_mod(
@@ -30,10 +30,10 @@ def get_value(client, consts, stackable):
 
 
 def test_non_penalized(client, consts):
-    value = get_value(client, consts, stackable=True)
+    value = get_dogma_value(client, consts, stackable=True)
     assert value == approx(67.5)
 
 
 def test_penalized(client, consts):
-    value = get_value(client, consts, stackable=False)
+    value = get_dogma_value(client, consts, stackable=False)
     assert value == approx(62.54978)
