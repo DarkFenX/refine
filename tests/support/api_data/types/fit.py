@@ -19,6 +19,13 @@ class Fit(AttrDict):
         return self
 
     # Item-related methods
+    def remove_item_request(self, item_id):
+        return self._client.remove_item_request(ss_id=self._ss_id, item_id=item_id)
+
+    def remove_item(self, item_id):
+        resp = self.remove_item_request(item_id=item_id).send()
+        assert resp.status_code == 204
+
     def add_implant_request(self, type_id, state=Absent):
         return self._client.add_implant_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
 

@@ -22,3 +22,10 @@ class Item(AttrDict):
         assert resp.status_code == 200
         self._data = resp.json()
         return self
+
+    def remove_request(self):
+        return self._client.remove_item_request(ss_id=self._ss_id, item_id=self.id)
+
+    def remove(self):
+        resp = self.remove_request().send()
+        assert resp.status_code == 204

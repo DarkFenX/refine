@@ -2,6 +2,7 @@
 max-args = 15
 max-attributes = 15
 max-locals = 50
+max-public-methods = 25
 
 [FORMAT]
 max-line-length = 120

@@ -238,6 +238,12 @@ class TestClient:
             url=f'{self.__base_url}/solar_system/{ss_id}/item/{item_id}',
             params={'item': 'full'})
 
+    def remove_item_request(self, ss_id, item_id):
+        return Request(
+            self,
+            method='DELETE',
+            url=f'{self.__base_url}/solar_system/{ss_id}/item/{item_id}')
+
     def add_implant_request(self, ss_id, fit_id, type_id, state=Absent):
         return self.__add_simple_item('add_implant', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
