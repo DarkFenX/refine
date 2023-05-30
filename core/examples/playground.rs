@@ -56,10 +56,16 @@ fn main() {
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
     let ship = sol_sys.set_fit_ship(fit, 11184, true).unwrap();
-    for skill_id in skill_ids.iter() {
-        sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
-    }
+    // for skill_id in skill_ids.iter() {
+    //     sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
+    // }
     let implant = sol_sys.add_implant(fit, 19687, true);
-    let attrs = sol_sys.get_item_dogma_attrs(&ship.id).unwrap();
-    println!("{attrs:?}");
+    let armor = sol_sys.get_item_attrs(&ship.id).unwrap().get(&265).unwrap().dogma;
+    println!("{armor}");
+    let rig = sol_sys.add_rig(fit, 31057, true).unwrap();
+    let armor = sol_sys.get_item_attrs(&ship.id).unwrap().get(&265).unwrap().dogma;
+    println!("{armor}");
+    sol_sys.remove_item(&rig.id);
+    let armor = sol_sys.get_item_attrs(&ship.id).unwrap().get(&265).unwrap().dogma;
+    println!("{armor}");
 }

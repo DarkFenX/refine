@@ -1,12 +1,10 @@
 use std::{
     collections::{HashMap, HashSet},
     hash::Hash,
-    sync::Arc,
 };
 
 use crate::{
     consts::{ModAfeeFilter, ModDomain},
-    ct,
     defs::{ReeId, ReeInt},
     ss::item::Item,
     util::KeyedStorage,
@@ -79,17 +77,17 @@ impl AffectionRegister {
         &mut self,
         afor_spec: &AffectorSpec,
         items: &HashMap<ReeId, Item>,
-    ) -> Option<Vec<ReeId>> {
+    ) -> Vec<ReeId> {
+        let mut afees = Vec::new();
         let afor_item = match items.get(&afor_spec.item_id) {
             Some(i) => i,
-            None => return None,
+            None => return afees,
         };
         let afor_fit_id = afor_item.get_fit_id();
         let afor_mod = match afor_spec.get_modifier() {
             Some(am) => am,
-            None => return None,
+            None => return afees,
         };
-        let mut afees = Vec::new();
         match (&afor_mod.afee_filter, afor_fit_id) {
             (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
                 (ModDomain::Item, _) => afees.push(afor_spec.item_id),
@@ -117,7 +115,7 @@ impl AffectionRegister {
             }
             _ => (),
         }
-        Some(afees)
+        afees
     }
     pub(in crate::ss::calc) fn get_projected_afee_items(&mut self, afor_spec: ReeId, tgt_items: ReeId) {}
     pub(in crate::ss::calc) fn get_afor_specs(&self, afee_item: &Item) -> Vec<AffectorSpec> {
@@ -251,17 +249,22 @@ impl AffectionRegister {
             }
         }
     }
-    pub(in crate::ss::calc) fn reg_local_effect(&mut self, afor_item: &Item, effect: &Arc<ct::Effect>) {
-        for (i, afor_mod) in effect.mods.iter().enumerate() {
-            let afor_item_id = afor_item.get_id();
-            let afor_fit_id = afor_item.get_fit_id();
-            let afor_spec = AffectorSpec::new(afor_item_id, effect.clone(), i);
+    pub(in crate::ss::calc) fn reg_local_afor_specs(
+        &mut self,
+        afor_fit_id: Option<ReeId>,
+        afor_specs: Vec<AffectorSpec>,
+    ) {
+        for afor_spec in afor_specs {
+            let afor_mod = match afor_spec.get_modifier() {
+                Some(afor_mod) => afor_mod,
+                None => continue,
+            };
             match (&afor_mod.afee_filter, afor_fit_id) {
                 (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
-                    (ModDomain::Item, _) => self.afors_direct.add_entry(afor_item_id, afor_spec),
+                    (ModDomain::Item, _) => self.afors_direct.add_entry(afor_spec.item_id, afor_spec),
                     (ModDomain::Char, Some(fid)) => self.afors_topdom.add_entry((fid, ModDomain::Char), afor_spec),
                     (ModDomain::Ship, Some(fid)) => self.afors_topdom.add_entry((fid, ModDomain::Ship), afor_spec),
-                    (ModDomain::Other, _) => self.afors_other.add_entry(afor_item_id, afor_spec),
+                    (ModDomain::Other, _) => self.afors_other.add_entry(afor_spec.item_id, afor_spec),
                     _ => (),
                 },
                 (ModAfeeFilter::Loc(d), Some(fid)) => self.afors_pardom.add_entry((fid, *d), afor_spec),
@@ -276,17 +279,22 @@ impl AffectionRegister {
             }
         }
     }
-    pub(in crate::ss::calc) fn unreg_local_effect(&mut self, afor_item: &Item, effect: &Arc<ct::Effect>) {
-        for (i, afor_mod) in effect.mods.iter().enumerate() {
-            let afor_item_id = afor_item.get_id();
-            let afor_fit_id = afor_item.get_fit_id();
-            let afor_spec = AffectorSpec::new(afor_item_id, effect.clone(), i);
+    pub(in crate::ss::calc) fn unreg_local_afor_specs(
+        &mut self,
+        afor_fit_id: Option<ReeId>,
+        afor_specs: Vec<AffectorSpec>,
+    ) {
+        for afor_spec in afor_specs {
+            let afor_mod = match afor_spec.get_modifier() {
+                Some(afor_mod) => afor_mod,
+                None => continue,
+            };
             match (&afor_mod.afee_filter, afor_fit_id) {
                 (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
-                    (ModDomain::Item, _) => self.afors_direct.rm_entry(&afor_item_id, &afor_spec),
+                    (ModDomain::Item, _) => self.afors_direct.rm_entry(&afor_spec.item_id, &afor_spec),
                     (ModDomain::Char, Some(fid)) => self.afors_topdom.rm_entry(&(fid, ModDomain::Char), &afor_spec),
                     (ModDomain::Ship, Some(fid)) => self.afors_topdom.rm_entry(&(fid, ModDomain::Ship), &afor_spec),
-                    (ModDomain::Other, _) => self.afors_other.rm_entry(&afor_item_id, &afor_spec),
+                    (ModDomain::Other, _) => self.afors_other.rm_entry(&afor_spec.item_id, &afor_spec),
                     _ => (),
                 },
                 (ModAfeeFilter::Loc(d), Some(fid)) => self.afors_pardom.rm_entry(&(fid, *d), &afor_spec),

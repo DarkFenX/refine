@@ -7,7 +7,10 @@ use crate::{
     ct,
     defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
-    ss::{calc::AttrVal, item::Item},
+    ss::{
+        calc::{affector::AffectorSpec, AttrVal},
+        item::Item,
+    },
     util::{Error, ErrorKind, Result},
 };
 
@@ -105,15 +108,42 @@ impl CalcSvc {
         self.affection.unreg_afee(item);
         self.attrs_vals.remove(&item.get_id());
     }
-    pub(in crate::ss) fn effects_started(&mut self, item: &Item, effects: &Vec<Arc<ct::Effect>>) {
-        for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
-            self.affection.reg_local_effect(item, effect);
+    pub(in crate::ss) fn effects_started(
+        &mut self,
+        item: &Item,
+        effects: &Vec<Arc<ct::Effect>>,
+        items: &HashMap<ReeId, Item>,
+    ) {
+        let afor_specs = generate_local_afor_specs(item, effects);
+        self.affection
+            .reg_local_afor_specs(item.get_fit_id(), afor_specs.clone());
+        for afor_spec in afor_specs {
+            let afor_mod = match afor_spec.get_modifier() {
+                Some(afor_mod) => afor_mod,
+                None => continue,
+            };
+            for item_id in self.affection.get_local_afee_items(&afor_spec, items) {
+                self.force_recalc(&item_id, &afor_mod.afee_attr_id);
+            }
         }
     }
-    pub(in crate::ss) fn effects_stopped(&mut self, item: &Item, effects: &Vec<Arc<ct::Effect>>) {
-        for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
-            self.affection.unreg_local_effect(item, effect);
+    pub(in crate::ss) fn effects_stopped(
+        &mut self,
+        item: &Item,
+        effects: &Vec<Arc<ct::Effect>>,
+        items: &HashMap<ReeId, Item>,
+    ) {
+        let afor_specs = generate_local_afor_specs(item, effects);
+        for afor_spec in afor_specs.iter() {
+            let afor_mod = match afor_spec.get_modifier() {
+                Some(afor_mod) => afor_mod,
+                None => continue,
+            };
+            for item_id in self.affection.get_local_afee_items(&afor_spec, items) {
+                self.force_recalc(&item_id, &afor_mod.afee_attr_id);
+            }
         }
+        self.affection.unreg_local_afor_specs(item.get_fit_id(), afor_specs);
     }
     // Private methods
     fn calc_item_attr_val(
@@ -206,6 +236,12 @@ impl CalcSvc {
         }
         Ok(AttrVal::new(base_val, dogma_val, dogma_val))
     }
+    fn force_recalc(&mut self, item_id: &ReeId, attr_id: &ReeInt) {
+        match self.get_item_dogma_attrs_mut(item_id) {
+            Ok(item_attrs) => item_attrs.remove(attr_id),
+            _ => return,
+        };
+    }
     fn get_modifications(
         &mut self,
         item: &Item,
@@ -255,6 +291,7 @@ impl CalcSvc {
     }
 }
 
+// Calculation-related functions
 fn penalize_vals(mut vals: Vec<ReeFloat>) -> ReeFloat {
     // Gather positive multipliers into one chain, negative into another, with stronger modifications
     // being first
@@ -297,4 +334,18 @@ fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {
     let mut val = 0.0;
     adds.iter().for_each(|v| val += v);
     val
+}
+
+// Maintenance- and query-related functions
+fn generate_local_afor_specs(afor_item: &Item, effects: &Vec<Arc<ct::Effect>>) -> Vec<AffectorSpec> {
+    let mut specs = Vec::new();
+    for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
+        for (i, afor_mod) in effect.mods.iter().enumerate() {
+            let afor_item_id = afor_item.get_id();
+            let afor_fit_id = afor_item.get_fit_id();
+            let afor_spec = AffectorSpec::new(afor_item_id, effect.clone(), i);
+            specs.push(afor_spec);
+        }
+    }
+    specs
 }

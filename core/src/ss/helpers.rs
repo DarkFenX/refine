@@ -1,8 +1,10 @@
-use crate::{consts::State, src::Src};
+use std::collections::HashMap;
+
+use crate::{consts::State, defs::ReeId, src::Src};
 
 use super::{calc::CalcSvc, item::Item, notify};
 
-pub(in crate::ss) fn add_item(item: &Item, src: &Src, calc: &mut CalcSvc) {
+pub(in crate::ss) fn add_item(item: &Item, src: &Src, items: &HashMap<ReeId, Item>, calc: &mut CalcSvc) {
     let item_state = item.get_state();
     let is_citem_loaded = item.is_loaded();
     notify::item_added(item);
@@ -12,40 +14,40 @@ pub(in crate::ss) fn add_item(item: &Item, src: &Src, calc: &mut CalcSvc) {
     match item_state {
         State::Offline => {
             let states = vec![State::Offline];
-            activate_item_states(item, states, src, calc);
+            activate_item_states(item, states, src, items, calc);
         }
         State::Online => {
             let states = vec![State::Offline, State::Online];
-            activate_item_states(item, states, src, calc);
+            activate_item_states(item, states, src, items, calc);
         }
         State::Active => {
             let states = vec![State::Offline, State::Online, State::Active];
-            activate_item_states(item, states, src, calc);
+            activate_item_states(item, states, src, items, calc);
         }
         State::Overload => {
             let states = vec![State::Offline, State::Online, State::Active, State::Overload];
-            activate_item_states(item, states, src, calc);
+            activate_item_states(item, states, src, items, calc);
         }
         _ => (),
     }
 }
-pub(in crate::ss) fn remove_item(item: &Item, src: &Src, calc: &mut CalcSvc) {
+pub(in crate::ss) fn remove_item(item: &Item, src: &Src, items: &HashMap<ReeId, Item>, calc: &mut CalcSvc) {
     match item.get_state() {
         State::Offline => {
             let states = vec![State::Offline];
-            deactivate_item_states(item, states, src, calc);
+            deactivate_item_states(item, states, src, items, calc);
         }
         State::Online => {
             let states = vec![State::Online, State::Offline];
-            deactivate_item_states(item, states, src, calc);
+            deactivate_item_states(item, states, src, items, calc);
         }
         State::Active => {
             let states = vec![State::Active, State::Online, State::Offline];
-            deactivate_item_states(item, states, src, calc);
+            deactivate_item_states(item, states, src, items, calc);
         }
         State::Overload => {
             let states = vec![State::Overload, State::Active, State::Online, State::Offline];
-            deactivate_item_states(item, states, src, calc);
+            deactivate_item_states(item, states, src, items, calc);
         }
         _ => (),
     }
@@ -54,7 +56,13 @@ pub(in crate::ss) fn remove_item(item: &Item, src: &Src, calc: &mut CalcSvc) {
     }
     notify::item_removed(item);
 }
-pub(in crate::ss) fn activate_item_states(item: &Item, states: Vec<State>, src: &Src, calc: &mut CalcSvc) {
+pub(in crate::ss) fn activate_item_states(
+    item: &Item,
+    states: Vec<State>,
+    src: &Src,
+    items: &HashMap<ReeId, Item>,
+    calc: &mut CalcSvc,
+) {
     for state in states.iter() {
         notify::state_activated(item, state);
     }
@@ -70,12 +78,18 @@ pub(in crate::ss) fn activate_item_states(item: &Item, states: Vec<State>, src: 
                 _ => (),
             }
             if !starting_effects.is_empty() {
-                notify::effects_started(item, &starting_effects, calc);
+                notify::effects_started(item, &starting_effects, items, calc);
             }
         }
     };
 }
-pub(in crate::ss) fn deactivate_item_states(item: &Item, states: Vec<State>, src: &Src, calc: &mut CalcSvc) {
+pub(in crate::ss) fn deactivate_item_states(
+    item: &Item,
+    states: Vec<State>,
+    src: &Src,
+    items: &HashMap<ReeId, Item>,
+    calc: &mut CalcSvc,
+) {
     if item.is_loaded() {
         let item_effect_datas = item.get_effect_datas().unwrap();
         for eff_id in item_effect_datas.keys() {
@@ -85,7 +99,7 @@ pub(in crate::ss) fn deactivate_item_states(item: &Item, states: Vec<State>, src
                 _ => (),
             }
             if !stopping_effects.is_empty() {
-                notify::effects_stopped(item, &stopping_effects, calc);
+                notify::effects_stopped(item, &stopping_effects, items, calc);
             }
         }
         for state in states.iter() {

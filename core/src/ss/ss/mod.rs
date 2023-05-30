@@ -69,8 +69,10 @@ impl SolarSystem {
         Ok(self.item_cnt.0)
     }
     fn add_item(&mut self, item: Item) {
-        helpers::add_item(&item, &self.src, &mut self.calc);
-        self.items.insert(item.get_id(), item);
+        let item_id = item.get_id();
+        self.items.insert(item_id, item);
+        let item = self.items.get(&item_id).unwrap();
+        helpers::add_item(item, &self.src, &self.items, &mut self.calc);
     }
     fn get_item(&self, item_id: &ReeId) -> Result<&Item> {
         self.items
@@ -86,38 +88,41 @@ impl SolarSystem {
         self.get_item(item_id).map(|v| ItemInfo::from_item(v, self))
     }
     pub fn remove_item(&mut self, item_id: &ReeId) -> Result<()> {
-        match self.items.remove(item_id) {
-            None => Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
-            Some(main) => {
-                helpers::remove_item(&main, &self.src, &mut self.calc);
-                match main {
-                    // Remove reference to charge if it's charge which we're removing
-                    Item::Charge(c) => match self.items.get_mut(&c.cont_id) {
-                        None => return Ok(()),
-                        Some(other) => match other {
-                            Item::Module(m) => m.charge_id = None,
-                            _ => (),
-                        },
-                    },
-                    // Remove charge if we're removing a module, charges cannot exist without their carrier
-                    Item::Module(m) => match m.charge_id {
-                        Some(other_id) => match self.items.remove(&other_id) {
-                            Some(charge) => helpers::remove_item(&charge, &self.src, &mut self.calc),
-                            _ => (),
-                        },
-                        _ => (),
-                    },
+        let main = match self.items.get(item_id) {
+            Some(item) => item,
+            None => return Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
+        };
+        helpers::remove_item(&main, &self.src, &self.items, &mut self.calc);
+        match main {
+            // Remove reference to charge if it's charge which we're removing
+            // Item::Charge(c) => match self.items.get_mut(&c.cont_id) {
+            //     None => {
+            //         self.items.remove(item_id);
+            //         return Ok(())
+            //     },
+            //     Some(other) => match other {
+            //         Item::Module(m) => m.charge_id = None,
+            //         _ => (),
+            //     },
+            // },
+            // Remove charge if we're removing a module, charges cannot exist without their carrier
+            Item::Module(m) => match m.charge_id {
+                Some(other_id) => match self.items.remove(&other_id) {
+                    Some(charge) => helpers::remove_item(&charge, &self.src, &self.items, &mut self.calc),
                     _ => (),
-                };
-                Ok(())
-            }
-        }
+                },
+                _ => (),
+            },
+            _ => (),
+        };
+        self.items.remove(item_id);
+        Ok(())
     }
     // Attribute calculator
-    pub fn get_item_dogma_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<AttrVal> {
+    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<AttrVal> {
         self.calc.get_item_attr_val(item_id, attr_id, &self.src, &self.items)
     }
-    pub fn get_item_dogma_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, AttrVal>> {
+    pub fn get_item_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, AttrVal>> {
         self.calc.get_item_attr_vals(item_id, &self.src, &self.items)
     }
 }

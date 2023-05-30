@@ -21,7 +21,7 @@ pub(crate) async fn get_item(
         GSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss.lock().await.get_item(&item_id, params.item.into()).await {
-        Ok(fit_info) => (StatusCode::OK, Json(fit_info)).into_response(),
+        Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),
         Err(e) => {
             let code = match e.kind {
                 ErrorKind::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
