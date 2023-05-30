@@ -4,13 +4,13 @@ from pytest import approx
 def get_dogma_value(client, consts, high_is_good):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(high_is_good=high_is_good)
-    eve_modifier = client.mk_eve_mod(
+    eve_mod = client.mk_eve_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.pre_assign,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_modifier])
+    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
     eve_item_src1 = client.mk_eve_item(attrs={eve_src_attr.id: 10}, eff_ids=[eve_effect.id])
     eve_item_src2 = client.mk_eve_item(attrs={eve_src_attr.id: -20}, eff_ids=[eve_effect.id])
     eve_item_src3 = client.mk_eve_item(attrs={eve_src_attr.id: 53.02}, eff_ids=[eve_effect.id])

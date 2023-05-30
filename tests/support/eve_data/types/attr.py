@@ -1,4 +1,4 @@
-from tests.support.util import conditional_insert
+from tests.support.util import conditional_insert, make_repr_str
 
 
 class Attribute:
@@ -24,3 +24,6 @@ class Attribute:
         conditional_insert(attr_entry, 'defaultValue', self.default_value, cast_to=float)
         conditional_insert(attr_entry, 'maxAttributeID', self.max_attribute_id, cast_to=int)
         primitive_data.dogmaattributes[self.id] = attr_entry
+
+    def __repr__(self):
+        return make_repr_str(self)

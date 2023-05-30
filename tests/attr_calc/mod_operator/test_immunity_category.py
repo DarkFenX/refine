@@ -8,13 +8,13 @@ def get_dogma_value(client, consts, cat_id):
 def get_dogma_value_ext(client, consts, src1_cat_id, src2_cat_id):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=False)
-    eve_modifier = client.mk_eve_mod(
+    eve_mod = client.mk_eve_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_modifier])
+    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
     eve_item_src1 = client.mk_eve_item(cat_id=src1_cat_id, attrs={eve_src_attr.id: 50}, eff_ids=[eve_effect.id])
     eve_item_src2 = client.mk_eve_item(cat_id=src2_cat_id, attrs={eve_src_attr.id: 100}, eff_ids=[eve_effect.id])
     eve_item_tgt = client.mk_eve_item(attrs={eve_tgt_attr.id: 100})

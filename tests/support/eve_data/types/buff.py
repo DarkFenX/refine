@@ -1,3 +1,6 @@
+from tests.support.util import make_repr_str
+
+
 class Buff:
 
     def __init__(
@@ -20,3 +23,6 @@ class Buff:
 
     def to_primitives(self, primitive_data):
         pass
+
+    def __repr__(self):
+        return make_repr_str(self)

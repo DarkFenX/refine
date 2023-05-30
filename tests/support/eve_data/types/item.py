@@ -1,4 +1,4 @@
-from tests.support.util import Default, Absent, conditional_insert
+from tests.support.util import Default, Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 
@@ -63,3 +63,6 @@ class Item:
                 effects_entry.append({'effectID': effect_id, 'isDefault': int(effect_id == self.default_effect_id)})
         else:
             item_entry['dogmaEffects'] = self.effect_ids
+
+    def __repr__(self):
+        return make_repr_str(self)

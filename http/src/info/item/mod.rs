@@ -1,11 +1,15 @@
 use std::collections::HashMap;
 
+use implant::ImplantInfo;
 use module::ModuleInfo;
+use rig::RigInfo;
 use ship::ShipInfo;
 
 use crate::info::{AttrValInfo, ItemInfoMode};
 
+mod implant;
 mod module;
+mod rig;
 mod ship;
 
 #[derive(serde::Serialize)]
@@ -35,22 +39,28 @@ impl ItemInfo {
 #[derive(serde::Serialize)]
 #[serde(untagged)]
 pub(crate) enum ItemInfoBasic {
+    Implant(ImplantInfo),
     Ship(ShipInfo),
     Module(ModuleInfo),
+    Rig(RigInfo),
 }
 impl ItemInfoBasic {
     fn get_id(&self) -> reefast::ReeId {
         match self {
-            Self::Ship(si) => si.item_id,
-            Self::Module(mi) => mi.item_id,
+            Self::Implant(info) => info.item_id,
+            Self::Ship(info) => info.item_id,
+            Self::Module(info) => info.item_id,
+            Self::Rig(info) => info.item_id,
         }
     }
 }
 impl From<&reefast::ItemInfo> for ItemInfoBasic {
     fn from(value: &reefast::ItemInfo) -> Self {
         match value {
-            reefast::ItemInfo::Ship(si) => Self::Ship(si.into()),
-            reefast::ItemInfo::Module(mi) => Self::Module(mi.into()),
+            reefast::ItemInfo::Implant(info) => Self::Implant(info.into()),
+            reefast::ItemInfo::Ship(info) => Self::Ship(info.into()),
+            reefast::ItemInfo::Module(info) => Self::Module(info.into()),
+            reefast::ItemInfo::Rig(info) => Self::Rig(info.into()),
             _ => Self::Ship(ShipInfo {
                 item_id: 0,
                 fit_id: 0,

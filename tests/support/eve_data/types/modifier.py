@@ -1,4 +1,4 @@
-from tests.support.util import conditional_insert
+from tests.support.util import conditional_insert, make_repr_str
 
 
 class Modifier:
@@ -18,3 +18,6 @@ class Modifier:
         conditional_insert(mod_entry, 'modifiedAttributeID', self.tgt_attr_id)
         conditional_insert(mod_entry, 'operation', self.operation)
         return mod_entry
+
+    def __repr__(self):
+        return make_repr_str(self)
