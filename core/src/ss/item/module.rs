@@ -9,7 +9,7 @@ use crate::{
 };
 
 pub(in crate::ss) struct Module {
-    pub(in crate::ss) item_id: ReeId,
+    pub(in crate::ss) id: ReeId,
     pub(in crate::ss) fit_id: ReeId,
     pub(in crate::ss) type_id: ReeInt,
     pub(in crate::ss) state: State,
@@ -21,7 +21,7 @@ pub(in crate::ss) struct Module {
 impl Module {
     pub(in crate::ss) fn new(
         src: &Arc<Src>,
-        item_id: ReeId,
+        id: ReeId,
         fit_id: ReeId,
         type_id: ReeInt,
         state: State,
@@ -30,7 +30,7 @@ impl Module {
         charge_id: Option<ReeId>,
     ) -> Self {
         Self {
-            item_id,
+            id,
             fit_id,
             type_id,
             state,
@@ -48,6 +48,6 @@ impl Named for Module {
 }
 impl fmt::Display for Module {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.item_id, self.type_id)
+        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.id, self.type_id)
     }
 }

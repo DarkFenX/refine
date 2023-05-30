@@ -10,15 +10,15 @@ use crate::{
 };
 
 pub(in crate::ss) struct SwEffect {
-    pub(in crate::ss) item_id: ReeId,
+    pub(in crate::ss) id: ReeId,
     pub(in crate::ss) type_id: ReeInt,
     pub(in crate::ss) state: State,
     pub(in crate::ss) cached_item: Option<Arc<ct::Item>>,
 }
 impl SwEffect {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, type_id: ReeInt, state: bool) -> Self {
+    pub(in crate::ss) fn new(src: &Arc<Src>, id: ReeId, type_id: ReeInt, state: bool) -> Self {
         Self {
-            item_id,
+            id,
             type_id,
             state: bool_to_state(state),
             cached_item: src.cache_handler.get_item(&type_id),
@@ -38,6 +38,6 @@ impl Named for SwEffect {
 }
 impl fmt::Display for SwEffect {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.item_id, self.type_id)
+        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.id, self.type_id)
     }
 }

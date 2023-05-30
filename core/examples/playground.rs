@@ -60,6 +60,6 @@ fn main() {
         sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
     }
     let implant = sol_sys.add_implant(fit, 19687, true);
-    let attrs = sol_sys.get_item_dogma_attrs(&ship.item_id).unwrap();
+    let attrs = sol_sys.get_item_dogma_attrs(&ship.id).unwrap();
     println!("{attrs:?}");
 }

@@ -4,15 +4,15 @@ use crate::{
 };
 
 pub struct CharacterInfo {
-    pub item_id: ReeId,
+    pub id: ReeId,
     pub fit_id: ReeId,
     pub type_id: ReeInt,
     pub enabled: bool,
 }
 impl CharacterInfo {
-    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
+    fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
         Self {
-            item_id,
+            id,
             fit_id,
             type_id,
             enabled,
@@ -21,6 +21,6 @@ impl CharacterInfo {
 }
 impl From<&Character> for CharacterInfo {
     fn from(c: &Character) -> Self {
-        CharacterInfo::new(c.item_id, c.fit_id, c.type_id, c.get_bool_state())
+        CharacterInfo::new(c.id, c.fit_id, c.type_id, c.get_bool_state())
     }
 }

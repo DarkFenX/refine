@@ -92,7 +92,7 @@ impl SolarSystem {
                 helpers::remove_item(&main, &self.src, &mut self.calc);
                 match main {
                     // Remove reference to charge if it's charge which we're removing
-                    Item::Charge(c) => match self.items.get_mut(&c.container_id) {
+                    Item::Charge(c) => match self.items.get_mut(&c.cont_id) {
                         None => return Ok(()),
                         Some(other) => match other {
                             Item::Module(m) => m.charge_id = None,

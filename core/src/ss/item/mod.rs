@@ -71,19 +71,19 @@ impl Item {
     }
     pub(in crate::ss) fn get_id(&self) -> ReeId {
         match self {
-            Self::Booster(booster) => booster.item_id,
-            Self::Character(character) => character.item_id,
-            Self::Charge(charge) => charge.item_id,
-            Self::Drone(drone) => drone.item_id,
-            Self::Fighter(fighter) => fighter.item_id,
-            Self::Implant(implant) => implant.item_id,
-            Self::Module(module) => module.item_id,
-            Self::Rig(rig) => rig.item_id,
-            Self::Ship(ship) => ship.item_id,
-            Self::Skill(skill) => skill.item_id,
-            Self::Stance(stance) => stance.item_id,
-            Self::Subsystem(subsystem) => subsystem.item_id,
-            Self::SwEffect(sw_effect) => sw_effect.item_id,
+            Self::Booster(booster) => booster.id,
+            Self::Character(character) => character.id,
+            Self::Charge(charge) => charge.id,
+            Self::Drone(drone) => drone.id,
+            Self::Fighter(fighter) => fighter.id,
+            Self::Implant(implant) => implant.id,
+            Self::Module(module) => module.id,
+            Self::Rig(rig) => rig.id,
+            Self::Ship(ship) => ship.id,
+            Self::Skill(skill) => skill.id,
+            Self::Stance(stance) => stance.id,
+            Self::Subsystem(subsystem) => subsystem.id,
+            Self::SwEffect(sw_effect) => sw_effect.id,
         }
     }
     pub(in crate::ss) fn get_fit_id(&self) -> Option<ReeId> {
@@ -231,7 +231,7 @@ impl Item {
         match self {
             Self::Booster(_) => None,
             Self::Character(_) => None,
-            Self::Charge(charge) => Some(charge.container_id),
+            Self::Charge(charge) => Some(charge.cont_id),
             Self::Drone(_) => None,
             Self::Fighter(_) => None,
             Self::Implant(_) => None,

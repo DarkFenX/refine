@@ -4,23 +4,23 @@ use crate::{
 };
 
 pub struct ChargeInfo {
-    pub item_id: ReeId,
+    pub id: ReeId,
     pub fit_id: ReeId,
     pub type_id: ReeInt,
-    pub cont: ReeId,
+    pub cont_id: ReeId,
 }
 impl ChargeInfo {
-    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, cont: ReeId) -> Self {
+    fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, cont_id: ReeId) -> Self {
         Self {
-            item_id,
+            id,
             fit_id,
             type_id,
-            cont,
+            cont_id,
         }
     }
 }
 impl From<&Charge> for ChargeInfo {
     fn from(c: &Charge) -> Self {
-        ChargeInfo::new(c.item_id, c.fit_id, c.type_id, c.container_id)
+        ChargeInfo::new(c.id, c.fit_id, c.type_id, c.cont_id)
     }
 }

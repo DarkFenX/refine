@@ -48,7 +48,7 @@ impl SolarSystem {
             }
             OrdAddMode::Insert(pos) => {
                 for info in infos.iter() {
-                    match self.items.get_mut(&info.item_id) {
+                    match self.items.get_mut(&info.id) {
                         Some(Item::Module(m)) if m.rack == rack && m.pos >= pos => m.pos += 1,
                         _ => (),
                     }
@@ -58,9 +58,9 @@ impl SolarSystem {
             OrdAddMode::Place(pos, repl) => {
                 let mut old_item_id = None;
                 for info in infos.iter() {
-                    match self.items.get(&info.item_id) {
+                    match self.items.get(&info.id) {
                         Some(Item::Module(m)) if m.rack == rack && m.pos == pos => {
-                            old_item_id = Some(info.item_id);
+                            old_item_id = Some(info.id);
                             break;
                         }
                         _ => (),
@@ -93,7 +93,7 @@ impl SolarSystem {
         let c_item_id = self.alloc_item_id()?;
         self.remove_module_charge(item_id)?;
         let module = self.get_module(item_id)?;
-        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_type_id, module.item_id);
+        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_type_id, module.id);
         let module = self.get_module_mut(item_id)?;
         module.charge_id = Some(c_item_id);
         Ok(c_info)

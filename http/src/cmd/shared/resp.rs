@@ -12,30 +12,30 @@ pub(crate) struct ItemIdsResp {
     charge_id: Option<String>,
 }
 impl ItemIdsResp {
-    fn new(id: reefast::ReeId, charge_id: Option<reefast::ChargeInfo>) -> Self {
+    fn new(item_id: reefast::ReeId, charge_info: Option<reefast::ChargeInfo>) -> Self {
         Self {
-            id: id.to_string(),
-            charge_id: charge_id.map(|v| v.item_id.to_string()),
+            id: item_id.to_string(),
+            charge_id: charge_info.map(|v| v.id.to_string()),
         }
     }
 }
 impl From<reefast::ImplantInfo> for ItemIdsResp {
     fn from(value: reefast::ImplantInfo) -> Self {
-        ItemIdsResp::new(value.item_id, None)
+        ItemIdsResp::new(value.id, None)
     }
 }
 impl From<reefast::ShipInfo> for ItemIdsResp {
     fn from(value: reefast::ShipInfo) -> Self {
-        ItemIdsResp::new(value.item_id, None)
+        ItemIdsResp::new(value.id, None)
     }
 }
 impl From<reefast::ModuleInfo> for ItemIdsResp {
     fn from(value: reefast::ModuleInfo) -> Self {
-        ItemIdsResp::new(value.item_id, value.charge)
+        ItemIdsResp::new(value.id, value.charge_info)
     }
 }
 impl From<reefast::RigInfo> for ItemIdsResp {
     fn from(value: reefast::RigInfo) -> Self {
-        ItemIdsResp::new(value.item_id, None)
+        ItemIdsResp::new(value.id, None)
     }
 }

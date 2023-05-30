@@ -47,10 +47,10 @@ pub(crate) enum ItemInfoBasic {
 impl ItemInfoBasic {
     fn get_id(&self) -> reefast::ReeId {
         match self {
-            Self::Implant(info) => info.item_id,
-            Self::Ship(info) => info.item_id,
-            Self::Module(info) => info.item_id,
-            Self::Rig(info) => info.item_id,
+            Self::Implant(info) => info.id,
+            Self::Ship(info) => info.id,
+            Self::Module(info) => info.id,
+            Self::Rig(info) => info.id,
         }
     }
 }
@@ -62,9 +62,9 @@ impl From<&reefast::ItemInfo> for ItemInfoBasic {
             reefast::ItemInfo::Module(info) => Self::Module(info.into()),
             reefast::ItemInfo::Rig(info) => Self::Rig(info.into()),
             _ => Self::Ship(ShipInfo {
-                item_id: 0,
-                fit_id: 0,
-                type_id: 0,
+                id: 999999,
+                fit_id: 666666,
+                type_id: 333333,
                 enabled: false,
             }),
         }

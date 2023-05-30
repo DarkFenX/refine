@@ -5,37 +5,37 @@ use crate::{
 };
 
 pub struct ModuleInfo {
-    pub item_id: ReeId,
+    pub id: ReeId,
     pub fit_id: ReeId,
     pub type_id: ReeInt,
     pub state: State,
     pub rack: ModRack,
     pub pos: ReeIdx,
-    pub charge: Option<ChargeInfo>,
+    pub charge_info: Option<ChargeInfo>,
 }
 impl ModuleInfo {
     fn new(
-        item_id: ReeId,
+        id: ReeId,
         fit_id: ReeId,
         type_id: ReeInt,
         state: State,
         rack: ModRack,
         pos: ReeIdx,
-        charge: Option<ChargeInfo>,
+        charge_info: Option<ChargeInfo>,
     ) -> Self {
         Self {
-            item_id,
+            id,
             fit_id,
             type_id,
             state,
             rack,
             pos,
-            charge,
+            charge_info,
         }
     }
     pub(in crate::ss) fn from_mod_and_charge(module: &Module, charge_info: Option<ChargeInfo>) -> Self {
         ModuleInfo::new(
-            module.item_id,
+            module.id,
             module.fit_id,
             module.type_id,
             module.state,

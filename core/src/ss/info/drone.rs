@@ -5,15 +5,15 @@ use crate::{
 };
 
 pub struct DroneInfo {
-    pub item_id: ReeId,
+    pub id: ReeId,
     pub fit_id: ReeId,
     pub type_id: ReeInt,
     pub state: State,
 }
 impl DroneInfo {
-    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
+    fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
         Self {
-            item_id,
+            id,
             fit_id,
             type_id,
             state,
@@ -22,6 +22,6 @@ impl DroneInfo {
 }
 impl From<&Drone> for DroneInfo {
     fn from(d: &Drone) -> Self {
-        DroneInfo::new(d.item_id, d.fit_id, d.type_id, d.state)
+        DroneInfo::new(d.id, d.fit_id, d.type_id, d.state)
     }
 }

@@ -10,16 +10,16 @@ use crate::{
 };
 
 pub(in crate::ss) struct Character {
-    pub(in crate::ss) item_id: ReeId,
+    pub(in crate::ss) id: ReeId,
     pub(in crate::ss) fit_id: ReeId,
     pub(in crate::ss) type_id: ReeInt,
     pub(in crate::ss) state: State,
     pub(in crate::ss) cached_item: Option<Arc<ct::Item>>,
 }
 impl Character {
-    pub(in crate::ss) fn new(src: &Arc<Src>, item_id: ReeId, fit_id: ReeId, type_id: ReeInt, state: bool) -> Self {
+    pub(in crate::ss) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: bool) -> Self {
         Self {
-            item_id,
+            id,
             fit_id,
             type_id,
             state: bool_to_state(state),
@@ -40,6 +40,6 @@ impl Named for Character {
 }
 impl fmt::Display for Character {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.item_id, self.type_id)
+        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.id, self.type_id)
     }
 }

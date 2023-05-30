@@ -4,16 +4,16 @@ use crate::{
 };
 
 pub struct SkillInfo {
-    pub item_id: ReeId,
+    pub id: ReeId,
     pub fit_id: ReeId,
     pub type_id: ReeInt,
     pub level: ReeInt,
     pub enabled: bool,
 }
 impl SkillInfo {
-    fn new(item_id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt, enabled: bool) -> Self {
+    fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt, enabled: bool) -> Self {
         Self {
-            item_id,
+            id,
             fit_id,
             type_id,
             level,
@@ -23,6 +23,6 @@ impl SkillInfo {
 }
 impl From<&Skill> for SkillInfo {
     fn from(s: &Skill) -> Self {
-        SkillInfo::new(s.item_id, s.fit_id, s.type_id, s.level, s.get_bool_state())
+        SkillInfo::new(s.id, s.fit_id, s.type_id, s.level, s.get_bool_state())
     }
 }
