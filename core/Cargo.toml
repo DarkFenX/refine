@@ -9,12 +9,10 @@ license = "LGPL-3.0-or-later"
 [dependencies]
 itertools = ">=0.10.5"
 log = ">=0.4.17"
-reqwest = { version = ">=0.11.14", features = ["blocking", "json"] }
 serde = { version = ">=1.0", features = ["derive"] }
 serde_repr = ">=0.1.12"
 serde_tuple = ">=0.5.0"
 serde_json = ">=1.0"
-url = ">=2.3.1"
 zstd = ">=0.12.2"
 
 [dev-dependencies]
