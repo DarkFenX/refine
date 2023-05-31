@@ -4,8 +4,8 @@ use itertools::Itertools;
 
 use crate::{
     consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
-    ct,
     defs::{ReeFloat, ReeId, ReeInt},
+    ert,
     src::Src,
     ss::{
         calc::{affector::AffectorSpec, AttrVal},
@@ -111,7 +111,7 @@ impl CalcSvc {
     pub(in crate::ss) fn effects_started(
         &mut self,
         item: &Item,
-        effects: &Vec<Arc<ct::Effect>>,
+        effects: &Vec<Arc<ert::Effect>>,
         items: &HashMap<ReeId, Item>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
@@ -130,7 +130,7 @@ impl CalcSvc {
     pub(in crate::ss) fn effects_stopped(
         &mut self,
         item: &Item,
-        effects: &Vec<Arc<ct::Effect>>,
+        effects: &Vec<Arc<ert::Effect>>,
         items: &HashMap<ReeId, Item>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
@@ -319,7 +319,7 @@ fn get_chain_val(vals: Vec<ReeFloat>) -> ReeFloat {
     val
 }
 
-fn process_assigns(assigns: &Vec<ReeFloat>, attr: &ct::Attr) -> ReeFloat {
+fn process_assigns(assigns: &Vec<ReeFloat>, attr: &ert::Attr) -> ReeFloat {
     match attr.hig {
         true => *assigns.iter().max_by(|a, b| a.total_cmp(b)).unwrap(),
         false => *assigns.iter().min_by(|a, b| a.total_cmp(b)).unwrap(),
@@ -337,7 +337,7 @@ fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {
 }
 
 // Maintenance- and query-related functions
-fn generate_local_afor_specs(afor_item: &Item, effects: &Vec<Arc<ct::Effect>>) -> Vec<AffectorSpec> {
+fn generate_local_afor_specs(afor_item: &Item, effects: &Vec<Arc<ert::Effect>>) -> Vec<AffectorSpec> {
     let mut specs = Vec::new();
     for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
         for (i, afor_mod) in effect.mods.iter().enumerate() {

@@ -16,8 +16,8 @@ pub(in crate::ss) use sw_effect::SwEffect;
 
 use crate::{
     consts::{ModDomain, State},
-    ct,
     defs::{ReeFloat, ReeId, ReeInt},
+    ert,
     src::Src,
     util::{Error, ErrorKind, Named, Result},
 };
@@ -156,7 +156,7 @@ impl Item {
             Self::SwEffect(sw_effect) => sw_effect.cached_item = cached_item,
         }
     }
-    pub(in crate::ss) fn get_cached_item(&self) -> Result<&Arc<ct::Item>> {
+    pub(in crate::ss) fn get_cached_item(&self) -> Result<&Arc<ert::Item>> {
         match self {
             Self::Booster(booster) => booster.cached_item.as_ref(),
             Self::Character(character) => character.cached_item.as_ref(),
@@ -181,7 +181,7 @@ impl Item {
     pub(in crate::ss) fn get_orig_attrs(&self) -> Result<&HashMap<ReeInt, ReeFloat>> {
         self.get_cached_item().map(|v| &v.attr_vals)
     }
-    pub(in crate::ss) fn get_effect_datas(&self) -> Result<&HashMap<ReeInt, ct::ItemEffData>> {
+    pub(in crate::ss) fn get_effect_datas(&self) -> Result<&HashMap<ReeInt, ert::ItemEffData>> {
         self.get_cached_item().map(|v| &v.effect_datas)
     }
     pub(in crate::ss) fn get_top_domain(&self) -> Option<ModDomain> {

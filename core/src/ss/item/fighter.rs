@@ -2,8 +2,8 @@ use std::{fmt, sync::Arc};
 
 use crate::{
     consts::State,
-    ct,
     defs::{ReeId, ReeInt},
+    ert,
     src::Src,
     util::Named,
 };
@@ -14,7 +14,7 @@ pub(in crate::ss) struct Fighter {
     pub(in crate::ss) type_id: ReeInt,
     pub(in crate::ss) state: State,
     pub(in crate::ss) amt_override: Option<ReeInt>,
-    pub(in crate::ss) cached_item: Option<Arc<ct::Item>>,
+    pub(in crate::ss) cached_item: Option<Arc<ert::Item>>,
 }
 impl Fighter {
     pub(in crate::ss) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
