@@ -1,8 +1,8 @@
-use crate::consts::State;
+use crate::{consts::State, ssi};
 
-use super::{item::Item, notify, SsInnerData};
+use super::{notify, SsInnerData};
 
-pub(in crate::ss) fn add_item(item: &Item, ss_data: &mut SsInnerData) {
+pub(in crate::ss) fn add_item(item: &ssi::Item, ss_data: &mut SsInnerData) {
     let item_state = item.get_state();
     let is_citem_loaded = item.is_loaded();
     notify::item_added(item);
@@ -29,7 +29,7 @@ pub(in crate::ss) fn add_item(item: &Item, ss_data: &mut SsInnerData) {
         _ => (),
     }
 }
-pub(in crate::ss) fn remove_item(item: &Item, ss_data: &mut SsInnerData) {
+pub(in crate::ss) fn remove_item(item: &ssi::Item, ss_data: &mut SsInnerData) {
     match item.get_state() {
         State::Offline => {
             let states = vec![State::Offline];
@@ -54,7 +54,7 @@ pub(in crate::ss) fn remove_item(item: &Item, ss_data: &mut SsInnerData) {
     }
     notify::item_removed(item);
 }
-pub(in crate::ss) fn activate_item_states(item: &Item, states: Vec<State>, ss_data: &mut SsInnerData) {
+pub(in crate::ss) fn activate_item_states(item: &ssi::Item, states: Vec<State>, ss_data: &mut SsInnerData) {
     for state in states.iter() {
         notify::state_activated(item, state);
     }
@@ -75,7 +75,7 @@ pub(in crate::ss) fn activate_item_states(item: &Item, states: Vec<State>, ss_da
         }
     };
 }
-pub(in crate::ss) fn deactivate_item_states(item: &Item, states: Vec<State>, ss_data: &mut SsInnerData) {
+pub(in crate::ss) fn deactivate_item_states(item: &ssi::Item, states: Vec<State>, ss_data: &mut SsInnerData) {
     if item.is_loaded() {
         let item_effect_datas = item.get_effect_datas().unwrap();
         for eff_id in item_effect_datas.keys() {

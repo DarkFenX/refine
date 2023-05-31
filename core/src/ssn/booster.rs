@@ -1,6 +1,6 @@
 use crate::{
     defs::{ReeId, ReeInt},
-    ss::item::Booster,
+    ssi,
 };
 
 pub struct BoosterInfo {
@@ -19,8 +19,8 @@ impl BoosterInfo {
         }
     }
 }
-impl From<&Booster> for BoosterInfo {
-    fn from(b: &Booster) -> Self {
+impl From<&ssi::Booster> for BoosterInfo {
+    fn from(b: &ssi::Booster) -> Self {
         BoosterInfo::new(b.id, b.fit_id, b.type_id, b.get_bool_state())
     }
 }

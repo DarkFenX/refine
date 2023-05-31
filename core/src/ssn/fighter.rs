@@ -1,7 +1,7 @@
 use crate::{
     consts::State,
     defs::{ReeId, ReeInt},
-    ss::item::Fighter,
+    ssi,
 };
 
 pub struct FighterInfo {
@@ -22,8 +22,8 @@ impl FighterInfo {
         }
     }
 }
-impl From<&Fighter> for FighterInfo {
-    fn from(f: &Fighter) -> Self {
+impl From<&ssi::Fighter> for FighterInfo {
+    fn from(f: &ssi::Fighter) -> Self {
         FighterInfo::new(f.id, f.fit_id, f.type_id, f.state, f.amt_override)
     }
 }

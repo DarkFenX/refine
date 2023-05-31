@@ -5,27 +5,21 @@ use crate::{
     defs::{ReeId, ReeInt},
     ert,
     src::Src,
-    ss::item::{bool_to_state, state_to_bool},
     util::Named,
 };
 
-pub(in crate::ss) struct Skill {
-    pub(in crate::ss) id: ReeId,
-    pub(in crate::ss) fit_id: ReeId,
-    pub(in crate::ss) type_id: ReeInt,
-    pub(in crate::ss) level: ReeInt,
-    pub(in crate::ss) state: State,
-    pub(in crate::ss) cached_item: Option<Arc<ert::Item>>,
+use super::{bool_to_state, state_to_bool};
+
+pub(crate) struct Skill {
+    pub(crate) id: ReeId,
+    pub(crate) fit_id: ReeId,
+    pub(crate) type_id: ReeInt,
+    pub(crate) level: ReeInt,
+    pub(crate) state: State,
+    pub(crate) cached_item: Option<Arc<ert::Item>>,
 }
 impl Skill {
-    pub(in crate::ss) fn new(
-        src: &Arc<Src>,
-        id: ReeId,
-        fit_id: ReeId,
-        type_id: ReeInt,
-        level: ReeInt,
-        state: bool,
-    ) -> Self {
+    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt, state: bool) -> Self {
         Self {
             id,
             fit_id,
@@ -35,10 +29,10 @@ impl Skill {
             cached_item: src.cache_handler.get_item(&type_id),
         }
     }
-    pub(in crate::ss) fn get_bool_state(&self) -> bool {
+    pub(crate) fn get_bool_state(&self) -> bool {
         state_to_bool(self.state)
     }
-    pub(in crate::ss) fn set_bool_state(&mut self, state: bool) {
+    pub(crate) fn set_bool_state(&mut self, state: bool) {
         self.state = bool_to_state(state);
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
     defs::{ReeId, ReeInt},
-    ss::item::Rig,
+    ssi,
 };
 
 pub struct RigInfo {
@@ -19,8 +19,8 @@ impl RigInfo {
         }
     }
 }
-impl From<&Rig> for RigInfo {
-    fn from(r: &Rig) -> Self {
+impl From<&ssi::Rig> for RigInfo {
+    fn from(r: &ssi::Rig) -> Self {
         RigInfo::new(r.id, r.fit_id, r.type_id, r.get_bool_state())
     }
 }

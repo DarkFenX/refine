@@ -8,15 +8,15 @@ use crate::{
     util::Named,
 };
 
-pub(in crate::ss) struct Drone {
-    pub(in crate::ss) id: ReeId,
-    pub(in crate::ss) fit_id: ReeId,
-    pub(in crate::ss) type_id: ReeInt,
-    pub(in crate::ss) state: State,
-    pub(in crate::ss) cached_item: Option<Arc<ert::Item>>,
+pub(crate) struct Drone {
+    pub(crate) id: ReeId,
+    pub(crate) fit_id: ReeId,
+    pub(crate) type_id: ReeInt,
+    pub(crate) state: State,
+    pub(crate) cached_item: Option<Arc<ert::Item>>,
 }
 impl Drone {
-    pub(in crate::ss) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
+    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
         Self {
             id,
             fit_id,

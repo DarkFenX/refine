@@ -1,8 +1,10 @@
 use crate::{
     consts::{ModRack, State},
     defs::{ReeId, ReeIdx, ReeInt},
-    ss::{info::ChargeInfo, item::Module},
+    ssi,
 };
+
+use super::ChargeInfo;
 
 pub struct ModuleInfo {
     pub id: ReeId,
@@ -33,7 +35,7 @@ impl ModuleInfo {
             charge_info,
         }
     }
-    pub(in crate::ss) fn from_mod_and_charge(module: &Module, charge_info: Option<ChargeInfo>) -> Self {
+    pub(crate) fn from_mod_and_charge(module: &ssi::Module, charge_info: Option<ChargeInfo>) -> Self {
         ModuleInfo::new(
             module.id,
             module.fit_id,

@@ -10,9 +10,8 @@ use crate::{
     ss::{
         calc::{AttrVal, CalcSvc},
         helpers,
-        info::ItemInfo,
-        item::Item,
     },
+    ssi, ssn,
     util::{Error, ErrorKind, Result},
 };
 
@@ -33,11 +32,11 @@ mod sw_effect;
 
 pub(in crate::ss) struct SsInnerData<'a> {
     pub(in crate::ss) src: &'a Arc<Src>,
-    pub(in crate::ss) items: &'a HashMap<ReeId, Item>,
+    pub(in crate::ss) items: &'a HashMap<ReeId, ssi::Item>,
     pub(in crate::ss) calc: &'a mut CalcSvc,
 }
 impl<'a> SsInnerData<'a> {
-    fn new(src: &'a Arc<Src>, items: &'a HashMap<ReeId, Item>, calc: &'a mut CalcSvc) -> Self {
+    fn new(src: &'a Arc<Src>, items: &'a HashMap<ReeId, ssi::Item>, calc: &'a mut CalcSvc) -> Self {
         Self { src, items, calc }
     }
 }
@@ -49,7 +48,7 @@ pub struct SolarSystem {
     // fleet_cnt: ReeId,
     // fleets: HashMap<ReeId, Fleet>,
     item_cnt: Wrapping<ReeId>,
-    items: HashMap<ReeId, Item>,
+    items: HashMap<ReeId, ssi::Item>,
     calc: CalcSvc,
 }
 impl SolarSystem {
@@ -79,24 +78,24 @@ impl SolarSystem {
         }
         Ok(self.item_cnt.0)
     }
-    fn add_item(&mut self, item: Item) {
+    fn add_item(&mut self, item: ssi::Item) {
         let item_id = item.get_id();
         self.items.insert(item_id, item);
         let item = self.items.get(&item_id).unwrap();
         helpers::add_item(item, &mut SsInnerData::new(&self.src, &self.items, &mut self.calc));
     }
-    fn get_item(&self, item_id: &ReeId) -> Result<&Item> {
+    fn get_item(&self, item_id: &ReeId) -> Result<&ssi::Item> {
         self.items
             .get(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }
-    fn get_item_mut(&mut self, item_id: &ReeId) -> Result<&mut Item> {
+    fn get_item_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::Item> {
         self.items
             .get_mut(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }
-    pub fn get_item_info(&self, item_id: &ReeId) -> Result<ItemInfo> {
-        self.get_item(item_id).map(|v| ItemInfo::from_item(v, self))
+    pub fn get_item_info(&self, item_id: &ReeId) -> Result<ssn::ItemInfo> {
+        self.get_item(item_id).map(|v| ssn::ItemInfo::from_item(v, self))
     }
     pub fn remove_item(&mut self, item_id: &ReeId) -> Result<()> {
         let main = match self.items.get(item_id) {
@@ -117,7 +116,7 @@ impl SolarSystem {
             //     },
             // },
             // Remove charge if we're removing a module, charges cannot exist without their carrier
-            Item::Module(m) => match m.charge_id {
+            ssi::Item::Module(m) => match m.charge_id {
                 Some(other_id) => match self.items.remove(&other_id) {
                     Some(charge) => {
                         helpers::remove_item(&charge, &mut SsInnerData::new(&self.src, &self.items, &mut self.calc))

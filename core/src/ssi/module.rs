@@ -8,18 +8,18 @@ use crate::{
     util::Named,
 };
 
-pub(in crate::ss) struct Module {
-    pub(in crate::ss) id: ReeId,
-    pub(in crate::ss) fit_id: ReeId,
-    pub(in crate::ss) type_id: ReeInt,
-    pub(in crate::ss) state: State,
-    pub(in crate::ss) rack: ModRack,
-    pub(in crate::ss) pos: ReeIdx,
-    pub(in crate::ss) charge_id: Option<ReeId>,
-    pub(in crate::ss) cached_item: Option<Arc<ert::Item>>,
+pub(crate) struct Module {
+    pub(crate) id: ReeId,
+    pub(crate) fit_id: ReeId,
+    pub(crate) type_id: ReeInt,
+    pub(crate) state: State,
+    pub(crate) rack: ModRack,
+    pub(crate) pos: ReeIdx,
+    pub(crate) charge_id: Option<ReeId>,
+    pub(crate) cached_item: Option<Arc<ert::Item>>,
 }
 impl Module {
-    pub(in crate::ss) fn new(
+    pub(crate) fn new(
         src: &Arc<Src>,
         id: ReeId,
         fit_id: ReeId,

@@ -1,6 +1,6 @@
 use crate::{
     defs::{ReeId, ReeInt},
-    ss::item::SwEffect,
+    ssi,
 };
 
 pub struct SwEffectInfo {
@@ -13,8 +13,8 @@ impl SwEffectInfo {
         Self { id, type_id, enabled }
     }
 }
-impl From<&SwEffect> for SwEffectInfo {
-    fn from(e: &SwEffect) -> Self {
+impl From<&ssi::SwEffect> for SwEffectInfo {
+    fn from(e: &ssi::SwEffect) -> Self {
         SwEffectInfo::new(e.id, e.type_id, e.get_bool_state())
     }
 }

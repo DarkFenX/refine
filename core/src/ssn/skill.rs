@@ -1,6 +1,6 @@
 use crate::{
     defs::{ReeId, ReeInt},
-    ss::item::Skill,
+    ssi,
 };
 
 pub struct SkillInfo {
@@ -21,8 +21,8 @@ impl SkillInfo {
         }
     }
 }
-impl From<&Skill> for SkillInfo {
-    fn from(s: &Skill) -> Self {
+impl From<&ssi::Skill> for SkillInfo {
+    fn from(s: &ssi::Skill) -> Self {
         SkillInfo::new(s.id, s.fit_id, s.type_id, s.level, s.get_bool_state())
     }
 }

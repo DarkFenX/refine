@@ -1,15 +1,15 @@
 use crate::{
     defs::{ReeId, ReeInt},
-    ss::item::Ship,
+    ssi,
 };
 
-pub struct ShipInfo {
+pub struct StanceInfo {
     pub id: ReeId,
     pub fit_id: ReeId,
     pub type_id: ReeInt,
     pub enabled: bool,
 }
-impl ShipInfo {
+impl StanceInfo {
     fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
         Self {
             id,
@@ -19,8 +19,8 @@ impl ShipInfo {
         }
     }
 }
-impl From<&Ship> for ShipInfo {
-    fn from(s: &Ship) -> Self {
-        ShipInfo::new(s.id, s.fit_id, s.type_id, s.get_bool_state())
+impl From<&ssi::Stance> for StanceInfo {
+    fn from(s: &ssi::Stance) -> Self {
+        StanceInfo::new(s.id, s.fit_id, s.type_id, s.get_bool_state())
     }
 }

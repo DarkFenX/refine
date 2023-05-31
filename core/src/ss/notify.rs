@@ -1,33 +1,33 @@
 use std::{collections::HashMap, sync::Arc};
 
-use crate::{consts::State, defs::ReeId, ert};
+use crate::{consts::State, defs::ReeId, ert, ssi};
 
-use super::{calc::CalcSvc, item::Item, SsInnerData};
+use super::{calc::CalcSvc, SsInnerData};
 
-pub(in crate::ss) fn item_added(item: &Item) {}
-pub(in crate::ss) fn item_removed(item: &Item) {}
-pub(in crate::ss) fn state_activated(item: &Item, state: &State) {}
-pub(in crate::ss) fn state_deactivated(item: &Item, state: &State) {}
-pub(in crate::ss) fn item_loaded(item: &Item, calc: &mut CalcSvc) {
+pub(in crate::ss) fn item_added(item: &ssi::Item) {}
+pub(in crate::ss) fn item_removed(item: &ssi::Item) {}
+pub(in crate::ss) fn state_activated(item: &ssi::Item, state: &State) {}
+pub(in crate::ss) fn state_deactivated(item: &ssi::Item, state: &State) {}
+pub(in crate::ss) fn item_loaded(item: &ssi::Item, calc: &mut CalcSvc) {
     calc.item_loaded(item);
 }
-pub(in crate::ss) fn item_unloaded(item: &Item, calc: &mut CalcSvc) {
+pub(in crate::ss) fn item_unloaded(item: &ssi::Item, calc: &mut CalcSvc) {
     calc.item_unloaded(item);
 }
-pub(in crate::ss) fn state_activated_loaded(item: &Item, state: &State) {}
-pub(in crate::ss) fn state_deactivated_loaded(item: &Item, state: &State) {}
+pub(in crate::ss) fn state_activated_loaded(item: &ssi::Item, state: &State) {}
+pub(in crate::ss) fn state_deactivated_loaded(item: &ssi::Item, state: &State) {}
 pub(in crate::ss) fn effects_started(
-    item: &Item,
+    item: &ssi::Item,
     effects: &Vec<Arc<ert::Effect>>,
-    items: &HashMap<ReeId, Item>,
+    items: &HashMap<ReeId, ssi::Item>,
     calc: &mut CalcSvc,
 ) {
     calc.effects_started(item, effects, items);
 }
 pub(in crate::ss) fn effects_stopped(
-    item: &Item,
+    item: &ssi::Item,
     effects: &Vec<Arc<ert::Effect>>,
-    items: &HashMap<ReeId, Item>,
+    items: &HashMap<ReeId, ssi::Item>,
     calc: &mut CalcSvc,
 ) {
     calc.effects_stopped(item, effects, items);

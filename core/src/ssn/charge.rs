@@ -1,6 +1,6 @@
 use crate::{
     defs::{ReeId, ReeInt},
-    ss::item::Charge,
+    ssi,
 };
 
 pub struct ChargeInfo {
@@ -19,8 +19,8 @@ impl ChargeInfo {
         }
     }
 }
-impl From<&Charge> for ChargeInfo {
-    fn from(c: &Charge) -> Self {
+impl From<&ssi::Charge> for ChargeInfo {
+    fn from(c: &ssi::Charge) -> Self {
         ChargeInfo::new(c.id, c.fit_id, c.type_id, c.cont_id)
     }
 }

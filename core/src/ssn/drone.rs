@@ -1,7 +1,7 @@
 use crate::{
     consts::State,
     defs::{ReeId, ReeInt},
-    ss::item::Drone,
+    ssi,
 };
 
 pub struct DroneInfo {
@@ -20,8 +20,8 @@ impl DroneInfo {
         }
     }
 }
-impl From<&Drone> for DroneInfo {
-    fn from(d: &Drone) -> Self {
+impl From<&ssi::Drone> for DroneInfo {
+    fn from(d: &ssi::Drone) -> Self {
         DroneInfo::new(d.id, d.fit_id, d.type_id, d.state)
     }
 }

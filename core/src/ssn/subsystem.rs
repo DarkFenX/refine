@@ -1,15 +1,15 @@
 use crate::{
     defs::{ReeId, ReeInt},
-    ss::item::Character,
+    ssi,
 };
 
-pub struct CharacterInfo {
+pub struct SubsystemInfo {
     pub id: ReeId,
     pub fit_id: ReeId,
     pub type_id: ReeInt,
     pub enabled: bool,
 }
-impl CharacterInfo {
+impl SubsystemInfo {
     fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
         Self {
             id,
@@ -19,8 +19,8 @@ impl CharacterInfo {
         }
     }
 }
-impl From<&Character> for CharacterInfo {
-    fn from(c: &Character) -> Self {
-        CharacterInfo::new(c.id, c.fit_id, c.type_id, c.get_bool_state())
+impl From<&ssi::Subsystem> for SubsystemInfo {
+    fn from(s: &ssi::Subsystem) -> Self {
+        SubsystemInfo::new(s.id, s.fit_id, s.type_id, s.get_bool_state())
     }
 }

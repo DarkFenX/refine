@@ -16,9 +16,10 @@ extern crate core;
 pub use consts::{ModRack, OrdAddMode, State};
 pub use defs::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::Src;
-pub use ss::{
-    AttrVal, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, ImplantInfo, ItemInfo, ModuleInfo,
-    RigInfo, ShipInfo, SkillInfo, SolarSystem, StanceInfo, SubsystemInfo, SwEffectInfo,
+pub use ss::{AttrVal, SolarSystem};
+pub use ssn::{
+    BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, ImplantInfo, ItemInfo, ModuleInfo, RigInfo,
+    ShipInfo, SkillInfo, StanceInfo, SubsystemInfo, SwEffectInfo,
 };
 pub use util::{Error, ErrorKind, Result};
 
@@ -34,4 +35,6 @@ pub mod ert;
 pub mod prelude;
 mod src;
 mod ss;
+mod ssi;
+pub mod ssn;
 mod util;

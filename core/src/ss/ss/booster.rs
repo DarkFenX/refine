@@ -1,32 +1,29 @@
 use crate::{
     defs::{ReeId, ReeInt},
-    ss::{
-        info::BoosterInfo,
-        item::{Booster, Item},
-        SolarSystem,
-    },
+    ss::SolarSystem,
+    ssi, ssn,
     util::{Error, ErrorKind, Named, Result},
 };
 
 impl SolarSystem {
     // Public
-    pub fn get_booster_info(&self, item_id: &ReeId) -> Result<BoosterInfo> {
+    pub fn get_booster_info(&self, item_id: &ReeId) -> Result<ssn::BoosterInfo> {
         Ok(self.get_booster(item_id)?.into())
     }
-    pub fn get_fit_booster_infos(&self, fit_id: &ReeId) -> Vec<BoosterInfo> {
+    pub fn get_fit_booster_infos(&self, fit_id: &ReeId) -> Vec<ssn::BoosterInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                Item::Booster(b) if b.fit_id == *fit_id => Some(b.into()),
+                ssi::Item::Booster(b) if b.fit_id == *fit_id => Some(b.into()),
                 _ => None,
             })
             .collect()
     }
-    pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<BoosterInfo> {
+    pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::BoosterInfo> {
         let item_id = self.alloc_item_id()?;
-        let booster = Booster::new(&self.src, item_id, fit_id, type_id, state);
-        let info = BoosterInfo::from(&booster);
-        let item = Item::Booster(booster);
+        let booster = ssi::Booster::new(&self.src, item_id, fit_id, type_id, state);
+        let info = ssn::BoosterInfo::from(&booster);
+        let item = ssi::Item::Booster(booster);
         self.add_item(item);
         Ok(info)
     }
@@ -35,25 +32,25 @@ impl SolarSystem {
         Ok(())
     }
     // Non-public
-    fn get_booster(&self, item_id: &ReeId) -> Result<&Booster> {
+    fn get_booster(&self, item_id: &ReeId) -> Result<&ssi::Booster> {
         let item = self.get_item(item_id)?;
         match item {
-            Item::Booster(booster) => Ok(booster),
+            ssi::Item::Booster(booster) => Ok(booster),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                Booster::get_name(),
+                ssi::Booster::get_name(),
             ))),
         }
     }
-    fn get_booster_mut(&mut self, item_id: &ReeId) -> Result<&mut Booster> {
+    fn get_booster_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::Booster> {
         let item = self.get_item_mut(item_id)?;
         match item {
-            Item::Booster(b) => Ok(b),
+            ssi::Item::Booster(b) => Ok(b),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                Booster::get_name(),
+                ssi::Booster::get_name(),
             ))),
         }
     }

@@ -7,10 +7,8 @@ use crate::{
     defs::{ReeFloat, ReeId, ReeInt},
     ert,
     src::Src,
-    ss::{
-        calc::{affector::AffectorSpec, AttrVal},
-        item::Item,
-    },
+    ss::calc::{affector::AffectorSpec, AttrVal},
+    ssi,
     util::{Error, ErrorKind, Result},
 };
 
@@ -62,7 +60,7 @@ impl CalcSvc {
         item_id: &ReeId,
         attr_id: &ReeInt,
         src: &Src,
-        items: &HashMap<ReeId, Item>,
+        items: &HashMap<ReeId, ssi::Item>,
     ) -> Result<AttrVal> {
         // Try accessing cached value
         match self.get_item_dogma_attr_map(item_id)?.get(attr_id) {
@@ -78,9 +76,9 @@ impl CalcSvc {
         &mut self,
         item_id: &ReeId,
         src: &Src,
-        items: &HashMap<ReeId, Item>,
+        items: &HashMap<ReeId, ssi::Item>,
     ) -> Result<HashMap<ReeInt, AttrVal>> {
-        // Item can have attributes which are not defined on the original EVE item. This happens when
+        // ssi::Item can have attributes which are not defined on the original EVE item. This happens when
         // something requested an attr value and it was calculated using base attribute value. Here,
         // we get already calculated attributes, which includes attributes absent on the EVE item
         let mut vals = self.get_item_dogma_attr_map(item_id)?.clone();
@@ -100,19 +98,19 @@ impl CalcSvc {
         Ok(vals)
     }
     // Maintenance methods
-    pub(in crate::ss) fn item_loaded(&mut self, item: &Item) {
+    pub(in crate::ss) fn item_loaded(&mut self, item: &ssi::Item) {
         self.attrs_vals.insert(item.get_id(), HashMap::new());
         self.affection.reg_afee(item);
     }
-    pub(in crate::ss) fn item_unloaded(&mut self, item: &Item) {
+    pub(in crate::ss) fn item_unloaded(&mut self, item: &ssi::Item) {
         self.affection.unreg_afee(item);
         self.attrs_vals.remove(&item.get_id());
     }
     pub(in crate::ss) fn effects_started(
         &mut self,
-        item: &Item,
+        item: &ssi::Item,
         effects: &Vec<Arc<ert::Effect>>,
-        items: &HashMap<ReeId, Item>,
+        items: &HashMap<ReeId, ssi::Item>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
         self.affection
@@ -129,9 +127,9 @@ impl CalcSvc {
     }
     pub(in crate::ss) fn effects_stopped(
         &mut self,
-        item: &Item,
+        item: &ssi::Item,
         effects: &Vec<Arc<ert::Effect>>,
-        items: &HashMap<ReeId, Item>,
+        items: &HashMap<ReeId, ssi::Item>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
         for afor_spec in afor_specs.iter() {
@@ -151,7 +149,7 @@ impl CalcSvc {
         item_id: &ReeId,
         attr_id: &ReeInt,
         src: &Src,
-        items: &HashMap<ReeId, Item>,
+        items: &HashMap<ReeId, ssi::Item>,
     ) -> Result<AttrVal> {
         let item = match items.get(item_id) {
             Some(i) => i,
@@ -171,7 +169,7 @@ impl CalcSvc {
             },
         };
         match (attr_id, item) {
-            (280, Item::Skill(s)) => return Ok(AttrVal::new(base_val, s.level as ReeFloat, s.level as ReeFloat)),
+            (280, ssi::Item::Skill(s)) => return Ok(AttrVal::new(base_val, s.level as ReeFloat, s.level as ReeFloat)),
             _ => (),
         }
         let mut stacked = HashMap::new();
@@ -244,10 +242,10 @@ impl CalcSvc {
     }
     fn get_modifications(
         &mut self,
-        item: &Item,
+        item: &ssi::Item,
         attr_id: &ReeInt,
         src: &Src,
-        items: &HashMap<ReeId, Item>,
+        items: &HashMap<ReeId, ssi::Item>,
     ) -> Vec<Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
@@ -337,7 +335,7 @@ fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {
 }
 
 // Maintenance- and query-related functions
-fn generate_local_afor_specs(afor_item: &Item, effects: &Vec<Arc<ert::Effect>>) -> Vec<AffectorSpec> {
+fn generate_local_afor_specs(afor_item: &ssi::Item, effects: &Vec<Arc<ert::Effect>>) -> Vec<AffectorSpec> {
     let mut specs = Vec::new();
     for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
         for (i, afor_mod) in effect.mods.iter().enumerate() {

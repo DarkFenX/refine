@@ -1,6 +1,6 @@
 use crate::{
     defs::{ReeId, ReeInt},
-    ss::item::Implant,
+    ssi,
 };
 
 pub struct ImplantInfo {
@@ -19,8 +19,8 @@ impl ImplantInfo {
         }
     }
 }
-impl From<&Implant> for ImplantInfo {
-    fn from(i: &Implant) -> Self {
+impl From<&ssi::Implant> for ImplantInfo {
+    fn from(i: &ssi::Implant) -> Self {
         ImplantInfo::new(i.id, i.fit_id, i.type_id, i.get_bool_state())
     }
 }
