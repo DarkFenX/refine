@@ -4,6 +4,7 @@ pub use info::{
     ShipInfo, SkillInfo, StanceInfo, SubsystemInfo, SwEffectInfo,
 };
 pub use ss::SolarSystem;
+use ss::SsInnerData;
 
 mod calc;
 mod helpers;

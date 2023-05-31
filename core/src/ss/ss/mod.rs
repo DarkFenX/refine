@@ -31,6 +31,17 @@ mod stance;
 mod subsystem;
 mod sw_effect;
 
+pub(in crate::ss) struct SsInnerData<'a> {
+    pub(in crate::ss) src: &'a Arc<Src>,
+    pub(in crate::ss) items: &'a HashMap<ReeId, Item>,
+    pub(in crate::ss) calc: &'a mut CalcSvc,
+}
+impl<'a> SsInnerData<'a> {
+    fn new(src: &'a Arc<Src>, items: &'a HashMap<ReeId, Item>, calc: &'a mut CalcSvc) -> Self {
+        Self { src, items, calc }
+    }
+}
+
 pub struct SolarSystem {
     src: Arc<Src>,
     fit_cnt: Wrapping<ReeId>,
@@ -72,7 +83,7 @@ impl SolarSystem {
         let item_id = item.get_id();
         self.items.insert(item_id, item);
         let item = self.items.get(&item_id).unwrap();
-        helpers::add_item(item, &self.src, &self.items, &mut self.calc);
+        helpers::add_item(item, &mut SsInnerData::new(&self.src, &self.items, &mut self.calc));
     }
     fn get_item(&self, item_id: &ReeId) -> Result<&Item> {
         self.items
@@ -92,7 +103,7 @@ impl SolarSystem {
             Some(item) => item,
             None => return Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
         };
-        helpers::remove_item(&main, &self.src, &self.items, &mut self.calc);
+        helpers::remove_item(&main, &mut SsInnerData::new(&self.src, &self.items, &mut self.calc));
         match main {
             // Remove reference to charge if it's charge which we're removing
             // Item::Charge(c) => match self.items.get_mut(&c.cont_id) {
@@ -108,7 +119,9 @@ impl SolarSystem {
             // Remove charge if we're removing a module, charges cannot exist without their carrier
             Item::Module(m) => match m.charge_id {
                 Some(other_id) => match self.items.remove(&other_id) {
-                    Some(charge) => helpers::remove_item(&charge, &self.src, &self.items, &mut self.calc),
+                    Some(charge) => {
+                        helpers::remove_item(&charge, &mut SsInnerData::new(&self.src, &self.items, &mut self.calc))
+                    }
                     _ => (),
                 },
                 _ => (),

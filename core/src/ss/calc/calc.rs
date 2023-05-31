@@ -236,11 +236,11 @@ impl CalcSvc {
         }
         Ok(AttrVal::new(base_val, dogma_val, dogma_val))
     }
-    fn force_recalc(&mut self, item_id: &ReeId, attr_id: &ReeInt) {
+    fn force_recalc(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> bool {
         match self.get_item_dogma_attrs_mut(item_id) {
-            Ok(item_attrs) => item_attrs.remove(attr_id),
-            _ => return,
-        };
+            Ok(item_attrs) => item_attrs.remove(attr_id).is_some(),
+            _ => return false,
+        }
     }
     fn get_modifications(
         &mut self,

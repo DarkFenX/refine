@@ -8,8 +8,8 @@ def build_server(proj_root):
     os.chdir(http_path)
     subprocess.run(
         ['cargo', 'build', '--profile=release'],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        # stdout=subprocess.DEVNULL,
+        # stderr=subprocess.DEVNULL,
         check=True)
 
 
