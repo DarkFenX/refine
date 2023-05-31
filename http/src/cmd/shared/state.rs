@@ -7,14 +7,14 @@ pub(crate) enum State {
     Active,
     Overload,
 }
-impl Into<reefast_core::State> for State {
-    fn into(self) -> reefast_core::State {
+impl Into<rc::State> for State {
+    fn into(self) -> rc::State {
         match self {
-            Self::Offline => reefast_core::State::Offline,
-            Self::Online => reefast_core::State::Online,
-            Self::Active => reefast_core::State::Active,
-            Self::Ghost => reefast_core::State::Ghost,
-            Self::Overload => reefast_core::State::Overload,
+            Self::Offline => rc::State::Offline,
+            Self::Online => rc::State::Online,
+            Self::Active => rc::State::Active,
+            Self::Ghost => rc::State::Ghost,
+            Self::Overload => rc::State::Overload,
         }
     }
 }

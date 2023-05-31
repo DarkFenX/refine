@@ -1,25 +1,21 @@
-use crate::{
-    defs::ReeInt,
-    edh,
-    util::{IntError, IntResult},
-};
+use crate::util::{Error, ErrorKind, Result};
 
-pub(in crate::edh_impls::phobos) trait FsdMerge<T> {
-    fn fsd_merge(self, id: ReeInt) -> Vec<T>;
+pub(crate) trait FsdMerge<T> {
+    fn fsd_merge(self, id: rc::ReeInt) -> Vec<T>;
 }
 
 #[derive(Debug)]
-pub(in crate::edh_impls::phobos) struct FsdItem {
-    pub(in crate::edh_impls::phobos) id: String,
-    pub(in crate::edh_impls::phobos) item: serde_json::Value,
+pub(crate) struct FsdItem {
+    pub(crate) id: String,
+    pub(crate) item: serde_json::Value,
 }
 impl FsdItem {
-    pub(in crate::edh_impls::phobos) fn new(id: String, item: serde_json::Value) -> Self {
+    pub(crate) fn new(id: String, item: serde_json::Value) -> Self {
         Self { id, item }
     }
 }
 
-pub(in crate::edh_impls::phobos) fn handle<T, U>(unprocessed: serde_json::Value) -> edh::Result<edh::Container<U>>
+pub(crate) fn handle<T, U>(unprocessed: serde_json::Value) -> rc::edh::Result<rc::edh::Container<U>>
 where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
@@ -27,22 +23,20 @@ where
     Ok(convert::<T, U>(decomposed))
 }
 
-fn decompose(json: serde_json::Value) -> IntResult<Vec<FsdItem>> {
+fn decompose(json: serde_json::Value) -> Result<Vec<FsdItem>> {
     match json {
         serde_json::Value::Object(map) => Ok(map.into_iter().map(|(k, v)| FsdItem::new(k, v)).collect()),
-        _ => Err(IntError::new(
-            "FSD decomposition failed: highest-level entity is not a map".to_string(),
-        )),
+        _ => Err(Error::new(ErrorKind::UnexpectedFsdTopEntity)),
     }
 }
 
-fn convert<T, U>(decomposed: Vec<FsdItem>) -> edh::Container<U>
+fn convert<T, U>(decomposed: Vec<FsdItem>) -> rc::edh::Container<U>
 where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
-    let mut cont = edh::Container::new();
+    let mut cont = rc::edh::Container::new();
     for fsd_item in decomposed {
-        match fsd_item.id.parse::<ReeInt>() {
+        match fsd_item.id.parse::<rc::ReeInt>() {
             Ok(id) => match serde_json::from_value::<T>(fsd_item.item) {
                 Ok(item) => cont.data.extend(item.fsd_merge(id)),
                 Err(e) => cont

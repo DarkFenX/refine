@@ -3,8 +3,10 @@
 
 pub use handler_file::PhbFileDHandler;
 pub use handler_http::PhbHttpDHandler;
+pub use util::{Error, ErrorKind, Result};
 
 mod data;
 mod fsd;
 mod handler_file;
 mod handler_http;
+mod util;

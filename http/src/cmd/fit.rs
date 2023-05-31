@@ -14,7 +14,7 @@ pub(crate) enum FitCommand {
     AddRig(AddRigCmd),
 }
 impl FitCommand {
-    pub(crate) fn fill_fit(self, fit_id: reefast_core::ReeId) -> ss::SsCommand {
+    pub(crate) fn fill_fit(self, fit_id: rc::ReeId) -> ss::SsCommand {
         match self {
             FitCommand::AddImplant(cmd) => ss::SsCommand::AddImplant(cmd.fill_fit(fit_id)),
             FitCommand::SetShip(cmd) => ss::SsCommand::SetShip(cmd.fill_fit(fit_id)),
@@ -28,22 +28,22 @@ impl FitCommand {
 
 #[derive(serde::Deserialize)]
 pub(crate) struct AddImplantCmd {
-    pub(crate) type_id: reefast_core::ReeInt,
+    pub(crate) type_id: rc::ReeInt,
     pub(crate) state: Option<bool>,
 }
 impl AddImplantCmd {
-    fn fill_fit(self, fit_id: reefast_core::ReeId) -> ss::AddImplantCmd {
+    fn fill_fit(self, fit_id: rc::ReeId) -> ss::AddImplantCmd {
         ss::AddImplantCmd::new(fit_id, self.type_id, self.state)
     }
 }
 
 #[derive(serde::Deserialize)]
 pub(crate) struct SetShipCmd {
-    pub(crate) type_id: reefast_core::ReeInt,
+    pub(crate) type_id: rc::ReeInt,
     pub(crate) state: Option<bool>,
 }
 impl SetShipCmd {
-    fn fill_fit(self, fit_id: reefast_core::ReeId) -> ss::SetShipCmd {
+    fn fill_fit(self, fit_id: rc::ReeId) -> ss::SetShipCmd {
         ss::SetShipCmd::new(fit_id, self.type_id, self.state)
     }
 }
@@ -51,12 +51,12 @@ impl SetShipCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct AddModuleCmd {
     pub(crate) add_mode: AddMode,
-    pub(crate) module_type_id: reefast_core::ReeInt,
-    pub(crate) charge_type_id: Option<reefast_core::ReeInt>,
+    pub(crate) module_type_id: rc::ReeInt,
+    pub(crate) charge_type_id: Option<rc::ReeInt>,
     pub(crate) state: State,
 }
 impl AddModuleCmd {
-    fn fill_fit(self, fit_id: reefast_core::ReeId) -> ss::AddModuleCmd {
+    fn fill_fit(self, fit_id: rc::ReeId) -> ss::AddModuleCmd {
         ss::AddModuleCmd::new(
             fit_id,
             self.add_mode,
@@ -69,11 +69,11 @@ impl AddModuleCmd {
 
 #[derive(serde::Deserialize)]
 pub(crate) struct AddRigCmd {
-    pub(crate) type_id: reefast_core::ReeInt,
+    pub(crate) type_id: rc::ReeInt,
     pub(crate) state: Option<bool>,
 }
 impl AddRigCmd {
-    fn fill_fit(self, fit_id: reefast_core::ReeId) -> ss::AddRigCmd {
+    fn fill_fit(self, fit_id: rc::ReeId) -> ss::AddRigCmd {
         ss::AddRigCmd::new(fit_id, self.type_id, self.state)
     }
 }

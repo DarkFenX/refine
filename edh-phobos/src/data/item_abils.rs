@@ -1,27 +1,23 @@
-use crate::{
-    defs::{ReeFloat, ReeInt},
-    edh_impls::phobos::fsd::FsdMerge,
-    edt,
-};
+use crate::fsd::FsdMerge;
 
 #[derive(Debug, serde::Deserialize)]
-pub(in super::super) struct ItemFighterAbils {
+pub(crate) struct ItemFighterAbils {
     #[serde(rename = "abilitySlot0")]
-    pub(in super::super) abil0: Option<ItemFighterAbilData>,
+    pub(crate) abil0: Option<ItemFighterAbilData>,
     #[serde(rename = "abilitySlot1")]
-    pub(in super::super) abil1: Option<ItemFighterAbilData>,
+    pub(crate) abil1: Option<ItemFighterAbilData>,
     #[serde(rename = "abilitySlot2")]
-    pub(in super::super) abil2: Option<ItemFighterAbilData>,
+    pub(crate) abil2: Option<ItemFighterAbilData>,
 }
-impl FsdMerge<edt::ItemFighterAbil> for ItemFighterAbils {
-    fn fsd_merge(self, id: ReeInt) -> Vec<edt::ItemFighterAbil> {
+impl FsdMerge<rc::edt::ItemFighterAbil> for ItemFighterAbils {
+    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::ItemFighterAbil> {
         let mut vec = Vec::new();
         for abil_data in vec![self.abil0, self.abil1, self.abil2].into_iter() {
             if let Some(abil_data) = abil_data {
                 let (charge_count, charge_rearm_time) = abil_data
                     .charges
                     .map_or((None, None), |v| (Some(v.count), Some(v.rearm_time)));
-                vec.push(edt::ItemFighterAbil::new(
+                vec.push(rc::edt::ItemFighterAbil::new(
                     id,
                     abil_data.abil_id,
                     abil_data.cooldown,
@@ -35,18 +31,18 @@ impl FsdMerge<edt::ItemFighterAbil> for ItemFighterAbils {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(in super::super) struct ItemFighterAbilData {
+pub(crate) struct ItemFighterAbilData {
     #[serde(rename = "abilityID")]
-    pub(in super::super) abil_id: ReeInt,
+    pub(crate) abil_id: rc::ReeInt,
     #[serde(rename = "cooldownSeconds")]
-    pub(in super::super) cooldown: Option<ReeFloat>,
-    pub(in super::super) charges: Option<ItemFighterAbilChargeData>,
+    pub(crate) cooldown: Option<rc::ReeFloat>,
+    pub(crate) charges: Option<ItemFighterAbilChargeData>,
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(in super::super) struct ItemFighterAbilChargeData {
+pub(crate) struct ItemFighterAbilChargeData {
     #[serde(rename = "chargeCount")]
-    pub(in super::super) count: ReeInt,
+    pub(crate) count: rc::ReeInt,
     #[serde(rename = "rearmTimeSeconds")]
-    pub(in super::super) rearm_time: ReeFloat,
+    pub(crate) rearm_time: rc::ReeFloat,
 }

@@ -3,16 +3,16 @@
 pub(crate) enum AddMode {
     Append,
     Equip,
-    Insert(reefast_core::ReeIdx),
-    Place(reefast_core::ReeIdx, bool),
+    Insert(rc::ReeIdx),
+    Place(rc::ReeIdx, bool),
 }
-impl Into<reefast_core::OrdAddMode> for AddMode {
-    fn into(self) -> reefast_core::OrdAddMode {
+impl Into<rc::OrdAddMode> for AddMode {
+    fn into(self) -> rc::OrdAddMode {
         match self {
-            Self::Append => reefast_core::OrdAddMode::Append,
-            Self::Equip => reefast_core::OrdAddMode::Equip,
-            Self::Insert(i) => reefast_core::OrdAddMode::Insert(i),
-            Self::Place(i, r) => reefast_core::OrdAddMode::Place(i, r),
+            Self::Append => rc::OrdAddMode::Append,
+            Self::Equip => rc::OrdAddMode::Equip,
+            Self::Insert(i) => rc::OrdAddMode::Insert(i),
+            Self::Place(i, r) => rc::OrdAddMode::Place(i, r),
         }
     }
 }

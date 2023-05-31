@@ -31,7 +31,7 @@ pub(crate) async fn create_source(
         Err(e) => {
             let code = match e.kind {
                 ErrorKind::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
-                ErrorKind::DhInitFailed(_, _) => StatusCode::BAD_REQUEST,
+                ErrorKind::EdhInitFailed(_, _) => StatusCode::BAD_REQUEST,
                 ErrorKind::SrcInitFailed(_, _) => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };

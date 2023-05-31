@@ -1,14 +1,14 @@
 #[derive(serde::Serialize)]
 pub(crate) struct ShipInfo {
     #[serde(with = "crate::util::serde_string")]
-    pub id: reefast_core::ReeId,
+    pub id: rc::ReeId,
     #[serde(with = "crate::util::serde_string")]
-    pub fit_id: reefast_core::ReeId,
-    pub type_id: reefast_core::ReeInt,
+    pub fit_id: rc::ReeId,
+    pub type_id: rc::ReeInt,
     pub enabled: bool,
 }
-impl From<&reefast_core::ShipInfo> for ShipInfo {
-    fn from(value: &reefast_core::ShipInfo) -> Self {
+impl From<&rc::ShipInfo> for ShipInfo {
+    fn from(value: &rc::ShipInfo) -> Self {
         Self {
             id: value.id,
             fit_id: value.fit_id,

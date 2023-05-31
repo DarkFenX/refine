@@ -26,7 +26,6 @@ pub use util::{Error, ErrorKind, Result};
 pub mod consts;
 mod defs;
 pub mod edh;
-pub mod edh_impls;
 pub mod edt;
 pub(crate) mod erg;
 pub mod erh;

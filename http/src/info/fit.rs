@@ -8,8 +8,8 @@ pub(crate) enum FitInfo {
 }
 impl FitInfo {
     pub(crate) fn mk_info(
-        core_ss: &mut reefast_core::SolarSystem,
-        fit_id: &reefast_core::ReeId,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::ReeId,
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
     ) -> Self {
@@ -47,23 +47,23 @@ pub(crate) struct FitInfoDetailed {
     pub(crate) modules: ModuleRacks,
 }
 impl FitInfoDetailed {
-    fn mk_info(core_ss: &mut reefast_core::SolarSystem, fit_id: &reefast_core::ReeId, item_mode: ItemInfoMode) -> Self {
+    fn mk_info(core_ss: &mut rc::SolarSystem, fit_id: &rc::ReeId, item_mode: ItemInfoMode) -> Self {
         let ship = core_ss
             .get_fit_ship_info(&fit_id)
             .ok()
             .map(|v| ItemInfo::mk_info(core_ss, &v, item_mode));
         let modules_high = core_ss
-            .get_module_infos(&fit_id, reefast_core::ModRack::High)
+            .get_module_infos(&fit_id, rc::ModRack::High)
             .iter()
             .map(|v| ItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         let modules_mid = core_ss
-            .get_module_infos(&fit_id, reefast_core::ModRack::Mid)
+            .get_module_infos(&fit_id, rc::ModRack::Mid)
             .iter()
             .map(|v| ItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         let modules_low = core_ss
-            .get_module_infos(&fit_id, reefast_core::ModRack::Low)
+            .get_module_infos(&fit_id, rc::ModRack::Low)
             .iter()
             .map(|v| ItemInfo::mk_info(core_ss, v, item_mode))
             .collect();

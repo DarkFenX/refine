@@ -14,12 +14,12 @@ pub(crate) enum SsCommand {
 #[derive(serde::Deserialize)]
 pub(crate) struct AddImplantCmd {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) fit_id: reefast_core::ReeId,
-    pub(crate) type_id: reefast_core::ReeInt,
+    pub(crate) fit_id: rc::ReeId,
+    pub(crate) type_id: rc::ReeInt,
     pub(crate) state: Option<bool>,
 }
 impl AddImplantCmd {
-    pub(crate) fn new(fit_id: reefast_core::ReeId, type_id: reefast_core::ReeInt, state: Option<bool>) -> Self {
+    pub(crate) fn new(fit_id: rc::ReeId, type_id: rc::ReeInt, state: Option<bool>) -> Self {
         Self { fit_id, type_id, state }
     }
 }
@@ -27,12 +27,12 @@ impl AddImplantCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct SetShipCmd {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) fit_id: reefast_core::ReeId,
-    pub(crate) type_id: reefast_core::ReeInt,
+    pub(crate) fit_id: rc::ReeId,
+    pub(crate) type_id: rc::ReeInt,
     pub(crate) state: Option<bool>,
 }
 impl SetShipCmd {
-    pub(crate) fn new(fit_id: reefast_core::ReeId, type_id: reefast_core::ReeInt, state: Option<bool>) -> Self {
+    pub(crate) fn new(fit_id: rc::ReeId, type_id: rc::ReeInt, state: Option<bool>) -> Self {
         Self { fit_id, type_id, state }
     }
 }
@@ -40,18 +40,18 @@ impl SetShipCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct AddModuleCmd {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) fit_id: reefast_core::ReeId,
+    pub(crate) fit_id: rc::ReeId,
     pub(crate) add_mode: AddMode,
-    pub(crate) module_type_id: reefast_core::ReeInt,
-    pub(crate) charge_type_id: Option<reefast_core::ReeInt>,
+    pub(crate) module_type_id: rc::ReeInt,
+    pub(crate) charge_type_id: Option<rc::ReeInt>,
     pub(crate) state: State,
 }
 impl AddModuleCmd {
     pub(crate) fn new(
-        fit_id: reefast_core::ReeId,
+        fit_id: rc::ReeId,
         add_mode: AddMode,
-        module_type_id: reefast_core::ReeInt,
-        charge_type_id: Option<reefast_core::ReeInt>,
+        module_type_id: rc::ReeInt,
+        charge_type_id: Option<rc::ReeInt>,
         state: State,
     ) -> Self {
         Self {
@@ -67,12 +67,12 @@ impl AddModuleCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct AddRigCmd {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) fit_id: reefast_core::ReeId,
-    pub(crate) type_id: reefast_core::ReeInt,
+    pub(crate) fit_id: rc::ReeId,
+    pub(crate) type_id: rc::ReeInt,
     pub(crate) state: Option<bool>,
 }
 impl AddRigCmd {
-    pub(crate) fn new(fit_id: reefast_core::ReeId, type_id: reefast_core::ReeInt, state: Option<bool>) -> Self {
+    pub(crate) fn new(fit_id: rc::ReeId, type_id: rc::ReeInt, state: Option<bool>) -> Self {
         Self { fit_id, type_id, state }
     }
 }

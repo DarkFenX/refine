@@ -10,9 +10,9 @@ pub(crate) enum ErrorKind {
     FitIdCastFailed(String),
     ItemIdCastFailed(String),
     SettingsInitFailed(String),
-    DhInitFailed(reefast_core::ErrorKind, String),
-    SrcInitFailed(reefast_core::ErrorKind, String),
-    CoreError(reefast_core::ErrorKind, String),
+    EdhInitFailed(rp::ErrorKind, String),
+    SrcInitFailed(rc::ErrorKind, String),
+    CoreError(rc::ErrorKind, String),
 }
 
 #[derive(Debug)]
@@ -33,29 +33,29 @@ impl Error {
             ErrorKind::FitIdCastFailed(_) => "IDC-001",
             ErrorKind::ItemIdCastFailed(_) => "IDC-002",
             ErrorKind::SettingsInitFailed(_) => "CFG-001",
-            ErrorKind::DhInitFailed(_, _) => "DHR-001",
+            ErrorKind::EdhInitFailed(_, _) => "EDH-001",
             ErrorKind::SrcInitFailed(_, _) => "SIN-001",
             ErrorKind::CoreError(k, _) => match k {
-                reefast_core::ErrorKind::DhHttpInvalidBaseUrl(_, _) => "COR-001",
-                reefast_core::ErrorKind::SrcCacheGenFailed(_) => "COR-002",
-                reefast_core::ErrorKind::FitNotFound(_) => "COR-003",
-                reefast_core::ErrorKind::ItemIdNotFound(_) => "COR-004",
-                reefast_core::ErrorKind::ItemTypeNotFound(_) => "COR-005",
-                reefast_core::ErrorKind::FitIdAllocFailed => "COR-006",
-                reefast_core::ErrorKind::ItemIdAllocFailed => "COR-007",
-                reefast_core::ErrorKind::InvalidSkillLevel(_) => "COR-008",
-                reefast_core::ErrorKind::UnexpectedItemType(_, _, _) => "COR-009",
-                reefast_core::ErrorKind::ModuleSlotTaken(_, _, _) => "COR-010",
-                reefast_core::ErrorKind::CachedAttrNotFound(_) => "COR-011",
-                reefast_core::ErrorKind::CachedItemNotLoaded(_) => "COR-012",
-                reefast_core::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
+                rc::ErrorKind::DhHttpInvalidBaseUrl(_, _) => "COR-001",
+                rc::ErrorKind::SrcCacheGenFailed(_) => "COR-002",
+                rc::ErrorKind::FitNotFound(_) => "COR-003",
+                rc::ErrorKind::ItemIdNotFound(_) => "COR-004",
+                rc::ErrorKind::ItemTypeNotFound(_) => "COR-005",
+                rc::ErrorKind::FitIdAllocFailed => "COR-006",
+                rc::ErrorKind::ItemIdAllocFailed => "COR-007",
+                rc::ErrorKind::InvalidSkillLevel(_) => "COR-008",
+                rc::ErrorKind::UnexpectedItemType(_, _, _) => "COR-009",
+                rc::ErrorKind::ModuleSlotTaken(_, _, _) => "COR-010",
+                rc::ErrorKind::CachedAttrNotFound(_) => "COR-011",
+                rc::ErrorKind::CachedItemNotLoaded(_) => "COR-012",
+                rc::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
             },
         };
         code.to_string()
     }
 }
-impl From<reefast_core::Error> for Error {
-    fn from(err: reefast_core::Error) -> Self {
+impl From<rc::Error> for Error {
+    fn from(err: rc::Error) -> Self {
         let reason = format!("{err}");
         Self::new(ErrorKind::CoreError(err.kind, reason))
     }
@@ -72,7 +72,7 @@ impl fmt::Display for Error {
             ErrorKind::FitIdCastFailed(s) => write!(f, "unable to take cast string {s} to id"),
             ErrorKind::ItemIdCastFailed(s) => write!(f, "unable to take cast string {s} to id"),
             ErrorKind::SettingsInitFailed(reason) => write!(f, "config initialization failed: {reason}"),
-            ErrorKind::DhInitFailed(_, reason) => write!(f, "data handler initialization failed: {reason}"),
+            ErrorKind::EdhInitFailed(_, reason) => write!(f, "EVE data handler initialization failed: {reason}"),
             ErrorKind::SrcInitFailed(_, reason) => write!(f, "source initialization failed: {reason}"),
             ErrorKind::CoreError(_, reason) => write!(f, "core library error: {reason}"),
         }

@@ -2,40 +2,36 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::{
-    defs::ReeInt,
-    edh_impls::phobos::{data::aux::into_opt, fsd::FsdMerge},
-    edt,
-};
+use crate::{fsd::FsdMerge, util::into_opt};
 
 #[derive(Debug, serde::Deserialize)]
-pub(in super::super) struct Effect {
+pub(crate) struct Effect {
     #[serde(rename = "effectCategory")]
-    pub(in super::super) category_id: ReeInt,
+    pub(crate) category_id: rc::ReeInt,
     #[serde(rename = "isAssistance")]
-    pub(in super::super) is_assistance: ReeInt,
+    pub(crate) is_assistance: rc::ReeInt,
     #[serde(rename = "isOffensive")]
-    pub(in super::super) is_offensive: ReeInt,
+    pub(crate) is_offensive: rc::ReeInt,
     #[serde(rename = "dischargeAttributeID")]
-    pub(in super::super) discharge_attr_id: Option<ReeInt>,
+    pub(crate) discharge_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "durationAttributeID")]
-    pub(in super::super) duration_attr_id: Option<ReeInt>,
+    pub(crate) duration_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "rangeAttributeID")]
-    pub(in super::super) range_attr_id: Option<ReeInt>,
+    pub(crate) range_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "falloffAttributeID")]
-    pub(in super::super) falloff_attr_id: Option<ReeInt>,
+    pub(crate) falloff_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "trackingSpeedAttributeID")]
-    pub(in super::super) tracking_attr_id: Option<ReeInt>,
+    pub(crate) tracking_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "fittingUsageChanceAttributeID")]
-    pub(in super::super) usage_chance_attr_id: Option<ReeInt>,
+    pub(crate) usage_chance_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "resistanceAttributeID")]
-    pub(in super::super) resist_attr_id: Option<ReeInt>,
+    pub(crate) resist_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
-    pub(in super::super) mods: Vec<EffectMod>,
+    pub(crate) mods: Vec<EffectMod>,
 }
-impl FsdMerge<edt::Effect> for Effect {
-    fn fsd_merge(self, id: ReeInt) -> Vec<edt::Effect> {
-        vec![edt::Effect::new(
+impl FsdMerge<rc::edt::Effect> for Effect {
+    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::Effect> {
+        vec![rc::edt::Effect::new(
             id,
             self.category_id,
             self.is_assistance != 0,
@@ -53,13 +49,13 @@ impl FsdMerge<edt::Effect> for Effect {
 }
 
 #[derive(Debug)]
-pub(in super::super) struct EffectMod {
-    pub(in super::super) func: String,
-    pub(in super::super) args: HashMap<String, edt::Primitive>,
+pub(crate) struct EffectMod {
+    pub(crate) func: String,
+    pub(crate) args: HashMap<String, rc::edt::Primitive>,
 }
-impl Into<edt::EffectMod> for EffectMod {
-    fn into(self) -> edt::EffectMod {
-        edt::EffectMod::new(self.func, self.args)
+impl Into<rc::edt::EffectMod> for EffectMod {
+    fn into(self) -> rc::edt::EffectMod {
+        rc::edt::EffectMod::new(self.func, self.args)
     }
 }
 
@@ -69,14 +65,9 @@ mod dgmmod {
     use serde::{de::Error, Deserialize};
     use serde_json::{Map, Value};
 
-    use crate::{
-        defs::{ReeFloat, ReeInt},
-        edt::{self, Primitive},
-    };
-
     use super::EffectMod;
 
-    pub(in super::super) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<EffectMod>, D::Error>
+    pub(crate) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<EffectMod>, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
@@ -107,20 +98,20 @@ mod dgmmod {
         }
     }
 
-    fn primitivize<E: Error>(json: Value) -> Result<Primitive, E> {
+    fn primitivize<E: Error>(json: Value) -> Result<rc::edt::Primitive, E> {
         match json {
-            Value::Null => Ok(edt::Primitive::Null),
-            Value::Bool(b) => Ok(edt::Primitive::Bool(b)),
+            Value::Null => Ok(rc::edt::Primitive::Null),
+            Value::Bool(b) => Ok(rc::edt::Primitive::Bool(b)),
             Value::Number(n) => {
                 if let Some(n) = n.as_i64() {
-                    Ok(edt::Primitive::Int(n as ReeInt))
+                    Ok(rc::edt::Primitive::Int(n as rc::ReeInt))
                 } else if let Some(n) = n.as_f64() {
-                    Ok(edt::Primitive::Float(n as ReeFloat))
+                    Ok(rc::edt::Primitive::Float(n as rc::ReeFloat))
                 } else {
                     Err(Error::custom("unexpected number type"))
                 }
             }
-            Value::String(s) => Ok(edt::Primitive::String(s)),
+            Value::String(s) => Ok(rc::edt::Primitive::String(s)),
             _ => Err(Error::custom("unexpected type")),
         }
     }

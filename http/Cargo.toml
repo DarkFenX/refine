@@ -5,7 +5,8 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2021"
 
 [dependencies]
-reefast-core = { path = "../core" }
+rc = { package = "reefast-core", path = "../core" }
+rp = { package = "reefast-edh-phobos", path = "../edh-phobos" }
 axum = { version = ">=0.6.4", features = ["query"] }
 chrono = ">=0.4.23"
 config = { version = ">=0.13.3", features = ["toml"] }
