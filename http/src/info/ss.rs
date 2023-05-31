@@ -9,7 +9,7 @@ pub(crate) enum SsInfo {
 impl SsInfo {
     pub(crate) fn mk_info(
         ss_id: String,
-        core_ss: &mut reefast::SolarSystem,
+        core_ss: &mut reefast_core::SolarSystem,
         ss_mode: SsInfoMode,
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
@@ -32,7 +32,7 @@ pub(crate) struct SsInfoFull {
 impl SsInfoFull {
     fn mk_info(
         ss_id: String,
-        core_ss: &mut reefast::SolarSystem,
+        core_ss: &mut reefast_core::SolarSystem,
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
     ) -> Self {

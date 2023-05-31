@@ -12,30 +12,30 @@ pub(crate) struct ItemIdsResp {
     charge_id: Option<String>,
 }
 impl ItemIdsResp {
-    fn new(item_id: reefast::ReeId, charge_info: Option<reefast::ChargeInfo>) -> Self {
+    fn new(item_id: reefast_core::ReeId, charge_info: Option<reefast_core::ChargeInfo>) -> Self {
         Self {
             id: item_id.to_string(),
             charge_id: charge_info.map(|v| v.id.to_string()),
         }
     }
 }
-impl From<reefast::ImplantInfo> for ItemIdsResp {
-    fn from(value: reefast::ImplantInfo) -> Self {
+impl From<reefast_core::ImplantInfo> for ItemIdsResp {
+    fn from(value: reefast_core::ImplantInfo) -> Self {
         ItemIdsResp::new(value.id, None)
     }
 }
-impl From<reefast::ShipInfo> for ItemIdsResp {
-    fn from(value: reefast::ShipInfo) -> Self {
+impl From<reefast_core::ShipInfo> for ItemIdsResp {
+    fn from(value: reefast_core::ShipInfo) -> Self {
         ItemIdsResp::new(value.id, None)
     }
 }
-impl From<reefast::ModuleInfo> for ItemIdsResp {
-    fn from(value: reefast::ModuleInfo) -> Self {
+impl From<reefast_core::ModuleInfo> for ItemIdsResp {
+    fn from(value: reefast_core::ModuleInfo) -> Self {
         ItemIdsResp::new(value.id, value.charge_info)
     }
 }
-impl From<reefast::RigInfo> for ItemIdsResp {
-    fn from(value: reefast::RigInfo) -> Self {
+impl From<reefast_core::RigInfo> for ItemIdsResp {
+    fn from(value: reefast_core::RigInfo) -> Self {
         ItemIdsResp::new(value.id, None)
     }
 }

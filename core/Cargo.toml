@@ -1,5 +1,5 @@
 [package]
-name = "reefast"
+name = "reefast-core"
 version = "0.0.1"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2018"

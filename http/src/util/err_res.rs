@@ -10,9 +10,9 @@ pub(crate) enum ErrorKind {
     FitIdCastFailed(String),
     ItemIdCastFailed(String),
     SettingsInitFailed(String),
-    DhInitFailed(reefast::ErrorKind, String),
-    SrcInitFailed(reefast::ErrorKind, String),
-    CoreError(reefast::ErrorKind, String),
+    DhInitFailed(reefast_core::ErrorKind, String),
+    SrcInitFailed(reefast_core::ErrorKind, String),
+    CoreError(reefast_core::ErrorKind, String),
 }
 
 #[derive(Debug)]
@@ -36,26 +36,26 @@ impl Error {
             ErrorKind::DhInitFailed(_, _) => "DHR-001",
             ErrorKind::SrcInitFailed(_, _) => "SIN-001",
             ErrorKind::CoreError(k, _) => match k {
-                reefast::ErrorKind::DhHttpInvalidBaseUrl(_, _) => "COR-001",
-                reefast::ErrorKind::SrcCacheGenFailed(_) => "COR-002",
-                reefast::ErrorKind::FitNotFound(_) => "COR-003",
-                reefast::ErrorKind::ItemIdNotFound(_) => "COR-004",
-                reefast::ErrorKind::ItemTypeNotFound(_) => "COR-005",
-                reefast::ErrorKind::FitIdAllocFailed => "COR-006",
-                reefast::ErrorKind::ItemIdAllocFailed => "COR-007",
-                reefast::ErrorKind::InvalidSkillLevel(_) => "COR-008",
-                reefast::ErrorKind::UnexpectedItemType(_, _, _) => "COR-009",
-                reefast::ErrorKind::ModuleSlotTaken(_, _, _) => "COR-010",
-                reefast::ErrorKind::CachedAttrNotFound(_) => "COR-011",
-                reefast::ErrorKind::CachedItemNotLoaded(_) => "COR-012",
-                reefast::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
+                reefast_core::ErrorKind::DhHttpInvalidBaseUrl(_, _) => "COR-001",
+                reefast_core::ErrorKind::SrcCacheGenFailed(_) => "COR-002",
+                reefast_core::ErrorKind::FitNotFound(_) => "COR-003",
+                reefast_core::ErrorKind::ItemIdNotFound(_) => "COR-004",
+                reefast_core::ErrorKind::ItemTypeNotFound(_) => "COR-005",
+                reefast_core::ErrorKind::FitIdAllocFailed => "COR-006",
+                reefast_core::ErrorKind::ItemIdAllocFailed => "COR-007",
+                reefast_core::ErrorKind::InvalidSkillLevel(_) => "COR-008",
+                reefast_core::ErrorKind::UnexpectedItemType(_, _, _) => "COR-009",
+                reefast_core::ErrorKind::ModuleSlotTaken(_, _, _) => "COR-010",
+                reefast_core::ErrorKind::CachedAttrNotFound(_) => "COR-011",
+                reefast_core::ErrorKind::CachedItemNotLoaded(_) => "COR-012",
+                reefast_core::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
             },
         };
         code.to_string()
     }
 }
-impl From<reefast::Error> for Error {
-    fn from(err: reefast::Error) -> Self {
+impl From<reefast_core::Error> for Error {
+    fn from(err: reefast_core::Error) -> Self {
         let reason = format!("{err}");
         Self::new(ErrorKind::CoreError(err.kind, reason))
     }

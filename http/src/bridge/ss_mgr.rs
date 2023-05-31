@@ -24,7 +24,7 @@ impl SsMgr {
     // Solar system methods
     pub(crate) async fn add_ss(
         &self,
-        src: Arc<reefast::Src>,
+        src: Arc<reefast_core::Src>,
         ss_mode: SsInfoMode,
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
@@ -32,7 +32,7 @@ impl SsMgr {
         let id = get_id();
         let id_mv = id.clone();
         let (core_ss, ss_info) = tokio_rayon::spawn_fifo(move || {
-            let mut core_ss = reefast::SolarSystem::new(src);
+            let mut core_ss = reefast_core::SolarSystem::new(src);
             let ss_info = SsInfo::mk_info(id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (core_ss, ss_info)
         })

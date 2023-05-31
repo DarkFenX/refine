@@ -24,7 +24,7 @@ pub(crate) async fn delete_item(
         Err(e) => {
             let code = match e.kind {
                 ErrorKind::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
-                ErrorKind::CoreError(reefast::ErrorKind::ItemIdNotFound(_), _) => StatusCode::NOT_FOUND,
+                ErrorKind::CoreError(reefast_core::ErrorKind::ItemIdNotFound(_), _) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(SingleErr::from(e))).into_response()

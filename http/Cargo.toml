@@ -5,7 +5,7 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2021"
 
 [dependencies]
-reefast = { path = "../core" }
+reefast-core = { path = "../core" }
 axum = { version = ">=0.6.4", features = ["query"] }
 chrono = ">=0.4.23"
 config = { version = ">=0.13.3", features = ["toml"] }

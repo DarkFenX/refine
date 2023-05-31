@@ -10,7 +10,7 @@ use crate::util::{Error, ErrorKind, Result};
 
 pub(crate) struct SrcMgr {
     cache_folder: Option<String>,
-    alias_src_map: RwLock<HashMap<String, Arc<reefast::Src>>>,
+    alias_src_map: RwLock<HashMap<String, Arc<reefast_core::Src>>>,
     default_alias: RwLock<Option<String>>,
     locked_aliases: RwLock<HashSet<String>>,
 }
@@ -64,7 +64,7 @@ impl SrcMgr {
             }
         }
     }
-    pub(crate) async fn get(&self, alias: Option<&str>) -> Result<Arc<reefast::Src>> {
+    pub(crate) async fn get(&self, alias: Option<&str>) -> Result<Arc<reefast_core::Src>> {
         match alias {
             Some(a) => self.get_src_by_alias(a).await,
             None => self.get_default_src().await,
@@ -98,7 +98,7 @@ impl SrcMgr {
             event!(Level::ERROR, "attempt to unlock alias which is not locked")
         }
     }
-    async fn get_src_by_alias(&self, alias: &str) -> Result<Arc<reefast::Src>> {
+    async fn get_src_by_alias(&self, alias: &str) -> Result<Arc<reefast_core::Src>> {
         self.alias_src_map
             .read()
             .await
@@ -106,7 +106,7 @@ impl SrcMgr {
             .cloned()
             .ok_or_else(|| Error::new(ErrorKind::SrcNotFound(alias.to_string())))
     }
-    async fn get_default_src(&self) -> Result<Arc<reefast::Src>> {
+    async fn get_default_src(&self) -> Result<Arc<reefast_core::Src>> {
         match self.default_alias.read().await.as_ref() {
             Some(a) => self.get_src_by_alias(a).await,
             None => Err(Error::new(ErrorKind::NoDefaultSrc)),
@@ -119,20 +119,20 @@ fn create_src(
     data_base_url: String,
     data_version: String,
     cache_folder: Option<String>,
-) -> Result<reefast::Src> {
+) -> Result<reefast_core::Src> {
     let dh = Box::new(
-        reefast::edh_impls::PhbHttpDHandler::new(data_base_url.as_str(), data_version).map_err(|e| {
+        reefast_core::edh_impls::PhbHttpDHandler::new(data_base_url.as_str(), data_version).map_err(|e| {
             let reason = format!("{e}");
             Error::new(ErrorKind::DhInitFailed(e.kind, reason))
         })?,
     );
-    let ch: Box<dyn reefast::erh::CacheHandler> = match cache_folder {
+    let ch: Box<dyn reefast_core::erh::CacheHandler> = match cache_folder {
         // Use cache handler with persistent storage if cache path is specified
-        Some(cf) => Box::new(reefast::erh_impls::JsonFileCHandler::new(cf.into(), alias)),
+        Some(cf) => Box::new(reefast_core::erh_impls::JsonFileCHandler::new(cf.into(), alias)),
         // Use RAM-only cache handler if path is not specified
-        None => Box::new(reefast::erh_impls::RamOnlyCHandler::new()),
+        None => Box::new(reefast_core::erh_impls::RamOnlyCHandler::new()),
     };
-    reefast::Src::new(dh, ch).map_err(|e| {
+    reefast_core::Src::new(dh, ch).map_err(|e| {
         let reason = format!("{e}");
         Error::new(ErrorKind::SrcInitFailed(e.kind, reason))
     })

@@ -21,7 +21,7 @@ pub(crate) enum ItemInfo {
 }
 impl ItemInfo {
     pub(crate) fn mk_info<T: Into<ItemInfoBasic>>(
-        core_ss: &mut reefast::SolarSystem,
+        core_ss: &mut reefast_core::SolarSystem,
         item_identity: T,
         item_mode: ItemInfoMode,
     ) -> Self {
@@ -45,7 +45,7 @@ pub(crate) enum ItemInfoBasic {
     Rig(RigInfo),
 }
 impl ItemInfoBasic {
-    fn get_id(&self) -> reefast::ReeId {
+    fn get_id(&self) -> reefast_core::ReeId {
         match self {
             Self::Implant(info) => info.id,
             Self::Ship(info) => info.id,
@@ -54,13 +54,13 @@ impl ItemInfoBasic {
         }
     }
 }
-impl From<&reefast::ItemInfo> for ItemInfoBasic {
-    fn from(value: &reefast::ItemInfo) -> Self {
+impl From<&reefast_core::ItemInfo> for ItemInfoBasic {
+    fn from(value: &reefast_core::ItemInfo) -> Self {
         match value {
-            reefast::ItemInfo::Implant(info) => Self::Implant(info.into()),
-            reefast::ItemInfo::Ship(info) => Self::Ship(info.into()),
-            reefast::ItemInfo::Module(info) => Self::Module(info.into()),
-            reefast::ItemInfo::Rig(info) => Self::Rig(info.into()),
+            reefast_core::ItemInfo::Implant(info) => Self::Implant(info.into()),
+            reefast_core::ItemInfo::Ship(info) => Self::Ship(info.into()),
+            reefast_core::ItemInfo::Module(info) => Self::Module(info.into()),
+            reefast_core::ItemInfo::Rig(info) => Self::Rig(info.into()),
             _ => Self::Ship(ShipInfo {
                 id: 999999,
                 fit_id: 666666,
@@ -70,13 +70,13 @@ impl From<&reefast::ItemInfo> for ItemInfoBasic {
         }
     }
 }
-impl From<&reefast::ModuleInfo> for ItemInfoBasic {
-    fn from(value: &reefast::ModuleInfo) -> Self {
+impl From<&reefast_core::ModuleInfo> for ItemInfoBasic {
+    fn from(value: &reefast_core::ModuleInfo) -> Self {
         ItemInfoBasic::Module(value.into())
     }
 }
-impl From<&reefast::ShipInfo> for ItemInfoBasic {
-    fn from(value: &reefast::ShipInfo) -> Self {
+impl From<&reefast_core::ShipInfo> for ItemInfoBasic {
+    fn from(value: &reefast_core::ShipInfo) -> Self {
         ItemInfoBasic::Ship(value.into())
     }
 }
@@ -85,10 +85,10 @@ impl From<&reefast::ShipInfo> for ItemInfoBasic {
 pub(crate) struct ItemInfoFull {
     #[serde(flatten)]
     pub(crate) basic_info: ItemInfoBasic,
-    pub(crate) attr_vals: HashMap<reefast::ReeInt, AttrValInfo>,
+    pub(crate) attr_vals: HashMap<reefast_core::ReeInt, AttrValInfo>,
 }
 impl ItemInfoFull {
-    fn mk_info<T: Into<ItemInfoBasic>>(core_ss: &mut reefast::SolarSystem, item_identity: T) -> Self {
+    fn mk_info<T: Into<ItemInfoBasic>>(core_ss: &mut reefast_core::SolarSystem, item_identity: T) -> Self {
         let info = item_identity.into();
         let item_id = info.get_id();
         let attrs = match core_ss.get_item_attrs(&item_id) {

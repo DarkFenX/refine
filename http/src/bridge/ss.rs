@@ -7,10 +7,10 @@ use crate::{
 pub(crate) struct SolarSystem {
     id: String,
     accessed: chrono::DateTime<chrono::Utc>,
-    core_ss: Option<reefast::SolarSystem>,
+    core_ss: Option<reefast_core::SolarSystem>,
 }
 impl SolarSystem {
-    pub(crate) fn new(id: String, core_ss: reefast::SolarSystem) -> Self {
+    pub(crate) fn new(id: String, core_ss: reefast_core::SolarSystem) -> Self {
         Self {
             id,
             accessed: chrono::Utc::now(),
@@ -150,7 +150,7 @@ impl SolarSystem {
         Ok((fit_info, cmd_results))
     }
     // Helper methods
-    fn take_ss(&mut self) -> Result<reefast::SolarSystem> {
+    fn take_ss(&mut self) -> Result<reefast_core::SolarSystem> {
         match self.core_ss.take() {
             Some(core_ss) => Ok(core_ss),
             None => {
@@ -159,7 +159,7 @@ impl SolarSystem {
             }
         }
     }
-    fn str_to_fit_id(&mut self, id: &str) -> Result<reefast::ReeId> {
+    fn str_to_fit_id(&mut self, id: &str) -> Result<reefast_core::ReeId> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {
@@ -168,7 +168,7 @@ impl SolarSystem {
             }
         }
     }
-    fn str_to_item_id(&mut self, id: &str) -> Result<reefast::ReeId> {
+    fn str_to_item_id(&mut self, id: &str) -> Result<reefast_core::ReeId> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {
@@ -182,7 +182,7 @@ impl SolarSystem {
     }
 }
 
-fn execute_commands(core_ss: &mut reefast::SolarSystem, commands: Vec<SsCommand>) -> Vec<CmdResp> {
+fn execute_commands(core_ss: &mut reefast_core::SolarSystem, commands: Vec<SsCommand>) -> Vec<CmdResp> {
     let mut cmd_results = Vec::with_capacity(commands.len());
     for cmd in commands.iter() {
         match cmd {
@@ -206,7 +206,7 @@ fn execute_commands(core_ss: &mut reefast::SolarSystem, commands: Vec<SsCommand>
                         c.fit_id,
                         c.module_type_id,
                         c.state.into(),
-                        reefast::ModRack::High,
+                        reefast_core::ModRack::High,
                         c.add_mode.into(),
                         c.charge_type_id,
                     )
@@ -220,7 +220,7 @@ fn execute_commands(core_ss: &mut reefast::SolarSystem, commands: Vec<SsCommand>
                         c.fit_id,
                         c.module_type_id,
                         c.state.into(),
-                        reefast::ModRack::Mid,
+                        reefast_core::ModRack::Mid,
                         c.add_mode.into(),
                         c.charge_type_id,
                     )
@@ -234,7 +234,7 @@ fn execute_commands(core_ss: &mut reefast::SolarSystem, commands: Vec<SsCommand>
                         c.fit_id,
                         c.module_type_id,
                         c.state.into(),
-                        reefast::ModRack::Low,
+                        reefast_core::ModRack::Low,
                         c.add_mode.into(),
                         c.charge_type_id,
                     )
