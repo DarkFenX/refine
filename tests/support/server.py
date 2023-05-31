@@ -8,8 +8,8 @@ def build_server(proj_root):
     os.chdir(http_path)
     subprocess.run(
         ['cargo', 'build', '--profile=release'],
-        # stdout=subprocess.DEVNULL,
-        # stderr=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
         check=True)
 
 
@@ -21,7 +21,10 @@ def build_config(path, port):
 
 def run_server(proj_root, config_path):
     binary_path = os.path.join(proj_root, 'target', 'release', 'reefast-http')
-    return subprocess.Popen([binary_path, config_path]).pid
+    return subprocess.Popen(
+        [binary_path, config_path],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL).pid
 
 
 def kill_server(pid):
