@@ -14,12 +14,12 @@ use crate::{
 use super::error::FromSuffix;
 
 /// Data handler which uses HTTP-served [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
-pub struct PhbHttpDHandler {
+pub struct PhbHttpEdh {
     base_url: Url,
     data_version: String,
 }
-impl PhbHttpDHandler {
-    /// Constructs new `PhbHttpDHandler` using provided base URL and data version.
+impl PhbHttpEdh {
+    /// Constructs HTTP EVE data handler using provided base URL and data version.
     ///
     /// URL should end with a trailing slash, and should point to the top-level directory of
     /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_binary/`.
@@ -57,15 +57,15 @@ impl PhbHttpDHandler {
     {
         let suffix = format!("{}/{}.json", folder, file);
         let json = self.fetch_data(&suffix)?;
-        fsd::handle::<T, U>(json)
+        fsd::handle::<T, U>(json, &suffix)
     }
 }
-impl fmt::Debug for PhbHttpDHandler {
+impl fmt::Debug for PhbHttpEdh {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "PhbHttpEdh(\"{}\")", self.base_url.to_string())
     }
 }
-impl rc::edh::EveDataHandler for PhbHttpDHandler {
+impl rc::edh::EveDataHandler for PhbHttpEdh {
     /// Get item types.
     fn get_items(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::Item>> {
         self.process_fsd::<Item, rc::edt::Item>("fsd_binary", "types")

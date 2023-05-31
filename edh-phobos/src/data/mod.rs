@@ -8,6 +8,7 @@ pub(crate) use item_attrs::ItemAttrs;
 pub(crate) use item_effects::ItemEffects;
 pub(crate) use item_group::ItemGroup;
 pub(crate) use item_srq_map::ItemSkillMap;
+#[cfg(feature = "file")]
 pub(crate) use metadata::Metadata;
 pub(crate) use muta_attr_mods::MutaAttrMods;
 pub(crate) use muta_item_convs::MutaItemConvs;
@@ -22,6 +23,7 @@ mod item_attrs;
 mod item_effects;
 mod item_group;
 mod item_srq_map;
+#[cfg(feature = "file")]
 mod metadata;
 mod muta_attr_mods;
 mod muta_item_convs;

@@ -15,18 +15,18 @@ impl FsdItem {
     }
 }
 
-pub(crate) fn handle<T, U>(unprocessed: serde_json::Value) -> rc::edh::Result<rc::edh::Container<U>>
+pub(crate) fn handle<T, U>(unprocessed: serde_json::Value, suffix: &str) -> rc::edh::Result<rc::edh::Container<U>>
 where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
-    let decomposed = decompose(unprocessed)?;
+    let decomposed = decompose(unprocessed, suffix)?;
     Ok(convert::<T, U>(decomposed))
 }
 
-fn decompose(json: serde_json::Value) -> Result<Vec<FsdItem>> {
+fn decompose(json: serde_json::Value, suffix: &str) -> Result<Vec<FsdItem>> {
     match json {
         serde_json::Value::Object(map) => Ok(map.into_iter().map(|(k, v)| FsdItem::new(k, v)).collect()),
-        _ => Err(Error::new(ErrorKind::UnexpectedFsdTopEntity)),
+        _ => Err(Error::new(ErrorKind::UnexpectedFsdTopEntity(suffix.to_string()))),
     }
 }
 

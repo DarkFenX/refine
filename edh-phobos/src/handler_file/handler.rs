@@ -12,11 +12,11 @@ use crate::{
 use super::{address::Address, error::FromPath};
 
 /// Data handler which uses locally stored [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
-pub struct PhbFileDHandler {
+pub struct PhbFileEdh {
     base_path: PathBuf,
 }
-impl PhbFileDHandler {
-    /// Constructs new `PhbFileDHandler` using provided path.
+impl PhbFileEdh {
+    /// Constructs file EVE data handler using provided path.
     ///
     /// Path should point to the top-level folder of a data dump, e.g. `/phobos_en-us` and not
     /// `/phobos_en-us/fsd_binary`.
@@ -36,15 +36,15 @@ impl PhbFileDHandler {
     {
         let addr = Address::new(folder, file);
         let json = self.read_json(&addr)?;
-        fsd::handle::<T, U>(json)
+        fsd::handle::<T, U>(json, &addr.get_part_str())
     }
 }
-impl fmt::Debug for PhbFileDHandler {
+impl fmt::Debug for PhbFileEdh {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "PhbFileEdh(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
     }
 }
-impl rc::edh::EveDataHandler for PhbFileDHandler {
+impl rc::edh::EveDataHandler for PhbFileEdh {
     /// Get item types.
     fn get_items(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::Item>> {
         self.process_fsd::<Item, rc::edt::Item>("fsd_binary", "types")
@@ -94,6 +94,8 @@ impl rc::edh::EveDataHandler for PhbFileDHandler {
         self.process_fsd::<MutaAttrMods, rc::edt::MutaAttrMod>("fsd_binary", "dynamicitemattributes")
     }
     /// Get version of the data.
+    ///
+    /// Uses `client_build` value of metadata file as version.
     fn get_version(&self) -> rc::edh::Result<String> {
         let addr = Address::new("phobos", "metadata");
         let unprocessed = self.read_json(&addr)?;
