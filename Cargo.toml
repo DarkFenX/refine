@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "core",
-    "edh-phobos",
+    "hrs-eve-phobos",
     "http",
 ]
 

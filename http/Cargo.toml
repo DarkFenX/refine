@@ -6,8 +6,8 @@ edition = "2021"
 
 [dependencies]
 rc = { package = "reefast-core", path = "../core" }
-redh = { package = "reefast-edh-phobos", path = "../edh-phobos", features = ["http"] }
-radh = { package = "reefast-adh", path = "../adh", features = ["json", "ram"] }
+redh = { package = "reefast-edh-phobos", path = "../hrs-eve-phobos", features = ["http"] }
+radh = { package = "reefast-adh", path = "../hrs-adapted", features = ["json", "ram"] }
 axum = { version = ">=0.6.4", features = ["query"] }
 chrono = ">=0.4.23"
 config = { version = ">=0.13.3", features = ["toml"] }
