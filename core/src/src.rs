@@ -1,6 +1,7 @@
 use crate::{
+    adg, adh,
     defs::VERSION,
-    edh, erg, erh,
+    edh,
     util::{Error, ErrorKind, IntError, IntResult, Result},
 };
 
@@ -10,12 +11,12 @@ use crate::{
 /// expose it to other parts of the library.
 #[derive(Debug)]
 pub struct Src {
-    pub(crate) cache_handler: Box<dyn erh::CacheHandler>,
+    pub(crate) cache_handler: Box<dyn adh::AdaptedDataHandler>,
 }
 impl Src {
     pub fn new(
         data_handler: Box<dyn edh::EveDataHandler>,
-        mut cache_handler: Box<dyn erh::CacheHandler>,
+        mut cache_handler: Box<dyn adh::AdaptedDataHandler>,
     ) -> Result<Self> {
         log::info!(
             "initializing new source with {:?} and {:?}",
@@ -45,7 +46,7 @@ fn get_data_fingerprint(data_version: &str) -> String {
     format!("{}_{}", data_version, VERSION)
 }
 
-fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn erh::CacheHandler>) -> bool {
+fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn adh::AdaptedDataHandler>) -> bool {
     // Failure to read version is not fatal, we just always generate cache in this case
     let data_version = match data_version {
         Some(dv) => dv,
@@ -76,13 +77,17 @@ fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn er
     false
 }
 
-fn regen_cache(data_handler: &Box<dyn edh::EveDataHandler>) -> IntResult<erh::Data> {
+fn regen_cache(data_handler: &Box<dyn edh::EveDataHandler>) -> IntResult<adh::Data> {
     log::info!("regenerating cache...");
     // If we have to regenerate cache, failure to generate one is fatal
-    erg::generate_erts(data_handler.as_ref()).map_err(|e| IntError::new(format!("failed to generate cache: {}", e)))
+    adg::generate_erts(data_handler.as_ref()).map_err(|e| IntError::new(format!("failed to generate cache: {}", e)))
 }
 
-fn update_cache(data_version: Option<String>, cache_handler: &mut Box<dyn erh::CacheHandler>, ch_data: erh::Data) {
+fn update_cache(
+    data_version: Option<String>,
+    cache_handler: &mut Box<dyn adh::AdaptedDataHandler>,
+    ch_data: adh::Data,
+) {
     let data_version = data_version.unwrap_or("none".into());
     let data_fp = get_data_fingerprint(&data_version);
     cache_handler.update_cache(ch_data, data_fp)

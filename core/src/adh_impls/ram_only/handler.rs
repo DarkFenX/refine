@@ -1,9 +1,9 @@
 use std::{collections::HashMap, fmt, sync::Arc};
 
 use crate::{
+    adh,
+    adt::{Attr, Buff, Effect, Item, Muta},
     defs::ReeInt,
-    erh,
-    ert::{Attr, Buff, Effect, Item, Muta},
     util::IntError,
 };
 
@@ -33,7 +33,7 @@ impl fmt::Debug for RamOnlyCHandler {
         write!(f, "RamOnlyCHandler()")
     }
 }
-impl erh::CacheHandler for RamOnlyCHandler {
+impl adh::AdaptedDataHandler for RamOnlyCHandler {
     /// Get cached item.
     fn get_item(&self, id: &ReeInt) -> Option<Arc<Item>> {
         self.storage_items.get(&id).cloned()
@@ -59,13 +59,13 @@ impl erh::CacheHandler for RamOnlyCHandler {
         None
     }
     /// Load cache from persistent storage.
-    fn load_cache(&mut self) -> erh::Result<()> {
+    fn load_cache(&mut self) -> adh::Result<()> {
         Err(Box::new(IntError::new(
             "RAM-only cache handler does not support persistent cache".to_string(),
         )))
     }
     /// Update data in handler with passed data.
-    fn update_cache(&mut self, ch_data: erh::Data, _: String) {
+    fn update_cache(&mut self, ch_data: adh::Data, _: String) {
         move_vec_to_map(ch_data.items, &mut self.storage_items);
         move_vec_to_map(ch_data.attrs, &mut self.storage_attrs);
         move_vec_to_map(ch_data.effects, &mut self.storage_effects);

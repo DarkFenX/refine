@@ -6,7 +6,7 @@
 //! # Assumptions about data
 //! Reefast verifies data integrity and makes several assumptions about it. If those assumptions are
 //! broken, offending entries will be adjusted or removed during conversion of the data into
-//! [EVE reefast types](crate::ert).
+//! [EVE reefast types](crate::adt).
 //!
 //! ### Primary keys
 //! Almost every data entry provided by a [`edh::EveDataHandler`](crate::edh::EveDataHandler)
@@ -25,10 +25,10 @@
 //! ability data to data structures related to effects.
 //!
 //! - Data defined on [`edt::FighterAbil`](crate::edt::FighterAbil) is moved to
-//!   [`ert::Effect`](crate::ert::Effect).
+//!   [`ert::Effect`](crate::adt::Effect).
 //! - Data defined on [`edt::ItemFighterAbil`](crate::edt::ItemFighterAbil) is moved to
-//!   [`ert::ItemEffData`](crate::ert::ItemEffData), which describe effect properties specific to
-//!   parent [`ert::Item`](crate::ert::Item).
+//!   [`ert::ItemEffData`](crate::adt::ItemEffData), which describe effect properties specific to
+//!   parent [`ert::Item`](crate::adt::Item).
 //!
 //! Since multiple abilities can map to the same effect, collisions are possible. In case of
 //! collisions, data from colliding abilities is compared. If there are any mismatches, warnings are

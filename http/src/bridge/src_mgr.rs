@@ -124,11 +124,11 @@ fn create_src(
         let reason = format!("{e}");
         Error::new(ErrorKind::EdhInitFailed(e.kind, reason))
     })?);
-    let ch: Box<dyn rc::erh::CacheHandler> = match cache_folder {
+    let ch: Box<dyn rc::adh::AdaptedDataHandler> = match cache_folder {
         // Use cache handler with persistent storage if cache path is specified
-        Some(cf) => Box::new(rc::erh_impls::JsonFileCHandler::new(cf.into(), alias)),
+        Some(cf) => Box::new(rc::adh_impls::JsonFileCHandler::new(cf.into(), alias)),
         // Use RAM-only cache handler if path is not specified
-        None => Box::new(rc::erh_impls::RamOnlyCHandler::new()),
+        None => Box::new(rc::adh_impls::RamOnlyCHandler::new()),
     };
     rc::Src::new(dh, ch).map_err(|e| {
         let reason = format!("{e}");

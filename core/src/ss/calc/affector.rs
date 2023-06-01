@@ -4,25 +4,25 @@ use std::{
 };
 
 use crate::{
+    adt,
     defs::{ReeId, ReeIdx},
-    ert,
 };
 
 #[derive(Clone)]
 pub(in crate::ss::calc) struct AffectorSpec {
     pub(in crate::ss::calc) item_id: ReeId,
-    pub(in crate::ss::calc) effect: Arc<ert::Effect>,
+    pub(in crate::ss::calc) effect: Arc<adt::Effect>,
     pub(in crate::ss::calc) modifier_idx: ReeIdx,
 }
 impl AffectorSpec {
-    pub(in crate::ss::calc) fn new(item_id: ReeId, effect: Arc<ert::Effect>, modifier_idx: ReeIdx) -> Self {
+    pub(in crate::ss::calc) fn new(item_id: ReeId, effect: Arc<adt::Effect>, modifier_idx: ReeIdx) -> Self {
         Self {
             item_id,
             effect,
             modifier_idx,
         }
     }
-    pub(in crate::ss::calc) fn get_modifier(&self) -> Option<&ert::AttrMod> {
+    pub(in crate::ss::calc) fn get_modifier(&self) -> Option<&adt::AttrMod> {
         self.effect.mods.get(self.modifier_idx)
     }
 }

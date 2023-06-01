@@ -1,15 +1,16 @@
 use itertools::Itertools;
 
 use crate::{
+    adt,
     consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
     defs::ReeInt,
-    edt, ert,
+    edt,
     util::{IntError, IntResult, Named},
 };
 
 use super::Data;
 
-pub(super) fn conv_buffs(erg_data: &Data) -> Vec<ert::Buff> {
+pub(super) fn conv_buffs(erg_data: &Data) -> Vec<adt::Buff> {
     let mut converted = Vec::new();
     for buff_data in erg_data.buffs.iter().sorted_by_key(|v| v.id) {
         let op = match conv_buff_op(&buff_data.operation) {
@@ -30,30 +31,30 @@ pub(super) fn conv_buffs(erg_data: &Data) -> Vec<ert::Buff> {
         };
         let mut mods = Vec::new();
         for item_mod in buff_data.item_mods.iter() {
-            mods.push(ert::BuffAttrMod::new(
+            mods.push(adt::BuffAttrMod::new(
                 ModAfeeFilter::Direct(ModDomain::Ship),
                 item_mod.attr_id,
             ));
         }
         for loc_mod in buff_data.loc_mods.iter() {
-            mods.push(ert::BuffAttrMod::new(
+            mods.push(adt::BuffAttrMod::new(
                 ModAfeeFilter::Loc(ModDomain::Ship),
                 loc_mod.attr_id,
             ));
         }
         for locgroup_mod in buff_data.locgroup_mods.iter() {
-            mods.push(ert::BuffAttrMod::new(
+            mods.push(adt::BuffAttrMod::new(
                 ModAfeeFilter::LocGrp(ModDomain::Ship, locgroup_mod.group_id),
                 locgroup_mod.attr_id,
             ));
         }
         for locsrq_mod in buff_data.locsrq_mods.iter() {
-            mods.push(ert::BuffAttrMod::new(
+            mods.push(adt::BuffAttrMod::new(
                 ModAfeeFilter::LocSrq(ModDomain::Ship, locsrq_mod.skill_id),
                 locsrq_mod.attr_id,
             ));
         }
-        let buff = ert::Buff::new(buff_data.id, aggr_mode, op, mods);
+        let buff = adt::Buff::new(buff_data.id, aggr_mode, op, mods);
         converted.push(buff);
     }
     converted

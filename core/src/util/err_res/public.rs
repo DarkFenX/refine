@@ -1,9 +1,9 @@
 use std::{error, fmt, result};
 
 use crate::{
+    adt,
     consts::ModRack,
     defs::{ReeId, ReeIdx, ReeInt},
-    ert,
     util::Named,
 };
 
@@ -52,14 +52,14 @@ impl fmt::Display for Error {
             ErrorKind::ModuleSlotTaken(rack, position, item_id) => {
                 write!(f, "{rack} slot {position} is occupied by item {item_id}")
             }
-            ErrorKind::CachedAttrNotFound(attr_id) => write!(f, "{} {} not found", ert::Attr::get_name(), attr_id),
-            ErrorKind::CachedItemNotLoaded(type_id) => write!(f, "{} {} not found", ert::Item::get_name(), type_id),
+            ErrorKind::CachedAttrNotFound(attr_id) => write!(f, "{} {} not found", adt::Attr::get_name(), attr_id),
+            ErrorKind::CachedItemNotLoaded(type_id) => write!(f, "{} {} not found", adt::Item::get_name(), type_id),
             ErrorKind::NoAttrBaseValue(attr_id, type_id) => write!(
                 f,
                 "{} {} has no base value for {} {}",
-                ert::Attr::get_name(),
+                adt::Attr::get_name(),
                 attr_id,
-                ert::Item::get_name(),
+                adt::Item::get_name(),
                 type_id
             ),
         }

@@ -3,15 +3,16 @@ use std::collections::HashMap;
 use itertools::Itertools;
 
 use crate::{
+    adt,
     consts::{attrs, effects, get_abil_effect, itemcats, itemgrps, ItemType},
     defs::ReeInt,
-    edt, ert,
+    edt,
     util::Named,
 };
 
 use super::super::{data::Support, Data};
 
-pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<ert::Item> {
+pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::Item> {
     // Auxiliary maps
     let defeff_map = erg_data
         .item_effects
@@ -40,7 +41,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<ert::Item> {
             None => None,
         };
         // Item construction
-        let item = ert::Item::new(
+        let item = adt::Item::new(
             item_data.id,
             None,
             item_data.group_id,
@@ -62,7 +63,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<ert::Item> {
     for item_effect in erg_data.item_effects.iter() {
         item_map.get_mut(&item_effect.item_id).and_then(|v| {
             v.effect_datas
-                .insert(item_effect.effect_id, ert::ItemEffData::new(None, None, None))
+                .insert(item_effect.effect_id, adt::ItemEffData::new(None, None, None))
         });
     }
     for item_abil in erg_data.item_abils.iter() {
@@ -102,7 +103,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<ert::Item> {
             _ => {
                 let msg = format!(
                     "{} {} is eligible for {} item types",
-                    ert::Item::get_name(),
+                    adt::Item::get_name(),
                     item.id,
                     item_types.len()
                 );
@@ -114,7 +115,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<ert::Item> {
     items
 }
 
-fn get_item_types(item: &ert::Item) -> Vec<ItemType> {
+fn get_item_types(item: &adt::Item) -> Vec<ItemType> {
     let mut types = Vec::new();
     if item.cat_id == itemcats::IMPLANT && item.attr_vals.contains_key(&attrs::BOOSTERNESS) {
         types.push(ItemType::Booster);

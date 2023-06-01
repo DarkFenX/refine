@@ -1,12 +1,12 @@
-use crate::ert;
+use crate::adt;
 
 /// Struct to store cacheable types and cache generation data.
 pub struct Data {
-    pub items: Vec<ert::Item>,
-    pub attrs: Vec<ert::Attr>,
-    pub mutas: Vec<ert::Muta>,
-    pub effects: Vec<ert::Effect>,
-    pub buffs: Vec<ert::Buff>,
+    pub items: Vec<adt::Item>,
+    pub attrs: Vec<adt::Attr>,
+    pub mutas: Vec<adt::Muta>,
+    pub effects: Vec<adt::Effect>,
+    pub buffs: Vec<adt::Buff>,
 }
 impl Data {
     pub(crate) fn new() -> Self {

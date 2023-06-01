@@ -1,11 +1,11 @@
 use std::{collections::HashMap, sync::Arc};
 
 use crate::{
+    adt::{Attr, Buff, Effect, Item, Muta},
     defs::ReeInt,
-    ert::{Attr, Buff, Effect, Item, Muta},
 };
 
-pub(in crate::erh_impls) trait Key {
+pub(in crate::adh_impls) trait Key {
     fn get_key(&self) -> ReeInt;
 }
 impl Key for Item {
@@ -34,7 +34,7 @@ impl Key for Buff {
     }
 }
 
-pub(in crate::erh_impls) fn move_vec_to_map<T: Key>(vec: Vec<T>, map: &mut HashMap<ReeInt, Arc<T>>) {
+pub(in crate::adh_impls) fn move_vec_to_map<T: Key>(vec: Vec<T>, map: &mut HashMap<ReeInt, Arc<T>>) {
     map.clear();
     map.shrink_to_fit();
     map.reserve(vec.len());

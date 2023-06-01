@@ -1,6 +1,6 @@
 use std::{collections::HashMap, sync::Arc};
 
-use crate::{consts::State, defs::ReeId, ert, ssi};
+use crate::{adt, consts::State, defs::ReeId, ssi};
 
 use super::{calc::CalcSvc, SsInnerData};
 
@@ -18,7 +18,7 @@ pub(in crate::ss) fn state_activated_loaded(item: &ssi::Item, state: &State) {}
 pub(in crate::ss) fn state_deactivated_loaded(item: &ssi::Item, state: &State) {}
 pub(in crate::ss) fn effects_started(
     item: &ssi::Item,
-    effects: &Vec<Arc<ert::Effect>>,
+    effects: &Vec<Arc<adt::Effect>>,
     items: &HashMap<ReeId, ssi::Item>,
     calc: &mut CalcSvc,
 ) {
@@ -26,7 +26,7 @@ pub(in crate::ss) fn effects_started(
 }
 pub(in crate::ss) fn effects_stopped(
     item: &ssi::Item,
-    effects: &Vec<Arc<ert::Effect>>,
+    effects: &Vec<Arc<adt::Effect>>,
     items: &HashMap<ReeId, ssi::Item>,
     calc: &mut CalcSvc,
 ) {

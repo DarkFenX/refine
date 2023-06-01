@@ -10,9 +10,9 @@ use std::{
 use log;
 
 use crate::{
+    adh,
+    adt::{Attr, Buff, Effect, Item, Muta},
     defs::ReeInt,
-    erh,
-    ert::{Attr, Buff, Effect, Item, Muta},
     util::{IntError, IntResult},
 };
 
@@ -95,7 +95,7 @@ impl fmt::Debug for JsonFileCHandler {
         )
     }
 }
-impl erh::CacheHandler for JsonFileCHandler {
+impl adh::AdaptedDataHandler for JsonFileCHandler {
     /// Get cached item.
     fn get_item(&self, id: &ReeInt) -> Option<Arc<Item>> {
         self.storage_items.get(&id).cloned()
@@ -121,7 +121,7 @@ impl erh::CacheHandler for JsonFileCHandler {
         self.fingerprint.as_deref()
     }
     /// Load cache from persistent storage.
-    fn load_cache(&mut self) -> erh::Result<()> {
+    fn load_cache(&mut self) -> adh::Result<()> {
         let full_path = self.get_full_path();
         let file = OpenOptions::new()
             .read(true)
@@ -136,7 +136,7 @@ impl erh::CacheHandler for JsonFileCHandler {
         Ok(())
     }
     /// Update data in handler with passed data.
-    fn update_cache(&mut self, ch_data: erh::Data, fingerprint: String) {
+    fn update_cache(&mut self, ch_data: adh::Data, fingerprint: String) {
         // Update persistent cache
         let cache = CacheData::new(
             ch_data.items,

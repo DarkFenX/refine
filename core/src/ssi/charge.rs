@@ -1,8 +1,8 @@
 use std::{fmt, sync::Arc};
 
 use crate::{
+    adt,
     defs::{ReeId, ReeInt},
-    ert,
     src::Src,
     util::Named,
 };
@@ -12,7 +12,7 @@ pub(crate) struct Charge {
     pub(crate) fit_id: ReeId,
     pub(crate) type_id: ReeInt,
     pub(crate) cont_id: ReeId,
-    pub(crate) cached_item: Option<Arc<ert::Item>>,
+    pub(crate) cached_item: Option<Arc<adt::Item>>,
 }
 impl Charge {
     pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, cont_id: ReeId) -> Self {

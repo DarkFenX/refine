@@ -1,9 +1,9 @@
 use std::{fmt, sync::Arc};
 
 use crate::{
+    adt,
     consts::State,
     defs::{ReeId, ReeInt},
-    ert,
     src::Src,
     util::Named,
 };
@@ -14,7 +14,7 @@ pub(crate) struct SwEffect {
     pub(crate) id: ReeId,
     pub(crate) type_id: ReeInt,
     pub(crate) state: State,
-    pub(crate) cached_item: Option<Arc<ert::Item>>,
+    pub(crate) cached_item: Option<Arc<adt::Item>>,
 }
 impl SwEffect {
     pub(crate) fn new(src: &Arc<Src>, id: ReeId, type_id: ReeInt, state: bool) -> Self {
