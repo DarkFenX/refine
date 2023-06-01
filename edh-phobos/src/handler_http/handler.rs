@@ -13,7 +13,7 @@ use crate::{
 
 use super::error::FromSuffix;
 
-/// Data handler which uses HTTP-served [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
+/// Data handler which fetches [Phobos](https://github.com/pyfa-org/Phobos) JSON dump via HTTP
 pub struct PhbHttpEdh {
     base_url: Url,
     data_version: String,
