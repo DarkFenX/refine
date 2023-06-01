@@ -90,5 +90,5 @@ fn update_cache(
 ) {
     let data_version = data_version.unwrap_or("none".into());
     let data_fp = get_data_fingerprint(&data_version);
-    cache_handler.update_cache(ch_data, data_fp)
+    cache_handler.update_data(ch_data, data_fp)
 }

@@ -120,10 +120,12 @@ fn create_src(
     data_version: String,
     cache_folder: Option<String>,
 ) -> Result<rc::Src> {
-    let dh = Box::new(rp::PhbHttpEdh::new(data_base_url.as_str(), data_version).map_err(|e| {
-        let reason = format!("{e}");
-        Error::new(ErrorKind::EdhInitFailed(e.kind, reason))
-    })?);
+    let dh = Box::new(
+        redh::PhbHttpEdh::new(data_base_url.as_str(), data_version).map_err(|e| {
+            let reason = format!("{e}");
+            Error::new(ErrorKind::EdhInitFailed(e.kind, reason))
+        })?,
+    );
     let ch: Box<dyn rc::adh::AdaptedDataHandler> = match cache_folder {
         // Use cache handler with persistent storage if cache path is specified
         Some(cf) => Box::new(rc::adh_impls::JsonFileCHandler::new(cf.into(), alias)),

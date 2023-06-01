@@ -25,7 +25,6 @@ pub use util::{Error, ErrorKind, Result};
 
 pub(crate) mod adg;
 pub mod adh;
-pub mod adh_impls;
 pub mod adt;
 pub mod consts;
 mod defs;
