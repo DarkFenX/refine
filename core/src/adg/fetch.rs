@@ -20,7 +20,7 @@ where
     T: Named,
 {
     log::debug!("fetching {}", T::get_name());
-    let cont = func(handler).map_err(|e| IntError::new(format!("{}", e)))?;
+    let cont = func(handler).map_err(|e| IntError::new(e.to_string()))?;
     vec.extend(cont.data);
     let warn_amt = cont.warns.len();
     if warn_amt > 0 {

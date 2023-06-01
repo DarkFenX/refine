@@ -10,10 +10,10 @@
 //! - `json`: Enables handler which stores data in RAM, and writes persistent JSON cache to disk.
 //! - `ram`: Enables handler which stores data in RAM, and does not implement persistent cache.
 
-pub use handler_ram::RamAdh;
+pub use handler_json::RamJsonAdh;
+pub use handler_ram::RamOnlyAdh;
 pub use util::{Error, ErrorKind, Result};
 
-mod act;
-//mod handler_json;
+mod handler_json;
 mod handler_ram;
 mod util;

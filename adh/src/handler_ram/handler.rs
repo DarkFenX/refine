@@ -6,14 +6,14 @@ use crate::util::{move_vec_to_map, Error, ErrorKind};
 ///
 /// This handler stores everything only in RAM. Access to data is fast, but has noticeable RAM
 /// consumption and adapted data has to be rebuilt every time.
-pub struct RamAdh {
+pub struct RamOnlyAdh {
     storage_items: HashMap<rc::ReeInt, Arc<rc::adt::Item>>,
     storage_attrs: HashMap<rc::ReeInt, Arc<rc::adt::Attr>>,
     storage_effects: HashMap<rc::ReeInt, Arc<rc::adt::Effect>>,
     storage_mutas: HashMap<rc::ReeInt, Arc<rc::adt::Muta>>,
     storage_buffs: HashMap<rc::ReeInt, Arc<rc::adt::Buff>>,
 }
-impl RamAdh {
+impl RamOnlyAdh {
     pub fn new() -> Self {
         Self {
             storage_items: HashMap::new(),
@@ -24,12 +24,12 @@ impl RamAdh {
         }
     }
 }
-impl fmt::Debug for RamAdh {
+impl fmt::Debug for RamOnlyAdh {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "RamOnlyCHandler()")
+        write!(f, "RamOnlyAdh()")
     }
 }
-impl rc::adh::AdaptedDataHandler for RamAdh {
+impl rc::adh::AdaptedDataHandler for RamOnlyAdh {
     /// Get adapted item.
     fn get_item(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Item>> {
         self.storage_items.get(&id).cloned()
@@ -58,7 +58,7 @@ impl rc::adh::AdaptedDataHandler for RamAdh {
     ///
     /// Will always fail, since this handler does not implement persistent storage.
     fn load_cache(&mut self) -> rc::adh::Result<()> {
-        Err(Box::new(Error::new(ErrorKind::NoCacheSupport)))
+        Err(Error::new(ErrorKind::NoCacheSupport).into())
     }
     /// Update handler with passed adapted data.
     fn update_data(&mut self, adata: rc::adh::Data, _: String) {

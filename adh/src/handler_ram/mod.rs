@@ -1,3 +1,3 @@
-pub use handler::RamAdh;
+pub use handler::RamOnlyAdh;
 
 mod handler;

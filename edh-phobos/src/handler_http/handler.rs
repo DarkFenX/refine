@@ -55,7 +55,7 @@ impl PhbHttpEdh {
     where
         T: serde::de::DeserializeOwned + fsd::FsdMerge<U>,
     {
-        let suffix = format!("{}/{}.json", folder, file);
+        let suffix = format!("{folder}/{file}.json");
         let json = self.fetch_data(&suffix)?;
         fsd::handle::<T, U>(json, &suffix)
     }

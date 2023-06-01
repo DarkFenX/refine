@@ -9,29 +9,27 @@ use std::{
 
 use log;
 
-use crate::{
-    adh,
-    adt::{Attr, Buff, Effect, Item, Muta},
-    defs::ReeInt,
-    util::{IntError, IntResult},
-};
+use crate::util::{move_vec_to_map, Error, ErrorKind, Result};
 
-use super::{super::common::move_vec_to_map, data::CacheData};
+use super::data::CacheData;
 
-/// A struct for handling compressed JSON cache.
-pub struct JsonFileCHandler {
+/// JSON adapted data handler implementation.
+///
+/// This handler implements persistent cache store in the form of zstd-compressed JSON. When data is
+/// loaded, adapted data types are stored in RAM, thus it provides extremely fast access, but has
+/// noticeable initialization time and RAM consumption.
+pub struct RamJsonAdh {
     folder: PathBuf,
     name: String,
-    storage_items: HashMap<ReeInt, Arc<Item>>,
-    storage_attrs: HashMap<ReeInt, Arc<Attr>>,
-    storage_effects: HashMap<ReeInt, Arc<Effect>>,
-    storage_mutas: HashMap<ReeInt, Arc<Muta>>,
-    storage_buffs: HashMap<ReeInt, Arc<Buff>>,
+    storage_items: HashMap<rc::ReeInt, Arc<rc::adt::Item>>,
+    storage_attrs: HashMap<rc::ReeInt, Arc<rc::adt::Attr>>,
+    storage_effects: HashMap<rc::ReeInt, Arc<rc::adt::Effect>>,
+    storage_mutas: HashMap<rc::ReeInt, Arc<rc::adt::Muta>>,
+    storage_buffs: HashMap<rc::ReeInt, Arc<rc::adt::Buff>>,
     fingerprint: Option<String>,
 }
-impl JsonFileCHandler {
-    /// Constructs new `JsonFileCHandler` using full path to cache folder and file name (without
-    /// extension).
+impl RamJsonAdh {
+    /// Constructs new handler using path to cache folder and cache file name (without extension).
     pub fn new(folder: PathBuf, name: String) -> Self {
         Self {
             folder: folder,
@@ -47,27 +45,27 @@ impl JsonFileCHandler {
     fn get_full_path(&self) -> PathBuf {
         self.folder.join(format!("{}.json.zst", self.name))
     }
-    fn create_cache_folder(&self) -> IntResult<()> {
+    fn create_cache_folder(&self) -> Option<String> {
         match create_dir_all(&self.folder) {
-            Ok(_) => Ok(()),
+            Ok(_) => None,
             Err(e) => {
                 match e.kind() {
                     // It's fine if it already exists for our purposes
-                    io::ErrorKind::AlreadyExists => Ok(()),
-                    _ => Err(IntError::new(format!("unable to create cache folder: {}", e))),
+                    io::ErrorKind::AlreadyExists => None,
+                    _ => Some(e.to_string()),
                 }
             }
         }
     }
-    fn update_memory_cache(&mut self, ch_data: CacheData) {
-        move_vec_to_map(ch_data.items, &mut self.storage_items);
-        move_vec_to_map(ch_data.attrs, &mut self.storage_attrs);
-        move_vec_to_map(ch_data.effects, &mut self.storage_effects);
-        move_vec_to_map(ch_data.mutas, &mut self.storage_mutas);
-        move_vec_to_map(ch_data.buffs, &mut self.storage_buffs);
-        self.fingerprint = Some(ch_data.fingerprint);
+    fn update_memory_cache(&mut self, adata: CacheData) {
+        move_vec_to_map(adata.items, &mut self.storage_items);
+        move_vec_to_map(adata.attrs, &mut self.storage_attrs);
+        move_vec_to_map(adata.effects, &mut self.storage_effects);
+        move_vec_to_map(adata.mutas, &mut self.storage_mutas);
+        move_vec_to_map(adata.buffs, &mut self.storage_buffs);
+        self.fingerprint = Some(adata.fingerprint);
     }
-    fn update_persistent_cache(&self, ch_data: &CacheData) {
+    fn update_persistent_cache(&self, adata: &CacheData) {
         let full_path = self.get_full_path();
         let file = match OpenOptions::new().create(true).write(true).open(full_path) {
             Ok(f) => f,
@@ -76,7 +74,7 @@ impl JsonFileCHandler {
                 return;
             }
         };
-        let json = serde_json::json!(&ch_data).to_string();
+        let json = serde_json::json!(&adata).to_string();
         match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
             Ok(_) => (),
             Err(e) => {
@@ -86,34 +84,34 @@ impl JsonFileCHandler {
         };
     }
 }
-impl fmt::Debug for JsonFileCHandler {
+impl fmt::Debug for RamJsonAdh {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "JsonFileCHandler(\"{}\")",
+            "RamJsonAdh(\"{}\")",
             self.get_full_path().to_str().unwrap_or("<error>")
         )
     }
 }
-impl adh::AdaptedDataHandler for JsonFileCHandler {
+impl rc::adh::AdaptedDataHandler for RamJsonAdh {
     /// Get cached item.
-    fn get_item(&self, id: &ReeInt) -> Option<Arc<Item>> {
+    fn get_item(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Item>> {
         self.storage_items.get(&id).cloned()
     }
     /// Get cached attribute.
-    fn get_attr(&self, id: &ReeInt) -> Option<Arc<Attr>> {
+    fn get_attr(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Attr>> {
         self.storage_attrs.get(&id).cloned()
     }
     /// Get cached effect.
-    fn get_effect(&self, id: &ReeInt) -> Option<Arc<Effect>> {
+    fn get_effect(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Effect>> {
         self.storage_effects.get(&id).cloned()
     }
     /// Get cached mutaplasmid.
-    fn get_muta(&self, id: &ReeInt) -> Option<Arc<Muta>> {
+    fn get_muta(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Muta>> {
         self.storage_mutas.get(&id).cloned()
     }
     /// Get cached warfare buff.
-    fn get_buff(&self, id: &ReeInt) -> Option<Arc<Buff>> {
+    fn get_buff(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Buff>> {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get cached data fingerprint.
@@ -121,34 +119,34 @@ impl adh::AdaptedDataHandler for JsonFileCHandler {
         self.fingerprint.as_deref()
     }
     /// Load cache from persistent storage.
-    fn load_cache(&mut self) -> adh::Result<()> {
+    fn load_cache(&mut self) -> rc::adh::Result<()> {
         let full_path = self.get_full_path();
         let file = OpenOptions::new()
             .read(true)
             .open(full_path)
-            .map_err(|e| IntError::new(format!("unable to open cache for reading: {}", e)))?;
+            .map_err(|e| Error::new(ErrorKind::RamJsonReadFailed(e.to_string())))?;
         let mut raw = Vec::new();
         zstd::stream::copy_decode(file, &mut raw)
-            .map_err(|e| IntError::new(format!("unable to decompress cache: {}", e)))?;
+            .map_err(|e| Error::new(ErrorKind::RamJsonDecompFailed(e.to_string())))?;
         let cache = serde_json::from_slice::<CacheData>(&raw)
-            .map_err(|e| IntError::new(format!("unable to deserealize cache: {}", e)))?;
+            .map_err(|e| Error::new(ErrorKind::RamJsonParseFailed(e.to_string())))?;
         self.update_memory_cache(cache);
         Ok(())
     }
     /// Update data in handler with passed data.
-    fn update_cache(&mut self, ch_data: adh::Data, fingerprint: String) {
+    fn update_data(&mut self, adata: rc::adh::Data, fingerprint: String) {
         // Update persistent cache
         let cache = CacheData::new(
-            ch_data.items,
-            ch_data.attrs,
-            ch_data.mutas,
-            ch_data.effects,
-            ch_data.buffs,
+            adata.items,
+            adata.attrs,
+            adata.mutas,
+            adata.effects,
+            adata.buffs,
             fingerprint,
         );
         match self.create_cache_folder() {
-            Ok(_) => self.update_persistent_cache(&cache),
-            Err(e) => log::error!("unable to create cache folder: {}", e),
+            None => self.update_persistent_cache(&cache),
+            Some(msg) => log::error!("unable to create cache folder: {}", msg),
         }
         // Update memory cache
         self.update_memory_cache(cache);

@@ -7,15 +7,15 @@ pub(in crate::handler_file) trait FromPath<T> {
 }
 impl FromPath<io::Error> for Error {
     fn from_path(err: io::Error, path: &str) -> Self {
-        Error::new(ErrorKind::FileSuffixReadFailed(path.to_string(), format!("{err}")))
+        Error::new(ErrorKind::FileSuffixReadFailed(path.to_string(), err.to_string()))
     }
 }
 impl FromPath<serde_json::Error> for Error {
     fn from_path(err: serde_json::Error, path: &str) -> Self {
         if err.is_io() {
-            Error::new(ErrorKind::FileSuffixReadFailed(path.to_string(), format!("{err}")))
+            Error::new(ErrorKind::FileSuffixReadFailed(path.to_string(), err.to_string()))
         } else {
-            Error::new(ErrorKind::FileSuffixParseFailed(path.to_string(), format!("{err}")))
+            Error::new(ErrorKind::FileSuffixParseFailed(path.to_string(), err.to_string()))
         }
     }
 }
