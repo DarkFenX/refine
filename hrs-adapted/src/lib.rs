@@ -12,7 +12,7 @@
 
 pub use handler_json::RamJsonAdh;
 pub use handler_ram::RamOnlyAdh;
-pub use util::{Error, ErrorKind, Result};
+pub use util::{Error, ErrorKind};
 
 mod handler_json;
 mod handler_ram;

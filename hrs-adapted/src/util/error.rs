@@ -1,4 +1,4 @@
-use std::{error, fmt, result};
+use std::{error, fmt};
 
 #[derive(Debug)]
 pub enum ErrorKind {
@@ -28,5 +28,3 @@ impl fmt::Display for Error {
         }
     }
 }
-
-pub type Result<T> = result::Result<T, Error>;

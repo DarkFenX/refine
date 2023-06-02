@@ -75,7 +75,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::Item> {
                     None => continue,
                     Some(edata) => {
                         edata.cd = item_abil.cooldown;
-                        edata.charges = item_abil.charge_count;
+                        edata.charge_amount = item_abil.charge_count;
                         edata.charge_reload_time = item_abil.charge_rearm_time;
                     }
                 },

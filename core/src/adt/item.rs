@@ -65,16 +65,20 @@ pub struct ItemEffData {
     /// Defines cooldown of the effect in seconds.
     pub cd: Option<ReeFloat>,
     /// Defines how many times the effect can be used before its parent item has to reload.
-    pub charges: Option<ReeInt>,
+    pub charge_amount: Option<ReeInt>,
     /// Defines how much time each charge of the effect takes to reload, in seconds.
     pub charge_reload_time: Option<ReeFloat>,
 }
 impl ItemEffData {
     /// Make a new per-item effect data container out of passed data.
-    pub(crate) fn new(cd: Option<ReeFloat>, charges: Option<ReeInt>, charge_reload_time: Option<ReeFloat>) -> Self {
+    pub(crate) fn new(
+        cd: Option<ReeFloat>,
+        charge_amount: Option<ReeInt>,
+        charge_reload_time: Option<ReeFloat>,
+    ) -> Self {
         Self {
             cd,
-            charges,
+            charge_amount,
             charge_reload_time,
         }
     }

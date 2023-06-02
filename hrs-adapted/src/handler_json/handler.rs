@@ -9,9 +9,9 @@ use std::{
 
 use log;
 
-use crate::util::{move_vec_to_map, Error, ErrorKind, Result};
+use crate::util::{move_vec_to_map, Error, ErrorKind};
 
-use super::data::CacheData;
+use super::cdt;
 
 /// JSON adapted data handler implementation.
 ///
@@ -57,15 +57,15 @@ impl RamJsonAdh {
             }
         }
     }
-    fn update_memory_cache(&mut self, adata: CacheData) {
+    fn update_memory_cache(&mut self, adata: rc::adh::Data, fingerprint: String) {
         move_vec_to_map(adata.items, &mut self.storage_items);
         move_vec_to_map(adata.attrs, &mut self.storage_attrs);
         move_vec_to_map(adata.effects, &mut self.storage_effects);
         move_vec_to_map(adata.mutas, &mut self.storage_mutas);
         move_vec_to_map(adata.buffs, &mut self.storage_buffs);
-        self.fingerprint = Some(adata.fingerprint);
+        self.fingerprint = Some(fingerprint);
     }
-    fn update_persistent_cache(&self, adata: &CacheData) {
+    fn update_persistent_cache(&self, cdata: &cdt::Data) {
         let full_path = self.get_full_path();
         let file = match OpenOptions::new().create(true).write(true).open(full_path) {
             Ok(f) => f,
@@ -74,7 +74,7 @@ impl RamJsonAdh {
                 return;
             }
         };
-        let json = serde_json::json!(&adata).to_string();
+        let json = serde_json::json!(&cdata).to_string();
         match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
             Ok(_) => (),
             Err(e) => {
@@ -128,27 +128,21 @@ impl rc::adh::AdaptedDataHandler for RamJsonAdh {
         let mut raw = Vec::new();
         zstd::stream::copy_decode(file, &mut raw)
             .map_err(|e| Error::new(ErrorKind::RamJsonDecompFailed(e.to_string())))?;
-        let cache = serde_json::from_slice::<CacheData>(&raw)
+        let cdata = serde_json::from_slice::<cdt::Data>(&raw)
             .map_err(|e| Error::new(ErrorKind::RamJsonParseFailed(e.to_string())))?;
-        self.update_memory_cache(cache);
+        let (adata, fingerprint) = cdata.to_adapted();
+        self.update_memory_cache(adata, fingerprint);
         Ok(())
     }
     /// Update data in handler with passed data.
     fn update_data(&mut self, adata: rc::adh::Data, fingerprint: String) {
         // Update persistent cache
-        let cache = CacheData::new(
-            adata.items,
-            adata.attrs,
-            adata.mutas,
-            adata.effects,
-            adata.buffs,
-            fingerprint,
-        );
+        let cdata = cdt::Data::from_adapted(&adata, &fingerprint);
         match self.create_cache_folder() {
-            None => self.update_persistent_cache(&cache),
+            None => self.update_persistent_cache(&cdata),
             Some(msg) => log::error!("unable to create cache folder: {}", msg),
         }
         // Update memory cache
-        self.update_memory_cache(cache);
+        self.update_memory_cache(adata, fingerprint);
     }
 }
