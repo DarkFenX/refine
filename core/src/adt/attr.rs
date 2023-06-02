@@ -7,7 +7,7 @@ use crate::{
 ///
 /// An attribute carries just attribute properties which govern how modified attribute values are
 /// calculated. Values themselves are stored on various items as plain numbers.
-pub struct Attr {
+pub struct AAttr {
     /// Attribute ID.
     pub id: ReeInt,
     /// Defines if modifications applied to the attribute's values are immune to stacking penalties
@@ -20,7 +20,7 @@ pub struct Attr {
     /// Refers another attribute, whose value limits value of this attribute.
     pub max_attr_id: Option<ReeInt>,
 }
-impl Attr {
+impl AAttr {
     /// Make a new dogma attribute out of passed data.
     pub(crate) fn new(
         id: ReeInt,
@@ -38,7 +38,7 @@ impl Attr {
         }
     }
 }
-impl Named for Attr {
+impl Named for AAttr {
     fn get_name() -> &'static str {
         "ct::Attr"
     }

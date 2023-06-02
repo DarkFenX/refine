@@ -13,7 +13,7 @@ use crate::{
 
 use super::Data;
 
-impl edt::FighterAbil {
+impl edt::EFighterAbil {
     fn get_target_mode(&self) -> String {
         self.target_mode.clone()
     }
@@ -25,7 +25,7 @@ impl edt::FighterAbil {
     }
 }
 
-pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
+pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::AEffect> {
     let mut effects = Vec::new();
     for effect_data in erg_data.effects.iter() {
         let (state, tgt_mode) = match effect_data.category_id {
@@ -38,7 +38,7 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
             _ => {
                 let msg = format!(
                     "{} {} uses unknown effect category {}",
-                    edt::Effect::get_name(),
+                    edt::EEffect::get_name(),
                     effect_data.id,
                     effect_data.category_id
                 );
@@ -46,7 +46,7 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
                 continue;
             }
         };
-        let mut effect = adt::Effect::new(
+        let mut effect = adt::AEffect::new(
             effect_data.id,
             state,
             tgt_mode,
@@ -78,7 +78,7 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
                 Err(e) => {
                     let msg = format!(
                         "failed to build stopper for {} {}: {}",
-                        adt::Effect::get_name(),
+                        adt::AEffect::get_name(),
                         effect.id,
                         e.msg
                     );
@@ -102,7 +102,7 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
                 Err(e) => {
                     let msg = format!(
                         "failed to build modifier for {} {}: {}",
-                        adt::Effect::get_name(),
+                        adt::AEffect::get_name(),
                         effect.id,
                         e.msg
                     );
@@ -122,9 +122,9 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
         effects.push(effect);
     }
     // Transfer some data from abilities onto effects
-    let hisec_ban_map = extract_ability_map(erg_data, edt::FighterAbil::get_disallow_hisec);
-    let lowsec_ban_map = extract_ability_map(erg_data, edt::FighterAbil::get_disallow_lowsec);
-    let tgt_mode_map = extract_ability_map(erg_data, edt::FighterAbil::get_target_mode);
+    let hisec_ban_map = extract_ability_map(erg_data, edt::EFighterAbil::get_disallow_hisec);
+    let lowsec_ban_map = extract_ability_map(erg_data, edt::EFighterAbil::get_disallow_lowsec);
+    let tgt_mode_map = extract_ability_map(erg_data, edt::EFighterAbil::get_target_mode);
     for effect in effects.iter_mut() {
         // Hisec flag
         match hisec_ban_map.get(&effect.id) {
@@ -136,7 +136,7 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
                 _ => {
                     let msg = format!(
                         "{} {} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
-                        adt::Effect::get_name(),
+                        adt::AEffect::get_name(),
                         effect.id,
                         flags.len()
                     );
@@ -154,7 +154,7 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
                 _ => {
                     let msg = format!(
                         "{} {} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
-                        adt::Effect::get_name(),
+                        adt::AEffect::get_name(),
                         effect.id,
                         flags.len()
                     );
@@ -171,7 +171,7 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
                     Err(e) => {
                         let msg = format!(
                             "failed to update target mode for {} {}: {}",
-                            adt::Effect::get_name(),
+                            adt::AEffect::get_name(),
                             effect.id,
                             e.msg
                         );
@@ -181,7 +181,7 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
                 _ => {
                     let msg = format!(
                         "{} {} has {} distinct \"target mode\" values mapped from fighter abilities",
-                        adt::Effect::get_name(),
+                        adt::AEffect::get_name(),
                         effect.id,
                         modes.len()
                     );
@@ -193,7 +193,7 @@ pub(super) fn conv_effects(erg_data: &Data) -> Vec<adt::Effect> {
     effects
 }
 
-fn extract_stopper(modifier_data: &edt::EffectMod) -> IntResult<Option<ReeInt>> {
+fn extract_stopper(modifier_data: &edt::EEffectMod) -> IntResult<Option<ReeInt>> {
     match modifier_data.func.as_str() {
         "EffectStopper" => {
             let domain = get_arg_str(&modifier_data.args, "domain")?;
@@ -206,8 +206,8 @@ fn extract_stopper(modifier_data: &edt::EffectMod) -> IntResult<Option<ReeInt>> 
     }
 }
 
-fn conv_item_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntResult<adt::AttrMod> {
-    Ok(adt::AttrMod::new(
+fn conv_item_mod(modifier_data: &edt::EEffectMod, effect: &adt::AEffect) -> IntResult<adt::AAttrMod> {
+    Ok(adt::AAttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
@@ -216,8 +216,8 @@ fn conv_item_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntRes
     ))
 }
 
-fn conv_loc_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntResult<adt::AttrMod> {
-    Ok(adt::AttrMod::new(
+fn conv_loc_mod(modifier_data: &edt::EEffectMod, effect: &adt::AEffect) -> IntResult<adt::AAttrMod> {
+    Ok(adt::AAttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
@@ -226,8 +226,8 @@ fn conv_loc_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntResu
     ))
 }
 
-fn conv_locgrp_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntResult<adt::AttrMod> {
-    Ok(adt::AttrMod::new(
+fn conv_locgrp_mod(modifier_data: &edt::EEffectMod, effect: &adt::AEffect) -> IntResult<adt::AAttrMod> {
+    Ok(adt::AAttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
@@ -236,8 +236,8 @@ fn conv_locgrp_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntR
     ))
 }
 
-fn conv_locsrq_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntResult<adt::AttrMod> {
-    Ok(adt::AttrMod::new(
+fn conv_locsrq_mod(modifier_data: &edt::EEffectMod, effect: &adt::AEffect) -> IntResult<adt::AAttrMod> {
+    Ok(adt::AAttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
@@ -246,8 +246,8 @@ fn conv_locsrq_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntR
     ))
 }
 
-fn conv_ownsrq_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntResult<adt::AttrMod> {
-    Ok(adt::AttrMod::new(
+fn conv_ownsrq_mod(modifier_data: &edt::EEffectMod, effect: &adt::AEffect) -> IntResult<adt::AAttrMod> {
+    Ok(adt::AAttrMod::new(
         get_mod_affector_attr_id(modifier_data)?,
         ModAggrMode::Stack,
         get_mod_operation(modifier_data)?,
@@ -256,15 +256,15 @@ fn conv_ownsrq_mod(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntR
     ))
 }
 
-fn get_mod_affector_attr_id(modifier_data: &edt::EffectMod) -> IntResult<ReeInt> {
+fn get_mod_affector_attr_id(modifier_data: &edt::EEffectMod) -> IntResult<ReeInt> {
     get_arg_int(&modifier_data.args, "modifyingAttributeID")
 }
 
-fn get_mod_affectee_attr_id(modifier_data: &edt::EffectMod) -> IntResult<ReeInt> {
+fn get_mod_affectee_attr_id(modifier_data: &edt::EEffectMod) -> IntResult<ReeInt> {
     get_arg_int(&modifier_data.args, "modifiedAttributeID")
 }
 
-fn get_mod_domain(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntResult<ModDomain> {
+fn get_mod_domain(modifier_data: &edt::EEffectMod, effect: &adt::AEffect) -> IntResult<ModDomain> {
     let domain = get_arg_str(&modifier_data.args, "domain")?;
     match domain.as_str() {
         "itemID" => Ok(ModDomain::Item),
@@ -283,7 +283,7 @@ fn get_mod_domain(modifier_data: &edt::EffectMod, effect: &adt::Effect) -> IntRe
     }
 }
 
-fn get_mod_operation(modifier_data: &edt::EffectMod) -> IntResult<ModOp> {
+fn get_mod_operation(modifier_data: &edt::EEffectMod) -> IntResult<ModOp> {
     let op = get_arg_int(&modifier_data.args, "operation")?;
     match op {
         -1 => Ok(ModOp::PreAssign),
@@ -299,11 +299,11 @@ fn get_mod_operation(modifier_data: &edt::EffectMod) -> IntResult<ModOp> {
     }
 }
 
-fn get_mod_grp_id(modifier_data: &edt::EffectMod) -> IntResult<ReeInt> {
+fn get_mod_grp_id(modifier_data: &edt::EEffectMod) -> IntResult<ReeInt> {
     get_arg_int(&modifier_data.args, "groupID")
 }
 
-fn get_mod_skill_id(modifier_data: &edt::EffectMod) -> IntResult<ReeInt> {
+fn get_mod_skill_id(modifier_data: &edt::EEffectMod) -> IntResult<ReeInt> {
     get_arg_int(&modifier_data.args, "skillTypeID")
 }
 
@@ -329,7 +329,7 @@ fn get_arg_str(args: &HashMap<String, edt::Primitive>, name: &str) -> IntResult<
 
 fn extract_ability_map<F, T>(erg_data: &Data, getter: F) -> HashMap<ReeInt, HashSet<T>>
 where
-    F: Fn(&edt::FighterAbil) -> T,
+    F: Fn(&edt::EFighterAbil) -> T,
     T: Eq + Hash,
 {
     let mut map = HashMap::new();

@@ -2,13 +2,13 @@ use crate::{defs::ReeInt, edt, util};
 
 use super::{Fk, Pk, Support};
 
-impl Pk for edt::Effect {
+impl Pk for edt::EEffect {
     fn get_pk(&self) -> Vec<ReeInt> {
         vec![self.id]
     }
 }
 
-impl Fk for edt::Effect {
+impl Fk for edt::EEffect {
     fn get_item_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.get_fks_from_mod_args("skillTypeID")
     }
@@ -33,7 +33,7 @@ impl Fk for edt::Effect {
         self.get_fks_from_mod_args("effectID")
     }
 }
-impl edt::Effect {
+impl edt::EEffect {
     fn get_fks_from_mod_args(&self, field: &'static str) -> Vec<ReeInt> {
         let mut vec = Vec::new();
         for modifier in self.mods.iter() {

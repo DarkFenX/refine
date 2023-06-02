@@ -4,11 +4,11 @@
 //! for ease of use by various reefast components. The EVE reefast types are assumed to be read-only
 //! by the components, anything mutable is built on top of them.
 
-pub use attr::Attr;
-pub use buff::{Buff, BuffAttrMod};
-pub use effect::{AttrMod, Effect};
-pub use item::{Item, ItemEffData};
-pub use muta::{Muta, MutaAttrRange};
+pub use attr::AAttr;
+pub use buff::{ABuff, ABuffAttrMod};
+pub use effect::{AAttrMod, AEffect};
+pub use item::{AItem, AItemEffData};
+pub use muta::{AMuta, AMutaAttrRange};
 
 mod attr;
 mod buff;

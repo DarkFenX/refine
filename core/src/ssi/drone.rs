@@ -13,7 +13,7 @@ pub(crate) struct Drone {
     pub(crate) fit_id: ReeId,
     pub(crate) type_id: ReeInt,
     pub(crate) state: State,
-    pub(crate) cached_item: Option<Arc<adt::Item>>,
+    pub(crate) cached_item: Option<Arc<adt::AItem>>,
 }
 impl Drone {
     pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {

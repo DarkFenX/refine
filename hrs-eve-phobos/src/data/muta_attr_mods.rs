@@ -7,11 +7,11 @@ pub(crate) struct MutaAttrMods {
     #[serde(rename = "attributeIDs")]
     pub(crate) attrs: HashMap<rc::ReeInt, MutaAttrModRange>,
 }
-impl FsdMerge<rc::edt::MutaAttrMod> for MutaAttrMods {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::MutaAttrMod> {
+impl FsdMerge<rc::edt::EMutaAttrMod> for MutaAttrMods {
+    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::EMutaAttrMod> {
         self.attrs
             .into_iter()
-            .map(|(attr_id, range)| rc::edt::MutaAttrMod::new(id, attr_id, range.min, range.max))
+            .map(|(attr_id, range)| rc::edt::EMutaAttrMod::new(id, attr_id, range.min, range.max))
             .collect()
     }
 }

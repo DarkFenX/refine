@@ -15,18 +15,18 @@ pub(super) fn attrval_to_fk(val: Option<ReeFloat>) -> Option<ReeInt> {
 
 /// Container for data, used internally by cache generator.
 pub(in super::super) struct Data {
-    pub(in super::super) items: Vec<edt::Item>,
-    pub(in super::super) groups: Vec<edt::ItemGroup>,
-    pub(in super::super) attrs: Vec<edt::Attr>,
-    pub(in super::super) item_attrs: Vec<edt::ItemAttr>,
-    pub(in super::super) effects: Vec<edt::Effect>,
-    pub(in super::super) item_effects: Vec<edt::ItemEffect>,
-    pub(in super::super) abils: Vec<edt::FighterAbil>,
-    pub(in super::super) item_abils: Vec<edt::ItemFighterAbil>,
-    pub(in super::super) buffs: Vec<edt::Buff>,
-    pub(in super::super) item_srqs: Vec<edt::ItemSkillReq>,
-    pub(in super::super) muta_items: Vec<edt::MutaItemConv>,
-    pub(in super::super) muta_attrs: Vec<edt::MutaAttrMod>,
+    pub(in super::super) items: Vec<edt::EItem>,
+    pub(in super::super) groups: Vec<edt::EItemGroup>,
+    pub(in super::super) attrs: Vec<edt::EAttr>,
+    pub(in super::super) item_attrs: Vec<edt::EItemAttr>,
+    pub(in super::super) effects: Vec<edt::EEffect>,
+    pub(in super::super) item_effects: Vec<edt::EItemEffect>,
+    pub(in super::super) abils: Vec<edt::EFighterAbil>,
+    pub(in super::super) item_abils: Vec<edt::EItemFighterAbil>,
+    pub(in super::super) buffs: Vec<edt::EBuff>,
+    pub(in super::super) item_srqs: Vec<edt::EItemSkillReq>,
+    pub(in super::super) muta_items: Vec<edt::EMutaItemConv>,
+    pub(in super::super) muta_attrs: Vec<edt::EMutaAttrMod>,
 }
 impl Data {
     pub(in super::super) fn new() -> Self {

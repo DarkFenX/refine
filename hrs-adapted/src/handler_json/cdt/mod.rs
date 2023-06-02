@@ -22,7 +22,7 @@ pub(in crate::handler_json) struct Data {
     pub(in crate::handler_json) fingerprint: String,
 }
 impl Data {
-    pub(in crate::handler_json) fn from_adapted(adata: &rc::adh::Data, fingerprint: &str) -> Self {
+    pub(in crate::handler_json) fn from_adapted(adata: &rc::adh::AData, fingerprint: &str) -> Self {
         Self {
             items: adata.items.iter().map(|v| v.into()).collect(),
             attrs: adata.attrs.iter().map(|v| v.into()).collect(),
@@ -32,8 +32,8 @@ impl Data {
             fingerprint: fingerprint.to_string(),
         }
     }
-    pub(in crate::handler_json) fn to_adapted(&self) -> (rc::adh::Data, String) {
-        let adata = rc::adh::Data {
+    pub(in crate::handler_json) fn to_adapted(&self) -> (rc::adh::AData, String) {
+        let adata = rc::adh::AData {
             items: self.items.iter().map(|v| v.into()).collect(),
             attrs: self.attrs.iter().map(|v| v.into()).collect(),
             mutas: self.mutas.iter().map(|v| v.into()).collect(),

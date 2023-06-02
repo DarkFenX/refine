@@ -18,7 +18,7 @@ pub(in crate::ss) fn state_activated_loaded(item: &ssi::Item, state: &State) {}
 pub(in crate::ss) fn state_deactivated_loaded(item: &ssi::Item, state: &State) {}
 pub(in crate::ss) fn effects_started(
     item: &ssi::Item,
-    effects: &Vec<Arc<adt::Effect>>,
+    effects: &Vec<Arc<adt::AEffect>>,
     items: &HashMap<ReeId, ssi::Item>,
     calc: &mut CalcSvc,
 ) {
@@ -26,7 +26,7 @@ pub(in crate::ss) fn effects_started(
 }
 pub(in crate::ss) fn effects_stopped(
     item: &ssi::Item,
-    effects: &Vec<Arc<adt::Effect>>,
+    effects: &Vec<Arc<adt::AEffect>>,
     items: &HashMap<ReeId, ssi::Item>,
     calc: &mut CalcSvc,
 ) {

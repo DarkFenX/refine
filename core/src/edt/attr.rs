@@ -3,10 +3,10 @@ use crate::{
     util::Named,
 };
 
-/// Dogma attribute data.
+/// EVE attribute data.
 #[derive(Debug)]
-pub struct Attr {
-    /// Dogma attribute ID.
+pub struct EAttr {
+    /// Attribute ID.
     pub id: ReeInt,
     /// Defines if modifications applied to the attribute's values stack with penalty (false) or not
     /// (true).
@@ -22,8 +22,8 @@ pub struct Attr {
     /// attribute, group or something else.
     pub unit_id: Option<ReeInt>,
 }
-impl Attr {
-    /// Make a new dogma attribute out of passed data.
+impl EAttr {
+    /// Make a new EVE attribute out of passed data.
     pub fn new(
         id: ReeInt,
         stackable: bool,
@@ -42,8 +42,8 @@ impl Attr {
         }
     }
 }
-impl Named for Attr {
+impl Named for EAttr {
     fn get_name() -> &'static str {
-        "edt::Attr"
+        "edt::EAttr"
     }
 }

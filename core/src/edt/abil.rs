@@ -1,8 +1,8 @@
 use crate::{defs::ReeInt, util::Named};
 
-/// Fighter ability data.
+/// EVE fighter ability data.
 #[derive(Debug)]
-pub struct FighterAbil {
+pub struct EFighterAbil {
     /// Fighter ability ID.
     pub id: ReeInt,
     /// Fighter ability target mode name.
@@ -12,7 +12,7 @@ pub struct FighterAbil {
     /// Defines if the ability can be used in lowsec.
     pub disallow_lowsec: bool,
 }
-impl FighterAbil {
+impl EFighterAbil {
     /// Make a new fighter ability out of passed data.
     pub fn new(id: ReeInt, target_mode: String, disallow_hisec: bool, disallow_lowsec: bool) -> Self {
         Self {
@@ -23,8 +23,8 @@ impl FighterAbil {
         }
     }
 }
-impl Named for FighterAbil {
+impl Named for EFighterAbil {
     fn get_name() -> &'static str {
-        "edt::FighterAbil"
+        "edt::EFighterAbil"
     }
 }

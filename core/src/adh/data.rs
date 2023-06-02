@@ -1,14 +1,14 @@
 use crate::adt;
 
 /// Struct to store cacheable types and cache generation data.
-pub struct Data {
-    pub items: Vec<adt::Item>,
-    pub attrs: Vec<adt::Attr>,
-    pub mutas: Vec<adt::Muta>,
-    pub effects: Vec<adt::Effect>,
-    pub buffs: Vec<adt::Buff>,
+pub struct AData {
+    pub items: Vec<adt::AItem>,
+    pub attrs: Vec<adt::AAttr>,
+    pub mutas: Vec<adt::AMuta>,
+    pub effects: Vec<adt::AEffect>,
+    pub buffs: Vec<adt::ABuff>,
 }
-impl Data {
+impl AData {
     pub(crate) fn new() -> Self {
         Self {
             items: Vec::new(),

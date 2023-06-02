@@ -1,8 +1,8 @@
 use std::fmt;
 
 use crate::edt::{
-    Attr, Buff, Effect, FighterAbil, Item, ItemAttr, ItemEffect, ItemFighterAbil, ItemGroup, ItemSkillReq, MutaAttrMod,
-    MutaItemConv,
+    EAttr, EBuff, EEffect, EFighterAbil, EItem, EItemAttr, EItemEffect, EItemFighterAbil, EItemGroup, EItemSkillReq,
+    EMutaAttrMod, EMutaItemConv,
 };
 
 use super::{cont::Container, Result};
@@ -18,29 +18,29 @@ use super::{cont::Container, Result};
 /// warning message and stored in [`Container::warns`](self::Container::warns).
 pub trait EveDataHandler: fmt::Debug {
     /// Get item types.
-    fn get_items(&self) -> Result<Container<Item>>;
+    fn get_items(&self) -> Result<Container<EItem>>;
     /// Get item groups.
-    fn get_item_groups(&self) -> Result<Container<ItemGroup>>;
+    fn get_item_groups(&self) -> Result<Container<EItemGroup>>;
     /// Get dogma attributes.
-    fn get_attrs(&self) -> Result<Container<Attr>>;
+    fn get_attrs(&self) -> Result<Container<EAttr>>;
     /// Get an m:n mapping between item types and dogma attributes.
-    fn get_item_attrs(&self) -> Result<Container<ItemAttr>>;
+    fn get_item_attrs(&self) -> Result<Container<EItemAttr>>;
     /// Get dogma effects.
-    fn get_effects(&self) -> Result<Container<Effect>>;
+    fn get_effects(&self) -> Result<Container<EEffect>>;
     /// Get an m:n mapping between item types and dogma effects.
-    fn get_item_effects(&self) -> Result<Container<ItemEffect>>;
+    fn get_item_effects(&self) -> Result<Container<EItemEffect>>;
     /// Get fighter abilities.
-    fn get_fighter_abils(&self) -> Result<Container<FighterAbil>>;
+    fn get_fighter_abils(&self) -> Result<Container<EFighterAbil>>;
     /// Get an m:n mapping between item types and fighter abilities.
-    fn get_item_fighter_abils(&self) -> Result<Container<ItemFighterAbil>>;
+    fn get_item_fighter_abils(&self) -> Result<Container<EItemFighterAbil>>;
     /// Get dogma buffs.
-    fn get_buffs(&self) -> Result<Container<Buff>>;
+    fn get_buffs(&self) -> Result<Container<EBuff>>;
     /// Get item skill requirements.
-    fn get_item_skill_reqs(&self) -> Result<Container<ItemSkillReq>>;
+    fn get_item_skill_reqs(&self) -> Result<Container<EItemSkillReq>>;
     /// Get mutaplasmid item conversions.
-    fn get_muta_item_convs(&self) -> Result<Container<MutaItemConv>>;
+    fn get_muta_item_convs(&self) -> Result<Container<EMutaItemConv>>;
     /// Get mutaplasmid item modifications.
-    fn get_muta_attr_mods(&self) -> Result<Container<MutaAttrMod>>;
+    fn get_muta_attr_mods(&self) -> Result<Container<EMutaAttrMod>>;
     /// Get version of the data.
     fn get_version(&self) -> Result<String>;
 }

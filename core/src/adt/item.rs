@@ -11,7 +11,7 @@ use crate::{
 /// An item carries alot of info needed to calculate fit attributes, for example base attribute
 /// values.
 #[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub struct Item {
+pub struct AItem {
     /// Item ID.
     pub id: ReeInt,
     /// Item type.
@@ -23,13 +23,13 @@ pub struct Item {
     /// Attribute values of the item.
     pub attr_vals: HashMap<ReeInt, ReeFloat>,
     /// Refers effects of the item.
-    pub effect_datas: HashMap<ReeInt, ItemEffData>,
+    pub effect_datas: HashMap<ReeInt, AItemEffData>,
     /// Refers an effect which is default for the item.
     pub defeff_id: Option<ReeInt>,
     /// Skill requirement map.
     pub srqs: HashMap<ReeInt, ReeInt>,
 }
-impl Item {
+impl AItem {
     /// Make a new item out of passed data.
     pub(crate) fn new(
         id: ReeInt,
@@ -37,7 +37,7 @@ impl Item {
         grp_id: ReeInt,
         cat_id: ReeInt,
         attr_vals: HashMap<ReeInt, ReeFloat>,
-        effect_datas: HashMap<ReeInt, ItemEffData>,
+        effect_datas: HashMap<ReeInt, AItemEffData>,
         defeff_id: Option<ReeInt>,
         srqs: HashMap<ReeInt, ReeInt>,
     ) -> Self {
@@ -53,7 +53,7 @@ impl Item {
         }
     }
 }
-impl Named for Item {
+impl Named for AItem {
     fn get_name() -> &'static str {
         "ct::Item"
     }
@@ -61,7 +61,7 @@ impl Named for Item {
 
 /// Stores item-specific effect data.
 #[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub struct ItemEffData {
+pub struct AItemEffData {
     /// Defines cooldown of the effect in seconds.
     pub cd: Option<ReeFloat>,
     /// Defines how many times the effect can be used before its parent item has to reload.
@@ -69,7 +69,7 @@ pub struct ItemEffData {
     /// Defines how much time each charge of the effect takes to reload, in seconds.
     pub charge_reload_time: Option<ReeFloat>,
 }
-impl ItemEffData {
+impl AItemEffData {
     /// Make a new per-item effect data container out of passed data.
     pub(crate) fn new(
         cd: Option<ReeFloat>,
@@ -83,7 +83,7 @@ impl ItemEffData {
         }
     }
 }
-impl Named for ItemEffData {
+impl Named for AItemEffData {
     fn get_name() -> &'static str {
         "ct::ItemEffData"
     }

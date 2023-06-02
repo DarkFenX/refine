@@ -16,7 +16,7 @@
 //!
 //! ### Item's default effect
 //! Every item can have a maximum of one default effect. For any given item,
-//! [`edt::ItemEffect`](crate::edt::ItemEffect) which is marked as default will be marked as
+//! [`edt::ItemEffect`](crate::edt::EItemEffect) which is marked as default will be marked as
 //! non-default past first seen entry.
 //!
 //! ### Ability-to-effect data transfer
@@ -24,11 +24,11 @@
 //! nothing else. During EVE reefast type generation, this assumption allows to move all the fighter
 //! ability data to data structures related to effects.
 //!
-//! - Data defined on [`edt::FighterAbil`](crate::edt::FighterAbil) is moved to
-//!   [`ert::Effect`](crate::adt::Effect).
-//! - Data defined on [`edt::ItemFighterAbil`](crate::edt::ItemFighterAbil) is moved to
-//!   [`ert::ItemEffData`](crate::adt::ItemEffData), which describe effect properties specific to
-//!   parent [`ert::Item`](crate::adt::Item).
+//! - Data defined on [`edt::FighterAbil`](crate::edt::EFighterAbil) is moved to
+//!   [`ert::Effect`](crate::adt::AEffect).
+//! - Data defined on [`edt::ItemFighterAbil`](crate::edt::EItemFighterAbil) is moved to
+//!   [`ert::ItemEffData`](crate::adt::AItemEffData), which describe effect properties specific to
+//!   parent [`ert::Item`](crate::adt::AItem).
 //!
 //! Since multiple abilities can map to the same effect, collisions are possible. In case of
 //! collisions, data from colliding abilities is compared. If there are any mismatches, warnings are

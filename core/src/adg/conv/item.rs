@@ -12,7 +12,7 @@ use crate::{
 
 use super::super::{data::Support, Data};
 
-pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::Item> {
+pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::AItem> {
     // Auxiliary maps
     let defeff_map = erg_data
         .item_effects
@@ -28,7 +28,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::Item> {
             None => {
                 let msg = format!(
                     "unable to find category ID for {} {}",
-                    edt::Item::get_name(),
+                    edt::EItem::get_name(),
                     item_data.id
                 );
                 log::warn!("{}", msg);
@@ -41,7 +41,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::Item> {
             None => None,
         };
         // Item construction
-        let item = adt::Item::new(
+        let item = adt::AItem::new(
             item_data.id,
             None,
             item_data.group_id,
@@ -63,7 +63,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::Item> {
     for item_effect in erg_data.item_effects.iter() {
         item_map.get_mut(&item_effect.item_id).and_then(|v| {
             v.effect_datas
-                .insert(item_effect.effect_id, adt::ItemEffData::new(None, None, None))
+                .insert(item_effect.effect_id, adt::AItemEffData::new(None, None, None))
         });
     }
     for item_abil in erg_data.item_abils.iter() {
@@ -103,7 +103,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::Item> {
             _ => {
                 let msg = format!(
                     "{} {} is eligible for {} item types",
-                    adt::Item::get_name(),
+                    adt::AItem::get_name(),
                     item.id,
                     item_types.len()
                 );
@@ -115,7 +115,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::Item> {
     items
 }
 
-fn get_item_types(item: &adt::Item) -> Vec<ItemType> {
+fn get_item_types(item: &adt::AItem) -> Vec<ItemType> {
     let mut types = Vec::new();
     if item.cat_id == itemcats::IMPLANT && item.attr_vals.contains_key(&attrs::BOOSTERNESS) {
         types.push(ItemType::Booster);

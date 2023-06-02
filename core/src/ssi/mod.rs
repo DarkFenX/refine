@@ -156,7 +156,7 @@ impl Item {
             Self::SwEffect(sw_effect) => sw_effect.cached_item = cached_item,
         }
     }
-    pub(crate) fn get_cached_item(&self) -> Result<&Arc<adt::Item>> {
+    pub(crate) fn get_cached_item(&self) -> Result<&Arc<adt::AItem>> {
         match self {
             Self::Booster(booster) => booster.cached_item.as_ref(),
             Self::Character(character) => character.cached_item.as_ref(),
@@ -181,7 +181,7 @@ impl Item {
     pub(crate) fn get_orig_attrs(&self) -> Result<&HashMap<ReeInt, ReeFloat>> {
         self.get_cached_item().map(|v| &v.attr_vals)
     }
-    pub(crate) fn get_effect_datas(&self) -> Result<&HashMap<ReeInt, adt::ItemEffData>> {
+    pub(crate) fn get_effect_datas(&self) -> Result<&HashMap<ReeInt, adt::AItemEffData>> {
         self.get_cached_item().map(|v| &v.effect_datas)
     }
     pub(crate) fn get_top_domain(&self) -> Option<ModDomain> {

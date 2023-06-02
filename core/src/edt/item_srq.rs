@@ -1,8 +1,8 @@
 use crate::{defs::ReeInt, util::Named};
 
-/// Item type skill requirement.
+/// EVE item type skill requirement.
 #[derive(Debug)]
-pub struct ItemSkillReq {
+pub struct EItemSkillReq {
     /// Refers an item type for which this skill requirement is defined.
     pub item_id: ReeInt,
     /// Refers a skill item type which is needed to meet the skill requirement.
@@ -10,8 +10,8 @@ pub struct ItemSkillReq {
     /// Defines skill level which is needed to meet the skill requirement.
     pub level: ReeInt,
 }
-impl ItemSkillReq {
-    /// Make a new item type skill requirement out of passed data.
+impl EItemSkillReq {
+    /// Make a new EVE item type skill requirement out of passed data.
     pub fn new(item_id: ReeInt, skill_id: ReeInt, level: ReeInt) -> Self {
         Self {
             item_id,
@@ -20,8 +20,8 @@ impl ItemSkillReq {
         }
     }
 }
-impl Named for ItemSkillReq {
+impl Named for EItemSkillReq {
     fn get_name() -> &'static str {
-        "edt::ItemSkillReq"
+        "edt::EItemSkillReq"
     }
 }

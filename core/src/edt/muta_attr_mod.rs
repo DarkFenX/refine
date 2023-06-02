@@ -3,9 +3,9 @@ use crate::{
     util::Named,
 };
 
-/// Mutaplasmid attribute modification data.
+/// EVE mutaplasmid attribute modification data.
 #[derive(Debug)]
-pub struct MutaAttrMod {
+pub struct EMutaAttrMod {
     /// Mutaplasmid item type ID.
     pub muta_id: ReeInt,
     /// Refers an attribute being modified by the mutaplasmid.
@@ -15,8 +15,8 @@ pub struct MutaAttrMod {
     /// Upper boundary of the modification range.
     pub max_attr_mult: ReeFloat,
 }
-impl MutaAttrMod {
-    /// Make a new mutaplasmid attribute conversion.
+impl EMutaAttrMod {
+    /// Make a new EVE mutaplasmid attribute conversion.
     pub fn new(muta_id: ReeInt, attr_id: ReeInt, min_attr_mult: ReeFloat, max_attr_mult: ReeFloat) -> Self {
         Self {
             muta_id,
@@ -26,8 +26,8 @@ impl MutaAttrMod {
         }
     }
 }
-impl Named for MutaAttrMod {
+impl Named for EMutaAttrMod {
     fn get_name() -> &'static str {
-        "edt::MutaAttrMod"
+        "edt::EMutaAttrMod"
     }
 }

@@ -13,8 +13,8 @@ pub(in crate::handler_json) struct Item {
     defeff_id: Option<rc::ReeInt>,
     srqs: HashMap<rc::ReeInt, rc::ReeInt>,
 }
-impl From<&rc::adt::Item> for Item {
-    fn from(value: &rc::adt::Item) -> Self {
+impl From<&rc::adt::AItem> for Item {
+    fn from(value: &rc::adt::AItem) -> Self {
         Item {
             id: value.id,
             itype: value.itype.as_ref().map(|v| v.into()),
@@ -27,9 +27,9 @@ impl From<&rc::adt::Item> for Item {
         }
     }
 }
-impl Into<rc::adt::Item> for &Item {
-    fn into(self) -> rc::adt::Item {
-        rc::adt::Item {
+impl Into<rc::adt::AItem> for &Item {
+    fn into(self) -> rc::adt::AItem {
+        rc::adt::AItem {
             id: self.id,
             itype: self.itype.as_ref().map(|v| v.into()),
             grp_id: self.grp_id,
@@ -48,8 +48,8 @@ struct ItemEffData {
     charge_amount: Option<rc::ReeInt>,
     charge_reload_time: Option<rc::ReeFloat>,
 }
-impl From<&rc::adt::ItemEffData> for ItemEffData {
-    fn from(value: &rc::adt::ItemEffData) -> Self {
+impl From<&rc::adt::AItemEffData> for ItemEffData {
+    fn from(value: &rc::adt::AItemEffData) -> Self {
         ItemEffData {
             cd: value.cd,
             charge_amount: value.charge_amount,
@@ -57,9 +57,9 @@ impl From<&rc::adt::ItemEffData> for ItemEffData {
         }
     }
 }
-impl Into<rc::adt::ItemEffData> for &ItemEffData {
-    fn into(self) -> rc::adt::ItemEffData {
-        rc::adt::ItemEffData {
+impl Into<rc::adt::AItemEffData> for &ItemEffData {
+    fn into(self) -> rc::adt::AItemEffData {
+        rc::adt::AItemEffData {
             cd: self.cd,
             charge_amount: self.charge_amount,
             charge_reload_time: self.charge_reload_time,

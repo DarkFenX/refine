@@ -29,9 +29,9 @@ pub(crate) struct Effect {
     #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
     pub(crate) mods: Vec<EffectMod>,
 }
-impl FsdMerge<rc::edt::Effect> for Effect {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::Effect> {
-        vec![rc::edt::Effect::new(
+impl FsdMerge<rc::edt::EEffect> for Effect {
+    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::EEffect> {
+        vec![rc::edt::EEffect::new(
             id,
             self.category_id,
             self.is_assistance != 0,
@@ -53,9 +53,9 @@ pub(crate) struct EffectMod {
     pub(crate) func: String,
     pub(crate) args: HashMap<String, rc::edt::Primitive>,
 }
-impl Into<rc::edt::EffectMod> for EffectMod {
-    fn into(self) -> rc::edt::EffectMod {
-        rc::edt::EffectMod::new(self.func, self.args)
+impl Into<rc::edt::EEffectMod> for EffectMod {
+    fn into(self) -> rc::edt::EEffectMod {
+        rc::edt::EEffectMod::new(self.func, self.args)
     }
 }
 

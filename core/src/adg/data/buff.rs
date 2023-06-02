@@ -2,13 +2,13 @@ use crate::{defs::ReeInt, edt};
 
 use super::{Fk, Pk, Support};
 
-impl Pk for edt::Buff {
+impl Pk for edt::EBuff {
     fn get_pk(&self) -> Vec<ReeInt> {
         vec![self.id]
     }
 }
 
-impl Fk for edt::Buff {
+impl Fk for edt::EBuff {
     fn get_item_fks(&self, _: &Support) -> Vec<ReeInt> {
         self.locsrq_mods.iter().map(|v| v.skill_id).collect()
     }

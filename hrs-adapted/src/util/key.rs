@@ -3,27 +3,27 @@ use std::{collections::HashMap, sync::Arc};
 pub(crate) trait Key {
     fn get_key(&self) -> rc::ReeInt;
 }
-impl Key for rc::adt::Item {
+impl Key for rc::adt::AItem {
     fn get_key(&self) -> rc::ReeInt {
         self.id
     }
 }
-impl Key for rc::adt::Attr {
+impl Key for rc::adt::AAttr {
     fn get_key(&self) -> rc::ReeInt {
         self.id
     }
 }
-impl Key for rc::adt::Effect {
+impl Key for rc::adt::AEffect {
     fn get_key(&self) -> rc::ReeInt {
         self.id
     }
 }
-impl Key for rc::adt::Muta {
+impl Key for rc::adt::AMuta {
     fn get_key(&self) -> rc::ReeInt {
         self.id
     }
 }
-impl Key for rc::adt::Buff {
+impl Key for rc::adt::ABuff {
     fn get_key(&self) -> rc::ReeInt {
         self.id
     }

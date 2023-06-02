@@ -5,11 +5,11 @@ pub(crate) struct ItemEffects {
     #[serde(rename = "dogmaEffects", default)]
     pub(crate) effects: Vec<ItemEffectData>,
 }
-impl FsdMerge<rc::edt::ItemEffect> for ItemEffects {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::ItemEffect> {
+impl FsdMerge<rc::edt::EItemEffect> for ItemEffects {
+    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::EItemEffect> {
         self.effects
             .into_iter()
-            .map(|v| rc::edt::ItemEffect::new(id, v.effect_id, v.is_default != 0))
+            .map(|v| rc::edt::EItemEffect::new(id, v.effect_id, v.is_default != 0))
             .collect()
     }
 }

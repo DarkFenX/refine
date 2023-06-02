@@ -3,9 +3,9 @@ use crate::{
     util::Named,
 };
 
-/// An item type - fighter ability relation.
+/// An EVE item type-fighter ability relation.
 #[derive(Debug)]
-pub struct ItemFighterAbil {
+pub struct EItemFighterAbil {
     /// Refers an item type involved in the relation.
     pub item_id: ReeInt,
     /// Refers a fighter ability involved in the relation.
@@ -17,8 +17,8 @@ pub struct ItemFighterAbil {
     /// Defines how long each charge of the ability takes to rearm, in seconds.
     pub charge_rearm_time: Option<ReeFloat>,
 }
-impl ItemFighterAbil {
-    /// Makes a new item-ability relation out of passed data.
+impl EItemFighterAbil {
+    /// Makes a new EVE item-ability relation out of passed data.
     pub fn new(
         item_id: ReeInt,
         abil_id: ReeInt,
@@ -35,8 +35,8 @@ impl ItemFighterAbil {
         }
     }
 }
-impl Named for ItemFighterAbil {
+impl Named for EItemFighterAbil {
     fn get_name() -> &'static str {
-        "edt::ItemFighterAbil"
+        "edt::EItemFighterAbil"
     }
 }

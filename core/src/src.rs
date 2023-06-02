@@ -77,7 +77,7 @@ fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn ad
     false
 }
 
-fn regen_cache(data_handler: &Box<dyn edh::EveDataHandler>) -> IntResult<adh::Data> {
+fn regen_cache(data_handler: &Box<dyn edh::EveDataHandler>) -> IntResult<adh::AData> {
     log::info!("regenerating cache...");
     // If we have to regenerate cache, failure to generate one is fatal
     adg::generate_erts(data_handler.as_ref()).map_err(|e| IntError::new(format!("failed to generate cache: {}", e)))
@@ -86,7 +86,7 @@ fn regen_cache(data_handler: &Box<dyn edh::EveDataHandler>) -> IntResult<adh::Da
 fn update_cache(
     data_version: Option<String>,
     cache_handler: &mut Box<dyn adh::AdaptedDataHandler>,
-    ch_data: adh::Data,
+    ch_data: adh::AData,
 ) {
     let data_version = data_version.unwrap_or("none".into());
     let data_fp = get_data_fingerprint(&data_version);

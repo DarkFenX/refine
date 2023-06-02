@@ -1,17 +1,17 @@
 use crate::{defs::ReeInt, util::Named};
 
-/// An item type - dogma effect relation.
+/// An EVE item type-effect relation.
 #[derive(Debug)]
-pub struct ItemEffect {
+pub struct EItemEffect {
     /// Refers an item type involved in the relation.
     pub item_id: ReeInt,
-    /// Refers a dogma effect involved in the relation.
+    /// Refers an effect involved in the relation.
     pub effect_id: ReeInt,
     /// Defines if the effect is default to the item or not.
     pub is_default: bool,
 }
-impl ItemEffect {
-    /// Make a new item-effect relation out of passed data.
+impl EItemEffect {
+    /// Make a new EVE item-effect relation out of passed data.
     pub fn new(item_id: ReeInt, effect_id: ReeInt, is_default: bool) -> Self {
         Self {
             item_id,
@@ -20,8 +20,8 @@ impl ItemEffect {
         }
     }
 }
-impl Named for ItemEffect {
+impl Named for EItemEffect {
     fn get_name() -> &'static str {
-        "edt::ItemEffect"
+        "edt::EItemEffect"
     }
 }

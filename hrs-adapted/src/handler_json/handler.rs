@@ -21,11 +21,11 @@ use super::cdt;
 pub struct RamJsonAdh {
     folder: PathBuf,
     name: String,
-    storage_items: HashMap<rc::ReeInt, Arc<rc::adt::Item>>,
-    storage_attrs: HashMap<rc::ReeInt, Arc<rc::adt::Attr>>,
-    storage_effects: HashMap<rc::ReeInt, Arc<rc::adt::Effect>>,
-    storage_mutas: HashMap<rc::ReeInt, Arc<rc::adt::Muta>>,
-    storage_buffs: HashMap<rc::ReeInt, Arc<rc::adt::Buff>>,
+    storage_items: HashMap<rc::ReeInt, Arc<rc::adt::AItem>>,
+    storage_attrs: HashMap<rc::ReeInt, Arc<rc::adt::AAttr>>,
+    storage_effects: HashMap<rc::ReeInt, Arc<rc::adt::AEffect>>,
+    storage_mutas: HashMap<rc::ReeInt, Arc<rc::adt::AMuta>>,
+    storage_buffs: HashMap<rc::ReeInt, Arc<rc::adt::ABuff>>,
     fingerprint: Option<String>,
 }
 impl RamJsonAdh {
@@ -57,7 +57,7 @@ impl RamJsonAdh {
             }
         }
     }
-    fn update_memory_cache(&mut self, adata: rc::adh::Data, fingerprint: String) {
+    fn update_memory_cache(&mut self, adata: rc::adh::AData, fingerprint: String) {
         move_vec_to_map(adata.items, &mut self.storage_items);
         move_vec_to_map(adata.attrs, &mut self.storage_attrs);
         move_vec_to_map(adata.effects, &mut self.storage_effects);
@@ -95,23 +95,23 @@ impl fmt::Debug for RamJsonAdh {
 }
 impl rc::adh::AdaptedDataHandler for RamJsonAdh {
     /// Get cached item.
-    fn get_item(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Item>> {
+    fn get_item(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::AItem>> {
         self.storage_items.get(&id).cloned()
     }
     /// Get cached attribute.
-    fn get_attr(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Attr>> {
+    fn get_attr(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::AAttr>> {
         self.storage_attrs.get(&id).cloned()
     }
     /// Get cached effect.
-    fn get_effect(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Effect>> {
+    fn get_effect(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::AEffect>> {
         self.storage_effects.get(&id).cloned()
     }
     /// Get cached mutaplasmid.
-    fn get_muta(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Muta>> {
+    fn get_muta(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::AMuta>> {
         self.storage_mutas.get(&id).cloned()
     }
     /// Get cached warfare buff.
-    fn get_buff(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::Buff>> {
+    fn get_buff(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::ABuff>> {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get cached data fingerprint.
@@ -135,7 +135,7 @@ impl rc::adh::AdaptedDataHandler for RamJsonAdh {
         Ok(())
     }
     /// Update data in handler with passed data.
-    fn update_data(&mut self, adata: rc::adh::Data, fingerprint: String) {
+    fn update_data(&mut self, adata: rc::adh::AData, fingerprint: String) {
         // Update persistent cache
         let cdata = cdt::Data::from_adapted(&adata, &fingerprint);
         match self.create_cache_folder() {

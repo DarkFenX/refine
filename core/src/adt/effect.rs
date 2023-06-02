@@ -10,7 +10,7 @@ use crate::{
 /// lower-level. An effect can contain any amount of modifiers under a single roof, accompanied by
 /// extra effect-wide properties.
 #[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub struct Effect {
+pub struct AEffect {
     /// Effect ID.
     pub id: ReeInt,
     /// Effect state dictates which state of parent item is needed for the effect to run.
@@ -43,11 +43,11 @@ pub struct Effect {
     /// Modifier build status.
     pub mod_build_status: ModBuildStatus,
     /// Attribute modifiers carried by the effect
-    pub mods: Vec<AttrMod>,
+    pub mods: Vec<AAttrMod>,
     /// Refers effects this effect stops on target.
     pub stop_ids: Vec<ReeInt>,
 }
-impl Effect {
+impl AEffect {
     /// Make a new dogma effect out of passed data.
     pub(crate) fn new(
         id: ReeInt,
@@ -65,7 +65,7 @@ impl Effect {
         chance_attr_id: Option<ReeInt>,
         resist_attr_id: Option<ReeInt>,
         mod_build_status: ModBuildStatus,
-        mods: Vec<AttrMod>,
+        mods: Vec<AAttrMod>,
         stop_ids: Vec<ReeInt>,
     ) -> Self {
         Self {
@@ -89,7 +89,7 @@ impl Effect {
         }
     }
 }
-impl Named for Effect {
+impl Named for AEffect {
     fn get_name() -> &'static str {
         "ct::Effect"
     }
@@ -100,7 +100,7 @@ impl Named for Effect {
 /// A modifier is an entity which specifies in detail which attributes on which items are going to
 /// be affected, and how.
 #[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub struct AttrMod {
+pub struct AAttrMod {
     /// Refers an attribute on the affector, which should be used as modification value.
     pub afor_attr_id: ReeInt,
     /// Defines how multiple modifications of the same attribute value are aggregated.
@@ -112,7 +112,7 @@ pub struct AttrMod {
     /// Refers an attribute, whose value will be affected on the affectee.
     pub afee_attr_id: ReeInt,
 }
-impl AttrMod {
+impl AAttrMod {
     /// Make a new attribute modifier out of passed data.
     pub(crate) fn new(
         afor_attr_id: ReeInt,
@@ -130,7 +130,7 @@ impl AttrMod {
         }
     }
 }
-impl Named for AttrMod {
+impl Named for AAttrMod {
     fn get_name() -> &'static str {
         "ct::AttrMod"
     }

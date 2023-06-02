@@ -6,13 +6,13 @@ use crate::{
 
 use super::{aux, Fk, Pk, Support};
 
-impl Pk for edt::ItemAttr {
+impl Pk for edt::EItemAttr {
     fn get_pk(&self) -> Vec<ReeInt> {
         vec![self.item_id, self.attr_id]
     }
 }
 
-impl Fk for edt::ItemAttr {
+impl Fk for edt::EItemAttr {
     fn get_item_fks(&self, supp: &Support) -> Vec<ReeInt> {
         let mut vec = Vec::new();
         vec.push(self.item_id);
@@ -47,7 +47,7 @@ impl Fk for edt::ItemAttr {
         vec
     }
 }
-impl edt::ItemAttr {
+impl edt::EItemAttr {
     /// Receive unit ID, and if the attribute has such unit ID - return attribute value.
     fn get_fk_from_val(&self, unit: ReeInt, supp: &Support) -> Option<ReeInt> {
         match (

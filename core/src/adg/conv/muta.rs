@@ -6,12 +6,12 @@ use crate::adt;
 
 use super::Data;
 
-pub(super) fn conv_mutas(erg_data: &Data) -> Vec<adt::Muta> {
+pub(super) fn conv_mutas(erg_data: &Data) -> Vec<adt::AMuta> {
     let mut composed = HashMap::new();
     for item_data in erg_data.muta_items.iter() {
         let muta = composed
             .entry(item_data.muta_id)
-            .or_insert_with(|| adt::Muta::new(item_data.muta_id));
+            .or_insert_with(|| adt::AMuta::new(item_data.muta_id));
         muta.item_map.insert(item_data.in_item_id, item_data.out_item_id);
     }
     for attr_data in erg_data.muta_attrs.iter() {
@@ -20,7 +20,7 @@ pub(super) fn conv_mutas(erg_data: &Data) -> Vec<adt::Muta> {
         if let Some(muta) = composed.get_mut(&attr_data.muta_id) {
             muta.attr_mods.insert(
                 attr_data.attr_id,
-                adt::MutaAttrRange::new(attr_data.min_attr_mult, attr_data.max_attr_mult),
+                adt::AMutaAttrRange::new(attr_data.min_attr_mult, attr_data.max_attr_mult),
             );
         }
     }

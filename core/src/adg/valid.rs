@@ -39,24 +39,30 @@ fn fk_check(erg_data: &Data, supp: &Support) {
     fk_check_referer(&erg_data.muta_attrs, &pkdb, supp);
 }
 fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, supp: &Support) {
-    fk_check_referee(rer_vec, &pkdb.items, supp, T::get_item_fks, edt::Item::get_name());
+    fk_check_referee(rer_vec, &pkdb.items, supp, T::get_item_fks, edt::EItem::get_name());
     fk_check_referee(
         rer_vec,
         &pkdb.groups,
         supp,
         T::get_group_fks,
-        edt::ItemGroup::get_name(),
+        edt::EItemGroup::get_name(),
     );
-    fk_check_referee(rer_vec, &pkdb.attrs, supp, T::get_attr_fks, edt::Attr::get_name());
-    fk_check_referee(rer_vec, &pkdb.effects, supp, T::get_effect_fks, edt::Effect::get_name());
+    fk_check_referee(rer_vec, &pkdb.attrs, supp, T::get_attr_fks, edt::EAttr::get_name());
+    fk_check_referee(
+        rer_vec,
+        &pkdb.effects,
+        supp,
+        T::get_effect_fks,
+        edt::EEffect::get_name(),
+    );
     fk_check_referee(
         rer_vec,
         &pkdb.abils,
         supp,
         T::get_abil_fks,
-        edt::FighterAbil::get_name(),
+        edt::EFighterAbil::get_name(),
     );
-    fk_check_referee(rer_vec, &pkdb.buffs, supp, T::get_buff_fks, edt::Buff::get_name());
+    fk_check_referee(rer_vec, &pkdb.buffs, supp, T::get_buff_fks, edt::EBuff::get_name());
 }
 fn fk_check_referee<T, F>(rer_vec: &Vec<T>, ree_pks: &HashSet<ReeInt>, supp: &Support, func: F, ree_name: &str)
 where
@@ -117,9 +123,9 @@ fn known_fighter_abilities(erg_data: &mut Data) {
         let msg = format!(
             "removed {} {} and {} {} with unknown fighter ability IDs: {}",
             abils,
-            edt::FighterAbil::get_name(),
+            edt::EFighterAbil::get_name(),
             item_abils,
-            edt::ItemFighterAbil::get_name(),
+            edt::EItemFighterAbil::get_name(),
             unknown_ids.iter().sorted().join(", ")
         );
         log::warn!("{}", msg);
@@ -153,7 +159,7 @@ fn fighter_ability_effect(erg_data: &mut Data) {
         let msg = format!(
             "removed {} {} with references to missing effects, showing up to {}: {}",
             invalids.len(),
-            edt::ItemFighterAbil::get_name(),
+            edt::EItemFighterAbil::get_name(),
             max_logged,
             invalids
                 .iter()

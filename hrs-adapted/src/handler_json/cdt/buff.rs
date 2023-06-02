@@ -7,8 +7,8 @@ pub(in crate::handler_json) struct Buff {
     op: ModOp,
     mods: Vec<BuffAttrMod>,
 }
-impl From<&rc::adt::Buff> for Buff {
-    fn from(value: &rc::adt::Buff) -> Self {
+impl From<&rc::adt::ABuff> for Buff {
+    fn from(value: &rc::adt::ABuff) -> Self {
         Buff {
             id: value.id,
             aggr_mode: (&value.aggr_mode).into(),
@@ -17,9 +17,9 @@ impl From<&rc::adt::Buff> for Buff {
         }
     }
 }
-impl Into<rc::adt::Buff> for &Buff {
-    fn into(self) -> rc::adt::Buff {
-        rc::adt::Buff {
+impl Into<rc::adt::ABuff> for &Buff {
+    fn into(self) -> rc::adt::ABuff {
+        rc::adt::ABuff {
             id: self.id,
             aggr_mode: (&self.aggr_mode).into(),
             op: (&self.op).into(),
@@ -33,17 +33,17 @@ struct BuffAttrMod {
     afee_filter: ModAfeeFilter,
     afee_attr_id: rc::ReeInt,
 }
-impl From<&rc::adt::BuffAttrMod> for BuffAttrMod {
-    fn from(value: &rc::adt::BuffAttrMod) -> Self {
+impl From<&rc::adt::ABuffAttrMod> for BuffAttrMod {
+    fn from(value: &rc::adt::ABuffAttrMod) -> Self {
         BuffAttrMod {
             afee_filter: (&value.afee_filter).into(),
             afee_attr_id: value.afee_attr_id,
         }
     }
 }
-impl Into<rc::adt::BuffAttrMod> for &BuffAttrMod {
-    fn into(self) -> rc::adt::BuffAttrMod {
-        rc::adt::BuffAttrMod {
+impl Into<rc::adt::ABuffAttrMod> for &BuffAttrMod {
+    fn into(self) -> rc::adt::ABuffAttrMod {
+        rc::adt::ABuffAttrMod {
             afee_filter: (&self.afee_filter).into(),
             afee_attr_id: self.afee_attr_id,
         }

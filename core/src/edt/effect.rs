@@ -4,10 +4,10 @@ use crate::{defs::ReeInt, util::Named};
 
 use super::Primitive;
 
-/// Dogma effect data.
+/// EVE effect data.
 #[derive(Debug)]
-pub struct Effect {
-    /// Dogma effect ID.
+pub struct EEffect {
+    /// Effect ID.
     pub id: ReeInt,
     /// Refers an effect category the effect belongs to.
     pub category_id: ReeInt,
@@ -31,10 +31,10 @@ pub struct Effect {
     /// Refers an attribute value which defines resistance strength to the effect.
     pub resist_attr_id: Option<ReeInt>,
     /// Modifiers of the effect.
-    pub mods: Vec<EffectMod>,
+    pub mods: Vec<EEffectMod>,
 }
-impl Effect {
-    /// Make a new dogma effect out of passed data.
+impl EEffect {
+    /// Make a new EVE effect out of passed data.
     pub fn new(
         id: ReeInt,
         category_id: ReeInt,
@@ -47,7 +47,7 @@ impl Effect {
         tracking_attr_id: Option<ReeInt>,
         usage_chance_attr_id: Option<ReeInt>,
         resist_attr_id: Option<ReeInt>,
-        mods: Vec<EffectMod>,
+        mods: Vec<EEffectMod>,
     ) -> Self {
         Self {
             id,
@@ -65,22 +65,22 @@ impl Effect {
         }
     }
 }
-impl Named for Effect {
+impl Named for EEffect {
     fn get_name() -> &'static str {
-        "edt::Effect"
+        "edt::EEffect"
     }
 }
 
-/// Dogma effect modifier data.
+/// EVE effect modifier data.
 #[derive(Debug)]
-pub struct EffectMod {
+pub struct EEffectMod {
     /// Function which the effect modifier calls to apply its modification.
     pub func: String,
     /// Arguments to the function call.
     pub args: HashMap<String, Primitive>,
 }
-impl EffectMod {
-    /// Make a new dogma effect modifier out of passed data.
+impl EEffectMod {
+    /// Make a new EVE effect modifier out of passed data.
     pub fn new(func: String, args: HashMap<String, Primitive>) -> Self {
         Self { func, args }
     }

@@ -3,17 +3,17 @@ use crate::{
     util::Named,
 };
 
-/// An item type - dogma attribute relation.
+/// An EVE item type-attribute relation.
 #[derive(Debug)]
-pub struct ItemAttr {
+pub struct EItemAttr {
     /// Refers an item type involved in the relation.
     pub item_id: ReeInt,
-    /// Refers a dogma attribute involved in the relation.
+    /// Refers an attribute involved in the relation.
     pub attr_id: ReeInt,
     /// Value of the attribute.
     pub value: ReeFloat,
 }
-impl ItemAttr {
+impl EItemAttr {
     /// Make a new item-attribute relation out of passed data.
     pub fn new(item_id: ReeInt, attr_id: ReeInt, value: ReeFloat) -> Self {
         Self {
@@ -23,8 +23,8 @@ impl ItemAttr {
         }
     }
 }
-impl Named for ItemAttr {
+impl Named for EItemAttr {
     fn get_name() -> &'static str {
-        "edt::ItemAttr"
+        "edt::EItemAttr"
     }
 }
