@@ -1,6 +1,6 @@
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
-pub(in crate::handler_json::cdt) enum ModOp {
+pub(in crate::handler_json) enum ModOp {
     PreAssign,
     PreMul,
     PreDiv,
@@ -11,8 +11,8 @@ pub(in crate::handler_json::cdt) enum ModOp {
     PostPerc,
     PostAssign,
 }
-impl From<rc::consts::ModOp> for ModOp {
-    fn from(value: rc::consts::ModOp) -> Self {
+impl From<&rc::consts::ModOp> for ModOp {
+    fn from(value: &rc::consts::ModOp) -> Self {
         match value {
             rc::consts::ModOp::PreAssign => Self::PreAssign,
             rc::consts::ModOp::PreMul => Self::PreMul,
@@ -26,7 +26,7 @@ impl From<rc::consts::ModOp> for ModOp {
         }
     }
 }
-impl Into<rc::consts::ModOp> for ModOp {
+impl Into<rc::consts::ModOp> for &ModOp {
     fn into(self) -> rc::consts::ModOp {
         match self {
             ModOp::PreAssign => rc::consts::ModOp::PreAssign,

@@ -1,14 +1,14 @@
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
-pub(in crate::handler_json::cdt) enum State {
+pub(in crate::handler_json) enum State {
     Ghost,
     Offline,
     Online,
     Active,
     Overload,
 }
-impl From<rc::consts::State> for State {
-    fn from(value: rc::consts::State) -> Self {
+impl From<&rc::consts::State> for State {
+    fn from(value: &rc::consts::State) -> Self {
         match value {
             rc::consts::State::Ghost => Self::Ghost,
             rc::consts::State::Offline => Self::Offline,
@@ -18,7 +18,7 @@ impl From<rc::consts::State> for State {
         }
     }
 }
-impl Into<rc::consts::State> for State {
+impl Into<rc::consts::State> for &State {
     fn into(self) -> rc::consts::State {
         match self {
             State::Ghost => rc::consts::State::Ghost,

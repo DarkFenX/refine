@@ -1,6 +1,6 @@
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
-pub(in crate::handler_json::cdt) enum ItemType {
+pub(in crate::handler_json) enum ItemType {
     Booster,
     Character,
     Charge,
@@ -18,8 +18,8 @@ pub(in crate::handler_json::cdt) enum ItemType {
     Stance,
     Subsystem,
 }
-impl From<rc::consts::ItemType> for ItemType {
-    fn from(value: rc::consts::ItemType) -> Self {
+impl From<&rc::consts::ItemType> for ItemType {
+    fn from(value: &rc::consts::ItemType) -> Self {
         match value {
             rc::consts::ItemType::Booster => Self::Booster,
             rc::consts::ItemType::Character => Self::Character,
@@ -40,7 +40,7 @@ impl From<rc::consts::ItemType> for ItemType {
         }
     }
 }
-impl Into<rc::consts::ItemType> for ItemType {
+impl Into<rc::consts::ItemType> for &ItemType {
     fn into(self) -> rc::consts::ItemType {
         match self {
             ItemType::Booster => rc::consts::ItemType::Booster,
