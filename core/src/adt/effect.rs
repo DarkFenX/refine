@@ -9,7 +9,7 @@ use crate::{
 /// Effects are higher-level modification descriptors, as opposed to modifiers, which are
 /// lower-level. An effect can contain any amount of modifiers under a single roof, accompanied by
 /// extra effect-wide properties.
-#[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+#[derive(Debug)]
 pub struct AEffect {
     /// Effect ID.
     pub id: ReeInt,
@@ -99,7 +99,7 @@ impl Named for AEffect {
 ///
 /// A modifier is an entity which specifies in detail which attributes on which items are going to
 /// be affected, and how.
-#[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+#[derive(Debug)]
 pub struct AAttrMod {
     /// Refers an attribute on the affector, which should be used as modification value.
     pub afor_attr_id: ReeInt,
