@@ -8,7 +8,7 @@ from tests.support.client import TestClient
 from tests.support.server import build_server, kill_server, run_server, build_config
 from tests.support.util import next_free_port
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
 ServerInfo = namedtuple('ServerInfo', ('pid', 'port'))
