@@ -3,74 +3,76 @@ use std::collections::{HashMap, HashSet};
 use itertools::Itertools;
 use log;
 
-use crate::{consts, defs::ReeInt, edt, util::Named};
-
-use super::{
-    data::{Fk, KeyDb, Pk, Support},
-    Data,
+use crate::{
+    adg::{
+        rels::{Fk, KeyDb, Pk},
+        GData, GSupport,
+    },
+    consts,
+    defs::ReeInt,
+    ed,
+    util::Named,
 };
 
 /// Ensure that assumptions reefast makes about the data are true.
-///
-/// See documentation for [`dh`](crate::edh) module about assumptions.
-pub(super) fn validate(erg_data: &mut Data, supp: &Support) {
-    fk_check(erg_data, supp);
-    default_effects(erg_data);
-    known_fighter_abilities(erg_data);
-    fighter_ability_effect(erg_data);
+pub(in crate::adg) fn validate(gdata: &mut GData, gsupp: &GSupport) {
+    fk_check(gdata, gsupp);
+    default_effects(gdata);
+    known_fighter_abilities(gdata);
+    fighter_ability_effect(gdata);
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
 /// a good idea, since it can help trace down the case when something fails to load from cache
 /// later.
-fn fk_check(erg_data: &Data, supp: &Support) {
-    let pkdb = KeyDb::new_pkdb(erg_data);
-    fk_check_referer(&erg_data.items, &pkdb, supp);
-    fk_check_referer(&erg_data.groups, &pkdb, supp);
-    fk_check_referer(&erg_data.attrs, &pkdb, supp);
-    fk_check_referer(&erg_data.item_attrs, &pkdb, supp);
-    fk_check_referer(&erg_data.effects, &pkdb, supp);
-    fk_check_referer(&erg_data.item_effects, &pkdb, supp);
-    fk_check_referer(&erg_data.abils, &pkdb, supp);
-    fk_check_referer(&erg_data.item_abils, &pkdb, supp);
-    fk_check_referer(&erg_data.buffs, &pkdb, supp);
-    fk_check_referer(&erg_data.item_srqs, &pkdb, supp);
-    fk_check_referer(&erg_data.muta_items, &pkdb, supp);
-    fk_check_referer(&erg_data.muta_attrs, &pkdb, supp);
+fn fk_check(gdata: &GData, gsupp: &GSupport) {
+    let pkdb = KeyDb::new_pkdb(gdata);
+    fk_check_referer(&gdata.items, &pkdb, gsupp);
+    fk_check_referer(&gdata.groups, &pkdb, gsupp);
+    fk_check_referer(&gdata.attrs, &pkdb, gsupp);
+    fk_check_referer(&gdata.item_attrs, &pkdb, gsupp);
+    fk_check_referer(&gdata.effects, &pkdb, gsupp);
+    fk_check_referer(&gdata.item_effects, &pkdb, gsupp);
+    fk_check_referer(&gdata.abils, &pkdb, gsupp);
+    fk_check_referer(&gdata.item_abils, &pkdb, gsupp);
+    fk_check_referer(&gdata.buffs, &pkdb, gsupp);
+    fk_check_referer(&gdata.item_srqs, &pkdb, gsupp);
+    fk_check_referer(&gdata.muta_items, &pkdb, gsupp);
+    fk_check_referer(&gdata.muta_attrs, &pkdb, gsupp);
 }
-fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, supp: &Support) {
-    fk_check_referee(rer_vec, &pkdb.items, supp, T::get_item_fks, edt::EItem::get_name());
+fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, gsupp: &GSupport) {
+    fk_check_referee(rer_vec, &pkdb.items, gsupp, T::get_item_fks, ed::EItem::get_name());
     fk_check_referee(
         rer_vec,
         &pkdb.groups,
-        supp,
+        gsupp,
         T::get_group_fks,
-        edt::EItemGroup::get_name(),
+        ed::EItemGroup::get_name(),
     );
-    fk_check_referee(rer_vec, &pkdb.attrs, supp, T::get_attr_fks, edt::EAttr::get_name());
+    fk_check_referee(rer_vec, &pkdb.attrs, gsupp, T::get_attr_fks, ed::EAttr::get_name());
     fk_check_referee(
         rer_vec,
         &pkdb.effects,
-        supp,
+        gsupp,
         T::get_effect_fks,
-        edt::EEffect::get_name(),
+        ed::EEffect::get_name(),
     );
     fk_check_referee(
         rer_vec,
         &pkdb.abils,
-        supp,
+        gsupp,
         T::get_abil_fks,
-        edt::EFighterAbil::get_name(),
+        ed::EFighterAbil::get_name(),
     );
-    fk_check_referee(rer_vec, &pkdb.buffs, supp, T::get_buff_fks, edt::EBuff::get_name());
+    fk_check_referee(rer_vec, &pkdb.buffs, gsupp, T::get_buff_fks, ed::EBuff::get_name());
 }
-fn fk_check_referee<T, F>(rer_vec: &Vec<T>, ree_pks: &HashSet<ReeInt>, supp: &Support, func: F, ree_name: &str)
+fn fk_check_referee<T, F>(rer_vec: &Vec<T>, ree_pks: &HashSet<ReeInt>, gsupp: &GSupport, func: F, ree_name: &str)
 where
     T: Fk + Named,
-    F: Fn(&T, &Support) -> Vec<ReeInt>,
+    F: Fn(&T, &GSupport) -> Vec<ReeInt>,
 {
     let mut fks = HashSet::new();
-    rer_vec.iter().for_each(|v| fks.extend(func(v, supp)));
+    rer_vec.iter().for_each(|v| fks.extend(func(v, gsupp)));
     let missing = fks.difference(ree_pks).collect_vec();
     if missing.len() > 0 {
         let msg = format!(
@@ -84,11 +86,11 @@ where
     }
 }
 
-/// One default effect per item max. Needed for Item generation.
-fn default_effects(erg_data: &mut Data) {
+/// One default effect per item max. Needed for adapted item generation.
+fn default_effects(gdata: &mut GData) {
     let mut unsets = 0;
     let mut seen_des = HashSet::new();
-    for item_effect in erg_data.item_effects.iter_mut() {
+    for item_effect in gdata.item_effects.iter_mut() {
         if item_effect.is_default {
             if !seen_des.insert(item_effect.get_pk()) {
                 unsets += 1;
@@ -103,16 +105,16 @@ fn default_effects(erg_data: &mut Data) {
 }
 
 /// Remove unknown fighter abilities.
-fn known_fighter_abilities(erg_data: &mut Data) {
+fn known_fighter_abilities(gdata: &mut GData) {
     let mut unknown_ids = HashSet::new();
-    let abils = erg_data
+    let abils = gdata
         .abils
         .drain_filter(|v| consts::get_abil_effect(v.id).is_none())
         .update(|v| {
             unknown_ids.insert(v.id);
         })
         .count();
-    let item_abils = erg_data
+    let item_abils = gdata
         .item_abils
         .drain_filter(|v| consts::get_abil_effect(v.abil_id).is_none())
         .update(|v| {
@@ -123,9 +125,9 @@ fn known_fighter_abilities(erg_data: &mut Data) {
         let msg = format!(
             "removed {} {} and {} {} with unknown fighter ability IDs: {}",
             abils,
-            edt::EFighterAbil::get_name(),
+            ed::EFighterAbil::get_name(),
             item_abils,
-            edt::EItemFighterAbil::get_name(),
+            ed::EItemFighterAbil::get_name(),
             unknown_ids.iter().sorted().join(", ")
         );
         log::warn!("{}", msg);
@@ -133,16 +135,16 @@ fn known_fighter_abilities(erg_data: &mut Data) {
 }
 
 /// Remove item abilities which have no effects to handle them.
-fn fighter_ability_effect(erg_data: &mut Data) {
+fn fighter_ability_effect(gdata: &mut GData) {
     let mut item_eff_map = HashMap::new();
-    for item_eff in erg_data.item_effects.iter() {
+    for item_eff in gdata.item_effects.iter() {
         item_eff_map
             .entry(item_eff.item_id)
             .or_insert_with(|| HashSet::new())
             .insert(item_eff.effect_id);
     }
     let mut invalids = HashSet::new();
-    erg_data
+    gdata
         .item_abils
         .drain_filter(|v| match consts::get_abil_effect(v.abil_id) {
             Some(eid) => match item_eff_map.get(&v.item_id) {
@@ -159,7 +161,7 @@ fn fighter_ability_effect(erg_data: &mut Data) {
         let msg = format!(
             "removed {} {} with references to missing effects, showing up to {}: {}",
             invalids.len(),
-            edt::EItemFighterAbil::get_name(),
+            ed::EItemFighterAbil::get_name(),
             max_logged,
             invalids
                 .iter()

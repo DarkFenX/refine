@@ -1,7 +1,7 @@
 use crate::{
-    adg, adh,
+    ad, adg,
     defs::VERSION,
-    edh,
+    ed,
     util::{Error, ErrorKind, IntError, IntResult, Result},
 };
 
@@ -11,12 +11,12 @@ use crate::{
 /// expose it to other parts of the library.
 #[derive(Debug)]
 pub struct Src {
-    pub(crate) cache_handler: Box<dyn adh::AdaptedDataHandler>,
+    pub(crate) cache_handler: Box<dyn ad::AdaptedDataHandler>,
 }
 impl Src {
     pub fn new(
-        data_handler: Box<dyn edh::EveDataHandler>,
-        mut cache_handler: Box<dyn adh::AdaptedDataHandler>,
+        data_handler: Box<dyn ed::EveDataHandler>,
+        mut cache_handler: Box<dyn ad::AdaptedDataHandler>,
     ) -> Result<Self> {
         log::info!(
             "initializing new source with {:?} and {:?}",
@@ -32,7 +32,7 @@ impl Src {
     }
 }
 
-fn get_data_version(data_handler: &Box<dyn edh::EveDataHandler>) -> Option<String> {
+fn get_data_version(data_handler: &Box<dyn ed::EveDataHandler>) -> Option<String> {
     match data_handler.get_version() {
         Ok(dv) => Some(dv),
         Err(e) => {
@@ -46,7 +46,7 @@ fn get_data_fingerprint(data_version: &str) -> String {
     format!("{}_{}", data_version, VERSION)
 }
 
-fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn adh::AdaptedDataHandler>) -> bool {
+fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn ad::AdaptedDataHandler>) -> bool {
     // Failure to read version is not fatal, we just always generate cache in this case
     let data_version = match data_version {
         Some(dv) => dv,
@@ -77,17 +77,14 @@ fn need_cache_regen(data_version: Option<String>, cache_handler: &mut Box<dyn ad
     false
 }
 
-fn regen_cache(data_handler: &Box<dyn edh::EveDataHandler>) -> IntResult<adh::AData> {
+fn regen_cache(data_handler: &Box<dyn ed::EveDataHandler>) -> IntResult<ad::AData> {
     log::info!("regenerating cache...");
     // If we have to regenerate cache, failure to generate one is fatal
-    adg::generate_erts(data_handler.as_ref()).map_err(|e| IntError::new(format!("failed to generate cache: {}", e)))
+    adg::generate_adapted_data(data_handler.as_ref())
+        .map_err(|e| IntError::new(format!("failed to generate cache: {}", e)))
 }
 
-fn update_cache(
-    data_version: Option<String>,
-    cache_handler: &mut Box<dyn adh::AdaptedDataHandler>,
-    ch_data: adh::AData,
-) {
+fn update_cache(data_version: Option<String>, cache_handler: &mut Box<dyn ad::AdaptedDataHandler>, ch_data: ad::AData) {
     let data_version = data_version.unwrap_or("none".into());
     let data_fp = get_data_fingerprint(&data_version);
     cache_handler.update_data(ch_data, data_fp)

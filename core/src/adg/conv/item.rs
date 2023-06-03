@@ -3,32 +3,31 @@ use std::collections::HashMap;
 use itertools::Itertools;
 
 use crate::{
-    adt,
+    ad,
+    adg::{GData, GSupport},
     consts::{attrs, effects, get_abil_effect, itemcats, itemgrps, ItemType},
     defs::ReeInt,
-    edt,
+    ed,
     util::Named,
 };
 
-use super::super::{data::Support, Data};
-
-pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::AItem> {
+pub(in crate::adg::conv) fn conv_items(gdata: &GData, gsupp: &GSupport) -> Vec<ad::AItem> {
     // Auxiliary maps
-    let defeff_map = erg_data
+    let defeff_map = gdata
         .item_effects
         .iter()
         .filter(|v| v.is_default)
         .map(|v| (v.item_id, v.effect_id))
         .collect::<HashMap<ReeInt, ReeInt>>();
     let mut item_map = HashMap::new();
-    for item_data in erg_data.items.iter() {
+    for item_data in gdata.items.iter() {
         // Item category ID
-        let cat_id = match supp.grp_cat_map.get(&item_data.group_id) {
+        let cat_id = match gsupp.grp_cat_map.get(&item_data.group_id) {
             Some(&cid) => cid,
             None => {
                 let msg = format!(
                     "unable to find category ID for {} {}",
-                    edt::EItem::get_name(),
+                    ed::EItem::get_name(),
                     item_data.id
                 );
                 log::warn!("{}", msg);
@@ -41,7 +40,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::AItem> {
             None => None,
         };
         // Item construction
-        let item = adt::AItem::new(
+        let item = ad::AItem::new(
             item_data.id,
             None,
             item_data.group_id,
@@ -54,19 +53,19 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::AItem> {
         item_map.insert(item.id, item);
     }
     // Item attributes
-    for item_attr in erg_data.item_attrs.iter() {
+    for item_attr in gdata.item_attrs.iter() {
         item_map
             .get_mut(&item_attr.item_id)
             .and_then(|v| v.attr_vals.insert(item_attr.attr_id, item_attr.value));
     }
     // Item effects & extended effect data from abilities
-    for item_effect in erg_data.item_effects.iter() {
+    for item_effect in gdata.item_effects.iter() {
         item_map.get_mut(&item_effect.item_id).and_then(|v| {
             v.effect_datas
-                .insert(item_effect.effect_id, adt::AItemEffData::new(None, None, None))
+                .insert(item_effect.effect_id, ad::AItemEffData::new(None, None, None))
         });
     }
-    for item_abil in erg_data.item_abils.iter() {
+    for item_abil in gdata.item_abils.iter() {
         match item_map.get_mut(&item_abil.item_id) {
             None => continue,
             Some(item) => match get_abil_effect(item_abil.abil_id) {
@@ -83,7 +82,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::AItem> {
         }
     }
     // Item skill requirements
-    for item_srq in erg_data.item_srqs.iter() {
+    for item_srq in gdata.item_srqs.iter() {
         item_map
             .get_mut(&item_srq.item_id)
             .and_then(|v| v.srqs.insert(item_srq.skill_id, item_srq.level));
@@ -103,7 +102,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::AItem> {
             _ => {
                 let msg = format!(
                     "{} {} is eligible for {} item types",
-                    adt::AItem::get_name(),
+                    ad::AItem::get_name(),
                     item.id,
                     item_types.len()
                 );
@@ -115,7 +114,7 @@ pub(super) fn conv_items(erg_data: &Data, supp: &Support) -> Vec<adt::AItem> {
     items
 }
 
-fn get_item_types(item: &adt::AItem) -> Vec<ItemType> {
+fn get_item_types(item: &ad::AItem) -> Vec<ItemType> {
     let mut types = Vec::new();
     if item.cat_id == itemcats::IMPLANT && item.attr_vals.contains_key(&attrs::BOOSTERNESS) {
         types.push(ItemType::Booster);

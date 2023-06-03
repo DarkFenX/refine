@@ -29,9 +29,9 @@ pub(crate) struct Effect {
     #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
     pub(crate) mods: Vec<EffectMod>,
 }
-impl FsdMerge<rc::edt::EEffect> for Effect {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::EEffect> {
-        vec![rc::edt::EEffect::new(
+impl FsdMerge<rc::ed::EEffect> for Effect {
+    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EEffect> {
+        vec![rc::ed::EEffect::new(
             id,
             self.category_id,
             self.is_assistance != 0,
@@ -51,11 +51,11 @@ impl FsdMerge<rc::edt::EEffect> for Effect {
 #[derive(Debug)]
 pub(crate) struct EffectMod {
     pub(crate) func: String,
-    pub(crate) args: HashMap<String, rc::edt::Primitive>,
+    pub(crate) args: HashMap<String, rc::ed::EPrimitive>,
 }
-impl Into<rc::edt::EEffectMod> for EffectMod {
-    fn into(self) -> rc::edt::EEffectMod {
-        rc::edt::EEffectMod::new(self.func, self.args)
+impl Into<rc::ed::EEffectMod> for EffectMod {
+    fn into(self) -> rc::ed::EEffectMod {
+        rc::ed::EEffectMod::new(self.func, self.args)
     }
 }
 
@@ -98,20 +98,20 @@ mod dgmmod {
         }
     }
 
-    fn primitivize<E: Error>(json: Value) -> Result<rc::edt::Primitive, E> {
+    fn primitivize<E: Error>(json: Value) -> Result<rc::ed::EPrimitive, E> {
         match json {
-            Value::Null => Ok(rc::edt::Primitive::Null),
-            Value::Bool(b) => Ok(rc::edt::Primitive::Bool(b)),
+            Value::Null => Ok(rc::ed::EPrimitive::Null),
+            Value::Bool(b) => Ok(rc::ed::EPrimitive::Bool(b)),
             Value::Number(n) => {
                 if let Some(n) = n.as_i64() {
-                    Ok(rc::edt::Primitive::Int(n as rc::ReeInt))
+                    Ok(rc::ed::EPrimitive::Int(n as rc::ReeInt))
                 } else if let Some(n) = n.as_f64() {
-                    Ok(rc::edt::Primitive::Float(n as rc::ReeFloat))
+                    Ok(rc::ed::EPrimitive::Float(n as rc::ReeFloat))
                 } else {
                     Err(Error::custom("unexpected number type"))
                 }
             }
-            Value::String(s) => Ok(rc::edt::Primitive::String(s)),
+            Value::String(s) => Ok(rc::ed::EPrimitive::String(s)),
             _ => Err(Error::custom("unexpected type")),
         }
     }

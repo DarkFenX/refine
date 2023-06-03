@@ -1,7 +1,7 @@
 use std::{fmt, sync::Arc};
 
 use crate::{
-    adt,
+    ad,
     consts::{attrs, State},
     defs::{ReeId, ReeInt},
     src::Src,
@@ -15,7 +15,7 @@ pub(crate) struct Subsystem {
     pub(crate) fit_id: ReeId,
     pub(crate) type_id: ReeInt,
     pub(crate) state: State,
-    pub(crate) cached_item: Option<Arc<adt::AItem>>,
+    pub(crate) cached_item: Option<Arc<ad::AItem>>,
 }
 impl Subsystem {
     pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: bool) -> Self {

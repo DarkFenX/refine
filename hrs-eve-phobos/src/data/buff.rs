@@ -15,9 +15,9 @@ pub(crate) struct Buff {
     #[serde(rename = "locationRequiredSkillModifiers")]
     pub(crate) locsrq_mods: Vec<BuffLRSM>,
 }
-impl FsdMerge<rc::edt::EBuff> for Buff {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::EBuff> {
-        vec![rc::edt::EBuff::new(
+impl FsdMerge<rc::ed::EBuff> for Buff {
+    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EBuff> {
+        vec![rc::ed::EBuff::new(
             id,
             self.aggregate_mode,
             self.operation,
@@ -34,9 +34,9 @@ pub(crate) struct BuffIM {
     #[serde(rename = "dogmaAttributeID")]
     pub(crate) attr_id: rc::ReeInt,
 }
-impl Into<rc::edt::EBuffIM> for BuffIM {
-    fn into(self) -> rc::edt::EBuffIM {
-        rc::edt::EBuffIM::new(self.attr_id)
+impl Into<rc::ed::EBuffIM> for BuffIM {
+    fn into(self) -> rc::ed::EBuffIM {
+        rc::ed::EBuffIM::new(self.attr_id)
     }
 }
 
@@ -45,9 +45,9 @@ pub(crate) struct BuffLM {
     #[serde(rename = "dogmaAttributeID")]
     pub(crate) attr_id: rc::ReeInt,
 }
-impl Into<rc::edt::EBuffLM> for BuffLM {
-    fn into(self) -> rc::edt::EBuffLM {
-        rc::edt::EBuffLM::new(self.attr_id)
+impl Into<rc::ed::EBuffLM> for BuffLM {
+    fn into(self) -> rc::ed::EBuffLM {
+        rc::ed::EBuffLM::new(self.attr_id)
     }
 }
 
@@ -58,9 +58,9 @@ pub(crate) struct BuffLGM {
     #[serde(rename = "groupID")]
     pub(crate) group_id: rc::ReeInt,
 }
-impl Into<rc::edt::EBuffLGM> for BuffLGM {
-    fn into(self) -> rc::edt::EBuffLGM {
-        rc::edt::EBuffLGM::new(self.attr_id, self.group_id)
+impl Into<rc::ed::EBuffLGM> for BuffLGM {
+    fn into(self) -> rc::ed::EBuffLGM {
+        rc::ed::EBuffLGM::new(self.attr_id, self.group_id)
     }
 }
 
@@ -71,8 +71,8 @@ pub(crate) struct BuffLRSM {
     #[serde(rename = "skillID")]
     pub(crate) skill_id: rc::ReeInt,
 }
-impl Into<rc::edt::EBuffLRSM> for BuffLRSM {
-    fn into(self) -> rc::edt::EBuffLRSM {
-        rc::edt::EBuffLRSM::new(self.attr_id, self.skill_id)
+impl Into<rc::ed::EBuffLRSM> for BuffLRSM {
+    fn into(self) -> rc::ed::EBuffLRSM {
+        rc::ed::EBuffLRSM::new(self.attr_id, self.skill_id)
     }
 }

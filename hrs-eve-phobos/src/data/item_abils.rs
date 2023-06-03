@@ -9,15 +9,15 @@ pub(crate) struct ItemFighterAbils {
     #[serde(rename = "abilitySlot2")]
     pub(crate) abil2: Option<ItemFighterAbilData>,
 }
-impl FsdMerge<rc::edt::EItemFighterAbil> for ItemFighterAbils {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::edt::EItemFighterAbil> {
+impl FsdMerge<rc::ed::EItemFighterAbil> for ItemFighterAbils {
+    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EItemFighterAbil> {
         let mut vec = Vec::new();
         for abil_data in vec![self.abil0, self.abil1, self.abil2].into_iter() {
             if let Some(abil_data) = abil_data {
                 let (charge_count, charge_rearm_time) = abil_data
                     .charges
                     .map_or((None, None), |v| (Some(v.count), Some(v.rearm_time)));
-                vec.push(rc::edt::EItemFighterAbil::new(
+                vec.push(rc::ed::EItemFighterAbil::new(
                     id,
                     abil_data.abil_id,
                     abil_data.cooldown,

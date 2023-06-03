@@ -2,9 +2,10 @@
 
 use std::collections::HashSet;
 
-use crate::util::Named;
-
-use super::data::{Data, Pk};
+use crate::{
+    adg::{rels::Pk, GData},
+    util::Named,
+};
 
 fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
     let mut seen_pks = HashSet::new();
@@ -25,17 +26,17 @@ fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
     }
 }
 
-pub(super) fn dedup_pks(erg_data: &mut Data) {
-    dedup_pks_vec(&mut erg_data.items);
-    dedup_pks_vec(&mut erg_data.groups);
-    dedup_pks_vec(&mut erg_data.attrs);
-    dedup_pks_vec(&mut erg_data.item_attrs);
-    dedup_pks_vec(&mut erg_data.effects);
-    dedup_pks_vec(&mut erg_data.item_effects);
-    dedup_pks_vec(&mut erg_data.abils);
-    dedup_pks_vec(&mut erg_data.item_abils);
-    dedup_pks_vec(&mut erg_data.buffs);
-    dedup_pks_vec(&mut erg_data.item_srqs);
-    dedup_pks_vec(&mut erg_data.muta_items);
-    dedup_pks_vec(&mut erg_data.muta_attrs);
+pub(in crate::adg) fn dedup_pks(gdata: &mut GData) {
+    dedup_pks_vec(&mut gdata.items);
+    dedup_pks_vec(&mut gdata.groups);
+    dedup_pks_vec(&mut gdata.attrs);
+    dedup_pks_vec(&mut gdata.item_attrs);
+    dedup_pks_vec(&mut gdata.effects);
+    dedup_pks_vec(&mut gdata.item_effects);
+    dedup_pks_vec(&mut gdata.abils);
+    dedup_pks_vec(&mut gdata.item_abils);
+    dedup_pks_vec(&mut gdata.buffs);
+    dedup_pks_vec(&mut gdata.item_srqs);
+    dedup_pks_vec(&mut gdata.muta_items);
+    dedup_pks_vec(&mut gdata.muta_attrs);
 }

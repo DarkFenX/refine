@@ -51,7 +51,7 @@ impl PhbHttpEdh {
             .map_err(|e| Error::from_suffix(e, suffix))?;
         Ok(data)
     }
-    fn process_fsd<T, U>(&self, folder: &'static str, file: &'static str) -> rc::edh::Result<rc::edh::Container<U>>
+    fn process_fsd<T, U>(&self, folder: &'static str, file: &'static str) -> rc::ed::EResult<rc::ed::EDataCont<U>>
     where
         T: serde::de::DeserializeOwned + fsd::FsdMerge<U>,
     {
@@ -65,57 +65,57 @@ impl fmt::Debug for PhbHttpEdh {
         write!(f, "PhbHttpEdh(\"{}\")", self.base_url.to_string())
     }
 }
-impl rc::edh::EveDataHandler for PhbHttpEdh {
+impl rc::ed::EveDataHandler for PhbHttpEdh {
     /// Get item types.
-    fn get_items(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EItem>> {
-        self.process_fsd::<Item, rc::edt::EItem>("fsd_binary", "types")
+    fn get_items(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItem>> {
+        self.process_fsd::<Item, rc::ed::EItem>("fsd_binary", "types")
     }
     /// Get item groups.
-    fn get_item_groups(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EItemGroup>> {
-        self.process_fsd::<ItemGroup, rc::edt::EItemGroup>("fsd_binary", "groups")
+    fn get_item_groups(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemGroup>> {
+        self.process_fsd::<ItemGroup, rc::ed::EItemGroup>("fsd_binary", "groups")
     }
     /// Get dogma attributes.
-    fn get_attrs(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EAttr>> {
-        self.process_fsd::<Attr, rc::edt::EAttr>("fsd_binary", "dogmaattributes")
+    fn get_attrs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EAttr>> {
+        self.process_fsd::<Attr, rc::ed::EAttr>("fsd_binary", "dogmaattributes")
     }
     /// Get an m:n mapping between item types and dogma attributes.
-    fn get_item_attrs(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EItemAttr>> {
-        self.process_fsd::<ItemAttrs, rc::edt::EItemAttr>("fsd_binary", "typedogma")
+    fn get_item_attrs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemAttr>> {
+        self.process_fsd::<ItemAttrs, rc::ed::EItemAttr>("fsd_binary", "typedogma")
     }
     /// Get dogma effects.
-    fn get_effects(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EEffect>> {
-        self.process_fsd::<Effect, rc::edt::EEffect>("fsd_binary", "dogmaeffects")
+    fn get_effects(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EEffect>> {
+        self.process_fsd::<Effect, rc::ed::EEffect>("fsd_binary", "dogmaeffects")
     }
     /// Get an m:n mapping between item types and dogma effects.
-    fn get_item_effects(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EItemEffect>> {
-        self.process_fsd::<ItemEffects, rc::edt::EItemEffect>("fsd_binary", "typedogma")
+    fn get_item_effects(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemEffect>> {
+        self.process_fsd::<ItemEffects, rc::ed::EItemEffect>("fsd_binary", "typedogma")
     }
     /// Get fighter abilities.
-    fn get_fighter_abils(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EFighterAbil>> {
-        self.process_fsd::<FighterAbil, rc::edt::EFighterAbil>("fsd_lite", "fighterabilities")
+    fn get_fighter_abils(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EFighterAbil>> {
+        self.process_fsd::<FighterAbil, rc::ed::EFighterAbil>("fsd_lite", "fighterabilities")
     }
     /// Get an m:n mapping between item types and fighter abilities.
-    fn get_item_fighter_abils(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EItemFighterAbil>> {
-        self.process_fsd::<ItemFighterAbils, rc::edt::EItemFighterAbil>("fsd_lite", "fighterabilitiesbytype")
+    fn get_item_fighter_abils(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemFighterAbil>> {
+        self.process_fsd::<ItemFighterAbils, rc::ed::EItemFighterAbil>("fsd_lite", "fighterabilitiesbytype")
     }
     /// Get dogma buffs.
-    fn get_buffs(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EBuff>> {
-        self.process_fsd::<Buff, rc::edt::EBuff>("fsd_lite", "dbuffcollections")
+    fn get_buffs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EBuff>> {
+        self.process_fsd::<Buff, rc::ed::EBuff>("fsd_lite", "dbuffcollections")
     }
     /// Get item skill requirements.
-    fn get_item_skill_reqs(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EItemSkillReq>> {
-        self.process_fsd::<ItemSkillMap, rc::edt::EItemSkillReq>("fsd_binary", "requiredskillsfortypes")
+    fn get_item_skill_reqs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemSkillReq>> {
+        self.process_fsd::<ItemSkillMap, rc::ed::EItemSkillReq>("fsd_binary", "requiredskillsfortypes")
     }
     /// Get mutaplasmid item conversions.
-    fn get_muta_item_convs(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EMutaItemConv>> {
-        self.process_fsd::<MutaItemConvs, rc::edt::EMutaItemConv>("fsd_binary", "dynamicitemattributes")
+    fn get_muta_item_convs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EMutaItemConv>> {
+        self.process_fsd::<MutaItemConvs, rc::ed::EMutaItemConv>("fsd_binary", "dynamicitemattributes")
     }
     /// Get mutaplasmid item modifications.
-    fn get_muta_attr_mods(&self) -> rc::edh::Result<rc::edh::Container<rc::edt::EMutaAttrMod>> {
-        self.process_fsd::<MutaAttrMods, rc::edt::EMutaAttrMod>("fsd_binary", "dynamicitemattributes")
+    fn get_muta_attr_mods(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EMutaAttrMod>> {
+        self.process_fsd::<MutaAttrMods, rc::ed::EMutaAttrMod>("fsd_binary", "dynamicitemattributes")
     }
     /// Get version of the data.
-    fn get_version(&self) -> rc::edh::Result<String> {
+    fn get_version(&self) -> rc::ed::EResult<String> {
         Ok(self.data_version.clone())
     }
 }

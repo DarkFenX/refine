@@ -4,18 +4,20 @@ use itertools::Itertools;
 use log;
 
 use crate::{
+    adg::{
+        rels::{KeyDb, Pk},
+        GData, GSupport,
+    },
     consts::{itemcats, itemgrps},
     util::{IntError, IntResult, Named},
 };
 
-use super::data::{Data, KeyDb, Pk, Support};
-
 const MAX_CYCLES: i32 = 100;
 
-pub(super) fn clean_unused(alive: &mut Data, supp: &Support) -> IntResult<()> {
-    let mut trash = Data::new();
+pub(in crate::adg) fn clean_unused(alive: &mut GData, gsupp: &GSupport) -> IntResult<()> {
+    let mut trash = GData::new();
     trash_all(alive, &mut trash);
-    restore_core_items(alive, &mut trash, &supp);
+    restore_core_items(alive, &mut trash, &gsupp);
 
     let mut counter = 0;
     let mut changes = true;
@@ -26,7 +28,7 @@ pub(super) fn clean_unused(alive: &mut Data, supp: &Support) -> IntResult<()> {
             log::error!("{}", msg);
             return Err(IntError::new(msg));
         }
-        changes = restore_item_data(alive, &mut trash) | restore_fk_tgts(alive, &mut trash, &supp);
+        changes = restore_item_data(alive, &mut trash) | restore_fk_tgts(alive, &mut trash, &gsupp);
     }
     cleanup_report(alive, &trash);
     Ok(())
@@ -45,7 +47,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initial preparation functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn trash_all(alive: &mut Data, trash: &mut Data) {
+fn trash_all(alive: &mut GData, trash: &mut GData) {
     move_data(&mut alive.items, &mut trash.items, |_| true);
     move_data(&mut alive.groups, &mut trash.groups, |_| true);
     move_data(&mut alive.attrs, &mut trash.attrs, |_| true);
@@ -60,7 +62,7 @@ fn trash_all(alive: &mut Data, trash: &mut Data) {
     move_data(&mut alive.muta_attrs, &mut trash.muta_attrs, |_| true);
 }
 
-fn restore_core_items(alive: &mut Data, trash: &mut Data, supp: &Support) {
+fn restore_core_items(alive: &mut GData, trash: &mut GData, gsupp: &GSupport) {
     let cats = vec![
         itemcats::CHARGE,
         itemcats::DRONE,
@@ -72,7 +74,7 @@ fn restore_core_items(alive: &mut Data, trash: &mut Data, supp: &Support) {
         itemcats::SUBSYSTEM,
     ];
     let mut grps = vec![itemgrps::CHARACTER, itemgrps::EFFECT_BEACON];
-    for (&grp, cat) in supp.grp_cat_map.iter() {
+    for (&grp, cat) in gsupp.grp_cat_map.iter() {
         if cats.contains(cat) {
             grps.push(grp);
         }
@@ -83,7 +85,7 @@ fn restore_core_items(alive: &mut Data, trash: &mut Data, supp: &Support) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cyclic restoration functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn restore_item_data(alive: &mut Data, trash: &mut Data) -> bool {
+fn restore_item_data(alive: &mut GData, trash: &mut GData) -> bool {
     let mut item_ids = HashSet::new();
     for item in alive.items.iter() {
         item_ids.extend(item.get_pk());
@@ -110,8 +112,8 @@ fn restore_item_data(alive: &mut Data, trash: &mut Data) -> bool {
     })
 }
 
-fn restore_fk_tgts(alive: &mut Data, trash: &mut Data, supp: &Support) -> bool {
-    let fkdb = KeyDb::new_fkdb(alive, supp);
+fn restore_fk_tgts(alive: &mut GData, trash: &mut GData, gsupp: &GSupport) -> bool {
+    let fkdb = KeyDb::new_fkdb(alive, gsupp);
     move_data(&mut trash.items, &mut alive.items, |v| fkdb.items.contains(&v.id))
         | move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
         | move_data(&mut trash.attrs, &mut alive.attrs, |v| fkdb.attrs.contains(&v.id))
@@ -123,7 +125,7 @@ fn restore_fk_tgts(alive: &mut Data, trash: &mut Data, supp: &Support) -> bool {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reporting
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn cleanup_report(alive: &Data, trash: &Data) {
+fn cleanup_report(alive: &GData, trash: &GData) {
     vec_report(&alive.items, &trash.items);
     vec_report(&alive.groups, &trash.groups);
     vec_report(&alive.attrs, &trash.attrs);

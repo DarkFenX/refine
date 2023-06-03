@@ -2,14 +2,21 @@
 #![feature(hash_drain_filter)]
 
 //! # Reefast
-//! Reefast is an engine built to simulate EVE Online ship and structure fits.
+//! Reefast is a library built to simulate EVE Online ship and structure fits.
 //!
 //! It exposes various endpoints to fetch aggregated stats and conduct fit optimizations. Initial
 //! setup consists of the following steps:
 //!
-//! - you feed EVE data using an [`dh::DataHandler`](crate::edh::EveDataHandler) implementation
-//! - the engine converts the data into optimized internal format
-//! - you compose fit objects and fetch data from there
+//! - you feed EVE data using an [`ed::EveDataHandler`](crate::ed::EveDataHandler) implementation
+//! - the engine adapts the data into format which is optimized for use by the library
+//! - library feeds it to an [`ad::AdaptedDataHandler`](crate::ad::AdaptedDataHandler)
+//! implementation and later uses it to fetch adapted data as needed
+//! - you compose solar system object, and manipulate it to create fits with ships and items, and
+//! fetch data and stats
+//!
+//! The data adaptation step can be skipped, if an
+//! [`ad::AdaptedDataHandler`](crate::ad::AdaptedDataHandler) you use caches data, and the library
+//! considers that cached data is still valid.
 
 pub use consts::{ModRack, OrdAddMode, State};
 pub use defs::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
@@ -21,13 +28,11 @@ pub use ssn::{
 };
 pub use util::{Error, ErrorKind, Result};
 
-pub(crate) mod adg;
-pub mod adh;
-pub mod adt;
+pub mod ad;
+mod adg;
 pub mod consts;
 mod defs;
-pub mod edh;
-pub mod edt;
+pub mod ed;
 pub mod prelude;
 mod src;
 mod ss;

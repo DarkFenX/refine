@@ -15,7 +15,7 @@ impl FsdItem {
     }
 }
 
-pub(crate) fn handle<T, U>(unprocessed: serde_json::Value, suffix: &str) -> rc::edh::Result<rc::edh::Container<U>>
+pub(crate) fn handle<T, U>(unprocessed: serde_json::Value, suffix: &str) -> rc::ed::EResult<rc::ed::EDataCont<U>>
 where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
@@ -30,11 +30,11 @@ fn decompose(json: serde_json::Value, suffix: &str) -> Result<Vec<FsdItem>> {
     }
 }
 
-fn convert<T, U>(decomposed: Vec<FsdItem>) -> rc::edh::Container<U>
+fn convert<T, U>(decomposed: Vec<FsdItem>) -> rc::ed::EDataCont<U>
 where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
-    let mut cont = rc::edh::Container::new();
+    let mut cont = rc::ed::EDataCont::new();
     for fsd_item in decomposed {
         match fsd_item.id.parse::<rc::ReeInt>() {
             Ok(id) => match serde_json::from_value::<T>(fsd_item.item) {

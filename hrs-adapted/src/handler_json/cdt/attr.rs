@@ -6,8 +6,8 @@ pub(in crate::handler_json) struct Attr {
     def_val: Option<rc::ReeFloat>,
     max_attr_id: Option<rc::ReeInt>,
 }
-impl From<&rc::adt::AAttr> for Attr {
-    fn from(value: &rc::adt::AAttr) -> Self {
+impl From<&rc::ad::AAttr> for Attr {
+    fn from(value: &rc::ad::AAttr) -> Self {
         Attr {
             id: value.id,
             penalizable: value.penalizable,
@@ -17,9 +17,9 @@ impl From<&rc::adt::AAttr> for Attr {
         }
     }
 }
-impl Into<rc::adt::AAttr> for &Attr {
-    fn into(self) -> rc::adt::AAttr {
-        rc::adt::AAttr {
+impl Into<rc::ad::AAttr> for &Attr {
+    fn into(self) -> rc::ad::AAttr {
+        rc::ad::AAttr {
             id: self.id,
             penalizable: self.penalizable,
             hig: self.hig,

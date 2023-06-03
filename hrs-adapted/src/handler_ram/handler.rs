@@ -7,11 +7,11 @@ use crate::util::{move_vec_to_map, Error, ErrorKind};
 /// This handler stores everything only in RAM. Access to data is fast, but has noticeable RAM
 /// consumption and adapted data has to be rebuilt every time.
 pub struct RamOnlyAdh {
-    storage_items: HashMap<rc::ReeInt, Arc<rc::adt::AItem>>,
-    storage_attrs: HashMap<rc::ReeInt, Arc<rc::adt::AAttr>>,
-    storage_effects: HashMap<rc::ReeInt, Arc<rc::adt::AEffect>>,
-    storage_mutas: HashMap<rc::ReeInt, Arc<rc::adt::AMuta>>,
-    storage_buffs: HashMap<rc::ReeInt, Arc<rc::adt::ABuff>>,
+    storage_items: HashMap<rc::ReeInt, Arc<rc::ad::AItem>>,
+    storage_attrs: HashMap<rc::ReeInt, Arc<rc::ad::AAttr>>,
+    storage_effects: HashMap<rc::ReeInt, Arc<rc::ad::AEffect>>,
+    storage_mutas: HashMap<rc::ReeInt, Arc<rc::ad::AMuta>>,
+    storage_buffs: HashMap<rc::ReeInt, Arc<rc::ad::ABuff>>,
 }
 impl RamOnlyAdh {
     pub fn new() -> Self {
@@ -29,25 +29,25 @@ impl fmt::Debug for RamOnlyAdh {
         write!(f, "RamOnlyAdh()")
     }
 }
-impl rc::adh::AdaptedDataHandler for RamOnlyAdh {
+impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     /// Get adapted item.
-    fn get_item(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::AItem>> {
+    fn get_item(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AItem>> {
         self.storage_items.get(&id).cloned()
     }
     /// Get adapted attribute.
-    fn get_attr(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::AAttr>> {
+    fn get_attr(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AAttr>> {
         self.storage_attrs.get(&id).cloned()
     }
     /// Get adapted effect.
-    fn get_effect(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::AEffect>> {
+    fn get_effect(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AEffect>> {
         self.storage_effects.get(&id).cloned()
     }
     /// Get adapted mutaplasmid.
-    fn get_muta(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::AMuta>> {
+    fn get_muta(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AMuta>> {
         self.storage_mutas.get(&id).cloned()
     }
     /// Get adapted warfare buff.
-    fn get_buff(&self, id: &rc::ReeInt) -> Option<Arc<rc::adt::ABuff>> {
+    fn get_buff(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::ABuff>> {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get adapted data fingerprint.
@@ -57,11 +57,11 @@ impl rc::adh::AdaptedDataHandler for RamOnlyAdh {
     /// Load cache from persistent storage.
     ///
     /// Will always fail, since this handler does not implement persistent storage.
-    fn load_cache(&mut self) -> rc::adh::Result<()> {
+    fn load_cache(&mut self) -> rc::ad::AResult<()> {
         Err(Error::new(ErrorKind::NoCacheSupport).into())
     }
     /// Update handler with passed adapted data.
-    fn update_data(&mut self, adata: rc::adh::AData, _: String) {
+    fn update_data(&mut self, adata: rc::ad::AData, _: String) {
         move_vec_to_map(adata.items, &mut self.storage_items);
         move_vec_to_map(adata.attrs, &mut self.storage_attrs);
         move_vec_to_map(adata.effects, &mut self.storage_effects);

@@ -1,7 +1,7 @@
 use std::{fmt, sync::Arc};
 
 use crate::{
-    adt,
+    ad,
     consts::{ModRack, State},
     defs::{ReeId, ReeIdx, ReeInt},
     src::Src,
@@ -16,7 +16,7 @@ pub(crate) struct Module {
     pub(crate) rack: ModRack,
     pub(crate) pos: ReeIdx,
     pub(crate) charge_id: Option<ReeId>,
-    pub(crate) cached_item: Option<Arc<adt::AItem>>,
+    pub(crate) cached_item: Option<Arc<ad::AItem>>,
 }
 impl Module {
     pub(crate) fn new(

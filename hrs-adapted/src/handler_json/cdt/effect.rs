@@ -20,8 +20,8 @@ pub(in crate::handler_json) struct Effect {
     mods: Vec<AttrMod>,
     stop_ids: Vec<rc::ReeInt>,
 }
-impl From<&rc::adt::AEffect> for Effect {
-    fn from(value: &rc::adt::AEffect) -> Self {
+impl From<&rc::ad::AEffect> for Effect {
+    fn from(value: &rc::ad::AEffect) -> Self {
         Effect {
             id: value.id,
             state: (&value.state).into(),
@@ -43,9 +43,9 @@ impl From<&rc::adt::AEffect> for Effect {
         }
     }
 }
-impl Into<rc::adt::AEffect> for &Effect {
-    fn into(self) -> rc::adt::AEffect {
-        rc::adt::AEffect {
+impl Into<rc::ad::AEffect> for &Effect {
+    fn into(self) -> rc::ad::AEffect {
+        rc::ad::AEffect {
             id: self.id,
             state: (&self.state).into(),
             tgt_mode: (&self.tgt_mode).into(),
@@ -75,8 +75,8 @@ struct AttrMod {
     afee_filter: ModAfeeFilter,
     afee_attr_id: rc::ReeInt,
 }
-impl From<&rc::adt::AAttrMod> for AttrMod {
-    fn from(value: &rc::adt::AAttrMod) -> Self {
+impl From<&rc::ad::AAttrMod> for AttrMod {
+    fn from(value: &rc::ad::AAttrMod) -> Self {
         AttrMod {
             afor_attr_id: value.afor_attr_id,
             aggr_mode: (&value.aggr_mode).into(),
@@ -86,9 +86,9 @@ impl From<&rc::adt::AAttrMod> for AttrMod {
         }
     }
 }
-impl Into<rc::adt::AAttrMod> for &AttrMod {
-    fn into(self) -> rc::adt::AAttrMod {
-        rc::adt::AAttrMod {
+impl Into<rc::ad::AAttrMod> for &AttrMod {
+    fn into(self) -> rc::ad::AAttrMod {
+        rc::ad::AAttrMod {
             afor_attr_id: self.afor_attr_id,
             aggr_mode: (&self.aggr_mode).into(),
             op: (&self.op).into(),
