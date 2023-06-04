@@ -64,7 +64,7 @@ impl SolarSystem {
     }
     pub fn set_src(&mut self, src: Arc<Src>) {
         for item in self.items.values_mut() {
-            item.reload_cached_item(&src)
+            item.reload_aitem(&src)
         }
         self.src = src;
     }

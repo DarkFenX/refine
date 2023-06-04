@@ -155,7 +155,7 @@ impl CalcSvc {
             Some(i) => i,
             None => return Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
         };
-        let attr = match src.cache_handler.get_attr(attr_id) {
+        let attr = match src.ahandler.get_attr(attr_id) {
             Some(attr) => attr,
             None => return Err(Error::new(ErrorKind::CachedAttrNotFound(*attr_id))),
         };

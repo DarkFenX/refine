@@ -24,7 +24,7 @@ pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Get adapted warfare buff.
     fn get_buff(&self, id: &ReeInt) -> Option<Arc<ABuff>>;
     /// Get adapted data fingerprint.
-    fn get_fingerprint(&self) -> Option<&str>;
+    fn get_data_fingerprint(&self) -> Option<&str>;
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> AResult<()>;
     /// Update data in handler with passed data.

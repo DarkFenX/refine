@@ -16,7 +16,7 @@ pub(crate) struct Module {
     pub(crate) rack: ModRack,
     pub(crate) pos: ReeIdx,
     pub(crate) charge_id: Option<ReeId>,
-    pub(crate) cached_item: Option<Arc<ad::AItem>>,
+    pub(crate) aitem: Option<Arc<ad::AItem>>,
 }
 impl Module {
     pub(crate) fn new(
@@ -37,7 +37,7 @@ impl Module {
             rack,
             pos,
             charge_id,
-            cached_item: src.cache_handler.get_item(&type_id),
+            aitem: src.ahandler.get_item(&type_id),
         }
     }
 }

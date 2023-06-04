@@ -96,7 +96,7 @@ impl rc::ed::EveDataHandler for PhbFileEdh {
     /// Get version of the data.
     ///
     /// Uses `client_build` value of metadata file as version.
-    fn get_version(&self) -> rc::ed::EResult<String> {
+    fn get_data_version(&self) -> rc::ed::EResult<String> {
         let addr = Address::new("phobos", "metadata");
         let unprocessed = self.read_json(&addr)?;
         let metadatas: Vec<Metadata> =

@@ -15,7 +15,7 @@ pub(crate) struct Rig {
     pub(crate) fit_id: ReeId,
     pub(crate) type_id: ReeInt,
     pub(crate) state: State,
-    pub(crate) cached_item: Option<Arc<ad::AItem>>,
+    pub(crate) aitem: Option<Arc<ad::AItem>>,
 }
 impl Rig {
     pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: bool) -> Self {
@@ -24,7 +24,7 @@ impl Rig {
             fit_id,
             type_id,
             state: bool_to_state(state),
-            cached_item: src.cache_handler.get_item(&type_id),
+            aitem: src.ahandler.get_item(&type_id),
         }
     }
     pub(crate) fn get_bool_state(&self) -> bool {

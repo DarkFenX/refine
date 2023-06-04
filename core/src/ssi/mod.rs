@@ -137,52 +137,52 @@ impl Item {
             Self::SwEffect(sw_effect) => sw_effect.state,
         }
     }
-    pub(crate) fn reload_cached_item(&mut self, src: &Arc<Src>) {
+    pub(crate) fn reload_aitem(&mut self, src: &Arc<Src>) {
         let type_id = self.get_type_id();
-        let cached_item = src.cache_handler.get_item(&type_id);
+        let aitem = src.ahandler.get_item(&type_id);
         match self {
-            Self::Booster(booster) => booster.cached_item = cached_item,
-            Self::Character(character) => character.cached_item = cached_item,
-            Self::Charge(charge) => charge.cached_item = cached_item,
-            Self::Drone(drone) => drone.cached_item = cached_item,
-            Self::Fighter(fighter) => fighter.cached_item = cached_item,
-            Self::Implant(implant) => implant.cached_item = cached_item,
-            Self::Module(module) => module.cached_item = cached_item,
-            Self::Rig(rig) => rig.cached_item = cached_item,
-            Self::Ship(ship) => ship.cached_item = cached_item,
-            Self::Skill(skill) => skill.cached_item = cached_item,
-            Self::Stance(stance) => stance.cached_item = cached_item,
-            Self::Subsystem(subsystem) => subsystem.cached_item = cached_item,
-            Self::SwEffect(sw_effect) => sw_effect.cached_item = cached_item,
+            Self::Booster(booster) => booster.aitem = aitem,
+            Self::Character(character) => character.aitem = aitem,
+            Self::Charge(charge) => charge.aitem = aitem,
+            Self::Drone(drone) => drone.aitem = aitem,
+            Self::Fighter(fighter) => fighter.aitem = aitem,
+            Self::Implant(implant) => implant.aitem = aitem,
+            Self::Module(module) => module.aitem = aitem,
+            Self::Rig(rig) => rig.aitem = aitem,
+            Self::Ship(ship) => ship.aitem = aitem,
+            Self::Skill(skill) => skill.aitem = aitem,
+            Self::Stance(stance) => stance.aitem = aitem,
+            Self::Subsystem(subsystem) => subsystem.aitem = aitem,
+            Self::SwEffect(sw_effect) => sw_effect.aitem = aitem,
         }
     }
-    pub(crate) fn get_cached_item(&self) -> Result<&Arc<ad::AItem>> {
+    pub(crate) fn get_aitem(&self) -> Result<&Arc<ad::AItem>> {
         match self {
-            Self::Booster(booster) => booster.cached_item.as_ref(),
-            Self::Character(character) => character.cached_item.as_ref(),
-            Self::Charge(charge) => charge.cached_item.as_ref(),
-            Self::Drone(drone) => drone.cached_item.as_ref(),
-            Self::Fighter(fighter) => fighter.cached_item.as_ref(),
-            Self::Implant(implant) => implant.cached_item.as_ref(),
-            Self::Module(module) => module.cached_item.as_ref(),
-            Self::Rig(rig) => rig.cached_item.as_ref(),
-            Self::Ship(ship) => ship.cached_item.as_ref(),
-            Self::Skill(skill) => skill.cached_item.as_ref(),
-            Self::Stance(stance) => stance.cached_item.as_ref(),
-            Self::Subsystem(subsystem) => subsystem.cached_item.as_ref(),
-            Self::SwEffect(sw_effect) => sw_effect.cached_item.as_ref(),
+            Self::Booster(booster) => booster.aitem.as_ref(),
+            Self::Character(character) => character.aitem.as_ref(),
+            Self::Charge(charge) => charge.aitem.as_ref(),
+            Self::Drone(drone) => drone.aitem.as_ref(),
+            Self::Fighter(fighter) => fighter.aitem.as_ref(),
+            Self::Implant(implant) => implant.aitem.as_ref(),
+            Self::Module(module) => module.aitem.as_ref(),
+            Self::Rig(rig) => rig.aitem.as_ref(),
+            Self::Ship(ship) => ship.aitem.as_ref(),
+            Self::Skill(skill) => skill.aitem.as_ref(),
+            Self::Stance(stance) => stance.aitem.as_ref(),
+            Self::Subsystem(subsystem) => subsystem.aitem.as_ref(),
+            Self::SwEffect(sw_effect) => sw_effect.aitem.as_ref(),
         }
         .ok_or_else(|| Error::new(ErrorKind::CachedItemNotLoaded(self.get_type_id())))
     }
     pub(crate) fn is_loaded(&self) -> bool {
-        self.get_cached_item().is_ok()
+        self.get_aitem().is_ok()
     }
     // Calculator-specific getters
     pub(crate) fn get_orig_attrs(&self) -> Result<&HashMap<ReeInt, ReeFloat>> {
-        self.get_cached_item().map(|v| &v.attr_vals)
+        self.get_aitem().map(|v| &v.attr_vals)
     }
     pub(crate) fn get_effect_datas(&self) -> Result<&HashMap<ReeInt, ad::AItemEffData>> {
-        self.get_cached_item().map(|v| &v.effect_datas)
+        self.get_aitem().map(|v| &v.effect_datas)
     }
     pub(crate) fn get_top_domain(&self) -> Option<ModDomain> {
         match self {
@@ -219,13 +219,13 @@ impl Item {
         }
     }
     pub(crate) fn get_group_id(&self) -> Result<ReeInt> {
-        self.get_cached_item().map(|v| v.grp_id)
+        self.get_aitem().map(|v| v.grp_id)
     }
     pub(crate) fn get_category_id(&self) -> Result<ReeInt> {
-        self.get_cached_item().map(|v| v.cat_id)
+        self.get_aitem().map(|v| v.cat_id)
     }
     pub(crate) fn get_skill_reqs(&self) -> Result<&HashMap<ReeInt, ReeInt>> {
-        self.get_cached_item().map(|v| &v.srqs)
+        self.get_aitem().map(|v| &v.srqs)
     }
     pub(crate) fn get_other(&self) -> Option<ReeId> {
         match self {

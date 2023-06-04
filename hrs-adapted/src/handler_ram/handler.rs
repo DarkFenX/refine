@@ -51,7 +51,9 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get adapted data fingerprint.
-    fn get_fingerprint(&self) -> Option<&str> {
+    ///
+    /// Always return None, since RAM-only handler
+    fn get_data_fingerprint(&self) -> Option<&str> {
         None
     }
     /// Load cache from persistent storage.

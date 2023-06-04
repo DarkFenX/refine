@@ -37,7 +37,7 @@ impl Error {
             ErrorKind::SrcInitFailed(_, _) => "SIN-001",
             ErrorKind::CoreError(k, _) => match k {
                 rc::ErrorKind::DhHttpInvalidBaseUrl(_, _) => "COR-001",
-                rc::ErrorKind::SrcCacheGenFailed(_) => "COR-002",
+                rc::ErrorKind::SrcADataGenFailed(_) => "COR-002",
                 rc::ErrorKind::FitNotFound(_) => "COR-003",
                 rc::ErrorKind::ItemIdNotFound(_) => "COR-004",
                 rc::ErrorKind::ItemTypeNotFound(_) => "COR-005",

@@ -115,7 +115,7 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get cached data fingerprint.
-    fn get_fingerprint(&self) -> Option<&str> {
+    fn get_data_fingerprint(&self) -> Option<&str> {
         self.fingerprint.as_deref()
     }
     /// Load cache from persistent storage.

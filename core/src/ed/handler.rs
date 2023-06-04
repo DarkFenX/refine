@@ -39,5 +39,5 @@ pub trait EveDataHandler: fmt::Debug {
     /// Get mutaplasmid item modifications.
     fn get_muta_attr_mods(&self) -> EResult<EDataCont<EMutaAttrMod>>;
     /// Get version of the data.
-    fn get_version(&self) -> EResult<String>;
+    fn get_data_version(&self) -> EResult<String>;
 }

@@ -11,7 +11,7 @@ use crate::{
 #[derive(Debug)]
 pub enum ErrorKind {
     DhHttpInvalidBaseUrl(String, String),
-    SrcCacheGenFailed(String),
+    SrcADataGenFailed(String),
     FitNotFound(ReeId),
     ItemIdNotFound(ReeId),
     ItemTypeNotFound(&'static str),
@@ -39,7 +39,7 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self.kind {
             ErrorKind::DhHttpInvalidBaseUrl(url, msg) => write!(f, "invalid \"{url}\": {msg}"),
-            ErrorKind::SrcCacheGenFailed(reason) => write!(f, "cache generation failed: {reason}"),
+            ErrorKind::SrcADataGenFailed(reason) => write!(f, "adapted data generation failed: {reason}"),
             ErrorKind::FitNotFound(fit_id) => write!(f, "fit {fit_id} not found"),
             ErrorKind::ItemIdNotFound(item_id) => write!(f, "item {item_id} not found"),
             ErrorKind::ItemTypeNotFound(item_type) => write!(f, "{item_type} not found"),

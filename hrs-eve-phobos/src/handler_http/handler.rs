@@ -115,7 +115,7 @@ impl rc::ed::EveDataHandler for PhbHttpEdh {
         self.process_fsd::<MutaAttrMods, rc::ed::EMutaAttrMod>("fsd_binary", "dynamicitemattributes")
     }
     /// Get version of the data.
-    fn get_version(&self) -> rc::ed::EResult<String> {
+    fn get_data_version(&self) -> rc::ed::EResult<String> {
         Ok(self.data_version.clone())
     }
 }
