@@ -7,16 +7,16 @@
 //! It exposes various endpoints to fetch aggregated stats and conduct fit optimizations. Initial
 //! setup consists of the following steps:
 //!
-//! - you feed EVE data using an [`ed::EveDataHandler`](crate::ed::EveDataHandler) implementation
-//! - the engine adapts the data into format which is optimized for use by the library
-//! - library feeds it to an [`ad::AdaptedDataHandler`](crate::ad::AdaptedDataHandler)
-//! implementation and later uses it to fetch adapted data as needed
-//! - you compose solar system object, and manipulate it to create fits with ships and items, and
-//! fetch data and stats
-//!
-//! The data adaptation step can be skipped, if an
-//! [`ad::AdaptedDataHandler`](crate::ad::AdaptedDataHandler) you use caches data, and the library
-//! considers that cached data is still valid.
+//! - you feed an [`ed::EveDataHandler`](crate::ed::EveDataHandler) implementation and an
+//! [`ad::AdaptedDataHandler`](crate::ad::AdaptedDataHandler) implementation to the library
+//! - you create [`Src`](crate::Src). During its initialization, the library attempts to load cached
+//! adapted data. If the cached data is loaded successfully, the library compares its fingerprint
+//! (data version + library version at the time of cache generation) and current fingerprint
+//! (version of currently provided data + current library version). If cache couldn't be loaded or
+//! fingerprints mismatch, EVE data is fetched and converted into adapted data (this process is
+//! relatively heavy on both IO and CPU), which is then fed to adapted data handler implementation.
+//! - you create [`SolarSystem`](crate::SolarSystem), and manipulate it to create fits with ships
+//! and items, and fetch data and stats
 
 pub use consts::{ModRack, OrdAddMode, State};
 pub use defs::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};

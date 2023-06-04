@@ -10,8 +10,8 @@ use super::{
 /// Adapted data handler interface definition.
 ///
 /// Primary role of an adapted data handler implementation is to provide adapted data by request of
-/// the library. Additionally, it can persist adapted types somewhere to avoid data adaptation on
-/// every run.
+/// the library. Additionally, it can persist adapted types somewhere to avoid regeneration of
+/// adapted data on every run.
 pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Get adapted item.
     fn get_item(&self, id: &ReeInt) -> Option<Arc<AItem>>;
