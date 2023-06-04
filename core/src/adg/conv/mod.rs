@@ -9,7 +9,7 @@ mod effect;
 mod item;
 mod muta;
 
-// Convert data handler-provided entities into cacheable types.
+// Convert EVE data types into adapted data types.
 pub(in crate::adg) fn convert(gdata: &GData, gsupp: &GSupport, adata: &mut ad::AData) {
     adata.items = item::conv_items(gdata, gsupp);
     adata.attrs = attr::conv_attrs(gdata);

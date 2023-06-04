@@ -23,8 +23,7 @@ pub(in crate::adg) fn validate(gdata: &mut GData, gsupp: &GSupport) {
 }
 
 /// FK validity. Strictly speaking, not needed for the engine, but reporting data inconsistencies is
-/// a good idea, since it can help trace down the case when something fails to load from cache
-/// later.
+/// a good idea, since it can help trace down the case when some adapted type fails to load.
 fn fk_check(gdata: &GData, gsupp: &GSupport) {
     let pkdb = KeyDb::new_pkdb(gdata);
     fk_check_referer(&gdata.items, &pkdb, gsupp);

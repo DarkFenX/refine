@@ -28,7 +28,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut GData, gsupp: &GSupport) -> IntRe
             log::error!("{}", msg);
             return Err(IntError::new(msg));
         }
-        changes = restore_item_data(alive, &mut trash) | restore_fk_tgts(alive, &mut trash, &gsupp);
+        changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, &gsupp);
     }
     cleanup_report(alive, &trash);
     Ok(())
@@ -99,15 +99,15 @@ fn restore_item_data(alive: &mut GData, trash: &mut GData) -> bool {
     // - Mutaplasmid attribute modifications are restored for alive mutaplasmids
     move_data(&mut trash.item_attrs, &mut alive.item_attrs, |v| {
         item_ids.contains(&v.item_id)
-    }) | move_data(&mut trash.item_effects, &mut alive.item_effects, |v| {
+    }) || move_data(&mut trash.item_effects, &mut alive.item_effects, |v| {
         item_ids.contains(&v.item_id)
-    }) | move_data(&mut trash.item_abils, &mut alive.item_abils, |v| {
+    }) || move_data(&mut trash.item_abils, &mut alive.item_abils, |v| {
         item_ids.contains(&v.item_id)
-    }) | move_data(&mut trash.item_srqs, &mut alive.item_srqs, |v| {
+    }) || move_data(&mut trash.item_srqs, &mut alive.item_srqs, |v| {
         item_ids.contains(&v.item_id)
-    }) | move_data(&mut trash.muta_items, &mut alive.muta_items, |v| {
+    }) || move_data(&mut trash.muta_items, &mut alive.muta_items, |v| {
         item_ids.contains(&v.in_item_id)
-    }) | move_data(&mut trash.muta_attrs, &mut alive.muta_attrs, |v| {
+    }) || move_data(&mut trash.muta_attrs, &mut alive.muta_attrs, |v| {
         item_ids.contains(&v.muta_id)
     })
 }
@@ -115,11 +115,11 @@ fn restore_item_data(alive: &mut GData, trash: &mut GData) -> bool {
 fn restore_fk_tgts(alive: &mut GData, trash: &mut GData, gsupp: &GSupport) -> bool {
     let fkdb = KeyDb::new_fkdb(alive, gsupp);
     move_data(&mut trash.items, &mut alive.items, |v| fkdb.items.contains(&v.id))
-        | move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
-        | move_data(&mut trash.attrs, &mut alive.attrs, |v| fkdb.attrs.contains(&v.id))
-        | move_data(&mut trash.effects, &mut alive.effects, |v| fkdb.effects.contains(&v.id))
-        | move_data(&mut trash.abils, &mut alive.abils, |v| fkdb.abils.contains(&v.id))
-        | move_data(&mut trash.buffs, &mut alive.buffs, |v| fkdb.buffs.contains(&v.id))
+        || move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
+        || move_data(&mut trash.attrs, &mut alive.attrs, |v| fkdb.attrs.contains(&v.id))
+        || move_data(&mut trash.effects, &mut alive.effects, |v| fkdb.effects.contains(&v.id))
+        || move_data(&mut trash.abils, &mut alive.abils, |v| fkdb.abils.contains(&v.id))
+        || move_data(&mut trash.buffs, &mut alive.buffs, |v| fkdb.buffs.contains(&v.id))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
