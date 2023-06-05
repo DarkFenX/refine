@@ -5,7 +5,7 @@ use std::{path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 use chrono;
 use itertools::Itertools;
 
-use reefast::{edh::EveDataHandler, edh_impls, erh::CacheHandler, erh_impls, SolarSystem, Src, VERSION};
+use rc::{ed::EveDataHandler, SolarSystem, Src, VERSION};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -27,9 +27,7 @@ fn setup_logger() -> Result<(), fern::InitError> {
 
 fn main() {
     setup_logger().unwrap();
-    let dh = Box::new(edh_impls::PhbFileDHandler::new(
-        "/home/dfx/Desktop/phobos_tq_en-us".into(),
-    ));
+    let dh = Box::new(rdhe::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
     // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
     // Get some data for skills
     let grp_ids = dh
@@ -48,7 +46,7 @@ fn main() {
         .filter(|v| grp_ids.contains(&v.group_id))
         .map(|v| v.id)
         .collect_vec();
-    let mut ch = Box::new(erh_impls::JsonFileCHandler::new(
+    let mut ch = Box::new(rdha::RamJsonAdh::new(
         PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
         "tq".to_string(),
     ));

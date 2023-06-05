@@ -1,8 +1,10 @@
 [workspace]
 members = [
     "core",
+    "dh-adapted",
     "dh-eve",
     "http",
+    "examples/playground",
 ]
 
 [profile.dev]
