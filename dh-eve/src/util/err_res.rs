@@ -6,37 +6,37 @@ pub enum ErrorKind {
     ///
     /// Includes suffix of requested entity.
     UnexpectedFsdTopEntity(String),
-    #[cfg(feature = "http")]
+    #[cfg(feature = "phb-http")]
     /// HTTP handler cannot use passed URL as base.
     ///
     /// Includes passed URL and text description of failure.
     HttpInvalidBaseUrl(String, String),
-    #[cfg(feature = "http")]
+    #[cfg(feature = "phb-http")]
     /// HTTP handler is unable to join base URL and suffix.
     ///
     /// Includes suffix and text description of failure.
     HttpSuffixJoinFailed(String, String),
-    #[cfg(feature = "http")]
+    #[cfg(feature = "phb-http")]
     /// HTTP handler is unable to fetch data.
     ///
     /// Includes suffix and text description of failure.
     HttpSuffixFetchFailed(String, String),
-    #[cfg(feature = "http")]
+    #[cfg(feature = "phb-http")]
     /// HTTP handler is unable to parse data.
     ///
     /// Includes suffix and text description of failure.
     HttpSuffixParseFailed(String, String),
-    #[cfg(feature = "file")]
+    #[cfg(feature = "phb-file")]
     /// File handler is unable to read data.
     ///
     /// Includes suffix and text description of failure.
     FileSuffixReadFailed(String, String),
-    #[cfg(feature = "file")]
+    #[cfg(feature = "phb-file")]
     /// File handler is unable to parse data.
     ///
     /// Includes suffix and text description of failure.
     FileSuffixParseFailed(String, String),
-    #[cfg(feature = "file")]
+    #[cfg(feature = "phb-file")]
     /// File handler is unable to find client version in metadata.
     FileNoClientBuild,
 }
@@ -60,21 +60,21 @@ impl fmt::Display for Error {
                     "{suffix} FSD decomposition failed: highest-level entity is not a map"
                 )
             }
-            #[cfg(feature = "http")]
+            #[cfg(feature = "phb-http")]
             ErrorKind::HttpInvalidBaseUrl(url, msg) => write!(f, "invalid base URL \"{url}\": {msg}"),
-            #[cfg(feature = "http")]
+            #[cfg(feature = "phb-http")]
             ErrorKind::HttpSuffixJoinFailed(suffix, msg) => {
                 write!(f, "{suffix} is failed to be joined to base URL: {msg}")
             }
-            #[cfg(feature = "http")]
+            #[cfg(feature = "phb-http")]
             ErrorKind::HttpSuffixFetchFailed(suffix, msg) => write!(f, "{suffix} fetching failed: {msg}"),
-            #[cfg(feature = "http")]
+            #[cfg(feature = "phb-http")]
             ErrorKind::HttpSuffixParseFailed(suffix, msg) => write!(f, "{suffix} parsing failed: {msg}"),
-            #[cfg(feature = "file")]
+            #[cfg(feature = "phb-file")]
             ErrorKind::FileSuffixReadFailed(suffix, msg) => write!(f, "{suffix} reading failed: {msg}"),
-            #[cfg(feature = "file")]
+            #[cfg(feature = "phb-file")]
             ErrorKind::FileSuffixParseFailed(suffix, msg) => write!(f, "{suffix} parsing failed: {msg}"),
-            #[cfg(feature = "file")]
+            #[cfg(feature = "phb-file")]
             ErrorKind::FileNoClientBuild => write!(f, "unable to find client build field"),
         }
     }

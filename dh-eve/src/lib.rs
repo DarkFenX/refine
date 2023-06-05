@@ -11,16 +11,16 @@
 //! - `http`: Enables handler which fetches data over HTTP.
 //! - `file`: Enables handler which reads data from local files.
 
-#[cfg(feature = "file")]
+#[cfg(feature = "phb-file")]
 pub use handler_file::PhbFileEdh;
-#[cfg(feature = "http")]
+#[cfg(feature = "phb-http")]
 pub use handler_http::PhbHttpEdh;
 pub use util::{Error, ErrorKind, Result};
 
 mod data;
 mod fsd;
-#[cfg(feature = "file")]
+#[cfg(feature = "phb-file")]
 mod handler_file;
-#[cfg(feature = "http")]
+#[cfg(feature = "phb-http")]
 mod handler_http;
 mod util;

@@ -121,16 +121,16 @@ fn create_src(
     cache_folder: Option<String>,
 ) -> Result<rc::Src> {
     let dh = Box::new(
-        redh::PhbHttpEdh::new(data_base_url.as_str(), data_version).map_err(|e| {
+        rdhe::PhbHttpEdh::new(data_base_url.as_str(), data_version).map_err(|e| {
             let reason = format!("{e}");
             Error::new(ErrorKind::EdhInitFailed(e.kind, reason))
         })?,
     );
     let ch: Box<dyn rc::ad::AdaptedDataHandler> = match cache_folder {
         // Use cache handler with persistent storage if cache path is specified
-        Some(cf) => Box::new(radh::RamJsonAdh::new(cf.into(), alias)),
+        Some(cf) => Box::new(rdha::RamJsonAdh::new(cf.into(), alias)),
         // Use RAM-only cache handler if path is not specified
-        None => Box::new(radh::RamOnlyAdh::new()),
+        None => Box::new(rdha::RamOnlyAdh::new()),
     };
     rc::Src::new(dh, ch).map_err(|e| {
         let reason = format!("{e}");

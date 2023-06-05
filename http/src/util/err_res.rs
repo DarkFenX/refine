@@ -10,7 +10,7 @@ pub(crate) enum ErrorKind {
     FitIdCastFailed(String),
     ItemIdCastFailed(String),
     SettingsInitFailed(String),
-    EdhInitFailed(redh::ErrorKind, String),
+    EdhInitFailed(rdhe::ErrorKind, String),
     SrcInitFailed(rc::ErrorKind, String),
     CoreError(rc::ErrorKind, String),
 }

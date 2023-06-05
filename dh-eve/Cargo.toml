@@ -1,5 +1,5 @@
 [package]
-name = "reefast-edh-phobos"
+name = "reefast-dh-eve"
 version = "1.0.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2018"
@@ -7,9 +7,9 @@ description = "EVE data handlers for reefast-core crate, which use Phobos dump a
 license = "LGPL-3.0-or-later"
 
 [features]
-full = ["http", "file"]
-http = ["dep:reqwest", "dep:url"]
-file = []
+full = ["phb-http", "phb-file"]
+phb-http = ["dep:reqwest", "dep:url"]
+phb-file = []
 
 [dependencies]
 rc = { package = "reefast-core", path = "../core" }
