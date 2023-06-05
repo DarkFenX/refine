@@ -26,7 +26,7 @@ where
 fn decompose(json: serde_json::Value, suffix: &str) -> Result<Vec<FsdItem>> {
     match json {
         serde_json::Value::Object(map) => Ok(map.into_iter().map(|(k, v)| FsdItem::new(k, v)).collect()),
-        _ => Err(Error::new(ErrorKind::UnexpectedFsdTopEntity(suffix.to_string()))),
+        _ => Err(Error::new(ErrorKind::PhbUnexpectedFsdTopEntity(suffix.to_string()))),
     }
 }
 

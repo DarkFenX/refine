@@ -12,15 +12,10 @@
 //! - `file`: Enables handler which reads data from local files.
 
 #[cfg(feature = "phb-file")]
-pub use handler_file::PhbFileEdh;
+pub use phb::PhbFileEdh;
 #[cfg(feature = "phb-http")]
-pub use handler_http::PhbHttpEdh;
+pub use phb::PhbHttpEdh;
 pub use util::{Error, ErrorKind, Result};
 
-mod data;
-mod fsd;
-#[cfg(feature = "phb-file")]
-mod handler_file;
-#[cfg(feature = "phb-http")]
-mod handler_http;
+mod phb;
 mod util;

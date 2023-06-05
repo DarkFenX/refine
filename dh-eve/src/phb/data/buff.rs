@@ -1,4 +1,4 @@
-use crate::{fsd::FsdMerge, util::into_vec};
+use crate::{phb::fsd::FsdMerge, util::into_vec};
 
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct Buff {

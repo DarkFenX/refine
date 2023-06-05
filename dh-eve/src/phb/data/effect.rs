@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::{fsd::FsdMerge, util::into_opt};
+use crate::{phb::fsd::FsdMerge, util::into_opt};
 
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct Effect {

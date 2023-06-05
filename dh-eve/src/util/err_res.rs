@@ -2,43 +2,44 @@ use std::{error, fmt, result};
 
 #[derive(Debug)]
 pub enum ErrorKind {
+    #[cfg(any(feature = "phb-http", feature = "phb-file"))]
     /// Unable to parse data due to it being in unexpected format.
     ///
     /// Includes suffix of requested entity.
-    UnexpectedFsdTopEntity(String),
+    PhbUnexpectedFsdTopEntity(String),
     #[cfg(feature = "phb-http")]
     /// HTTP handler cannot use passed URL as base.
     ///
     /// Includes passed URL and text description of failure.
-    HttpInvalidBaseUrl(String, String),
+    PhbHttpInvalidBaseUrl(String, String),
     #[cfg(feature = "phb-http")]
     /// HTTP handler is unable to join base URL and suffix.
     ///
     /// Includes suffix and text description of failure.
-    HttpSuffixJoinFailed(String, String),
+    PhbHttpSuffixJoinFailed(String, String),
     #[cfg(feature = "phb-http")]
     /// HTTP handler is unable to fetch data.
     ///
     /// Includes suffix and text description of failure.
-    HttpSuffixFetchFailed(String, String),
+    PhbHttpSuffixFetchFailed(String, String),
     #[cfg(feature = "phb-http")]
     /// HTTP handler is unable to parse data.
     ///
     /// Includes suffix and text description of failure.
-    HttpSuffixParseFailed(String, String),
+    PhbHttpSuffixParseFailed(String, String),
     #[cfg(feature = "phb-file")]
     /// File handler is unable to read data.
     ///
     /// Includes suffix and text description of failure.
-    FileSuffixReadFailed(String, String),
+    PhbFileSuffixReadFailed(String, String),
     #[cfg(feature = "phb-file")]
     /// File handler is unable to parse data.
     ///
     /// Includes suffix and text description of failure.
-    FileSuffixParseFailed(String, String),
+    PhbFileSuffixParseFailed(String, String),
     #[cfg(feature = "phb-file")]
     /// File handler is unable to find client version in metadata.
-    FileNoClientBuild,
+    PhbFileNoClientBuild,
 }
 
 #[derive(Debug)]
@@ -54,28 +55,29 @@ impl error::Error for Error {}
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self.kind {
-            ErrorKind::UnexpectedFsdTopEntity(suffix) => {
+            #[cfg(any(feature = "phb-http", feature = "phb-file"))]
+            ErrorKind::PhbUnexpectedFsdTopEntity(suffix) => {
                 write!(
                     f,
                     "{suffix} FSD decomposition failed: highest-level entity is not a map"
                 )
             }
             #[cfg(feature = "phb-http")]
-            ErrorKind::HttpInvalidBaseUrl(url, msg) => write!(f, "invalid base URL \"{url}\": {msg}"),
+            ErrorKind::PhbHttpInvalidBaseUrl(url, msg) => write!(f, "invalid base URL \"{url}\": {msg}"),
             #[cfg(feature = "phb-http")]
-            ErrorKind::HttpSuffixJoinFailed(suffix, msg) => {
+            ErrorKind::PhbHttpSuffixJoinFailed(suffix, msg) => {
                 write!(f, "{suffix} is failed to be joined to base URL: {msg}")
             }
             #[cfg(feature = "phb-http")]
-            ErrorKind::HttpSuffixFetchFailed(suffix, msg) => write!(f, "{suffix} fetching failed: {msg}"),
+            ErrorKind::PhbHttpSuffixFetchFailed(suffix, msg) => write!(f, "{suffix} fetching failed: {msg}"),
             #[cfg(feature = "phb-http")]
-            ErrorKind::HttpSuffixParseFailed(suffix, msg) => write!(f, "{suffix} parsing failed: {msg}"),
+            ErrorKind::PhbHttpSuffixParseFailed(suffix, msg) => write!(f, "{suffix} parsing failed: {msg}"),
             #[cfg(feature = "phb-file")]
-            ErrorKind::FileSuffixReadFailed(suffix, msg) => write!(f, "{suffix} reading failed: {msg}"),
+            ErrorKind::PhbFileSuffixReadFailed(suffix, msg) => write!(f, "{suffix} reading failed: {msg}"),
             #[cfg(feature = "phb-file")]
-            ErrorKind::FileSuffixParseFailed(suffix, msg) => write!(f, "{suffix} parsing failed: {msg}"),
+            ErrorKind::PhbFileSuffixParseFailed(suffix, msg) => write!(f, "{suffix} parsing failed: {msg}"),
             #[cfg(feature = "phb-file")]
-            ErrorKind::FileNoClientBuild => write!(f, "unable to find client build field"),
+            ErrorKind::PhbFileNoClientBuild => write!(f, "unable to find client build field"),
         }
     }
 }

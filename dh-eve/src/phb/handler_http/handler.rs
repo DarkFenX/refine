@@ -3,11 +3,13 @@ use std::fmt;
 use reqwest::{blocking::get, IntoUrl, Url};
 
 use crate::{
-    data::{
-        Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
-        MutaAttrMods, MutaItemConvs,
+    phb::{
+        data::{
+            Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
+            MutaAttrMods, MutaItemConvs,
+        },
+        fsd,
     },
-    fsd,
     util::{Error, ErrorKind, Result},
 };
 
@@ -25,13 +27,13 @@ impl PhbHttpEdh {
     /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_binary/`.
     pub fn new<U: IntoUrl + Copy + Into<String>>(base_url: U, data_version: String) -> Result<Self> {
         let base_url_conv = base_url.into_url().map_err(|e| {
-            Error::new(ErrorKind::HttpInvalidBaseUrl(
+            Error::new(ErrorKind::PhbHttpInvalidBaseUrl(
                 base_url.into(),
                 format!("failed to interpret: {}", e),
             ))
         })?;
         match base_url_conv.cannot_be_a_base() {
-            true => Err(Error::new(ErrorKind::HttpInvalidBaseUrl(
+            true => Err(Error::new(ErrorKind::PhbHttpInvalidBaseUrl(
                 base_url.into(),
                 "cannot be used as base".to_string(),
             ))),

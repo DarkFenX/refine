@@ -1,4 +1,4 @@
-use crate::fsd::FsdMerge;
+use crate::phb::fsd::FsdMerge;
 
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct FighterAbil {

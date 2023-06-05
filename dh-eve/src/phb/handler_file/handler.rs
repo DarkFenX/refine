@@ -1,11 +1,13 @@
 use std::{fmt, fs::File, io::BufReader, path::PathBuf};
 
 use crate::{
-    data::{
-        Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
-        Metadata, MutaAttrMods, MutaItemConvs,
+    phb::{
+        data::{
+            Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
+            Metadata, MutaAttrMods, MutaItemConvs,
+        },
+        fsd,
     },
-    fsd,
     util::{Error, ErrorKind, Result},
 };
 
@@ -106,6 +108,6 @@ impl rc::ed::EveDataHandler for PhbFileEdh {
                 return Ok(metadata.field_value.to_string());
             }
         }
-        Err(Error::new(ErrorKind::FileNoClientBuild).into())
+        Err(Error::new(ErrorKind::PhbFileNoClientBuild).into())
     }
 }

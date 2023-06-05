@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::fsd::FsdMerge;
+use crate::phb::fsd::FsdMerge;
 
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct MutaAttrMods {

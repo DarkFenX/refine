@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::fsd::FsdMerge;
+use crate::phb::fsd::FsdMerge;
 
 pub(crate) type ItemSkillMap = HashMap<rc::ReeInt, rc::ReeInt>;
 impl FsdMerge<rc::ed::EItemSkillReq> for ItemSkillMap {
