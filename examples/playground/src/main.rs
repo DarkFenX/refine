@@ -28,7 +28,6 @@ fn setup_logger() -> Result<(), fern::InitError> {
 fn main() {
     setup_logger().unwrap();
     let dh = Box::new(rdhe::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    // let dh = phobos::PhbHttpDHandler::new("http://localhost:8555/").unwrap();
     // Get some data for skills
     let grp_ids = dh
         .get_item_groups()
@@ -47,16 +46,16 @@ fn main() {
         .map(|v| v.id)
         .collect_vec();
     let mut ch = Box::new(rdha::RamJsonAdh::new(
-        PathBuf::from("/home/dfx/Workspace/eve/reefast/cache/"),
+        PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
     let src = Arc::new(Src::new(dh, ch).unwrap());
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
     let ship = sol_sys.set_fit_ship(fit, 11184, true).unwrap();
-    // for skill_id in skill_ids.iter() {
-    //     sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
-    // }
+    for skill_id in skill_ids.iter() {
+        sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
+    }
     let implant = sol_sys.add_implant(fit, 19687, true);
     let armor = sol_sys.get_item_attrs(&ship.id).unwrap().get(&265).unwrap().dogma;
     println!("{armor}");
