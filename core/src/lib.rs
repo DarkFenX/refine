@@ -33,7 +33,6 @@ mod adg;
 pub mod consts;
 mod defs;
 pub mod ed;
-pub mod prelude;
 mod src;
 mod ss;
 mod ssi;
