@@ -1,6 +1,6 @@
 [package]
 name = "reefast-dh-eve"
-version = "1.0.0"
+version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2018"
 description = "EVE data handlers for reefast-core crate, which use Phobos dump as data source"

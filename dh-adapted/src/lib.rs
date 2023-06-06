@@ -10,10 +10,14 @@
 //! - `json`: Enables handler which stores data in RAM, and writes persistent JSON cache to disk.
 //! - `ram`: Enables handler which stores data in RAM, and does not implement persistent cache.
 
+#[cfg(feature = "json")]
 pub use handler_json::RamJsonAdh;
+#[cfg(feature = "ram")]
 pub use handler_ram::RamOnlyAdh;
 pub use util::{Error, ErrorKind};
 
+#[cfg(feature = "json")]
 mod handler_json;
+#[cfg(feature = "ram")]
 mod handler_ram;
 mod util;

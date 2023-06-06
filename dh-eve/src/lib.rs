@@ -17,5 +17,6 @@ pub use phb::PhbFileEdh;
 pub use phb::PhbHttpEdh;
 pub use util::{Error, ErrorKind, Result};
 
+#[cfg(any(feature = "phb-http", feature = "phb-file"))]
 mod phb;
 mod util;

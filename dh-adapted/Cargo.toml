@@ -1,22 +1,21 @@
 [package]
 name = "reefast-dh-adapted"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2018"
 description = "Adapted data handlers for reefast-core crate"
 license = "LGPL-3.0-or-later"
 
 [features]
-full = ["ram", "json"]
+full = ["json", "ram"]
+json = ["dep:log", "dep:serde", "dep:serde_repr", "dep:serde_tuple", "dep:serde_json", "dep:zstd"]
 ram = []
-json = []
 
 [dependencies]
 rc = { package = "reefast-core", path = "../core" }
-itertools = ">=0.10.5"
-log = ">=0.4.17"
-serde = { version = ">=1.0", features = ["derive"] }
-serde_repr = ">=0.1.12"
-serde_tuple = ">=0.5.0"
-serde_json = ">=1.0"
-zstd = ">=0.12.2"
+log = { version = ">=0.4.17", optional = true }
+serde = { version = ">=1.0", features = ["derive"], optional = true }
+serde_repr = { version = ">=0.1.12", optional = true }
+serde_tuple = { version = ">=0.5.0", optional = true }
+serde_json = { version = ">=1.0", optional = true }
+zstd = { version = ">=0.12.2", optional = true }
