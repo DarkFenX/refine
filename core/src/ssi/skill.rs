@@ -26,7 +26,7 @@ impl SsSkill {
             a_item_id,
             level,
             state: bool_to_state(state),
-            a_item: src.ahandler.get_item(&a_item_id),
+            a_item: src.a_handler.get_item(&a_item_id),
         }
     }
     pub(crate) fn get_bool_state(&self) -> bool {

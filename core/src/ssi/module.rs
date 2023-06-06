@@ -37,7 +37,7 @@ impl SsModule {
             rack,
             pos,
             charge_a_item_id: charge_a_item_id,
-            a_item: src.ahandler.get_item(&a_item_id),
+            a_item: src.a_handler.get_item(&a_item_id),
         }
     }
 }

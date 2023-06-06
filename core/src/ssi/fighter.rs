@@ -24,7 +24,7 @@ impl SsFighter {
             a_item_id,
             state,
             amt_override: None,
-            a_item: src.ahandler.get_item(&a_item_id),
+            a_item: src.a_handler.get_item(&a_item_id),
         }
     }
 }

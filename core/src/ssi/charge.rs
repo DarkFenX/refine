@@ -21,7 +21,7 @@ impl SsCharge {
             fit_id,
             a_item_id,
             cont_id,
-            a_item: src.ahandler.get_item(&a_item_id),
+            a_item: src.a_handler.get_item(&a_item_id),
         }
     }
 }

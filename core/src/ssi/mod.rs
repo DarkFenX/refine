@@ -139,7 +139,7 @@ impl SsItem {
     }
     pub(crate) fn reload_a_item(&mut self, src: &Arc<Src>) {
         let a_item_id = self.get_a_item_id();
-        let a_item = src.ahandler.get_item(&a_item_id);
+        let a_item = src.a_handler.get_item(&a_item_id);
         match self {
             Self::Booster(ss_booster) => ss_booster.a_item = a_item,
             Self::Character(ss_character) => ss_character.a_item = a_item,
