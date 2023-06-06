@@ -9,8 +9,8 @@ impl AttrValInfo {
         Self { base, dogma, extra }
     }
 }
-impl From<&rc::AttrVal> for AttrValInfo {
-    fn from(value: &rc::AttrVal) -> Self {
+impl From<&rc::SsAttr> for AttrValInfo {
+    fn from(value: &rc::SsAttr) -> Self {
         Self::new(value.base, value.dogma, value.extra)
     }
 }

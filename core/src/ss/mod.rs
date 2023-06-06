@@ -1,4 +1,4 @@
-pub use calc::AttrVal;
+pub use calc::SsAttr;
 pub use ss::SolarSystem;
 use ss::SsInnerData;
 
