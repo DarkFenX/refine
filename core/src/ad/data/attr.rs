@@ -40,6 +40,6 @@ impl AAttr {
 }
 impl Named for AAttr {
     fn get_name() -> &'static str {
-        "ad::AAttr"
+        "AAttr"
     }
 }

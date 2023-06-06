@@ -28,6 +28,6 @@ impl EMutaAttrMod {
 }
 impl Named for EMutaAttrMod {
     fn get_name() -> &'static str {
-        "ed::EMutaAttrMod"
+        "EMutaAttrMod"
     }
 }

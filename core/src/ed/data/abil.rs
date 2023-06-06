@@ -25,6 +25,6 @@ impl EFighterAbil {
 }
 impl Named for EFighterAbil {
     fn get_name() -> &'static str {
-        "ed::EFighterAbil"
+        "EFighterAbil"
     }
 }

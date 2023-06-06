@@ -16,6 +16,6 @@ impl EItemGroup {
 }
 impl Named for EItemGroup {
     fn get_name() -> &'static str {
-        "ed::EItemGroup"
+        "EItemGroup"
     }
 }

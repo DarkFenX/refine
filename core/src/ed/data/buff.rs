@@ -42,7 +42,7 @@ impl EBuff {
 }
 impl Named for EBuff {
     fn get_name() -> &'static str {
-        "ed::EBuff"
+        "EBuff"
     }
 }
 

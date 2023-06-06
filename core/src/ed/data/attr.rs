@@ -44,6 +44,6 @@ impl EAttr {
 }
 impl Named for EAttr {
     fn get_name() -> &'static str {
-        "ed::EAttr"
+        "EAttr"
     }
 }

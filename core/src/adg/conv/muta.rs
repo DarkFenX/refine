@@ -4,23 +4,23 @@ use itertools::Itertools;
 
 use crate::{ad, adg::GData};
 
-pub(in crate::adg::conv) fn conv_mutas(gdata: &GData) -> Vec<ad::AMuta> {
-    let mut composed = HashMap::new();
-    for item_data in gdata.muta_items.iter() {
-        let muta = composed
-            .entry(item_data.muta_id)
-            .or_insert_with(|| ad::AMuta::new(item_data.muta_id));
-        muta.item_map.insert(item_data.in_item_id, item_data.out_item_id);
+pub(in crate::adg::conv) fn conv_mutas(g_data: &GData) -> Vec<ad::AMuta> {
+    let mut a_muta_map = HashMap::new();
+    for e_muta in g_data.muta_items.iter() {
+        let a_muta = a_muta_map
+            .entry(e_muta.muta_id)
+            .or_insert_with(|| ad::AMuta::new(e_muta.muta_id));
+        a_muta.item_map.insert(e_muta.in_item_id, e_muta.out_item_id);
     }
-    for attr_data in gdata.muta_attrs.iter() {
+    for e_attr_data in g_data.muta_attrs.iter() {
         // We are interested in attribute modifiers only for mutaplasmids which have in-out item
         // definitions
-        if let Some(muta) = composed.get_mut(&attr_data.muta_id) {
-            muta.attr_mods.insert(
-                attr_data.attr_id,
-                ad::AMutaAttrRange::new(attr_data.min_attr_mult, attr_data.max_attr_mult),
+        if let Some(a_muta) = a_muta_map.get_mut(&e_attr_data.muta_id) {
+            a_muta.attr_mods.insert(
+                e_attr_data.attr_id,
+                ad::AMutaAttrRange::new(e_attr_data.min_attr_mult, e_attr_data.max_attr_mult),
             );
         }
     }
-    composed.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id).collect()
+    a_muta_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id).collect()
 }

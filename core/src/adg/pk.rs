@@ -22,21 +22,21 @@ fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
         .count();
     if removed > 0 {
         let msg = format!("cleaned up {} PK duplicates for {}", removed, T::get_name());
-        log::warn!("{}", msg);
+        log::warn!("{msg}");
     }
 }
 
-pub(in crate::adg) fn dedup_pks(gdata: &mut GData) {
-    dedup_pks_vec(&mut gdata.items);
-    dedup_pks_vec(&mut gdata.groups);
-    dedup_pks_vec(&mut gdata.attrs);
-    dedup_pks_vec(&mut gdata.item_attrs);
-    dedup_pks_vec(&mut gdata.effects);
-    dedup_pks_vec(&mut gdata.item_effects);
-    dedup_pks_vec(&mut gdata.abils);
-    dedup_pks_vec(&mut gdata.item_abils);
-    dedup_pks_vec(&mut gdata.buffs);
-    dedup_pks_vec(&mut gdata.item_srqs);
-    dedup_pks_vec(&mut gdata.muta_items);
-    dedup_pks_vec(&mut gdata.muta_attrs);
+pub(in crate::adg) fn dedup_pks(g_data: &mut GData) {
+    dedup_pks_vec(&mut g_data.items);
+    dedup_pks_vec(&mut g_data.groups);
+    dedup_pks_vec(&mut g_data.attrs);
+    dedup_pks_vec(&mut g_data.item_attrs);
+    dedup_pks_vec(&mut g_data.effects);
+    dedup_pks_vec(&mut g_data.item_effects);
+    dedup_pks_vec(&mut g_data.abils);
+    dedup_pks_vec(&mut g_data.item_abils);
+    dedup_pks_vec(&mut g_data.buffs);
+    dedup_pks_vec(&mut g_data.item_srqs);
+    dedup_pks_vec(&mut g_data.muta_items);
+    dedup_pks_vec(&mut g_data.muta_attrs);
 }

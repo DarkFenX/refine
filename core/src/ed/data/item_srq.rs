@@ -22,6 +22,6 @@ impl EItemSkillReq {
 }
 impl Named for EItemSkillReq {
     fn get_name() -> &'static str {
-        "ed::EItemSkillReq"
+        "EItemSkillReq"
     }
 }

@@ -14,10 +14,10 @@ use crate::{
 
 const MAX_CYCLES: i32 = 100;
 
-pub(in crate::adg) fn clean_unused(alive: &mut GData, gsupp: &GSupport) -> IntResult<()> {
+pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> IntResult<()> {
     let mut trash = GData::new();
     trash_all(alive, &mut trash);
-    restore_core_items(alive, &mut trash, &gsupp);
+    restore_core_items(alive, &mut trash, &g_supp);
 
     let mut counter = 0;
     let mut changes = true;
@@ -25,10 +25,10 @@ pub(in crate::adg) fn clean_unused(alive: &mut GData, gsupp: &GSupport) -> IntRe
         counter += 1;
         if counter > MAX_CYCLES {
             let msg = format!("reached limit of {} cycles during cleanup", MAX_CYCLES);
-            log::error!("{}", msg);
+            log::error!("{msg}");
             return Err(IntError::new(msg));
         }
-        changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, &gsupp);
+        changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, &g_supp);
     }
     cleanup_report(alive, &trash);
     Ok(())
@@ -62,7 +62,7 @@ fn trash_all(alive: &mut GData, trash: &mut GData) {
     move_data(&mut alive.muta_attrs, &mut trash.muta_attrs, |_| true);
 }
 
-fn restore_core_items(alive: &mut GData, trash: &mut GData, gsupp: &GSupport) {
+fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
     let cats = vec![
         itemcats::CHARGE,
         itemcats::DRONE,
@@ -74,7 +74,7 @@ fn restore_core_items(alive: &mut GData, trash: &mut GData, gsupp: &GSupport) {
         itemcats::SUBSYSTEM,
     ];
     let mut grps = vec![itemgrps::CHARACTER, itemgrps::EFFECT_BEACON];
-    for (&grp, cat) in gsupp.grp_cat_map.iter() {
+    for (&grp, cat) in g_supp.grp_cat_map.iter() {
         if cats.contains(cat) {
             grps.push(grp);
         }
@@ -112,8 +112,8 @@ fn restore_item_data(alive: &mut GData, trash: &mut GData) -> bool {
     })
 }
 
-fn restore_fk_tgts(alive: &mut GData, trash: &mut GData, gsupp: &GSupport) -> bool {
-    let fkdb = KeyDb::new_fkdb(alive, gsupp);
+fn restore_fk_tgts(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) -> bool {
+    let fkdb = KeyDb::new_fkdb(alive, g_supp);
     move_data(&mut trash.items, &mut alive.items, |v| fkdb.items.contains(&v.id))
         || move_data(&mut trash.groups, &mut alive.groups, |v| fkdb.groups.contains(&v.id))
         || move_data(&mut trash.attrs, &mut alive.attrs, |v| fkdb.attrs.contains(&v.id))

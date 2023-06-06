@@ -16,6 +16,6 @@ impl EItem {
 }
 impl Named for EItem {
     fn get_name() -> &'static str {
-        "ed::EItem"
+        "EItem"
     }
 }

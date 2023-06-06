@@ -42,8 +42,8 @@ impl Fk for ed::EEffect {
 impl ed::EEffect {
     fn get_fks_from_mod_args(&self, field: &'static str) -> Vec<ReeInt> {
         let mut vec = Vec::new();
-        for modifier in self.mods.iter() {
-            for (k, v) in modifier.args.iter() {
+        for e_modifier in self.mods.iter() {
+            for (k, v) in e_modifier.args.iter() {
                 if let (true, &ed::EPrimitive::Int(fk)) = (k == field, v) {
                     vec.push(fk);
                 }

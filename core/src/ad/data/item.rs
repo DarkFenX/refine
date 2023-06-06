@@ -55,7 +55,7 @@ impl AItem {
 }
 impl Named for AItem {
     fn get_name() -> &'static str {
-        "ad::AItem"
+        "AItem"
     }
 }
 
@@ -85,6 +85,6 @@ impl AItemEffData {
 }
 impl Named for AItemEffData {
     fn get_name() -> &'static str {
-        "ad::AItemEffData"
+        "AItemEffData"
     }
 }

@@ -67,7 +67,7 @@ impl EEffect {
 }
 impl Named for EEffect {
     fn get_name() -> &'static str {
-        "ed::EEffect"
+        "EEffect"
     }
 }
 

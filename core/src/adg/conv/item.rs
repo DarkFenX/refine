@@ -11,161 +11,158 @@ use crate::{
     util::Named,
 };
 
-pub(in crate::adg::conv) fn conv_items(gdata: &GData, gsupp: &GSupport) -> Vec<ad::AItem> {
+pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec<ad::AItem> {
     // Auxiliary maps
-    let defeff_map = gdata
+    let defeff_map = g_data
         .item_effects
         .iter()
         .filter(|v| v.is_default)
         .map(|v| (v.item_id, v.effect_id))
         .collect::<HashMap<ReeInt, ReeInt>>();
-    let mut item_map = HashMap::new();
-    for item_data in gdata.items.iter() {
+    let mut a_item_map = HashMap::new();
+    for e_item in g_data.items.iter() {
         // Item category ID
-        let cat_id = match gsupp.grp_cat_map.get(&item_data.group_id) {
+        let cat_id = match g_supp.grp_cat_map.get(&e_item.group_id) {
             Some(&cid) => cid,
             None => {
                 let msg = format!(
                     "unable to find category ID for {} {}",
                     ed::EItem::get_name(),
-                    item_data.id
+                    e_item.id
                 );
-                log::warn!("{}", msg);
+                log::warn!("{msg}");
                 continue;
             }
         };
         // Item default effect
-        let defeff_id = match defeff_map.get(&item_data.id) {
-            Some(&deff) => Some(deff),
-            None => None,
-        };
+        let defeff_id = defeff_map.get(&e_item.id).map(|v| *v);
         // Item construction
-        let item = ad::AItem::new(
-            item_data.id,
+        let a_item = ad::AItem::new(
+            e_item.id,
             None,
-            item_data.group_id,
+            e_item.group_id,
             cat_id,
             HashMap::new(),
             HashMap::new(),
             defeff_id,
             HashMap::new(),
         );
-        item_map.insert(item.id, item);
+        a_item_map.insert(a_item.id, a_item);
     }
     // Item attributes
-    for item_attr in gdata.item_attrs.iter() {
-        item_map
-            .get_mut(&item_attr.item_id)
-            .and_then(|v| v.attr_vals.insert(item_attr.attr_id, item_attr.value));
+    for e_item_attr in g_data.item_attrs.iter() {
+        a_item_map
+            .get_mut(&e_item_attr.item_id)
+            .and_then(|v| v.attr_vals.insert(e_item_attr.attr_id, e_item_attr.value));
     }
     // Item effects & extended effect data from abilities
-    for item_effect in gdata.item_effects.iter() {
-        item_map.get_mut(&item_effect.item_id).and_then(|v| {
+    for e_item_effect in g_data.item_effects.iter() {
+        a_item_map.get_mut(&e_item_effect.item_id).and_then(|v| {
             v.effect_datas
-                .insert(item_effect.effect_id, ad::AItemEffData::new(None, None, None))
+                .insert(e_item_effect.effect_id, ad::AItemEffData::new(None, None, None))
         });
     }
-    for item_abil in gdata.item_abils.iter() {
-        match item_map.get_mut(&item_abil.item_id) {
+    for e_item_abil in g_data.item_abils.iter() {
+        match a_item_map.get_mut(&e_item_abil.item_id) {
             None => continue,
-            Some(item) => match get_abil_effect(item_abil.abil_id) {
+            Some(a_item) => match get_abil_effect(e_item_abil.abil_id) {
                 None => continue,
-                Some(eid) => match item.effect_datas.get_mut(&eid) {
+                Some(effect_id) => match a_item.effect_datas.get_mut(&effect_id) {
                     None => continue,
-                    Some(edata) => {
-                        edata.cd = item_abil.cooldown;
-                        edata.charge_amount = item_abil.charge_count;
-                        edata.charge_reload_time = item_abil.charge_rearm_time;
+                    Some(a_item_eff_data) => {
+                        a_item_eff_data.cd = e_item_abil.cooldown;
+                        a_item_eff_data.charge_amount = e_item_abil.charge_count;
+                        a_item_eff_data.charge_reload_time = e_item_abil.charge_rearm_time;
                     }
                 },
             },
         }
     }
     // Item skill requirements
-    for item_srq in gdata.item_srqs.iter() {
-        item_map
-            .get_mut(&item_srq.item_id)
-            .and_then(|v| v.srqs.insert(item_srq.skill_id, item_srq.level));
+    for e_item_srq in g_data.item_srqs.iter() {
+        a_item_map
+            .get_mut(&e_item_srq.item_id)
+            .and_then(|v| v.srqs.insert(e_item_srq.skill_id, e_item_srq.level));
     }
     // Item type
-    let mut items = Vec::new();
-    for mut item in item_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id) {
-        let mut item_types = get_item_types(&item);
+    let mut a_items = Vec::new();
+    for mut a_item in a_item_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id) {
+        let mut item_types = get_item_types(&a_item);
         match item_types.len() {
             0 => {
-                items.push(item);
+                a_items.push(a_item);
             }
             1 => {
-                item.itype = Some(item_types.pop().unwrap());
-                items.push(item);
+                a_item.itype = Some(item_types.pop().unwrap());
+                a_items.push(a_item);
             }
             _ => {
                 let msg = format!(
                     "{} {} is eligible for {} item types",
                     ad::AItem::get_name(),
-                    item.id,
+                    a_item.id,
                     item_types.len()
                 );
-                log::warn!("{}", msg);
+                log::warn!("{msg}");
                 continue;
             }
         }
     }
-    items
+    a_items
 }
 
-fn get_item_types(item: &ad::AItem) -> Vec<ItemType> {
+fn get_item_types(a_item: &ad::AItem) -> Vec<ItemType> {
     let mut types = Vec::new();
-    if item.cat_id == itemcats::IMPLANT && item.attr_vals.contains_key(&attrs::BOOSTERNESS) {
+    if a_item.cat_id == itemcats::IMPLANT && a_item.attr_vals.contains_key(&attrs::BOOSTERNESS) {
         types.push(ItemType::Booster);
     };
-    if item.grp_id == itemgrps::CHARACTER {
+    if a_item.grp_id == itemgrps::CHARACTER {
         types.push(ItemType::Character);
     };
-    if item.cat_id == itemcats::CHARGE {
+    if a_item.cat_id == itemcats::CHARGE {
         types.push(ItemType::Charge);
     };
-    if item.cat_id == itemcats::DRONE {
+    if a_item.cat_id == itemcats::DRONE {
         types.push(ItemType::Drone);
     };
-    if item.grp_id == itemgrps::EFFECT_BEACON {
+    if a_item.grp_id == itemgrps::EFFECT_BEACON {
         types.push(ItemType::EffectBeacon);
     };
-    if item.cat_id == itemcats::FIGHTER
-        && (item.attr_vals.contains_key(&attrs::FTR_SQ_IS_HEAVY)
-            || item.attr_vals.contains_key(&attrs::FTR_SQ_IS_LIGHT)
-            || item.attr_vals.contains_key(&attrs::FTR_SQ_IS_SUPPORT))
+    if a_item.cat_id == itemcats::FIGHTER
+        && (a_item.attr_vals.contains_key(&attrs::FTR_SQ_IS_HEAVY)
+            || a_item.attr_vals.contains_key(&attrs::FTR_SQ_IS_LIGHT)
+            || a_item.attr_vals.contains_key(&attrs::FTR_SQ_IS_SUPPORT))
     {
         types.push(ItemType::FighterSquad);
     };
-    if item.cat_id == itemcats::IMPLANT && item.attr_vals.contains_key(&attrs::IMPLANTNESS) {
+    if a_item.cat_id == itemcats::IMPLANT && a_item.attr_vals.contains_key(&attrs::IMPLANTNESS) {
         types.push(ItemType::Implant);
     };
-    if item.cat_id == itemcats::MODULE && item.effect_datas.contains_key(&effects::HI_POWER) {
+    if a_item.cat_id == itemcats::MODULE && a_item.effect_datas.contains_key(&effects::HI_POWER) {
         types.push(ItemType::ModHigh);
     };
-    if item.cat_id == itemcats::MODULE && item.effect_datas.contains_key(&effects::LO_POWER) {
+    if a_item.cat_id == itemcats::MODULE && a_item.effect_datas.contains_key(&effects::LO_POWER) {
         types.push(ItemType::ModLow);
     };
-    if item.cat_id == itemcats::MODULE && item.effect_datas.contains_key(&effects::MED_POWER) {
+    if a_item.cat_id == itemcats::MODULE && a_item.effect_datas.contains_key(&effects::MED_POWER) {
         types.push(ItemType::ModMid);
     };
-    if item.cat_id == itemcats::MODULE && item.effect_datas.contains_key(&effects::RIG_SLOT) {
+    if a_item.cat_id == itemcats::MODULE && a_item.effect_datas.contains_key(&effects::RIG_SLOT) {
         types.push(ItemType::Rig);
     };
-    if item.grp_id == itemgrps::MUTAPLASMID {
+    if a_item.grp_id == itemgrps::MUTAPLASMID {
         types.push(ItemType::Mutaplasmid);
     };
-    if item.cat_id == itemcats::SHIP {
+    if a_item.cat_id == itemcats::SHIP {
         types.push(ItemType::Ship);
     };
-    if item.cat_id == itemcats::SKILL {
+    if a_item.cat_id == itemcats::SKILL {
         types.push(ItemType::Skill);
     };
-    if item.grp_id == itemgrps::SHIP_MOD {
+    if a_item.grp_id == itemgrps::SHIP_MOD {
         types.push(ItemType::Stance);
     };
-    if item.cat_id == itemcats::SUBSYSTEM && item.effect_datas.contains_key(&effects::SUBSYSTEM) {
+    if a_item.cat_id == itemcats::SUBSYSTEM && a_item.effect_datas.contains_key(&effects::SUBSYSTEM) {
         types.push(ItemType::Subsystem);
     };
     types

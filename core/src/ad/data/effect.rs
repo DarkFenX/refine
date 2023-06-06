@@ -91,7 +91,7 @@ impl AEffect {
 }
 impl Named for AEffect {
     fn get_name() -> &'static str {
-        "ad::AEffect"
+        "AEffect"
     }
 }
 
@@ -132,6 +132,6 @@ impl AAttrMod {
 }
 impl Named for AAttrMod {
     fn get_name() -> &'static str {
-        "ad::AAttrMod"
+        "AAttrMod"
     }
 }

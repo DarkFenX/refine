@@ -11,17 +11,17 @@ mod rels;
 mod valid;
 
 /// Fetch EVE data and generate adapted data out of it
-pub(crate) fn generate_adapted_data(ehandler: &dyn ed::EveDataHandler) -> IntResult<ad::AData> {
-    let mut gdata = GData::new();
-    let mut gsupp = GSupport::new();
-    let mut adata = ad::AData::new();
-    fetch::fetch_data(ehandler, &mut gdata)?;
-    pk::dedup_pks(&mut gdata);
-    gsupp.post_pk(&gdata);
-    clean::clean_unused(&mut gdata, &gsupp)?;
-    valid::validate(&mut gdata, &gsupp);
-    conv::convert(&gdata, &gsupp, &mut adata);
-    Ok(adata)
+pub(crate) fn generate_adapted_data(e_handler: &dyn ed::EveDataHandler) -> IntResult<ad::AData> {
+    let mut g_data = GData::new();
+    let mut g_supp = GSupport::new();
+    let mut a_data = ad::AData::new();
+    fetch::fetch_data(e_handler, &mut g_data)?;
+    pk::dedup_pks(&mut g_data);
+    g_supp.post_pk(&g_data);
+    clean::clean_unused(&mut g_data, &g_supp)?;
+    valid::validate(&mut g_data, &g_supp);
+    conv::convert(&g_data, &g_supp, &mut a_data);
+    Ok(a_data)
 }
 
 /// Container for primary data, used internally by the generator.
@@ -70,19 +70,19 @@ impl GSupport {
             grp_cat_map: HashMap::new(),
         }
     }
-    pub(in crate::adg) fn post_pk(&mut self, gdata: &GData) {
-        self.fill_attr_unit_map(&gdata);
-        self.fill_grp_cat_map(&gdata);
+    pub(in crate::adg) fn post_pk(&mut self, g_data: &GData) {
+        self.fill_attr_unit_map(&g_data);
+        self.fill_grp_cat_map(&g_data);
     }
-    fn fill_attr_unit_map(&mut self, gdata: &GData) {
-        for attr in gdata.attrs.iter() {
+    fn fill_attr_unit_map(&mut self, g_data: &GData) {
+        for attr in g_data.attrs.iter() {
             if let Some(unit) = attr.unit_id {
                 self.attr_unit_map.insert(attr.id, unit);
             }
         }
     }
-    fn fill_grp_cat_map(&mut self, gdata: &GData) {
-        for grp in gdata.groups.iter() {
+    fn fill_grp_cat_map(&mut self, g_data: &GData) {
+        for grp in g_data.groups.iter() {
             self.grp_cat_map.insert(grp.id, grp.category_id);
         }
     }

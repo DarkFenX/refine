@@ -37,6 +37,6 @@ impl EItemFighterAbil {
 }
 impl Named for EItemFighterAbil {
     fn get_name() -> &'static str {
-        "ed::EItemFighterAbil"
+        "EItemFighterAbil"
     }
 }

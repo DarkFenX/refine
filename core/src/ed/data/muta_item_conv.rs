@@ -22,6 +22,6 @@ impl EMutaItemConv {
 }
 impl Named for EMutaItemConv {
     fn get_name() -> &'static str {
-        "ed::EMutaItemConv"
+        "EMutaItemConv"
     }
 }

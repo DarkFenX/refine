@@ -24,10 +24,10 @@ impl ed::EFighterAbil {
     }
 }
 
-pub(in crate::adg::conv) fn conv_effects(gdata: &GData) -> Vec<ad::AEffect> {
-    let mut effects = Vec::new();
-    for effect_data in gdata.effects.iter() {
-        let (state, tgt_mode) = match effect_data.category_id {
+pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
+    let mut a_effects = Vec::new();
+    for e_effect in g_data.effects.iter() {
+        let (state, tgt_mode) = match e_effect.category_id {
             effcats::PASSIVE => (State::Offline, TgtMode::None),
             effcats::ACTIVE => (State::Active, TgtMode::None),
             effcats::TARGET => (State::Active, TgtMode::Item),
@@ -38,39 +38,39 @@ pub(in crate::adg::conv) fn conv_effects(gdata: &GData) -> Vec<ad::AEffect> {
                 let msg = format!(
                     "{} {} uses unknown effect category {}",
                     ed::EEffect::get_name(),
-                    effect_data.id,
-                    effect_data.category_id
+                    e_effect.id,
+                    e_effect.category_id
                 );
-                log::warn!("{}", msg);
+                log::warn!("{msg}");
                 continue;
             }
         };
-        let mut effect = ad::AEffect::new(
-            effect_data.id,
+        let mut a_effect = ad::AEffect::new(
+            e_effect.id,
             state,
             tgt_mode,
-            effect_data.is_assistance,
-            effect_data.is_offensive,
+            e_effect.is_assistance,
+            e_effect.is_offensive,
             None,
             None,
-            effect_data.discharge_attr_id,
-            effect_data.duration_attr_id,
-            effect_data.range_attr_id,
-            effect_data.falloff_attr_id,
-            effect_data.tracking_attr_id,
-            effect_data.usage_chance_attr_id,
-            effect_data.resist_attr_id,
+            e_effect.discharge_attr_id,
+            e_effect.duration_attr_id,
+            e_effect.range_attr_id,
+            e_effect.falloff_attr_id,
+            e_effect.tracking_attr_id,
+            e_effect.usage_chance_attr_id,
+            e_effect.resist_attr_id,
             ModBuildStatus::Unbuilt,
             Vec::new(),
             Vec::new(),
         );
         let mut mod_errs = 0;
-        for modifier_data in effect_data.mods.iter() {
+        for e_modifier in e_effect.mods.iter() {
             // Process effect stoppers first
-            match extract_stopper(modifier_data) {
-                Ok(Some(eid)) => {
-                    if !effect.stop_ids.contains(&eid) {
-                        effect.stop_ids.push(eid)
+            match extract_stopper(e_modifier) {
+                Ok(Some(effect_id)) => {
+                    if !a_effect.stop_ids.contains(&effect_id) {
+                        a_effect.stop_ids.push(effect_id)
                     };
                     continue;
                 }
@@ -78,199 +78,199 @@ pub(in crate::adg::conv) fn conv_effects(gdata: &GData) -> Vec<ad::AEffect> {
                     let msg = format!(
                         "failed to build stopper for {} {}: {}",
                         ad::AEffect::get_name(),
-                        effect.id,
+                        a_effect.id,
                         e.msg
                     );
-                    log::warn!("{}", msg);
+                    log::warn!("{msg}");
                     mod_errs += 1;
                     continue;
                 }
                 _ => (),
             }
             // Process regular attribute modifiers
-            let mod_res = match modifier_data.func.as_str() {
-                "ItemModifier" => conv_item_mod(modifier_data, &effect),
-                "LocationModifier" => conv_loc_mod(modifier_data, &effect),
-                "LocationGroupModifier" => conv_locgrp_mod(modifier_data, &effect),
-                "LocationRequiredSkillModifier" => conv_locsrq_mod(modifier_data, &effect),
-                "OwnerRequiredSkillModifier" => conv_ownsrq_mod(modifier_data, &effect),
-                _ => Err(IntError::new(format!("unknown function \"{}\"", modifier_data.func))),
+            let a_mod_res = match e_modifier.func.as_str() {
+                "ItemModifier" => conv_item_mod(e_modifier, &a_effect),
+                "LocationModifier" => conv_loc_mod(e_modifier, &a_effect),
+                "LocationGroupModifier" => conv_locgrp_mod(e_modifier, &a_effect),
+                "LocationRequiredSkillModifier" => conv_locsrq_mod(e_modifier, &a_effect),
+                "OwnerRequiredSkillModifier" => conv_ownsrq_mod(e_modifier, &a_effect),
+                _ => Err(IntError::new(format!("unknown function \"{}\"", e_modifier.func))),
             };
-            match mod_res {
-                Ok(m) => effect.mods.push(m),
+            match a_mod_res {
+                Ok(a_mod) => a_effect.mods.push(a_mod),
                 Err(e) => {
                     let msg = format!(
                         "failed to build modifier for {} {}: {}",
                         ad::AEffect::get_name(),
-                        effect.id,
+                        a_effect.id,
                         e.msg
                     );
-                    log::warn!("{}", msg);
+                    log::warn!("{msg}");
                     mod_errs += 1;
                     continue;
                 }
             }
         }
         match mod_errs {
-            0 => effect.mod_build_status = ModBuildStatus::Success,
-            _ if !effect.mods.is_empty() || !effect.stop_ids.is_empty() => {
-                effect.mod_build_status = ModBuildStatus::SuccessPartial(mod_errs)
+            0 => a_effect.mod_build_status = ModBuildStatus::Success,
+            _ if !a_effect.mods.is_empty() || !a_effect.stop_ids.is_empty() => {
+                a_effect.mod_build_status = ModBuildStatus::SuccessPartial(mod_errs)
             }
-            _ => effect.mod_build_status = ModBuildStatus::Error(mod_errs),
+            _ => a_effect.mod_build_status = ModBuildStatus::Error(mod_errs),
         }
-        effects.push(effect);
+        a_effects.push(a_effect);
     }
     // Transfer some data from abilities onto effects
-    let hisec_ban_map = extract_ability_map(gdata, ed::EFighterAbil::get_disallow_hisec);
-    let lowsec_ban_map = extract_ability_map(gdata, ed::EFighterAbil::get_disallow_lowsec);
-    let tgt_mode_map = extract_ability_map(gdata, ed::EFighterAbil::get_target_mode);
-    for effect in effects.iter_mut() {
+    let hisec_ban_map = extract_ability_map(g_data, ed::EFighterAbil::get_disallow_hisec);
+    let lowsec_ban_map = extract_ability_map(g_data, ed::EFighterAbil::get_disallow_lowsec);
+    let tgt_mode_map = extract_ability_map(g_data, ed::EFighterAbil::get_target_mode);
+    for a_effect in a_effects.iter_mut() {
         // Hisec flag
-        match hisec_ban_map.get(&effect.id) {
+        match hisec_ban_map.get(&a_effect.id) {
             None => (),
             Some(flags) => match flags.len() {
                 1 => {
-                    effect.hisec = Some(!*flags.iter().next().unwrap());
+                    a_effect.hisec = Some(!*flags.iter().next().unwrap());
                 }
                 _ => {
                     let msg = format!(
                         "{} {} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
                         ad::AEffect::get_name(),
-                        effect.id,
+                        a_effect.id,
                         flags.len()
                     );
-                    log::warn!("{}", msg);
+                    log::warn!("{msg}");
                 }
             },
         }
         // Lowsec flag
-        match lowsec_ban_map.get(&effect.id) {
+        match lowsec_ban_map.get(&a_effect.id) {
             None => (),
             Some(flags) => match flags.len() {
                 1 => {
-                    effect.lowsec = Some(!*flags.iter().next().unwrap());
+                    a_effect.lowsec = Some(!*flags.iter().next().unwrap());
                 }
                 _ => {
                     let msg = format!(
                         "{} {} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
                         ad::AEffect::get_name(),
-                        effect.id,
+                        a_effect.id,
                         flags.len()
                     );
-                    log::warn!("{}", msg);
+                    log::warn!("{msg}");
                 }
             },
         }
         // Target mode
-        match tgt_mode_map.get(&effect.id) {
+        match tgt_mode_map.get(&a_effect.id) {
             None => (),
             Some(modes) => match modes.len() {
                 1 => match get_abil_tgt_mode(modes.iter().next().unwrap()) {
-                    Ok(mode) => effect.tgt_mode = mode,
+                    Ok(mode) => a_effect.tgt_mode = mode,
                     Err(e) => {
                         let msg = format!(
                             "failed to update target mode for {} {}: {}",
                             ad::AEffect::get_name(),
-                            effect.id,
+                            a_effect.id,
                             e.msg
                         );
-                        log::warn!("{}", msg);
+                        log::warn!("{msg}");
                     }
                 },
                 _ => {
                     let msg = format!(
                         "{} {} has {} distinct \"target mode\" values mapped from fighter abilities",
                         ad::AEffect::get_name(),
-                        effect.id,
+                        a_effect.id,
                         modes.len()
                     );
-                    log::warn!("{}", msg);
+                    log::warn!("{msg}");
                 }
             },
         }
     }
-    effects
+    a_effects
 }
 
-fn extract_stopper(modifier_data: &ed::EEffectMod) -> IntResult<Option<ReeInt>> {
-    match modifier_data.func.as_str() {
+fn extract_stopper(e_modifier: &ed::EEffectMod) -> IntResult<Option<ReeInt>> {
+    match e_modifier.func.as_str() {
         "EffectStopper" => {
-            let domain = get_arg_str(&modifier_data.args, "domain")?;
+            let domain = get_arg_str(&e_modifier.args, "domain")?;
             if domain.ne("target") {
                 return Err(IntError::new(format!("unexpected domain \"{}\"", domain)));
             }
-            Ok(Some(get_arg_int(&modifier_data.args, "effectID")?))
+            Ok(Some(get_arg_int(&e_modifier.args, "effectID")?))
         }
         _ => Ok(None),
     }
 }
 
-fn conv_item_mod(modifier_data: &ed::EEffectMod, effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
+fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
-        get_mod_affector_attr_id(modifier_data)?,
+        get_mod_affector_attr_id(e_modifier)?,
         ModAggrMode::Stack,
-        get_mod_operation(modifier_data)?,
-        ModAfeeFilter::Direct(get_mod_domain(modifier_data, effect)?),
-        get_mod_affectee_attr_id(modifier_data)?,
+        get_mod_operation(e_modifier)?,
+        ModAfeeFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
-fn conv_loc_mod(modifier_data: &ed::EEffectMod, effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
+fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
-        get_mod_affector_attr_id(modifier_data)?,
+        get_mod_affector_attr_id(e_modifier)?,
         ModAggrMode::Stack,
-        get_mod_operation(modifier_data)?,
-        ModAfeeFilter::Loc(get_mod_domain(modifier_data, effect)?),
-        get_mod_affectee_attr_id(modifier_data)?,
+        get_mod_operation(e_modifier)?,
+        ModAfeeFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
-fn conv_locgrp_mod(modifier_data: &ed::EEffectMod, effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
+fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
-        get_mod_affector_attr_id(modifier_data)?,
+        get_mod_affector_attr_id(e_modifier)?,
         ModAggrMode::Stack,
-        get_mod_operation(modifier_data)?,
-        ModAfeeFilter::LocGrp(get_mod_domain(modifier_data, effect)?, get_mod_grp_id(modifier_data)?),
-        get_mod_affectee_attr_id(modifier_data)?,
+        get_mod_operation(e_modifier)?,
+        ModAfeeFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
-fn conv_locsrq_mod(modifier_data: &ed::EEffectMod, effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
+fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
-        get_mod_affector_attr_id(modifier_data)?,
+        get_mod_affector_attr_id(e_modifier)?,
         ModAggrMode::Stack,
-        get_mod_operation(modifier_data)?,
-        ModAfeeFilter::LocSrq(get_mod_domain(modifier_data, effect)?, get_mod_skill_id(modifier_data)?),
-        get_mod_affectee_attr_id(modifier_data)?,
+        get_mod_operation(e_modifier)?,
+        ModAfeeFilter::LocSrq(get_mod_domain(e_modifier, a_effect)?, get_mod_skill_id(e_modifier)?),
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
-fn conv_ownsrq_mod(modifier_data: &ed::EEffectMod, effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
+fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
-        get_mod_affector_attr_id(modifier_data)?,
+        get_mod_affector_attr_id(e_modifier)?,
         ModAggrMode::Stack,
-        get_mod_operation(modifier_data)?,
-        ModAfeeFilter::OwnSrq(get_mod_domain(modifier_data, effect)?, get_mod_skill_id(modifier_data)?),
-        get_mod_affectee_attr_id(modifier_data)?,
+        get_mod_operation(e_modifier)?,
+        ModAfeeFilter::OwnSrq(get_mod_domain(e_modifier, a_effect)?, get_mod_skill_id(e_modifier)?),
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
-fn get_mod_affector_attr_id(modifier_data: &ed::EEffectMod) -> IntResult<ReeInt> {
-    get_arg_int(&modifier_data.args, "modifyingAttributeID")
+fn get_mod_affector_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<ReeInt> {
+    get_arg_int(&e_modifier.args, "modifyingAttributeID")
 }
 
-fn get_mod_affectee_attr_id(modifier_data: &ed::EEffectMod) -> IntResult<ReeInt> {
-    get_arg_int(&modifier_data.args, "modifiedAttributeID")
+fn get_mod_affectee_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<ReeInt> {
+    get_arg_int(&e_modifier.args, "modifiedAttributeID")
 }
 
-fn get_mod_domain(modifier_data: &ed::EEffectMod, effect: &ad::AEffect) -> IntResult<ModDomain> {
-    let domain = get_arg_str(&modifier_data.args, "domain")?;
+fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ModDomain> {
+    let domain = get_arg_str(&e_modifier.args, "domain")?;
     match domain.as_str() {
         "itemID" => Ok(ModDomain::Item),
         "charID" => Ok(ModDomain::Char),
         "shipID" => Ok(ModDomain::Ship),
         "structureID" => Ok(ModDomain::Structure),
-        "targetID" => match effect.tgt_mode {
+        "targetID" => match a_effect.tgt_mode {
             TgtMode::Item => Ok(ModDomain::Item),
             _ => Err(IntError::new(format!(
                 "modifier uses {} domain on untargeted effect",
@@ -282,8 +282,8 @@ fn get_mod_domain(modifier_data: &ed::EEffectMod, effect: &ad::AEffect) -> IntRe
     }
 }
 
-fn get_mod_operation(modifier_data: &ed::EEffectMod) -> IntResult<ModOp> {
-    let op = get_arg_int(&modifier_data.args, "operation")?;
+fn get_mod_operation(e_modifier: &ed::EEffectMod) -> IntResult<ModOp> {
+    let op = get_arg_int(&e_modifier.args, "operation")?;
     match op {
         -1 => Ok(ModOp::PreAssign),
         0 => Ok(ModOp::PreMul),
@@ -298,12 +298,12 @@ fn get_mod_operation(modifier_data: &ed::EEffectMod) -> IntResult<ModOp> {
     }
 }
 
-fn get_mod_grp_id(modifier_data: &ed::EEffectMod) -> IntResult<ReeInt> {
-    get_arg_int(&modifier_data.args, "groupID")
+fn get_mod_grp_id(e_modifier: &ed::EEffectMod) -> IntResult<ReeInt> {
+    get_arg_int(&e_modifier.args, "groupID")
 }
 
-fn get_mod_skill_id(modifier_data: &ed::EEffectMod) -> IntResult<ReeInt> {
-    get_arg_int(&modifier_data.args, "skillTypeID")
+fn get_mod_skill_id(e_modifier: &ed::EEffectMod) -> IntResult<ReeInt> {
+    get_arg_int(&e_modifier.args, "skillTypeID")
 }
 
 fn get_arg_int(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<ReeInt> {
@@ -326,19 +326,19 @@ fn get_arg_str(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<
     }
 }
 
-fn extract_ability_map<F, T>(gdata: &GData, getter: F) -> HashMap<ReeInt, HashSet<T>>
+fn extract_ability_map<F, T>(g_data: &GData, getter: F) -> HashMap<ReeInt, HashSet<T>>
 where
     F: Fn(&ed::EFighterAbil) -> T,
     T: Eq + Hash,
 {
     let mut map = HashMap::new();
-    for abil_data in gdata.abils.iter() {
-        match get_abil_effect(abil_data.id) {
+    for e_abil in g_data.abils.iter() {
+        match get_abil_effect(e_abil.id) {
             None => continue,
-            Some(eff_id) => map
-                .entry(eff_id)
+            Some(effect_id) => map
+                .entry(effect_id)
                 .or_insert_with(|| HashSet::new())
-                .insert(getter(&abil_data)),
+                .insert(getter(&e_abil)),
         };
     }
     map

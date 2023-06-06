@@ -28,5 +28,5 @@ pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> AResult<()>;
     /// Update data in handler with passed data.
-    fn update_data(&mut self, adata: AData, fingerprint: String);
+    fn update_data(&mut self, data: AData, fingerprint: String);
 }

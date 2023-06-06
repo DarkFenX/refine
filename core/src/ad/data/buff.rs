@@ -32,7 +32,7 @@ impl ABuff {
 }
 impl Named for ABuff {
     fn get_name() -> &'static str {
-        "ad::ABuff"
+        "ABuff"
     }
 }
 
@@ -58,6 +58,6 @@ impl ABuffAttrMod {
 }
 impl Named for ABuffAttrMod {
     fn get_name() -> &'static str {
-        "ad::ABuffAttrMod"
+        "ABuffAttrMod"
     }
 }

@@ -25,6 +25,6 @@ impl EItemAttr {
 }
 impl Named for EItemAttr {
     fn get_name() -> &'static str {
-        "ed::EItemAttr"
+        "EItemAttr"
     }
 }

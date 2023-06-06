@@ -22,6 +22,6 @@ impl EItemEffect {
 }
 impl Named for EItemEffect {
     fn get_name() -> &'static str {
-        "ed::EItemEffect"
+        "EItemEffect"
     }
 }
