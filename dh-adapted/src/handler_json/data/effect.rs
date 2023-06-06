@@ -1,10 +1,10 @@
-use super::enums::{ModAfeeFilter, ModAggrMode, ModBuildStatus, ModOp, State, TgtMode};
+use super::enums::{CModAfeeFilter, CModAggrMode, CModBuildStatus, CModOp, CState, CTgtMode};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(in crate::handler_json) struct Effect {
+pub(in crate::handler_json) struct CEffect {
     id: rc::ReeInt,
-    state: State,
-    tgt_mode: TgtMode,
+    state: CState,
+    tgt_mode: CTgtMode,
     is_assist: bool,
     is_offense: bool,
     hisec: Option<bool>,
@@ -16,34 +16,34 @@ pub(in crate::handler_json) struct Effect {
     track_attr_id: Option<rc::ReeInt>,
     chance_attr_id: Option<rc::ReeInt>,
     resist_attr_id: Option<rc::ReeInt>,
-    mod_build_status: ModBuildStatus,
-    mods: Vec<AttrMod>,
+    mod_build_status: CModBuildStatus,
+    mods: Vec<CAttrMod>,
     stop_ids: Vec<rc::ReeInt>,
 }
-impl From<&rc::ad::AEffect> for Effect {
-    fn from(value: &rc::ad::AEffect) -> Self {
-        Effect {
-            id: value.id,
-            state: (&value.state).into(),
-            tgt_mode: (&value.tgt_mode).into(),
-            is_assist: value.is_assist,
-            is_offense: value.is_offense,
-            hisec: value.hisec,
-            lowsec: value.lowsec,
-            discharge_attr_id: value.discharge_attr_id,
-            duration_attr_id: value.duration_attr_id,
-            range_attr_id: value.range_attr_id,
-            falloff_attr_id: value.falloff_attr_id,
-            track_attr_id: value.track_attr_id,
-            chance_attr_id: value.chance_attr_id,
-            resist_attr_id: value.resist_attr_id,
-            mod_build_status: (&value.mod_build_status).into(),
-            mods: value.mods.iter().map(|v| v.into()).collect(),
-            stop_ids: value.stop_ids.clone(),
+impl From<&rc::ad::AEffect> for CEffect {
+    fn from(a_effect: &rc::ad::AEffect) -> Self {
+        CEffect {
+            id: a_effect.id,
+            state: (&a_effect.state).into(),
+            tgt_mode: (&a_effect.tgt_mode).into(),
+            is_assist: a_effect.is_assist,
+            is_offense: a_effect.is_offense,
+            hisec: a_effect.hisec,
+            lowsec: a_effect.lowsec,
+            discharge_attr_id: a_effect.discharge_attr_id,
+            duration_attr_id: a_effect.duration_attr_id,
+            range_attr_id: a_effect.range_attr_id,
+            falloff_attr_id: a_effect.falloff_attr_id,
+            track_attr_id: a_effect.track_attr_id,
+            chance_attr_id: a_effect.chance_attr_id,
+            resist_attr_id: a_effect.resist_attr_id,
+            mod_build_status: (&a_effect.mod_build_status).into(),
+            mods: a_effect.mods.iter().map(|v| v.into()).collect(),
+            stop_ids: a_effect.stop_ids.clone(),
         }
     }
 }
-impl Into<rc::ad::AEffect> for &Effect {
+impl Into<rc::ad::AEffect> for &CEffect {
     fn into(self) -> rc::ad::AEffect {
         rc::ad::AEffect {
             id: self.id,
@@ -68,25 +68,25 @@ impl Into<rc::ad::AEffect> for &Effect {
 }
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-struct AttrMod {
+struct CAttrMod {
     afor_attr_id: rc::ReeInt,
-    aggr_mode: ModAggrMode,
-    op: ModOp,
-    afee_filter: ModAfeeFilter,
+    aggr_mode: CModAggrMode,
+    op: CModOp,
+    afee_filter: CModAfeeFilter,
     afee_attr_id: rc::ReeInt,
 }
-impl From<&rc::ad::AAttrMod> for AttrMod {
-    fn from(value: &rc::ad::AAttrMod) -> Self {
-        AttrMod {
-            afor_attr_id: value.afor_attr_id,
-            aggr_mode: (&value.aggr_mode).into(),
-            op: (&value.op).into(),
-            afee_filter: (&value.afee_filter).into(),
-            afee_attr_id: value.afee_attr_id,
+impl From<&rc::ad::AAttrMod> for CAttrMod {
+    fn from(a_modifier: &rc::ad::AAttrMod) -> Self {
+        CAttrMod {
+            afor_attr_id: a_modifier.afor_attr_id,
+            aggr_mode: (&a_modifier.aggr_mode).into(),
+            op: (&a_modifier.op).into(),
+            afee_filter: (&a_modifier.afee_filter).into(),
+            afee_attr_id: a_modifier.afee_attr_id,
         }
     }
 }
-impl Into<rc::ad::AAttrMod> for &AttrMod {
+impl Into<rc::ad::AAttrMod> for &CAttrMod {
     fn into(self) -> rc::ad::AAttrMod {
         rc::ad::AAttrMod {
             afor_attr_id: self.afor_attr_id,

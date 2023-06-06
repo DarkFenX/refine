@@ -63,7 +63,7 @@ fn conv_buff_aggr_mode(aggr_mode: &str, key: ReeInt) -> IntResult<ModAggrMode> {
     match aggr_mode {
         "Maximum" => Ok(ModAggrMode::Max(key)),
         "Minimum" => Ok(ModAggrMode::Min(key)),
-        _ => Err(IntError::new(format!("unexpected aggregate mode \"{}\"", aggr_mode))),
+        _ => Err(IntError::new(format!("unexpected aggregate mode \"{aggr_mode}\""))),
     }
 }
 
@@ -78,6 +78,6 @@ fn conv_buff_op(operation: &str) -> IntResult<ModOp> {
         "PostDiv" => Ok(ModOp::PostDiv),
         "PostPercent" => Ok(ModOp::PostPerc),
         "PostAssignment" => Ok(ModOp::PostAssign),
-        _ => Err(IntError::new(format!("unexpected operation \"{}\"", operation))),
+        _ => Err(IntError::new(format!("unexpected operation \"{operation}\""))),
     }
 }

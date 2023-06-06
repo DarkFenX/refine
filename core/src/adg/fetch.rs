@@ -27,7 +27,7 @@ where
             MAX_WARNS
         );
         for warn_msg in e_cont.warns.iter().take(MAX_WARNS) {
-            log::warn!("{}", warn_msg);
+            log::warn!("{warn_msg}");
         }
     }
     Ok(())

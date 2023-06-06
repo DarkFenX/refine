@@ -24,7 +24,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> IntR
     while changes {
         counter += 1;
         if counter > MAX_CYCLES {
-            let msg = format!("reached limit of {} cycles during cleanup", MAX_CYCLES);
+            let msg = format!("reached limit of {MAX_CYCLES} cycles during cleanup");
             log::error!("{msg}");
             return Err(IntError::new(msg));
         }

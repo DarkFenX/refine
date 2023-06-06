@@ -98,7 +98,7 @@ fn default_effects(g_data: &mut GData) {
         }
     }
     if unsets > 0 {
-        let msg = format!("set {} excessive default effects as non-default", unsets);
+        let msg = format!("set {unsets} excessive default effects as non-default");
         log::warn!("{msg}");
     }
 }

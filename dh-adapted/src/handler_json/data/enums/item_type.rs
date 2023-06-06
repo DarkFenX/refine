@@ -1,6 +1,6 @@
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
-pub(in crate::handler_json) enum ItemType {
+pub(in crate::handler_json) enum CItemType {
     Booster,
     Character,
     Charge,
@@ -18,9 +18,9 @@ pub(in crate::handler_json) enum ItemType {
     Stance,
     Subsystem,
 }
-impl From<&rc::consts::ItemType> for ItemType {
-    fn from(value: &rc::consts::ItemType) -> Self {
-        match value {
+impl From<&rc::consts::ItemType> for CItemType {
+    fn from(item_type: &rc::consts::ItemType) -> Self {
+        match item_type {
             rc::consts::ItemType::Booster => Self::Booster,
             rc::consts::ItemType::Character => Self::Character,
             rc::consts::ItemType::Charge => Self::Charge,
@@ -40,25 +40,25 @@ impl From<&rc::consts::ItemType> for ItemType {
         }
     }
 }
-impl Into<rc::consts::ItemType> for &ItemType {
+impl Into<rc::consts::ItemType> for &CItemType {
     fn into(self) -> rc::consts::ItemType {
         match self {
-            ItemType::Booster => rc::consts::ItemType::Booster,
-            ItemType::Character => rc::consts::ItemType::Character,
-            ItemType::Charge => rc::consts::ItemType::Charge,
-            ItemType::Drone => rc::consts::ItemType::Drone,
-            ItemType::EffectBeacon => rc::consts::ItemType::EffectBeacon,
-            ItemType::FighterSquad => rc::consts::ItemType::FighterSquad,
-            ItemType::Implant => rc::consts::ItemType::Implant,
-            ItemType::ModHigh => rc::consts::ItemType::ModHigh,
-            ItemType::ModLow => rc::consts::ItemType::ModLow,
-            ItemType::ModMid => rc::consts::ItemType::ModMid,
-            ItemType::Mutaplasmid => rc::consts::ItemType::Mutaplasmid,
-            ItemType::Rig => rc::consts::ItemType::Rig,
-            ItemType::Ship => rc::consts::ItemType::Ship,
-            ItemType::Skill => rc::consts::ItemType::Skill,
-            ItemType::Stance => rc::consts::ItemType::Stance,
-            ItemType::Subsystem => rc::consts::ItemType::Subsystem,
+            CItemType::Booster => rc::consts::ItemType::Booster,
+            CItemType::Character => rc::consts::ItemType::Character,
+            CItemType::Charge => rc::consts::ItemType::Charge,
+            CItemType::Drone => rc::consts::ItemType::Drone,
+            CItemType::EffectBeacon => rc::consts::ItemType::EffectBeacon,
+            CItemType::FighterSquad => rc::consts::ItemType::FighterSquad,
+            CItemType::Implant => rc::consts::ItemType::Implant,
+            CItemType::ModHigh => rc::consts::ItemType::ModHigh,
+            CItemType::ModLow => rc::consts::ItemType::ModLow,
+            CItemType::ModMid => rc::consts::ItemType::ModMid,
+            CItemType::Mutaplasmid => rc::consts::ItemType::Mutaplasmid,
+            CItemType::Rig => rc::consts::ItemType::Rig,
+            CItemType::Ship => rc::consts::ItemType::Ship,
+            CItemType::Skill => rc::consts::ItemType::Skill,
+            CItemType::Stance => rc::consts::ItemType::Stance,
+            CItemType::Subsystem => rc::consts::ItemType::Subsystem,
         }
     }
 }

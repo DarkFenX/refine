@@ -52,7 +52,7 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     }
     /// Get adapted data fingerprint.
     ///
-    /// Always return None, since RAM-only handler
+    /// Always return None, since it does not persist data and does not store fingerprint.
     fn get_data_fingerprint(&self) -> Option<&str> {
         None
     }
@@ -63,11 +63,11 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
         Err(Error::new(ErrorKind::NoCacheSupport).into())
     }
     /// Update handler with passed adapted data.
-    fn update_data(&mut self, adata: rc::ad::AData, _: String) {
-        move_vec_to_map(adata.items, &mut self.storage_items);
-        move_vec_to_map(adata.attrs, &mut self.storage_attrs);
-        move_vec_to_map(adata.effects, &mut self.storage_effects);
-        move_vec_to_map(adata.mutas, &mut self.storage_mutas);
-        move_vec_to_map(adata.buffs, &mut self.storage_buffs);
+    fn update_data(&mut self, a_data: rc::ad::AData, _: String) {
+        move_vec_to_map(a_data.items, &mut self.storage_items);
+        move_vec_to_map(a_data.attrs, &mut self.storage_attrs);
+        move_vec_to_map(a_data.effects, &mut self.storage_effects);
+        move_vec_to_map(a_data.mutas, &mut self.storage_mutas);
+        move_vec_to_map(a_data.buffs, &mut self.storage_buffs);
     }
 }

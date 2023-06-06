@@ -31,7 +31,7 @@ impl PhbHttpEdh {
         let base_url_conv = base_url.into_url().map_err(|e| {
             Error::new(ErrorKind::PhbHttpInvalidBaseUrl(
                 base_url.into(),
-                format!("failed to interpret: {}", e),
+                format!("failed to interpret: {e}"),
             ))
         })?;
         match base_url_conv.cannot_be_a_base() {

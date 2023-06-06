@@ -197,7 +197,7 @@ fn extract_stopper(e_modifier: &ed::EEffectMod) -> IntResult<Option<ReeInt>> {
         "EffectStopper" => {
             let domain = get_arg_str(&e_modifier.args, "domain")?;
             if domain.ne("target") {
-                return Err(IntError::new(format!("unexpected domain \"{}\"", domain)));
+                return Err(IntError::new(format!("unexpected domain \"{domain}\"")));
             }
             Ok(Some(get_arg_int(&e_modifier.args, "effectID")?))
         }
@@ -278,7 +278,7 @@ fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRes
             ))),
         },
         "otherID" => Ok(ModDomain::Other),
-        _ => Err(IntError::new(format!("unknown domain {}", domain))),
+        _ => Err(IntError::new(format!("unknown domain {domain}"))),
     }
 }
 
@@ -294,7 +294,7 @@ fn get_mod_operation(e_modifier: &ed::EEffectMod) -> IntResult<ModOp> {
         5 => Ok(ModOp::PostDiv),
         6 => Ok(ModOp::PostPerc),
         7 => Ok(ModOp::PostAssign),
-        _ => Err(IntError::new(format!("unknown operation {}", op))),
+        _ => Err(IntError::new(format!("unknown operation {op}"))),
     }
 }
 
@@ -307,22 +307,18 @@ fn get_mod_skill_id(e_modifier: &ed::EEffectMod) -> IntResult<ReeInt> {
 }
 
 fn get_arg_int(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<ReeInt> {
-    let primitive = args
-        .get(name)
-        .ok_or(IntError::new(format!("no \"{}\" in args", name)))?;
+    let primitive = args.get(name).ok_or(IntError::new(format!("no \"{name}\" in args")))?;
     match primitive {
         ed::EPrimitive::Int(i) => Ok(*i),
-        _ => Err(IntError::new(format!("expected int in \"{}\" value", name))),
+        _ => Err(IntError::new(format!("expected int in \"{name}\" value"))),
     }
 }
 
 fn get_arg_str(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<String> {
-    let primitive = args
-        .get(name)
-        .ok_or(IntError::new(format!("no \"{}\" in args", name)))?;
+    let primitive = args.get(name).ok_or(IntError::new(format!("no \"{name}\" in args")))?;
     match primitive {
         ed::EPrimitive::String(s) => Ok(s.into()),
-        _ => Err(IntError::new(format!("expected string in \"{}\" value", name))),
+        _ => Err(IntError::new(format!("expected string in \"{name}\" value"))),
     }
 }
 
@@ -349,6 +345,6 @@ fn get_abil_tgt_mode(tgt_mode: &str) -> IntResult<TgtMode> {
         "untargeted" => Ok(TgtMode::None),
         "itemTargeted" => Ok(TgtMode::Item),
         "pointTargeted" => Ok(TgtMode::Point),
-        _ => Err(IntError::new(format!("unknown ability target mode \"{}\"", tgt_mode))),
+        _ => Err(IntError::new(format!("unknown ability target mode \"{tgt_mode}\""))),
     }
 }

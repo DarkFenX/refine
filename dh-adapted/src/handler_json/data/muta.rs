@@ -1,21 +1,21 @@
 use std::collections::HashMap;
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(in crate::handler_json) struct Muta {
+pub(in crate::handler_json) struct CMuta {
     id: rc::ReeInt,
     item_map: HashMap<rc::ReeInt, rc::ReeInt>,
-    attr_mods: HashMap<rc::ReeInt, MutaAttrRange>,
+    attr_mods: HashMap<rc::ReeInt, CMutaAttrRange>,
 }
-impl From<&rc::ad::AMuta> for Muta {
-    fn from(value: &rc::ad::AMuta) -> Self {
-        Muta {
-            id: value.id,
-            item_map: value.item_map.clone(),
-            attr_mods: value.attr_mods.iter().map(|(k, v)| (*k, v.into())).collect(),
+impl From<&rc::ad::AMuta> for CMuta {
+    fn from(a_muta: &rc::ad::AMuta) -> Self {
+        CMuta {
+            id: a_muta.id,
+            item_map: a_muta.item_map.clone(),
+            attr_mods: a_muta.attr_mods.iter().map(|(k, v)| (*k, v.into())).collect(),
         }
     }
 }
-impl Into<rc::ad::AMuta> for &Muta {
+impl Into<rc::ad::AMuta> for &CMuta {
     fn into(self) -> rc::ad::AMuta {
         rc::ad::AMuta {
             id: self.id,
@@ -26,19 +26,19 @@ impl Into<rc::ad::AMuta> for &Muta {
 }
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-struct MutaAttrRange {
+struct CMutaAttrRange {
     min_mult: rc::ReeFloat,
     max_mult: rc::ReeFloat,
 }
-impl From<&rc::ad::AMutaAttrRange> for MutaAttrRange {
-    fn from(value: &rc::ad::AMutaAttrRange) -> Self {
-        MutaAttrRange {
-            min_mult: value.min_mult,
-            max_mult: value.max_mult,
+impl From<&rc::ad::AMutaAttrRange> for CMutaAttrRange {
+    fn from(a_muta_range: &rc::ad::AMutaAttrRange) -> Self {
+        CMutaAttrRange {
+            min_mult: a_muta_range.min_mult,
+            max_mult: a_muta_range.max_mult,
         }
     }
 }
-impl Into<rc::ad::AMutaAttrRange> for &MutaAttrRange {
+impl Into<rc::ad::AMutaAttrRange> for &CMutaAttrRange {
     fn into(self) -> rc::ad::AMutaAttrRange {
         rc::ad::AMutaAttrRange {
             min_mult: self.min_mult,
