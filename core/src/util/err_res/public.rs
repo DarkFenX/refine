@@ -20,8 +20,8 @@ pub enum ErrorKind {
     InvalidSkillLevel(ReeInt),
     UnexpectedItemType(ReeId, &'static str, &'static str),
     ModuleSlotTaken(ModRack, ReeIdx, ReeId),
-    CachedAttrNotFound(ReeInt),
-    CachedItemNotLoaded(ReeInt),
+    AAttrNotFound(ReeInt),
+    AItemNotLoaded(ReeInt),
     NoAttrBaseValue(ReeInt, ReeInt),
 }
 
@@ -52,8 +52,8 @@ impl fmt::Display for Error {
             ErrorKind::ModuleSlotTaken(rack, position, item_id) => {
                 write!(f, "{rack} slot {position} is occupied by item {item_id}")
             }
-            ErrorKind::CachedAttrNotFound(attr_id) => write!(f, "{} {} not found", ad::AAttr::get_name(), attr_id),
-            ErrorKind::CachedItemNotLoaded(type_id) => write!(f, "{} {} not found", ad::AItem::get_name(), type_id),
+            ErrorKind::AAttrNotFound(attr_id) => write!(f, "{} {} not found", ad::AAttr::get_name(), attr_id),
+            ErrorKind::AItemNotLoaded(type_id) => write!(f, "{} {} not found", ad::AItem::get_name(), type_id),
             ErrorKind::NoAttrBaseValue(attr_id, type_id) => write!(
                 f,
                 "{} {} has no base value for {} {}",

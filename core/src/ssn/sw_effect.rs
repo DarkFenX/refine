@@ -3,18 +3,18 @@ use crate::{
     ssi,
 };
 
-pub struct SwEffectInfo {
+pub struct SsSwEffectInfo {
     pub id: ReeId,
-    pub type_id: ReeInt,
+    pub a_item_id: ReeInt,
     pub enabled: bool,
 }
-impl SwEffectInfo {
-    fn new(id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
-        Self { id, type_id, enabled }
+impl SsSwEffectInfo {
+    fn new(id: ReeId, a_item_id: ReeInt, enabled: bool) -> Self {
+        Self { id, a_item_id, enabled }
     }
 }
-impl From<&ssi::SwEffect> for SwEffectInfo {
-    fn from(e: &ssi::SwEffect) -> Self {
-        SwEffectInfo::new(e.id, e.type_id, e.get_bool_state())
+impl From<&ssi::SsSwEffect> for SsSwEffectInfo {
+    fn from(ss_sw_effect: &ssi::SsSwEffect) -> Self {
+        SsSwEffectInfo::new(ss_sw_effect.id, ss_sw_effect.a_item_id, ss_sw_effect.get_bool_state())
     }
 }

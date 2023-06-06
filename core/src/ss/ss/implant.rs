@@ -7,23 +7,23 @@ use crate::{
 
 impl SolarSystem {
     // Public
-    pub fn get_implant_info(&self, item_id: &ReeId) -> Result<ssn::ImplantInfo> {
+    pub fn get_implant_info(&self, item_id: &ReeId) -> Result<ssn::SsImplantInfo> {
         Ok(self.get_implant(item_id)?.into())
     }
-    pub fn get_fit_implant_infos(&self, fit_id: &ReeId) -> Vec<ssn::ImplantInfo> {
+    pub fn get_fit_implant_infos(&self, fit_id: &ReeId) -> Vec<ssn::SsImplantInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                ssi::Item::Implant(i) if i.fit_id == *fit_id => Some(i.into()),
+                ssi::SsItem::Implant(i) if i.fit_id == *fit_id => Some(i.into()),
                 _ => None,
             })
             .collect()
     }
-    pub fn add_implant(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::ImplantInfo> {
+    pub fn add_implant(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::SsImplantInfo> {
         let item_id = self.alloc_item_id()?;
-        let implant = ssi::Implant::new(&self.src, item_id, fit_id, type_id, state);
-        let info = ssn::ImplantInfo::from(&implant);
-        let item = ssi::Item::Implant(implant);
+        let implant = ssi::SsImplant::new(&self.src, item_id, fit_id, type_id, state);
+        let info = ssn::SsImplantInfo::from(&implant);
+        let item = ssi::SsItem::Implant(implant);
         self.add_item(item);
         Ok(info)
     }
@@ -32,25 +32,25 @@ impl SolarSystem {
         Ok(())
     }
     // Non-public
-    fn get_implant(&self, item_id: &ReeId) -> Result<&ssi::Implant> {
+    fn get_implant(&self, item_id: &ReeId) -> Result<&ssi::SsImplant> {
         let item = self.get_item(item_id)?;
         match item {
-            ssi::Item::Implant(implant) => Ok(implant),
+            ssi::SsItem::Implant(implant) => Ok(implant),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Implant::get_name(),
+                ssi::SsImplant::get_name(),
             ))),
         }
     }
-    fn get_implant_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::Implant> {
+    fn get_implant_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::SsImplant> {
         let item = self.get_item_mut(item_id)?;
         match item {
-            ssi::Item::Implant(implant) => Ok(implant),
+            ssi::SsItem::Implant(implant) => Ok(implant),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Implant::get_name(),
+                ssi::SsImplant::get_name(),
             ))),
         }
     }

@@ -4,26 +4,32 @@ use crate::{
     ssi,
 };
 
-pub struct FighterInfo {
+pub struct SsFighterInfo {
     pub id: ReeId,
     pub fit_id: ReeId,
-    pub type_id: ReeInt,
+    pub a_item_id: ReeInt,
     pub state: State,
     pub amt_override: Option<ReeInt>,
 }
-impl FighterInfo {
-    fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State, amt_override: Option<ReeInt>) -> Self {
+impl SsFighterInfo {
+    fn new(id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: State, amt_override: Option<ReeInt>) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             state,
             amt_override,
         }
     }
 }
-impl From<&ssi::Fighter> for FighterInfo {
-    fn from(f: &ssi::Fighter) -> Self {
-        FighterInfo::new(f.id, f.fit_id, f.type_id, f.state, f.amt_override)
+impl From<&ssi::SsFighter> for SsFighterInfo {
+    fn from(ss_fighter: &ssi::SsFighter) -> Self {
+        SsFighterInfo::new(
+            ss_fighter.id,
+            ss_fighter.fit_id,
+            ss_fighter.a_item_id,
+            ss_fighter.state,
+            ss_fighter.amt_override,
+        )
     }
 }

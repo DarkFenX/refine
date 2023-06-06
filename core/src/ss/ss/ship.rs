@@ -9,10 +9,10 @@ use crate::{
 
 impl SolarSystem {
     // Public
-    pub fn get_fit_ship_info(&self, fit_id: &ReeId) -> Result<ssn::ShipInfo> {
+    pub fn get_fit_ship_info(&self, fit_id: &ReeId) -> Result<ssn::SsShipInfo> {
         self.get_fit_ship(fit_id).map(|v| v.into())
     }
-    pub fn set_fit_ship(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::ShipInfo> {
+    pub fn set_fit_ship(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::SsShipInfo> {
         match self.remove_fit_ship(&fit_id) {
             Ok(_) => (),
             // Suppress ItemTypeNotFound error, since this method is supposed to be used
@@ -23,9 +23,9 @@ impl SolarSystem {
             },
         };
         let item_id = self.alloc_item_id()?;
-        let ship = ssi::Ship::new(&self.src, item_id, fit_id, type_id, state);
-        let info = ssn::ShipInfo::from(&ship);
-        let item = ssi::Item::Ship(ship);
+        let ship = ssi::SsShip::new(&self.src, item_id, fit_id, type_id, state);
+        let info = ssn::SsShipInfo::from(&ship);
+        let item = ssi::SsItem::Ship(ship);
         self.add_item(item);
         Ok(info)
     }
@@ -38,32 +38,32 @@ impl SolarSystem {
         let removed = self
             .items
             .drain_filter(|_, v| match v {
-                ssi::Item::Ship(s) if s.fit_id == *fit_id => true,
+                ssi::SsItem::Ship(s) if s.fit_id == *fit_id => true,
                 _ => false,
             })
             .collect_vec();
         match removed.is_empty() {
-            true => Err(Error::new(ErrorKind::ItemTypeNotFound(ssi::Ship::get_name()))),
+            true => Err(Error::new(ErrorKind::ItemTypeNotFound(ssi::SsShip::get_name()))),
             false => Ok(()),
         }
     }
     // Non-public
-    fn get_fit_ship(&self, fit_id: &ReeId) -> Result<&ssi::Ship> {
+    fn get_fit_ship(&self, fit_id: &ReeId) -> Result<&ssi::SsShip> {
         self.items
             .values()
             .find_map(|v| match v {
-                ssi::Item::Ship(s) if s.fit_id == *fit_id => Some(s),
+                ssi::SsItem::Ship(s) if s.fit_id == *fit_id => Some(s),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::Ship::get_name())))
+            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::SsShip::get_name())))
     }
-    fn get_fit_ship_mut(&mut self, fit_id: &ReeId) -> Result<&mut ssi::Ship> {
+    fn get_fit_ship_mut(&mut self, fit_id: &ReeId) -> Result<&mut ssi::SsShip> {
         self.items
             .values_mut()
             .find_map(|v| match v {
-                ssi::Item::Ship(s) if s.fit_id == *fit_id => Some(s),
+                ssi::SsItem::Ship(s) if s.fit_id == *fit_id => Some(s),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::Ship::get_name())))
+            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::SsShip::get_name())))
     }
 }

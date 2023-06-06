@@ -10,23 +10,23 @@ use crate::{
 
 use super::{bool_to_state, state_to_bool};
 
-pub(crate) struct Skill {
+pub(crate) struct SsSkill {
     pub(crate) id: ReeId,
     pub(crate) fit_id: ReeId,
-    pub(crate) type_id: ReeInt,
+    pub(crate) a_item_id: ReeInt,
     pub(crate) level: ReeInt,
     pub(crate) state: State,
-    pub(crate) aitem: Option<Arc<ad::AItem>>,
+    pub(crate) a_item: Option<Arc<ad::AItem>>,
 }
-impl Skill {
-    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, level: ReeInt, state: bool) -> Self {
+impl SsSkill {
+    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, level: ReeInt, state: bool) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             level,
             state: bool_to_state(state),
-            aitem: src.ahandler.get_item(&type_id),
+            a_item: src.ahandler.get_item(&a_item_id),
         }
     }
     pub(crate) fn get_bool_state(&self) -> bool {
@@ -36,13 +36,13 @@ impl Skill {
         self.state = bool_to_state(state);
     }
 }
-impl Named for Skill {
+impl Named for SsSkill {
     fn get_name() -> &'static str {
-        "ssi:Skill"
+        "SsSkill"
     }
 }
-impl fmt::Display for Skill {
+impl fmt::Display for SsSkill {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.id, self.type_id)
+        write!(f, "{}(id={}, a_item_id={})", Self::get_name(), self.id, self.a_item_id)
     }
 }

@@ -7,12 +7,12 @@ pub(crate) struct RigInfo {
     pub type_id: rc::ReeInt,
     pub enabled: bool,
 }
-impl From<&rc::RigInfo> for RigInfo {
-    fn from(value: &rc::RigInfo) -> Self {
+impl From<&rc::SsRigInfo> for RigInfo {
+    fn from(value: &rc::SsRigInfo) -> Self {
         Self {
             id: value.id,
             fit_id: value.fit_id,
-            type_id: value.type_id,
+            type_id: value.a_item_id,
             enabled: value.enabled,
         }
     }

@@ -3,24 +3,29 @@ use crate::{
     ssi,
 };
 
-pub struct StanceInfo {
+pub struct SsStanceInfo {
     pub id: ReeId,
     pub fit_id: ReeId,
-    pub type_id: ReeInt,
+    pub a_item_id: ReeInt,
     pub enabled: bool,
 }
-impl StanceInfo {
-    fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
+impl SsStanceInfo {
+    fn new(id: ReeId, fit_id: ReeId, a_item_id: ReeInt, enabled: bool) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             enabled,
         }
     }
 }
-impl From<&ssi::Stance> for StanceInfo {
-    fn from(s: &ssi::Stance) -> Self {
-        StanceInfo::new(s.id, s.fit_id, s.type_id, s.get_bool_state())
+impl From<&ssi::SsStance> for SsStanceInfo {
+    fn from(ss_stance: &ssi::SsStance) -> Self {
+        SsStanceInfo::new(
+            ss_stance.id,
+            ss_stance.fit_id,
+            ss_stance.a_item_id,
+            ss_stance.get_bool_state(),
+        )
     }
 }

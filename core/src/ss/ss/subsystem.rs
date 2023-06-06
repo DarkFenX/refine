@@ -7,23 +7,23 @@ use crate::{
 
 impl SolarSystem {
     // Public
-    pub fn get_subsystem_info(&self, item_id: &ReeId) -> Result<ssn::SubsystemInfo> {
+    pub fn get_subsystem_info(&self, item_id: &ReeId) -> Result<ssn::SsSubsystemInfo> {
         Ok(self.get_subsystem(item_id)?.into())
     }
-    pub fn get_fit_subsystem_infos(&self, fit_id: &ReeId) -> Vec<ssn::SubsystemInfo> {
+    pub fn get_fit_subsystem_infos(&self, fit_id: &ReeId) -> Vec<ssn::SsSubsystemInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                ssi::Item::Subsystem(s) if s.fit_id == *fit_id => Some(s.into()),
+                ssi::SsItem::Subsystem(s) if s.fit_id == *fit_id => Some(s.into()),
                 _ => None,
             })
             .collect()
     }
-    pub fn add_subsystem(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::SubsystemInfo> {
+    pub fn add_subsystem(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::SsSubsystemInfo> {
         let item_id = self.alloc_item_id()?;
-        let subsystem = ssi::Subsystem::new(&self.src, item_id, fit_id, type_id, state);
-        let info = ssn::SubsystemInfo::from(&subsystem);
-        let item = ssi::Item::Subsystem(subsystem);
+        let subsystem = ssi::SsSubsystem::new(&self.src, item_id, fit_id, type_id, state);
+        let info = ssn::SsSubsystemInfo::from(&subsystem);
+        let item = ssi::SsItem::Subsystem(subsystem);
         self.add_item(item);
         Ok(info)
     }
@@ -32,25 +32,25 @@ impl SolarSystem {
         Ok(())
     }
     // Non-public
-    fn get_subsystem(&self, item_id: &ReeId) -> Result<&ssi::Subsystem> {
+    fn get_subsystem(&self, item_id: &ReeId) -> Result<&ssi::SsSubsystem> {
         let item = self.get_item(item_id)?;
         match item {
-            ssi::Item::Subsystem(subsystem) => Ok(subsystem),
+            ssi::SsItem::Subsystem(subsystem) => Ok(subsystem),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Subsystem::get_name(),
+                ssi::SsSubsystem::get_name(),
             ))),
         }
     }
-    fn get_subsystem_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::Subsystem> {
+    fn get_subsystem_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::SsSubsystem> {
         let item = self.get_item_mut(item_id)?;
         match item {
-            ssi::Item::Subsystem(subsystem) => Ok(subsystem),
+            ssi::SsItem::Subsystem(subsystem) => Ok(subsystem),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Subsystem::get_name(),
+                ssi::SsSubsystem::get_name(),
             ))),
         }
     }

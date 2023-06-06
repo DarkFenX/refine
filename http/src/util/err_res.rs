@@ -46,8 +46,8 @@ impl Error {
                 rc::ErrorKind::InvalidSkillLevel(_) => "COR-008",
                 rc::ErrorKind::UnexpectedItemType(_, _, _) => "COR-009",
                 rc::ErrorKind::ModuleSlotTaken(_, _, _) => "COR-010",
-                rc::ErrorKind::CachedAttrNotFound(_) => "COR-011",
-                rc::ErrorKind::CachedItemNotLoaded(_) => "COR-012",
+                rc::ErrorKind::AAttrNotFound(_) => "COR-011",
+                rc::ErrorKind::AItemNotLoaded(_) => "COR-012",
                 rc::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
             },
         };

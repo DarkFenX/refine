@@ -7,12 +7,12 @@ pub(crate) struct ShipInfo {
     pub type_id: rc::ReeInt,
     pub enabled: bool,
 }
-impl From<&rc::ShipInfo> for ShipInfo {
-    fn from(value: &rc::ShipInfo) -> Self {
+impl From<&rc::SsShipInfo> for ShipInfo {
+    fn from(value: &rc::SsShipInfo) -> Self {
         Self {
             id: value.id,
             fit_id: value.fit_id,
-            type_id: value.type_id,
+            type_id: value.a_item_id,
             enabled: value.enabled,
         }
     }

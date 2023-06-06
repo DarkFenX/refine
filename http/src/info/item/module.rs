@@ -6,12 +6,12 @@ pub(crate) struct ModuleInfo {
     pub fit_id: rc::ReeId,
     pub type_id: rc::ReeInt,
 }
-impl From<&rc::ModuleInfo> for ModuleInfo {
-    fn from(value: &rc::ModuleInfo) -> Self {
+impl From<&rc::SsModuleInfo> for ModuleInfo {
+    fn from(value: &rc::SsModuleInfo) -> Self {
         Self {
             id: value.id,
             fit_id: value.fit_id,
-            type_id: value.type_id,
+            type_id: value.a_item_id,
         }
     }
 }

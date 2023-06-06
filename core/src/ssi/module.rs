@@ -8,46 +8,46 @@ use crate::{
     util::Named,
 };
 
-pub(crate) struct Module {
+pub(crate) struct SsModule {
     pub(crate) id: ReeId,
     pub(crate) fit_id: ReeId,
-    pub(crate) type_id: ReeInt,
+    pub(crate) a_item_id: ReeInt,
     pub(crate) state: State,
     pub(crate) rack: ModRack,
     pub(crate) pos: ReeIdx,
-    pub(crate) charge_id: Option<ReeId>,
-    pub(crate) aitem: Option<Arc<ad::AItem>>,
+    pub(crate) charge_a_item_id: Option<ReeId>,
+    pub(crate) a_item: Option<Arc<ad::AItem>>,
 }
-impl Module {
+impl SsModule {
     pub(crate) fn new(
         src: &Arc<Src>,
         id: ReeId,
         fit_id: ReeId,
-        type_id: ReeInt,
+        a_item_id: ReeInt,
         state: State,
         rack: ModRack,
         pos: ReeIdx,
-        charge_id: Option<ReeId>,
+        charge_a_item_id: Option<ReeId>,
     ) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             state,
             rack,
             pos,
-            charge_id,
-            aitem: src.ahandler.get_item(&type_id),
+            charge_a_item_id: charge_a_item_id,
+            a_item: src.ahandler.get_item(&a_item_id),
         }
     }
 }
-impl Named for Module {
+impl Named for SsModule {
     fn get_name() -> &'static str {
-        "ssi:Module"
+        "SsModule"
     }
 }
-impl fmt::Display for Module {
+impl fmt::Display for SsModule {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.id, self.type_id)
+        write!(f, "{}(id={}, a_item_id={})", Self::get_name(), self.id, self.a_item_id)
     }
 }

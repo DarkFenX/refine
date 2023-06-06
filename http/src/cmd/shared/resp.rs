@@ -12,30 +12,30 @@ pub(crate) struct ItemIdsResp {
     charge_id: Option<String>,
 }
 impl ItemIdsResp {
-    fn new(item_id: rc::ReeId, charge_info: Option<rc::ChargeInfo>) -> Self {
+    fn new(item_id: rc::ReeId, charge_info: Option<rc::SsChargeInfo>) -> Self {
         Self {
             id: item_id.to_string(),
             charge_id: charge_info.map(|v| v.id.to_string()),
         }
     }
 }
-impl From<rc::ImplantInfo> for ItemIdsResp {
-    fn from(value: rc::ImplantInfo) -> Self {
+impl From<rc::SsImplantInfo> for ItemIdsResp {
+    fn from(value: rc::SsImplantInfo) -> Self {
         ItemIdsResp::new(value.id, None)
     }
 }
-impl From<rc::ShipInfo> for ItemIdsResp {
-    fn from(value: rc::ShipInfo) -> Self {
+impl From<rc::SsShipInfo> for ItemIdsResp {
+    fn from(value: rc::SsShipInfo) -> Self {
         ItemIdsResp::new(value.id, None)
     }
 }
-impl From<rc::ModuleInfo> for ItemIdsResp {
-    fn from(value: rc::ModuleInfo) -> Self {
-        ItemIdsResp::new(value.id, value.charge_info)
+impl From<rc::SsModuleInfo> for ItemIdsResp {
+    fn from(value: rc::SsModuleInfo) -> Self {
+        ItemIdsResp::new(value.id, value.ss_charge_info)
     }
 }
-impl From<rc::RigInfo> for ItemIdsResp {
-    fn from(value: rc::RigInfo) -> Self {
+impl From<rc::SsRigInfo> for ItemIdsResp {
+    fn from(value: rc::SsRigInfo) -> Self {
         ItemIdsResp::new(value.id, None)
     }
 }

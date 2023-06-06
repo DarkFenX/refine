@@ -8,33 +8,33 @@ use crate::{
     util::Named,
 };
 
-pub(crate) struct Fighter {
+pub(crate) struct SsFighter {
     pub(crate) id: ReeId,
     pub(crate) fit_id: ReeId,
-    pub(crate) type_id: ReeInt,
+    pub(crate) a_item_id: ReeInt,
     pub(crate) state: State,
     pub(crate) amt_override: Option<ReeInt>,
-    pub(crate) aitem: Option<Arc<ad::AItem>>,
+    pub(crate) a_item: Option<Arc<ad::AItem>>,
 }
-impl Fighter {
-    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
+impl SsFighter {
+    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: State) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             state,
             amt_override: None,
-            aitem: src.ahandler.get_item(&type_id),
+            a_item: src.ahandler.get_item(&a_item_id),
         }
     }
 }
-impl Named for Fighter {
+impl Named for SsFighter {
     fn get_name() -> &'static str {
-        "ssi:Fighter"
+        "SsFighter"
     }
 }
-impl fmt::Display for Fighter {
+impl fmt::Display for SsFighter {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.id, self.type_id)
+        write!(f, "{}(id={}, a_item_id={})", Self::get_name(), self.id, self.a_item_id)
     }
 }

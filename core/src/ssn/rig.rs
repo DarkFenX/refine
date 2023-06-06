@@ -3,24 +3,24 @@ use crate::{
     ssi,
 };
 
-pub struct RigInfo {
+pub struct SsRigInfo {
     pub id: ReeId,
     pub fit_id: ReeId,
-    pub type_id: ReeInt,
+    pub a_item_id: ReeInt,
     pub enabled: bool,
 }
-impl RigInfo {
-    fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
+impl SsRigInfo {
+    fn new(id: ReeId, fit_id: ReeId, a_item_id: ReeInt, enabled: bool) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             enabled,
         }
     }
 }
-impl From<&ssi::Rig> for RigInfo {
-    fn from(r: &ssi::Rig) -> Self {
-        RigInfo::new(r.id, r.fit_id, r.type_id, r.get_bool_state())
+impl From<&ssi::SsRig> for SsRigInfo {
+    fn from(ss_rig: &ssi::SsRig) -> Self {
+        SsRigInfo::new(ss_rig.id, ss_rig.fit_id, ss_rig.a_item_id, ss_rig.get_bool_state())
     }
 }

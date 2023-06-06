@@ -7,23 +7,23 @@ use crate::{
 
 impl SolarSystem {
     // Public
-    pub fn get_rig_info(&self, item_id: &ReeId) -> Result<ssn::RigInfo> {
+    pub fn get_rig_info(&self, item_id: &ReeId) -> Result<ssn::SsRigInfo> {
         Ok(self.get_rig(item_id)?.into())
     }
-    pub fn get_fit_rig_infos(&self, fit_id: &ReeId) -> Vec<ssn::RigInfo> {
+    pub fn get_fit_rig_infos(&self, fit_id: &ReeId) -> Vec<ssn::SsRigInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                ssi::Item::Rig(r) if r.fit_id == *fit_id => Some(r.into()),
+                ssi::SsItem::Rig(r) if r.fit_id == *fit_id => Some(r.into()),
                 _ => None,
             })
             .collect()
     }
-    pub fn add_rig(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::RigInfo> {
+    pub fn add_rig(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::SsRigInfo> {
         let item_id = self.alloc_item_id()?;
-        let rig = ssi::Rig::new(&self.src, item_id, fit_id, type_id, state);
-        let info = ssn::RigInfo::from(&rig);
-        let item = ssi::Item::Rig(rig);
+        let rig = ssi::SsRig::new(&self.src, item_id, fit_id, type_id, state);
+        let info = ssn::SsRigInfo::from(&rig);
+        let item = ssi::SsItem::Rig(rig);
         self.add_item(item);
         Ok(info)
     }
@@ -32,25 +32,25 @@ impl SolarSystem {
         Ok(())
     }
     // Non-public
-    fn get_rig(&self, item_id: &ReeId) -> Result<&ssi::Rig> {
+    fn get_rig(&self, item_id: &ReeId) -> Result<&ssi::SsRig> {
         let item = self.get_item(item_id)?;
         match item {
-            ssi::Item::Rig(rig) => Ok(rig),
+            ssi::SsItem::Rig(rig) => Ok(rig),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Rig::get_name(),
+                ssi::SsRig::get_name(),
             ))),
         }
     }
-    fn get_rig_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::Rig> {
+    fn get_rig_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::SsRig> {
         let item = self.get_item_mut(item_id)?;
         match item {
-            ssi::Item::Rig(rig) => Ok(rig),
+            ssi::SsItem::Rig(rig) => Ok(rig),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Rig::get_name(),
+                ssi::SsRig::get_name(),
             ))),
         }
     }

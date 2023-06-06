@@ -54,13 +54,13 @@ impl ItemInfoBasic {
         }
     }
 }
-impl From<&rc::ItemInfo> for ItemInfoBasic {
-    fn from(value: &rc::ItemInfo) -> Self {
+impl From<&rc::SsItemInfo> for ItemInfoBasic {
+    fn from(value: &rc::SsItemInfo) -> Self {
         match value {
-            rc::ItemInfo::Implant(info) => Self::Implant(info.into()),
-            rc::ItemInfo::Ship(info) => Self::Ship(info.into()),
-            rc::ItemInfo::Module(info) => Self::Module(info.into()),
-            rc::ItemInfo::Rig(info) => Self::Rig(info.into()),
+            rc::SsItemInfo::Implant(info) => Self::Implant(info.into()),
+            rc::SsItemInfo::Ship(info) => Self::Ship(info.into()),
+            rc::SsItemInfo::Module(info) => Self::Module(info.into()),
+            rc::SsItemInfo::Rig(info) => Self::Rig(info.into()),
             _ => Self::Ship(ShipInfo {
                 id: 999999,
                 fit_id: 666666,
@@ -70,13 +70,13 @@ impl From<&rc::ItemInfo> for ItemInfoBasic {
         }
     }
 }
-impl From<&rc::ModuleInfo> for ItemInfoBasic {
-    fn from(value: &rc::ModuleInfo) -> Self {
+impl From<&rc::SsModuleInfo> for ItemInfoBasic {
+    fn from(value: &rc::SsModuleInfo) -> Self {
         ItemInfoBasic::Module(value.into())
     }
 }
-impl From<&rc::ShipInfo> for ItemInfoBasic {
-    fn from(value: &rc::ShipInfo) -> Self {
+impl From<&rc::SsShipInfo> for ItemInfoBasic {
+    fn from(value: &rc::SsShipInfo) -> Self {
         ItemInfoBasic::Ship(value.into())
     }
 }

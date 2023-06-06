@@ -3,24 +3,24 @@ use crate::{
     ssi,
 };
 
-pub struct ChargeInfo {
+pub struct SsChargeInfo {
     pub id: ReeId,
     pub fit_id: ReeId,
-    pub type_id: ReeInt,
+    pub a_item_id: ReeInt,
     pub cont_id: ReeId,
 }
-impl ChargeInfo {
-    fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, cont_id: ReeId) -> Self {
+impl SsChargeInfo {
+    fn new(id: ReeId, fit_id: ReeId, a_item_id: ReeInt, cont_id: ReeId) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             cont_id,
         }
     }
 }
-impl From<&ssi::Charge> for ChargeInfo {
-    fn from(c: &ssi::Charge) -> Self {
-        ChargeInfo::new(c.id, c.fit_id, c.type_id, c.cont_id)
+impl From<&ssi::SsCharge> for SsChargeInfo {
+    fn from(ss_charge: &ssi::SsCharge) -> Self {
+        SsChargeInfo::new(ss_charge.id, ss_charge.fit_id, ss_charge.a_item_id, ss_charge.cont_id)
     }
 }

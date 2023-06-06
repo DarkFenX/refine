@@ -60,7 +60,7 @@ impl CalcSvc {
         item_id: &ReeId,
         attr_id: &ReeInt,
         src: &Src,
-        items: &HashMap<ReeId, ssi::Item>,
+        items: &HashMap<ReeId, ssi::SsItem>,
     ) -> Result<AttrVal> {
         // Try accessing cached value
         match self.get_item_dogma_attr_map(item_id)?.get(attr_id) {
@@ -76,7 +76,7 @@ impl CalcSvc {
         &mut self,
         item_id: &ReeId,
         src: &Src,
-        items: &HashMap<ReeId, ssi::Item>,
+        items: &HashMap<ReeId, ssi::SsItem>,
     ) -> Result<HashMap<ReeInt, AttrVal>> {
         // ssi::Item can have attributes which are not defined on the original EVE item. This happens when
         // something requested an attr value and it was calculated using base attribute value. Here,
@@ -98,19 +98,19 @@ impl CalcSvc {
         Ok(vals)
     }
     // Maintenance methods
-    pub(in crate::ss) fn item_loaded(&mut self, item: &ssi::Item) {
+    pub(in crate::ss) fn item_loaded(&mut self, item: &ssi::SsItem) {
         self.attrs_vals.insert(item.get_id(), HashMap::new());
         self.affection.reg_afee(item);
     }
-    pub(in crate::ss) fn item_unloaded(&mut self, item: &ssi::Item) {
+    pub(in crate::ss) fn item_unloaded(&mut self, item: &ssi::SsItem) {
         self.affection.unreg_afee(item);
         self.attrs_vals.remove(&item.get_id());
     }
     pub(in crate::ss) fn effects_started(
         &mut self,
-        item: &ssi::Item,
+        item: &ssi::SsItem,
         effects: &Vec<Arc<ad::AEffect>>,
-        items: &HashMap<ReeId, ssi::Item>,
+        items: &HashMap<ReeId, ssi::SsItem>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
         self.affection
@@ -127,9 +127,9 @@ impl CalcSvc {
     }
     pub(in crate::ss) fn effects_stopped(
         &mut self,
-        item: &ssi::Item,
+        item: &ssi::SsItem,
         effects: &Vec<Arc<ad::AEffect>>,
-        items: &HashMap<ReeId, ssi::Item>,
+        items: &HashMap<ReeId, ssi::SsItem>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
         for afor_spec in afor_specs.iter() {
@@ -149,7 +149,7 @@ impl CalcSvc {
         item_id: &ReeId,
         attr_id: &ReeInt,
         src: &Src,
-        items: &HashMap<ReeId, ssi::Item>,
+        items: &HashMap<ReeId, ssi::SsItem>,
     ) -> Result<AttrVal> {
         let item = match items.get(item_id) {
             Some(i) => i,
@@ -157,7 +157,7 @@ impl CalcSvc {
         };
         let attr = match src.ahandler.get_attr(attr_id) {
             Some(attr) => attr,
-            None => return Err(Error::new(ErrorKind::CachedAttrNotFound(*attr_id))),
+            None => return Err(Error::new(ErrorKind::AAttrNotFound(*attr_id))),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure
@@ -165,11 +165,13 @@ impl CalcSvc {
             Some(orig_val) => *orig_val,
             None => match attr.def_val {
                 Some(def_val) => def_val,
-                None => return Err(Error::new(ErrorKind::NoAttrBaseValue(*attr_id, item.get_type_id()))),
+                None => return Err(Error::new(ErrorKind::NoAttrBaseValue(*attr_id, item.get_a_item_id()))),
             },
         };
         match (attr_id, item) {
-            (280, ssi::Item::Skill(s)) => return Ok(AttrVal::new(base_val, s.level as ReeFloat, s.level as ReeFloat)),
+            (280, ssi::SsItem::Skill(s)) => {
+                return Ok(AttrVal::new(base_val, s.level as ReeFloat, s.level as ReeFloat))
+            }
             _ => (),
         }
         let mut stacked = HashMap::new();
@@ -242,10 +244,10 @@ impl CalcSvc {
     }
     fn get_modifications(
         &mut self,
-        item: &ssi::Item,
+        item: &ssi::SsItem,
         attr_id: &ReeInt,
         src: &Src,
-        items: &HashMap<ReeId, ssi::Item>,
+        items: &HashMap<ReeId, ssi::SsItem>,
     ) -> Vec<Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
@@ -335,7 +337,7 @@ fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {
 }
 
 // Maintenance- and query-related functions
-fn generate_local_afor_specs(afor_item: &ssi::Item, effects: &Vec<Arc<ad::AEffect>>) -> Vec<AffectorSpec> {
+fn generate_local_afor_specs(afor_item: &ssi::SsItem, effects: &Vec<Arc<ad::AEffect>>) -> Vec<AffectorSpec> {
     let mut specs = Vec::new();
     for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
         for (i, afor_mod) in effect.mods.iter().enumerate() {

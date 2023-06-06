@@ -23,8 +23,8 @@ pub use defs::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION}
 pub use src::Src;
 pub use ss::{AttrVal, SolarSystem};
 pub use ssn::{
-    BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, ImplantInfo, ItemInfo, ModuleInfo, RigInfo,
-    ShipInfo, SkillInfo, StanceInfo, SubsystemInfo, SwEffectInfo,
+    SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsImplantInfo, SsItemInfo, SsModuleInfo,
+    SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsSubsystemInfo, SsSwEffectInfo,
 };
 pub use util::{Error, ErrorKind, Result};
 

@@ -3,24 +3,29 @@ use crate::{
     ssi,
 };
 
-pub struct ImplantInfo {
+pub struct SsImplantInfo {
     pub id: ReeId,
     pub fit_id: ReeId,
-    pub type_id: ReeInt,
+    pub a_item_id: ReeInt,
     pub enabled: bool,
 }
-impl ImplantInfo {
-    fn new(id: ReeId, fit_id: ReeId, type_id: ReeInt, enabled: bool) -> Self {
+impl SsImplantInfo {
+    fn new(id: ReeId, fit_id: ReeId, a_item_id: ReeInt, enabled: bool) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             enabled,
         }
     }
 }
-impl From<&ssi::Implant> for ImplantInfo {
-    fn from(i: &ssi::Implant) -> Self {
-        ImplantInfo::new(i.id, i.fit_id, i.type_id, i.get_bool_state())
+impl From<&ssi::SsImplant> for SsImplantInfo {
+    fn from(ss_implant: &ssi::SsImplant) -> Self {
+        SsImplantInfo::new(
+            ss_implant.id,
+            ss_implant.fit_id,
+            ss_implant.a_item_id,
+            ss_implant.get_bool_state(),
+        )
     }
 }

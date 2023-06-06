@@ -4,46 +4,46 @@ use crate::{
     ssi,
 };
 
-use super::ChargeInfo;
+use super::SsChargeInfo;
 
-pub struct ModuleInfo {
+pub struct SsModuleInfo {
     pub id: ReeId,
     pub fit_id: ReeId,
-    pub type_id: ReeInt,
+    pub a_item_id: ReeInt,
     pub state: State,
     pub rack: ModRack,
     pub pos: ReeIdx,
-    pub charge_info: Option<ChargeInfo>,
+    pub ss_charge_info: Option<SsChargeInfo>,
 }
-impl ModuleInfo {
+impl SsModuleInfo {
     fn new(
         id: ReeId,
         fit_id: ReeId,
-        type_id: ReeInt,
+        a_item_id: ReeInt,
         state: State,
         rack: ModRack,
         pos: ReeIdx,
-        charge_info: Option<ChargeInfo>,
+        ss_charge_info: Option<SsChargeInfo>,
     ) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             state,
             rack,
             pos,
-            charge_info,
+            ss_charge_info,
         }
     }
-    pub(crate) fn from_mod_and_charge(module: &ssi::Module, charge_info: Option<ChargeInfo>) -> Self {
-        ModuleInfo::new(
-            module.id,
-            module.fit_id,
-            module.type_id,
-            module.state,
-            module.rack,
-            module.pos,
-            charge_info,
+    pub(crate) fn from_mod_and_charge(ss_module: &ssi::SsModule, ss_charge_info: Option<SsChargeInfo>) -> Self {
+        SsModuleInfo::new(
+            ss_module.id,
+            ss_module.fit_id,
+            ss_module.a_item_id,
+            ss_module.state,
+            ss_module.rack,
+            ss_module.pos,
+            ss_charge_info,
         )
     }
 }

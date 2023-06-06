@@ -9,10 +9,10 @@ use crate::{
 
 impl SolarSystem {
     // Public
-    pub fn get_fit_stance_info(&self, fit_id: &ReeId) -> Result<ssn::StanceInfo> {
+    pub fn get_fit_stance_info(&self, fit_id: &ReeId) -> Result<ssn::SsStanceInfo> {
         self.get_fit_stance(fit_id).map(|v| v.into())
     }
-    pub fn set_fit_stance(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::StanceInfo> {
+    pub fn set_fit_stance(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::SsStanceInfo> {
         match self.remove_fit_stance(&fit_id) {
             Ok(_) => (),
             // Suppress ItemNotFound error, since this method is supposed to be used
@@ -23,9 +23,9 @@ impl SolarSystem {
             },
         };
         let item_id = self.alloc_item_id()?;
-        let stance = ssi::Stance::new(&self.src, item_id, fit_id, type_id, state);
-        let info = ssn::StanceInfo::from(&stance);
-        let item = ssi::Item::Stance(stance);
+        let stance = ssi::SsStance::new(&self.src, item_id, fit_id, type_id, state);
+        let info = ssn::SsStanceInfo::from(&stance);
+        let item = ssi::SsItem::Stance(stance);
         self.add_item(item);
         Ok(info)
     }
@@ -38,32 +38,32 @@ impl SolarSystem {
         let removed = self
             .items
             .drain_filter(|_, v| match v {
-                ssi::Item::Stance(s) if s.fit_id == *fit_id => true,
+                ssi::SsItem::Stance(s) if s.fit_id == *fit_id => true,
                 _ => false,
             })
             .collect_vec();
         match removed.is_empty() {
-            true => Err(Error::new(ErrorKind::ItemTypeNotFound(ssi::Stance::get_name()))),
+            true => Err(Error::new(ErrorKind::ItemTypeNotFound(ssi::SsStance::get_name()))),
             false => Ok(()),
         }
     }
     // Non-public
-    fn get_fit_stance(&self, fit_id: &ReeId) -> Result<&ssi::Stance> {
+    fn get_fit_stance(&self, fit_id: &ReeId) -> Result<&ssi::SsStance> {
         self.items
             .values()
             .find_map(|v| match v {
-                ssi::Item::Stance(s) if s.fit_id == *fit_id => Some(s),
+                ssi::SsItem::Stance(s) if s.fit_id == *fit_id => Some(s),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::Stance::get_name())))
+            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::SsStance::get_name())))
     }
-    fn get_fit_stance_mut(&mut self, fit_id: &ReeId) -> Result<&mut ssi::Stance> {
+    fn get_fit_stance_mut(&mut self, fit_id: &ReeId) -> Result<&mut ssi::SsStance> {
         self.items
             .values_mut()
             .find_map(|v| match v {
-                ssi::Item::Stance(s) if s.fit_id == *fit_id => Some(s),
+                ssi::SsItem::Stance(s) if s.fit_id == *fit_id => Some(s),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::Stance::get_name())))
+            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::SsStance::get_name())))
     }
 }

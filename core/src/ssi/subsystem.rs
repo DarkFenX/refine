@@ -10,21 +10,21 @@ use crate::{
 
 use super::{bool_to_state, state_to_bool};
 
-pub(crate) struct Subsystem {
+pub(crate) struct SsSubsystem {
     pub(crate) id: ReeId,
     pub(crate) fit_id: ReeId,
-    pub(crate) type_id: ReeInt,
+    pub(crate) a_item_id: ReeInt,
     pub(crate) state: State,
-    pub(crate) aitem: Option<Arc<ad::AItem>>,
+    pub(crate) a_item: Option<Arc<ad::AItem>>,
 }
-impl Subsystem {
-    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: bool) -> Self {
+impl SsSubsystem {
+    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: bool) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             state: bool_to_state(state),
-            aitem: src.ahandler.get_item(&type_id),
+            a_item: src.ahandler.get_item(&a_item_id),
         }
     }
     pub(crate) fn get_bool_state(&self) -> bool {
@@ -34,22 +34,22 @@ impl Subsystem {
         self.state = bool_to_state(state);
     }
     pub(crate) fn get_slot(&self) -> Option<ReeInt> {
-        match &self.aitem {
+        match &self.a_item {
             None => None,
-            Some(i) => match i.attr_vals.get(&attrs::SUBSYSTEM_SLOT) {
+            Some(a_item) => match a_item.attr_vals.get(&attrs::SUBSYSTEM_SLOT) {
                 None => None,
-                Some(v) => Some(v.round() as ReeInt),
+                Some(value) => Some(value.round() as ReeInt),
             },
         }
     }
 }
-impl Named for Subsystem {
+impl Named for SsSubsystem {
     fn get_name() -> &'static str {
-        "ssi:Subsystem"
+        "SsSubsystem"
     }
 }
-impl fmt::Display for Subsystem {
+impl fmt::Display for SsSubsystem {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.id, self.type_id)
+        write!(f, "{}(id={}, a_item_id={})", Self::get_name(), self.id, self.a_item_id)
     }
 }

@@ -8,31 +8,31 @@ use crate::{
     util::Named,
 };
 
-pub(crate) struct Drone {
+pub(crate) struct SsDrone {
     pub(crate) id: ReeId,
     pub(crate) fit_id: ReeId,
-    pub(crate) type_id: ReeInt,
+    pub(crate) a_item_id: ReeInt,
     pub(crate) state: State,
-    pub(crate) aitem: Option<Arc<ad::AItem>>,
+    pub(crate) a_item: Option<Arc<ad::AItem>>,
 }
-impl Drone {
-    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, type_id: ReeInt, state: State) -> Self {
+impl SsDrone {
+    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: State) -> Self {
         Self {
             id,
             fit_id,
-            type_id,
+            a_item_id,
             state,
-            aitem: src.ahandler.get_item(&type_id),
+            a_item: src.ahandler.get_item(&a_item_id),
         }
     }
 }
-impl Named for Drone {
+impl Named for SsDrone {
     fn get_name() -> &'static str {
-        "ssi:Drone"
+        "SsDrone"
     }
 }
-impl fmt::Display for Drone {
+impl fmt::Display for SsDrone {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}(id={}, type_id={})", Self::get_name(), self.id, self.type_id)
+        write!(f, "{}(id={}, a_item_id={})", Self::get_name(), self.id, self.a_item_id)
     }
 }

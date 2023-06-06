@@ -7,24 +7,30 @@ use crate::{
 
 impl SolarSystem {
     // Public
-    pub fn get_skill_info(&self, item_id: &ReeId) -> Result<ssn::SkillInfo> {
+    pub fn get_skill_info(&self, item_id: &ReeId) -> Result<ssn::SsSkillInfo> {
         Ok(self.get_skill(item_id)?.into())
     }
-    pub fn get_fit_skill_infos(&self, fit_id: &ReeId) -> Vec<ssn::SkillInfo> {
+    pub fn get_fit_skill_infos(&self, fit_id: &ReeId) -> Vec<ssn::SsSkillInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                ssi::Item::Skill(s) if s.fit_id == *fit_id => Some(s.into()),
+                ssi::SsItem::Skill(s) if s.fit_id == *fit_id => Some(s.into()),
                 _ => None,
             })
             .collect()
     }
-    pub fn add_skill(&mut self, fit_id: ReeId, type_id: ReeInt, level: ReeInt, state: bool) -> Result<ssn::SkillInfo> {
+    pub fn add_skill(
+        &mut self,
+        fit_id: ReeId,
+        type_id: ReeInt,
+        level: ReeInt,
+        state: bool,
+    ) -> Result<ssn::SsSkillInfo> {
         check_skill_level(level)?;
         let item_id = self.alloc_item_id()?;
-        let skill = ssi::Skill::new(&self.src, item_id, fit_id, type_id, level, state);
-        let info = ssn::SkillInfo::from(&skill);
-        let item = ssi::Item::Skill(skill);
+        let skill = ssi::SsSkill::new(&self.src, item_id, fit_id, type_id, level, state);
+        let info = ssn::SsSkillInfo::from(&skill);
+        let item = ssi::SsItem::Skill(skill);
         self.add_item(item);
         Ok(info)
     }
@@ -38,25 +44,25 @@ impl SolarSystem {
         Ok(())
     }
     // Non-public
-    fn get_skill(&self, item_id: &ReeId) -> Result<&ssi::Skill> {
+    fn get_skill(&self, item_id: &ReeId) -> Result<&ssi::SsSkill> {
         let item = self.get_item(item_id)?;
         match item {
-            ssi::Item::Skill(skill) => Ok(skill),
+            ssi::SsItem::Skill(skill) => Ok(skill),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Skill::get_name(),
+                ssi::SsSkill::get_name(),
             ))),
         }
     }
-    fn get_skill_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::Skill> {
+    fn get_skill_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::SsSkill> {
         let item = self.get_item_mut(item_id)?;
         match item {
-            ssi::Item::Skill(skill) => Ok(skill),
+            ssi::SsItem::Skill(skill) => Ok(skill),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Skill::get_name(),
+                ssi::SsSkill::get_name(),
             ))),
         }
     }

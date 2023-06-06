@@ -8,23 +8,23 @@ use crate::{
 
 impl SolarSystem {
     // Public
-    pub fn get_fighter_info(&self, item_id: &ReeId) -> Result<ssn::FighterInfo> {
+    pub fn get_fighter_info(&self, item_id: &ReeId) -> Result<ssn::SsFighterInfo> {
         Ok(self.get_fighter(item_id)?.into())
     }
-    pub fn get_fit_fighter_infos(&self, fit_id: &ReeId) -> Vec<ssn::FighterInfo> {
+    pub fn get_fit_fighter_infos(&self, fit_id: &ReeId) -> Vec<ssn::SsFighterInfo> {
         self.items
             .values()
             .filter_map(|v| match v {
-                ssi::Item::Fighter(f) if f.fit_id == *fit_id => Some(f.into()),
+                ssi::SsItem::Fighter(f) if f.fit_id == *fit_id => Some(f.into()),
                 _ => None,
             })
             .collect()
     }
-    pub fn add_fighter(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<ssn::FighterInfo> {
+    pub fn add_fighter(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<ssn::SsFighterInfo> {
         let item_id = self.alloc_item_id()?;
-        let fighter = ssi::Fighter::new(&self.src, item_id, fit_id, type_id, state);
-        let info = ssn::FighterInfo::from(&fighter);
-        let item = ssi::Item::Fighter(fighter);
+        let fighter = ssi::SsFighter::new(&self.src, item_id, fit_id, type_id, state);
+        let info = ssn::SsFighterInfo::from(&fighter);
+        let item = ssi::SsItem::Fighter(fighter);
         self.add_item(item);
         Ok(info)
     }
@@ -33,25 +33,25 @@ impl SolarSystem {
         Ok(())
     }
     // Non-public
-    fn get_fighter(&self, item_id: &ReeId) -> Result<&ssi::Fighter> {
+    fn get_fighter(&self, item_id: &ReeId) -> Result<&ssi::SsFighter> {
         let item = self.get_item(item_id)?;
         match item {
-            ssi::Item::Fighter(fighter) => Ok(fighter),
+            ssi::SsItem::Fighter(fighter) => Ok(fighter),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Fighter::get_name(),
+                ssi::SsFighter::get_name(),
             ))),
         }
     }
-    fn get_fighter_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::Fighter> {
+    fn get_fighter_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::SsFighter> {
         let item = self.get_item_mut(item_id)?;
         match item {
-            ssi::Item::Fighter(fighter) => Ok(fighter),
+            ssi::SsItem::Fighter(fighter) => Ok(fighter),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(
                 *item_id,
                 item.get_name(),
-                ssi::Fighter::get_name(),
+                ssi::SsFighter::get_name(),
             ))),
         }
     }
