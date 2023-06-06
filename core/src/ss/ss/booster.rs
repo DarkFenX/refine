@@ -19,9 +19,9 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_booster(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::SsBoosterInfo> {
+    pub fn add_booster(&mut self, fit_id: ReeId, a_item_id: ReeInt, state: bool) -> Result<ssn::SsBoosterInfo> {
         let item_id = self.alloc_item_id()?;
-        let booster = ssi::SsBooster::new(&self.src, item_id, fit_id, type_id, state);
+        let booster = ssi::SsBooster::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = ssn::SsBoosterInfo::from(&booster);
         let item = ssi::SsItem::Booster(booster);
         self.add_item(item);

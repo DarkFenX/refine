@@ -20,9 +20,9 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_drone(&mut self, fit_id: ReeId, type_id: ReeInt, state: State) -> Result<ssn::SsDroneInfo> {
+    pub fn add_drone(&mut self, fit_id: ReeId, a_item_id: ReeInt, state: State) -> Result<ssn::SsDroneInfo> {
         let item_id = self.alloc_item_id()?;
-        let drone = ssi::SsDrone::new(&self.src, item_id, fit_id, type_id, state);
+        let drone = ssi::SsDrone::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = ssn::SsDroneInfo::from(&drone);
         let item = ssi::SsItem::Drone(drone);
         self.add_item(item);

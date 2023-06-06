@@ -41,7 +41,11 @@ pub(in crate::adg) fn fetch_data(e_handler: &dyn EveDataHandler, g_data: &mut GD
     fetch_data_vec(e_handler, EveDataHandler::get_effects, &mut g_data.effects)?;
     fetch_data_vec(e_handler, EveDataHandler::get_item_effects, &mut g_data.item_effects)?;
     fetch_data_vec(e_handler, EveDataHandler::get_fighter_abils, &mut g_data.abils)?;
-    fetch_data_vec(e_handler, EveDataHandler::get_item_fighter_abils, &mut g_data.item_abils)?;
+    fetch_data_vec(
+        e_handler,
+        EveDataHandler::get_item_fighter_abils,
+        &mut g_data.item_abils,
+    )?;
     fetch_data_vec(e_handler, EveDataHandler::get_buffs, &mut g_data.buffs)?;
     fetch_data_vec(e_handler, EveDataHandler::get_item_skill_reqs, &mut g_data.item_srqs)?;
     fetch_data_vec(e_handler, EveDataHandler::get_muta_item_convs, &mut g_data.muta_items)?;

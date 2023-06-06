@@ -22,13 +22,13 @@ impl SolarSystem {
     pub fn add_skill(
         &mut self,
         fit_id: ReeId,
-        type_id: ReeInt,
+        a_item_id: ReeInt,
         level: ReeInt,
         state: bool,
     ) -> Result<ssn::SsSkillInfo> {
         check_skill_level(level)?;
         let item_id = self.alloc_item_id()?;
-        let skill = ssi::SsSkill::new(&self.src, item_id, fit_id, type_id, level, state);
+        let skill = ssi::SsSkill::new(&self.src, item_id, fit_id, a_item_id, level, state);
         let info = ssn::SsSkillInfo::from(&skill);
         let item = ssi::SsItem::Skill(skill);
         self.add_item(item);

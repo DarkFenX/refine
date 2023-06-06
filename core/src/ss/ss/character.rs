@@ -12,18 +12,18 @@ impl SolarSystem {
     pub fn get_fit_character_info(&self, fit_id: &ReeId) -> Result<ssn::SsCharacterInfo> {
         self.get_fit_character(fit_id).map(|v| v.into())
     }
-    pub fn set_fit_character(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::SsCharacterInfo> {
+    pub fn set_fit_character(&mut self, fit_id: ReeId, a_item_id: ReeInt, state: bool) -> Result<ssn::SsCharacterInfo> {
         match self.remove_fit_character(&fit_id) {
             Ok(_) => (),
             // Suppress ItemTypeNotFound error, since this method is supposed to be used
             // even when no character is set
             Err(e) => match e.kind {
-                ErrorKind::ItemTypeNotFound(_) => (),
+                ErrorKind::SsItemTypeNotFound(_) => (),
                 _ => return Err(e),
             },
         };
         let item_id = self.alloc_item_id()?;
-        let character = ssi::SsCharacter::new(&self.src, item_id, fit_id, type_id, state);
+        let character = ssi::SsCharacter::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = ssn::SsCharacterInfo::from(&character);
         let item = ssi::SsItem::Character(character);
         self.add_item(item);
@@ -43,7 +43,7 @@ impl SolarSystem {
             })
             .collect_vec();
         match removed.is_empty() {
-            true => Err(Error::new(ErrorKind::ItemTypeNotFound(ssi::SsCharacter::get_name()))),
+            true => Err(Error::new(ErrorKind::SsItemTypeNotFound(ssi::SsCharacter::get_name()))),
             false => Ok(()),
         }
     }
@@ -55,7 +55,7 @@ impl SolarSystem {
                 ssi::SsItem::Character(c) if c.fit_id == *fit_id => Some(c),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::SsCharacter::get_name())))
+            .ok_or_else(|| Error::new(ErrorKind::SsItemTypeNotFound(ssi::SsCharacter::get_name())))
     }
     fn get_fit_character_mut(&mut self, fit_id: &ReeId) -> Result<&mut ssi::SsCharacter> {
         self.items
@@ -64,6 +64,6 @@ impl SolarSystem {
                 ssi::SsItem::Character(c) if c.fit_id == *fit_id => Some(c),
                 _ => None,
             })
-            .ok_or_else(|| Error::new(ErrorKind::ItemTypeNotFound(ssi::SsCharacter::get_name())))
+            .ok_or_else(|| Error::new(ErrorKind::SsItemTypeNotFound(ssi::SsCharacter::get_name())))
     }
 }

@@ -26,11 +26,11 @@ impl SolarSystem {
         &mut self,
         item_id: Option<ReeId>,
         fit_id: ReeId,
-        type_id: Option<ReeInt>,
+        a_item_id: Option<ReeInt>,
         cont_id: ReeId,
     ) -> Option<ssn::SsChargeInfo> {
-        match (item_id, type_id) {
-            (Some(iid), Some(tid)) => Some(self.add_charge_with_id(iid, fit_id, tid, cont_id)),
+        match (item_id, a_item_id) {
+            (Some(item_id), Some(a_item_id)) => Some(self.add_charge_with_id(item_id, fit_id, a_item_id, cont_id)),
             _ => None,
         }
     }
@@ -38,10 +38,10 @@ impl SolarSystem {
         &mut self,
         item_id: ReeId,
         fit_id: ReeId,
-        type_id: ReeInt,
+        a_item_id: ReeInt,
         cont_id: ReeId,
     ) -> ssn::SsChargeInfo {
-        let charge = ssi::SsCharge::new(&self.src, item_id, fit_id, type_id, cont_id);
+        let charge = ssi::SsCharge::new(&self.src, item_id, fit_id, a_item_id, cont_id);
         let info = ssn::SsChargeInfo::from(&charge);
         let item = ssi::SsItem::Charge(charge);
         self.add_item(item);

@@ -23,15 +23,15 @@ impl SolarSystem {
     pub fn add_module(
         &mut self,
         fit_id: ReeId,
-        type_id: ReeInt,
+        a_item_id: ReeInt,
         state: State,
         rack: ModRack,
         pos_mode: OrdAddMode,
-        charge_type_id: Option<ReeInt>,
+        charge_a_item_id: Option<ReeInt>,
     ) -> Result<ssn::SsModuleInfo> {
         // Allocate resources first
         let m_item_id = self.alloc_item_id()?;
-        let c_item_id = match charge_type_id {
+        let c_item_id = match charge_a_item_id {
             Some(_) => Some(self.alloc_item_id()?),
             None => None,
         };
@@ -75,8 +75,8 @@ impl SolarSystem {
             }
         };
         // Create and register all necessary items
-        let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_type_id, m_item_id);
-        let module = ssi::SsModule::new(&self.src, m_item_id, fit_id, type_id, state, rack, pos, c_item_id);
+        let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_a_item_id, m_item_id);
+        let module = ssi::SsModule::new(&self.src, m_item_id, fit_id, a_item_id, state, rack, pos, c_item_id);
         let m_info = ssn::SsModuleInfo::from_mod_and_charge(&module, c_info);
         let m_item = ssi::SsItem::Module(module);
         self.add_item(m_item);
@@ -86,11 +86,11 @@ impl SolarSystem {
         self.get_module_mut(item_id)?.state = state;
         Ok(())
     }
-    pub fn set_module_charge(&mut self, item_id: &ReeId, charge_type_id: ReeInt) -> Result<ssn::SsChargeInfo> {
+    pub fn set_module_charge(&mut self, item_id: &ReeId, charge_a_item_id: ReeInt) -> Result<ssn::SsChargeInfo> {
         let c_item_id = self.alloc_item_id()?;
         self.remove_module_charge(item_id)?;
         let module = self.get_module(item_id)?;
-        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_type_id, module.id);
+        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_a_item_id, module.id);
         let module = self.get_module_mut(item_id)?;
         module.charge_a_item_id = Some(c_item_id);
         Ok(c_info)

@@ -19,9 +19,9 @@ impl SolarSystem {
             })
             .collect()
     }
-    pub fn add_rig(&mut self, fit_id: ReeId, type_id: ReeInt, state: bool) -> Result<ssn::SsRigInfo> {
+    pub fn add_rig(&mut self, fit_id: ReeId, a_item_id: ReeInt, state: bool) -> Result<ssn::SsRigInfo> {
         let item_id = self.alloc_item_id()?;
-        let rig = ssi::SsRig::new(&self.src, item_id, fit_id, type_id, state);
+        let rig = ssi::SsRig::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = ssn::SsRigInfo::from(&rig);
         let item = ssi::SsItem::Rig(rig);
         self.add_item(item);

@@ -40,7 +40,7 @@ impl Error {
                 rc::ErrorKind::SrcADataGenFailed(_) => "COR-002",
                 rc::ErrorKind::FitNotFound(_) => "COR-003",
                 rc::ErrorKind::ItemIdNotFound(_) => "COR-004",
-                rc::ErrorKind::ItemTypeNotFound(_) => "COR-005",
+                rc::ErrorKind::SsItemTypeNotFound(_) => "COR-005",
                 rc::ErrorKind::FitIdAllocFailed => "COR-006",
                 rc::ErrorKind::ItemIdAllocFailed => "COR-007",
                 rc::ErrorKind::InvalidSkillLevel(_) => "COR-008",

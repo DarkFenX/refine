@@ -25,11 +25,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
         let cat_id = match g_supp.grp_cat_map.get(&e_item.group_id) {
             Some(&cid) => cid,
             None => {
-                let msg = format!(
-                    "unable to find category ID for {} {}",
-                    ed::EItem::get_name(),
-                    e_item.id
-                );
+                let msg = format!("unable to find category ID for {} {}", ed::EItem::get_name(), e_item.id);
                 log::warn!("{msg}");
                 continue;
             }
