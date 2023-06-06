@@ -3,8 +3,8 @@ use std::{fmt, fs::File, io::BufReader, path::PathBuf};
 use crate::{
     phb::{
         data::{
-            Attr, Buff, Effect, FighterAbil, Item, ItemAttrs, ItemEffects, ItemFighterAbils, ItemGroup, ItemSkillMap,
-            Metadata, MutaAttrMods, MutaItemConvs,
+            PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemAttrs, PItemEffects, PItemFighterAbils, PItemGroup,
+            PItemSkillMap, PMetadata, PMutaAttrMods, PMutaItemConvs,
         },
         fsd,
     },
@@ -49,59 +49,59 @@ impl fmt::Debug for PhbFileEdh {
 impl rc::ed::EveDataHandler for PhbFileEdh {
     /// Get item types.
     fn get_items(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItem>> {
-        self.process_fsd::<Item, rc::ed::EItem>("fsd_binary", "types")
+        self.process_fsd::<PItem, rc::ed::EItem>("fsd_binary", "types")
     }
     /// Get item groups.
     fn get_item_groups(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemGroup>> {
-        self.process_fsd::<ItemGroup, rc::ed::EItemGroup>("fsd_binary", "groups")
+        self.process_fsd::<PItemGroup, rc::ed::EItemGroup>("fsd_binary", "groups")
     }
     /// Get dogma attributes.
     fn get_attrs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EAttr>> {
-        self.process_fsd::<Attr, rc::ed::EAttr>("fsd_binary", "dogmaattributes")
+        self.process_fsd::<PAttr, rc::ed::EAttr>("fsd_binary", "dogmaattributes")
     }
     /// Get an m:n mapping between item types and dogma attributes.
     fn get_item_attrs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemAttr>> {
-        self.process_fsd::<ItemAttrs, rc::ed::EItemAttr>("fsd_binary", "typedogma")
+        self.process_fsd::<PItemAttrs, rc::ed::EItemAttr>("fsd_binary", "typedogma")
     }
     /// Get dogma effects.
     fn get_effects(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EEffect>> {
-        self.process_fsd::<Effect, rc::ed::EEffect>("fsd_binary", "dogmaeffects")
+        self.process_fsd::<PEffect, rc::ed::EEffect>("fsd_binary", "dogmaeffects")
     }
     /// Get an m:n mapping between item types and dogma effects.
     fn get_item_effects(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemEffect>> {
-        self.process_fsd::<ItemEffects, rc::ed::EItemEffect>("fsd_binary", "typedogma")
+        self.process_fsd::<PItemEffects, rc::ed::EItemEffect>("fsd_binary", "typedogma")
     }
     /// Get fighter abilities.
     fn get_fighter_abils(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EFighterAbil>> {
-        self.process_fsd::<FighterAbil, rc::ed::EFighterAbil>("fsd_lite", "fighterabilities")
+        self.process_fsd::<PFighterAbil, rc::ed::EFighterAbil>("fsd_lite", "fighterabilities")
     }
     /// Get an m:n mapping between item types and fighter abilities.
     fn get_item_fighter_abils(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemFighterAbil>> {
-        self.process_fsd::<ItemFighterAbils, rc::ed::EItemFighterAbil>("fsd_lite", "fighterabilitiesbytype")
+        self.process_fsd::<PItemFighterAbils, rc::ed::EItemFighterAbil>("fsd_lite", "fighterabilitiesbytype")
     }
     /// Get dogma buffs.
     fn get_buffs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EBuff>> {
-        self.process_fsd::<Buff, rc::ed::EBuff>("fsd_lite", "dbuffcollections")
+        self.process_fsd::<PBuff, rc::ed::EBuff>("fsd_lite", "dbuffcollections")
     }
     /// Get item skill requirements.
     fn get_item_skill_reqs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EItemSkillReq>> {
-        self.process_fsd::<ItemSkillMap, rc::ed::EItemSkillReq>("fsd_binary", "requiredskillsfortypes")
+        self.process_fsd::<PItemSkillMap, rc::ed::EItemSkillReq>("fsd_binary", "requiredskillsfortypes")
     }
     /// Get mutaplasmid item conversions.
     fn get_muta_item_convs(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EMutaItemConv>> {
-        self.process_fsd::<MutaItemConvs, rc::ed::EMutaItemConv>("fsd_binary", "dynamicitemattributes")
+        self.process_fsd::<PMutaItemConvs, rc::ed::EMutaItemConv>("fsd_binary", "dynamicitemattributes")
     }
     /// Get mutaplasmid item modifications.
     fn get_muta_attr_mods(&self) -> rc::ed::EResult<rc::ed::EDataCont<rc::ed::EMutaAttrMod>> {
-        self.process_fsd::<MutaAttrMods, rc::ed::EMutaAttrMod>("fsd_binary", "dynamicitemattributes")
+        self.process_fsd::<PMutaAttrMods, rc::ed::EMutaAttrMod>("fsd_binary", "dynamicitemattributes")
     }
     /// Get version of the data.
     ///
-    /// Uses `client_build` value of metadata file as version.
+    /// Uses `client_build` value of the metadata file as version.
     fn get_data_version(&self) -> rc::ed::EResult<String> {
         let addr = Address::new("phobos", "metadata");
         let unprocessed = self.read_json(&addr)?;
-        let metadatas: Vec<Metadata> =
+        let metadatas: Vec<PMetadata> =
             serde_json::from_value(unprocessed).map_err(|e| Error::from_path(e, &addr.get_part_str()))?;
         for metadata in metadatas {
             if metadata.field_name == "client_build" {

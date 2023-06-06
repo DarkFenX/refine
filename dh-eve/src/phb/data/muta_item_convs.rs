@@ -1,11 +1,11 @@
 use crate::phb::fsd::FsdMerge;
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct MutaItemConvs {
+pub(in crate::phb) struct PMutaItemConvs {
     #[serde(rename = "inputOutputMapping")]
-    pub(crate) item_maps: Vec<MutaItemMap>,
+    pub(in crate::phb) item_maps: Vec<PMutaItemMap>,
 }
-impl FsdMerge<rc::ed::EMutaItemConv> for MutaItemConvs {
+impl FsdMerge<rc::ed::EMutaItemConv> for PMutaItemConvs {
     fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EMutaItemConv> {
         let mut vec = Vec::new();
         for item_map in self.item_maps {
@@ -17,9 +17,9 @@ impl FsdMerge<rc::ed::EMutaItemConv> for MutaItemConvs {
     }
 }
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct MutaItemMap {
+pub(in crate::phb) struct PMutaItemMap {
     #[serde(rename = "applicableTypes")]
-    pub(crate) applicable_item_ids: Vec<rc::ReeInt>,
+    pub(in crate::phb) applicable_item_ids: Vec<rc::ReeInt>,
     #[serde(rename = "resultingType")]
-    pub(crate) result_item_id: rc::ReeInt,
+    pub(in crate::phb) result_item_id: rc::ReeInt,
 }

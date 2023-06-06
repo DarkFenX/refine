@@ -3,11 +3,11 @@ use std::collections::HashMap;
 use crate::phb::fsd::FsdMerge;
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct MutaAttrMods {
+pub(in crate::phb) struct PMutaAttrMods {
     #[serde(rename = "attributeIDs")]
-    pub(crate) attrs: HashMap<rc::ReeInt, MutaAttrModRange>,
+    pub(in crate::phb) attrs: HashMap<rc::ReeInt, PMutaAttrModRange>,
 }
-impl FsdMerge<rc::ed::EMutaAttrMod> for MutaAttrMods {
+impl FsdMerge<rc::ed::EMutaAttrMod> for PMutaAttrMods {
     fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EMutaAttrMod> {
         self.attrs
             .into_iter()
@@ -17,7 +17,7 @@ impl FsdMerge<rc::ed::EMutaAttrMod> for MutaAttrMods {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct MutaAttrModRange {
-    pub(crate) min: rc::ReeFloat,
-    pub(crate) max: rc::ReeFloat,
+pub(in crate::phb) struct PMutaAttrModRange {
+    pub(in crate::phb) min: rc::ReeFloat,
+    pub(in crate::phb) max: rc::ReeFloat,
 }

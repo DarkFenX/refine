@@ -5,31 +5,31 @@ use itertools::Itertools;
 use crate::{phb::fsd::FsdMerge, util::into_opt};
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct Effect {
+pub(in crate::phb) struct PEffect {
     #[serde(rename = "effectCategory")]
-    pub(crate) category_id: rc::ReeInt,
+    pub(in crate::phb) category_id: rc::ReeInt,
     #[serde(rename = "isAssistance")]
-    pub(crate) is_assistance: rc::ReeInt,
+    pub(in crate::phb) is_assistance: rc::ReeInt,
     #[serde(rename = "isOffensive")]
-    pub(crate) is_offensive: rc::ReeInt,
+    pub(in crate::phb) is_offensive: rc::ReeInt,
     #[serde(rename = "dischargeAttributeID")]
-    pub(crate) discharge_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) discharge_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "durationAttributeID")]
-    pub(crate) duration_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) duration_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "rangeAttributeID")]
-    pub(crate) range_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) range_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "falloffAttributeID")]
-    pub(crate) falloff_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) falloff_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "trackingSpeedAttributeID")]
-    pub(crate) tracking_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) tracking_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "fittingUsageChanceAttributeID")]
-    pub(crate) usage_chance_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) usage_chance_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "resistanceAttributeID")]
-    pub(crate) resist_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) resist_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
-    pub(crate) mods: Vec<EffectMod>,
+    pub(in crate::phb) mods: Vec<PEffectMod>,
 }
-impl FsdMerge<rc::ed::EEffect> for Effect {
+impl FsdMerge<rc::ed::EEffect> for PEffect {
     fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EEffect> {
         vec![rc::ed::EEffect::new(
             id,
@@ -49,11 +49,11 @@ impl FsdMerge<rc::ed::EEffect> for Effect {
 }
 
 #[derive(Debug)]
-pub(crate) struct EffectMod {
-    pub(crate) func: String,
-    pub(crate) args: HashMap<String, rc::ed::EPrimitive>,
+pub(in crate::phb) struct PEffectMod {
+    pub(in crate::phb) func: String,
+    pub(in crate::phb) args: HashMap<String, rc::ed::EPrimitive>,
 }
-impl Into<rc::ed::EEffectMod> for EffectMod {
+impl Into<rc::ed::EEffectMod> for PEffectMod {
     fn into(self) -> rc::ed::EEffectMod {
         rc::ed::EEffectMod::new(self.func, self.args)
     }
@@ -65,9 +65,9 @@ mod dgmmod {
     use serde::{de::Error, Deserialize};
     use serde_json::{Map, Value};
 
-    use super::EffectMod;
+    use super::PEffectMod;
 
-    pub(crate) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<EffectMod>, D::Error>
+    pub(in crate::phb) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<PEffectMod>, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
@@ -79,10 +79,10 @@ mod dgmmod {
             let mut argmap = HashMap::new();
             for (argname, v) in json_mod_map.into_iter() {
                 let argval = primitivize::<D::Error>(v)
-                    .map_err(|e| Error::custom(format!("failed to parse argument \"{}\" value: {}", argname, e)))?;
+                    .map_err(|e| Error::custom(format!("failed to parse argument \"{argname}\" value: {e}")))?;
                 argmap.insert(argname, argval);
             }
-            mods.push(EffectMod { func, args: argmap })
+            mods.push(PEffectMod { func, args: argmap })
         }
         Ok(mods)
     }
@@ -94,7 +94,7 @@ mod dgmmod {
         };
         match func {
             Value::String(s) => Ok(s.to_owned()),
-            _ => return Err(Error::custom(format!("unexpected type of {} value", key))),
+            _ => return Err(Error::custom(format!("unexpected type of {key} value"))),
         }
     }
 

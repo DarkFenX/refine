@@ -1,18 +1,18 @@
 use crate::phb::fsd::FsdMerge;
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct Attr {
-    pub(crate) stackable: rc::ReeInt,
+pub(in crate::phb) struct PAttr {
+    pub(in crate::phb) stackable: rc::ReeInt,
     #[serde(rename = "highIsGood")]
-    pub(crate) high_is_good: rc::ReeInt,
+    pub(in crate::phb) high_is_good: rc::ReeInt,
     #[serde(rename = "defaultValue")]
-    pub(crate) default_value: Option<rc::ReeFloat>,
+    pub(in crate::phb) default_value: Option<rc::ReeFloat>,
     #[serde(rename = "maxAttributeID")]
-    pub(crate) max_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) max_attr_id: Option<rc::ReeInt>,
     #[serde(rename = "unitID")]
-    pub(crate) unit_id: Option<rc::ReeInt>,
+    pub(in crate::phb) unit_id: Option<rc::ReeInt>,
 }
-impl FsdMerge<rc::ed::EAttr> for Attr {
+impl FsdMerge<rc::ed::EAttr> for PAttr {
     fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EAttr> {
         vec![rc::ed::EAttr::new(
             id,

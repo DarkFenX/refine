@@ -169,9 +169,7 @@ impl CalcSvc {
             },
         };
         match (attr_id, item) {
-            (280, ssi::SsItem::Skill(s)) => {
-                return Ok(SsAttr::new(base_val, s.level as ReeFloat, s.level as ReeFloat))
-            }
+            (280, ssi::SsItem::Skill(s)) => return Ok(SsAttr::new(base_val, s.level as ReeFloat, s.level as ReeFloat)),
             _ => (),
         }
         let mut stacked = HashMap::new();

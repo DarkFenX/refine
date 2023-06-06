@@ -1,15 +1,15 @@
 use crate::phb::fsd::FsdMerge;
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct FighterAbil {
+pub(in crate::phb) struct PFighterAbil {
     #[serde(rename = "targetMode")]
-    pub(crate) target_mode: String,
+    pub(in crate::phb) target_mode: String,
     #[serde(rename = "disallowInHighSec")]
-    pub(crate) disallow_hisec: bool,
+    pub(in crate::phb) disallow_hisec: bool,
     #[serde(rename = "disallowInLowSec")]
-    pub(crate) disallow_lowsec: bool,
+    pub(in crate::phb) disallow_lowsec: bool,
 }
-impl FsdMerge<rc::ed::EFighterAbil> for FighterAbil {
+impl FsdMerge<rc::ed::EFighterAbil> for PFighterAbil {
     fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EFighterAbil> {
         vec![rc::ed::EFighterAbil::new(
             id,

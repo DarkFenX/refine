@@ -1,21 +1,24 @@
 use crate::util::{Error, ErrorKind, Result};
 
-pub(crate) trait FsdMerge<T> {
+pub(in crate::phb) trait FsdMerge<T> {
     fn fsd_merge(self, id: rc::ReeInt) -> Vec<T>;
 }
 
 #[derive(Debug)]
-pub(crate) struct FsdItem {
-    pub(crate) id: String,
-    pub(crate) item: serde_json::Value,
+pub(in crate::phb) struct FsdItem {
+    pub(in crate::phb) id: String,
+    pub(in crate::phb) item: serde_json::Value,
 }
 impl FsdItem {
-    pub(crate) fn new(id: String, item: serde_json::Value) -> Self {
+    pub(in crate::phb) fn new(id: String, item: serde_json::Value) -> Self {
         Self { id, item }
     }
 }
 
-pub(crate) fn handle<T, U>(unprocessed: serde_json::Value, suffix: &str) -> rc::ed::EResult<rc::ed::EDataCont<U>>
+pub(in crate::phb) fn handle<T, U>(
+    unprocessed: serde_json::Value,
+    suffix: &str,
+) -> rc::ed::EResult<rc::ed::EDataCont<U>>
 where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
@@ -34,19 +37,19 @@ fn convert<T, U>(decomposed: Vec<FsdItem>) -> rc::ed::EDataCont<U>
 where
     T: serde::de::DeserializeOwned + FsdMerge<U>,
 {
-    let mut cont = rc::ed::EDataCont::new();
+    let mut e_cont = rc::ed::EDataCont::new();
     for fsd_item in decomposed {
         match fsd_item.id.parse::<rc::ReeInt>() {
             Ok(id) => match serde_json::from_value::<T>(fsd_item.item) {
-                Ok(item) => cont.data.extend(item.fsd_merge(id)),
-                Err(e) => cont
+                Ok(p_item) => e_cont.data.extend(p_item.fsd_merge(id)),
+                Err(e) => e_cont
                     .warns
-                    .push(format!("failed to parse FSD item with key \"{}\": {}", id, e)),
+                    .push(format!("failed to parse FSD item with key \"{id}\": {e}")),
             },
-            Err(_) => cont
+            Err(_) => e_cont
                 .warns
                 .push(format!("failed to cast FSD key \"{}\" to integer", fsd_item.id)),
         }
     }
-    cont
+    e_cont
 }

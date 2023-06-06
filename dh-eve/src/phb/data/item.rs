@@ -1,11 +1,11 @@
 use crate::phb::fsd::FsdMerge;
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct Item {
+pub(in crate::phb) struct PItem {
     #[serde(rename = "groupID")]
-    pub(crate) group_id: rc::ReeInt,
+    pub(in crate::phb) group_id: rc::ReeInt,
 }
-impl FsdMerge<rc::ed::EItem> for Item {
+impl FsdMerge<rc::ed::EItem> for PItem {
     fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EItem> {
         vec![rc::ed::EItem::new(id, self.group_id)]
     }

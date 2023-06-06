@@ -1,17 +1,17 @@
-pub(crate) use abil::FighterAbil;
-pub(crate) use attr::Attr;
-pub(crate) use buff::Buff;
-pub(crate) use effect::Effect;
-pub(crate) use item::Item;
-pub(crate) use item_abils::ItemFighterAbils;
-pub(crate) use item_attrs::ItemAttrs;
-pub(crate) use item_effects::ItemEffects;
-pub(crate) use item_group::ItemGroup;
-pub(crate) use item_srq_map::ItemSkillMap;
+pub(in crate::phb) use abil::PFighterAbil;
+pub(in crate::phb) use attr::PAttr;
+pub(in crate::phb) use buff::PBuff;
+pub(in crate::phb) use effect::PEffect;
+pub(in crate::phb) use item::PItem;
+pub(in crate::phb) use item_abils::PItemFighterAbils;
+pub(in crate::phb) use item_attrs::PItemAttrs;
+pub(in crate::phb) use item_effects::PItemEffects;
+pub(in crate::phb) use item_group::PItemGroup;
+pub(in crate::phb) use item_srq_map::PItemSkillMap;
 #[cfg(feature = "phb-file")]
-pub(crate) use metadata::Metadata;
-pub(crate) use muta_attr_mods::MutaAttrMods;
-pub(crate) use muta_item_convs::MutaItemConvs;
+pub(in crate::phb) use metadata::PMetadata;
+pub(in crate::phb) use muta_attr_mods::PMutaAttrMods;
+pub(in crate::phb) use muta_item_convs::PMutaItemConvs;
 
 mod abil;
 mod attr;

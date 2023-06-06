@@ -1,21 +1,21 @@
 use crate::{phb::fsd::FsdMerge, util::into_vec};
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct Buff {
+pub(in crate::phb) struct PBuff {
     #[serde(rename = "aggregateMode")]
-    pub(crate) aggregate_mode: String,
+    pub(in crate::phb) aggregate_mode: String,
     #[serde(rename = "operationName")]
-    pub(crate) operation: String,
+    pub(in crate::phb) operation: String,
     #[serde(rename = "itemModifiers")]
-    pub(crate) item_mods: Vec<BuffIM>,
+    pub(in crate::phb) item_mods: Vec<PBuffIM>,
     #[serde(rename = "locationModifiers")]
-    pub(crate) loc_mods: Vec<BuffLM>,
+    pub(in crate::phb) loc_mods: Vec<PBuffLM>,
     #[serde(rename = "locationGroupModifiers")]
-    pub(crate) locgroup_mods: Vec<BuffLGM>,
+    pub(in crate::phb) locgroup_mods: Vec<PBuffLGM>,
     #[serde(rename = "locationRequiredSkillModifiers")]
-    pub(crate) locsrq_mods: Vec<BuffLRSM>,
+    pub(in crate::phb) locsrq_mods: Vec<PBuffLRSM>,
 }
-impl FsdMerge<rc::ed::EBuff> for Buff {
+impl FsdMerge<rc::ed::EBuff> for PBuff {
     fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EBuff> {
         vec![rc::ed::EBuff::new(
             id,
@@ -30,48 +30,48 @@ impl FsdMerge<rc::ed::EBuff> for Buff {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct BuffIM {
+pub(in crate::phb) struct PBuffIM {
     #[serde(rename = "dogmaAttributeID")]
-    pub(crate) attr_id: rc::ReeInt,
+    pub(in crate::phb) attr_id: rc::ReeInt,
 }
-impl Into<rc::ed::EBuffIM> for BuffIM {
+impl Into<rc::ed::EBuffIM> for PBuffIM {
     fn into(self) -> rc::ed::EBuffIM {
         rc::ed::EBuffIM::new(self.attr_id)
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct BuffLM {
+pub(in crate::phb) struct PBuffLM {
     #[serde(rename = "dogmaAttributeID")]
-    pub(crate) attr_id: rc::ReeInt,
+    pub(in crate::phb) attr_id: rc::ReeInt,
 }
-impl Into<rc::ed::EBuffLM> for BuffLM {
+impl Into<rc::ed::EBuffLM> for PBuffLM {
     fn into(self) -> rc::ed::EBuffLM {
         rc::ed::EBuffLM::new(self.attr_id)
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct BuffLGM {
+pub(in crate::phb) struct PBuffLGM {
     #[serde(rename = "dogmaAttributeID")]
-    pub(crate) attr_id: rc::ReeInt,
+    pub(in crate::phb) attr_id: rc::ReeInt,
     #[serde(rename = "groupID")]
-    pub(crate) group_id: rc::ReeInt,
+    pub(in crate::phb) group_id: rc::ReeInt,
 }
-impl Into<rc::ed::EBuffLGM> for BuffLGM {
+impl Into<rc::ed::EBuffLGM> for PBuffLGM {
     fn into(self) -> rc::ed::EBuffLGM {
         rc::ed::EBuffLGM::new(self.attr_id, self.group_id)
     }
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct BuffLRSM {
+pub(in crate::phb) struct PBuffLRSM {
     #[serde(rename = "dogmaAttributeID")]
-    pub(crate) attr_id: rc::ReeInt,
+    pub(in crate::phb) attr_id: rc::ReeInt,
     #[serde(rename = "skillID")]
-    pub(crate) skill_id: rc::ReeInt,
+    pub(in crate::phb) skill_id: rc::ReeInt,
 }
-impl Into<rc::ed::EBuffLRSM> for BuffLRSM {
+impl Into<rc::ed::EBuffLRSM> for PBuffLRSM {
     fn into(self) -> rc::ed::EBuffLRSM {
         rc::ed::EBuffLRSM::new(self.attr_id, self.skill_id)
     }
