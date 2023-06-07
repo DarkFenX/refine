@@ -8,7 +8,7 @@ use crate::{
     defs::{ReeId, ReeInt},
     src::Src,
     ss::{
-        calc::{CalcSvc, SsAttr},
+        calc::{CalcSvc, SsAttrVal},
         helpers,
     },
     ssi, ssn,
@@ -131,10 +131,10 @@ impl SolarSystem {
         Ok(())
     }
     // Attribute calculator
-    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttr> {
+    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {
         self.calc.get_item_attr_val(item_id, attr_id, &self.src, &self.items)
     }
-    pub fn get_item_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, SsAttr>> {
+    pub fn get_item_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, SsAttrVal>> {
         self.calc.get_item_attr_vals(item_id, &self.src, &self.items)
     }
 }

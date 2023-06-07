@@ -8,13 +8,13 @@ use axum::{
 use tokio::sync::Mutex;
 
 use crate::{
-    bridge::{SolarSystem, SsMgr},
+    bridge::{HSolarSystem, SsMgr},
     handlers::SingleErr,
     util::ErrorKind,
 };
 
 pub(in crate::handlers) enum GSsResult {
-    Ss(Arc<Mutex<SolarSystem>>),
+    Ss(Arc<Mutex<HSolarSystem>>),
     ErrResp(Response),
 }
 

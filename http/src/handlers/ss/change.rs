@@ -8,7 +8,7 @@ use axum::{
 use crate::{
     cmd::{CmdResp, SsCommand},
     handlers::{get_guarded_ss, ss::SsInfoParams, GSsResult, SingleErr},
-    info::SsInfo,
+    info::HSsInfo,
     state::AppState,
 };
 
@@ -19,11 +19,11 @@ pub(crate) struct SsChangeReq {
 
 #[derive(serde::Serialize)]
 pub(crate) struct SsChangeResp {
-    solar_system: SsInfo,
+    solar_system: HSsInfo,
     cmd_results: Vec<CmdResp>,
 }
 impl SsChangeResp {
-    pub(crate) fn new(ss_info: SsInfo, cmd_results: Vec<CmdResp>) -> Self {
+    pub(crate) fn new(ss_info: HSsInfo, cmd_results: Vec<CmdResp>) -> Self {
         Self {
             solar_system: ss_info,
             cmd_results,

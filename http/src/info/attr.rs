@@ -1,16 +1,16 @@
 #[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-pub(crate) struct AttrValInfo {
+pub(crate) struct HAttrVal {
     pub base: rc::ReeFloat,
     pub dogma: rc::ReeFloat,
     pub extra: rc::ReeFloat,
 }
-impl AttrValInfo {
+impl HAttrVal {
     fn new(base: rc::ReeFloat, dogma: rc::ReeFloat, extra: rc::ReeFloat) -> Self {
         Self { base, dogma, extra }
     }
 }
-impl From<&rc::SsAttr> for AttrValInfo {
-    fn from(value: &rc::SsAttr) -> Self {
-        Self::new(value.base, value.dogma, value.extra)
+impl From<&rc::SsAttrVal> for HAttrVal {
+    fn from(ss_attr_val: &rc::SsAttrVal) -> Self {
+        Self::new(ss_attr_val.base, ss_attr_val.dogma, ss_attr_val.extra)
     }
 }

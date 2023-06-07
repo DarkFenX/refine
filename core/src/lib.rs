@@ -21,7 +21,7 @@
 pub use consts::{ModRack, OrdAddMode, State};
 pub use defs::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::Src;
-pub use ss::{SolarSystem, SsAttr};
+pub use ss::{SolarSystem, SsAttrVal};
 pub use ssn::{
     SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsImplantInfo, SsItemInfo, SsModuleInfo,
     SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsSubsystemInfo, SsSwEffectInfo,

@@ -1,15 +1,15 @@
 use crate::{
     cmd::{CmdResp, FitCommand, ItemIdsResp, SsCommand},
-    info::{FitInfo, FitInfoMode, ItemInfo, ItemInfoMode, SsInfo, SsInfoMode},
+    info::{HFitInfo, HFitInfoMode, HItemInfo, HItemInfoMode, HSsInfo, HSsInfoMode},
     util::{Error, ErrorKind, Result},
 };
 
-pub(crate) struct SolarSystem {
+pub(crate) struct HSolarSystem {
     id: String,
     accessed: chrono::DateTime<chrono::Utc>,
     core_ss: Option<rc::SolarSystem>,
 }
-impl SolarSystem {
+impl HSolarSystem {
     pub(crate) fn new(id: String, core_ss: rc::SolarSystem) -> Self {
         Self {
             id,
@@ -22,14 +22,14 @@ impl SolarSystem {
     }
     pub(crate) async fn get_info(
         &mut self,
-        ss_mode: SsInfoMode,
-        fit_mode: FitInfoMode,
-        item_mode: ItemInfoMode,
-    ) -> Result<SsInfo> {
+        ss_mode: HSsInfoMode,
+        fit_mode: HFitInfoMode,
+        item_mode: HItemInfoMode,
+    ) -> Result<HSsInfo> {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = SsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            let res = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (res, core_ss)
         })
         .await;
@@ -38,11 +38,11 @@ impl SolarSystem {
         Ok(res)
     }
     // Fit methods
-    pub(crate) async fn add_fit(&mut self, fit_mode: FitInfoMode, item_mode: ItemInfoMode) -> Result<FitInfo> {
+    pub(crate) async fn add_fit(&mut self, fit_mode: HFitInfoMode, item_mode: HItemInfoMode) -> Result<HFitInfo> {
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
             let res = match core_ss.add_fit() {
-                Ok(fit_id) => Ok(FitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode)),
+                Ok(fit_id) => Ok(HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode)),
                 Err(e) => Err(e.into()),
             };
             (res, core_ss)
@@ -55,13 +55,13 @@ impl SolarSystem {
     pub(crate) async fn get_fit(
         &mut self,
         fit_id: &str,
-        fit_mode: FitInfoMode,
-        item_mode: ItemInfoMode,
-    ) -> Result<FitInfo> {
+        fit_mode: HFitInfoMode,
+        item_mode: HItemInfoMode,
+    ) -> Result<HFitInfo> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = FitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
+            let res = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
             (res, core_ss)
         })
         .await;
@@ -82,12 +82,12 @@ impl SolarSystem {
         res
     }
     // Item methods
-    pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: ItemInfoMode) -> Result<ItemInfo> {
+    pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: HItemInfoMode) -> Result<HItemInfo> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || match core_ss.get_item_info(&item_id) {
             Ok(core_info) => {
-                let item_info = ItemInfo::mk_info(&mut core_ss, &core_info, item_mode);
+                let item_info = HItemInfo::mk_info(&mut core_ss, &core_info, item_mode);
                 (Ok(item_info), core_ss)
             }
             Err(e) => (Err(Error::from(e)), core_ss),
@@ -113,15 +113,15 @@ impl SolarSystem {
     pub(crate) async fn execute_ss_commands(
         &mut self,
         commands: Vec<SsCommand>,
-        ss_mode: SsInfoMode,
-        fit_mode: FitInfoMode,
-        item_mode: ItemInfoMode,
-    ) -> Result<(SsInfo, Vec<CmdResp>)> {
+        ss_mode: HSsInfoMode,
+        fit_mode: HFitInfoMode,
+        item_mode: HItemInfoMode,
+    ) -> Result<(HSsInfo, Vec<CmdResp>)> {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
         let (core_ss, ss_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
             let cmd_results = execute_commands(&mut core_ss, commands);
-            let info = SsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            let info = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (core_ss, info, cmd_results)
         })
         .await;
@@ -133,15 +133,15 @@ impl SolarSystem {
         &mut self,
         fit_id: &str,
         commands: Vec<FitCommand>,
-        fit_mode: FitInfoMode,
-        item_mode: ItemInfoMode,
-    ) -> Result<(FitInfo, Vec<CmdResp>)> {
+        fit_mode: HFitInfoMode,
+        item_mode: HItemInfoMode,
+    ) -> Result<(HFitInfo, Vec<CmdResp>)> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
         let (core_ss, fit_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
             let commands = commands.into_iter().map(|v| v.fill_fit(fit_id)).collect();
             let cmd_results = execute_commands(&mut core_ss, commands);
-            let info = FitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
+            let info = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
             (core_ss, info, cmd_results)
         })
         .await;

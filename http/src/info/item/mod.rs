@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
-use implant::ImplantInfo;
-use module::ModuleInfo;
-use rig::RigInfo;
-use ship::ShipInfo;
+use implant::HImplantInfo;
+use module::HModuleInfo;
+use rig::HRigInfo;
+use ship::HShipInfo;
 
-use crate::info::{AttrValInfo, ItemInfoMode};
+use crate::info::{HAttrVal, HItemInfoMode};
 
 mod implant;
 mod module;
@@ -14,37 +14,37 @@ mod ship;
 
 #[derive(serde::Serialize)]
 #[serde(untagged)]
-pub(crate) enum ItemInfo {
-    IdOnly(String),
-    Basic(ItemInfoBasic),
-    Full(ItemInfoFull),
+pub(crate) enum HItemInfo {
+    Id(String),
+    Basic(HItemInfoBasic),
+    Full(HItemInfoFull),
 }
-impl ItemInfo {
-    pub(crate) fn mk_info<T: Into<ItemInfoBasic>>(
+impl HItemInfo {
+    pub(crate) fn mk_info<T: Into<HItemInfoBasic>>(
         core_ss: &mut rc::SolarSystem,
         item_identity: T,
-        item_mode: ItemInfoMode,
+        item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {
-            ItemInfoMode::IdOnly => {
+            HItemInfoMode::Id => {
                 let info = item_identity.into();
-                Self::IdOnly(info.get_id().to_string())
+                Self::Id(info.get_id().to_string())
             }
-            ItemInfoMode::Basic => Self::Basic(item_identity.into()),
-            ItemInfoMode::Full => Self::Full(ItemInfoFull::mk_info(core_ss, item_identity)),
+            HItemInfoMode::Basic => Self::Basic(item_identity.into()),
+            HItemInfoMode::Full => Self::Full(HItemInfoFull::mk_info(core_ss, item_identity)),
         }
     }
 }
 
 #[derive(serde::Serialize)]
 #[serde(untagged)]
-pub(crate) enum ItemInfoBasic {
-    Implant(ImplantInfo),
-    Ship(ShipInfo),
-    Module(ModuleInfo),
-    Rig(RigInfo),
+pub(crate) enum HItemInfoBasic {
+    Implant(HImplantInfo),
+    Ship(HShipInfo),
+    Module(HModuleInfo),
+    Rig(HRigInfo),
 }
-impl ItemInfoBasic {
+impl HItemInfoBasic {
     fn get_id(&self) -> rc::ReeId {
         match self {
             Self::Implant(info) => info.id,
@@ -54,14 +54,14 @@ impl ItemInfoBasic {
         }
     }
 }
-impl From<&rc::SsItemInfo> for ItemInfoBasic {
-    fn from(value: &rc::SsItemInfo) -> Self {
-        match value {
+impl From<&rc::SsItemInfo> for HItemInfoBasic {
+    fn from(ss_item_info: &rc::SsItemInfo) -> Self {
+        match ss_item_info {
             rc::SsItemInfo::Implant(info) => Self::Implant(info.into()),
             rc::SsItemInfo::Ship(info) => Self::Ship(info.into()),
             rc::SsItemInfo::Module(info) => Self::Module(info.into()),
             rc::SsItemInfo::Rig(info) => Self::Rig(info.into()),
-            _ => Self::Ship(ShipInfo {
+            _ => Self::Ship(HShipInfo {
                 id: 999999,
                 fit_id: 666666,
                 type_id: 333333,
@@ -70,33 +70,33 @@ impl From<&rc::SsItemInfo> for ItemInfoBasic {
         }
     }
 }
-impl From<&rc::SsModuleInfo> for ItemInfoBasic {
-    fn from(value: &rc::SsModuleInfo) -> Self {
-        ItemInfoBasic::Module(value.into())
+impl From<&rc::SsModuleInfo> for HItemInfoBasic {
+    fn from(ss_module_info: &rc::SsModuleInfo) -> Self {
+        HItemInfoBasic::Module(ss_module_info.into())
     }
 }
-impl From<&rc::SsShipInfo> for ItemInfoBasic {
-    fn from(value: &rc::SsShipInfo) -> Self {
-        ItemInfoBasic::Ship(value.into())
+impl From<&rc::SsShipInfo> for HItemInfoBasic {
+    fn from(ss_ship_info: &rc::SsShipInfo) -> Self {
+        HItemInfoBasic::Ship(ss_ship_info.into())
     }
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct ItemInfoFull {
+pub(crate) struct HItemInfoFull {
     #[serde(flatten)]
-    pub(crate) basic_info: ItemInfoBasic,
-    pub(crate) attr_vals: HashMap<rc::ReeInt, AttrValInfo>,
+    pub(crate) basic_info: HItemInfoBasic,
+    pub(crate) attr_vals: HashMap<rc::ReeInt, HAttrVal>,
 }
-impl ItemInfoFull {
-    fn mk_info<T: Into<ItemInfoBasic>>(core_ss: &mut rc::SolarSystem, item_identity: T) -> Self {
-        let info = item_identity.into();
-        let item_id = info.get_id();
+impl HItemInfoFull {
+    fn mk_info<T: Into<HItemInfoBasic>>(core_ss: &mut rc::SolarSystem, item_identity: T) -> Self {
+        let h_info = item_identity.into();
+        let item_id = h_info.get_id();
         let attrs = match core_ss.get_item_attrs(&item_id) {
-            Ok(attrs) => attrs.into_iter().map(|(k, v)| (k, AttrValInfo::from(&v))).collect(),
+            Ok(attrs) => attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),
         };
         Self {
-            basic_info: info,
+            basic_info: h_info,
             attr_vals: attrs,
         }
     }

@@ -1,4 +1,4 @@
-pub use attr::SsAttr;
+pub use attr::SsAttrVal;
 pub(in crate::ss) use calc::CalcSvc;
 
 mod affection_reg;

@@ -8,7 +8,7 @@ use axum::{
 use crate::{
     cmd::{CmdResp, FitCommand},
     handlers::{fit::FitInfoParams, get_guarded_ss, GSsResult, SingleErr},
-    info::FitInfo,
+    info::HFitInfo,
     state::AppState,
     util::ErrorKind,
 };
@@ -20,11 +20,11 @@ pub(crate) struct FitChangeReq {
 
 #[derive(serde::Serialize)]
 pub(crate) struct FitChangeResp {
-    fit: FitInfo,
+    fit: HFitInfo,
     cmd_results: Vec<CmdResp>,
 }
 impl FitChangeResp {
-    pub(crate) fn new(fit: FitInfo, cmd_results: Vec<CmdResp>) -> Self {
+    pub(crate) fn new(fit: HFitInfo, cmd_results: Vec<CmdResp>) -> Self {
         Self { fit, cmd_results }
     }
 }

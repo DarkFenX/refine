@@ -1,7 +1,7 @@
-use crate::info::{FitInfoMode, ItemInfoMode};
+use crate::info::{HFitInfoMode, HItemInfoMode};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct FitInfoParams {
-    pub(crate) fit: Option<FitInfoMode>,
-    pub(crate) item: Option<ItemInfoMode>,
+    pub(crate) fit: Option<HFitInfoMode>,
+    pub(crate) item: Option<HItemInfoMode>,
 }

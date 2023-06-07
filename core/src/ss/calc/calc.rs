@@ -7,7 +7,7 @@ use crate::{
     consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
     defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
-    ss::calc::{affector::AffectorSpec, SsAttr},
+    ss::calc::{affector::AffectorSpec, SsAttrVal},
     ssi,
     util::{Error, ErrorKind, Result},
 };
@@ -44,7 +44,7 @@ const LIMITED_PRECISION_ATTR_IDS: [ReeInt; 4] = [attrs::CPU, attrs::POWER, attrs
 const PENALTY_BASE: ReeFloat = 0.86911998080039742919922218788997270166873931884765625;
 
 pub(in crate::ss) struct CalcSvc {
-    attrs_vals: HashMap<ReeId, HashMap<ReeInt, SsAttr>>,
+    attrs_vals: HashMap<ReeId, HashMap<ReeInt, SsAttrVal>>,
     affection: AffectionRegister,
 }
 impl CalcSvc {
@@ -61,7 +61,7 @@ impl CalcSvc {
         attr_id: &ReeInt,
         src: &Src,
         items: &HashMap<ReeId, ssi::SsItem>,
-    ) -> Result<SsAttr> {
+    ) -> Result<SsAttrVal> {
         // Try accessing cached value
         match self.get_item_dogma_attr_map(item_id)?.get(attr_id) {
             Some(v) => return Ok(*v),
@@ -77,7 +77,7 @@ impl CalcSvc {
         item_id: &ReeId,
         src: &Src,
         items: &HashMap<ReeId, ssi::SsItem>,
-    ) -> Result<HashMap<ReeInt, SsAttr>> {
+    ) -> Result<HashMap<ReeInt, SsAttrVal>> {
         // ssi::Item can have attributes which are not defined on the original EVE item. This happens when
         // something requested an attr value and it was calculated using base attribute value. Here,
         // we get already calculated attributes, which includes attributes absent on the EVE item
@@ -150,7 +150,7 @@ impl CalcSvc {
         attr_id: &ReeInt,
         src: &Src,
         items: &HashMap<ReeId, ssi::SsItem>,
-    ) -> Result<SsAttr> {
+    ) -> Result<SsAttrVal> {
         let item = match items.get(item_id) {
             Some(i) => i,
             None => return Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
@@ -169,7 +169,9 @@ impl CalcSvc {
             },
         };
         match (attr_id, item) {
-            (280, ssi::SsItem::Skill(s)) => return Ok(SsAttr::new(base_val, s.level as ReeFloat, s.level as ReeFloat)),
+            (280, ssi::SsItem::Skill(s)) => {
+                return Ok(SsAttrVal::new(base_val, s.level as ReeFloat, s.level as ReeFloat))
+            }
             _ => (),
         }
         let mut stacked = HashMap::new();
@@ -232,7 +234,7 @@ impl CalcSvc {
         if LIMITED_PRECISION_ATTR_IDS.contains(attr_id) {
             dogma_val = (dogma_val * 100.0).round() / 100.0
         }
-        Ok(SsAttr::new(base_val, dogma_val, dogma_val))
+        Ok(SsAttrVal::new(base_val, dogma_val, dogma_val))
     }
     fn force_recalc(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> bool {
         match self.get_item_dogma_attrs_mut(item_id) {
@@ -275,13 +277,13 @@ impl CalcSvc {
         }
         mods
     }
-    fn get_item_dogma_attr_map(&self, item_id: &ReeId) -> Result<&HashMap<ReeInt, SsAttr>> {
+    fn get_item_dogma_attr_map(&self, item_id: &ReeId) -> Result<&HashMap<ReeInt, SsAttrVal>> {
         // All items known to calculator are in this map, so consider absence an error
         self.attrs_vals
             .get(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }
-    fn get_item_dogma_attrs_mut(&mut self, item_id: &ReeId) -> Result<&mut HashMap<ReeInt, SsAttr>> {
+    fn get_item_dogma_attrs_mut(&mut self, item_id: &ReeId) -> Result<&mut HashMap<ReeInt, SsAttrVal>> {
         // All items known to calculator are in this map, so consider absence an error
         self.attrs_vals
             .get_mut(item_id)

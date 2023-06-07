@@ -1,17 +1,17 @@
 #[derive(serde::Serialize)]
-pub(crate) struct ModuleInfo {
+pub(crate) struct HModuleInfo {
     #[serde(with = "crate::util::serde_string")]
     pub id: rc::ReeId,
     #[serde(with = "crate::util::serde_string")]
     pub fit_id: rc::ReeId,
     pub type_id: rc::ReeInt,
 }
-impl From<&rc::SsModuleInfo> for ModuleInfo {
-    fn from(value: &rc::SsModuleInfo) -> Self {
+impl From<&rc::SsModuleInfo> for HModuleInfo {
+    fn from(ss_module_info: &rc::SsModuleInfo) -> Self {
         Self {
-            id: value.id,
-            fit_id: value.fit_id,
-            type_id: value.a_item_id,
+            id: ss_module_info.id,
+            fit_id: ss_module_info.fit_id,
+            type_id: ss_module_info.a_item_id,
         }
     }
 }

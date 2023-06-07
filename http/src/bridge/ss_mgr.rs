@@ -7,13 +7,13 @@ use tokio::{
 use uuid::Uuid;
 
 use crate::{
-    bridge::SolarSystem,
-    info::{FitInfoMode, ItemInfoMode, SsInfo, SsInfoMode},
+    bridge::HSolarSystem,
+    info::{HFitInfoMode, HItemInfoMode, HSsInfo, HSsInfoMode},
     util::{Error, ErrorKind, Result},
 };
 
 pub(crate) struct SsMgr {
-    id_ss_map: RwLock<HashMap<String, Arc<Mutex<SolarSystem>>>>,
+    id_ss_map: RwLock<HashMap<String, Arc<Mutex<HSolarSystem>>>>,
 }
 impl SsMgr {
     pub(crate) fn new() -> Self {
@@ -25,25 +25,25 @@ impl SsMgr {
     pub(crate) async fn add_ss(
         &self,
         src: Arc<rc::Src>,
-        ss_mode: SsInfoMode,
-        fit_mode: FitInfoMode,
-        item_mode: ItemInfoMode,
-    ) -> SsInfo {
+        ss_mode: HSsInfoMode,
+        fit_mode: HFitInfoMode,
+        item_mode: HItemInfoMode,
+    ) -> HSsInfo {
         let id = get_id();
         let id_mv = id.clone();
         let (core_ss, ss_info) = tokio_rayon::spawn_fifo(move || {
             let mut core_ss = rc::SolarSystem::new(src);
-            let ss_info = SsInfo::mk_info(id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            let ss_info = HSsInfo::mk_info(id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (core_ss, ss_info)
         })
         .await;
         self.id_ss_map
             .write()
             .await
-            .insert(id.clone(), Arc::new(Mutex::new(SolarSystem::new(id, core_ss))));
+            .insert(id.clone(), Arc::new(Mutex::new(HSolarSystem::new(id, core_ss))));
         ss_info
     }
-    pub(crate) async fn get_ss(&self, id: &str) -> Result<Arc<Mutex<SolarSystem>>> {
+    pub(crate) async fn get_ss(&self, id: &str) -> Result<Arc<Mutex<HSolarSystem>>> {
         self.id_ss_map
             .read()
             .await

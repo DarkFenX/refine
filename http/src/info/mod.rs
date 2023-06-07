@@ -1,7 +1,7 @@
-pub(crate) use attr::AttrValInfo;
-pub(crate) use fit::FitInfo;
-pub(crate) use item::ItemInfo;
-pub(crate) use ss::SsInfo;
+pub(crate) use attr::HAttrVal;
+pub(crate) use fit::HFitInfo;
+pub(crate) use item::HItemInfo;
+pub(crate) use ss::HSsInfo;
 
 mod attr;
 mod fit;
@@ -10,13 +10,13 @@ mod ss;
 
 #[derive(Copy, Clone, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum SsInfoMode {
-    IdOnly,
+pub(crate) enum HSsInfoMode {
+    Id,
     Full,
 }
-impl From<Option<SsInfoMode>> for SsInfoMode {
-    fn from(value: Option<SsInfoMode>) -> Self {
-        match value {
+impl From<Option<HSsInfoMode>> for HSsInfoMode {
+    fn from(mode_opt: Option<HSsInfoMode>) -> Self {
+        match mode_opt {
             Some(v) => v,
             None => Self::Full,
         }
@@ -25,13 +25,13 @@ impl From<Option<SsInfoMode>> for SsInfoMode {
 
 #[derive(Copy, Clone, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum FitInfoMode {
-    IdOnly,
+pub(crate) enum HFitInfoMode {
+    Id,
     Full,
 }
-impl From<Option<FitInfoMode>> for FitInfoMode {
-    fn from(value: Option<FitInfoMode>) -> Self {
-        match value {
+impl From<Option<HFitInfoMode>> for HFitInfoMode {
+    fn from(mode_opt: Option<HFitInfoMode>) -> Self {
+        match mode_opt {
             Some(v) => v,
             None => Self::Full,
         }
@@ -40,14 +40,14 @@ impl From<Option<FitInfoMode>> for FitInfoMode {
 
 #[derive(Copy, Clone, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum ItemInfoMode {
-    IdOnly,
+pub(crate) enum HItemInfoMode {
+    Id,
     Basic,
     Full,
 }
-impl From<Option<ItemInfoMode>> for ItemInfoMode {
-    fn from(value: Option<ItemInfoMode>) -> Self {
-        match value {
+impl From<Option<HItemInfoMode>> for HItemInfoMode {
+    fn from(mode_opt: Option<HItemInfoMode>) -> Self {
+        match mode_opt {
             Some(v) => v,
             None => Self::Basic,
         }
