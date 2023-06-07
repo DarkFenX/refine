@@ -43,7 +43,7 @@ pub(crate) struct HFitInfoDetailed {
     pub(crate) id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) ship: Option<HItemInfo>,
-    #[serde(skip_serializing_if = "ModuleRacks::is_empty")]
+    #[serde(skip_serializing_if = "HModuleRacks::is_empty")]
     pub(crate) modules: HModuleRacks,
 }
 impl HFitInfoDetailed {
