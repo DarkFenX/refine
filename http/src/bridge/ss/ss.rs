@@ -28,29 +28,27 @@ impl HSolarSystem {
     ) -> HResult<HSsInfo> {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
-        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
-            (res, core_ss)
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let result = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            (result, core_ss)
         })
         .await;
-        self.core_ss = Some(core_ss);
-        self.touch();
-        Ok(res)
+        self.put_ss_back(core_ss);
+        Ok(result)
     }
     // Fit methods
     pub(crate) async fn add_fit(&mut self, fit_mode: HFitInfoMode, item_mode: HItemInfoMode) -> HResult<HFitInfo> {
         let mut core_ss = self.take_ss()?;
-        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = match core_ss.add_fit() {
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let result = match core_ss.add_fit() {
                 Ok(fit_id) => Ok(HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode)),
                 Err(e) => Err(e.into()),
             };
-            (res, core_ss)
+            (result, core_ss)
         })
         .await;
-        self.core_ss = Some(core_ss);
-        self.touch();
-        res
+        self.put_ss_back(core_ss);
+        result
     }
     pub(crate) async fn get_fit(
         &mut self,
@@ -60,54 +58,50 @@ impl HSolarSystem {
     ) -> HResult<HFitInfo> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
-        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
-            (res, core_ss)
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let result = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
+            (result, core_ss)
         })
         .await;
-        self.core_ss = Some(core_ss);
-        self.touch();
-        Ok(res)
+        self.put_ss_back(core_ss);
+        Ok(result)
     }
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> HResult<()> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
-        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = core_ss.remove_fit(&fit_id).map_err(|e| e.into());
-            (res, core_ss)
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let result = core_ss.remove_fit(&fit_id).map_err(|e| e.into());
+            (result, core_ss)
         })
         .await;
-        self.core_ss = Some(core_ss);
-        self.touch();
-        res
+        self.put_ss_back(core_ss);
+        result
     }
     // Item methods
     pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: HItemInfoMode) -> HResult<HItemInfo> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_ss = self.take_ss()?;
-        let (res, core_ss) = tokio_rayon::spawn_fifo(move || match core_ss.get_item_info(&item_id) {
-            Ok(core_info) => {
-                let item_info = HItemInfo::mk_info(&mut core_ss, &core_info, item_mode);
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || match core_ss.get_item_info(&item_id) {
+            Ok(core_item_info) => {
+                let item_info = HItemInfo::mk_info(&mut core_ss, &core_item_info, item_mode);
                 (Ok(item_info), core_ss)
             }
             Err(e) => (Err(HError::from(e)), core_ss),
         })
         .await;
-        self.core_ss = Some(core_ss);
-        self.touch();
-        res
+        self.put_ss_back(core_ss);
+        result
     }
     pub(crate) async fn remove_item(&mut self, item_id: &str) -> HResult<()> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_ss = self.take_ss()?;
-        let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let res = core_ss.remove_item(&item_id).map_err(|v| v.into());
-            (res, core_ss)
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let result = core_ss.remove_item(&item_id).map_err(|v| v.into());
+            (result, core_ss)
         })
         .await;
-        self.core_ss = Some(core_ss);
-        self.touch();
-        res
+        self.put_ss_back(core_ss);
+        result
     }
     // Command methods
     pub(crate) async fn execute_ss_commands(
@@ -121,12 +115,11 @@ impl HSolarSystem {
         let ss_id_mv = self.id.clone();
         let (core_ss, ss_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
             let cmd_results = execute_commands(&mut core_ss, commands);
-            let info = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
-            (core_ss, info, cmd_results)
+            let ss_info = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            (core_ss, ss_info, cmd_results)
         })
         .await;
-        self.core_ss = Some(core_ss);
-        self.touch();
+        self.put_ss_back(core_ss);
         Ok((ss_info, cmd_results))
     }
     pub(crate) async fn execute_fit_commands(
@@ -145,8 +138,7 @@ impl HSolarSystem {
             (core_ss, info, cmd_results)
         })
         .await;
-        self.core_ss = Some(core_ss);
-        self.touch();
+        self.put_ss_back(core_ss);
         Ok((fit_info, cmd_results))
     }
     // Helper methods
@@ -158,6 +150,10 @@ impl HSolarSystem {
                 Err(HError::new(HErrorKind::NoCoreSs))
             }
         }
+    }
+    fn put_ss_back(&mut self, core_ss: rc::SolarSystem) {
+        self.core_ss = Some(core_ss);
+        self.touch();
     }
     fn str_to_fit_id(&mut self, id: &str) -> HResult<rc::ReeId> {
         match id.parse() {
