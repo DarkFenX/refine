@@ -1,7 +1,6 @@
 use std::{
     collections::{HashMap, HashSet},
     num::Wrapping,
-    sync::Arc,
 };
 
 use crate::{
@@ -31,18 +30,18 @@ mod subsystem;
 mod sw_effect;
 
 pub(in crate::ss) struct SsInnerData<'a> {
-    pub(in crate::ss) src: &'a Arc<Src>,
+    pub(in crate::ss) src: &'a Src,
     pub(in crate::ss) items: &'a HashMap<ReeId, ssi::SsItem>,
     pub(in crate::ss) calc: &'a mut CalcSvc,
 }
 impl<'a> SsInnerData<'a> {
-    fn new(src: &'a Arc<Src>, items: &'a HashMap<ReeId, ssi::SsItem>, calc: &'a mut CalcSvc) -> Self {
+    fn new(src: &'a Src, items: &'a HashMap<ReeId, ssi::SsItem>, calc: &'a mut CalcSvc) -> Self {
         Self { src, items, calc }
     }
 }
 
 pub struct SolarSystem {
-    src: Arc<Src>,
+    src: Src,
     fit_cnt: Wrapping<ReeId>,
     fits: HashSet<ReeId>,
     // fleet_cnt: ReeId,
@@ -52,7 +51,7 @@ pub struct SolarSystem {
     calc: CalcSvc,
 }
 impl SolarSystem {
-    pub fn new(src: Arc<Src>) -> Self {
+    pub fn new(src: Src) -> Self {
         Self {
             src,
             fit_cnt: Wrapping(0),
@@ -62,7 +61,7 @@ impl SolarSystem {
             calc: CalcSvc::new(),
         }
     }
-    pub fn set_src(&mut self, src: Arc<Src>) {
+    pub fn set_src(&mut self, src: Src) {
         for item in self.items.values_mut() {
             item.reload_a_item(&src)
         }

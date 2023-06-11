@@ -16,13 +16,13 @@ pub(crate) struct SsDrone {
     pub(crate) a_item: Option<Arc<ad::AItem>>,
 }
 impl SsDrone {
-    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: State) -> Self {
+    pub(crate) fn new(src: &Src, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: State) -> Self {
         Self {
             id,
             fit_id,
             a_item_id,
             state,
-            a_item: src.a_handler.get_item(&a_item_id),
+            a_item: src.get_a_item(&a_item_id),
         }
     }
 }

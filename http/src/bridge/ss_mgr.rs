@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
 
 use tokio::{sync::RwLock, time};
 use uuid::Uuid;
@@ -21,7 +21,7 @@ impl HSsMgr {
     // Solar system methods
     pub(crate) async fn add_ss(
         &self,
-        src: Arc<rc::Src>,
+        src: rc::Src,
         ss_mode: HSsInfoMode,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,

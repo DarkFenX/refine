@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    sync::Arc,
-};
+use std::collections::{HashMap, HashSet};
 
 use tokio::sync::RwLock;
 use tracing::{event, Level};
@@ -10,7 +7,7 @@ use crate::util::{HError, HErrorKind, HResult};
 
 pub(crate) struct HSrcMgr {
     cache_folder: Option<String>,
-    alias_src_map: RwLock<HashMap<String, Arc<rc::Src>>>,
+    alias_src_map: RwLock<HashMap<String, rc::Src>>,
     default_alias: RwLock<Option<String>>,
     locked_aliases: RwLock<HashSet<String>>,
 }
@@ -50,7 +47,6 @@ impl HSrcMgr {
         .await
         {
             Ok(src) => {
-                let src = Arc::new(src);
                 if make_default {
                     *self.default_alias.write().await = Some(alias.clone())
                 };
@@ -64,7 +60,7 @@ impl HSrcMgr {
             }
         }
     }
-    pub(crate) async fn get(&self, alias: Option<&str>) -> HResult<Arc<rc::Src>> {
+    pub(crate) async fn get(&self, alias: Option<&str>) -> HResult<rc::Src> {
         match alias {
             Some(a) => self.get_src_by_alias(a).await,
             None => self.get_default_src().await,
@@ -98,7 +94,7 @@ impl HSrcMgr {
             event!(Level::ERROR, "attempt to unlock alias which is not locked")
         }
     }
-    async fn get_src_by_alias(&self, alias: &str) -> HResult<Arc<rc::Src>> {
+    async fn get_src_by_alias(&self, alias: &str) -> HResult<rc::Src> {
         self.alias_src_map
             .read()
             .await
@@ -106,7 +102,7 @@ impl HSrcMgr {
             .cloned()
             .ok_or_else(|| HError::new(HErrorKind::SrcNotFound(alias.to_string())))
     }
-    async fn get_default_src(&self) -> HResult<Arc<rc::Src>> {
+    async fn get_default_src(&self) -> HResult<rc::Src> {
         match self.default_alias.read().await.as_ref() {
             Some(a) => self.get_src_by_alias(a).await,
             None => Err(HError::new(HErrorKind::NoDefaultSrc)),

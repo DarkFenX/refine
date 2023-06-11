@@ -15,13 +15,13 @@ pub(crate) struct SsCharge {
     pub(crate) a_item: Option<Arc<ad::AItem>>,
 }
 impl SsCharge {
-    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, cont_id: ReeId) -> Self {
+    pub(crate) fn new(src: &Src, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, cont_id: ReeId) -> Self {
         Self {
             id,
             fit_id,
             a_item_id,
             cont_id,
-            a_item: src.a_handler.get_item(&a_item_id),
+            a_item: src.get_a_item(&a_item_id),
         }
     }
 }

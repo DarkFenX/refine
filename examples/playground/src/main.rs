@@ -49,7 +49,7 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    let src = Arc::new(Src::new(dh, ch).unwrap());
+    let src = Src::new(dh, ch).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
     let ship = sol_sys.set_fit_ship(fit, 11184, true).unwrap();

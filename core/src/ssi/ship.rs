@@ -18,13 +18,13 @@ pub(crate) struct SsShip {
     pub(crate) a_item: Option<Arc<ad::AItem>>,
 }
 impl SsShip {
-    pub(crate) fn new(src: &Arc<Src>, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: bool) -> Self {
+    pub(crate) fn new(src: &Src, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: bool) -> Self {
         Self {
             id,
             fit_id,
             a_item_id,
             state: bool_to_state(state),
-            a_item: src.a_handler.get_item(&a_item_id),
+            a_item: src.get_a_item(&a_item_id),
         }
     }
     pub(crate) fn get_bool_state(&self) -> bool {

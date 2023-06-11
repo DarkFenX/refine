@@ -137,9 +137,9 @@ impl SsItem {
             Self::SwEffect(sw_effect) => sw_effect.state,
         }
     }
-    pub(crate) fn reload_a_item(&mut self, src: &Arc<Src>) {
+    pub(crate) fn reload_a_item(&mut self, src: &Src) {
         let a_item_id = self.get_a_item_id();
-        let a_item = src.a_handler.get_item(&a_item_id);
+        let a_item = src.get_a_item(&a_item_id);
         match self {
             Self::Booster(booster) => booster.a_item = a_item,
             Self::Character(character) => character.a_item = a_item,

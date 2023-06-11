@@ -65,7 +65,7 @@ pub(in crate::ss) fn activate_item_states(item: &ssi::SsItem, states: Vec<State>
         let item_effect_datas = item.get_effect_datas().unwrap();
         for eff_id in item_effect_datas.keys() {
             let mut starting_effects = Vec::with_capacity(item_effect_datas.len());
-            match ss_data.src.a_handler.get_effect(eff_id) {
+            match ss_data.src.get_a_effect(eff_id) {
                 Some(e) if states.contains(&e.state) => starting_effects.push(e.clone()),
                 _ => (),
             }
@@ -80,7 +80,7 @@ pub(in crate::ss) fn deactivate_item_states(item: &ssi::SsItem, states: Vec<Stat
         let item_effect_datas = item.get_effect_datas().unwrap();
         for eff_id in item_effect_datas.keys() {
             let mut stopping_effects = Vec::with_capacity(item_effect_datas.len());
-            match ss_data.src.a_handler.get_effect(eff_id) {
+            match ss_data.src.get_a_effect(eff_id) {
                 Some(e) if states.contains(&e.state) => stopping_effects.push(e.clone()),
                 _ => (),
             }

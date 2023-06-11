@@ -20,7 +20,7 @@ pub(crate) struct SsModule {
 }
 impl SsModule {
     pub(crate) fn new(
-        src: &Arc<Src>,
+        src: &Src,
         id: ReeId,
         fit_id: ReeId,
         a_item_id: ReeInt,
@@ -37,7 +37,7 @@ impl SsModule {
             rack,
             pos,
             charge_a_item_id: charge_a_item_id,
-            a_item: src.a_handler.get_item(&a_item_id),
+            a_item: src.get_a_item(&a_item_id),
         }
     }
 }
