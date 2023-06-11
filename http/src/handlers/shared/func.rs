@@ -1,20 +1,17 @@
-use std::sync::Arc;
-
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
     Json,
 };
-use tokio::sync::Mutex;
 
 use crate::{
-    bridge::{HSolarSystem, HSsMgr},
+    bridge::{HGuardedSs, HSsMgr},
     handlers::HSingleErr,
     util::HErrorKind,
 };
 
 pub(in crate::handlers) enum HGSsResult {
-    Ss(Arc<Mutex<HSolarSystem>>),
+    Ss(HGuardedSs),
     ErrResp(Response),
 }
 

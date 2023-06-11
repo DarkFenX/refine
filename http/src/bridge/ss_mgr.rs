@@ -1,19 +1,16 @@
 use std::{collections::HashMap, sync::Arc};
 
-use tokio::{
-    sync::{Mutex, RwLock},
-    time,
-};
+use tokio::{sync::RwLock, time};
 use uuid::Uuid;
 
 use crate::{
-    bridge::HSolarSystem,
+    bridge::HGuardedSs,
     info::{HFitInfoMode, HItemInfoMode, HSsInfo, HSsInfoMode},
     util::{HError, HErrorKind, HResult},
 };
 
 pub(crate) struct HSsMgr {
-    id_ss_map: RwLock<HashMap<String, Arc<Mutex<HSolarSystem>>>>,
+    id_ss_map: RwLock<HashMap<String, HGuardedSs>>,
 }
 impl HSsMgr {
     pub(crate) fn new() -> Self {
@@ -40,10 +37,10 @@ impl HSsMgr {
         self.id_ss_map
             .write()
             .await
-            .insert(id.clone(), Arc::new(Mutex::new(HSolarSystem::new(id, core_ss))));
+            .insert(id.clone(), HGuardedSs::new(id, core_ss));
         ss_info
     }
-    pub(crate) async fn get_ss(&self, id: &str) -> HResult<Arc<Mutex<HSolarSystem>>> {
+    pub(crate) async fn get_ss(&self, id: &str) -> HResult<HGuardedSs> {
         self.id_ss_map
             .read()
             .await

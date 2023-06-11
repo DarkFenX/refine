@@ -2,7 +2,7 @@
 // together.
 
 pub(crate) use src_mgr::HSrcMgr;
-pub(crate) use ss::HSolarSystem;
+pub(crate) use ss::{HGuardedSs, HSolarSystem};
 pub(crate) use ss_mgr::HSsMgr;
 
 mod src_mgr;
