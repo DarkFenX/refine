@@ -4,10 +4,10 @@ use super::{notify, SsInnerData};
 
 pub(in crate::ss) fn add_item(item: &ssi::SsItem, ss_data: &mut SsInnerData) {
     let item_state = item.get_state();
-    let is_citem_loaded = item.is_loaded();
+    let is_a_item_loaded = item.is_loaded();
     notify::item_added(item);
-    if is_citem_loaded {
-        notify::item_loaded(item, ss_data.calc)
+    if is_a_item_loaded {
+        notify::item_loaded(item, ss_data)
     }
     match item_state {
         State::Offline => {
@@ -50,7 +50,7 @@ pub(in crate::ss) fn remove_item(item: &ssi::SsItem, ss_data: &mut SsInnerData) 
         _ => (),
     }
     if item.is_loaded() {
-        notify::item_unloaded(item, ss_data.calc)
+        notify::item_unloaded(item, ss_data)
     }
     notify::item_removed(item);
 }
@@ -70,7 +70,7 @@ pub(in crate::ss) fn activate_item_states(item: &ssi::SsItem, states: Vec<State>
                 _ => (),
             }
             if !starting_effects.is_empty() {
-                notify::effects_started(item, &starting_effects, ss_data.items, ss_data.calc);
+                notify::effects_started(item, &starting_effects, ss_data);
             }
         }
     };
@@ -85,7 +85,7 @@ pub(in crate::ss) fn deactivate_item_states(item: &ssi::SsItem, states: Vec<Stat
                 _ => (),
             }
             if !stopping_effects.is_empty() {
-                notify::effects_stopped(item, &stopping_effects, ss_data.items, ss_data.calc);
+                notify::effects_stopped(item, &stopping_effects, ss_data);
             }
         }
         for state in states.iter() {
