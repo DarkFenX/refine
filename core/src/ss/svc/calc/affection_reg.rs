@@ -12,7 +12,7 @@ use crate::{
 
 use super::affector::AffectorSpec;
 
-pub(in crate::ss::calc) struct AffectionRegister {
+pub(in crate::ss::svc::calc) struct AffectionRegister {
     // All known affectee items
     // Contains: HashSet<affectee item IDs>
     afees: HashSet<ReeId>,
@@ -55,7 +55,7 @@ pub(in crate::ss::calc) struct AffectionRegister {
     afors_own_srq: KeyedStorage<(ReeId, ReeInt), AffectorSpec>,
 }
 impl AffectionRegister {
-    pub(in crate::ss::calc) fn new() -> Self {
+    pub(in crate::ss::svc::calc) fn new() -> Self {
         Self {
             afees: HashSet::new(),
             afees_topdom: KeyedStorage::new(),
@@ -73,7 +73,7 @@ impl AffectionRegister {
         }
     }
     // Query methods
-    pub(in crate::ss::calc) fn get_local_afee_items(
+    pub(in crate::ss::svc::calc) fn get_local_afee_items(
         &mut self,
         afor_spec: &AffectorSpec,
         items: &HashMap<ReeId, ssi::SsItem>,
@@ -117,8 +117,8 @@ impl AffectionRegister {
         }
         afees
     }
-    pub(in crate::ss::calc) fn get_projected_afee_items(&mut self, afor_spec: ReeId, tgt_items: ReeId) {}
-    pub(in crate::ss::calc) fn get_afor_specs(&self, afee_item: &ssi::SsItem) -> Vec<AffectorSpec> {
+    pub(in crate::ss::svc::calc) fn get_projected_afee_items(&mut self, afor_spec: ReeId, tgt_items: ReeId) {}
+    pub(in crate::ss::svc::calc) fn get_afor_specs(&self, afee_item: &ssi::SsItem) -> Vec<AffectorSpec> {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
         let afee_topdom = afee_item.get_top_domain();
@@ -166,7 +166,7 @@ impl AffectionRegister {
         afors
     }
     // Maintenance methods
-    pub(in crate::ss::calc) fn reg_afee(&mut self, afee_item: &ssi::SsItem) {
+    pub(in crate::ss::svc::calc) fn reg_afee(&mut self, afee_item: &ssi::SsItem) {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
         let afee_topdom = afee_item.get_top_domain();
@@ -208,7 +208,7 @@ impl AffectionRegister {
             }
         }
     }
-    pub(in crate::ss::calc) fn unreg_afee(&mut self, afee_item: &ssi::SsItem) {
+    pub(in crate::ss::svc::calc) fn unreg_afee(&mut self, afee_item: &ssi::SsItem) {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
         let afee_topdom = afee_item.get_top_domain();
@@ -250,7 +250,7 @@ impl AffectionRegister {
             }
         }
     }
-    pub(in crate::ss::calc) fn reg_local_afor_specs(
+    pub(in crate::ss::svc::calc) fn reg_local_afor_specs(
         &mut self,
         afor_fit_id: Option<ReeId>,
         afor_specs: Vec<AffectorSpec>,
@@ -280,7 +280,7 @@ impl AffectionRegister {
             }
         }
     }
-    pub(in crate::ss::calc) fn unreg_local_afor_specs(
+    pub(in crate::ss::svc::calc) fn unreg_local_afor_specs(
         &mut self,
         afor_fit_id: Option<ReeId>,
         afor_specs: Vec<AffectorSpec>,

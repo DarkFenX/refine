@@ -1,5 +1,5 @@
 pub use attr::SsAttrVal;
-pub(in crate::ss) use calc::CalcSvc;
+pub(in crate::ss::svc) use calc::CalcSvc;
 
 mod affection_reg;
 mod affector;

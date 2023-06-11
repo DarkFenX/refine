@@ -7,7 +7,7 @@ use crate::{
     consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
     defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
-    ss::calc::{affector::AffectorSpec, SsAttrVal},
+    ss::svc::calc::{affector::AffectorSpec, SsAttrVal},
     ssi,
     util::{Error, ErrorKind, Result},
 };

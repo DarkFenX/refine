@@ -22,7 +22,7 @@ impl SolarSystem {
             ))),
         }
     }
-    pub(in crate::ss::ss) fn add_charge_with_id_opt(
+    pub(in crate::ss::item) fn add_charge_with_id_opt(
         &mut self,
         item_id: Option<ReeId>,
         fit_id: ReeId,
@@ -34,7 +34,7 @@ impl SolarSystem {
             _ => None,
         }
     }
-    pub(in crate::ss::ss) fn add_charge_with_id(
+    pub(in crate::ss::item) fn add_charge_with_id(
         &mut self,
         item_id: ReeId,
         fit_id: ReeId,

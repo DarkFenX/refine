@@ -3,15 +3,15 @@ use crate::{
     defs::ReeFloat,
 };
 
-pub(in crate::ss::calc) struct Modification {
-    pub(in crate::ss::calc) op: ModOp,
-    pub(in crate::ss::calc) val: ReeFloat,
-    pub(in crate::ss::calc) res_val: ReeFloat,
-    pub(in crate::ss::calc) aggr_mode: ModAggrMode,
-    pub(in crate::ss::calc) afor_pen_immune: bool,
+pub(in crate::ss::svc::calc) struct Modification {
+    pub(in crate::ss::svc::calc) op: ModOp,
+    pub(in crate::ss::svc::calc) val: ReeFloat,
+    pub(in crate::ss::svc::calc) res_val: ReeFloat,
+    pub(in crate::ss::svc::calc) aggr_mode: ModAggrMode,
+    pub(in crate::ss::svc::calc) afor_pen_immune: bool,
 }
 impl Modification {
-    pub(in crate::ss::calc) fn new(
+    pub(in crate::ss::svc::calc) fn new(
         op: ModOp,
         val: ReeFloat,
         res_val: ReeFloat,

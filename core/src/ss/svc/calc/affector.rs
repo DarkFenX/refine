@@ -6,20 +6,20 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(in crate::ss::calc) struct AffectorSpec {
-    pub(in crate::ss::calc) item_id: ReeId,
-    pub(in crate::ss::calc) effect: ad::ArcEffect,
-    pub(in crate::ss::calc) modifier_idx: ReeIdx,
+pub(in crate::ss::svc::calc) struct AffectorSpec {
+    pub(in crate::ss::svc::calc) item_id: ReeId,
+    pub(in crate::ss::svc::calc) effect: ad::ArcEffect,
+    pub(in crate::ss::svc::calc) modifier_idx: ReeIdx,
 }
 impl AffectorSpec {
-    pub(in crate::ss::calc) fn new(item_id: ReeId, effect: ad::ArcEffect, modifier_idx: ReeIdx) -> Self {
+    pub(in crate::ss::svc::calc) fn new(item_id: ReeId, effect: ad::ArcEffect, modifier_idx: ReeIdx) -> Self {
         Self {
             item_id,
             effect,
             modifier_idx,
         }
     }
-    pub(in crate::ss::calc) fn get_modifier(&self) -> Option<&ad::AAttrMod> {
+    pub(in crate::ss::svc::calc) fn get_modifier(&self) -> Option<&ad::AAttrMod> {
         self.effect.mods.get(self.modifier_idx)
     }
 }

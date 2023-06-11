@@ -14,7 +14,7 @@ mod sw_effect;
 
 use crate::{
     defs::ReeId,
-    ss::{helpers, SolarSystem, SsInnerData},
+    ss::{SolarSystem, SsView},
     ssi, ssn,
     util::{Error, ErrorKind, Result},
 };
@@ -29,7 +29,7 @@ impl SolarSystem {
             Some(item) => item,
             None => return Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
         };
-        helpers::remove_item(&main, &mut SsInnerData::new(&self.src, &self.items, &mut self.calc));
+        self.svcs.remove_item(&SsView::new(&self.src, &self.items), &main);
         match main {
             // Remove reference to charge if it's charge which we're removing
             // Item::Charge(c) => match self.items.get_mut(&c.cont_id) {
@@ -45,9 +45,7 @@ impl SolarSystem {
             // Remove charge if we're removing a module, charges cannot exist without their carrier
             ssi::SsItem::Module(m) => match m.charge_a_item_id {
                 Some(other_id) => match self.items.remove(&other_id) {
-                    Some(charge) => {
-                        helpers::remove_item(&charge, &mut SsInnerData::new(&self.src, &self.items, &mut self.calc))
-                    }
+                    Some(charge) => self.svcs.remove_item(&SsView::new(&self.src, &self.items), &charge),
                     _ => (),
                 },
                 _ => (),
@@ -72,7 +70,7 @@ impl SolarSystem {
         let item_id = item.get_id();
         self.items.insert(item_id, item);
         let item = self.items.get(&item_id).unwrap();
-        helpers::add_item(item, &mut SsInnerData::new(&self.src, &self.items, &mut self.calc));
+        self.svcs.add_item(&SsView::new(&self.src, &self.items), item);
     }
     fn get_item(&self, item_id: &ReeId) -> Result<&ssi::SsItem> {
         self.items
