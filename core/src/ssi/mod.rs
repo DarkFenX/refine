@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
 
 pub(crate) use booster::SsBooster;
 pub(crate) use character::SsCharacter;
@@ -156,7 +156,7 @@ impl SsItem {
             Self::SwEffect(sw_effect) => sw_effect.a_item = a_item,
         }
     }
-    pub(crate) fn get_a_item(&self) -> Result<&Arc<ad::AItem>> {
+    pub(crate) fn get_a_item(&self) -> Result<&ad::ArcItem> {
         match self {
             Self::Booster(booster) => booster.a_item.as_ref(),
             Self::Character(character) => character.a_item.as_ref(),

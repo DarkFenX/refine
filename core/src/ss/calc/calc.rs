@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
 
 use itertools::Itertools;
 
@@ -109,7 +109,7 @@ impl CalcSvc {
     pub(in crate::ss) fn effects_started(
         &mut self,
         item: &ssi::SsItem,
-        effects: &Vec<Arc<ad::AEffect>>,
+        effects: &Vec<ad::ArcEffect>,
         items: &HashMap<ReeId, ssi::SsItem>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
@@ -128,7 +128,7 @@ impl CalcSvc {
     pub(in crate::ss) fn effects_stopped(
         &mut self,
         item: &ssi::SsItem,
-        effects: &Vec<Arc<ad::AEffect>>,
+        effects: &Vec<ad::ArcEffect>,
         items: &HashMap<ReeId, ssi::SsItem>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
@@ -337,7 +337,7 @@ fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {
 }
 
 // Maintenance- and query-related functions
-fn generate_local_afor_specs(afor_item: &ssi::SsItem, effects: &Vec<Arc<ad::AEffect>>) -> Vec<AffectorSpec> {
+fn generate_local_afor_specs(afor_item: &ssi::SsItem, effects: &Vec<ad::ArcEffect>) -> Vec<AffectorSpec> {
     let mut specs = Vec::new();
     for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
         for (i, afor_mod) in effect.mods.iter().enumerate() {

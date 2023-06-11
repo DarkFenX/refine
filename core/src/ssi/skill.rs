@@ -1,4 +1,4 @@
-use std::{fmt, sync::Arc};
+use std::fmt;
 
 use crate::{
     ad,
@@ -16,7 +16,7 @@ pub(crate) struct SsSkill {
     pub(crate) a_item_id: ReeInt,
     pub(crate) level: ReeInt,
     pub(crate) state: State,
-    pub(crate) a_item: Option<Arc<ad::AItem>>,
+    pub(crate) a_item: Option<ad::ArcItem>,
 }
 impl SsSkill {
     pub(crate) fn new(src: &Src, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, level: ReeInt, state: bool) -> Self {

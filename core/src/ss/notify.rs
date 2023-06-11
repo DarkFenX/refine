@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
 
 use crate::{ad, consts::State, defs::ReeId, ssi};
 
@@ -18,7 +18,7 @@ pub(in crate::ss) fn state_activated_loaded(item: &ssi::SsItem, state: &State) {
 pub(in crate::ss) fn state_deactivated_loaded(item: &ssi::SsItem, state: &State) {}
 pub(in crate::ss) fn effects_started(
     item: &ssi::SsItem,
-    effects: &Vec<Arc<ad::AEffect>>,
+    effects: &Vec<ad::ArcEffect>,
     items: &HashMap<ReeId, ssi::SsItem>,
     calc: &mut CalcSvc,
 ) {
@@ -26,7 +26,7 @@ pub(in crate::ss) fn effects_started(
 }
 pub(in crate::ss) fn effects_stopped(
     item: &ssi::SsItem,
-    effects: &Vec<Arc<ad::AEffect>>,
+    effects: &Vec<ad::ArcEffect>,
     items: &HashMap<ReeId, ssi::SsItem>,
     calc: &mut CalcSvc,
 ) {

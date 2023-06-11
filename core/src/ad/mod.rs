@@ -4,7 +4,10 @@
 //! for ease of use by various reefast components. Adapted data types are assumed to be read-only by
 //! the components, anything mutable is built on top of them.
 
-pub use data::{AAttr, AAttrMod, ABuff, ABuffAttrMod, AData, AEffect, AItem, AItemEffData, AMuta, AMutaAttrRange};
+pub use data::{
+    AAttr, AAttrMod, ABuff, ABuffAttrMod, AData, AEffect, AItem, AItemEffData, AMuta, AMutaAttrRange, ArcAttr, ArcBuff,
+    ArcEffect, ArcItem, ArcMuta,
+};
 pub use handler::AdaptedDataHandler;
 pub use result::AResult;
 

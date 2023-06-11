@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAttrMod};
 pub use effect::{AAttrMod, AEffect};
@@ -9,6 +11,12 @@ mod buff;
 mod effect;
 mod item;
 mod muta;
+
+pub type ArcAttr = Arc<AAttr>;
+pub type ArcBuff = Arc<ABuff>;
+pub type ArcEffect = Arc<AEffect>;
+pub type ArcItem = Arc<AItem>;
+pub type ArcMuta = Arc<AMuta>;
 
 /// Adapted data storage.
 pub struct AData {

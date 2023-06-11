@@ -1,4 +1,4 @@
-use std::{fmt, sync::Arc};
+use std::fmt;
 
 use crate::{
     ad,
@@ -16,7 +16,7 @@ pub(crate) struct SsModule {
     pub(crate) rack: ModRack,
     pub(crate) pos: ReeIdx,
     pub(crate) charge_a_item_id: Option<ReeId>,
-    pub(crate) a_item: Option<Arc<ad::AItem>>,
+    pub(crate) a_item: Option<ad::ArcItem>,
 }
 impl SsModule {
     pub(crate) fn new(

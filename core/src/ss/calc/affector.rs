@@ -1,7 +1,4 @@
-use std::{
-    hash::{Hash, Hasher},
-    sync::Arc,
-};
+use std::hash::{Hash, Hasher};
 
 use crate::{
     ad,
@@ -11,11 +8,11 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::ss::calc) struct AffectorSpec {
     pub(in crate::ss::calc) item_id: ReeId,
-    pub(in crate::ss::calc) effect: Arc<ad::AEffect>,
+    pub(in crate::ss::calc) effect: ad::ArcEffect,
     pub(in crate::ss::calc) modifier_idx: ReeIdx,
 }
 impl AffectorSpec {
-    pub(in crate::ss::calc) fn new(item_id: ReeId, effect: Arc<ad::AEffect>, modifier_idx: ReeIdx) -> Self {
+    pub(in crate::ss::calc) fn new(item_id: ReeId, effect: ad::ArcEffect, modifier_idx: ReeIdx) -> Self {
         Self {
             item_id,
             effect,

@@ -1,4 +1,4 @@
-use std::{fmt, sync::Arc};
+use std::fmt;
 
 use crate::{
     ad,
@@ -14,7 +14,7 @@ pub(crate) struct SsSwEffect {
     pub(crate) id: ReeId,
     pub(crate) a_item_id: ReeInt,
     pub(crate) state: State,
-    pub(crate) a_item: Option<Arc<ad::AItem>>,
+    pub(crate) a_item: Option<ad::ArcItem>,
 }
 impl SsSwEffect {
     pub(crate) fn new(src: &Src, id: ReeId, a_item_id: ReeInt, state: bool) -> Self {

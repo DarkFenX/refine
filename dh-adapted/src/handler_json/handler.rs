@@ -4,7 +4,6 @@ use std::{
     fs::{create_dir_all, OpenOptions},
     io,
     path::PathBuf,
-    sync::Arc,
 };
 
 use log;
@@ -21,11 +20,11 @@ use super::data;
 pub struct RamJsonAdh {
     folder: PathBuf,
     name: String,
-    storage_items: HashMap<rc::ReeInt, Arc<rc::ad::AItem>>,
-    storage_attrs: HashMap<rc::ReeInt, Arc<rc::ad::AAttr>>,
-    storage_effects: HashMap<rc::ReeInt, Arc<rc::ad::AEffect>>,
-    storage_mutas: HashMap<rc::ReeInt, Arc<rc::ad::AMuta>>,
-    storage_buffs: HashMap<rc::ReeInt, Arc<rc::ad::ABuff>>,
+    storage_items: HashMap<rc::ReeInt, rc::ad::ArcItem>,
+    storage_attrs: HashMap<rc::ReeInt, rc::ad::ArcAttr>,
+    storage_effects: HashMap<rc::ReeInt, rc::ad::ArcEffect>,
+    storage_mutas: HashMap<rc::ReeInt, rc::ad::ArcMuta>,
+    storage_buffs: HashMap<rc::ReeInt, rc::ad::ArcBuff>,
     fingerprint: Option<String>,
 }
 impl RamJsonAdh {
@@ -95,23 +94,23 @@ impl fmt::Debug for RamJsonAdh {
 }
 impl rc::ad::AdaptedDataHandler for RamJsonAdh {
     /// Get cached item.
-    fn get_item(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AItem>> {
+    fn get_item(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcItem> {
         self.storage_items.get(&id).cloned()
     }
     /// Get cached attribute.
-    fn get_attr(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AAttr>> {
+    fn get_attr(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcAttr> {
         self.storage_attrs.get(&id).cloned()
     }
     /// Get cached effect.
-    fn get_effect(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AEffect>> {
+    fn get_effect(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcEffect> {
         self.storage_effects.get(&id).cloned()
     }
     /// Get cached mutaplasmid.
-    fn get_muta(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AMuta>> {
+    fn get_muta(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcMuta> {
         self.storage_mutas.get(&id).cloned()
     }
     /// Get cached warfare buff.
-    fn get_buff(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::ABuff>> {
+    fn get_buff(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcBuff> {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get cached data fingerprint.

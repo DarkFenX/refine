@@ -1,4 +1,4 @@
-use std::{fmt, sync::Arc};
+use std::fmt;
 
 use crate::{
     ad,
@@ -14,7 +14,7 @@ pub(crate) struct SsFighter {
     pub(crate) a_item_id: ReeInt,
     pub(crate) state: State,
     pub(crate) amt_override: Option<ReeInt>,
-    pub(crate) a_item: Option<Arc<ad::AItem>>,
+    pub(crate) a_item: Option<ad::ArcItem>,
 }
 impl SsFighter {
     pub(crate) fn new(src: &Src, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: State) -> Self {

@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt, sync::Arc};
+use std::{collections::HashMap, fmt};
 
 use crate::util::{move_vec_to_map, Error, ErrorKind};
 
@@ -7,11 +7,11 @@ use crate::util::{move_vec_to_map, Error, ErrorKind};
 /// This handler stores everything only in RAM. Access to data is fast, but has noticeable RAM
 /// consumption and adapted data has to be rebuilt every time.
 pub struct RamOnlyAdh {
-    storage_items: HashMap<rc::ReeInt, Arc<rc::ad::AItem>>,
-    storage_attrs: HashMap<rc::ReeInt, Arc<rc::ad::AAttr>>,
-    storage_effects: HashMap<rc::ReeInt, Arc<rc::ad::AEffect>>,
-    storage_mutas: HashMap<rc::ReeInt, Arc<rc::ad::AMuta>>,
-    storage_buffs: HashMap<rc::ReeInt, Arc<rc::ad::ABuff>>,
+    storage_items: HashMap<rc::ReeInt, rc::ad::ArcItem>,
+    storage_attrs: HashMap<rc::ReeInt, rc::ad::ArcAttr>,
+    storage_effects: HashMap<rc::ReeInt, rc::ad::ArcEffect>,
+    storage_mutas: HashMap<rc::ReeInt, rc::ad::ArcMuta>,
+    storage_buffs: HashMap<rc::ReeInt, rc::ad::ArcBuff>,
 }
 impl RamOnlyAdh {
     pub fn new() -> Self {
@@ -31,23 +31,23 @@ impl fmt::Debug for RamOnlyAdh {
 }
 impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     /// Get adapted item.
-    fn get_item(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AItem>> {
+    fn get_item(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcItem> {
         self.storage_items.get(&id).cloned()
     }
     /// Get adapted attribute.
-    fn get_attr(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AAttr>> {
+    fn get_attr(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcAttr> {
         self.storage_attrs.get(&id).cloned()
     }
     /// Get adapted effect.
-    fn get_effect(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AEffect>> {
+    fn get_effect(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcEffect> {
         self.storage_effects.get(&id).cloned()
     }
     /// Get adapted mutaplasmid.
-    fn get_muta(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::AMuta>> {
+    fn get_muta(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcMuta> {
         self.storage_mutas.get(&id).cloned()
     }
     /// Get adapted warfare buff.
-    fn get_buff(&self, id: &rc::ReeInt) -> Option<Arc<rc::ad::ABuff>> {
+    fn get_buff(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcBuff> {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get adapted data fingerprint.
