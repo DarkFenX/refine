@@ -6,38 +6,38 @@ use axum::{
 };
 
 use crate::{
-    cmd::{CmdResp, FitCommand},
-    handlers::{fit::FitInfoParams, get_guarded_ss, GSsResult, SingleErr},
+    cmd::{HCmdResp, HFitCommand},
+    handlers::{fit::HFitInfoParams, get_guarded_ss, HGSsResult, HSingleErr},
     info::HFitInfo,
-    state::AppState,
-    util::ErrorKind,
+    state::HAppState,
+    util::HErrorKind,
 };
 
 #[derive(serde::Deserialize)]
-pub(crate) struct FitChangeReq {
-    commands: Vec<FitCommand>,
+pub(crate) struct HFitChangeReq {
+    commands: Vec<HFitCommand>,
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct FitChangeResp {
+pub(crate) struct HFitChangeResp {
     fit: HFitInfo,
-    cmd_results: Vec<CmdResp>,
+    cmd_results: Vec<HCmdResp>,
 }
-impl FitChangeResp {
-    pub(crate) fn new(fit: HFitInfo, cmd_results: Vec<CmdResp>) -> Self {
+impl HFitChangeResp {
+    pub(crate) fn new(fit: HFitInfo, cmd_results: Vec<HCmdResp>) -> Self {
         Self { fit, cmd_results }
     }
 }
 
 pub(crate) async fn change_fit(
-    State(state): State<AppState>,
+    State(state): State<HAppState>,
     Path((ss_id, fit_id)): Path<(String, String)>,
-    Query(params): Query<FitInfoParams>,
-    Json(payload): Json<FitChangeReq>,
+    Query(params): Query<HFitInfoParams>,
+    Json(payload): Json<HFitChangeReq>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::Ss(ss) => ss,
-        GSsResult::ErrResp(r) => return r,
+        HGSsResult::Ss(ss) => ss,
+        HGSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss
         .lock()
@@ -46,16 +46,16 @@ pub(crate) async fn change_fit(
         .await
     {
         Ok((fit_info, cmd_results)) => {
-            let resp = FitChangeResp::new(fit_info, cmd_results);
+            let resp = HFitChangeResp::new(fit_info, cmd_results);
             (StatusCode::OK, Json(resp)).into_response()
         }
         Err(e) => {
             let code = match e.kind {
-                ErrorKind::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
-                ErrorKind::CoreError(rc::ErrorKind::FitNotFound(_), _) => StatusCode::NOT_FOUND,
+                HErrorKind::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
+                HErrorKind::CoreError(rc::ErrorKind::FitNotFound(_), _) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(SingleErr::from(e))).into_response()
+            (code, Json(HSingleErr::from(e))).into_response()
         }
     };
     resp

@@ -1,7 +1,7 @@
 use std::{error, fmt, result};
 
 #[derive(Debug)]
-pub(crate) enum ErrorKind {
+pub(crate) enum HErrorKind {
     SrcAliasNotAvailable(String),
     SrcNotFound(String),
     NoDefaultSrc,
@@ -16,26 +16,26 @@ pub(crate) enum ErrorKind {
 }
 
 #[derive(Debug)]
-pub(crate) struct Error {
-    pub(crate) kind: ErrorKind,
+pub(crate) struct HError {
+    pub(crate) kind: HErrorKind,
 }
-impl Error {
-    pub(crate) fn new(kind: ErrorKind) -> Self {
+impl HError {
+    pub(crate) fn new(kind: HErrorKind) -> Self {
         Self { kind }
     }
     pub(crate) fn get_code(&self) -> String {
         let code = match &self.kind {
-            ErrorKind::SrcAliasNotAvailable(_) => "SRC-001",
-            ErrorKind::SrcNotFound(_) => "SRC-002",
-            ErrorKind::NoDefaultSrc => "SRC-003",
-            ErrorKind::SsNotFound(_) => "SOL-001",
-            ErrorKind::NoCoreSs => "SOL-002",
-            ErrorKind::FitIdCastFailed(_) => "IDC-001",
-            ErrorKind::ItemIdCastFailed(_) => "IDC-002",
-            ErrorKind::SettingsInitFailed(_) => "CFG-001",
-            ErrorKind::EdhInitFailed(_, _) => "EDH-001",
-            ErrorKind::SrcInitFailed(_, _) => "SIN-001",
-            ErrorKind::CoreError(k, _) => match k {
+            HErrorKind::SrcAliasNotAvailable(_) => "SRC-001",
+            HErrorKind::SrcNotFound(_) => "SRC-002",
+            HErrorKind::NoDefaultSrc => "SRC-003",
+            HErrorKind::SsNotFound(_) => "SOL-001",
+            HErrorKind::NoCoreSs => "SOL-002",
+            HErrorKind::FitIdCastFailed(_) => "IDC-001",
+            HErrorKind::ItemIdCastFailed(_) => "IDC-002",
+            HErrorKind::SettingsInitFailed(_) => "CFG-001",
+            HErrorKind::EdhInitFailed(_, _) => "EDH-001",
+            HErrorKind::SrcInitFailed(_, _) => "SIN-001",
+            HErrorKind::CoreError(k, _) => match k {
                 rc::ErrorKind::DhHttpInvalidBaseUrl(_, _) => "COR-001",
                 rc::ErrorKind::SrcADataGenFailed(_) => "COR-002",
                 rc::ErrorKind::FitNotFound(_) => "COR-003",
@@ -54,29 +54,29 @@ impl Error {
         code.to_string()
     }
 }
-impl From<rc::Error> for Error {
-    fn from(err: rc::Error) -> Self {
-        let reason = format!("{err}");
-        Self::new(ErrorKind::CoreError(err.kind, reason))
+impl From<rc::Error> for HError {
+    fn from(core_err: rc::Error) -> Self {
+        let reason = format!("{core_err}");
+        Self::new(HErrorKind::CoreError(core_err.kind, reason))
     }
 }
-impl error::Error for Error {}
-impl fmt::Display for Error {
+impl error::Error for HError {}
+impl fmt::Display for HError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self.kind {
-            ErrorKind::SrcAliasNotAvailable(alias) => write!(f, "source alias \"{alias}\" is not available"),
-            ErrorKind::SrcNotFound(alias) => write!(f, "source with alias \"{alias}\" not found"),
-            ErrorKind::NoDefaultSrc => write!(f, "default source is not defined"),
-            ErrorKind::SsNotFound(id) => write!(f, "no solar system with ID \"{id}\""),
-            ErrorKind::NoCoreSs => write!(f, "unable to take core solar system"),
-            ErrorKind::FitIdCastFailed(s) => write!(f, "unable to take cast string {s} to id"),
-            ErrorKind::ItemIdCastFailed(s) => write!(f, "unable to take cast string {s} to id"),
-            ErrorKind::SettingsInitFailed(reason) => write!(f, "config initialization failed: {reason}"),
-            ErrorKind::EdhInitFailed(_, reason) => write!(f, "EVE data handler initialization failed: {reason}"),
-            ErrorKind::SrcInitFailed(_, reason) => write!(f, "source initialization failed: {reason}"),
-            ErrorKind::CoreError(_, reason) => write!(f, "core library error: {reason}"),
+            HErrorKind::SrcAliasNotAvailable(alias) => write!(f, "source alias \"{alias}\" is not available"),
+            HErrorKind::SrcNotFound(alias) => write!(f, "source with alias \"{alias}\" not found"),
+            HErrorKind::NoDefaultSrc => write!(f, "default source is not defined"),
+            HErrorKind::SsNotFound(id) => write!(f, "no solar system with ID \"{id}\""),
+            HErrorKind::NoCoreSs => write!(f, "unable to take core solar system"),
+            HErrorKind::FitIdCastFailed(s) => write!(f, "unable to take cast string {s} to id"),
+            HErrorKind::ItemIdCastFailed(s) => write!(f, "unable to take cast string {s} to id"),
+            HErrorKind::SettingsInitFailed(reason) => write!(f, "config initialization failed: {reason}"),
+            HErrorKind::EdhInitFailed(_, reason) => write!(f, "EVE data handler initialization failed: {reason}"),
+            HErrorKind::SrcInitFailed(_, reason) => write!(f, "source initialization failed: {reason}"),
+            HErrorKind::CoreError(_, reason) => write!(f, "core library error: {reason}"),
         }
     }
 }
 
-pub(crate) type Result<T> = result::Result<T, Error>;
+pub(crate) type HResult<T> = result::Result<T, HError>;

@@ -6,19 +6,19 @@ use axum::{
 };
 
 use crate::{
-    handlers::{fit::FitInfoParams, get_guarded_ss, GSsResult, SingleErr},
-    state::AppState,
-    util::ErrorKind,
+    handlers::{fit::HFitInfoParams, get_guarded_ss, HGSsResult, HSingleErr},
+    state::HAppState,
+    util::HErrorKind,
 };
 
 pub(crate) async fn create_fit(
-    State(state): State<AppState>,
+    State(state): State<HAppState>,
     Path(ss_id): Path<String>,
-    Query(params): Query<FitInfoParams>,
+    Query(params): Query<HFitInfoParams>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::Ss(ss) => ss,
-        GSsResult::ErrResp(r) => return r,
+        HGSsResult::Ss(ss) => ss,
+        HGSsResult::ErrResp(r) => return r,
     };
     let fit_info = match guarded_ss
         .lock()
@@ -29,10 +29,10 @@ pub(crate) async fn create_fit(
         Ok(fit_info) => fit_info,
         Err(e) => {
             let code = match e.kind {
-                ErrorKind::CoreError(rc::ErrorKind::FitIdAllocFailed, _) => StatusCode::SERVICE_UNAVAILABLE,
+                HErrorKind::CoreError(rc::ErrorKind::FitIdAllocFailed, _) => StatusCode::SERVICE_UNAVAILABLE,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            return (code, Json(SingleErr::from(e))).into_response();
+            return (code, Json(HSingleErr::from(e))).into_response();
         }
     };
     (StatusCode::CREATED, Json(fit_info)).into_response()

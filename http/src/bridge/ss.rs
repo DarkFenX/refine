@@ -1,7 +1,7 @@
 use crate::{
-    cmd::{CmdResp, FitCommand, ItemIdsResp, SsCommand},
+    cmd::{HCmdResp, HFitCommand, HItemIdsResp, HSsCommand},
     info::{HFitInfo, HFitInfoMode, HItemInfo, HItemInfoMode, HSsInfo, HSsInfoMode},
-    util::{Error, ErrorKind, Result},
+    util::{HError, HErrorKind, HResult},
 };
 
 pub(crate) struct HSolarSystem {
@@ -25,7 +25,7 @@ impl HSolarSystem {
         ss_mode: HSsInfoMode,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> Result<HSsInfo> {
+    ) -> HResult<HSsInfo> {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
@@ -38,7 +38,7 @@ impl HSolarSystem {
         Ok(res)
     }
     // Fit methods
-    pub(crate) async fn add_fit(&mut self, fit_mode: HFitInfoMode, item_mode: HItemInfoMode) -> Result<HFitInfo> {
+    pub(crate) async fn add_fit(&mut self, fit_mode: HFitInfoMode, item_mode: HItemInfoMode) -> HResult<HFitInfo> {
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
             let res = match core_ss.add_fit() {
@@ -57,7 +57,7 @@ impl HSolarSystem {
         fit_id: &str,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> Result<HFitInfo> {
+    ) -> HResult<HFitInfo> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
@@ -69,7 +69,7 @@ impl HSolarSystem {
         self.touch();
         Ok(res)
     }
-    pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> Result<()> {
+    pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> HResult<()> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
@@ -82,7 +82,7 @@ impl HSolarSystem {
         res
     }
     // Item methods
-    pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: HItemInfoMode) -> Result<HItemInfo> {
+    pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: HItemInfoMode) -> HResult<HItemInfo> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || match core_ss.get_item_info(&item_id) {
@@ -90,14 +90,14 @@ impl HSolarSystem {
                 let item_info = HItemInfo::mk_info(&mut core_ss, &core_info, item_mode);
                 (Ok(item_info), core_ss)
             }
-            Err(e) => (Err(Error::from(e)), core_ss),
+            Err(e) => (Err(HError::from(e)), core_ss),
         })
         .await;
         self.core_ss = Some(core_ss);
         self.touch();
         res
     }
-    pub(crate) async fn remove_item(&mut self, item_id: &str) -> Result<()> {
+    pub(crate) async fn remove_item(&mut self, item_id: &str) -> HResult<()> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_ss = self.take_ss()?;
         let (res, core_ss) = tokio_rayon::spawn_fifo(move || {
@@ -112,11 +112,11 @@ impl HSolarSystem {
     // Command methods
     pub(crate) async fn execute_ss_commands(
         &mut self,
-        commands: Vec<SsCommand>,
+        commands: Vec<HSsCommand>,
         ss_mode: HSsInfoMode,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> Result<(HSsInfo, Vec<CmdResp>)> {
+    ) -> HResult<(HSsInfo, Vec<HCmdResp>)> {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
         let (core_ss, ss_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
@@ -132,10 +132,10 @@ impl HSolarSystem {
     pub(crate) async fn execute_fit_commands(
         &mut self,
         fit_id: &str,
-        commands: Vec<FitCommand>,
+        commands: Vec<HFitCommand>,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> Result<(HFitInfo, Vec<CmdResp>)> {
+    ) -> HResult<(HFitInfo, Vec<HCmdResp>)> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
         let (core_ss, fit_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
@@ -150,30 +150,30 @@ impl HSolarSystem {
         Ok((fit_info, cmd_results))
     }
     // Helper methods
-    fn take_ss(&mut self) -> Result<rc::SolarSystem> {
+    fn take_ss(&mut self) -> HResult<rc::SolarSystem> {
         match self.core_ss.take() {
             Some(core_ss) => Ok(core_ss),
             None => {
                 self.touch();
-                Err(Error::new(ErrorKind::NoCoreSs))
+                Err(HError::new(HErrorKind::NoCoreSs))
             }
         }
     }
-    fn str_to_fit_id(&mut self, id: &str) -> Result<rc::ReeId> {
+    fn str_to_fit_id(&mut self, id: &str) -> HResult<rc::ReeId> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {
                 self.touch();
-                Err(Error::new(ErrorKind::FitIdCastFailed(id.to_string())))
+                Err(HError::new(HErrorKind::FitIdCastFailed(id.to_string())))
             }
         }
     }
-    fn str_to_item_id(&mut self, id: &str) -> Result<rc::ReeId> {
+    fn str_to_item_id(&mut self, id: &str) -> HResult<rc::ReeId> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {
                 self.touch();
-                Err(Error::new(ErrorKind::ItemIdCastFailed(id.to_string())))
+                Err(HError::new(HErrorKind::ItemIdCastFailed(id.to_string())))
             }
         }
     }
@@ -182,25 +182,25 @@ impl HSolarSystem {
     }
 }
 
-fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<SsCommand>) -> Vec<CmdResp> {
+fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) -> Vec<HCmdResp> {
     let mut cmd_results = Vec::with_capacity(commands.len());
     for cmd in commands.iter() {
         match cmd {
-            SsCommand::AddImplant(c) => {
+            HSsCommand::AddImplant(c) => {
                 let implant_id = core_ss
                     .add_implant(c.fit_id, c.type_id, c.state.unwrap_or(true))
                     .unwrap();
-                let resp = CmdResp::ItemIds(ItemIdsResp::from(implant_id));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(implant_id));
                 cmd_results.push(resp);
             }
-            SsCommand::SetShip(c) => {
+            HSsCommand::SetShip(c) => {
                 let ship_id = core_ss
                     .set_fit_ship(c.fit_id, c.type_id, c.state.unwrap_or(true))
                     .unwrap();
-                let resp = CmdResp::ItemIds(ItemIdsResp::from(ship_id));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(ship_id));
                 cmd_results.push(resp);
             }
-            SsCommand::AddModuleHigh(c) => {
+            HSsCommand::AddModuleHigh(c) => {
                 let id_data = core_ss
                     .add_module(
                         c.fit_id,
@@ -211,10 +211,10 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<SsCommand>) -> 
                         c.charge_type_id,
                     )
                     .unwrap();
-                let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(id_data));
                 cmd_results.push(resp);
             }
-            SsCommand::AddModuleMid(c) => {
+            HSsCommand::AddModuleMid(c) => {
                 let id_data = core_ss
                     .add_module(
                         c.fit_id,
@@ -225,10 +225,10 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<SsCommand>) -> 
                         c.charge_type_id,
                     )
                     .unwrap();
-                let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(id_data));
                 cmd_results.push(resp);
             }
-            SsCommand::AddModuleLow(c) => {
+            HSsCommand::AddModuleLow(c) => {
                 let id_data = core_ss
                     .add_module(
                         c.fit_id,
@@ -239,12 +239,12 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<SsCommand>) -> 
                         c.charge_type_id,
                     )
                     .unwrap();
-                let resp = CmdResp::ItemIds(ItemIdsResp::from(id_data));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(id_data));
                 cmd_results.push(resp);
             }
-            SsCommand::AddRig(c) => {
+            HSsCommand::AddRig(c) => {
                 let rig_id = core_ss.add_rig(c.fit_id, c.type_id, c.state.unwrap_or(true)).unwrap();
-                let resp = CmdResp::ItemIds(ItemIdsResp::from(rig_id));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(rig_id));
                 cmd_results.push(resp);
             }
         };

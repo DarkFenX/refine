@@ -1,18 +1,18 @@
 use std::sync::Arc;
 
-use crate::bridge::{SrcMgr, SsMgr};
+use crate::bridge::{HSrcMgr, HSsMgr};
 
-pub(crate) struct InnerAppState {
-    pub(crate) src_mgr: SrcMgr,
-    pub(crate) ss_mgr: SsMgr,
+pub(crate) struct HInnerAppState {
+    pub(crate) src_mgr: HSrcMgr,
+    pub(crate) ss_mgr: HSsMgr,
 }
-impl InnerAppState {
+impl HInnerAppState {
     pub(crate) fn new(cache_folder: Option<String>) -> Self {
         Self {
-            src_mgr: SrcMgr::new(cache_folder),
-            ss_mgr: SsMgr::new(),
+            src_mgr: HSrcMgr::new(cache_folder),
+            ss_mgr: HSsMgr::new(),
         }
     }
 }
 
-pub(crate) type AppState = Arc<InnerAppState>;
+pub(crate) type HAppState = Arc<HInnerAppState>;

@@ -6,24 +6,24 @@ use axum::{
 };
 
 use crate::{
-    cmd::{CmdResp, SsCommand},
-    handlers::{get_guarded_ss, ss::SsInfoParams, GSsResult, SingleErr},
+    cmd::{HCmdResp, HSsCommand},
+    handlers::{get_guarded_ss, ss::HSsInfoParams, HGSsResult, HSingleErr},
     info::HSsInfo,
-    state::AppState,
+    state::HAppState,
 };
 
 #[derive(serde::Deserialize)]
-pub(crate) struct SsChangeReq {
-    commands: Vec<SsCommand>,
+pub(crate) struct HSsChangeReq {
+    commands: Vec<HSsCommand>,
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct SsChangeResp {
+pub(crate) struct HSsChangeResp {
     solar_system: HSsInfo,
-    cmd_results: Vec<CmdResp>,
+    cmd_results: Vec<HCmdResp>,
 }
-impl SsChangeResp {
-    pub(crate) fn new(ss_info: HSsInfo, cmd_results: Vec<CmdResp>) -> Self {
+impl HSsChangeResp {
+    pub(crate) fn new(ss_info: HSsInfo, cmd_results: Vec<HCmdResp>) -> Self {
         Self {
             solar_system: ss_info,
             cmd_results,
@@ -32,14 +32,14 @@ impl SsChangeResp {
 }
 
 pub(crate) async fn change_ss(
-    State(state): State<AppState>,
+    State(state): State<HAppState>,
     Path(ss_id): Path<String>,
-    Query(params): Query<SsInfoParams>,
-    Json(payload): Json<SsChangeReq>,
+    Query(params): Query<HSsInfoParams>,
+    Json(payload): Json<HSsChangeReq>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::Ss(ss) => ss,
-        GSsResult::ErrResp(r) => return r,
+        HGSsResult::Ss(ss) => ss,
+        HGSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss
         .lock()
@@ -53,10 +53,10 @@ pub(crate) async fn change_ss(
         .await
     {
         Ok((ss_info, cmd_results)) => {
-            let resp = SsChangeResp::new(ss_info, cmd_results);
+            let resp = HSsChangeResp::new(ss_info, cmd_results);
             (StatusCode::OK, Json(resp)).into_response()
         }
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(SingleErr::from(e))).into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(e))).into_response(),
     };
     resp
 }

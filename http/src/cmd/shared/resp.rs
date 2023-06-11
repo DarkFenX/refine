@@ -1,17 +1,17 @@
 #[derive(serde::Serialize)]
 #[serde(untagged)]
-pub(crate) enum CmdResp {
+pub(crate) enum HCmdResp {
     NoData,
-    ItemIds(ItemIdsResp),
+    ItemIds(HItemIdsResp),
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct ItemIdsResp {
+pub(crate) struct HItemIdsResp {
     id: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     charge_id: Option<String>,
 }
-impl ItemIdsResp {
+impl HItemIdsResp {
     fn new(item_id: rc::ReeId, charge_info: Option<rc::SsChargeInfo>) -> Self {
         Self {
             id: item_id.to_string(),
@@ -19,23 +19,23 @@ impl ItemIdsResp {
         }
     }
 }
-impl From<rc::SsImplantInfo> for ItemIdsResp {
-    fn from(value: rc::SsImplantInfo) -> Self {
-        ItemIdsResp::new(value.id, None)
+impl From<rc::SsImplantInfo> for HItemIdsResp {
+    fn from(ss_implant_info: rc::SsImplantInfo) -> Self {
+        HItemIdsResp::new(ss_implant_info.id, None)
     }
 }
-impl From<rc::SsShipInfo> for ItemIdsResp {
-    fn from(value: rc::SsShipInfo) -> Self {
-        ItemIdsResp::new(value.id, None)
+impl From<rc::SsShipInfo> for HItemIdsResp {
+    fn from(ss_ship_info: rc::SsShipInfo) -> Self {
+        HItemIdsResp::new(ss_ship_info.id, None)
     }
 }
-impl From<rc::SsModuleInfo> for ItemIdsResp {
-    fn from(value: rc::SsModuleInfo) -> Self {
-        ItemIdsResp::new(value.id, value.ss_charge_info)
+impl From<rc::SsModuleInfo> for HItemIdsResp {
+    fn from(ss_module_info: rc::SsModuleInfo) -> Self {
+        HItemIdsResp::new(ss_module_info.id, ss_module_info.ss_charge_info)
     }
 }
-impl From<rc::SsRigInfo> for ItemIdsResp {
-    fn from(value: rc::SsRigInfo) -> Self {
-        ItemIdsResp::new(value.id, None)
+impl From<rc::SsRigInfo> for HItemIdsResp {
+    fn from(ss_rig_info: rc::SsRigInfo) -> Self {
+        HItemIdsResp::new(ss_rig_info.id, None)
     }
 }

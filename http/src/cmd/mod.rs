@@ -1,6 +1,6 @@
-pub(crate) use fit::FitCommand;
-pub(crate) use shared::{CmdResp, ItemIdsResp};
-pub(crate) use ss::SsCommand;
+pub(crate) use fit::HFitCommand;
+pub(crate) use shared::{HCmdResp, HItemIdsResp};
+pub(crate) use ss::HSsCommand;
 
 mod fit;
 mod shared;

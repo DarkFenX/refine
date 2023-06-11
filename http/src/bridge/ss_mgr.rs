@@ -9,13 +9,13 @@ use uuid::Uuid;
 use crate::{
     bridge::HSolarSystem,
     info::{HFitInfoMode, HItemInfoMode, HSsInfo, HSsInfoMode},
-    util::{Error, ErrorKind, Result},
+    util::{HError, HErrorKind, HResult},
 };
 
-pub(crate) struct SsMgr {
+pub(crate) struct HSsMgr {
     id_ss_map: RwLock<HashMap<String, Arc<Mutex<HSolarSystem>>>>,
 }
-impl SsMgr {
+impl HSsMgr {
     pub(crate) fn new() -> Self {
         Self {
             id_ss_map: RwLock::new(HashMap::new()),
@@ -43,18 +43,18 @@ impl SsMgr {
             .insert(id.clone(), Arc::new(Mutex::new(HSolarSystem::new(id, core_ss))));
         ss_info
     }
-    pub(crate) async fn get_ss(&self, id: &str) -> Result<Arc<Mutex<HSolarSystem>>> {
+    pub(crate) async fn get_ss(&self, id: &str) -> HResult<Arc<Mutex<HSolarSystem>>> {
         self.id_ss_map
             .read()
             .await
             .get(id)
-            .ok_or_else(|| Error::new(ErrorKind::SsNotFound(id.to_string())))
+            .ok_or_else(|| HError::new(HErrorKind::SsNotFound(id.to_string())))
             .cloned()
     }
-    pub(crate) async fn delete_ss(&self, id: &str) -> Result<()> {
+    pub(crate) async fn delete_ss(&self, id: &str) -> HResult<()> {
         match self.id_ss_map.write().await.remove(id) {
             Some(_) => Ok(()),
-            None => Err(Error::new(ErrorKind::SsNotFound(id.to_string()))),
+            None => Err(HError::new(HErrorKind::SsNotFound(id.to_string()))),
         }
     }
     // Cleanup methods

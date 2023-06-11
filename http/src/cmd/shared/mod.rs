@@ -1,6 +1,6 @@
-pub(crate) use add_mode::AddMode;
-pub(crate) use resp::{CmdResp, ItemIdsResp};
-pub(crate) use state::State;
+pub(crate) use add_mode::HAddMode;
+pub(crate) use resp::{HCmdResp, HItemIdsResp};
+pub(crate) use state::HState;
 
 mod add_mode;
 mod resp;

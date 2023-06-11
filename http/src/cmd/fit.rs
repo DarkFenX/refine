@@ -1,63 +1,63 @@
 use crate::cmd::{
-    shared::{AddMode, State},
+    shared::{HAddMode, HState},
     ss,
 };
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-pub(crate) enum FitCommand {
-    AddImplant(AddImplantCmd),
-    SetShip(SetShipCmd),
-    AddModuleHigh(AddModuleCmd),
-    AddModuleMid(AddModuleCmd),
-    AddModuleLow(AddModuleCmd),
-    AddRig(AddRigCmd),
+pub(crate) enum HFitCommand {
+    AddImplant(HAddImplantCmd),
+    SetShip(HSetShipCmd),
+    AddModuleHigh(HAddModuleCmd),
+    AddModuleMid(HAddModuleCmd),
+    AddModuleLow(HAddModuleCmd),
+    AddRig(HAddRigCmd),
 }
-impl FitCommand {
-    pub(crate) fn fill_fit(self, fit_id: rc::ReeId) -> ss::SsCommand {
+impl HFitCommand {
+    pub(crate) fn fill_fit(self, fit_id: rc::ReeId) -> ss::HSsCommand {
         match self {
-            FitCommand::AddImplant(cmd) => ss::SsCommand::AddImplant(cmd.fill_fit(fit_id)),
-            FitCommand::SetShip(cmd) => ss::SsCommand::SetShip(cmd.fill_fit(fit_id)),
-            FitCommand::AddModuleHigh(cmd) => ss::SsCommand::AddModuleHigh(cmd.fill_fit(fit_id)),
-            FitCommand::AddModuleMid(cmd) => ss::SsCommand::AddModuleMid(cmd.fill_fit(fit_id)),
-            FitCommand::AddModuleLow(cmd) => ss::SsCommand::AddModuleLow(cmd.fill_fit(fit_id)),
-            FitCommand::AddRig(cmd) => ss::SsCommand::AddRig(cmd.fill_fit(fit_id)),
+            HFitCommand::AddImplant(cmd) => ss::HSsCommand::AddImplant(cmd.fill_fit(fit_id)),
+            HFitCommand::SetShip(cmd) => ss::HSsCommand::SetShip(cmd.fill_fit(fit_id)),
+            HFitCommand::AddModuleHigh(cmd) => ss::HSsCommand::AddModuleHigh(cmd.fill_fit(fit_id)),
+            HFitCommand::AddModuleMid(cmd) => ss::HSsCommand::AddModuleMid(cmd.fill_fit(fit_id)),
+            HFitCommand::AddModuleLow(cmd) => ss::HSsCommand::AddModuleLow(cmd.fill_fit(fit_id)),
+            HFitCommand::AddRig(cmd) => ss::HSsCommand::AddRig(cmd.fill_fit(fit_id)),
         }
     }
 }
 
 #[derive(serde::Deserialize)]
-pub(crate) struct AddImplantCmd {
+pub(crate) struct HAddImplantCmd {
     pub(crate) type_id: rc::ReeInt,
     pub(crate) state: Option<bool>,
 }
-impl AddImplantCmd {
-    fn fill_fit(self, fit_id: rc::ReeId) -> ss::AddImplantCmd {
-        ss::AddImplantCmd::new(fit_id, self.type_id, self.state)
+impl HAddImplantCmd {
+    fn fill_fit(self, fit_id: rc::ReeId) -> ss::HAddImplantCmd {
+        ss::HAddImplantCmd::new(fit_id, self.type_id, self.state)
     }
 }
 
 #[derive(serde::Deserialize)]
-pub(crate) struct SetShipCmd {
+pub(crate) struct HSetShipCmd {
     pub(crate) type_id: rc::ReeInt,
     pub(crate) state: Option<bool>,
 }
-impl SetShipCmd {
-    fn fill_fit(self, fit_id: rc::ReeId) -> ss::SetShipCmd {
-        ss::SetShipCmd::new(fit_id, self.type_id, self.state)
+impl HSetShipCmd {
+    fn fill_fit(self, fit_id: rc::ReeId) -> ss::HSetShipCmd {
+        ss::HSetShipCmd::new(fit_id, self.type_id, self.state)
     }
 }
 
 #[derive(serde::Deserialize)]
-pub(crate) struct AddModuleCmd {
-    pub(crate) add_mode: AddMode,
+pub(crate) struct HAddModuleCmd {
+    pub(crate) add_mode: HAddMode,
     pub(crate) module_type_id: rc::ReeInt,
     pub(crate) charge_type_id: Option<rc::ReeInt>,
-    pub(crate) state: State,
+    pub(crate) state: HState,
 }
-impl AddModuleCmd {
-    fn fill_fit(self, fit_id: rc::ReeId) -> ss::AddModuleCmd {
-        ss::AddModuleCmd::new(
+impl HAddModuleCmd {
+    fn fill_fit(self, fit_id: rc::ReeId) -> ss::HAddModuleCmd {
+        ss::HAddModuleCmd::new(
             fit_id,
             self.add_mode,
             self.module_type_id,
@@ -68,12 +68,12 @@ impl AddModuleCmd {
 }
 
 #[derive(serde::Deserialize)]
-pub(crate) struct AddRigCmd {
+pub(crate) struct HAddRigCmd {
     pub(crate) type_id: rc::ReeInt,
     pub(crate) state: Option<bool>,
 }
-impl AddRigCmd {
-    fn fill_fit(self, fit_id: rc::ReeId) -> ss::AddRigCmd {
-        ss::AddRigCmd::new(fit_id, self.type_id, self.state)
+impl HAddRigCmd {
+    fn fill_fit(self, fit_id: rc::ReeId) -> ss::HAddRigCmd {
+        ss::HAddRigCmd::new(fit_id, self.type_id, self.state)
     }
 }

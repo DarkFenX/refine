@@ -5,19 +5,19 @@ use axum::{
     Json,
 };
 
-use crate::{handlers::SingleErr, state::AppState, util::ErrorKind};
+use crate::{handlers::HSingleErr, state::HAppState, util::HErrorKind};
 
 #[derive(serde::Deserialize)]
-pub(crate) struct CreateSrcReq {
+pub(crate) struct HCreateSrcReq {
     data_version: String,
     data_base_url: String,
     make_default: Option<bool>,
 }
 
 pub(crate) async fn create_source(
-    State(state): State<AppState>,
+    State(state): State<HAppState>,
     Path(alias): Path<String>,
-    Json(payload): Json<CreateSrcReq>,
+    Json(payload): Json<HCreateSrcReq>,
 ) -> impl IntoResponse {
     let data_version = payload.data_version;
     let data_base_url = payload.data_base_url;
@@ -30,12 +30,12 @@ pub(crate) async fn create_source(
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(e) => {
             let code = match e.kind {
-                ErrorKind::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
-                ErrorKind::EdhInitFailed(_, _) => StatusCode::BAD_REQUEST,
-                ErrorKind::SrcInitFailed(_, _) => StatusCode::UNPROCESSABLE_ENTITY,
+                HErrorKind::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
+                HErrorKind::EdhInitFailed(_, _) => StatusCode::BAD_REQUEST,
+                HErrorKind::SrcInitFailed(_, _) => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(SingleErr::from(e))).into_response()
+            (code, Json(HSingleErr::from(e))).into_response()
         }
     }
 }

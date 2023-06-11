@@ -10,7 +10,7 @@ use axum::{
 use tower::Layer;
 use tower_http::normalize_path::NormalizePathLayer;
 
-use crate::{settings::Settings, state::InnerAppState};
+use crate::{settings::HSettings, state::HInnerAppState};
 
 mod bridge;
 mod cmd;
@@ -26,8 +26,8 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     let config_path = env::args().nth(1);
-    let settings = Settings::new(config_path).unwrap();
-    let state = Arc::new(InnerAppState::new(settings.server.cache_folder));
+    let settings = HSettings::new(config_path).unwrap();
+    let state = Arc::new(HInnerAppState::new(settings.server.cache_folder));
 
     let state_cleanup = state.clone();
     tokio::spawn(async move {

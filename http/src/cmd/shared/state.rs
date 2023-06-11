@@ -1,13 +1,13 @@
 #[derive(Copy, Clone, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum State {
+pub(crate) enum HState {
     Ghost,
     Offline,
     Online,
     Active,
     Overload,
 }
-impl Into<rc::State> for State {
+impl Into<rc::State> for HState {
     fn into(self) -> rc::State {
         match self {
             Self::Offline => rc::State::Offline,

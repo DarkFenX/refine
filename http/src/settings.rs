@@ -1,7 +1,7 @@
-use crate::util::{Error, ErrorKind, Result};
+use crate::util::{HError, HErrorKind, HResult};
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct Server {
+pub(crate) struct HServer {
     pub(crate) port: u16,
     pub(crate) solsys_lifetime: u64,
     pub(crate) solsys_cleanup_interval: u64,
@@ -9,14 +9,14 @@ pub(crate) struct Server {
 }
 
 #[derive(Debug, serde::Deserialize)]
-pub(crate) struct Settings {
-    pub(crate) server: Server,
+pub(crate) struct HSettings {
+    pub(crate) server: HServer,
 }
-impl Settings {
-    pub(crate) fn new(conf_path: Option<String>) -> Result<Self> {
-        Self::new_internal(conf_path).map_err(|e| Error::new(ErrorKind::SettingsInitFailed(e.to_string())))
+impl HSettings {
+    pub(crate) fn new(conf_path: Option<String>) -> HResult<Self> {
+        Self::new_internal(conf_path).map_err(|e| HError::new(HErrorKind::SettingsInitFailed(e.to_string())))
     }
-    fn new_internal(conf_path: Option<String>) -> std::result::Result<Self, config::ConfigError> {
+    fn new_internal(conf_path: Option<String>) -> Result<Self, config::ConfigError> {
         // Set defaults - in quite a cumbersome way, mostly because config crate does not expose
         // a good way to set defaults for values residing on a level deeper first one
         let mut server_defaults = config::Map::new();

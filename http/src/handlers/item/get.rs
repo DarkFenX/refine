@@ -6,29 +6,29 @@ use axum::{
 };
 
 use crate::{
-    handlers::{get_guarded_ss, item::ItemInfoParams, GSsResult, SingleErr},
-    state::AppState,
-    util::ErrorKind,
+    handlers::{get_guarded_ss, item::HItemInfoParams, HGSsResult, HSingleErr},
+    state::HAppState,
+    util::HErrorKind,
 };
 
 pub(crate) async fn get_item(
-    State(state): State<AppState>,
+    State(state): State<HAppState>,
     Path((ss_id, item_id)): Path<(String, String)>,
-    Query(params): Query<ItemInfoParams>,
+    Query(params): Query<HItemInfoParams>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::Ss(ss) => ss,
-        GSsResult::ErrResp(r) => return r,
+        HGSsResult::Ss(ss) => ss,
+        HGSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss.lock().await.get_item(&item_id, params.item.into()).await {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),
         Err(e) => {
             let code = match e.kind {
-                ErrorKind::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
-                ErrorKind::CoreError(rc::ErrorKind::ItemIdNotFound(_), _) => StatusCode::NOT_FOUND,
+                HErrorKind::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
+                HErrorKind::CoreError(rc::ErrorKind::ItemIdNotFound(_), _) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(SingleErr::from(e))).into_response()
+            (code, Json(HSingleErr::from(e))).into_response()
         }
     };
     resp

@@ -6,19 +6,19 @@ use axum::{
 };
 
 use crate::{
-    handlers::{fit::FitInfoParams, get_guarded_ss, GSsResult, SingleErr},
-    state::AppState,
-    util::ErrorKind,
+    handlers::{fit::HFitInfoParams, get_guarded_ss, HGSsResult, HSingleErr},
+    state::HAppState,
+    util::HErrorKind,
 };
 
 pub(crate) async fn get_fit(
-    State(state): State<AppState>,
+    State(state): State<HAppState>,
     Path((ss_id, fit_id)): Path<(String, String)>,
-    Query(params): Query<FitInfoParams>,
+    Query(params): Query<HFitInfoParams>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        GSsResult::Ss(ss) => ss,
-        GSsResult::ErrResp(r) => return r,
+        HGSsResult::Ss(ss) => ss,
+        HGSsResult::ErrResp(r) => return r,
     };
     let resp = match guarded_ss
         .lock()
@@ -29,11 +29,11 @@ pub(crate) async fn get_fit(
         Ok(fit_info) => (StatusCode::OK, Json(fit_info)).into_response(),
         Err(e) => {
             let code = match e.kind {
-                ErrorKind::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
-                ErrorKind::CoreError(rc::ErrorKind::FitNotFound(_), _) => StatusCode::NOT_FOUND,
+                HErrorKind::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
+                HErrorKind::CoreError(rc::ErrorKind::FitNotFound(_), _) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(SingleErr::from(e))).into_response()
+            (code, Json(HSingleErr::from(e))).into_response()
         }
     };
     resp
