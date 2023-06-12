@@ -111,17 +111,17 @@ impl SsSvcs {
             .affections
             .reg_local_afor_specs(item.get_fit_id(), afor_specs.clone());
         for afor_spec in afor_specs {
-            let afor_mod = match afor_spec.get_modifier() {
-                Some(afor_mod) => afor_mod,
-                None => continue,
-            };
             for item_id in self
                 .calc_data
                 .affections
                 .get_local_afee_items(&afor_spec, ss_view.items)
             {
-                if self.calc_force_recalc(&item_id, &afor_mod.afee_attr_id) {
-                    self.notify_attr_val_changed(ss_view, ss_view.items.get(&item_id).unwrap(), afor_mod.afee_attr_id);
+                if self.calc_force_recalc(&item_id, &afor_spec.modifier.afee_attr_id) {
+                    self.notify_attr_val_changed(
+                        ss_view,
+                        ss_view.items.get(&item_id).unwrap(),
+                        afor_spec.modifier.afee_attr_id,
+                    );
                 }
             }
         }
@@ -134,17 +134,17 @@ impl SsSvcs {
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
         for afor_spec in afor_specs.iter() {
-            let afor_mod = match afor_spec.get_modifier() {
-                Some(afor_mod) => afor_mod,
-                None => continue,
-            };
             for item_id in self
                 .calc_data
                 .affections
                 .get_local_afee_items(&afor_spec, ss_view.items)
             {
-                if self.calc_force_recalc(&item_id, &afor_mod.afee_attr_id) {
-                    self.notify_attr_val_changed(ss_view, ss_view.items.get(&item_id).unwrap(), afor_mod.afee_attr_id);
+                if self.calc_force_recalc(&item_id, &afor_spec.modifier.afee_attr_id) {
+                    self.notify_attr_val_changed(
+                        ss_view,
+                        ss_view.items.get(&item_id).unwrap(),
+                        afor_spec.modifier.afee_attr_id,
+                    );
                 }
             }
         }
@@ -154,22 +154,20 @@ impl SsSvcs {
     }
     pub(in crate::ss) fn calc_attr_value_changed(&mut self, ss_view: &SsView, item: &ssi::SsItem, attr_id: ReeInt) {
         for afor_spec in self.calc_data.affections.get_afor_specs_by_afor(item) {
-            if let Some(modifier) = afor_spec.get_modifier() {
-                if modifier.afor_attr_id != attr_id {
-                    continue;
-                }
-                for afee_item_id in self
-                    .calc_data
-                    .affections
-                    .get_local_afee_items(&afor_spec, ss_view.items)
-                {
-                    if self.calc_force_recalc(&afee_item_id, &modifier.afee_attr_id) {
-                        self.notify_attr_val_changed(
-                            ss_view,
-                            ss_view.items.get(&afee_item_id).unwrap(),
-                            modifier.afee_attr_id,
-                        );
-                    }
+            if afor_spec.modifier.afor_attr_id != attr_id {
+                continue;
+            }
+            for afee_item_id in self
+                .calc_data
+                .affections
+                .get_local_afee_items(&afor_spec, ss_view.items)
+            {
+                if self.calc_force_recalc(&afee_item_id, &afor_spec.modifier.afee_attr_id) {
+                    self.notify_attr_val_changed(
+                        ss_view,
+                        ss_view.items.get(&afee_item_id).unwrap(),
+                        afor_spec.modifier.afee_attr_id,
+                    );
                 }
             }
         }
@@ -271,14 +269,10 @@ impl SsSvcs {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
         for afor_spec in self.calc_data.affections.get_afor_specs_by_afee(item).iter() {
-            let afor_mod = match afor_spec.get_modifier() {
-                Some(m) => m,
-                None => continue,
-            };
-            if &afor_mod.afee_attr_id != attr_id {
+            if &afor_spec.modifier.afee_attr_id != attr_id {
                 continue;
             }
-            let val = match self.calc_get_item_attr_val(ss_view, &afor_spec.item_id, &afor_mod.afor_attr_id) {
+            let val = match self.calc_get_item_attr_val(ss_view, &afor_spec.item_id, &afor_spec.modifier.afor_attr_id) {
                 Ok(v) => v,
                 _ => continue,
             };
@@ -291,7 +285,7 @@ impl SsSvcs {
                 _ => continue,
             };
             // TODO: implement resistance support
-            let modification = Modification::new(afor_mod.op, val.dogma, 1.0, ModAggrMode::Stack, pen_immune);
+            let modification = Modification::new(afor_spec.modifier.op, val.dogma, 1.0, ModAggrMode::Stack, pen_immune);
             mods.push(modification);
         }
         mods
@@ -361,10 +355,10 @@ fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {
 fn generate_local_afor_specs(afor_item: &ssi::SsItem, effects: &Vec<ad::ArcEffect>) -> Vec<AffectorSpec> {
     let mut specs = Vec::new();
     for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
-        for (i, afor_mod) in effect.mods.iter().enumerate() {
+        for afor_mod in effect.mods.iter() {
             let afor_item_id = afor_item.get_id();
             let afor_fit_id = afor_item.get_fit_id();
-            let afor_spec = AffectorSpec::new(afor_item_id, effect.clone(), i);
+            let afor_spec = AffectorSpec::new(afor_item_id, effect.clone(), *afor_mod);
             specs.push(afor_spec);
         }
     }

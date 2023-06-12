@@ -2,7 +2,6 @@
 
 use std::{path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 
-use chrono;
 use itertools::Itertools;
 
 use rc::{ed::EveDataHandler, ModRack, OrdAddMode, SolarSystem, Src, State, VERSION};

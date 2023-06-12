@@ -99,7 +99,7 @@ impl Named for AEffect {
 ///
 /// A modifier is an entity which specifies in detail which attributes on which items are going to
 /// be affected, and how.
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq)]
 pub struct AAttrMod {
     /// Refers an attribute on the affector, which should be used as modification value.
     pub afor_attr_id: ReeInt,

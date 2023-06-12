@@ -87,7 +87,7 @@ pub enum ModBuildStatus {
 }
 
 /// Defines which items will be affected by a modifier.
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq)]
 pub enum ModAfeeFilter {
     /// Single item modified, as specified by the domain.
     Direct(ModDomain),
@@ -120,7 +120,7 @@ pub enum ModDomain {
 ///
 /// When in the non-stack mode, multiple values which share the same aggregation mode and the same
 /// aggregation key (the mode argument) are converted into a single value.
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq)]
 pub enum ModAggrMode {
     /// All modifications are applied.
     Stack,
