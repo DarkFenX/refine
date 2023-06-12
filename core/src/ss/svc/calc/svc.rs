@@ -50,23 +50,23 @@ const PENALTY_BASE: ReeFloat = 0.86911998080039742919922218788997270166873931884
 
 impl SsSvcs {
     // Query methods
-    pub(in crate::ss) fn get_item_attr_val(
+    pub(in crate::ss) fn calc_get_item_attr_val(
         &mut self,
         ss_view: &SsView,
         item_id: &ReeId,
         attr_id: &ReeInt,
     ) -> Result<SsAttrVal> {
         // Try accessing cached value
-        match self.get_item_dogma_attr_map(item_id)?.get(attr_id) {
+        match self.calc_get_item_dogma_attr_map(item_id)?.get(attr_id) {
             Some(v) => return Ok(*v),
             _ => (),
         };
         // If it is not cached, calculate and cache it
-        let val = self.calc_item_attr_val(ss_view, item_id, attr_id)?;
-        self.get_item_dogma_attrs_mut(item_id)?.insert(*attr_id, val);
+        let val = self.calc_calc_item_attr_val(ss_view, item_id, attr_id)?;
+        self.calc_get_item_dogma_attrs_mut(item_id)?.insert(*attr_id, val);
         Ok(val)
     }
-    pub(in crate::ss) fn get_item_attr_vals(
+    pub(in crate::ss) fn calc_get_item_attr_vals(
         &mut self,
         ss_view: &SsView,
         item_id: &ReeId,
@@ -74,7 +74,7 @@ impl SsSvcs {
         // ssi::Item can have attributes which are not defined on the original EVE item. This happens when
         // something requested an attr value and it was calculated using base attribute value. Here,
         // we get already calculated attributes, which includes attributes absent on the EVE item
-        let mut vals = self.get_item_dogma_attr_map(item_id)?.clone();
+        let mut vals = self.calc_get_item_dogma_attr_map(item_id)?.clone();
         // Calculate & store attributes which are not calculated yet,
         // but are defined on the EVE item
         for attr_id in ss_view
@@ -84,7 +84,7 @@ impl SsSvcs {
             .get_orig_attrs()?
             .keys()
         {
-            match self.get_item_attr_val(ss_view, item_id, attr_id) {
+            match self.calc_get_item_attr_val(ss_view, item_id, attr_id) {
                 Ok(v) => vals.entry(*attr_id).or_insert(v),
                 _ => continue,
             };
@@ -120,7 +120,7 @@ impl SsSvcs {
                 .affections
                 .get_local_afee_items(&afor_spec, ss_view.items)
             {
-                self.force_recalc(&item_id, &afor_mod.afee_attr_id);
+                self.calc_force_recalc(&item_id, &afor_mod.afee_attr_id);
             }
         }
     }
@@ -141,15 +141,23 @@ impl SsSvcs {
                 .affections
                 .get_local_afee_items(&afor_spec, ss_view.items)
             {
-                self.force_recalc(&item_id, &afor_mod.afee_attr_id);
+                self.calc_force_recalc(&item_id, &afor_mod.afee_attr_id);
             }
         }
         self.calc_data
             .affections
             .unreg_local_afor_specs(item.get_fit_id(), afor_specs);
     }
+    pub(in crate::ss) fn calc_attr_value_changed(
+        &mut self,
+        ss_view: &SsView,
+        item: &ssi::SsItem,
+        attr_id: ReeId,
+    ) {
+
+    }
     // Private methods
-    fn calc_item_attr_val(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {
+    fn calc_calc_item_attr_val(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {
         let item = match ss_view.items.get(item_id) {
             Some(i) => i,
             None => return Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
@@ -177,7 +185,7 @@ impl SsSvcs {
         let mut stacked_penalized = HashMap::new();
         // let aggregate_min = Vec::new();
         // let aggregate_max = Vec::new();
-        for modification in self.get_modifications(ss_view, item, attr_id).iter() {
+        for modification in self.calc_get_modifications(ss_view, item, attr_id).iter() {
             let penalize =
                 attr.penalizable && !modification.afor_pen_immune && PENALIZABLE_OPS.contains(&modification.op);
             let mod_val = match modification.op {
@@ -235,13 +243,13 @@ impl SsSvcs {
         }
         Ok(SsAttrVal::new(base_val, dogma_val, dogma_val))
     }
-    fn force_recalc(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> bool {
-        match self.get_item_dogma_attrs_mut(item_id) {
+    fn calc_force_recalc(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> bool {
+        match self.calc_get_item_dogma_attrs_mut(item_id) {
             Ok(item_attrs) => item_attrs.remove(attr_id).is_some(),
             _ => return false,
         }
     }
-    fn get_modifications(&mut self, ss_view: &SsView, item: &ssi::SsItem, attr_id: &ReeInt) -> Vec<Modification> {
+    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &ssi::SsItem, attr_id: &ReeInt) -> Vec<Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
         for afor_spec in self.calc_data.affections.get_afor_specs(item).iter() {
@@ -252,7 +260,7 @@ impl SsSvcs {
             if &afor_mod.afee_attr_id != attr_id {
                 continue;
             }
-            let val = match self.get_item_attr_val(ss_view, &afor_spec.item_id, &afor_mod.afor_attr_id) {
+            let val = match self.calc_get_item_attr_val(ss_view, &afor_spec.item_id, &afor_mod.afor_attr_id) {
                 Ok(v) => v,
                 _ => continue,
             };
@@ -270,14 +278,14 @@ impl SsSvcs {
         }
         mods
     }
-    fn get_item_dogma_attr_map(&self, item_id: &ReeId) -> Result<&HashMap<ReeInt, SsAttrVal>> {
+    fn calc_get_item_dogma_attr_map(&self, item_id: &ReeId) -> Result<&HashMap<ReeInt, SsAttrVal>> {
         // All items known to calculator are in this map, so consider absence an error
         self.calc_data
             .attrs
             .get(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }
-    fn get_item_dogma_attrs_mut(&mut self, item_id: &ReeId) -> Result<&mut HashMap<ReeInt, SsAttrVal>> {
+    fn calc_get_item_dogma_attrs_mut(&mut self, item_id: &ReeId) -> Result<&mut HashMap<ReeInt, SsAttrVal>> {
         // All items known to calculator are in this map, so consider absence an error
         self.calc_data
             .attrs

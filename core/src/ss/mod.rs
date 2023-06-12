@@ -57,10 +57,10 @@ impl SolarSystem {
     // Attribute calculator
     pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {
         self.svcs
-            .get_item_attr_val(&SsView::new(&self.src, &self.items), item_id, attr_id)
+            .calc_get_item_attr_val(&SsView::new(&self.src, &self.items), item_id, attr_id)
     }
     pub fn get_item_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, SsAttrVal>> {
         self.svcs
-            .get_item_attr_vals(&SsView::new(&self.src, &self.items), item_id)
+            .calc_get_item_attr_vals(&SsView::new(&self.src, &self.items), item_id)
     }
 }
