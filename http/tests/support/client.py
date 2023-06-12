@@ -49,6 +49,10 @@ class TestClient:
             eff_ids=Default,
             defeff_id=None,
             srqs=Default,
+            capacity=Default,
+            mass=Default,
+            radius=Default,
+            volume=Default,
     ):
         if data is Default:
             data = self.__default_data
@@ -59,7 +63,11 @@ class TestClient:
             attributes={} if attrs is Default else attrs,
             effect_ids=[] if eff_ids is Default else eff_ids,
             default_effect_id=defeff_id,
-            skill_reqs={} if srqs is Default else srqs)
+            skill_reqs={} if srqs is Default else srqs,
+            capacity=0.0 if capacity is Default else capacity,
+            mass=0.0 if mass is Default else mass,
+            radius=0.0 if radius is Default else radius,
+            volume=0.0 if volume is Default else volume)
 
     def mk_eve_attr(
             self,

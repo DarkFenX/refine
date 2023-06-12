@@ -5,7 +5,7 @@ use std::{path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 use chrono;
 use itertools::Itertools;
 
-use rc::{ed::EveDataHandler, SolarSystem, Src, VERSION};
+use rc::{ed::EveDataHandler, ModRack, OrdAddMode, SolarSystem, Src, State, VERSION};
 
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
@@ -53,16 +53,29 @@ fn main() {
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
     let ship = sol_sys.set_fit_ship(fit, 11184, true).unwrap();
-    for skill_id in skill_ids.iter() {
-        sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
-    }
-    let implant = sol_sys.add_implant(fit, 19687, true);
-    let armor = sol_sys.get_item_attrs(&ship.id).unwrap().get(&265).unwrap().dogma;
-    println!("{armor}");
-    let rig = sol_sys.add_rig(fit, 31057, true).unwrap();
-    let armor = sol_sys.get_item_attrs(&ship.id).unwrap().get(&265).unwrap().dogma;
-    println!("{armor}");
-    sol_sys.remove_item(&rig.id);
-    let armor = sol_sys.get_item_attrs(&ship.id).unwrap().get(&265).unwrap().dogma;
-    println!("{armor}");
+    // for skill_id in skill_ids.iter() {
+    //     sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
+    // }
+    // let implant = sol_sys.add_implant(fit, 19687, true);
+    println!("{}", sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma);
+    let plate = sol_sys
+        .add_module(fit, 31906, State::Online, ModRack::Low, OrdAddMode::Equip, None)
+        .unwrap();
+    println!(
+        "{} {}",
+        sol_sys.get_item_attr(&plate.id, &796).unwrap().dogma,
+        sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma
+    );
+    let skill = sol_sys.add_skill(fit, 33078, 5, true).unwrap();
+    println!(
+        "{} {}",
+        sol_sys.get_item_attr(&plate.id, &796).unwrap().dogma,
+        sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma
+    );
+    sol_sys.remove_item(&skill.id);
+    println!(
+        "{} {}",
+        sol_sys.get_item_attr(&plate.id, &796).unwrap().dogma,
+        sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma
+    );
 }

@@ -31,6 +31,9 @@ pub(in crate::ss::svc) struct AffectionRegister {
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affectee item IDs>
     afees_own_srq: KeyedStorage<(ReeId, ReeInt), ReeId>,
+    // Affector specs registered for an item
+    // Contains: KeyedStorage<affector item ID, affector specs>
+    afors: KeyedStorage<ReeId, AffectorSpec>,
     // Affector specs which modify item directly
     // Contains: KeyedStorage<affectee item ID, affector specs>
     afors_direct: KeyedStorage<ReeId, AffectorSpec>,
@@ -63,6 +66,7 @@ impl AffectionRegister {
             afees_pardom_grp: KeyedStorage::new(),
             afees_pardom_srq: KeyedStorage::new(),
             afees_own_srq: KeyedStorage::new(),
+            afors: KeyedStorage::new(),
             afors_direct: KeyedStorage::new(),
             afors_topdom: KeyedStorage::new(),
             afors_other: KeyedStorage::new(),
@@ -118,7 +122,7 @@ impl AffectionRegister {
         afees
     }
     pub(in crate::ss::svc::calc) fn get_projected_afee_items(&mut self, afor_spec: ReeId, tgt_items: ReeId) {}
-    pub(in crate::ss::svc::calc) fn get_afor_specs(&self, afee_item: &ssi::SsItem) -> Vec<AffectorSpec> {
+    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afee(&self, afee_item: &ssi::SsItem) -> Vec<AffectorSpec> {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
         let afee_topdom = afee_item.get_top_domain();
@@ -164,6 +168,12 @@ impl AffectionRegister {
             }
         }
         afors
+    }
+    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afor(&self, afor_item: &ssi::SsItem) -> Vec<AffectorSpec> {
+        self.afors
+            .get(&afor_item.get_id())
+            .map(|v| v.iter().map(|v| v.clone()).collect())
+            .unwrap_or_else(|| Vec::new())
     }
     // Maintenance methods
     pub(in crate::ss::svc::calc) fn reg_afee(&mut self, afee_item: &ssi::SsItem) {
@@ -256,6 +266,7 @@ impl AffectionRegister {
         afor_specs: Vec<AffectorSpec>,
     ) {
         for afor_spec in afor_specs {
+            self.afors.add_entry(afor_spec.item_id, afor_spec.clone());
             let afor_mod = match afor_spec.get_modifier() {
                 Some(afor_mod) => afor_mod,
                 None => continue,
@@ -286,6 +297,7 @@ impl AffectionRegister {
         afor_specs: Vec<AffectorSpec>,
     ) {
         for afor_spec in afor_specs {
+            self.afors.rm_entry(&afor_spec.item_id, &afor_spec);
             let afor_mod = match afor_spec.get_modifier() {
                 Some(afor_mod) => afor_mod,
                 None => continue,

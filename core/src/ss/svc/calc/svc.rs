@@ -120,7 +120,9 @@ impl SsSvcs {
                 .affections
                 .get_local_afee_items(&afor_spec, ss_view.items)
             {
-                self.calc_force_recalc(&item_id, &afor_mod.afee_attr_id);
+                if self.calc_force_recalc(&item_id, &afor_mod.afee_attr_id) {
+                    self.notify_attr_val_changed(ss_view, ss_view.items.get(&item_id).unwrap(), afor_mod.afee_attr_id);
+                }
             }
         }
     }
@@ -141,20 +143,36 @@ impl SsSvcs {
                 .affections
                 .get_local_afee_items(&afor_spec, ss_view.items)
             {
-                self.calc_force_recalc(&item_id, &afor_mod.afee_attr_id);
+                if self.calc_force_recalc(&item_id, &afor_mod.afee_attr_id) {
+                    self.notify_attr_val_changed(ss_view, ss_view.items.get(&item_id).unwrap(), afor_mod.afee_attr_id);
+                }
             }
         }
         self.calc_data
             .affections
             .unreg_local_afor_specs(item.get_fit_id(), afor_specs);
     }
-    pub(in crate::ss) fn calc_attr_value_changed(
-        &mut self,
-        ss_view: &SsView,
-        item: &ssi::SsItem,
-        attr_id: ReeId,
-    ) {
-
+    pub(in crate::ss) fn calc_attr_value_changed(&mut self, ss_view: &SsView, item: &ssi::SsItem, attr_id: ReeInt) {
+        for afor_spec in self.calc_data.affections.get_afor_specs_by_afor(item) {
+            if let Some(modifier) = afor_spec.get_modifier() {
+                if modifier.afor_attr_id != attr_id {
+                    continue;
+                }
+                for afee_item_id in self
+                    .calc_data
+                    .affections
+                    .get_local_afee_items(&afor_spec, ss_view.items)
+                {
+                    if self.calc_force_recalc(&afee_item_id, &modifier.afee_attr_id) {
+                        self.notify_attr_val_changed(
+                            ss_view,
+                            ss_view.items.get(&afee_item_id).unwrap(),
+                            modifier.afee_attr_id,
+                        );
+                    }
+                }
+            }
+        }
     }
     // Private methods
     fn calc_calc_item_attr_val(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {
@@ -252,7 +270,7 @@ impl SsSvcs {
     fn calc_get_modifications(&mut self, ss_view: &SsView, item: &ssi::SsItem, attr_id: &ReeInt) -> Vec<Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
-        for afor_spec in self.calc_data.affections.get_afor_specs(item).iter() {
+        for afor_spec in self.calc_data.affections.get_afor_specs_by_afee(item).iter() {
             let afor_mod = match afor_spec.get_modifier() {
                 Some(m) => m,
                 None => continue,

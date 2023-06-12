@@ -13,6 +13,10 @@ class Item:
             effect_ids,
             default_effect_id,
             skill_reqs,
+            capacity,
+            mass,
+            radius,
+            volume,
     ):
         self.id = id_
         self.group_id = group_id
@@ -21,6 +25,10 @@ class Item:
         self.effect_ids = effect_ids
         self.default_effect_id = default_effect_id
         self.skill_reqs = skill_reqs
+        self.capacity = capacity
+        self.mass = mass
+        self.radius = radius
+        self.volume = volume
 
     def to_primitives(self, primitive_data):
         item_entry = {'typeID': self.id}
@@ -30,6 +38,10 @@ class Item:
         self.__add_primitive_attributes(primitive_data)
         self.__add_primitive_effects(primitive_data)
         conditional_insert(primitive_data.requiredskillsfortypes, self.id, self.skill_reqs)
+        conditional_insert(item_entry, 'capacity', self.capacity)
+        conditional_insert(item_entry, 'mass', self.mass)
+        conditional_insert(item_entry, 'radius', self.radius)
+        conditional_insert(item_entry, 'volume', self.volume)
 
     def __add_primitive_group(self, primitive_data):
         if self.group_id is Absent:
