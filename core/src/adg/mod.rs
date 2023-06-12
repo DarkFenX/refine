@@ -6,6 +6,7 @@ use crate::{ad, defs::ReeInt, ed, util::IntResult};
 mod clean;
 mod conv;
 mod fetch;
+mod norm;
 mod pk;
 mod rels;
 mod valid;
@@ -17,7 +18,8 @@ pub(crate) fn generate_adapted_data(e_handler: &dyn ed::EveDataHandler) -> IntRe
     let mut a_data = ad::AData::new();
     fetch::fetch_data(e_handler, &mut g_data)?;
     pk::dedup_pks(&mut g_data);
-    g_supp.post_pk(&g_data);
+    norm::normalize(&mut g_data);
+    g_supp.fill(&g_data);
     clean::clean_unused(&mut g_data, &g_supp)?;
     valid::validate(&mut g_data, &g_supp);
     conv::convert(&g_data, &g_supp, &mut a_data);
@@ -70,7 +72,7 @@ impl GSupport {
             grp_cat_map: HashMap::new(),
         }
     }
-    pub(in crate::adg) fn post_pk(&mut self, g_data: &GData) {
+    pub(in crate::adg) fn fill(&mut self, g_data: &GData) {
         self.fill_attr_unit_map(&g_data);
         self.fill_grp_cat_map(&g_data);
     }
