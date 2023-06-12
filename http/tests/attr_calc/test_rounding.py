@@ -57,6 +57,6 @@ def test_power_output(client, consts):
     assert value == approx(2.67)
 
 
-def test_other(client, consts):
+def test_other(client):
     value = get_value_simple(client, attr_id=Default, base_value=2.6666)
     assert value == approx(2.6666)
