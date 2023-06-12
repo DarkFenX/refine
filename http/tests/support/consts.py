@@ -55,3 +55,11 @@ class ModOp(IntEnum):
     post_div = 5
     post_percent = 6
     post_assign = 7
+
+
+@unique
+class Attr(IntEnum):
+    cpu = 50
+    cpu_output = 48
+    power = 30
+    power_output = 11
