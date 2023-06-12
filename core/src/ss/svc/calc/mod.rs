@@ -1,8 +1,6 @@
-pub use attr::SsAttrVal;
-pub(in crate::ss::svc) use calc::CalcSvc;
+pub(in crate::ss::svc) use data::CalcData;
+pub use support::SsAttrVal;
 
-mod affection_reg;
-mod affector;
-mod attr;
-mod calc;
-mod modification;
+mod data;
+mod support;
+mod svc;

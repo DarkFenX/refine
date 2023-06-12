@@ -7,12 +7,15 @@ use crate::{
     consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
     defs::{ReeFloat, ReeId, ReeInt},
     src::Src,
-    ss::svc::calc::{affector::AffectorSpec, SsAttrVal},
+    ss::svc::{
+        calc::support::{AffectorSpec, SsAttrVal},
+        SsSvcs,
+    },
     ssi,
     util::{Error, ErrorKind, Result},
 };
 
-use super::{affection_reg::AffectionRegister, modification::Modification};
+use super::support::Modification;
 
 const PENALTY_IMMUNE_CATS: [ReeInt; 5] = [
     itemcats::SHIP,
@@ -43,17 +46,7 @@ const LIMITED_PRECISION_ATTR_IDS: [ReeInt; 4] = [attrs::CPU, attrs::POWER, attrs
 // Source expression: 1 / e^((1 / 2.67)^2)
 const PENALTY_BASE: ReeFloat = 0.86911998080039742919922218788997270166873931884765625;
 
-pub(in crate::ss) struct CalcSvc {
-    attrs_vals: HashMap<ReeId, HashMap<ReeInt, SsAttrVal>>,
-    affection: AffectionRegister,
-}
-impl CalcSvc {
-    pub(in crate::ss) fn new() -> Self {
-        Self {
-            attrs_vals: HashMap::new(),
-            affection: AffectionRegister::new(),
-        }
-    }
+impl SsSvcs {
     // Query methods
     pub(in crate::ss) fn get_item_attr_val(
         &mut self,
@@ -98,34 +91,35 @@ impl CalcSvc {
         Ok(vals)
     }
     // Maintenance methods
-    pub(in crate::ss) fn item_loaded(&mut self, item: &ssi::SsItem) {
-        self.attrs_vals.insert(item.get_id(), HashMap::new());
-        self.affection.reg_afee(item);
+    pub(in crate::ss) fn calc_item_loaded(&mut self, item: &ssi::SsItem) {
+        self.calc_data.attrs.insert(item.get_id(), HashMap::new());
+        self.calc_data.affections.reg_afee(item);
     }
-    pub(in crate::ss) fn item_unloaded(&mut self, item: &ssi::SsItem) {
-        self.affection.unreg_afee(item);
-        self.attrs_vals.remove(&item.get_id());
+    pub(in crate::ss) fn calc_item_unloaded(&mut self, item: &ssi::SsItem) {
+        self.calc_data.affections.unreg_afee(item);
+        self.calc_data.attrs.remove(&item.get_id());
     }
-    pub(in crate::ss) fn effects_started(
+    pub(in crate::ss) fn calc_effects_started(
         &mut self,
         item: &ssi::SsItem,
         effects: &Vec<ad::ArcEffect>,
         items: &HashMap<ReeId, ssi::SsItem>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
-        self.affection
+        self.calc_data
+            .affections
             .reg_local_afor_specs(item.get_fit_id(), afor_specs.clone());
         for afor_spec in afor_specs {
             let afor_mod = match afor_spec.get_modifier() {
                 Some(afor_mod) => afor_mod,
                 None => continue,
             };
-            for item_id in self.affection.get_local_afee_items(&afor_spec, items) {
+            for item_id in self.calc_data.affections.get_local_afee_items(&afor_spec, items) {
                 self.force_recalc(&item_id, &afor_mod.afee_attr_id);
             }
         }
     }
-    pub(in crate::ss) fn effects_stopped(
+    pub(in crate::ss) fn calc_effects_stopped(
         &mut self,
         item: &ssi::SsItem,
         effects: &Vec<ad::ArcEffect>,
@@ -137,11 +131,13 @@ impl CalcSvc {
                 Some(afor_mod) => afor_mod,
                 None => continue,
             };
-            for item_id in self.affection.get_local_afee_items(&afor_spec, items) {
+            for item_id in self.calc_data.affections.get_local_afee_items(&afor_spec, items) {
                 self.force_recalc(&item_id, &afor_mod.afee_attr_id);
             }
         }
-        self.affection.unreg_local_afor_specs(item.get_fit_id(), afor_specs);
+        self.calc_data
+            .affections
+            .unreg_local_afor_specs(item.get_fit_id(), afor_specs);
     }
     // Private methods
     fn calc_item_attr_val(
@@ -251,7 +247,7 @@ impl CalcSvc {
     ) -> Vec<Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
-        for afor_spec in self.affection.get_afor_specs(item).iter() {
+        for afor_spec in self.calc_data.affections.get_afor_specs(item).iter() {
             let afor_mod = match afor_spec.get_modifier() {
                 Some(m) => m,
                 None => continue,
@@ -279,13 +275,15 @@ impl CalcSvc {
     }
     fn get_item_dogma_attr_map(&self, item_id: &ReeId) -> Result<&HashMap<ReeInt, SsAttrVal>> {
         // All items known to calculator are in this map, so consider absence an error
-        self.attrs_vals
+        self.calc_data
+            .attrs
             .get(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }
     fn get_item_dogma_attrs_mut(&mut self, item_id: &ReeId) -> Result<&mut HashMap<ReeInt, SsAttrVal>> {
         // All items known to calculator are in this map, so consider absence an error
-        self.attrs_vals
+        self.calc_data
+            .attrs
             .get_mut(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }

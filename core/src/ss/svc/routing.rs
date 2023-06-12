@@ -108,10 +108,10 @@ impl SsSvcs {
     pub(in crate::ss) fn notify_state_activated(&mut self, ss_view: &SsView, item: &ssi::SsItem, state: &State) {}
     pub(in crate::ss) fn notify_state_deactivated(&mut self, ss_view: &SsView, item: &ssi::SsItem, state: &State) {}
     pub(in crate::ss) fn notify_item_loaded(&mut self, ss_view: &SsView, item: &ssi::SsItem) {
-        self.calc.item_loaded(item);
+        self.calc_item_loaded(item);
     }
     pub(in crate::ss) fn notify_item_unloaded(&mut self, ss_view: &SsView, item: &ssi::SsItem) {
-        self.calc.item_unloaded(item);
+        self.calc_item_unloaded(item);
     }
     pub(in crate::ss) fn notify_state_activated_loaded(&mut self, ss_view: &SsView, item: &ssi::SsItem, state: &State) {
     }
@@ -128,7 +128,7 @@ impl SsSvcs {
         item: &ssi::SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        self.calc.effects_started(item, effects, &ss_view.items);
+        self.calc_effects_started(item, effects, &ss_view.items);
     }
     pub(in crate::ss) fn notify_effects_stopped(
         &mut self,
@@ -136,7 +136,7 @@ impl SsSvcs {
         item: &ssi::SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        self.calc.effects_stopped(item, effects, &ss_view.items);
+        self.calc_effects_stopped(item, effects, &ss_view.items);
     }
     pub(in crate::ss) fn notify_attr_val_changed(&mut self, ss_view: &SsView, item: &ssi::SsItem, attr_id: ReeId) {}
 }

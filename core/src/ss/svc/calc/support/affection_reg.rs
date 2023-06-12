@@ -12,7 +12,7 @@ use crate::{
 
 use super::affector::AffectorSpec;
 
-pub(in crate::ss::svc::calc) struct AffectionRegister {
+pub(in crate::ss::svc) struct AffectionRegister {
     // All known affectee items
     // Contains: HashSet<affectee item IDs>
     afees: HashSet<ReeId>,
