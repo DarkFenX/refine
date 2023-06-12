@@ -128,7 +128,7 @@ impl SsSvcs {
         item: &ssi::SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        self.calc_effects_started(item, effects, &ss_view.items);
+        self.calc_effects_started(ss_view, item, effects);
     }
     pub(in crate::ss) fn notify_effects_stopped(
         &mut self,
@@ -136,7 +136,7 @@ impl SsSvcs {
         item: &ssi::SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        self.calc_effects_stopped(item, effects, &ss_view.items);
+        self.calc_effects_stopped(ss_view, item, effects);
     }
     pub(in crate::ss) fn notify_attr_val_changed(&mut self, ss_view: &SsView, item: &ssi::SsItem, attr_id: ReeId) {}
 }

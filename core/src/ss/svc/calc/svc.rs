@@ -6,10 +6,12 @@ use crate::{
     ad,
     consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
     defs::{ReeFloat, ReeId, ReeInt},
-    src::Src,
-    ss::svc::{
-        calc::support::{AffectorSpec, SsAttrVal},
-        SsSvcs,
+    ss::{
+        svc::{
+            calc::support::{AffectorSpec, SsAttrVal},
+            SsSvcs,
+        },
+        SsView,
     },
     ssi,
     util::{Error, ErrorKind, Result},
@@ -50,10 +52,9 @@ impl SsSvcs {
     // Query methods
     pub(in crate::ss) fn get_item_attr_val(
         &mut self,
+        ss_view: &SsView,
         item_id: &ReeId,
         attr_id: &ReeInt,
-        src: &Src,
-        items: &HashMap<ReeId, ssi::SsItem>,
     ) -> Result<SsAttrVal> {
         // Try accessing cached value
         match self.get_item_dogma_attr_map(item_id)?.get(attr_id) {
@@ -61,15 +62,14 @@ impl SsSvcs {
             _ => (),
         };
         // If it is not cached, calculate and cache it
-        let val = self.calc_item_attr_val(item_id, attr_id, src, items)?;
+        let val = self.calc_item_attr_val(ss_view, item_id, attr_id)?;
         self.get_item_dogma_attrs_mut(item_id)?.insert(*attr_id, val);
         Ok(val)
     }
     pub(in crate::ss) fn get_item_attr_vals(
         &mut self,
+        ss_view: &SsView,
         item_id: &ReeId,
-        src: &Src,
-        items: &HashMap<ReeId, ssi::SsItem>,
     ) -> Result<HashMap<ReeInt, SsAttrVal>> {
         // ssi::Item can have attributes which are not defined on the original EVE item. This happens when
         // something requested an attr value and it was calculated using base attribute value. Here,
@@ -77,13 +77,14 @@ impl SsSvcs {
         let mut vals = self.get_item_dogma_attr_map(item_id)?.clone();
         // Calculate & store attributes which are not calculated yet,
         // but are defined on the EVE item
-        for attr_id in items
+        for attr_id in ss_view
+            .items
             .get(item_id)
             .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))?
             .get_orig_attrs()?
             .keys()
         {
-            match self.get_item_attr_val(item_id, attr_id, src, items) {
+            match self.get_item_attr_val(ss_view, item_id, attr_id) {
                 Ok(v) => vals.entry(*attr_id).or_insert(v),
                 _ => continue,
             };
@@ -101,9 +102,9 @@ impl SsSvcs {
     }
     pub(in crate::ss) fn calc_effects_started(
         &mut self,
+        ss_view: &SsView,
         item: &ssi::SsItem,
         effects: &Vec<ad::ArcEffect>,
-        items: &HashMap<ReeId, ssi::SsItem>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
         self.calc_data
@@ -114,16 +115,20 @@ impl SsSvcs {
                 Some(afor_mod) => afor_mod,
                 None => continue,
             };
-            for item_id in self.calc_data.affections.get_local_afee_items(&afor_spec, items) {
+            for item_id in self
+                .calc_data
+                .affections
+                .get_local_afee_items(&afor_spec, ss_view.items)
+            {
                 self.force_recalc(&item_id, &afor_mod.afee_attr_id);
             }
         }
     }
     pub(in crate::ss) fn calc_effects_stopped(
         &mut self,
+        ss_view: &SsView,
         item: &ssi::SsItem,
         effects: &Vec<ad::ArcEffect>,
-        items: &HashMap<ReeId, ssi::SsItem>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
         for afor_spec in afor_specs.iter() {
@@ -131,7 +136,11 @@ impl SsSvcs {
                 Some(afor_mod) => afor_mod,
                 None => continue,
             };
-            for item_id in self.calc_data.affections.get_local_afee_items(&afor_spec, items) {
+            for item_id in self
+                .calc_data
+                .affections
+                .get_local_afee_items(&afor_spec, ss_view.items)
+            {
                 self.force_recalc(&item_id, &afor_mod.afee_attr_id);
             }
         }
@@ -140,18 +149,12 @@ impl SsSvcs {
             .unreg_local_afor_specs(item.get_fit_id(), afor_specs);
     }
     // Private methods
-    fn calc_item_attr_val(
-        &mut self,
-        item_id: &ReeId,
-        attr_id: &ReeInt,
-        src: &Src,
-        items: &HashMap<ReeId, ssi::SsItem>,
-    ) -> Result<SsAttrVal> {
-        let item = match items.get(item_id) {
+    fn calc_item_attr_val(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {
+        let item = match ss_view.items.get(item_id) {
             Some(i) => i,
             None => return Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
         };
-        let attr = match src.get_a_attr(attr_id) {
+        let attr = match ss_view.src.get_a_attr(attr_id) {
             Some(attr) => attr,
             None => return Err(Error::new(ErrorKind::AAttrNotFound(*attr_id))),
         };
@@ -174,7 +177,7 @@ impl SsSvcs {
         let mut stacked_penalized = HashMap::new();
         // let aggregate_min = Vec::new();
         // let aggregate_max = Vec::new();
-        for modification in self.get_modifications(item, attr_id, src, items).iter() {
+        for modification in self.get_modifications(ss_view, item, attr_id).iter() {
             let penalize =
                 attr.penalizable && !modification.afor_pen_immune && PENALIZABLE_OPS.contains(&modification.op);
             let mod_val = match modification.op {
@@ -238,13 +241,7 @@ impl SsSvcs {
             _ => return false,
         }
     }
-    fn get_modifications(
-        &mut self,
-        item: &ssi::SsItem,
-        attr_id: &ReeInt,
-        src: &Src,
-        items: &HashMap<ReeId, ssi::SsItem>,
-    ) -> Vec<Modification> {
+    fn get_modifications(&mut self, ss_view: &SsView, item: &ssi::SsItem, attr_id: &ReeInt) -> Vec<Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
         for afor_spec in self.calc_data.affections.get_afor_specs(item).iter() {
@@ -255,11 +252,11 @@ impl SsSvcs {
             if &afor_mod.afee_attr_id != attr_id {
                 continue;
             }
-            let val = match self.get_item_attr_val(&afor_spec.item_id, &afor_mod.afor_attr_id, src, items) {
+            let val = match self.get_item_attr_val(ss_view, &afor_spec.item_id, &afor_mod.afor_attr_id) {
                 Ok(v) => v,
                 _ => continue,
             };
-            let afor_item = match items.get(&afor_spec.item_id) {
+            let afor_item = match ss_view.items.get(&afor_spec.item_id) {
                 Some(i) => i,
                 None => continue,
             };
