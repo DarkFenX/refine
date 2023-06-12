@@ -78,7 +78,7 @@ impl AffectionRegister {
     }
     // Query methods
     pub(in crate::ss::svc::calc) fn get_local_afee_items(
-        &mut self,
+        &self,
         afor_spec: &AffectorSpec,
         items: &HashMap<ReeId, ssi::SsItem>,
     ) -> Vec<ReeId> {
@@ -117,7 +117,7 @@ impl AffectionRegister {
         }
         afees
     }
-    pub(in crate::ss::svc::calc) fn get_projected_afee_items(&mut self, afor_spec: ReeId, tgt_items: ReeId) {}
+    pub(in crate::ss::svc::calc) fn get_projected_afee_items(&self, afor_spec: ReeId, tgt_items: ReeId) {}
     pub(in crate::ss::svc::calc) fn get_afor_specs_by_afee(&self, afee_item: &ssi::SsItem) -> Vec<AffectorSpec> {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
@@ -165,9 +165,9 @@ impl AffectionRegister {
         }
         afors
     }
-    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afor(&self, afor_item: &ssi::SsItem) -> Vec<AffectorSpec> {
+    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afor(&self, afor_item_id: &ReeId) -> Vec<AffectorSpec> {
         self.afors
-            .get(&afor_item.get_id())
+            .get(afor_item_id)
             .map(|v| v.iter().map(|v| v.clone()).collect())
             .unwrap_or_else(|| Vec::new())
     }
