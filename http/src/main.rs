@@ -27,9 +27,9 @@ async fn main() {
     let config_path = env::args().nth(1);
     let settings = HSettings::new(config_path).unwrap();
     // Logging
-    let _log_guard = logging::setup(settings.server.log_folder);
+    let _log_guard = logging::setup(settings.log.folder, settings.log.level);
     // Shared state
-    let state = Arc::new(HInnerAppState::new(settings.server.cache_folder));
+    let state = Arc::new(HInnerAppState::new(settings.cache.folder));
 
     // Cleanup task
     let state_cleanup = state.clone();

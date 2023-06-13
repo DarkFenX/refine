@@ -1,7 +1,12 @@
-use tracing_appender::{non_blocking::WorkerGuard, rolling::RollingFileAppender};
-use tracing_subscriber::fmt::{self, time::UtcTime};
+use std::str::FromStr;
 
-pub(crate) fn setup(log_folder: Option<String>) -> WorkerGuard {
+use tracing_appender::{non_blocking::WorkerGuard, rolling::RollingFileAppender};
+use tracing_subscriber::{
+    filter::LevelFilter,
+    fmt::{self, time::UtcTime},
+};
+
+pub(crate) fn setup(log_folder: Option<String>, log_level: Option<String>) -> WorkerGuard {
     let (non_blocking, guard) = match log_folder {
         Some(path) => {
             let file_appender = RollingFileAppender::new(
@@ -21,9 +26,10 @@ pub(crate) fn setup(log_folder: Option<String>) -> WorkerGuard {
         .with_timer(UtcTime::new(time_format))
         .with_ansi(false)
         .compact();
+    let log_level = LevelFilter::from_str(&log_level.unwrap_or("off".to_string())).unwrap_or(LevelFilter::OFF);
     tracing_subscriber::fmt()
         .event_format(log_format)
-        .with_max_level(tracing::Level::DEBUG)
+        .with_max_level(log_level)
         .with_writer(non_blocking)
         .init();
     guard
