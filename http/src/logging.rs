@@ -23,6 +23,7 @@ pub(crate) fn setup(log_folder: Option<String>) -> WorkerGuard {
         .compact();
     tracing_subscriber::fmt()
         .event_format(log_format)
+        .with_max_level(tracing::Level::TRACE)
         .with_writer(non_blocking)
         .init();
     guard
