@@ -9,11 +9,8 @@ use tracing_subscriber::{
 pub(crate) fn setup(log_folder: Option<String>, log_level: Option<String>) -> WorkerGuard {
     let (non_blocking, guard) = match log_folder {
         Some(path) => {
-            let file_appender = RollingFileAppender::new(
-                tracing_appender::rolling::Rotation::DAILY,
-                "/home/dfx/Workspace/eve/reefast/http/logs/",
-                "reefast-http.log",
-            );
+            let file_appender =
+                RollingFileAppender::new(tracing_appender::rolling::Rotation::DAILY, path, "reefast-http.log");
             tracing_appender::non_blocking(file_appender)
         }
         None => tracing_appender::non_blocking(std::io::stdout()),
