@@ -13,10 +13,18 @@ def build_server(proj_root):
         check=True)
 
 
-def build_config(path, port):
-    contents = f'[server]\nport = {port}\nsolsys_lifetime=30\nsolsys_cleanup_interval=5'
-    with open(path, 'w', encoding='utf-8') as f:
-        f.write(contents)
+def build_config(config_path, port, log_path):
+    contents = [
+        '[server]',
+        f'port = {port}',
+        'nsolsys_lifetime = 30',
+        'solsys_cleanup_interval = 5',
+        '[log]',
+        f'folder = "{log_path}"',
+        'level = "debug"',
+        'rotate = false']
+    with open(config_path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(contents))
 
 
 def run_server(proj_root, config_path):
