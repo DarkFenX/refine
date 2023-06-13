@@ -16,19 +16,22 @@ mod bridge;
 mod cmd;
 mod handlers;
 mod info;
+mod logging;
 mod settings;
 mod state;
 mod util;
 
 #[tokio::main]
 async fn main() {
-    // initialize tracing
-    tracing_subscriber::fmt::init();
-
+    // Settings
     let config_path = env::args().nth(1);
     let settings = HSettings::new(config_path).unwrap();
+    // Logging
+    let _log_guard = logging::setup(settings.server.log_folder);
+    // Shared state
     let state = Arc::new(HInnerAppState::new(settings.server.cache_folder));
 
+    // Cleanup task
     let state_cleanup = state.clone();
     tokio::spawn(async move {
         state_cleanup
@@ -37,7 +40,7 @@ async fn main() {
             .await
     });
 
-    // build our application with a route
+    // HTTP routing
     let app = NormalizePathLayer::trim_trailing_slash().layer(
         Router::new()
             .route("/", get(handlers::root))
@@ -62,8 +65,7 @@ async fn main() {
             .with_state(state),
     );
 
-    // run our app with hyper
-    // `axum::Server` is a re-export of `hyper::Server`
+    // Run app
     let addr = SocketAddr::from(([127, 0, 0, 1], settings.server.port));
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr).serve(app.into_make_service()).await.unwrap();

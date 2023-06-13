@@ -6,6 +6,7 @@ pub(crate) struct HServer {
     pub(crate) solsys_lifetime: u64,
     pub(crate) solsys_cleanup_interval: u64,
     pub(crate) cache_folder: Option<String>,
+    pub(crate) log_folder: Option<String>,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -24,6 +25,7 @@ impl HSettings {
         server_defaults.insert("solsys_lifetime".to_string(), config::ValueKind::U64(900));
         server_defaults.insert("solsys_cleanup_interval".to_string(), config::ValueKind::U64(30));
         server_defaults.insert("cache_folder".to_string(), config::ValueKind::Nil);
+        server_defaults.insert("log_folder".to_string(), config::ValueKind::Nil);
         let s = config::Config::builder().set_default("server", server_defaults)?;
         // Overwrite defaults with values from file only if we have a path to it
         let s = match conf_path {
