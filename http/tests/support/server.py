@@ -14,7 +14,7 @@ def build_server(proj_root):
 
 
 def build_config(path, port):
-    contents = f"[server]\nport = {port}"
+    contents = f"[server]\nport = {port}\nsolsys_lifetime=30\nsolsys_cleanup_interval=5"
     with open(path, 'w', encoding='utf-8') as f:
         f.write(contents)
 
