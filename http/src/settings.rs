@@ -15,7 +15,7 @@ pub(crate) struct HSetCache {
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct HSetLog {
     pub(crate) folder: Option<String>,
-    pub(crate) level: Option<String>,
+    pub(crate) level: String,
     pub(crate) rotate: bool,
 }
 
@@ -29,7 +29,7 @@ impl HSettings {
     pub(crate) fn new(conf_path: Option<String>) -> HResult<Self> {
         Self::new_internal(conf_path).map_err(|e| HError::new(HErrorKind::SettingsInitFailed(e.to_string())))
     }
-    fn new_internal(conf_path: Option<String>) -> Result<Self, config::ConfigError> {
+    fn new_internal(conf_path_opt: Option<String>) -> Result<Self, config::ConfigError> {
         // Set defaults - in quite a cumbersome way, mostly because config crate does not expose
         // a good way to set defaults for values residing on a level deeper first one
         let mut server_defaults = config::Map::new();
@@ -40,17 +40,17 @@ impl HSettings {
         cache_defaults.insert("folder".to_string(), config::ValueKind::Nil);
         let mut log_defaults = config::Map::new();
         log_defaults.insert("folder".to_string(), config::ValueKind::Nil);
-        log_defaults.insert("level".to_string(), config::ValueKind::Nil);
+        log_defaults.insert("level".to_string(), config::ValueKind::String("off".to_string()));
         log_defaults.insert("rotate".to_string(), config::ValueKind::Boolean(false));
-        let s = config::Config::builder()
+        let builder = config::Config::builder()
             .set_default("server", server_defaults)?
             .set_default("cache", cache_defaults)?
             .set_default("log", log_defaults)?;
         // Overwrite defaults with values from file only if we have a path to it
-        let s = match conf_path {
-            Some(cp) => s.add_source(config::File::with_name(&cp).required(false)),
-            None => s,
+        let builder = match conf_path_opt {
+            Some(conf_path) => builder.add_source(config::File::with_name(&conf_path).required(false)),
+            None => builder,
         };
-        s.build()?.try_deserialize()
+        builder.build()?.try_deserialize()
     }
 }

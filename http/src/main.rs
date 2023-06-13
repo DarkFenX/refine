@@ -27,7 +27,7 @@ async fn main() {
     let config_path = env::args().nth(1);
     let settings = HSettings::new(config_path).unwrap();
     // Logging
-    let _log_guard = logging::setup(settings.log.folder, settings.log.level, settings.log.rotate);
+    let _log_guard = logging::setup(settings.log.folder, &settings.log.level, settings.log.rotate);
     // Shared state
     let state = Arc::new(HInnerAppState::new(settings.cache.folder));
 

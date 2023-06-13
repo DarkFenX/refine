@@ -6,7 +6,7 @@ use tracing_subscriber::{
     fmt::{self, time::UtcTime},
 };
 
-pub(crate) fn setup(folder: Option<String>, level: Option<String>, rotate: bool) -> WorkerGuard {
+pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> WorkerGuard {
     let (non_blocking, guard) = match folder {
         Some(path) => {
             let rotation = match rotate {
@@ -26,7 +26,7 @@ pub(crate) fn setup(folder: Option<String>, level: Option<String>, rotate: bool)
         .with_timer(UtcTime::new(time_format))
         .with_ansi(false)
         .compact();
-    let level_filter = LevelFilter::from_str(&level.unwrap_or("off".to_string())).unwrap_or(LevelFilter::OFF);
+    let level_filter = LevelFilter::from_str(level).unwrap_or(LevelFilter::OFF);
     tracing_subscriber::fmt()
         .event_format(log_format)
         .with_max_level(level_filter)
