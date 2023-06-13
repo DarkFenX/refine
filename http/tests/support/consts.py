@@ -42,6 +42,7 @@ class ModDom(StrEnum):
     ship = 'shipID'
     struct = 'structureID'
     tgt = 'targetID'
+    other = 'otherID'
 
 
 @unique
