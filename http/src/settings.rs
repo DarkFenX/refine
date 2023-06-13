@@ -16,6 +16,7 @@ pub(crate) struct HSetCache {
 pub(crate) struct HSetLog {
     pub(crate) folder: Option<String>,
     pub(crate) level: Option<String>,
+    pub(crate) rotate: bool,
 }
 
 #[derive(Debug, serde::Deserialize)]
@@ -40,6 +41,7 @@ impl HSettings {
         let mut log_defaults = config::Map::new();
         log_defaults.insert("folder".to_string(), config::ValueKind::Nil);
         log_defaults.insert("level".to_string(), config::ValueKind::Nil);
+        log_defaults.insert("rotate".to_string(), config::ValueKind::Boolean(false));
         let s = config::Config::builder()
             .set_default("server", server_defaults)?
             .set_default("cache", cache_defaults)?
