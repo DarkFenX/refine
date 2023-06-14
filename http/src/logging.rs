@@ -1,36 +1,54 @@
 use std::str::FromStr;
 
+use tracing::Level;
 use tracing_appender::{non_blocking::WorkerGuard, rolling::RollingFileAppender};
 use tracing_subscriber::{
-    filter::LevelFilter,
+    filter::Targets,
     fmt::{self, time::UtcTime},
+    prelude::*,
 };
 
-pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> WorkerGuard {
-    let (non_blocking, guard) = match folder {
-        Some(path) => {
-            let rotation = match rotate {
-                true => tracing_appender::rolling::Rotation::DAILY,
-                false => tracing_appender::rolling::Rotation::NEVER,
-            };
-            let file_appender = RollingFileAppender::new(rotation, path, "reefast-http.log");
-            tracing_appender::non_blocking(file_appender)
-        }
-        None => tracing_appender::non_blocking(std::io::stdout()),
-    };
+pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option<WorkerGuard> {
     let time_format = time::macros::format_description!(
         version = 2,
         r"\[[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]\]"
     );
-    let log_format = fmt::format()
+    // We always log warnings and higher to stdout
+    let stdout_log = fmt::layer()
+        .with_writer(std::io::stdout.with_max_level(Level::WARN))
+        .with_ansi(true)
         .with_timer(UtcTime::new(time_format))
-        .with_ansi(false)
-        .compact();
-    let level_filter = LevelFilter::from_str(level).unwrap_or(LevelFilter::OFF);
-    tracing_subscriber::fmt()
-        .event_format(log_format)
-        .with_max_level(level_filter)
-        .with_writer(non_blocking)
+        .pretty();
+    // We log into file only if we've been given path and appropriate log level
+    let file_max_level_res = Level::from_str(level);
+    let (file_log, file_guard) = match (folder, file_max_level_res) {
+        (Some(folder_path), Ok(max_level)) => {
+            let rotation = match rotate {
+                true => tracing_appender::rolling::Rotation::DAILY,
+                false => tracing_appender::rolling::Rotation::NEVER,
+            };
+            let appender = RollingFileAppender::new(rotation, folder_path, "reefast-http.log");
+            let (file_writer, file_guard) = tracing_appender::non_blocking(appender);
+            let file_log = fmt::layer()
+                .with_writer(file_writer.with_max_level(max_level))
+                .with_ansi(false)
+                .with_timer(UtcTime::new(time_format))
+                .compact();
+            (Some(file_log), Some(file_guard))
+        }
+        _ => (None, None),
+    };
+    tracing_subscriber::registry()
+        .with(stdout_log)
+        .with(file_log)
+        .with(
+            Targets::new()
+                .with_default(None)
+                .with_target("reefast_core", Level::TRACE)
+                .with_target("reefast_dh_eve", Level::TRACE)
+                .with_target("reefast_dh_adapted", Level::TRACE)
+                .with_target("reefast_http", Level::TRACE),
+        )
         .init();
-    guard
+    file_guard
 }
