@@ -14,7 +14,8 @@ class TestClient:
     def __init__(self, data_server, port):
         self.__datas = {}
         self.__data_server = data_server
-        self.__stack_alias_map = {}
+        self.__created_data_aliases = set()
+        self.__defsrc_stack_alias_map = {}
         self.__session = requests.Session()
         self.__base_url = f'http://localhost:{port}'
 
@@ -32,11 +33,11 @@ class TestClient:
     @property
     def __default_data(self):
         key = get_stack_key()
-        if key in self.__stack_alias_map:
-            alias = self.__stack_alias_map[key]
+        if key in self.__defsrc_stack_alias_map:
+            alias = self.__defsrc_stack_alias_map[key]
             return self.__datas[alias]
         data = self.mk_eve_data()
-        self.__stack_alias_map[key] = data.alias
+        self.__defsrc_stack_alias_map[key] = data.alias
         return data
 
     def mk_eve_item(
@@ -187,6 +188,17 @@ class TestClient:
         # Get request and send it
         resp = self.create_source_request(data=data).send()
         assert resp.status_code == 204
+        self.__created_data_aliases.add(data.alias)
+
+    def remove_source_request(self, src_alias):
+        return Request(
+            self,
+            method='DELETE',
+            url=f'{self.__base_url}/source/{src_alias}')
+
+    def remove_source(self, src_alias):
+        resp = self.remove_source_request(src_alias=src_alias).send()
+        assert resp.status_code == 204
 
     def __setup_handler(self, url, data):
         self.__data_server.expect_request(url).respond_with_data(data)
@@ -194,6 +206,10 @@ class TestClient:
     def create_sources(self):
         for data in self.__datas.values():
             self.create_source(data)
+
+    def cleanup_sources(self):
+        for alias in self.__created_data_aliases:
+            self.remove_source(src_alias=alias)
 
     # Solar system-related methods
     def create_ss_request(self, data=Default):
