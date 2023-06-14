@@ -34,6 +34,7 @@ def reefast_server(tmp_path_factory):
 def client(httpserver, reefast_server):  # pylint: disable=W0621
     test_client = TestClient(httpserver, reefast_server.port)
     yield test_client
+    test_client.cleanup_sss()
     test_client.cleanup_sources()
 
 

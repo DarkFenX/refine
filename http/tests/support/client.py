@@ -14,10 +14,11 @@ class TestClient:
     def __init__(self, data_server, port):
         self.__datas = {}
         self.__data_server = data_server
-        self.__created_data_aliases = set()
         self.__defsrc_stack_alias_map = {}
         self.__session = requests.Session()
         self.__base_url = f'http://localhost:{port}'
+        self.__created_data_aliases = set()
+        self.created_sss = set()
 
     def send_prepared(self, req):
         return self.__session.send(req)
@@ -199,6 +200,7 @@ class TestClient:
     def remove_source(self, src_alias):
         resp = self.remove_source_request(src_alias=src_alias).send()
         assert resp.status_code == 204
+        self.__created_data_aliases.remove(src_alias)
 
     def __setup_handler(self, url, data):
         self.__data_server.expect_request(url).respond_with_data(data)
@@ -208,7 +210,7 @@ class TestClient:
             self.create_source(data)
 
     def cleanup_sources(self):
-        for alias in self.__created_data_aliases:
+        for alias in self.__created_data_aliases.copy():
             self.remove_source(src_alias=alias)
 
     # Solar system-related methods
@@ -230,7 +232,9 @@ class TestClient:
             data = self.__default_data
         resp = self.create_ss_request(data=data).send()
         assert resp.status_code == 201
-        return SolarSystem(client=self, data=resp.json())
+        sol_sys = SolarSystem(client=self, data=resp.json())
+        self.created_sss.add(sol_sys)
+        return sol_sys
 
     def update_ss_request(self, ss_id):
         return Request(
@@ -238,6 +242,16 @@ class TestClient:
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}',
             params={'ss': 'full', 'fit': 'full', 'item': 'full'})
+
+    def remove_ss_request(self, ss_id):
+        return Request(
+            self,
+            method='DELETE',
+            url=f'{self.__base_url}/solar_system/{ss_id}')
+
+    def cleanup_sss(self):
+        for ss in self.created_sss.copy():
+            ss.remove()
 
     # Fit-related methods
     def create_fit_request(self, ss_id):

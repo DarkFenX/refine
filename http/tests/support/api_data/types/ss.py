@@ -18,8 +18,16 @@ class SolarSystem(AttrDict):
     def update(self):
         resp = self.update_request().send()
         assert resp.status_code == 200
-        self._data = resp.json
+        self._data = resp.json()
         return self
+
+    def remove_request(self):
+        return self._client.remove_ss_request(ss_id=self.id)
+
+    def remove(self):
+        resp = self.remove_request().send()
+        assert resp.status_code == 204
+        self._client.created_sss.remove(self)
 
     # Fit-related methods
     def create_fit_request(self):
