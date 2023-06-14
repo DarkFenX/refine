@@ -12,6 +12,7 @@ mod rels;
 mod valid;
 
 /// Fetch EVE data and generate adapted data out of it
+#[tracing::instrument(name = "adg", level = "trace", skip_all)]
 pub(crate) fn generate_adapted_data(e_handler: &dyn ed::EveDataHandler) -> IntResult<ad::AData> {
     let mut g_data = GData::new();
     let mut g_supp = GSupport::new();

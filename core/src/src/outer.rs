@@ -13,6 +13,7 @@ pub struct Src {
     inner: Arc<InnerSrc>,
 }
 impl Src {
+    #[tracing::instrument(name = "src-new", level = "trace", skip_all)]
     pub fn new(e_handler: Box<dyn ed::EveDataHandler>, a_handler: Box<dyn ad::AdaptedDataHandler>) -> Result<Self> {
         let inner_src = InnerSrc::new(e_handler, a_handler)?;
         let src = Self {
