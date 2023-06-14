@@ -56,33 +56,29 @@ impl HSsMgr {
         }
     }
     // Cleanup methods
+    #[tracing::instrument(name = "ss-cleanup", level = "trace", skip_all)]
     async fn cleanup_ss(&self, lifetime: u64) {
-        let span = tracing::trace_span!("ss-cleanup");
-        async move {
-            tracing::debug!("starting cleanup");
-            let now = chrono::Utc::now();
-            let lifetime = chrono::Duration::seconds(lifetime as i64);
-            let to_clean: Vec<_> = self
-                .id_ss_map
-                .read()
-                .await
-                .iter()
-                .filter(|(_, v)| match v.try_lock() {
-                    Ok(ss) => *ss.last_accessed() + lifetime < now,
-                    // If it's locked - it means it's being worked on, we don't touch that
-                    Err(_) => false,
-                })
-                .map(|(k, _)| k.clone())
-                .collect();
-            if to_clean.is_empty() {
-                tracing::debug!("nothing to remove");
-                return;
-            }
-            self.id_ss_map.write().await.drain_filter(|k, _| to_clean.contains(k));
-            tracing::debug!("{} solar systems removed", to_clean.len());
+        tracing::debug!("starting cleanup");
+        let now = chrono::Utc::now();
+        let lifetime = chrono::Duration::seconds(lifetime as i64);
+        let to_clean: Vec<_> = self
+            .id_ss_map
+            .read()
+            .await
+            .iter()
+            .filter(|(_, v)| match v.try_lock() {
+                Ok(ss) => *ss.last_accessed() + lifetime < now,
+                // If it's locked - it means it's being worked on, we don't touch that
+                Err(_) => false,
+            })
+            .map(|(k, _)| k.clone())
+            .collect();
+        if to_clean.is_empty() {
+            tracing::debug!("nothing to remove");
+            return;
         }
-        .instrument(span)
-        .await
+        self.id_ss_map.write().await.drain_filter(|k, _| to_clean.contains(k));
+        tracing::info!("{} solar systems removed", to_clean.len());
     }
     pub(crate) async fn periodic_cleanup(&self, interval: u64, lifetime: u64) {
         let mut timer = time::interval(time::Duration::from_secs(interval));
