@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use time::macros::format_description;
 use tracing::Level;
 use tracing_appender::{non_blocking::WorkerGuard, rolling::RollingFileAppender};
 use tracing_subscriber::{
@@ -9,7 +10,7 @@ use tracing_subscriber::{
 };
 
 pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option<WorkerGuard> {
-    let time_format = time::macros::format_description!(
+    let time_format_full = format_description!(
         version = 2,
         r"\[[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]\]"
     );
@@ -17,15 +18,18 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
     let stdout_log = fmt::layer()
         .with_writer(std::io::stdout.with_max_level(Level::WARN))
         .with_ansi(true)
-        .with_timer(UtcTime::new(time_format))
+        .with_timer(UtcTime::new(time_format_full))
         .pretty();
     // We log into file only if we've been given path and appropriate log level
     let file_max_level_res = Level::from_str(level);
     let (file_log, file_guard) = match (folder, file_max_level_res) {
         (Some(folder_path), Ok(max_level)) => {
-            let rotation = match rotate {
-                true => tracing_appender::rolling::Rotation::DAILY,
-                false => tracing_appender::rolling::Rotation::NEVER,
+            let (rotation, time_format) = match rotate {
+                true => (
+                    tracing_appender::rolling::Rotation::DAILY,
+                    format_description!(version = 2, r"\[[hour]:[minute]:[second].[subsecond digits:3]\]"),
+                ),
+                false => (tracing_appender::rolling::Rotation::NEVER, time_format_full),
             };
             let appender = RollingFileAppender::new(rotation, folder_path, "reefast-http.log");
             let (file_writer, file_guard) = tracing_appender::non_blocking(appender);
