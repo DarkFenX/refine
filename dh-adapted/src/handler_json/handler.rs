@@ -132,6 +132,7 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
         Ok(())
     }
     /// Update data in handler with passed data.
+    #[tracing::instrument(name = "adh-ramjson-update", level = "trace", skip_all)]
     fn update_data(&mut self, a_data: rc::ad::AData, fingerprint: String) {
         // Update persistent cache
         let c_data = data::CData::from_adapted(&a_data, &fingerprint);
