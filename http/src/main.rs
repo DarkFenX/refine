@@ -6,6 +6,7 @@ use std::{env, net::SocketAddr, sync::Arc, time::Duration};
 use axum::{
     body::{Body, BoxBody},
     http::{Request, Response},
+    middleware,
     routing::{delete, get, patch, post},
     Router, ServiceExt,
 };
@@ -65,14 +66,15 @@ async fn main() {
             .route("/solar_system/:ss_id/fleet/:fleet_id", get(handlers::get_fleet))
             .route("/solar_system/:ss_id/fleet/:fleet_id", patch(handlers::change_fleet))
             .route("/solar_system/:ss_id/fleet/:fleet_id", delete(handlers::delete_fleet))
+            .layer(middleware::from_fn(util::ml_trace_reqresp::print_request_response))
             .layer(
                 TraceLayer::new_for_http()
                     .make_span_with(|_: &Request<Body>| tracing::trace_span!("http"))
                     .on_request(|request: &Request<Body>, _span: &Span| {
-                        tracing::debug!("started {} {}", request.method(), request.uri().path())
+                        tracing::debug!(">>> rx {} {}", request.method(), request.uri())
                     })
                     .on_response(|response: &Response<BoxBody>, latency: Duration, _span: &Span| {
-                        tracing::debug!("response {} generated in {:?}", response.status(), latency)
+                        tracing::debug!("<<< tx {} generated in {:?}", response.status(), latency)
                     }),
             )
             .with_state(state),
