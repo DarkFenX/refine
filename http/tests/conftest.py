@@ -19,9 +19,8 @@ def reefast_server(tmp_path_factory):
     build_server(PROJECT_ROOT)
     tmp_path = tmp_path_factory.mktemp('reefast_test')
     config_path = tmp_path / 'config.toml'
-    log_path = tmp_path / 'logs'
     port = next_free_port(8000)
-    build_config(config_path=config_path, port=port, log_path=log_path)
+    build_config(config_path=config_path, port=port, log_folder=tmp_path)
     pid = run_server(proj_root=PROJECT_ROOT, config_path=config_path)
     try:
         yield ServerInfo(pid, port)

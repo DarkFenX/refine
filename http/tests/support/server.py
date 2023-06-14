@@ -13,14 +13,14 @@ def build_server(proj_root):
         check=True)
 
 
-def build_config(config_path, port, log_path):
+def build_config(config_path, port, log_folder):
     contents = [
         '[server]',
         f'port = {port}',
         'nsolsys_lifetime = 30',
         'solsys_cleanup_interval = 5',
         '[log]',
-        f'folder = "{log_path}"',
+        f'folder = "{log_folder}"',
         'level = "debug"',
         'rotate = false']
     with open(config_path, 'w', encoding='utf-8') as f:
