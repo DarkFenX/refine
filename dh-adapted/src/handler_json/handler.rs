@@ -6,8 +6,6 @@ use std::{
     path::PathBuf,
 };
 
-use log;
-
 use crate::util::{move_vec_to_map, Error, ErrorKind};
 
 use super::data;
@@ -69,7 +67,7 @@ impl RamJsonAdh {
         let file = match OpenOptions::new().create(true).write(true).open(full_path) {
             Ok(f) => f,
             Err(e) => {
-                log::error!("unable to open cache file for writing: {e}");
+                tracing::error!("unable to open cache file for writing: {e}");
                 return;
             }
         };
@@ -77,7 +75,7 @@ impl RamJsonAdh {
         match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
             Ok(_) => (),
             Err(e) => {
-                log::error!("unable to write cache file: {e}");
+                tracing::error!("unable to write cache file: {e}");
                 return;
             }
         };
@@ -139,7 +137,7 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
         let c_data = data::CData::from_adapted(&a_data, &fingerprint);
         match self.create_cache_folder() {
             None => self.update_persistent_cache(&c_data),
-            Some(msg) => log::error!("unable to create cache folder: {msg}"),
+            Some(msg) => tracing::error!("unable to create cache folder: {msg}"),
         }
         // Update memory cache
         self.update_memory_cache(a_data, fingerprint);

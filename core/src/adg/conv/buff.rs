@@ -16,7 +16,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
             Ok(op) => op,
             Err(e) => {
                 let msg = format!("{} {}: {}", ed::EBuff::get_name(), e_buff.id, e.msg);
-                log::warn!("{msg}");
+                tracing::warn!("{msg}");
                 continue;
             }
         };
@@ -24,7 +24,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
             Ok(am) => am,
             Err(e) => {
                 let msg = format!("{} {}: {}", ed::EBuff::get_name(), e_buff.id, e.msg);
-                log::warn!("{msg}");
+                tracing::warn!("{msg}");
                 continue;
             }
         };

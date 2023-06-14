@@ -1,7 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
 use itertools::Itertools;
-use log;
 
 use crate::{
     adg::{
@@ -81,7 +80,7 @@ where
             ree_name,
             missing.iter().sorted().join(", ")
         );
-        log::warn!("{msg}");
+        tracing::warn!("{msg}");
     }
 }
 
@@ -99,7 +98,7 @@ fn default_effects(g_data: &mut GData) {
     }
     if unsets > 0 {
         let msg = format!("set {unsets} excessive default effects as non-default");
-        log::warn!("{msg}");
+        tracing::warn!("{msg}");
     }
 }
 
@@ -129,7 +128,7 @@ fn known_fighter_abilities(g_data: &mut GData) {
             ed::EItemFighterAbil::get_name(),
             unknown_ids.iter().sorted().join(", ")
         );
-        log::warn!("{msg}");
+        tracing::warn!("{msg}");
     }
 }
 
@@ -168,6 +167,6 @@ fn fighter_ability_effect(g_data: &mut GData) {
                 .take(max_logged)
                 .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))
         );
-        log::warn!("{msg}");
+        tracing::warn!("{msg}");
     }
 }

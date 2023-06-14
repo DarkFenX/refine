@@ -11,7 +11,7 @@ pub struct InnerSrc {
 }
 impl InnerSrc {
     pub fn new(e_handler: Box<dyn ed::EveDataHandler>, mut a_handler: Box<dyn ad::AdaptedDataHandler>) -> Result<Self> {
-        log::info!("initializing new source with {e_handler:?} and {a_handler:?}",);
+        tracing::info!("initializing new source with {e_handler:?} and {a_handler:?}",);
         let e_version = get_e_version(&e_handler);
         if need_to_adapt(e_version.clone(), &mut a_handler) {
             let a_data = adapt_data(&e_handler).map_err(|e| Error::new(ErrorKind::SrcADataGenFailed(e.msg)))?;
@@ -25,7 +25,7 @@ fn get_e_version(e_handler: &Box<dyn ed::EveDataHandler>) -> Option<String> {
     match e_handler.get_data_version() {
         Ok(e_version) => Some(e_version),
         Err(e) => {
-            log::info!("unable to get EVE data version: {e}");
+            tracing::info!("unable to get EVE data version: {e}");
             None
         }
     }
@@ -46,7 +46,7 @@ fn need_to_adapt(e_version: Option<String>, a_handler: &mut Box<dyn ad::AdaptedD
     match a_handler.load_cache() {
         Ok(_) => (),
         Err(e) => {
-            log::info!("unable to load cache: {e}");
+            tracing::info!("unable to load cache: {e}");
             return true;
         }
     }
@@ -55,12 +55,12 @@ fn need_to_adapt(e_version: Option<String>, a_handler: &mut Box<dyn ad::AdaptedD
     match a_fingerprint_opt {
         Some(a_fingerprint) => {
             if &e_fingeprint != a_fingerprint {
-                log::info!("fingerprint mismatch: {e_fingeprint} EVE data vs {a_fingerprint} adapted data");
+                tracing::info!("fingerprint mismatch: {e_fingeprint} EVE data vs {a_fingerprint} adapted data");
                 return true;
             };
         }
         None => {
-            log::info!("no adapted data fingerprint");
+            tracing::info!("no adapted data fingerprint");
             return true;
         }
     }
@@ -68,7 +68,7 @@ fn need_to_adapt(e_version: Option<String>, a_handler: &mut Box<dyn ad::AdaptedD
 }
 
 fn adapt_data(e_handler: &Box<dyn ed::EveDataHandler>) -> IntResult<ad::AData> {
-    log::info!("generating adapted data...");
+    tracing::info!("generating adapted data...");
     // If we have to generate adapted data, failure to generate one is fatal
     adg::generate_adapted_data(e_handler.as_ref())
         .map_err(|e| IntError::new(format!("failed to generate adapted data: {e}")))

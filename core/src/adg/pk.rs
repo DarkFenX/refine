@@ -22,7 +22,7 @@ fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
         .count();
     if removed > 0 {
         let msg = format!("cleaned up {} PK duplicates for {}", removed, T::get_name());
-        log::warn!("{msg}");
+        tracing::warn!("{msg}");
     }
 }
 

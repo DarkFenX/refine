@@ -8,4 +8,4 @@ license = "LGPL-3.0-or-later"
 
 [dependencies]
 itertools = ">=0.10.5"
-log = ">=0.4.17"
+tracing = ">=0.1"

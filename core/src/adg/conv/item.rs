@@ -26,7 +26,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
             Some(&cid) => cid,
             None => {
                 let msg = format!("unable to find category ID for {} {}", ed::EItem::get_name(), e_item.id);
-                log::warn!("{msg}");
+                tracing::warn!("{msg}");
                 continue;
             }
         };
@@ -99,7 +99,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
                     a_item.id,
                     item_types.len()
                 );
-                log::warn!("{msg}");
+                tracing::warn!("{msg}");
                 continue;
             }
         }

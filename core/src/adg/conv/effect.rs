@@ -41,7 +41,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                     e_effect.id,
                     e_effect.category_id
                 );
-                log::warn!("{msg}");
+                tracing::warn!("{msg}");
                 continue;
             }
         };
@@ -81,7 +81,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                         a_effect.id,
                         e.msg
                     );
-                    log::warn!("{msg}");
+                    tracing::warn!("{msg}");
                     mod_errs += 1;
                     continue;
                 }
@@ -105,7 +105,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                         a_effect.id,
                         e.msg
                     );
-                    log::warn!("{msg}");
+                    tracing::warn!("{msg}");
                     mod_errs += 1;
                     continue;
                 }
@@ -139,7 +139,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                         a_effect.id,
                         flags.len()
                     );
-                    log::warn!("{msg}");
+                    tracing::warn!("{msg}");
                 }
             },
         }
@@ -157,7 +157,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                         a_effect.id,
                         flags.len()
                     );
-                    log::warn!("{msg}");
+                    tracing::warn!("{msg}");
                 }
             },
         }
@@ -174,7 +174,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                             a_effect.id,
                             e.msg
                         );
-                        log::warn!("{msg}");
+                        tracing::warn!("{msg}");
                     }
                 },
                 _ => {
@@ -184,7 +184,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                         a_effect.id,
                         modes.len()
                     );
-                    log::warn!("{msg}");
+                    tracing::warn!("{msg}");
                 }
             },
         }

@@ -1,5 +1,3 @@
-use log;
-
 use crate::{
     adg::GData,
     ed::{self, EveDataHandler},
@@ -15,19 +13,19 @@ where
     F: Fn(&S) -> ed::EResult<ed::EDataCont<T>>,
     T: Named,
 {
-    log::debug!("fetching {}", T::get_name());
+    tracing::debug!("fetching {}", T::get_name());
     let e_cont = func(e_handler).map_err(|e| IntError::new(e.to_string()))?;
     vec.extend(e_cont.data);
     let warn_amt = e_cont.warns.len();
     if warn_amt > 0 {
-        log::warn!(
+        tracing::warn!(
             "{} warnings encountered during fetching of {}, showing up to {}:",
             warn_amt,
             T::get_name(),
             MAX_WARNS
         );
         for warn_msg in e_cont.warns.iter().take(MAX_WARNS) {
-            log::warn!("{warn_msg}");
+            tracing::warn!("{warn_msg}");
         }
     }
     Ok(())

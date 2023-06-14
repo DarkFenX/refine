@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 
 use itertools::Itertools;
-use log;
 
 use crate::{
     adg::{
@@ -25,7 +24,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> IntR
         counter += 1;
         if counter > MAX_CYCLES {
             let msg = format!("reached limit of {MAX_CYCLES} cycles during cleanup");
-            log::error!("{msg}");
+            tracing::error!("{msg}");
             return Err(IntError::new(msg));
         }
         changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, &g_supp);
@@ -147,6 +146,6 @@ fn vec_report<T: Named>(alive: &Vec<T>, trash: &Vec<T>) {
     }
     let ratio = trash.len() as f64 / total as f64;
     if ratio > 0.0 {
-        log::info!("cleaned {:.1}% of {}", ratio * 100.0, T::get_name());
+        tracing::info!("cleaned {:.1}% of {}", ratio * 100.0, T::get_name());
     }
 }
