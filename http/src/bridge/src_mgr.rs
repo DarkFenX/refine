@@ -20,6 +20,7 @@ impl HSrcMgr {
             locked_aliases: RwLock::new(HashSet::new()),
         }
     }
+    #[tracing::instrument(name = "srcmgr-add", level = "trace", skip_all)]
     pub(crate) async fn add(
         &self,
         alias: String,
@@ -60,6 +61,7 @@ impl HSrcMgr {
             None => self.get_default_src().await,
         }
     }
+    #[tracing::instrument(name = "srcmgr-del", level = "trace", skip_all)]
     pub(crate) async fn del(&self, alias: &str) -> HResult<()> {
         tracing::debug!("removing source with alias \"{alias}\"");
         self.alias_src_map
