@@ -17,7 +17,7 @@ def build_config(config_path, port, log_folder):
     contents = [
         '[server]',
         f'port = {port}',
-        'nsolsys_lifetime = 30',
+        'solsys_lifetime = 30',
         'solsys_cleanup_interval = 5',
         '[log]',
         f'folder = "{log_folder}"',
