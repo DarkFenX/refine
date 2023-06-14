@@ -1,7 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
 use tokio::sync::RwLock;
-use tracing::{event, Level};
 
 use crate::util::{HError, HErrorKind, HResult};
 
@@ -28,12 +27,7 @@ impl HSrcMgr {
         data_base_url: String,
         make_default: bool,
     ) -> HResult<()> {
-        event!(
-            Level::INFO,
-            "adding source with alias \"{}\", default={}",
-            alias,
-            make_default
-        );
+        tracing::debug!("adding source with alias \"{alias}\", default={make_default}");
 
         if !self.check_alias_availability(&alias).await {
             return Err(HError::new(HErrorKind::SrcAliasNotAvailable(alias)));
@@ -67,7 +61,7 @@ impl HSrcMgr {
         }
     }
     pub(crate) async fn del(&self, alias: &str) -> HResult<()> {
-        event!(Level::INFO, "removing source with alias \"{}\"", alias);
+        tracing::debug!("removing source with alias \"{alias}\"");
         self.alias_src_map
             .write()
             .await
@@ -85,13 +79,13 @@ impl HSrcMgr {
         !self.alias_src_map.read().await.contains_key(alias) && !self.locked_aliases.read().await.contains(alias)
     }
     async fn lock_alias(&self, alias: &str) {
-        event!(Level::DEBUG, "locking alias \"{}\"", alias);
+        tracing::trace!("locking alias \"{alias}\"");
         self.locked_aliases.write().await.insert(alias.into());
     }
     async fn unlock_alias(&self, alias: &str) {
-        event!(Level::DEBUG, "unlocking alias \"{}\"", alias);
+        tracing::trace!("unlocking alias \"{alias}\"");
         if !self.locked_aliases.write().await.remove(alias) {
-            event!(Level::ERROR, "attempt to unlock alias which is not locked")
+            tracing::warn!("attempt to unlock alias which is not locked")
         }
     }
     async fn get_src_by_alias(&self, alias: &str) -> HResult<rc::Src> {

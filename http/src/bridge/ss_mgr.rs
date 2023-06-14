@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use tokio::{sync::RwLock, time};
-use tracing::Instrument;
 use uuid::Uuid;
 
 use crate::{
@@ -81,8 +80,8 @@ impl HSsMgr {
         tracing::info!("{} solar systems removed", to_clean.len());
     }
     pub(crate) async fn periodic_cleanup(&self, interval: u64, lifetime: u64) {
-        let mut timer = time::interval(time::Duration::from_secs(interval))
-            .set_missed_tick_behavior(time::MissedTickBehavior::Skip);
+        let mut timer = time::interval(time::Duration::from_secs(interval));
+        timer.set_missed_tick_behavior(time::MissedTickBehavior::Skip);
         loop {
             timer.tick().await;
             self.cleanup_ss(lifetime).await;
