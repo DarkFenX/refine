@@ -12,6 +12,7 @@ use axum::{
 };
 use tower::Layer;
 use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
+use tower_request_id::{RequestId, RequestIdLayer};
 use tracing::Span;
 
 use crate::{settings::HSettings, state::HInnerAppState};
@@ -69,7 +70,14 @@ async fn main() {
             .layer(middleware::from_fn(util::ml_trace_reqresp::print_request_response))
             .layer(
                 TraceLayer::new_for_http()
-                    .make_span_with(|_: &Request<Body>| tracing::trace_span!("http"))
+                    .make_span_with(|request: &Request<Body>| {
+                        let request_id = request
+                            .extensions()
+                            .get::<RequestId>()
+                            .map(ToString::to_string)
+                            .unwrap_or_else(|| "unknown".into());
+                        tracing::trace_span!("http", id = %request_id)
+                    })
                     .on_request(|request: &Request<Body>, _span: &Span| {
                         tracing::debug!(">>> rx {} {}", request.method(), request.uri())
                     })
@@ -77,6 +85,7 @@ async fn main() {
                         tracing::debug!("<<< tx {} generated in {:?}", response.status(), latency)
                     }),
             )
+            .layer(RequestIdLayer)
             .with_state(state),
     );
 

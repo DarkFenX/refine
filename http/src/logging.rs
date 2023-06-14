@@ -38,8 +38,7 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
                 .with_writer(file_writer.with_max_level(max_level))
                 .with_ansi(false)
                 .with_timer(UtcTime::new(time_format))
-                .with_target(false)
-                .compact();
+                .with_target(false);
             (Some(file_log), Some(file_guard))
         }
         _ => (None, None),
