@@ -51,7 +51,8 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
                 .with_target("reefast_core", Level::TRACE)
                 .with_target("reefast_dh_eve", Level::TRACE)
                 .with_target("reefast_dh_adapted", Level::TRACE)
-                .with_target("reefast_http", Level::TRACE),
+                .with_target("reefast_http", Level::TRACE)
+                .with_target("http", Level::TRACE),
         )
         .init();
     file_guard

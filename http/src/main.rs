@@ -1,14 +1,17 @@
 #![feature(hash_drain_filter)]
 #![feature(result_option_inspect)]
 
-use std::{env, net::SocketAddr, sync::Arc};
+use std::{env, net::SocketAddr, sync::Arc, time::Duration};
 
 use axum::{
+    body::{Body, BoxBody},
+    http::{Request, Response},
     routing::{delete, get, patch, post},
     Router, ServiceExt,
 };
 use tower::Layer;
-use tower_http::normalize_path::NormalizePathLayer;
+use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
+use tracing::Span;
 
 use crate::{settings::HSettings, state::HInnerAppState};
 
@@ -62,6 +65,16 @@ async fn main() {
             .route("/solar_system/:ss_id/fleet/:fleet_id", get(handlers::get_fleet))
             .route("/solar_system/:ss_id/fleet/:fleet_id", patch(handlers::change_fleet))
             .route("/solar_system/:ss_id/fleet/:fleet_id", delete(handlers::delete_fleet))
+            .layer(
+                TraceLayer::new_for_http()
+                    .make_span_with(|_: &Request<Body>| tracing::trace_span!("http"))
+                    .on_request(|request: &Request<Body>, _span: &Span| {
+                        tracing::debug!("started {} {}", request.method(), request.uri().path())
+                    })
+                    .on_response(|response: &Response<BoxBody>, latency: Duration, _span: &Span| {
+                        tracing::debug!("response {} generated in {:?}", response.status(), latency)
+                    }),
+            )
             .with_state(state),
     );
 
