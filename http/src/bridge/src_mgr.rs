@@ -36,7 +36,10 @@ impl HSrcMgr {
         self.lock_alias(&alias).await;
         let alias_cloned = alias.clone();
         let cache_folder_cloned = self.cache_folder.clone();
+
+        let sync_span = tracing::trace_span!("sync");
         match tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
             create_src(alias_cloned, data_base_url, data_version, cache_folder_cloned)
         })
         .await

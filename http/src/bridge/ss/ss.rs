@@ -20,6 +20,7 @@ impl HSolarSystem {
     pub(crate) fn last_accessed(&self) -> &chrono::DateTime<chrono::Utc> {
         &self.accessed
     }
+    #[tracing::instrument(name = "ss-ss-info", level = "trace", skip_all)]
     pub(crate) async fn get_info(
         &mut self,
         ss_mode: HSsInfoMode,
@@ -28,7 +29,9 @@ impl HSolarSystem {
     ) -> HResult<HSsInfo> {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
+        let sync_span = tracing::trace_span!("sync");
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
             let result = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (result, core_ss)
         })
@@ -37,9 +40,12 @@ impl HSolarSystem {
         Ok(result)
     }
     // Fit methods
+    #[tracing::instrument(name = "ss-fit-add", level = "trace", skip_all)]
     pub(crate) async fn add_fit(&mut self, fit_mode: HFitInfoMode, item_mode: HItemInfoMode) -> HResult<HFitInfo> {
         let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
             let result = match core_ss.add_fit() {
                 Ok(fit_id) => Ok(HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode)),
                 Err(e) => Err(e.into()),
@@ -50,6 +56,7 @@ impl HSolarSystem {
         self.put_ss_back(core_ss);
         result
     }
+    #[tracing::instrument(name = "ss-fit-info", level = "trace", skip_all)]
     pub(crate) async fn get_fit(
         &mut self,
         fit_id: &str,
@@ -58,7 +65,9 @@ impl HSolarSystem {
     ) -> HResult<HFitInfo> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
             let result = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
             (result, core_ss)
         })
@@ -66,10 +75,13 @@ impl HSolarSystem {
         self.put_ss_back(core_ss);
         Ok(result)
     }
+    #[tracing::instrument(name = "ss-fit-del", level = "trace", skip_all)]
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> HResult<()> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
             let result = core_ss.remove_fit(&fit_id).map_err(|e| e.into());
             (result, core_ss)
         })
@@ -78,24 +90,32 @@ impl HSolarSystem {
         result
     }
     // Item methods
+    #[tracing::instrument(name = "ss-item-info", level = "trace", skip_all)]
     pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: HItemInfoMode) -> HResult<HItemInfo> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_ss = self.take_ss()?;
-        let (result, core_ss) = tokio_rayon::spawn_fifo(move || match core_ss.get_item_info(&item_id) {
-            Ok(core_item_info) => {
-                let item_info = HItemInfo::mk_info(&mut core_ss, &core_item_info, item_mode);
-                (Ok(item_info), core_ss)
+        let sync_span = tracing::trace_span!("sync");
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            match core_ss.get_item_info(&item_id) {
+                Ok(core_item_info) => {
+                    let item_info = HItemInfo::mk_info(&mut core_ss, &core_item_info, item_mode);
+                    (Ok(item_info), core_ss)
+                }
+                Err(e) => (Err(HError::from(e)), core_ss),
             }
-            Err(e) => (Err(HError::from(e)), core_ss),
         })
         .await;
         self.put_ss_back(core_ss);
         result
     }
+    #[tracing::instrument(name = "ss-item-del", level = "trace", skip_all)]
     pub(crate) async fn remove_item(&mut self, item_id: &str) -> HResult<()> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
             let result = core_ss.remove_item(&item_id).map_err(|v| v.into());
             (result, core_ss)
         })
@@ -104,6 +124,7 @@ impl HSolarSystem {
         result
     }
     // Command methods
+    #[tracing::instrument(name = "ss-ss-cmd", level = "trace", skip_all)]
     pub(crate) async fn execute_ss_commands(
         &mut self,
         commands: Vec<HSsCommand>,
@@ -113,7 +134,9 @@ impl HSolarSystem {
     ) -> HResult<(HSsInfo, Vec<HCmdResp>)> {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
+        let sync_span = tracing::trace_span!("sync");
         let (core_ss, ss_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
             let cmd_results = execute_commands(&mut core_ss, commands);
             let ss_info = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (core_ss, ss_info, cmd_results)
@@ -122,6 +145,7 @@ impl HSolarSystem {
         self.put_ss_back(core_ss);
         Ok((ss_info, cmd_results))
     }
+    #[tracing::instrument(name = "ss-fit-cmd", level = "trace", skip_all)]
     pub(crate) async fn execute_fit_commands(
         &mut self,
         fit_id: &str,
@@ -131,7 +155,9 @@ impl HSolarSystem {
     ) -> HResult<(HFitInfo, Vec<HCmdResp>)> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
         let (core_ss, fit_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
             let commands = commands.into_iter().map(|v| v.fill_fit(fit_id)).collect();
             let cmd_results = execute_commands(&mut core_ss, commands);
             let info = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);

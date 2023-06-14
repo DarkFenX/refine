@@ -19,6 +19,7 @@ impl HSsMgr {
         }
     }
     // Solar system methods
+    #[tracing::instrument(name = "ssmgr-add", level = "trace", skip_all)]
     pub(crate) async fn add_ss(
         &self,
         src: rc::Src,
@@ -28,7 +29,9 @@ impl HSsMgr {
     ) -> HSsInfo {
         let id = get_id();
         let id_mv = id.clone();
+        let sync_span = tracing::trace_span!("sync");
         let (core_ss, ss_info) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
             let mut core_ss = rc::SolarSystem::new(src);
             let ss_info = HSsInfo::mk_info(id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
             (core_ss, ss_info)
@@ -48,6 +51,7 @@ impl HSsMgr {
             .ok_or_else(|| HError::new(HErrorKind::SsNotFound(id.to_string())))
             .cloned()
     }
+    #[tracing::instrument(name = "ssmgr-del", level = "trace", skip_all)]
     pub(crate) async fn delete_ss(&self, id: &str) -> HResult<()> {
         match self.id_ss_map.write().await.remove(id) {
             Some(_) => Ok(()),
@@ -55,7 +59,7 @@ impl HSsMgr {
         }
     }
     // Cleanup methods
-    #[tracing::instrument(name = "ss-cleanup", level = "trace", skip_all)]
+    #[tracing::instrument(name = "ssmgr-cleanup", level = "trace", skip_all)]
     async fn cleanup_ss(&self, lifetime: u64) {
         tracing::debug!("starting cleanup");
         let now = chrono::Utc::now();
