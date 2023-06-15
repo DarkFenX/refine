@@ -317,12 +317,12 @@ class TestClient:
             url=f'{self.__base_url}/solar_system/{ss_id}',
             json=payload)
 
-    def add_high_mod_request(self, ss_id, fit_id, module_type_id, state='offline', charge_type_id=Absent, mode='equip'):
+    def add_high_mod_request(self, ss_id, fit_id, type_id, state='offline', charge_type_id=Absent, mode='equip'):
         command = {
             'type': 'add_module_high',
             'fit_id': fit_id,
             'add_mode': mode,
-            'module_type_id': module_type_id,
+            'module_type_id': type_id,
             'state': state}
         conditional_insert(command, 'charge_type_id', charge_type_id)
         return Request(

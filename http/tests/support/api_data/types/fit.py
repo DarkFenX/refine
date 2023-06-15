@@ -53,14 +53,14 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
-    def add_high_mod_request(self, module_type_id, state='offline', charge_type_id=None, mode='equip'):
+    def add_high_mod_request(self, type_id, state='offline', charge_type_id=None, mode='equip'):
         return self._client.add_high_mod_request(
-            ss_id=self._ss_id, fit_id=self.id, module_type_id=module_type_id,
+            ss_id=self._ss_id, fit_id=self.id, type_id=type_id,
             state=state, charge_type_id=charge_type_id, mode=mode)
 
-    def add_high_mod(self, module_type_id, state='offline', charge_type_id=None, mode='equip'):
+    def add_high_mod(self, type_id, state='offline', charge_type_id=None, mode='equip'):
         resp = self.add_high_mod_request(
-            module_type_id=module_type_id,
+            type_id=type_id,
             state=state,
             charge_type_id=charge_type_id,
             mode=mode).send()
