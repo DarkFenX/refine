@@ -149,14 +149,16 @@ class TestClient:
             dom=Absent,
             src_attr_id=Absent,
             tgt_attr_id=Absent,
-            op=Absent
+            op=Absent,
+            grp=Absent,
     ):
         return Modifier(
             func=func,
             domain=dom,
             src_attr_id=src_attr_id,
             tgt_attr_id=tgt_attr_id,
-            operation=op)
+            operation=op,
+            group=grp)
 
     # Data source-related methods
     def create_source_request(self, data=Default):
