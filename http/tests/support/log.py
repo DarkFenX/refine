@@ -23,11 +23,16 @@ class Level(StrEnum):
 
 LogEntry = namedtuple('LogEntry', ('time', 'level', 'span', 'msg'))
 
+TIME_PATTERN = r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}'
+LEVEL_PATTERN = '|'.join(Level)
+LOG_MATCHER = re.compile(
+    fr'^\[(?P<time>{TIME_PATTERN})\]\s+'
+    fr'(?P<level>{LEVEL_PATTERN})\s'
+    fr'((?P<span>\S+): )?'
+    fr'(?P<msg>.*)\n$')
+
 
 class LogReader:
-
-    __time = r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}'
-    __level = '|'.join(Level)
 
     def __init__(self, path):
         self.__path = path
@@ -60,11 +65,7 @@ class LogReader:
                 yield line
 
     def __parse(self, line):
-        m = re.match(
-            fr'^\[(?P<time>{self.__time})\]\s+'
-            fr'(?P<level>{self.__level})\s'
-            fr'((?P<span>\S+): )?'
-            fr'(?P<msg>.*)\n$', line)
+        m = re.match(LOG_MATCHER, line)
         if not m:
             raise ParseError(line)
         return LogEntry(time=m.group('time'), level=Level(m.group('level')), span=m.group('span'), msg=m.group('msg'))
