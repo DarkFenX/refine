@@ -18,9 +18,15 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage<K, V> {
         values.insert(entry);
     }
     pub(crate) fn rm_entry(&mut self, key: &K, entry: &V) {
-        match self.data.get_mut(key) {
+        let need_cleanup = match self.data.get_mut(key) {
             None => return,
-            Some(v) => v.remove(entry),
+            Some(v) => {
+                v.remove(entry);
+                v.is_empty()
+            },
         };
+        if need_cleanup {
+            self.data.remove(key);
+        }
     }
 }
