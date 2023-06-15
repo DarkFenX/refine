@@ -6,7 +6,9 @@ use rig::HRigInfo;
 use ship::HShipInfo;
 
 use crate::info::{HAttrVal, HItemInfoMode};
+use crate::info::item::character::HCharacterInfo;
 
+mod character;
 mod implant;
 mod module;
 mod rig;
@@ -39,6 +41,7 @@ impl HItemInfo {
 #[derive(serde::Serialize)]
 #[serde(untagged)]
 pub(crate) enum HItemInfoBasic {
+    Character(HCharacterInfo),
     Implant(HImplantInfo),
     Ship(HShipInfo),
     Module(HModuleInfo),
@@ -47,6 +50,7 @@ pub(crate) enum HItemInfoBasic {
 impl HItemInfoBasic {
     fn get_id(&self) -> rc::ReeId {
         match self {
+            Self::Character(info) => info.id,
             Self::Implant(info) => info.id,
             Self::Ship(info) => info.id,
             Self::Module(info) => info.id,
@@ -57,6 +61,7 @@ impl HItemInfoBasic {
 impl From<&rc::SsItemInfo> for HItemInfoBasic {
     fn from(ss_item_info: &rc::SsItemInfo) -> Self {
         match ss_item_info {
+            rc::SsItemInfo::Character(info) => Self::Character(info.into()),
             rc::SsItemInfo::Implant(info) => Self::Implant(info.into()),
             rc::SsItemInfo::Ship(info) => Self::Ship(info.into()),
             rc::SsItemInfo::Module(info) => Self::Module(info.into()),
