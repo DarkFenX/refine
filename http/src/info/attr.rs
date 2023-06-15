@@ -1,8 +1,8 @@
 #[derive(Debug, serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(crate) struct HAttrVal {
-    pub base: rc::ReeFloat,
-    pub dogma: rc::ReeFloat,
-    pub extra: rc::ReeFloat,
+    pub(crate) base: rc::ReeFloat,
+    pub(crate) dogma: rc::ReeFloat,
+    pub(crate) extra: rc::ReeFloat,
 }
 impl HAttrVal {
     fn new(base: rc::ReeFloat, dogma: rc::ReeFloat, extra: rc::ReeFloat) -> Self {

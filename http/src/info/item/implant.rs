@@ -1,11 +1,11 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HImplantInfo {
     #[serde(with = "crate::util::serde_string")]
-    pub id: rc::ReeId,
+    pub(crate) id: rc::ReeId,
     #[serde(with = "crate::util::serde_string")]
-    pub fit_id: rc::ReeId,
-    pub type_id: rc::ReeInt,
-    pub enabled: bool,
+    pub(crate) fit_id: rc::ReeId,
+    pub(crate) type_id: rc::ReeInt,
+    pub(crate) enabled: bool,
 }
 impl From<&rc::SsImplantInfo> for HImplantInfo {
     fn from(ss_implant_info: &rc::SsImplantInfo) -> Self {
