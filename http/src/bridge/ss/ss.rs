@@ -208,6 +208,13 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
     let mut cmd_results = Vec::with_capacity(commands.len());
     for cmd in commands.iter() {
         match cmd {
+            HSsCommand::SetCharacter(c) => {
+                let char_id = core_ss
+                    .set_fit_character(c.fit_id, c.type_id, c.state.unwrap_or(true))
+                    .unwrap();
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(char_id));
+                cmd_results.push(resp);
+            }
             HSsCommand::AddImplant(c) => {
                 let implant_id = core_ss
                     .add_implant(c.fit_id, c.type_id, c.state.unwrap_or(true))

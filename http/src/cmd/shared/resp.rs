@@ -19,6 +19,11 @@ impl HItemIdsResp {
         }
     }
 }
+impl From<rc::SsCharacterInfo> for HItemIdsResp {
+    fn from(ss_char_info: rc::SsCharacterInfo) -> Self {
+        HItemIdsResp::new(ss_char_info.id, None)
+    }
+}
 impl From<rc::SsImplantInfo> for HItemIdsResp {
     fn from(ss_implant_info: rc::SsImplantInfo) -> Self {
         HItemIdsResp::new(ss_implant_info.id, None)
