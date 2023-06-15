@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use character::HCharacterInfo;
+use charge::HChargeInfo;
 use drone::HDroneInfo;
 use implant::HImplantInfo;
 use module::HModuleInfo;
@@ -10,6 +11,7 @@ use ship::HShipInfo;
 use crate::info::{HAttrVal, HItemInfoMode};
 
 mod character;
+mod charge;
 mod drone;
 mod implant;
 mod module;
@@ -49,6 +51,7 @@ pub(crate) enum HItemInfoBasic {
     Module(HModuleInfo),
     Rig(HRigInfo),
     Drone(HDroneInfo),
+    Charge(HChargeInfo),
 }
 impl HItemInfoBasic {
     fn get_id(&self) -> rc::ReeId {
@@ -59,6 +62,7 @@ impl HItemInfoBasic {
             Self::Module(info) => info.id,
             Self::Rig(info) => info.id,
             Self::Drone(info) => info.id,
+            Self::Charge(info) => info.id,
         }
     }
 }
@@ -71,6 +75,7 @@ impl From<&rc::SsItemInfo> for HItemInfoBasic {
             rc::SsItemInfo::Module(info) => Self::Module(info.into()),
             rc::SsItemInfo::Rig(info) => Self::Rig(info.into()),
             rc::SsItemInfo::Drone(info) => Self::Drone(info.into()),
+            rc::SsItemInfo::Charge(info) => Self::Charge(info.into()),
             // TODO: remove after all conversions were added
             _ => Self::Ship(HShipInfo {
                 id: 999999,

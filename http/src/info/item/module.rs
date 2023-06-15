@@ -1,5 +1,7 @@
 use crate::shared::{HState, HModRack};
 
+use super::HChargeInfo;
+
 #[derive(serde::Serialize)]
 pub(crate) struct HModuleInfo {
     #[serde(with = "crate::util::serde_string")]
@@ -10,6 +12,8 @@ pub(crate) struct HModuleInfo {
     pub(crate) state: HState,
     pub(crate) rack: HModRack,
     pub(crate) pos: rc::ReeIdx,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) charge: Option<HChargeInfo>,
 }
 impl From<&rc::SsModuleInfo> for HModuleInfo {
     fn from(ss_module_info: &rc::SsModuleInfo) -> Self {
@@ -20,6 +24,7 @@ impl From<&rc::SsModuleInfo> for HModuleInfo {
             state: (&ss_module_info.state).into(),
             rack: (&ss_module_info.rack).into(),
             pos: ss_module_info.pos,
+            charge: ss_module_info.ss_charge_info.as_ref().map(|v| v.into()),
         }
     }
 }
