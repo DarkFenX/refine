@@ -298,6 +298,14 @@ class TestClient:
             method='DELETE',
             url=f'{self.__base_url}/solar_system/{ss_id}/item/{item_id}')
 
+    def set_char_request(self, ss_id, fit_id, type_id):
+        payload = {'commands': [{'type': 'set_character', 'fit_id': fit_id, 'type_id': type_id}]}
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
+            json=payload)
+
     def add_implant_request(self, ss_id, fit_id, type_id, state=Absent):
         return self.__add_simple_item('add_implant', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 

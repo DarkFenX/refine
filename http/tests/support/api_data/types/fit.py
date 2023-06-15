@@ -26,6 +26,15 @@ class Fit(AttrDict):
         resp = self.remove_item_request(item_id=item_id).send()
         assert resp.status_code == 204
 
+    def set_char_request(self, type_id):
+        return self._client.set_char_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
+
+    def set_char(self, type_id):
+        resp = self.set_char_request(type_id=type_id).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        return item
+
     def add_implant_request(self, type_id, state=Absent):
         return self._client.add_implant_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
 
