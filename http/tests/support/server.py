@@ -21,7 +21,7 @@ def build_config(config_path, port, log_folder):
         'solsys_cleanup_interval = 5',
         '[log]',
         f'folder = "{log_folder}"',
-        'level = "debug"',
+        'level = "info"',
         'rotate = false']
     with open(config_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(contents))
