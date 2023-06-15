@@ -79,10 +79,10 @@ async fn main() {
                         tracing::trace_span!("http", id = %request_id)
                     })
                     .on_request(|request: &Request<Body>, _span: &Span| {
-                        tracing::debug!(">>> rx {} {}", request.method(), request.uri())
+                        tracing::info!(">>> rx {} {}", request.method(), request.uri())
                     })
                     .on_response(|response: &Response<BoxBody>, latency: Duration, _span: &Span| {
-                        tracing::debug!("<<< tx {} generated in {:?}", response.status(), latency)
+                        tracing::info!("<<< tx {} generated in {:?}", response.status(), latency)
                     }),
             )
             .layer(RequestIdLayer)

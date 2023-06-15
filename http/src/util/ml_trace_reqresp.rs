@@ -39,9 +39,9 @@ where
 
     if let Ok(body) = std::str::from_utf8(&bytes) {
         if body.is_empty() {
-            tracing::debug!("{arrows} {direction} body is empty");
+            tracing::info!("{arrows} {direction} body is empty");
         } else {
-            tracing::debug!("{arrows} {direction} body: {body}");
+            tracing::info!("{arrows} {direction} body: {body}");
         }
     }
     Ok(bytes)
