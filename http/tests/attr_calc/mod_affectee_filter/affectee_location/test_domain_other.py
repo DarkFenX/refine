@@ -1,8 +1,8 @@
 from pytest import approx
 
 
-# Currently there are no effects used by EVE which affect multiple items in "other" domain,
-# so we don't support it either
+# Currently there are no effects used by EVE which affect multiple items
+# filtered "other" domain, so we don't support it either
 def test_unaffected(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()

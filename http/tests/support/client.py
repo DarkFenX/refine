@@ -159,18 +159,20 @@ class TestClient:
             self,
             func=Absent,
             dom=Absent,
+            grp=Absent,
+            srq=Absent,
             src_attr_id=Absent,
             tgt_attr_id=Absent,
             op=Absent,
-            grp=Absent,
     ):
         return Modifier(
             func=func,
             domain=dom,
+            group=grp,
+            skill_req=srq,
             src_attr_id=src_attr_id,
             tgt_attr_id=tgt_attr_id,
-            operation=op,
-            group=grp)
+            operation=op)
 
     # Data source-related methods
     def create_source_request(self, data=Default):

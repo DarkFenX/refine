@@ -20,7 +20,6 @@ def test_affected(client, consts):
     api_fit = api_ss.create_fit()
     api_src_item = api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_implant(type_id=eve_tgt_item.id)
-    # Implant is an item which is in character location -> it should be affected
     value = api_tgt_item.update().attr_vals[eve_tgt_attr.id].dogma
     assert value == approx(120)
     api_src_item.remove()

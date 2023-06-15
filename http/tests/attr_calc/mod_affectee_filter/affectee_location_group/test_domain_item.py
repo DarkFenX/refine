@@ -1,8 +1,8 @@
 from pytest import approx
 
 
-# Currently there are no effects used by EVE which affect multiple items with group filter
-# in "self" domain, so we don't support it either
+# Currently there are no effects used by EVE which affect multiple items
+# filtered "self" domain and group, so we don't support it either
 def test_unaffected(client, consts):
     eve_grp = client.mk_eve_item_group()
     eve_src_attr = client.mk_eve_attr()
