@@ -113,8 +113,12 @@ def test_update(client, consts):
     # capping attribute value is calculated
     value = api_capped_item.update().attr_vals[eve_capped_attr.id].dogma
     assert value == approx(2)
-    api_fit.add_implant(type_id=eve_capping_item.id)
+    api_capping_item = api_fit.add_implant(type_id=eve_capping_item.id)
     # Here, capping attribute should be multiplied by 3.5 (2 * 3.5 = 7), which
     # is still below uncapped value of capped attribute (18)
     value = api_capped_item.update().attr_vals[eve_capped_attr.id].dogma
     assert value == approx(7)
+    api_capping_item.remove()
+    # Should revert back to base value after change of capping attribute
+    value = api_capped_item.update().attr_vals[eve_capped_attr.id].dogma
+    assert value == approx(2)

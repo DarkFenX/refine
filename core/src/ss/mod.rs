@@ -53,6 +53,8 @@ impl SolarSystem {
             item.reload_a_item(&src)
         }
         self.src = src;
+        // TODO: make sure attributes and attribute caps are cleared when source
+        // is switched or item is reloaded (as well as stuff in other services)
     }
     // Attribute calculator
     pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {

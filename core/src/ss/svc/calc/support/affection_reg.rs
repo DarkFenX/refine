@@ -7,7 +7,7 @@ use crate::{
     consts::{ModAfeeFilter, ModDomain},
     defs::{ReeId, ReeInt},
     ssi,
-    util::KeyedStorage,
+    util::KeyedStorage1L,
 };
 
 use super::affector::AffectorSpec;
@@ -18,62 +18,62 @@ pub(in crate::ss::svc) struct AffectionRegister {
     afees: HashSet<ReeId>,
     // Top-level items which are representing an "owner" of domain (char, ship)
     // Contains: KeyedStorage<(affectee fit ID, affectee domain), affectee item IDs>
-    afees_topdom: KeyedStorage<(ReeId, ModDomain), ReeId>,
+    afees_topdom: KeyedStorage1L<(ReeId, ModDomain), ReeId>,
     // Items belonging to certain fit and domain (e.g. char's implants, ship's modules)
     // Contains: KeyedStorage<(affectee fit ID, affectee domain), affectee item IDs>
-    afees_pardom: KeyedStorage<(ReeId, ModDomain), ReeId>,
+    afees_pardom: KeyedStorage1L<(ReeId, ModDomain), ReeId>,
     // Items belonging to certain fit, domain and group
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affectee item IDs>
-    afees_pardom_grp: KeyedStorage<(ReeId, ModDomain, ReeInt), ReeId>,
+    afees_pardom_grp: KeyedStorage1L<(ReeId, ModDomain, ReeInt), ReeId>,
     // Items belonging to certain fit and domain, and having certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affectee item IDs>
-    afees_pardom_srq: KeyedStorage<(ReeId, ModDomain, ReeInt), ReeId>,
+    afees_pardom_srq: KeyedStorage1L<(ReeId, ModDomain, ReeInt), ReeId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affectee item IDs>
-    afees_own_srq: KeyedStorage<(ReeId, ReeInt), ReeId>,
+    afees_own_srq: KeyedStorage1L<(ReeId, ReeInt), ReeId>,
     // Affector specs registered for an item
     // Contains: KeyedStorage<affector item ID, affector specs>
-    afors: KeyedStorage<ReeId, AffectorSpec>,
+    afors: KeyedStorage1L<ReeId, AffectorSpec>,
     // Affector specs which modify item directly
     // Contains: KeyedStorage<affectee item ID, affector specs>
-    afors_direct: KeyedStorage<ReeId, AffectorSpec>,
+    afors_direct: KeyedStorage1L<ReeId, AffectorSpec>,
     // All affector specs which affect top-level entities (via ship or character reference) are kept here
     // Contains: KeyedStorage<(affectee fit ID, affectee domain), affector specs>
-    afors_topdom: KeyedStorage<(ReeId, ModDomain), AffectorSpec>,
+    afors_topdom: KeyedStorage1L<(ReeId, ModDomain), AffectorSpec>,
     // Affector specs with modifiers which affect 'other' location are always
     // stored here, regardless if they actually affect something or not
     // Contains: KeyedStorage<affector item ID, affector specs>
-    afors_other: KeyedStorage<ReeId, AffectorSpec>,
+    afors_other: KeyedStorage1L<ReeId, AffectorSpec>,
     // Affector specs influencing all items belonging to certain fit and domain
     // Contains: KeyedStorage<(affectee fit ID, affectee domain), affector specs>
-    afors_pardom: KeyedStorage<(ReeId, ModDomain), AffectorSpec>,
+    afors_pardom: KeyedStorage1L<(ReeId, ModDomain), AffectorSpec>,
     // Affector specs influencing items belonging to certain fit, domain and group
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affector specs>
-    afors_pardom_grp: KeyedStorage<(ReeId, ModDomain, ReeInt), AffectorSpec>,
+    afors_pardom_grp: KeyedStorage1L<(ReeId, ModDomain, ReeInt), AffectorSpec>,
     // Affector specs influencing items belonging to certain fit and domain, and having certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affector specs>
-    afors_pardom_srq: KeyedStorage<(ReeId, ModDomain, ReeInt), AffectorSpec>,
+    afors_pardom_srq: KeyedStorage1L<(ReeId, ModDomain, ReeInt), AffectorSpec>,
     // Affector specs influencing owner-modifiable items belonging to certain fit and having certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affector specs>
-    afors_own_srq: KeyedStorage<(ReeId, ReeInt), AffectorSpec>,
+    afors_own_srq: KeyedStorage1L<(ReeId, ReeInt), AffectorSpec>,
 }
 impl AffectionRegister {
     pub(in crate::ss::svc::calc) fn new() -> Self {
         Self {
             afees: HashSet::new(),
-            afees_topdom: KeyedStorage::new(),
-            afees_pardom: KeyedStorage::new(),
-            afees_pardom_grp: KeyedStorage::new(),
-            afees_pardom_srq: KeyedStorage::new(),
-            afees_own_srq: KeyedStorage::new(),
-            afors: KeyedStorage::new(),
-            afors_direct: KeyedStorage::new(),
-            afors_topdom: KeyedStorage::new(),
-            afors_other: KeyedStorage::new(),
-            afors_pardom: KeyedStorage::new(),
-            afors_pardom_grp: KeyedStorage::new(),
-            afors_pardom_srq: KeyedStorage::new(),
-            afors_own_srq: KeyedStorage::new(),
+            afees_topdom: KeyedStorage1L::new(),
+            afees_pardom: KeyedStorage1L::new(),
+            afees_pardom_grp: KeyedStorage1L::new(),
+            afees_pardom_srq: KeyedStorage1L::new(),
+            afees_own_srq: KeyedStorage1L::new(),
+            afors: KeyedStorage1L::new(),
+            afors_direct: KeyedStorage1L::new(),
+            afors_topdom: KeyedStorage1L::new(),
+            afors_other: KeyedStorage1L::new(),
+            afors_pardom: KeyedStorage1L::new(),
+            afors_pardom_grp: KeyedStorage1L::new(),
+            afors_pardom_srq: KeyedStorage1L::new(),
+            afors_own_srq: KeyedStorage1L::new(),
         }
     }
     // Query methods
@@ -310,7 +310,7 @@ impl AffectionRegister {
 
 fn extend_vec_from_storage<K: Eq + Hash, V: Eq + Hash + Clone>(
     vec: &mut Vec<V>,
-    storage: &KeyedStorage<K, V>,
+    storage: &KeyedStorage1L<K, V>,
     key: &K,
 ) {
     match storage.get(key) {

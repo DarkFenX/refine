@@ -5,8 +5,7 @@ use module::HModuleInfo;
 use rig::HRigInfo;
 use ship::HShipInfo;
 
-use crate::info::{HAttrVal, HItemInfoMode};
-use crate::info::item::character::HCharacterInfo;
+use crate::info::{item::character::HCharacterInfo, HAttrVal, HItemInfoMode};
 
 mod character;
 mod implant;

@@ -141,6 +141,17 @@ impl SsSvcs {
             .unreg_local_afor_specs(item.get_fit_id(), afor_specs);
     }
     pub(in crate::ss) fn calc_attr_value_changed(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) {
+        // Clear up attribute values which rely on passed attribute as an upper cap
+        let capped_attr_ids = self
+            .calc_data
+            .caps
+            .get_l2(item_id, attr_id)
+            .map(|v| v.iter().map(|v| *v).collect_vec());
+        if let Some(capped_attr_ids) = capped_attr_ids {
+            for capped_attr_id in capped_attr_ids.iter() {
+                self.calc_force_recalc(ss_view, item_id, capped_attr_id);
+            }
+        };
         for afor_spec in self.calc_data.affections.get_afor_specs_by_afor(item_id) {
             if afor_spec.modifier.afor_attr_id != *attr_id {
                 continue;
@@ -237,11 +248,12 @@ impl SsSvcs {
         }
         // Upper cap for the attribute value being calculated
         let mut dogma_val = match attr.max_attr_id {
-            Some(capping_attr_id) => {
-                match self.calc_get_item_attr_val(ss_view, item_id, &capping_attr_id) {
-                    Ok(capping_vals) => ReeFloat::min(dogma_val, capping_vals.dogma),
-                    Err(_) => dogma_val,
+            Some(capping_attr_id) => match self.calc_get_item_attr_val(ss_view, item_id, &capping_attr_id) {
+                Ok(capping_vals) => {
+                    self.calc_data.caps.add_entry(*item_id, capping_attr_id, *attr_id);
+                    ReeFloat::min(dogma_val, capping_vals.dogma)
                 }
+                Err(_) => dogma_val,
             },
             None => dogma_val,
         };
