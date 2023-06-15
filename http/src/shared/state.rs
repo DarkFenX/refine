@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HState {
     Ghost,
@@ -7,8 +7,8 @@ pub(crate) enum HState {
     Active,
     Overload,
 }
-impl From<rc::State> for HState {
-    fn from(core_state: rc::State) -> Self {
+impl From<&rc::State> for HState {
+    fn from(core_state: &rc::State) -> Self {
         match core_state {
             rc::State::Offline => Self::Offline,
             rc::State::Online => Self::Online,
@@ -18,14 +18,14 @@ impl From<rc::State> for HState {
         }
     }
 }
-impl Into<rc::State> for HState {
+impl Into<rc::State> for &HState {
     fn into(self) -> rc::State {
         match self {
-            Self::Offline => rc::State::Offline,
-            Self::Online => rc::State::Online,
-            Self::Active => rc::State::Active,
-            Self::Ghost => rc::State::Ghost,
-            Self::Overload => rc::State::Overload,
+            HState::Offline => rc::State::Offline,
+            HState::Online => rc::State::Online,
+            HState::Active => rc::State::Active,
+            HState::Ghost => rc::State::Ghost,
+            HState::Overload => rc::State::Overload,
         }
     }
 }

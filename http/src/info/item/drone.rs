@@ -15,7 +15,7 @@ impl From<&rc::SsDroneInfo> for HDroneInfo {
             id: ss_drone_info.id,
             fit_id: ss_drone_info.fit_id,
             type_id: ss_drone_info.a_item_id,
-            state: ss_drone_info.state.into(),
+            state: (&ss_drone_info.state).into(),
         }
     }
 }

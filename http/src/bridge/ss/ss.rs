@@ -234,7 +234,7 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                     .add_module(
                         c.fit_id,
                         c.module_type_id,
-                        c.state.into(),
+                        (&c.state).into(),
                         rc::ModRack::High,
                         c.add_mode.into(),
                         c.charge_type_id,
@@ -248,7 +248,7 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                     .add_module(
                         c.fit_id,
                         c.module_type_id,
-                        c.state.into(),
+                        (&c.state).into(),
                         rc::ModRack::Mid,
                         c.add_mode.into(),
                         c.charge_type_id,
@@ -262,7 +262,7 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                     .add_module(
                         c.fit_id,
                         c.module_type_id,
-                        c.state.into(),
+                        (&c.state).into(),
                         rc::ModRack::Low,
                         c.add_mode.into(),
                         c.charge_type_id,
@@ -277,7 +277,7 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 cmd_results.push(resp);
             }
             HSsCommand::AddDrone(c) => {
-                let drone_info = core_ss.add_drone(c.fit_id, c.type_id, c.state.into()).unwrap();
+                let drone_info = core_ss.add_drone(c.fit_id, c.type_id, (&c.state).into()).unwrap();
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(drone_info));
                 cmd_results.push(resp);
             }
