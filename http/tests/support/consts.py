@@ -3,6 +3,15 @@ from enum import StrEnum, IntEnum, unique
 
 
 @unique
+class State(StrEnum):
+    ghost = 'ghost'
+    offline = 'offline'
+    online = 'online'
+    active = 'active'
+    overload = 'overload'
+
+
+@unique
 class ItemCat(IntEnum):
     charge = 8
     drone = 18

@@ -1,7 +1,7 @@
 import requests
 
 from tests.support.api_data import SolarSystem
-from tests.support.consts import EffCat, ItemCat
+from tests.support.consts import EffCat, ItemCat, State
 from tests.support.eve_data import TestObjects, Modifier
 from tests.support.request import Request
 from tests.support.util import Absent, Default, conditional_insert, get_stack_key
@@ -317,7 +317,7 @@ class TestClient:
             url=f'{self.__base_url}/solar_system/{ss_id}',
             json=payload)
 
-    def add_high_mod_request(self, ss_id, fit_id, type_id, state='offline', charge_type_id=Absent, mode='equip'):
+    def add_high_mod_request(self, ss_id, fit_id, type_id, state=State.offline, charge_type_id=Absent, mode='equip'):
         command = {
             'type': 'add_module_high',
             'fit_id': fit_id,
@@ -333,6 +333,9 @@ class TestClient:
 
     def add_rig_request(self, ss_id, fit_id, type_id, state=Absent):
         return self.__add_simple_item('add_rig', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+
+    def add_drone_request(self, ss_id, fit_id, type_id, state=State.offline):
+        return self.__add_simple_item('add_drone', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
     def __add_simple_item(self, cmd_name, ss_id, fit_id, type_id, state):
         command = {

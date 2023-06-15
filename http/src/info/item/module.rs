@@ -1,4 +1,4 @@
-use crate::shared::{HState, HModRack};
+use crate::shared::{HModRack, HState};
 
 use super::HChargeInfo;
 

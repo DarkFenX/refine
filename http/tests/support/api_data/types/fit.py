@@ -1,3 +1,4 @@
+from tests.support.consts import State
 from tests.support.util import AttrDict, Absent
 from .item import Item
 
@@ -73,6 +74,15 @@ class Fit(AttrDict):
 
     def add_rig(self, type_id, state=Absent):
         resp = self.add_rig_request(type_id=type_id, state=state).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        return item
+
+    def add_drone_request(self, type_id, state=State.offline):
+        return self._client.add_drone_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+
+    def add_drone(self, type_id, state=State.offline):
+        resp = self.add_drone_request(type_id=type_id, state=state).send()
         assert resp.status_code == 200
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
