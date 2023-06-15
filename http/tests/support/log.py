@@ -100,6 +100,10 @@ class LogCollector:
     def append_entry(self, entry):
         self.__buffer.append(entry)
 
+    def clear(self):
+        self.buffer.clear()
+        self.errors.clear()
+
     @property
     def buffer(self):
         return self.__buffer
