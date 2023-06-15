@@ -235,7 +235,16 @@ impl SsSvcs {
                 _ => (),
             }
         }
-        // TODO: implement upper cap
+        // Upper cap for the attribute value being calculated
+        let mut dogma_val = match attr.max_attr_id {
+            Some(capping_attr_id) => {
+                match self.calc_get_item_attr_val(ss_view, item_id, &capping_attr_id) {
+                    Ok(capping_vals) => ReeFloat::min(dogma_val, capping_vals.dogma),
+                    Err(_) => dogma_val,
+                }
+            },
+            None => dogma_val,
+        };
         if LIMITED_PRECISION_ATTR_IDS.contains(attr_id) {
             dogma_val = (dogma_val * 100.0).round() / 100.0
         }
