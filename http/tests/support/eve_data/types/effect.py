@@ -1,4 +1,5 @@
 from tests.support.util import conditional_insert
+from .exception import TestDataConsistencyError
 
 
 class Effect:
@@ -48,4 +49,6 @@ class Effect:
         else:
             modifier_info = self.modifier_info
         conditional_insert(effect_entry, 'modifierInfo', modifier_info)
+        if self.id in primitive_data.dogmaeffects:
+            raise TestDataConsistencyError(f'attempt to add effect with duplicate ID {self.id}')
         primitive_data.dogmaeffects[self.id] = effect_entry

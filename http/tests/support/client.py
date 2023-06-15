@@ -71,6 +71,18 @@ class TestClient:
             radius=0.0 if radius is Default else radius,
             volume=0.0 if volume is Default else volume)
 
+    def mk_eve_item_group(
+            self,
+            data=Default,
+            id_=Default,
+            cat_id=ItemCat.module,
+    ):
+        if data is Default:
+            data = self.__default_data
+        return data.mk_item_group(
+            id_=id_,
+            category_id=cat_id)
+
     def mk_eve_attr(
             self,
             data=Default,

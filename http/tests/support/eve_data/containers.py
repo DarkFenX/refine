@@ -1,7 +1,7 @@
 import json
 
 from tests.support.util import Default
-from .types import Item, Attribute, Effect, Buff
+from .types import Item, Group, Attribute, Effect, Buff
 
 ID_START = 1000000
 
@@ -11,6 +11,7 @@ class TestObjects:
     def __init__(self, alias):
         self.alias = alias
         self.items = []
+        self.item_groups = []
         self.attributes = []
         self.effects = []
         self.buffs = []
@@ -24,12 +25,18 @@ class TestObjects:
         if id_ is Default:
             id_ = self.item_id
             self.item_id += 1
-        if group_id is Default:
-            group_id = self.item_group_id
-            self.item_group_id += 1
-        item = Item(id_=id_, group_id=group_id, category_id=category_id, *args, **kwargs)
+        group = self.mk_item_group(id_=group_id, category_id=category_id)
+        item = Item(id_=id_, group_id=group.id, *args, **kwargs)
         self.items.append(item)
         return item
+
+    def mk_item_group(self, id_, category_id):
+        if id_ is Default:
+            id_ = self.item_group_id
+            self.item_group_id += 1
+        group = Group(id_=id_, category_id=category_id)
+        self.items.append(group)
+        return group
 
     def mk_attr(self, id_, *args, **kwargs):
         if id_ is Default:
@@ -64,6 +71,8 @@ class TestObjects:
         primitive_data = TestPrimitives(self.alias)
         for item in self.items:
             item.to_primitives(primitive_data)
+        for item_group in self.item_groups:
+            item_group.to_primitives(primitive_data)
         for attr in self.attributes:
             attr.to_primitives(primitive_data)
         for effect in self.effects:

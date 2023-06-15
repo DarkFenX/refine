@@ -1,4 +1,4 @@
-from tests.support.util import Default, Absent, conditional_insert, make_repr_str
+from tests.support.util import Default, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 
@@ -8,7 +8,6 @@ class Item:
             self,
             id_,
             group_id,
-            category_id,
             attributes,
             effect_ids,
             default_effect_id,
@@ -20,7 +19,6 @@ class Item:
     ):
         self.id = id_
         self.group_id = group_id
-        self.category_id = category_id
         self.attributes = attributes
         self.effect_ids = effect_ids
         self.default_effect_id = default_effect_id
@@ -33,28 +31,18 @@ class Item:
     def to_primitives(self, primitive_data):
         item_entry = {'typeID': self.id}
         conditional_insert(item_entry, 'groupID', self.group_id)
-        primitive_data.types[self.id] = item_entry
-        self.__add_primitive_group(primitive_data)
-        self.__add_primitive_attributes(primitive_data)
-        self.__add_primitive_effects(primitive_data)
+        self.__add_primitive_item_attributes(primitive_data)
+        self.__add_primitive_item_effects(primitive_data)
         conditional_insert(primitive_data.requiredskillsfortypes, self.id, self.skill_reqs)
         conditional_insert(item_entry, 'capacity', self.capacity)
         conditional_insert(item_entry, 'mass', self.mass)
         conditional_insert(item_entry, 'radius', self.radius)
         conditional_insert(item_entry, 'volume', self.volume)
+        if self.id in primitive_data.types:
+            raise TestDataConsistencyError(f'attempt to add item with duplicate ID {self.id}')
+        primitive_data.types[self.id] = item_entry
 
-    def __add_primitive_group(self, primitive_data):
-        if self.group_id is Absent:
-            return
-        if self.group_id in primitive_data.groups:
-            group_entry = primitive_data.groups[self.group_id]
-            if ((self.category_id is Absent and 'categoryID' in group_entry) or
-                    (self.category_id is not Absent and group_entry.get('categoryID', Absent) != self.category_id)):
-                raise TestDataConsistencyError('attempt to add group which already exists and has different category')
-        group_entry = primitive_data.groups.setdefault(self.group_id, {'groupID': self.group_id})
-        conditional_insert(group_entry, 'categoryID', self.category_id)
-
-    def __add_primitive_attributes(self, primitive_data):
+    def __add_primitive_item_attributes(self, primitive_data):
         if self.attributes is Default:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
@@ -65,7 +53,7 @@ class Item:
         else:
             item_entry['dogmaAttributes'] = self.attributes
 
-    def __add_primitive_effects(self, primitive_data):
+    def __add_primitive_item_effects(self, primitive_data):
         if self.effect_ids is Default:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
