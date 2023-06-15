@@ -1,4 +1,5 @@
 pub(crate) use character::HSetCharCmd;
+pub(crate) use drone::HAddDroneCmd;
 pub(crate) use implant::HAddImplantCmd;
 pub(crate) use module::HAddModuleCmd;
 pub(crate) use rig::HAddRigCmd;
@@ -7,6 +8,7 @@ pub(crate) use ship::HSetShipCmd;
 use crate::cmd::ss;
 
 mod character;
+mod drone;
 mod implant;
 mod module;
 mod rig;
@@ -22,6 +24,7 @@ pub(crate) enum HFitCommand {
     AddModuleMid(HAddModuleCmd),
     AddModuleLow(HAddModuleCmd),
     AddRig(HAddRigCmd),
+    AddDrone(HAddDroneCmd),
 }
 impl HFitCommand {
     pub(crate) fn fill_fit(self, fit_id: rc::ReeId) -> ss::HSsCommand {
@@ -33,6 +36,7 @@ impl HFitCommand {
             HFitCommand::AddModuleMid(cmd) => ss::HSsCommand::AddModuleMid(cmd.fill_fit(fit_id)),
             HFitCommand::AddModuleLow(cmd) => ss::HSsCommand::AddModuleLow(cmd.fill_fit(fit_id)),
             HFitCommand::AddRig(cmd) => ss::HSsCommand::AddRig(cmd.fill_fit(fit_id)),
+            HFitCommand::AddDrone(cmd) => ss::HSsCommand::AddDrone(cmd.fill_fit(fit_id)),
         }
     }
 }

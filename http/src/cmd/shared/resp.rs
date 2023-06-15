@@ -44,3 +44,8 @@ impl From<rc::SsRigInfo> for HItemIdsResp {
         HItemIdsResp::new(ss_rig_info.id, None)
     }
 }
+impl From<rc::SsDroneInfo> for HItemIdsResp {
+    fn from(ss_drone_info: rc::SsDroneInfo) -> Self {
+        HItemIdsResp::new(ss_drone_info.id, None)
+    }
+}

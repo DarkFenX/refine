@@ -1,4 +1,4 @@
-use crate::cmd::shared::{HAddMode, HState};
+use crate::{cmd::shared::HAddMode, shared::HState};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddModuleCmd {

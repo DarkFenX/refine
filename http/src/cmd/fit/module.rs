@@ -1,6 +1,6 @@
-use crate::cmd::{
-    shared::{HAddMode, HState},
-    ss,
+use crate::{
+    cmd::{shared::HAddMode, ss},
+    shared::HState,
 };
 
 #[derive(serde::Deserialize)]

@@ -1,10 +1,12 @@
 pub(crate) use character::HSetCharCmd;
+pub(crate) use drone::HAddDroneCmd;
 pub(crate) use implant::HAddImplantCmd;
 pub(crate) use module::HAddModuleCmd;
 pub(crate) use rig::HAddRigCmd;
 pub(crate) use ship::HSetShipCmd;
 
 mod character;
+mod drone;
 mod implant;
 mod module;
 mod rig;
@@ -20,4 +22,5 @@ pub(crate) enum HSsCommand {
     AddModuleMid(HAddModuleCmd),
     AddModuleLow(HAddModuleCmd),
     AddRig(HAddRigCmd),
+    AddDrone(HAddDroneCmd),
 }

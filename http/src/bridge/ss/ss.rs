@@ -209,28 +209,28 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
     for cmd in commands.iter() {
         match cmd {
             HSsCommand::SetCharacter(c) => {
-                let char_id = core_ss
+                let char_info = core_ss
                     .set_fit_character(c.fit_id, c.type_id, c.state.unwrap_or(true))
                     .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(char_id));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(char_info));
                 cmd_results.push(resp);
             }
             HSsCommand::AddImplant(c) => {
-                let implant_id = core_ss
+                let implant_info = core_ss
                     .add_implant(c.fit_id, c.type_id, c.state.unwrap_or(true))
                     .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(implant_id));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(implant_info));
                 cmd_results.push(resp);
             }
             HSsCommand::SetShip(c) => {
-                let ship_id = core_ss
+                let ship_info = core_ss
                     .set_fit_ship(c.fit_id, c.type_id, c.state.unwrap_or(true))
                     .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(ship_id));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(ship_info));
                 cmd_results.push(resp);
             }
             HSsCommand::AddModuleHigh(c) => {
-                let id_data = core_ss
+                let module_info = core_ss
                     .add_module(
                         c.fit_id,
                         c.module_type_id,
@@ -240,11 +240,11 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                         c.charge_type_id,
                     )
                     .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(id_data));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(module_info));
                 cmd_results.push(resp);
             }
             HSsCommand::AddModuleMid(c) => {
-                let id_data = core_ss
+                let module_info = core_ss
                     .add_module(
                         c.fit_id,
                         c.module_type_id,
@@ -254,11 +254,11 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                         c.charge_type_id,
                     )
                     .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(id_data));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(module_info));
                 cmd_results.push(resp);
             }
             HSsCommand::AddModuleLow(c) => {
-                let id_data = core_ss
+                let module_info = core_ss
                     .add_module(
                         c.fit_id,
                         c.module_type_id,
@@ -268,12 +268,17 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                         c.charge_type_id,
                     )
                     .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(id_data));
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(module_info));
                 cmd_results.push(resp);
             }
             HSsCommand::AddRig(c) => {
-                let rig_id = core_ss.add_rig(c.fit_id, c.type_id, c.state.unwrap_or(true)).unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(rig_id));
+                let rig_info = core_ss.add_rig(c.fit_id, c.type_id, c.state.unwrap_or(true)).unwrap();
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(rig_info));
+                cmd_results.push(resp);
+            }
+            HSsCommand::AddDrone(c) => {
+                let drone_info = core_ss.add_drone(c.fit_id, c.type_id, c.state.into()).unwrap();
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(drone_info));
                 cmd_results.push(resp);
             }
         };

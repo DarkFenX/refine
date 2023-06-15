@@ -23,6 +23,7 @@ mod handlers;
 mod info;
 mod logging;
 mod settings;
+mod shared;
 mod state;
 mod util;
 
