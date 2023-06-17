@@ -20,9 +20,7 @@ pub(crate) enum HFitCommand {
     SetCharacter(HSetCharCmd),
     AddImplant(HAddImplantCmd),
     SetShip(HSetShipCmd),
-    AddModuleHigh(HAddModuleCmd),
-    AddModuleMid(HAddModuleCmd),
-    AddModuleLow(HAddModuleCmd),
+    AddModule(HAddModuleCmd),
     AddRig(HAddRigCmd),
     AddDrone(HAddDroneCmd),
 }
@@ -32,9 +30,7 @@ impl HFitCommand {
             HFitCommand::SetCharacter(cmd) => ss::HSsCommand::SetCharacter(cmd.fill_fit(fit_id)),
             HFitCommand::AddImplant(cmd) => ss::HSsCommand::AddImplant(cmd.fill_fit(fit_id)),
             HFitCommand::SetShip(cmd) => ss::HSsCommand::SetShip(cmd.fill_fit(fit_id)),
-            HFitCommand::AddModuleHigh(cmd) => ss::HSsCommand::AddModuleHigh(cmd.fill_fit(fit_id)),
-            HFitCommand::AddModuleMid(cmd) => ss::HSsCommand::AddModuleMid(cmd.fill_fit(fit_id)),
-            HFitCommand::AddModuleLow(cmd) => ss::HSsCommand::AddModuleLow(cmd.fill_fit(fit_id)),
+            HFitCommand::AddModule(cmd) => ss::HSsCommand::AddModule(cmd.fill_fit(fit_id)),
             HFitCommand::AddRig(cmd) => ss::HSsCommand::AddRig(cmd.fill_fit(fit_id)),
             HFitCommand::AddDrone(cmd) => ss::HSsCommand::AddDrone(cmd.fill_fit(fit_id)),
         }

@@ -23,10 +23,10 @@ impl SolarSystem {
     pub fn add_module(
         &mut self,
         fit_id: ReeId,
-        a_item_id: ReeInt,
-        state: State,
         rack: ModRack,
         pos_mode: OrdAddMode,
+        a_item_id: ReeInt,
+        state: State,
         charge_a_item_id: Option<ReeInt>,
     ) -> Result<ssn::SsModuleInfo> {
         // Allocate resources first

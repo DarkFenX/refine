@@ -319,8 +319,9 @@ class TestClient:
 
     def add_high_mod_request(self, ss_id, fit_id, type_id, state=State.offline, charge_type_id=Absent, mode='equip'):
         command = {
-            'type': 'add_module_high',
+            'type': 'add_module',
             'fit_id': fit_id,
+            'rack': 'high',
             'add_mode': mode,
             'module_type_id': type_id,
             'state': state}

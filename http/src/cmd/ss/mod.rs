@@ -18,9 +18,7 @@ pub(crate) enum HSsCommand {
     SetCharacter(HSetCharCmd),
     AddImplant(HAddImplantCmd),
     SetShip(HSetShipCmd),
-    AddModuleHigh(HAddModuleCmd),
-    AddModuleMid(HAddModuleCmd),
-    AddModuleLow(HAddModuleCmd),
+    AddModule(HAddModuleCmd),
     AddRig(HAddRigCmd),
     AddDrone(HAddDroneCmd),
 }

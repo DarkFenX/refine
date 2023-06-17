@@ -229,42 +229,14 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(ship_info));
                 cmd_results.push(resp);
             }
-            HSsCommand::AddModuleHigh(c) => {
+            HSsCommand::AddModule(c) => {
                 let module_info = core_ss
                     .add_module(
                         c.fit_id,
+                        (&c.rack).into(),
+                        (&c.add_mode).into(),
                         c.module_type_id,
                         (&c.state).into(),
-                        rc::ModRack::High,
-                        c.add_mode.into(),
-                        c.charge_type_id,
-                    )
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(module_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddModuleMid(c) => {
-                let module_info = core_ss
-                    .add_module(
-                        c.fit_id,
-                        c.module_type_id,
-                        (&c.state).into(),
-                        rc::ModRack::Mid,
-                        c.add_mode.into(),
-                        c.charge_type_id,
-                    )
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(module_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddModuleLow(c) => {
-                let module_info = core_ss
-                    .add_module(
-                        c.fit_id,
-                        c.module_type_id,
-                        (&c.state).into(),
-                        rc::ModRack::Low,
-                        c.add_mode.into(),
                         c.charge_type_id,
                     )
                     .unwrap();

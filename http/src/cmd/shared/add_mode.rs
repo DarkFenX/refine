@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(crate) enum HAddMode {
     Append,
@@ -6,13 +6,13 @@ pub(crate) enum HAddMode {
     Insert(rc::ReeIdx),
     Place(rc::ReeIdx, bool),
 }
-impl Into<rc::OrdAddMode> for HAddMode {
+impl Into<rc::OrdAddMode> for &HAddMode {
     fn into(self) -> rc::OrdAddMode {
         match self {
-            Self::Append => rc::OrdAddMode::Append,
-            Self::Equip => rc::OrdAddMode::Equip,
-            Self::Insert(i) => rc::OrdAddMode::Insert(i),
-            Self::Place(i, r) => rc::OrdAddMode::Place(i, r),
+            HAddMode::Append => rc::OrdAddMode::Append,
+            HAddMode::Equip => rc::OrdAddMode::Equip,
+            HAddMode::Insert(i) => rc::OrdAddMode::Insert(*i),
+            HAddMode::Place(i, r) => rc::OrdAddMode::Place(*i, *r),
         }
     }
 }
