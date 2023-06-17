@@ -30,7 +30,9 @@ impl SolarSystem {
                 return Err(Error::new(ErrorKind::FitIdAllocFailed));
             }
         }
-        Ok(self.fit_cnt.0)
+        let fit_id = self.fit_cnt.0;
+        self.fit_cnt += 1;
+        Ok(fit_id)
     }
     pub(in crate::ss) fn check_fit(&self, fit_id: &ReeId) -> Result<()> {
         match self.fits.contains(&fit_id) {

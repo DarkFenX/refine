@@ -64,24 +64,11 @@ fn main() {
     // }
     // let implant = sol_sys.add_implant(fit, 19687, true);
     println!("{}", sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma);
-    let plate = sol_sys
-        .add_module(fit, ModRack::Low, OrdAddMode::Equip, 31906, State::Online, None)
+    let laser = sol_sys
+        .add_module(fit, ModRack::High, OrdAddMode::Equip, 3041, State::Online, Some(12563))
         .unwrap();
     println!(
-        "{} {}",
-        sol_sys.get_item_attr(&plate.id, &796).unwrap().dogma,
-        sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma
-    );
-    let skill = sol_sys.add_skill(fit, 33078, 5, true).unwrap();
-    println!(
-        "{} {}",
-        sol_sys.get_item_attr(&plate.id, &796).unwrap().dogma,
-        sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma
-    );
-    sol_sys.remove_item(&skill.id);
-    println!(
-        "{} {}",
-        sol_sys.get_item_attr(&plate.id, &796).unwrap().dogma,
-        sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma
+        "{}",
+        laser.ss_charge_info.unwrap().cont_id
     );
 }

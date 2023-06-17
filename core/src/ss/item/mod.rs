@@ -64,7 +64,9 @@ impl SolarSystem {
                 return Err(Error::new(ErrorKind::ItemIdAllocFailed));
             }
         }
-        Ok(self.item_cnt.0)
+        let item_id = self.item_cnt.0;
+        self.item_cnt += 1;
+        Ok(item_id)
     }
     fn add_item(&mut self, item: ssi::SsItem) {
         let item_id = item.get_id();
