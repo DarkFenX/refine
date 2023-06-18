@@ -1,6 +1,11 @@
 import os
 import subprocess
+from collections import namedtuple
 from signal import SIGKILL
+
+
+ConfigInfo = namedtuple('ConfigInfo', (['config_path', 'port', 'log_path']))
+ServerInfo = namedtuple('ServerInfo', ['pid'])
 
 
 def build_server(proj_root):
@@ -25,14 +30,16 @@ def build_config(config_path, port, log_folder):
         'rotate = false']
     with open(config_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(contents))
+    log_path = log_folder / 'reefast-http.log'
+    return ConfigInfo(config_path=config_path, port=port, log_path=log_path)
 
 
 def run_server(proj_root, config_path):
     binary_path = os.path.join(proj_root, 'target', 'release', 'reefast-http')
-    return subprocess.Popen(
+    return ServerInfo(pid=subprocess.Popen(
         [binary_path, config_path],
         stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL).pid
+        stderr=subprocess.DEVNULL).pid)
 
 
 def kill_server(pid):

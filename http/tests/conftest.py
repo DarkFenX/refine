@@ -1,5 +1,4 @@
 import os
-from collections import namedtuple
 
 import pytest
 
@@ -12,29 +11,33 @@ from tests.support.util import next_free_port
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
-ServerInfo = namedtuple('ServerInfo', ('pid', 'port', 'log_path'))
+@pytest.fixture(scope='session')
+def reefast_tmp_folder(tmp_path_factory):
+    yield tmp_path_factory.mktemp('reefast_test')
+
+
+@pytest.fixture(scope='session')
+def reefast_config(reefast_tmp_folder):  # pylint: disable=W0621
+    config_path = reefast_tmp_folder / 'config.toml'
+    port = next_free_port(8000)
+    yield build_config(config_path=config_path, port=port, log_folder=reefast_tmp_folder)
 
 
 @pytest.fixture(scope='session', autouse=True)
-def reefast_server(tmp_path_factory):
+def reefast_server(reefast_config):  # pylint: disable=W0621
     build_server(PROJECT_ROOT)
-    tmp_path = tmp_path_factory.mktemp('reefast_test')
-    config_path = tmp_path / 'config.toml'
-    port = next_free_port(8000)
-    build_config(config_path=config_path, port=port, log_folder=tmp_path)
-    log_path = tmp_path / 'reefast-http.log'
-    pid = run_server(proj_root=PROJECT_ROOT, config_path=config_path)
+    server_info = run_server(proj_root=PROJECT_ROOT, config_path=reefast_config.config_path)
     try:
-        yield ServerInfo(pid=pid, port=port, log_path=log_path)
+        yield server_info
     except Exception:
-        kill_server(pid)
+        kill_server(server_info.pid)
         raise
-    kill_server(pid)
+    kill_server(server_info.pid)
 
 
 @pytest.fixture()
-def client(httpserver, reefast_server):  # pylint: disable=W0621
-    test_client = TestClient(httpserver, reefast_server.port)
+def client(httpserver, reefast_config):  # pylint: disable=W0621
+    test_client = TestClient(httpserver, reefast_config.port)
     yield test_client
     test_client.cleanup_sss()
     test_client.cleanup_sources()
@@ -46,8 +49,8 @@ def consts():
 
 
 @pytest.fixture(scope='session')
-def log_reader(reefast_server):  # pylint: disable=W0621
-    reader = LogReader(path=reefast_server.log_path)
+def log_reader(reefast_config):  # pylint: disable=W0621
+    reader = LogReader(path=reefast_config.log_path)
     reader.run()
     yield reader
     reader.stop()
