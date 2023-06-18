@@ -216,7 +216,7 @@ class TestClient:
             self.__setup_handler(f'/{data.alias}/{suffix}', container)
         # Get request and send it
         resp = self.create_source_request(data=data).send()
-        assert resp.status_code == 204
+        assert resp.status_code == 201
         self.__created_data_aliases.add(data.alias)
 
     def remove_source_request(self, src_alias: str) -> Request:
