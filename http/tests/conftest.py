@@ -4,7 +4,7 @@ import pytest
 
 from tests.support import consts as eve_consts
 from tests.support.client import TestClient
-from tests.support.log import LogReader, LogCollector
+from tests.support.log import LogReader
 from tests.support.server import build_server, kill_server, run_server, build_config
 from tests.support.util import next_free_port
 
@@ -24,9 +24,11 @@ def reefast_config(reefast_tmp_folder):  # pylint: disable=W0621
 
 
 @pytest.fixture(scope='session', autouse=True)
-def reefast_server(reefast_config):  # pylint: disable=W0621
+def reefast_server(reefast_config, log_reader):  # pylint: disable=W0621
     build_server(PROJECT_ROOT)
-    server_info = run_server(proj_root=PROJECT_ROOT, config_path=reefast_config.config_path)
+    with log_reader.get_collector() as log_collector:
+        server_info = run_server(proj_root=PROJECT_ROOT, config_path=reefast_config.config_path)
+        # TODO: wait for "listen" log entry here
     try:
         yield server_info
     except Exception:
@@ -58,7 +60,5 @@ def log_reader(reefast_config):  # pylint: disable=W0621
 
 @pytest.fixture()
 def log(log_reader):  # pylint: disable=W0621
-    collector = LogCollector()
-    log_reader.add_target(collector)
-    yield collector
-    log_reader.remove_target(collector)
+    with log_reader.get_collector() as log_collector:
+        yield log_collector

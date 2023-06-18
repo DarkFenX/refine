@@ -1,3 +1,4 @@
+import contextlib
 import os
 import pathlib
 import re
@@ -39,10 +40,10 @@ class LogReader:
         self.__targets = []
         self.__execute_flag = False
 
-    def add_target(self, target):
+    def __add_target(self, target):
         self.__targets.append(target)
 
-    def remove_target(self, target):
+    def __remove_target(self, target):
         self.__targets.remove(target)
 
     def run(self):
@@ -52,6 +53,15 @@ class LogReader:
 
     def stop(self):
         self.__execute_flag = False
+
+    @contextlib.contextmanager
+    def get_collector(self):
+        collector = LogCollector()
+        self.__add_target(collector)
+        try:
+            yield collector
+        finally:
+            self.__remove_target(collector)
 
     def __follow(self):
         pathlib.Path(self.__path).touch(mode=0o644, exist_ok=True)
