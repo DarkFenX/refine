@@ -10,7 +10,7 @@ impl HAttrVal {
     }
 }
 impl From<&rc::SsAttrVal> for HAttrVal {
-    fn from(ss_attr_val: &rc::SsAttrVal) -> Self {
-        Self::new(ss_attr_val.base, ss_attr_val.dogma, ss_attr_val.extra)
+    fn from(core_attr_val: &rc::SsAttrVal) -> Self {
+        Self::new(core_attr_val.base, core_attr_val.dogma, core_attr_val.extra)
     }
 }

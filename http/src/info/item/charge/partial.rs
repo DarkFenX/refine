@@ -1,5 +1,5 @@
 #[derive(serde::Serialize)]
-pub(crate) struct HChargeInfo {
+pub(crate) struct HChargeInfoPartial {
     #[serde(with = "crate::util::serde_string")]
     pub(crate) id: rc::ReeId,
     #[serde(with = "crate::util::serde_string")]
@@ -8,13 +8,13 @@ pub(crate) struct HChargeInfo {
     #[serde(with = "crate::util::serde_string")]
     pub(crate) cont_id: rc::ReeId,
 }
-impl From<&rc::SsChargeInfo> for HChargeInfo {
-    fn from(ss_charge_info: &rc::SsChargeInfo) -> Self {
+impl From<&rc::SsChargeInfo> for HChargeInfoPartial {
+    fn from(core_charge_info: &rc::SsChargeInfo) -> Self {
         Self {
-            id: ss_charge_info.id,
-            fit_id: ss_charge_info.fit_id,
-            type_id: ss_charge_info.a_item_id,
-            cont_id: ss_charge_info.cont_id,
+            id: core_charge_info.id,
+            fit_id: core_charge_info.fit_id,
+            type_id: core_charge_info.a_item_id,
+            cont_id: core_charge_info.cont_id,
         }
     }
 }

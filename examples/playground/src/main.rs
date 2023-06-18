@@ -26,7 +26,7 @@ fn setup_logger() -> () {
                 .with_default(None)
                 .with_target("reefast_core", tracing::Level::TRACE)
                 .with_target("reefast_dh_eve", tracing::Level::TRACE)
-                .with_target("reefast_dh_adapted", tracing::Level::TRACE)
+                .with_target("reefast_dh_adapted", tracing::Level::TRACE),
         )
         .init();
 }
@@ -67,8 +67,5 @@ fn main() {
     let laser = sol_sys
         .add_module(fit, ModRack::High, OrdAddMode::Equip, 3041, State::Online, Some(12563))
         .unwrap();
-    println!(
-        "{}",
-        laser.ss_charge_info.unwrap().cont_id
-    );
+    println!("{}", laser.ss_charge_info.unwrap().cont_id);
 }

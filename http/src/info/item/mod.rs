@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use character::HCharacterInfo;
 use charge::HChargeInfo;
 use drone::HDroneInfo;
@@ -8,7 +6,7 @@ use module::HModuleInfo;
 use rig::HRigInfo;
 use ship::HShipInfo;
 
-use crate::info::{HAttrVal, HItemInfoMode};
+use crate::info::HItemInfoMode;
 
 mod character;
 mod charge;
@@ -21,30 +19,6 @@ mod ship;
 #[derive(serde::Serialize)]
 #[serde(untagged)]
 pub(crate) enum HItemInfo {
-    Id(String),
-    Basic(HItemInfoBasic),
-    Full(HItemInfoFull),
-}
-impl HItemInfo {
-    pub(crate) fn mk_info<T: Into<HItemInfoBasic>>(
-        core_ss: &mut rc::SolarSystem,
-        item_identity: T,
-        item_mode: HItemInfoMode,
-    ) -> Self {
-        match item_mode {
-            HItemInfoMode::Id => {
-                let info = item_identity.into();
-                Self::Id(info.get_id().to_string())
-            }
-            HItemInfoMode::Basic => Self::Basic(item_identity.into()),
-            HItemInfoMode::Full => Self::Full(HItemInfoFull::mk_info(core_ss, item_identity)),
-        }
-    }
-}
-
-#[derive(serde::Serialize)]
-#[serde(untagged)]
-pub(crate) enum HItemInfoBasic {
     Character(HCharacterInfo),
     Implant(HImplantInfo),
     Ship(HShipInfo),
@@ -52,68 +26,77 @@ pub(crate) enum HItemInfoBasic {
     Rig(HRigInfo),
     Drone(HDroneInfo),
     Charge(HChargeInfo),
+    // TODO: remove when all item types are implemented
+    ToRemove(bool),
 }
-impl HItemInfoBasic {
-    fn get_id(&self) -> rc::ReeId {
-        match self {
-            Self::Character(info) => info.id,
-            Self::Implant(info) => info.id,
-            Self::Ship(info) => info.id,
-            Self::Module(info) => info.id,
-            Self::Rig(info) => info.id,
-            Self::Drone(info) => info.id,
-            Self::Charge(info) => info.id,
+impl HItemInfo {
+    pub(crate) fn mk_from_core_item(
+        core_ss: &mut rc::SolarSystem,
+        core_item_info: &rc::SsItemInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        match core_item_info {
+            rc::SsItemInfo::Character(core_character_info) => {
+                Self::mk_from_core_character(core_ss, core_character_info, item_mode)
+            }
+            rc::SsItemInfo::Implant(core_implant_info) => {
+                Self::mk_from_core_implant(core_ss, core_implant_info, item_mode)
+            }
+            rc::SsItemInfo::Ship(core_ship_info) => Self::mk_from_core_ship(core_ss, core_ship_info, item_mode),
+            rc::SsItemInfo::Module(core_module_info) => Self::mk_from_core_module(core_ss, core_module_info, item_mode),
+            rc::SsItemInfo::Rig(core_rig_info) => Self::mk_from_core_rig(core_ss, core_rig_info, item_mode),
+            rc::SsItemInfo::Drone(core_drone_info) => Self::mk_from_core_drone(core_ss, core_drone_info, item_mode),
+            rc::SsItemInfo::Charge(core_charge_info) => Self::mk_from_core_charge(core_ss, core_charge_info, item_mode),
+            _ => Self::ToRemove(true),
         }
     }
-}
-impl From<&rc::SsItemInfo> for HItemInfoBasic {
-    fn from(ss_item_info: &rc::SsItemInfo) -> Self {
-        match ss_item_info {
-            rc::SsItemInfo::Character(info) => Self::Character(info.into()),
-            rc::SsItemInfo::Implant(info) => Self::Implant(info.into()),
-            rc::SsItemInfo::Ship(info) => Self::Ship(info.into()),
-            rc::SsItemInfo::Module(info) => Self::Module(info.into()),
-            rc::SsItemInfo::Rig(info) => Self::Rig(info.into()),
-            rc::SsItemInfo::Drone(info) => Self::Drone(info.into()),
-            rc::SsItemInfo::Charge(info) => Self::Charge(info.into()),
-            // TODO: remove after all conversions were added
-            _ => Self::Ship(HShipInfo {
-                id: 999999,
-                fit_id: 666666,
-                type_id: 333333,
-                enabled: false,
-            }),
-        }
+    pub(crate) fn mk_from_core_character(
+        core_ss: &mut rc::SolarSystem,
+        core_character_info: &rc::SsCharacterInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::Character(HCharacterInfo::mk_info(core_ss, core_character_info, item_mode))
     }
-}
-impl From<&rc::SsModuleInfo> for HItemInfoBasic {
-    fn from(ss_module_info: &rc::SsModuleInfo) -> Self {
-        HItemInfoBasic::Module(ss_module_info.into())
+    pub(crate) fn mk_from_core_implant(
+        core_ss: &mut rc::SolarSystem,
+        core_implant_info: &rc::SsImplantInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::Implant(HImplantInfo::mk_info(core_ss, core_implant_info, item_mode))
     }
-}
-impl From<&rc::SsShipInfo> for HItemInfoBasic {
-    fn from(ss_ship_info: &rc::SsShipInfo) -> Self {
-        HItemInfoBasic::Ship(ss_ship_info.into())
+    pub(crate) fn mk_from_core_ship(
+        core_ss: &mut rc::SolarSystem,
+        core_ship_info: &rc::SsShipInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::Ship(HShipInfo::mk_info(core_ss, core_ship_info, item_mode))
     }
-}
-
-#[derive(serde::Serialize)]
-pub(crate) struct HItemInfoFull {
-    #[serde(flatten)]
-    pub(crate) basic_info: HItemInfoBasic,
-    pub(crate) attr_vals: HashMap<rc::ReeInt, HAttrVal>,
-}
-impl HItemInfoFull {
-    fn mk_info<T: Into<HItemInfoBasic>>(core_ss: &mut rc::SolarSystem, item_identity: T) -> Self {
-        let h_info = item_identity.into();
-        let item_id = h_info.get_id();
-        let attrs = match core_ss.get_item_attrs(&item_id) {
-            Ok(attrs) => attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
-            _ => HashMap::new(),
-        };
-        Self {
-            basic_info: h_info,
-            attr_vals: attrs,
-        }
+    pub(crate) fn mk_from_core_module(
+        core_ss: &mut rc::SolarSystem,
+        core_module_info: &rc::SsModuleInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::Module(HModuleInfo::mk_info(core_ss, core_module_info, item_mode))
+    }
+    pub(crate) fn mk_from_core_rig(
+        core_ss: &mut rc::SolarSystem,
+        core_rig_info: &rc::SsRigInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::Rig(HRigInfo::mk_info(core_ss, core_rig_info, item_mode))
+    }
+    pub(crate) fn mk_from_core_drone(
+        core_ss: &mut rc::SolarSystem,
+        core_drone_info: &rc::SsDroneInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::Drone(HDroneInfo::mk_info(core_ss, core_drone_info, item_mode))
+    }
+    pub(crate) fn mk_from_core_charge(
+        core_ss: &mut rc::SolarSystem,
+        core_charge_info: &rc::SsChargeInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::Charge(HChargeInfo::mk_info(core_ss, core_charge_info, item_mode))
     }
 }

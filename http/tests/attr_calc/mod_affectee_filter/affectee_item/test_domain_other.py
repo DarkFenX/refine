@@ -39,5 +39,5 @@ def test_affected_module_bundled(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_module = api_fit.add_high_mod(type_id=eve_tgt_item.id, charge_type_id=eve_src_item.id)
-    value = api_module.update().charge.attr_vals[eve_tgt_attr.id].dogma
+    value = api_module.update().attr_vals[eve_tgt_attr.id].dogma
     assert value == approx(120)
