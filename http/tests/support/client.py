@@ -325,7 +325,7 @@ class TestClient:
             'fit_id': fit_id,
             'rack': 'high',
             'add_mode': mode,
-            'module_type_id': type_id,
+            'type_id': type_id,
             'state': state}
         conditional_insert(command, 'charge_type_id', charge_type_id)
         return Request(

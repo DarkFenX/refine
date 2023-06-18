@@ -9,24 +9,24 @@ pub(crate) struct HAddModuleCmd {
     pub(crate) fit_id: rc::ReeId,
     pub(crate) rack: HModRack,
     pub(crate) add_mode: HAddMode,
-    pub(crate) module_type_id: rc::ReeInt,
-    pub(crate) charge_type_id: Option<rc::ReeInt>,
+    pub(crate) type_id: rc::ReeInt,
     pub(crate) state: HState,
+    pub(crate) charge_type_id: Option<rc::ReeInt>,
 }
 impl HAddModuleCmd {
     pub(crate) fn new(
         fit_id: rc::ReeId,
         rack: HModRack,
         add_mode: HAddMode,
-        module_type_id: rc::ReeInt,
-        charge_type_id: Option<rc::ReeInt>,
+        type_id: rc::ReeInt,
         state: HState,
+        charge_type_id: Option<rc::ReeInt>,
     ) -> Self {
         Self {
             fit_id,
             rack,
             add_mode,
-            module_type_id,
+            type_id,
             charge_type_id,
             state,
         }

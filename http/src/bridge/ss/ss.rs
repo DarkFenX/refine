@@ -235,7 +235,7 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                         c.fit_id,
                         (&c.rack).into(),
                         (&c.add_mode).into(),
-                        c.module_type_id,
+                        c.type_id,
                         (&c.state).into(),
                         c.charge_type_id,
                     )

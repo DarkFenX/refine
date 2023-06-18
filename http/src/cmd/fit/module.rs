@@ -7,9 +7,9 @@ use crate::{
 pub(crate) struct HAddModuleCmd {
     pub(crate) rack: HModRack,
     pub(crate) add_mode: HAddMode,
-    pub(crate) module_type_id: rc::ReeInt,
-    pub(crate) charge_type_id: Option<rc::ReeInt>,
+    pub(crate) type_id: rc::ReeInt,
     pub(crate) state: HState,
+    pub(crate) charge_type_id: Option<rc::ReeInt>,
 }
 impl HAddModuleCmd {
     pub(in crate::cmd::fit) fn fill_fit(self, fit_id: rc::ReeId) -> ss::HAddModuleCmd {
@@ -17,9 +17,9 @@ impl HAddModuleCmd {
             fit_id,
             self.rack,
             self.add_mode,
-            self.module_type_id,
-            self.charge_type_id,
+            self.type_id,
             self.state,
+            self.charge_type_id,
         )
     }
 }
