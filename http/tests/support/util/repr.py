@@ -1,6 +1,7 @@
+from typing import Union
 
 
-def make_repr_str(instance, spec=None):
+def make_repr_str(instance, spec: Union[None, list[str]] = None) -> str:
     arg_list = []
     if spec is None:
         for attr_name in sorted(vars(instance)):

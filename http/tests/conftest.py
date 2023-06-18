@@ -28,7 +28,8 @@ def reefast_server(reefast_config, log_reader):  # pylint: disable=W0621
     build_server(PROJECT_ROOT)
     with log_reader.get_collector() as log_collector:
         server_info = run_server(proj_root=PROJECT_ROOT, config_path=reefast_config.config_path)
-        # TODO: wait for "listen" log entry here
+        # Wait for server to confirm it's up before yielding
+        log_collector.wait_log_entry(msg='re:listening on.+', timeout=10)
     try:
         yield server_info
     except Exception:

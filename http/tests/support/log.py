@@ -1,14 +1,20 @@
 import contextlib
 import os
 import pathlib
+import queue
 import re
 import time
-from collections import namedtuple
 from enum import StrEnum, unique
 from threading import Thread
 
+from tests.support.util import Timer, make_repr_str
+
 
 class ParseError(Exception):
+    pass
+
+
+class LogEntryNotFound(Exception):
     pass
 
 
@@ -22,23 +28,49 @@ class Level(StrEnum):
     trace = 'TRACE'
 
 
-LogEntry = namedtuple('LogEntry', ('time', 'level', 'span', 'msg'))
+class LogEntry:
 
-TIME_PATTERN = r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}'
-LEVEL_PATTERN = '|'.join(Level)
-LOG_MATCHER = re.compile(
-    fr'^\[(?P<time>{TIME_PATTERN})\]\s+'
-    fr'(?P<level>{LEVEL_PATTERN})\s'
-    fr'((?P<span>\S+): )?'
-    fr'(?P<msg>.*)\n$')
+    def __init__(self, timestamp, level, span, msg):
+        self.timestamp = timestamp
+        self.level = level
+        self.span = span
+        self.msg = msg
+
+    def check(self, msg, level=None, span=None):
+        # Span of None just means no span specified
+        if span != self.span:
+            return False
+        # Level of None means we do not check level
+        if level is not None and level != self.level:
+            return False
+        # Regex matching based on "re:" prefix
+        if msg[:3] == 're:':
+            pattern = msg[3:]
+            if not re.match(pattern, self.msg):
+                return False
+        else:
+            if msg != self.msg:
+                return False
+        return True
+
+    def __repr__(self):
+        return make_repr_str(self, spec=['timestamp', 'level', 'span', 'msg'])
 
 
 class LogReader:
 
-    def __init__(self, path):
-        self.__path = path
-        self.__targets = []
-        self.__execute_flag = False
+    TIMESTAMP_PATTERN = r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}'
+    LEVEL_PATTERN = '|'.join(Level)
+    LOG_MATCHER = re.compile(
+        fr'^\[(?P<timestamp>{TIMESTAMP_PATTERN})\]\s+'
+        fr'(?P<level>{LEVEL_PATTERN})\s'
+        fr'((?P<span>\S+): )?'
+        fr'(?P<msg>.*)\n$')
+
+    def __init__(self, path: str) -> None:
+        self.__path: str = path
+        self.__targets: list[LogCollector] = []
+        self.__execute_flag: bool = False
 
     def __add_target(self, target):
         self.__targets.append(target)
@@ -63,7 +95,7 @@ class LogReader:
         finally:
             self.__remove_target(collector)
 
-    def __follow(self):
+    def __follow(self) -> str:
         pathlib.Path(self.__path).touch(mode=0o644, exist_ok=True)
         with open(self.__path, 'r', encoding='utf-8') as f:
             f.seek(0, os.SEEK_END)
@@ -74,11 +106,15 @@ class LogReader:
                     continue
                 yield line
 
-    def __parse(self, line):
-        m = re.match(LOG_MATCHER, line)
+    def __parse(self, line: str) -> LogEntry:
+        m = re.match(self.LOG_MATCHER, line)
         if not m:
             raise ParseError(line)
-        return LogEntry(time=m.group('time'), level=Level(m.group('level')), span=m.group('span'), msg=m.group('msg'))
+        return LogEntry(
+            timestamp=m.group('timestamp'),
+            level=Level(m.group('level')),
+            span=m.group('span'),
+            msg=m.group('msg'))
 
     def __execute(self):
         for line in  self.__follow():
@@ -101,18 +137,25 @@ class LogReader:
 class LogCollector:
 
     def __init__(self):
-        self.__buffer = []
-        self.__errors = []
+        self.__buffer: queue.SimpleQueue[LogEntry] = queue.SimpleQueue()
+        self.__errors: list[ParseError] = []
 
-    def append_error(self, error):
+    def append_error(self, error: ParseError) -> None:
         self.__errors.append(error)
 
-    def append_entry(self, entry):
-        self.__buffer.append(entry)
+    def append_entry(self, entry: LogEntry) -> None:
+        self.__buffer.put(entry)
 
-    def clear(self):
-        self.buffer.clear()
-        self.errors.clear()
+    def wait_log_entry(self, msg, level=None, span=None, timeout=1):
+        timer = Timer(timeout=timeout)
+        while timer.remainder > 0:
+            try:
+                entry = self.__buffer.get(timeout=timer.remainder)
+            except queue.Empty as e:
+                raise LogEntryNotFound(f'cannot find log entry with level {level}, span {span}, message "{msg}"') from e
+            if entry.check(msg=msg, level=level, span=span):
+                return
+        raise LogEntryNotFound(f'cannot find log entry with level {level}, span {span}, message "{msg}"')
 
     @property
     def buffer(self):
