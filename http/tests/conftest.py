@@ -52,8 +52,9 @@ def consts():
 
 
 @pytest.fixture(scope='session')
-def log_reader(reefast_config):  # pylint: disable=W0621
-    reader = LogReader(path=reefast_config.log_path)
+def log_reader(reefast_tmp_folder):  # pylint: disable=W0621
+    log_path = reefast_tmp_folder / 'reefast-http.log'
+    reader = LogReader(path=log_path)
     reader.run()
     yield reader
     reader.stop()

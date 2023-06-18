@@ -4,7 +4,7 @@ from collections import namedtuple
 from signal import SIGKILL
 
 
-ConfigInfo = namedtuple('ConfigInfo', (['config_path', 'port', 'log_path']))
+ConfigInfo = namedtuple('ConfigInfo', (['config_path', 'port']))
 ServerInfo = namedtuple('ServerInfo', ['pid'])
 
 
@@ -30,8 +30,7 @@ def build_config(config_path, port, log_folder):
         'rotate = false']
     with open(config_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(contents))
-    log_path = log_folder / 'reefast-http.log'
-    return ConfigInfo(config_path=config_path, port=port, log_path=log_path)
+    return ConfigInfo(config_path=config_path, port=port)
 
 
 def run_server(proj_root, config_path):
