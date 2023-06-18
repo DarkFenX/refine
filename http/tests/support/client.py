@@ -240,7 +240,7 @@ class TestClient:
             self,
             method='POST',
             url=f'{self.__base_url}/solar_system',
-            params={'ss': 'full', 'fit': 'full', 'item': 'full'},
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=body)
 
     def create_ss(self, data=Default):
@@ -257,7 +257,7 @@ class TestClient:
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'full'})
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'})
 
     def remove_ss_request(self, ss_id):
         return Request(
@@ -275,14 +275,14 @@ class TestClient:
             self,
             method='POST',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit',
-            params={'fit': 'full', 'item': 'full'})
+            params={'fit': 'full', 'item': 'id'})
 
     def update_fit_request(self, ss_id, fit_id):
         return Request(
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}',
-            params={'fit': 'full', 'item': 'full'})
+            params={'fit': 'full', 'item': 'id'})
 
     # Item-related methods
     def get_item_request(self, ss_id, item_id):
@@ -304,6 +304,7 @@ class TestClient:
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
     def add_implant_request(self, ss_id, fit_id, type_id, state=Absent):
@@ -315,6 +316,7 @@ class TestClient:
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
     def add_high_mod_request(self, ss_id, fit_id, type_id, state=State.offline, charge_type_id=Absent, mode='equip'):
@@ -330,6 +332,7 @@ class TestClient:
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json={'commands': [command]})
 
     def add_rig_request(self, ss_id, fit_id, type_id, state=Absent):
@@ -348,4 +351,5 @@ class TestClient:
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json={'commands': [command]})
