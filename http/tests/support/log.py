@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import contextlib
 import os
 import pathlib
@@ -69,31 +71,31 @@ class LogReader:
 
     def __init__(self, path: str) -> None:
         self.__path: str = path
-        self.__targets: list[LogCollector] = []
+        self.__collectors: list[LogCollector] = []
         self.__execute_flag: bool = False
 
-    def __add_target(self, target):
-        self.__targets.append(target)
+    def __add_collector(self, collector: LogCollector) -> None:
+        self.__collectors.append(collector)
 
-    def __remove_target(self, target):
-        self.__targets.remove(target)
+    def __remove_collector(self, collector: LogCollector) -> None:
+        self.__collectors.remove(collector)
 
-    def run(self):
+    def run(self) -> None:
         self.__execute_flag = True
         t = Thread(target=self.__execute)
         t.start()
 
-    def stop(self):
+    def stop(self) -> None:
         self.__execute_flag = False
 
     @contextlib.contextmanager
-    def get_collector(self):
+    def get_collector(self) -> LogCollector:
         collector = LogCollector()
-        self.__add_target(collector)
+        self.__add_collector(collector)
         try:
             yield collector
         finally:
-            self.__remove_target(collector)
+            self.__remove_collector(collector)
 
     def __follow(self) -> str:
         pathlib.Path(self.__path).touch(mode=0o644, exist_ok=True)
@@ -116,21 +118,21 @@ class LogReader:
             span=m.group('span'),
             msg=m.group('msg'))
 
-    def __execute(self):
+    def __execute(self) -> None:
         for line in  self.__follow():
             # Should happen only if we were asked to stop following
             if line is None:
                 return
             # Don't waste time on parsing when nobody is going to take it anyway
-            if not self.__targets:
+            if not self.__collectors:
                 continue
             try:
                 entry = self.__parse(line)
             except ParseError as e:
-                for target in self.__targets:
+                for target in self.__collectors:
                     target.append_error(e)
                 continue
-            for target in self.__targets:
+            for target in self.__collectors:
                 target.append_entry(entry)
 
 
@@ -146,7 +148,7 @@ class LogCollector:
     def append_entry(self, entry: LogEntry) -> None:
         self.__buffer.put(entry)
 
-    def wait_log_entry(self, msg, level=None, span=None, timeout=1):
+    def wait_log_entry(self, msg, level=None, span=None, timeout=1) -> None:
         timer = Timer(timeout=timeout)
         while timer.remainder > 0:
             try:
@@ -158,9 +160,9 @@ class LogCollector:
         raise LogEntryNotFound(f'cannot find log entry with level {level}, span {span}, message "{msg}"')
 
     @property
-    def buffer(self):
+    def buffer(self) -> queue.SimpleQueue[LogEntry]:
         return self.__buffer
 
     @property
-    def errors(self):
+    def errors(self) -> list[ParseError]:
         return self.__errors

@@ -1,3 +1,5 @@
+from typing import Any
+
 from tests.support.util import make_repr_str
 
 
@@ -5,13 +7,13 @@ class Buff:
 
     def __init__(
             self,
-            id_,
-            aggregate_mode,
-            operation_name,
-            item_modifiers,
-            location_modifiers,
-            location_group_modifiers,
-            location_skillreq_modifiers,
+            id_: Any,
+            aggregate_mode: Any,
+            operation_name: Any,
+            item_modifiers: Any,
+            location_modifiers: Any,
+            location_group_modifiers: Any,
+            location_skillreq_modifiers: Any,
     ):
         self.id = id_
         self.aggregate_mode = aggregate_mode
@@ -24,5 +26,5 @@ class Buff:
     def to_primitives(self, primitive_data):
         pass
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return make_repr_str(self)

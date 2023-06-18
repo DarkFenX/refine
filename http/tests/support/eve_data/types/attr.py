@@ -1,16 +1,23 @@
+from __future__ import annotations
+
+from typing import Union, TYPE_CHECKING
+
 from tests.support.util import conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
+
+if TYPE_CHECKING:
+    from tests.support.util import Absent
 
 
 class Attribute:
 
     def __init__(
             self,
-            id_,
-            stackable,
-            high_is_good,
-            default_value,
-            max_attribute_id
+            id_: int,
+            stackable: Union[int, Absent],
+            high_is_good: Union[int, Absent],
+            default_value: Union[float, Absent],
+            max_attribute_id: Union[int, Absent],
     ):
         self.id = id_
         self.stackable = stackable
@@ -28,5 +35,5 @@ class Attribute:
             raise TestDataConsistencyError(f'attempt to add attribute with duplicate ID {self.id}')
         primitive_data.dogmaattributes[self.id] = attr_entry
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return make_repr_str(self)

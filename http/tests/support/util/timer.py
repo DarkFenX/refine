@@ -4,7 +4,7 @@ from typing import Union
 
 class Timer:
 
-    def __init__(self, timeout: Union[int, float] = 0) -> None:
+    def __init__(self, timeout: Union[int, float] = 0):
         self.__timeout = timeout
         self.__start = time.time()
 

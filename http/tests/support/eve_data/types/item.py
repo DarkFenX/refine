@@ -1,4 +1,6 @@
-from tests.support.util import Default, conditional_insert, make_repr_str
+from typing import Union
+
+from tests.support.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 
@@ -6,16 +8,16 @@ class Item:
 
     def __init__(
             self,
-            id_,
-            group_id,
-            attributes,
-            effect_ids,
-            default_effect_id,
-            skill_reqs,
-            capacity,
-            mass,
-            radius,
-            volume,
+            id_: int,
+            group_id: Union[int, Absent],
+            attributes: Union[dict[int, float], Absent],
+            effect_ids: Union[list[int], tuple[int], Absent],
+            default_effect_id: Union[int, None],
+            skill_reqs: Union[dict[int, int], Absent],
+            capacity: Union[float, Absent],
+            mass: Union[float, Absent],
+            radius: Union[float, Absent],
+            volume: Union[float, Absent],
     ):
         self.id = id_
         self.group_id = group_id
@@ -43,7 +45,7 @@ class Item:
         primitive_data.types[self.id] = item_entry
 
     def __add_primitive_item_attributes(self, primitive_data):
-        if self.attributes is Default:
+        if self.attributes is Absent:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
         if isinstance(self.attributes, dict):
@@ -54,7 +56,7 @@ class Item:
             item_entry['dogmaAttributes'] = self.attributes
 
     def __add_primitive_item_effects(self, primitive_data):
-        if self.effect_ids is Default:
+        if self.effect_ids is Absent:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
         if isinstance(self.effect_ids, (tuple, list, set)):
@@ -64,5 +66,5 @@ class Item:
         else:
             item_entry['dogmaEffects'] = self.effect_ids
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return make_repr_str(self)

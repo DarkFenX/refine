@@ -12,10 +12,10 @@ class AttrDict:
         self._data = data
         self._hooks = hooks or {}
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         return convert(data=self._data[index], hooks=self._hooks)
 
-    def __getattr__(self, key):
+    def __getattr__(self, key: str):
         default = object()
         val = self._data.get(key, default)
         if val is default:
@@ -26,5 +26,5 @@ class AttrDict:
             return hook(val)
         return convert(data=val, hooks=self._hooks)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{type(self).__name__}({repr(self._data)})'

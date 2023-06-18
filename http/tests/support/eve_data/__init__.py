@@ -1,2 +1,2 @@
 from .containers import TestObjects
-from .types import Attribute, Buff, Effect, Item, Modifier
+from .types import Attribute, Buff, Effect, Item, Modifier, Group

@@ -4,6 +4,10 @@ import os.path
 from tests import TEST_FOLDER_SPLIT
 
 
+class StackKey(tuple):
+    pass
+
+
 def frame_to_primitive(frame, ignore_local_context=False):
     if ignore_local_context:
         return (
@@ -20,7 +24,7 @@ def frame_to_primitive(frame, ignore_local_context=False):
         pos.end_col_offset)
 
 
-def is_test_path(path):
+def is_test_path(path: str) -> bool:
     # Not test path if it's a path outside of tests folder altogether
     split_path = os.path.normpath(os.path.realpath(path)).split(os.sep)
     if split_path[:len(TEST_FOLDER_SPLIT)] != TEST_FOLDER_SPLIT:
@@ -35,7 +39,7 @@ def is_test_path(path):
     return True
 
 
-def get_stack_key():
+def get_stack_key() -> StackKey:
     """
     This function is supposed to give key (= hashable entity) which is unique
     for each test, and stays the same for the duration of the test.
@@ -52,4 +56,4 @@ def get_stack_key():
     # to refer to the same data on different calls
     key = [frame_to_primitive(stack[0], ignore_local_context=True)]
     key += [frame_to_primitive(f) for f in stack[1:]]
-    return tuple(key)
+    return StackKey(key)

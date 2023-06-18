@@ -1,11 +1,17 @@
+from __future__ import annotations
+
 import json
+from typing import Union, TYPE_CHECKING
 
 import requests
+
+if TYPE_CHECKING:
+    from tests.support.client import TestClient
 
 
 class Request(requests.PreparedRequest):
 
-    def __init__(self, client, *args, **kwargs):  # pylint: disable=W0231
+    def __init__(self, client: TestClient, *args, **kwargs):  # pylint: disable=W0231
         prepared_request = requests.Request(*args, **kwargs).prepare()
         self.__dict__.update(prepared_request.__dict__)
         self.__client = client
@@ -13,13 +19,13 @@ class Request(requests.PreparedRequest):
         self.body = prepared_request.body
 
     @property
-    def body(self):
+    def body(self) -> str:
         if self.__body_bytes is None:
             return ''
         return self.__body_bytes.decode('utf-8')
 
     @body.setter
-    def body(self, body):
+    def body(self, body: Union[str, bytes]) -> None:
         if body is None:
             self.__body_bytes = None
             self.headers['content-length'] = 0
@@ -37,5 +43,5 @@ class Request(requests.PreparedRequest):
     def json(self, data):
         self.body = json.dumps(data)
 
-    def send(self):
+    def send(self) -> requests.models.Response:
         return self.__client.send_prepared(self)

@@ -1,10 +1,16 @@
+from typing import Union
+
 from tests.support.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 
 class Group:
 
-    def __init__(self, id_, category_id):
+    def __init__(
+            self,
+            id_: int,
+            category_id: Union[int, Absent],
+    ):
         self.id = id_
         self.category_id = category_id
 
@@ -19,5 +25,5 @@ class Group:
         conditional_insert(group_entry, 'categoryID', self.category_id, cast_to=int)
         primitive_data.groups[self.id] = group_entry
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return make_repr_str(self)

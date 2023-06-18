@@ -1,23 +1,31 @@
-from tests.support.util import conditional_insert
+from __future__ import annotations
+
+from typing import Union, TYPE_CHECKING
+
+from tests.support.util import conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
+
+if TYPE_CHECKING:
+    from tests.support.util import Absent
+    from .modifier import Modifier
 
 
 class Effect:
 
     def __init__(
             self,
-            id_,
-            category_id,
-            is_assistance,
-            is_offensive,
-            discharge_attribute_id,
-            duration_attribute_id,
-            range_attribute_id,
-            falloff_attribute_id,
-            tracking_attribute_id,
-            usage_chance_attribute_id,
-            resist_attribute_id,
-            modifier_info,
+            id_: int,
+            category_id: Union[int, Absent],
+            is_assistance: Union[int, Absent],
+            is_offensive: Union[int, Absent],
+            discharge_attribute_id: Union[int, Absent],
+            duration_attribute_id: Union[int, Absent],
+            range_attribute_id: Union[int, Absent],
+            falloff_attribute_id: Union[int, Absent],
+            tracking_attribute_id: Union[int, Absent],
+            usage_chance_attribute_id: Union[int, Absent],
+            resist_attribute_id: Union[int, Absent],
+            modifier_info: Union[list[Modifier], tuple[Modifier], Absent],
     ):
         self.id = id_
         self.category_id = category_id
@@ -52,3 +60,6 @@ class Effect:
         if self.id in primitive_data.dogmaeffects:
             raise TestDataConsistencyError(f'attempt to add effect with duplicate ID {self.id}')
         primitive_data.dogmaeffects[self.id] = effect_entry
+
+    def __repr__(self) -> str:
+        return make_repr_str(self)

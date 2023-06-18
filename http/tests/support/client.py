@@ -1,38 +1,44 @@
+from __future__ import annotations
+
+from typing import Union, TYPE_CHECKING
+
 import requests
 
-from tests.support.api_data import SolarSystem
 from tests.support.consts import EffCat, ItemCat, State
-from tests.support.eve_data import TestObjects, Modifier
 from tests.support.request import Request
 from tests.support.util import Absent, Default, conditional_insert, get_stack_key
+from tests.support import api_data, eve_data
 
-data_id = 10000000  # pylint: disable=C0103
+if TYPE_CHECKING:
+    from tests.support.util import StackKey
+
+data_id: int = 10000000  # pylint: disable=C0103
 
 
 class TestClient:
 
-    def __init__(self, data_server, port):
-        self.__datas = {}
+    def __init__(self, data_server, port: int):
+        self.__datas: dict[str, eve_data.TestObjects] = {}
         self.__data_server = data_server
-        self.__defsrc_stack_alias_map = {}
-        self.__session = requests.Session()
-        self.__base_url = f'http://localhost:{port}'
-        self.__created_data_aliases = set()
-        self.created_sss = set()
+        self.__defsrc_stack_alias_map: dict[StackKey, str] = {}
+        self.__session: requests.Session = requests.Session()
+        self.__base_url: str = f'http://localhost:{port}'
+        self.__created_data_aliases: set[str] = set()
+        self.created_sss: set[api_data.SolarSystem] = set()
 
-    def send_prepared(self, req):
+    def send_prepared(self, req: Request) -> requests.models.Response:
         return self.__session.send(req)
 
     # Data-related methods
-    def mk_eve_data(self):
+    def mk_eve_data(self) -> eve_data.TestObjects:
         global data_id  # pylint: disable=C0103,W0603
         alias = str(data_id)
-        data = self.__datas[alias] = TestObjects(alias)
+        data = self.__datas[alias] = eve_data.TestObjects(alias)
         data_id += 1
         return data
 
     @property
-    def __default_data(self):
+    def __default_data(self) -> eve_data.TestObjects:
         key = get_stack_key()
         if key in self.__defsrc_stack_alias_map:
             alias = self.__defsrc_stack_alias_map[key]
@@ -43,19 +49,19 @@ class TestClient:
 
     def mk_eve_item(
             self,
-            data=Default,
-            id_=Default,
-            grp_id=Default,
-            cat_id=ItemCat.module,
-            attrs=Default,
-            eff_ids=Default,
-            defeff_id=None,
-            srqs=Default,
-            capacity=Default,
-            mass=Default,
-            radius=Default,
-            volume=Default,
-    ):
+            data: Union[eve_data.TestObjects, Default] = Default,
+            id_: Union[int, Default] = Default,
+            grp_id: Union[int, Default] = Default,
+            cat_id: Union[int, Default] = ItemCat.module,
+            attrs: Union[dict[int, float], Default] = Default,
+            eff_ids: Union[list[int], Default] = Default,
+            defeff_id: Union[int, None] = None,
+            srqs: Union[dict[int, int], Default] = Default,
+            capacity: Union[float, Default] = Default,
+            mass: Union[float, Default] = Default,
+            radius: Union[float, Default] = Default,
+            volume: Union[float, Default] = Default,
+    ) -> eve_data.Item:
         if data is Default:
             data = self.__default_data
         return data.mk_item(
@@ -73,10 +79,10 @@ class TestClient:
 
     def mk_eve_item_group(
             self,
-            data=Default,
-            id_=Default,
-            cat_id=ItemCat.module,
-    ):
+            data: Union[eve_data.TestObjects, Default] = Default,
+            id_: Union[int, Default] = Default,
+            cat_id: Union[int, Default] = ItemCat.module,
+    ) -> eve_data.Group:
         if data is Default:
             data = self.__default_data
         return data.mk_item_group(
@@ -85,13 +91,13 @@ class TestClient:
 
     def mk_eve_attr(
             self,
-            data=Default,
-            id_=Default,
-            stackable=True,
-            high_is_good=True,
-            def_val=0.0,
-            max_attr_id=Absent,
-    ):
+            data: Union[eve_data.TestObjects, Default] = Default,
+            id_: Union[int, Default] = Default,
+            stackable: bool = True,
+            high_is_good: bool = True,
+            def_val: float = 0.0,
+            max_attr_id: Union[int, Absent] = Absent,
+    ) -> eve_data.Attribute:
         if data is Default:
             data = self.__default_data
         return data.mk_attr(
@@ -103,20 +109,20 @@ class TestClient:
 
     def mk_eve_effect(
             self,
-            data=Default,
-            id_=Default,
-            cat_id=EffCat.passive,
-            is_assistance=False,
-            is_offensive=False,
-            discharge_attr_id=Absent,
-            duration_attr_id=Absent,
-            range_attr_id=Absent,
-            falloff_attr_id=Absent,
-            tracking_attr_id=Absent,
-            chance_attr_id=Absent,
-            resist_attr_id=Absent,
-            mod_info=Absent,
-    ):
+            data: Union[eve_data.TestObjects, Default] = Default,
+            id_: Union[int, Default] = Default,
+            cat_id: int = EffCat.passive,
+            is_assistance: bool = False,
+            is_offensive: bool = False,
+            discharge_attr_id: Union[int, Absent] = Absent,
+            duration_attr_id: Union[int, Absent] = Absent,
+            range_attr_id: Union[int, Absent] = Absent,
+            falloff_attr_id: Union[int, Absent] = Absent,
+            tracking_attr_id: Union[int, Absent] = Absent,
+            chance_attr_id: Union[int, Absent] = Absent,
+            resist_attr_id: Union[int, Absent] = Absent,
+            mod_info: Union[dict, Absent] = Absent,
+    ) -> eve_data.Effect:
         if data is Default:
             data = self.__default_data
         return data.mk_effect(
@@ -135,15 +141,15 @@ class TestClient:
 
     def mk_eve_buff(
             self,
-            data=Default,
-            id_=Default,
-            aggr_mode=Default,
-            op=Default,
-            item_mods=Default,
-            loc_mods=Default,
-            loc_grp_mods=Default,
-            loc_srq_mods=Default,
-    ):
+            data: Union[eve_data.TestObjects, Default] = Default,
+            id_: Union[int, Default] = Default,
+            aggr_mode: Default = Default,
+            op: Default = Default,
+            item_mods: Default = Default,
+            loc_mods: Default = Default,
+            loc_grp_mods: Default = Default,
+            loc_srq_mods: Default = Default,
+    ) -> eve_data.Buff:
         if data is Default:
             data = self.__default_data
         return data.mk_buff(
@@ -157,25 +163,28 @@ class TestClient:
 
     def mk_eve_mod(
             self,
-            func=Absent,
-            dom=Absent,
-            grp=Absent,
-            srq=Absent,
-            src_attr_id=Absent,
-            tgt_attr_id=Absent,
-            op=Absent,
-    ):
-        return Modifier(
+            func: Union[str, Absent] = Absent,
+            dom: Union[str, Absent] = Absent,
+            grp: Union[int, Absent] = Absent,
+            srq: Union[int, Absent] = Absent,
+            op: Union[int, Absent] = Absent,
+            src_attr_id: Union[int, Absent] = Absent,
+            tgt_attr_id: Union[int, Absent] = Absent,
+    ) -> eve_data.Modifier:
+        return eve_data.Modifier(
             func=func,
             domain=dom,
             group=grp,
             skill_req=srq,
+            operation=op,
             src_attr_id=src_attr_id,
-            tgt_attr_id=tgt_attr_id,
-            operation=op)
+            tgt_attr_id=tgt_attr_id)
 
     # Data source-related methods
-    def create_source_request(self, data=Default):
+    def create_source_request(
+            self,
+            data: Union[eve_data.TestObjects, Default] = Default
+    ) -> Request:
         if data is Default:
             data = self.__default_data
         return Request(
@@ -184,7 +193,10 @@ class TestClient:
             url=f'{self.__base_url}/source/{data.alias}',
             json={'data_version': '1', 'data_base_url': f'http://localhost:{self.__data_server.port}/{data.alias}/'})
 
-    def create_source(self, data=Default):
+    def create_source(
+            self,
+            data: Union[eve_data.TestObjects, Default] = Default
+    ) -> None:
         if data is Default:
             data = self.__default_data
         # Set up server with local data
@@ -207,30 +219,33 @@ class TestClient:
         assert resp.status_code == 204
         self.__created_data_aliases.add(data.alias)
 
-    def remove_source_request(self, src_alias):
+    def remove_source_request(self, src_alias: str) -> Request:
         return Request(
             self,
             method='DELETE',
             url=f'{self.__base_url}/source/{src_alias}')
 
-    def remove_source(self, src_alias):
+    def remove_source(self, src_alias: str) -> None:
         resp = self.remove_source_request(src_alias=src_alias).send()
         assert resp.status_code == 204
         self.__created_data_aliases.remove(src_alias)
 
-    def __setup_handler(self, url, data):
+    def __setup_handler(self, url: str, data: str) -> None:
         self.__data_server.expect_request(url).respond_with_data(data)
 
-    def create_sources(self):
+    def create_sources(self) -> None:
         for data in self.__datas.values():
             self.create_source(data)
 
-    def cleanup_sources(self):
+    def cleanup_sources(self) -> None:
         for alias in self.__created_data_aliases.copy():
             self.remove_source(src_alias=alias)
 
     # Solar system-related methods
-    def create_ss_request(self, data=Default):
+    def create_ss_request(
+            self,
+            data: Union[eve_data.TestObjects, Default] = Default
+    ) -> Request:
         if data is Default:
             data = self.__default_data
         body = {}
@@ -243,41 +258,51 @@ class TestClient:
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=body)
 
-    def create_ss(self, data=Default):
+    def create_ss(
+            self,
+            data: Union[eve_data.TestObjects, Default] = Default
+    ) -> api_data.SolarSystem:
         if data is Default:
             data = self.__default_data
         resp = self.create_ss_request(data=data).send()
         assert resp.status_code == 201
-        sol_sys = SolarSystem(client=self, data=resp.json())
+        sol_sys = api_data.SolarSystem(client=self, data=resp.json())
         self.created_sss.add(sol_sys)
         return sol_sys
 
-    def update_ss_request(self, ss_id):
+    def update_ss_request(self, ss_id: str) -> Request:
         return Request(
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}',
             params={'ss': 'full', 'fit': 'full', 'item': 'id'})
 
-    def remove_ss_request(self, ss_id):
+    def remove_ss_request(self, ss_id: str) -> Request:
         return Request(
             self,
             method='DELETE',
             url=f'{self.__base_url}/solar_system/{ss_id}')
 
-    def cleanup_sss(self):
+    def cleanup_sss(self) -> None:
         for ss in self.created_sss.copy():
             ss.remove()
 
     # Fit-related methods
-    def create_fit_request(self, ss_id):
+    def create_fit_request(
+            self,
+            ss_id: str
+    ) -> Request:
         return Request(
             self,
             method='POST',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit',
             params={'fit': 'full', 'item': 'id'})
 
-    def update_fit_request(self, ss_id, fit_id):
+    def update_fit_request(
+            self,
+            ss_id: str,
+            fit_id: str
+    ) -> Request:
         return Request(
             self,
             method='GET',
@@ -285,20 +310,33 @@ class TestClient:
             params={'fit': 'full', 'item': 'id'})
 
     # Item-related methods
-    def get_item_request(self, ss_id, item_id):
+    def get_item_request(
+            self,
+            ss_id: str,
+            item_id: str
+    ) -> Request:
         return Request(
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}/item/{item_id}',
             params={'item': 'full'})
 
-    def remove_item_request(self, ss_id, item_id):
+    def remove_item_request(
+            self,
+            ss_id: str,
+            item_id: str
+    ) -> Request:
         return Request(
             self,
             method='DELETE',
             url=f'{self.__base_url}/solar_system/{ss_id}/item/{item_id}')
 
-    def set_char_request(self, ss_id, fit_id, type_id):
+    def set_char_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int
+    ) -> Request:
         payload = {'commands': [{'type': 'set_character', 'fit_id': fit_id, 'type_id': type_id}]}
         return Request(
             self,
@@ -307,10 +345,21 @@ class TestClient:
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
-    def add_implant_request(self, ss_id, fit_id, type_id, state=Absent):
+    def add_implant_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            state: Union[bool, Absent] = Absent
+    ) -> Request:
         return self.__add_simple_item('add_implant', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
-    def set_ship_request(self, ss_id, fit_id, type_id):
+    def set_ship_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int
+    ) -> Request:
         payload = {'commands': [{'type': 'set_ship', 'fit_id': fit_id, 'type_id': type_id}]}
         return Request(
             self,
@@ -319,7 +368,15 @@ class TestClient:
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
-    def add_high_mod_request(self, ss_id, fit_id, type_id, state=State.offline, charge_type_id=Absent, mode='equip'):
+    def add_high_mod_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            state: str = State.offline,
+            charge_type_id: Union[int, Absent] = Absent,
+            mode: str = 'equip',
+    ) -> Request:
         command = {
             'type': 'add_module',
             'fit_id': fit_id,
@@ -335,13 +392,32 @@ class TestClient:
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json={'commands': [command]})
 
-    def add_rig_request(self, ss_id, fit_id, type_id, state=Absent):
+    def add_rig_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            state: Union[bool, Absent] = Absent
+    ) -> Request:
         return self.__add_simple_item('add_rig', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
-    def add_drone_request(self, ss_id, fit_id, type_id, state=State.offline):
+    def add_drone_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            state: str = State.offline
+    ) -> Request:
         return self.__add_simple_item('add_drone', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
-    def __add_simple_item(self, cmd_name, ss_id, fit_id, type_id, state):
+    def __add_simple_item(
+            self,
+            cmd_name: str,
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            state: Union[bool, str, Absent],
+    ) -> Request:
         command = {
             'type': cmd_name,
             'fit_id': fit_id,

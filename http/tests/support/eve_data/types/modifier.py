@@ -1,9 +1,25 @@
+from __future__ import annotations
+
+from typing import Union, TYPE_CHECKING
+
 from tests.support.util import conditional_insert, make_repr_str
+
+if TYPE_CHECKING:
+    from tests.support.util import Absent
 
 
 class Modifier:
 
-    def __init__(self, func, domain, group, skill_req, src_attr_id, tgt_attr_id, operation):
+    def __init__(
+            self,
+            func: Union[str, Absent],
+            domain: Union[str, Absent],
+            group: Union[int, Absent],
+            skill_req: Union[int, Absent],
+            src_attr_id: Union[int, Absent],
+            tgt_attr_id: Union[int, Absent],
+            operation: Union[int, Absent],
+    ):
         self.func = func
         self.domain = domain
         self.group = group
@@ -23,5 +39,5 @@ class Modifier:
         conditional_insert(mod_entry, 'operation', self.operation)
         return mod_entry
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return make_repr_str(self)
