@@ -1,6 +1,6 @@
 use crate::{
     cmd::{HCmdResp, HFitCommand, HItemIdsResp, HSsCommand},
-    info::{HFitInfo, HFitInfoMode, HItemInfo, HItemInfoMode, HSsInfo, HSsInfoMode},
+    info::{HFitInfo, HFitInfoMode, HItemInfo, HItemInfoMode, HSsInfo, HSsInfoMode, MkItemInfo},
     util::{HError, HErrorKind, HResult},
 };
 
@@ -99,7 +99,7 @@ impl HSolarSystem {
             let _sg = sync_span.enter();
             match core_ss.get_item_info(&item_id) {
                 Ok(core_item_info) => {
-                    let item_info = HItemInfo::mk_from_core_item(&mut core_ss, &core_item_info, item_mode);
+                    let item_info = HItemInfo::mk_info(&mut core_ss, &core_item_info, item_mode);
                     (Ok(item_info), core_ss)
                 }
                 Err(e) => (Err(HError::from(e)), core_ss),

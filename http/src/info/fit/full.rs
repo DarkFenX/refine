@@ -1,4 +1,4 @@
-use crate::info::{item::MkItemInfo, HItemInfo, HItemInfoMode};
+use crate::info::{HItemInfo, HItemInfoMode, MkItemInfo};
 
 #[derive(serde::Serialize)]
 pub(crate) struct HFitInfoFull {
