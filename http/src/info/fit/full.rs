@@ -1,4 +1,4 @@
-use crate::info::{HItemInfo, HItemInfoMode};
+use crate::info::{item::MkItemInfo, HItemInfo, HItemInfoMode};
 
 #[derive(serde::Serialize)]
 pub(crate) struct HFitInfoFull {
@@ -25,40 +25,40 @@ impl HFitInfoFull {
         let character = core_ss
             .get_fit_character_info(&fit_id)
             .ok()
-            .map(|v| HItemInfo::mk_from_core_character(core_ss, &v, item_mode));
+            .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode));
         let implants = core_ss
             .get_fit_implant_infos(&fit_id)
             .iter()
-            .map(|v| HItemInfo::mk_from_core_implant(core_ss, v, item_mode))
+            .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         let ship = core_ss
             .get_fit_ship_info(&fit_id)
             .ok()
-            .map(|v| HItemInfo::mk_from_core_ship(core_ss, &v, item_mode));
+            .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode));
         let modules_high = core_ss
             .get_module_infos(&fit_id, rc::ModRack::High)
             .iter()
-            .map(|v| HItemInfo::mk_from_core_module(core_ss, v, item_mode))
+            .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         let modules_mid = core_ss
             .get_module_infos(&fit_id, rc::ModRack::Mid)
             .iter()
-            .map(|v| HItemInfo::mk_from_core_module(core_ss, v, item_mode))
+            .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         let modules_low = core_ss
             .get_module_infos(&fit_id, rc::ModRack::Low)
             .iter()
-            .map(|v| HItemInfo::mk_from_core_module(core_ss, v, item_mode))
+            .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         let rigs = core_ss
             .get_fit_rig_infos(&fit_id)
             .iter()
-            .map(|v| HItemInfo::mk_from_core_rig(core_ss, v, item_mode))
+            .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         let drones = core_ss
             .get_fit_drone_infos(&fit_id)
             .iter()
-            .map(|v| HItemInfo::mk_from_core_drone(core_ss, v, item_mode))
+            .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
             .collect();
         Self {
             id: fit_id.to_string(),
