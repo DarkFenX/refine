@@ -15,6 +15,8 @@ pub(crate) struct HFitInfoFull {
     pub(crate) ship: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) stance: Option<HItemInfo>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) subsystems: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "HModuleRacks::is_empty")]
     pub(crate) modules: HModuleRacks,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -59,6 +61,11 @@ impl HFitInfoFull {
                 .get_fit_stance_info(&fit_id)
                 .ok()
                 .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode)),
+            subsystems: core_ss
+                .get_fit_subsystem_infos(&fit_id)
+                .iter()
+                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .collect(),
             modules: HModuleRacks {
                 high: core_ss
                     .get_module_infos(&fit_id, rc::ModRack::High)

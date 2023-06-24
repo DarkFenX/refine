@@ -9,6 +9,7 @@ use rig::HRigInfo;
 use ship::HShipInfo;
 use skill::HSkillInfo;
 use stance::HStanceInfo;
+use subsystem::HSubsystemInfo;
 
 use crate::info::HItemInfoMode;
 
@@ -23,6 +24,7 @@ mod rig;
 mod ship;
 mod skill;
 mod stance;
+mod subsystem;
 
 pub(crate) trait MkItemInfo<T> {
     fn mk_info(core_ss: &mut rc::SolarSystem, source: T, item_mode: HItemInfoMode) -> HItemInfo;
@@ -37,6 +39,7 @@ pub(crate) enum HItemInfo {
     Booster(HBoosterInfo),
     Ship(HShipInfo),
     Stance(HStanceInfo),
+    Subsystem(HSubsystemInfo),
     Module(HModuleInfo),
     Rig(HRigInfo),
     Drone(HDroneInfo),
@@ -54,6 +57,7 @@ impl MkItemInfo<&rc::SsItemInfo> for HItemInfo {
             rc::SsItemInfo::Booster(core_booster_info) => Self::mk_info(core_ss, core_booster_info, item_mode),
             rc::SsItemInfo::Ship(core_ship_info) => Self::mk_info(core_ss, core_ship_info, item_mode),
             rc::SsItemInfo::Stance(core_stance_info) => Self::mk_info(core_ss, core_stance_info, item_mode),
+            rc::SsItemInfo::Subsystem(core_subsystem_info) => Self::mk_info(core_ss, core_subsystem_info, item_mode),
             rc::SsItemInfo::Module(core_module_info) => Self::mk_info(core_ss, core_module_info, item_mode),
             rc::SsItemInfo::Rig(core_rig_info) => Self::mk_info(core_ss, core_rig_info, item_mode),
             rc::SsItemInfo::Drone(core_drone_info) => Self::mk_info(core_ss, core_drone_info, item_mode),
@@ -95,6 +99,11 @@ impl MkItemInfo<&rc::SsShipInfo> for HItemInfo {
 impl MkItemInfo<&rc::SsStanceInfo> for HItemInfo {
     fn mk_info(core_ss: &mut rc::SolarSystem, core_stance_info: &rc::SsStanceInfo, item_mode: HItemInfoMode) -> Self {
         Self::Stance(HStanceInfo::mk_info(core_ss, core_stance_info, item_mode))
+    }
+}
+impl MkItemInfo<&rc::SsSubsystemInfo> for HItemInfo {
+    fn mk_info(core_ss: &mut rc::SolarSystem, core_subsystem_info: &rc::SsSubsystemInfo, item_mode: HItemInfoMode) -> Self {
+        Self::Subsystem(HSubsystemInfo::mk_info(core_ss, core_subsystem_info, item_mode))
     }
 }
 impl MkItemInfo<&rc::SsModuleInfo> for HItemInfo {
