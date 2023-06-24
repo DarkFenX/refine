@@ -1,4 +1,4 @@
-use crate::info::{HFitInfo, HFitInfoMode, HItemInfoMode};
+use crate::info::{HFitInfo, HFitInfoMode, HItemInfo, HItemInfoMode, MkItemInfo};
 
 #[derive(serde::Serialize)]
 pub(crate) struct HSsInfoFull {
@@ -7,6 +7,8 @@ pub(crate) struct HSsInfoFull {
     pub(crate) fits: Vec<HFitInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) fleets: Vec<()>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) sw_effects: Vec<HItemInfo>,
 }
 impl HSsInfoFull {
     pub(in crate::info::ss) fn mk_info(
@@ -23,6 +25,11 @@ impl HSsInfoFull {
                 .map(|fit_id| HFitInfo::mk_info(core_ss, fit_id, fit_mode, item_mode))
                 .collect(),
             fleets: Vec::new(),
+            sw_effects: core_ss
+                .get_sw_effect_infos()
+                .iter()
+                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .collect(),
         }
     }
 }

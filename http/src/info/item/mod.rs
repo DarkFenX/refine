@@ -10,6 +10,7 @@ use ship::HShipInfo;
 use skill::HSkillInfo;
 use stance::HStanceInfo;
 use subsystem::HSubsystemInfo;
+use sw_effect::HSwEffectInfo;
 
 use crate::info::HItemInfoMode;
 
@@ -25,6 +26,7 @@ mod ship;
 mod skill;
 mod stance;
 mod subsystem;
+mod sw_effect;
 
 pub(crate) trait MkItemInfo<T> {
     fn mk_info(core_ss: &mut rc::SolarSystem, source: T, item_mode: HItemInfoMode) -> HItemInfo;
@@ -45,8 +47,7 @@ pub(crate) enum HItemInfo {
     Drone(HDroneInfo),
     Fighter(HFighterInfo),
     Charge(HChargeInfo),
-    // TODO: remove when all item types are implemented
-    ToRemove(bool),
+    SwEffect(HSwEffectInfo),
 }
 impl MkItemInfo<&rc::SsItemInfo> for HItemInfo {
     fn mk_info(core_ss: &mut rc::SolarSystem, core_item_info: &rc::SsItemInfo, item_mode: HItemInfoMode) -> Self {
@@ -63,7 +64,7 @@ impl MkItemInfo<&rc::SsItemInfo> for HItemInfo {
             rc::SsItemInfo::Drone(core_drone_info) => Self::mk_info(core_ss, core_drone_info, item_mode),
             rc::SsItemInfo::Fighter(core_fighter_info) => Self::mk_info(core_ss, core_fighter_info, item_mode),
             rc::SsItemInfo::Charge(core_charge_info) => Self::mk_info(core_ss, core_charge_info, item_mode),
-            _ => Self::ToRemove(true),
+            rc::SsItemInfo::SwEffect(core_sw_effect_info) => Self::mk_info(core_ss, core_sw_effect_info, item_mode),
         }
     }
 }
@@ -102,7 +103,11 @@ impl MkItemInfo<&rc::SsStanceInfo> for HItemInfo {
     }
 }
 impl MkItemInfo<&rc::SsSubsystemInfo> for HItemInfo {
-    fn mk_info(core_ss: &mut rc::SolarSystem, core_subsystem_info: &rc::SsSubsystemInfo, item_mode: HItemInfoMode) -> Self {
+    fn mk_info(
+        core_ss: &mut rc::SolarSystem,
+        core_subsystem_info: &rc::SsSubsystemInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
         Self::Subsystem(HSubsystemInfo::mk_info(core_ss, core_subsystem_info, item_mode))
     }
 }
@@ -129,5 +134,14 @@ impl MkItemInfo<&rc::SsFighterInfo> for HItemInfo {
 impl MkItemInfo<&rc::SsChargeInfo> for HItemInfo {
     fn mk_info(core_ss: &mut rc::SolarSystem, core_charge_info: &rc::SsChargeInfo, item_mode: HItemInfoMode) -> Self {
         Self::Charge(HChargeInfo::mk_info(core_ss, core_charge_info, item_mode))
+    }
+}
+impl MkItemInfo<&rc::SsSwEffectInfo> for HItemInfo {
+    fn mk_info(
+        core_ss: &mut rc::SolarSystem,
+        core_sw_effect_info: &rc::SsSwEffectInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::SwEffect(HSwEffectInfo::mk_info(core_ss, core_sw_effect_info, item_mode))
     }
 }
