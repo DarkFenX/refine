@@ -2,6 +2,7 @@ use booster::HBoosterInfo;
 use character::HCharacterInfo;
 use charge::HChargeInfo;
 use drone::HDroneInfo;
+use fighter::HFighterInfo;
 use implant::HImplantInfo;
 use module::HModuleInfo;
 use rig::HRigInfo;
@@ -13,6 +14,7 @@ mod booster;
 mod character;
 mod charge;
 mod drone;
+mod fighter;
 mod implant;
 mod module;
 mod rig;
@@ -32,6 +34,7 @@ pub(crate) enum HItemInfo {
     Module(HModuleInfo),
     Rig(HRigInfo),
     Drone(HDroneInfo),
+    Fighter(HFighterInfo),
     Charge(HChargeInfo),
     // TODO: remove when all item types are implemented
     ToRemove(bool),
@@ -87,6 +90,11 @@ impl MkItemInfo<&rc::SsRigInfo> for HItemInfo {
 impl MkItemInfo<&rc::SsDroneInfo> for HItemInfo {
     fn mk_info(core_ss: &mut rc::SolarSystem, core_drone_info: &rc::SsDroneInfo, item_mode: HItemInfoMode) -> Self {
         Self::Drone(HDroneInfo::mk_info(core_ss, core_drone_info, item_mode))
+    }
+}
+impl MkItemInfo<&rc::SsFighterInfo> for HItemInfo {
+    fn mk_info(core_ss: &mut rc::SolarSystem, core_fighter_info: &rc::SsFighterInfo, item_mode: HItemInfoMode) -> Self {
+        Self::Fighter(HFighterInfo::mk_info(core_ss, core_fighter_info, item_mode))
     }
 }
 impl MkItemInfo<&rc::SsChargeInfo> for HItemInfo {

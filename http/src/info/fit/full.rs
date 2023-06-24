@@ -17,6 +17,8 @@ pub(crate) struct HFitInfoFull {
     pub(crate) rigs: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) drones: Vec<HItemInfo>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) fighters: Vec<HItemInfo>,
 }
 impl HFitInfoFull {
     pub(in crate::info::fit) fn mk_info(
@@ -68,6 +70,11 @@ impl HFitInfoFull {
                 .collect(),
             drones: core_ss
                 .get_fit_drone_infos(&fit_id)
+                .iter()
+                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .collect(),
+            fighters: core_ss
+                .get_fit_fighter_infos(&fit_id)
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                 .collect(),
