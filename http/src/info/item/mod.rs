@@ -1,3 +1,4 @@
+use booster::HBoosterInfo;
 use character::HCharacterInfo;
 use charge::HChargeInfo;
 use drone::HDroneInfo;
@@ -8,6 +9,7 @@ use ship::HShipInfo;
 
 use crate::info::HItemInfoMode;
 
+mod booster;
 mod character;
 mod charge;
 mod drone;
@@ -25,6 +27,7 @@ pub(crate) trait MkItemInfo<T> {
 pub(crate) enum HItemInfo {
     Character(HCharacterInfo),
     Implant(HImplantInfo),
+    Booster(HBoosterInfo),
     Ship(HShipInfo),
     Module(HModuleInfo),
     Rig(HRigInfo),
@@ -59,6 +62,11 @@ impl MkItemInfo<&rc::SsCharacterInfo> for HItemInfo {
 impl MkItemInfo<&rc::SsImplantInfo> for HItemInfo {
     fn mk_info(core_ss: &mut rc::SolarSystem, core_implant_info: &rc::SsImplantInfo, item_mode: HItemInfoMode) -> Self {
         Self::Implant(HImplantInfo::mk_info(core_ss, core_implant_info, item_mode))
+    }
+}
+impl MkItemInfo<&rc::SsBoosterInfo> for HItemInfo {
+    fn mk_info(core_ss: &mut rc::SolarSystem, core_booster_info: &rc::SsBoosterInfo, item_mode: HItemInfoMode) -> Self {
+        Self::Booster(HBoosterInfo::mk_info(core_ss, core_booster_info, item_mode))
     }
 }
 impl MkItemInfo<&rc::SsShipInfo> for HItemInfo {
