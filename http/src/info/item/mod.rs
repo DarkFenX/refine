@@ -7,6 +7,7 @@ use implant::HImplantInfo;
 use module::HModuleInfo;
 use rig::HRigInfo;
 use ship::HShipInfo;
+use skill::HSkillInfo;
 
 use crate::info::HItemInfoMode;
 
@@ -19,6 +20,7 @@ mod implant;
 mod module;
 mod rig;
 mod ship;
+mod skill;
 
 pub(crate) trait MkItemInfo<T> {
     fn mk_info(core_ss: &mut rc::SolarSystem, source: T, item_mode: HItemInfoMode) -> HItemInfo;
@@ -28,6 +30,7 @@ pub(crate) trait MkItemInfo<T> {
 #[serde(untagged)]
 pub(crate) enum HItemInfo {
     Character(HCharacterInfo),
+    Skill(HSkillInfo),
     Implant(HImplantInfo),
     Booster(HBoosterInfo),
     Ship(HShipInfo),
@@ -43,11 +46,14 @@ impl MkItemInfo<&rc::SsItemInfo> for HItemInfo {
     fn mk_info(core_ss: &mut rc::SolarSystem, core_item_info: &rc::SsItemInfo, item_mode: HItemInfoMode) -> Self {
         match core_item_info {
             rc::SsItemInfo::Character(core_character_info) => Self::mk_info(core_ss, core_character_info, item_mode),
+            rc::SsItemInfo::Skill(core_skill_info) => Self::mk_info(core_ss, core_skill_info, item_mode),
             rc::SsItemInfo::Implant(core_implant_info) => Self::mk_info(core_ss, core_implant_info, item_mode),
+            rc::SsItemInfo::Booster(core_booster_info) => Self::mk_info(core_ss, core_booster_info, item_mode),
             rc::SsItemInfo::Ship(core_ship_info) => Self::mk_info(core_ss, core_ship_info, item_mode),
             rc::SsItemInfo::Module(core_module_info) => Self::mk_info(core_ss, core_module_info, item_mode),
             rc::SsItemInfo::Rig(core_rig_info) => Self::mk_info(core_ss, core_rig_info, item_mode),
             rc::SsItemInfo::Drone(core_drone_info) => Self::mk_info(core_ss, core_drone_info, item_mode),
+            rc::SsItemInfo::Fighter(core_fighter_info) => Self::mk_info(core_ss, core_fighter_info, item_mode),
             rc::SsItemInfo::Charge(core_charge_info) => Self::mk_info(core_ss, core_charge_info, item_mode),
             _ => Self::ToRemove(true),
         }
@@ -60,6 +66,11 @@ impl MkItemInfo<&rc::SsCharacterInfo> for HItemInfo {
         item_mode: HItemInfoMode,
     ) -> Self {
         Self::Character(HCharacterInfo::mk_info(core_ss, core_character_info, item_mode))
+    }
+}
+impl MkItemInfo<&rc::SsSkillInfo> for HItemInfo {
+    fn mk_info(core_ss: &mut rc::SolarSystem, core_skill_info: &rc::SsSkillInfo, item_mode: HItemInfoMode) -> Self {
+        Self::Skill(HSkillInfo::mk_info(core_ss, core_skill_info, item_mode))
     }
 }
 impl MkItemInfo<&rc::SsImplantInfo> for HItemInfo {

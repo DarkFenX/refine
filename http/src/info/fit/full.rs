@@ -6,6 +6,8 @@ pub(crate) struct HFitInfoFull {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) character: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) skills: Vec<HItemInfo>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) implants: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) boosters: Vec<HItemInfo>,
@@ -32,6 +34,11 @@ impl HFitInfoFull {
                 .get_fit_character_info(&fit_id)
                 .ok()
                 .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode)),
+            skills: core_ss
+                .get_fit_skill_infos(&fit_id)
+                .iter()
+                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .collect(),
             implants: core_ss
                 .get_fit_implant_infos(&fit_id)
                 .iter()
