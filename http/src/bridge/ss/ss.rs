@@ -158,7 +158,10 @@ impl HSolarSystem {
         let sync_span = tracing::trace_span!("sync");
         let (core_ss, fit_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let commands = commands.into_iter().map(|v| v.fill_fit(fit_id)).collect();
+            let commands = commands
+                .into_iter()
+                .map(|v| HSsCommand::from_fit_cmd(fit_id, v))
+                .collect();
             let cmd_results = execute_commands(&mut core_ss, commands);
             let info = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
             (core_ss, info, cmd_results)
@@ -210,21 +213,21 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
         match cmd {
             HSsCommand::SetCharacter(c) => {
                 let char_info = core_ss
-                    .set_fit_character(c.fit_id, c.type_id, c.state.unwrap_or(true))
+                    .set_fit_character(c.get_fit_id(), c.get_type_id(), c.get_state())
                     .unwrap();
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(char_info));
                 cmd_results.push(resp);
             }
             HSsCommand::AddImplant(c) => {
                 let implant_info = core_ss
-                    .add_implant(c.fit_id, c.type_id, c.state.unwrap_or(true))
+                    .add_implant(c.get_fit_id(), c.get_type_id(), c.get_state())
                     .unwrap();
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(implant_info));
                 cmd_results.push(resp);
             }
             HSsCommand::SetShip(c) => {
                 let ship_info = core_ss
-                    .set_fit_ship(c.fit_id, c.type_id, c.state.unwrap_or(true))
+                    .set_fit_ship(c.get_fit_id(), c.get_type_id(), c.get_state())
                     .unwrap();
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(ship_info));
                 cmd_results.push(resp);
@@ -232,24 +235,26 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
             HSsCommand::AddModule(c) => {
                 let module_info = core_ss
                     .add_module(
-                        c.fit_id,
-                        (&c.rack).into(),
-                        (&c.add_mode).into(),
-                        c.type_id,
-                        (&c.state).into(),
-                        c.charge_type_id,
+                        c.get_fit_id(),
+                        c.get_rack().into(),
+                        c.get_add_mode().into(),
+                        c.get_type_id(),
+                        c.get_state().into(),
+                        c.get_charge_type_id(),
                     )
                     .unwrap();
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(module_info));
                 cmd_results.push(resp);
             }
             HSsCommand::AddRig(c) => {
-                let rig_info = core_ss.add_rig(c.fit_id, c.type_id, c.state.unwrap_or(true)).unwrap();
+                let rig_info = core_ss.add_rig(c.get_fit_id(), c.get_type_id(), c.get_state()).unwrap();
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(rig_info));
                 cmd_results.push(resp);
             }
             HSsCommand::AddDrone(c) => {
-                let drone_info = core_ss.add_drone(c.fit_id, c.type_id, (&c.state).into()).unwrap();
+                let drone_info = core_ss
+                    .add_drone(c.get_fit_id(), c.get_type_id(), c.get_state().into())
+                    .unwrap();
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(drone_info));
                 cmd_results.push(resp);
             }

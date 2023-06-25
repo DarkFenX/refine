@@ -1,12 +1,15 @@
-use crate::{cmd::ss, shared::HState};
+use crate::shared::HState;
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddDroneCmd {
-    pub(crate) type_id: rc::ReeInt,
-    pub(crate) state: HState,
+    type_id: rc::ReeInt,
+    state: HState,
 }
 impl HAddDroneCmd {
-    pub(in crate::cmd::fit) fn fill_fit(self, fit_id: rc::ReeId) -> ss::HAddDroneCmd {
-        ss::HAddDroneCmd::new(fit_id, self.type_id, self.state)
+    pub(crate) fn get_type_id(&self) -> rc::ReeInt {
+        self.type_id
+    }
+    pub(crate) fn get_state(&self) -> &HState {
+        &self.state
     }
 }

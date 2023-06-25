@@ -1,12 +1,13 @@
-use crate::cmd::ss;
-
 #[derive(serde::Deserialize)]
 pub(crate) struct HSetCharCmd {
-    pub(crate) type_id: rc::ReeInt,
-    pub(crate) state: Option<bool>,
+    type_id: rc::ReeInt,
+    state: Option<bool>,
 }
 impl HSetCharCmd {
-    pub(in crate::cmd::fit) fn fill_fit(self, fit_id: rc::ReeId) -> ss::HSetCharCmd {
-        ss::HSetCharCmd::new(fit_id, self.type_id, self.state)
+    pub(crate) fn get_type_id(&self) -> rc::ReeInt {
+        self.type_id
+    }
+    pub(crate) fn get_state(&self) -> bool {
+        self.state.unwrap_or(true)
     }
 }
