@@ -36,23 +36,20 @@ impl HAddModuleCmd {
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
-    #[serde(with = "crate::util::serde_string")]
-    fit_id: rc::ReeId,
     #[serde(flatten)]
     fit_cmd: fit::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
-    pub(in crate::cmd::ss) fn from_fit_cmd(fit_id: rc::ReeId, fit_cmd: fit::HChangeModuleCmd) -> Self {
-        Self { fit_id, fit_cmd }
-    }
-    pub(crate) fn get_fit_id(&self) -> rc::ReeId {
-        self.fit_id
-    }
     pub(crate) fn get_item_id(&self) -> rc::ReeId {
         self.fit_cmd.get_item_id()
     }
 
     pub(crate) fn get_state(&self) -> Option<&HState> {
         self.fit_cmd.get_state()
+    }
+}
+impl From<fit::HChangeModuleCmd> for HChangeModuleCmd {
+    fn from(fit_cmd: fit::HChangeModuleCmd) -> Self {
+        Self { fit_cmd }
     }
 }
