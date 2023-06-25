@@ -393,6 +393,21 @@ class TestClient:
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json={'commands': [command]})
 
+    def change_mod_request(
+            self,
+            ss_id: str,
+            item_id: str,
+            state: Union[State, Absent] = Absent,
+    ) -> Request:
+        command = {'type': 'change_module', 'item_id': item_id}
+        conditional_insert(command, 'state', state)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            json={'commands': [command]})
+
     def add_rig_request(
             self,
             ss_id: str,

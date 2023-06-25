@@ -56,4 +56,4 @@ class SolarSystem(AttrDict):
     def get_item(self, item_id: str) -> Item:
         resp = self.get_item_request(item_id=item_id).send()
         assert resp.status_code == 200
-        return Item(client=self, data=resp.json(), ss_id=self.id)
+        return Item(client=self._client, data=resp.json(), ss_id=self.id)

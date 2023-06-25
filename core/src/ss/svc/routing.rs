@@ -15,46 +15,12 @@ impl SsSvcs {
         if is_a_item_loaded {
             self.notify_item_loaded(ss_view, item)
         }
-        match item_state {
-            State::Offline => {
-                let states = vec![State::Offline];
-                self.activate_item_states(ss_view, item, states);
-            }
-            State::Online => {
-                let states = vec![State::Offline, State::Online];
-                self.activate_item_states(ss_view, item, states);
-            }
-            State::Active => {
-                let states = vec![State::Offline, State::Online, State::Active];
-                self.activate_item_states(ss_view, item, states);
-            }
-            State::Overload => {
-                let states = vec![State::Offline, State::Online, State::Active, State::Overload];
-                self.activate_item_states(ss_view, item, states);
-            }
-            _ => (),
-        }
+        let states = State::iter().filter(|v| **v <= item_state).map(|v| *v).collect();
+        self.activate_item_states(ss_view, item, states);
     }
     pub(in crate::ss) fn remove_item(&mut self, ss_view: &SsView, item: &ssi::SsItem) {
-        match item.get_state() {
-            State::Offline => {
-                let states = vec![State::Offline];
-                self.deactivate_item_states(ss_view, item, states);
-            }
-            State::Online => {
-                let states = vec![State::Online, State::Offline];
-                self.deactivate_item_states(ss_view, item, states);
-            }
-            State::Active => {
-                let states = vec![State::Active, State::Online, State::Offline];
-                self.deactivate_item_states(ss_view, item, states);
-            }
-            State::Overload => {
-                let states = vec![State::Overload, State::Active, State::Online, State::Offline];
-                self.deactivate_item_states(ss_view, item, states);
-            }
-            _ => (),
-        }
+        let states = State::iter().filter(|v| **v <= item.get_state()).map(|v| *v).collect();
+        self.deactivate_item_states(ss_view, item, states);
         if item.is_loaded() {
             self.notify_item_unloaded(ss_view, item)
         }
@@ -69,30 +35,30 @@ impl SsSvcs {
                 self.notify_state_activated_loaded(ss_view, item, state);
             }
             let item_effect_datas = item.get_effect_datas().unwrap();
+            let mut starting_effects = Vec::with_capacity(item_effect_datas.len());
             for eff_id in item_effect_datas.keys() {
-                let mut starting_effects = Vec::with_capacity(item_effect_datas.len());
                 match ss_view.src.get_a_effect(eff_id) {
                     Some(e) if states.contains(&e.state) => starting_effects.push(e.clone()),
                     _ => (),
                 }
-                if !starting_effects.is_empty() {
-                    self.notify_effects_started(ss_view, item, &starting_effects);
-                }
+            }
+            if !starting_effects.is_empty() {
+                self.notify_effects_started(ss_view, item, &starting_effects);
             }
         };
     }
     pub(in crate::ss) fn deactivate_item_states(&mut self, ss_view: &SsView, item: &ssi::SsItem, states: Vec<State>) {
         if item.is_loaded() {
             let item_effect_datas = item.get_effect_datas().unwrap();
+            let mut stopping_effects = Vec::with_capacity(item_effect_datas.len());
             for eff_id in item_effect_datas.keys() {
-                let mut stopping_effects = Vec::with_capacity(item_effect_datas.len());
                 match ss_view.src.get_a_effect(eff_id) {
                     Some(e) if states.contains(&e.state) => stopping_effects.push(e.clone()),
                     _ => (),
                 }
-                if !stopping_effects.is_empty() {
-                    self.notify_effects_stopped(ss_view, item, &stopping_effects);
-                }
+            }
+            if !stopping_effects.is_empty() {
+                self.notify_effects_stopped(ss_view, item, &stopping_effects);
             }
             for state in states.iter() {
                 self.notify_state_deactivated_loaded(ss_view, item, state);

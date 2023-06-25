@@ -1,7 +1,7 @@
 use crate::{
     consts::{ModRack, OrdAddMode, State},
     defs::{ReeId, ReeIdx, ReeInt},
-    ss::SolarSystem,
+    ss::{SolarSystem, SsView},
     ssi, ssn,
     util::{Error, ErrorKind, Named, Result},
 };
@@ -83,7 +83,26 @@ impl SolarSystem {
         Ok(m_info)
     }
     pub fn set_module_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
-        self.get_module_mut(item_id)?.state = state;
+        let module = self.get_module_mut(item_id)?;
+        let old_state = module.state;
+        module.state = state;
+        if state > old_state {
+            let states = State::iter()
+                .filter(|v| **v > old_state && **v <= state)
+                .map(|v| *v)
+                .collect();
+            let item = self.items.get(item_id).unwrap();
+            self.svcs
+                .activate_item_states(&SsView::new(&self.src, &self.items), item, states);
+        } else if state < old_state {
+            let states = State::iter()
+                .filter(|v| **v > state && **v <= old_state)
+                .map(|v| *v)
+                .collect();
+            let item = self.items.get(item_id).unwrap();
+            self.svcs
+                .deactivate_item_states(&SsView::new(&self.src, &self.items), item, states);
+        }
         Ok(())
     }
     pub fn set_module_charge(&mut self, item_id: &ReeId, charge_a_item_id: ReeInt) -> Result<ssn::SsChargeInfo> {

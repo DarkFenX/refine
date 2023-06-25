@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from collections import namedtuple
-from typing import TYPE_CHECKING
+from typing import Union, TYPE_CHECKING
 
-from tests.support.util import AttrDict
+from tests.support.util import AttrDict, Absent
 
 if TYPE_CHECKING:
     from tests.support.client import TestClient
+    from tests.support.consts import State
     from tests.support.eve_data import TestObjects
     from tests.support.request import Request
 
@@ -30,6 +31,13 @@ class Item(AttrDict):
         assert resp.status_code == 200
         self._data = resp.json()
         return self
+
+    def change_mod_request(self, state: Union[State, Absent] = Absent) -> Request:
+        return self._client.change_mod_request(ss_id=self._ss_id, item_id=self.id, state=state)
+
+    def change_mod(self, state: Union[State, Absent] = Absent) -> None:
+        resp = self.change_mod_request(state=state).send()
+        assert resp.status_code == 200
 
     def remove_request(self) -> Request:
         return self._client.remove_item_request(ss_id=self._ss_id, item_id=self.id)

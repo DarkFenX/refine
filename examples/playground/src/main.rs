@@ -64,8 +64,13 @@ fn main() {
     // }
     // let implant = sol_sys.add_implant(fit, 19687, true);
     println!("{}", sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma);
-    let laser = sol_sys
-        .add_module(fit, ModRack::High, OrdAddMode::Equip, 3041, State::Online, Some(12563))
+    // let laser = sol_sys
+    //     .add_module(fit, ModRack::High, OrdAddMode::Equip, 3041, State::Online, Some(12563))
+    //     .unwrap();
+    let anp = sol_sys
+        .add_module(fit, ModRack::Low, OrdAddMode::Equip, 1306, State::Offline, None)
         .unwrap();
-    println!("{}", laser.ss_charge_info.unwrap().cont_id);
+    println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
+    sol_sys.set_module_state(&anp.id, State::Online);
+    println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
 }
