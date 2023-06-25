@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Union, TYPE_CHECKING
 
-from tests.support.consts import State
+from tests.support.consts import State, Rack
 from tests.support.util import AttrDict, Absent
 from .item import Item
 
@@ -71,25 +71,28 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
-    def add_high_mod_request(
+    def add_mod_request(
             self,
             type_id: int,
+            rack: Rack = Rack.high,
             state: str = State.offline,
             charge_type_id: Union[int, Absent] = Absent,
             mode: str = 'equip',
     ) -> Request:
-        return self._client.add_high_mod_request(
-            ss_id=self._ss_id, fit_id=self.id, type_id=type_id,
+        return self._client.add_mod_request(
+            ss_id=self._ss_id, fit_id=self.id, rack=rack, type_id=type_id,
             state=state, charge_type_id=charge_type_id, mode=mode)
 
-    def add_high_mod(
+    def add_mod(
             self,
             type_id: int,
+            rack: Rack = Rack.high,
             state: str = State.offline,
             charge_type_id: Union[int, Absent] = Absent,
             mode: str = 'equip',
     ) -> Item:
-        resp = self.add_high_mod_request(
+        resp = self.add_mod_request(
+            rack=rack,
             type_id=type_id,
             state=state,
             charge_type_id=charge_type_id,

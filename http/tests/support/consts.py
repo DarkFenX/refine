@@ -3,6 +3,13 @@ from enum import StrEnum, IntEnum, unique
 
 
 @unique
+class Rack(StrEnum):
+    high = 'high'
+    mid = 'mid'
+    low = 'low'
+
+
+@unique
 class State(StrEnum):
     ghost = 'ghost'
     offline = 'offline'

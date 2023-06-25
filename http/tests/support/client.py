@@ -4,7 +4,7 @@ from typing import Union, TYPE_CHECKING
 
 import requests
 
-from tests.support.consts import EffCat, ItemCat, State
+from tests.support.consts import EffCat, ItemCat, State, Rack
 from tests.support.request import Request
 from tests.support.util import Absent, Default, conditional_insert, get_stack_key
 from tests.support import api_data, eve_data
@@ -368,11 +368,12 @@ class TestClient:
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
-    def add_high_mod_request(
+    def add_mod_request(
             self,
             ss_id: str,
             fit_id: str,
             type_id: int,
+            rack: Rack = Rack.high,
             state: str = State.offline,
             charge_type_id: Union[int, Absent] = Absent,
             mode: str = 'equip',
@@ -380,7 +381,7 @@ class TestClient:
         command = {
             'type': 'add_module',
             'fit_id': fit_id,
-            'rack': 'high',
+            'rack': rack,
             'add_mode': mode,
             'type_id': type_id,
             'state': state}
