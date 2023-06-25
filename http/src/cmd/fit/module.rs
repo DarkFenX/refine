@@ -1,5 +1,5 @@
 use crate::{
-    cmd::shared::HAddMode,
+    cmd::{item, shared::HAddMode},
     shared::{HModRack, HState},
 };
 
@@ -26,5 +26,24 @@ impl HAddModuleCmd {
     }
     pub(crate) fn get_charge_type_id(&self) -> Option<rc::ReeInt> {
         self.charge_type_id
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HChangeModuleCmd {
+    #[serde(with = "crate::util::serde_string")]
+    item_id: rc::ReeId,
+    #[serde(flatten)]
+    item_cmd: item::HChangeModuleCmd,
+}
+impl HChangeModuleCmd {
+    pub(in crate::cmd::fit) fn from_item_cmd(item_id: rc::ReeId, item_cmd: item::HChangeModuleCmd) -> Self {
+        Self { item_id, item_cmd }
+    }
+    pub(crate) fn get_item_id(&self) -> rc::ReeId {
+        self.item_id
+    }
+    pub(crate) fn get_state(&self) -> Option<&HState> {
+        self.item_cmd.get_state()
     }
 }

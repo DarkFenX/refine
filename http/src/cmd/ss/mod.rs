@@ -1,7 +1,7 @@
 pub(crate) use character::HSetCharCmd;
 pub(crate) use drone::HAddDroneCmd;
 pub(crate) use implant::HAddImplantCmd;
-pub(crate) use module::HAddModuleCmd;
+pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::HAddRigCmd;
 pub(crate) use ship::HSetShipCmd;
 
@@ -21,6 +21,7 @@ pub(crate) enum HSsCommand {
     AddImplant(HAddImplantCmd),
     SetShip(HSetShipCmd),
     AddModule(HAddModuleCmd),
+    ChangeModule(HChangeModuleCmd),
     AddRig(HAddRigCmd),
     AddDrone(HAddDroneCmd),
 }
@@ -31,6 +32,7 @@ impl HSsCommand {
             HFitCommand::AddImplant(fit_cmd) => Self::AddImplant(HAddImplantCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::SetShip(fit_cmd) => Self::SetShip(HSetShipCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddModule(fit_cmd) => Self::AddModule(HAddModuleCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::ChangeModule(fit_cmd) => Self::ChangeModule(HChangeModuleCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddRig(fit_cmd) => Self::AddRig(HAddRigCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddDrone(fit_cmd) => Self::AddDrone(HAddDroneCmd::from_fit_cmd(fit_id, fit_cmd)),
         }

@@ -1,9 +1,11 @@
 pub(crate) use character::HSetCharCmd;
 pub(crate) use drone::HAddDroneCmd;
 pub(crate) use implant::HAddImplantCmd;
-pub(crate) use module::HAddModuleCmd;
+pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::HAddRigCmd;
 pub(crate) use ship::HSetShipCmd;
+
+use crate::cmd::HItemCommand;
 
 mod character;
 mod drone;
@@ -19,6 +21,16 @@ pub(crate) enum HFitCommand {
     AddImplant(HAddImplantCmd),
     SetShip(HSetShipCmd),
     AddModule(HAddModuleCmd),
+    ChangeModule(HChangeModuleCmd),
     AddRig(HAddRigCmd),
     AddDrone(HAddDroneCmd),
+}
+impl HFitCommand {
+    pub(crate) fn from_item_cmd(item_id: rc::ReeId, item_cmd: HItemCommand) -> Self {
+        match item_cmd {
+            HItemCommand::ChangeModule(item_cmd) => {
+                Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))
+            }
+        }
+    }
 }
