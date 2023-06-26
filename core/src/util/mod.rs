@@ -9,4 +9,5 @@ pub(crate) use traits::Named;
 mod err_res;
 mod funcs;
 mod keyed_storage;
+mod opt_map;
 mod traits;
