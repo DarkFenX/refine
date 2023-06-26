@@ -16,10 +16,10 @@ pub(crate) use sw_effect::SsSwEffect;
 
 use crate::{
     ad,
-    consts::{ModDomain, State},
-    defs::{ReeFloat, ReeId, ReeInt},
+    consts::{ModDomain, State, EffectMode},
+    defs::{ReeFloat, ReeId, ReeInt, EffectId},
     src::Src,
-    util::{Error, ErrorKind, Named, Result},
+    util::{Error, ErrorKind, Named, Result, OptMap},
 };
 
 mod booster;
@@ -101,6 +101,40 @@ impl SsItem {
             Self::Stance(stance) => Some(stance.fit_id),
             Self::Subsystem(subsystem) => Some(subsystem.fit_id),
             Self::SwEffect(_) => None,
+        }
+    }
+    pub(crate) fn get_effect_modes(&self) -> &OptMap<EffectId, EffectMode> {
+        match self {
+            Self::Booster(booster) => &booster.effect_modes,
+            Self::Character(character) => &character.effect_modes,
+            Self::Charge(charge) => &charge.effect_modes,
+            Self::Drone(drone) => &drone.effect_modes,
+            Self::Fighter(fighter) => &fighter.effect_modes,
+            Self::Implant(implant) => &implant.effect_modes,
+            Self::Module(module) => &module.effect_modes,
+            Self::Rig(rig) => &rig.effect_modes,
+            Self::Ship(ship) => &ship.effect_modes,
+            Self::Skill(skill) => &skill.effect_modes,
+            Self::Stance(stance) => &stance.effect_modes,
+            Self::Subsystem(subsystem) => &subsystem.effect_modes,
+            Self::SwEffect(sw_effect) => &sw_effect.effect_modes,
+        }
+    }
+    pub(crate) fn get_effect_modes_mut(&mut self) -> &mut OptMap<EffectId, EffectMode> {
+        match self {
+            Self::Booster(booster) => &mut booster.effect_modes,
+            Self::Character(character) => &mut character.effect_modes,
+            Self::Charge(charge) => &mut charge.effect_modes,
+            Self::Drone(drone) => &mut drone.effect_modes,
+            Self::Fighter(fighter) => &mut fighter.effect_modes,
+            Self::Implant(implant) => &mut implant.effect_modes,
+            Self::Module(module) => &mut module.effect_modes,
+            Self::Rig(rig) => &mut rig.effect_modes,
+            Self::Ship(ship) => &mut ship.effect_modes,
+            Self::Skill(skill) => &mut skill.effect_modes,
+            Self::Stance(stance) => &mut stance.effect_modes,
+            Self::Subsystem(subsystem) => &mut subsystem.effect_modes,
+            Self::SwEffect(sw_effect) => &mut sw_effect.effect_modes,
         }
     }
     pub(crate) fn get_a_item_id(&self) -> ReeInt {

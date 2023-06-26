@@ -2,10 +2,10 @@ use std::fmt;
 
 use crate::{
     ad,
-    consts::State,
-    defs::{ReeId, ReeInt},
+    consts::{EffectMode, State},
+    defs::{EffectId, ReeId, ReeInt},
     src::Src,
-    util::Named,
+    util::{Named, OptMap},
 };
 
 use super::{bool_to_state, state_to_bool};
@@ -14,6 +14,7 @@ pub(crate) struct SsSwEffect {
     pub(crate) id: ReeId,
     pub(crate) a_item_id: ReeInt,
     pub(crate) state: State,
+    pub(crate) effect_modes: OptMap<EffectId, EffectMode>,
     pub(crate) a_item: Option<ad::ArcItem>,
 }
 impl SsSwEffect {
@@ -22,6 +23,7 @@ impl SsSwEffect {
             id,
             a_item_id,
             state: bool_to_state(state),
+            effect_modes: OptMap::new(),
             a_item: src.get_a_item(&a_item_id),
         }
     }

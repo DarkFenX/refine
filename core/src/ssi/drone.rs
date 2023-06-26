@@ -2,10 +2,10 @@ use std::fmt;
 
 use crate::{
     ad,
-    consts::State,
-    defs::{ReeId, ReeInt},
+    consts::{EffectMode, State},
+    defs::{EffectId, ReeId, ReeInt},
     src::Src,
-    util::Named,
+    util::{Named, OptMap},
 };
 
 pub(crate) struct SsDrone {
@@ -13,6 +13,7 @@ pub(crate) struct SsDrone {
     pub(crate) fit_id: ReeId,
     pub(crate) a_item_id: ReeInt,
     pub(crate) state: State,
+    pub(crate) effect_modes: OptMap<EffectId, EffectMode>,
     pub(crate) a_item: Option<ad::ArcItem>,
 }
 impl SsDrone {
@@ -22,6 +23,7 @@ impl SsDrone {
             fit_id,
             a_item_id,
             state,
+            effect_modes: OptMap::new(),
             a_item: src.get_a_item(&a_item_id),
         }
     }

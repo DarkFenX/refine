@@ -2,10 +2,10 @@ use std::fmt;
 
 use crate::{
     ad,
-    consts::{ModRack, State},
-    defs::{ReeId, ReeIdx, ReeInt},
+    consts::{EffectMode, ModRack, State},
+    defs::{EffectId, ReeId, ReeIdx, ReeInt},
     src::Src,
-    util::Named,
+    util::{Named, OptMap},
 };
 
 pub(crate) struct SsModule {
@@ -16,6 +16,7 @@ pub(crate) struct SsModule {
     pub(crate) rack: ModRack,
     pub(crate) pos: ReeIdx,
     pub(crate) charge_a_item_id: Option<ReeId>,
+    pub(crate) effect_modes: OptMap<EffectId, EffectMode>,
     pub(crate) a_item: Option<ad::ArcItem>,
 }
 impl SsModule {
@@ -37,6 +38,7 @@ impl SsModule {
             rack,
             pos,
             charge_a_item_id: charge_a_item_id,
+            effect_modes: OptMap::new(),
             a_item: src.get_a_item(&a_item_id),
         }
     }
