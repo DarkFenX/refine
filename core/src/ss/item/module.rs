@@ -1,42 +1,46 @@
 use crate::{
     consts::{ModRack, OrdAddMode, State},
-    defs::{ReeId, ReeIdx, ReeInt},
+    defs::{ReeIdx, ReeInt, SsFitId, SsItemId},
     ss::{SolarSystem, SsView},
     ssi, ssn,
-    util::{Error, ErrorKind, Named, Result},
+    util::{Error, ErrorKind, Result},
 };
 
 impl SolarSystem {
     // Public
-    pub fn get_module_info(&self, item_id: &ReeId) -> Result<ssn::SsModuleInfo> {
-        Ok(self.make_mod_info(self.get_module(item_id)?))
+    pub fn get_module_info(&self, item_id: &SsItemId) -> Result<ssn::SsModuleInfo> {
+        Ok(self.make_mod_info(self.items.get_module(item_id)?))
     }
-    pub fn get_module_infos(&self, fit_id: &ReeId, rack: ModRack) -> Vec<ssn::SsModuleInfo> {
-        self.items
-            .values()
-            .filter_map(|v| match v {
-                ssi::SsItem::Module(m) if m.fit_id == *fit_id && m.rack == rack => Some(self.make_mod_info(m)),
-                _ => None,
-            })
-            .collect()
+    pub fn get_module_infos(&self, fit_id: &SsFitId, rack: ModRack) -> Result<Vec<ssn::SsModuleInfo>> {
+        let fit = self.fits.get_fit(fit_id)?;
+        let module_ids = match rack {
+            ModRack::High => &fit.mods_high,
+            ModRack::Mid => &fit.mods_mid,
+            ModRack::Low => &fit.mods_low,
+        };
+        let module_infos = module_ids
+            .iter()
+            .map(|v| self.make_mod_info(self.items.get_module(v).unwrap()))
+            .collect();
+        Ok(module_infos)
     }
     pub fn add_module(
         &mut self,
-        fit_id: ReeId,
+        fit_id: SsFitId,
         rack: ModRack,
         pos_mode: OrdAddMode,
         a_item_id: ReeInt,
         state: State,
         charge_a_item_id: Option<ReeInt>,
     ) -> Result<ssn::SsModuleInfo> {
-        // Allocate resources first
-        let m_item_id = self.alloc_item_id()?;
+        // Allocate resources early, to make sure if we fail we don't need to roll anything back
+        let m_item_id = self.items.alloc_item_id()?;
         let c_item_id = match charge_a_item_id {
-            Some(_) => Some(self.alloc_item_id()?),
+            Some(_) => Some(self.items.alloc_item_id()?),
             None => None,
         };
         // Calculate position for the module and make necessary changes to positions of other modules
-        let infos = self.get_module_infos(&fit_id, rack);
+        let infos = self.get_module_infos(&fit_id, rack)?;
         let pos = match pos_mode {
             OrdAddMode::Append => infos.iter().map(|v| v.pos).max().map(|v| 1 + v).unwrap_or(0),
             OrdAddMode::Equip => {
@@ -45,8 +49,8 @@ impl SolarSystem {
             }
             OrdAddMode::Insert(pos) => {
                 for info in infos.iter() {
-                    match self.items.get_mut(&info.id) {
-                        Some(ssi::SsItem::Module(m)) if m.rack == rack && m.pos >= pos => m.pos += 1,
+                    match self.items.get_item_mut(&info.id) {
+                        Ok(ssi::SsItem::Module(m)) if m.rack == rack && m.pos >= pos => m.pos += 1,
                         _ => (),
                     }
                 }
@@ -55,8 +59,8 @@ impl SolarSystem {
             OrdAddMode::Place(pos, repl) => {
                 let mut old_item_id = None;
                 for info in infos.iter() {
-                    match self.items.get(&info.id) {
-                        Some(ssi::SsItem::Module(m)) if m.rack == rack && m.pos == pos => {
+                    match self.items.get_item(&info.id) {
+                        Ok(ssi::SsItem::Module(m)) if m.rack == rack && m.pos == pos => {
                             old_item_id = Some(info.id);
                             break;
                         }
@@ -82,8 +86,8 @@ impl SolarSystem {
         self.add_item(m_item);
         Ok(m_info)
     }
-    pub fn set_module_state(&mut self, item_id: &ReeId, state: State) -> Result<()> {
-        let module = self.get_module_mut(item_id)?;
+    pub fn set_module_state(&mut self, item_id: &SsItemId, state: State) -> Result<()> {
+        let module = self.items.get_module_mut(item_id)?;
         let old_state = module.state;
         module.state = state;
         if state > old_state {
@@ -91,62 +95,40 @@ impl SolarSystem {
                 .filter(|v| **v > old_state && **v <= state)
                 .map(|v| *v)
                 .collect();
-            let item = self.items.get(item_id).unwrap();
+            let item = self.items.get_item(item_id).unwrap();
             self.svcs
-                .activate_item_states(&SsView::new(&self.src, &self.items), item, states);
+                .activate_item_states(&SsView::new(&self.src, &self.fits, &self.items), item, states);
         } else if state < old_state {
             let states = State::iter()
                 .filter(|v| **v > state && **v <= old_state)
                 .map(|v| *v)
                 .collect();
-            let item = self.items.get(item_id).unwrap();
+            let item = self.items.get_item(item_id).unwrap();
             self.svcs
-                .deactivate_item_states(&SsView::new(&self.src, &self.items), item, states);
+                .deactivate_item_states(&SsView::new(&self.src, &self.fits, &self.items), item, states);
         }
         Ok(())
     }
-    pub fn set_module_charge(&mut self, item_id: &ReeId, charge_a_item_id: ReeInt) -> Result<ssn::SsChargeInfo> {
-        let c_item_id = self.alloc_item_id()?;
+    pub fn set_module_charge(&mut self, item_id: &SsItemId, charge_a_item_id: ReeInt) -> Result<ssn::SsChargeInfo> {
+        let c_item_id = self.items.alloc_item_id()?;
         self.remove_module_charge(item_id)?;
-        let module = self.get_module(item_id)?;
+        let module = self.items.get_module(item_id)?;
         let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_a_item_id, module.id);
-        let module = self.get_module_mut(item_id)?;
+        let module = self.items.get_module_mut(item_id)?;
         module.charge_a_item_id = Some(c_item_id);
         Ok(c_info)
     }
-    pub fn remove_module_charge(&mut self, item_id: &ReeId) -> Result<bool> {
-        let module = self.get_module_mut(item_id)?;
+    pub fn remove_module_charge(&mut self, item_id: &SsItemId) -> Result<bool> {
+        let module = self.items.get_module_mut(item_id)?;
         match module.charge_a_item_id {
             Some(cid) => {
                 module.charge_a_item_id = None;
-                Ok(self.items.remove(&cid).is_some())
+                Ok(self.items.remove_item(&cid).is_some())
             }
             None => Ok(false),
         }
     }
     // Non-public
-    fn get_module(&self, item_id: &ReeId) -> Result<&ssi::SsModule> {
-        let item = self.get_item(item_id)?;
-        match item {
-            ssi::SsItem::Module(module) => Ok(module),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
-                *item_id,
-                item.get_name(),
-                ssi::SsModule::get_name(),
-            ))),
-        }
-    }
-    fn get_module_mut(&mut self, item_id: &ReeId) -> Result<&mut ssi::SsModule> {
-        let item = self.get_item_mut(item_id)?;
-        match item {
-            ssi::SsItem::Module(module) => Ok(module),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
-                *item_id,
-                item.get_name(),
-                ssi::SsModule::get_name(),
-            ))),
-        }
-    }
     pub(crate) fn make_mod_info(&self, module: &ssi::SsModule) -> ssn::SsModuleInfo {
         let charge_info = match module.charge_a_item_id {
             Some(cid) => match self.get_charge_info(&cid) {

@@ -40,16 +40,19 @@ impl HFitInfoFull {
                 .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode)),
             skills: core_ss
                 .get_fit_skill_infos(&fit_id)
+                .unwrap()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                 .collect(),
             implants: core_ss
                 .get_fit_implant_infos(&fit_id)
+                .unwrap()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                 .collect(),
             boosters: core_ss
                 .get_fit_booster_infos(&fit_id)
+                .unwrap()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                 .collect(),
@@ -63,38 +66,45 @@ impl HFitInfoFull {
                 .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode)),
             subsystems: core_ss
                 .get_fit_subsystem_infos(&fit_id)
+                .unwrap()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                 .collect(),
             modules: HModuleRacks {
                 high: core_ss
                     .get_module_infos(&fit_id, rc::ModRack::High)
+                    .unwrap()
                     .iter()
                     .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                     .collect(),
                 mid: core_ss
                     .get_module_infos(&fit_id, rc::ModRack::Mid)
+                    .unwrap()
                     .iter()
                     .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                     .collect(),
                 low: core_ss
                     .get_module_infos(&fit_id, rc::ModRack::Low)
+                    .unwrap()
                     .iter()
                     .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                     .collect(),
             },
             rigs: core_ss
                 .get_fit_rig_infos(&fit_id)
+                .unwrap()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                 .collect(),
             drones: core_ss
                 .get_fit_drone_infos(&fit_id)
+                .unwrap()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                 .collect(),
             fighters: core_ss
                 .get_fit_fighter_infos(&fit_id)
+                .unwrap()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                 .collect(),

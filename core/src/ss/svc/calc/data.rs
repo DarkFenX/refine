@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use crate::{
     defs::{ReeId, ReeInt},
     util::KeyedStorage2L,
-    ReeFloat,
 };
 
 use super::support::{AffectionRegister, SsAttrVal};

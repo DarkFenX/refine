@@ -1,11 +1,9 @@
-use std::{
-    collections::{HashMap, HashSet},
-    hash::Hash,
-};
+use std::{collections::HashSet, hash::Hash};
 
 use crate::{
     consts::{ModAfeeFilter, ModDomain},
     defs::{ReeId, ReeInt},
+    ss::items::SsItems,
     ssi,
     util::KeyedStorage1L,
 };
@@ -80,12 +78,12 @@ impl AffectionRegister {
     pub(in crate::ss::svc::calc) fn get_local_afee_items(
         &self,
         afor_spec: &AffectorSpec,
-        items: &HashMap<ReeId, ssi::SsItem>,
+        items: &SsItems,
     ) -> Vec<ReeId> {
         let mut afees = Vec::new();
-        let afor_item = match items.get(&afor_spec.item_id) {
-            Some(i) => i,
-            None => return afees,
+        let afor_item = match items.get_item(&afor_spec.item_id) {
+            Ok(i) => i,
+            _ => return afees,
         };
         let afor_fit_id = afor_item.get_fit_id();
         match (afor_spec.modifier.afee_filter, afor_fit_id) {

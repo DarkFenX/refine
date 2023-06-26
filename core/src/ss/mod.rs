@@ -1,68 +1,76 @@
-use std::{
-    collections::{HashMap, HashSet},
-    num::Wrapping,
-};
+use std::collections::{HashMap, HashSet};
 
 pub use svc::SsAttrVal;
 
 use crate::{
-    defs::{ReeId, ReeInt},
+    defs::{ReeInt, SsFitId, SsItemId},
     src::Src,
-    ss::svc::SsSvcs,
-    ssi,
+    ss::{fits::SsFits, items::SsItems, svc::SsSvcs},
     util::Result,
 };
 
 mod fit;
+mod fits;
 mod item;
+mod items;
 mod svc;
 
 struct SsView<'a> {
     src: &'a Src,
-    items: &'a HashMap<ReeId, ssi::SsItem>,
+    fits: &'a SsFits,
+    items: &'a SsItems,
 }
 impl<'a> SsView<'a> {
-    fn new(src: &'a Src, items: &'a HashMap<ReeId, ssi::SsItem>) -> Self {
-        Self { src, items }
+    fn new(src: &'a Src, fits: &'a SsFits, items: &'a SsItems) -> Self {
+        Self { src, fits, items }
     }
 }
 
 pub struct SolarSystem {
     src: Src,
-    fit_cnt: Wrapping<ReeId>,
-    fits: HashSet<ReeId>,
-    // fleet_cnt: ReeId,
-    // fleets: HashMap<ReeId, Fleet>,
-    item_cnt: Wrapping<ReeId>,
-    items: HashMap<ReeId, ssi::SsItem>,
+    fits: SsFits,
+    // fleets will go here
+    items: SsItems,
     svcs: SsSvcs,
+    sw_effects: HashSet<SsItemId>,
 }
 impl SolarSystem {
     pub fn new(src: Src) -> Self {
         Self {
             src,
-            fit_cnt: Wrapping(0),
-            fits: HashSet::new(),
-            item_cnt: Wrapping(0),
-            items: HashMap::new(),
+            fits: SsFits::new(),
+            items: SsItems::new(),
             svcs: SsSvcs::new(),
+            sw_effects: HashSet::new(),
         }
     }
     pub fn set_src(&mut self, src: Src) {
-        for item in self.items.values_mut() {
+        for item in self.items.iter_mut() {
             item.reload_a_item(&src)
         }
         self.src = src;
         // TODO: make sure attributes and attribute caps are cleared when source
         // is switched or item is reloaded (as well as stuff in other services)
     }
-    // Attribute calculator
-    pub fn get_item_attr(&mut self, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {
-        self.svcs
-            .calc_get_item_attr_val(&SsView::new(&self.src, &self.items), item_id, attr_id)
+    // Fits
+    pub fn add_fit(&mut self) -> Result<SsFitId> {
+        self.fits.add_fit()
     }
-    pub fn get_item_attrs(&mut self, item_id: &ReeId) -> Result<HashMap<ReeInt, SsAttrVal>> {
+    pub fn remove_fit(&mut self, fit_id: &SsFitId) -> Result<()> {
+        self.fits.remove_fit(fit_id)?;
+        self.items.remove_fit_items(fit_id);
+        Ok(())
+    }
+    pub fn get_fit_ids(&self) -> Vec<SsFitId> {
+        self.fits.get_fit_ids()
+    }
+    // Attribute calculator
+    pub fn get_item_attr(&mut self, item_id: &SsItemId, attr_id: &ReeInt) -> Result<SsAttrVal> {
         self.svcs
-            .calc_get_item_attr_vals(&SsView::new(&self.src, &self.items), item_id)
+            .calc_get_item_attr_val(&SsView::new(&self.src, &self.fits, &self.items), item_id, attr_id)
+    }
+    pub fn get_item_attrs(&mut self, item_id: &SsItemId) -> Result<HashMap<ReeInt, SsAttrVal>> {
+        self.svcs
+            .calc_get_item_attr_vals(&SsView::new(&self.src, &self.fits, &self.items), item_id)
     }
 }

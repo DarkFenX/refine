@@ -12,7 +12,7 @@ impl SolarSystem {
     }
     // Non-public
     fn get_charge(&self, item_id: &ReeId) -> Result<&ssi::SsCharge> {
-        let item = self.get_item(item_id)?;
+        let item = self.items.get_item(item_id)?;
         match item {
             ssi::SsItem::Charge(charge) => Ok(charge),
             _ => Err(Error::new(ErrorKind::UnexpectedItemType(

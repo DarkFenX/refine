@@ -77,13 +77,7 @@ impl SsSvcs {
         let mut vals = self.calc_get_item_dogma_attr_map(item_id)?.clone();
         // Calculate & store attributes which are not calculated yet,
         // but are defined on the EVE item
-        for attr_id in ss_view
-            .items
-            .get(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))?
-            .get_orig_attrs()?
-            .keys()
-        {
+        for attr_id in ss_view.items.get_item(item_id)?.get_orig_attrs()?.keys() {
             match self.calc_get_item_attr_val(ss_view, item_id, attr_id) {
                 Ok(v) => vals.entry(*attr_id).or_insert(v),
                 _ => continue,
@@ -167,10 +161,7 @@ impl SsSvcs {
     }
     // Private methods
     fn calc_calc_item_attr_val(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {
-        let item = match ss_view.items.get(item_id) {
-            Some(i) => i,
-            None => return Err(Error::new(ErrorKind::ItemIdNotFound(*item_id))),
-        };
+        let item = ss_view.items.get_item(item_id)?;
         let attr = match ss_view.src.get_a_attr(attr_id) {
             Some(attr) => attr,
             None => return Err(Error::new(ErrorKind::AAttrNotFound(*attr_id))),
@@ -283,9 +274,9 @@ impl SsSvcs {
                 Ok(v) => v,
                 _ => continue,
             };
-            let afor_item = match ss_view.items.get(&afor_spec.item_id) {
-                Some(i) => i,
-                None => continue,
+            let afor_item = match ss_view.items.get_item(&afor_spec.item_id) {
+                Ok(i) => i,
+                _ => continue,
             };
             let pen_immune = match afor_item.get_category_id() {
                 Ok(cid) => PENALTY_IMMUNE_CATS.contains(&cid),
