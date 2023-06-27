@@ -178,24 +178,23 @@ impl AffectionRegister {
         let afee_srqs = afee_item.get_skill_reqs();
         self.afees.insert(afee_item_id);
         match (afee_fit_id, afee_topdom) {
-            (Some(fid), Some(td)) => self.afees_topdom.add_entry((fid, td), afee_item_id),
+            (Some(fid), Some(td)) => self.afees_topdom.add((fid, td), afee_item_id),
             _ => (),
         }
         match (afee_fit_id, afee_pardom) {
-            (Some(fid), Some(pd)) => self.afees_pardom.add_entry((fid, pd), afee_item_id),
+            (Some(fid), Some(pd)) => self.afees_pardom.add((fid, pd), afee_item_id),
             _ => (),
         }
         match (afee_fit_id, afee_pardom, afee_grp_id) {
             (Some(fid), Some(pd), Ok(gid)) => {
-                self.afees_pardom_grp.add_entry((fid, pd, gid), afee_item_id);
+                self.afees_pardom_grp.add((fid, pd, gid), afee_item_id);
             }
             _ => (),
         }
         match (afee_fit_id, afee_pardom, &afee_srqs) {
             (Some(fid), Some(pd), Ok(srqs)) => {
                 for skill_a_item_id in srqs.keys() {
-                    self.afees_pardom_srq
-                        .add_entry((fid, pd, *skill_a_item_id), afee_item_id);
+                    self.afees_pardom_srq.add((fid, pd, *skill_a_item_id), afee_item_id);
                 }
             }
             _ => (),
@@ -204,7 +203,7 @@ impl AffectionRegister {
             match (afee_fit_id, &afee_srqs) {
                 (Some(fid), Ok(srqs)) => {
                     for skill_a_item_id in srqs.keys() {
-                        self.afees_own_srq.add_entry((fid, *skill_a_item_id), afee_item_id);
+                        self.afees_own_srq.add((fid, *skill_a_item_id), afee_item_id);
                     }
                 }
                 _ => (),
@@ -220,16 +219,16 @@ impl AffectionRegister {
         let afee_srqs = afee_item.get_skill_reqs();
         self.afees.insert(afee_item_id);
         match (afee_fit_id, afee_topdom) {
-            (Some(fid), Some(td)) => self.afees_topdom.rm_entry(&(fid, td), &afee_item_id),
+            (Some(fid), Some(td)) => self.afees_topdom.remove(&(fid, td), &afee_item_id),
             _ => (),
         }
         match (afee_fit_id, afee_pardom) {
-            (Some(fid), Some(pd)) => self.afees_pardom.rm_entry(&(fid, pd), &afee_item_id),
+            (Some(fid), Some(pd)) => self.afees_pardom.remove(&(fid, pd), &afee_item_id),
             _ => (),
         }
         match (afee_fit_id, afee_pardom, afee_grp_id) {
             (Some(fid), Some(pd), Ok(gid)) => {
-                self.afees_pardom_grp.rm_entry(&(fid, pd, gid), &afee_item_id);
+                self.afees_pardom_grp.remove(&(fid, pd, gid), &afee_item_id);
             }
             _ => (),
         }
@@ -237,7 +236,7 @@ impl AffectionRegister {
             (Some(fid), Some(pd), Ok(srqs)) => {
                 for skill_a_item_id in srqs.keys() {
                     self.afees_pardom_srq
-                        .rm_entry(&(fid, pd, *skill_a_item_id), &afee_item_id);
+                        .remove(&(fid, pd, *skill_a_item_id), &afee_item_id);
                 }
             }
             _ => (),
@@ -246,7 +245,7 @@ impl AffectionRegister {
             match (afee_fit_id, &afee_srqs) {
                 (Some(fid), Ok(srqs)) => {
                     for skill_a_item_id in srqs.keys() {
-                        self.afees_own_srq.rm_entry(&(fid, *skill_a_item_id), &afee_item_id);
+                        self.afees_own_srq.remove(&(fid, *skill_a_item_id), &afee_item_id);
                     }
                 }
                 _ => (),
@@ -259,19 +258,19 @@ impl AffectionRegister {
         afor_specs: Vec<AffectorSpec>,
     ) {
         for afor_spec in afor_specs {
-            self.afors.add_entry(afor_spec.item_id, afor_spec.clone());
+            self.afors.add(afor_spec.item_id, afor_spec.clone());
             match (afor_spec.modifier.afee_filter, afor_fit_id) {
                 (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
-                    (ModDomain::Item, _) => self.afors_direct.add_entry(afor_spec.item_id, afor_spec),
-                    (ModDomain::Char, Some(fid)) => self.afors_topdom.add_entry((fid, ModDomain::Char), afor_spec),
-                    (ModDomain::Ship, Some(fid)) => self.afors_topdom.add_entry((fid, ModDomain::Ship), afor_spec),
-                    (ModDomain::Other, _) => self.afors_other.add_entry(afor_spec.item_id, afor_spec),
+                    (ModDomain::Item, _) => self.afors_direct.add(afor_spec.item_id, afor_spec),
+                    (ModDomain::Char, Some(fid)) => self.afors_topdom.add((fid, ModDomain::Char), afor_spec),
+                    (ModDomain::Ship, Some(fid)) => self.afors_topdom.add((fid, ModDomain::Ship), afor_spec),
+                    (ModDomain::Other, _) => self.afors_other.add(afor_spec.item_id, afor_spec),
                     _ => (),
                 },
-                (ModAfeeFilter::Loc(d), Some(fid)) => self.afors_pardom.add_entry((fid, d), afor_spec),
-                (ModAfeeFilter::LocGrp(d, gid), Some(fid)) => self.afors_pardom_grp.add_entry((fid, d, gid), afor_spec),
-                (ModAfeeFilter::LocSrq(d, srq), Some(fid)) => self.afors_pardom_srq.add_entry((fid, d, srq), afor_spec),
-                (ModAfeeFilter::OwnSrq(_, srq), Some(fid)) => self.afors_own_srq.add_entry((fid, srq), afor_spec),
+                (ModAfeeFilter::Loc(d), Some(fid)) => self.afors_pardom.add((fid, d), afor_spec),
+                (ModAfeeFilter::LocGrp(d, gid), Some(fid)) => self.afors_pardom_grp.add((fid, d, gid), afor_spec),
+                (ModAfeeFilter::LocSrq(d, srq), Some(fid)) => self.afors_pardom_srq.add((fid, d, srq), afor_spec),
+                (ModAfeeFilter::OwnSrq(_, srq), Some(fid)) => self.afors_own_srq.add((fid, srq), afor_spec),
                 _ => (),
             }
         }
@@ -282,23 +281,19 @@ impl AffectionRegister {
         afor_specs: Vec<AffectorSpec>,
     ) {
         for afor_spec in afor_specs {
-            self.afors.rm_entry(&afor_spec.item_id, &afor_spec);
+            self.afors.remove(&afor_spec.item_id, &afor_spec);
             match (afor_spec.modifier.afee_filter, afor_fit_id) {
                 (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
-                    (ModDomain::Item, _) => self.afors_direct.rm_entry(&afor_spec.item_id, &afor_spec),
-                    (ModDomain::Char, Some(fid)) => self.afors_topdom.rm_entry(&(fid, ModDomain::Char), &afor_spec),
-                    (ModDomain::Ship, Some(fid)) => self.afors_topdom.rm_entry(&(fid, ModDomain::Ship), &afor_spec),
-                    (ModDomain::Other, _) => self.afors_other.rm_entry(&afor_spec.item_id, &afor_spec),
+                    (ModDomain::Item, _) => self.afors_direct.remove(&afor_spec.item_id, &afor_spec),
+                    (ModDomain::Char, Some(fid)) => self.afors_topdom.remove(&(fid, ModDomain::Char), &afor_spec),
+                    (ModDomain::Ship, Some(fid)) => self.afors_topdom.remove(&(fid, ModDomain::Ship), &afor_spec),
+                    (ModDomain::Other, _) => self.afors_other.remove(&afor_spec.item_id, &afor_spec),
                     _ => (),
                 },
-                (ModAfeeFilter::Loc(d), Some(fid)) => self.afors_pardom.rm_entry(&(fid, d), &afor_spec),
-                (ModAfeeFilter::LocGrp(d, gid), Some(fid)) => {
-                    self.afors_pardom_grp.rm_entry(&(fid, d, gid), &afor_spec)
-                }
-                (ModAfeeFilter::LocSrq(d, srq), Some(fid)) => {
-                    self.afors_pardom_srq.rm_entry(&(fid, d, srq), &afor_spec)
-                }
-                (ModAfeeFilter::OwnSrq(_, srq), Some(fid)) => self.afors_own_srq.rm_entry(&(fid, srq), &afor_spec),
+                (ModAfeeFilter::Loc(d), Some(fid)) => self.afors_pardom.remove(&(fid, d), &afor_spec),
+                (ModAfeeFilter::LocGrp(d, gid), Some(fid)) => self.afors_pardom_grp.remove(&(fid, d, gid), &afor_spec),
+                (ModAfeeFilter::LocSrq(d, srq), Some(fid)) => self.afors_pardom_srq.remove(&(fid, d, srq), &afor_spec),
+                (ModAfeeFilter::OwnSrq(_, srq), Some(fid)) => self.afors_own_srq.remove(&(fid, srq), &afor_spec),
                 _ => (),
             }
         }

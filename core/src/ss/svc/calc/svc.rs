@@ -239,7 +239,7 @@ impl SsSvcs {
         let mut dogma_val = match attr.max_attr_id {
             Some(capping_attr_id) => match self.calc_get_item_attr_val(ss_view, item_id, &capping_attr_id) {
                 Ok(capping_vals) => {
-                    self.calc_data.caps.add_entry(*item_id, capping_attr_id, *attr_id);
+                    self.calc_data.caps.add(*item_id, capping_attr_id, *attr_id);
                     ReeFloat::min(dogma_val, capping_vals.dogma)
                 }
                 Err(_) => dogma_val,

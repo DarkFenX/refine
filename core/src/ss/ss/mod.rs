@@ -8,7 +8,6 @@ use crate::{
 };
 
 mod item;
-mod ss;
 
 pub struct SolarSystem {
     src: Src,
