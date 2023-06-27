@@ -7,13 +7,13 @@ use crate::{
     consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
     defs::{ReeFloat, ReeId, ReeInt},
     ss::{
+        item::SsItem,
         svc::{
             calc::support::{AffectorSpec, SsAttrVal},
             SsSvcs,
         },
         SsView,
     },
-    ssi,
     util::{Error, ErrorKind, Result},
 };
 
@@ -86,18 +86,18 @@ impl SsSvcs {
         Ok(vals)
     }
     // Maintenance methods
-    pub(in crate::ss) fn calc_item_loaded(&mut self, item: &ssi::SsItem) {
+    pub(in crate::ss) fn calc_item_loaded(&mut self, item: &SsItem) {
         self.calc_data.attrs.insert(item.get_id(), HashMap::new());
         self.calc_data.affections.reg_afee(item);
     }
-    pub(in crate::ss) fn calc_item_unloaded(&mut self, item: &ssi::SsItem) {
+    pub(in crate::ss) fn calc_item_unloaded(&mut self, item: &SsItem) {
         self.calc_data.affections.unreg_afee(item);
         self.calc_data.attrs.remove(&item.get_id());
     }
     pub(in crate::ss) fn calc_effects_started(
         &mut self,
         ss_view: &SsView,
-        item: &ssi::SsItem,
+        item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
@@ -117,7 +117,7 @@ impl SsSvcs {
     pub(in crate::ss) fn calc_effects_stopped(
         &mut self,
         ss_view: &SsView,
-        item: &ssi::SsItem,
+        item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
         let afor_specs = generate_local_afor_specs(item, effects);
@@ -176,9 +176,7 @@ impl SsSvcs {
             },
         };
         match (attr_id, item) {
-            (280, ssi::SsItem::Skill(s)) => {
-                return Ok(SsAttrVal::new(base_val, s.level as ReeFloat, s.level as ReeFloat))
-            }
+            (280, SsItem::Skill(s)) => return Ok(SsAttrVal::new(base_val, s.level as ReeFloat, s.level as ReeFloat)),
             _ => (),
         }
         let mut stacked = HashMap::new();
@@ -263,7 +261,7 @@ impl SsSvcs {
             _ => return,
         }
     }
-    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &ssi::SsItem, attr_id: &ReeInt) -> Vec<Modification> {
+    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &SsItem, attr_id: &ReeInt) -> Vec<Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
         for afor_spec in self.calc_data.affections.get_afor_specs_by_afee(item).iter() {
@@ -350,7 +348,7 @@ fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {
 }
 
 // Maintenance- and query-related functions
-fn generate_local_afor_specs(afor_item: &ssi::SsItem, effects: &Vec<ad::ArcEffect>) -> Vec<AffectorSpec> {
+fn generate_local_afor_specs(afor_item: &SsItem, effects: &Vec<ad::ArcEffect>) -> Vec<AffectorSpec> {
     let mut specs = Vec::new();
     for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
         for afor_mod in effect.mods.iter() {

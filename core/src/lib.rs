@@ -22,10 +22,12 @@
 pub use consts::{ModRack, OrdAddMode, State};
 pub use defs::{ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
 pub use src::Src;
-pub use ss::{SolarSystem, SsAttrVal};
-pub use ssn::{
-    SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsImplantInfo, SsItemInfo, SsModuleInfo,
-    SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsSubsystemInfo, SsSwEffectInfo,
+pub use ss::{
+    info::{
+        SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsImplantInfo, SsItemInfo,
+        SsModuleInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsSubsystemInfo, SsSwEffectInfo,
+    },
+    SolarSystem, SsAttrVal,
 };
 pub use util::{Error, ErrorKind, Result};
 
@@ -36,6 +38,4 @@ mod defs;
 pub mod ed;
 mod src;
 mod ss;
-mod ssi;
-pub mod ssn;
 mod util;

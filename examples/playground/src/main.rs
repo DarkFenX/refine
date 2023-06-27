@@ -23,7 +23,7 @@ fn setup_logger() -> () {
         .with(stdout_log)
         .with(
             tracing_subscriber::filter::Targets::new()
-                .with_default(None)
+                .with_default(tracing::Level::ERROR)
                 .with_target("reefast_core", tracing::Level::TRACE)
                 .with_target("reefast_dh_eve", tracing::Level::TRACE)
                 .with_target("reefast_dh_adapted", tracing::Level::TRACE),
@@ -59,18 +59,20 @@ fn main() {
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
     let ship = sol_sys.set_fit_ship(fit, 11184, true).unwrap();
-    // for skill_id in skill_ids.iter() {
-    //     sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
-    // }
-    // let implant = sol_sys.add_implant(fit, 19687, true);
-    println!("{}", sol_sys.get_item_attr(&ship.id, &4).unwrap().dogma);
-    // let laser = sol_sys
-    //     .add_module(fit, ModRack::High, OrdAddMode::Equip, 3041, State::Online, Some(12563))
-    //     .unwrap();
-    let anp = sol_sys
-        .add_module(fit, ModRack::Low, OrdAddMode::Equip, 1306, State::Offline, None)
-        .unwrap();
-    println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
-    sol_sys.set_module_state(&anp.id, State::Online);
-    println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
+    for skill_id in skill_ids.iter() {
+        sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
+    }
+    tracing::error!("starting");
+    for _ in 0..1000000 {
+        let anp = sol_sys
+            .add_module(fit, ModRack::Low, OrdAddMode::Equip, 1306, State::Offline, None)
+            .unwrap();
+        sol_sys.get_item_attrs(&ship.id);
+        sol_sys.remove_item(&anp.id);
+        sol_sys.get_item_attrs(&ship.id);
+    }
+    tracing::error!("done");
+    // println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
+    // sol_sys.set_module_state(&anp.id, State::Online);
+    // println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
 }

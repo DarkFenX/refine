@@ -3,8 +3,7 @@ use std::{collections::HashSet, hash::Hash};
 use crate::{
     consts::{ModAfeeFilter, ModDomain},
     defs::{ReeId, ReeInt},
-    ss::items::SsItems,
-    ssi,
+    ss::item::{SsItem, SsItems},
     util::KeyedStorage1L,
 };
 
@@ -116,7 +115,7 @@ impl AffectionRegister {
         afees
     }
     pub(in crate::ss::svc::calc) fn get_projected_afee_items(&self, afor_spec: ReeId, tgt_items: ReeId) {}
-    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afee(&self, afee_item: &ssi::SsItem) -> Vec<AffectorSpec> {
+    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afee(&self, afee_item: &SsItem) -> Vec<AffectorSpec> {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
         let afee_topdom = afee_item.get_top_domain();
@@ -170,7 +169,7 @@ impl AffectionRegister {
             .unwrap_or_else(|| Vec::new())
     }
     // Maintenance methods
-    pub(in crate::ss::svc::calc) fn reg_afee(&mut self, afee_item: &ssi::SsItem) {
+    pub(in crate::ss::svc::calc) fn reg_afee(&mut self, afee_item: &SsItem) {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
         let afee_topdom = afee_item.get_top_domain();
@@ -212,7 +211,7 @@ impl AffectionRegister {
             }
         }
     }
-    pub(in crate::ss::svc::calc) fn unreg_afee(&mut self, afee_item: &ssi::SsItem) {
+    pub(in crate::ss::svc::calc) fn unreg_afee(&mut self, afee_item: &SsItem) {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
         let afee_topdom = afee_item.get_top_domain();
