@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from tests.support.request import Request
 
 AttrVals = namedtuple('AttrVals', ('base', 'dogma', 'extra'))
+EffectInfo = namedtuple('EffectInfo', ('running', 'mode'))
 
 
 class Item(AttrDict):
@@ -19,7 +20,9 @@ class Item(AttrDict):
     def __init__(self, client: TestClient, data: TestObjects, ss_id: str):
         super().__init__(
             data=data,
-            hooks={'attrs': lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()}})
+            hooks={
+                'attrs': lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()},
+                'effects': lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()}})
         self._client = client
         self._ss_id = ss_id
 
