@@ -57,13 +57,13 @@ impl SsSvcs {
         attr_id: &ReeInt,
     ) -> Result<SsAttrVal> {
         // Try accessing cached value
-        match self.calc_get_item_dogma_attr_map(item_id)?.get(attr_id) {
+        match self.calc_data.attrs.get_item_attrs(item_id)?.get(attr_id) {
             Some(v) => return Ok(*v),
             _ => (),
         };
         // If it is not cached, calculate and cache it
         let val = self.calc_calc_item_attr_val(ss_view, item_id, attr_id)?;
-        self.calc_get_item_dogma_attrs_mut(item_id)?.insert(*attr_id, val);
+        self.calc_data.attrs.get_item_attrs_mut(item_id)?.insert(*attr_id, val);
         Ok(val)
     }
     pub(in crate::ss) fn calc_get_item_attr_vals(
@@ -74,7 +74,7 @@ impl SsSvcs {
         // ssi::Item can have attributes which are not defined on the original EVE item. This happens when
         // something requested an attr value and it was calculated using base attribute value. Here,
         // we get already calculated attributes, which includes attributes absent on the EVE item
-        let mut vals = self.calc_get_item_dogma_attr_map(item_id)?.clone();
+        let mut vals = self.calc_data.attrs.get_item_attrs_mut(item_id)?.clone();
         // Calculate & store attributes which are not calculated yet,
         // but are defined on the EVE item
         for attr_id in ss_view.items.get_item(item_id)?.get_orig_attrs()?.keys() {
@@ -87,13 +87,14 @@ impl SsSvcs {
     }
     // Maintenance methods
     pub(in crate::ss) fn calc_item_loaded(&mut self, item: &SsItem) {
-        self.calc_data.attrs.insert(item.get_id(), HashMap::new());
+        self.calc_data.attrs.add_item(item.get_id());
         self.calc_data.affections.reg_afee(item);
     }
     pub(in crate::ss) fn calc_item_unloaded(&mut self, item: &SsItem) {
         self.calc_data.affections.unreg_afee(item);
-        self.calc_data.attrs.remove(&item.get_id());
-        self.calc_data.caps.clear_item_caps(&item.get_id());
+        let item_id = item.get_id();
+        self.calc_data.attrs.remove_item(&item_id);
+        self.calc_data.caps.clear_item_caps(&item_id);
     }
     pub(in crate::ss) fn calc_effects_started(
         &mut self,
@@ -253,7 +254,7 @@ impl SsSvcs {
         Ok(SsAttrVal::new(base_val, dogma_val, dogma_val))
     }
     fn calc_force_recalc(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) {
-        match self.calc_get_item_dogma_attrs_mut(item_id) {
+        match self.calc_data.attrs.get_item_attrs_mut(item_id) {
             Ok(item_attrs) => {
                 if item_attrs.remove(attr_id).is_some() {
                     self.notify_attr_val_changed(ss_view, item_id, attr_id);
@@ -286,20 +287,6 @@ impl SsSvcs {
             mods.push(modification);
         }
         mods
-    }
-    fn calc_get_item_dogma_attr_map(&self, item_id: &ReeId) -> Result<&HashMap<ReeInt, SsAttrVal>> {
-        // All items known to calculator are in this map, so consider absence an error
-        self.calc_data
-            .attrs
-            .get(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
-    }
-    fn calc_get_item_dogma_attrs_mut(&mut self, item_id: &ReeId) -> Result<&mut HashMap<ReeInt, SsAttrVal>> {
-        // All items known to calculator are in this map, so consider absence an error
-        self.calc_data
-            .attrs
-            .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
     }
 }
 

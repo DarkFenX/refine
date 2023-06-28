@@ -5,10 +5,10 @@ use crate::{
     util::KeyedStorage2L,
 };
 
-pub(in crate::ss::svc::calc) struct AttrCap {
+pub(in crate::ss::svc::calc) struct AttrCapData {
     data: KeyedStorage2L<SsItemId, AttrId, AttrId>,
 }
-impl AttrCap {
+impl AttrCapData {
     pub(in crate::ss::svc::calc) fn new() -> Self {
         Self {
             data: KeyedStorage2L::new(),
