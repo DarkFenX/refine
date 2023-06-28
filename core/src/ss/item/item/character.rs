@@ -6,7 +6,7 @@ use crate::{
     util::{Named, OptMap},
 };
 
-use super::{bool_to_state, state_to_bool};
+use super::support::{bool_to_state, state_to_bool};
 
 pub(in crate::ss) struct SsCharacter {
     pub(in crate::ss) id: SsItemId,

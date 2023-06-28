@@ -34,6 +34,7 @@ mod ship;
 mod skill;
 mod stance;
 mod subsystem;
+mod support;
 mod sw_effect;
 
 pub(in crate::ss) enum SsItem {
@@ -294,19 +295,5 @@ impl SsItem {
             Self::Subsystem(_) => false,
             Self::SwEffect(_) => false,
         }
-    }
-}
-
-fn bool_to_state(bool_state: bool) -> State {
-    match bool_state {
-        true => State::Offline,
-        false => State::Ghost,
-    }
-}
-
-fn state_to_bool(state: State) -> bool {
-    match state {
-        State::Ghost => false,
-        _ => true,
     }
 }
