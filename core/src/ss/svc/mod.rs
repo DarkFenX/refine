@@ -2,13 +2,13 @@ use std::collections::HashSet;
 
 use calc::CalcData;
 pub use calc::SsAttrVal;
-use effect::RunningEffects;
+use running_effects::RunningEffects;
 
 use crate::defs::{EffectId, SsItemId};
 
 mod calc;
-mod effect;
 mod routing;
+mod running_effects;
 
 pub(in crate::ss) struct SsSvcs {
     pub(in crate::ss::svc) running_effects: RunningEffects,

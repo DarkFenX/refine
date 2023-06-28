@@ -93,6 +93,7 @@ impl SsSvcs {
     pub(in crate::ss) fn calc_item_unloaded(&mut self, item: &SsItem) {
         self.calc_data.affections.unreg_afee(item);
         self.calc_data.attrs.remove(&item.get_id());
+        self.calc_data.caps.clear_item_caps(&item.get_id());
     }
     pub(in crate::ss) fn calc_effects_started(
         &mut self,
@@ -139,7 +140,7 @@ impl SsSvcs {
         let capped_attr_ids = self
             .calc_data
             .caps
-            .get_l2(item_id, attr_id)
+            .get_capped_attr_ids(item_id, attr_id)
             .map(|v| v.iter().map(|v| *v).collect_vec());
         if let Some(capped_attr_ids) = capped_attr_ids {
             for capped_attr_id in capped_attr_ids.iter() {
@@ -239,7 +240,7 @@ impl SsSvcs {
         let mut dogma_val = match attr.max_attr_id {
             Some(capping_attr_id) => match self.calc_get_item_attr_val(ss_view, item_id, &capping_attr_id) {
                 Ok(capping_vals) => {
-                    self.calc_data.caps.add(*item_id, capping_attr_id, *attr_id);
+                    self.calc_data.caps.add_cap(*item_id, capping_attr_id, *attr_id);
                     ReeFloat::min(dogma_val, capping_vals.dogma)
                 }
                 Err(_) => dogma_val,

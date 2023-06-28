@@ -10,9 +10,14 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
     pub(crate) fn new() -> KeyedStorage1L<K, V> {
         Self { data: HashMap::new() }
     }
+    // Getters
     pub(crate) fn get(&self, key: &K) -> Option<&HashSet<V>> {
         self.data.get(key)
     }
+    fn is_empty(&self) -> bool {
+        self.data.is_empty()
+    }
+    // Maintenance
     pub(crate) fn add(&mut self, key: K, entry: V) {
         let values = self.data.entry(key).or_insert_with(|| HashSet::with_capacity(1));
         values.insert(entry);
@@ -56,9 +61,6 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
             self.data.remove(key);
         }
     }
-    fn is_empty(&self) -> bool {
-        self.data.is_empty()
-    }
 }
 
 pub(crate) struct KeyedStorage2L<A, B, V> {
@@ -68,6 +70,7 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KeyedStorage2L<A, B, V> {
     pub(crate) fn new() -> KeyedStorage2L<A, B, V> {
         Self { data: HashMap::new() }
     }
+    // Getters
     pub(crate) fn get_l1(&self, key1: &A) -> Option<&KeyedStorage1L<B, V>> {
         self.data.get(key1)
     }
@@ -77,11 +80,12 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KeyedStorage2L<A, B, V> {
             None => None,
         }
     }
+    // Maintenance
     pub(crate) fn add(&mut self, key1: A, key2: B, entry: V) {
         let ks1l = self.data.entry(key1).or_insert_with(|| KeyedStorage1L::new());
         ks1l.add(key2, entry);
     }
-    pub(crate) fn remove(&mut self, key1: &A, key2: &B, entry: &V) {
+    pub(crate) fn remove_entry(&mut self, key1: &A, key2: &B, entry: &V) {
         let need_cleanup = match self.data.get_mut(key1) {
             None => return,
             Some(v) => {
@@ -92,5 +96,8 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KeyedStorage2L<A, B, V> {
         if need_cleanup {
             self.data.remove(key1);
         }
+    }
+    pub(crate) fn remove_l1(&mut self, key: &A) {
+        self.data.remove(key);
     }
 }
