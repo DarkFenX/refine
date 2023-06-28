@@ -27,5 +27,5 @@ def test_absent_attr_combination(client, consts):
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_rig(type_id=eve_item.id)
     # Invalid source value shouldn't screw whole calculation process
-    value = api_item.update().attr_vals[eve_tgt_attr.id].dogma
+    value = api_item.update().attrs[eve_tgt_attr.id].dogma
     assert value == approx(150)

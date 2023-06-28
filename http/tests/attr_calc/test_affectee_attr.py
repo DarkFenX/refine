@@ -27,11 +27,11 @@ def test_multiple(client, consts):
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_rig(type_id=eve_item.id)
     # First attribute should be modified by modifier 1
-    value = api_item.update().attr_vals[eve_tgt_attr1.id].dogma
+    value = api_item.update().attrs[eve_tgt_attr1.id].dogma
     assert value == approx(60)
     # Second should be modified by modifier 2
-    value = api_item.attr_vals[eve_tgt_attr2.id].dogma
+    value = api_item.attrs[eve_tgt_attr2.id].dogma
     assert value == approx(96)
     # Third should stay unmodified
-    value = api_item.attr_vals[eve_tgt_attr3.id].dogma
+    value = api_item.attrs[eve_tgt_attr3.id].dogma
     assert value == approx(100)

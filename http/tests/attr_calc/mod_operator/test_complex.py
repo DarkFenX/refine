@@ -130,7 +130,7 @@ def get_dogma_value(
     if val_post_ass:
         api_fit.add_rig(type_id=eve_item_src_post_ass.id)
     api_item_tgt = api_fit.set_ship(type_id=eve_item_tgt.id)
-    return api_item_tgt.update().attr_vals[eve_tgt_attr.id].dogma
+    return api_item_tgt.update().attrs[eve_tgt_attr.id].dogma
 
 
 def test_almost_all_in(client, consts):

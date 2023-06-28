@@ -1,3 +1,4 @@
+pub use effect_info::EffectInfo;
 pub use ss::SolarSystem;
 pub use svc::SsAttrVal;
 pub(in crate::ss) use view::SsView;

@@ -44,7 +44,7 @@ def get_value_for_state(client, consts, state):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=state)
-    return api_item.update().attr_vals[eve_tgt_attr.id].dogma
+    return api_item.update().attrs[eve_tgt_attr.id].dogma
 
 
 def test_fit_offline(client, consts):

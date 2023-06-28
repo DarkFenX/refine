@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use crate::{
     consts::DEFAULT_EFFECT_MODE,
-    defs::{AttrId, EffectId, ReeInt, SsFitId, SsItemId},
+    defs::{AttrId, EffectId, SsFitId, SsItemId},
     src::Src,
     ss::{effect_info::EffectInfo, fit::SsFits, item::SsItems, svc::SsSvcs, SsAttrVal, SsView},
     util::Result,
@@ -64,17 +64,12 @@ impl SolarSystem {
         let running_effect_ids = self.svcs.get_running_effects(item_id);
         let effect_infos = a_effect_ids
             .map(|v| {
-                (
-                    *v,
-                    EffectInfo::new(
-                        *v,
-                        match running_effect_ids {
-                            Some(effect_ids) => effect_ids.contains(v),
-                            None => false,
-                        },
-                        *item.get_effect_modes().get(v).unwrap_or(&DEFAULT_EFFECT_MODE)
-                    ),
-                )
+                let running = match running_effect_ids {
+                    Some(effect_ids) => effect_ids.contains(v),
+                    None => false,
+                };
+                let mode = item.get_effect_modes().get(v).unwrap_or(&DEFAULT_EFFECT_MODE);
+                (*v, EffectInfo::new(running, *mode))
             })
             .collect();
         Ok(effect_infos)

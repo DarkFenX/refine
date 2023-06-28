@@ -27,14 +27,14 @@ def test_item_addition_removal(client, consts):
     api_fit = api_ss.create_fit()
     api_fit.set_ship(type_id=eve_ship.id)
     api_rig = api_fit.add_rig(type_id=eve_rig.id)
-    value = api_rig.update().attr_vals[eve_attr3.id].dogma
+    value = api_rig.update().attrs[eve_attr3.id].dogma
     assert value == approx(0.5375)
     eve_implant = api_fit.add_implant(type_id=eve_implant.id)
     # Added item must clean all already calculated attributes which are now
     # affected by it, to allow recalculation
-    value = api_rig.update().attr_vals[eve_attr3.id].dogma
+    value = api_rig.update().attrs[eve_attr3.id].dogma
     assert value == approx(0.6875)
     eve_implant.remove()
     # Removed item should've triggered cleanup too
-    value = api_rig.update().attr_vals[eve_attr3.id].dogma
+    value = api_rig.update().attrs[eve_attr3.id].dogma
     assert value == approx(0.5375)

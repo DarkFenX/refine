@@ -24,7 +24,7 @@ def get_dogma_value_ext(client, consts, src1_cat_id, src2_cat_id):
     api_fit.add_rig(type_id=eve_item_src1.id)
     api_fit.add_rig(type_id=eve_item_src2.id)
     api_item_tgt = api_fit.set_ship(type_id=eve_item_tgt.id)
-    return api_item_tgt.update().attr_vals[eve_tgt_attr.id].dogma
+    return api_item_tgt.update().attrs[eve_tgt_attr.id].dogma
 
 
 def test_ship(client, consts):

@@ -45,7 +45,7 @@ def get_value_after_switch(client, consts, state_from, state_to):
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=state_from)
     api_item.change_mod(state=state_to)
-    return api_item.update().attr_vals[eve_tgt_attr.id].dogma
+    return api_item.update().attrs[eve_tgt_attr.id].dogma
 
 
 def test_switch_up_single(client, consts):

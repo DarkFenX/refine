@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::info::{HAttrVal, HItemInfoMode};
+use crate::info::{HAttrVal, HEffect, HItemInfoMode};
 
 use super::HModuleInfoPartial;
 
@@ -8,7 +8,8 @@ use super::HModuleInfoPartial;
 pub(crate) struct HModuleInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HModuleInfoPartial,
-    pub(crate) attr_vals: HashMap<rc::ReeInt, HAttrVal>,
+    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
 }
 impl HModuleInfoFull {
     pub(super) fn mk_info(
@@ -17,13 +18,18 @@ impl HModuleInfoFull {
         item_mode: HItemInfoMode,
     ) -> Self {
         let partial_info = HModuleInfoPartial::mk_info(core_ss, core_module_info, item_mode);
-        let attr_vals = match core_ss.get_item_attrs(&partial_info.id) {
-            Ok(attrs) => attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
+        let attrs = match core_ss.get_item_attrs(&partial_info.id) {
+            Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
+            _ => HashMap::new(),
+        };
+        let effects = match core_ss.get_item_effects(&partial_info.id) {
+            Ok(core_effects) => core_effects.into_iter().map(|(k, v)| (k, HEffect::from(&v))).collect(),
             _ => HashMap::new(),
         };
         Self {
             partial_info,
-            attr_vals,
+            attrs,
+            effects,
         }
     }
 }

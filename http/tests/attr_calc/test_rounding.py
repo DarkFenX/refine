@@ -10,7 +10,7 @@ def get_value_simple(client, attr_id, base_value):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_implant(type_id=eve_item.id)
-    return api_item.update().attr_vals[eve_attr.id].dogma
+    return api_item.update().attrs[eve_attr.id].dogma
 
 
 def test_cpu_down(client, consts):
@@ -38,7 +38,7 @@ def test_cpu_modified(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_implant(type_id=eve_item.id)
-    value = api_item.update().attr_vals[eve_tgt_attr.id].dogma
+    value = api_item.update().attrs[eve_tgt_attr.id].dogma
     assert value == approx(2.33)
 
 

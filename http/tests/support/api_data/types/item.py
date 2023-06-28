@@ -19,7 +19,7 @@ class Item(AttrDict):
     def __init__(self, client: TestClient, data: TestObjects, ss_id: str):
         super().__init__(
             data=data,
-            hooks={'attr_vals': lambda attr_vals: {int(k): AttrVals(*v) for k, v in attr_vals.items()}})
+            hooks={'attrs': lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()}})
         self._client = client
         self._ss_id = ss_id
 

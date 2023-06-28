@@ -38,7 +38,7 @@ def test_calculation(client, consts):
     api_fit.set_ship(type_id=eve_ship.id)
     api_rig = api_fit.add_rig(type_id=eve_rig.id)
     api_fit.add_implant(type_id=eve_implant.id)
-    value = api_rig.update().attr_vals[eve_attr4.id].dogma
+    value = api_rig.update().attrs[eve_attr4.id].dogma
     # If everything is processed properly, item1 will multiply attr2 by
     # attr1 on self, resulting in 20 * 5 = 100, then apply it as percentage
     # modifier on ship's (item2) attr3, resulting in 150 + 100% = 300, then

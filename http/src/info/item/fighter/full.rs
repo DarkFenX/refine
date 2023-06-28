@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::info::HAttrVal;
+use crate::info::{HAttrVal, HEffect};
 
 use super::HFighterInfoPartial;
 
@@ -8,18 +8,24 @@ use super::HFighterInfoPartial;
 pub(crate) struct HFighterInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HFighterInfoPartial,
-    pub(crate) attr_vals: HashMap<rc::ReeInt, HAttrVal>,
+    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
 }
 impl HFighterInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_fighter_info: &rc::SsFighterInfo) -> Self {
         let partial_info = HFighterInfoPartial::from(core_fighter_info);
-        let attr_vals = match core_ss.get_item_attrs(&partial_info.id) {
-            Ok(attrs) => attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
+        let attrs = match core_ss.get_item_attrs(&partial_info.id) {
+            Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
+            _ => HashMap::new(),
+        };
+        let effects = match core_ss.get_item_effects(&partial_info.id) {
+            Ok(core_effects) => core_effects.into_iter().map(|(k, v)| (k, HEffect::from(&v))).collect(),
             _ => HashMap::new(),
         };
         Self {
             partial_info,
-            attr_vals,
+            attrs,
+            effects,
         }
     }
 }

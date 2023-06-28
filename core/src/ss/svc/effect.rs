@@ -15,12 +15,10 @@ impl RunningEffects {
         }
     }
     // Getters
-    pub(in crate::ss::svc) fn get_running_effects(&self, item_id: &SsItemId) -> Option<&HashSet<EffectId>>
-    {
+    pub(in crate::ss::svc) fn get_running_effects(&self, item_id: &SsItemId) -> Option<&HashSet<EffectId>> {
         self.data.get(item_id)
     }
-    pub(in crate::ss::svc) fn is_effect_running(&self, item_id: &SsItemId, effect_id: &EffectId) -> bool
-    {
+    pub(in crate::ss::svc) fn is_effect_running(&self, item_id: &SsItemId, effect_id: &EffectId) -> bool {
         match self.data.get(item_id) {
             Some(effect_ids) => effect_ids.contains(effect_id),
             None => false,
