@@ -4,14 +4,14 @@ use super::enums::CItemType;
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CItem {
-    id: rc::ReeInt,
+    id: rc::ItemId,
     itype: Option<CItemType>,
-    grp_id: rc::ReeInt,
-    cat_id: rc::ReeInt,
-    attr_vals: HashMap<rc::ReeInt, rc::ReeFloat>,
-    effect_datas: HashMap<rc::ReeInt, CItemEffData>,
-    defeff_id: Option<rc::ReeInt>,
-    srqs: HashMap<rc::ReeInt, rc::ReeInt>,
+    grp_id: rc::ItemGrpId,
+    cat_id: rc::ItemCatId,
+    attr_vals: HashMap<rc::AttrId, rc::AttrVal>,
+    effect_datas: HashMap<rc::EffectId, CItemEffData>,
+    defeff_id: Option<rc::EffectId>,
+    srqs: HashMap<rc::ItemId, rc::SkillLevel>,
 }
 impl From<&rc::ad::AItem> for CItem {
     fn from(a_item: &rc::ad::AItem) -> Self {
@@ -44,9 +44,9 @@ impl Into<rc::ad::AItem> for &CItem {
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 struct CItemEffData {
-    cd: Option<rc::ReeFloat>,
-    charge_amount: Option<rc::ReeInt>,
-    charge_reload_time: Option<rc::ReeFloat>,
+    cd: Option<rc::AttrVal>,
+    charge_amount: Option<rc::Amount>,
+    charge_reload_time: Option<rc::AttrVal>,
 }
 impl From<&rc::ad::AItemEffData> for CItemEffData {
     fn from(a_item_eff_data: &rc::ad::AItemEffData) -> Self {

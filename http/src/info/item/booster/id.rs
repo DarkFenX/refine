@@ -1,7 +1,7 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HBoosterInfoId {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) id: rc::ReeId,
+    pub(crate) id: rc::SsItemId,
 }
 impl From<&rc::SsBoosterInfo> for HBoosterInfoId {
     fn from(core_booster_info: &rc::SsBoosterInfo) -> Self {

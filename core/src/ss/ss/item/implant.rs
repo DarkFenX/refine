@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ReeInt, SsFitId, SsItemId},
+    defs::{ItemId, SsFitId, SsItemId},
     ss::{
         info::SsImplantInfo,
         item::{SsImplant, SsItem},
@@ -22,7 +22,7 @@ impl SolarSystem {
             .collect();
         Ok(implant_infos)
     }
-    pub fn add_implant(&mut self, fit_id: SsFitId, a_item_id: ReeInt, state: bool) -> Result<SsImplantInfo> {
+    pub fn add_implant(&mut self, fit_id: SsFitId, a_item_id: ItemId, state: bool) -> Result<SsImplantInfo> {
         let item_id = self.items.alloc_item_id()?;
         let implant = SsImplant::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsImplantInfo::from(&implant);

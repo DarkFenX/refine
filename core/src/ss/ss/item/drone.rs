@@ -1,6 +1,6 @@
 use crate::{
     consts::State,
-    defs::{ReeInt, SsFitId, SsItemId},
+    defs::{ItemId, SsFitId, SsItemId},
     ss::{
         info::SsDroneInfo,
         item::{SsDrone, SsItem},
@@ -23,7 +23,7 @@ impl SolarSystem {
             .collect();
         Ok(drone_infos)
     }
-    pub fn add_drone(&mut self, fit_id: SsFitId, a_item_id: ReeInt, state: State) -> Result<SsDroneInfo> {
+    pub fn add_drone(&mut self, fit_id: SsFitId, a_item_id: ItemId, state: State) -> Result<SsDroneInfo> {
         let item_id = self.items.alloc_item_id()?;
         let drone = SsDrone::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsDroneInfo::from(&drone);

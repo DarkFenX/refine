@@ -1,6 +1,11 @@
 use std::sync::Arc;
 
-use crate::{ad, defs::ReeInt, ed, util::Result};
+use crate::{
+    ad,
+    defs::{AttrId, BuffId, EffectId, ItemId, MutaId},
+    ed,
+    util::Result,
+};
 
 use super::inner::InnerSrc;
 
@@ -21,19 +26,19 @@ impl Src {
         };
         Ok(src)
     }
-    pub(crate) fn get_a_item(&self, id: &ReeInt) -> Option<ad::ArcItem> {
+    pub(crate) fn get_a_item(&self, id: &ItemId) -> Option<ad::ArcItem> {
         self.inner.a_handler.get_item(id)
     }
-    pub(crate) fn get_a_attr(&self, id: &ReeInt) -> Option<ad::ArcAttr> {
+    pub(crate) fn get_a_attr(&self, id: &AttrId) -> Option<ad::ArcAttr> {
         self.inner.a_handler.get_attr(id)
     }
-    pub(crate) fn get_a_effect(&self, id: &ReeInt) -> Option<ad::ArcEffect> {
+    pub(crate) fn get_a_effect(&self, id: &EffectId) -> Option<ad::ArcEffect> {
         self.inner.a_handler.get_effect(id)
     }
-    pub(crate) fn get_a_muta(&self, id: &ReeInt) -> Option<ad::ArcMuta> {
+    pub(crate) fn get_a_muta(&self, id: &MutaId) -> Option<ad::ArcMuta> {
         self.inner.a_handler.get_muta(id)
     }
-    pub(crate) fn get_a_buff(&self, id: &ReeInt) -> Option<ad::ArcBuff> {
+    pub(crate) fn get_a_buff(&self, id: &BuffId) -> Option<ad::ArcBuff> {
         self.inner.a_handler.get_buff(id)
     }
 }

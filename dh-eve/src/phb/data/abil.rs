@@ -1,4 +1,4 @@
-use crate::phb::fsd::FsdMerge;
+use crate::phb::fsd::{FsdId, FsdMerge};
 
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PFighterAbil {
@@ -10,7 +10,7 @@ pub(in crate::phb) struct PFighterAbil {
     pub(in crate::phb) disallow_lowsec: bool,
 }
 impl FsdMerge<rc::ed::EFighterAbil> for PFighterAbil {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EFighterAbil> {
+    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EFighterAbil> {
         vec![rc::ed::EFighterAbil::new(
             id,
             self.target_mode,

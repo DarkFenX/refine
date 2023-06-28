@@ -1,8 +1,11 @@
 use std::collections::HashSet;
 
 use crate::{
-    adg::{rels::Pk, GData},
-    defs::{ReeFloat, ReeInt},
+    adg::{
+        rels::{KeyPart, Pk},
+        GData,
+    },
+    defs::{AttrId, AttrVal, ItemId},
     ed::EItemAttr,
 };
 
@@ -26,12 +29,12 @@ fn move_basic_attrs(g_data: &mut GData) {
 }
 
 fn move_basic_attr(
-    item_id: ReeInt,
-    attr_id: ReeInt,
-    basic_value: ReeFloat,
+    item_id: ItemId,
+    attr_id: AttrId,
+    basic_value: AttrVal,
     g_data_item_attrs: &mut Vec<EItemAttr>,
-    attr_ids: &HashSet<ReeInt>,
-    seen_pks: &HashSet<Vec<ReeInt>>,
+    attr_ids: &HashSet<AttrId>,
+    seen_pks: &HashSet<Vec<KeyPart>>,
 ) {
     // Shouldn't be useful on actual data, but causes lots of broken relations when running tests
     if !attr_ids.contains(&attr_id) {

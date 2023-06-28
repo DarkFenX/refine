@@ -2,7 +2,7 @@ use std::{collections::HashSet, hash::Hash};
 
 use crate::{
     consts::{ModAfeeFilter, ModDomain},
-    defs::{ReeId, ReeInt},
+    defs::{ItemGrpId, ItemId, SsFitId, SsItemId},
     ss::item::{SsItem, SsItems},
     util::KeyedStorage1L,
 };
@@ -12,47 +12,47 @@ use super::affector::AffectorSpec;
 pub(in crate::ss::svc::calc) struct AffectionRegister {
     // All known affectee items
     // Contains: HashSet<affectee item IDs>
-    afees: HashSet<ReeId>,
+    afees: HashSet<SsItemId>,
     // Top-level items which are representing an "owner" of domain (char, ship)
     // Contains: KeyedStorage<(affectee fit ID, affectee domain), affectee item IDs>
-    afees_topdom: KeyedStorage1L<(ReeId, ModDomain), ReeId>,
+    afees_topdom: KeyedStorage1L<(SsFitId, ModDomain), SsItemId>,
     // Items belonging to certain fit and domain (e.g. char's implants, ship's modules)
     // Contains: KeyedStorage<(affectee fit ID, affectee domain), affectee item IDs>
-    afees_pardom: KeyedStorage1L<(ReeId, ModDomain), ReeId>,
+    afees_pardom: KeyedStorage1L<(SsFitId, ModDomain), SsItemId>,
     // Items belonging to certain fit, domain and group
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affectee item IDs>
-    afees_pardom_grp: KeyedStorage1L<(ReeId, ModDomain, ReeInt), ReeId>,
+    afees_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, ItemGrpId), SsItemId>,
     // Items belonging to certain fit and domain, and having certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affectee item IDs>
-    afees_pardom_srq: KeyedStorage1L<(ReeId, ModDomain, ReeInt), ReeId>,
+    afees_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, ItemId), SsItemId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affectee item IDs>
-    afees_own_srq: KeyedStorage1L<(ReeId, ReeInt), ReeId>,
+    afees_own_srq: KeyedStorage1L<(SsFitId, ItemId), SsItemId>,
     // Affector specs registered for an item
     // Contains: KeyedStorage<affector item ID, affector specs>
-    afors: KeyedStorage1L<ReeId, AffectorSpec>,
+    afors: KeyedStorage1L<SsItemId, AffectorSpec>,
     // Affector specs which modify item directly
     // Contains: KeyedStorage<affectee item ID, affector specs>
-    afors_direct: KeyedStorage1L<ReeId, AffectorSpec>,
+    afors_direct: KeyedStorage1L<SsItemId, AffectorSpec>,
     // All affector specs which affect top-level entities (via ship or character reference) are kept here
     // Contains: KeyedStorage<(affectee fit ID, affectee domain), affector specs>
-    afors_topdom: KeyedStorage1L<(ReeId, ModDomain), AffectorSpec>,
+    afors_topdom: KeyedStorage1L<(SsFitId, ModDomain), AffectorSpec>,
     // Affector specs with modifiers which affect 'other' location are always
     // stored here, regardless if they actually affect something or not
     // Contains: KeyedStorage<affector item ID, affector specs>
-    afors_other: KeyedStorage1L<ReeId, AffectorSpec>,
+    afors_other: KeyedStorage1L<SsItemId, AffectorSpec>,
     // Affector specs influencing all items belonging to certain fit and domain
     // Contains: KeyedStorage<(affectee fit ID, affectee domain), affector specs>
-    afors_pardom: KeyedStorage1L<(ReeId, ModDomain), AffectorSpec>,
+    afors_pardom: KeyedStorage1L<(SsFitId, ModDomain), AffectorSpec>,
     // Affector specs influencing items belonging to certain fit, domain and group
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affector specs>
-    afors_pardom_grp: KeyedStorage1L<(ReeId, ModDomain, ReeInt), AffectorSpec>,
+    afors_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, ItemGrpId), AffectorSpec>,
     // Affector specs influencing items belonging to certain fit and domain, and having certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affector specs>
-    afors_pardom_srq: KeyedStorage1L<(ReeId, ModDomain, ReeInt), AffectorSpec>,
+    afors_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, ItemId), AffectorSpec>,
     // Affector specs influencing owner-modifiable items belonging to certain fit and having certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affector specs>
-    afors_own_srq: KeyedStorage1L<(ReeId, ReeInt), AffectorSpec>,
+    afors_own_srq: KeyedStorage1L<(SsFitId, ItemId), AffectorSpec>,
 }
 impl AffectionRegister {
     pub(in crate::ss::svc::calc) fn new() -> Self {
@@ -78,7 +78,7 @@ impl AffectionRegister {
         &self,
         afor_spec: &AffectorSpec,
         items: &SsItems,
-    ) -> Vec<ReeId> {
+    ) -> Vec<SsItemId> {
         let mut afees = Vec::new();
         let afor_item = match items.get_item(&afor_spec.item_id) {
             Ok(i) => i,
@@ -114,7 +114,7 @@ impl AffectionRegister {
         }
         afees
     }
-    pub(in crate::ss::svc::calc) fn get_projected_afee_items(&self, afor_spec: ReeId, tgt_items: ReeId) {}
+    pub(in crate::ss::svc::calc) fn get_projected_afee_items(&self, afor_spec: SsItemId, tgt_items: SsItemId) {}
     pub(in crate::ss::svc::calc) fn get_afor_specs_by_afee(&self, afee_item: &SsItem) -> Vec<AffectorSpec> {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();
@@ -162,7 +162,7 @@ impl AffectionRegister {
         }
         afors
     }
-    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afor(&self, afor_item_id: &ReeId) -> Vec<AffectorSpec> {
+    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afor(&self, afor_item_id: &SsItemId) -> Vec<AffectorSpec> {
         self.afors
             .get(afor_item_id)
             .map(|v| v.iter().map(|v| v.clone()).collect())
@@ -254,7 +254,7 @@ impl AffectionRegister {
     }
     pub(in crate::ss::svc::calc) fn reg_local_afor_specs(
         &mut self,
-        afor_fit_id: Option<ReeId>,
+        afor_fit_id: Option<SsFitId>,
         afor_specs: Vec<AffectorSpec>,
     ) {
         for afor_spec in afor_specs {
@@ -277,7 +277,7 @@ impl AffectionRegister {
     }
     pub(in crate::ss::svc::calc) fn unreg_local_afor_specs(
         &mut self,
-        afor_fit_id: Option<ReeId>,
+        afor_fit_id: Option<SsFitId>,
         afor_specs: Vec<AffectorSpec>,
     ) {
         for afor_spec in afor_specs {

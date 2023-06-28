@@ -17,7 +17,7 @@ pub(in crate::ss) use sw_effect::SsSwEffect;
 use crate::{
     ad,
     consts::{EffectMode, ModDomain, State},
-    defs::{EffectId, ReeFloat, ReeId, ReeInt},
+    defs::{AttrId, AttrVal, EffectId, ItemCatId, ItemGrpId, ItemId, SkillLevel, SsFitId, SsItemId},
     src::Src,
     util::{Error, ErrorKind, Named, OptMap, Result},
 };
@@ -69,7 +69,7 @@ impl SsItem {
             Self::SwEffect(_) => SsSwEffect::get_name(),
         }
     }
-    pub(in crate::ss) fn get_id(&self) -> ReeId {
+    pub(in crate::ss) fn get_id(&self) -> SsItemId {
         match self {
             Self::Booster(booster) => booster.id,
             Self::Character(character) => character.id,
@@ -86,7 +86,7 @@ impl SsItem {
             Self::SwEffect(sw_effect) => sw_effect.id,
         }
     }
-    pub(in crate::ss) fn get_fit_id(&self) -> Option<ReeId> {
+    pub(in crate::ss) fn get_fit_id(&self) -> Option<SsFitId> {
         match self {
             Self::Booster(booster) => Some(booster.fit_id),
             Self::Character(character) => Some(character.fit_id),
@@ -137,7 +137,7 @@ impl SsItem {
             Self::SwEffect(sw_effect) => &mut sw_effect.effect_modes,
         }
     }
-    pub(in crate::ss) fn get_a_item_id(&self) -> ReeInt {
+    pub(in crate::ss) fn get_a_item_id(&self) -> ItemId {
         match self {
             Self::Booster(booster) => booster.a_item_id,
             Self::Character(character) => character.a_item_id,
@@ -212,10 +212,10 @@ impl SsItem {
         self.get_a_item().is_ok()
     }
     // Calculator-specific getters
-    pub(in crate::ss) fn get_orig_attrs(&self) -> Result<&HashMap<ReeInt, ReeFloat>> {
+    pub(in crate::ss) fn get_orig_attrs(&self) -> Result<&HashMap<AttrId, AttrVal>> {
         Ok(&self.get_a_item()?.attr_vals)
     }
-    pub(in crate::ss) fn get_effect_datas(&self) -> Result<&HashMap<ReeInt, ad::AItemEffData>> {
+    pub(in crate::ss) fn get_effect_datas(&self) -> Result<&HashMap<EffectId, ad::AItemEffData>> {
         Ok(&self.get_a_item()?.effect_datas)
     }
     pub(in crate::ss) fn get_top_domain(&self) -> Option<ModDomain> {
@@ -252,16 +252,16 @@ impl SsItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::ss) fn get_group_id(&self) -> Result<ReeInt> {
+    pub(in crate::ss) fn get_group_id(&self) -> Result<ItemGrpId> {
         Ok(self.get_a_item()?.grp_id)
     }
-    pub(in crate::ss) fn get_category_id(&self) -> Result<ReeInt> {
+    pub(in crate::ss) fn get_category_id(&self) -> Result<ItemCatId> {
         Ok(self.get_a_item()?.cat_id)
     }
-    pub(in crate::ss) fn get_skill_reqs(&self) -> Result<&HashMap<ReeInt, ReeInt>> {
+    pub(in crate::ss) fn get_skill_reqs(&self) -> Result<&HashMap<ItemId, SkillLevel>> {
         Ok(&self.get_a_item()?.srqs)
     }
-    pub(in crate::ss) fn get_other(&self) -> Option<ReeId> {
+    pub(in crate::ss) fn get_other(&self) -> Option<SsItemId> {
         match self {
             Self::Booster(_) => None,
             Self::Character(_) => None,

@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     consts::ItemType,
-    defs::{ReeFloat, ReeInt},
+    defs::{Amount, AttrId, AttrVal, EffectId, ItemCatId, ItemGrpId, ItemId, SkillLevel},
     util::Named,
 };
 
@@ -13,33 +13,33 @@ use crate::{
 #[derive(Debug)]
 pub struct AItem {
     /// Item ID.
-    pub id: ReeInt,
+    pub id: ItemId,
     /// Item type.
     pub itype: Option<ItemType>,
     /// Item group ID.
-    pub grp_id: ReeInt,
+    pub grp_id: ItemGrpId,
     /// Item category ID.
-    pub cat_id: ReeInt,
+    pub cat_id: ItemCatId,
     /// Attribute values of the item.
-    pub attr_vals: HashMap<ReeInt, ReeFloat>,
+    pub attr_vals: HashMap<AttrId, AttrVal>,
     /// Refers effects of the item.
-    pub effect_datas: HashMap<ReeInt, AItemEffData>,
+    pub effect_datas: HashMap<EffectId, AItemEffData>,
     /// Refers an effect which is default for the item.
-    pub defeff_id: Option<ReeInt>,
+    pub defeff_id: Option<EffectId>,
     /// Skill requirement map.
-    pub srqs: HashMap<ReeInt, ReeInt>,
+    pub srqs: HashMap<ItemId, SkillLevel>,
 }
 impl AItem {
     /// Make a new adapted item type out of passed data.
     pub(crate) fn new(
-        id: ReeInt,
+        id: ItemId,
         itype: Option<ItemType>,
-        grp_id: ReeInt,
-        cat_id: ReeInt,
-        attr_vals: HashMap<ReeInt, ReeFloat>,
-        effect_datas: HashMap<ReeInt, AItemEffData>,
-        defeff_id: Option<ReeInt>,
-        srqs: HashMap<ReeInt, ReeInt>,
+        grp_id: ItemGrpId,
+        cat_id: ItemCatId,
+        attr_vals: HashMap<AttrId, AttrVal>,
+        effect_datas: HashMap<EffectId, AItemEffData>,
+        defeff_id: Option<EffectId>,
+        srqs: HashMap<ItemId, SkillLevel>,
     ) -> Self {
         Self {
             id,
@@ -63,19 +63,15 @@ impl Named for AItem {
 #[derive(Debug)]
 pub struct AItemEffData {
     /// Defines cooldown of the effect in seconds.
-    pub cd: Option<ReeFloat>,
+    pub cd: Option<AttrVal>,
     /// Defines how many times the effect can be used before its parent item has to reload.
-    pub charge_amount: Option<ReeInt>,
+    pub charge_amount: Option<Amount>,
     /// Defines how much time each charge of the effect takes to reload, in seconds.
-    pub charge_reload_time: Option<ReeFloat>,
+    pub charge_reload_time: Option<AttrVal>,
 }
 impl AItemEffData {
     /// Make a new per-item effect data container out of passed data.
-    pub(crate) fn new(
-        cd: Option<ReeFloat>,
-        charge_amount: Option<ReeInt>,
-        charge_reload_time: Option<ReeFloat>,
-    ) -> Self {
+    pub(crate) fn new(cd: Option<AttrVal>, charge_amount: Option<Amount>, charge_reload_time: Option<AttrVal>) -> Self {
         Self {
             cd,
             charge_amount,

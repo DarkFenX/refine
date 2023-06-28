@@ -1,18 +1,18 @@
 use crate::{
     consts::State,
-    defs::{ReeId, ReeInt},
+    defs::{Amount, ItemId, SsFitId, SsItemId},
     ss::item::SsFighter,
 };
 
 pub struct SsFighterInfo {
-    pub id: ReeId,
-    pub fit_id: ReeId,
-    pub a_item_id: ReeInt,
+    pub id: SsItemId,
+    pub fit_id: SsFitId,
+    pub a_item_id: ItemId,
     pub state: State,
-    pub amt_override: Option<ReeInt>,
+    pub amt_override: Option<Amount>,
 }
 impl SsFighterInfo {
-    fn new(id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: State, amt_override: Option<ReeInt>) -> Self {
+    fn new(id: SsItemId, fit_id: SsFitId, a_item_id: ItemId, state: State, amt_override: Option<Amount>) -> Self {
         Self {
             id,
             fit_id,

@@ -7,9 +7,9 @@ use crate::{
 pub(crate) struct HAddModuleCmd {
     rack: HModRack,
     add_mode: HAddMode,
-    type_id: rc::ReeInt,
+    type_id: rc::ItemId,
     state: HState,
-    charge_type_id: Option<rc::ReeInt>,
+    charge_type_id: Option<rc::ItemId>,
 }
 impl HAddModuleCmd {
     pub(crate) fn get_rack(&self) -> &HModRack {
@@ -18,13 +18,13 @@ impl HAddModuleCmd {
     pub(crate) fn get_add_mode(&self) -> &HAddMode {
         &self.add_mode
     }
-    pub(crate) fn get_type_id(&self) -> rc::ReeInt {
+    pub(crate) fn get_type_id(&self) -> rc::ItemId {
         self.type_id
     }
     pub(crate) fn get_state(&self) -> &HState {
         &self.state
     }
-    pub(crate) fn get_charge_type_id(&self) -> Option<rc::ReeInt> {
+    pub(crate) fn get_charge_type_id(&self) -> Option<rc::ItemId> {
         self.charge_type_id
     }
 }
@@ -32,15 +32,15 @@ impl HAddModuleCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
     #[serde(with = "crate::util::serde_string")]
-    item_id: rc::ReeId,
+    item_id: rc::SsItemId,
     #[serde(flatten)]
     item_cmd: item::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
-    pub(in crate::cmd::fit) fn from_item_cmd(item_id: rc::ReeId, item_cmd: item::HChangeModuleCmd) -> Self {
+    pub(in crate::cmd::fit) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeModuleCmd) -> Self {
         Self { item_id, item_cmd }
     }
-    pub(crate) fn get_item_id(&self) -> rc::ReeId {
+    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
         self.item_id
     }
     pub(crate) fn get_state(&self) -> Option<&HState> {

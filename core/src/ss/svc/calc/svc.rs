@@ -5,7 +5,7 @@ use itertools::Itertools;
 use crate::{
     ad,
     consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
-    defs::{ReeFloat, ReeId, ReeInt},
+    defs::{AttrId, AttrVal, ItemCatId, SsItemId},
     ss::{
         item::SsItem,
         svc::{
@@ -19,7 +19,7 @@ use crate::{
 
 use super::support::Modification;
 
-const PENALTY_IMMUNE_CATS: [ReeInt; 5] = [
+const PENALTY_IMMUNE_CATS: [ItemCatId; 5] = [
     itemcats::SHIP,
     itemcats::CHARGE,
     itemcats::SKILL,
@@ -44,17 +44,17 @@ const OP_ORDER: [ModOp; 9] = [
     ModOp::PostPerc,
     ModOp::PostAssign,
 ];
-const LIMITED_PRECISION_ATTR_IDS: [ReeInt; 4] = [attrs::CPU, attrs::POWER, attrs::CPU_OUTPUT, attrs::POWER_OUTPUT];
+const LIMITED_PRECISION_ATTR_IDS: [AttrId; 4] = [attrs::CPU, attrs::POWER, attrs::CPU_OUTPUT, attrs::POWER_OUTPUT];
 // Source expression: 1 / e^((1 / 2.67)^2)
-const PENALTY_BASE: ReeFloat = 0.86911998080039742919922218788997270166873931884765625;
+const PENALTY_BASE: f64 = 0.86911998080039742919922218788997270166873931884765625;
 
 impl SsSvcs {
     // Query methods
     pub(in crate::ss) fn calc_get_item_attr_val(
         &mut self,
         ss_view: &SsView,
-        item_id: &ReeId,
-        attr_id: &ReeInt,
+        item_id: &SsItemId,
+        attr_id: &AttrId,
     ) -> Result<SsAttrVal> {
         // Try accessing cached value
         match self.calc_data.attrs.get_item_attrs(item_id)?.get(attr_id) {
@@ -69,8 +69,8 @@ impl SsSvcs {
     pub(in crate::ss) fn calc_get_item_attr_vals(
         &mut self,
         ss_view: &SsView,
-        item_id: &ReeId,
-    ) -> Result<HashMap<ReeInt, SsAttrVal>> {
+        item_id: &SsItemId,
+    ) -> Result<HashMap<AttrId, SsAttrVal>> {
         // ssi::Item can have attributes which are not defined on the original EVE item. This happens when
         // something requested an attr value and it was calculated using base attribute value. Here,
         // we get already calculated attributes, which includes attributes absent on the EVE item
@@ -136,7 +136,7 @@ impl SsSvcs {
             .affections
             .unreg_local_afor_specs(item.get_fit_id(), afor_specs);
     }
-    pub(in crate::ss) fn calc_attr_value_changed(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) {
+    pub(in crate::ss) fn calc_attr_value_changed(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &AttrId) {
         // Clear up attribute values which rely on passed attribute as an upper cap
         let capped_attr_ids = self
             .calc_data
@@ -162,7 +162,7 @@ impl SsSvcs {
         }
     }
     // Private methods
-    fn calc_calc_item_attr_val(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) -> Result<SsAttrVal> {
+    fn calc_calc_item_attr_val(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &AttrId) -> Result<SsAttrVal> {
         let item = ss_view.items.get_item(item_id)?;
         let attr = match ss_view.src.get_a_attr(attr_id) {
             Some(attr) => attr,
@@ -178,7 +178,7 @@ impl SsSvcs {
             },
         };
         match (attr_id, item) {
-            (280, SsItem::Skill(s)) => return Ok(SsAttrVal::new(base_val, s.level as ReeFloat, s.level as ReeFloat)),
+            (280, SsItem::Skill(s)) => return Ok(SsAttrVal::new(base_val, s.level as AttrVal, s.level as AttrVal)),
             _ => (),
         }
         let mut stacked = HashMap::new();
@@ -242,7 +242,7 @@ impl SsSvcs {
             Some(capping_attr_id) => match self.calc_get_item_attr_val(ss_view, item_id, &capping_attr_id) {
                 Ok(capping_vals) => {
                     self.calc_data.caps.add_cap(*item_id, capping_attr_id, *attr_id);
-                    ReeFloat::min(dogma_val, capping_vals.dogma)
+                    AttrVal::min(dogma_val, capping_vals.dogma)
                 }
                 Err(_) => dogma_val,
             },
@@ -253,7 +253,7 @@ impl SsSvcs {
         }
         Ok(SsAttrVal::new(base_val, dogma_val, dogma_val))
     }
-    fn calc_force_recalc(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) {
+    fn calc_force_recalc(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &AttrId) {
         match self.calc_data.attrs.get_item_attrs_mut(item_id) {
             Ok(item_attrs) => {
                 if item_attrs.remove(attr_id).is_some() {
@@ -263,7 +263,7 @@ impl SsSvcs {
             _ => return,
         }
     }
-    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &SsItem, attr_id: &ReeInt) -> Vec<Modification> {
+    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &SsItem, attr_id: &AttrId) -> Vec<Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
         for afor_spec in self.calc_data.affections.get_afor_specs_by_afee(item).iter() {
@@ -291,7 +291,7 @@ impl SsSvcs {
 }
 
 // Calculation-related functions
-fn penalize_vals(mut vals: Vec<ReeFloat>) -> ReeFloat {
+fn penalize_vals(mut vals: Vec<AttrVal>) -> AttrVal {
     // Gather positive multipliers into one chain, negative into another, with stronger modifications
     // being first
     let positive = vals
@@ -306,7 +306,7 @@ fn penalize_vals(mut vals: Vec<ReeFloat>) -> ReeFloat {
     get_chain_val(positive) * get_chain_val(negative)
 }
 
-fn get_chain_val(vals: Vec<ReeFloat>) -> ReeFloat {
+fn get_chain_val(vals: Vec<AttrVal>) -> AttrVal {
     let mut val = 1.0;
     for (i, mod_val) in vals.iter().enumerate() {
         // Ignore 12th modification and further as non-significant
@@ -318,18 +318,18 @@ fn get_chain_val(vals: Vec<ReeFloat>) -> ReeFloat {
     val
 }
 
-fn process_assigns(assigns: &Vec<ReeFloat>, attr: &ad::AAttr) -> ReeFloat {
+fn process_assigns(assigns: &Vec<AttrVal>, attr: &ad::AAttr) -> AttrVal {
     match attr.hig {
         true => *assigns.iter().max_by(|a, b| a.total_cmp(b)).unwrap(),
         false => *assigns.iter().min_by(|a, b| a.total_cmp(b)).unwrap(),
     }
 }
-fn process_mults(mults: &Vec<ReeFloat>) -> ReeFloat {
+fn process_mults(mults: &Vec<AttrVal>) -> AttrVal {
     let mut val = 1.0;
     mults.iter().for_each(|v| val *= v);
     val
 }
-fn process_adds(adds: &Vec<ReeFloat>) -> ReeFloat {
+fn process_adds(adds: &Vec<AttrVal>) -> AttrVal {
     let mut val = 0.0;
     adds.iter().for_each(|v| val += v);
     val

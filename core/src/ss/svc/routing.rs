@@ -1,7 +1,7 @@
 use crate::{
     ad,
     consts::State,
-    defs::{ReeId, ReeInt},
+    defs::{AttrId, SsItemId},
     ss::{item::SsItem, svc::SsSvcs, SsView},
 };
 
@@ -100,7 +100,7 @@ impl SsSvcs {
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| v.id));
     }
-    pub(in crate::ss) fn notify_attr_val_changed(&mut self, ss_view: &SsView, item_id: &ReeId, attr_id: &ReeInt) {
+    pub(in crate::ss) fn notify_attr_val_changed(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &AttrId) {
         self.calc_attr_value_changed(ss_view, item_id, attr_id);
     }
 }

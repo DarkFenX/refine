@@ -3,7 +3,7 @@ use std::{error, fmt, result};
 use crate::{
     ad,
     consts::ModRack,
-    defs::{ReeId, ReeIdx, ReeInt},
+    defs::{AttrId, ItemId, ReeIdx, SkillLevel, SsFitId, SsItemId},
     util::Named,
 };
 
@@ -12,17 +12,17 @@ use crate::{
 pub enum ErrorKind {
     DhHttpInvalidBaseUrl(String, String),
     SrcADataGenFailed(String),
-    FitNotFound(ReeId),
-    ItemIdNotFound(ReeId),
+    FitNotFound(SsFitId),
+    ItemIdNotFound(SsItemId),
     SsItemTypeNotFound(&'static str),
     FitIdAllocFailed,
     ItemIdAllocFailed,
-    InvalidSkillLevel(ReeInt),
-    UnexpectedItemType(ReeId, &'static str, &'static str),
-    ModuleSlotTaken(ModRack, ReeIdx, ReeId),
-    AAttrNotFound(ReeInt),
-    AItemNotLoaded(ReeInt),
-    NoAttrBaseValue(ReeInt, ReeInt),
+    InvalidSkillLevel(SkillLevel),
+    UnexpectedItemType(SsItemId, &'static str, &'static str),
+    ModuleSlotTaken(ModRack, ReeIdx, SsItemId),
+    AAttrNotFound(AttrId),
+    AItemNotLoaded(ItemId),
+    NoAttrBaseValue(AttrId, ItemId),
 }
 
 #[derive(Debug)]

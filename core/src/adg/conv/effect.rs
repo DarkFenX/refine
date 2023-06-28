@@ -7,7 +7,7 @@ use crate::{
     ad,
     adg::GData,
     consts::{effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
-    defs::ReeInt,
+    defs::{AttrId, EffectId, ItemGrpId, ItemId},
     ed,
     util::{IntError, IntResult, Named},
 };
@@ -192,7 +192,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
     a_effects
 }
 
-fn extract_stopper(e_modifier: &ed::EEffectMod) -> IntResult<Option<ReeInt>> {
+fn extract_stopper(e_modifier: &ed::EEffectMod) -> IntResult<Option<EffectId>> {
     match e_modifier.func.as_str() {
         "EffectStopper" => {
             let domain = get_arg_str(&e_modifier.args, "domain")?;
@@ -255,11 +255,11 @@ fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
     ))
 }
 
-fn get_mod_affector_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<ReeInt> {
+fn get_mod_affector_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<AttrId> {
     get_arg_int(&e_modifier.args, "modifyingAttributeID")
 }
 
-fn get_mod_affectee_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<ReeInt> {
+fn get_mod_affectee_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<AttrId> {
     get_arg_int(&e_modifier.args, "modifiedAttributeID")
 }
 
@@ -298,15 +298,15 @@ fn get_mod_operation(e_modifier: &ed::EEffectMod) -> IntResult<ModOp> {
     }
 }
 
-fn get_mod_grp_id(e_modifier: &ed::EEffectMod) -> IntResult<ReeInt> {
+fn get_mod_grp_id(e_modifier: &ed::EEffectMod) -> IntResult<ItemGrpId> {
     get_arg_int(&e_modifier.args, "groupID")
 }
 
-fn get_mod_skill_id(e_modifier: &ed::EEffectMod) -> IntResult<ReeInt> {
+fn get_mod_skill_id(e_modifier: &ed::EEffectMod) -> IntResult<ItemId> {
     get_arg_int(&e_modifier.args, "skillTypeID")
 }
 
-fn get_arg_int(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<ReeInt> {
+fn get_arg_int(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<i32> {
     let primitive = args.get(name).ok_or(IntError::new(format!("no \"{name}\" in args")))?;
     match primitive {
         ed::EPrimitive::Int(i) => Ok(*i),
@@ -322,7 +322,7 @@ fn get_arg_str(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<
     }
 }
 
-fn extract_ability_map<F, T>(g_data: &GData, getter: F) -> HashMap<ReeInt, HashSet<T>>
+fn extract_ability_map<F, T>(g_data: &GData, getter: F) -> HashMap<EffectId, HashSet<T>>
 where
     F: Fn(&ed::EFighterAbil) -> T,
     T: Eq + Hash,

@@ -5,9 +5,9 @@ use super::CModDomain;
 pub(in crate::handler_json) enum CModAfeeFilter {
     Direct(CModDomain),
     Loc(CModDomain),
-    LocGrp(CModDomain, rc::ReeInt),
-    LocSrq(CModDomain, rc::ReeInt),
-    OwnSrq(CModDomain, rc::ReeInt),
+    LocGrp(CModDomain, rc::ItemGrpId),
+    LocSrq(CModDomain, rc::ItemId),
+    OwnSrq(CModDomain, rc::ItemId),
 }
 impl From<&rc::consts::ModAfeeFilter> for CModAfeeFilter {
     fn from(mod_afee_filter: &rc::consts::ModAfeeFilter) -> Self {

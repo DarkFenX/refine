@@ -1,7 +1,7 @@
 use crate::{
     ad,
     consts::{EffectMode, State},
-    defs::{EffectId, ReeId, ReeInt},
+    defs::{EffectId, ItemId, SkillLevel, SsFitId, SsItemId},
     src::Src,
     util::{Named, OptMap},
 };
@@ -9,10 +9,10 @@ use crate::{
 use super::{bool_to_state, state_to_bool};
 
 pub(in crate::ss) struct SsSkill {
-    pub(in crate::ss) id: ReeId,
-    pub(in crate::ss) fit_id: ReeId,
-    pub(in crate::ss) a_item_id: ReeInt,
-    pub(in crate::ss) level: ReeInt,
+    pub(in crate::ss) id: SsItemId,
+    pub(in crate::ss) fit_id: SsFitId,
+    pub(in crate::ss) a_item_id: ItemId,
+    pub(in crate::ss) level: SkillLevel,
     pub(in crate::ss) state: State,
     pub(in crate::ss) effect_modes: OptMap<EffectId, EffectMode>,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
@@ -20,10 +20,10 @@ pub(in crate::ss) struct SsSkill {
 impl SsSkill {
     pub(in crate::ss) fn new(
         src: &Src,
-        id: ReeId,
-        fit_id: ReeId,
-        a_item_id: ReeInt,
-        level: ReeInt,
+        id: SsItemId,
+        fit_id: SsFitId,
+        a_item_id: ItemId,
+        level: SkillLevel,
         state: bool,
     ) -> Self {
         Self {

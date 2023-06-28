@@ -3,10 +3,10 @@ use crate::shared::HState;
 #[derive(serde::Serialize)]
 pub(crate) struct HDroneInfoPartial {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) id: rc::ReeId,
+    pub(crate) id: rc::SsItemId,
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) fit_id: rc::ReeId,
-    pub(crate) type_id: rc::ReeInt,
+    pub(crate) fit_id: rc::SsFitId,
+    pub(crate) type_id: rc::ItemId,
     pub(crate) state: HState,
 }
 impl From<&rc::SsDroneInfo> for HDroneInfoPartial {

@@ -29,7 +29,7 @@ pub(crate) struct HFitInfoFull {
 impl HFitInfoFull {
     pub(in crate::info::fit) fn mk_info(
         core_ss: &mut rc::SolarSystem,
-        fit_id: &rc::ReeId,
+        fit_id: &rc::SsFitId,
         item_mode: HItemInfoMode,
     ) -> Self {
         Self {

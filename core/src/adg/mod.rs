@@ -1,7 +1,12 @@
 //! Adapted data generator
 use std::collections::HashMap;
 
-use crate::{ad, defs::ReeInt, ed, util::IntResult};
+use crate::{
+    ad,
+    defs::{AttrId, AttrUnitId, ItemCatId, ItemGrpId},
+    ed,
+    util::IntResult,
+};
 
 mod clean;
 mod conv;
@@ -63,8 +68,8 @@ impl GData {
 
 /// Container for auxiliary data.
 pub(in crate::adg) struct GSupport {
-    pub(in crate::adg) attr_unit_map: HashMap<ReeInt, ReeInt>,
-    pub(in crate::adg) grp_cat_map: HashMap<ReeInt, ReeInt>,
+    pub(in crate::adg) attr_unit_map: HashMap<AttrId, AttrUnitId>,
+    pub(in crate::adg) grp_cat_map: HashMap<ItemGrpId, ItemCatId>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {

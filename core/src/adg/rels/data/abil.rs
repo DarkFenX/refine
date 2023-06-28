@@ -1,11 +1,10 @@
 use crate::{
-    adg::rels::{Fk, Pk},
-    defs::ReeInt,
+    adg::rels::{Fk, KeyPart, Pk},
     ed,
 };
 
 impl Pk for ed::EFighterAbil {
-    fn get_pk(&self) -> Vec<ReeInt> {
+    fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.id]
     }
 }

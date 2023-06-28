@@ -1,4 +1,4 @@
-use crate::phb::fsd::FsdMerge;
+use crate::phb::fsd::{FsdId, FsdMerge};
 
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PItemAttrs {
@@ -6,7 +6,7 @@ pub(in crate::phb) struct PItemAttrs {
     pub(in crate::phb) attrs: Vec<PItemAttrData>,
 }
 impl FsdMerge<rc::ed::EItemAttr> for PItemAttrs {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EItemAttr> {
+    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemAttr> {
         self.attrs
             .into_iter()
             .map(|v| rc::ed::EItemAttr::new(id, v.attr_id, v.value))
@@ -17,6 +17,6 @@ impl FsdMerge<rc::ed::EItemAttr> for PItemAttrs {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PItemAttrData {
     #[serde(rename = "attributeID")]
-    pub(in crate::phb) attr_id: rc::ReeInt,
-    pub(in crate::phb) value: rc::ReeFloat,
+    pub(in crate::phb) attr_id: rc::AttrId,
+    pub(in crate::phb) value: rc::AttrVal,
 }

@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ReeInt, SsFitId, SsItemId},
+    defs::{ItemId, SkillLevel, SsFitId, SsItemId},
     ss::{
         info::SsSkillInfo,
         item::{SsItem, SsSkill},
@@ -22,7 +22,13 @@ impl SolarSystem {
             .collect();
         Ok(skill_infos)
     }
-    pub fn add_skill(&mut self, fit_id: SsFitId, a_item_id: ReeInt, level: ReeInt, state: bool) -> Result<SsSkillInfo> {
+    pub fn add_skill(
+        &mut self,
+        fit_id: SsFitId,
+        a_item_id: ItemId,
+        level: SkillLevel,
+        state: bool,
+    ) -> Result<SsSkillInfo> {
         let item_id = self.items.alloc_item_id()?;
         let skill = SsSkill::new(&self.src, item_id, fit_id, a_item_id, level, state);
         let info = SsSkillInfo::from(&skill);
@@ -30,7 +36,7 @@ impl SolarSystem {
         self.add_item(item);
         Ok(info)
     }
-    pub fn set_skill_level(&mut self, item_id: &SsItemId, level: ReeInt) -> Result<()> {
+    pub fn set_skill_level(&mut self, item_id: &SsItemId, level: SkillLevel) -> Result<()> {
         check_skill_level(level)?;
         self.items.get_skill_mut(item_id)?.level = level;
         Ok(())
@@ -41,8 +47,8 @@ impl SolarSystem {
     }
 }
 
-fn check_skill_level(level: ReeInt) -> Result<()> {
-    if level > 5 || level < 0 {
+fn check_skill_level(level: SkillLevel) -> Result<()> {
+    if level > 5 as SkillLevel || level < 0 as SkillLevel {
         return Err(Error::new(ErrorKind::InvalidSkillLevel(level)));
     };
     Ok(())

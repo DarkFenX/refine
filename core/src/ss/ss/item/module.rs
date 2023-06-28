@@ -1,6 +1,6 @@
 use crate::{
     consts::{ModRack, OrdAddMode, State},
-    defs::{ReeIdx, ReeInt, SsFitId, SsItemId},
+    defs::{ItemId, ReeIdx, SsFitId, SsItemId},
     ss::{
         info::{SsChargeInfo, SsModuleInfo},
         item::{SsItem, SsModule},
@@ -32,9 +32,9 @@ impl SolarSystem {
         fit_id: SsFitId,
         rack: ModRack,
         pos_mode: OrdAddMode,
-        a_item_id: ReeInt,
+        a_item_id: ItemId,
         state: State,
-        charge_a_item_id: Option<ReeInt>,
+        charge_a_item_id: Option<ItemId>,
     ) -> Result<SsModuleInfo> {
         // Allocate resources early, to make sure if we fail we don't need to roll anything back
         let m_item_id = self.items.alloc_item_id()?;
@@ -112,7 +112,7 @@ impl SolarSystem {
         }
         Ok(())
     }
-    pub fn set_module_charge(&mut self, item_id: &SsItemId, charge_a_item_id: ReeInt) -> Result<SsChargeInfo> {
+    pub fn set_module_charge(&mut self, item_id: &SsItemId, charge_a_item_id: ItemId) -> Result<SsChargeInfo> {
         let c_item_id = self.items.alloc_item_id()?;
         self.remove_module_charge(item_id)?;
         let module = self.items.get_module(item_id)?;

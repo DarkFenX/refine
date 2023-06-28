@@ -6,10 +6,10 @@ use crate::{
 #[derive(serde::Serialize)]
 pub(crate) struct HModuleInfoPartial {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) id: rc::ReeId,
+    pub(crate) id: rc::SsItemId,
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) fit_id: rc::ReeId,
-    pub(crate) type_id: rc::ReeInt,
+    pub(crate) fit_id: rc::SsFitId,
+    pub(crate) type_id: rc::ItemId,
     pub(crate) state: HState,
     pub(crate) rack: HModRack,
     pub(crate) pos: rc::ReeIdx,

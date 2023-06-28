@@ -18,11 +18,11 @@ use super::data;
 pub struct RamJsonAdh {
     folder: PathBuf,
     name: String,
-    storage_items: HashMap<rc::ReeInt, rc::ad::ArcItem>,
-    storage_attrs: HashMap<rc::ReeInt, rc::ad::ArcAttr>,
-    storage_effects: HashMap<rc::ReeInt, rc::ad::ArcEffect>,
-    storage_mutas: HashMap<rc::ReeInt, rc::ad::ArcMuta>,
-    storage_buffs: HashMap<rc::ReeInt, rc::ad::ArcBuff>,
+    storage_items: HashMap<rc::ItemId, rc::ad::ArcItem>,
+    storage_attrs: HashMap<rc::AttrId, rc::ad::ArcAttr>,
+    storage_effects: HashMap<rc::EffectId, rc::ad::ArcEffect>,
+    storage_mutas: HashMap<rc::MutaId, rc::ad::ArcMuta>,
+    storage_buffs: HashMap<rc::BuffId, rc::ad::ArcBuff>,
     fingerprint: Option<String>,
 }
 impl RamJsonAdh {
@@ -92,23 +92,23 @@ impl fmt::Debug for RamJsonAdh {
 }
 impl rc::ad::AdaptedDataHandler for RamJsonAdh {
     /// Get cached item.
-    fn get_item(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcItem> {
+    fn get_item(&self, id: &rc::ItemId) -> Option<rc::ad::ArcItem> {
         self.storage_items.get(&id).cloned()
     }
     /// Get cached attribute.
-    fn get_attr(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcAttr> {
+    fn get_attr(&self, id: &rc::AttrId) -> Option<rc::ad::ArcAttr> {
         self.storage_attrs.get(&id).cloned()
     }
     /// Get cached effect.
-    fn get_effect(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcEffect> {
+    fn get_effect(&self, id: &rc::EffectId) -> Option<rc::ad::ArcEffect> {
         self.storage_effects.get(&id).cloned()
     }
     /// Get cached mutaplasmid.
-    fn get_muta(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcMuta> {
+    fn get_muta(&self, id: &rc::MutaId) -> Option<rc::ad::ArcMuta> {
         self.storage_mutas.get(&id).cloned()
     }
     /// Get cached warfare buff.
-    fn get_buff(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcBuff> {
+    fn get_buff(&self, id: &rc::BuffId) -> Option<rc::ad::ArcBuff> {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get cached data fingerprint.

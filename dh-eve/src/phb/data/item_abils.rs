@@ -1,4 +1,4 @@
-use crate::phb::fsd::FsdMerge;
+use crate::phb::fsd::{FsdId, FsdMerge};
 
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PItemFighterAbils {
@@ -10,7 +10,7 @@ pub(in crate::phb) struct PItemFighterAbils {
     pub(in crate::phb) abil2: Option<PItemFighterAbilData>,
 }
 impl FsdMerge<rc::ed::EItemFighterAbil> for PItemFighterAbils {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EItemFighterAbil> {
+    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemFighterAbil> {
         let mut vec = Vec::new();
         for p_abil_data_opt in vec![self.abil0, self.abil1, self.abil2].into_iter() {
             if let Some(p_abil_data) = p_abil_data_opt {
@@ -33,16 +33,16 @@ impl FsdMerge<rc::ed::EItemFighterAbil> for PItemFighterAbils {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PItemFighterAbilData {
     #[serde(rename = "abilityID")]
-    pub(in crate::phb) abil_id: rc::ReeInt,
+    pub(in crate::phb) abil_id: rc::AbilId,
     #[serde(rename = "cooldownSeconds")]
-    pub(in crate::phb) cooldown: Option<rc::ReeFloat>,
+    pub(in crate::phb) cooldown: Option<rc::AttrVal>,
     pub(in crate::phb) charges: Option<PItemFighterAbilChargeData>,
 }
 
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PItemFighterAbilChargeData {
     #[serde(rename = "chargeCount")]
-    pub(in crate::phb) count: rc::ReeInt,
+    pub(in crate::phb) count: rc::Amount,
     #[serde(rename = "rearmTimeSeconds")]
-    pub(in crate::phb) rearm_time: rc::ReeFloat,
+    pub(in crate::phb) rearm_time: rc::AttrVal,
 }

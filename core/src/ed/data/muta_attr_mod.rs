@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ReeFloat, ReeInt},
+    defs::{AttrId, AttrVal, MutaId},
     util::Named,
 };
 
@@ -7,17 +7,17 @@ use crate::{
 #[derive(Debug)]
 pub struct EMutaAttrMod {
     /// Mutaplasmid item type ID.
-    pub muta_id: ReeInt,
+    pub muta_id: MutaId,
     /// Refers an attribute being modified by the mutaplasmid.
-    pub attr_id: ReeInt,
+    pub attr_id: AttrId,
     /// Lower boundary of the modification range.
-    pub min_attr_mult: ReeFloat,
+    pub min_attr_mult: AttrVal,
     /// Upper boundary of the modification range.
-    pub max_attr_mult: ReeFloat,
+    pub max_attr_mult: AttrVal,
 }
 impl EMutaAttrMod {
     /// Make a new EVE mutaplasmid attribute conversion.
-    pub fn new(muta_id: ReeInt, attr_id: ReeInt, min_attr_mult: ReeFloat, max_attr_mult: ReeFloat) -> Self {
+    pub fn new(muta_id: MutaId, attr_id: AttrId, min_attr_mult: AttrVal, max_attr_mult: AttrVal) -> Self {
         Self {
             muta_id,
             attr_id,

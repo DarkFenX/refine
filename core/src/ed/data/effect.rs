@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 
-use crate::{defs::ReeInt, util::Named};
+use crate::{
+    defs::{AttrId, EffectCatId, EffectId},
+    util::Named,
+};
 
 use super::EPrimitive;
 
@@ -8,45 +11,45 @@ use super::EPrimitive;
 #[derive(Debug)]
 pub struct EEffect {
     /// Effect ID.
-    pub id: ReeInt,
+    pub id: EffectId,
     /// Refers an effect category the effect belongs to.
-    pub category_id: ReeInt,
+    pub category_id: EffectCatId,
     /// Defines if the effect is considered as an assistance.
     pub is_assistance: bool,
     /// Defines if the effect is offensive or not.
     pub is_offensive: bool,
     /// Refers an attribute value which defines capacitor cost to run the effect.
-    pub discharge_attr_id: Option<ReeInt>,
+    pub discharge_attr_id: Option<AttrId>,
     /// Refers an attribute value which defines how long an effect cycle would take in milliseconds.
-    pub duration_attr_id: Option<ReeInt>,
+    pub duration_attr_id: Option<AttrId>,
     /// Refers an attribute value which defines optimal range of the effect in meters.
-    pub range_attr_id: Option<ReeInt>,
+    pub range_attr_id: Option<AttrId>,
     /// Refers an attribute value which defines falloff range of the effect in meters.
-    pub falloff_attr_id: Option<ReeInt>,
+    pub falloff_attr_id: Option<AttrId>,
     /// Refers an attribute value which defines tracking speed of the effect.
-    pub tracking_attr_id: Option<ReeInt>,
+    pub tracking_attr_id: Option<AttrId>,
     /// Refers an attribute value which defines chance of the effect to run when its parent item is
     /// fitted.
-    pub usage_chance_attr_id: Option<ReeInt>,
+    pub usage_chance_attr_id: Option<AttrId>,
     /// Refers an attribute value which defines resistance strength to the effect.
-    pub resist_attr_id: Option<ReeInt>,
+    pub resist_attr_id: Option<AttrId>,
     /// Modifiers of the effect.
     pub mods: Vec<EEffectMod>,
 }
 impl EEffect {
     /// Make a new EVE dogma effect out of passed data.
     pub fn new(
-        id: ReeInt,
-        category_id: ReeInt,
+        id: EffectId,
+        category_id: EffectCatId,
         is_assistance: bool,
         is_offensive: bool,
-        discharge_attr_id: Option<ReeInt>,
-        duration_attr_id: Option<ReeInt>,
-        range_attr_id: Option<ReeInt>,
-        falloff_attr_id: Option<ReeInt>,
-        tracking_attr_id: Option<ReeInt>,
-        usage_chance_attr_id: Option<ReeInt>,
-        resist_attr_id: Option<ReeInt>,
+        discharge_attr_id: Option<AttrId>,
+        duration_attr_id: Option<AttrId>,
+        range_attr_id: Option<AttrId>,
+        falloff_attr_id: Option<AttrId>,
+        tracking_attr_id: Option<AttrId>,
+        usage_chance_attr_id: Option<AttrId>,
+        resist_attr_id: Option<AttrId>,
         mods: Vec<EEffectMod>,
     ) -> Self {
         Self {

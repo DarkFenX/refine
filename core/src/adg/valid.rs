@@ -4,12 +4,10 @@ use itertools::Itertools;
 
 use crate::{
     adg::{
-        rels::{Fk, KeyDb, Pk},
+        rels::{Fk, KeyDb, KeyPart, Pk},
         GData, GSupport,
     },
-    consts,
-    defs::ReeInt,
-    ed,
+    consts, ed,
     util::Named,
 };
 
@@ -64,10 +62,10 @@ fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, g_supp: &GSup
     );
     fk_check_referee(rer_vec, &pkdb.buffs, g_supp, T::get_buff_fks, ed::EBuff::get_name());
 }
-fn fk_check_referee<T, F>(rer_vec: &Vec<T>, ree_pks: &HashSet<ReeInt>, g_supp: &GSupport, func: F, ree_name: &str)
+fn fk_check_referee<T, F>(rer_vec: &Vec<T>, ree_pks: &HashSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
 where
     T: Fk + Named,
-    F: Fn(&T, &GSupport) -> Vec<ReeInt>,
+    F: Fn(&T, &GSupport) -> Vec<KeyPart>,
 {
     let mut fks = HashSet::new();
     rer_vec.iter().for_each(|v| fks.extend(func(v, g_supp)));

@@ -13,17 +13,17 @@ mod subsystem;
 mod sw_effect;
 
 use crate::{
-    defs::ReeId,
+    defs::SsItemId,
     ss::{info::SsItemInfo, item::SsItem, SolarSystem, SsView},
     util::Result,
 };
 
 impl SolarSystem {
     // Public
-    pub fn get_item_info(&self, item_id: &ReeId) -> Result<SsItemInfo> {
+    pub fn get_item_info(&self, item_id: &SsItemId) -> Result<SsItemInfo> {
         self.items.get_item(item_id).map(|v| SsItemInfo::from_ss_item(v, self))
     }
-    pub fn remove_item(&mut self, item_id: &ReeId) -> Result<()> {
+    pub fn remove_item(&mut self, item_id: &SsItemId) -> Result<()> {
         let main = self.items.get_item(item_id)?;
         self.svcs
             .remove_item(&SsView::new(&self.src, &self.fits, &self.items), &main);

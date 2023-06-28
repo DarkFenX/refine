@@ -26,7 +26,7 @@ pub(crate) enum HFitCommand {
     AddDrone(HAddDroneCmd),
 }
 impl HFitCommand {
-    pub(crate) fn from_item_cmd(item_id: rc::ReeId, item_cmd: HItemCommand) -> Self {
+    pub(crate) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: HItemCommand) -> Self {
         match item_cmd {
             HItemCommand::ChangeModule(item_cmd) => {
                 Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))

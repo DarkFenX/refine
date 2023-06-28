@@ -7,11 +7,11 @@ use crate::util::{move_vec_to_map, Error, ErrorKind};
 /// This handler stores everything only in RAM. Access to data is fast, but has noticeable RAM
 /// consumption and adapted data has to be rebuilt every time.
 pub struct RamOnlyAdh {
-    storage_items: HashMap<rc::ReeInt, rc::ad::ArcItem>,
-    storage_attrs: HashMap<rc::ReeInt, rc::ad::ArcAttr>,
-    storage_effects: HashMap<rc::ReeInt, rc::ad::ArcEffect>,
-    storage_mutas: HashMap<rc::ReeInt, rc::ad::ArcMuta>,
-    storage_buffs: HashMap<rc::ReeInt, rc::ad::ArcBuff>,
+    storage_items: HashMap<rc::ItemId, rc::ad::ArcItem>,
+    storage_attrs: HashMap<rc::AttrId, rc::ad::ArcAttr>,
+    storage_effects: HashMap<rc::EffectId, rc::ad::ArcEffect>,
+    storage_mutas: HashMap<rc::MutaId, rc::ad::ArcMuta>,
+    storage_buffs: HashMap<rc::BuffId, rc::ad::ArcBuff>,
 }
 impl RamOnlyAdh {
     pub fn new() -> Self {
@@ -31,23 +31,23 @@ impl fmt::Debug for RamOnlyAdh {
 }
 impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     /// Get adapted item.
-    fn get_item(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcItem> {
+    fn get_item(&self, id: &rc::ItemId) -> Option<rc::ad::ArcItem> {
         self.storage_items.get(&id).cloned()
     }
     /// Get adapted attribute.
-    fn get_attr(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcAttr> {
+    fn get_attr(&self, id: &rc::AttrId) -> Option<rc::ad::ArcAttr> {
         self.storage_attrs.get(&id).cloned()
     }
     /// Get adapted effect.
-    fn get_effect(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcEffect> {
+    fn get_effect(&self, id: &rc::EffectId) -> Option<rc::ad::ArcEffect> {
         self.storage_effects.get(&id).cloned()
     }
     /// Get adapted mutaplasmid.
-    fn get_muta(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcMuta> {
+    fn get_muta(&self, id: &rc::MutaId) -> Option<rc::ad::ArcMuta> {
         self.storage_mutas.get(&id).cloned()
     }
     /// Get adapted warfare buff.
-    fn get_buff(&self, id: &rc::ReeInt) -> Option<rc::ad::ArcBuff> {
+    fn get_buff(&self, id: &rc::BuffId) -> Option<rc::ad::ArcBuff> {
         self.storage_buffs.get(&id).cloned()
     }
     /// Get adapted data fingerprint.

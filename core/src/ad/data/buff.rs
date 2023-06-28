@@ -1,6 +1,6 @@
 use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModOp},
-    defs::ReeInt,
+    defs::{AttrId, BuffId},
     util::Named,
 };
 
@@ -11,7 +11,7 @@ use crate::{
 #[derive(Debug)]
 pub struct ABuff {
     /// Buff ID.
-    pub id: ReeInt,
+    pub id: BuffId,
     /// Defines how multiple modifications of the same attribute value are aggregated.
     pub aggr_mode: ModAggrMode,
     /// Operation to use when applying the buff's modifiers.
@@ -21,7 +21,7 @@ pub struct ABuff {
 }
 impl ABuff {
     /// Make a new dogma buff out of passed data.
-    pub(crate) fn new(id: ReeInt, aggr_mode: ModAggrMode, op: ModOp, mods: Vec<ABuffAttrMod>) -> Self {
+    pub(crate) fn new(id: BuffId, aggr_mode: ModAggrMode, op: ModOp, mods: Vec<ABuffAttrMod>) -> Self {
         Self {
             id,
             aggr_mode,
@@ -45,11 +45,11 @@ pub struct ABuffAttrMod {
     /// Defines an affectee filter, that is a filter which defines which items will be affected.
     pub afee_filter: ModAfeeFilter,
     /// Refers an attribute, whose value will be affected on the affectee.
-    pub afee_attr_id: ReeInt,
+    pub afee_attr_id: AttrId,
 }
 impl ABuffAttrMod {
     /// Make a new buff-specific attribute modifier out of passed data.
-    pub(crate) fn new(afee_filter: ModAfeeFilter, afee_attr_id: ReeInt) -> Self {
+    pub(crate) fn new(afee_filter: ModAfeeFilter, afee_attr_id: AttrId) -> Self {
         Self {
             afee_filter,
             afee_attr_id,

@@ -184,7 +184,7 @@ impl HSolarSystem {
         self.core_ss = Some(core_ss);
         self.touch();
     }
-    fn str_to_fit_id(&mut self, id: &str) -> HResult<rc::ReeId> {
+    fn str_to_fit_id(&mut self, id: &str) -> HResult<rc::SsFitId> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {
@@ -193,7 +193,7 @@ impl HSolarSystem {
             }
         }
     }
-    fn str_to_item_id(&mut self, id: &str) -> HResult<rc::ReeId> {
+    fn str_to_item_id(&mut self, id: &str) -> HResult<rc::SsItemId> {
         match id.parse() {
             Ok(i) => Ok(i),
             Err(_) => {

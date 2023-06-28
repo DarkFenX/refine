@@ -1,35 +1,37 @@
 use std::{collections::HashMap, sync::Arc};
 
-pub(crate) trait Key {
-    fn get_key(&self) -> rc::ReeInt;
+type KeyVal = i32;
+
+pub trait Key {
+    fn get_key(&self) -> KeyVal;
 }
 impl Key for rc::ad::AItem {
-    fn get_key(&self) -> rc::ReeInt {
+    fn get_key(&self) -> KeyVal {
         self.id
     }
 }
 impl Key for rc::ad::AAttr {
-    fn get_key(&self) -> rc::ReeInt {
+    fn get_key(&self) -> KeyVal {
         self.id
     }
 }
 impl Key for rc::ad::AEffect {
-    fn get_key(&self) -> rc::ReeInt {
+    fn get_key(&self) -> KeyVal {
         self.id
     }
 }
 impl Key for rc::ad::AMuta {
-    fn get_key(&self) -> rc::ReeInt {
+    fn get_key(&self) -> KeyVal {
         self.id
     }
 }
 impl Key for rc::ad::ABuff {
-    fn get_key(&self) -> rc::ReeInt {
+    fn get_key(&self) -> KeyVal {
         self.id
     }
 }
 
-pub(crate) fn move_vec_to_map<T: Key>(vec: Vec<T>, map: &mut HashMap<rc::ReeInt, Arc<T>>) {
+pub(crate) fn move_vec_to_map<T: Key>(vec: Vec<T>, map: &mut HashMap<KeyVal, Arc<T>>) {
     map.clear();
     map.shrink_to_fit();
     map.reserve(vec.len());

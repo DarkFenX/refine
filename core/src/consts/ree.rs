@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-use crate::defs::{ReeIdx, ReeInt};
+use crate::defs::{Amount, BuffId, ItemGrpId, ItemId, ReeIdx};
 
 /// Contains states which can be assigned to several entities.
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
@@ -112,9 +112,9 @@ pub enum ModBuildStatus {
     /// Modifiers haven't been built yet.
     Unbuilt,
     /// All modifiers failed conversion, with a failure count.
-    Error(ReeInt),
+    Error(Amount),
     /// Some modifiers failed conversion, with a failure count.
-    SuccessPartial(ReeInt),
+    SuccessPartial(Amount),
     /// Conversion was successful.
     Success,
     /// Modifiers on an effect were customized by the library.
@@ -129,11 +129,11 @@ pub enum ModAfeeFilter {
     /// All items belonging to the domain are affected.
     Loc(ModDomain),
     /// All items located in the domain and belonging to the group are affected.
-    LocGrp(ModDomain, ReeInt),
+    LocGrp(ModDomain, ItemGrpId),
     /// All items located in the domain and having specified skill requirement are affected.
-    LocSrq(ModDomain, ReeInt),
+    LocSrq(ModDomain, ItemId),
     /// All items belonging to the domain and having specified skill requirement are affected.
-    OwnSrq(ModDomain, ReeInt),
+    OwnSrq(ModDomain, ItemId),
 }
 
 /// Defines domain (or scope) which is target for a modification.
@@ -160,9 +160,9 @@ pub enum ModAggrMode {
     /// All modifications are applied.
     Stack,
     /// Min value will be used, from values with provided key.
-    Min(ReeInt),
+    Min(BuffId),
     /// Max value will be used, from values with provided key.
-    Max(ReeInt),
+    Max(BuffId),
 }
 
 /// Defines what kind of operation will be applied to a target attribute.

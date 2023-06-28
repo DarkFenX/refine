@@ -1,15 +1,15 @@
 use std::hash::{Hash, Hasher};
 
-use crate::{ad, defs::ReeId};
+use crate::{ad, defs::SsItemId};
 
 #[derive(Clone)]
 pub(in crate::ss::svc::calc) struct AffectorSpec {
-    pub(in crate::ss::svc::calc) item_id: ReeId,
+    pub(in crate::ss::svc::calc) item_id: SsItemId,
     pub(in crate::ss::svc::calc) effect: ad::ArcEffect,
     pub(in crate::ss::svc::calc) modifier: ad::AAttrMod,
 }
 impl AffectorSpec {
-    pub(in crate::ss::svc::calc) fn new(item_id: ReeId, effect: ad::ArcEffect, modifier: ad::AAttrMod) -> Self {
+    pub(in crate::ss::svc::calc) fn new(item_id: SsItemId, effect: ad::ArcEffect, modifier: ad::AAttrMod) -> Self {
         Self {
             item_id,
             effect,

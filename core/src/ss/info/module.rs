@@ -1,15 +1,15 @@
 use crate::{
     consts::{ModRack, State},
-    defs::{ReeId, ReeIdx, ReeInt},
+    defs::{ItemId, ReeIdx, SsFitId, SsItemId},
     ss::item::SsModule,
 };
 
 use super::SsChargeInfo;
 
 pub struct SsModuleInfo {
-    pub id: ReeId,
-    pub fit_id: ReeId,
-    pub a_item_id: ReeInt,
+    pub id: SsItemId,
+    pub fit_id: SsFitId,
+    pub a_item_id: ItemId,
     pub state: State,
     pub rack: ModRack,
     pub pos: ReeIdx,
@@ -17,9 +17,9 @@ pub struct SsModuleInfo {
 }
 impl SsModuleInfo {
     fn new(
-        id: ReeId,
-        fit_id: ReeId,
-        a_item_id: ReeInt,
+        id: SsItemId,
+        fit_id: SsFitId,
+        a_item_id: ItemId,
         state: State,
         rack: ModRack,
         pos: ReeIdx,

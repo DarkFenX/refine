@@ -1,10 +1,13 @@
-use crate::{defs::ReeInt, util::Named};
+use crate::{
+    defs::{AttrId, BuffId, ItemGrpId, ItemId},
+    util::Named,
+};
 
 /// EVE buff data.
 #[derive(Debug)]
 pub struct EBuff {
     /// Buff ID.
-    pub id: ReeInt,
+    pub id: BuffId,
     /// Defines how multiple buffs of the same type are aggregated.
     pub aggregate_mode: String,
     /// Name of the operation applied to attributes targeted by the buff.
@@ -21,7 +24,7 @@ pub struct EBuff {
 impl EBuff {
     /// Make a new EVE buff out of passed data.
     pub fn new(
-        id: ReeInt,
+        id: BuffId,
         aggregate_mode: String,
         operation: String,
         item_mods: Vec<EBuffIM>,
@@ -50,11 +53,11 @@ impl Named for EBuff {
 #[derive(Debug)]
 pub struct EBuffIM {
     /// Refers an attribute which is the target of the modification.
-    pub attr_id: ReeInt,
+    pub attr_id: AttrId,
 }
 impl EBuffIM {
     /// Make a new EVE buff auxiliary modifier out of passed data.
-    pub fn new(attr_id: ReeInt) -> Self {
+    pub fn new(attr_id: AttrId) -> Self {
         Self { attr_id }
     }
 }
@@ -63,11 +66,11 @@ impl EBuffIM {
 #[derive(Debug)]
 pub struct EBuffLM {
     /// Refers an attribute which is the target of the modification.
-    pub attr_id: ReeInt,
+    pub attr_id: AttrId,
 }
 impl EBuffLM {
     /// Make a new EVE buff auxiliary modifier out of passed data.
-    pub fn new(attr_id: ReeInt) -> Self {
+    pub fn new(attr_id: AttrId) -> Self {
         Self { attr_id }
     }
 }
@@ -76,14 +79,14 @@ impl EBuffLM {
 #[derive(Debug)]
 pub struct EBuffLGM {
     /// Refers an attribute which is the target of the modification.
-    pub attr_id: ReeInt,
+    pub attr_id: AttrId,
     /// Refers an item group for a modification filter. Only items belonging to this group are
     /// eligible for the modification.
-    pub group_id: ReeInt,
+    pub group_id: ItemGrpId,
 }
 impl EBuffLGM {
     /// Make a new EVE buff auxiliary modifier out of passed data.
-    pub fn new(attr_id: ReeInt, group_id: ReeInt) -> Self {
+    pub fn new(attr_id: AttrId, group_id: ItemGrpId) -> Self {
         Self { attr_id, group_id }
     }
 }
@@ -93,14 +96,14 @@ impl EBuffLGM {
 #[derive(Debug)]
 pub struct EBuffLRSM {
     /// Refers an attribute which is the target of the modification.
-    pub attr_id: ReeInt,
+    pub attr_id: AttrId,
     /// Refers a skill item for a modification filter. Only items having this skill requirement will
     /// be eligible for the modification.
-    pub skill_id: ReeInt,
+    pub skill_id: ItemId,
 }
 impl EBuffLRSM {
     /// Make a new EVE buff auxiliary modifier out of passed data.
-    pub fn new(attr_id: ReeInt, skill_id: ReeInt) -> Self {
+    pub fn new(attr_id: AttrId, skill_id: ItemId) -> Self {
         Self { attr_id, skill_id }
     }
 }

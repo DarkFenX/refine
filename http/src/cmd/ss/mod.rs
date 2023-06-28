@@ -26,7 +26,7 @@ pub(crate) enum HSsCommand {
     AddDrone(HAddDroneCmd),
 }
 impl HSsCommand {
-    pub(crate) fn from_fit_cmd(fit_id: rc::ReeId, fit_cmd: HFitCommand) -> Self {
+    pub(crate) fn from_fit_cmd(fit_id: rc::SsFitId, fit_cmd: HFitCommand) -> Self {
         match fit_cmd {
             HFitCommand::SetCharacter(fit_cmd) => Self::SetCharacter(HSetCharCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddImplant(fit_cmd) => Self::AddImplant(HAddImplantCmd::from_fit_cmd(fit_id, fit_cmd)),

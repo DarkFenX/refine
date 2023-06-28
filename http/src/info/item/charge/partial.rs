@@ -1,12 +1,12 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HChargeInfoPartial {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) id: rc::ReeId,
+    pub(crate) id: rc::SsItemId,
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) fit_id: rc::ReeId,
-    pub(crate) type_id: rc::ReeInt,
+    pub(crate) fit_id: rc::SsFitId,
+    pub(crate) type_id: rc::ItemId,
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) cont_id: rc::ReeId,
+    pub(crate) cont_id: rc::SsItemId,
 }
 impl From<&rc::SsChargeInfo> for HChargeInfoPartial {
     fn from(core_charge_info: &rc::SsChargeInfo) -> Self {

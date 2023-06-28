@@ -1,11 +1,11 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HSkillInfoPartial {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) id: rc::ReeId,
+    pub(crate) id: rc::SsItemId,
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) fit_id: rc::ReeId,
-    pub(crate) type_id: rc::ReeInt,
-    pub(crate) level: rc::ReeInt,
+    pub(crate) fit_id: rc::SsFitId,
+    pub(crate) type_id: rc::ItemId,
+    pub(crate) level: rc::SkillLevel,
     pub(crate) enabled: bool,
 }
 impl From<&rc::SsSkillInfo> for HSkillInfoPartial {

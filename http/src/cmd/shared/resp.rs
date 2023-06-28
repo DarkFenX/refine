@@ -12,7 +12,7 @@ pub(crate) struct HItemIdsResp {
     charge_id: Option<String>,
 }
 impl HItemIdsResp {
-    fn new(item_id: rc::ReeId, charge_info: Option<rc::SsChargeInfo>) -> Self {
+    fn new(item_id: rc::SsItemId, charge_info: Option<rc::SsChargeInfo>) -> Self {
         Self {
             id: item_id.to_string(),
             charge_id: charge_info.map(|v| v.id.to_string()),

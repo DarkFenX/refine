@@ -1,15 +1,15 @@
 use crate::{
-    defs::{ReeId, ReeInt},
+    defs::{ItemId, SsItemId},
     ss::item::SsSwEffect,
 };
 
 pub struct SsSwEffectInfo {
-    pub id: ReeId,
-    pub a_item_id: ReeInt,
+    pub id: SsItemId,
+    pub a_item_id: ItemId,
     pub enabled: bool,
 }
 impl SsSwEffectInfo {
-    fn new(id: ReeId, a_item_id: ReeInt, enabled: bool) -> Self {
+    fn new(id: SsItemId, a_item_id: ItemId, enabled: bool) -> Self {
         Self { id, a_item_id, enabled }
     }
 }

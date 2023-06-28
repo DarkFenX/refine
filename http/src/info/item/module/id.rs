@@ -1,9 +1,9 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HModuleInfoId {
     #[serde(with = "crate::util::serde_string")]
-    pub(crate) id: rc::ReeId,
+    pub(crate) id: rc::SsItemId,
     #[serde(skip_serializing_if = "Option::is_none", with = "crate::util::serde_string_opt")]
-    pub(crate) charge_id: Option<rc::ReeId>,
+    pub(crate) charge_id: Option<rc::SsItemId>,
 }
 impl From<&rc::SsModuleInfo> for HModuleInfoId {
     fn from(core_module_info: &rc::SsModuleInfo) -> Self {

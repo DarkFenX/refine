@@ -6,3 +6,6 @@ mod data;
 mod db;
 mod funcs;
 mod traits;
+
+// Part of primary and foreign keys
+pub(in crate::adg) type KeyPart = i32;

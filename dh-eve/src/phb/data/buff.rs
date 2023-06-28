@@ -1,4 +1,7 @@
-use crate::{phb::fsd::FsdMerge, util::into_vec};
+use crate::{
+    phb::fsd::{FsdId, FsdMerge},
+    util::into_vec,
+};
 
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PBuff {
@@ -16,7 +19,7 @@ pub(in crate::phb) struct PBuff {
     pub(in crate::phb) locsrq_mods: Vec<PBuffLRSM>,
 }
 impl FsdMerge<rc::ed::EBuff> for PBuff {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EBuff> {
+    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EBuff> {
         vec![rc::ed::EBuff::new(
             id,
             self.aggregate_mode,
@@ -32,7 +35,7 @@ impl FsdMerge<rc::ed::EBuff> for PBuff {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PBuffIM {
     #[serde(rename = "dogmaAttributeID")]
-    pub(in crate::phb) attr_id: rc::ReeInt,
+    pub(in crate::phb) attr_id: rc::AttrId,
 }
 impl Into<rc::ed::EBuffIM> for PBuffIM {
     fn into(self) -> rc::ed::EBuffIM {
@@ -43,7 +46,7 @@ impl Into<rc::ed::EBuffIM> for PBuffIM {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PBuffLM {
     #[serde(rename = "dogmaAttributeID")]
-    pub(in crate::phb) attr_id: rc::ReeInt,
+    pub(in crate::phb) attr_id: rc::AttrId,
 }
 impl Into<rc::ed::EBuffLM> for PBuffLM {
     fn into(self) -> rc::ed::EBuffLM {
@@ -54,9 +57,9 @@ impl Into<rc::ed::EBuffLM> for PBuffLM {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PBuffLGM {
     #[serde(rename = "dogmaAttributeID")]
-    pub(in crate::phb) attr_id: rc::ReeInt,
+    pub(in crate::phb) attr_id: rc::AttrId,
     #[serde(rename = "groupID")]
-    pub(in crate::phb) group_id: rc::ReeInt,
+    pub(in crate::phb) group_id: rc::ItemGrpId,
 }
 impl Into<rc::ed::EBuffLGM> for PBuffLGM {
     fn into(self) -> rc::ed::EBuffLGM {
@@ -67,9 +70,9 @@ impl Into<rc::ed::EBuffLGM> for PBuffLGM {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PBuffLRSM {
     #[serde(rename = "dogmaAttributeID")]
-    pub(in crate::phb) attr_id: rc::ReeInt,
+    pub(in crate::phb) attr_id: rc::AttrId,
     #[serde(rename = "skillID")]
-    pub(in crate::phb) skill_id: rc::ReeInt,
+    pub(in crate::phb) skill_id: rc::ItemId,
 }
 impl Into<rc::ed::EBuffLRSM> for PBuffLRSM {
     fn into(self) -> rc::ed::EBuffLRSM {

@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ReeFloat, ReeInt},
+    defs::{AttrId, AttrVal},
     util::Named,
 };
 
@@ -9,25 +9,25 @@ use crate::{
 /// Values themselves are stored on various items as plain numbers.
 pub struct AAttr {
     /// Attribute ID.
-    pub id: ReeInt,
+    pub id: AttrId,
     /// Defines if modifications applied to the attribute's values are immune to stacking penalties
     /// or not.
     pub penalizable: bool,
     /// "High is good" defines if higher value of the attribute is considered good or not.
     pub hig: bool,
     /// Default value of the attribute, used if not provided by an item type.
-    pub def_val: Option<ReeFloat>,
+    pub def_val: Option<AttrVal>,
     /// Refers another attribute, whose value limits value of this attribute.
-    pub max_attr_id: Option<ReeInt>,
+    pub max_attr_id: Option<AttrId>,
 }
 impl AAttr {
     /// Make a new adapted dogma attribute out of passed data.
     pub(crate) fn new(
-        id: ReeInt,
+        id: AttrId,
         penalizable: bool,
         hig: bool,
-        def_val: Option<ReeFloat>,
-        max_attr_id: Option<ReeInt>,
+        def_val: Option<AttrVal>,
+        max_attr_id: Option<AttrId>,
     ) -> Self {
         Self {
             id,

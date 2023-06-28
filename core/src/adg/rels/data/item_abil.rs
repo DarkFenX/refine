@@ -1,23 +1,22 @@
 use crate::{
     adg::{
-        rels::{Fk, Pk},
+        rels::{Fk, KeyPart, Pk},
         GSupport,
     },
-    defs::ReeInt,
     ed,
 };
 
 impl Pk for ed::EItemFighterAbil {
-    fn get_pk(&self) -> Vec<ReeInt> {
+    fn get_pk(&self) -> Vec<KeyPart> {
         vec![self.item_id, self.abil_id]
     }
 }
 
 impl Fk for ed::EItemFighterAbil {
-    fn get_item_fks(&self, _: &GSupport) -> Vec<ReeInt> {
+    fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         vec![self.item_id]
     }
-    fn get_abil_fks(&self, _: &GSupport) -> Vec<ReeInt> {
+    fn get_abil_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         vec![self.abil_id]
     }
 }

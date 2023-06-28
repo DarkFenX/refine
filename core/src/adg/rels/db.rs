@@ -2,19 +2,19 @@ use std::collections::HashSet;
 
 use crate::{
     adg::{
-        rels::{Fk, Pk},
+        rels::{Fk, KeyPart, Pk},
         GData, GSupport,
     },
-    defs::ReeInt,
+    defs::{AbilId, AttrId, BuffId, EffectId, ItemGrpId, ItemId},
 };
 
 pub(in crate::adg) struct KeyDb {
-    pub(in crate::adg) items: HashSet<ReeInt>,
-    pub(in crate::adg) groups: HashSet<ReeInt>,
-    pub(in crate::adg) attrs: HashSet<ReeInt>,
-    pub(in crate::adg) effects: HashSet<ReeInt>,
-    pub(in crate::adg) abils: HashSet<ReeInt>,
-    pub(in crate::adg) buffs: HashSet<ReeInt>,
+    pub(in crate::adg) items: HashSet<ItemId>,
+    pub(in crate::adg) groups: HashSet<ItemGrpId>,
+    pub(in crate::adg) attrs: HashSet<AttrId>,
+    pub(in crate::adg) effects: HashSet<EffectId>,
+    pub(in crate::adg) abils: HashSet<AbilId>,
+    pub(in crate::adg) buffs: HashSet<BuffId>,
 }
 impl KeyDb {
     pub(in crate::adg) fn new() -> Self {
@@ -38,7 +38,7 @@ impl KeyDb {
         Self::extend_pk_vec(&mut pkdb.buffs, &g_data.buffs);
         pkdb
     }
-    fn extend_pk_vec<T: Pk>(set: &mut HashSet<ReeInt>, vec: &Vec<T>) {
+    fn extend_pk_vec<T: Pk>(set: &mut HashSet<KeyPart>, vec: &Vec<T>) {
         for i in vec.iter() {
             set.extend(i.get_pk())
         }

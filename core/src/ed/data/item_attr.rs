@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ReeFloat, ReeInt},
+    defs::{AttrId, AttrVal, ItemId},
     util::Named,
 };
 
@@ -7,15 +7,15 @@ use crate::{
 #[derive(Debug)]
 pub struct EItemAttr {
     /// Refers an item type involved in the relation.
-    pub item_id: ReeInt,
+    pub item_id: ItemId,
     /// Refers an attribute involved in the relation.
-    pub attr_id: ReeInt,
+    pub attr_id: AttrId,
     /// Value of the attribute.
-    pub value: ReeFloat,
+    pub value: AttrVal,
 }
 impl EItemAttr {
     /// Make a new item-attribute relation out of passed data.
-    pub fn new(item_id: ReeInt, attr_id: ReeInt, value: ReeFloat) -> Self {
+    pub fn new(item_id: ItemId, attr_id: AttrId, value: AttrVal) -> Self {
         Self {
             item_id,
             attr_id,

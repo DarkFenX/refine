@@ -20,7 +20,10 @@
 //! and items, and fetch data and stats
 
 pub use consts::{EffectMode, ModRack, OrdAddMode, State};
-pub use defs::{AttrId, EffectId, ReeFloat, ReeId, ReeIdx, ReeInt, REEINT_MAX, REEINT_MIN, VERSION};
+pub use defs::{
+    AbilId, Amount, AttrId, AttrUnitId, AttrVal, BuffId, EffectCatId, EffectId, ItemCatId, ItemGrpId, ItemId, MutaId,
+    ReeIdx, SkillLevel, SsFitId, SsItemId, VERSION,
+};
 pub use src::Src;
 pub use ss::{
     info::{

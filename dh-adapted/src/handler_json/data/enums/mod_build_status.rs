@@ -2,8 +2,8 @@
 #[serde(rename_all = "snake_case")]
 pub(in crate::handler_json) enum CModBuildStatus {
     Unbuilt,
-    Error(rc::ReeInt),
-    SuccessPartial(rc::ReeInt),
+    Error(rc::Amount),
+    SuccessPartial(rc::Amount),
     Success,
     Custom,
 }

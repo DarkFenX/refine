@@ -2,40 +2,46 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use crate::{phb::fsd::FsdMerge, util::into_opt};
+use crate::{
+    phb::{
+        fsd::{FsdId, FsdMerge},
+        serde_custom::bool_from_int,
+    },
+    util::into_opt,
+};
 
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PEffect {
     #[serde(rename = "effectCategory")]
-    pub(in crate::phb) category_id: rc::ReeInt,
-    #[serde(rename = "isAssistance")]
-    pub(in crate::phb) is_assistance: rc::ReeInt,
-    #[serde(rename = "isOffensive")]
-    pub(in crate::phb) is_offensive: rc::ReeInt,
+    pub(in crate::phb) category_id: rc::EffectCatId,
+    #[serde(rename = "isAssistance", deserialize_with = "bool_from_int")]
+    pub(in crate::phb) is_assistance: bool,
+    #[serde(rename = "isOffensive", deserialize_with = "bool_from_int")]
+    pub(in crate::phb) is_offensive: bool,
     #[serde(rename = "dischargeAttributeID")]
-    pub(in crate::phb) discharge_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) discharge_attr_id: Option<rc::AttrId>,
     #[serde(rename = "durationAttributeID")]
-    pub(in crate::phb) duration_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) duration_attr_id: Option<rc::AttrId>,
     #[serde(rename = "rangeAttributeID")]
-    pub(in crate::phb) range_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) range_attr_id: Option<rc::AttrId>,
     #[serde(rename = "falloffAttributeID")]
-    pub(in crate::phb) falloff_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) falloff_attr_id: Option<rc::AttrId>,
     #[serde(rename = "trackingSpeedAttributeID")]
-    pub(in crate::phb) tracking_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) tracking_attr_id: Option<rc::AttrId>,
     #[serde(rename = "fittingUsageChanceAttributeID")]
-    pub(in crate::phb) usage_chance_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) usage_chance_attr_id: Option<rc::AttrId>,
     #[serde(rename = "resistanceAttributeID")]
-    pub(in crate::phb) resist_attr_id: Option<rc::ReeInt>,
+    pub(in crate::phb) resist_attr_id: Option<rc::AttrId>,
     #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
     pub(in crate::phb) mods: Vec<PEffectMod>,
 }
 impl FsdMerge<rc::ed::EEffect> for PEffect {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<rc::ed::EEffect> {
+    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EEffect> {
         vec![rc::ed::EEffect::new(
             id,
             self.category_id,
-            self.is_assistance != 0,
-            self.is_offensive != 0,
+            self.is_assistance,
+            self.is_offensive,
             into_opt(self.discharge_attr_id),
             into_opt(self.duration_attr_id),
             into_opt(self.range_attr_id),
@@ -104,9 +110,9 @@ mod dgmmod {
             Value::Bool(b) => Ok(rc::ed::EPrimitive::Bool(b)),
             Value::Number(n) => {
                 if let Some(n) = n.as_i64() {
-                    Ok(rc::ed::EPrimitive::Int(n as rc::ReeInt))
+                    Ok(rc::ed::EPrimitive::Int(n as i32))
                 } else if let Some(n) = n.as_f64() {
-                    Ok(rc::ed::EPrimitive::Float(n as rc::ReeFloat))
+                    Ok(rc::ed::EPrimitive::Float(n))
                 } else {
                     Err(Error::custom("unexpected number type"))
                 }

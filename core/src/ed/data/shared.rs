@@ -1,5 +1,3 @@
-use crate::defs::{ReeFloat, ReeInt};
-
 /// Auxiliary entity for "primitive" data.
 #[derive(Debug)]
 pub enum EPrimitive {
@@ -8,9 +6,9 @@ pub enum EPrimitive {
     /// Represents a boolean value.
     Bool(bool),
     /// Represents an integer number value.
-    Int(ReeInt),
+    Int(i32),
     /// Represents a float number value.
-    Float(ReeFloat),
+    Float(f64),
     /// Represents a string value.
     String(String),
 }

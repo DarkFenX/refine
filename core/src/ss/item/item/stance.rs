@@ -1,7 +1,7 @@
 use crate::{
     ad,
     consts::{EffectMode, State},
-    defs::{EffectId, ReeId, ReeInt},
+    defs::{EffectId, ItemId, SsFitId, SsItemId},
     src::Src,
     util::{Named, OptMap},
 };
@@ -9,15 +9,15 @@ use crate::{
 use super::{bool_to_state, state_to_bool};
 
 pub(in crate::ss) struct SsStance {
-    pub(in crate::ss) id: ReeId,
-    pub(in crate::ss) fit_id: ReeId,
-    pub(in crate::ss) a_item_id: ReeInt,
+    pub(in crate::ss) id: SsItemId,
+    pub(in crate::ss) fit_id: SsFitId,
+    pub(in crate::ss) a_item_id: ItemId,
     pub(in crate::ss) state: State,
     pub(in crate::ss) effect_modes: OptMap<EffectId, EffectMode>,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
 impl SsStance {
-    pub(in crate::ss) fn new(src: &Src, id: ReeId, fit_id: ReeId, a_item_id: ReeInt, state: bool) -> Self {
+    pub(in crate::ss) fn new(src: &Src, id: SsItemId, fit_id: SsFitId, a_item_id: ItemId, state: bool) -> Self {
         Self {
             id,
             fit_id,

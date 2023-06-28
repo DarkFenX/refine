@@ -8,10 +8,11 @@ use crate::{
         GData, GSupport,
     },
     consts::{itemcats, itemgrps},
+    defs::Amount,
     util::{IntError, IntResult, Named},
 };
 
-const MAX_CYCLES: i32 = 100;
+const MAX_CYCLES: Amount = 100;
 
 pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> IntResult<()> {
     let mut trash = GData::new();

@@ -1,7 +1,9 @@
 use crate::util::{Error, ErrorKind, Result};
 
+pub(in crate::phb) type FsdId = i32;
+
 pub(in crate::phb) trait FsdMerge<T> {
-    fn fsd_merge(self, id: rc::ReeInt) -> Vec<T>;
+    fn fsd_merge(self, id: FsdId) -> Vec<T>;
 }
 
 #[derive(Debug)]
@@ -39,7 +41,7 @@ where
 {
     let mut e_cont = rc::ed::EDataCont::new();
     for fsd_item in decomposed {
-        match fsd_item.id.parse::<rc::ReeInt>() {
+        match fsd_item.id.parse::<FsdId>() {
             Ok(id) => match serde_json::from_value::<T>(fsd_item.item) {
                 Ok(p_item) => e_cont.data.extend(p_item.fsd_merge(id)),
                 Err(e) => e_cont

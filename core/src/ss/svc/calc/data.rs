@@ -1,8 +1,4 @@
-use std::collections::HashMap;
-
-use crate::defs::{AttrId, SsItemId};
-
-use super::support::{AffectionRegister, AttrCapData, AttrValData, SsAttrVal};
+use super::support::{AffectionRegister, AttrCapData, AttrValData};
 
 pub(in crate::ss::svc) struct CalcData {
     pub(in crate::ss::svc::calc) attrs: AttrValData,

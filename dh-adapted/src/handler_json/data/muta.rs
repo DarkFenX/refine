@@ -2,9 +2,9 @@ use std::collections::HashMap;
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CMuta {
-    id: rc::ReeInt,
-    item_map: HashMap<rc::ReeInt, rc::ReeInt>,
-    attr_mods: HashMap<rc::ReeInt, CMutaAttrRange>,
+    id: rc::MutaId,
+    item_map: HashMap<rc::ItemId, rc::ItemId>,
+    attr_mods: HashMap<rc::AttrId, CMutaAttrRange>,
 }
 impl From<&rc::ad::AMuta> for CMuta {
     fn from(a_muta: &rc::ad::AMuta) -> Self {
@@ -27,8 +27,8 @@ impl Into<rc::ad::AMuta> for &CMuta {
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 struct CMutaAttrRange {
-    min_mult: rc::ReeFloat,
-    max_mult: rc::ReeFloat,
+    min_mult: rc::AttrVal,
+    max_mult: rc::AttrVal,
 }
 impl From<&rc::ad::AMutaAttrRange> for CMutaAttrRange {
     fn from(a_muta_range: &rc::ad::AMutaAttrRange) -> Self {

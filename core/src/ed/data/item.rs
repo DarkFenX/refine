@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ReeFloat, ReeInt},
+    defs::{AttrVal, ItemGrpId, ItemId},
     util::Named,
 };
 
@@ -7,27 +7,27 @@ use crate::{
 #[derive(Debug)]
 pub struct EItem {
     /// Item type ID.
-    pub id: ReeInt,
+    pub id: ItemId,
     /// Refers an item group the item type belongs to.
-    pub group_id: ReeInt,
+    pub group_id: ItemGrpId,
     /// Base value of capacity attribute.
-    pub capacity: ReeFloat,
+    pub capacity: AttrVal,
     /// Base value of mass attribute.
-    pub mass: ReeFloat,
+    pub mass: AttrVal,
     /// Base value of radius attribute.
-    pub radius: ReeFloat,
+    pub radius: AttrVal,
     /// Base value of volume attribute.
-    pub volume: ReeFloat,
+    pub volume: AttrVal,
 }
 impl EItem {
     /// Make a new EVE item type out of passed data.
     pub fn new(
-        id: ReeInt,
-        group_id: ReeInt,
-        capacity: ReeFloat,
-        mass: ReeFloat,
-        radius: ReeFloat,
-        volume: ReeFloat,
+        id: ItemId,
+        group_id: ItemGrpId,
+        capacity: AttrVal,
+        mass: AttrVal,
+        radius: AttrVal,
+        volume: AttrVal,
     ) -> Self {
         Self {
             id,
