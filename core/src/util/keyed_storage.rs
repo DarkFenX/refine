@@ -17,7 +17,10 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
         let values = self.data.entry(key).or_insert_with(|| HashSet::with_capacity(1));
         values.insert(entry);
     }
-    pub(crate) fn extend<I: Iterator<Item = V> + ExactSizeIterator>(&mut self, key: K, entries: I) {
+    pub(crate) fn extend<I>(&mut self, key: K, entries: I)
+    where
+        I: Iterator<Item = V> + ExactSizeIterator,
+    {
         let values = self
             .data
             .entry(key)
@@ -36,7 +39,10 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
             self.data.remove(key);
         }
     }
-    pub(crate) fn drain<I: Iterator<Item = V>>(&mut self, key: &K, entries: I) {
+    pub(crate) fn drain<I>(&mut self, key: &K, entries: I)
+    where
+        I: Iterator<Item = V>,
+    {
         let need_cleanup = match self.data.get_mut(key) {
             None => return,
             Some(v) => {
