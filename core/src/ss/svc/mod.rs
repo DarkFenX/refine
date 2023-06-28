@@ -4,7 +4,7 @@ use calc::CalcData;
 pub use calc::SsAttrVal;
 use running_effects::RunningEffects;
 
-use crate::defs::{EffectId, SsItemId};
+use crate::defs::{EEffectId, SsItemId};
 
 mod calc;
 mod routing;
@@ -21,7 +21,7 @@ impl SsSvcs {
             calc_data: CalcData::new(),
         }
     }
-    pub(in crate::ss) fn get_running_effects(&self, item_id: &SsItemId) -> Option<&HashSet<EffectId>> {
+    pub(in crate::ss) fn get_running_effects(&self, item_id: &SsItemId) -> Option<&HashSet<EEffectId>> {
         self.running_effects.get_running_effects(item_id)
     }
 }

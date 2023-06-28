@@ -8,8 +8,8 @@ use super::HSkillInfoPartial;
 pub(crate) struct HSkillInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HSkillInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HSkillInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_skill_info: &rc::SsSkillInfo) -> Self {

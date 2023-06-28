@@ -13,25 +13,25 @@ use crate::{
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PEffect {
     #[serde(rename = "effectCategory")]
-    pub(in crate::phb) category_id: rc::EffectCatId,
+    pub(in crate::phb) category_id: rc::EEffectCatId,
     #[serde(rename = "isAssistance", deserialize_with = "bool_from_int")]
     pub(in crate::phb) is_assistance: bool,
     #[serde(rename = "isOffensive", deserialize_with = "bool_from_int")]
     pub(in crate::phb) is_offensive: bool,
     #[serde(rename = "dischargeAttributeID")]
-    pub(in crate::phb) discharge_attr_id: Option<rc::AttrId>,
+    pub(in crate::phb) discharge_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "durationAttributeID")]
-    pub(in crate::phb) duration_attr_id: Option<rc::AttrId>,
+    pub(in crate::phb) duration_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "rangeAttributeID")]
-    pub(in crate::phb) range_attr_id: Option<rc::AttrId>,
+    pub(in crate::phb) range_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "falloffAttributeID")]
-    pub(in crate::phb) falloff_attr_id: Option<rc::AttrId>,
+    pub(in crate::phb) falloff_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "trackingSpeedAttributeID")]
-    pub(in crate::phb) tracking_attr_id: Option<rc::AttrId>,
+    pub(in crate::phb) tracking_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "fittingUsageChanceAttributeID")]
-    pub(in crate::phb) usage_chance_attr_id: Option<rc::AttrId>,
+    pub(in crate::phb) usage_chance_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "resistanceAttributeID")]
-    pub(in crate::phb) resist_attr_id: Option<rc::AttrId>,
+    pub(in crate::phb) resist_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "modifierInfo", default, deserialize_with = "dgmmod::deserialize")]
     pub(in crate::phb) mods: Vec<PEffectMod>,
 }

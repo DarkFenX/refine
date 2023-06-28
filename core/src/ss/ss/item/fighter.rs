@@ -1,6 +1,6 @@
 use crate::{
     consts::State,
-    defs::{ItemId, SsFitId, SsItemId},
+    defs::{EItemId, SsFitId, SsItemId},
     ss::{
         info::SsFighterInfo,
         item::{SsFighter, SsItem},
@@ -23,7 +23,7 @@ impl SolarSystem {
             .collect();
         Ok(fighter_infos)
     }
-    pub fn add_fighter(&mut self, fit_id: SsFitId, a_item_id: ItemId, state: State) -> Result<SsFighterInfo> {
+    pub fn add_fighter(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: State) -> Result<SsFighterInfo> {
         let item_id = self.items.alloc_item_id()?;
         let fighter = SsFighter::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsFighterInfo::from(&fighter);

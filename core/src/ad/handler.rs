@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::defs::{AttrId, BuffId, EffectId, ItemId, MutaId};
+use crate::defs::{EAttrId, EBuffId, EEffectId, EItemId, EMutaId};
 
 use super::{
     data::{AData, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta},
@@ -14,15 +14,15 @@ use super::{
 /// adapted data on every run.
 pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Get adapted item.
-    fn get_item(&self, id: &ItemId) -> Option<ArcItem>;
+    fn get_item(&self, id: &EItemId) -> Option<ArcItem>;
     /// Get adapted attribute.
-    fn get_attr(&self, id: &AttrId) -> Option<ArcAttr>;
+    fn get_attr(&self, id: &EAttrId) -> Option<ArcAttr>;
     /// Get adapted effect.
-    fn get_effect(&self, id: &EffectId) -> Option<ArcEffect>;
+    fn get_effect(&self, id: &EEffectId) -> Option<ArcEffect>;
     /// Get adapted mutaplasmid.
-    fn get_muta(&self, id: &MutaId) -> Option<ArcMuta>;
+    fn get_muta(&self, id: &EMutaId) -> Option<ArcMuta>;
     /// Get adapted warfare buff.
-    fn get_buff(&self, id: &BuffId) -> Option<ArcBuff>;
+    fn get_buff(&self, id: &EBuffId) -> Option<ArcBuff>;
     /// Get adapted data fingerprint.
     fn get_data_fingerprint(&self) -> Option<&str>;
     /// Load cache from persistent storage.

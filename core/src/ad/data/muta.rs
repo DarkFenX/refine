@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    defs::{AttrId, AttrVal, ItemId, MutaId},
+    defs::{AttrVal, EAttrId, EItemId, EMutaId},
     util::Named,
 };
 
@@ -11,15 +11,15 @@ use crate::{
 #[derive(Debug)]
 pub struct AMuta {
     /// Mutaplasmid ID.
-    pub id: MutaId,
+    pub id: EMutaId,
     /// Describes which item you will get (value) by applying the mutaplasmid to another item (key).
-    pub item_map: HashMap<ItemId, ItemId>,
+    pub item_map: HashMap<EItemId, EItemId>,
     /// Describes mutation ranges for attributes.
-    pub attr_mods: HashMap<AttrId, AMutaAttrRange>,
+    pub attr_mods: HashMap<EAttrId, AMutaAttrRange>,
 }
 impl AMuta {
     /// Make a new adapted mutaplasmid out of passed data.
-    pub(crate) fn new(id: MutaId) -> Self {
+    pub(crate) fn new(id: EMutaId) -> Self {
         Self {
             id,
             item_map: HashMap::new(),

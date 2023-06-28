@@ -8,8 +8,8 @@ use super::HSwEffectInfoPartial;
 pub(crate) struct HSwEffectInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HSwEffectInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HSwEffectInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_sw_effect_info: &rc::SsSwEffectInfo) -> Self {

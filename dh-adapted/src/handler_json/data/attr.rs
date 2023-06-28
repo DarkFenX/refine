@@ -1,10 +1,10 @@
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CAttr {
-    id: rc::AttrId,
+    id: rc::EAttrId,
     penalizable: bool,
     hig: bool,
     def_val: Option<rc::AttrVal>,
-    max_attr_id: Option<rc::AttrId>,
+    max_attr_id: Option<rc::EAttrId>,
 }
 impl From<&rc::ad::AAttr> for CAttr {
     fn from(a_attr: &rc::ad::AAttr) -> Self {

@@ -1,6 +1,6 @@
 use crate::{
     consts::{ModRack, OrdAddMode, State},
-    defs::{ItemId, ReeIdx, SsFitId, SsItemId},
+    defs::{EItemId, Idx, SsFitId, SsItemId},
     ss::{
         info::{SsChargeInfo, SsModuleInfo},
         item::{SsItem, SsModule},
@@ -32,9 +32,9 @@ impl SolarSystem {
         fit_id: SsFitId,
         rack: ModRack,
         pos_mode: OrdAddMode,
-        a_item_id: ItemId,
+        a_item_id: EItemId,
         state: State,
-        charge_a_item_id: Option<ItemId>,
+        charge_a_item_id: Option<EItemId>,
     ) -> Result<SsModuleInfo> {
         // Allocate resources early, to make sure if we fail we don't need to roll anything back
         let m_item_id = self.items.alloc_item_id()?;
@@ -112,7 +112,7 @@ impl SolarSystem {
         }
         Ok(())
     }
-    pub fn set_module_charge(&mut self, item_id: &SsItemId, charge_a_item_id: ItemId) -> Result<SsChargeInfo> {
+    pub fn set_module_charge(&mut self, item_id: &SsItemId, charge_a_item_id: EItemId) -> Result<SsChargeInfo> {
         let c_item_id = self.items.alloc_item_id()?;
         self.remove_module_charge(item_id)?;
         let module = self.items.get_module(item_id)?;
@@ -145,7 +145,7 @@ impl SolarSystem {
 }
 
 // Find first slot not taken by any module
-fn find_equip_pos(mut positions: Vec<ReeIdx>) -> ReeIdx {
+fn find_equip_pos(mut positions: Vec<Idx>) -> Idx {
     for i in 0..positions.len() {
         while (positions[i] < positions.len()) && (positions[i] != i) {
             let j = positions[i];

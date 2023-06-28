@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ItemId, MutaId},
+    defs::{EItemId, EMutaId},
     util::Named,
 };
 
@@ -7,15 +7,15 @@ use crate::{
 #[derive(Debug)]
 pub struct EMutaItemConv {
     /// Mutaplasmid item type ID.
-    pub muta_id: MutaId,
+    pub muta_id: EMutaId,
     /// Refers an item type the mutaplasmid can be applied to.
-    pub in_item_id: ItemId,
+    pub in_item_id: EItemId,
     /// Refers an item type, which is the outcome of the conversion.
-    pub out_item_id: ItemId,
+    pub out_item_id: EItemId,
 }
 impl EMutaItemConv {
     /// Make a new EVE mutaplasmid item type conversion.
-    pub fn new(muta_id: MutaId, in_item_id: ItemId, out_item_id: ItemId) -> Self {
+    pub fn new(muta_id: EMutaId, in_item_id: EItemId, out_item_id: EItemId) -> Self {
         Self {
             muta_id,
             in_item_id,

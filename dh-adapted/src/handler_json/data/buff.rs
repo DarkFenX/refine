@@ -2,7 +2,7 @@ use super::enums::{CModAfeeFilter, CModAggrMode, CModOp};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CBuff {
-    id: rc::BuffId,
+    id: rc::EBuffId,
     aggr_mode: CModAggrMode,
     op: CModOp,
     mods: Vec<CBuffAttrMod>,
@@ -31,7 +31,7 @@ impl Into<rc::ad::ABuff> for &CBuff {
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 struct CBuffAttrMod {
     afee_filter: CModAfeeFilter,
-    afee_attr_id: rc::AttrId,
+    afee_attr_id: rc::EAttrId,
 }
 impl From<&rc::ad::ABuffAttrMod> for CBuffAttrMod {
     fn from(a_modifier: &rc::ad::ABuffAttrMod) -> Self {

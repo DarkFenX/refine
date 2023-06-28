@@ -2,7 +2,7 @@
 pub(crate) struct HSwEffectInfoPartial {
     #[serde(with = "crate::util::serde_string")]
     pub(crate) id: rc::SsItemId,
-    pub(crate) type_id: rc::ItemId,
+    pub(crate) type_id: rc::EItemId,
     pub(crate) enabled: bool,
 }
 impl From<&rc::SsSwEffectInfo> for HSwEffectInfoPartial {

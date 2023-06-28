@@ -1,7 +1,7 @@
 use crate::{
     ad,
     consts::EffectMode,
-    defs::{EffectId, ItemId, SsFitId, SsItemId},
+    defs::{EEffectId, EItemId, SsFitId, SsItemId},
     src::Src,
     util::{Named, OptMap},
 };
@@ -9,13 +9,13 @@ use crate::{
 pub(in crate::ss) struct SsCharge {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) fit_id: SsFitId,
-    pub(in crate::ss) a_item_id: ItemId,
+    pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) cont_id: SsItemId,
-    pub(in crate::ss) effect_modes: OptMap<EffectId, EffectMode>,
+    pub(in crate::ss) effect_modes: OptMap<EEffectId, EffectMode>,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
 impl SsCharge {
-    pub(in crate::ss) fn new(src: &Src, id: SsItemId, fit_id: SsFitId, a_item_id: ItemId, cont_id: SsItemId) -> Self {
+    pub(in crate::ss) fn new(src: &Src, id: SsItemId, fit_id: SsFitId, a_item_id: EItemId, cont_id: SsItemId) -> Self {
         Self {
             id,
             fit_id,

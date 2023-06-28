@@ -7,9 +7,9 @@ use crate::{
 pub(crate) struct HAddModuleCmd {
     rack: HModRack,
     add_mode: HAddMode,
-    type_id: rc::ItemId,
+    type_id: rc::EItemId,
     state: HState,
-    charge_type_id: Option<rc::ItemId>,
+    charge_type_id: Option<rc::EItemId>,
 }
 impl HAddModuleCmd {
     pub(crate) fn get_rack(&self) -> &HModRack {
@@ -18,13 +18,13 @@ impl HAddModuleCmd {
     pub(crate) fn get_add_mode(&self) -> &HAddMode {
         &self.add_mode
     }
-    pub(crate) fn get_type_id(&self) -> rc::ItemId {
+    pub(crate) fn get_type_id(&self) -> rc::EItemId {
         self.type_id
     }
     pub(crate) fn get_state(&self) -> &HState {
         &self.state
     }
-    pub(crate) fn get_charge_type_id(&self) -> Option<rc::ItemId> {
+    pub(crate) fn get_charge_type_id(&self) -> Option<rc::EItemId> {
         self.charge_type_id
     }
 }

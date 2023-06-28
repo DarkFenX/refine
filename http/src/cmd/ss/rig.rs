@@ -14,7 +14,7 @@ impl HAddRigCmd {
     pub(crate) fn get_fit_id(&self) -> rc::SsFitId {
         self.fit_id
     }
-    pub(crate) fn get_type_id(&self) -> rc::ItemId {
+    pub(crate) fn get_type_id(&self) -> rc::EItemId {
         self.fit_cmd.get_type_id()
     }
     pub(crate) fn get_state(&self) -> bool {

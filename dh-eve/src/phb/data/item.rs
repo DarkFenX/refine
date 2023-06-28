@@ -3,7 +3,7 @@ use crate::phb::fsd::{FsdId, FsdMerge};
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PItem {
     #[serde(rename = "groupID")]
-    pub(in crate::phb) group_id: rc::ItemGrpId,
+    pub(in crate::phb) group_id: rc::EItemGrpId,
     pub(in crate::phb) capacity: rc::AttrVal,
     pub(in crate::phb) mass: rc::AttrVal,
     pub(in crate::phb) radius: rc::AttrVal,

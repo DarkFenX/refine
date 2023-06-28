@@ -8,8 +8,8 @@ use super::HFighterInfoPartial;
 pub(crate) struct HFighterInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HFighterInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HFighterInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_fighter_info: &rc::SsFighterInfo) -> Self {

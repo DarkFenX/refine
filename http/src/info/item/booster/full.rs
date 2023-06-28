@@ -8,8 +8,8 @@ use super::HBoosterInfoPartial;
 pub(crate) struct HBoosterInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HBoosterInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HBoosterInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_booster_info: &rc::SsBoosterInfo) -> Self {

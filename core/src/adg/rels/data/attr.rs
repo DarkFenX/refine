@@ -4,7 +4,7 @@ use crate::{
         GSupport,
     },
     consts::{attrs, units},
-    defs::AttrUnitId,
+    defs::EAttrUnitId,
     ed,
     util::vec_push_opt,
 };
@@ -52,7 +52,7 @@ impl Fk for ed::EAttr {
 impl ed::EAttr {
     /// Receive unit ID, and if the attribute has such unit ID - push its default value to the
     /// vector.
-    fn get_fk_from_defval(&self, unit: AttrUnitId) -> Option<KeyPart> {
+    fn get_fk_from_defval(&self, unit: EAttrUnitId) -> Option<KeyPart> {
         match (self.unit_id, attrval_to_fk(self.default_value)) {
             (Some(u), Some(dv_fk)) if u == unit => Some(dv_fk),
             _ => None,

@@ -19,7 +19,7 @@ impl FsdMerge<rc::ed::EMutaItemConv> for PMutaItemConvs {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PMutaItemMap {
     #[serde(rename = "applicableTypes")]
-    pub(in crate::phb) applicable_item_ids: Vec<rc::ItemId>,
+    pub(in crate::phb) applicable_item_ids: Vec<rc::EItemId>,
     #[serde(rename = "resultingType")]
-    pub(in crate::phb) result_item_id: rc::ItemId,
+    pub(in crate::phb) result_item_id: rc::EItemId,
 }

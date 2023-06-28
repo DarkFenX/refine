@@ -1,6 +1,6 @@
 use crate::{
     consts::{ModAfeeFilter, ModAggrMode, ModBuildStatus, ModOp, State, TgtMode},
-    defs::{AttrId, EffectId},
+    defs::{EAttrId, EEffectId},
     util::Named,
 };
 
@@ -12,7 +12,7 @@ use crate::{
 #[derive(Debug)]
 pub struct AEffect {
     /// Effect ID.
-    pub id: EffectId,
+    pub id: EEffectId,
     /// Effect state dictates which state of parent item is needed for the effect to run.
     pub state: State,
     /// Defines what kind of target you need to run the effect.
@@ -26,47 +26,47 @@ pub struct AEffect {
     /// Defines if the effect can be used in lowsec.
     pub lowsec: Option<bool>,
     /// Refers an attribute value which defines capacitor cost to run the effect.
-    pub discharge_attr_id: Option<AttrId>,
+    pub discharge_attr_id: Option<EAttrId>,
     /// Refers an attribute value which defines how long an effect cycle would take in milliseconds.
-    pub duration_attr_id: Option<AttrId>,
+    pub duration_attr_id: Option<EAttrId>,
     /// Refers an attribute value which defines optimal range of the effect in meters.
-    pub range_attr_id: Option<AttrId>,
+    pub range_attr_id: Option<EAttrId>,
     /// Refers an attribute value which defines falloff range of the effect in meters.
-    pub falloff_attr_id: Option<AttrId>,
+    pub falloff_attr_id: Option<EAttrId>,
     /// Refers an attribute value which defines tracking speed of the effect.
-    pub track_attr_id: Option<AttrId>,
+    pub track_attr_id: Option<EAttrId>,
     /// Refers an attribute value which defines chance of the effect to run when its parent item is
     /// fitted.
-    pub chance_attr_id: Option<AttrId>,
+    pub chance_attr_id: Option<EAttrId>,
     /// Refers an attribute value which defines resistance strength to the effect.
-    pub resist_attr_id: Option<AttrId>,
+    pub resist_attr_id: Option<EAttrId>,
     /// Modifier build status.
     pub mod_build_status: ModBuildStatus,
     /// Attribute modifiers carried by the effect
     pub mods: Vec<AAttrMod>,
     /// Refers effects this effect stops on target.
-    pub stop_ids: Vec<EffectId>,
+    pub stop_ids: Vec<EEffectId>,
 }
 impl AEffect {
     /// Make a new adapted dogma effect out of passed data.
     pub(crate) fn new(
-        id: EffectId,
+        id: EEffectId,
         state: State,
         tgt_mode: TgtMode,
         is_assist: bool,
         is_offense: bool,
         hisec: Option<bool>,
         lowsec: Option<bool>,
-        discharge_attr_id: Option<AttrId>,
-        duration_attr_id: Option<AttrId>,
-        range_attr_id: Option<AttrId>,
-        falloff_attr_id: Option<AttrId>,
-        track_attr_id: Option<AttrId>,
-        chance_attr_id: Option<AttrId>,
-        resist_attr_id: Option<AttrId>,
+        discharge_attr_id: Option<EAttrId>,
+        duration_attr_id: Option<EAttrId>,
+        range_attr_id: Option<EAttrId>,
+        falloff_attr_id: Option<EAttrId>,
+        track_attr_id: Option<EAttrId>,
+        chance_attr_id: Option<EAttrId>,
+        resist_attr_id: Option<EAttrId>,
         mod_build_status: ModBuildStatus,
         mods: Vec<AAttrMod>,
-        stop_ids: Vec<EffectId>,
+        stop_ids: Vec<EEffectId>,
     ) -> Self {
         Self {
             id,
@@ -102,7 +102,7 @@ impl Named for AEffect {
 #[derive(Debug, Copy, Clone, Hash, PartialEq)]
 pub struct AAttrMod {
     /// Refers an attribute on the affector, which should be used as modification value.
-    pub afor_attr_id: AttrId,
+    pub afor_attr_id: EAttrId,
     /// Defines how multiple modifications of the same attribute value are aggregated.
     pub aggr_mode: ModAggrMode,
     /// Operation to apply during the modification.
@@ -110,16 +110,16 @@ pub struct AAttrMod {
     /// Defines an affectee filter, that is a filter which defines which items will be affected.
     pub afee_filter: ModAfeeFilter,
     /// Refers an attribute, whose value will be affected on the affectee.
-    pub afee_attr_id: AttrId,
+    pub afee_attr_id: EAttrId,
 }
 impl AAttrMod {
     /// Make a new attribute modifier out of passed data.
     pub(crate) fn new(
-        afor_attr_id: AttrId,
+        afor_attr_id: EAttrId,
         aggr_mode: ModAggrMode,
         op: ModOp,
         afee_filter: ModAfeeFilter,
-        afee_attr_id: AttrId,
+        afee_attr_id: EAttrId,
     ) -> Self {
         Self {
             afor_attr_id,

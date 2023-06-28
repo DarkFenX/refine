@@ -5,7 +5,7 @@ use crate::phb::fsd::{FsdId, FsdMerge};
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PMutaAttrMods {
     #[serde(rename = "attributeIDs")]
-    pub(in crate::phb) attrs: HashMap<rc::AttrId, PMutaAttrModRange>,
+    pub(in crate::phb) attrs: HashMap<rc::EAttrId, PMutaAttrModRange>,
 }
 impl FsdMerge<rc::ed::EMutaAttrMod> for PMutaAttrMods {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EMutaAttrMod> {

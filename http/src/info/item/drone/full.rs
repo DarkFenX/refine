@@ -8,8 +8,8 @@ use super::HDroneInfoPartial;
 pub(crate) struct HDroneInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HDroneInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HDroneInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_drone_info: &rc::SsDroneInfo) -> Self {

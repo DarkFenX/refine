@@ -33,7 +33,7 @@ impl FsdMerge<rc::ed::EItemFighterAbil> for PItemFighterAbils {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PItemFighterAbilData {
     #[serde(rename = "abilityID")]
-    pub(in crate::phb) abil_id: rc::AbilId,
+    pub(in crate::phb) abil_id: rc::EAbilId,
     #[serde(rename = "cooldownSeconds")]
     pub(in crate::phb) cooldown: Option<rc::AttrVal>,
     pub(in crate::phb) charges: Option<PItemFighterAbilChargeData>,

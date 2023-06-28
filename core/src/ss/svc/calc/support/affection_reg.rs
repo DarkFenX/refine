@@ -2,7 +2,7 @@ use std::{collections::HashSet, hash::Hash};
 
 use crate::{
     consts::{ModAfeeFilter, ModDomain},
-    defs::{ItemGrpId, ItemId, SsFitId, SsItemId},
+    defs::{EItemGrpId, EItemId, SsFitId, SsItemId},
     ss::item::{SsItem, SsItems},
     util::KeyedStorage1L,
 };
@@ -21,13 +21,13 @@ pub(in crate::ss::svc::calc) struct AffectionRegister {
     afees_pardom: KeyedStorage1L<(SsFitId, ModDomain), SsItemId>,
     // Items belonging to certain fit, domain and group
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affectee item IDs>
-    afees_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, ItemGrpId), SsItemId>,
+    afees_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, EItemGrpId), SsItemId>,
     // Items belonging to certain fit and domain, and having certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affectee item IDs>
-    afees_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, ItemId), SsItemId>,
+    afees_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, EItemId), SsItemId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affectee item IDs>
-    afees_own_srq: KeyedStorage1L<(SsFitId, ItemId), SsItemId>,
+    afees_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsItemId>,
     // Affector specs registered for an item
     // Contains: KeyedStorage<affector item ID, affector specs>
     afors: KeyedStorage1L<SsItemId, AffectorSpec>,
@@ -46,13 +46,13 @@ pub(in crate::ss::svc::calc) struct AffectionRegister {
     afors_pardom: KeyedStorage1L<(SsFitId, ModDomain), AffectorSpec>,
     // Affector specs influencing items belonging to certain fit, domain and group
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affector specs>
-    afors_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, ItemGrpId), AffectorSpec>,
+    afors_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, EItemGrpId), AffectorSpec>,
     // Affector specs influencing items belonging to certain fit and domain, and having certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affector specs>
-    afors_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, ItemId), AffectorSpec>,
+    afors_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, EItemId), AffectorSpec>,
     // Affector specs influencing owner-modifiable items belonging to certain fit and having certain skill requirement
     // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affector specs>
-    afors_own_srq: KeyedStorage1L<(SsFitId, ItemId), AffectorSpec>,
+    afors_own_srq: KeyedStorage1L<(SsFitId, EItemId), AffectorSpec>,
 }
 impl AffectionRegister {
     pub(in crate::ss::svc::calc) fn new() -> Self {

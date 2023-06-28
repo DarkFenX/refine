@@ -1,7 +1,7 @@
 use crate::{
     ad,
     consts::{EffectMode, ModRack, State},
-    defs::{EffectId, ItemId, ReeIdx, SsFitId, SsItemId},
+    defs::{EEffectId, EItemId, Idx, SsFitId, SsItemId},
     src::Src,
     util::{Named, OptMap},
 };
@@ -9,12 +9,12 @@ use crate::{
 pub(in crate::ss) struct SsModule {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) fit_id: SsFitId,
-    pub(in crate::ss) a_item_id: ItemId,
+    pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) state: State,
     pub(in crate::ss) rack: ModRack,
-    pub(in crate::ss) pos: ReeIdx,
+    pub(in crate::ss) pos: Idx,
     pub(in crate::ss) charge_a_item_id: Option<SsItemId>,
-    pub(in crate::ss) effect_modes: OptMap<EffectId, EffectMode>,
+    pub(in crate::ss) effect_modes: OptMap<EEffectId, EffectMode>,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
 impl SsModule {
@@ -22,10 +22,10 @@ impl SsModule {
         src: &Src,
         id: SsItemId,
         fit_id: SsFitId,
-        a_item_id: ItemId,
+        a_item_id: EItemId,
         state: State,
         rack: ModRack,
-        pos: ReeIdx,
+        pos: Idx,
         charge_a_item_id: Option<SsItemId>,
     ) -> Self {
         Self {

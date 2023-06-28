@@ -5,7 +5,7 @@ use itertools::Itertools;
 use crate::{
     ad,
     consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
-    defs::{AttrId, AttrVal, ItemCatId, SsItemId},
+    defs::{AttrVal, EAttrId, EItemCatId, SsItemId},
     ss::{
         item::SsItem,
         svc::{
@@ -19,7 +19,7 @@ use crate::{
 
 use super::support::Modification;
 
-const PENALTY_IMMUNE_CATS: [ItemCatId; 5] = [
+const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
     itemcats::SHIP,
     itemcats::CHARGE,
     itemcats::SKILL,
@@ -44,7 +44,7 @@ const OP_ORDER: [ModOp; 9] = [
     ModOp::PostPerc,
     ModOp::PostAssign,
 ];
-const LIMITED_PRECISION_ATTR_IDS: [AttrId; 4] = [attrs::CPU, attrs::POWER, attrs::CPU_OUTPUT, attrs::POWER_OUTPUT];
+const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [attrs::CPU, attrs::POWER, attrs::CPU_OUTPUT, attrs::POWER_OUTPUT];
 // Source expression: 1 / e^((1 / 2.67)^2)
 const PENALTY_BASE: f64 = 0.86911998080039742919922218788997270166873931884765625;
 
@@ -54,7 +54,7 @@ impl SsSvcs {
         &mut self,
         ss_view: &SsView,
         item_id: &SsItemId,
-        attr_id: &AttrId,
+        attr_id: &EAttrId,
     ) -> Result<SsAttrVal> {
         // Try accessing cached value
         match self.calc_data.attrs.get_item_attrs(item_id)?.get(attr_id) {
@@ -70,7 +70,7 @@ impl SsSvcs {
         &mut self,
         ss_view: &SsView,
         item_id: &SsItemId,
-    ) -> Result<HashMap<AttrId, SsAttrVal>> {
+    ) -> Result<HashMap<EAttrId, SsAttrVal>> {
         // ssi::Item can have attributes which are not defined on the original EVE item. This happens when
         // something requested an attr value and it was calculated using base attribute value. Here,
         // we get already calculated attributes, which includes attributes absent on the EVE item
@@ -136,7 +136,7 @@ impl SsSvcs {
             .affections
             .unreg_local_afor_specs(item.get_fit_id(), afor_specs);
     }
-    pub(in crate::ss) fn calc_attr_value_changed(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &AttrId) {
+    pub(in crate::ss) fn calc_attr_value_changed(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &EAttrId) {
         // Clear up attribute values which rely on passed attribute as an upper cap
         let capped_attr_ids = self
             .calc_data
@@ -162,7 +162,12 @@ impl SsSvcs {
         }
     }
     // Private methods
-    fn calc_calc_item_attr_val(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &AttrId) -> Result<SsAttrVal> {
+    fn calc_calc_item_attr_val(
+        &mut self,
+        ss_view: &SsView,
+        item_id: &SsItemId,
+        attr_id: &EAttrId,
+    ) -> Result<SsAttrVal> {
         let item = ss_view.items.get_item(item_id)?;
         let attr = match ss_view.src.get_a_attr(attr_id) {
             Some(attr) => attr,
@@ -253,7 +258,7 @@ impl SsSvcs {
         }
         Ok(SsAttrVal::new(base_val, dogma_val, dogma_val))
     }
-    fn calc_force_recalc(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &AttrId) {
+    fn calc_force_recalc(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &EAttrId) {
         match self.calc_data.attrs.get_item_attrs_mut(item_id) {
             Ok(item_attrs) => {
                 if item_attrs.remove(attr_id).is_some() {
@@ -263,7 +268,7 @@ impl SsSvcs {
             _ => return,
         }
     }
-    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &SsItem, attr_id: &AttrId) -> Vec<Modification> {
+    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &SsItem, attr_id: &EAttrId) -> Vec<Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = Vec::new();
         for afor_spec in self.calc_data.affections.get_afor_specs_by_afee(item).iter() {

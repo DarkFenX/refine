@@ -9,10 +9,10 @@ pub(crate) struct HModuleInfoPartial {
     pub(crate) id: rc::SsItemId,
     #[serde(with = "crate::util::serde_string")]
     pub(crate) fit_id: rc::SsFitId,
-    pub(crate) type_id: rc::ItemId,
+    pub(crate) type_id: rc::EItemId,
     pub(crate) state: HState,
     pub(crate) rack: HModRack,
-    pub(crate) pos: rc::ReeIdx,
+    pub(crate) pos: rc::Idx,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) charge: Option<HChargeInfo>,
 }

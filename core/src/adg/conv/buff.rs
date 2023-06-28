@@ -4,7 +4,7 @@ use crate::{
     ad,
     adg::GData,
     consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
-    defs::BuffId,
+    defs::EBuffId,
     ed,
     util::{IntError, IntResult, Named},
 };
@@ -59,7 +59,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
     a_buffs
 }
 
-fn conv_buff_aggr_mode(aggr_mode: &str, key: BuffId) -> IntResult<ModAggrMode> {
+fn conv_buff_aggr_mode(aggr_mode: &str, key: EBuffId) -> IntResult<ModAggrMode> {
     match aggr_mode {
         "Maximum" => Ok(ModAggrMode::Max(key)),
         "Minimum" => Ok(ModAggrMode::Min(key)),

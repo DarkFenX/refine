@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ItemId, SsFitId, SsItemId},
+    defs::{EItemId, SsFitId, SsItemId},
     ss::{
         info::SsChargeInfo,
         item::{SsCharge, SsItem},
@@ -29,7 +29,7 @@ impl SolarSystem {
         &mut self,
         item_id: Option<SsItemId>,
         fit_id: SsFitId,
-        a_item_id: Option<ItemId>,
+        a_item_id: Option<EItemId>,
         cont_id: SsItemId,
     ) -> Option<SsChargeInfo> {
         match (item_id, a_item_id) {
@@ -41,7 +41,7 @@ impl SolarSystem {
         &mut self,
         item_id: SsItemId,
         fit_id: SsFitId,
-        a_item_id: ItemId,
+        a_item_id: EItemId,
         cont_id: SsItemId,
     ) -> SsChargeInfo {
         let charge = SsCharge::new(&self.src, item_id, fit_id, a_item_id, cont_id);

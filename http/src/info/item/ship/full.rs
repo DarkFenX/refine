@@ -8,8 +8,8 @@ use super::HShipInfoPartial;
 pub(crate) struct HShipInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HShipInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HShipInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_ship_info: &rc::SsShipInfo) -> Self {

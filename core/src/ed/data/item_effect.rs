@@ -1,5 +1,5 @@
 use crate::{
-    defs::{EffectId, ItemId},
+    defs::{EEffectId, EItemId},
     util::Named,
 };
 
@@ -7,15 +7,15 @@ use crate::{
 #[derive(Debug)]
 pub struct EItemEffect {
     /// Refers an item type involved in the relation.
-    pub item_id: ItemId,
+    pub item_id: EItemId,
     /// Refers an effect involved in the relation.
-    pub effect_id: EffectId,
+    pub effect_id: EEffectId,
     /// Defines if the effect is default to the item or not.
     pub is_default: bool,
 }
 impl EItemEffect {
     /// Make a new EVE item-effect relation out of passed data.
-    pub fn new(item_id: ItemId, effect_id: EffectId, is_default: bool) -> Self {
+    pub fn new(item_id: EItemId, effect_id: EEffectId, is_default: bool) -> Self {
         Self {
             item_id,
             effect_id,

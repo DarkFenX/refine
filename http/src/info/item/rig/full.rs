@@ -8,8 +8,8 @@ use super::HRigInfoPartial;
 pub(crate) struct HRigInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HRigInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HRigInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_rig_info: &rc::SsRigInfo) -> Self {

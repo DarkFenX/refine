@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrId, AttrVal},
+    defs::{AttrVal, EAttrId},
     util::Named,
 };
 
@@ -9,7 +9,7 @@ use crate::{
 /// Values themselves are stored on various items as plain numbers.
 pub struct AAttr {
     /// Attribute ID.
-    pub id: AttrId,
+    pub id: EAttrId,
     /// Defines if modifications applied to the attribute's values are immune to stacking penalties
     /// or not.
     pub penalizable: bool,
@@ -18,16 +18,16 @@ pub struct AAttr {
     /// Default value of the attribute, used if not provided by an item type.
     pub def_val: Option<AttrVal>,
     /// Refers another attribute, whose value limits value of this attribute.
-    pub max_attr_id: Option<AttrId>,
+    pub max_attr_id: Option<EAttrId>,
 }
 impl AAttr {
     /// Make a new adapted dogma attribute out of passed data.
     pub(crate) fn new(
-        id: AttrId,
+        id: EAttrId,
         penalizable: bool,
         hig: bool,
         def_val: Option<AttrVal>,
-        max_attr_id: Option<AttrId>,
+        max_attr_id: Option<EAttrId>,
     ) -> Self {
         Self {
             id,

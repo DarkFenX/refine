@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use crate::{
     consts::DEFAULT_EFFECT_MODE,
-    defs::{AttrId, EffectId, SsFitId, SsItemId},
+    defs::{EAttrId, EEffectId, SsFitId, SsItemId},
     src::Src,
     ss::{effect_info::EffectInfo, fit::SsFits, item::SsItems, svc::SsSvcs, SsAttrVal, SsView},
     util::Result,
@@ -49,16 +49,16 @@ impl SolarSystem {
         self.fits.get_fit_ids()
     }
     // Item attributes
-    pub fn get_item_attr(&mut self, item_id: &SsItemId, attr_id: &AttrId) -> Result<SsAttrVal> {
+    pub fn get_item_attr(&mut self, item_id: &SsItemId, attr_id: &EAttrId) -> Result<SsAttrVal> {
         self.svcs
             .calc_get_item_attr_val(&SsView::new(&self.src, &self.fits, &self.items), item_id, attr_id)
     }
-    pub fn get_item_attrs(&mut self, item_id: &SsItemId) -> Result<HashMap<AttrId, SsAttrVal>> {
+    pub fn get_item_attrs(&mut self, item_id: &SsItemId) -> Result<HashMap<EAttrId, SsAttrVal>> {
         self.svcs
             .calc_get_item_attr_vals(&SsView::new(&self.src, &self.fits, &self.items), item_id)
     }
     // Item effects
-    pub fn get_item_effects(&mut self, item_id: &SsItemId) -> Result<HashMap<EffectId, EffectInfo>> {
+    pub fn get_item_effects(&mut self, item_id: &SsItemId) -> Result<HashMap<EEffectId, EffectInfo>> {
         let item = self.items.get_item(item_id)?;
         let a_effect_ids = item.get_effect_datas()?.keys();
         let running_effect_ids = self.svcs.get_running_effects(item_id);

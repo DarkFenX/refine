@@ -4,14 +4,14 @@ use super::enums::CItemType;
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CItem {
-    id: rc::ItemId,
+    id: rc::EItemId,
     itype: Option<CItemType>,
-    grp_id: rc::ItemGrpId,
-    cat_id: rc::ItemCatId,
-    attr_vals: HashMap<rc::AttrId, rc::AttrVal>,
-    effect_datas: HashMap<rc::EffectId, CItemEffData>,
-    defeff_id: Option<rc::EffectId>,
-    srqs: HashMap<rc::ItemId, rc::SkillLevel>,
+    grp_id: rc::EItemGrpId,
+    cat_id: rc::EItemCatId,
+    attr_vals: HashMap<rc::EAttrId, rc::AttrVal>,
+    effect_datas: HashMap<rc::EEffectId, CItemEffData>,
+    defeff_id: Option<rc::EEffectId>,
+    srqs: HashMap<rc::EItemId, rc::SkillLevel>,
 }
 impl From<&rc::ad::AItem> for CItem {
     fn from(a_item: &rc::ad::AItem) -> Self {

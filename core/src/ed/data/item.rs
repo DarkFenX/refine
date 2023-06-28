@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, ItemGrpId, ItemId},
+    defs::{AttrVal, EItemGrpId, EItemId},
     util::Named,
 };
 
@@ -7,9 +7,9 @@ use crate::{
 #[derive(Debug)]
 pub struct EItem {
     /// Item type ID.
-    pub id: ItemId,
+    pub id: EItemId,
     /// Refers an item group the item type belongs to.
-    pub group_id: ItemGrpId,
+    pub group_id: EItemGrpId,
     /// Base value of capacity attribute.
     pub capacity: AttrVal,
     /// Base value of mass attribute.
@@ -22,8 +22,8 @@ pub struct EItem {
 impl EItem {
     /// Make a new EVE item type out of passed data.
     pub fn new(
-        id: ItemId,
-        group_id: ItemGrpId,
+        id: EItemId,
+        group_id: EItemGrpId,
         capacity: AttrVal,
         mass: AttrVal,
         radius: AttrVal,

@@ -2,8 +2,8 @@
 #[serde(rename_all = "snake_case")]
 pub(in crate::handler_json) enum CModAggrMode {
     Stack,
-    Min(rc::BuffId),
-    Max(rc::BuffId),
+    Min(rc::EBuffId),
+    Max(rc::EBuffId),
 }
 impl From<&rc::consts::ModAggrMode> for CModAggrMode {
     fn from(mod_aggr_mode: &rc::consts::ModAggrMode) -> Self {

@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ItemCatId, ItemGrpId},
+    defs::{EItemCatId, EItemGrpId},
     util::Named,
 };
 
@@ -7,13 +7,13 @@ use crate::{
 #[derive(Debug)]
 pub struct EItemGroup {
     /// Item group ID.
-    pub id: ItemGrpId,
+    pub id: EItemGrpId,
     /// Refers an item category the item group belongs to.
-    pub category_id: ItemCatId,
+    pub category_id: EItemCatId,
 }
 impl EItemGroup {
     /// Make a new EVE item group out of passed data.
-    pub fn new(id: ItemGrpId, category_id: ItemCatId) -> Self {
+    pub fn new(id: EItemGrpId, category_id: EItemCatId) -> Self {
         Self { id, category_id }
     }
 }

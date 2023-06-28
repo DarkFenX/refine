@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ItemId, SsItemId},
+    defs::{EItemId, SsItemId},
     ss::{
         info::SsSwEffectInfo,
         item::{SsItem, SsSwEffect},
@@ -19,7 +19,7 @@ impl SolarSystem {
             .map(|v| self.items.get_sw_effect(v).unwrap().into())
             .collect()
     }
-    pub fn add_sw_effect(&mut self, a_item_id: ItemId, state: bool) -> Result<SsSwEffectInfo> {
+    pub fn add_sw_effect(&mut self, a_item_id: EItemId, state: bool) -> Result<SsSwEffectInfo> {
         let item_id = self.items.alloc_item_id()?;
         let sw_effect = SsSwEffect::new(&self.src, item_id, a_item_id, state);
         let info = SsSwEffectInfo::from(&sw_effect);

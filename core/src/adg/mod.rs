@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use crate::{
     ad,
-    defs::{AttrId, AttrUnitId, ItemCatId, ItemGrpId},
+    defs::{EAttrId, EAttrUnitId, EItemCatId, EItemGrpId},
     ed,
     util::IntResult,
 };
@@ -68,8 +68,8 @@ impl GData {
 
 /// Container for auxiliary data.
 pub(in crate::adg) struct GSupport {
-    pub(in crate::adg) attr_unit_map: HashMap<AttrId, AttrUnitId>,
-    pub(in crate::adg) grp_cat_map: HashMap<ItemGrpId, ItemCatId>,
+    pub(in crate::adg) attr_unit_map: HashMap<EAttrId, EAttrUnitId>,
+    pub(in crate::adg) grp_cat_map: HashMap<EItemGrpId, EItemCatId>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {

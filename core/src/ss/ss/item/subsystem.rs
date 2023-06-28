@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ItemId, SsFitId, SsItemId},
+    defs::{EItemId, SsFitId, SsItemId},
     ss::{
         info::SsSubsystemInfo,
         item::{SsItem, SsSubsystem},
@@ -22,7 +22,7 @@ impl SolarSystem {
             .collect();
         Ok(subsystem_infos)
     }
-    pub fn add_subsystem(&mut self, fit_id: SsFitId, a_item_id: ItemId, state: bool) -> Result<SsSubsystemInfo> {
+    pub fn add_subsystem(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: bool) -> Result<SsSubsystemInfo> {
         let item_id = self.items.alloc_item_id()?;
         let subsystem = SsSubsystem::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsSubsystemInfo::from(&subsystem);

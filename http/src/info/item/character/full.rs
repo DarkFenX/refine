@@ -8,8 +8,8 @@ use super::HCharacterInfoPartial;
 pub(crate) struct HCharacterInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HCharacterInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HCharacterInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_character_info: &rc::SsCharacterInfo) -> Self {

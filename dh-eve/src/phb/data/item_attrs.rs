@@ -17,6 +17,6 @@ impl FsdMerge<rc::ed::EItemAttr> for PItemAttrs {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PItemAttrData {
     #[serde(rename = "attributeID")]
-    pub(in crate::phb) attr_id: rc::AttrId,
+    pub(in crate::phb) attr_id: rc::EAttrId,
     pub(in crate::phb) value: rc::AttrVal,
 }

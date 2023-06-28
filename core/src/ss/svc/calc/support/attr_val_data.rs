@@ -1,21 +1,21 @@
 use std::collections::HashMap;
 
 use crate::{
-    defs::{AttrId, SsItemId},
+    defs::{EAttrId, SsItemId},
     util::{Error, ErrorKind, Result},
 };
 
 use super::SsAttrVal;
 
 pub(in crate::ss::svc::calc) struct AttrValData {
-    data: HashMap<SsItemId, HashMap<AttrId, SsAttrVal>>,
+    data: HashMap<SsItemId, HashMap<EAttrId, SsAttrVal>>,
 }
 impl AttrValData {
     pub(in crate::ss::svc::calc) fn new() -> Self {
         Self { data: HashMap::new() }
     }
     // Getters
-    pub(in crate::ss::svc::calc) fn get_item_attrs(&self, item_id: &SsItemId) -> Result<&HashMap<AttrId, SsAttrVal>> {
+    pub(in crate::ss::svc::calc) fn get_item_attrs(&self, item_id: &SsItemId) -> Result<&HashMap<EAttrId, SsAttrVal>> {
         // All items known to calculator should be added to the map, so consider absence an error
         self.data
             .get(item_id)
@@ -24,7 +24,7 @@ impl AttrValData {
     pub(in crate::ss::svc::calc) fn get_item_attrs_mut(
         &mut self,
         item_id: &SsItemId,
-    ) -> Result<&mut HashMap<AttrId, SsAttrVal>> {
+    ) -> Result<&mut HashMap<EAttrId, SsAttrVal>> {
         // All items known to calculator should be added to the map, so consider absence an error
         self.data
             .get_mut(item_id)

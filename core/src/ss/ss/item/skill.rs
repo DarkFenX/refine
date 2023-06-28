@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ItemId, SkillLevel, SsFitId, SsItemId},
+    defs::{EItemId, SkillLevel, SsFitId, SsItemId},
     ss::{
         info::SsSkillInfo,
         item::{SsItem, SsSkill},
@@ -25,7 +25,7 @@ impl SolarSystem {
     pub fn add_skill(
         &mut self,
         fit_id: SsFitId,
-        a_item_id: ItemId,
+        a_item_id: EItemId,
         level: SkillLevel,
         state: bool,
     ) -> Result<SsSkillInfo> {

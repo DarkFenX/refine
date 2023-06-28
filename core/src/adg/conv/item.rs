@@ -6,7 +6,7 @@ use crate::{
     ad,
     adg::{GData, GSupport},
     consts::{attrs, effects, get_abil_effect, itemcats, itemgrps, ItemType},
-    defs::{EffectId, ItemId},
+    defs::{EEffectId, EItemId},
     ed,
     util::Named,
 };
@@ -18,7 +18,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
         .iter()
         .filter(|v| v.is_default)
         .map(|v| (v.item_id, v.effect_id))
-        .collect::<HashMap<ItemId, EffectId>>();
+        .collect::<HashMap<EItemId, EEffectId>>();
     let mut a_item_map = HashMap::new();
     for e_item in g_data.items.iter() {
         // Item category ID

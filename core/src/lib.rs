@@ -21,8 +21,8 @@
 
 pub use consts::{EffectMode, ModRack, OrdAddMode, State};
 pub use defs::{
-    AbilId, Amount, AttrId, AttrUnitId, AttrVal, BuffId, EffectCatId, EffectId, ItemCatId, ItemGrpId, ItemId, MutaId,
-    ReeIdx, SkillLevel, SsFitId, SsItemId, VERSION,
+    Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
+    EMutaId, Idx, SkillLevel, SsFitId, SsItemId, VERSION,
 };
 pub use src::Src;
 pub use ss::{

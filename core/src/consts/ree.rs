@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-use crate::defs::{Amount, BuffId, ItemGrpId, ItemId, ReeIdx};
+use crate::defs::{Amount, EBuffId, EItemGrpId, EItemId, Idx};
 
 /// Contains states which can be assigned to several entities.
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
@@ -129,11 +129,11 @@ pub enum ModAfeeFilter {
     /// All items belonging to the domain are affected.
     Loc(ModDomain),
     /// All items located in the domain and belonging to the group are affected.
-    LocGrp(ModDomain, ItemGrpId),
+    LocGrp(ModDomain, EItemGrpId),
     /// All items located in the domain and having specified skill requirement are affected.
-    LocSrq(ModDomain, ItemId),
+    LocSrq(ModDomain, EItemId),
     /// All items belonging to the domain and having specified skill requirement are affected.
-    OwnSrq(ModDomain, ItemId),
+    OwnSrq(ModDomain, EItemId),
 }
 
 /// Defines domain (or scope) which is target for a modification.
@@ -160,9 +160,9 @@ pub enum ModAggrMode {
     /// All modifications are applied.
     Stack,
     /// Min value will be used, from values with provided key.
-    Min(BuffId),
+    Min(EBuffId),
     /// Max value will be used, from values with provided key.
-    Max(BuffId),
+    Max(EBuffId),
 }
 
 /// Defines what kind of operation will be applied to a target attribute.
@@ -210,9 +210,9 @@ pub enum OrdAddMode {
     /// Add to first free position of container.
     Equip,
     /// Add to specific position, shifting modules on this position and after it to the right.
-    Insert(ReeIdx),
+    Insert(Idx),
     /// Add to specific position, replacing item on it if 2nd argument is true.
-    Place(ReeIdx, bool),
+    Place(Idx, bool),
 }
 
 /// Defines how an item is removed from an ordered container.

@@ -1,17 +1,17 @@
 use crate::{
-    defs::{ItemId, SkillLevel, SsFitId, SsItemId},
+    defs::{EItemId, SkillLevel, SsFitId, SsItemId},
     ss::item::SsSkill,
 };
 
 pub struct SsSkillInfo {
     pub id: SsItemId,
     pub fit_id: SsFitId,
-    pub a_item_id: ItemId,
+    pub a_item_id: EItemId,
     pub level: SkillLevel,
     pub enabled: bool,
 }
 impl SsSkillInfo {
-    fn new(id: SsItemId, fit_id: SsFitId, a_item_id: ItemId, level: SkillLevel, enabled: bool) -> Self {
+    fn new(id: SsItemId, fit_id: SsFitId, a_item_id: EItemId, level: SkillLevel, enabled: bool) -> Self {
         Self {
             id,
             fit_id,

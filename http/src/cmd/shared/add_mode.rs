@@ -3,8 +3,8 @@
 pub(crate) enum HAddMode {
     Append,
     Equip,
-    Insert(rc::ReeIdx),
-    Place(rc::ReeIdx, bool),
+    Insert(rc::Idx),
+    Place(rc::Idx, bool),
 }
 impl Into<rc::OrdAddMode> for &HAddMode {
     fn into(self) -> rc::OrdAddMode {

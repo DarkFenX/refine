@@ -23,13 +23,13 @@ impl HAddModuleCmd {
     pub(crate) fn get_add_mode(&self) -> &HAddMode {
         self.fit_cmd.get_add_mode()
     }
-    pub(crate) fn get_type_id(&self) -> rc::ItemId {
+    pub(crate) fn get_type_id(&self) -> rc::EItemId {
         self.fit_cmd.get_type_id()
     }
     pub(crate) fn get_state(&self) -> &HState {
         self.fit_cmd.get_state()
     }
-    pub(crate) fn get_charge_type_id(&self) -> Option<rc::ItemId> {
+    pub(crate) fn get_charge_type_id(&self) -> Option<rc::EItemId> {
         self.fit_cmd.get_charge_type_id()
     }
 }

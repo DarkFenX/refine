@@ -5,16 +5,16 @@ use crate::{
         rels::{Fk, KeyPart, Pk},
         GData, GSupport,
     },
-    defs::{AbilId, AttrId, BuffId, EffectId, ItemGrpId, ItemId},
+    defs::{EAbilId, EAttrId, EBuffId, EEffectId, EItemGrpId, EItemId},
 };
 
 pub(in crate::adg) struct KeyDb {
-    pub(in crate::adg) items: HashSet<ItemId>,
-    pub(in crate::adg) groups: HashSet<ItemGrpId>,
-    pub(in crate::adg) attrs: HashSet<AttrId>,
-    pub(in crate::adg) effects: HashSet<EffectId>,
-    pub(in crate::adg) abils: HashSet<AbilId>,
-    pub(in crate::adg) buffs: HashSet<BuffId>,
+    pub(in crate::adg) items: HashSet<EItemId>,
+    pub(in crate::adg) groups: HashSet<EItemGrpId>,
+    pub(in crate::adg) attrs: HashSet<EAttrId>,
+    pub(in crate::adg) effects: HashSet<EEffectId>,
+    pub(in crate::adg) abils: HashSet<EAbilId>,
+    pub(in crate::adg) buffs: HashSet<EBuffId>,
 }
 impl KeyDb {
     pub(in crate::adg) fn new() -> Self {

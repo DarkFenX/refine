@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ItemId, SsFitId, SsItemId},
+    defs::{EItemId, SsFitId, SsItemId},
     ss::{
         info::SsStanceInfo,
         item::{SsItem, SsStance},
@@ -13,7 +13,7 @@ impl SolarSystem {
     pub fn get_fit_stance_info(&self, fit_id: &SsFitId) -> Result<SsStanceInfo> {
         self.get_fit_stance(fit_id).map(|v| v.into())
     }
-    pub fn set_fit_stance(&mut self, fit_id: SsFitId, a_item_id: ItemId, state: bool) -> Result<SsStanceInfo> {
+    pub fn set_fit_stance(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: bool) -> Result<SsStanceInfo> {
         match self.remove_fit_stance(&fit_id) {
             Ok(_) => (),
             // Suppress ItemTypeNotFound error, since this method is supposed to be used

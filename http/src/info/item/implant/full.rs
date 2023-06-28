@@ -8,8 +8,8 @@ use super::HImplantInfoPartial;
 pub(crate) struct HImplantInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HImplantInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HImplantInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_implant_info: &rc::SsImplantInfo) -> Self {

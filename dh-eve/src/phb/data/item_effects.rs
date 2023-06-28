@@ -20,7 +20,7 @@ impl FsdMerge<rc::ed::EItemEffect> for PItemEffects {
 #[derive(Debug, serde::Deserialize)]
 pub(in crate::phb) struct PItemEffectData {
     #[serde(rename = "effectID")]
-    pub(in crate::phb) effect_id: rc::EffectId,
+    pub(in crate::phb) effect_id: rc::EEffectId,
     #[serde(rename = "isDefault", deserialize_with = "bool_from_int")]
     pub(in crate::phb) is_default: bool,
 }

@@ -1,17 +1,17 @@
 use crate::{
     consts::State,
-    defs::{ItemId, SsFitId, SsItemId},
+    defs::{EItemId, SsFitId, SsItemId},
     ss::item::SsDrone,
 };
 
 pub struct SsDroneInfo {
     pub id: SsItemId,
     pub fit_id: SsFitId,
-    pub a_item_id: ItemId,
+    pub a_item_id: EItemId,
     pub state: State,
 }
 impl SsDroneInfo {
-    fn new(id: SsItemId, fit_id: SsFitId, a_item_id: ItemId, state: State) -> Self {
+    fn new(id: SsItemId, fit_id: SsFitId, a_item_id: EItemId, state: State) -> Self {
         Self {
             id,
             fit_id,

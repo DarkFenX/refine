@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AbilId, Amount, AttrVal, ItemId},
+    defs::{Amount, AttrVal, EAbilId, EItemId},
     util::Named,
 };
 
@@ -7,9 +7,9 @@ use crate::{
 #[derive(Debug)]
 pub struct EItemFighterAbil {
     /// Refers an item type involved in the relation.
-    pub item_id: ItemId,
+    pub item_id: EItemId,
     /// Refers a fighter ability involved in the relation.
-    pub abil_id: AbilId,
+    pub abil_id: EAbilId,
     /// Defines cooldown of the ability in seconds.
     pub cooldown: Option<AttrVal>,
     /// Defines how many times the ability can be used before the fighter has to rearm.
@@ -20,8 +20,8 @@ pub struct EItemFighterAbil {
 impl EItemFighterAbil {
     /// Makes a new EVE item-ability relation out of passed data.
     pub fn new(
-        item_id: ItemId,
-        abil_id: AbilId,
+        item_id: EItemId,
+        abil_id: EAbilId,
         cooldown: Option<AttrVal>,
         charge_count: Option<Amount>,
         charge_rearm_time: Option<AttrVal>,

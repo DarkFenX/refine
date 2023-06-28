@@ -12,9 +12,9 @@ pub(in crate::phb) struct PAttr {
     #[serde(rename = "defaultValue")]
     pub(in crate::phb) default_value: Option<rc::AttrVal>,
     #[serde(rename = "maxAttributeID")]
-    pub(in crate::phb) max_attr_id: Option<rc::AttrId>,
+    pub(in crate::phb) max_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "unitID")]
-    pub(in crate::phb) unit_id: Option<rc::AttrUnitId>,
+    pub(in crate::phb) unit_id: Option<rc::EAttrUnitId>,
 }
 impl FsdMerge<rc::ed::EAttr> for PAttr {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EAttr> {

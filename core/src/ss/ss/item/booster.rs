@@ -1,5 +1,5 @@
 use crate::{
-    defs::{ItemId, SsFitId, SsItemId},
+    defs::{EItemId, SsFitId, SsItemId},
     ss::{
         info::SsBoosterInfo,
         item::{SsBooster, SsItem},
@@ -22,7 +22,7 @@ impl SolarSystem {
             .collect();
         Ok(booster_infos)
     }
-    pub fn add_booster(&mut self, fit_id: SsFitId, a_item_id: ItemId, state: bool) -> Result<SsBoosterInfo> {
+    pub fn add_booster(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: bool) -> Result<SsBoosterInfo> {
         let item_id = self.items.alloc_item_id()?;
         let booster = SsBooster::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsBoosterInfo::from(&booster);

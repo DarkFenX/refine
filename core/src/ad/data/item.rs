@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{
     consts::ItemType,
-    defs::{Amount, AttrId, AttrVal, EffectId, ItemCatId, ItemGrpId, ItemId, SkillLevel},
+    defs::{Amount, AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
     util::Named,
 };
 
@@ -13,33 +13,33 @@ use crate::{
 #[derive(Debug)]
 pub struct AItem {
     /// Item ID.
-    pub id: ItemId,
+    pub id: EItemId,
     /// Item type.
     pub itype: Option<ItemType>,
     /// Item group ID.
-    pub grp_id: ItemGrpId,
+    pub grp_id: EItemGrpId,
     /// Item category ID.
-    pub cat_id: ItemCatId,
+    pub cat_id: EItemCatId,
     /// Attribute values of the item.
-    pub attr_vals: HashMap<AttrId, AttrVal>,
+    pub attr_vals: HashMap<EAttrId, AttrVal>,
     /// Refers effects of the item.
-    pub effect_datas: HashMap<EffectId, AItemEffData>,
+    pub effect_datas: HashMap<EEffectId, AItemEffData>,
     /// Refers an effect which is default for the item.
-    pub defeff_id: Option<EffectId>,
+    pub defeff_id: Option<EEffectId>,
     /// Skill requirement map.
-    pub srqs: HashMap<ItemId, SkillLevel>,
+    pub srqs: HashMap<EItemId, SkillLevel>,
 }
 impl AItem {
     /// Make a new adapted item type out of passed data.
     pub(crate) fn new(
-        id: ItemId,
+        id: EItemId,
         itype: Option<ItemType>,
-        grp_id: ItemGrpId,
-        cat_id: ItemCatId,
-        attr_vals: HashMap<AttrId, AttrVal>,
-        effect_datas: HashMap<EffectId, AItemEffData>,
-        defeff_id: Option<EffectId>,
-        srqs: HashMap<ItemId, SkillLevel>,
+        grp_id: EItemGrpId,
+        cat_id: EItemCatId,
+        attr_vals: HashMap<EAttrId, AttrVal>,
+        effect_datas: HashMap<EEffectId, AItemEffData>,
+        defeff_id: Option<EEffectId>,
+        srqs: HashMap<EItemId, SkillLevel>,
     ) -> Self {
         Self {
             id,

@@ -4,7 +4,7 @@ pub(crate) struct HShipInfoPartial {
     pub(crate) id: rc::SsItemId,
     #[serde(with = "crate::util::serde_string")]
     pub(crate) fit_id: rc::SsFitId,
-    pub(crate) type_id: rc::ItemId,
+    pub(crate) type_id: rc::EItemId,
     pub(crate) enabled: bool,
 }
 impl From<&rc::SsShipInfo> for HShipInfoPartial {

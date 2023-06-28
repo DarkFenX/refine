@@ -4,7 +4,7 @@ pub(crate) struct HSkillInfoPartial {
     pub(crate) id: rc::SsItemId,
     #[serde(with = "crate::util::serde_string")]
     pub(crate) fit_id: rc::SsFitId,
-    pub(crate) type_id: rc::ItemId,
+    pub(crate) type_id: rc::EItemId,
     pub(crate) level: rc::SkillLevel,
     pub(crate) enabled: bool,
 }

@@ -2,23 +2,23 @@ use super::enums::{CModAfeeFilter, CModAggrMode, CModBuildStatus, CModOp, CState
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
-    id: rc::EffectId,
+    id: rc::EEffectId,
     state: CState,
     tgt_mode: CTgtMode,
     is_assist: bool,
     is_offense: bool,
     hisec: Option<bool>,
     lowsec: Option<bool>,
-    discharge_attr_id: Option<rc::AttrId>,
-    duration_attr_id: Option<rc::AttrId>,
-    range_attr_id: Option<rc::AttrId>,
-    falloff_attr_id: Option<rc::AttrId>,
-    track_attr_id: Option<rc::AttrId>,
-    chance_attr_id: Option<rc::AttrId>,
-    resist_attr_id: Option<rc::AttrId>,
+    discharge_attr_id: Option<rc::EAttrId>,
+    duration_attr_id: Option<rc::EAttrId>,
+    range_attr_id: Option<rc::EAttrId>,
+    falloff_attr_id: Option<rc::EAttrId>,
+    track_attr_id: Option<rc::EAttrId>,
+    chance_attr_id: Option<rc::EAttrId>,
+    resist_attr_id: Option<rc::EAttrId>,
     mod_build_status: CModBuildStatus,
     mods: Vec<CAttrMod>,
-    stop_ids: Vec<rc::EffectId>,
+    stop_ids: Vec<rc::EEffectId>,
 }
 impl From<&rc::ad::AEffect> for CEffect {
     fn from(a_effect: &rc::ad::AEffect) -> Self {
@@ -69,11 +69,11 @@ impl Into<rc::ad::AEffect> for &CEffect {
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 struct CAttrMod {
-    afor_attr_id: rc::AttrId,
+    afor_attr_id: rc::EAttrId,
     aggr_mode: CModAggrMode,
     op: CModOp,
     afee_filter: CModAfeeFilter,
-    afee_attr_id: rc::AttrId,
+    afee_attr_id: rc::EAttrId,
 }
 impl From<&rc::ad::AAttrMod> for CAttrMod {
     fn from(a_modifier: &rc::ad::AAttrMod) -> Self {

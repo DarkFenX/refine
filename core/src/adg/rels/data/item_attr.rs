@@ -4,7 +4,7 @@ use crate::{
         GSupport,
     },
     consts::{attrs, units},
-    defs::AttrUnitId,
+    defs::EAttrUnitId,
     ed,
 };
 
@@ -51,7 +51,7 @@ impl Fk for ed::EItemAttr {
 }
 impl ed::EItemAttr {
     /// Receive unit ID, and if the attribute has such unit ID - return attribute value.
-    fn get_fk_from_val(&self, unit: AttrUnitId, g_supp: &GSupport) -> Option<KeyPart> {
+    fn get_fk_from_val(&self, unit: EAttrUnitId, g_supp: &GSupport) -> Option<KeyPart> {
         match (g_supp.attr_unit_map.get(&self.attr_id), attrval_to_fk(Some(self.value))) {
             (Some(&u), Some(v_fk)) if u == unit => Some(v_fk),
             _ => None,

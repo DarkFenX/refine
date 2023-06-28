@@ -8,8 +8,8 @@ use super::HModuleInfoPartial;
 pub(crate) struct HModuleInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HModuleInfoPartial,
-    pub(crate) attrs: HashMap<rc::AttrId, HAttrVal>,
-    pub(crate) effects: HashMap<rc::EffectId, HEffect>,
+    pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
 }
 impl HModuleInfoFull {
     pub(super) fn mk_info(

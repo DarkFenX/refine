@@ -3,7 +3,7 @@ use std::{error, fmt, result};
 use crate::{
     ad,
     consts::ModRack,
-    defs::{AttrId, ItemId, ReeIdx, SkillLevel, SsFitId, SsItemId},
+    defs::{EAttrId, EItemId, Idx, SkillLevel, SsFitId, SsItemId},
     util::Named,
 };
 
@@ -19,10 +19,10 @@ pub enum ErrorKind {
     ItemIdAllocFailed,
     InvalidSkillLevel(SkillLevel),
     UnexpectedItemType(SsItemId, &'static str, &'static str),
-    ModuleSlotTaken(ModRack, ReeIdx, SsItemId),
-    AAttrNotFound(AttrId),
-    AItemNotLoaded(ItemId),
-    NoAttrBaseValue(AttrId, ItemId),
+    ModuleSlotTaken(ModRack, Idx, SsItemId),
+    AAttrNotFound(EAttrId),
+    AItemNotLoaded(EItemId),
+    NoAttrBaseValue(EAttrId, EItemId),
 }
 
 #[derive(Debug)]
