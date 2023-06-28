@@ -213,10 +213,10 @@ impl SsItem {
     }
     // Calculator-specific getters
     pub(in crate::ss) fn get_orig_attrs(&self) -> Result<&HashMap<ReeInt, ReeFloat>> {
-        self.get_a_item().map(|v| &v.attr_vals)
+        Ok(&self.get_a_item()?.attr_vals)
     }
     pub(in crate::ss) fn get_effect_datas(&self) -> Result<&HashMap<ReeInt, ad::AItemEffData>> {
-        self.get_a_item().map(|v| &v.effect_datas)
+        Ok(&self.get_a_item()?.effect_datas)
     }
     pub(in crate::ss) fn get_top_domain(&self) -> Option<ModDomain> {
         match self {
@@ -253,13 +253,13 @@ impl SsItem {
         }
     }
     pub(in crate::ss) fn get_group_id(&self) -> Result<ReeInt> {
-        self.get_a_item().map(|v| v.grp_id)
+        Ok(self.get_a_item()?.grp_id)
     }
     pub(in crate::ss) fn get_category_id(&self) -> Result<ReeInt> {
-        self.get_a_item().map(|v| v.cat_id)
+        Ok(self.get_a_item()?.cat_id)
     }
     pub(in crate::ss) fn get_skill_reqs(&self) -> Result<&HashMap<ReeInt, ReeInt>> {
-        self.get_a_item().map(|v| &v.srqs)
+        Ok(&self.get_a_item()?.srqs)
     }
     pub(in crate::ss) fn get_other(&self) -> Option<ReeId> {
         match self {

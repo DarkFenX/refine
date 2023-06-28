@@ -25,6 +25,7 @@ impl State {
 }
 
 /// Item effect operation modes.
+#[derive(Copy, Clone)]
 pub enum EffectMode {
     /// In this mode rules vary, depending on effect category:
     /// - Offline: effects from this category are run when item is in offline+
@@ -43,6 +44,8 @@ pub enum EffectMode {
     /// Effects in this mode are never running no matter what
     ForceStop,
 }
+
+pub(crate) const DEFAULT_EFFECT_MODE: EffectMode = EffectMode::FullCompliance;
 
 /// Contains list of item types.
 #[derive(Debug)]

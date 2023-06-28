@@ -1,9 +1,10 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::{
-    defs::{ReeInt, SsFitId, SsItemId},
+    consts::DEFAULT_EFFECT_MODE,
+    defs::{AttrId, EffectId, ReeInt, SsFitId, SsItemId},
     src::Src,
-    ss::{fit::SsFits, item::SsItems, svc::SsSvcs, SsAttrVal, SsView},
+    ss::{effect_info::EffectInfo, fit::SsFits, item::SsItems, svc::SsSvcs, SsAttrVal, SsView},
     util::Result,
 };
 
@@ -47,13 +48,35 @@ impl SolarSystem {
     pub fn get_fit_ids(&self) -> Vec<SsFitId> {
         self.fits.get_fit_ids()
     }
-    // Attribute calculator
-    pub fn get_item_attr(&mut self, item_id: &SsItemId, attr_id: &ReeInt) -> Result<SsAttrVal> {
+    // Item attributes
+    pub fn get_item_attr(&mut self, item_id: &SsItemId, attr_id: &AttrId) -> Result<SsAttrVal> {
         self.svcs
             .calc_get_item_attr_val(&SsView::new(&self.src, &self.fits, &self.items), item_id, attr_id)
     }
-    pub fn get_item_attrs(&mut self, item_id: &SsItemId) -> Result<HashMap<ReeInt, SsAttrVal>> {
+    pub fn get_item_attrs(&mut self, item_id: &SsItemId) -> Result<HashMap<AttrId, SsAttrVal>> {
         self.svcs
             .calc_get_item_attr_vals(&SsView::new(&self.src, &self.fits, &self.items), item_id)
+    }
+    // Item effects
+    pub fn get_item_effects(&mut self, item_id: &SsItemId) -> Result<HashMap<EffectId, EffectInfo>> {
+        let item = self.items.get_item(item_id)?;
+        let a_effect_ids = item.get_effect_datas()?.keys();
+        let running_effect_ids = self.svcs.get_running_effects(item_id);
+        let effect_infos = a_effect_ids
+            .map(|v| {
+                (
+                    *v,
+                    EffectInfo::new(
+                        *v,
+                        match running_effect_ids {
+                            Some(effect_ids) => effect_ids.contains(v),
+                            None => false,
+                        },
+                        *item.get_effect_modes().get(v).unwrap_or(&DEFAULT_EFFECT_MODE)
+                    ),
+                )
+            })
+            .collect();
+        Ok(effect_infos)
     }
 }
