@@ -49,6 +49,11 @@ impl From<rc::SsStanceInfo> for HItemIdsResp {
         HItemIdsResp::new(ss_stance_info.id, None)
     }
 }
+impl From<rc::SsSubsystemInfo> for HItemIdsResp {
+    fn from(ss_subsystem_info: rc::SsSubsystemInfo) -> Self {
+        HItemIdsResp::new(ss_subsystem_info.id, None)
+    }
+}
 impl From<rc::SsModuleInfo> for HItemIdsResp {
     fn from(ss_module_info: rc::SsModuleInfo) -> Self {
         HItemIdsResp::new(ss_module_info.id, ss_module_info.ss_charge_info)
