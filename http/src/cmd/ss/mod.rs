@@ -1,7 +1,7 @@
 pub(crate) use booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(crate) use character::{HChangeCharacterCmd, HSetCharacterCmd};
 pub(crate) use drone::{HAddDroneCmd, HChangeDroneCmd};
-pub(crate) use fighter::HAddFighterCmd;
+pub(crate) use fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(crate) use implant::HAddImplantCmd;
 pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::HAddRigCmd;
@@ -44,6 +44,7 @@ pub(crate) enum HSsCommand {
     AddDrone(HAddDroneCmd),
     ChangeDrone(HChangeDroneCmd),
     AddFighter(HAddFighterCmd),
+    ChangeFighter(HChangeFighterCmd),
     AddSwEffect(HAddSwEffectCmd),
 }
 impl HSsCommand {
@@ -64,6 +65,7 @@ impl HSsCommand {
             HFitCommand::AddDrone(fit_cmd) => Self::AddDrone(HAddDroneCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeDrone(fit_cmd) => Self::ChangeDrone(HChangeDroneCmd::from(fit_cmd)),
             HFitCommand::AddFighter(fit_cmd) => Self::AddFighter(HAddFighterCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::ChangeFighter(fit_cmd) => Self::ChangeFighter(HChangeFighterCmd::from(fit_cmd)),
         }
     }
     pub(crate) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: HItemCommand) -> Self {
@@ -78,6 +80,9 @@ impl HSsCommand {
                 Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))
             }
             HItemCommand::ChangeDrone(item_cmd) => Self::ChangeDrone(HChangeDroneCmd::from_item_cmd(item_id, item_cmd)),
+            HItemCommand::ChangeFighter(item_cmd) => {
+                Self::ChangeFighter(HChangeFighterCmd::from_item_cmd(item_id, item_cmd))
+            }
         }
     }
 }

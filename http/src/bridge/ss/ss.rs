@@ -346,6 +346,13 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(fighter_info));
                 cmd_results.push(resp);
             }
+            HSsCommand::ChangeFighter(c) => {
+                if let Some(state) = c.get_state() {
+                    core_ss.set_fighter_state(&c.get_item_id(), state.into()).unwrap();
+                }
+                let resp = HCmdResp::NoData;
+                cmd_results.push(resp);
+            }
             HSsCommand::AddSwEffect(c) => {
                 let sw_effect_info = core_ss.add_sw_effect(c.get_type_id(), c.get_state()).unwrap();
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(sw_effect_info));
