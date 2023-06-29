@@ -65,7 +65,7 @@ fn main() {
     tracing::error!("starting");
     for _ in 0..1000000 {
         let anp = sol_sys
-            .add_module(fit, ModRack::Low, OrdAddMode::Equip, 1306, State::Offline, None)
+            .add_module(fit, ModRack::Low, OrdAddMode::Equip, 1306, State::Online, None)
             .unwrap();
         sol_sys.get_item_attrs(&ship.id);
         sol_sys.remove_item(&anp.id);
