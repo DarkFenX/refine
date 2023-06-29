@@ -6,6 +6,7 @@ pub(crate) use implant::HAddImplantCmd;
 pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::HAddRigCmd;
 pub(crate) use ship::HSetShipCmd;
+pub(crate) use skill::HAddSkillCmd;
 
 use crate::cmd::fit::HFitCommand;
 
@@ -17,11 +18,13 @@ mod implant;
 mod module;
 mod rig;
 mod ship;
+mod skill;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HSsCommand {
     SetCharacter(HSetCharCmd),
+    AddSkill(HAddSkillCmd),
     AddImplant(HAddImplantCmd),
     AddBooster(HAddBoosterCmd),
     SetShip(HSetShipCmd),
@@ -35,6 +38,7 @@ impl HSsCommand {
     pub(crate) fn from_fit_cmd(fit_id: rc::SsFitId, fit_cmd: HFitCommand) -> Self {
         match fit_cmd {
             HFitCommand::SetCharacter(fit_cmd) => Self::SetCharacter(HSetCharCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::AddSkill(fit_cmd) => Self::AddSkill(HAddSkillCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddImplant(fit_cmd) => Self::AddImplant(HAddImplantCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddBooster(fit_cmd) => Self::AddBooster(HAddBoosterCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::SetShip(fit_cmd) => Self::SetShip(HSetShipCmd::from_fit_cmd(fit_id, fit_cmd)),

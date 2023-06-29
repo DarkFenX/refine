@@ -218,6 +218,13 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(char_info));
                 cmd_results.push(resp);
             }
+            HSsCommand::AddSkill(c) => {
+                let skill_info = core_ss
+                    .add_skill(c.get_fit_id(), c.get_type_id(), c.get_level(), c.get_state())
+                    .unwrap();
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(skill_info));
+                cmd_results.push(resp);
+            }
             HSsCommand::AddImplant(c) => {
                 let implant_info = core_ss
                     .add_implant(c.get_fit_id(), c.get_type_id(), c.get_state())
