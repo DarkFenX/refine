@@ -74,3 +74,8 @@ impl From<rc::SsFighterInfo> for HItemIdsResp {
         HItemIdsResp::new(ss_fighter_info.id, None)
     }
 }
+impl From<rc::SsSwEffectInfo> for HItemIdsResp {
+    fn from(ss_sw_effect_info: rc::SsSwEffectInfo) -> Self {
+        HItemIdsResp::new(ss_sw_effect_info.id, None)
+    }
+}

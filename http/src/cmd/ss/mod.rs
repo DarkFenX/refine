@@ -9,6 +9,7 @@ pub(crate) use ship::HSetShipCmd;
 pub(crate) use skill::HAddSkillCmd;
 pub(crate) use stance::HSetStanceCmd;
 pub(crate) use subsystem::HAddSubsystemCmd;
+pub(crate) use sw_effect::HAddSwEffectCmd;
 
 use crate::cmd::fit::HFitCommand;
 
@@ -23,6 +24,7 @@ mod ship;
 mod skill;
 mod stance;
 mod subsystem;
+mod sw_effect;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
@@ -39,6 +41,7 @@ pub(crate) enum HSsCommand {
     AddRig(HAddRigCmd),
     AddDrone(HAddDroneCmd),
     AddFighter(HAddFighterCmd),
+    AddSwEffect(HAddSwEffectCmd),
 }
 impl HSsCommand {
     pub(crate) fn from_fit_cmd(fit_id: rc::SsFitId, fit_cmd: HFitCommand) -> Self {
