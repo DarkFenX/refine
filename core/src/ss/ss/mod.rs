@@ -45,7 +45,7 @@ impl SolarSystem {
         Ok(())
     }
     pub fn get_fit_ids(&self) -> Vec<SsFitId> {
-        self.fits.get_fit_ids()
+        self.fits.iter_fit_ids().map(|v| *v).collect()
     }
     // Item attributes
     pub fn get_item_attr(&mut self, item_id: &SsItemId, attr_id: &EAttrId) -> Result<SsAttrVal> {

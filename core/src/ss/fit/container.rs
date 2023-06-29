@@ -38,8 +38,8 @@ impl SsFits {
             None => Err(Error::new(ErrorKind::FitNotFound(*fit_id))),
         }
     }
-    pub(in crate::ss) fn get_fit_ids(&self) -> Vec<SsFitId> {
-        self.data.keys().map(|v| *v).collect()
+    pub(in crate::ss) fn iter_fit_ids(&self) -> impl Iterator<Item = &SsFitId> {
+        self.data.keys()
     }
     pub(in crate::ss) fn check_fit(&self, fit_id: &SsFitId) -> Result<()> {
         match self.data.contains_key(&fit_id) {
