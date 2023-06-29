@@ -2,7 +2,7 @@ pub(crate) use booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(crate) use character::{HChangeCharacterCmd, HSetCharacterCmd};
 pub(crate) use drone::{HAddDroneCmd, HChangeDroneCmd};
 pub(crate) use fighter::{HAddFighterCmd, HChangeFighterCmd};
-pub(crate) use implant::HAddImplantCmd;
+pub(crate) use implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::HAddRigCmd;
 pub(crate) use ship::HSetShipCmd;
@@ -33,6 +33,7 @@ pub(crate) enum HSsCommand {
     ChangeCharacter(HChangeCharacterCmd),
     AddSkill(HAddSkillCmd),
     AddImplant(HAddImplantCmd),
+    ChangeImplant(HChangeImplantCmd),
     AddBooster(HAddBoosterCmd),
     ChangeBooster(HChangeBoosterCmd),
     SetShip(HSetShipCmd),
@@ -54,6 +55,7 @@ impl HSsCommand {
             HFitCommand::ChangeCharacter(fit_cmd) => Self::ChangeCharacter(HChangeCharacterCmd::from(fit_cmd)),
             HFitCommand::AddSkill(fit_cmd) => Self::AddSkill(HAddSkillCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddImplant(fit_cmd) => Self::AddImplant(HAddImplantCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::ChangeImplant(fit_cmd) => Self::ChangeImplant(HChangeImplantCmd::from(fit_cmd)),
             HFitCommand::AddBooster(fit_cmd) => Self::AddBooster(HAddBoosterCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeBooster(fit_cmd) => Self::ChangeBooster(HChangeBoosterCmd::from(fit_cmd)),
             HFitCommand::SetShip(fit_cmd) => Self::SetShip(HSetShipCmd::from_fit_cmd(fit_id, fit_cmd)),
@@ -72,6 +74,9 @@ impl HSsCommand {
         match item_cmd {
             HItemCommand::ChangeCharacter(item_cmd) => {
                 Self::ChangeCharacter(HChangeCharacterCmd::from_item_cmd(item_id, item_cmd))
+            }
+            HItemCommand::ChangeImplant(item_cmd) => {
+                Self::ChangeImplant(HChangeImplantCmd::from_item_cmd(item_id, item_cmd))
             }
             HItemCommand::ChangeBooster(item_cmd) => {
                 Self::ChangeBooster(HChangeBoosterCmd::from_item_cmd(item_id, item_cmd))
