@@ -332,6 +332,13 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(drone_info));
                 cmd_results.push(resp);
             }
+            HSsCommand::ChangeDrone(c) => {
+                if let Some(state) = c.get_state() {
+                    core_ss.set_drone_state(&c.get_item_id(), state.into()).unwrap();
+                }
+                let resp = HCmdResp::NoData;
+                cmd_results.push(resp);
+            }
             HSsCommand::AddFighter(c) => {
                 let fighter_info = core_ss
                     .add_fighter(c.get_fit_id(), c.get_type_id(), c.get_state().into())

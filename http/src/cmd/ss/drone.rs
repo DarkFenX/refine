@@ -1,4 +1,7 @@
-use crate::{cmd::fit, shared::HState};
+use crate::{
+    cmd::{fit, item},
+    shared::HState,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddDroneCmd {
@@ -19,5 +22,29 @@ impl HAddDroneCmd {
     }
     pub(crate) fn get_state(&self) -> &HState {
         self.fit_cmd.get_state()
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HChangeDroneCmd {
+    #[serde(flatten)]
+    fit_cmd: fit::HChangeDroneCmd,
+}
+impl HChangeDroneCmd {
+    pub(in crate::cmd::ss) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeDroneCmd) -> Self {
+        Self {
+            fit_cmd: fit::HChangeDroneCmd::from_item_cmd(item_id, item_cmd),
+        }
+    }
+    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
+        self.fit_cmd.get_item_id()
+    }
+    pub(crate) fn get_state(&self) -> Option<&HState> {
+        self.fit_cmd.get_state()
+    }
+}
+impl From<fit::HChangeDroneCmd> for HChangeDroneCmd {
+    fn from(fit_cmd: fit::HChangeDroneCmd) -> Self {
+        Self { fit_cmd }
     }
 }
