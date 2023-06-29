@@ -6,7 +6,7 @@ pub(crate) use implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::{HAddRigCmd, HChangeRigCmd};
 pub(crate) use ship::{HChangeShipCmd, HSetShipCmd};
-pub(crate) use skill::HAddSkillCmd;
+pub(crate) use skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(crate) use stance::{HChangeStanceCmd, HSetStanceCmd};
 pub(crate) use subsystem::HAddSubsystemCmd;
 
@@ -28,6 +28,7 @@ pub(crate) enum HFitCommand {
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
     AddSkill(HAddSkillCmd),
+    ChangeSkill(HChangeSkillCmd),
     AddImplant(HAddImplantCmd),
     ChangeImplant(HChangeImplantCmd),
     AddBooster(HAddBoosterCmd),

@@ -1,4 +1,4 @@
-use crate::cmd::fit;
+use crate::cmd::{fit, item};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddSkillCmd {
@@ -22,5 +22,29 @@ impl HAddSkillCmd {
     }
     pub(crate) fn get_state(&self) -> bool {
         self.fit_cmd.get_state()
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HChangeSkillCmd {
+    #[serde(flatten)]
+    fit_cmd: fit::HChangeSkillCmd,
+}
+impl HChangeSkillCmd {
+    pub(in crate::cmd::ss) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeSkillCmd) -> Self {
+        Self {
+            fit_cmd: fit::HChangeSkillCmd::from_item_cmd(item_id, item_cmd),
+        }
+    }
+    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
+        self.fit_cmd.get_item_id()
+    }
+    pub(crate) fn get_state(&self) -> Option<bool> {
+        self.fit_cmd.get_state()
+    }
+}
+impl From<fit::HChangeSkillCmd> for HChangeSkillCmd {
+    fn from(fit_cmd: fit::HChangeSkillCmd) -> Self {
+        Self { fit_cmd }
     }
 }

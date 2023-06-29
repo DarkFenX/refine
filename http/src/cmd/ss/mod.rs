@@ -6,7 +6,7 @@ pub(crate) use implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::{HAddRigCmd, HChangeRigCmd};
 pub(crate) use ship::{HChangeShipCmd, HSetShipCmd};
-pub(crate) use skill::HAddSkillCmd;
+pub(crate) use skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(crate) use stance::{HChangeStanceCmd, HSetStanceCmd};
 pub(crate) use subsystem::HAddSubsystemCmd;
 pub(crate) use sw_effect::HAddSwEffectCmd;
@@ -32,6 +32,7 @@ pub(crate) enum HSsCommand {
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
     AddSkill(HAddSkillCmd),
+    ChangeSkill(HChangeSkillCmd),
     AddImplant(HAddImplantCmd),
     ChangeImplant(HChangeImplantCmd),
     AddBooster(HAddBoosterCmd),
@@ -57,6 +58,7 @@ impl HSsCommand {
             HFitCommand::SetCharacter(fit_cmd) => Self::SetCharacter(HSetCharacterCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeCharacter(fit_cmd) => Self::ChangeCharacter(HChangeCharacterCmd::from(fit_cmd)),
             HFitCommand::AddSkill(fit_cmd) => Self::AddSkill(HAddSkillCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::ChangeSkill(fit_cmd) => Self::ChangeSkill(HChangeSkillCmd::from(fit_cmd)),
             HFitCommand::AddImplant(fit_cmd) => Self::AddImplant(HAddImplantCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeImplant(fit_cmd) => Self::ChangeImplant(HChangeImplantCmd::from(fit_cmd)),
             HFitCommand::AddBooster(fit_cmd) => Self::AddBooster(HAddBoosterCmd::from_fit_cmd(fit_id, fit_cmd)),
@@ -81,6 +83,7 @@ impl HSsCommand {
             HItemCommand::ChangeCharacter(item_cmd) => {
                 Self::ChangeCharacter(HChangeCharacterCmd::from_item_cmd(item_id, item_cmd))
             }
+            HItemCommand::ChangeSkill(item_cmd) => Self::ChangeSkill(HChangeSkillCmd::from_item_cmd(item_id, item_cmd)),
             HItemCommand::ChangeImplant(item_cmd) => {
                 Self::ChangeImplant(HChangeImplantCmd::from_item_cmd(item_id, item_cmd))
             }

@@ -6,6 +6,7 @@ pub(crate) use implant::HChangeImplantCmd;
 pub(crate) use module::HChangeModuleCmd;
 pub(crate) use rig::HChangeRigCmd;
 pub(crate) use ship::HChangeShipCmd;
+pub(crate) use skill::HChangeSkillCmd;
 pub(crate) use stance::HChangeStanceCmd;
 
 mod booster;
@@ -16,12 +17,14 @@ mod implant;
 mod module;
 mod rig;
 mod ship;
+mod skill;
 mod stance;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HItemCommand {
     ChangeCharacter(HChangeCharacterCmd),
+    ChangeSkill(HChangeSkillCmd),
     ChangeImplant(HChangeImplantCmd),
     ChangeBooster(HChangeBoosterCmd),
     ChangeShip(HChangeShipCmd),
