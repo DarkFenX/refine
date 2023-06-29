@@ -246,6 +246,13 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(ship_info));
                 cmd_results.push(resp);
             }
+            HSsCommand::SetStance(c) => {
+                let stance_info = core_ss
+                    .set_fit_stance(c.get_fit_id(), c.get_type_id(), c.get_state())
+                    .unwrap();
+                let resp = HCmdResp::ItemIds(HItemIdsResp::from(stance_info));
+                cmd_results.push(resp);
+            }
             HSsCommand::AddModule(c) => {
                 let module_info = core_ss
                     .add_module(

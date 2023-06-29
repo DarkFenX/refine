@@ -7,6 +7,7 @@ pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::HAddRigCmd;
 pub(crate) use ship::HSetShipCmd;
 pub(crate) use skill::HAddSkillCmd;
+pub(crate) use stance::HSetStanceCmd;
 
 use crate::cmd::HItemCommand;
 
@@ -19,6 +20,7 @@ mod module;
 mod rig;
 mod ship;
 mod skill;
+mod stance;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
@@ -28,6 +30,7 @@ pub(crate) enum HFitCommand {
     AddImplant(HAddImplantCmd),
     AddBooster(HAddBoosterCmd),
     SetShip(HSetShipCmd),
+    SetStance(HSetStanceCmd),
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
     AddRig(HAddRigCmd),
