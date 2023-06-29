@@ -1,4 +1,4 @@
-use std::{error, fmt, result};
+use std::{error, fmt};
 
 #[derive(Debug)]
 pub(crate) enum HErrorKind {
@@ -79,4 +79,4 @@ impl fmt::Display for HError {
     }
 }
 
-pub(crate) type HResult<T> = result::Result<T, HError>;
+pub(crate) type HResult<T> = Result<T, HError>;

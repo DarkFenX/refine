@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{fit, shared::HAddMode},
+    cmd::{fit, item, shared::HAddMode},
     shared::{HModRack, HState},
 };
 
@@ -40,6 +40,11 @@ pub(crate) struct HChangeModuleCmd {
     fit_cmd: fit::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
+    pub(in crate::cmd::ss) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeModuleCmd) -> Self {
+        Self {
+            fit_cmd: fit::HChangeModuleCmd::from_item_cmd(item_id, item_cmd),
+        }
+    }
     pub(crate) fn get_item_id(&self) -> rc::SsItemId {
         self.fit_cmd.get_item_id()
     }

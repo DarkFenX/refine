@@ -22,7 +22,7 @@ pub(crate) struct HChangeBoosterCmd {
     item_cmd: item::HChangeBoosterCmd,
 }
 impl HChangeBoosterCmd {
-    pub(in crate::cmd::fit) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeBoosterCmd) -> Self {
+    pub(in crate::cmd) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeBoosterCmd) -> Self {
         Self { item_id, item_cmd }
     }
     pub(crate) fn get_item_id(&self) -> rc::SsItemId {

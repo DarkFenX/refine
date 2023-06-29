@@ -37,7 +37,7 @@ pub(crate) struct HChangeModuleCmd {
     item_cmd: item::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
-    pub(in crate::cmd::fit) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeModuleCmd) -> Self {
+    pub(in crate::cmd) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeModuleCmd) -> Self {
         Self { item_id, item_cmd }
     }
     pub(crate) fn get_item_id(&self) -> rc::SsItemId {

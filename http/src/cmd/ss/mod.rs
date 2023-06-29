@@ -11,7 +11,7 @@ pub(crate) use stance::HSetStanceCmd;
 pub(crate) use subsystem::HAddSubsystemCmd;
 pub(crate) use sw_effect::HAddSwEffectCmd;
 
-use crate::cmd::fit::HFitCommand;
+use crate::cmd::{HFitCommand, HItemCommand};
 
 mod booster;
 mod character;
@@ -60,6 +60,16 @@ impl HSsCommand {
             HFitCommand::AddRig(fit_cmd) => Self::AddRig(HAddRigCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddDrone(fit_cmd) => Self::AddDrone(HAddDroneCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddFighter(fit_cmd) => Self::AddFighter(HAddFighterCmd::from_fit_cmd(fit_id, fit_cmd)),
+        }
+    }
+    pub(crate) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: HItemCommand) -> Self {
+        match item_cmd {
+            HItemCommand::ChangeBooster(item_cmd) => {
+                Self::ChangeBooster(HChangeBoosterCmd::from_item_cmd(item_id, item_cmd))
+            }
+            HItemCommand::ChangeModule(item_cmd) => {
+                Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))
+            }
         }
     }
 }

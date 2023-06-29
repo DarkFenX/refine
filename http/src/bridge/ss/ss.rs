@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, HFitCommand, HItemIdsResp, HSsCommand},
+    cmd::{HCmdResp, HFitCommand, HItemCommand, HItemIdsResp, HSsCommand},
     info::{HFitInfo, HFitInfoMode, HItemInfo, HItemInfoMode, HSsInfo, HSsInfoMode, MkItemInfo},
     util::{HError, HErrorKind, HResult},
 };
@@ -169,6 +169,31 @@ impl HSolarSystem {
         .await;
         self.put_ss_back(core_ss);
         Ok((fit_info, cmd_results))
+    }
+    #[tracing::instrument(name = "ss-item-cmd", level = "trace", skip_all)]
+    pub(crate) async fn execute_item_commands(
+        &mut self,
+        item_id: &str,
+        commands: Vec<HItemCommand>,
+        item_mode: HItemInfoMode,
+    ) -> HResult<(HItemInfo, Vec<HCmdResp>)> {
+        let item_id = self.str_to_item_id(item_id)?;
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_ss, item_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let commands = commands
+                .into_iter()
+                .map(|v| HSsCommand::from_item_cmd(item_id, v))
+                .collect();
+            let cmd_results = execute_commands(&mut core_ss, commands);
+            let core_info = core_ss.get_item_info(&item_id).unwrap();
+            let info = HItemInfo::mk_info(&mut core_ss, &core_info, item_mode);
+            (core_ss, info, cmd_results)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        Ok((item_info, cmd_results))
     }
     // Helper methods
     fn take_ss(&mut self) -> HResult<rc::SolarSystem> {

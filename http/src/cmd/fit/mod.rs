@@ -10,8 +10,6 @@ pub(crate) use skill::HAddSkillCmd;
 pub(crate) use stance::HSetStanceCmd;
 pub(crate) use subsystem::HAddSubsystemCmd;
 
-use crate::cmd::HItemCommand;
-
 mod booster;
 mod character;
 mod drone;
@@ -40,16 +38,4 @@ pub(crate) enum HFitCommand {
     AddRig(HAddRigCmd),
     AddDrone(HAddDroneCmd),
     AddFighter(HAddFighterCmd),
-}
-impl HFitCommand {
-    pub(crate) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: HItemCommand) -> Self {
-        match item_cmd {
-            HItemCommand::ChangeBooster(item_cmd) => {
-                Self::ChangeBooster(HChangeBoosterCmd::from_item_cmd(item_id, item_cmd))
-            }
-            HItemCommand::ChangeModule(item_cmd) => {
-                Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))
-            }
-        }
-    }
 }
