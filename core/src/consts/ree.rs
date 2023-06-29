@@ -45,8 +45,6 @@ pub enum EffectMode {
     ForceStop,
 }
 
-pub(crate) const DEFAULT_EFFECT_MODE: EffectMode = EffectMode::FullCompliance;
-
 /// Contains list of item types.
 #[derive(Debug)]
 pub enum ItemType {

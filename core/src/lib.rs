@@ -36,6 +36,7 @@ pub use util::{Error, ErrorKind, Result};
 
 pub mod ad;
 mod adg;
+pub(crate) mod config;
 pub mod consts;
 mod defs;
 pub mod ed;

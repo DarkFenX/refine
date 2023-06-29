@@ -53,6 +53,8 @@ pub(crate) mod attrs {
 pub(crate) mod effects {
     use crate::defs::EEffectId;
 
+    pub(crate) const ONLINE: EEffectId = 16;
+    // Slot-related
     pub(crate) const HI_POWER: EEffectId = 12;
     pub(crate) const LO_POWER: EEffectId = 11;
     pub(crate) const MED_POWER: EEffectId = 13;

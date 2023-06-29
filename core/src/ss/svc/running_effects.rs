@@ -15,8 +15,11 @@ impl RunningEffects {
         }
     }
     // Getters
-    pub(in crate::ss::svc) fn get_running_effects(&self, item_id: &SsItemId) -> Option<&HashSet<EEffectId>> {
-        self.data.get(item_id)
+    pub(in crate::ss::svc) fn is_running(&self, item_id: &SsItemId, effect_id: &EEffectId) -> bool {
+        match self.data.get(item_id) {
+            Some(effect_ids) => effect_ids.contains(effect_id),
+            None => false,
+        }
     }
     // Maintenance methods
     pub(in crate::ss::svc) fn effects_started<I>(&mut self, item_id: SsItemId, effects: I)

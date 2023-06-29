@@ -1,8 +1,4 @@
-use crate::{
-    consts::{EffectMode, DEFAULT_EFFECT_MODE},
-    defs::EEffectId,
-    util::OptMap,
-};
+use crate::{config::DEFAULT_EFFECT_MODE, consts::EffectMode, defs::EEffectId, util::OptMap};
 
 pub(in crate::ss) struct EffectModes {
     data: OptMap<EEffectId, EffectMode>,

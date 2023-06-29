@@ -219,6 +219,9 @@ impl SsItem {
     pub(in crate::ss) fn get_effect_datas(&self) -> Result<&HashMap<EEffectId, ad::AItemEffData>> {
         Ok(&self.get_a_item()?.effect_datas)
     }
+    pub(in crate::ss) fn get_defeff_id(&self) -> Result<&Option<EEffectId>> {
+        Ok(&self.get_a_item()?.defeff_id)
+    }
     pub(in crate::ss) fn get_top_domain(&self) -> Option<ModDomain> {
         match self {
             Self::Booster(_) => None,

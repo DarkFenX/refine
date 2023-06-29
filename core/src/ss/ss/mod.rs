@@ -60,13 +60,9 @@ impl SolarSystem {
     pub fn get_item_effects(&mut self, item_id: &SsItemId) -> Result<HashMap<EEffectId, EffectInfo>> {
         let item = self.items.get_item(item_id)?;
         let a_effect_ids = item.get_effect_datas()?.keys();
-        let running_effect_ids = self.svcs.get_running_effects(item_id);
         let effect_infos = a_effect_ids
             .map(|v| {
-                let running = match running_effect_ids {
-                    Some(effect_ids) => effect_ids.contains(v),
-                    None => false,
-                };
+                let running = self.svcs.is_effect_running(item_id, v);
                 let mode = item.get_effect_modes().get(v);
                 (*v, EffectInfo::new(running, *mode))
             })

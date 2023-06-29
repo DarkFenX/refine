@@ -93,23 +93,11 @@ impl SolarSystem {
         let module = self.items.get_module_mut(item_id)?;
         let old_state = module.state;
         module.state = state;
-        if state > old_state {
-            let states = State::iter()
-                .filter(|v| **v > old_state && **v <= state)
-                .map(|v| *v)
-                .collect();
+        if state != old_state {
             let item = self.items.get_item(item_id).unwrap();
             self.svcs
-                .activate_item_states(&SsView::new(&self.src, &self.fits, &self.items), item, states);
-        } else if state < old_state {
-            let states = State::iter()
-                .filter(|v| **v > state && **v <= old_state)
-                .map(|v| *v)
-                .collect();
-            let item = self.items.get_item(item_id).unwrap();
-            self.svcs
-                .deactivate_item_states(&SsView::new(&self.src, &self.fits, &self.items), item, states);
-        }
+                .switch_state(&SsView::new(&self.src, &self.fits, &self.items), item, old_state, state);
+        };
         Ok(())
     }
     pub fn set_module_charge(&mut self, item_id: &SsItemId, charge_a_item_id: EItemId) -> Result<SsChargeInfo> {

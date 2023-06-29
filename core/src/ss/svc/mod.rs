@@ -21,7 +21,7 @@ impl SsSvcs {
             calc_data: CalcData::new(),
         }
     }
-    pub(in crate::ss) fn get_running_effects(&self, item_id: &SsItemId) -> Option<&HashSet<EEffectId>> {
-        self.running_effects.get_running_effects(item_id)
+    pub(in crate::ss) fn is_effect_running(&self, item_id: &SsItemId, effect_id: &EEffectId) -> bool {
+        self.running_effects.is_running(item_id, effect_id)
     }
 }
