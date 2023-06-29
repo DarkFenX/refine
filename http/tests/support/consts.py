@@ -31,6 +31,11 @@ class ItemCat(IntEnum):
 
 
 @unique
+class Effect(IntEnum):
+    online = 16
+
+
+@unique
 class EffCat(IntEnum):
     passive = 0
     active = 1

@@ -10,6 +10,7 @@ use crate::{
 
 mod clean;
 mod conv;
+mod custom;
 mod fetch;
 mod norm;
 mod pk;
@@ -29,6 +30,7 @@ pub(crate) fn generate_adapted_data(e_handler: &dyn ed::EveDataHandler) -> IntRe
     clean::clean_unused(&mut g_data, &g_supp)?;
     valid::validate(&mut g_data, &g_supp);
     conv::convert(&g_data, &g_supp, &mut a_data);
+    custom::customize(&mut a_data);
     Ok(a_data)
 }
 
