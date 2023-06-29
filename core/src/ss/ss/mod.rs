@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::{
+    consts::EffectMode,
     defs::{EAttrId, EEffectId, SsFitId, SsItemId},
     src::Src,
     ss::{effect_info::EffectInfo, fit::SsFits, item::SsItems, svc::SsSvcs, SsAttrVal, SsView},
@@ -57,7 +58,7 @@ impl SolarSystem {
             .calc_get_item_attr_vals(&SsView::new(&self.src, &self.fits, &self.items), item_id)
     }
     // Item effects
-    pub fn get_item_effects(&mut self, item_id: &SsItemId) -> Result<HashMap<EEffectId, EffectInfo>> {
+    pub fn get_item_effects(&self, item_id: &SsItemId) -> Result<HashMap<EEffectId, EffectInfo>> {
         let item = self.items.get_item(item_id)?;
         let a_effect_ids = item.get_effect_datas()?.keys();
         let effect_infos = a_effect_ids
@@ -68,5 +69,15 @@ impl SolarSystem {
             })
             .collect();
         Ok(effect_infos)
+    }
+    pub fn set_item_effect_mode(&mut self, item_id: &SsItemId, effect_id: &EEffectId, mode: Option<EffectMode>) -> Result<()> {
+        let item = self.items.get_item_mut(item_id)?;
+        match mode {
+            Some(mode) => item.get_effect_modes_mut().set(*effect_id, mode),
+            None => item.get_effect_modes_mut().unset(effect_id),
+        };
+        let item = self.items.get_item(item_id).unwrap();
+        self.svcs.process_effects(&SsView::new(&self.src, &self.fits, &self.items), item, item.get_state());
+        Ok(())
     }
 }

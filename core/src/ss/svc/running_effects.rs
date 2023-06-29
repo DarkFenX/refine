@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use crate::{
     defs::{EEffectId, SsItemId},
     util::KeyedStorage1L,
