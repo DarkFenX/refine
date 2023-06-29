@@ -1,4 +1,4 @@
-pub(crate) use booster::HAddBoosterCmd;
+pub(crate) use booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(crate) use character::HSetCharCmd;
 pub(crate) use drone::HAddDroneCmd;
 pub(crate) use fighter::HAddFighterCmd;
@@ -31,6 +31,7 @@ pub(crate) enum HFitCommand {
     AddSkill(HAddSkillCmd),
     AddImplant(HAddImplantCmd),
     AddBooster(HAddBoosterCmd),
+    ChangeBooster(HChangeBoosterCmd),
     SetShip(HSetShipCmd),
     SetStance(HSetStanceCmd),
     AddSubsystem(HAddSubsystemCmd),
@@ -43,6 +44,9 @@ pub(crate) enum HFitCommand {
 impl HFitCommand {
     pub(crate) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: HItemCommand) -> Self {
         match item_cmd {
+            HItemCommand::ChangeBooster(item_cmd) => {
+                Self::ChangeBooster(HChangeBoosterCmd::from_item_cmd(item_id, item_cmd))
+            }
             HItemCommand::ChangeModule(item_cmd) => {
                 Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))
             }

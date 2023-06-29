@@ -239,6 +239,13 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(booster_info));
                 cmd_results.push(resp);
             }
+            HSsCommand::ChangeBooster(c) => {
+                if let Some(state) = c.get_state() {
+                    core_ss.set_booster_state(&c.get_item_id(), state).unwrap();
+                }
+                let resp = HCmdResp::NoData;
+                cmd_results.push(resp);
+            }
             HSsCommand::SetShip(c) => {
                 let ship_info = core_ss
                     .set_fit_ship(c.get_fit_id(), c.get_type_id(), c.get_state())

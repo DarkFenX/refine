@@ -21,3 +21,22 @@ impl HAddBoosterCmd {
         self.fit_cmd.get_state()
     }
 }
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HChangeBoosterCmd {
+    #[serde(flatten)]
+    fit_cmd: fit::HChangeBoosterCmd,
+}
+impl HChangeBoosterCmd {
+    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
+        self.fit_cmd.get_item_id()
+    }
+    pub(crate) fn get_state(&self) -> Option<bool> {
+        self.fit_cmd.get_state()
+    }
+}
+impl From<fit::HChangeBoosterCmd> for HChangeBoosterCmd {
+    fn from(fit_cmd: fit::HChangeBoosterCmd) -> Self {
+        Self { fit_cmd }
+    }
+}
