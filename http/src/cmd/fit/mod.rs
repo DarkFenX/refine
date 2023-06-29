@@ -4,7 +4,7 @@ pub(crate) use drone::{HAddDroneCmd, HChangeDroneCmd};
 pub(crate) use fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(crate) use implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
-pub(crate) use rig::HAddRigCmd;
+pub(crate) use rig::{HAddRigCmd, HChangeRigCmd};
 pub(crate) use ship::HSetShipCmd;
 pub(crate) use skill::HAddSkillCmd;
 pub(crate) use stance::HSetStanceCmd;
@@ -38,6 +38,7 @@ pub(crate) enum HFitCommand {
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
     AddRig(HAddRigCmd),
+    ChangeRig(HChangeRigCmd),
     AddDrone(HAddDroneCmd),
     ChangeDrone(HChangeDroneCmd),
     AddFighter(HAddFighterCmd),

@@ -4,7 +4,7 @@ pub(crate) use drone::{HAddDroneCmd, HChangeDroneCmd};
 pub(crate) use fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(crate) use implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
-pub(crate) use rig::HAddRigCmd;
+pub(crate) use rig::{HAddRigCmd, HChangeRigCmd};
 pub(crate) use ship::HSetShipCmd;
 pub(crate) use skill::HAddSkillCmd;
 pub(crate) use stance::HSetStanceCmd;
@@ -42,6 +42,7 @@ pub(crate) enum HSsCommand {
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
     AddRig(HAddRigCmd),
+    ChangeRig(HChangeRigCmd),
     AddDrone(HAddDroneCmd),
     ChangeDrone(HChangeDroneCmd),
     AddFighter(HAddFighterCmd),
@@ -64,6 +65,7 @@ impl HSsCommand {
             HFitCommand::AddModule(fit_cmd) => Self::AddModule(HAddModuleCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeModule(fit_cmd) => Self::ChangeModule(HChangeModuleCmd::from(fit_cmd)),
             HFitCommand::AddRig(fit_cmd) => Self::AddRig(HAddRigCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::ChangeRig(fit_cmd) => Self::ChangeRig(HChangeRigCmd::from(fit_cmd)),
             HFitCommand::AddDrone(fit_cmd) => Self::AddDrone(HAddDroneCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeDrone(fit_cmd) => Self::ChangeDrone(HChangeDroneCmd::from(fit_cmd)),
             HFitCommand::AddFighter(fit_cmd) => Self::AddFighter(HAddFighterCmd::from_fit_cmd(fit_id, fit_cmd)),
@@ -84,6 +86,7 @@ impl HSsCommand {
             HItemCommand::ChangeModule(item_cmd) => {
                 Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))
             }
+            HItemCommand::ChangeRig(item_cmd) => Self::ChangeRig(HChangeRigCmd::from_item_cmd(item_id, item_cmd)),
             HItemCommand::ChangeDrone(item_cmd) => Self::ChangeDrone(HChangeDroneCmd::from_item_cmd(item_id, item_cmd)),
             HItemCommand::ChangeFighter(item_cmd) => {
                 Self::ChangeFighter(HChangeFighterCmd::from_item_cmd(item_id, item_cmd))
