@@ -5,7 +5,7 @@ pub(crate) use fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(crate) use implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::{HAddRigCmd, HChangeRigCmd};
-pub(crate) use ship::HSetShipCmd;
+pub(crate) use ship::{HChangeShipCmd, HSetShipCmd};
 pub(crate) use skill::HAddSkillCmd;
 pub(crate) use stance::HSetStanceCmd;
 pub(crate) use subsystem::HAddSubsystemCmd;
@@ -37,6 +37,7 @@ pub(crate) enum HSsCommand {
     AddBooster(HAddBoosterCmd),
     ChangeBooster(HChangeBoosterCmd),
     SetShip(HSetShipCmd),
+    ChangeShip(HChangeShipCmd),
     SetStance(HSetStanceCmd),
     AddSubsystem(HAddSubsystemCmd),
     AddModule(HAddModuleCmd),
@@ -60,6 +61,7 @@ impl HSsCommand {
             HFitCommand::AddBooster(fit_cmd) => Self::AddBooster(HAddBoosterCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeBooster(fit_cmd) => Self::ChangeBooster(HChangeBoosterCmd::from(fit_cmd)),
             HFitCommand::SetShip(fit_cmd) => Self::SetShip(HSetShipCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::ChangeShip(fit_cmd) => Self::ChangeShip(HChangeShipCmd::from(fit_cmd)),
             HFitCommand::SetStance(fit_cmd) => Self::SetStance(HSetStanceCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddSubsystem(fit_cmd) => Self::AddSubsystem(HAddSubsystemCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddModule(fit_cmd) => Self::AddModule(HAddModuleCmd::from_fit_cmd(fit_id, fit_cmd)),
@@ -83,6 +85,7 @@ impl HSsCommand {
             HItemCommand::ChangeBooster(item_cmd) => {
                 Self::ChangeBooster(HChangeBoosterCmd::from_item_cmd(item_id, item_cmd))
             }
+            HItemCommand::ChangeShip(item_cmd) => Self::ChangeShip(HChangeShipCmd::from_item_cmd(item_id, item_cmd)),
             HItemCommand::ChangeModule(item_cmd) => {
                 Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))
             }

@@ -1,4 +1,4 @@
-use crate::cmd::fit;
+use crate::cmd::{fit, item};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HSetShipCmd {
@@ -19,5 +19,29 @@ impl HSetShipCmd {
     }
     pub(crate) fn get_state(&self) -> bool {
         self.fit_cmd.get_state()
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HChangeShipCmd {
+    #[serde(flatten)]
+    fit_cmd: fit::HChangeShipCmd,
+}
+impl HChangeShipCmd {
+    pub(in crate::cmd::ss) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeShipCmd) -> Self {
+        Self {
+            fit_cmd: fit::HChangeShipCmd::from_item_cmd(item_id, item_cmd),
+        }
+    }
+    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
+        self.fit_cmd.get_item_id()
+    }
+    pub(crate) fn get_state(&self) -> Option<bool> {
+        self.fit_cmd.get_state()
+    }
+}
+impl From<fit::HChangeShipCmd> for HChangeShipCmd {
+    fn from(fit_cmd: fit::HChangeShipCmd) -> Self {
+        Self { fit_cmd }
     }
 }

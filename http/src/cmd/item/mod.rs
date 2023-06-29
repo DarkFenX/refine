@@ -5,6 +5,7 @@ pub(crate) use fighter::HChangeFighterCmd;
 pub(crate) use implant::HChangeImplantCmd;
 pub(crate) use module::HChangeModuleCmd;
 pub(crate) use rig::HChangeRigCmd;
+pub(crate) use ship::HChangeShipCmd;
 
 mod booster;
 mod character;
@@ -13,6 +14,7 @@ mod fighter;
 mod implant;
 mod module;
 mod rig;
+mod ship;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
@@ -20,6 +22,7 @@ pub(crate) enum HItemCommand {
     ChangeCharacter(HChangeCharacterCmd),
     ChangeImplant(HChangeImplantCmd),
     ChangeBooster(HChangeBoosterCmd),
+    ChangeShip(HChangeShipCmd),
     ChangeModule(HChangeModuleCmd),
     ChangeRig(HChangeRigCmd),
     ChangeDrone(HChangeDroneCmd),
