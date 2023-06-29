@@ -1,14 +1,14 @@
-use crate::cmd::fit;
+use crate::cmd::{fit, item};
 
 #[derive(serde::Deserialize)]
-pub(crate) struct HSetCharCmd {
+pub(crate) struct HSetCharacterCmd {
     #[serde(with = "crate::util::serde_string")]
     fit_id: rc::SsItemId,
     #[serde(flatten)]
-    fit_cmd: fit::HSetCharCmd,
+    fit_cmd: fit::HSetCharacterCmd,
 }
-impl HSetCharCmd {
-    pub(in crate::cmd::ss) fn from_fit_cmd(fit_id: rc::SsItemId, fit_cmd: fit::HSetCharCmd) -> Self {
+impl HSetCharacterCmd {
+    pub(in crate::cmd::ss) fn from_fit_cmd(fit_id: rc::SsItemId, fit_cmd: fit::HSetCharacterCmd) -> Self {
         Self { fit_id, fit_cmd }
     }
     pub(crate) fn get_fit_id(&self) -> rc::SsItemId {
@@ -19,5 +19,29 @@ impl HSetCharCmd {
     }
     pub(crate) fn get_state(&self) -> bool {
         self.fit_cmd.get_state()
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HChangeCharacterCmd {
+    #[serde(flatten)]
+    fit_cmd: fit::HChangeCharacterCmd,
+}
+impl HChangeCharacterCmd {
+    pub(in crate::cmd::ss) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeCharacterCmd) -> Self {
+        Self {
+            fit_cmd: fit::HChangeCharacterCmd::from_item_cmd(item_id, item_cmd),
+        }
+    }
+    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
+        self.fit_cmd.get_item_id()
+    }
+    pub(crate) fn get_state(&self) -> Option<bool> {
+        self.fit_cmd.get_state()
+    }
+}
+impl From<fit::HChangeCharacterCmd> for HChangeCharacterCmd {
+    fn from(fit_cmd: fit::HChangeCharacterCmd) -> Self {
+        Self { fit_cmd }
     }
 }

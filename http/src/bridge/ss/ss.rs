@@ -243,6 +243,13 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(char_info));
                 cmd_results.push(resp);
             }
+            HSsCommand::ChangeCharacter(c) => {
+                if let Some(state) = c.get_state() {
+                    core_ss.set_character_state(&c.get_item_id(), state).unwrap();
+                }
+                let resp = HCmdResp::NoData;
+                cmd_results.push(resp);
+            }
             HSsCommand::AddSkill(c) => {
                 let skill_info = core_ss
                     .add_skill(c.get_fit_id(), c.get_type_id(), c.get_level(), c.get_state())

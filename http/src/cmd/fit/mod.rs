@@ -1,5 +1,5 @@
 pub(crate) use booster::{HAddBoosterCmd, HChangeBoosterCmd};
-pub(crate) use character::HSetCharCmd;
+pub(crate) use character::{HChangeCharacterCmd, HSetCharacterCmd};
 pub(crate) use drone::HAddDroneCmd;
 pub(crate) use fighter::HAddFighterCmd;
 pub(crate) use implant::HAddImplantCmd;
@@ -25,7 +25,8 @@ mod subsystem;
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HFitCommand {
-    SetCharacter(HSetCharCmd),
+    SetCharacter(HSetCharacterCmd),
+    ChangeCharacter(HChangeCharacterCmd),
     AddSkill(HAddSkillCmd),
     AddImplant(HAddImplantCmd),
     AddBooster(HAddBoosterCmd),

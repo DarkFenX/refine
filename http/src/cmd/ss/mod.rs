@@ -1,5 +1,5 @@
 pub(crate) use booster::{HAddBoosterCmd, HChangeBoosterCmd};
-pub(crate) use character::HSetCharCmd;
+pub(crate) use character::{HChangeCharacterCmd, HSetCharacterCmd};
 pub(crate) use drone::HAddDroneCmd;
 pub(crate) use fighter::HAddFighterCmd;
 pub(crate) use implant::HAddImplantCmd;
@@ -29,7 +29,8 @@ mod sw_effect;
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HSsCommand {
-    SetCharacter(HSetCharCmd),
+    SetCharacter(HSetCharacterCmd),
+    ChangeCharacter(HChangeCharacterCmd),
     AddSkill(HAddSkillCmd),
     AddImplant(HAddImplantCmd),
     AddBooster(HAddBoosterCmd),
@@ -47,7 +48,8 @@ pub(crate) enum HSsCommand {
 impl HSsCommand {
     pub(crate) fn from_fit_cmd(fit_id: rc::SsFitId, fit_cmd: HFitCommand) -> Self {
         match fit_cmd {
-            HFitCommand::SetCharacter(fit_cmd) => Self::SetCharacter(HSetCharCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::SetCharacter(fit_cmd) => Self::SetCharacter(HSetCharacterCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::ChangeCharacter(fit_cmd) => Self::ChangeCharacter(HChangeCharacterCmd::from(fit_cmd)),
             HFitCommand::AddSkill(fit_cmd) => Self::AddSkill(HAddSkillCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddImplant(fit_cmd) => Self::AddImplant(HAddImplantCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddBooster(fit_cmd) => Self::AddBooster(HAddBoosterCmd::from_fit_cmd(fit_id, fit_cmd)),
@@ -64,6 +66,9 @@ impl HSsCommand {
     }
     pub(crate) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: HItemCommand) -> Self {
         match item_cmd {
+            HItemCommand::ChangeCharacter(item_cmd) => {
+                Self::ChangeCharacter(HChangeCharacterCmd::from_item_cmd(item_id, item_cmd))
+            }
             HItemCommand::ChangeBooster(item_cmd) => {
                 Self::ChangeBooster(HChangeBoosterCmd::from_item_cmd(item_id, item_cmd))
             }
