@@ -1,10 +1,12 @@
 use crate::{
     ad,
-    consts::{EffectMode, State},
-    defs::{Amount, EEffectId, EItemId, SsFitId, SsItemId},
+    consts::State,
+    defs::{Amount, EItemId, SsFitId, SsItemId},
     src::Src,
-    util::{Named, OptMap},
+    util::Named,
 };
+
+use super::support::EffectModes;
 
 pub(in crate::ss) struct SsFighter {
     pub(in crate::ss) id: SsItemId,
@@ -12,7 +14,7 @@ pub(in crate::ss) struct SsFighter {
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) state: State,
     pub(in crate::ss) amt_override: Option<Amount>,
-    pub(in crate::ss) effect_modes: OptMap<EEffectId, EffectMode>,
+    pub(in crate::ss) effect_modes: EffectModes,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
 impl SsFighter {
@@ -23,7 +25,7 @@ impl SsFighter {
             a_item_id,
             state,
             amt_override: None,
-            effect_modes: OptMap::new(),
+            effect_modes: EffectModes::new(),
             a_item: src.get_a_item(&a_item_id),
         }
     }

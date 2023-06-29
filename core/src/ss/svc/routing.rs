@@ -67,6 +67,9 @@ impl SsSvcs {
             self.notify_state_deactivated(ss_view, item, state);
         }
     }
+    pub(in crate::ss) fn process_effects(&mut self, ss_view: &SsView, item: &SsItem) {
+        let old_effects = self.running_effects.get_running_effects(&item.get_id());
+    }
     // Lower level methods
     pub(in crate::ss) fn notify_item_added(&mut self, ss_view: &SsView, item: &SsItem) {}
     pub(in crate::ss) fn notify_item_removed(&mut self, ss_view: &SsView, item: &SsItem) {}
@@ -80,22 +83,12 @@ impl SsSvcs {
     }
     pub(in crate::ss) fn notify_state_activated_loaded(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}
     pub(in crate::ss) fn notify_state_deactivated_loaded(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}
-    pub(in crate::ss) fn notify_effects_started(
-        &mut self,
-        ss_view: &SsView,
-        item: &SsItem,
-        effects: &Vec<ad::ArcEffect>,
-    ) {
+    fn notify_effects_started(&mut self, ss_view: &SsView, item: &SsItem, effects: &Vec<ad::ArcEffect>) {
         self.running_effects
             .effects_started(item.get_id(), effects.iter().map(|v| v.id));
         self.calc_effects_started(ss_view, item, effects);
     }
-    pub(in crate::ss) fn notify_effects_stopped(
-        &mut self,
-        ss_view: &SsView,
-        item: &SsItem,
-        effects: &Vec<ad::ArcEffect>,
-    ) {
+    fn notify_effects_stopped(&mut self, ss_view: &SsView, item: &SsItem, effects: &Vec<ad::ArcEffect>) {
         self.calc_effects_stopped(ss_view, item, effects);
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| v.id));

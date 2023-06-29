@@ -1,7 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::{
-    consts::DEFAULT_EFFECT_MODE,
     defs::{EAttrId, EEffectId, SsFitId, SsItemId},
     src::Src,
     ss::{effect_info::EffectInfo, fit::SsFits, item::SsItems, svc::SsSvcs, SsAttrVal, SsView},
@@ -68,7 +67,7 @@ impl SolarSystem {
                     Some(effect_ids) => effect_ids.contains(v),
                     None => false,
                 };
-                let mode = item.get_effect_modes().get(v).unwrap_or(&DEFAULT_EFFECT_MODE);
+                let mode = item.get_effect_modes().get(v);
                 (*v, EffectInfo::new(running, *mode))
             })
             .collect();

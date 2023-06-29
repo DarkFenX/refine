@@ -1,17 +1,18 @@
 use crate::{
     ad,
-    consts::EffectMode,
-    defs::{EEffectId, EItemId, SsFitId, SsItemId},
+    defs::{EItemId, SsFitId, SsItemId},
     src::Src,
-    util::{Named, OptMap},
+    util::Named,
 };
+
+use super::support::EffectModes;
 
 pub(in crate::ss) struct SsCharge {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) fit_id: SsFitId,
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) cont_id: SsItemId,
-    pub(in crate::ss) effect_modes: OptMap<EEffectId, EffectMode>,
+    pub(in crate::ss) effect_modes: EffectModes,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
 impl SsCharge {
@@ -21,7 +22,7 @@ impl SsCharge {
             fit_id,
             a_item_id,
             cont_id,
-            effect_modes: OptMap::new(),
+            effect_modes: EffectModes::new(),
             a_item: src.get_a_item(&a_item_id),
         }
     }

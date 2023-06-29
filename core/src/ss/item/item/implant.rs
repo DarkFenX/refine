@@ -1,19 +1,19 @@
 use crate::{
     ad,
-    consts::{attrs, EffectMode, State},
-    defs::{EEffectId, EItemId, SlotNumber, SsFitId, SsItemId},
+    consts::{attrs, State},
+    defs::{EItemId, SlotNumber, SsFitId, SsItemId},
     src::Src,
-    util::{Named, OptMap},
+    util::Named,
 };
 
-use super::support::{bool_to_state, state_to_bool};
+use super::support::{bool_to_state, state_to_bool, EffectModes};
 
 pub(in crate::ss) struct SsImplant {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) fit_id: SsFitId,
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) state: State,
-    pub(in crate::ss) effect_modes: OptMap<EEffectId, EffectMode>,
+    pub(in crate::ss) effect_modes: EffectModes,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
 impl SsImplant {
@@ -23,7 +23,7 @@ impl SsImplant {
             fit_id,
             a_item_id,
             state: bool_to_state(state),
-            effect_modes: OptMap::new(),
+            effect_modes: EffectModes::new(),
             a_item: src.get_a_item(&a_item_id),
         }
     }

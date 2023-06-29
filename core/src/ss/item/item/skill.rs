@@ -1,12 +1,12 @@
 use crate::{
     ad,
-    consts::{EffectMode, State},
-    defs::{EEffectId, EItemId, SkillLevel, SsFitId, SsItemId},
+    consts::State,
+    defs::{EItemId, SkillLevel, SsFitId, SsItemId},
     src::Src,
-    util::{Named, OptMap},
+    util::Named,
 };
 
-use super::support::{bool_to_state, state_to_bool};
+use super::support::{bool_to_state, state_to_bool, EffectModes};
 
 pub(in crate::ss) struct SsSkill {
     pub(in crate::ss) id: SsItemId,
@@ -14,7 +14,7 @@ pub(in crate::ss) struct SsSkill {
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) level: SkillLevel,
     pub(in crate::ss) state: State,
-    pub(in crate::ss) effect_modes: OptMap<EEffectId, EffectMode>,
+    pub(in crate::ss) effect_modes: EffectModes,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
 impl SsSkill {
@@ -32,7 +32,7 @@ impl SsSkill {
             a_item_id,
             level,
             state: bool_to_state(state),
-            effect_modes: OptMap::new(),
+            effect_modes: EffectModes::new(),
             a_item: src.get_a_item(&a_item_id),
         }
     }

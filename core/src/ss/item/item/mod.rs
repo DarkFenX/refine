@@ -16,10 +16,10 @@ pub(in crate::ss) use sw_effect::SsSwEffect;
 
 use crate::{
     ad,
-    consts::{EffectMode, ModDomain, State},
+    consts::{ModDomain, State},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SsFitId, SsItemId},
     src::Src,
-    util::{Error, ErrorKind, Named, OptMap, Result},
+    util::{Error, ErrorKind, Named, Result},
 };
 
 mod booster;
@@ -104,7 +104,7 @@ impl SsItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::ss) fn get_effect_modes(&self) -> &OptMap<EEffectId, EffectMode> {
+    pub(in crate::ss) fn get_effect_modes(&self) -> &support::EffectModes {
         match self {
             Self::Booster(booster) => &booster.effect_modes,
             Self::Character(character) => &character.effect_modes,
@@ -121,7 +121,7 @@ impl SsItem {
             Self::SwEffect(sw_effect) => &sw_effect.effect_modes,
         }
     }
-    pub(in crate::ss) fn get_effect_modes_mut(&mut self) -> &mut OptMap<EEffectId, EffectMode> {
+    pub(in crate::ss) fn get_effect_modes_mut(&mut self) -> &mut support::EffectModes {
         match self {
             Self::Booster(booster) => &mut booster.effect_modes,
             Self::Character(character) => &mut character.effect_modes,
