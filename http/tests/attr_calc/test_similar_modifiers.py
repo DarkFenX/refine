@@ -19,7 +19,7 @@ def test_same_item_different_effects_attrs(client, consts):
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
-        src_attr_id=eve_src_attr1.id,
+        src_attr_id=eve_src_attr2.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect2 = client.mk_eve_effect(mod_info=[eve_mod2])
     eve_item = client.mk_eve_item(

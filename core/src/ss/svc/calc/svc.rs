@@ -9,15 +9,13 @@ use crate::{
     ss::{
         item::SsItem,
         svc::{
-            calc::support::{AffectorSpec, SsAttrVal},
+            calc::support::{AffectorSpec, SsAttrVal, Modification, ModKey},
             SsSvcs,
         },
         SsView,
     },
     util::{Error, ErrorKind, Result},
 };
-
-use super::support::Modification;
 
 const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
     itemcats::SHIP,
@@ -190,7 +188,7 @@ impl SsSvcs {
         let mut stacked_penalized = HashMap::new();
         // let aggregate_min = Vec::new();
         // let aggregate_max = Vec::new();
-        for modification in self.calc_get_modifications(ss_view, item, attr_id).iter() {
+        for modification in self.calc_get_modifications(ss_view, item, attr_id).values() {
             let penalize =
                 attr.penalizable && !modification.afor_pen_immune && PENALIZABLE_OPS.contains(&modification.op);
             let mod_val = match modification.op {
@@ -268,9 +266,9 @@ impl SsSvcs {
             _ => return,
         }
     }
-    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &SsItem, attr_id: &EAttrId) -> Vec<Modification> {
+    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &SsItem, attr_id: &EAttrId) -> HashMap<ModKey, Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
-        let mut mods = Vec::new();
+        let mut mods = HashMap::new();
         for afor_spec in self.calc_data.affections.get_afor_specs_by_afee(item).iter() {
             if &afor_spec.modifier.afee_attr_id != attr_id {
                 continue;
@@ -287,9 +285,10 @@ impl SsSvcs {
                 Ok(cid) => PENALTY_IMMUNE_CATS.contains(&cid),
                 _ => continue,
             };
-            // TODO: implement resistance support
+            // TODO: implement resistance support (add it to key as well? idk)
+            let mod_key = ModKey::from(afor_spec);
             let modification = Modification::new(afor_spec.modifier.op, val.dogma, 1.0, ModAggrMode::Stack, pen_immune);
-            mods.push(modification);
+            mods.insert(mod_key, modification);
         }
         mods
     }

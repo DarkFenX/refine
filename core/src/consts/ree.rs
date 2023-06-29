@@ -1,5 +1,3 @@
-use std::hash::Hash;
-
 use crate::defs::{Amount, EBuffId, EItemGrpId, EItemId, Idx};
 
 /// Contains states which can be assigned to several entities.
