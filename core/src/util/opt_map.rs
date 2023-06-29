@@ -7,9 +7,11 @@ impl<K: Eq + Hash, V> OptMap<K, V> {
     pub(crate) fn new() -> Self {
         Self { data: None }
     }
+    // Query methods
     pub(crate) fn get(&self, key: &K) -> Option<&V> {
         self.data.as_ref().map(|v| v.get(key)).unwrap_or(None)
     }
+    // Modification methods
     pub(crate) fn insert(&mut self, key: K, value: V) {
         match self.data.as_mut() {
             Some(map) => {

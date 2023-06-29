@@ -14,7 +14,7 @@ impl AttrCapData {
             data: KeyedStorage2L::new(),
         }
     }
-    // Getters
+    // Query methods
     pub(in crate::ss::svc::calc) fn get_capped_attr_ids(
         &mut self,
         item_id: &SsItemId,
@@ -22,7 +22,7 @@ impl AttrCapData {
     ) -> Option<&HashSet<EAttrId>> {
         self.data.get_l2(item_id, capping_attr_id)
     }
-    // Maintenance
+    // Modification methods
     pub(in crate::ss::svc::calc) fn add_cap(
         &mut self,
         item_id: SsItemId,

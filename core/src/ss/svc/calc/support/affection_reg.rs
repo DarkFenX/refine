@@ -168,7 +168,7 @@ impl AffectionRegister {
             .map(|v| v.iter().map(|v| v.clone()).collect())
             .unwrap_or_else(|| Vec::new())
     }
-    // Maintenance methods
+    // Modification methods
     pub(in crate::ss::svc::calc) fn reg_afee(&mut self, afee_item: &SsItem) {
         let afee_item_id = afee_item.get_id();
         let afee_fit_id = afee_item.get_fit_id();

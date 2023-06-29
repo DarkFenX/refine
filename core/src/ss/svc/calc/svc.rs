@@ -85,7 +85,7 @@ impl SsSvcs {
         }
         Ok(vals)
     }
-    // Maintenance methods
+    // Modification methods
     pub(in crate::ss) fn calc_item_loaded(&mut self, item: &SsItem) {
         self.calc_data.attrs.add_item(item.get_id());
         self.calc_data.affections.reg_afee(item);
@@ -340,7 +340,7 @@ fn process_adds(adds: &Vec<AttrVal>) -> AttrVal {
     val
 }
 
-// Maintenance- and query-related functions
+// Query- and modification-related functions
 fn generate_local_afor_specs(afor_item: &SsItem, effects: &Vec<ad::ArcEffect>) -> Vec<AffectorSpec> {
     let mut specs = Vec::new();
     for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {

@@ -7,11 +7,11 @@ impl EffectModes {
     pub(in crate::ss::item::item) fn new() -> Self {
         Self { data: OptMap::new() }
     }
-    // Getters
+    // Query methods
     pub(in crate::ss) fn get(&self, effect_id: &EEffectId) -> &EffectMode {
         self.data.get(effect_id).unwrap_or(&DEFAULT_EFFECT_MODE)
     }
-    // Maintenance
+    // Modification methods
     pub(in crate::ss) fn set(&mut self, effect_id: EEffectId, mode: EffectMode) {
         self.data.insert(effect_id, mode)
     }

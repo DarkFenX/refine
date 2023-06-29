@@ -10,14 +10,14 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
     pub(crate) fn new() -> KeyedStorage1L<K, V> {
         Self { data: HashMap::new() }
     }
-    // Getters
+    // Query methods
     pub(crate) fn get(&self, key: &K) -> Option<&HashSet<V>> {
         self.data.get(key)
     }
     fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
-    // Maintenance
+    // Modification methods
     pub(crate) fn add(&mut self, key: K, entry: V) {
         let values = self.data.entry(key).or_insert_with(|| HashSet::with_capacity(1));
         values.insert(entry);
@@ -70,7 +70,7 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KeyedStorage2L<A, B, V> {
     pub(crate) fn new() -> KeyedStorage2L<A, B, V> {
         Self { data: HashMap::new() }
     }
-    // Getters
+    // Query methods
     pub(crate) fn get_l1(&self, key1: &A) -> Option<&KeyedStorage1L<B, V>> {
         self.data.get(key1)
     }
@@ -80,7 +80,7 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KeyedStorage2L<A, B, V> {
             None => None,
         }
     }
-    // Maintenance
+    // Modification methods
     pub(crate) fn add(&mut self, key1: A, key2: B, entry: V) {
         let ks1l = self.data.entry(key1).or_insert_with(|| KeyedStorage1L::new());
         ks1l.add(key2, entry);
