@@ -1,3 +1,4 @@
+pub(crate) use booster::HAddBoosterCmd;
 pub(crate) use character::HSetCharCmd;
 pub(crate) use drone::HAddDroneCmd;
 pub(crate) use implant::HAddImplantCmd;
@@ -7,6 +8,7 @@ pub(crate) use ship::HSetShipCmd;
 
 use crate::cmd::fit::HFitCommand;
 
+mod booster;
 mod character;
 mod drone;
 mod implant;
@@ -19,6 +21,7 @@ mod ship;
 pub(crate) enum HSsCommand {
     SetCharacter(HSetCharCmd),
     AddImplant(HAddImplantCmd),
+    AddBooster(HAddBoosterCmd),
     SetShip(HSetShipCmd),
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
@@ -30,6 +33,7 @@ impl HSsCommand {
         match fit_cmd {
             HFitCommand::SetCharacter(fit_cmd) => Self::SetCharacter(HSetCharCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddImplant(fit_cmd) => Self::AddImplant(HAddImplantCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::AddBooster(fit_cmd) => Self::AddBooster(HAddBoosterCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::SetShip(fit_cmd) => Self::SetShip(HSetShipCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddModule(fit_cmd) => Self::AddModule(HAddModuleCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeModule(fit_cmd) => Self::ChangeModule(HChangeModuleCmd::from(fit_cmd)),

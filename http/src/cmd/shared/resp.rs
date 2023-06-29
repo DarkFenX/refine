@@ -29,6 +29,11 @@ impl From<rc::SsImplantInfo> for HItemIdsResp {
         HItemIdsResp::new(ss_implant_info.id, None)
     }
 }
+impl From<rc::SsBoosterInfo> for HItemIdsResp {
+    fn from(ss_booster_info: rc::SsBoosterInfo) -> Self {
+        HItemIdsResp::new(ss_booster_info.id, None)
+    }
+}
 impl From<rc::SsShipInfo> for HItemIdsResp {
     fn from(ss_ship_info: rc::SsShipInfo) -> Self {
         HItemIdsResp::new(ss_ship_info.id, None)

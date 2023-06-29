@@ -1,3 +1,4 @@
+pub(crate) use booster::HAddBoosterCmd;
 pub(crate) use character::HSetCharCmd;
 pub(crate) use drone::HAddDroneCmd;
 pub(crate) use implant::HAddImplantCmd;
@@ -7,6 +8,7 @@ pub(crate) use ship::HSetShipCmd;
 
 use crate::cmd::HItemCommand;
 
+mod booster;
 mod character;
 mod drone;
 mod implant;
@@ -19,6 +21,7 @@ mod ship;
 pub(crate) enum HFitCommand {
     SetCharacter(HSetCharCmd),
     AddImplant(HAddImplantCmd),
+    AddBooster(HAddBoosterCmd),
     SetShip(HSetShipCmd),
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),

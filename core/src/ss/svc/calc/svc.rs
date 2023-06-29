@@ -9,7 +9,7 @@ use crate::{
     ss::{
         item::SsItem,
         svc::{
-            calc::support::{AffectorSpec, SsAttrVal, Modification, ModKey},
+            calc::support::{AffectorSpec, ModKey, Modification, SsAttrVal},
             SsSvcs,
         },
         SsView,
@@ -266,7 +266,12 @@ impl SsSvcs {
             _ => return,
         }
     }
-    fn calc_get_modifications(&mut self, ss_view: &SsView, item: &SsItem, attr_id: &EAttrId) -> HashMap<ModKey, Modification> {
+    fn calc_get_modifications(
+        &mut self,
+        ss_view: &SsView,
+        item: &SsItem,
+        attr_id: &EAttrId,
+    ) -> HashMap<ModKey, Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = HashMap::new();
         for afor_spec in self.calc_data.affections.get_afor_specs_by_afee(item).iter() {
