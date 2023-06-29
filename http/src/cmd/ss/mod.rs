@@ -1,6 +1,7 @@
 pub(crate) use booster::HAddBoosterCmd;
 pub(crate) use character::HSetCharCmd;
 pub(crate) use drone::HAddDroneCmd;
+pub(crate) use fighter::HAddFighterCmd;
 pub(crate) use implant::HAddImplantCmd;
 pub(crate) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(crate) use rig::HAddRigCmd;
@@ -11,6 +12,7 @@ use crate::cmd::fit::HFitCommand;
 mod booster;
 mod character;
 mod drone;
+mod fighter;
 mod implant;
 mod module;
 mod rig;
@@ -27,6 +29,7 @@ pub(crate) enum HSsCommand {
     ChangeModule(HChangeModuleCmd),
     AddRig(HAddRigCmd),
     AddDrone(HAddDroneCmd),
+    AddFighter(HAddFighterCmd),
 }
 impl HSsCommand {
     pub(crate) fn from_fit_cmd(fit_id: rc::SsFitId, fit_cmd: HFitCommand) -> Self {
@@ -39,6 +42,7 @@ impl HSsCommand {
             HFitCommand::ChangeModule(fit_cmd) => Self::ChangeModule(HChangeModuleCmd::from(fit_cmd)),
             HFitCommand::AddRig(fit_cmd) => Self::AddRig(HAddRigCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::AddDrone(fit_cmd) => Self::AddDrone(HAddDroneCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::AddFighter(fit_cmd) => Self::AddFighter(HAddFighterCmd::from_fit_cmd(fit_id, fit_cmd)),
         }
     }
 }
