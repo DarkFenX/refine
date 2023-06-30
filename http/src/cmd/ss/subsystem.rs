@@ -1,4 +1,4 @@
-use crate::cmd::fit;
+use crate::cmd::{fit, item};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddSubsystemCmd {
@@ -19,5 +19,29 @@ impl HAddSubsystemCmd {
     }
     pub(crate) fn get_state(&self) -> bool {
         self.fit_cmd.get_state()
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HChangeSubsystemCmd {
+    #[serde(flatten)]
+    fit_cmd: fit::HChangeSubsystemCmd,
+}
+impl HChangeSubsystemCmd {
+    pub(in crate::cmd::ss) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeSubsystemCmd) -> Self {
+        Self {
+            fit_cmd: fit::HChangeSubsystemCmd::from_item_cmd(item_id, item_cmd),
+        }
+    }
+    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
+        self.fit_cmd.get_item_id()
+    }
+    pub(crate) fn get_state(&self) -> Option<bool> {
+        self.fit_cmd.get_state()
+    }
+}
+impl From<fit::HChangeSubsystemCmd> for HChangeSubsystemCmd {
+    fn from(fit_cmd: fit::HChangeSubsystemCmd) -> Self {
+        Self { fit_cmd }
     }
 }

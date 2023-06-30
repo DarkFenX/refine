@@ -8,7 +8,7 @@ pub(crate) use rig::{HAddRigCmd, HChangeRigCmd};
 pub(crate) use ship::{HChangeShipCmd, HSetShipCmd};
 pub(crate) use skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(crate) use stance::{HChangeStanceCmd, HSetStanceCmd};
-pub(crate) use subsystem::HAddSubsystemCmd;
+pub(crate) use subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 
 mod booster;
 mod character;
@@ -38,6 +38,7 @@ pub(crate) enum HFitCommand {
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
     AddSubsystem(HAddSubsystemCmd),
+    ChangeSubsystem(HChangeSubsystemCmd),
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
     AddRig(HAddRigCmd),

@@ -8,7 +8,7 @@ pub(crate) use rig::{HAddRigCmd, HChangeRigCmd};
 pub(crate) use ship::{HChangeShipCmd, HSetShipCmd};
 pub(crate) use skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(crate) use stance::{HChangeStanceCmd, HSetStanceCmd};
-pub(crate) use subsystem::HAddSubsystemCmd;
+pub(crate) use subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(crate) use sw_effect::HAddSwEffectCmd;
 
 use crate::cmd::{HFitCommand, HItemCommand};
@@ -42,6 +42,7 @@ pub(crate) enum HSsCommand {
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
     AddSubsystem(HAddSubsystemCmd),
+    ChangeSubsystem(HChangeSubsystemCmd),
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
     AddRig(HAddRigCmd),
@@ -68,6 +69,7 @@ impl HSsCommand {
             HFitCommand::SetStance(fit_cmd) => Self::SetStance(HSetStanceCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeStance(fit_cmd) => Self::ChangeStance(HChangeStanceCmd::from(fit_cmd)),
             HFitCommand::AddSubsystem(fit_cmd) => Self::AddSubsystem(HAddSubsystemCmd::from_fit_cmd(fit_id, fit_cmd)),
+            HFitCommand::ChangeSubsystem(fit_cmd) => Self::ChangeSubsystem(HChangeSubsystemCmd::from(fit_cmd)),
             HFitCommand::AddModule(fit_cmd) => Self::AddModule(HAddModuleCmd::from_fit_cmd(fit_id, fit_cmd)),
             HFitCommand::ChangeModule(fit_cmd) => Self::ChangeModule(HChangeModuleCmd::from(fit_cmd)),
             HFitCommand::AddRig(fit_cmd) => Self::AddRig(HAddRigCmd::from_fit_cmd(fit_id, fit_cmd)),
@@ -93,6 +95,9 @@ impl HSsCommand {
             HItemCommand::ChangeShip(item_cmd) => Self::ChangeShip(HChangeShipCmd::from_item_cmd(item_id, item_cmd)),
             HItemCommand::ChangeStance(item_cmd) => {
                 Self::ChangeStance(HChangeStanceCmd::from_item_cmd(item_id, item_cmd))
+            }
+            HItemCommand::ChangeSubsystem(item_cmd) => {
+                Self::ChangeSubsystem(HChangeSubsystemCmd::from_item_cmd(item_id, item_cmd))
             }
             HItemCommand::ChangeModule(item_cmd) => {
                 Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))
