@@ -1,5 +1,8 @@
 use crate::{
-    cmd::{fit, item, shared::HAddMode},
+    cmd::{
+        fit, item,
+        shared::{HAddMode, HEffectModeMap},
+    },
     shared::{HModRack, HState},
 };
 
@@ -50,6 +53,9 @@ impl HChangeModuleCmd {
     }
     pub(crate) fn get_state(&self) -> Option<&HState> {
         self.fit_cmd.get_state()
+    }
+    pub(crate) fn get_effect_modes(&self) -> Option<&HEffectModeMap> {
+        self.fit_cmd.get_effect_modes()
     }
 }
 impl From<fit::HChangeModuleCmd> for HChangeModuleCmd {

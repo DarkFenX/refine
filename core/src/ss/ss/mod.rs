@@ -80,4 +80,18 @@ impl SolarSystem {
             .process_effects(&SsView::new(&self.src, &self.fits, &self.items), item, item.get_state());
         Ok(())
     }
+    pub fn set_item_effect_modes(
+        &mut self,
+        item_id: &SsItemId,
+        mode_map: &HashMap<EEffectId, EffectMode>,
+    ) -> Result<()> {
+        let effect_modes = self.items.get_item_mut(item_id)?.get_effect_modes_mut();
+        for (effect_id, effect_mode) in mode_map.iter() {
+            effect_modes.set(*effect_id, *effect_mode)
+        }
+        let item = self.items.get_item(item_id).unwrap();
+        self.svcs
+            .process_effects(&SsView::new(&self.src, &self.fits, &self.items), item, item.get_state());
+        Ok(())
+    }
 }

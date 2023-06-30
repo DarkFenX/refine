@@ -1,4 +1,4 @@
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub(crate) enum HEffectMode {
     #[serde(rename = "full")]
     FullCompliance,

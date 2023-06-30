@@ -352,6 +352,10 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 if let Some(state) = c.get_state() {
                     core_ss.set_module_state(&c.get_item_id(), state.into()).unwrap();
                 }
+                if let Some(mode_map) = c.get_effect_modes() {
+                    let mode_map = mode_map.into_iter().map(|(k, v)| (*k, v.into())).collect();
+                    core_ss.set_item_effect_modes(&c.get_item_id(), &mode_map).unwrap();
+                }
                 let resp = HCmdResp::NoData;
                 cmd_results.push(resp);
             }
