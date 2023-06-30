@@ -42,8 +42,8 @@ def test_affected_child(client, consts):
 
 
 def test_unaffected_top(client, consts):
-    # Check that item which is top of domain does not affect top items of other
-    # domains and children of its domain
+    # Check that item which is top of domain does not affect top items of other domains and children
+    # of its domain
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_mod(
@@ -68,8 +68,8 @@ def test_unaffected_top(client, consts):
 
 
 def test_unaffected_child(client, consts):
-    # Check that item which belongs to a domain does not affect top item of its
-    # domain and other items within its domain
+    # Check that item which belongs to a domain does not affect top item of its domain and other
+    # items within its domain
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_mod(

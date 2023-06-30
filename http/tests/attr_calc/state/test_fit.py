@@ -7,7 +7,7 @@ def get_value_for_state(client, consts, state):
     eve_src_attr_online = client.mk_eve_attr()
     eve_src_attr_active = client.mk_eve_attr()
     eve_src_attr_overload = client.mk_eve_attr()
-    eve_effect_online = client.mk_eve_effect(id_=consts.Effect.online, cat_id=consts.EffCat.active)
+    eve_effect_online = client.mk_eve_online_effect()
     eve_mod_cat_offline = client.mk_eve_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,

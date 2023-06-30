@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import requests
 
 if TYPE_CHECKING:
+    from typing import Union
+
     from tests.support.client import TestClient
 
 

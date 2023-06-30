@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from tests.support.util import Default
 from .types import Item, Group, Attribute, Effect, Buff
 
 if TYPE_CHECKING:
+    from typing import Any, Type, Union
+
     from tests.support.util import Absent
     from .types import Modifier
 
@@ -30,17 +32,17 @@ class TestObjects:
 
     def mk_item(
             self,
-            id_: Union[int, Default],
-            group_id: Union[int, Default],
-            category_id: Union[int, Absent, Default],
-            attributes: Union[dict[int, float], Absent],
-            effect_ids: Union[list[int], tuple[int], Absent],
+            id_: Union[int, Type[Default]],
+            group_id: Union[int, Type[Default]],
+            category_id: Union[int, Type[Absent], Type[Default]],
+            attributes: Union[dict[int, float], Type[Absent]],
+            effect_ids: Union[list[int], tuple[int], Type[Absent]],
             default_effect_id: Union[int, None],
-            skill_reqs: Union[dict[int, int], Absent],
-            capacity: Union[float, Absent],
-            mass: Union[float, Absent],
-            radius: Union[float, Absent],
-            volume: Union[float, Absent],
+            skill_reqs: Union[dict[int, int], Type[Absent]],
+            capacity: Union[float, Type[Absent]],
+            mass: Union[float, Type[Absent]],
+            radius: Union[float, Type[Absent]],
+            volume: Union[float, Type[Absent]],
     ) -> Item:
         if id_ is Default:
             id_ = self.item_id
@@ -62,8 +64,8 @@ class TestObjects:
 
     def mk_item_group(
             self,
-            id_: Union[int, Default],
-            category_id: Union[int, Absent, Default],
+            id_: Union[int, Type[Default]],
+            category_id: Union[int, Type[Absent], Type[Default]],
     ) -> Group:
         if id_ is Default:
             id_ = self.item_group_id
@@ -74,11 +76,11 @@ class TestObjects:
 
     def mk_attr(
             self,
-            id_: Union[int, Default],
-            stackable: Union[int, Absent],
-            high_is_good: Union[int, Absent],
-            default_value: Union[float, Absent],
-            max_attribute_id: Union[int, Absent],
+            id_: Union[int, Type[Default]],
+            stackable: Union[int, Type[Absent]],
+            high_is_good: Union[int, Type[Absent]],
+            default_value: Union[float, Type[Absent]],
+            max_attribute_id: Union[int, Type[Absent]],
     ) -> Attribute:
         if id_ is Default:
             id_ = self.attr_id
@@ -94,18 +96,18 @@ class TestObjects:
 
     def mk_effect(
             self,
-            id_: Union[int, Default],
-            category_id: Union[int, Absent],
-            is_assistance: Union[int, Absent],
-            is_offensive: Union[int, Absent],
-            discharge_attribute_id: Union[int, Absent],
-            duration_attribute_id: Union[int, Absent],
-            range_attribute_id: Union[int, Absent],
-            falloff_attribute_id: Union[int, Absent],
-            tracking_attribute_id: Union[int, Absent],
-            usage_chance_attribute_id: Union[int, Absent],
-            resist_attribute_id: Union[int, Absent],
-            modifier_info: Union[list[Modifier], tuple[Modifier], Absent],
+            id_: Union[int, Type[Default]],
+            category_id: Union[int, Type[Absent]],
+            is_assistance: Union[int, Type[Absent]],
+            is_offensive: Union[int, Type[Absent]],
+            discharge_attribute_id: Union[int, Type[Absent]],
+            duration_attribute_id: Union[int, Type[Absent]],
+            range_attribute_id: Union[int, Type[Absent]],
+            falloff_attribute_id: Union[int, Type[Absent]],
+            tracking_attribute_id: Union[int, Type[Absent]],
+            usage_chance_attribute_id: Union[int, Type[Absent]],
+            resist_attribute_id: Union[int, Type[Absent]],
+            modifier_info: Union[list[Modifier], tuple[Modifier], Type[Absent]],
     ) -> Effect:
         if id_ is Default:
             id_ = self.effect_id
@@ -128,7 +130,7 @@ class TestObjects:
 
     def mk_buff(
             self,
-            id_: Union[int, Default],
+            id_: Union[int, Type[Default]],
             aggregate_mode: Any,
             operation_name: Any,
             item_modifiers: Any,

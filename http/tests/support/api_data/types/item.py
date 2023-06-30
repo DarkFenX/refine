@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from collections import namedtuple
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from tests.support.util import AttrDict, Absent
 
 if TYPE_CHECKING:
+    from typing import Type, Union
+
     from tests.support.client import TestClient
     from tests.support.consts import EffMode, State
     from tests.support.eve_data import TestObjects
@@ -37,15 +39,16 @@ class Item(AttrDict):
 
     def change_mod_request(
             self,
-            state: Union[State, Absent] = Absent,
-            effect_modes: Union[dict[int, EffMode], Absent] = Absent,
+            state: Union[State, Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
     ) -> Request:
-        return self._client.change_mod_request(ss_id=self._ss_id, item_id=self.id, state=state, effect_modes=effect_modes)
+        return self._client.change_mod_request(
+            ss_id=self._ss_id, item_id=self.id, state=state, effect_modes=effect_modes)
 
     def change_mod(
             self,
-            state: Union[State, Absent] = Absent,
-            effect_modes: Union[dict[int, EffMode], Absent] = Absent,
+            state: Union[State, Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
     ) -> None:
         resp = self.change_mod_request(state=state, effect_modes=effect_modes).send()
         assert resp.status_code == 200

@@ -2,9 +2,8 @@ from pytest import approx
 
 
 def test_same_item_different_effects_attrs(client, consts):
-    # Reflects currently real EVE scenario: 2 different skills affect 2 separate
-    # attributes on capital ships, which, in turn, affect ship agility via 2
-    # different on-ship effects
+    # Reflects currently real EVE scenario: 2 different skills affect 2 separate attributes on
+    # capital ships, which, in turn, affect ship agility via 2 different on-ship effects
     eve_src_attr1 = client.mk_eve_attr()
     eve_src_attr2 = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
@@ -34,11 +33,10 @@ def test_same_item_different_effects_attrs(client, consts):
 
 
 def test_same_item_different_effects_attrs_switching(client, consts):
-    # This case is theoretical. We just check that our calculation core properly
-    # registers/unregisters affectors, ignoring modifier keys which are needed
-    # for some tests in this module to work. If it did not register properly and
-    # used the same keys as logic above it, after disabling one of effects attr
-    # value would revert to its base value
+    # This case is theoretical. We just check that our calculation core properly registers/
+    # unregisters affectors, ignoring modifier keys which are needed for some tests in this module
+    # to work. If it did not register properly and used the same keys as logic above it, after
+    # disabling one of effects attr value would revert to its base value
     eve_src_attr1 = client.mk_eve_attr()
     eve_src_attr2 = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
@@ -75,11 +73,10 @@ def test_same_item_different_effects_attrs_switching(client, consts):
 
 
 def test_same_item_attr_different_effects(client, consts):
-    # Reflects currently real EVE scenario: capital hull repair systems have
-    # both capital and sub-capital repair systems skills in their direct
-    # requirements. There are some items which affect both (e.g. nanobot
-    # accelerator rigs). Despite having two different effects, modification is
-    # applied only once in game
+    # Reflects currently real EVE scenario: capital hull repair systems have both capital and
+    # sub-capital repair systems skills in their direct requirements. There are some items which
+    # affect both (e.g. nanobot accelerator rigs). Despite having two different effects,
+    # modification is applied only once in game
     eve_skill1 = client.mk_eve_item()
     eve_skill2 = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
@@ -112,11 +109,10 @@ def test_same_item_attr_different_effects(client, consts):
 
 
 def test_same_item_attr_different_effects_switch(client, consts):
-    # This case is theoretical. We just check that our calculation core properly
-    # registers/unregisters affectors, ignoring modifier keys which are needed
-    # for some tests in this module to work. If it did not register properly and
-    # used the same keys as logic above it, after disabling one of effects attr
-    # value would revert to its base value
+    # This case is theoretical. We just check that our calculation core properly registers/
+    # unregisters affectors, ignoring modifier keys which are needed for some tests in this module
+    # to work. If it did not register properly and used the same keys as logic above it, after
+    # disabling one of effects attr value would revert to its base value
     eve_skill1 = client.mk_eve_item()
     eve_skill2 = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()

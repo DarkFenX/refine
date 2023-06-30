@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Type, Union
 
 from tests.support.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
@@ -9,15 +9,15 @@ class Item:
     def __init__(
             self,
             id_: int,
-            group_id: Union[int, Absent],
-            attributes: Union[dict[int, float], Absent],
-            effect_ids: Union[list[int], tuple[int], Absent],
+            group_id: Union[int, Type[Absent]],
+            attributes: Union[dict[int, float], Type[Absent]],
+            effect_ids: Union[list[int], tuple[int], Type[Absent]],
             default_effect_id: Union[int, None],
-            skill_reqs: Union[dict[int, int], Absent],
-            capacity: Union[float, Absent],
-            mass: Union[float, Absent],
-            radius: Union[float, Absent],
-            volume: Union[float, Absent],
+            skill_reqs: Union[dict[int, int], Type[Absent]],
+            capacity: Union[float, Type[Absent]],
+            mass: Union[float, Type[Absent]],
+            radius: Union[float, Type[Absent]],
+            volume: Union[float, Type[Absent]],
     ):
         self.id = id_
         self.group_id = group_id

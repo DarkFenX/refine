@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import requests
 
-from tests.support.consts import EffCat, ItemCat, State, Rack
+from tests.support.consts import EffCat, Effect, ItemCat, Rack, State
 from tests.support.request import Request
 from tests.support.util import Absent, Default, conditional_insert, get_stack_key
 from tests.support import api_data, eve_data
 
 if TYPE_CHECKING:
+    from typing import Type, Union
+
     from tests.support.consts import EffMode
     from tests.support.util import StackKey
 
@@ -50,18 +52,18 @@ class TestClient:
 
     def mk_eve_item(
             self,
-            data: Union[eve_data.TestObjects, Default] = Default,
-            id_: Union[int, Default] = Default,
-            grp_id: Union[int, Default] = Default,
-            cat_id: Union[int, Default] = ItemCat.module,
-            attrs: Union[dict[int, float], Default] = Default,
-            eff_ids: Union[list[int], Default] = Default,
+            data: Union[eve_data.TestObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
+            grp_id: Union[int, Type[Default]] = Default,
+            cat_id: Union[int, Type[Default]] = ItemCat.module,
+            attrs: Union[dict[int, float], Type[Default]] = Default,
+            eff_ids: Union[list[int], Type[Default]] = Default,
             defeff_id: Union[int, None] = None,
-            srqs: Union[dict[int, int], Default] = Default,
-            capacity: Union[float, Default] = Default,
-            mass: Union[float, Default] = Default,
-            radius: Union[float, Default] = Default,
-            volume: Union[float, Default] = Default,
+            srqs: Union[dict[int, int], Type[Default]] = Default,
+            capacity: Union[float, Type[Default]] = Default,
+            mass: Union[float, Type[Default]] = Default,
+            radius: Union[float, Type[Default]] = Default,
+            volume: Union[float, Type[Default]] = Default,
     ) -> eve_data.Item:
         if data is Default:
             data = self.__default_data
@@ -80,9 +82,9 @@ class TestClient:
 
     def mk_eve_item_group(
             self,
-            data: Union[eve_data.TestObjects, Default] = Default,
-            id_: Union[int, Default] = Default,
-            cat_id: Union[int, Default] = ItemCat.module,
+            data: Union[eve_data.TestObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
+            cat_id: Union[int, Type[Default]] = ItemCat.module,
     ) -> eve_data.Group:
         if data is Default:
             data = self.__default_data
@@ -92,12 +94,12 @@ class TestClient:
 
     def mk_eve_attr(
             self,
-            data: Union[eve_data.TestObjects, Default] = Default,
-            id_: Union[int, Default] = Default,
+            data: Union[eve_data.TestObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
             stackable: bool = True,
             high_is_good: bool = True,
             def_val: float = 0.0,
-            max_attr_id: Union[int, Absent] = Absent,
+            max_attr_id: Union[int, Type[Absent]] = Absent,
     ) -> eve_data.Attribute:
         if data is Default:
             data = self.__default_data
@@ -110,19 +112,19 @@ class TestClient:
 
     def mk_eve_effect(
             self,
-            data: Union[eve_data.TestObjects, Default] = Default,
-            id_: Union[int, Default] = Default,
+            data: Union[eve_data.TestObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
             cat_id: int = EffCat.passive,
             is_assistance: bool = False,
             is_offensive: bool = False,
-            discharge_attr_id: Union[int, Absent] = Absent,
-            duration_attr_id: Union[int, Absent] = Absent,
-            range_attr_id: Union[int, Absent] = Absent,
-            falloff_attr_id: Union[int, Absent] = Absent,
-            tracking_attr_id: Union[int, Absent] = Absent,
-            chance_attr_id: Union[int, Absent] = Absent,
-            resist_attr_id: Union[int, Absent] = Absent,
-            mod_info: Union[dict, Absent] = Absent,
+            discharge_attr_id: Union[int, Type[Absent]] = Absent,
+            duration_attr_id: Union[int, Type[Absent]] = Absent,
+            range_attr_id: Union[int, Type[Absent]] = Absent,
+            falloff_attr_id: Union[int, Type[Absent]] = Absent,
+            tracking_attr_id: Union[int, Type[Absent]] = Absent,
+            chance_attr_id: Union[int, Type[Absent]] = Absent,
+            resist_attr_id: Union[int, Type[Absent]] = Absent,
+            mod_info: Union[dict, Type[Absent]] = Absent,
     ) -> eve_data.Effect:
         if data is Default:
             data = self.__default_data
@@ -140,16 +142,33 @@ class TestClient:
             resist_attribute_id=resist_attr_id,
             modifier_info=mod_info)
 
+    def mk_eve_online_effect(self, data: Union[eve_data.TestObjects, Type[Default]] = Default) -> eve_data.Effect:
+        if data is Default:
+            data = self.__default_data
+        return data.mk_effect(
+            id_=Effect.online,
+            category_id=EffCat.active,
+            is_assistance=False,
+            is_offensive=False,
+            discharge_attribute_id=Absent,
+            duration_attribute_id=Absent,
+            range_attribute_id=Absent,
+            falloff_attribute_id=Absent,
+            tracking_attribute_id=Absent,
+            usage_chance_attribute_id=Absent,
+            resist_attribute_id=Absent,
+            modifier_info=Absent)
+
     def mk_eve_buff(
             self,
-            data: Union[eve_data.TestObjects, Default] = Default,
-            id_: Union[int, Default] = Default,
-            aggr_mode: Default = Default,
-            op: Default = Default,
-            item_mods: Default = Default,
-            loc_mods: Default = Default,
-            loc_grp_mods: Default = Default,
-            loc_srq_mods: Default = Default,
+            data: Union[eve_data.TestObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
+            aggr_mode: Type[Default] = Default,
+            op: Type[Default] = Default,
+            item_mods: Type[Default] = Default,
+            loc_mods: Type[Default] = Default,
+            loc_grp_mods: Type[Default] = Default,
+            loc_srq_mods: Type[Default] = Default,
     ) -> eve_data.Buff:
         if data is Default:
             data = self.__default_data
@@ -164,11 +183,11 @@ class TestClient:
 
     def mk_eve_mod(
             self,
-            func: Union[str, Absent] = Absent,
-            dom: Union[str, Absent] = Absent,
-            grp: Union[int, Absent] = Absent,
-            srq: Union[int, Absent] = Absent,
-            op: Union[int, Absent] = Absent,
+            func: Union[str, Type[Absent]] = Absent,
+            dom: Union[str, Type[Absent]] = Absent,
+            grp: Union[int, Type[Absent]] = Absent,
+            srq: Union[int, Type[Absent]] = Absent,
+            op: Union[int, Type[Absent]] = Absent,
             src_attr_id: Union[int, Absent] = Absent,
             tgt_attr_id: Union[int, Absent] = Absent,
     ) -> eve_data.Modifier:
@@ -184,7 +203,7 @@ class TestClient:
     # Data source-related methods
     def create_source_request(
             self,
-            data: Union[eve_data.TestObjects, Default] = Default
+            data: Union[eve_data.TestObjects, Type[Default]] = Default
     ) -> Request:
         if data is Default:
             data = self.__default_data
@@ -196,7 +215,7 @@ class TestClient:
 
     def create_source(
             self,
-            data: Union[eve_data.TestObjects, Default] = Default
+            data: Union[eve_data.TestObjects, Type[Default]] = Default
     ) -> None:
         if data is Default:
             data = self.__default_data
@@ -245,7 +264,7 @@ class TestClient:
     # Solar system-related methods
     def create_ss_request(
             self,
-            data: Union[eve_data.TestObjects, Default] = Default
+            data: Union[eve_data.TestObjects, Type[Default]] = Default
     ) -> Request:
         if data is Default:
             data = self.__default_data
@@ -261,7 +280,7 @@ class TestClient:
 
     def create_ss(
             self,
-            data: Union[eve_data.TestObjects, Default] = Default
+            data: Union[eve_data.TestObjects, Type[Default]] = Default
     ) -> api_data.SolarSystem:
         if data is Default:
             data = self.__default_data
@@ -351,7 +370,7 @@ class TestClient:
             ss_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, Absent] = Absent
+            state: Union[bool, Type[Absent]] = Absent
     ) -> Request:
         return self.__add_simple_item('add_implant', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
@@ -376,7 +395,7 @@ class TestClient:
             type_id: int,
             rack: Rack = Rack.high,
             state: str = State.offline,
-            charge_type_id: Union[int, Absent] = Absent,
+            charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: str = 'equip',
     ) -> Request:
         command = {
@@ -398,8 +417,8 @@ class TestClient:
             self,
             ss_id: str,
             item_id: str,
-            state: Union[State, Absent] = Absent,
-            effect_modes: Union[dict[int, EffMode], Absent] = Absent,
+            state: Union[State, Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
     ) -> Request:
         command = {'type': 'change_module', 'item_id': item_id}
         conditional_insert(command, 'state', state)
@@ -416,7 +435,7 @@ class TestClient:
             ss_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, Absent] = Absent
+            state: Union[bool, Type[Absent]] = Absent
     ) -> Request:
         return self.__add_simple_item('add_rig', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
@@ -435,7 +454,7 @@ class TestClient:
             ss_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, str, Absent],
+            state: Union[bool, str, Type[Absent]],
     ) -> Request:
         command = {
             'type': cmd_name,

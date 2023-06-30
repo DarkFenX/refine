@@ -5,6 +5,7 @@ use running_effects::RunningEffects;
 use crate::defs::{EEffectId, SsItemId};
 
 mod calc;
+mod effect_resolver;
 mod routing;
 mod running_effects;
 

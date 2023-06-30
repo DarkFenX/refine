@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from tests.support.consts import State, Rack
 from tests.support.util import AttrDict, Absent
 from .item import Item
 
 if TYPE_CHECKING:
+    from typing import Type, Union
+
     from tests.support.client import TestClient
     from tests.support.eve_data import TestObjects
     from tests.support.request import Request
@@ -48,14 +50,14 @@ class Fit(AttrDict):
     def add_implant_request(
             self,
             type_id: int,
-            state: Union[bool, Absent] = Absent,
+            state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
         return self._client.add_implant_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_implant(
             self,
             type_id: int,
-            state: Union[bool, Absent] = Absent,
+            state: Union[bool, Type[Absent]] = Absent,
     ) -> Item:
         resp = self.add_implant_request(type_id=type_id, state=state).send()
         assert resp.status_code == 200
@@ -76,7 +78,7 @@ class Fit(AttrDict):
             type_id: int,
             rack: Rack = Rack.high,
             state: str = State.offline,
-            charge_type_id: Union[int, Absent] = Absent,
+            charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: str = 'equip',
     ) -> Request:
         return self._client.add_mod_request(
@@ -88,7 +90,7 @@ class Fit(AttrDict):
             type_id: int,
             rack: Rack = Rack.high,
             state: str = State.offline,
-            charge_type_id: Union[int, Absent] = Absent,
+            charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: str = 'equip',
     ) -> Item:
         resp = self.add_mod_request(
@@ -104,14 +106,14 @@ class Fit(AttrDict):
     def add_rig_request(
             self,
             type_id: int,
-            state: Union[bool, Absent] = Absent,
+            state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
         return self._client.add_rig_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_rig(
             self,
             type_id: int,
-            state: Union[bool, Absent] = Absent,
+            state: Union[bool, Type[Absent]] = Absent,
     ) -> Item:
         resp = self.add_rig_request(type_id=type_id, state=state).send()
         assert resp.status_code == 200

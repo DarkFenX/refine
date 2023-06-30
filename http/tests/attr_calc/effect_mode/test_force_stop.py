@@ -16,11 +16,14 @@ def test_force_stop(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.State.offline)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    api_item.update()
+    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(120)
+    assert api_item.effects[eve_effect.id] == (True, consts.EffMode.full_compliance)
     api_item.change_mod(effect_modes={eve_effect.id: consts.EffMode.force_stop})
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    api_item.update()
+    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(100)
+    assert api_item.effects[eve_effect.id] == (False, consts.EffMode.force_stop)
     api_item.change_mod(effect_modes={eve_effect.id: consts.EffMode.full_compliance})
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    api_item.update()
+    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(120)
+    assert api_item.effects[eve_effect.id] == (True, consts.EffMode.full_compliance)

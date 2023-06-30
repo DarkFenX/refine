@@ -30,8 +30,8 @@ def test_item_addition_removal(client, consts):
     value = api_rig.update().attrs[eve_attr3.id].dogma
     assert value == approx(0.5375)
     eve_implant = api_fit.add_implant(type_id=eve_implant.id)
-    # Added item must clean all already calculated attributes which are now
-    # affected by it, to allow recalculation
+    # Added item must clean all already calculated attributes which are now affected by it, to allow
+    # recalculation
     value = api_rig.update().attrs[eve_attr3.id].dogma
     assert value == approx(0.6875)
     eve_implant.remove()

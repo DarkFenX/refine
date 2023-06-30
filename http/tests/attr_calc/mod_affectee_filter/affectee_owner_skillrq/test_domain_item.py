@@ -1,10 +1,9 @@
 from pytest import approx
 
 
-# EVE does not use effects with "itemID" domain with owner modifiable filter, so
-# it's an undefined behavior. Reefast just ignores domain and applies
-# modification
 def test_affected(client, consts):
+    # EVE does not use effects with "itemID" domain with owner modifiable filter, so it's an
+    # undefined behavior. Reefast just ignores domain and applies modification
     eve_skill = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()

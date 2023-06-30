@@ -26,9 +26,9 @@ def test_affected(client, consts):
 
 
 def test_awaiting(client, consts):
-    # Here we add modification before target, and make sure target is still
-    # modified by it. This should work with no specific code in reefast, but
-    # used to need extra processing in eos, so we test it just in case
+    # Here we add modification before target, and make sure target is still modified by it. This
+    # should work with no specific code in reefast, but used to need extra processing in eos, so we
+    # test it just in case
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_mod(

@@ -41,19 +41,18 @@ def is_test_path(path: str) -> bool:
 
 def get_stack_key() -> StackKey:
     """
-    This function is supposed to give key (= hashable entity) which is unique
-    for each test, and stays the same for the duration of the test.
+    This function is supposed to give key (= hashable entity) which is unique for each test, and
+    stays the same for the duration of the test.
 
-    Current implementation assumes that all calls which eventually use this
-    function have to be done from the same function. This translates to need
-    to have all the EVE data set up in one function, otherwise you have to
-    explicitly specify data source to use.
+    Current implementation assumes that all calls which eventually use this function have to be done
+    from the same function. This translates to need to have all the EVE data set up in one function,
+    otherwise you have to explicitly specify data source to use.
     """
     stack = inspect.stack(context=0)
     # Include only frames from test folder
     stack = [f for f in stack if is_test_path(f.filename)]
-    # For method which tried to retrieve data, ignore all its local context,
-    # to refer to the same data on different calls
+    # For method which tried to retrieve data, ignore all its local context, to refer to the same
+    # data on different calls
     key = [frame_to_primitive(stack[0], ignore_local_context=True)]
     key += [frame_to_primitive(f) for f in stack[1:]]
     return StackKey(key)

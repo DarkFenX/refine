@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from tests.support.util import conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 if TYPE_CHECKING:
+    from typing import Type, Union
+
     from tests.support.util import Absent
 
 
@@ -14,10 +16,10 @@ class Attribute:
     def __init__(
             self,
             id_: int,
-            stackable: Union[int, Absent],
-            high_is_good: Union[int, Absent],
-            default_value: Union[float, Absent],
-            max_attribute_id: Union[int, Absent],
+            stackable: Union[int, Type[Absent]],
+            high_is_good: Union[int, Type[Absent]],
+            default_value: Union[float, Type[Absent]],
+            max_attribute_id: Union[int, Type[Absent]],
     ):
         self.id = id_
         self.stackable = stackable

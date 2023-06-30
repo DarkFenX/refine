@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Type, Union
 
 from tests.support.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
@@ -9,7 +9,7 @@ class Group:
     def __init__(
             self,
             id_: int,
-            category_id: Union[int, Absent],
+            category_id: Union[int, Type[Absent]],
     ):
         self.id = id_
         self.category_id = category_id
