@@ -1,1 +1,1 @@
-from .types import SolarSystem
+from .ss import SolarSystem

@@ -84,17 +84,17 @@ impl SsSvcs {
         Ok(vals)
     }
     // Modification methods
-    pub(in crate::ss) fn calc_item_loaded(&mut self, item: &SsItem) {
+    pub(in crate::ss::svc) fn calc_item_loaded(&mut self, item: &SsItem) {
         self.calc_data.attrs.add_item(item.get_id());
         self.calc_data.affections.reg_afee(item);
     }
-    pub(in crate::ss) fn calc_item_unloaded(&mut self, item: &SsItem) {
+    pub(in crate::ss::svc) fn calc_item_unloaded(&mut self, item: &SsItem) {
         self.calc_data.affections.unreg_afee(item);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
         self.calc_data.caps.clear_item_caps(&item_id);
     }
-    pub(in crate::ss) fn calc_effects_started(
+    pub(in crate::ss::svc) fn calc_effects_started(
         &mut self,
         ss_view: &SsView,
         item: &SsItem,
@@ -110,11 +110,11 @@ impl SsSvcs {
                 .affections
                 .get_local_afee_items(&afor_spec, ss_view.items)
             {
-                self.calc_force_recalc(ss_view, &item_id, &afor_spec.modifier.afee_attr_id);
+                self.calc_force_attr_recalc(ss_view, &item_id, &afor_spec.modifier.afee_attr_id);
             }
         }
     }
-    pub(in crate::ss) fn calc_effects_stopped(
+    pub(in crate::ss::svc) fn calc_effects_stopped(
         &mut self,
         ss_view: &SsView,
         item: &SsItem,
@@ -127,14 +127,19 @@ impl SsSvcs {
                 .affections
                 .get_local_afee_items(&afor_spec, ss_view.items)
             {
-                self.calc_force_recalc(ss_view, &item_id, &afor_spec.modifier.afee_attr_id);
+                self.calc_force_attr_recalc(ss_view, &item_id, &afor_spec.modifier.afee_attr_id);
             }
         }
         self.calc_data
             .affections
             .unreg_local_afor_specs(item.get_fit_id(), afor_specs);
     }
-    pub(in crate::ss) fn calc_attr_value_changed(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &EAttrId) {
+    pub(in crate::ss::svc) fn calc_attr_value_changed(
+        &mut self,
+        ss_view: &SsView,
+        item_id: &SsItemId,
+        attr_id: &EAttrId,
+    ) {
         // Clear up attribute values which rely on passed attribute as an upper cap
         let capped_attr_ids = self
             .calc_data
@@ -143,7 +148,7 @@ impl SsSvcs {
             .map(|v| v.iter().map(|v| *v).collect_vec());
         if let Some(capped_attr_ids) = capped_attr_ids {
             for capped_attr_id in capped_attr_ids.iter() {
-                self.calc_force_recalc(ss_view, item_id, capped_attr_id);
+                self.calc_force_attr_recalc(ss_view, item_id, capped_attr_id);
             }
         };
         for afor_spec in self.calc_data.affections.get_afor_specs_by_afor(item_id) {
@@ -155,8 +160,18 @@ impl SsSvcs {
                 .affections
                 .get_local_afee_items(&afor_spec, ss_view.items)
             {
-                self.calc_force_recalc(ss_view, &afee_item_id, &afor_spec.modifier.afee_attr_id);
+                self.calc_force_attr_recalc(ss_view, &afee_item_id, &afor_spec.modifier.afee_attr_id);
             }
+        }
+    }
+    pub(in crate::ss) fn calc_force_attr_recalc(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &EAttrId) {
+        match self.calc_data.attrs.get_item_attrs_mut(item_id) {
+            Ok(item_attrs) => {
+                if item_attrs.remove(attr_id).is_some() {
+                    self.notify_attr_val_changed(ss_view, item_id, attr_id);
+                }
+            }
+            _ => return,
         }
     }
     // Private methods
@@ -181,7 +196,9 @@ impl SsSvcs {
             },
         };
         match (attr_id, item) {
-            (280, SsItem::Skill(s)) => return Ok(SsAttrVal::new(base_val, s.level as AttrVal, s.level as AttrVal)),
+            (&attrs::SKILL_LEVEL, SsItem::Skill(s)) => {
+                return Ok(SsAttrVal::new(base_val, s.level as AttrVal, s.level as AttrVal))
+            }
             _ => (),
         }
         let mut stacked = HashMap::new();
@@ -255,16 +272,6 @@ impl SsSvcs {
             dogma_val = (dogma_val * 100.0).round() / 100.0
         }
         Ok(SsAttrVal::new(base_val, dogma_val, dogma_val))
-    }
-    fn calc_force_recalc(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &EAttrId) {
-        match self.calc_data.attrs.get_item_attrs_mut(item_id) {
-            Ok(item_attrs) => {
-                if item_attrs.remove(attr_id).is_some() {
-                    self.notify_attr_val_changed(ss_view, item_id, attr_id);
-                }
-            }
-            _ => return,
-        }
     }
     fn calc_get_modifications(
         &mut self,

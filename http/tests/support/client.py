@@ -365,6 +365,46 @@ class TestClient:
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
+    def add_skill_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            level: int,
+            state: Union[bool, Type[Absent]] = Absent
+    ) -> Request:
+        command = {
+            'type': 'add_skill',
+            'fit_id': fit_id,
+            'type_id': type_id,
+            'level': level}
+        conditional_insert(command, 'state', state)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            json={'commands': [command]})
+
+    def change_skill_request(
+            self,
+            ss_id: str,
+            item_id: str,
+            level: Union[int, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
+    ) -> Request:
+        command = {'type': 'change_skill', 'item_id': item_id}
+        conditional_insert(command, 'level', level)
+        conditional_insert(command, 'state', state)
+        conditional_insert(command, 'effect_modes', effect_modes)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            json={'commands': [command]})
+
     def add_implant_request(
             self,
             ss_id: str,

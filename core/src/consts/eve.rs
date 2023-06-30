@@ -27,6 +27,7 @@ pub(crate) mod itemcats {
 pub(crate) mod attrs {
     use crate::defs::EAttrId;
 
+    pub(crate) const SKILL_LEVEL: EAttrId = 280;
     // Fitting resource-related
     pub(crate) const CPU: EAttrId = 50;
     pub(crate) const CPU_OUTPUT: EAttrId = 48;

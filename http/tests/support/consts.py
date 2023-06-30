@@ -78,6 +78,7 @@ class Attr(IntEnum):
     cpu_output = 48
     power = 30
     power_output = 11
+    skill_level = 280
 
 
 @unique

@@ -37,6 +37,24 @@ class Item(AttrDict):
         self._data = resp.json()
         return self
 
+    def change_skill_request(
+            self,
+            level: Union[int, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.change_skill_request(
+            ss_id=self._ss_id, item_id=self.id, level=level, state=state, effect_modes=effect_modes)
+
+    def change_skill(
+            self,
+            level: Union[int, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
+    ) -> None:
+        resp = self.change_skill_request(level=level, state=state, effect_modes=effect_modes).send()
+        assert resp.status_code == 200
+
     def change_mod_request(
             self,
             state: Union[State, Type[Absent]] = Absent,

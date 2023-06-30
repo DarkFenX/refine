@@ -1,9 +1,10 @@
 use crate::{
+    consts::attrs,
     defs::{EItemId, SkillLevel, SsFitId, SsItemId},
     ss::{
         info::SsSkillInfo,
         item::{SsItem, SsSkill},
-        SolarSystem,
+        SolarSystem, SsView,
     },
     util::{Error, ErrorKind, Result},
 };
@@ -39,6 +40,11 @@ impl SolarSystem {
     pub fn set_skill_level(&mut self, item_id: &SsItemId, level: SkillLevel) -> Result<()> {
         check_skill_level(level)?;
         self.items.get_skill_mut(item_id)?.level = level;
+        self.svcs.calc_force_attr_recalc(
+            &SsView::new(&self.src, &self.fits, &self.items),
+            item_id,
+            &attrs::SKILL_LEVEL,
+        );
         Ok(())
     }
     pub fn set_skill_state(&mut self, item_id: &SsItemId, state: bool) -> Result<()> {

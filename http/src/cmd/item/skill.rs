@@ -6,6 +6,7 @@ use crate::cmd::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeSkillCmd {
+    level: Option<rc::SkillLevel>,
     state: Option<bool>,
     // Workaround for https://github.com/serde-rs/serde/issues/1183
     #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
@@ -17,6 +18,9 @@ impl HChangeSkillCmd {
         core_ss: &mut rc::SolarSystem,
         item_id: &rc::SsItemId,
     ) -> rc::Result<HCmdResp> {
+        if let Some(level) = self.level {
+            core_ss.set_skill_level(item_id, level)?;
+        }
         if let Some(state) = self.state {
             core_ss.set_skill_state(item_id, state)?;
         }
