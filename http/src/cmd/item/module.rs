@@ -6,9 +6,12 @@ use crate::{
     shared::HState,
 };
 
+#[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
     state: Option<HState>,
+    // Workaround for https://github.com/serde-rs/serde/issues/1183
+    #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeModuleCmd {

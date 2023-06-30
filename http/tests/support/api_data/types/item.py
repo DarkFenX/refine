@@ -7,7 +7,7 @@ from tests.support.util import AttrDict, Absent
 
 if TYPE_CHECKING:
     from tests.support.client import TestClient
-    from tests.support.consts import State
+    from tests.support.consts import EffMode, State
     from tests.support.eve_data import TestObjects
     from tests.support.request import Request
 
@@ -35,11 +35,19 @@ class Item(AttrDict):
         self._data = resp.json()
         return self
 
-    def change_mod_request(self, state: Union[State, Absent] = Absent) -> Request:
-        return self._client.change_mod_request(ss_id=self._ss_id, item_id=self.id, state=state)
+    def change_mod_request(
+            self,
+            state: Union[State, Absent] = Absent,
+            effect_modes: Union[dict[int, EffMode], Absent] = Absent,
+    ) -> Request:
+        return self._client.change_mod_request(ss_id=self._ss_id, item_id=self.id, state=state, effect_modes=effect_modes)
 
-    def change_mod(self, state: Union[State, Absent] = Absent) -> None:
-        resp = self.change_mod_request(state=state).send()
+    def change_mod(
+            self,
+            state: Union[State, Absent] = Absent,
+            effect_modes: Union[dict[int, EffMode], Absent] = Absent,
+    ) -> None:
+        resp = self.change_mod_request(state=state, effect_modes=effect_modes).send()
         assert resp.status_code == 200
 
     def remove_request(self) -> Request:

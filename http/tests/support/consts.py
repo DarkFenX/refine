@@ -89,7 +89,7 @@ class Rack(StrEnum):
 
 @unique
 class EffMode(StrEnum):
-    full = 'full'
-    state = 'state'
+    full_compliance = 'full'
+    state_compliance = 'state'
     force_run = 'run'
     force_stop = 'stop'

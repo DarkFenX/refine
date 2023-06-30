@@ -3,9 +3,12 @@ use crate::cmd::{
     HCmdResp,
 };
 
+#[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeSubsystemCmd {
     state: Option<bool>,
+    // Workaround for https://github.com/serde-rs/serde/issues/1183
+    #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeSubsystemCmd {
