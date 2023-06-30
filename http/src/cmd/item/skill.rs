@@ -1,8 +1,12 @@
-use crate::cmd::HCmdResp;
+use crate::cmd::{
+    shared::{apply_effect_modes, HEffectModeMap},
+    HCmdResp,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeSkillCmd {
     state: Option<bool>,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeSkillCmd {
     pub(in crate::cmd) fn execute(
@@ -13,6 +17,7 @@ impl HChangeSkillCmd {
         if let Some(state) = self.state {
             core_ss.set_skill_state(item_id, state)?;
         }
+        apply_effect_modes(core_ss, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)
     }
 }

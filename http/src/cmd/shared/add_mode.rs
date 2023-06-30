@@ -1,6 +1,6 @@
 #[derive(serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum HAddMode {
+pub(in crate::cmd) enum HAddMode {
     Append,
     Equip,
     Insert(rc::Idx),

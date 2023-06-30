@@ -1,5 +1,8 @@
 use crate::{
-    cmd::{shared::HEffectModeMap, HCmdResp},
+    cmd::{
+        shared::{apply_effect_modes, HEffectModeMap},
+        HCmdResp,
+    },
     shared::HState,
 };
 
@@ -17,10 +20,7 @@ impl HChangeModuleCmd {
         if let Some(state) = &self.state {
             core_ss.set_module_state(item_id, state.into())?;
         }
-        if let Some(mode_map) = &self.effect_modes {
-            let mode_map = mode_map.into_iter().map(|(k, v)| (*k, v.into())).collect();
-            core_ss.set_item_effect_modes(item_id, &mode_map)?;
-        }
+        apply_effect_modes(core_ss, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)
     }
 }

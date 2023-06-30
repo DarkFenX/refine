@@ -1,8 +1,12 @@
-use crate::cmd::HCmdResp;
+use crate::cmd::{
+    shared::{apply_effect_modes, HEffectModeMap},
+    HCmdResp,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeStanceCmd {
     state: Option<bool>,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeStanceCmd {
     pub(in crate::cmd) fn execute(
@@ -13,6 +17,7 @@ impl HChangeStanceCmd {
         if let Some(state) = self.state {
             core_ss.set_stance_state(item_id, state)?;
         }
+        apply_effect_modes(core_ss, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)
     }
 }
