@@ -34,6 +34,10 @@ impl SolarSystem {
         self.items.get_character_mut(item_id)?.set_bool_state(state);
         Ok(())
     }
+    pub fn set_fit_character_state(&mut self, fit_id: &SsFitId, state: bool) -> Result<()> {
+        self.get_fit_character_mut(fit_id)?.set_bool_state(state);
+        Ok(())
+    }
     pub fn remove_fit_character(&mut self, fit_id: &SsFitId) -> Result<()> {
         let item_id = self.get_fit_character_id(fit_id)?;
         self.remove_item(&item_id)
@@ -48,5 +52,9 @@ impl SolarSystem {
     fn get_fit_character(&self, fit_id: &SsFitId) -> Result<&SsCharacter> {
         let item_id = self.get_fit_character_id(fit_id)?;
         self.items.get_character(&item_id)
+    }
+    fn get_fit_character_mut(&mut self, fit_id: &SsFitId) -> Result<&mut SsCharacter> {
+        let item_id = self.get_fit_character_id(fit_id)?;
+        self.items.get_character_mut(&item_id)
     }
 }

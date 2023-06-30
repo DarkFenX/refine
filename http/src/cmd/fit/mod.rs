@@ -1,14 +1,16 @@
 pub(in crate::cmd) use booster::{HAddBoosterCmd, HChangeBoosterCmd};
-pub(in crate::cmd) use character::{HChangeCharacterCmd, HSetCharacterCmd};
+pub(in crate::cmd) use character::{
+    HChangeCharacterCmd, HChangeCharacterViaFitIdCmd, HChangeCharacterViaItemIdCmd, HSetCharacterCmd,
+};
 pub(in crate::cmd) use charge::HChangeChargeCmd;
 pub(in crate::cmd) use drone::{HAddDroneCmd, HChangeDroneCmd};
 pub(in crate::cmd) use fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(in crate::cmd) use implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(in crate::cmd) use module::{HAddModuleCmd, HChangeModuleCmd};
 pub(in crate::cmd) use rig::{HAddRigCmd, HChangeRigCmd};
-pub(in crate::cmd) use ship::{HChangeShipCmd, HSetShipCmd};
+pub(in crate::cmd) use ship::{HChangeShipCmd, HChangeShipViaFitIdCmd, HChangeShipViaItemIdCmd, HSetShipCmd};
 pub(in crate::cmd) use skill::{HAddSkillCmd, HChangeSkillCmd};
-pub(in crate::cmd) use stance::{HChangeStanceCmd, HSetStanceCmd};
+pub(in crate::cmd) use stance::{HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd};
 pub(in crate::cmd) use subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 
 use crate::cmd::HCmdResp;
@@ -57,7 +59,7 @@ impl HFitCommand {
     pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
         match self {
             Self::SetCharacter(cmd) => cmd.execute(core_ss, fit_id),
-            Self::ChangeCharacter(cmd) => cmd.execute(core_ss),
+            Self::ChangeCharacter(cmd) => cmd.execute(core_ss, fit_id),
             Self::AddSkill(cmd) => cmd.execute(core_ss, fit_id),
             Self::ChangeSkill(cmd) => cmd.execute(core_ss),
             Self::AddImplant(cmd) => cmd.execute(core_ss, fit_id),
@@ -65,9 +67,9 @@ impl HFitCommand {
             Self::AddBooster(cmd) => cmd.execute(core_ss, fit_id),
             Self::ChangeBooster(cmd) => cmd.execute(core_ss),
             Self::SetShip(cmd) => cmd.execute(core_ss, fit_id),
-            Self::ChangeShip(cmd) => cmd.execute(core_ss),
+            Self::ChangeShip(cmd) => cmd.execute(core_ss, fit_id),
             Self::SetStance(cmd) => cmd.execute(core_ss, fit_id),
-            Self::ChangeStance(cmd) => cmd.execute(core_ss),
+            Self::ChangeStance(cmd) => cmd.execute(core_ss, fit_id),
             Self::AddSubsystem(cmd) => cmd.execute(core_ss, fit_id),
             Self::ChangeSubsystem(cmd) => cmd.execute(core_ss),
             Self::AddModule(cmd) => cmd.execute(core_ss, fit_id),

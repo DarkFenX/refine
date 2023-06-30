@@ -34,6 +34,10 @@ impl SolarSystem {
         self.items.get_ship_mut(item_id)?.set_bool_state(state);
         Ok(())
     }
+    pub fn set_fit_ship_state(&mut self, fit_id: &SsFitId, state: bool) -> Result<()> {
+        self.get_fit_ship_mut(fit_id)?.set_bool_state(state);
+        Ok(())
+    }
     pub fn remove_fit_ship(&mut self, fit_id: &SsFitId) -> Result<()> {
         let item_id = self.get_fit_ship_id(fit_id)?;
         self.remove_item(&item_id)
@@ -48,5 +52,9 @@ impl SolarSystem {
     fn get_fit_ship(&self, fit_id: &SsFitId) -> Result<&SsShip> {
         let item_id = self.get_fit_ship_id(fit_id)?;
         self.items.get_ship(&item_id)
+    }
+    fn get_fit_ship_mut(&mut self, fit_id: &SsFitId) -> Result<&mut SsShip> {
+        let item_id = self.get_fit_ship_id(fit_id)?;
+        self.items.get_ship_mut(&item_id)
     }
 }

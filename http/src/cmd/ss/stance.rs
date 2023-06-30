@@ -14,12 +14,40 @@ impl HSetStanceCmd {
 }
 
 #[derive(serde::Deserialize)]
-pub(crate) struct HChangeStanceCmd {
-    #[serde(flatten)]
-    fit_cmd: fit::HChangeStanceCmd,
+#[serde(untagged)]
+pub(crate) enum HChangeStanceCmd {
+    ViaItemId(HChangeStanceViaItemIdCmd),
+    ViaFitId(HChangeStanceViaFitIdCmd),
 }
 impl HChangeStanceCmd {
     pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        match self {
+            Self::ViaItemId(cmd) => cmd.execute(core_ss),
+            Self::ViaFitId(cmd) => cmd.execute(core_ss),
+        }
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HChangeStanceViaItemIdCmd {
+    #[serde(flatten)]
+    fit_cmd: fit::HChangeStanceViaItemIdCmd,
+}
+impl HChangeStanceViaItemIdCmd {
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
         self.fit_cmd.execute(core_ss)
+    }
+}
+
+#[derive(serde::Deserialize)]
+pub(crate) struct HChangeStanceViaFitIdCmd {
+    #[serde(with = "crate::util::serde_string")]
+    fit_id: rc::SsFitId,
+    #[serde(flatten)]
+    fit_cmd: fit::HChangeStanceViaFitIdCmd,
+}
+impl HChangeStanceViaFitIdCmd {
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        self.fit_cmd.execute(core_ss, &self.fit_id)
     }
 }
