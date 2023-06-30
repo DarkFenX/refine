@@ -1,5 +1,6 @@
 pub(in crate::cmd) use booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(in crate::cmd) use character::{HChangeCharacterCmd, HSetCharacterCmd};
+pub(in crate::cmd) use charge::HChangeChargeCmd;
 pub(in crate::cmd) use drone::{HAddDroneCmd, HChangeDroneCmd};
 pub(in crate::cmd) use fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(in crate::cmd) use implant::{HAddImplantCmd, HChangeImplantCmd};
@@ -14,6 +15,7 @@ use crate::cmd::HCmdResp;
 
 mod booster;
 mod character;
+mod charge;
 mod drone;
 mod fighter;
 mod implant;
@@ -49,6 +51,7 @@ pub(crate) enum HFitCommand {
     ChangeDrone(HChangeDroneCmd),
     AddFighter(HAddFighterCmd),
     ChangeFighter(HChangeFighterCmd),
+    ChangeCharge(HChangeChargeCmd),
 }
 impl HFitCommand {
     pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
@@ -75,6 +78,7 @@ impl HFitCommand {
             Self::ChangeDrone(cmd) => cmd.execute(core_ss),
             Self::AddFighter(cmd) => cmd.execute(core_ss, fit_id),
             Self::ChangeFighter(cmd) => cmd.execute(core_ss),
+            Self::ChangeCharge(cmd) => cmd.execute(core_ss),
         }
     }
 }

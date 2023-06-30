@@ -1,5 +1,6 @@
 pub(in crate::cmd) use booster::HChangeBoosterCmd;
 pub(in crate::cmd) use character::HChangeCharacterCmd;
+pub(in crate::cmd) use charge::HChangeChargeCmd;
 pub(in crate::cmd) use drone::HChangeDroneCmd;
 pub(in crate::cmd) use fighter::HChangeFighterCmd;
 pub(in crate::cmd) use implant::HChangeImplantCmd;
@@ -15,6 +16,7 @@ use crate::cmd::HCmdResp;
 
 mod booster;
 mod character;
+mod charge;
 mod drone;
 mod fighter;
 mod implant;
@@ -40,6 +42,7 @@ pub(crate) enum HItemCommand {
     ChangeRig(HChangeRigCmd),
     ChangeDrone(HChangeDroneCmd),
     ChangeFighter(HChangeFighterCmd),
+    ChangeCharge(HChangeChargeCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
 }
 impl HItemCommand {
@@ -56,6 +59,7 @@ impl HItemCommand {
             Self::ChangeRig(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeDrone(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeFighter(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeCharge(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeSwEffect(cmd) => cmd.execute(core_ss, item_id),
         }
     }

@@ -1,5 +1,6 @@
 pub(in crate::cmd) use booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(in crate::cmd) use character::{HChangeCharacterCmd, HSetCharacterCmd};
+pub(in crate::cmd) use charge::HChangeChargeCmd;
 pub(in crate::cmd) use drone::{HAddDroneCmd, HChangeDroneCmd};
 pub(in crate::cmd) use fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(in crate::cmd) use implant::{HAddImplantCmd, HChangeImplantCmd};
@@ -15,6 +16,7 @@ use crate::cmd::HCmdResp;
 
 mod booster;
 mod character;
+mod charge;
 mod drone;
 mod fighter;
 mod implant;
@@ -52,6 +54,7 @@ pub(crate) enum HSsCommand {
     AddFighter(HAddFighterCmd),
     ChangeFighter(HChangeFighterCmd),
     AddSwEffect(HAddSwEffectCmd),
+    ChangeCharge(HChangeChargeCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
 }
 impl HSsCommand {
@@ -80,6 +83,7 @@ impl HSsCommand {
             Self::AddFighter(cmd) => cmd.execute(core_ss),
             Self::ChangeFighter(cmd) => cmd.execute(core_ss),
             Self::AddSwEffect(cmd) => cmd.execute(core_ss),
+            Self::ChangeCharge(cmd) => cmd.execute(core_ss),
             Self::ChangeSwEffect(cmd) => cmd.execute(core_ss),
         }
     }
