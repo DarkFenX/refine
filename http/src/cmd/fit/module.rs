@@ -1,8 +1,5 @@
 use crate::{
-    cmd::{
-        item,
-        shared::{HAddMode, HEffectModeMap},
-    },
+    cmd::{item, shared::HAddMode, HCmdResp},
     shared::{HModRack, HState},
 };
 
@@ -15,20 +12,17 @@ pub(crate) struct HAddModuleCmd {
     charge_type_id: Option<rc::EItemId>,
 }
 impl HAddModuleCmd {
-    pub(crate) fn get_rack(&self) -> &HModRack {
-        &self.rack
-    }
-    pub(crate) fn get_add_mode(&self) -> &HAddMode {
-        &self.add_mode
-    }
-    pub(crate) fn get_type_id(&self) -> rc::EItemId {
-        self.type_id
-    }
-    pub(crate) fn get_state(&self) -> &HState {
-        &self.state
-    }
-    pub(crate) fn get_charge_type_id(&self) -> Option<rc::EItemId> {
-        self.charge_type_id
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
+        Ok(core_ss
+            .add_module(
+                *fit_id,
+                (&self.rack).into(),
+                (&self.add_mode).into(),
+                self.type_id,
+                (&self.state).into(),
+                self.charge_type_id,
+            )?
+            .into())
     }
 }
 
@@ -40,16 +34,7 @@ pub(crate) struct HChangeModuleCmd {
     item_cmd: item::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
-    pub(in crate::cmd) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeModuleCmd) -> Self {
-        Self { item_id, item_cmd }
-    }
-    pub(in crate::cmd) fn get_item_id(&self) -> rc::SsItemId {
-        self.item_id
-    }
-    pub(in crate::cmd) fn get_state(&self) -> Option<&HState> {
-        self.item_cmd.get_state()
-    }
-    pub(in crate::cmd) fn get_effect_modes(&self) -> Option<&HEffectModeMap> {
-        self.item_cmd.get_effect_modes()
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        self.item_cmd.execute(core_ss, &self.item_id)
     }
 }

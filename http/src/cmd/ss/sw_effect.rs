@@ -1,4 +1,4 @@
-use crate::cmd::item;
+use crate::cmd::{item, HCmdResp};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddSwEffectCmd {
@@ -6,11 +6,8 @@ pub(crate) struct HAddSwEffectCmd {
     state: Option<bool>,
 }
 impl HAddSwEffectCmd {
-    pub(crate) fn get_type_id(&self) -> rc::EItemId {
-        self.type_id
-    }
-    pub(crate) fn get_state(&self) -> bool {
-        self.state.unwrap_or(true)
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        Ok(core_ss.add_sw_effect(self.type_id, self.state.unwrap_or(true))?.into())
     }
 }
 
@@ -22,13 +19,7 @@ pub(crate) struct HChangeSwEffectCmd {
     item_cmd: item::HChangeSwEffectCmd,
 }
 impl HChangeSwEffectCmd {
-    pub(in crate::cmd::ss) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeSwEffectCmd) -> Self {
-        Self { item_id, item_cmd }
-    }
-    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
-        self.item_id
-    }
-    pub(crate) fn get_state(&self) -> Option<bool> {
-        self.item_cmd.get_state()
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        self.item_cmd.execute(core_ss, &self.item_id)
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, HFitCommand, HItemCommand, HItemIdsResp, HSsCommand},
+    cmd::{HCmdResp, HFitCommand, HItemCommand, HSsCommand},
     info::{HFitInfo, HFitInfoMode, HItemInfo, HItemInfoMode, HSsInfo, HSsInfoMode, MkItemInfo},
     util::{HError, HErrorKind, HResult},
 };
@@ -135,15 +135,19 @@ impl HSolarSystem {
         let mut core_ss = self.take_ss()?;
         let ss_id_mv = self.id.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_ss, ss_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
+        let (core_ss, ss_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let cmd_results = execute_commands(&mut core_ss, commands);
+            let mut cmd_resps = Vec::with_capacity(commands.len());
+            for command in commands.iter() {
+                let resp = command.execute(&mut core_ss).unwrap();
+                cmd_resps.push(resp);
+            }
             let ss_info = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
-            (core_ss, ss_info, cmd_results)
+            (core_ss, ss_info, cmd_resps)
         })
         .await;
         self.put_ss_back(core_ss);
-        Ok((ss_info, cmd_results))
+        Ok((ss_info, cmd_resps))
     }
     #[tracing::instrument(name = "ss-fit-cmd", level = "trace", skip_all)]
     pub(crate) async fn execute_fit_commands(
@@ -156,19 +160,19 @@ impl HSolarSystem {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_ss = self.take_ss()?;
         let sync_span = tracing::trace_span!("sync");
-        let (core_ss, fit_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
+        let (core_ss, fit_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let commands = commands
-                .into_iter()
-                .map(|v| HSsCommand::from_fit_cmd(fit_id, v))
-                .collect();
-            let cmd_results = execute_commands(&mut core_ss, commands);
+            let mut cmd_resps = Vec::with_capacity(commands.len());
+            for command in commands.iter() {
+                let resp = command.execute(&mut core_ss, &fit_id).unwrap();
+                cmd_resps.push(resp);
+            }
             let info = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
-            (core_ss, info, cmd_results)
+            (core_ss, info, cmd_resps)
         })
         .await;
         self.put_ss_back(core_ss);
-        Ok((fit_info, cmd_results))
+        Ok((fit_info, cmd_resps))
     }
     #[tracing::instrument(name = "ss-item-cmd", level = "trace", skip_all)]
     pub(crate) async fn execute_item_commands(
@@ -180,20 +184,20 @@ impl HSolarSystem {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_ss = self.take_ss()?;
         let sync_span = tracing::trace_span!("sync");
-        let (core_ss, item_info, cmd_results) = tokio_rayon::spawn_fifo(move || {
+        let (core_ss, item_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let commands = commands
-                .into_iter()
-                .map(|v| HSsCommand::from_item_cmd(item_id, v))
-                .collect();
-            let cmd_results = execute_commands(&mut core_ss, commands);
+            let mut cmd_resps = Vec::with_capacity(commands.len());
+            for command in commands.iter() {
+                let resp = command.execute(&mut core_ss, &item_id).unwrap();
+                cmd_resps.push(resp);
+            }
             let core_info = core_ss.get_item_info(&item_id).unwrap();
             let info = HItemInfo::mk_info(&mut core_ss, &core_info, item_mode);
-            (core_ss, info, cmd_results)
+            (core_ss, info, cmd_resps)
         })
         .await;
         self.put_ss_back(core_ss);
-        Ok((item_info, cmd_results))
+        Ok((item_info, cmd_resps))
     }
     // Helper methods
     fn take_ss(&mut self) -> HResult<rc::SolarSystem> {
@@ -230,180 +234,4 @@ impl HSolarSystem {
     fn touch(&mut self) {
         self.accessed = chrono::Utc::now();
     }
-}
-
-fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) -> Vec<HCmdResp> {
-    let mut cmd_results = Vec::with_capacity(commands.len());
-    for cmd in commands.iter() {
-        match cmd {
-            HSsCommand::SetCharacter(c) => {
-                let char_info = core_ss
-                    .set_fit_character(c.get_fit_id(), c.get_type_id(), c.get_state())
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(char_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeCharacter(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_character_state(&c.get_item_id(), state).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddSkill(c) => {
-                let skill_info = core_ss
-                    .add_skill(c.get_fit_id(), c.get_type_id(), c.get_level(), c.get_state())
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(skill_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeSkill(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_skill_state(&c.get_item_id(), state).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddImplant(c) => {
-                let implant_info = core_ss
-                    .add_implant(c.get_fit_id(), c.get_type_id(), c.get_state())
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(implant_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeImplant(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_implant_state(&c.get_item_id(), state).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddBooster(c) => {
-                let booster_info = core_ss
-                    .add_booster(c.get_fit_id(), c.get_type_id(), c.get_state())
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(booster_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeBooster(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_booster_state(&c.get_item_id(), state).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::SetShip(c) => {
-                let ship_info = core_ss
-                    .set_fit_ship(c.get_fit_id(), c.get_type_id(), c.get_state())
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(ship_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeShip(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_ship_state(&c.get_item_id(), state).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::SetStance(c) => {
-                let stance_info = core_ss
-                    .set_fit_stance(c.get_fit_id(), c.get_type_id(), c.get_state())
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(stance_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeStance(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_stance_state(&c.get_item_id(), state).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddSubsystem(c) => {
-                let subsystem_info = core_ss
-                    .add_subsystem(c.get_fit_id(), c.get_type_id(), c.get_state())
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(subsystem_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeSubsystem(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_subsystem_state(&c.get_item_id(), state.into()).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddModule(c) => {
-                let module_info = core_ss
-                    .add_module(
-                        c.get_fit_id(),
-                        c.get_rack().into(),
-                        c.get_add_mode().into(),
-                        c.get_type_id(),
-                        c.get_state().into(),
-                        c.get_charge_type_id(),
-                    )
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(module_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeModule(c) => {
-                cmd_results.push(c.execute(core_ss).unwrap());
-            }
-            HSsCommand::AddRig(c) => {
-                let rig_info = core_ss.add_rig(c.get_fit_id(), c.get_type_id(), c.get_state()).unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(rig_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeRig(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_rig_state(&c.get_item_id(), state).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddDrone(c) => {
-                let drone_info = core_ss
-                    .add_drone(c.get_fit_id(), c.get_type_id(), c.get_state().into())
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(drone_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeDrone(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_drone_state(&c.get_item_id(), state.into()).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddFighter(c) => {
-                let fighter_info = core_ss
-                    .add_fighter(c.get_fit_id(), c.get_type_id(), c.get_state().into())
-                    .unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(fighter_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeFighter(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_fighter_state(&c.get_item_id(), state.into()).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-            HSsCommand::AddSwEffect(c) => {
-                let sw_effect_info = core_ss.add_sw_effect(c.get_type_id(), c.get_state()).unwrap();
-                let resp = HCmdResp::ItemIds(HItemIdsResp::from(sw_effect_info));
-                cmd_results.push(resp);
-            }
-            HSsCommand::ChangeSwEffect(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_sw_effect_state(&c.get_item_id(), state.into()).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
-            }
-        };
-    }
-    cmd_results
 }

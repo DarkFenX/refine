@@ -11,6 +11,8 @@ pub(crate) use stance::HChangeStanceCmd;
 pub(crate) use subsystem::HChangeSubsystemCmd;
 pub(crate) use sw_effect::HChangeSwEffectCmd;
 
+use crate::cmd::HCmdResp;
+
 mod booster;
 mod character;
 mod drone;
@@ -39,4 +41,22 @@ pub(crate) enum HItemCommand {
     ChangeDrone(HChangeDroneCmd),
     ChangeFighter(HChangeFighterCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
+}
+impl HItemCommand {
+    pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem, item_id: &rc::SsItemId) -> rc::Result<HCmdResp> {
+        match self {
+            Self::ChangeCharacter(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeSkill(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeImplant(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeBooster(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeShip(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeStance(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeSubsystem(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeModule(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeRig(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeDrone(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeFighter(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeSwEffect(cmd) => cmd.execute(core_ss, item_id),
+        }
+    }
 }

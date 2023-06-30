@@ -4,6 +4,66 @@ pub(crate) enum HCmdResp {
     NoData,
     ItemIds(HItemIdsResp),
 }
+impl From<rc::SsCharacterInfo> for HCmdResp {
+    fn from(ss_char_info: rc::SsCharacterInfo) -> Self {
+        HCmdResp::ItemIds(ss_char_info.into())
+    }
+}
+impl From<rc::SsSkillInfo> for HCmdResp {
+    fn from(ss_skill_info: rc::SsSkillInfo) -> Self {
+        HCmdResp::ItemIds(ss_skill_info.into())
+    }
+}
+impl From<rc::SsImplantInfo> for HCmdResp {
+    fn from(ss_implant_info: rc::SsImplantInfo) -> Self {
+        HCmdResp::ItemIds(ss_implant_info.into())
+    }
+}
+impl From<rc::SsBoosterInfo> for HCmdResp {
+    fn from(ss_booster_info: rc::SsBoosterInfo) -> Self {
+        HCmdResp::ItemIds(ss_booster_info.into())
+    }
+}
+impl From<rc::SsShipInfo> for HCmdResp {
+    fn from(ss_ship_info: rc::SsShipInfo) -> Self {
+        HCmdResp::ItemIds(ss_ship_info.into())
+    }
+}
+impl From<rc::SsStanceInfo> for HCmdResp {
+    fn from(ss_stance_info: rc::SsStanceInfo) -> Self {
+        HCmdResp::ItemIds(ss_stance_info.into())
+    }
+}
+impl From<rc::SsSubsystemInfo> for HCmdResp {
+    fn from(ss_subsystem_info: rc::SsSubsystemInfo) -> Self {
+        HCmdResp::ItemIds(ss_subsystem_info.into())
+    }
+}
+impl From<rc::SsModuleInfo> for HCmdResp {
+    fn from(ss_module_info: rc::SsModuleInfo) -> Self {
+        HCmdResp::ItemIds(ss_module_info.into())
+    }
+}
+impl From<rc::SsRigInfo> for HCmdResp {
+    fn from(ss_rig_info: rc::SsRigInfo) -> Self {
+        HCmdResp::ItemIds(ss_rig_info.into())
+    }
+}
+impl From<rc::SsDroneInfo> for HCmdResp {
+    fn from(ss_drone_info: rc::SsDroneInfo) -> Self {
+        HCmdResp::ItemIds(ss_drone_info.into())
+    }
+}
+impl From<rc::SsFighterInfo> for HCmdResp {
+    fn from(ss_fighter_info: rc::SsFighterInfo) -> Self {
+        HCmdResp::ItemIds(ss_fighter_info.into())
+    }
+}
+impl From<rc::SsSwEffectInfo> for HCmdResp {
+    fn from(ss_sw_effect_info: rc::SsSwEffectInfo) -> Self {
+        HCmdResp::ItemIds(ss_sw_effect_info.into())
+    }
+}
 
 #[derive(serde::Serialize)]
 pub(crate) struct HItemIdsResp {

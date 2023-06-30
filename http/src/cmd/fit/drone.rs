@@ -1,4 +1,7 @@
-use crate::{cmd::item, shared::HState};
+use crate::{
+    cmd::{item, HCmdResp},
+    shared::HState,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddDroneCmd {
@@ -6,11 +9,8 @@ pub(crate) struct HAddDroneCmd {
     state: HState,
 }
 impl HAddDroneCmd {
-    pub(crate) fn get_type_id(&self) -> rc::EItemId {
-        self.type_id
-    }
-    pub(crate) fn get_state(&self) -> &HState {
-        &self.state
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
+        Ok(core_ss.add_drone(*fit_id, self.type_id, (&self.state).into())?.into())
     }
 }
 
@@ -22,13 +22,7 @@ pub(crate) struct HChangeDroneCmd {
     item_cmd: item::HChangeDroneCmd,
 }
 impl HChangeDroneCmd {
-    pub(in crate::cmd) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeDroneCmd) -> Self {
-        Self { item_id, item_cmd }
-    }
-    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
-        self.item_id
-    }
-    pub(crate) fn get_state(&self) -> Option<&HState> {
-        self.item_cmd.get_state()
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        self.item_cmd.execute(core_ss, &self.item_id)
     }
 }

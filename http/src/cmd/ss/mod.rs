@@ -11,7 +11,7 @@ pub(crate) use stance::{HChangeStanceCmd, HSetStanceCmd};
 pub(crate) use subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(crate) use sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
 
-use crate::cmd::{HFitCommand, HItemCommand};
+use crate::cmd::HCmdResp;
 
 mod booster;
 mod character;
@@ -55,62 +55,32 @@ pub(crate) enum HSsCommand {
     ChangeSwEffect(HChangeSwEffectCmd),
 }
 impl HSsCommand {
-    pub(crate) fn from_fit_cmd(fit_id: rc::SsFitId, fit_cmd: HFitCommand) -> Self {
-        match fit_cmd {
-            HFitCommand::SetCharacter(fit_cmd) => Self::SetCharacter(HSetCharacterCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeCharacter(fit_cmd) => Self::ChangeCharacter(HChangeCharacterCmd::from(fit_cmd)),
-            HFitCommand::AddSkill(fit_cmd) => Self::AddSkill(HAddSkillCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeSkill(fit_cmd) => Self::ChangeSkill(HChangeSkillCmd::from(fit_cmd)),
-            HFitCommand::AddImplant(fit_cmd) => Self::AddImplant(HAddImplantCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeImplant(fit_cmd) => Self::ChangeImplant(HChangeImplantCmd::from(fit_cmd)),
-            HFitCommand::AddBooster(fit_cmd) => Self::AddBooster(HAddBoosterCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeBooster(fit_cmd) => Self::ChangeBooster(HChangeBoosterCmd::from(fit_cmd)),
-            HFitCommand::SetShip(fit_cmd) => Self::SetShip(HSetShipCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeShip(fit_cmd) => Self::ChangeShip(HChangeShipCmd::from(fit_cmd)),
-            HFitCommand::SetStance(fit_cmd) => Self::SetStance(HSetStanceCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeStance(fit_cmd) => Self::ChangeStance(HChangeStanceCmd::from(fit_cmd)),
-            HFitCommand::AddSubsystem(fit_cmd) => Self::AddSubsystem(HAddSubsystemCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeSubsystem(fit_cmd) => Self::ChangeSubsystem(HChangeSubsystemCmd::from(fit_cmd)),
-            HFitCommand::AddModule(fit_cmd) => Self::AddModule(HAddModuleCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeModule(fit_cmd) => Self::ChangeModule(HChangeModuleCmd::from(fit_cmd)),
-            HFitCommand::AddRig(fit_cmd) => Self::AddRig(HAddRigCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeRig(fit_cmd) => Self::ChangeRig(HChangeRigCmd::from(fit_cmd)),
-            HFitCommand::AddDrone(fit_cmd) => Self::AddDrone(HAddDroneCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeDrone(fit_cmd) => Self::ChangeDrone(HChangeDroneCmd::from(fit_cmd)),
-            HFitCommand::AddFighter(fit_cmd) => Self::AddFighter(HAddFighterCmd::from_fit_cmd(fit_id, fit_cmd)),
-            HFitCommand::ChangeFighter(fit_cmd) => Self::ChangeFighter(HChangeFighterCmd::from(fit_cmd)),
-        }
-    }
-    pub(crate) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: HItemCommand) -> Self {
-        match item_cmd {
-            HItemCommand::ChangeCharacter(item_cmd) => {
-                Self::ChangeCharacter(HChangeCharacterCmd::from_item_cmd(item_id, item_cmd))
-            }
-            HItemCommand::ChangeSkill(item_cmd) => Self::ChangeSkill(HChangeSkillCmd::from_item_cmd(item_id, item_cmd)),
-            HItemCommand::ChangeImplant(item_cmd) => {
-                Self::ChangeImplant(HChangeImplantCmd::from_item_cmd(item_id, item_cmd))
-            }
-            HItemCommand::ChangeBooster(item_cmd) => {
-                Self::ChangeBooster(HChangeBoosterCmd::from_item_cmd(item_id, item_cmd))
-            }
-            HItemCommand::ChangeShip(item_cmd) => Self::ChangeShip(HChangeShipCmd::from_item_cmd(item_id, item_cmd)),
-            HItemCommand::ChangeStance(item_cmd) => {
-                Self::ChangeStance(HChangeStanceCmd::from_item_cmd(item_id, item_cmd))
-            }
-            HItemCommand::ChangeSubsystem(item_cmd) => {
-                Self::ChangeSubsystem(HChangeSubsystemCmd::from_item_cmd(item_id, item_cmd))
-            }
-            HItemCommand::ChangeModule(item_cmd) => {
-                Self::ChangeModule(HChangeModuleCmd::from_item_cmd(item_id, item_cmd))
-            }
-            HItemCommand::ChangeRig(item_cmd) => Self::ChangeRig(HChangeRigCmd::from_item_cmd(item_id, item_cmd)),
-            HItemCommand::ChangeDrone(item_cmd) => Self::ChangeDrone(HChangeDroneCmd::from_item_cmd(item_id, item_cmd)),
-            HItemCommand::ChangeFighter(item_cmd) => {
-                Self::ChangeFighter(HChangeFighterCmd::from_item_cmd(item_id, item_cmd))
-            }
-            HItemCommand::ChangeSwEffect(item_cmd) => {
-                Self::ChangeSwEffect(HChangeSwEffectCmd::from_item_cmd(item_id, item_cmd))
-            }
+    pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        match self {
+            Self::SetCharacter(cmd) => cmd.execute(core_ss),
+            Self::ChangeCharacter(cmd) => cmd.execute(core_ss),
+            Self::AddSkill(cmd) => cmd.execute(core_ss),
+            Self::ChangeSkill(cmd) => cmd.execute(core_ss),
+            Self::AddImplant(cmd) => cmd.execute(core_ss),
+            Self::ChangeImplant(cmd) => cmd.execute(core_ss),
+            Self::AddBooster(cmd) => cmd.execute(core_ss),
+            Self::ChangeBooster(cmd) => cmd.execute(core_ss),
+            Self::SetShip(cmd) => cmd.execute(core_ss),
+            Self::ChangeShip(cmd) => cmd.execute(core_ss),
+            Self::SetStance(cmd) => cmd.execute(core_ss),
+            Self::ChangeStance(cmd) => cmd.execute(core_ss),
+            Self::AddSubsystem(cmd) => cmd.execute(core_ss),
+            Self::ChangeSubsystem(cmd) => cmd.execute(core_ss),
+            Self::AddModule(cmd) => cmd.execute(core_ss),
+            Self::ChangeModule(cmd) => cmd.execute(core_ss),
+            Self::AddRig(cmd) => cmd.execute(core_ss),
+            Self::ChangeRig(cmd) => cmd.execute(core_ss),
+            Self::AddDrone(cmd) => cmd.execute(core_ss),
+            Self::ChangeDrone(cmd) => cmd.execute(core_ss),
+            Self::AddFighter(cmd) => cmd.execute(core_ss),
+            Self::ChangeFighter(cmd) => cmd.execute(core_ss),
+            Self::AddSwEffect(cmd) => cmd.execute(core_ss),
+            Self::ChangeSwEffect(cmd) => cmd.execute(core_ss),
         }
     }
 }

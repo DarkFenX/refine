@@ -1,11 +1,18 @@
-use crate::shared::HState;
+use crate::{cmd::HCmdResp, shared::HState};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeDroneCmd {
     state: Option<HState>,
 }
 impl HChangeDroneCmd {
-    pub(crate) fn get_state(&self) -> Option<&HState> {
-        self.state.as_ref()
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        item_id: &rc::SsItemId,
+    ) -> rc::Result<HCmdResp> {
+        if let Some(state) = &self.state {
+            core_ss.set_drone_state(item_id, state.into())?;
+        }
+        Ok(HCmdResp::NoData)
     }
 }
