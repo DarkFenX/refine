@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
         fit, item,
-        shared::{HAddMode, HEffectModeMap},
+        shared::{HAddMode, HCmdResp, HEffectModeMap},
     },
     shared::{HModRack, HState},
 };
@@ -43,18 +43,28 @@ pub(crate) struct HChangeModuleCmd {
     fit_cmd: fit::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
+    pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        if let Some(state) = self.get_state() {
+            core_ss.set_module_state(&self.get_item_id(), state.into())?;
+        }
+        if let Some(mode_map) = self.get_effect_modes() {
+            let mode_map = mode_map.into_iter().map(|(k, v)| (*k, v.into())).collect();
+            core_ss.set_item_effect_modes(&self.get_item_id(), &mode_map)?;
+        }
+        Ok(HCmdResp::NoData)
+    }
     pub(in crate::cmd::ss) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeModuleCmd) -> Self {
         Self {
             fit_cmd: fit::HChangeModuleCmd::from_item_cmd(item_id, item_cmd),
         }
     }
-    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
+    fn get_item_id(&self) -> rc::SsItemId {
         self.fit_cmd.get_item_id()
     }
-    pub(crate) fn get_state(&self) -> Option<&HState> {
+    fn get_state(&self) -> Option<&HState> {
         self.fit_cmd.get_state()
     }
-    pub(crate) fn get_effect_modes(&self) -> Option<&HEffectModeMap> {
+    fn get_effect_modes(&self) -> Option<&HEffectModeMap> {
         self.fit_cmd.get_effect_modes()
     }
 }

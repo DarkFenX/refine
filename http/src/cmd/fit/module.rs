@@ -43,13 +43,13 @@ impl HChangeModuleCmd {
     pub(in crate::cmd) fn from_item_cmd(item_id: rc::SsItemId, item_cmd: item::HChangeModuleCmd) -> Self {
         Self { item_id, item_cmd }
     }
-    pub(crate) fn get_item_id(&self) -> rc::SsItemId {
+    pub(in crate::cmd) fn get_item_id(&self) -> rc::SsItemId {
         self.item_id
     }
-    pub(crate) fn get_state(&self) -> Option<&HState> {
+    pub(in crate::cmd) fn get_state(&self) -> Option<&HState> {
         self.item_cmd.get_state()
     }
-    pub(crate) fn get_effect_modes(&self) -> Option<&HEffectModeMap> {
+    pub(in crate::cmd) fn get_effect_modes(&self) -> Option<&HEffectModeMap> {
         self.item_cmd.get_effect_modes()
     }
 }

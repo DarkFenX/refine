@@ -349,15 +349,7 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 cmd_results.push(resp);
             }
             HSsCommand::ChangeModule(c) => {
-                if let Some(state) = c.get_state() {
-                    core_ss.set_module_state(&c.get_item_id(), state.into()).unwrap();
-                }
-                if let Some(mode_map) = c.get_effect_modes() {
-                    let mode_map = mode_map.into_iter().map(|(k, v)| (*k, v.into())).collect();
-                    core_ss.set_item_effect_modes(&c.get_item_id(), &mode_map).unwrap();
-                }
-                let resp = HCmdResp::NoData;
-                cmd_results.push(resp);
+                cmd_results.push(c.execute(core_ss).unwrap());
             }
             HSsCommand::AddRig(c) => {
                 let rig_info = core_ss.add_rig(c.get_fit_id(), c.get_type_id(), c.get_state()).unwrap();

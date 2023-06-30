@@ -6,10 +6,10 @@ pub(crate) struct HChangeModuleCmd {
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeModuleCmd {
-    pub(crate) fn get_state(&self) -> Option<&HState> {
+    pub(in crate::cmd) fn get_state(&self) -> Option<&HState> {
         self.state.as_ref()
     }
-    pub(crate) fn get_effect_modes(&self) -> Option<&HEffectModeMap> {
+    pub(in crate::cmd) fn get_effect_modes(&self) -> Option<&HEffectModeMap> {
         self.effect_modes.as_ref()
     }
 }
