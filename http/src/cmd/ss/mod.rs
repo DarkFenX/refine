@@ -9,7 +9,7 @@ pub(crate) use ship::{HChangeShipCmd, HSetShipCmd};
 pub(crate) use skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(crate) use stance::{HChangeStanceCmd, HSetStanceCmd};
 pub(crate) use subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
-pub(crate) use sw_effect::HAddSwEffectCmd;
+pub(crate) use sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
 
 use crate::cmd::{HFitCommand, HItemCommand};
 
@@ -52,6 +52,7 @@ pub(crate) enum HSsCommand {
     AddFighter(HAddFighterCmd),
     ChangeFighter(HChangeFighterCmd),
     AddSwEffect(HAddSwEffectCmd),
+    ChangeSwEffect(HChangeSwEffectCmd),
 }
 impl HSsCommand {
     pub(crate) fn from_fit_cmd(fit_id: rc::SsFitId, fit_cmd: HFitCommand) -> Self {
@@ -106,6 +107,9 @@ impl HSsCommand {
             HItemCommand::ChangeDrone(item_cmd) => Self::ChangeDrone(HChangeDroneCmd::from_item_cmd(item_id, item_cmd)),
             HItemCommand::ChangeFighter(item_cmd) => {
                 Self::ChangeFighter(HChangeFighterCmd::from_item_cmd(item_id, item_cmd))
+            }
+            HItemCommand::ChangeSwEffect(item_cmd) => {
+                Self::ChangeSwEffect(HChangeSwEffectCmd::from_item_cmd(item_id, item_cmd))
             }
         }
     }

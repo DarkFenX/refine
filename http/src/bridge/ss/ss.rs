@@ -400,6 +400,13 @@ fn execute_commands(core_ss: &mut rc::SolarSystem, commands: Vec<HSsCommand>) ->
                 let resp = HCmdResp::ItemIds(HItemIdsResp::from(sw_effect_info));
                 cmd_results.push(resp);
             }
+            HSsCommand::ChangeSwEffect(c) => {
+                if let Some(state) = c.get_state() {
+                    core_ss.set_sw_effect_state(&c.get_item_id(), state.into()).unwrap();
+                }
+                let resp = HCmdResp::NoData;
+                cmd_results.push(resp);
+            }
         };
     }
     cmd_results

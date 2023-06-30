@@ -9,6 +9,7 @@ pub(crate) use ship::HChangeShipCmd;
 pub(crate) use skill::HChangeSkillCmd;
 pub(crate) use stance::HChangeStanceCmd;
 pub(crate) use subsystem::HChangeSubsystemCmd;
+pub(crate) use sw_effect::HChangeSwEffectCmd;
 
 mod booster;
 mod character;
@@ -21,6 +22,7 @@ mod ship;
 mod skill;
 mod stance;
 mod subsystem;
+mod sw_effect;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
@@ -36,4 +38,5 @@ pub(crate) enum HItemCommand {
     ChangeRig(HChangeRigCmd),
     ChangeDrone(HChangeDroneCmd),
     ChangeFighter(HChangeFighterCmd),
+    ChangeSwEffect(HChangeSwEffectCmd),
 }
