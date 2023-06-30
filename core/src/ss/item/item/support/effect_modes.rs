@@ -13,9 +13,10 @@ impl EffectModes {
     }
     // Modification methods
     pub(in crate::ss) fn set(&mut self, effect_id: EEffectId, mode: EffectMode) {
-        self.data.insert(effect_id, mode)
-    }
-    pub(in crate::ss) fn unset(&mut self, effect_id: &EEffectId) {
-        self.data.remove(effect_id)
+        if mode == DEFAULT_EFFECT_MODE {
+            self.data.remove(&effect_id)
+        } else {
+            self.data.insert(effect_id, mode)
+        }
     }
 }

@@ -23,7 +23,7 @@ impl State {
 }
 
 /// Item effect operation modes.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 pub enum EffectMode {
     /// In this mode rules vary, depending on effect category:
     /// - Offline: effects from this category are run when item is in offline+
