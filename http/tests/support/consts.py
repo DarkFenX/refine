@@ -3,13 +3,6 @@ from enum import StrEnum, IntEnum, unique
 
 
 @unique
-class Rack(StrEnum):
-    high = 'high'
-    mid = 'mid'
-    low = 'low'
-
-
-@unique
 class State(StrEnum):
     ghost = 'ghost'
     offline = 'offline'
@@ -85,3 +78,18 @@ class Attr(IntEnum):
     cpu_output = 48
     power = 30
     power_output = 11
+
+
+@unique
+class Rack(StrEnum):
+    high = 'high'
+    mid = 'mid'
+    low = 'low'
+
+
+@unique
+class EffMode(StrEnum):
+    full = 'full'
+    state = 'state'
+    force_run = 'run'
+    force_stop = 'stop'

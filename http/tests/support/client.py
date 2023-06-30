@@ -10,6 +10,7 @@ from tests.support.util import Absent, Default, conditional_insert, get_stack_ke
 from tests.support import api_data, eve_data
 
 if TYPE_CHECKING:
+    from tests.support.consts import EffMode
     from tests.support.util import StackKey
 
 data_id: int = 10000000  # pylint: disable=C0103
@@ -398,9 +399,11 @@ class TestClient:
             ss_id: str,
             item_id: str,
             state: Union[State, Absent] = Absent,
+            effect_modes: Union[dict[int, EffMode], Absent] = Absent,
     ) -> Request:
         command = {'type': 'change_module', 'item_id': item_id}
         conditional_insert(command, 'state', state)
+        conditional_insert(command, 'effect_modes', effect_modes)
         return Request(
             self,
             method='PATCH',
