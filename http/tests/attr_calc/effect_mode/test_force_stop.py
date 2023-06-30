@@ -10,12 +10,12 @@ def test_force_stop(client, consts):
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_effect = client.mk_eve_effect(cat_id=consts.EffCat.passive, mod_info=[eve_mod])
     eve_item = client.mk_eve_item(attrs={eve_src_attr.id: 20, eve_tgt_attr.id: 100}, eff_ids=[eve_effect.id])
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item.id)
+    api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.State.offline)
     value = api_item.update().attrs[eve_tgt_attr.id].dogma
     assert value == approx(120)
     api_item.change_mod(effect_modes={eve_effect.id: consts.EffMode.force_stop})

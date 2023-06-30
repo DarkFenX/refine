@@ -15,7 +15,7 @@ def test_force_run(client, consts):
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item.id)
+    api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.State.offline)
     value = api_item.update().attrs[eve_tgt_attr.id].dogma
     assert value == approx(100)
     api_item.change_mod(effect_modes={eve_effect.id: consts.EffMode.force_run})
