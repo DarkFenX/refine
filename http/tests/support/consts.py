@@ -26,6 +26,7 @@ class ItemCat(IntEnum):
 @unique
 class Effect(IntEnum):
     online = 16
+    self_rof = 1851
 
 
 @unique
@@ -74,11 +75,15 @@ class ModOp(IntEnum):
 
 @unique
 class Attr(IntEnum):
+    # Resources
     cpu = 50
     cpu_output = 48
     power = 30
     power_output = 11
+    # Misc
     skill_level = 280
+    speed = 51
+    rof_bonus = 293
 
 
 @unique
