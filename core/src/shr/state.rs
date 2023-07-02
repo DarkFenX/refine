@@ -1,5 +1,6 @@
 /// Contains states which can be assigned to several entities.
-#[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
+// Order is important (or discriminants have to be in this order)
+#[derive(Copy, Clone, PartialEq, PartialOrd)]
 pub enum State {
     Ghost,
     Offline,

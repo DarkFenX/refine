@@ -1,5 +1,5 @@
 /// Defines domain (or scope) which is target for a modification.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum ModDomain {
     /// Ship or items belonging to it.
     Ship,

@@ -1,7 +1,7 @@
 /// Defines what kind of operation will be applied to a target attribute.
 ///
 /// All the operations are applied in the order they are defined in this enum.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum ModOp {
     /// Assigns modification value to the target item attribute before all other operations are
     /// applied.

@@ -5,7 +5,7 @@ use crate::{
     ss::item::SsItem,
 };
 
-#[derive(Copy, Clone, Eq, Hash, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::calc) struct SsAttrMod {
     pub(in crate::ss::svc::calc) src_item_id: SsItemId,
     pub(in crate::ss::svc::calc) src_effect_id: EEffectId,
@@ -52,7 +52,7 @@ impl SsAttrMod {
     }
 }
 
-#[derive(Copy, Clone, Eq, Hash, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::calc) enum SsModTgtFilter {
     Direct(ModDomain),
     Loc(ModDomain),

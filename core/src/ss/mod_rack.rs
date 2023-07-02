@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub enum ModRack {
     High,
     Mid,

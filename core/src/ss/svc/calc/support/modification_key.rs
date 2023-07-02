@@ -10,7 +10,7 @@ use super::SsAttrMod;
 // here is based on observations and common sense. For EVE scenarios which
 // prompt for existence of key and what's in it, see tests in
 // "test_similar_modifiers.py"
-#[derive(Hash, Eq, PartialEq)]
+#[derive(Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::calc) struct ModKey {
     pub(in crate::ss::svc::calc) src_item_id: SsItemId,
     pub(in crate::ss::svc::calc) src_attr_id: EAttrId,
