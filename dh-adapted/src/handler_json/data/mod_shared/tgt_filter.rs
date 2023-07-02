@@ -10,8 +10,8 @@ pub(in crate::handler_json) enum CModTgtFilter {
     OwnSrq(CModDomain, CModSrq),
 }
 impl From<&rc::ad::AModTgtFilter> for CModTgtFilter {
-    fn from(mod_afee_filter: &rc::ad::AModTgtFilter) -> Self {
-        match mod_afee_filter {
+    fn from(mod_tgt_filter: &rc::ad::AModTgtFilter) -> Self {
+        match mod_tgt_filter {
             rc::ad::AModTgtFilter::Direct(dom) => Self::Direct(dom.into()),
             rc::ad::AModTgtFilter::Loc(dom) => Self::Loc(dom.into()),
             rc::ad::AModTgtFilter::LocGrp(dom, grp) => Self::LocGrp(dom.into(), *grp),

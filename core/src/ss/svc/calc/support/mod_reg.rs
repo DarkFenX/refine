@@ -9,7 +9,7 @@ use crate::{
 
 use super::modifier::{SsAttrMod, SsModTgtFilter};
 
-pub(in crate::ss::svc::calc) struct AffectionRegister {
+pub(in crate::ss::svc::calc) struct ModRegister {
     // All known target items
     // Contains: HashSet<target item IDs>
     tgts: HashSet<SsItemId>,
@@ -54,7 +54,7 @@ pub(in crate::ss::svc::calc) struct AffectionRegister {
     // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), modifiers>
     mods_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsAttrMod>,
 }
-impl AffectionRegister {
+impl ModRegister {
     pub(in crate::ss::svc::calc) fn new() -> Self {
         Self {
             tgts: HashSet::new(),

@@ -92,10 +92,10 @@ impl SsSvcs {
     // Modification methods
     pub(in crate::ss::svc) fn calc_item_loaded(&mut self, item: &SsItem) {
         self.calc_data.attrs.add_item(item.get_id());
-        self.calc_data.affections.reg_tgt(item);
+        self.calc_data.mods.reg_tgt(item);
     }
     pub(in crate::ss::svc) fn calc_item_unloaded(&mut self, item: &SsItem) {
-        self.calc_data.affections.unreg_tgt(item);
+        self.calc_data.mods.unreg_tgt(item);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
         self.calc_data.caps.clear_item_caps(&item_id);
@@ -107,9 +107,9 @@ impl SsSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         let mods = generate_ss_attr_mods(item, effects);
-        self.calc_data.affections.reg_mods(item.get_fit_id(), mods.clone());
+        self.calc_data.mods.reg_mods(item.get_fit_id(), mods.clone());
         for modifier in mods {
-            for item_id in self.calc_data.affections.get_tgt_items(&modifier, ss_view.items) {
+            for item_id in self.calc_data.mods.get_tgt_items(&modifier, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
             }
         }
@@ -122,11 +122,11 @@ impl SsSvcs {
     ) {
         let mods = generate_ss_attr_mods(item, effects);
         for modifier in mods.iter() {
-            for item_id in self.calc_data.affections.get_tgt_items(&modifier, ss_view.items) {
+            for item_id in self.calc_data.mods.get_tgt_items(&modifier, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
             }
         }
-        self.calc_data.affections.unreg_mods(item.get_fit_id(), mods);
+        self.calc_data.mods.unreg_mods(item.get_fit_id(), mods);
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
         &mut self,
@@ -147,13 +147,13 @@ impl SsSvcs {
         };
         let mods = self
             .calc_data
-            .affections
+            .mods
             .iter_mods_for_src(item_id)
             .filter(|v| v.src_attr_id == *attr_id)
             .map(|v| *v)
             .collect_vec();
         for modifier in mods.iter() {
-            for tgt_item_id in self.calc_data.affections.get_tgt_items(&modifier, ss_view.items) {
+            for tgt_item_id in self.calc_data.mods.get_tgt_items(&modifier, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
             }
         }
@@ -201,7 +201,7 @@ impl SsSvcs {
         // let aggregate_max = Vec::new();
         for modification in self.calc_get_modifications(ss_view, item, attr_id).values() {
             let penalize =
-                attr.penalizable && !modification.afor_pen_immune && PENALIZABLE_OPS.contains(&modification.op);
+                attr.penalizable && !modification.src_pen_immune && PENALIZABLE_OPS.contains(&modification.op);
             let mod_val = match modification.op {
                 ModOp::PreAssign => modification.val,
                 ModOp::PreMul => modification.val,
@@ -275,7 +275,7 @@ impl SsSvcs {
     ) -> HashMap<ModKey, Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = HashMap::new();
-        for modifier in self.calc_data.affections.get_mods_for_tgt(item).iter() {
+        for modifier in self.calc_data.mods.get_mods_for_tgt(item).iter() {
             if &modifier.tgt_attr_id != attr_id {
                 continue;
             }

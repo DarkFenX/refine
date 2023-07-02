@@ -8,7 +8,7 @@ pub(in crate::ss::svc::calc) struct Modification {
     pub(in crate::ss::svc::calc) val: AttrVal,
     pub(in crate::ss::svc::calc) res_val: AttrVal,
     pub(in crate::ss::svc::calc) aggr_mode: ModAggrMode,
-    pub(in crate::ss::svc::calc) afor_pen_immune: bool,
+    pub(in crate::ss::svc::calc) src_pen_immune: bool,
 }
 impl Modification {
     pub(in crate::ss::svc::calc) fn new(
@@ -16,14 +16,14 @@ impl Modification {
         val: AttrVal,
         res_val: AttrVal,
         aggr_mode: ModAggrMode,
-        afor_pen_immune: bool,
+        src_pen_immune: bool,
     ) -> Self {
         Self {
             op,
             val,
             res_val,
             aggr_mode,
-            afor_pen_immune,
+            src_pen_immune,
         }
     }
 }

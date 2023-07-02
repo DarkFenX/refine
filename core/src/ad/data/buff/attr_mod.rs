@@ -6,17 +6,18 @@ use crate::{ad::AModTgtFilter, defs::EAttrId, util::Named};
 /// buff and some on the item applying the buff.
 #[derive(Debug)]
 pub struct ABuffAttrMod {
-    /// Defines an affectee filter, that is a filter which defines which items will be affected.
-    pub afee_filter: AModTgtFilter,
-    /// Refers an attribute, whose value will be affected on the affectee.
-    pub afee_attr_id: EAttrId,
+    /// Defines a target filter, that is a filter which defines which items will be targeted for
+    /// modification.
+    pub tgt_filter: AModTgtFilter,
+    /// Refers an attribute, whose value will be target for modification.
+    pub tgt_attr_id: EAttrId,
 }
 impl ABuffAttrMod {
     /// Make a new buff-specific attribute modifier out of passed data.
-    pub(crate) fn new(afee_filter: AModTgtFilter, afee_attr_id: EAttrId) -> Self {
+    pub(crate) fn new(tgt_filter: AModTgtFilter, tgt_attr_id: EAttrId) -> Self {
         Self {
-            afee_filter,
-            afee_attr_id,
+            tgt_filter,
+            tgt_attr_id,
         }
     }
 }

@@ -5,23 +5,24 @@ use crate::{ad::AModTgtFilter, defs::EAttrId, shr::ModOp, util::Named};
 /// A modifier is an entity which specifies in detail which attributes on which items are going to
 /// be affected, and how.
 pub struct AEffectAttrMod {
-    /// Refers an attribute on the affector, which should be used as modification value.
-    pub afor_attr_id: EAttrId,
+    /// Refers an attribute on the modification source, which should be used as modification value.
+    pub src_attr_id: EAttrId,
     /// Operation to apply during the modification.
     pub op: ModOp,
-    /// Defines an affectee filter, that is a filter which defines which items will be affected.
-    pub afee_filter: AModTgtFilter,
-    /// Refers an attribute, whose value will be affected on the affectee.
-    pub afee_attr_id: EAttrId,
+    /// Defines a target filter, that is a filter which defines which items will be targeted for
+    /// modification.
+    pub tgt_filter: AModTgtFilter,
+    /// Refers an attribute, whose value will be target for modification.
+    pub tgt_attr_id: EAttrId,
 }
 impl AEffectAttrMod {
     /// Make a new attribute modifier out of passed data.
-    pub(crate) fn new(afor_attr_id: EAttrId, op: ModOp, afee_filter: AModTgtFilter, afee_attr_id: EAttrId) -> Self {
+    pub(crate) fn new(src_attr_id: EAttrId, op: ModOp, tgt_filter: AModTgtFilter, tgt_attr_id: EAttrId) -> Self {
         Self {
-            afor_attr_id,
+            src_attr_id,
             op,
-            afee_filter,
-            afee_attr_id,
+            tgt_filter,
+            tgt_attr_id,
         }
     }
 }

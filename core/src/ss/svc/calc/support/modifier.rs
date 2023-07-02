@@ -43,11 +43,11 @@ impl SsAttrMod {
         Self::new(
             src_ss_item.get_id(),
             src_a_effect.id,
-            src_a_mod.afor_attr_id,
-            SsModTgtFilter::from_a_mod_tgt_filter(&src_a_mod.afee_filter, src_ss_item),
+            src_a_mod.src_attr_id,
+            SsModTgtFilter::from_a_mod_tgt_filter(&src_a_mod.tgt_filter, src_ss_item),
             src_a_mod.op,
             ModAggrMode::Stack,
-            src_a_mod.afee_attr_id,
+            src_a_mod.tgt_attr_id,
         )
     }
 }

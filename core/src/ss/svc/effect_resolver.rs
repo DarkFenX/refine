@@ -10,7 +10,7 @@ pub(in crate::ss::svc) fn resolve_effect_status(
     effect: &ad::ArcEffect,
     online_running: bool,
 ) -> bool {
-    // Ghost'ed items should never affect anything regardless of effect mode
+    // Ghosted items should never affect anything regardless of effect mode
     if item_state == State::Ghost {
         return false;
     }

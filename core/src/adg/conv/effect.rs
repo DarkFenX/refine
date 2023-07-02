@@ -207,60 +207,60 @@ fn extract_stopper(e_modifier: &ed::EEffectMod) -> IntResult<Option<EEffectId>> 
 
 fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
     Ok(ad::AEffectAttrMod::new(
-        get_mod_affector_attr_id(e_modifier)?,
+        get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AModTgtFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
-        get_mod_affectee_attr_id(e_modifier)?,
+        get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
 
 fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
     Ok(ad::AEffectAttrMod::new(
-        get_mod_affector_attr_id(e_modifier)?,
+        get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AModTgtFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
-        get_mod_affectee_attr_id(e_modifier)?,
+        get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
 
 fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
     Ok(ad::AEffectAttrMod::new(
-        get_mod_affector_attr_id(e_modifier)?,
+        get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AModTgtFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
-        get_mod_affectee_attr_id(e_modifier)?,
+        get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
 
 fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
     Ok(ad::AEffectAttrMod::new(
-        get_mod_affector_attr_id(e_modifier)?,
+        get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AModTgtFilter::LocSrq(
             get_mod_domain(e_modifier, a_effect)?,
             ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?),
         ),
-        get_mod_affectee_attr_id(e_modifier)?,
+        get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
 
 fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
     Ok(ad::AEffectAttrMod::new(
-        get_mod_affector_attr_id(e_modifier)?,
+        get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AModTgtFilter::OwnSrq(
             get_mod_domain(e_modifier, a_effect)?,
             ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?),
         ),
-        get_mod_affectee_attr_id(e_modifier)?,
+        get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
 
-fn get_mod_affector_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<EAttrId> {
+fn get_mod_src_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<EAttrId> {
     get_arg_int(&e_modifier.args, "modifyingAttributeID")
 }
 
-fn get_mod_affectee_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<EAttrId> {
+fn get_mod_tgt_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<EAttrId> {
     get_arg_int(&e_modifier.args, "modifiedAttributeID")
 }
 
