@@ -2,10 +2,11 @@
 
 use crate::defs::EAttrId;
 
+pub(crate) const SKILL_LEVEL: EAttrId = 280;
 pub(crate) const SPEED: EAttrId = 51;
 pub(crate) const ROF_BONUS: EAttrId = 293;
-pub(crate) const SKILL_LEVEL: EAttrId = 280;
 pub(crate) const DMG_MULT_BONUS: EAttrId = 292;
+pub(crate) const DMG_MULT: EAttrId = 64;
 // Damage attrs
 pub(crate) const EM_DMG: EAttrId = 114;
 pub(crate) const THERM_DMG: EAttrId = 118;

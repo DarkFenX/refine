@@ -26,6 +26,7 @@ class ItemCat(IntEnum):
 @unique
 class Effect(IntEnum):
     online = 16
+    drone_dmg_bonus = 1730
     self_rof = 1851
     missile_em_dmg_bonus = 660
     missile_therm_dmg_bonus = 662
@@ -93,6 +94,7 @@ class Attr(IntEnum):
     skill_level = 280
     speed = 51
     rof_bonus = 293
+    dmg_mult = 64
     dmg_mult_bonus = 292
 
 

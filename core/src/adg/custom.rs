@@ -12,6 +12,7 @@ pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
     mk_self_skillreq_modifier_missile_dmg(a_data, ec::effects::MISSILE_THERM_DMG_BONUS, ec::attrs::THERM_DMG);
     mk_self_skillreq_modifier_missile_dmg(a_data, ec::effects::MISSILE_KIN_DMG_BONUS, ec::attrs::KIN_DMG);
     mk_self_skillreq_modifier_missile_dmg(a_data, ec::effects::MISSILE_EXPL_DMG_BONUS, ec::attrs::EXPL_DMG);
+    mk_self_skillreq_drone_dmg(a_data);
 }
 
 fn fix_online_effect_cat(a_data: &mut ad::AData) {
@@ -55,6 +56,27 @@ fn mk_self_skillreq_modifier_missile_dmg(a_data: &mut ad::AData, effect_id: EEff
             ModOp::PostPerc,
             ad::AModTgtFilter::OwnSrq(ad::AModSrq::SelfRef),
             attr_id,
+        );
+        effect.mods.push(modifier);
+        effect.mod_build_status = ad::AModBuildStatus::Custom;
+    }
+}
+
+fn mk_self_skillreq_drone_dmg(a_data: &mut ad::AData) {
+    for effect in a_data
+        .effects
+        .iter_mut()
+        .filter(|v| v.id == ec::effects::DRONE_DMG_BONUS)
+    {
+        if !effect.mods.is_empty() {
+            tracing::info!("self-skillreq drone dmg effect has modifiers, overwriting them");
+            effect.mods.clear();
+        }
+        let modifier = ad::AEffectAttrMod::new(
+            ec::attrs::DMG_MULT_BONUS,
+            ModOp::PostPerc,
+            ad::AModTgtFilter::OwnSrq(ad::AModSrq::SelfRef),
+            ec::attrs::DMG_MULT,
         );
         effect.mods.push(modifier);
         effect.mod_build_status = ad::AModBuildStatus::Custom;

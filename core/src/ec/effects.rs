@@ -23,6 +23,7 @@ pub(crate) const FTR_ABIL_BOMB: EEffectId = 6485;
 pub(crate) const FTR_ABIL_KAMIKAZE: EEffectId = 6554;
 // Effects which need customizations
 pub(crate) const ONLINE: EEffectId = 16;
+pub(crate) const DRONE_DMG_BONUS: EEffectId = 1730;
 pub(crate) const SELF_ROF: EEffectId = 1851;
 pub(crate) const MISSILE_EM_DMG_BONUS: EEffectId = 660;
 pub(crate) const MISSILE_THERM_DMG_BONUS: EEffectId = 662;
