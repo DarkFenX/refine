@@ -6,7 +6,9 @@ use std::{
 use crate::{
     ad,
     adg::GData,
-    consts::{effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, State, TgtMode},
+    consts::{
+        effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, ModSrq, State, TgtMode,
+    },
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
     ed,
     util::{IntError, IntResult, Named},
@@ -240,7 +242,10 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
         get_mod_affector_attr_id(e_modifier)?,
         ModAggrMode::Stack,
         get_mod_operation(e_modifier)?,
-        ModAfeeFilter::LocSrq(get_mod_domain(e_modifier, a_effect)?, get_mod_skill_id(e_modifier)?),
+        ModAfeeFilter::LocSrq(
+            get_mod_domain(e_modifier, a_effect)?,
+            ModSrq::ItemId(get_mod_skill_id(e_modifier)?),
+        ),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
@@ -250,7 +255,10 @@ fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
         get_mod_affector_attr_id(e_modifier)?,
         ModAggrMode::Stack,
         get_mod_operation(e_modifier)?,
-        ModAfeeFilter::OwnSrq(get_mod_domain(e_modifier, a_effect)?, get_mod_skill_id(e_modifier)?),
+        ModAfeeFilter::OwnSrq(
+            get_mod_domain(e_modifier, a_effect)?,
+            ModSrq::ItemId(get_mod_skill_id(e_modifier)?),
+        ),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
 }

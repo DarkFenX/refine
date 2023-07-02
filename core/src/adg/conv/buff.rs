@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad,
     adg::GData,
-    consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp},
+    consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp, ModSrq},
     defs::EBuffId,
     ed,
     util::{IntError, IntResult, Named},
@@ -49,7 +49,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
         }
         for e_locsrq_mod in e_buff.locsrq_mods.iter() {
             a_mods.push(ad::ABuffAttrMod::new(
-                ModAfeeFilter::LocSrq(ModDomain::Ship, e_locsrq_mod.skill_id),
+                ModAfeeFilter::LocSrq(ModDomain::Ship, ModSrq::ItemId(e_locsrq_mod.skill_id)),
                 e_locsrq_mod.attr_id,
             ));
         }

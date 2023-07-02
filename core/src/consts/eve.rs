@@ -27,6 +27,8 @@ pub(crate) mod itemcats {
 pub(crate) mod attrs {
     use crate::defs::EAttrId;
 
+    pub(crate) const SPEED: EAttrId = 51;
+    pub(crate) const ROF_BONUS: EAttrId = 293;
     pub(crate) const SKILL_LEVEL: EAttrId = 280;
     // Fitting resource-related
     pub(crate) const CPU: EAttrId = 50;
@@ -53,8 +55,6 @@ pub(crate) mod attrs {
 
 pub(crate) mod effects {
     use crate::defs::EEffectId;
-
-    pub(crate) const ONLINE: EEffectId = 16;
     // Slot-related
     pub(crate) const HI_POWER: EEffectId = 12;
     pub(crate) const LO_POWER: EEffectId = 11;
@@ -75,6 +75,9 @@ pub(crate) mod effects {
     pub(crate) const FTR_ABIL_ATK_MISSILE: EEffectId = 6465;
     pub(crate) const FTR_ABIL_BOMB: EEffectId = 6485;
     pub(crate) const FTR_ABIL_KAMIKAZE: EEffectId = 6554;
+    // Effects which need customizations
+    pub(crate) const ONLINE: EEffectId = 16;
+    pub(crate) const SELF_ROF: EEffectId = 1851;
 }
 
 pub(crate) mod effcats {

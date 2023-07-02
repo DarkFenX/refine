@@ -80,24 +80,6 @@ impl std::fmt::Display for ModRack {
     }
 }
 
-// enum EffectMode {
-//     // In this mode rules vary, depending on effect category:
-//     // - Offline: effects from this category are run when item is in offline+ state, and when
-// they     // do not have fitting usage chance specified
-//     // - Online: effects from this category are run when item is in online+ state, and when item
-// has     // runnable 'online' effect
-//     // - Active: effects from this category are run when item is in active+ state, and only when
-//     // effect is default item effect
-//     // - Overload: effects from this category are run when item is in overload+ state
-//     FullCompliance,
-//     // Effects in this mode are always run if item's state is high enough to run it
-//     StateCompliance,
-//     // Effects in this mode are always running no matter what
-//     ForceRun,
-//     // Effects in this mode are never running no matter what
-//     ForceStop,
-// }
-
 /// Effect modifier build statuses.
 ///
 /// During cache generation, the library converts modifiers of an effect into internal format.
@@ -118,7 +100,7 @@ pub enum ModBuildStatus {
 }
 
 /// Defines which items will be affected by a modifier.
-#[derive(Debug, Copy, Clone, Hash, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Hash)]
 pub enum ModAfeeFilter {
     /// Single item modified, as specified by the domain.
     Direct(ModDomain),
@@ -127,13 +109,22 @@ pub enum ModAfeeFilter {
     /// All items located in the domain and belonging to the group are affected.
     LocGrp(ModDomain, EItemGrpId),
     /// All items located in the domain and having specified skill requirement are affected.
-    LocSrq(ModDomain, EItemId),
+    LocSrq(ModDomain, ModSrq),
     /// All items belonging to the domain and having specified skill requirement are affected.
-    OwnSrq(ModDomain, EItemId),
+    OwnSrq(ModDomain, ModSrq),
+}
+
+/// Defines modifier skill requirement.
+#[derive(Debug, Copy, Clone, PartialEq, Hash)]
+pub enum ModSrq {
+    /// Affects items which require item which carries the modifier as skill.
+    SelfRef,
+    // Affects items which require specific skill.
+    ItemId(EItemId),
 }
 
 /// Defines domain (or scope) which is target for a modification.
-#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum ModDomain {
     /// Ship or items belonging to it.
     Ship,
@@ -151,7 +142,7 @@ pub enum ModDomain {
 ///
 /// When in the non-stack mode, multiple values which share the same aggregation mode and the same
 /// aggregation key (the mode argument) are converted into a single value.
-#[derive(Debug, Copy, Clone, Hash, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub enum ModAggrMode {
     /// All modifications are applied.
     Stack,
@@ -164,7 +155,7 @@ pub enum ModAggrMode {
 /// Defines what kind of operation will be applied to a target attribute.
 ///
 /// All the operations are applied in the order they are defined in this enum.
-#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum ModOp {
     /// Assigns modification value to the target item attribute before all other operations are
     /// applied.

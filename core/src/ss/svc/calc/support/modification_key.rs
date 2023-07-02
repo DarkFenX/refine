@@ -3,7 +3,7 @@ use crate::{
     defs::{EAttrId, SsItemId},
 };
 
-use super::AffectorSpec;
+use super::SsAttrMod;
 
 // This is an auxiliary entity to make sure that overlapping modifications are
 // not applied. We can only guess what's in actual key in EVE, and what we have
@@ -12,25 +12,21 @@ use super::AffectorSpec;
 // "test_similar_modifiers.py"
 #[derive(Hash, Eq, PartialEq)]
 pub(in crate::ss::svc::calc) struct ModKey {
-    pub(in crate::ss::svc::calc) afor_item_id: SsItemId,
-    pub(in crate::ss::svc::calc) afor_attr_id: EAttrId,
+    pub(in crate::ss::svc::calc) src_item_id: SsItemId,
+    pub(in crate::ss::svc::calc) src_attr_id: EAttrId,
     pub(in crate::ss::svc::calc) op: ModOp,
 }
 impl ModKey {
-    fn new(afor_item_id: SsItemId, afor_attr_id: EAttrId, op: ModOp) -> Self {
+    fn new(src_item_id: SsItemId, src_attr_id: EAttrId, op: ModOp) -> Self {
         Self {
-            afor_item_id,
-            afor_attr_id,
+            src_item_id,
+            src_attr_id,
             op,
         }
     }
 }
-impl From<&AffectorSpec> for ModKey {
-    fn from(affector_spec: &AffectorSpec) -> Self {
-        ModKey::new(
-            affector_spec.item_id,
-            affector_spec.modifier.afor_attr_id,
-            affector_spec.modifier.op,
-        )
+impl From<&SsAttrMod> for ModKey {
+    fn from(modifier: &SsAttrMod) -> Self {
+        ModKey::new(modifier.src_item_id, modifier.src_attr_id, modifier.op)
     }
 }

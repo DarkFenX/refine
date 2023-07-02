@@ -4,6 +4,7 @@ pub(in crate::handler_json) use mod_aggr_mode::CModAggrMode;
 pub(in crate::handler_json) use mod_build_status::CModBuildStatus;
 pub(in crate::handler_json) use mod_domain::CModDomain;
 pub(in crate::handler_json) use mod_op::CModOp;
+pub(in crate::handler_json) use srq::CModSrq;
 pub(in crate::handler_json) use state::CState;
 pub(in crate::handler_json) use tgt_mode::CTgtMode;
 
@@ -13,5 +14,6 @@ mod mod_aggr_mode;
 mod mod_build_status;
 mod mod_domain;
 mod mod_op;
+mod srq;
 mod state;
 mod tgt_mode;

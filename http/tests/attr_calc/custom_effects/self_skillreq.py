@@ -2,6 +2,9 @@ from pytest import approx
 
 
 def test_missile_launcher_rof(client, consts):
+    # All missile specialization skills use the same effect, which has no modifiers defined in EVE
+    # data files. In EVE, they affect missile launchers which have skill which carries the effect
+    # as their skill requirement
     eve_src_attr = client.mk_eve_attr(id_=consts.Attr.rof_bonus)
     eve_tgt_attr = client.mk_eve_attr(id_=consts.Attr.speed)
     eve_effect = client.mk_eve_effect(id_=consts.Effect.self_rof)

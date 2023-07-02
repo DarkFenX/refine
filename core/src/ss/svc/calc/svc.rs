@@ -9,7 +9,7 @@ use crate::{
     ss::{
         item::SsItem,
         svc::{
-            calc::support::{AffectorSpec, ModKey, Modification, SsAttrVal},
+            calc::support::{ModKey, Modification, SsAttrMod, SsAttrVal},
             SsSvcs,
         },
         SsView,
@@ -86,10 +86,10 @@ impl SsSvcs {
     // Modification methods
     pub(in crate::ss::svc) fn calc_item_loaded(&mut self, item: &SsItem) {
         self.calc_data.attrs.add_item(item.get_id());
-        self.calc_data.affections.reg_afee(item);
+        self.calc_data.affections.reg_tgt(item);
     }
     pub(in crate::ss::svc) fn calc_item_unloaded(&mut self, item: &SsItem) {
-        self.calc_data.affections.unreg_afee(item);
+        self.calc_data.affections.unreg_tgt(item);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
         self.calc_data.caps.clear_item_caps(&item_id);
@@ -100,17 +100,11 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        let afor_specs = generate_local_afor_specs(item, effects);
-        self.calc_data
-            .affections
-            .reg_local_afor_specs(item.get_fit_id(), afor_specs.clone());
-        for afor_spec in afor_specs {
-            for item_id in self
-                .calc_data
-                .affections
-                .get_local_afee_items(&afor_spec, ss_view.items)
-            {
-                self.calc_force_attr_recalc(ss_view, &item_id, &afor_spec.modifier.afee_attr_id);
+        let mods = generate_ss_attr_mods(item, effects);
+        self.calc_data.affections.reg_mods(item.get_fit_id(), mods.clone());
+        for modifier in mods {
+            for item_id in self.calc_data.affections.get_tgt_items(&modifier, ss_view.items) {
+                self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
             }
         }
     }
@@ -120,19 +114,13 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        let afor_specs = generate_local_afor_specs(item, effects);
-        for afor_spec in afor_specs.iter() {
-            for item_id in self
-                .calc_data
-                .affections
-                .get_local_afee_items(&afor_spec, ss_view.items)
-            {
-                self.calc_force_attr_recalc(ss_view, &item_id, &afor_spec.modifier.afee_attr_id);
+        let mods = generate_ss_attr_mods(item, effects);
+        for modifier in mods.iter() {
+            for item_id in self.calc_data.affections.get_tgt_items(&modifier, ss_view.items) {
+                self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
             }
         }
-        self.calc_data
-            .affections
-            .unreg_local_afor_specs(item.get_fit_id(), afor_specs);
+        self.calc_data.affections.unreg_mods(item.get_fit_id(), mods);
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
         &mut self,
@@ -151,16 +139,16 @@ impl SsSvcs {
                 self.calc_force_attr_recalc(ss_view, item_id, capped_attr_id);
             }
         };
-        for afor_spec in self.calc_data.affections.get_afor_specs_by_afor(item_id) {
-            if afor_spec.modifier.afor_attr_id != *attr_id {
-                continue;
-            }
-            for afee_item_id in self
-                .calc_data
-                .affections
-                .get_local_afee_items(&afor_spec, ss_view.items)
-            {
-                self.calc_force_attr_recalc(ss_view, &afee_item_id, &afor_spec.modifier.afee_attr_id);
+        let mods = self
+            .calc_data
+            .affections
+            .iter_mods_for_src(item_id)
+            .filter(|v| v.src_attr_id == *attr_id)
+            .map(|v| *v)
+            .collect_vec();
+        for modifier in mods.iter() {
+            for tgt_item_id in self.calc_data.affections.get_tgt_items(&modifier, ss_view.items) {
+                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
             }
         }
     }
@@ -281,25 +269,25 @@ impl SsSvcs {
     ) -> HashMap<ModKey, Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = HashMap::new();
-        for afor_spec in self.calc_data.affections.get_afor_specs_by_afee(item).iter() {
-            if &afor_spec.modifier.afee_attr_id != attr_id {
+        for modifier in self.calc_data.affections.get_mods_for_tgt(item).iter() {
+            if &modifier.tgt_attr_id != attr_id {
                 continue;
             }
-            let val = match self.calc_get_item_attr_val(ss_view, &afor_spec.item_id, &afor_spec.modifier.afor_attr_id) {
+            let val = match self.calc_get_item_attr_val(ss_view, &modifier.src_item_id, &modifier.src_attr_id) {
                 Ok(v) => v,
                 _ => continue,
             };
-            let afor_item = match ss_view.items.get_item(&afor_spec.item_id) {
+            let src_item = match ss_view.items.get_item(&modifier.src_item_id) {
                 Ok(i) => i,
                 _ => continue,
             };
-            let pen_immune = match afor_item.get_category_id() {
+            let pen_immune = match src_item.get_category_id() {
                 Ok(cid) => PENALTY_IMMUNE_CATS.contains(&cid),
                 _ => continue,
             };
             // TODO: implement resistance support (add it to key as well? idk)
-            let mod_key = ModKey::from(afor_spec);
-            let modification = Modification::new(afor_spec.modifier.op, val.dogma, 1.0, ModAggrMode::Stack, pen_immune);
+            let mod_key = ModKey::from(modifier);
+            let modification = Modification::new(modifier.op, val.dogma, 1.0, ModAggrMode::Stack, pen_immune);
             mods.insert(mod_key, modification);
         }
         mods
@@ -352,13 +340,12 @@ fn process_adds(adds: &Vec<AttrVal>) -> AttrVal {
 }
 
 // Query- and modification-related functions
-fn generate_local_afor_specs(afor_item: &SsItem, effects: &Vec<ad::ArcEffect>) -> Vec<AffectorSpec> {
+fn generate_ss_attr_mods(src_item: &SsItem, src_effects: &Vec<ad::ArcEffect>) -> Vec<SsAttrMod> {
     let mut specs = Vec::new();
-    for effect in effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
-        for afor_mod in effect.mods.iter() {
-            let afor_item_id = afor_item.get_id();
-            let afor_spec = AffectorSpec::new(afor_item_id, effect.clone(), *afor_mod);
-            specs.push(afor_spec);
+    for effect in src_effects.iter().filter(|e| matches!(&e.tgt_mode, TgtMode::None)) {
+        for a_mod in effect.mods.iter() {
+            let ss_mod = SsAttrMod::from_a_data(src_item, effect, a_mod);
+            specs.push(ss_mod);
         }
     }
     specs

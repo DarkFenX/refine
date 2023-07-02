@@ -1,299 +1,319 @@
 use std::{collections::HashSet, hash::Hash};
 
 use crate::{
-    consts::{ModAfeeFilter, ModDomain},
+    consts::ModDomain,
     defs::{EItemGrpId, EItemId, SsFitId, SsItemId},
     ss::item::{SsItem, SsItems},
     util::KeyedStorage1L,
 };
 
-use super::affector::AffectorSpec;
+use super::modifier::{SsAttrMod, SsModTgtFilter};
 
 pub(in crate::ss::svc::calc) struct AffectionRegister {
-    // All known affectee items
-    // Contains: HashSet<affectee item IDs>
-    afees: HashSet<SsItemId>,
+    // All known target items
+    // Contains: HashSet<target item IDs>
+    tgts: HashSet<SsItemId>,
     // Top-level items which are representing an "owner" of domain (char, ship)
-    // Contains: KeyedStorage<(affectee fit ID, affectee domain), affectee item IDs>
-    afees_topdom: KeyedStorage1L<(SsFitId, ModDomain), SsItemId>,
+    // Contains: KeyedStorage<(target's fit ID, target's domain), target item IDs>
+    tgts_topdom: KeyedStorage1L<(SsFitId, ModDomain), SsItemId>,
     // Items belonging to certain fit and domain (e.g. char's implants, ship's modules)
-    // Contains: KeyedStorage<(affectee fit ID, affectee domain), affectee item IDs>
-    afees_pardom: KeyedStorage1L<(SsFitId, ModDomain), SsItemId>,
+    // Contains: KeyedStorage<(target's fit ID, target's domain), target item IDs>
+    tgts_pardom: KeyedStorage1L<(SsFitId, ModDomain), SsItemId>,
     // Items belonging to certain fit, domain and group
-    // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affectee item IDs>
-    afees_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, EItemGrpId), SsItemId>,
+    // Contains: KeyedStorage<(target's fit ID, target's domain, target's group ID), target item IDs>
+    tgts_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, EItemGrpId), SsItemId>,
     // Items belonging to certain fit and domain, and having certain skill requirement
-    // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affectee item IDs>
-    afees_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, EItemId), SsItemId>,
+    // Contains: KeyedStorage<(target's fit ID, target's domain, target's skillreq type ID), target item IDs>
+    tgts_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, EItemId), SsItemId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
-    // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affectee item IDs>
-    afees_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsItemId>,
-    // Affector specs registered for an item
-    // Contains: KeyedStorage<affector item ID, affector specs>
-    afors: KeyedStorage1L<SsItemId, AffectorSpec>,
-    // Affector specs which modify item directly
-    // Contains: KeyedStorage<affectee item ID, affector specs>
-    afors_direct: KeyedStorage1L<SsItemId, AffectorSpec>,
-    // All affector specs which affect top-level entities (via ship or character reference) are kept here
-    // Contains: KeyedStorage<(affectee fit ID, affectee domain), affector specs>
-    afors_topdom: KeyedStorage1L<(SsFitId, ModDomain), AffectorSpec>,
-    // Affector specs with modifiers which affect 'other' location are always
-    // stored here, regardless if they actually affect something or not
-    // Contains: KeyedStorage<affector item ID, affector specs>
-    afors_other: KeyedStorage1L<SsItemId, AffectorSpec>,
-    // Affector specs influencing all items belonging to certain fit and domain
-    // Contains: KeyedStorage<(affectee fit ID, affectee domain), affector specs>
-    afors_pardom: KeyedStorage1L<(SsFitId, ModDomain), AffectorSpec>,
-    // Affector specs influencing items belonging to certain fit, domain and group
-    // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee group ID), affector specs>
-    afors_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, EItemGrpId), AffectorSpec>,
-    // Affector specs influencing items belonging to certain fit and domain, and having certain skill requirement
-    // Contains: KeyedStorage<(affectee fit ID, affectee domain, affectee skillreq type ID), affector specs>
-    afors_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, EItemId), AffectorSpec>,
-    // Affector specs influencing owner-modifiable items belonging to certain fit and having certain skill requirement
-    // Contains: KeyedStorage<(affectee fit ID, affectee skillreq type ID), affector specs>
-    afors_own_srq: KeyedStorage1L<(SsFitId, EItemId), AffectorSpec>,
+    // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), target item IDs>
+    tgts_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsItemId>,
+    // Modifiers registered for an item
+    // Contains: KeyedStorage<modifier item ID, modifiers>
+    mods: KeyedStorage1L<SsItemId, SsAttrMod>,
+    // Modifiers which modify item directly
+    // Contains: KeyedStorage<modifier item ID, modifiers>
+    mods_direct: KeyedStorage1L<SsItemId, SsAttrMod>,
+    // All modifiers which modify top-level entities (via ship or character reference) are kept here
+    // Contains: KeyedStorage<(target's fit ID, target's domain), modifiers>
+    mods_topdom: KeyedStorage1L<(SsFitId, ModDomain), SsAttrMod>,
+    // Modifiers which modify 'other' location are always stored here, regardless if they actually
+    // modify something or not
+    // Contains: KeyedStorage<modifier item ID, modifiers>
+    mods_other: KeyedStorage1L<SsItemId, SsAttrMod>,
+    // Modifiers influencing all items belonging to certain fit and domain
+    // Contains: KeyedStorage<(target's fit ID, target's domain), modifiers>
+    mods_pardom: KeyedStorage1L<(SsFitId, ModDomain), SsAttrMod>,
+    // Modifiers influencing items belonging to certain fit, domain and group
+    // Contains: KeyedStorage<(target's fit ID, target's domain, target's group ID), modifiers>
+    mods_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, EItemGrpId), SsAttrMod>,
+    // Modifiers influencing items belonging to certain fit and domain, and having certain skill requirement
+    // Contains: KeyedStorage<(target's fit ID, target's domain, target's skillreq type ID), modifiers>
+    mods_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, EItemId), SsAttrMod>,
+    // Modifiers influencing owner-modifiable items belonging to certain fit and having certain skill requirement
+    // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), modifiers>
+    mods_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsAttrMod>,
 }
 impl AffectionRegister {
     pub(in crate::ss::svc::calc) fn new() -> Self {
         Self {
-            afees: HashSet::new(),
-            afees_topdom: KeyedStorage1L::new(),
-            afees_pardom: KeyedStorage1L::new(),
-            afees_pardom_grp: KeyedStorage1L::new(),
-            afees_pardom_srq: KeyedStorage1L::new(),
-            afees_own_srq: KeyedStorage1L::new(),
-            afors: KeyedStorage1L::new(),
-            afors_direct: KeyedStorage1L::new(),
-            afors_topdom: KeyedStorage1L::new(),
-            afors_other: KeyedStorage1L::new(),
-            afors_pardom: KeyedStorage1L::new(),
-            afors_pardom_grp: KeyedStorage1L::new(),
-            afors_pardom_srq: KeyedStorage1L::new(),
-            afors_own_srq: KeyedStorage1L::new(),
+            tgts: HashSet::new(),
+            tgts_topdom: KeyedStorage1L::new(),
+            tgts_pardom: KeyedStorage1L::new(),
+            tgts_pardom_grp: KeyedStorage1L::new(),
+            tgts_pardom_srq: KeyedStorage1L::new(),
+            tgts_own_srq: KeyedStorage1L::new(),
+            mods: KeyedStorage1L::new(),
+            mods_direct: KeyedStorage1L::new(),
+            mods_topdom: KeyedStorage1L::new(),
+            mods_other: KeyedStorage1L::new(),
+            mods_pardom: KeyedStorage1L::new(),
+            mods_pardom_grp: KeyedStorage1L::new(),
+            mods_pardom_srq: KeyedStorage1L::new(),
+            mods_own_srq: KeyedStorage1L::new(),
         }
     }
     // Query methods
-    pub(in crate::ss::svc::calc) fn get_local_afee_items(
-        &self,
-        afor_spec: &AffectorSpec,
-        items: &SsItems,
-    ) -> Vec<SsItemId> {
-        let mut afees = Vec::new();
-        let afor_item = match items.get_item(&afor_spec.item_id) {
+    pub(in crate::ss::svc::calc) fn get_tgt_items(&self, modifier: &SsAttrMod, items: &SsItems) -> Vec<SsItemId> {
+        let mut tgts = Vec::new();
+        let src_item = match items.get_item(&modifier.src_item_id) {
             Ok(i) => i,
-            _ => return afees,
+            _ => return tgts,
         };
-        let afor_fit_id = afor_item.get_fit_id();
-        match (afor_spec.modifier.afee_filter, afor_fit_id) {
-            (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
-                (ModDomain::Item, _) => afees.push(afor_spec.item_id),
-                (ModDomain::Char, Some(fid)) => {
-                    extend_vec_from_storage(&mut afees, &self.afees_topdom, &(fid, ModDomain::Char))
+        let src_fit_id_opt = src_item.get_fit_id();
+        match (modifier.tgt_filter, src_fit_id_opt) {
+            (SsModTgtFilter::Direct(dom), _) => match (dom, src_fit_id_opt) {
+                (ModDomain::Item, _) => tgts.push(modifier.src_item_id),
+                (ModDomain::Char, Some(src_fit_id)) => {
+                    extend_vec_from_storage(&mut tgts, &self.tgts_topdom, &(src_fit_id, ModDomain::Char))
                 }
-                (ModDomain::Ship, Some(fid)) => {
-                    extend_vec_from_storage(&mut afees, &self.afees_topdom, &(fid, ModDomain::Ship))
+                (ModDomain::Ship, Some(src_fit_id)) => {
+                    extend_vec_from_storage(&mut tgts, &self.tgts_topdom, &(src_fit_id, ModDomain::Ship))
                 }
-                (ModDomain::Other, _) => match afor_item.get_other() {
-                    Some(oid) => afees.push(oid),
+                (ModDomain::Other, _) => match src_item.get_other() {
+                    Some(other_item_id) => tgts.push(other_item_id),
                     _ => (),
                 },
                 _ => (),
             },
-            (ModAfeeFilter::Loc(d), Some(fid)) => extend_vec_from_storage(&mut afees, &self.afees_pardom, &(fid, d)),
-            (ModAfeeFilter::LocGrp(d, gid), Some(fid)) => {
-                extend_vec_from_storage(&mut afees, &self.afees_pardom_grp, &(fid, d, gid))
+            (SsModTgtFilter::Loc(dom), Some(src_fit_id)) => {
+                extend_vec_from_storage(&mut tgts, &self.tgts_pardom, &(src_fit_id, dom))
             }
-            (ModAfeeFilter::LocSrq(d, sid), Some(fid)) => {
-                extend_vec_from_storage(&mut afees, &self.afees_pardom_srq, &(fid, d, sid))
+            (SsModTgtFilter::LocGrp(dom, grp_id), Some(src_fit_id)) => {
+                extend_vec_from_storage(&mut tgts, &self.tgts_pardom_grp, &(src_fit_id, dom, grp_id))
             }
-            (ModAfeeFilter::OwnSrq(_, sid), Some(fid)) => {
-                extend_vec_from_storage(&mut afees, &self.afees_own_srq, &(fid, sid))
+            (SsModTgtFilter::LocSrq(dom, srq_id), Some(src_fit_id)) => {
+                extend_vec_from_storage(&mut tgts, &self.tgts_pardom_srq, &(src_fit_id, dom, srq_id))
+            }
+            (SsModTgtFilter::OwnSrq(_, srq_id), Some(src_fit_id)) => {
+                extend_vec_from_storage(&mut tgts, &self.tgts_own_srq, &(src_fit_id, srq_id))
             }
             _ => (),
         }
-        afees
+        tgts
     }
-    pub(in crate::ss::svc::calc) fn get_projected_afee_items(&self, afor_spec: SsItemId, tgt_items: SsItemId) {}
-    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afee(&self, afee_item: &SsItem) -> Vec<AffectorSpec> {
-        let afee_item_id = afee_item.get_id();
-        let afee_fit_id = afee_item.get_fit_id();
-        let afee_topdom = afee_item.get_top_domain();
-        let afee_pardom = afee_item.get_parent_domain();
-        let afee_grp_id = afee_item.get_group_id();
-        let afee_srqs = afee_item.get_skill_reqs();
-        let mut afors = Vec::new();
-        extend_vec_from_storage(&mut afors, &self.afors_direct, &afee_item_id);
-        match (afee_fit_id, afee_topdom) {
-            (Some(fid), Some(td)) => extend_vec_from_storage(&mut afors, &self.afors_topdom, &(fid, td)),
-            _ => (),
-        }
-        match afee_item.get_other() {
-            Some(o) => extend_vec_from_storage(&mut afors, &self.afors_other, &o),
-            _ => (),
-        }
-        match (afee_fit_id, afee_pardom) {
-            (Some(fid), Some(pd)) => extend_vec_from_storage(&mut afors, &self.afors_pardom, &(fid, pd)),
-            _ => (),
-        }
-        match (afee_fit_id, afee_pardom, afee_grp_id) {
-            (Some(fid), Some(pd), Ok(gid)) => {
-                extend_vec_from_storage(&mut afors, &self.afors_pardom_grp, &(fid, pd, gid));
+    pub(in crate::ss::svc::calc) fn get_mods_for_tgt(&self, tgt_item: &SsItem) -> Vec<SsAttrMod> {
+        let tgt_item_id = tgt_item.get_id();
+        let tgt_fit_id_opt = tgt_item.get_fit_id();
+        let tgt_topdom_opt = tgt_item.get_top_domain();
+        let tgt_pardom_opt = tgt_item.get_parent_domain();
+        let tgt_grp_id_res = tgt_item.get_group_id();
+        let tgt_srqs_res = tgt_item.get_skill_reqs();
+        let mut mods = Vec::new();
+        extend_vec_from_storage(&mut mods, &self.mods_direct, &tgt_item_id);
+        match (tgt_fit_id_opt, tgt_topdom_opt) {
+            (Some(tgt_fit_id), Some(tgt_topdom)) => {
+                extend_vec_from_storage(&mut mods, &self.mods_topdom, &(tgt_fit_id, tgt_topdom))
             }
             _ => (),
         }
-        match (afee_fit_id, afee_pardom, &afee_srqs) {
-            (Some(fid), Some(pd), Ok(srqs)) => {
-                for skill_a_item_id in srqs.keys() {
-                    extend_vec_from_storage(&mut afors, &self.afors_pardom_srq, &(fid, pd, *skill_a_item_id));
+        match tgt_item.get_other() {
+            Some(other_item_id) => extend_vec_from_storage(&mut mods, &self.mods_other, &other_item_id),
+            _ => (),
+        }
+        match (tgt_fit_id_opt, tgt_pardom_opt) {
+            (Some(tgt_fit_id), Some(tgt_pardom)) => {
+                extend_vec_from_storage(&mut mods, &self.mods_pardom, &(tgt_fit_id, tgt_pardom))
+            }
+            _ => (),
+        }
+        match (tgt_fit_id_opt, tgt_pardom_opt, tgt_grp_id_res) {
+            (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_grp_id)) => {
+                extend_vec_from_storage(&mut mods, &self.mods_pardom_grp, &(tgt_fit_id, tgt_pardom, tgt_grp_id));
+            }
+            _ => (),
+        }
+        match (tgt_fit_id_opt, tgt_pardom_opt, &tgt_srqs_res) {
+            (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_srqs)) => {
+                for skill_a_item_id in tgt_srqs.keys() {
+                    extend_vec_from_storage(
+                        &mut mods,
+                        &self.mods_pardom_srq,
+                        &(tgt_fit_id, tgt_pardom, *skill_a_item_id),
+                    );
                 }
             }
             _ => (),
         }
-        if afee_item.is_owner_modifiable() {
-            match (afee_fit_id, &afee_srqs) {
-                (Some(fid), Ok(srqs)) => {
-                    for skill_a_item_id in srqs.keys() {
-                        extend_vec_from_storage(&mut afors, &self.afors_own_srq, &(fid, *skill_a_item_id));
+        if tgt_item.is_owner_modifiable() {
+            match (tgt_fit_id_opt, &tgt_srqs_res) {
+                (Some(tgt_fit_id), Ok(tgt_srqs)) => {
+                    for skill_a_item_id in tgt_srqs.keys() {
+                        extend_vec_from_storage(&mut mods, &self.mods_own_srq, &(tgt_fit_id, *skill_a_item_id));
                     }
                 }
                 _ => (),
             }
         }
-        afors
+        mods
     }
-    pub(in crate::ss::svc::calc) fn get_afor_specs_by_afor(&self, afor_item_id: &SsItemId) -> Vec<AffectorSpec> {
-        self.afors
-            .get(afor_item_id)
-            .map(|v| v.iter().map(|v| v.clone()).collect())
-            .unwrap_or_else(|| Vec::new())
+    pub(in crate::ss::svc::calc) fn iter_mods_for_src(
+        &self,
+        src_item_id: &SsItemId,
+    ) -> impl Iterator<Item = &SsAttrMod> {
+        self.mods.get(src_item_id).into_iter().flatten()
     }
     // Modification methods
-    pub(in crate::ss::svc::calc) fn reg_afee(&mut self, afee_item: &SsItem) {
-        let afee_item_id = afee_item.get_id();
-        let afee_fit_id = afee_item.get_fit_id();
-        let afee_topdom = afee_item.get_top_domain();
-        let afee_pardom = afee_item.get_parent_domain();
-        let afee_grp_id = afee_item.get_group_id();
-        let afee_srqs = afee_item.get_skill_reqs();
-        self.afees.insert(afee_item_id);
-        match (afee_fit_id, afee_topdom) {
-            (Some(fid), Some(td)) => self.afees_topdom.add((fid, td), afee_item_id),
+    pub(in crate::ss::svc::calc) fn reg_tgt(&mut self, tgt_item: &SsItem) {
+        let tgt_item_id = tgt_item.get_id();
+        let tgt_fit_id_opt = tgt_item.get_fit_id();
+        let tgt_topdom_opt = tgt_item.get_top_domain();
+        let tgt_pardom_opt = tgt_item.get_parent_domain();
+        let tgt_grp_id_res = tgt_item.get_group_id();
+        let tgt_srqs_res = tgt_item.get_skill_reqs();
+        self.tgts.insert(tgt_item_id);
+        match (tgt_fit_id_opt, tgt_topdom_opt) {
+            (Some(tgt_fit_id), Some(tgt_topdom)) => self.tgts_topdom.add((tgt_fit_id, tgt_topdom), tgt_item_id),
             _ => (),
         }
-        match (afee_fit_id, afee_pardom) {
-            (Some(fid), Some(pd)) => self.afees_pardom.add((fid, pd), afee_item_id),
+        match (tgt_fit_id_opt, tgt_pardom_opt) {
+            (Some(tgt_fit_id), Some(tgt_pardom)) => self.tgts_pardom.add((tgt_fit_id, tgt_pardom), tgt_item_id),
             _ => (),
         }
-        match (afee_fit_id, afee_pardom, afee_grp_id) {
-            (Some(fid), Some(pd), Ok(gid)) => {
-                self.afees_pardom_grp.add((fid, pd, gid), afee_item_id);
+        match (tgt_fit_id_opt, tgt_pardom_opt, tgt_grp_id_res) {
+            (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_grp_id)) => {
+                self.tgts_pardom_grp
+                    .add((tgt_fit_id, tgt_pardom, tgt_grp_id), tgt_item_id);
             }
             _ => (),
         }
-        match (afee_fit_id, afee_pardom, &afee_srqs) {
-            (Some(fid), Some(pd), Ok(srqs)) => {
-                for skill_a_item_id in srqs.keys() {
-                    self.afees_pardom_srq.add((fid, pd, *skill_a_item_id), afee_item_id);
+        match (tgt_fit_id_opt, tgt_pardom_opt, &tgt_srqs_res) {
+            (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_srqs)) => {
+                for skill_a_item_id in tgt_srqs.keys() {
+                    self.tgts_pardom_srq
+                        .add((tgt_fit_id, tgt_pardom, *skill_a_item_id), tgt_item_id);
                 }
             }
             _ => (),
         }
-        if afee_item.is_owner_modifiable() {
-            match (afee_fit_id, &afee_srqs) {
-                (Some(fid), Ok(srqs)) => {
-                    for skill_a_item_id in srqs.keys() {
-                        self.afees_own_srq.add((fid, *skill_a_item_id), afee_item_id);
+        if tgt_item.is_owner_modifiable() {
+            match (tgt_fit_id_opt, &tgt_srqs_res) {
+                (Some(tgt_fit_id), Ok(tgt_srqs)) => {
+                    for skill_a_item_id in tgt_srqs.keys() {
+                        self.tgts_own_srq.add((tgt_fit_id, *skill_a_item_id), tgt_item_id);
                     }
                 }
                 _ => (),
             }
         }
     }
-    pub(in crate::ss::svc::calc) fn unreg_afee(&mut self, afee_item: &SsItem) {
-        let afee_item_id = afee_item.get_id();
-        let afee_fit_id = afee_item.get_fit_id();
-        let afee_topdom = afee_item.get_top_domain();
-        let afee_pardom = afee_item.get_parent_domain();
-        let afee_grp_id = afee_item.get_group_id();
-        let afee_srqs = afee_item.get_skill_reqs();
-        self.afees.insert(afee_item_id);
-        match (afee_fit_id, afee_topdom) {
-            (Some(fid), Some(td)) => self.afees_topdom.remove(&(fid, td), &afee_item_id),
+    pub(in crate::ss::svc::calc) fn unreg_tgt(&mut self, tgt_item: &SsItem) {
+        let tgt_item_id = tgt_item.get_id();
+        let tgt_fit_id_opt = tgt_item.get_fit_id();
+        let tgt_topdom_opt = tgt_item.get_top_domain();
+        let tgt_pardom_opt = tgt_item.get_parent_domain();
+        let tgt_grp_id_res = tgt_item.get_group_id();
+        let tgt_srqs_res = tgt_item.get_skill_reqs();
+        self.tgts.insert(tgt_item_id);
+        match (tgt_fit_id_opt, tgt_topdom_opt) {
+            (Some(tgt_fit_id), Some(tgt_topdom)) => self.tgts_topdom.remove(&(tgt_fit_id, tgt_topdom), &tgt_item_id),
             _ => (),
         }
-        match (afee_fit_id, afee_pardom) {
-            (Some(fid), Some(pd)) => self.afees_pardom.remove(&(fid, pd), &afee_item_id),
+        match (tgt_fit_id_opt, tgt_pardom_opt) {
+            (Some(tgt_fit_id), Some(tgt_pardom)) => self.tgts_pardom.remove(&(tgt_fit_id, tgt_pardom), &tgt_item_id),
             _ => (),
         }
-        match (afee_fit_id, afee_pardom, afee_grp_id) {
-            (Some(fid), Some(pd), Ok(gid)) => {
-                self.afees_pardom_grp.remove(&(fid, pd, gid), &afee_item_id);
+        match (tgt_fit_id_opt, tgt_pardom_opt, tgt_grp_id_res) {
+            (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_grp_id)) => {
+                self.tgts_pardom_grp
+                    .remove(&(tgt_fit_id, tgt_pardom, tgt_grp_id), &tgt_item_id);
             }
             _ => (),
         }
-        match (afee_fit_id, afee_pardom, &afee_srqs) {
-            (Some(fid), Some(pd), Ok(srqs)) => {
-                for skill_a_item_id in srqs.keys() {
-                    self.afees_pardom_srq
-                        .remove(&(fid, pd, *skill_a_item_id), &afee_item_id);
+        match (tgt_fit_id_opt, tgt_pardom_opt, &tgt_srqs_res) {
+            (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_srqs)) => {
+                for skill_a_item_id in tgt_srqs.keys() {
+                    self.tgts_pardom_srq
+                        .remove(&(tgt_fit_id, tgt_pardom, *skill_a_item_id), &tgt_item_id);
                 }
             }
             _ => (),
         }
-        if afee_item.is_owner_modifiable() {
-            match (afee_fit_id, &afee_srqs) {
-                (Some(fid), Ok(srqs)) => {
-                    for skill_a_item_id in srqs.keys() {
-                        self.afees_own_srq.remove(&(fid, *skill_a_item_id), &afee_item_id);
+        if tgt_item.is_owner_modifiable() {
+            match (tgt_fit_id_opt, &tgt_srqs_res) {
+                (Some(tgt_fit_id), Ok(tgt_srqs)) => {
+                    for skill_a_item_id in tgt_srqs.keys() {
+                        self.tgts_own_srq.remove(&(tgt_fit_id, *skill_a_item_id), &tgt_item_id);
                     }
                 }
                 _ => (),
             }
         }
     }
-    pub(in crate::ss::svc::calc) fn reg_local_afor_specs(
-        &mut self,
-        afor_fit_id: Option<SsFitId>,
-        afor_specs: Vec<AffectorSpec>,
-    ) {
-        for afor_spec in afor_specs {
-            self.afors.add(afor_spec.item_id, afor_spec.clone());
-            match (afor_spec.modifier.afee_filter, afor_fit_id) {
-                (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
-                    (ModDomain::Item, _) => self.afors_direct.add(afor_spec.item_id, afor_spec),
-                    (ModDomain::Char, Some(fid)) => self.afors_topdom.add((fid, ModDomain::Char), afor_spec),
-                    (ModDomain::Ship, Some(fid)) => self.afors_topdom.add((fid, ModDomain::Ship), afor_spec),
-                    (ModDomain::Other, _) => self.afors_other.add(afor_spec.item_id, afor_spec),
+    pub(in crate::ss::svc::calc) fn reg_mods(&mut self, src_fit_id_opt: Option<SsFitId>, mods: Vec<SsAttrMod>) {
+        for modifier in mods {
+            self.mods.add(modifier.src_item_id, modifier);
+            match (modifier.tgt_filter, src_fit_id_opt) {
+                (SsModTgtFilter::Direct(dom), _) => match (dom, src_fit_id_opt) {
+                    (ModDomain::Item, _) => self.mods_direct.add(modifier.src_item_id, modifier),
+                    (ModDomain::Char, Some(src_fit_id)) => {
+                        self.mods_topdom.add((src_fit_id, ModDomain::Char), modifier)
+                    }
+                    (ModDomain::Ship, Some(src_fit_id)) => {
+                        self.mods_topdom.add((src_fit_id, ModDomain::Ship), modifier)
+                    }
+                    (ModDomain::Other, _) => self.mods_other.add(modifier.src_item_id, modifier),
                     _ => (),
                 },
-                (ModAfeeFilter::Loc(d), Some(fid)) => self.afors_pardom.add((fid, d), afor_spec),
-                (ModAfeeFilter::LocGrp(d, gid), Some(fid)) => self.afors_pardom_grp.add((fid, d, gid), afor_spec),
-                (ModAfeeFilter::LocSrq(d, srq), Some(fid)) => self.afors_pardom_srq.add((fid, d, srq), afor_spec),
-                (ModAfeeFilter::OwnSrq(_, srq), Some(fid)) => self.afors_own_srq.add((fid, srq), afor_spec),
+                (SsModTgtFilter::Loc(dom), Some(src_fit_id)) => self.mods_pardom.add((src_fit_id, dom), modifier),
+                (SsModTgtFilter::LocGrp(dom, grp_id), Some(src_fit_id)) => {
+                    self.mods_pardom_grp.add((src_fit_id, dom, grp_id), modifier)
+                }
+                (SsModTgtFilter::LocSrq(dom, srq_id), Some(src_fit_id)) => {
+                    self.mods_pardom_srq.add((src_fit_id, dom, srq_id), modifier)
+                }
+                (SsModTgtFilter::OwnSrq(_, srq_id), Some(src_fit_id)) => {
+                    self.mods_own_srq.add((src_fit_id, srq_id), modifier)
+                }
                 _ => (),
             }
         }
     }
-    pub(in crate::ss::svc::calc) fn unreg_local_afor_specs(
-        &mut self,
-        afor_fit_id: Option<SsFitId>,
-        afor_specs: Vec<AffectorSpec>,
-    ) {
-        for afor_spec in afor_specs {
-            self.afors.remove(&afor_spec.item_id, &afor_spec);
-            match (afor_spec.modifier.afee_filter, afor_fit_id) {
-                (ModAfeeFilter::Direct(d), _) => match (d, afor_fit_id) {
-                    (ModDomain::Item, _) => self.afors_direct.remove(&afor_spec.item_id, &afor_spec),
-                    (ModDomain::Char, Some(fid)) => self.afors_topdom.remove(&(fid, ModDomain::Char), &afor_spec),
-                    (ModDomain::Ship, Some(fid)) => self.afors_topdom.remove(&(fid, ModDomain::Ship), &afor_spec),
-                    (ModDomain::Other, _) => self.afors_other.remove(&afor_spec.item_id, &afor_spec),
+    pub(in crate::ss::svc::calc) fn unreg_mods(&mut self, src_fit_id_opt: Option<SsFitId>, mods: Vec<SsAttrMod>) {
+        for modifier in mods {
+            self.mods.remove(&modifier.src_item_id, &modifier);
+            match (modifier.tgt_filter, src_fit_id_opt) {
+                (SsModTgtFilter::Direct(dom), _) => match (dom, src_fit_id_opt) {
+                    (ModDomain::Item, _) => self.mods_direct.remove(&modifier.src_item_id, &modifier),
+                    (ModDomain::Char, Some(src_fit_id)) => {
+                        self.mods_topdom.remove(&(src_fit_id, ModDomain::Char), &modifier)
+                    }
+                    (ModDomain::Ship, Some(src_fit_id)) => {
+                        self.mods_topdom.remove(&(src_fit_id, ModDomain::Ship), &modifier)
+                    }
+                    (ModDomain::Other, _) => self.mods_other.remove(&modifier.src_item_id, &modifier),
                     _ => (),
                 },
-                (ModAfeeFilter::Loc(d), Some(fid)) => self.afors_pardom.remove(&(fid, d), &afor_spec),
-                (ModAfeeFilter::LocGrp(d, gid), Some(fid)) => self.afors_pardom_grp.remove(&(fid, d, gid), &afor_spec),
-                (ModAfeeFilter::LocSrq(d, srq), Some(fid)) => self.afors_pardom_srq.remove(&(fid, d, srq), &afor_spec),
-                (ModAfeeFilter::OwnSrq(_, srq), Some(fid)) => self.afors_own_srq.remove(&(fid, srq), &afor_spec),
+                (SsModTgtFilter::Loc(dom), Some(src_fit_id)) => self.mods_pardom.remove(&(src_fit_id, dom), &modifier),
+                (SsModTgtFilter::LocGrp(dom, grp_id), Some(src_fit_id)) => {
+                    self.mods_pardom_grp.remove(&(src_fit_id, dom, grp_id), &modifier)
+                }
+                (SsModTgtFilter::LocSrq(dom, srq_id), Some(src_fit_id)) => {
+                    self.mods_pardom_srq.remove(&(src_fit_id, dom, srq_id), &modifier)
+                }
+                (SsModTgtFilter::OwnSrq(_, srq), Some(src_fit_id)) => {
+                    self.mods_own_srq.remove(&(src_fit_id, srq), &modifier)
+                }
                 _ => (),
             }
         }
