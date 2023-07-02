@@ -1,7 +1,8 @@
 use crate::{
     ad,
-    consts::{ModRack, State},
+    consts::ModRack,
     defs::{EItemId, Idx, SsFitId, SsItemId},
+    shr::State,
     src::Src,
     util::Named,
 };

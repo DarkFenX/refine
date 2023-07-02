@@ -1,6 +1,7 @@
 use crate::{
-    consts::{ModRack, State},
+    consts::ModRack,
     defs::{EItemId, Idx, SsFitId, SsItemId},
+    shr::State,
     ss::item::SsModule,
 };
 

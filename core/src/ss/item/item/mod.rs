@@ -16,8 +16,9 @@ pub(in crate::ss) use sw_effect::SsSwEffect;
 
 use crate::{
     ad,
-    consts::{ModDomain, State},
+    consts::ModDomain,
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SsFitId, SsItemId},
+    shr::State,
     src::Src,
     util::{Error, ErrorKind, Named, Result},
 };

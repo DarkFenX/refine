@@ -1,7 +1,7 @@
 use crate::{
     ad,
-    consts::State,
     defs::{Amount, EItemId, SsFitId, SsItemId},
+    shr::State,
     src::Src,
     util::Named,
 };

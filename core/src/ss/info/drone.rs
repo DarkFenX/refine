@@ -1,6 +1,6 @@
 use crate::{
-    consts::State,
     defs::{EItemId, SsFitId, SsItemId},
+    shr::State,
     ss::item::SsDrone,
 };
 

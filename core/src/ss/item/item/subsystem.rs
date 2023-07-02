@@ -1,7 +1,8 @@
 use crate::{
     ad,
-    consts::{attrs, State},
+    consts::attrs,
     defs::{EItemId, SlotNumber, SsFitId, SsItemId},
+    shr::State,
     src::Src,
     util::Named,
 };

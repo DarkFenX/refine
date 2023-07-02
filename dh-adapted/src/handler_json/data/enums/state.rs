@@ -7,25 +7,25 @@ pub(in crate::handler_json) enum CState {
     Active,
     Overload,
 }
-impl From<&rc::consts::State> for CState {
-    fn from(state: &rc::consts::State) -> Self {
+impl From<&rc::State> for CState {
+    fn from(state: &rc::State) -> Self {
         match state {
-            rc::consts::State::Ghost => Self::Ghost,
-            rc::consts::State::Offline => Self::Offline,
-            rc::consts::State::Online => Self::Online,
-            rc::consts::State::Active => Self::Active,
-            rc::consts::State::Overload => Self::Overload,
+            rc::State::Ghost => Self::Ghost,
+            rc::State::Offline => Self::Offline,
+            rc::State::Online => Self::Online,
+            rc::State::Active => Self::Active,
+            rc::State::Overload => Self::Overload,
         }
     }
 }
-impl Into<rc::consts::State> for &CState {
-    fn into(self) -> rc::consts::State {
+impl Into<rc::State> for &CState {
+    fn into(self) -> rc::State {
         match self {
-            CState::Ghost => rc::consts::State::Ghost,
-            CState::Offline => rc::consts::State::Offline,
-            CState::Online => rc::consts::State::Online,
-            CState::Active => rc::consts::State::Active,
-            CState::Overload => rc::consts::State::Overload,
+            CState::Ghost => rc::State::Ghost,
+            CState::Offline => rc::State::Offline,
+            CState::Online => rc::State::Online,
+            CState::Active => rc::State::Active,
+            CState::Overload => rc::State::Overload,
         }
     }
 }

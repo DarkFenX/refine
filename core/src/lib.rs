@@ -19,11 +19,12 @@
 //! - you create [`SolarSystem`](crate::SolarSystem), and manipulate it to create fits with ships
 //! and items, and fetch data and stats
 
-pub use consts::{EffectMode, ModRack, OrdAddMode, State};
+pub use consts::{EffectMode, ModRack, OrdAddMode};
 pub use defs::{
     Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
     EMutaId, Idx, SkillLevel, SsFitId, SsItemId, VERSION,
 };
+pub use shr::State;
 pub use src::Src;
 pub use ss::{
     info::{
@@ -40,6 +41,7 @@ pub(crate) mod config;
 pub mod consts;
 mod defs;
 pub mod ed;
+mod shr;
 mod src;
 mod ss;
 mod util;

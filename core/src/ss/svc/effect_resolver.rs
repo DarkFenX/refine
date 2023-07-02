@@ -1,6 +1,7 @@
 use crate::{
     ad,
-    consts::{effects, EffectMode, State},
+    consts::{effects, EffectMode},
+    shr::State,
     ss::{item::SsItem, SsView},
 };
 

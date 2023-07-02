@@ -6,9 +6,10 @@ use std::{
 use crate::{
     ad,
     adg::GData,
-    consts::{effcats, get_abil_effect, ModAfeeFilter, ModBuildStatus, ModDomain, ModOp, ModSrq, State, TgtMode},
+    consts::{effcats, get_abil_effect, ModAfeeFilter, ModBuildStatus, ModDomain, ModOp, ModSrq, TgtMode},
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
     ed,
+    shr::State,
     util::{IntError, IntResult, Named},
 };
 
