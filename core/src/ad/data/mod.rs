@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAttrMod};
-pub use effect::{AAttrMod, AEffect};
+pub use effect::{AAttrMod, AEffect, ModBuildStatus};
 pub use item::{AItem, AItemEffData};
 pub use muta::{AMuta, AMutaAttrRange};
 

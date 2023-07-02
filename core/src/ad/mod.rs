@@ -6,7 +6,7 @@
 
 pub use data::{
     AAttr, AAttrMod, ABuff, ABuffAttrMod, AData, AEffect, AItem, AItemEffData, AMuta, AMutaAttrRange, ArcAttr, ArcBuff,
-    ArcEffect, ArcItem, ArcMuta,
+    ArcEffect, ArcItem, ArcMuta, ModBuildStatus,
 };
 pub use handler::AdaptedDataHandler;
 pub use result::AResult;

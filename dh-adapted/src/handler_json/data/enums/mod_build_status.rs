@@ -7,25 +7,25 @@ pub(in crate::handler_json) enum CModBuildStatus {
     Success,
     Custom,
 }
-impl From<&rc::consts::ModBuildStatus> for CModBuildStatus {
-    fn from(mod_build_status: &rc::consts::ModBuildStatus) -> Self {
+impl From<&rc::ad::ModBuildStatus> for CModBuildStatus {
+    fn from(mod_build_status: &rc::ad::ModBuildStatus) -> Self {
         match mod_build_status {
-            rc::consts::ModBuildStatus::Unbuilt => Self::Unbuilt,
-            rc::consts::ModBuildStatus::Error(fails) => Self::Error(*fails),
-            rc::consts::ModBuildStatus::SuccessPartial(fails) => Self::SuccessPartial(*fails),
-            rc::consts::ModBuildStatus::Success => Self::Success,
-            rc::consts::ModBuildStatus::Custom => Self::Custom,
+            rc::ad::ModBuildStatus::Unbuilt => Self::Unbuilt,
+            rc::ad::ModBuildStatus::Error(fails) => Self::Error(*fails),
+            rc::ad::ModBuildStatus::SuccessPartial(fails) => Self::SuccessPartial(*fails),
+            rc::ad::ModBuildStatus::Success => Self::Success,
+            rc::ad::ModBuildStatus::Custom => Self::Custom,
         }
     }
 }
-impl Into<rc::consts::ModBuildStatus> for &CModBuildStatus {
-    fn into(self) -> rc::consts::ModBuildStatus {
+impl Into<rc::ad::ModBuildStatus> for &CModBuildStatus {
+    fn into(self) -> rc::ad::ModBuildStatus {
         match self {
-            CModBuildStatus::Unbuilt => rc::consts::ModBuildStatus::Unbuilt,
-            CModBuildStatus::Error(fails) => rc::consts::ModBuildStatus::Error(*fails),
-            CModBuildStatus::SuccessPartial(fails) => rc::consts::ModBuildStatus::SuccessPartial(*fails),
-            CModBuildStatus::Success => rc::consts::ModBuildStatus::Success,
-            CModBuildStatus::Custom => rc::consts::ModBuildStatus::Custom,
+            CModBuildStatus::Unbuilt => rc::ad::ModBuildStatus::Unbuilt,
+            CModBuildStatus::Error(fails) => rc::ad::ModBuildStatus::Error(*fails),
+            CModBuildStatus::SuccessPartial(fails) => rc::ad::ModBuildStatus::SuccessPartial(*fails),
+            CModBuildStatus::Success => rc::ad::ModBuildStatus::Success,
+            CModBuildStatus::Custom => rc::ad::ModBuildStatus::Custom,
         }
     }
 }

@@ -6,7 +6,7 @@ use std::{
 use crate::{
     ad,
     adg::GData,
-    consts::{effcats, get_abil_effect, ModAfeeFilter, ModBuildStatus, ModDomain, ModOp, ModSrq, TgtMode},
+    consts::{effcats, get_abil_effect, ModAfeeFilter, ModDomain, ModOp, ModSrq, TgtMode},
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
     ed,
     shr::State,
@@ -61,7 +61,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
             e_effect.tracking_attr_id,
             e_effect.usage_chance_attr_id,
             e_effect.resist_attr_id,
-            ModBuildStatus::Unbuilt,
+            ad::ModBuildStatus::Unbuilt,
             Vec::new(),
             Vec::new(),
         );
@@ -113,11 +113,11 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
             }
         }
         match mod_errs {
-            0 => a_effect.mod_build_status = ModBuildStatus::Success,
+            0 => a_effect.mod_build_status = ad::ModBuildStatus::Success,
             _ if !a_effect.mods.is_empty() || !a_effect.stop_ids.is_empty() => {
-                a_effect.mod_build_status = ModBuildStatus::SuccessPartial(mod_errs)
+                a_effect.mod_build_status = ad::ModBuildStatus::SuccessPartial(mod_errs)
             }
-            _ => a_effect.mod_build_status = ModBuildStatus::Error(mod_errs),
+            _ => a_effect.mod_build_status = ad::ModBuildStatus::Error(mod_errs),
         }
         a_effects.push(a_effect);
     }

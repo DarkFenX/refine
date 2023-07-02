@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    consts::{attrs, effects, ModAfeeFilter, ModBuildStatus, ModDomain, ModOp, ModSrq},
+    consts::{attrs, effects, ModAfeeFilter, ModDomain, ModOp, ModSrq},
     shr::State,
 };
 
@@ -35,6 +35,6 @@ fn mk_self_skillreq_modifiers_launcher_rof(a_data: &mut ad::AData) {
             attrs::SPEED,
         );
         effect.mods.push(modifier);
-        effect.mod_build_status = ModBuildStatus::Custom;
+        effect.mod_build_status = ad::ModBuildStatus::Custom;
     }
 }

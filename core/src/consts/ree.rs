@@ -1,39 +1,4 @@
-use crate::defs::{Amount, EBuffId, EItemGrpId, EItemId, Idx};
-
-#[derive(Copy, Clone, Debug, PartialEq)]
-pub enum ModRack {
-    High,
-    Mid,
-    Low,
-}
-impl std::fmt::Display for ModRack {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::High => write!(f, "high"),
-            Self::Mid => write!(f, "mid"),
-            Self::Low => write!(f, "low"),
-        }
-    }
-}
-
-/// Effect modifier build statuses.
-///
-/// During cache generation, the library converts modifiers of an effect into internal format.
-/// Some of those modifiers might not make it through conversion process due to various reasons.
-/// Variants of this enum are stored on an effect, to keep info about conversion status.
-#[derive(Debug)]
-pub enum ModBuildStatus {
-    /// Modifiers haven't been built yet.
-    Unbuilt,
-    /// All modifiers failed conversion, with a failure count.
-    Error(Amount),
-    /// Some modifiers failed conversion, with a failure count.
-    SuccessPartial(Amount),
-    /// Conversion was successful.
-    Success,
-    /// Modifiers on an effect were customized by the library.
-    Custom,
-}
+use crate::defs::{EBuffId, EItemGrpId, EItemId, Idx};
 
 /// Defines which items will be affected by a modifier.
 #[derive(Debug, Copy, Clone, PartialEq, Hash)]

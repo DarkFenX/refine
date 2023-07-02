@@ -1,8 +1,7 @@
 use crate::{
-    consts::ModRack,
     defs::{EItemId, Idx, SsFitId, SsItemId},
     shr::State,
-    ss::item::SsModule,
+    ss::{item::SsModule, ModRack},
 };
 
 use super::SsChargeInfo;

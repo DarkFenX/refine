@@ -2,8 +2,8 @@ use std::{error, fmt, result};
 
 use crate::{
     ad,
-    consts::ModRack,
     defs::{EAttrId, EItemId, Idx, SkillLevel, SsFitId, SsItemId},
+    ss::ModRack,
     util::Named,
 };
 

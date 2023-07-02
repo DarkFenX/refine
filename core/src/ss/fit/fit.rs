@@ -1,9 +1,8 @@
 use std::collections::HashSet;
 
 use crate::{
-    consts::ModRack,
     defs::{SsFitId, SsItemId},
-    ss::item::SsItem,
+    ss::{item::SsItem, ModRack},
 };
 
 pub(in crate::ss) struct SsFit {
