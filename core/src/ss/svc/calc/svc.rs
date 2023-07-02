@@ -308,11 +308,11 @@ fn penalize_vals(mut vals: Vec<AttrVal>) -> AttrVal {
         .drain_filter(|v| *v > 1.0)
         .into_iter()
         .sorted_by(|a, b| b.partial_cmp(a).unwrap())
-        .collect_vec();
+        .collect();
     let negative = vals
         .into_iter()
         .sorted_by(|a, b| a.partial_cmp(b).unwrap())
-        .collect_vec();
+        .collect();
     get_chain_val(positive) * get_chain_val(negative)
 }
 
