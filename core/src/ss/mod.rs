@@ -1,6 +1,6 @@
 pub use effect_info::EffectInfo;
 pub use ss::SolarSystem;
-pub use svc::SsAttrVal;
+pub use svc::{EffectMode, SsAttrVal};
 pub(in crate::ss) use view::SsView;
 
 mod effect_info;

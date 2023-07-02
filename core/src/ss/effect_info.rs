@@ -1,4 +1,4 @@
-use crate::consts::EffectMode;
+use super::EffectMode;
 
 pub struct EffectInfo {
     pub running: bool,

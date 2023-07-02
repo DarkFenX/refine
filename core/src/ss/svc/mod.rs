@@ -1,5 +1,5 @@
 use calc::CalcData;
-pub use calc::SsAttrVal;
+pub use calc::{EffectMode, SsAttrVal};
 use running_effects::RunningEffects;
 
 use crate::defs::{EEffectId, SsItemId};
