@@ -1,4 +1,4 @@
-use crate::{consts::ModAfeeFilter, defs::EAttrId, shr::ModOp, util::Named};
+use crate::{ad::ModAfeeFilter, defs::EAttrId, shr::ModOp, util::Named};
 
 /// An adapted attribute modifier.
 ///

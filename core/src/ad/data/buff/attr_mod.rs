@@ -1,4 +1,4 @@
-use crate::{consts::ModAfeeFilter, defs::EAttrId, util::Named};
+use crate::{ad::ModAfeeFilter, defs::EAttrId, util::Named};
 
 /// A buff-specific attribute modifier.
 ///
