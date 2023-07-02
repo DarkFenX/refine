@@ -1,5 +1,5 @@
 use crate::{
-    defs::{EBuffId, EItemGrpId, EItemId, Idx},
+    defs::{EItemGrpId, EItemId, Idx},
     shr::ModDomain,
 };
 
@@ -25,20 +25,6 @@ pub enum ModSrq {
     SelfRef,
     // Affects items which require specific skill.
     ItemId(EItemId),
-}
-
-/// Defines how a modification will be aggregated.
-///
-/// When in the non-stack mode, multiple values which share the same aggregation mode and the same
-/// aggregation key (the mode argument) are converted into a single value.
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
-pub enum ModAggrMode {
-    /// All modifications are applied.
-    Stack,
-    /// Min value will be used, from values with provided key.
-    Min(EBuffId),
-    /// Max value will be used, from values with provided key.
-    Max(EBuffId),
 }
 
 /// Defines how effects like fighter abilities are targeted.

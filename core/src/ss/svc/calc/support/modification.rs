@@ -1,4 +1,7 @@
-use crate::{consts::ModAggrMode, defs::AttrVal, shr::ModOp};
+use crate::{
+    defs::AttrVal,
+    shr::{ModAggrMode, ModOp},
+};
 
 pub(in crate::ss::svc::calc) struct Modification {
     pub(in crate::ss::svc::calc) op: ModOp,
