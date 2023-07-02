@@ -24,7 +24,7 @@ pub use defs::{
     Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
     EMutaId, Idx, SkillLevel, SsFitId, SsItemId, VERSION,
 };
-pub use shr::State;
+pub use shr::{ItemType, State};
 pub use src::Src;
 pub use ss::{
     info::{

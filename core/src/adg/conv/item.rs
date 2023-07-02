@@ -5,9 +5,10 @@ use itertools::Itertools;
 use crate::{
     ad,
     adg::{GData, GSupport},
-    consts::{attrs, effects, get_abil_effect, itemcats, itemgrps, ItemType},
+    consts::{attrs, effects, get_abil_effect, itemcats, itemgrps},
     defs::{EEffectId, EItemId},
     ed,
+    shr::ItemType,
     util::Named,
 };
 
