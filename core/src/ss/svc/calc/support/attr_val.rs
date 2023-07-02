@@ -1,6 +1,6 @@
 use crate::defs::AttrVal;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone)]
 pub struct SsAttrVal {
     pub base: AttrVal,
     pub dogma: AttrVal,

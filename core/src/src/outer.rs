@@ -13,7 +13,7 @@ use super::inner::InnerSrc;
 ///
 /// Data source is a top-level entity which manages EVE and adapted data handlers to do necessary
 /// preparations and expose adapted data to solar system and its services.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct Src {
     inner: Arc<InnerSrc>,
 }

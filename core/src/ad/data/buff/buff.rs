@@ -9,7 +9,6 @@ use crate::{
 ///
 /// A dogma buff applies modifications to multiple ships, and the modifications stick for some time.
 /// For instance, fleet effects are implemented as dogma buffs.
-#[derive(Debug)]
 pub struct ABuff {
     /// Buff ID.
     pub id: EBuffId,

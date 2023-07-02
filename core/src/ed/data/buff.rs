@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// EVE buff data.
-#[derive(Debug)]
 pub struct EBuff {
     /// Buff ID.
     pub id: EBuffId,
@@ -50,7 +49,6 @@ impl Named for EBuff {
 }
 
 /// Auxiliary data needed to apply an EVE buff modification directly to some item.
-#[derive(Debug)]
 pub struct EBuffIM {
     /// Refers an attribute which is the target of the modification.
     pub attr_id: EAttrId,
@@ -63,7 +61,6 @@ impl EBuffIM {
 }
 
 /// Auxiliary data needed to apply an EVE buff modification to location-filtered items.
-#[derive(Debug)]
 pub struct EBuffLM {
     /// Refers an attribute which is the target of the modification.
     pub attr_id: EAttrId,
@@ -76,7 +73,6 @@ impl EBuffLM {
 }
 
 /// Auxiliary data needed to apply an EVE buff modification to location- and group-filtered items.
-#[derive(Debug)]
 pub struct EBuffLGM {
     /// Refers an attribute which is the target of the modification.
     pub attr_id: EAttrId,
@@ -93,7 +89,6 @@ impl EBuffLGM {
 
 /// Auxiliary data needed to apply an EVE buff modification to location- and skill
 /// requirement-filtered items.
-#[derive(Debug)]
 pub struct EBuffLRSM {
     /// Refers an attribute which is the target of the modification.
     pub attr_id: EAttrId,

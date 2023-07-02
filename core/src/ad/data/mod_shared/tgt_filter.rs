@@ -1,7 +1,6 @@
 use crate::{ad::AModSrq, defs::EItemGrpId, shr::ModDomain};
 
 /// Defines which items will be targeted for a modifier.
-#[derive(Debug)]
 pub enum AModTgtFilter {
     /// Single item modified, as specified by the domain.
     Direct(ModDomain),

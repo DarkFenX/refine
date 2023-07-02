@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// EVE dogma attribute data.
-#[derive(Debug)]
 pub struct EAttr {
     /// Attribute ID.
     pub id: EAttrId,

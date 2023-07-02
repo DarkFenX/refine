@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// EVE item group data.
-#[derive(Debug)]
 pub struct EItemGroup {
     /// Item group ID.
     pub id: EItemGrpId,

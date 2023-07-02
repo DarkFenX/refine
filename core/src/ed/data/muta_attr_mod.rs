@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// EVE mutaplasmid attribute modification data.
-#[derive(Debug)]
 pub struct EMutaAttrMod {
     /// Mutaplasmid item type ID.
     pub muta_id: EMutaId,

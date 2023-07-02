@@ -10,7 +10,6 @@ use crate::{
 ///
 /// An item carries alot of info needed to calculate fit attributes, for example base attribute
 /// values.
-#[derive(Debug)]
 pub struct AItem {
     /// Item ID.
     pub id: EItemId,

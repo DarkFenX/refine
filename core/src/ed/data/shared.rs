@@ -1,5 +1,4 @@
 /// Auxiliary entity for "primitive" data.
-#[derive(Debug)]
 pub enum EPrimitive {
     /// Represents absence of a value.
     Null,

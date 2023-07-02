@@ -1,5 +1,4 @@
 /// Contains adapted item types.
-#[derive(Debug)]
 pub enum AItemType {
     Booster,
     Character,

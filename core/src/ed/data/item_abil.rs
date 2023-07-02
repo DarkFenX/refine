@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// An EVE item type-fighter ability relation.
-#[derive(Debug)]
 pub struct EItemFighterAbil {
     /// Refers an item type involved in the relation.
     pub item_id: EItemId,

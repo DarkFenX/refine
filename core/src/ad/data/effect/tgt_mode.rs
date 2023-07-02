@@ -1,5 +1,4 @@
 /// Defines how effects like fighter abilities are targeted.
-#[derive(Debug)]
 pub enum ATgtMode {
     /// No target needed.
     None,

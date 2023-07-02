@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// An EVE item type-attribute relation.
-#[derive(Debug)]
 pub struct EItemAttr {
     /// Refers an item type involved in the relation.
     pub item_id: EItemId,

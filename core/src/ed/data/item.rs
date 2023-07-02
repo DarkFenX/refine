@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// EVE item type data.
-#[derive(Debug)]
 pub struct EItem {
     /// Item type ID.
     pub id: EItemId,

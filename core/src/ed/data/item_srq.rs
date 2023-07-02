@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// EVE item type skill requirement.
-#[derive(Debug)]
 pub struct EItemSkillReq {
     /// Refers an item type for which this skill requirement is defined.
     pub item_id: EItemId,

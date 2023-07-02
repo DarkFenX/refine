@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// EVE mutaplasmid item type conversion data.
-#[derive(Debug)]
 pub struct EMutaItemConv {
     /// Mutaplasmid item type ID.
     pub muta_id: EMutaId,

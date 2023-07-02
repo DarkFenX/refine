@@ -10,7 +10,7 @@ use crate::{
     util::into_opt,
 };
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PEffect {
     #[serde(rename = "effectCategory")]
     pub(in crate::phb) category_id: rc::EEffectCatId,
@@ -54,7 +54,6 @@ impl FsdMerge<rc::ed::EEffect> for PEffect {
     }
 }
 
-#[derive(Debug)]
 pub(in crate::phb) struct PEffectMod {
     pub(in crate::phb) func: String,
     pub(in crate::phb) args: HashMap<String, rc::ed::EPrimitive>,

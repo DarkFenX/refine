@@ -5,7 +5,6 @@ use crate::{
     util::{Error, ErrorKind, IntError, IntResult, Result},
 };
 
-#[derive(Debug)]
 pub struct InnerSrc {
     pub(crate) a_handler: Box<dyn ad::AdaptedDataHandler>,
 }

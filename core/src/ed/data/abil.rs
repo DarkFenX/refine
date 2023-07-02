@@ -1,7 +1,6 @@
 use crate::{defs::EAbilId, util::Named};
 
 /// EVE fighter ability data.
-#[derive(Debug)]
 pub struct EFighterAbil {
     /// Fighter ability ID.
     pub id: EAbilId,

@@ -4,7 +4,6 @@ use crate::{
 };
 
 /// Stores item-specific effect data.
-#[derive(Debug)]
 pub struct AItemEffData {
     /// Defines cooldown of the effect in seconds.
     pub cd: Option<AttrVal>,

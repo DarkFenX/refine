@@ -1,4 +1,4 @@
-use super::support::{ModRegister, AttrCapData, AttrValData};
+use super::support::{AttrCapData, AttrValData, ModRegister};
 
 pub(in crate::ss::svc) struct CalcData {
     pub(in crate::ss::svc::calc) attrs: AttrValData,

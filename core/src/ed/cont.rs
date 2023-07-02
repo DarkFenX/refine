@@ -1,5 +1,4 @@
 /// Convenience type to pass data and accumulated warnings to the caller.
-#[derive(Debug)]
 pub struct EDataCont<T> {
     /// Vector with actual data.
     pub data: Vec<T>,

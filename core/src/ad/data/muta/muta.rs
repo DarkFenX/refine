@@ -9,7 +9,6 @@ use crate::{
 /// Represents an adapted mutaplasmid.
 ///
 /// A mutaplasmid controls how attributes of an item it is being applied to change.
-#[derive(Debug)]
 pub struct AMuta {
     /// Mutaplasmid ID.
     pub id: EMutaId,

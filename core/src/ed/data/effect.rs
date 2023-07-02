@@ -8,7 +8,6 @@ use crate::{
 use super::EPrimitive;
 
 /// EVE dogma effect data.
-#[derive(Debug)]
 pub struct EEffect {
     /// Effect ID.
     pub id: EEffectId,
@@ -75,7 +74,6 @@ impl Named for EEffect {
 }
 
 /// EVE dogma effect modifier data.
-#[derive(Debug)]
 pub struct EEffectMod {
     /// Function which the effect modifier calls to apply its modification.
     pub func: String,
