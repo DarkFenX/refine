@@ -46,7 +46,7 @@ impl SsAttrMod {
             src_a_mod.afor_attr_id,
             SsModTgtFilter::from_a_mod_tgt_filter(&src_a_mod.afee_filter, src_ss_item),
             src_a_mod.op,
-            src_a_mod.aggr_mode,
+            ModAggrMode::Stack,
             src_a_mod.afee_attr_id,
         )
     }

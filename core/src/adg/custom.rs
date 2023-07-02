@@ -29,7 +29,6 @@ fn mk_self_skillreq_modifiers_launcher_rof(a_data: &mut ad::AData) {
         }
         let modifier = ad::AAttrMod::new(
             attrs::ROF_BONUS,
-            ModAggrMode::Stack,
             ModOp::PostPerc,
             ModAfeeFilter::LocSrq(ModDomain::Ship, ModSrq::SelfRef),
             attrs::SPEED,

@@ -1,4 +1,4 @@
-use super::enums::{CModAfeeFilter, CModAggrMode, CModBuildStatus, CModOp, CState, CTgtMode};
+use super::enums::{CModAfeeFilter, CModBuildStatus, CModOp, CState, CTgtMode};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
@@ -70,7 +70,6 @@ impl Into<rc::ad::AEffect> for &CEffect {
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 struct CAttrMod {
     afor_attr_id: rc::EAttrId,
-    aggr_mode: CModAggrMode,
     op: CModOp,
     afee_filter: CModAfeeFilter,
     afee_attr_id: rc::EAttrId,
@@ -79,7 +78,6 @@ impl From<&rc::ad::AAttrMod> for CAttrMod {
     fn from(a_modifier: &rc::ad::AAttrMod) -> Self {
         CAttrMod {
             afor_attr_id: a_modifier.afor_attr_id,
-            aggr_mode: (&a_modifier.aggr_mode).into(),
             op: (&a_modifier.op).into(),
             afee_filter: (&a_modifier.afee_filter).into(),
             afee_attr_id: a_modifier.afee_attr_id,
@@ -90,7 +88,6 @@ impl Into<rc::ad::AAttrMod> for &CAttrMod {
     fn into(self) -> rc::ad::AAttrMod {
         rc::ad::AAttrMod {
             afor_attr_id: self.afor_attr_id,
-            aggr_mode: (&self.aggr_mode).into(),
             op: (&self.op).into(),
             afee_filter: (&self.afee_filter).into(),
             afee_attr_id: self.afee_attr_id,

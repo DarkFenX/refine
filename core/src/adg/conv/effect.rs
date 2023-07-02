@@ -6,9 +6,7 @@ use std::{
 use crate::{
     ad,
     adg::GData,
-    consts::{
-        effcats, get_abil_effect, ModAfeeFilter, ModAggrMode, ModBuildStatus, ModDomain, ModOp, ModSrq, State, TgtMode,
-    },
+    consts::{effcats, get_abil_effect, ModAfeeFilter, ModBuildStatus, ModDomain, ModOp, ModSrq, State, TgtMode},
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
     ed,
     util::{IntError, IntResult, Named},
@@ -210,7 +208,6 @@ fn extract_stopper(e_modifier: &ed::EEffectMod) -> IntResult<Option<EEffectId>> 
 fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
-        ModAggrMode::Stack,
         get_mod_operation(e_modifier)?,
         ModAfeeFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
         get_mod_affectee_attr_id(e_modifier)?,
@@ -220,7 +217,6 @@ fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResu
 fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
-        ModAggrMode::Stack,
         get_mod_operation(e_modifier)?,
         ModAfeeFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
         get_mod_affectee_attr_id(e_modifier)?,
@@ -230,7 +226,6 @@ fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResul
 fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
-        ModAggrMode::Stack,
         get_mod_operation(e_modifier)?,
         ModAfeeFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
         get_mod_affectee_attr_id(e_modifier)?,
@@ -240,7 +235,6 @@ fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
 fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
-        ModAggrMode::Stack,
         get_mod_operation(e_modifier)?,
         ModAfeeFilter::LocSrq(
             get_mod_domain(e_modifier, a_effect)?,
@@ -253,7 +247,6 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
 fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AAttrMod> {
     Ok(ad::AAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
-        ModAggrMode::Stack,
         get_mod_operation(e_modifier)?,
         ModAfeeFilter::OwnSrq(
             get_mod_domain(e_modifier, a_effect)?,

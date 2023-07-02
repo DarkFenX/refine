@@ -1,5 +1,5 @@
 use crate::{
-    consts::{ModAfeeFilter, ModAggrMode, ModBuildStatus, ModOp, State, TgtMode},
+    consts::{ModAfeeFilter, ModBuildStatus, ModOp, State, TgtMode},
     defs::{EAttrId, EEffectId},
     util::Named,
 };
@@ -103,8 +103,6 @@ impl Named for AEffect {
 pub struct AAttrMod {
     /// Refers an attribute on the affector, which should be used as modification value.
     pub afor_attr_id: EAttrId,
-    /// Defines how multiple modifications of the same attribute value are aggregated.
-    pub aggr_mode: ModAggrMode,
     /// Operation to apply during the modification.
     pub op: ModOp,
     /// Defines an affectee filter, that is a filter which defines which items will be affected.
@@ -114,16 +112,9 @@ pub struct AAttrMod {
 }
 impl AAttrMod {
     /// Make a new attribute modifier out of passed data.
-    pub(crate) fn new(
-        afor_attr_id: EAttrId,
-        aggr_mode: ModAggrMode,
-        op: ModOp,
-        afee_filter: ModAfeeFilter,
-        afee_attr_id: EAttrId,
-    ) -> Self {
+    pub(crate) fn new(afor_attr_id: EAttrId, op: ModOp, afee_filter: ModAfeeFilter, afee_attr_id: EAttrId) -> Self {
         Self {
             afor_attr_id,
-            aggr_mode,
             op,
             afee_filter,
             afee_attr_id,
