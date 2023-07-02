@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_affected(client, consts):
+def test_domain_other(client, consts):
     # EVE does not use effects with "otherID" domain with owner modifiable filter, so it's an
     # undefined behavior. Reefast just ignores domain and applies modification
     eve_skill = client.mk_eve_item()
@@ -22,8 +22,5 @@ def test_affected(client, consts):
     api_fit = api_ss.create_fit()
     api_src_item = api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_drone(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
-    api_src_item.remove()
     value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
     assert value == approx(100)

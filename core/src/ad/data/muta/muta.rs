@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use crate::{
     ad::AMutaAttrRange,
     defs::{EAttrId, EItemId, EMutaId},
-    util::Named,
 };
 
 /// Represents an adapted mutaplasmid.

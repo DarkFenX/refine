@@ -9,7 +9,7 @@ use crate::{
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
     ec, ed,
     shr::{ModDomain, ModOp, State},
-    util::{IntError, IntResult, Named},
+    util::{IntError, IntResult},
 };
 
 impl ed::EFighterAbil {
@@ -222,13 +222,16 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
 }
 
 fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
+    if get_mod_domain(e_modifier, a_effect)? != ModDomain::Char {
+        return Err(IntError::new(format!(
+            "unexpected domain \"{}\" for owner-filtered modification",
+            get_arg_str(&e_modifier.args, "domain")?
+        )));
+    }
     Ok(ad::AEffectAttrMod::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AModTgtFilter::OwnSrq(
-            get_mod_domain(e_modifier, a_effect)?,
-            ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?),
-        ),
+        ad::AModTgtFilter::OwnSrq(ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?)),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }

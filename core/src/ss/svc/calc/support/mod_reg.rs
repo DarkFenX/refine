@@ -105,7 +105,7 @@ impl ModRegister {
             (SsModTgtFilter::LocSrq(dom, srq_id), Some(src_fit_id)) => {
                 extend_vec_from_storage(&mut tgts, &self.tgts_pardom_srq, &(src_fit_id, dom, srq_id))
             }
-            (SsModTgtFilter::OwnSrq(_, srq_id), Some(src_fit_id)) => {
+            (SsModTgtFilter::OwnSrq(srq_id), Some(src_fit_id)) => {
                 extend_vec_from_storage(&mut tgts, &self.tgts_own_srq, &(src_fit_id, srq_id))
             }
             _ => (),
@@ -282,7 +282,7 @@ impl ModRegister {
                 (SsModTgtFilter::LocSrq(dom, srq_id), Some(src_fit_id)) => {
                     self.mods_pardom_srq.add((src_fit_id, dom, srq_id), modifier)
                 }
-                (SsModTgtFilter::OwnSrq(_, srq_id), Some(src_fit_id)) => {
+                (SsModTgtFilter::OwnSrq(srq_id), Some(src_fit_id)) => {
                     self.mods_own_srq.add((src_fit_id, srq_id), modifier)
                 }
                 _ => (),
@@ -311,7 +311,7 @@ impl ModRegister {
                 (SsModTgtFilter::LocSrq(dom, srq_id), Some(src_fit_id)) => {
                     self.mods_pardom_srq.remove(&(src_fit_id, dom, srq_id), &modifier)
                 }
-                (SsModTgtFilter::OwnSrq(_, srq), Some(src_fit_id)) => {
+                (SsModTgtFilter::OwnSrq(srq), Some(src_fit_id)) => {
                     self.mods_own_srq.remove(&(src_fit_id, srq), &modifier)
                 }
                 _ => (),

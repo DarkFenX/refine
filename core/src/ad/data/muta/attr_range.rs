@@ -1,4 +1,4 @@
-use crate::{defs::AttrVal, util::Named};
+use crate::defs::AttrVal;
 
 /// Stores mutation range of specific attribute of specific mutaplasmid.
 pub struct AMutaAttrRange {

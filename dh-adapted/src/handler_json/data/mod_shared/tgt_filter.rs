@@ -7,7 +7,7 @@ pub(in crate::handler_json) enum CModTgtFilter {
     Loc(CModDomain),
     LocGrp(CModDomain, rc::EItemGrpId),
     LocSrq(CModDomain, CModSrq),
-    OwnSrq(CModDomain, CModSrq),
+    OwnSrq(CModSrq),
 }
 impl From<&rc::ad::AModTgtFilter> for CModTgtFilter {
     fn from(mod_tgt_filter: &rc::ad::AModTgtFilter) -> Self {
@@ -16,7 +16,7 @@ impl From<&rc::ad::AModTgtFilter> for CModTgtFilter {
             rc::ad::AModTgtFilter::Loc(dom) => Self::Loc(dom.into()),
             rc::ad::AModTgtFilter::LocGrp(dom, grp) => Self::LocGrp(dom.into(), *grp),
             rc::ad::AModTgtFilter::LocSrq(dom, srq) => Self::LocSrq(dom.into(), srq.into()),
-            rc::ad::AModTgtFilter::OwnSrq(dom, srq) => Self::OwnSrq(dom.into(), srq.into()),
+            rc::ad::AModTgtFilter::OwnSrq(srq) => Self::OwnSrq(srq.into()),
         }
     }
 }
@@ -27,7 +27,7 @@ impl Into<rc::ad::AModTgtFilter> for &CModTgtFilter {
             CModTgtFilter::Loc(dom) => rc::ad::AModTgtFilter::Loc(dom.into()),
             CModTgtFilter::LocGrp(dom, grp) => rc::ad::AModTgtFilter::LocGrp(dom.into(), *grp),
             CModTgtFilter::LocSrq(dom, srq) => rc::ad::AModTgtFilter::LocSrq(dom.into(), srq.into()),
-            CModTgtFilter::OwnSrq(dom, srq) => rc::ad::AModTgtFilter::OwnSrq(dom.into(), srq.into()),
+            CModTgtFilter::OwnSrq(srq) => rc::ad::AModTgtFilter::OwnSrq(srq.into()),
         }
     }
 }

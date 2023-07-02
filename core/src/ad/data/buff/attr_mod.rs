@@ -1,4 +1,4 @@
-use crate::{ad::AModTgtFilter, defs::EAttrId, util::Named};
+use crate::{ad::AModTgtFilter, defs::EAttrId};
 
 /// An attribute modifier.
 ///

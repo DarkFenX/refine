@@ -6,8 +6,7 @@ use crate::{
     ad,
     adg::{GData, GSupport},
     defs::{EEffectId, EItemId},
-    ec, ed,
-    util::Named,
+    ec,
 };
 
 pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec<ad::AItem> {

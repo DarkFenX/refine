@@ -11,5 +11,5 @@ pub enum AModTgtFilter {
     /// All items located in the domain and having specified skill requirement are affected.
     LocSrq(ModDomain, AModSrq),
     /// All items belonging to the domain and having specified skill requirement are affected.
-    OwnSrq(ModDomain, AModSrq),
+    OwnSrq(AModSrq),
 }

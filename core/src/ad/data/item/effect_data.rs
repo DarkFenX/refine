@@ -1,7 +1,4 @@
-use crate::{
-    defs::{Amount, AttrVal},
-    util::Named,
-};
+use crate::defs::{Amount, AttrVal};
 
 /// Stores item-specific effect data.
 pub struct AItemEffData {

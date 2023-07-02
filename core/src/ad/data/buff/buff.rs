@@ -2,7 +2,6 @@ use crate::{
     ad::ABuffAttrMod,
     defs::EBuffId,
     shr::{ModAggrMode, ModOp},
-    util::Named,
 };
 
 /// Represents an adapted dogma buff.

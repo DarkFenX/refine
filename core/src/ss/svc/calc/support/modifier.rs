@@ -58,7 +58,7 @@ pub(in crate::ss::svc::calc) enum SsModTgtFilter {
     Loc(ModDomain),
     LocGrp(ModDomain, EItemGrpId),
     LocSrq(ModDomain, EItemId),
-    OwnSrq(ModDomain, EItemId),
+    OwnSrq(EItemId),
 }
 impl SsModTgtFilter {
     fn from_a_mod_tgt_filter(a_mod_tgt_filter: &ad::AModTgtFilter, ss_item: &SsItem) -> Self {
@@ -67,7 +67,7 @@ impl SsModTgtFilter {
             ad::AModTgtFilter::Loc(dom) => Self::Loc(*dom),
             ad::AModTgtFilter::LocGrp(domain, grp_id) => Self::LocGrp(*domain, *grp_id),
             ad::AModTgtFilter::LocSrq(domain, mod_srq) => Self::LocSrq(*domain, get_srq(mod_srq, ss_item)),
-            ad::AModTgtFilter::OwnSrq(domain, mod_srq) => Self::OwnSrq(*domain, get_srq(mod_srq, ss_item)),
+            ad::AModTgtFilter::OwnSrq(mod_srq) => Self::OwnSrq(get_srq(mod_srq, ss_item)),
         }
     }
 }
