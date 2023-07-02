@@ -18,47 +18,47 @@ pub(in crate::handler_json) enum CItemType {
     Stance,
     Subsystem,
 }
-impl From<&rc::ItemType> for CItemType {
-    fn from(item_type: &rc::ItemType) -> Self {
+impl From<&rc::ad::ItemType> for CItemType {
+    fn from(item_type: &rc::ad::ItemType) -> Self {
         match item_type {
-            rc::ItemType::Booster => Self::Booster,
-            rc::ItemType::Character => Self::Character,
-            rc::ItemType::Charge => Self::Charge,
-            rc::ItemType::Drone => Self::Drone,
-            rc::ItemType::EffectBeacon => Self::EffectBeacon,
-            rc::ItemType::FighterSquad => Self::FighterSquad,
-            rc::ItemType::Implant => Self::Implant,
-            rc::ItemType::ModHigh => Self::ModHigh,
-            rc::ItemType::ModLow => Self::ModLow,
-            rc::ItemType::ModMid => Self::ModMid,
-            rc::ItemType::Mutaplasmid => Self::Mutaplasmid,
-            rc::ItemType::Rig => Self::Rig,
-            rc::ItemType::Ship => Self::Ship,
-            rc::ItemType::Skill => Self::Skill,
-            rc::ItemType::Stance => Self::Stance,
-            rc::ItemType::Subsystem => Self::Subsystem,
+            rc::ad::ItemType::Booster => Self::Booster,
+            rc::ad::ItemType::Character => Self::Character,
+            rc::ad::ItemType::Charge => Self::Charge,
+            rc::ad::ItemType::Drone => Self::Drone,
+            rc::ad::ItemType::EffectBeacon => Self::EffectBeacon,
+            rc::ad::ItemType::FighterSquad => Self::FighterSquad,
+            rc::ad::ItemType::Implant => Self::Implant,
+            rc::ad::ItemType::ModHigh => Self::ModHigh,
+            rc::ad::ItemType::ModLow => Self::ModLow,
+            rc::ad::ItemType::ModMid => Self::ModMid,
+            rc::ad::ItemType::Mutaplasmid => Self::Mutaplasmid,
+            rc::ad::ItemType::Rig => Self::Rig,
+            rc::ad::ItemType::Ship => Self::Ship,
+            rc::ad::ItemType::Skill => Self::Skill,
+            rc::ad::ItemType::Stance => Self::Stance,
+            rc::ad::ItemType::Subsystem => Self::Subsystem,
         }
     }
 }
-impl Into<rc::ItemType> for &CItemType {
-    fn into(self) -> rc::ItemType {
+impl Into<rc::ad::ItemType> for &CItemType {
+    fn into(self) -> rc::ad::ItemType {
         match self {
-            CItemType::Booster => rc::ItemType::Booster,
-            CItemType::Character => rc::ItemType::Character,
-            CItemType::Charge => rc::ItemType::Charge,
-            CItemType::Drone => rc::ItemType::Drone,
-            CItemType::EffectBeacon => rc::ItemType::EffectBeacon,
-            CItemType::FighterSquad => rc::ItemType::FighterSquad,
-            CItemType::Implant => rc::ItemType::Implant,
-            CItemType::ModHigh => rc::ItemType::ModHigh,
-            CItemType::ModLow => rc::ItemType::ModLow,
-            CItemType::ModMid => rc::ItemType::ModMid,
-            CItemType::Mutaplasmid => rc::ItemType::Mutaplasmid,
-            CItemType::Rig => rc::ItemType::Rig,
-            CItemType::Ship => rc::ItemType::Ship,
-            CItemType::Skill => rc::ItemType::Skill,
-            CItemType::Stance => rc::ItemType::Stance,
-            CItemType::Subsystem => rc::ItemType::Subsystem,
+            CItemType::Booster => rc::ad::ItemType::Booster,
+            CItemType::Character => rc::ad::ItemType::Character,
+            CItemType::Charge => rc::ad::ItemType::Charge,
+            CItemType::Drone => rc::ad::ItemType::Drone,
+            CItemType::EffectBeacon => rc::ad::ItemType::EffectBeacon,
+            CItemType::FighterSquad => rc::ad::ItemType::FighterSquad,
+            CItemType::Implant => rc::ad::ItemType::Implant,
+            CItemType::ModHigh => rc::ad::ItemType::ModHigh,
+            CItemType::ModLow => rc::ad::ItemType::ModLow,
+            CItemType::ModMid => rc::ad::ItemType::ModMid,
+            CItemType::Mutaplasmid => rc::ad::ItemType::Mutaplasmid,
+            CItemType::Rig => rc::ad::ItemType::Rig,
+            CItemType::Ship => rc::ad::ItemType::Ship,
+            CItemType::Skill => rc::ad::ItemType::Skill,
+            CItemType::Stance => rc::ad::ItemType::Stance,
+            CItemType::Subsystem => rc::ad::ItemType::Subsystem,
         }
     }
 }

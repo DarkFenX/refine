@@ -1,9 +1,8 @@
 use std::collections::HashMap;
 
 use crate::{
-    ad::AItemEffData,
+    ad::{AItemEffData, ItemType},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
-    shr::ItemType,
     util::Named,
 };
 
