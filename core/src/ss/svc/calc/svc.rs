@@ -4,8 +4,9 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    consts::{attrs, itemcats, ModAggrMode, ModOp, TgtMode},
+    consts::{attrs, itemcats, ModAggrMode, TgtMode},
     defs::{AttrVal, EAttrId, EItemCatId, SsItemId},
+    shr::ModOp,
     ss::{
         item::SsItem,
         svc::{

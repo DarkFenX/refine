@@ -1,6 +1,7 @@
 #![allow(warnings, unused)]
+#![feature(core_intrinsics)]
 
-use std::{path::PathBuf, sync::Arc, thread::sleep, time::Duration};
+use std::{intrinsics::black_box, path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 
 use itertools::Itertools;
 use tracing_subscriber::prelude::*;
@@ -67,9 +68,9 @@ fn main() {
         let anp = sol_sys
             .add_module(fit, ModRack::Low, OrdAddMode::Equip, 1306, State::Online, None)
             .unwrap();
-        sol_sys.get_item_attrs(&ship.id);
+        black_box(sol_sys.get_item_attrs(&ship.id));
         sol_sys.remove_item(&anp.id);
-        sol_sys.get_item_attrs(&ship.id);
+        black_box(sol_sys.get_item_attrs(&ship.id));
     }
     tracing::error!("done");
     // println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);

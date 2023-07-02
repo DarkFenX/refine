@@ -1,6 +1,6 @@
 use crate::{
-    consts::ModOp,
     defs::{EAttrId, SsItemId},
+    shr::ModOp,
 };
 
 use super::SsAttrMod;

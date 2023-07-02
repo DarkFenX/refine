@@ -1,8 +1,8 @@
 use crate::{
     ad::{AAttrMod, ArcEffect},
-    consts::{ModAfeeFilter, ModAggrMode, ModOp, ModSrq},
+    consts::{ModAfeeFilter, ModAggrMode, ModSrq},
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId, SsItemId},
-    shr::ModDomain,
+    shr::{ModDomain, ModOp},
     ss::item::SsItem,
 };
 

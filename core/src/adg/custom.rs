@@ -1,7 +1,7 @@
 use crate::{
     ad,
-    consts::{attrs, effects, ModAfeeFilter, ModOp, ModSrq},
-    shr::{ModDomain, State},
+    consts::{attrs, effects, ModAfeeFilter, ModSrq},
+    shr::{ModDomain, ModOp, State},
 };
 
 pub(in crate::adg) fn customize(a_data: &mut ad::AData) {

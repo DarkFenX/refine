@@ -1,6 +1,7 @@
 use crate::{
-    consts::{ModAfeeFilter, ModAggrMode, ModOp},
+    consts::{ModAfeeFilter, ModAggrMode},
     defs::{EAttrId, EBuffId},
+    shr::ModOp,
     util::Named,
 };
 

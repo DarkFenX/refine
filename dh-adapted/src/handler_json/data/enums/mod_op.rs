@@ -11,33 +11,33 @@ pub(in crate::handler_json) enum CModOp {
     PostPerc,
     PostAssign,
 }
-impl From<&rc::consts::ModOp> for CModOp {
-    fn from(mod_op: &rc::consts::ModOp) -> Self {
+impl From<&rc::ModOp> for CModOp {
+    fn from(mod_op: &rc::ModOp) -> Self {
         match mod_op {
-            rc::consts::ModOp::PreAssign => Self::PreAssign,
-            rc::consts::ModOp::PreMul => Self::PreMul,
-            rc::consts::ModOp::PreDiv => Self::PreDiv,
-            rc::consts::ModOp::Add => Self::Add,
-            rc::consts::ModOp::Sub => Self::Sub,
-            rc::consts::ModOp::PostMul => Self::PostMul,
-            rc::consts::ModOp::PostDiv => Self::PostDiv,
-            rc::consts::ModOp::PostPerc => Self::PostPerc,
-            rc::consts::ModOp::PostAssign => Self::PostAssign,
+            rc::ModOp::PreAssign => Self::PreAssign,
+            rc::ModOp::PreMul => Self::PreMul,
+            rc::ModOp::PreDiv => Self::PreDiv,
+            rc::ModOp::Add => Self::Add,
+            rc::ModOp::Sub => Self::Sub,
+            rc::ModOp::PostMul => Self::PostMul,
+            rc::ModOp::PostDiv => Self::PostDiv,
+            rc::ModOp::PostPerc => Self::PostPerc,
+            rc::ModOp::PostAssign => Self::PostAssign,
         }
     }
 }
-impl Into<rc::consts::ModOp> for &CModOp {
-    fn into(self) -> rc::consts::ModOp {
+impl Into<rc::ModOp> for &CModOp {
+    fn into(self) -> rc::ModOp {
         match self {
-            CModOp::PreAssign => rc::consts::ModOp::PreAssign,
-            CModOp::PreMul => rc::consts::ModOp::PreMul,
-            CModOp::PreDiv => rc::consts::ModOp::PreDiv,
-            CModOp::Add => rc::consts::ModOp::Add,
-            CModOp::Sub => rc::consts::ModOp::Sub,
-            CModOp::PostMul => rc::consts::ModOp::PostMul,
-            CModOp::PostDiv => rc::consts::ModOp::PostDiv,
-            CModOp::PostPerc => rc::consts::ModOp::PostPerc,
-            CModOp::PostAssign => rc::consts::ModOp::PostAssign,
+            CModOp::PreAssign => rc::ModOp::PreAssign,
+            CModOp::PreMul => rc::ModOp::PreMul,
+            CModOp::PreDiv => rc::ModOp::PreDiv,
+            CModOp::Add => rc::ModOp::Add,
+            CModOp::Sub => rc::ModOp::Sub,
+            CModOp::PostMul => rc::ModOp::PostMul,
+            CModOp::PostDiv => rc::ModOp::PostDiv,
+            CModOp::PostPerc => rc::ModOp::PostPerc,
+            CModOp::PostAssign => rc::ModOp::PostAssign,
         }
     }
 }
