@@ -27,6 +27,10 @@ class ItemCat(IntEnum):
 class Effect(IntEnum):
     online = 16
     self_rof = 1851
+    missile_em_dmg_bonus = 660
+    missile_therm_dmg_bonus = 662
+    missile_kin_dmg_bonus2 = 668
+    missile_expl_dmg_bonus = 661
 
 
 @unique
@@ -80,10 +84,16 @@ class Attr(IntEnum):
     cpu_output = 48
     power = 30
     power_output = 11
+    # Damage
+    em_dmg = 114
+    therm_dmg = 118
+    kin_dmg = 117
+    expl_dmg = 116
     # Misc
     skill_level = 280
     speed = 51
     rof_bonus = 293
+    dmg_mult_bonus = 292
 
 
 @unique
