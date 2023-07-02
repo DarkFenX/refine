@@ -1,4 +1,4 @@
-#[derive(Debug, serde_tuple::Serialize_tuple)]
+#[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HAttrVal {
     pub(crate) base: rc::AttrVal,
     pub(crate) dogma: rc::AttrVal,
