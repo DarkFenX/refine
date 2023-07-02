@@ -106,59 +106,59 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
     a_items
 }
 
-fn get_item_types(a_item: &ad::AItem) -> Vec<ad::ItemType> {
+fn get_item_types(a_item: &ad::AItem) -> Vec<ad::AItemType> {
     let mut types = Vec::new();
     if a_item.cat_id == ec::itemcats::IMPLANT && a_item.attr_vals.contains_key(&ec::attrs::BOOSTERNESS) {
-        types.push(ad::ItemType::Booster);
+        types.push(ad::AItemType::Booster);
     };
     if a_item.grp_id == ec::itemgrps::CHARACTER {
-        types.push(ad::ItemType::Character);
+        types.push(ad::AItemType::Character);
     };
     if a_item.cat_id == ec::itemcats::CHARGE {
-        types.push(ad::ItemType::Charge);
+        types.push(ad::AItemType::Charge);
     };
     if a_item.cat_id == ec::itemcats::DRONE {
-        types.push(ad::ItemType::Drone);
+        types.push(ad::AItemType::Drone);
     };
     if a_item.grp_id == ec::itemgrps::EFFECT_BEACON {
-        types.push(ad::ItemType::EffectBeacon);
+        types.push(ad::AItemType::EffectBeacon);
     };
     if a_item.cat_id == ec::itemcats::FIGHTER
         && (a_item.attr_vals.contains_key(&ec::attrs::FTR_SQ_IS_HEAVY)
             || a_item.attr_vals.contains_key(&ec::attrs::FTR_SQ_IS_LIGHT)
             || a_item.attr_vals.contains_key(&ec::attrs::FTR_SQ_IS_SUPPORT))
     {
-        types.push(ad::ItemType::FighterSquad);
+        types.push(ad::AItemType::FighterSquad);
     };
     if a_item.cat_id == ec::itemcats::IMPLANT && a_item.attr_vals.contains_key(&ec::attrs::IMPLANTNESS) {
-        types.push(ad::ItemType::Implant);
+        types.push(ad::AItemType::Implant);
     };
     if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::HI_POWER) {
-        types.push(ad::ItemType::ModHigh);
+        types.push(ad::AItemType::ModHigh);
     };
     if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::LO_POWER) {
-        types.push(ad::ItemType::ModLow);
+        types.push(ad::AItemType::ModLow);
     };
     if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::MED_POWER) {
-        types.push(ad::ItemType::ModMid);
+        types.push(ad::AItemType::ModMid);
     };
     if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::RIG_SLOT) {
-        types.push(ad::ItemType::Rig);
+        types.push(ad::AItemType::Rig);
     };
     if a_item.grp_id == ec::itemgrps::MUTAPLASMID {
-        types.push(ad::ItemType::Mutaplasmid);
+        types.push(ad::AItemType::Mutaplasmid);
     };
     if a_item.cat_id == ec::itemcats::SHIP {
-        types.push(ad::ItemType::Ship);
+        types.push(ad::AItemType::Ship);
     };
     if a_item.cat_id == ec::itemcats::SKILL {
-        types.push(ad::ItemType::Skill);
+        types.push(ad::AItemType::Skill);
     };
     if a_item.grp_id == ec::itemgrps::SHIP_MOD {
-        types.push(ad::ItemType::Stance);
+        types.push(ad::AItemType::Stance);
     };
     if a_item.cat_id == ec::itemcats::SUBSYSTEM && a_item.effect_datas.contains_key(&ec::effects::SUBSYSTEM) {
-        types.push(ad::ItemType::Subsystem);
+        types.push(ad::AItemType::Subsystem);
     };
     types
 }

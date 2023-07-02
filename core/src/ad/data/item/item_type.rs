@@ -1,6 +1,6 @@
-/// Contains list of item types.
+/// Contains adapted item types.
 #[derive(Debug)]
-pub enum ItemType {
+pub enum AItemType {
     Booster,
     Character,
     Charge,

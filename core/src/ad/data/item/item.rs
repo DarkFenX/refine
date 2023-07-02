@@ -1,21 +1,21 @@
 use std::collections::HashMap;
 
 use crate::{
-    ad::{AItemEffData, ItemType},
+    ad::{AItemEffData, AItemType},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
     util::Named,
 };
 
-/// Represents an adapted item type.
+/// Represents an adapted item.
 ///
-/// An item type carries alot of info needed to calculate fit attributes, for example base attribute
+/// An item carries alot of info needed to calculate fit attributes, for example base attribute
 /// values.
 #[derive(Debug)]
 pub struct AItem {
     /// Item ID.
     pub id: EItemId,
     /// Item type.
-    pub itype: Option<ItemType>,
+    pub itype: Option<AItemType>,
     /// Item group ID.
     pub grp_id: EItemGrpId,
     /// Item category ID.
@@ -33,7 +33,7 @@ impl AItem {
     /// Make a new adapted item type out of passed data.
     pub(crate) fn new(
         id: EItemId,
-        itype: Option<ItemType>,
+        itype: Option<AItemType>,
         grp_id: EItemGrpId,
         cat_id: EItemCatId,
         attr_vals: HashMap<EAttrId, AttrVal>,

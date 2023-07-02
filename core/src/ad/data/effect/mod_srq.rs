@@ -1,10 +1,10 @@
 use crate::defs::EItemId;
 
-/// Defines modifier skill requirement.
+/// Adapted modifier skill requirement.
 #[derive(Debug)]
-pub enum ModSrq {
+pub enum AModSrq {
     /// Affects items which require item which carries the modifier as skill.
     SelfRef,
-    // Affects items which require specific skill.
+    // Affects items which require specified skill.
     ItemId(EItemId),
 }

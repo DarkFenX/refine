@@ -1,4 +1,4 @@
-use crate::{ad::ModAfeeFilter, defs::EAttrId, shr::ModOp, util::Named};
+use crate::{ad::AModTgtFilter, defs::EAttrId, shr::ModOp, util::Named};
 
 /// An adapted attribute modifier.
 ///
@@ -10,13 +10,13 @@ pub struct AEffectAttrMod {
     /// Operation to apply during the modification.
     pub op: ModOp,
     /// Defines an affectee filter, that is a filter which defines which items will be affected.
-    pub afee_filter: ModAfeeFilter,
+    pub afee_filter: AModTgtFilter,
     /// Refers an attribute, whose value will be affected on the affectee.
     pub afee_attr_id: EAttrId,
 }
 impl AEffectAttrMod {
     /// Make a new attribute modifier out of passed data.
-    pub(crate) fn new(afor_attr_id: EAttrId, op: ModOp, afee_filter: ModAfeeFilter, afee_attr_id: EAttrId) -> Self {
+    pub(crate) fn new(afor_attr_id: EAttrId, op: ModOp, afee_filter: AModTgtFilter, afee_attr_id: EAttrId) -> Self {
         Self {
             afor_attr_id,
             op,

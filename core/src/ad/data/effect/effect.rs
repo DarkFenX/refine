@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AEffectAttrMod, ModBuildStatus, TgtMode},
+    ad::{AEffectAttrMod, AModBuildStatus, ATgtMode},
     defs::{EAttrId, EEffectId},
     shr::State,
     util::Named,
@@ -16,7 +16,7 @@ pub struct AEffect {
     /// Effect state dictates which state of parent item is needed for the effect to run.
     pub state: State,
     /// Defines what kind of target you need to run the effect.
-    pub tgt_mode: TgtMode,
+    pub tgt_mode: ATgtMode,
     /// Defines if the effect is considered as an assistance.
     pub is_assist: bool,
     /// Defines if the effect is offensive or not.
@@ -41,7 +41,7 @@ pub struct AEffect {
     /// Refers an attribute value which defines resistance strength to the effect.
     pub resist_attr_id: Option<EAttrId>,
     /// Modifier build status.
-    pub mod_build_status: ModBuildStatus,
+    pub mod_build_status: AModBuildStatus,
     /// Attribute modifiers carried by the effect
     pub mods: Vec<AEffectAttrMod>,
     /// Refers effects this effect stops on target.
@@ -52,7 +52,7 @@ impl AEffect {
     pub(crate) fn new(
         id: EEffectId,
         state: State,
-        tgt_mode: TgtMode,
+        tgt_mode: ATgtMode,
         is_assist: bool,
         is_offense: bool,
         hisec: Option<bool>,
@@ -64,7 +64,7 @@ impl AEffect {
         track_attr_id: Option<EAttrId>,
         chance_attr_id: Option<EAttrId>,
         resist_attr_id: Option<EAttrId>,
-        mod_build_status: ModBuildStatus,
+        mod_build_status: AModBuildStatus,
         mods: Vec<AEffectAttrMod>,
         stop_ids: Vec<EEffectId>,
     ) -> Self {

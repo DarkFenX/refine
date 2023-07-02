@@ -30,10 +30,10 @@ fn mk_self_skillreq_modifiers_launcher_rof(a_data: &mut ad::AData) {
         let modifier = ad::AEffectAttrMod::new(
             ec::attrs::ROF_BONUS,
             ModOp::PostPerc,
-            ad::ModAfeeFilter::LocSrq(ModDomain::Ship, ad::ModSrq::SelfRef),
+            ad::AModTgtFilter::LocSrq(ModDomain::Ship, ad::AModSrq::SelfRef),
             ec::attrs::SPEED,
         );
         effect.mods.push(modifier);
-        effect.mod_build_status = ad::ModBuildStatus::Custom;
+        effect.mod_build_status = ad::AModBuildStatus::Custom;
     }
 }

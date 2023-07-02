@@ -61,20 +61,20 @@ pub(in crate::ss::svc::calc) enum SsModTgtFilter {
     OwnSrq(ModDomain, EItemId),
 }
 impl SsModTgtFilter {
-    fn from_a_mod_tgt_filter(a_mod_tgt_filter: &ad::ModAfeeFilter, ss_item: &SsItem) -> Self {
+    fn from_a_mod_tgt_filter(a_mod_tgt_filter: &ad::AModTgtFilter, ss_item: &SsItem) -> Self {
         match a_mod_tgt_filter {
-            ad::ModAfeeFilter::Direct(dom) => Self::Direct(*dom),
-            ad::ModAfeeFilter::Loc(dom) => Self::Loc(*dom),
-            ad::ModAfeeFilter::LocGrp(domain, grp_id) => Self::LocGrp(*domain, *grp_id),
-            ad::ModAfeeFilter::LocSrq(domain, mod_srq) => Self::LocSrq(*domain, get_srq(mod_srq, ss_item)),
-            ad::ModAfeeFilter::OwnSrq(domain, mod_srq) => Self::OwnSrq(*domain, get_srq(mod_srq, ss_item)),
+            ad::AModTgtFilter::Direct(dom) => Self::Direct(*dom),
+            ad::AModTgtFilter::Loc(dom) => Self::Loc(*dom),
+            ad::AModTgtFilter::LocGrp(domain, grp_id) => Self::LocGrp(*domain, *grp_id),
+            ad::AModTgtFilter::LocSrq(domain, mod_srq) => Self::LocSrq(*domain, get_srq(mod_srq, ss_item)),
+            ad::AModTgtFilter::OwnSrq(domain, mod_srq) => Self::OwnSrq(*domain, get_srq(mod_srq, ss_item)),
         }
     }
 }
 
-fn get_srq(mod_srq: &ad::ModSrq, ss_item: &SsItem) -> EItemId {
+fn get_srq(mod_srq: &ad::AModSrq, ss_item: &SsItem) -> EItemId {
     match mod_srq {
-        ad::ModSrq::SelfRef => ss_item.get_a_item_id(),
-        ad::ModSrq::ItemId(item_id) => *item_id,
+        ad::AModSrq::SelfRef => ss_item.get_a_item_id(),
+        ad::AModSrq::ItemId(item_id) => *item_id,
     }
 }

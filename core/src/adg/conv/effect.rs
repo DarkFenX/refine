@@ -28,12 +28,12 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
     let mut a_effects = Vec::new();
     for e_effect in g_data.effects.iter() {
         let (state, tgt_mode) = match e_effect.category_id {
-            ec::effcats::PASSIVE => (State::Offline, ad::TgtMode::None),
-            ec::effcats::ACTIVE => (State::Active, ad::TgtMode::None),
-            ec::effcats::TARGET => (State::Active, ad::TgtMode::Item),
-            ec::effcats::ONLINE => (State::Online, ad::TgtMode::None),
-            ec::effcats::OVERLOAD => (State::Overload, ad::TgtMode::None),
-            ec::effcats::SYSTEM => (State::Offline, ad::TgtMode::None),
+            ec::effcats::PASSIVE => (State::Offline, ad::ATgtMode::None),
+            ec::effcats::ACTIVE => (State::Active, ad::ATgtMode::None),
+            ec::effcats::TARGET => (State::Active, ad::ATgtMode::Item),
+            ec::effcats::ONLINE => (State::Online, ad::ATgtMode::None),
+            ec::effcats::OVERLOAD => (State::Overload, ad::ATgtMode::None),
+            ec::effcats::SYSTEM => (State::Offline, ad::ATgtMode::None),
             _ => {
                 let msg = format!(
                     "{} {} uses unknown effect category {}",
@@ -60,7 +60,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
             e_effect.tracking_attr_id,
             e_effect.usage_chance_attr_id,
             e_effect.resist_attr_id,
-            ad::ModBuildStatus::Unbuilt,
+            ad::AModBuildStatus::Unbuilt,
             Vec::new(),
             Vec::new(),
         );
@@ -112,11 +112,11 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
             }
         }
         match mod_errs {
-            0 => a_effect.mod_build_status = ad::ModBuildStatus::Success,
+            0 => a_effect.mod_build_status = ad::AModBuildStatus::Success,
             _ if !a_effect.mods.is_empty() || !a_effect.stop_ids.is_empty() => {
-                a_effect.mod_build_status = ad::ModBuildStatus::SuccessPartial(mod_errs)
+                a_effect.mod_build_status = ad::AModBuildStatus::SuccessPartial(mod_errs)
             }
-            _ => a_effect.mod_build_status = ad::ModBuildStatus::Error(mod_errs),
+            _ => a_effect.mod_build_status = ad::AModBuildStatus::Error(mod_errs),
         }
         a_effects.push(a_effect);
     }
@@ -209,7 +209,7 @@ fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResu
     Ok(ad::AEffectAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::ModAfeeFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
+        ad::AModTgtFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
@@ -218,7 +218,7 @@ fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResul
     Ok(ad::AEffectAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::ModAfeeFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
+        ad::AModTgtFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
@@ -227,7 +227,7 @@ fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
     Ok(ad::AEffectAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::ModAfeeFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
+        ad::AModTgtFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
@@ -236,9 +236,9 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
     Ok(ad::AEffectAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::ModAfeeFilter::LocSrq(
+        ad::AModTgtFilter::LocSrq(
             get_mod_domain(e_modifier, a_effect)?,
-            ad::ModSrq::ItemId(get_mod_skill_id(e_modifier)?),
+            ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?),
         ),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
@@ -248,9 +248,9 @@ fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
     Ok(ad::AEffectAttrMod::new(
         get_mod_affector_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::ModAfeeFilter::OwnSrq(
+        ad::AModTgtFilter::OwnSrq(
             get_mod_domain(e_modifier, a_effect)?,
-            ad::ModSrq::ItemId(get_mod_skill_id(e_modifier)?),
+            ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?),
         ),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
@@ -272,7 +272,7 @@ fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRes
         "shipID" => Ok(ModDomain::Ship),
         "structureID" => Ok(ModDomain::Structure),
         "targetID" => match a_effect.tgt_mode {
-            ad::TgtMode::Item => Ok(ModDomain::Item),
+            ad::ATgtMode::Item => Ok(ModDomain::Item),
             _ => Err(IntError::new(format!(
                 "modifier uses {} domain on untargeted effect",
                 domain
@@ -341,11 +341,11 @@ where
     map
 }
 
-fn get_abil_tgt_mode(tgt_mode: &str) -> IntResult<ad::TgtMode> {
+fn get_abil_tgt_mode(tgt_mode: &str) -> IntResult<ad::ATgtMode> {
     match tgt_mode {
-        "untargeted" => Ok(ad::TgtMode::None),
-        "itemTargeted" => Ok(ad::TgtMode::Item),
-        "pointTargeted" => Ok(ad::TgtMode::Point),
+        "untargeted" => Ok(ad::ATgtMode::None),
+        "itemTargeted" => Ok(ad::ATgtMode::Item),
+        "pointTargeted" => Ok(ad::ATgtMode::Point),
         _ => Err(IntError::new(format!("unknown ability target mode \"{tgt_mode}\""))),
     }
 }

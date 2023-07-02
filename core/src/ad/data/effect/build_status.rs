@@ -2,10 +2,9 @@ use crate::defs::Amount;
 
 /// Effect modifier build statuses.
 ///
-/// During cache generation, the library converts modifiers of an effect into internal format.
-/// Some of those modifiers might not make it through conversion process due to various reasons.
-/// Variants of this enum are stored on an effect, to keep info about conversion status.
-pub enum ModBuildStatus {
+/// During conversion of EVE data into adapted data, some modifiers might not make it due to various
+/// reasons Variants of this enum are stored on an effect, to keep info about conversion status.
+pub enum AModBuildStatus {
     /// Modifiers haven't been built yet.
     Unbuilt,
     /// All modifiers failed conversion, with a failure count.

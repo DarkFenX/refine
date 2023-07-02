@@ -348,7 +348,7 @@ fn process_adds(adds: &Vec<AttrVal>) -> AttrVal {
 // Query- and modification-related functions
 fn generate_ss_attr_mods(src_item: &SsItem, src_effects: &Vec<ad::ArcEffect>) -> Vec<SsAttrMod> {
     let mut specs = Vec::new();
-    for effect in src_effects.iter().filter(|e| matches!(&e.tgt_mode, ad::TgtMode::None)) {
+    for effect in src_effects.iter().filter(|e| matches!(&e.tgt_mode, ad::ATgtMode::None)) {
         for a_mod in effect.mods.iter() {
             let ss_mod = SsAttrMod::from_a_data(src_item, effect, a_mod);
             specs.push(ss_mod);

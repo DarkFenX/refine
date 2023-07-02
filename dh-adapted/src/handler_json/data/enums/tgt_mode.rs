@@ -5,21 +5,21 @@ pub(in crate::handler_json) enum CTgtMode {
     Item,
     Point,
 }
-impl From<&rc::ad::TgtMode> for CTgtMode {
-    fn from(tgt_mode: &rc::ad::TgtMode) -> Self {
+impl From<&rc::ad::ATgtMode> for CTgtMode {
+    fn from(tgt_mode: &rc::ad::ATgtMode) -> Self {
         match tgt_mode {
-            rc::ad::TgtMode::None => Self::None,
-            rc::ad::TgtMode::Item => Self::Item,
-            rc::ad::TgtMode::Point => Self::Point,
+            rc::ad::ATgtMode::None => Self::None,
+            rc::ad::ATgtMode::Item => Self::Item,
+            rc::ad::ATgtMode::Point => Self::Point,
         }
     }
 }
-impl Into<rc::ad::TgtMode> for &CTgtMode {
-    fn into(self) -> rc::ad::TgtMode {
+impl Into<rc::ad::ATgtMode> for &CTgtMode {
+    fn into(self) -> rc::ad::ATgtMode {
         match self {
-            CTgtMode::None => rc::ad::TgtMode::None,
-            CTgtMode::Item => rc::ad::TgtMode::Item,
-            CTgtMode::Point => rc::ad::TgtMode::Point,
+            CTgtMode::None => rc::ad::ATgtMode::None,
+            CTgtMode::Item => rc::ad::ATgtMode::Item,
+            CTgtMode::Point => rc::ad::ATgtMode::Point,
         }
     }
 }

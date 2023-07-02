@@ -7,25 +7,25 @@ pub(in crate::handler_json) enum CModBuildStatus {
     Success,
     Custom,
 }
-impl From<&rc::ad::ModBuildStatus> for CModBuildStatus {
-    fn from(mod_build_status: &rc::ad::ModBuildStatus) -> Self {
+impl From<&rc::ad::AModBuildStatus> for CModBuildStatus {
+    fn from(mod_build_status: &rc::ad::AModBuildStatus) -> Self {
         match mod_build_status {
-            rc::ad::ModBuildStatus::Unbuilt => Self::Unbuilt,
-            rc::ad::ModBuildStatus::Error(fails) => Self::Error(*fails),
-            rc::ad::ModBuildStatus::SuccessPartial(fails) => Self::SuccessPartial(*fails),
-            rc::ad::ModBuildStatus::Success => Self::Success,
-            rc::ad::ModBuildStatus::Custom => Self::Custom,
+            rc::ad::AModBuildStatus::Unbuilt => Self::Unbuilt,
+            rc::ad::AModBuildStatus::Error(fails) => Self::Error(*fails),
+            rc::ad::AModBuildStatus::SuccessPartial(fails) => Self::SuccessPartial(*fails),
+            rc::ad::AModBuildStatus::Success => Self::Success,
+            rc::ad::AModBuildStatus::Custom => Self::Custom,
         }
     }
 }
-impl Into<rc::ad::ModBuildStatus> for &CModBuildStatus {
-    fn into(self) -> rc::ad::ModBuildStatus {
+impl Into<rc::ad::AModBuildStatus> for &CModBuildStatus {
+    fn into(self) -> rc::ad::AModBuildStatus {
         match self {
-            CModBuildStatus::Unbuilt => rc::ad::ModBuildStatus::Unbuilt,
-            CModBuildStatus::Error(fails) => rc::ad::ModBuildStatus::Error(*fails),
-            CModBuildStatus::SuccessPartial(fails) => rc::ad::ModBuildStatus::SuccessPartial(*fails),
-            CModBuildStatus::Success => rc::ad::ModBuildStatus::Success,
-            CModBuildStatus::Custom => rc::ad::ModBuildStatus::Custom,
+            CModBuildStatus::Unbuilt => rc::ad::AModBuildStatus::Unbuilt,
+            CModBuildStatus::Error(fails) => rc::ad::AModBuildStatus::Error(*fails),
+            CModBuildStatus::SuccessPartial(fails) => rc::ad::AModBuildStatus::SuccessPartial(*fails),
+            CModBuildStatus::Success => rc::ad::AModBuildStatus::Success,
+            CModBuildStatus::Custom => rc::ad::AModBuildStatus::Custom,
         }
     }
 }
