@@ -1,6 +1,5 @@
 use crate::{
-    ad::{AAttrMod, ModBuildStatus},
-    consts::TgtMode,
+    ad::{AEffectAttrMod, ModBuildStatus, TgtMode},
     defs::{EAttrId, EEffectId},
     shr::State,
     util::Named,
@@ -44,7 +43,7 @@ pub struct AEffect {
     /// Modifier build status.
     pub mod_build_status: ModBuildStatus,
     /// Attribute modifiers carried by the effect
-    pub mods: Vec<AAttrMod>,
+    pub mods: Vec<AEffectAttrMod>,
     /// Refers effects this effect stops on target.
     pub stop_ids: Vec<EEffectId>,
 }
@@ -66,7 +65,7 @@ impl AEffect {
         chance_attr_id: Option<EAttrId>,
         resist_attr_id: Option<EAttrId>,
         mod_build_status: ModBuildStatus,
-        mods: Vec<AAttrMod>,
+        mods: Vec<AEffectAttrMod>,
         stop_ids: Vec<EEffectId>,
     ) -> Self {
         Self {

@@ -25,8 +25,8 @@ fn setup() {
     setup_logger().unwrap();
 }
 
-fn make_attr_mod1() -> rc::ad::AAttrMod {
-    rc::ad::AAttrMod {
+fn make_attr_mod1() -> rc::ad::AEffectAttrMod {
+    rc::ad::AEffectAttrMod {
         afor_attr_id: 333,
         aggr_mode: rc::consts::ModAggrMode::Stack,
         op: rc::consts::ModOp::Add,
@@ -34,8 +34,8 @@ fn make_attr_mod1() -> rc::ad::AAttrMod {
         afee_attr_id: 4747,
     }
 }
-fn make_attr_mod2() -> rc::ad::AAttrMod {
-    rc::ad::AAttrMod {
+fn make_attr_mod2() -> rc::ad::AEffectAttrMod {
+    rc::ad::AEffectAttrMod {
         afor_attr_id: 333,
         aggr_mode: rc::consts::ModAggrMode::Min(22),
         op: rc::consts::ModOp::Sub,

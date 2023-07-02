@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrMod, ArcEffect, ModAfeeFilter, ModSrq},
+    ad,
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId, SsItemId},
     shr::{ModAggrMode, ModDomain, ModOp},
     ss::item::SsItem,
@@ -37,8 +37,8 @@ impl SsAttrMod {
     }
     pub(in crate::ss::svc::calc) fn from_a_data(
         src_ss_item: &SsItem,
-        src_a_effect: &ArcEffect,
-        src_a_mod: &AAttrMod,
+        src_a_effect: &ad::ArcEffect,
+        src_a_mod: &ad::AEffectAttrMod,
     ) -> Self {
         Self::new(
             src_ss_item.get_id(),
@@ -61,20 +61,20 @@ pub(in crate::ss::svc::calc) enum SsModTgtFilter {
     OwnSrq(ModDomain, EItemId),
 }
 impl SsModTgtFilter {
-    fn from_a_mod_tgt_filter(a_mod_tgt_filter: &ModAfeeFilter, ss_item: &SsItem) -> Self {
+    fn from_a_mod_tgt_filter(a_mod_tgt_filter: &ad::ModAfeeFilter, ss_item: &SsItem) -> Self {
         match a_mod_tgt_filter {
-            ModAfeeFilter::Direct(dom) => Self::Direct(*dom),
-            ModAfeeFilter::Loc(dom) => Self::Loc(*dom),
-            ModAfeeFilter::LocGrp(domain, grp_id) => Self::LocGrp(*domain, *grp_id),
-            ModAfeeFilter::LocSrq(domain, mod_srq) => Self::LocSrq(*domain, get_srq(mod_srq, ss_item)),
-            ModAfeeFilter::OwnSrq(domain, mod_srq) => Self::OwnSrq(*domain, get_srq(mod_srq, ss_item)),
+            ad::ModAfeeFilter::Direct(dom) => Self::Direct(*dom),
+            ad::ModAfeeFilter::Loc(dom) => Self::Loc(*dom),
+            ad::ModAfeeFilter::LocGrp(domain, grp_id) => Self::LocGrp(*domain, *grp_id),
+            ad::ModAfeeFilter::LocSrq(domain, mod_srq) => Self::LocSrq(*domain, get_srq(mod_srq, ss_item)),
+            ad::ModAfeeFilter::OwnSrq(domain, mod_srq) => Self::OwnSrq(*domain, get_srq(mod_srq, ss_item)),
         }
     }
 }
 
-fn get_srq(mod_srq: &ModSrq, ss_item: &SsItem) -> EItemId {
+fn get_srq(mod_srq: &ad::ModSrq, ss_item: &SsItem) -> EItemId {
     match mod_srq {
-        ModSrq::SelfRef => ss_item.get_a_item_id(),
-        ModSrq::ItemId(item_id) => *item_id,
+        ad::ModSrq::SelfRef => ss_item.get_a_item_id(),
+        ad::ModSrq::ItemId(item_id) => *item_id,
     }
 }

@@ -1,6 +1,5 @@
 use crate::{
     ad,
-    ad::{ModAfeeFilter, ModSrq},
     consts::{attrs, effects},
     shr::{ModDomain, ModOp, State},
 };
@@ -29,10 +28,10 @@ fn mk_self_skillreq_modifiers_launcher_rof(a_data: &mut ad::AData) {
             tracing::info!("self-skillreq missile rof effect has modifiers, overwriting them");
             effect.mods.clear();
         }
-        let modifier = ad::AAttrMod::new(
+        let modifier = ad::AEffectAttrMod::new(
             attrs::ROF_BONUS,
             ModOp::PostPerc,
-            ModAfeeFilter::LocSrq(ModDomain::Ship, ModSrq::SelfRef),
+            ad::ModAfeeFilter::LocSrq(ModDomain::Ship, ad::ModSrq::SelfRef),
             attrs::SPEED,
         );
         effect.mods.push(modifier);

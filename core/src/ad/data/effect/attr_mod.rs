@@ -4,7 +4,7 @@ use crate::{ad::ModAfeeFilter, defs::EAttrId, shr::ModOp, util::Named};
 ///
 /// A modifier is an entity which specifies in detail which attributes on which items are going to
 /// be affected, and how.
-pub struct AAttrMod {
+pub struct AEffectAttrMod {
     /// Refers an attribute on the affector, which should be used as modification value.
     pub afor_attr_id: EAttrId,
     /// Operation to apply during the modification.
@@ -14,7 +14,7 @@ pub struct AAttrMod {
     /// Refers an attribute, whose value will be affected on the affectee.
     pub afee_attr_id: EAttrId,
 }
-impl AAttrMod {
+impl AEffectAttrMod {
     /// Make a new attribute modifier out of passed data.
     pub(crate) fn new(afor_attr_id: EAttrId, op: ModOp, afee_filter: ModAfeeFilter, afee_attr_id: EAttrId) -> Self {
         Self {
@@ -25,7 +25,7 @@ impl AAttrMod {
         }
     }
 }
-impl Named for AAttrMod {
+impl Named for AEffectAttrMod {
     fn get_name() -> &'static str {
         "AAttrMod"
     }

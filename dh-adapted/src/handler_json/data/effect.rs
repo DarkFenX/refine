@@ -17,7 +17,7 @@ pub(in crate::handler_json) struct CEffect {
     chance_attr_id: Option<rc::EAttrId>,
     resist_attr_id: Option<rc::EAttrId>,
     mod_build_status: CModBuildStatus,
-    mods: Vec<CAttrMod>,
+    mods: Vec<CEffectAttrMod>,
     stop_ids: Vec<rc::EEffectId>,
 }
 impl From<&rc::ad::AEffect> for CEffect {
@@ -68,15 +68,15 @@ impl Into<rc::ad::AEffect> for &CEffect {
 }
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-struct CAttrMod {
+struct CEffectAttrMod {
     afor_attr_id: rc::EAttrId,
     op: CModOp,
     afee_filter: CModAfeeFilter,
     afee_attr_id: rc::EAttrId,
 }
-impl From<&rc::ad::AAttrMod> for CAttrMod {
-    fn from(a_modifier: &rc::ad::AAttrMod) -> Self {
-        CAttrMod {
+impl From<&rc::ad::AEffectAttrMod> for CEffectAttrMod {
+    fn from(a_modifier: &rc::ad::AEffectAttrMod) -> Self {
+        CEffectAttrMod {
             afor_attr_id: a_modifier.afor_attr_id,
             op: (&a_modifier.op).into(),
             afee_filter: (&a_modifier.afee_filter).into(),
@@ -84,9 +84,9 @@ impl From<&rc::ad::AAttrMod> for CAttrMod {
         }
     }
 }
-impl Into<rc::ad::AAttrMod> for &CAttrMod {
-    fn into(self) -> rc::ad::AAttrMod {
-        rc::ad::AAttrMod {
+impl Into<rc::ad::AEffectAttrMod> for &CEffectAttrMod {
+    fn into(self) -> rc::ad::AEffectAttrMod {
+        rc::ad::AEffectAttrMod {
             afor_attr_id: self.afor_attr_id,
             op: (&self.op).into(),
             afee_filter: (&self.afee_filter).into(),
