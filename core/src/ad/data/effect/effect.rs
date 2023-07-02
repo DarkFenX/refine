@@ -94,3 +94,8 @@ impl Named for AEffect {
         "AEffect"
     }
 }
+impl std::fmt::Display for AEffect {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}(id={})", Self::get_name(), self.id)
+    }
+}

@@ -47,6 +47,11 @@ impl Named for EBuff {
         "EBuff"
     }
 }
+impl std::fmt::Display for EBuff {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}(id={})", Self::get_name(), self.id)
+    }
+}
 
 /// Auxiliary data needed to apply an EVE buff modification directly to some item.
 pub struct EBuffIM {

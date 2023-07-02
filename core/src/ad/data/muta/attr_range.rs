@@ -13,8 +13,3 @@ impl AMutaAttrRange {
         Self { min_mult, max_mult }
     }
 }
-impl Named for AMutaAttrRange {
-    fn get_name() -> &'static str {
-        "AMutaAttrRange"
-    }
-}

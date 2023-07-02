@@ -26,8 +26,3 @@ impl AEffectAttrMod {
         }
     }
 }
-impl Named for AEffectAttrMod {
-    fn get_name() -> &'static str {
-        "AAttrMod"
-    }
-}

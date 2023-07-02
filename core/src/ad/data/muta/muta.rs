@@ -27,8 +27,3 @@ impl AMuta {
         }
     }
 }
-impl Named for AMuta {
-    fn get_name() -> &'static str {
-        "AMuta"
-    }
-}

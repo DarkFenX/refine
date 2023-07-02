@@ -35,12 +35,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
             ec::effcats::OVERLOAD => (State::Overload, ad::ATgtMode::None),
             ec::effcats::SYSTEM => (State::Offline, ad::ATgtMode::None),
             _ => {
-                let msg = format!(
-                    "{} {} uses unknown effect category {}",
-                    ed::EEffect::get_name(),
-                    e_effect.id,
-                    e_effect.category_id
-                );
+                let msg = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
                 tracing::warn!("{msg}");
                 continue;
             }
@@ -75,12 +70,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                     continue;
                 }
                 Err(e) => {
-                    let msg = format!(
-                        "failed to build stopper for {} {}: {}",
-                        ad::AEffect::get_name(),
-                        a_effect.id,
-                        e.msg
-                    );
+                    let msg = format!("failed to build stopper for {}: {}", a_effect, e.msg);
                     tracing::warn!("{msg}");
                     mod_errs += 1;
                     continue;
@@ -99,12 +89,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
             match a_mod_res {
                 Ok(a_mod) => a_effect.mods.push(a_mod),
                 Err(e) => {
-                    let msg = format!(
-                        "failed to build modifier for {} {}: {}",
-                        ad::AEffect::get_name(),
-                        a_effect.id,
-                        e.msg
-                    );
+                    let msg = format!("failed to build modifier for {}: {}", a_effect, e.msg);
                     tracing::warn!("{msg}");
                     mod_errs += 1;
                     continue;
@@ -134,9 +119,8 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                 }
                 _ => {
                     let msg = format!(
-                        "{} {} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
-                        ad::AEffect::get_name(),
-                        a_effect.id,
+                        "{} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
+                        a_effect,
                         flags.len()
                     );
                     tracing::warn!("{msg}");
@@ -152,9 +136,8 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                 }
                 _ => {
                     let msg = format!(
-                        "{} {} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
-                        ad::AEffect::get_name(),
-                        a_effect.id,
+                        "{} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
+                        a_effect,
                         flags.len()
                     );
                     tracing::warn!("{msg}");
@@ -168,20 +151,14 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                 1 => match get_abil_tgt_mode(modes.iter().next().unwrap()) {
                     Ok(mode) => a_effect.tgt_mode = mode,
                     Err(e) => {
-                        let msg = format!(
-                            "failed to update target mode for {} {}: {}",
-                            ad::AEffect::get_name(),
-                            a_effect.id,
-                            e.msg
-                        );
+                        let msg = format!("failed to update target mode for {}: {}", a_effect, e.msg);
                         tracing::warn!("{msg}");
                     }
                 },
                 _ => {
                     let msg = format!(
-                        "{} {} has {} distinct \"target mode\" values mapped from fighter abilities",
-                        ad::AEffect::get_name(),
-                        a_effect.id,
+                        "{} has {} distinct \"target mode\" values mapped from fighter abilities",
+                        a_effect,
                         modes.len()
                     );
                     tracing::warn!("{msg}");

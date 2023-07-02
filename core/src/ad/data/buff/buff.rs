@@ -30,8 +30,3 @@ impl ABuff {
         }
     }
 }
-impl Named for ABuff {
-    fn get_name() -> &'static str {
-        "ABuff"
-    }
-}

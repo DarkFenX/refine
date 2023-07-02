@@ -22,8 +22,3 @@ impl AItemEffData {
         }
     }
 }
-impl Named for AItemEffData {
-    fn get_name() -> &'static str {
-        "AItemEffData"
-    }
-}

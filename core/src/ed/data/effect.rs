@@ -72,6 +72,11 @@ impl Named for EEffect {
         "EEffect"
     }
 }
+impl std::fmt::Display for EEffect {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}(id={})", Self::get_name(), self.id)
+    }
+}
 
 /// EVE dogma effect modifier data.
 pub struct EEffectMod {

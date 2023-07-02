@@ -43,3 +43,8 @@ impl Named for EItem {
         "EItem"
     }
 }
+impl std::fmt::Display for EItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}(id={})", Self::get_name(), self.id)
+    }
+}

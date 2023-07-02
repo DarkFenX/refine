@@ -15,7 +15,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
         let op = match conv_buff_op(&e_buff.operation) {
             Ok(op) => op,
             Err(e) => {
-                let msg = format!("{} {}: {}", ed::EBuff::get_name(), e_buff.id, e.msg);
+                let msg = format!("{}: {}", e_buff, e.msg);
                 tracing::warn!("{msg}");
                 continue;
             }
@@ -23,7 +23,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
         let aggr_mode = match conv_buff_aggr_mode(&e_buff.aggregate_mode, e_buff.id) {
             Ok(am) => am,
             Err(e) => {
-                let msg = format!("{} {}: {}", ed::EBuff::get_name(), e_buff.id, e.msg);
+                let msg = format!("{}: {}", e_buff, e.msg);
                 tracing::warn!("{msg}");
                 continue;
             }

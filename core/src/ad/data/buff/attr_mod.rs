@@ -20,8 +20,3 @@ impl ABuffAttrMod {
         }
     }
 }
-impl Named for ABuffAttrMod {
-    fn get_name() -> &'static str {
-        "ABuffAttrMod"
-    }
-}
