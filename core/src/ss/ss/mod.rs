@@ -6,8 +6,10 @@ use crate::{
     ss::{fit::SsFits, item::SsItems, svc::SsSvcs, EffectInfo, EffectMode, SsAttrVal, SsView},
     util::Result,
 };
+pub use ord_modes::{OrdAddMode, OrdRmMode};
 
 mod item;
+mod ord_modes;
 
 pub struct SolarSystem {
     src: Src,

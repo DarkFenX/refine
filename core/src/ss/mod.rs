@@ -1,6 +1,6 @@
 pub use effect_info::EffectInfo;
 pub use mod_rack::ModRack;
-pub use ss::SolarSystem;
+pub use ss::{OrdAddMode, OrdRmMode, SolarSystem};
 pub use svc::{EffectMode, SsAttrVal};
 pub(in crate::ss) use view::SsView;
 

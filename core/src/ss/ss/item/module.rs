@@ -1,11 +1,10 @@
 use crate::{
-    consts::OrdAddMode,
     defs::{EItemId, Idx, SsFitId, SsItemId},
     shr::State,
     ss::{
         info::{SsChargeInfo, SsModuleInfo},
         item::{SsItem, SsModule},
-        ModRack, SolarSystem, SsView,
+        ModRack, OrdAddMode, SolarSystem, SsView,
     },
     util::{Error, ErrorKind, Result},
 };
