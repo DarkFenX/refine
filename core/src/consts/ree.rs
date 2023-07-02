@@ -1,7 +1,10 @@
-use crate::defs::{EBuffId, EItemGrpId, EItemId, Idx};
+use crate::{
+    defs::{EBuffId, EItemGrpId, EItemId, Idx},
+    shr::ModDomain,
+};
 
 /// Defines which items will be affected by a modifier.
-#[derive(Debug, Copy, Clone, PartialEq, Hash)]
+#[derive(Debug)]
 pub enum ModAfeeFilter {
     /// Single item modified, as specified by the domain.
     Direct(ModDomain),
@@ -16,27 +19,12 @@ pub enum ModAfeeFilter {
 }
 
 /// Defines modifier skill requirement.
-#[derive(Debug, Copy, Clone, PartialEq, Hash)]
+#[derive(Debug)]
 pub enum ModSrq {
     /// Affects items which require item which carries the modifier as skill.
     SelfRef,
     // Affects items which require specific skill.
     ItemId(EItemId),
-}
-
-/// Defines domain (or scope) which is target for a modification.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
-pub enum ModDomain {
-    /// Ship or items belonging to it.
-    Ship,
-    /// Structure or items belonging to it.
-    Structure,
-    /// Character or items owned by it.
-    Char,
-    /// Specific single item.
-    Item,
-    /// Charge for module, module for charge.
-    Other,
 }
 
 /// Defines how a modification will be aggregated.

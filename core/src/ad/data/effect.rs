@@ -10,7 +10,6 @@ use crate::{
 /// Effects are higher-level modification descriptors, as opposed to modifiers, which are
 /// lower-level. An effect can contain any amount of modifiers under a single roof, accompanied by
 /// extra effect-wide properties.
-#[derive(Debug)]
 pub struct AEffect {
     /// Effect ID.
     pub id: EEffectId,
@@ -100,7 +99,6 @@ impl Named for AEffect {
 ///
 /// A modifier is an entity which specifies in detail which attributes on which items are going to
 /// be affected, and how.
-#[derive(Debug, Copy, Clone, Hash, PartialEq)]
 pub struct AAttrMod {
     /// Refers an attribute on the affector, which should be used as modification value.
     pub afor_attr_id: EAttrId,
@@ -133,7 +131,6 @@ impl Named for AAttrMod {
 /// During cache generation, the library converts modifiers of an effect into internal format.
 /// Some of those modifiers might not make it through conversion process due to various reasons.
 /// Variants of this enum are stored on an effect, to keep info about conversion status.
-#[derive(Debug)]
 pub enum ModBuildStatus {
     /// Modifiers haven't been built yet.
     Unbuilt,

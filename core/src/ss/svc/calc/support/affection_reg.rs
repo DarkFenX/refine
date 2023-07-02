@@ -1,8 +1,8 @@
 use std::{collections::HashSet, hash::Hash};
 
 use crate::{
-    consts::ModDomain,
     defs::{EItemGrpId, EItemId, SsFitId, SsItemId},
+    shr::ModDomain,
     ss::item::{SsItem, SsItems},
     util::KeyedStorage1L,
 };

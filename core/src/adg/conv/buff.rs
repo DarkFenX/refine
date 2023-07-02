@@ -3,9 +3,10 @@ use itertools::Itertools;
 use crate::{
     ad,
     adg::GData,
-    consts::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp, ModSrq},
+    consts::{ModAfeeFilter, ModAggrMode, ModOp, ModSrq},
     defs::EBuffId,
     ed,
+    shr::ModDomain,
     util::{IntError, IntResult, Named},
 };
 

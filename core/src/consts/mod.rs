@@ -1,7 +1,7 @@
 //! Contains enums and constants used throughout the crate.
 
 pub(crate) use eve::{attrs, effcats, effects, get_abil_effect, itemcats, itemgrps, units};
-pub use ree::{ModAfeeFilter, ModAggrMode, ModDomain, ModOp, ModSrq, OrdAddMode, OrdRmMode, TgtMode};
+pub use ree::{ModAfeeFilter, ModAggrMode, ModOp, ModSrq, OrdAddMode, OrdRmMode, TgtMode};
 
 mod eve;
 mod ree;
