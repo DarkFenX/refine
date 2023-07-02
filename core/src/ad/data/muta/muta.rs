@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 
 use crate::{
-    defs::{AttrVal, EAttrId, EItemId, EMutaId},
+    ad::AMutaAttrRange,
+    defs::{EAttrId, EItemId, EMutaId},
     util::Named,
 };
 
@@ -30,25 +31,5 @@ impl AMuta {
 impl Named for AMuta {
     fn get_name() -> &'static str {
         "AMuta"
-    }
-}
-
-/// Stores mutation range of specific attribute of specific mutaplasmid.
-#[derive(Debug)]
-pub struct AMutaAttrRange {
-    /// Lower boundary of the modification range.
-    pub min_mult: AttrVal,
-    /// Upper boundary of the modification range.
-    pub max_mult: AttrVal,
-}
-impl AMutaAttrRange {
-    /// Make a new attribute mutation range.
-    pub(crate) fn new(min_mult: AttrVal, max_mult: AttrVal) -> Self {
-        Self { min_mult, max_mult }
-    }
-}
-impl Named for AMutaAttrRange {
-    fn get_name() -> &'static str {
-        "AMutaAttrRange"
     }
 }

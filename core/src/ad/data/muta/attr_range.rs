@@ -1,0 +1,21 @@
+use crate::{defs::AttrVal, util::Named};
+
+/// Stores mutation range of specific attribute of specific mutaplasmid.
+#[derive(Debug)]
+pub struct AMutaAttrRange {
+    /// Lower boundary of the modification range.
+    pub min_mult: AttrVal,
+    /// Upper boundary of the modification range.
+    pub max_mult: AttrVal,
+}
+impl AMutaAttrRange {
+    /// Make a new attribute mutation range.
+    pub(crate) fn new(min_mult: AttrVal, max_mult: AttrVal) -> Self {
+        Self { min_mult, max_mult }
+    }
+}
+impl Named for AMutaAttrRange {
+    fn get_name() -> &'static str {
+        "AMutaAttrRange"
+    }
+}
