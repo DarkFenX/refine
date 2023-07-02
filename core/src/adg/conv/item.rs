@@ -92,12 +92,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
                 a_items.push(a_item);
             }
             _ => {
-                let msg = format!(
-                    "{} {} is eligible for {} item types",
-                    ad::AItem::get_name(),
-                    a_item.id,
-                    item_types.len()
-                );
+                let msg = format!("{} is eligible for {} item types", a_item, item_types.len());
                 tracing::warn!("{msg}");
                 continue;
             }
