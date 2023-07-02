@@ -6,7 +6,6 @@ pub(in crate::phb) trait FsdMerge<T> {
     fn fsd_merge(self, id: FsdId) -> Vec<T>;
 }
 
-#[derive(Debug)]
 pub(in crate::phb) struct FsdItem {
     pub(in crate::phb) id: String,
     pub(in crate::phb) item: serde_json::Value,

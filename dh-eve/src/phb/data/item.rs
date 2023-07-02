@@ -1,6 +1,6 @@
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItem {
     #[serde(rename = "groupID")]
     pub(in crate::phb) group_id: rc::EItemGrpId,

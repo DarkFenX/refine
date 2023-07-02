@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PMutaAttrMods {
     #[serde(rename = "attributeIDs")]
     pub(in crate::phb) attrs: HashMap<rc::EAttrId, PMutaAttrModRange>,
@@ -16,7 +16,7 @@ impl FsdMerge<rc::ed::EMutaAttrMod> for PMutaAttrMods {
     }
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PMutaAttrModRange {
     pub(in crate::phb) min: rc::AttrVal,
     pub(in crate::phb) max: rc::AttrVal,

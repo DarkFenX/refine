@@ -3,7 +3,7 @@ use crate::phb::{
     serde_custom::bool_from_int,
 };
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PAttr {
     #[serde(deserialize_with = "bool_from_int")]
     pub(in crate::phb) stackable: bool,

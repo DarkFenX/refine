@@ -3,7 +3,7 @@ use crate::phb::{
     serde_custom::bool_from_int,
 };
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemEffects {
     #[serde(rename = "dogmaEffects", default)]
     pub(in crate::phb) effects: Vec<PItemEffectData>,
@@ -17,7 +17,7 @@ impl FsdMerge<rc::ed::EItemEffect> for PItemEffects {
     }
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemEffectData {
     #[serde(rename = "effectID")]
     pub(in crate::phb) effect_id: rc::EEffectId,

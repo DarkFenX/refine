@@ -1,6 +1,6 @@
 use crate::phb::fsd::{FsdId, FsdMerge};
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemFighterAbils {
     #[serde(rename = "abilitySlot0")]
     pub(in crate::phb) abil0: Option<PItemFighterAbilData>,
@@ -30,7 +30,7 @@ impl FsdMerge<rc::ed::EItemFighterAbil> for PItemFighterAbils {
     }
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemFighterAbilData {
     #[serde(rename = "abilityID")]
     pub(in crate::phb) abil_id: rc::EAbilId,
@@ -39,7 +39,7 @@ pub(in crate::phb) struct PItemFighterAbilData {
     pub(in crate::phb) charges: Option<PItemFighterAbilChargeData>,
 }
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemFighterAbilChargeData {
     #[serde(rename = "chargeCount")]
     pub(in crate::phb) count: rc::Amount,
