@@ -7,8 +7,8 @@ use crate::{
         rels::{KeyDb, Pk},
         GData, GSupport,
     },
-    consts::{itemcats, itemgrps},
     defs::Amount,
+    ec,
     util::{IntError, IntResult, Named},
 };
 
@@ -64,16 +64,16 @@ fn trash_all(alive: &mut GData, trash: &mut GData) {
 
 fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
     let cats = vec![
-        itemcats::CHARGE,
-        itemcats::DRONE,
-        itemcats::FIGHTER,
-        itemcats::IMPLANT,
-        itemcats::MODULE,
-        itemcats::SHIP,
-        itemcats::SKILL,
-        itemcats::SUBSYSTEM,
+        ec::itemcats::CHARGE,
+        ec::itemcats::DRONE,
+        ec::itemcats::FIGHTER,
+        ec::itemcats::IMPLANT,
+        ec::itemcats::MODULE,
+        ec::itemcats::SHIP,
+        ec::itemcats::SKILL,
+        ec::itemcats::SUBSYSTEM,
     ];
-    let mut grps = vec![itemgrps::CHARACTER, itemgrps::EFFECT_BEACON];
+    let mut grps = vec![ec::itemgrps::CHARACTER, ec::itemgrps::EFFECT_BEACON];
     for (&grp, cat) in g_supp.grp_cat_map.iter() {
         if cats.contains(cat) {
             grps.push(grp);

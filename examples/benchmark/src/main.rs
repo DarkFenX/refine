@@ -28,18 +28,18 @@ fn setup() {
 fn make_attr_mod1() -> rc::ad::AEffectAttrMod {
     rc::ad::AEffectAttrMod {
         afor_attr_id: 333,
-        aggr_mode: rc::consts::ModAggrMode::Stack,
-        op: rc::consts::ModOp::Add,
-        afee_filter: rc::consts::ModAfeeFilter::LocGrp(rc::consts::ModDomain::Item, 33),
+        aggr_mode: rc::ec::ModAggrMode::Stack,
+        op: rc::ec::ModOp::Add,
+        afee_filter: rc::ec::ModAfeeFilter::LocGrp(rc::ec::ModDomain::Item, 33),
         afee_attr_id: 4747,
     }
 }
 fn make_attr_mod2() -> rc::ad::AEffectAttrMod {
     rc::ad::AEffectAttrMod {
         afor_attr_id: 333,
-        aggr_mode: rc::consts::ModAggrMode::Min(22),
-        op: rc::consts::ModOp::Sub,
-        afee_filter: rc::consts::ModAfeeFilter::Direct(rc::consts::ModDomain::Ship),
+        aggr_mode: rc::ec::ModAggrMode::Min(22),
+        op: rc::ec::ModOp::Sub,
+        afee_filter: rc::ec::ModAfeeFilter::Direct(rc::ec::ModDomain::Ship),
         afee_attr_id: 222234324,
     }
 }

@@ -1,6 +1,5 @@
 use crate::{
-    ad,
-    consts::effects,
+    ad, ec,
     shr::State,
     ss::{item::SsItem, EffectMode, SsView},
 };
@@ -31,7 +30,7 @@ fn resolve_effect_status_full(item: &SsItem, item_state: State, effect: &ad::Arc
         // Online effects depend on 'online' effect, ignoring everything else
         State::Online => {
             // Online effect itself runs unconditionally if item is online+
-            if effect.id == effects::ONLINE {
+            if effect.id == ec::effects::ONLINE {
                 item_state >= effect.state
             // Other effects from online category rely only on "online" effect run status
             } else {
@@ -59,10 +58,10 @@ fn resolve_effect_status_full(item: &SsItem, item_state: State, effect: &ad::Arc
 }
 
 pub(in crate::ss::svc) fn resolve_online_effect_status(ss_view: &SsView, item: &SsItem, item_state: State) -> bool {
-    if !item.get_effect_datas().unwrap().contains_key(&effects::ONLINE) {
+    if !item.get_effect_datas().unwrap().contains_key(&ec::effects::ONLINE) {
         return false;
     }
-    let effect = match ss_view.src.get_a_effect(&effects::ONLINE) {
+    let effect = match ss_view.src.get_a_effect(&ec::effects::ONLINE) {
         Some(effect) => effect,
         None => return false,
     };

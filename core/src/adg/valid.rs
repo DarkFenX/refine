@@ -7,7 +7,7 @@ use crate::{
         rels::{Fk, KeyDb, KeyPart, Pk},
         GData, GSupport,
     },
-    consts, ed,
+    ec, ed,
     util::Named,
 };
 
@@ -105,14 +105,14 @@ fn known_fighter_abilities(g_data: &mut GData) {
     let mut unknown_ids = HashSet::new();
     let abils = g_data
         .abils
-        .drain_filter(|v| consts::get_abil_effect(v.id).is_none())
+        .drain_filter(|v| ec::abils::get_abil_effect(v.id).is_none())
         .update(|v| {
             unknown_ids.insert(v.id);
         })
         .count();
     let item_abils = g_data
         .item_abils
-        .drain_filter(|v| consts::get_abil_effect(v.abil_id).is_none())
+        .drain_filter(|v| ec::abils::get_abil_effect(v.abil_id).is_none())
         .update(|v| {
             unknown_ids.insert(v.abil_id);
         })
@@ -142,7 +142,7 @@ fn fighter_ability_effect(g_data: &mut GData) {
     let mut invalids = HashSet::new();
     g_data
         .item_abils
-        .drain_filter(|v| match consts::get_abil_effect(v.abil_id) {
+        .drain_filter(|v| match ec::abils::get_abil_effect(v.abil_id) {
             Some(eid) => match item_eff_map.get(&v.item_id) {
                 Some(eids) => !eids.contains(&eid),
                 None => true,

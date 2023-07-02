@@ -6,9 +6,8 @@ use std::{
 use crate::{
     ad,
     adg::GData,
-    consts::{effcats, get_abil_effect},
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
-    ed,
+    ec, ed,
     shr::{ModDomain, ModOp, State},
     util::{IntError, IntResult, Named},
 };
@@ -29,12 +28,12 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
     let mut a_effects = Vec::new();
     for e_effect in g_data.effects.iter() {
         let (state, tgt_mode) = match e_effect.category_id {
-            effcats::PASSIVE => (State::Offline, ad::TgtMode::None),
-            effcats::ACTIVE => (State::Active, ad::TgtMode::None),
-            effcats::TARGET => (State::Active, ad::TgtMode::Item),
-            effcats::ONLINE => (State::Online, ad::TgtMode::None),
-            effcats::OVERLOAD => (State::Overload, ad::TgtMode::None),
-            effcats::SYSTEM => (State::Offline, ad::TgtMode::None),
+            ec::effcats::PASSIVE => (State::Offline, ad::TgtMode::None),
+            ec::effcats::ACTIVE => (State::Active, ad::TgtMode::None),
+            ec::effcats::TARGET => (State::Active, ad::TgtMode::Item),
+            ec::effcats::ONLINE => (State::Online, ad::TgtMode::None),
+            ec::effcats::OVERLOAD => (State::Overload, ad::TgtMode::None),
+            ec::effcats::SYSTEM => (State::Offline, ad::TgtMode::None),
             _ => {
                 let msg = format!(
                     "{} {} uses unknown effect category {}",
@@ -331,7 +330,7 @@ where
 {
     let mut map = HashMap::new();
     for e_abil in g_data.abils.iter() {
-        match get_abil_effect(e_abil.id) {
+        match ec::abils::get_abil_effect(e_abil.id) {
             None => continue,
             Some(effect_id) => map
                 .entry(effect_id)

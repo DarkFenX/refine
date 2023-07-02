@@ -4,8 +4,8 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    consts::{attrs, itemcats},
     defs::{AttrVal, EAttrId, EItemCatId, SsItemId},
+    ec,
     shr::{ModAggrMode, ModOp},
     ss::{
         item::SsItem,
@@ -19,11 +19,11 @@ use crate::{
 };
 
 const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
-    itemcats::SHIP,
-    itemcats::CHARGE,
-    itemcats::SKILL,
-    itemcats::IMPLANT,
-    itemcats::SUBSYSTEM,
+    ec::itemcats::SHIP,
+    ec::itemcats::CHARGE,
+    ec::itemcats::SKILL,
+    ec::itemcats::IMPLANT,
+    ec::itemcats::SUBSYSTEM,
 ];
 const PENALIZABLE_OPS: [ModOp; 5] = [
     ModOp::PreMul,
@@ -43,7 +43,12 @@ const OP_ORDER: [ModOp; 9] = [
     ModOp::PostPerc,
     ModOp::PostAssign,
 ];
-const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [attrs::CPU, attrs::POWER, attrs::CPU_OUTPUT, attrs::POWER_OUTPUT];
+const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
+    ec::attrs::CPU,
+    ec::attrs::POWER,
+    ec::attrs::CPU_OUTPUT,
+    ec::attrs::POWER_OUTPUT,
+];
 // Source expression: 1 / e^((1 / 2.67)^2)
 const PENALTY_BASE: f64 = 0.86911998080039742919922218788997270166873931884765625;
 
@@ -185,7 +190,7 @@ impl SsSvcs {
             },
         };
         match (attr_id, item) {
-            (&attrs::SKILL_LEVEL, SsItem::Skill(s)) => {
+            (&ec::attrs::SKILL_LEVEL, SsItem::Skill(s)) => {
                 return Ok(SsAttrVal::new(base_val, s.level as AttrVal, s.level as AttrVal))
             }
             _ => (),

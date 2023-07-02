@@ -1,7 +1,7 @@
 use crate::{
     ad,
-    consts::attrs,
     defs::{EItemId, SlotNumber, SsFitId, SsItemId},
+    ec,
     shr::State,
     src::Src,
     util::Named,
@@ -37,7 +37,7 @@ impl SsBooster {
     pub(in crate::ss) fn get_slot(&self) -> Option<SlotNumber> {
         match &self.a_item {
             None => None,
-            Some(a_item) => match a_item.attr_vals.get(&attrs::BOOSTERNESS) {
+            Some(a_item) => match a_item.attr_vals.get(&ec::attrs::BOOSTERNESS) {
                 None => None,
                 Some(value) => Some(value.round() as SlotNumber),
             },

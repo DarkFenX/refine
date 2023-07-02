@@ -1,6 +1,5 @@
 use crate::{
-    ad,
-    consts::{attrs, effects},
+    ad, ec,
     shr::{ModDomain, ModOp, State},
 };
 
@@ -11,7 +10,7 @@ pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
 
 fn fix_online_effect_cat(a_data: &mut ad::AData) {
     let mut fixed = false;
-    for effect in a_data.effects.iter_mut().filter(|v| v.id == effects::ONLINE) {
+    for effect in a_data.effects.iter_mut().filter(|v| v.id == ec::effects::ONLINE) {
         if effect.state == State::Active {
             effect.state = State::Online;
             fixed = true;
@@ -23,16 +22,16 @@ fn fix_online_effect_cat(a_data: &mut ad::AData) {
 }
 
 fn mk_self_skillreq_modifiers_launcher_rof(a_data: &mut ad::AData) {
-    for effect in a_data.effects.iter_mut().filter(|v| v.id == effects::SELF_ROF) {
+    for effect in a_data.effects.iter_mut().filter(|v| v.id == ec::effects::SELF_ROF) {
         if !effect.mods.is_empty() {
             tracing::info!("self-skillreq missile rof effect has modifiers, overwriting them");
             effect.mods.clear();
         }
         let modifier = ad::AEffectAttrMod::new(
-            attrs::ROF_BONUS,
+            ec::attrs::ROF_BONUS,
             ModOp::PostPerc,
             ad::ModAfeeFilter::LocSrq(ModDomain::Ship, ad::ModSrq::SelfRef),
-            attrs::SPEED,
+            ec::attrs::SPEED,
         );
         effect.mods.push(modifier);
         effect.mod_build_status = ad::ModBuildStatus::Custom;

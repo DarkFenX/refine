@@ -3,9 +3,8 @@ use crate::{
         rels::{attrval_to_fk, Fk, KeyPart, Pk},
         GSupport,
     },
-    consts::{attrs, units},
     defs::EAttrUnitId,
-    ed,
+    ec, ed,
     util::vec_push_opt,
 };
 
@@ -18,14 +17,14 @@ impl Pk for ed::EAttr {
 impl Fk for ed::EAttr {
     fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(v) = self.get_fk_from_defval(units::ITEM_ID) {
+        if let Some(v) = self.get_fk_from_defval(ec::units::ITEM_ID) {
             vec.push(v);
         }
         vec
     }
     fn get_group_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(v) = self.get_fk_from_defval(units::GROUP_ID) {
+        if let Some(v) = self.get_fk_from_defval(ec::units::GROUP_ID) {
             vec.push(v);
         }
         vec
@@ -33,7 +32,7 @@ impl Fk for ed::EAttr {
     fn get_attr_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         vec_push_opt(&mut vec, self.max_attr_id);
-        if let Some(v) = self.get_fk_from_defval(units::ATTR_ID) {
+        if let Some(v) = self.get_fk_from_defval(ec::units::ATTR_ID) {
             vec.push(v);
         }
         vec
@@ -41,7 +40,7 @@ impl Fk for ed::EAttr {
     fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         if let (true, Some(dv_fk)) = (
-            attrs::BUFF_ID_ATTRS.contains(&self.id),
+            ec::attrs::BUFF_ID_ATTRS.contains(&self.id),
             attrval_to_fk(self.default_value),
         ) {
             vec.push(dv_fk);

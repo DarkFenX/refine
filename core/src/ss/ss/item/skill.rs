@@ -1,6 +1,6 @@
 use crate::{
-    consts::attrs,
     defs::{EItemId, SkillLevel, SsFitId, SsItemId},
+    ec,
     ss::{
         info::SsSkillInfo,
         item::{SsItem, SsSkill},
@@ -43,7 +43,7 @@ impl SolarSystem {
         self.svcs.calc_force_attr_recalc(
             &SsView::new(&self.src, &self.fits, &self.items),
             item_id,
-            &attrs::SKILL_LEVEL,
+            &ec::attrs::SKILL_LEVEL,
         );
         Ok(())
     }
