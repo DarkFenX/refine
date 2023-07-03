@@ -19,10 +19,12 @@ class Item(IntEnum):
 @unique
 class ItemGrp(IntEnum):
     character = 1
+    effect_beacon = 920
 
 
 @unique
 class ItemCat(IntEnum):
+    celestial = 2
     charge = 8
     drone = 18
     fighter = 87

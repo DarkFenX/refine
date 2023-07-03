@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.util import AttrDict
+from tests.support.util import Absent, AttrDict
 from .fit import Fit
 from .item import Item
 
 if TYPE_CHECKING:
+    from typing import Type, Union
+
     from tests.support.client import TestClient
     from tests.support.eve_data import TestObjects
     from tests.support.request import Request
@@ -48,6 +50,24 @@ class SolarSystem(AttrDict):
         fit = Fit(client=self._client, data=resp.json(), ss_id=self.id)
         self.update()
         return fit
+
+    # Item-related methods
+    def add_sw_effect_request(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.add_sw_effect_request(ss_id=self.id, type_id=type_id, state=state)
+
+    def add_sw_effect(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Item:
+        resp = self.add_sw_effect_request(type_id=type_id, state=state).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self.id)
+        return item
 
     # Item-related methods
     def get_item_request(self, item_id: str) -> Request:
