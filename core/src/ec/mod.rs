@@ -6,4 +6,5 @@ pub(crate) mod effcats;
 pub(crate) mod effects;
 pub(crate) mod itemcats;
 pub(crate) mod itemgrps;
+pub(crate) mod items;
 pub(crate) mod units;

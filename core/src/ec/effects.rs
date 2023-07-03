@@ -31,3 +31,5 @@ pub(crate) const MISSILE_KIN_DMG_BONUS: EEffectId = 668;
 pub(crate) const MISSILE_EXPL_DMG_BONUS: EEffectId = 661;
 pub(crate) const HARDPOINT_MODIFIER_EFFECT: EEffectId = 3773;
 pub(crate) const SLOT_MODIFIER: EEffectId = 3774;
+// Library-specific effects
+pub(crate) const REE_CHAR_MISSILE_DMG: EEffectId = -1;
