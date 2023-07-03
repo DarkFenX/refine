@@ -18,6 +18,16 @@ pub(crate) const CPU_OUTPUT: EAttrId = 48;
 pub(crate) const POWER: EAttrId = 30;
 pub(crate) const POWER_OUTPUT: EAttrId = 11;
 // Slot-related
+pub(crate) const HI_SLOTS: EAttrId = 14;
+pub(crate) const HI_SLOT_MODIFIER: EAttrId = 1374;
+pub(crate) const MED_SLOTS: EAttrId = 13;
+pub(crate) const MED_SLOT_MODIFIER: EAttrId = 1375;
+pub(crate) const LOW_SLOTS: EAttrId = 12;
+pub(crate) const LOW_SLOT_MODIFIER: EAttrId = 1376;
+pub(crate) const LAUNCHER_SLOTS_LEFT: EAttrId = 101;
+pub(crate) const LAUNCHER_HARDPOINT_MODIFIER: EAttrId = 1369;
+pub(crate) const TURRET_SLOTS_LEFT: EAttrId = 102;
+pub(crate) const TURRET_HARDPOINT_MODIFIER: EAttrId = 1368;
 pub(crate) const BOOSTERNESS: EAttrId = 1087;
 pub(crate) const IMPLANTNESS: EAttrId = 331;
 pub(crate) const SUBSYSTEM_SLOT: EAttrId = 1366;

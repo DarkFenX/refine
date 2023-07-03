@@ -29,3 +29,5 @@ pub(crate) const MISSILE_EM_DMG_BONUS: EEffectId = 660;
 pub(crate) const MISSILE_THERM_DMG_BONUS: EEffectId = 662;
 pub(crate) const MISSILE_KIN_DMG_BONUS: EEffectId = 668;
 pub(crate) const MISSILE_EXPL_DMG_BONUS: EEffectId = 661;
+pub(crate) const HARDPOINT_MODIFIER_EFFECT: EEffectId = 3773;
+pub(crate) const SLOT_MODIFIER: EEffectId = 3774;
