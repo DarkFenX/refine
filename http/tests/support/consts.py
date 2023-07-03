@@ -25,13 +25,15 @@ class ItemCat(IntEnum):
 
 @unique
 class Effect(IntEnum):
-    online = 16
     drone_dmg_bonus = 1730
-    self_rof = 1851
+    hardpoint_modifier_effect = 3773
     missile_em_dmg_bonus = 660
-    missile_therm_dmg_bonus = 662
-    missile_kin_dmg_bonus2 = 668
     missile_expl_dmg_bonus = 661
+    missile_kin_dmg_bonus = 668
+    missile_therm_dmg_bonus = 662
+    online = 16
+    self_rof = 1851
+    slot_modifier = 3774
 
 
 @unique
@@ -90,6 +92,17 @@ class Attr(IntEnum):
     therm_dmg = 118
     kin_dmg = 117
     expl_dmg = 116
+    # Slots
+    hi_slots = 14
+    hi_slot_modifier = 1374
+    med_slots = 13
+    med_slot_modifier = 1375
+    low_slots = 12
+    low_slot_modifier = 1376
+    turret_slots_left = 102
+    turret_hardpoint_modifier = 1368
+    launcher_slots_left = 101
+    launcher_hardpoint_modifier = 1369
     # Misc
     skill_level = 280
     speed = 51

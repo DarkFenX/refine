@@ -428,6 +428,15 @@ class TestClient:
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
+    def add_subsystem_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent
+    ) -> Request:
+        return self.__add_simple_item('add_subsystem', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+
     def add_mod_request(
             self,
             ss_id: str,
