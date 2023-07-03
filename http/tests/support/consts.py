@@ -12,6 +12,16 @@ class State(StrEnum):
 
 
 @unique
+class Item(IntEnum):
+    missile_launcher_operation = 3319
+
+
+@unique
+class ItemGrp(IntEnum):
+    character = 1
+
+
+@unique
 class ItemCat(IntEnum):
     charge = 8
     drone = 18
@@ -109,6 +119,7 @@ class Attr(IntEnum):
     rof_bonus = 293
     dmg_mult = 64
     dmg_mult_bonus = 292
+    missile_dmg_mult = 212
 
 
 @unique
