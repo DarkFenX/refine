@@ -31,6 +31,12 @@ pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) 
     effect.mods.push(mk_modifier(ec::attrs::KIN_DMG));
     effect.mods.push(mk_modifier(ec::attrs::EXPL_DMG));
     a_data.effects.push(effect);
+    for item in a_data.items.iter_mut().filter(|v| v.grp_id == ec::itemgrps::CHARACTER) {
+        item.effect_datas.insert(
+            ec::effects::REE_CHAR_MISSILE_DMG,
+            ad::AItemEffData::new(None, None, None),
+        );
+    }
 }
 
 fn mk_modifier(tgt_attr_id: EAttrId) -> ad::AEffectAttrMod {
