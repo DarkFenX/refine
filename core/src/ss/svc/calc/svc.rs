@@ -305,7 +305,7 @@ fn penalize_vals(mut vals: Vec<AttrVal>) -> AttrVal {
     // Gather positive multipliers into one chain, negative into another, with stronger modifications
     // being first
     let positive = vals
-        .drain_filter(|v| *v > 1.0)
+        .extract_if(|v| *v > 1.0)
         .into_iter()
         .sorted_by(|a, b| b.partial_cmp(a).unwrap())
         .collect();

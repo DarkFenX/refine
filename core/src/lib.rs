@@ -1,5 +1,5 @@
-#![feature(drain_filter)]
-#![feature(hash_drain_filter)]
+#![feature(extract_if)]
+#![feature(hash_extract_if)]
 
 //! # Reefast
 //! Reefast is a library built to simulate EVE Online ship and structure fits.

@@ -10,7 +10,7 @@ use crate::{
 fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
     let mut seen_pks = HashSet::new();
     let removed = vec
-        .drain_filter(|v| {
+        .extract_if(|v| {
             let pk = v.get_pk();
             if seen_pks.contains(&pk) {
                 true

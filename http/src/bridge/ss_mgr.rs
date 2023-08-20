@@ -80,7 +80,7 @@ impl HSsMgr {
             tracing::debug!("nothing to remove");
             return;
         }
-        self.id_ss_map.write().await.drain_filter(|k, _| to_clean.contains(k));
+        self.id_ss_map.write().await.extract_if(|k, _| to_clean.contains(k));
         tracing::info!("{} solar systems removed", to_clean.len());
     }
     pub(crate) async fn periodic_cleanup(&self, interval: u64, lifetime: u64) {
