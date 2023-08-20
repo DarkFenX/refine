@@ -32,13 +32,14 @@ const PENALIZABLE_OPS: [ModOp; 5] = [
     ModOp::PostDiv,
     ModOp::PostPerc,
 ];
-const OP_ORDER: [ModOp; 9] = [
+const OP_ORDER: [ModOp; 10] = [
     ModOp::PreAssign,
     ModOp::PreMul,
     ModOp::PreDiv,
     ModOp::Add,
     ModOp::Sub,
     ModOp::PostMul,
+    ModOp::PostMulImmune,
     ModOp::PostDiv,
     ModOp::PostPerc,
     ModOp::PostAssign,
@@ -209,6 +210,7 @@ impl SsSvcs {
                 ModOp::Add => modification.val,
                 ModOp::Sub => -modification.val,
                 ModOp::PostMul => modification.val,
+                ModOp::PostMulImmune => modification.val,
                 ModOp::PostDiv => 1.0 / modification.val,
                 ModOp::PostPerc => 1.0 + modification.val / 100.0,
                 ModOp::PostAssign => modification.val,
@@ -242,6 +244,7 @@ impl SsSvcs {
                     ModOp::Add => dogma_val += process_adds(vals),
                     ModOp::Sub => dogma_val += process_adds(vals),
                     ModOp::PostMul => dogma_val *= process_mults(vals),
+                    ModOp::PostMulImmune => dogma_val *= process_mults(vals),
                     ModOp::PostDiv => dogma_val *= process_mults(vals),
                     ModOp::PostPerc => dogma_val *= process_mults(vals),
                     ModOp::PostAssign => {

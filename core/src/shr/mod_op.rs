@@ -16,6 +16,8 @@ pub enum ModOp {
     Sub,
     /// Late multiplication.
     PostMul,
+    /// Late multiplication immune to stacking penalization. Not used directly in EVE modifiers.
+    PostMulImmune,
     /// Late division.
     PostDiv,
     /// Late percent-alike modification, e.g. 2 + 20% = 2.4.
