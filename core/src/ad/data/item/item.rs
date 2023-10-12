@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use crate::{
     ad::{AItemEffData, AItemType},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
+    shr::FitType,
     util::Named,
 };
 
@@ -15,6 +16,8 @@ pub struct AItem {
     pub id: EItemId,
     /// Item type.
     pub itype: Option<AItemType>,
+    /// Fit type for this item.
+    pub ftype: Option<FitType>,
     /// Item group ID.
     pub grp_id: EItemGrpId,
     /// Item category ID.
@@ -33,6 +36,7 @@ impl AItem {
     pub(crate) fn new(
         id: EItemId,
         itype: Option<AItemType>,
+        ftype: Option<FitType>,
         grp_id: EItemGrpId,
         cat_id: EItemCatId,
         attr_vals: HashMap<EAttrId, AttrVal>,
@@ -43,6 +47,7 @@ impl AItem {
         Self {
             id,
             itype,
+            ftype,
             grp_id,
             cat_id,
             attr_vals,

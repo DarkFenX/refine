@@ -2,11 +2,13 @@ use std::collections::HashSet;
 
 use crate::{
     defs::{SsFitId, SsItemId},
+    shr::FitType,
     ss::{item::SsItem, ModRack},
 };
 
 pub(in crate::ss) struct SsFit {
     pub(in crate::ss) id: SsFitId,
+    pub(in crate::ss) fit_type: Option<FitType>,
     pub(in crate::ss) character: Option<SsItemId>,
     pub(in crate::ss) skills: HashSet<SsItemId>,
     pub(in crate::ss) implants: HashSet<SsItemId>,
@@ -25,6 +27,7 @@ impl SsFit {
     pub(in crate::ss) fn new(id: SsFitId) -> Self {
         Self {
             id,
+            fit_type: None,
             character: None,
             skills: HashSet::new(),
             implants: HashSet::new(),
