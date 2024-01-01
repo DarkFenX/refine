@@ -1,5 +1,4 @@
 #![feature(hash_extract_if)]
-#![feature(result_option_inspect)]
 
 use std::{env, net::SocketAddr, sync::Arc, time::Duration};
 
