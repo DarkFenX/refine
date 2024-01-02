@@ -7,7 +7,6 @@ use crate::{
     adg::{GData, GSupport},
     defs::{EEffectId, EItemId},
     ec,
-    shr::FitType,
 };
 
 pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec<ad::AItem> {
@@ -29,19 +28,12 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
                 continue;
             }
         };
-        // Item fit type
-        let fit_type = match cat_id {
-            ec::itemcats::SHIP => Some(FitType::Ship),
-            ec::itemcats::STRUCTURE => Some(FitType::Structure),
-            _ => None,
-        };
         // Item default effect
         let defeff_id = defeff_map.get(&e_item.id).map(|v| *v);
         // Item construction
         let a_item = ad::AItem::new(
             e_item.id,
             None,
-            fit_type,
             e_item.group_id,
             cat_id,
             HashMap::new(),
