@@ -12,16 +12,25 @@ use super::support::{bool_to_state, state_to_bool, EffectModes};
 pub(in crate::ss) struct SsImplant {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) fit_id: SsFitId,
+    pub(in crate::ss) char_item_id: Option<SsItemId>,
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) state: State,
     pub(in crate::ss) effect_modes: EffectModes,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
 impl SsImplant {
-    pub(in crate::ss) fn new(src: &Src, id: SsItemId, fit_id: SsFitId, a_item_id: EItemId, state: bool) -> Self {
+    pub(in crate::ss) fn new(
+        src: &Src,
+        id: SsItemId,
+        fit_id: SsFitId,
+        char_item_id: Option<SsItemId>,
+        a_item_id: EItemId,
+        state: bool,
+    ) -> Self {
         Self {
             id,
             fit_id,
+            char_item_id,
             a_item_id,
             state: bool_to_state(state),
             effect_modes: EffectModes::new(),

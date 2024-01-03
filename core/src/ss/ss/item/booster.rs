@@ -23,10 +23,12 @@ impl SolarSystem {
         Ok(booster_infos)
     }
     pub fn add_booster(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: bool) -> Result<SsBoosterInfo> {
+        let fit = self.fits.get_fit_mut(&fit_id)?;
         let item_id = self.items.alloc_item_id()?;
-        let booster = SsBooster::new(&self.src, item_id, fit_id, a_item_id, state);
+        let booster = SsBooster::new(&self.src, item_id, fit_id, fit.character, a_item_id, state);
         let info = SsBoosterInfo::from(&booster);
         let item = SsItem::Booster(booster);
+        fit.add_item(&item);
         self.add_item(item);
         Ok(info)
     }

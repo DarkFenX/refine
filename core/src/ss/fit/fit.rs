@@ -12,6 +12,7 @@ pub(in crate::ss) struct SsFit {
     pub(in crate::ss) implants: HashSet<SsItemId>,
     pub(in crate::ss) boosters: HashSet<SsItemId>,
     pub(in crate::ss) ship: Option<SsItemId>,
+    pub(in crate::ss) structure: Option<SsItemId>,
     pub(in crate::ss) stance: Option<SsItemId>,
     pub(in crate::ss) subsystems: HashSet<SsItemId>,
     pub(in crate::ss) mods_high: HashSet<SsItemId>,
@@ -30,6 +31,7 @@ impl SsFit {
             implants: HashSet::new(),
             boosters: HashSet::new(),
             ship: None,
+            structure: None,
             stance: None,
             subsystems: HashSet::new(),
             mods_high: HashSet::new(),
@@ -82,7 +84,8 @@ impl SsFit {
                 ()
             }
             // Ignore charges and system-wide effects
-            _ => (),
+            SsItem::Charge(_) => (),
+            SsItem::SwEffect(_) => (),
         };
     }
     pub(in crate::ss) fn remove_item(&mut self, item: &SsItem) {

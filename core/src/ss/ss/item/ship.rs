@@ -23,10 +23,12 @@ impl SolarSystem {
                 _ => return Err(e),
             },
         };
+        let fit = self.fits.get_fit_mut(&fit_id)?;
         let item_id = self.items.alloc_item_id()?;
         let ship = SsShip::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsShipInfo::from(&ship);
         let item = SsItem::Ship(ship);
+        fit.add_item(&item);
         self.add_item(item);
         Ok(info)
     }

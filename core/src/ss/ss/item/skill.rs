@@ -30,10 +30,12 @@ impl SolarSystem {
         level: SkillLevel,
         state: bool,
     ) -> Result<SsSkillInfo> {
+        let fit = self.fits.get_fit_mut(&fit_id)?;
         let item_id = self.items.alloc_item_id()?;
-        let skill = SsSkill::new(&self.src, item_id, fit_id, a_item_id, level, state);
+        let skill = SsSkill::new(&self.src, item_id, fit_id, fit.character, a_item_id, level, state);
         let info = SsSkillInfo::from(&skill);
         let item = SsItem::Skill(skill);
+        fit.add_item(&item);
         self.add_item(item);
         Ok(info)
     }
