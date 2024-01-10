@@ -54,6 +54,7 @@ impl SolarSystem {
             },
             _ => (),
         };
+        self.items.remove_item(item_id);
         Ok(())
     }
     // Non-public
