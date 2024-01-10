@@ -126,48 +126,32 @@ impl ModRegister {
         let tgt_srqs_res = tgt_item.get_skill_reqs();
         let mut mods = Vec::new();
         extend_vec_from_storage(&mut mods, &self.mods_direct, &tgt_item_id);
-        match (tgt_fit_id_opt, tgt_topdom_opt) {
-            (Some(tgt_fit_id), Some(tgt_topdom)) => {
-                extend_vec_from_storage(&mut mods, &self.mods_topdom, &(tgt_fit_id, tgt_topdom))
-            }
-            _ => (),
+        if let (Some(tgt_fit_id), Some(tgt_topdom)) = (tgt_fit_id_opt, tgt_topdom_opt) {
+            extend_vec_from_storage(&mut mods, &self.mods_topdom, &(tgt_fit_id, tgt_topdom))
         }
-        match tgt_item.get_other() {
-            Some(other_item_id) => extend_vec_from_storage(&mut mods, &self.mods_other, &other_item_id),
-            _ => (),
+        if let Some(other_item_id) = tgt_item.get_other() {
+            extend_vec_from_storage(&mut mods, &self.mods_other, &other_item_id)
         }
-        match (tgt_fit_id_opt, tgt_pardom_opt) {
-            (Some(tgt_fit_id), Some(tgt_pardom)) => {
-                extend_vec_from_storage(&mut mods, &self.mods_pardom, &(tgt_fit_id, tgt_pardom))
-            }
-            _ => (),
+        if let (Some(tgt_fit_id), Some(tgt_pardom)) = (tgt_fit_id_opt, tgt_pardom_opt) {
+            extend_vec_from_storage(&mut mods, &self.mods_pardom, &(tgt_fit_id, tgt_pardom))
         }
-        match (tgt_fit_id_opt, tgt_pardom_opt, tgt_grp_id_res) {
-            (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_grp_id)) => {
-                extend_vec_from_storage(&mut mods, &self.mods_pardom_grp, &(tgt_fit_id, tgt_pardom, tgt_grp_id));
-            }
-            _ => (),
+        if let (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_grp_id)) = (tgt_fit_id_opt, tgt_pardom_opt, tgt_grp_id_res) {
+            extend_vec_from_storage(&mut mods, &self.mods_pardom_grp, &(tgt_fit_id, tgt_pardom, tgt_grp_id));
         }
-        match (tgt_fit_id_opt, tgt_pardom_opt, &tgt_srqs_res) {
-            (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_srqs)) => {
-                for skill_a_item_id in tgt_srqs.keys() {
-                    extend_vec_from_storage(
-                        &mut mods,
-                        &self.mods_pardom_srq,
-                        &(tgt_fit_id, tgt_pardom, *skill_a_item_id),
-                    );
-                }
+        if let (Some(tgt_fit_id), Some(tgt_pardom), Ok(tgt_srqs)) = (tgt_fit_id_opt, tgt_pardom_opt, &tgt_srqs_res) {
+            for skill_a_item_id in tgt_srqs.keys() {
+                extend_vec_from_storage(
+                    &mut mods,
+                    &self.mods_pardom_srq,
+                    &(tgt_fit_id, tgt_pardom, *skill_a_item_id),
+                );
             }
-            _ => (),
         }
         if tgt_item.is_owner_modifiable() {
-            match (tgt_fit_id_opt, &tgt_srqs_res) {
-                (Some(tgt_fit_id), Ok(tgt_srqs)) => {
-                    for skill_a_item_id in tgt_srqs.keys() {
-                        extend_vec_from_storage(&mut mods, &self.mods_own_srq, &(tgt_fit_id, *skill_a_item_id));
-                    }
+            if let (Some(tgt_fit_id), Ok(tgt_srqs)) = (tgt_fit_id_opt, &tgt_srqs_res) {
+                for skill_a_item_id in tgt_srqs.keys() {
+                    extend_vec_from_storage(&mut mods, &self.mods_own_srq, &(tgt_fit_id, *skill_a_item_id));
                 }
-                _ => (),
             }
         }
         mods
