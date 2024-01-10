@@ -83,19 +83,9 @@ impl ModRegister {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 ModDomain::Item => tgts.push(modifier.src_item_id),
-                ModDomain::Char => {
+                ModDomain::Char | ModDomain::Ship | ModDomain::Structure => {
                     if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_topdom, &(src_fit_id, ModDomain::Char))
-                    }
-                }
-                ModDomain::Ship => {
-                    if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_topdom, &(src_fit_id, ModDomain::Ship))
-                    }
-                }
-                ModDomain::Structure => {
-                    if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_topdom, &(src_fit_id, ModDomain::Structure))
+                        extend_vec_from_storage(&mut tgts, &self.tgts_topdom, &(src_fit_id, dom))
                     }
                 }
                 ModDomain::Other => {
