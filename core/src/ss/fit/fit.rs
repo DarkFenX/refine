@@ -12,6 +12,7 @@ pub(in crate::ss) struct SsFit {
     pub(in crate::ss) implants: HashSet<SsItemId>,
     pub(in crate::ss) boosters: HashSet<SsItemId>,
     pub(in crate::ss) ship: Option<SsItemId>,
+    pub(in crate::ss) structure: Option<SsItemId>,
     pub(in crate::ss) stance: Option<SsItemId>,
     pub(in crate::ss) subsystems: HashSet<SsItemId>,
     pub(in crate::ss) mods_high: HashSet<SsItemId>,
@@ -30,6 +31,7 @@ impl SsFit {
             implants: HashSet::new(),
             boosters: HashSet::new(),
             ship: None,
+            structure: None,
             stance: None,
             subsystems: HashSet::new(),
             mods_high: HashSet::new(),
@@ -56,6 +58,7 @@ impl SsFit {
                 ()
             }
             SsItem::Ship(ship) => self.ship = Some(ship.id),
+            SsItem::Structure(structure) => self.structure = Some(structure.id),
             SsItem::Stance(stance) => self.stance = Some(stance.id),
             SsItem::Subsystem(subsystem) => {
                 self.subsystems.insert(subsystem.id);
@@ -82,12 +85,17 @@ impl SsFit {
                 ()
             }
             // Ignore charges and system-wide effects
-            _ => (),
+            SsItem::Charge(_) => (),
+            SsItem::SwEffect(_) => (),
         };
     }
     pub(in crate::ss) fn remove_item(&mut self, item: &SsItem) {
         match item {
-            SsItem::Character(character) if self.character == Some(character.id) => self.character = None,
+            SsItem::Character(character) => {
+                if self.character == Some(character.id) {
+                    self.character = None
+                }
+            }
             SsItem::Skill(skill) => {
                 self.skills.remove(&skill.id);
                 ()
@@ -100,8 +108,21 @@ impl SsFit {
                 self.boosters.remove(&booster.id);
                 ()
             }
-            SsItem::Ship(ship) if self.ship == Some(ship.id) => self.ship = None,
-            SsItem::Stance(stance) if self.stance == Some(stance.id) => self.stance = None,
+            SsItem::Ship(ship) => {
+                if self.ship == Some(ship.id) {
+                    self.ship = None
+                }
+            }
+            SsItem::Structure(structure) => {
+                if self.structure == Some(structure.id) {
+                    self.structure = None
+                }
+            }
+            SsItem::Stance(stance) => {
+                if self.stance == Some(stance.id) {
+                    self.stance = None
+                }
+            }
             SsItem::Subsystem(subsystem) => {
                 self.subsystems.remove(&subsystem.id);
                 ()
@@ -126,7 +147,8 @@ impl SsFit {
                 ()
             }
             // Ignore charges and system-wide effects
-            _ => (),
+            SsItem::Charge(_) => (),
+            SsItem::SwEffect(_) => (),
         }
     }
 }

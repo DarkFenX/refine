@@ -11,6 +11,7 @@ pub(in crate::ss) use rig::SsRig;
 pub(in crate::ss) use ship::SsShip;
 pub(in crate::ss) use skill::SsSkill;
 pub(in crate::ss) use stance::SsStance;
+pub(in crate::ss) use structure::SsStructure;
 pub(in crate::ss) use subsystem::SsSubsystem;
 pub(in crate::ss) use sw_effect::SsSwEffect;
 
@@ -33,6 +34,7 @@ mod rig;
 mod ship;
 mod skill;
 mod stance;
+mod structure;
 mod subsystem;
 mod support;
 mod sw_effect;
@@ -47,6 +49,7 @@ pub(in crate::ss) enum SsItem {
     Module(SsModule),
     Rig(SsRig),
     Ship(SsShip),
+    Structure(SsStructure),
     Skill(SsSkill),
     Stance(SsStance),
     Subsystem(SsSubsystem),
@@ -66,6 +69,7 @@ impl SsItem {
             Self::Ship(_) => SsShip::get_name(),
             Self::Skill(_) => SsSkill::get_name(),
             Self::Stance(_) => SsStance::get_name(),
+            Self::Structure(_) => SsStructure::get_name(),
             Self::Subsystem(_) => SsSubsystem::get_name(),
             Self::SwEffect(_) => SsSwEffect::get_name(),
         }
@@ -83,6 +87,7 @@ impl SsItem {
             Self::Ship(ship) => ship.id,
             Self::Skill(skill) => skill.id,
             Self::Stance(stance) => stance.id,
+            Self::Structure(structure) => structure.id,
             Self::Subsystem(subsystem) => subsystem.id,
             Self::SwEffect(sw_effect) => sw_effect.id,
         }
@@ -100,6 +105,7 @@ impl SsItem {
             Self::Ship(ship) => Some(ship.fit_id),
             Self::Skill(skill) => Some(skill.fit_id),
             Self::Stance(stance) => Some(stance.fit_id),
+            Self::Structure(structure) => Some(structure.fit_id),
             Self::Subsystem(subsystem) => Some(subsystem.fit_id),
             Self::SwEffect(_) => None,
         }
@@ -117,6 +123,7 @@ impl SsItem {
             Self::Ship(ship) => &ship.effect_modes,
             Self::Skill(skill) => &skill.effect_modes,
             Self::Stance(stance) => &stance.effect_modes,
+            Self::Structure(structure) => &structure.effect_modes,
             Self::Subsystem(subsystem) => &subsystem.effect_modes,
             Self::SwEffect(sw_effect) => &sw_effect.effect_modes,
         }
@@ -134,6 +141,7 @@ impl SsItem {
             Self::Ship(ship) => &mut ship.effect_modes,
             Self::Skill(skill) => &mut skill.effect_modes,
             Self::Stance(stance) => &mut stance.effect_modes,
+            Self::Structure(structure) => &mut structure.effect_modes,
             Self::Subsystem(subsystem) => &mut subsystem.effect_modes,
             Self::SwEffect(sw_effect) => &mut sw_effect.effect_modes,
         }
@@ -151,6 +159,7 @@ impl SsItem {
             Self::Ship(ship) => ship.a_item_id,
             Self::Skill(skill) => skill.a_item_id,
             Self::Stance(stance) => stance.a_item_id,
+            Self::Structure(structure) => structure.a_item_id,
             Self::Subsystem(subsystem) => subsystem.a_item_id,
             Self::SwEffect(sw_effect) => sw_effect.a_item_id,
         }
@@ -168,6 +177,7 @@ impl SsItem {
             Self::Ship(ship) => ship.state,
             Self::Skill(skill) => skill.state,
             Self::Stance(stance) => stance.state,
+            Self::Structure(structure) => structure.state,
             Self::Subsystem(subsystem) => subsystem.state,
             Self::SwEffect(sw_effect) => sw_effect.state,
         }
@@ -187,6 +197,7 @@ impl SsItem {
             Self::Ship(ship) => ship.a_item = a_item,
             Self::Skill(skill) => skill.a_item = a_item,
             Self::Stance(stance) => stance.a_item = a_item,
+            Self::Structure(structure) => structure.a_item = a_item,
             Self::Subsystem(subsystem) => subsystem.a_item = a_item,
             Self::SwEffect(sw_effect) => sw_effect.a_item = a_item,
         }
@@ -204,6 +215,7 @@ impl SsItem {
             Self::Ship(ship) => ship.a_item.as_ref(),
             Self::Skill(skill) => skill.a_item.as_ref(),
             Self::Stance(stance) => stance.a_item.as_ref(),
+            Self::Structure(structure) => structure.a_item.as_ref(),
             Self::Subsystem(subsystem) => subsystem.a_item.as_ref(),
             Self::SwEffect(sw_effect) => sw_effect.a_item.as_ref(),
         }
@@ -235,6 +247,7 @@ impl SsItem {
             Self::Ship(_) => Some(ModDomain::Ship),
             Self::Skill(_) => None,
             Self::Stance(_) => None,
+            Self::Structure(_) => Some(ModDomain::Structure),
             Self::Subsystem(_) => None,
             Self::SwEffect(_) => None,
         }
@@ -252,6 +265,7 @@ impl SsItem {
             Self::Ship(_) => None,
             Self::Skill(_) => Some(ModDomain::Char),
             Self::Stance(_) => Some(ModDomain::Ship),
+            Self::Structure(_) => None,
             Self::Subsystem(_) => Some(ModDomain::Ship),
             Self::SwEffect(_) => None,
         }
@@ -278,6 +292,7 @@ impl SsItem {
             Self::Ship(_) => None,
             Self::Skill(_) => None,
             Self::Stance(_) => None,
+            Self::Structure(_) => None,
             Self::Subsystem(_) => None,
             Self::SwEffect(_) => None,
         }
@@ -295,6 +310,7 @@ impl SsItem {
             Self::Ship(_) => false,
             Self::Skill(_) => false,
             Self::Stance(_) => false,
+            Self::Structure(_) => false,
             Self::Subsystem(_) => false,
             Self::SwEffect(_) => false,
         }

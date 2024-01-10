@@ -9,6 +9,7 @@ pub use rig::SsRigInfo;
 pub use ship::SsShipInfo;
 pub use skill::SsSkillInfo;
 pub use stance::SsStanceInfo;
+pub use structure::SsStructureInfo;
 pub use subsystem::SsSubsystemInfo;
 pub use sw_effect::SsSwEffectInfo;
 
@@ -25,6 +26,7 @@ mod rig;
 mod ship;
 mod skill;
 mod stance;
+mod structure;
 mod subsystem;
 mod sw_effect;
 
@@ -40,6 +42,7 @@ pub enum SsItemInfo {
     Ship(SsShipInfo),
     Skill(SsSkillInfo),
     Stance(SsStanceInfo),
+    Structure(SsStructureInfo),
     Subsystem(SsSubsystemInfo),
     SwEffect(SsSwEffectInfo),
 }
@@ -57,6 +60,7 @@ impl SsItemInfo {
             SsItem::Ship(ss_ship) => SsItemInfo::Ship(ss_ship.into()),
             SsItem::Skill(ss_skill) => SsItemInfo::Skill(ss_skill.into()),
             SsItem::Stance(ss_stance) => SsItemInfo::Stance(ss_stance.into()),
+            SsItem::Structure(ss_structure) => SsItemInfo::Structure(ss_structure.into()),
             SsItem::Subsystem(ss_subsystem) => SsItemInfo::Subsystem(ss_subsystem.into()),
             SsItem::SwEffect(ss_sw_effect) => SsItemInfo::SwEffect(ss_sw_effect.into()),
         }
