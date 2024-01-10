@@ -24,12 +24,10 @@ impl SolarSystem {
         Ok(drone_infos)
     }
     pub fn add_drone(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: State) -> Result<SsDroneInfo> {
-        let fit = self.fits.get_fit_mut(&fit_id)?;
         let item_id = self.items.alloc_item_id()?;
         let drone = SsDrone::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsDroneInfo::from(&drone);
         let item = SsItem::Drone(drone);
-        fit.add_item(&item);
         self.add_item(item);
         Ok(info)
     }

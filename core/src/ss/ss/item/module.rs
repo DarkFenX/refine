@@ -83,22 +83,9 @@ impl SolarSystem {
         };
         // Create and register all necessary items
         let c_info = self.add_charge_with_id_opt(c_item_id, fit_id, charge_a_item_id, m_item_id);
-        let fit = self.fits.get_fit_mut(&fit_id)?;
-        let module = SsModule::new(
-            &self.src,
-            m_item_id,
-            fit_id,
-            fit.ship,
-            fit.structure,
-            a_item_id,
-            state,
-            rack,
-            pos,
-            c_item_id,
-        );
+        let module = SsModule::new(&self.src, m_item_id, fit_id, a_item_id, state, rack, pos, c_item_id);
         let m_info = SsModuleInfo::from_mod_and_charge(&module, c_info);
         let m_item = SsItem::Module(module);
-        fit.add_item(&m_item);
         self.add_item(m_item);
         Ok(m_info)
     }
@@ -117,7 +104,7 @@ impl SolarSystem {
         let c_item_id = self.items.alloc_item_id()?;
         self.remove_module_charge(item_id)?;
         let module = self.items.get_module(item_id)?;
-        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_a_item_id, module.id)?;
+        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_a_item_id, module.id);
         let module = self.items.get_module_mut(item_id)?;
         module.charge_a_item_id = Some(c_item_id);
         Ok(c_info)

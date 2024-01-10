@@ -11,7 +11,6 @@ use super::support::{bool_to_state, state_to_bool, EffectModes};
 pub(in crate::ss) struct SsSkill {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) fit_id: SsFitId,
-    pub(in crate::ss) char_item_id: Option<SsItemId>,
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) level: SkillLevel,
     pub(in crate::ss) state: State,
@@ -23,7 +22,6 @@ impl SsSkill {
         src: &Src,
         id: SsItemId,
         fit_id: SsFitId,
-        char_item_id: Option<SsItemId>,
         a_item_id: EItemId,
         level: SkillLevel,
         state: bool,
@@ -31,7 +29,6 @@ impl SsSkill {
         Self {
             id,
             fit_id,
-            char_item_id,
             a_item_id,
             level,
             state: bool_to_state(state),

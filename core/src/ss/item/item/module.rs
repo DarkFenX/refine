@@ -12,8 +12,6 @@ use super::support::EffectModes;
 pub(in crate::ss) struct SsModule {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) fit_id: SsFitId,
-    pub(in crate::ss) ship_item_id: Option<SsItemId>,
-    pub(in crate::ss) struct_item_id: Option<SsItemId>,
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) state: State,
     pub(in crate::ss) rack: ModRack,
@@ -27,8 +25,6 @@ impl SsModule {
         src: &Src,
         id: SsItemId,
         fit_id: SsFitId,
-        ship_item_id: Option<SsItemId>,
-        struct_item_id: Option<SsItemId>,
         a_item_id: EItemId,
         state: State,
         rack: ModRack,
@@ -38,8 +34,6 @@ impl SsModule {
         Self {
             id,
             fit_id,
-            ship_item_id,
-            struct_item_id,
             a_item_id,
             state,
             rack,

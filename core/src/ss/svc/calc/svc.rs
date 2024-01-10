@@ -108,13 +108,9 @@ impl SsSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         let mods = generate_ss_attr_mods(item, effects);
-        self.calc_data.mods.reg_mods(mods.clone(), ss_view.items, ss_view.fits);
+        self.calc_data.mods.reg_mods(item.get_fit_id(), mods.clone());
         for modifier in mods {
-            for item_id in self
-                .calc_data
-                .mods
-                .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
-            {
+            for item_id in self.calc_data.mods.get_tgt_items(&modifier, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
             }
         }
@@ -127,15 +123,11 @@ impl SsSvcs {
     ) {
         let mods = generate_ss_attr_mods(item, effects);
         for modifier in mods.iter() {
-            for item_id in self
-                .calc_data
-                .mods
-                .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
-            {
+            for item_id in self.calc_data.mods.get_tgt_items(&modifier, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
             }
         }
-        self.calc_data.mods.unreg_mods(mods, ss_view.items, ss_view.fits);
+        self.calc_data.mods.unreg_mods(item.get_fit_id(), mods);
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
         &mut self,
@@ -162,11 +154,7 @@ impl SsSvcs {
             .map(|v| *v)
             .collect_vec();
         for modifier in mods.iter() {
-            for tgt_item_id in self
-                .calc_data
-                .mods
-                .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
-            {
+            for tgt_item_id in self.calc_data.mods.get_tgt_items(&modifier, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
             }
         }

@@ -33,7 +33,7 @@ impl SolarSystem {
         cont_id: SsItemId,
     ) -> Option<SsChargeInfo> {
         match (item_id, a_item_id) {
-            (Some(item_id), Some(a_item_id)) => self.add_charge_with_id(item_id, fit_id, a_item_id, cont_id).ok(),
+            (Some(item_id), Some(a_item_id)) => Some(self.add_charge_with_id(item_id, fit_id, a_item_id, cont_id)),
             _ => None,
         }
     }
@@ -43,13 +43,11 @@ impl SolarSystem {
         fit_id: SsFitId,
         a_item_id: EItemId,
         cont_id: SsItemId,
-    ) -> Result<SsChargeInfo> {
-        let fit = self.fits.get_fit_mut(&fit_id)?;
+    ) -> SsChargeInfo {
         let charge = SsCharge::new(&self.src, item_id, fit_id, a_item_id, cont_id);
         let info = SsChargeInfo::from(&charge);
         let item = SsItem::Charge(charge);
-        fit.add_item(&item);
         self.add_item(item);
-        Ok(info)
+        info
     }
 }

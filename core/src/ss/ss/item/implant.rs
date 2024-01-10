@@ -23,12 +23,10 @@ impl SolarSystem {
         Ok(implant_infos)
     }
     pub fn add_implant(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: bool) -> Result<SsImplantInfo> {
-        let fit = self.fits.get_fit_mut(&fit_id)?;
         let item_id = self.items.alloc_item_id()?;
-        let implant = SsImplant::new(&self.src, item_id, fit_id, fit.character, a_item_id, state);
+        let implant = SsImplant::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsImplantInfo::from(&implant);
         let item = SsItem::Implant(implant);
-        fit.add_item(&item);
         self.add_item(item);
         Ok(info)
     }

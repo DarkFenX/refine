@@ -23,12 +23,10 @@ impl SolarSystem {
         Ok(subsystem_infos)
     }
     pub fn add_subsystem(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: bool) -> Result<SsSubsystemInfo> {
-        let fit = self.fits.get_fit_mut(&fit_id)?;
         let item_id = self.items.alloc_item_id()?;
-        let subsystem = SsSubsystem::new(&self.src, item_id, fit_id, fit.ship, a_item_id, state);
+        let subsystem = SsSubsystem::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsSubsystemInfo::from(&subsystem);
         let item = SsItem::Subsystem(subsystem);
-        fit.add_item(&item);
         self.add_item(item);
         Ok(info)
     }

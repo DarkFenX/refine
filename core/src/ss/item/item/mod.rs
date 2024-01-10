@@ -256,64 +256,6 @@ impl SsItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::ss) fn get_parent_character_item_id(&self) -> Option<SsItemId> {
-        match self {
-            Self::Booster(booster) => booster.char_item_id,
-            Self::Character(_) => None,
-            Self::Charge(_) => None,
-            Self::Drone(_) => None,
-            Self::Fighter(_) => None,
-            Self::Implant(implant) => implant.char_item_id,
-            Self::Module(_) => None,
-            Self::Rig(_) => None,
-            Self::Ship(_) => None,
-            Self::Skill(skill) => skill.char_item_id,
-            Self::Stance(_) => None,
-            Self::Subsystem(_) => None,
-            Self::SwEffect(_) => None,
-        }
-    }
-    pub(in crate::ss) fn get_parent_ship_item_id(&self) -> Option<SsItemId> {
-        match self {
-            Self::Booster(_) => None,
-            Self::Character(_) => None,
-            Self::Charge(_) => None,
-            Self::Drone(_) => None,
-            Self::Fighter(_) => None,
-            Self::Implant(_) => None,
-            Self::Module(module) => module.ship_item_id,
-            Self::Rig(rig) => rig.ship_item_id,
-            Self::Ship(_) => None,
-            Self::Skill(_) => None,
-            Self::Stance(stance) => stance.ship_item_id,
-            Self::Subsystem(subsystem) => subsystem.ship_item_id,
-            Self::SwEffect(_) => None,
-        }
-    }
-    pub(in crate::ss) fn get_parent_structure_item_id(&self) -> Option<SsItemId> {
-        match self {
-            Self::Booster(_) => None,
-            Self::Character(_) => None,
-            Self::Charge(_) => None,
-            Self::Drone(_) => None,
-            Self::Fighter(_) => None,
-            Self::Implant(_) => None,
-            Self::Module(module) => module.struct_item_id,
-            Self::Rig(rig) => rig.struct_item_id,
-            Self::Ship(_) => None,
-            Self::Skill(_) => None,
-            Self::Stance(_) => None,
-            Self::Subsystem(_) => None,
-            Self::SwEffect(_) => None,
-        }
-    }
-    pub(in crate::ss) fn get_parent_domain_item_ids(&self) -> [Option<SsItemId>; 3] {
-        [
-            self.get_parent_character_item_id(),
-            self.get_parent_ship_item_id(),
-            self.get_parent_structure_item_id(),
-        ]
-    }
     pub(in crate::ss) fn get_group_id(&self) -> Result<EItemGrpId> {
         Ok(self.get_a_item()?.grp_id)
     }
