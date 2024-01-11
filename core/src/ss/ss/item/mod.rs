@@ -9,6 +9,7 @@ mod rig;
 mod ship;
 mod skill;
 mod stance;
+mod structure;
 mod subsystem;
 mod sw_effect;
 

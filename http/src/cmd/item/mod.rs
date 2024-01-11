@@ -9,6 +9,7 @@ pub(in crate::cmd) use rig::HChangeRigCmd;
 pub(in crate::cmd) use ship::HChangeShipCmd;
 pub(in crate::cmd) use skill::HChangeSkillCmd;
 pub(in crate::cmd) use stance::HChangeStanceCmd;
+pub(in crate::cmd) use structure::HChangeStructureCmd;
 pub(in crate::cmd) use subsystem::HChangeSubsystemCmd;
 pub(in crate::cmd) use sw_effect::HChangeSwEffectCmd;
 
@@ -25,6 +26,7 @@ mod rig;
 mod ship;
 mod skill;
 mod stance;
+mod structure;
 mod subsystem;
 mod sw_effect;
 
@@ -36,6 +38,7 @@ pub(crate) enum HItemCommand {
     ChangeImplant(HChangeImplantCmd),
     ChangeBooster(HChangeBoosterCmd),
     ChangeShip(HChangeShipCmd),
+    ChangeStructure(HChangeStructureCmd),
     ChangeStance(HChangeStanceCmd),
     ChangeSubsystem(HChangeSubsystemCmd),
     ChangeModule(HChangeModuleCmd),
@@ -53,6 +56,7 @@ impl HItemCommand {
             Self::ChangeImplant(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeBooster(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeShip(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeStructure(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeStance(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeSubsystem(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeModule(cmd) => cmd.execute(core_ss, item_id),

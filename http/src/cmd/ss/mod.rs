@@ -9,6 +9,7 @@ pub(in crate::cmd) use rig::{HAddRigCmd, HChangeRigCmd};
 pub(in crate::cmd) use ship::{HChangeShipCmd, HSetShipCmd};
 pub(in crate::cmd) use skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use stance::{HChangeStanceCmd, HSetStanceCmd};
+pub(in crate::cmd) use structure::{HChangeStructureCmd, HSetStructureCmd};
 pub(in crate::cmd) use subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
 
@@ -25,6 +26,7 @@ mod rig;
 mod ship;
 mod skill;
 mod stance;
+mod structure;
 mod subsystem;
 mod sw_effect;
 
@@ -41,6 +43,8 @@ pub(crate) enum HSsCommand {
     ChangeBooster(HChangeBoosterCmd),
     SetShip(HSetShipCmd),
     ChangeShip(HChangeShipCmd),
+    SetStructure(HSetStructureCmd),
+    ChangeStructure(HChangeStructureCmd),
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
     AddSubsystem(HAddSubsystemCmd),
@@ -70,6 +74,8 @@ impl HSsCommand {
             Self::ChangeBooster(cmd) => cmd.execute(core_ss),
             Self::SetShip(cmd) => cmd.execute(core_ss),
             Self::ChangeShip(cmd) => cmd.execute(core_ss),
+            Self::SetStructure(cmd) => cmd.execute(core_ss),
+            Self::ChangeStructure(cmd) => cmd.execute(core_ss),
             Self::SetStance(cmd) => cmd.execute(core_ss),
             Self::ChangeStance(cmd) => cmd.execute(core_ss),
             Self::AddSubsystem(cmd) => cmd.execute(core_ss),

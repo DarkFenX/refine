@@ -4,7 +4,7 @@ use crate::{
     defs::{SsFitId, SsItemId},
     ss::item::{
         SsBooster, SsCharacter, SsCharge, SsDrone, SsFighter, SsImplant, SsItem, SsModule, SsRig, SsShip, SsSkill,
-        SsStance, SsSubsystem, SsSwEffect,
+        SsStance, SsStructure, SsSubsystem, SsSwEffect,
     },
     util::{Error, ErrorKind, Named, Result},
 };
@@ -299,6 +299,29 @@ impl SsItems {
                 *item_id,
                 item.get_name(),
                 SsStance::get_name(),
+            ))),
+        }
+    }
+    // Structure methods
+    pub(in crate::ss) fn get_structure(&self, item_id: &SsItemId) -> Result<&SsStructure> {
+        let item = self.get_item(item_id)?;
+        match item {
+            SsItem::Structure(structure) => Ok(structure),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                SsStructure::get_name(),
+            ))),
+        }
+    }
+    pub(in crate::ss) fn get_structure_mut(&mut self, item_id: &SsItemId) -> Result<&mut SsStructure> {
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            SsItem::Structure(structure) => Ok(structure),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                SsStructure::get_name(),
             ))),
         }
     }

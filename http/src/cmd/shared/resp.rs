@@ -29,6 +29,11 @@ impl From<rc::SsShipInfo> for HCmdResp {
         HCmdResp::ItemIds(ss_ship_info.into())
     }
 }
+impl From<rc::SsStructureInfo> for HCmdResp {
+    fn from(ss_structure_info: rc::SsStructureInfo) -> Self {
+        HCmdResp::ItemIds(ss_structure_info.into())
+    }
+}
 impl From<rc::SsStanceInfo> for HCmdResp {
     fn from(ss_stance_info: rc::SsStanceInfo) -> Self {
         HCmdResp::ItemIds(ss_stance_info.into())
@@ -102,6 +107,11 @@ impl From<rc::SsBoosterInfo> for HItemIdsResp {
 impl From<rc::SsShipInfo> for HItemIdsResp {
     fn from(ss_ship_info: rc::SsShipInfo) -> Self {
         HItemIdsResp::new(ss_ship_info.id, None)
+    }
+}
+impl From<rc::SsStructureInfo> for HItemIdsResp {
+    fn from(ss_structure_info: rc::SsStructureInfo) -> Self {
+        HItemIdsResp::new(ss_structure_info.id, None)
     }
 }
 impl From<rc::SsStanceInfo> for HItemIdsResp {
