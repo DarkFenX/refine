@@ -428,6 +428,20 @@ class TestClient:
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
+    def set_struct_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int
+    ) -> Request:
+        payload = {'commands': [{'type': 'set_structure', 'fit_id': fit_id, 'type_id': type_id}]}
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            json=payload)
+
     def add_subsystem_request(
             self,
             ss_id: str,

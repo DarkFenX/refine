@@ -93,6 +93,15 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    def set_struct_request(self, type_id: int) -> Request:
+        return self._client.set_struct_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
+
+    def set_struct(self, type_id: int) -> Item:
+        resp = self.set_struct_request(type_id=type_id).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        return item
+
     def add_subsystem_request(
             self,
             type_id: int,
