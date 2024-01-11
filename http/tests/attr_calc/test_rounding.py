@@ -14,13 +14,11 @@ def get_value_simple(client, attr_id, base_value):
 
 
 def test_cpu_down(client, consts):
-    value = get_value_simple(client, attr_id=consts.Attr.cpu, base_value=2.3333)
-    assert value == approx(2.33)
+    assert get_value_simple(client, attr_id=consts.Attr.cpu, base_value=2.3333) == approx(2.33)
 
 
 def test_cpu_up(client, consts):
-    value = get_value_simple(client, attr_id=consts.Attr.cpu, base_value=2.6666)
-    assert value == approx(2.67)
+    assert get_value_simple(client, attr_id=consts.Attr.cpu, base_value=2.6666) == approx(2.67)
 
 
 def test_cpu_modified(client, consts):
@@ -38,25 +36,20 @@ def test_cpu_modified(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_implant(type_id=eve_item.id)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(2.33)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(2.33)
 
 
 def test_cpu_output(client, consts):
-    value = get_value_simple(client, attr_id=consts.Attr.cpu_output, base_value=2.6666)
-    assert value == approx(2.67)
+    assert get_value_simple(client, attr_id=consts.Attr.cpu_output, base_value=2.6666) == approx(2.67)
 
 
 def test_power(client, consts):
-    value = get_value_simple(client, attr_id=consts.Attr.power, base_value=2.6666)
-    assert value == approx(2.67)
+    assert get_value_simple(client, attr_id=consts.Attr.power, base_value=2.6666) == approx(2.67)
 
 
 def test_power_output(client, consts):
-    value = get_value_simple(client, attr_id=consts.Attr.power_output, base_value=2.6666)
-    assert value == approx(2.67)
+    assert get_value_simple(client, attr_id=consts.Attr.power_output, base_value=2.6666) == approx(2.67)
 
 
 def test_other(client):
-    value = get_value_simple(client, attr_id=Default, base_value=2.6666)
-    assert value == approx(2.6666)
+    assert get_value_simple(client, attr_id=Default, base_value=2.6666) == approx(2.6666)

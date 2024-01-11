@@ -26,10 +26,8 @@ def get_dogma_value(client, consts, high_is_good):
 
 
 def test_high_is_good(client, consts):
-    value = get_dogma_value(client, consts, high_is_good=True)
-    assert value == approx(53.02)
+    assert get_dogma_value(client, consts, high_is_good=True) == approx(53.02)
 
 
 def test_high_is_bad(client, consts):
-    value = get_dogma_value(client, consts, high_is_good=False)
-    assert value == approx(-20)
+    assert get_dogma_value(client, consts, high_is_good=False) == approx(-20)

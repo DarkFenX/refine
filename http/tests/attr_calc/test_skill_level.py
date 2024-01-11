@@ -16,8 +16,6 @@ def test_switch(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_skill(type_id=eve_item.id, level=5)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(500)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(500)
     api_item.change_skill(level=3)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(300)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(300)

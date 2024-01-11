@@ -52,20 +52,16 @@ def get_value_for_state(client, consts, state):
 
 
 def test_fit_offline(client, consts):
-    value = get_value_for_state(client, consts, state=consts.State.offline)
-    assert value == approx(110)
+    assert get_value_for_state(client, consts, state=consts.State.offline) == approx(110)
 
 
 def test_fit_online(client, consts):
-    value = get_value_for_state(client, consts, state=consts.State.online)
-    assert value == approx(143)
+    assert get_value_for_state(client, consts, state=consts.State.online) == approx(143)
 
 
 def test_fit_active(client, consts):
-    value = get_value_for_state(client, consts, state=consts.State.active)
-    assert value == approx(214.5)
+    assert get_value_for_state(client, consts, state=consts.State.active) == approx(214.5)
 
 
 def test_fit_overload(client, consts):
-    value = get_value_for_state(client, consts, state=consts.State.overload)
-    assert value == approx(364.65)
+    assert get_value_for_state(client, consts, state=consts.State.overload) == approx(364.65)

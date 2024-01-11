@@ -18,11 +18,9 @@ def test_affected(client, consts):
     api_fit = api_ss.create_fit()
     api_tgt_item = api_fit.set_char(type_id=eve_tgt_item.id)
     api_src_item = api_fit.add_rig(type_id=eve_src_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
     api_src_item.remove()
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_awaiting(client, consts):
@@ -45,11 +43,9 @@ def test_awaiting(client, consts):
     api_fit = api_ss.create_fit()
     api_src_item = api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.set_char(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
     api_src_item.remove()
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_other_domain(client, consts):
@@ -69,8 +65,7 @@ def test_other_domain(client, consts):
     api_fit = api_ss.create_fit()
     api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.set_ship(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_child_item(client, consts):
@@ -90,5 +85,4 @@ def test_child_item(client, consts):
     api_fit = api_ss.create_fit()
     api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_implant(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)

@@ -17,8 +17,7 @@ def test_affected_top(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.set_char(type_id=eve_item.id)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
 
 
 def test_affected_child(client, consts):
@@ -37,8 +36,7 @@ def test_affected_child(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_rig(type_id=eve_item.id)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
 
 
 def test_unaffected_top(client, consts):
@@ -60,11 +58,9 @@ def test_unaffected_top(client, consts):
     api_fit = api_ss.create_fit()
     api_fit.set_char(type_id=eve_affecting_item.id)
     api_unaffected_top_item = api_fit.set_ship(type_id=eve_unaffected_item.id)
-    value = api_unaffected_top_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_unaffected_top_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
     api_unaffected_child_item = api_fit.add_implant(type_id=eve_unaffected_item.id)
-    value = api_unaffected_child_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_unaffected_child_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_unaffected_child(client, consts):
@@ -86,8 +82,6 @@ def test_unaffected_child(client, consts):
     api_fit = api_ss.create_fit()
     api_fit.add_rig(type_id=eve_affecting_item.id)
     api_unaffected_top_item = api_fit.set_ship(type_id=eve_unaffected_item.id)
-    value = api_unaffected_top_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_unaffected_top_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
     api_unaffected_child_item = api_fit.add_rig(type_id=eve_unaffected_item.id)
-    value = api_unaffected_child_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_unaffected_child_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)

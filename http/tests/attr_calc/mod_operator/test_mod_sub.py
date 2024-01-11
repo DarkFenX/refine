@@ -26,10 +26,8 @@ def get_dogma_value(client, consts, stackable):
 
 
 def test_non_penalized(client, consts):
-    value = get_dogma_value(client, consts, stackable=True)
-    assert value == approx(43.92)
+    assert get_dogma_value(client, consts, stackable=True) == approx(43.92)
 
 
 def test_penalized(client, consts):
-    value = get_dogma_value(client, consts, stackable=False)
-    assert value == approx(43.92)
+    assert get_dogma_value(client, consts, stackable=False) == approx(43.92)

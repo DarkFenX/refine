@@ -23,7 +23,5 @@ def test_unaffected(client, consts):
     api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item1 = api_fit.add_rig(type_id=eve_tgt_item.id)
     api_tgt_item2 = api_fit.add_implant(type_id=eve_tgt_item.id)
-    value = api_tgt_item1.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
-    value = api_tgt_item2.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item1.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    assert api_tgt_item2.update().attrs[eve_tgt_attr.id].dogma == approx(100)

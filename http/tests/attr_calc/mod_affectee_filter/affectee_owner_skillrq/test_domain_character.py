@@ -20,11 +20,9 @@ def test_affected(client, consts):
     api_fit = api_ss.create_fit()
     api_src_item = api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_drone(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
     api_src_item.remove()
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_non_owner_modifiable(client, consts):
@@ -46,8 +44,7 @@ def test_non_owner_modifiable(client, consts):
     api_fit = api_ss.create_fit()
     api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_rig(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_other_skillreq(client, consts):
@@ -70,5 +67,4 @@ def test_other_skillreq(client, consts):
     api_fit = api_ss.create_fit()
     api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_drone(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)

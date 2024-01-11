@@ -28,28 +28,23 @@ def get_dogma_value_ext(client, consts, src1_cat_id, src2_cat_id):
 
 
 def test_ship(client, consts):
-    value = get_dogma_value(client, consts, cat_id=consts.ItemCat.ship)
-    assert value == approx(300)
+    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.ship) == approx(300)
 
 
 def test_charge(client, consts):
-    value = get_dogma_value(client, consts, cat_id=consts.ItemCat.charge)
-    assert value == approx(300)
+    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.charge) == approx(300)
 
 
 def test_skill(client, consts):
-    value = get_dogma_value(client, consts, cat_id=consts.ItemCat.skill)
-    assert value == approx(300)
+    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.skill) == approx(300)
 
 
 def test_implant(client, consts):
-    value = get_dogma_value(client, consts, cat_id=consts.ItemCat.implant)
-    assert value == approx(300)
+    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.implant) == approx(300)
 
 
 def test_subsystem(client, consts):
-    value = get_dogma_value(client, consts, cat_id=consts.ItemCat.subsystem)
-    assert value == approx(300)
+    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.subsystem) == approx(300)
 
 
 def test_mixed(client, consts):

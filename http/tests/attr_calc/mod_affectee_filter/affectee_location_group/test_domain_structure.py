@@ -22,11 +22,9 @@ def test_affected(client, consts):
     api_fit.set_struct(type_id=eve_struct_item.id)
     api_src_item = api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_rig(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
     api_src_item.remove()
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_other_location(client, consts):
@@ -50,8 +48,7 @@ def test_other_location(client, consts):
     api_fit.set_struct(type_id=eve_struct_item.id)
     api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_implant(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_other_group(client, consts):
@@ -76,8 +73,7 @@ def test_other_group(client, consts):
     api_fit.set_struct(type_id=eve_struct_item.id)
     api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_rig(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_struct_toggle(client, consts):

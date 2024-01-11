@@ -22,5 +22,4 @@ def test_domain_other(client, consts):
     api_fit = api_ss.create_fit()
     api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_drone(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(100)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)

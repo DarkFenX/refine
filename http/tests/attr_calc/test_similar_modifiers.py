@@ -28,8 +28,7 @@ def test_same_item_different_effects_attrs(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.set_ship(type_id=eve_item.id)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(144)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(144)
 
 
 def test_same_item_different_effects_attrs_switching(client, consts):
@@ -62,14 +61,11 @@ def test_same_item_different_effects_attrs_switching(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.State.offline)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
     api_item.change_mod(state=consts.State.active)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(144)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(144)
     api_item.change_mod(state=consts.State.offline)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
 
 
 def test_same_item_attr_different_effects(client, consts):
@@ -106,8 +102,7 @@ def test_same_item_attr_different_effects(client, consts):
     api_fit.set_ship(type_id=eve_ship_item.id)
     api_fit.add_rig(type_id=eve_src_item.id)
     api_item = api_fit.add_mod(type_id=eve_tgt_item.id, rack=consts.Rack.mid)
-    value = api_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
 
 
 def test_same_item_attr_different_effects_switch(client, consts):
@@ -143,11 +138,8 @@ def test_same_item_attr_different_effects_switch(client, consts):
     api_fit = api_ss.create_fit()
     api_src_item = api_fit.add_mod(type_id=eve_src_item.id, state=consts.State.offline)
     api_tgt_item = api_fit.set_ship(type_id=eve_tgt_item.id)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
     api_src_item.change_mod(state=consts.State.active)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
     api_src_item.change_mod(state=consts.State.offline)
-    value = api_tgt_item.update().attrs[eve_tgt_attr.id].dogma
-    assert value == approx(120)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
