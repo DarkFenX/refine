@@ -175,6 +175,32 @@ impl ModRegister {
         }
         mods
     }
+    pub(in crate::ss::svc::calc) fn get_mods_for_changed_domain_owner(
+        &mut self,
+        item: &SsItem,
+        items: &SsItems,
+    ) -> Vec<SsAttrMod> {
+        let mut mods = Vec::new();
+        if let (Some(fit_id), Some(dom)) = (item.get_fit_id(), item.get_top_domain()) {
+            for (sub_item_id, sub_mods) in self.mods.iter() {
+                if let Ok(sub_item) = items.get_item(sub_item_id) {
+                    if sub_item.get_fit_id() == Some(fit_id) {
+                        for sub_mod in sub_mods.iter() {
+                            if match sub_mod.tgt_filter {
+                                SsModTgtFilter::Loc(sub_dom) => dom == sub_dom,
+                                SsModTgtFilter::LocGrp(sub_dom, _) => dom == sub_dom,
+                                SsModTgtFilter::LocSrq(sub_dom, _) => dom == sub_dom,
+                                _ => false,
+                            } {
+                                mods.push(*sub_mod);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        mods
+    }
     pub(in crate::ss::svc::calc) fn iter_mods_for_src(
         &self,
         src_item_id: &SsItemId,

@@ -14,6 +14,9 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
     pub(crate) fn get(&self, key: &K) -> Option<&HashSet<V>> {
         self.data.get(key)
     }
+    pub(crate) fn iter(&self) -> impl Iterator<Item = (&K, &HashSet<V>)> {
+        self.data.iter()
+    }
     fn is_empty(&self) -> bool {
         self.data.is_empty()
     }

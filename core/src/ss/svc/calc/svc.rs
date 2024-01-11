@@ -91,6 +91,26 @@ impl SsSvcs {
         Ok(vals)
     }
     // Modification methods
+    pub(in crate::ss::svc) fn calc_item_added_or_removed(&mut self, ss_view: &SsView, item: &SsItem) {
+        match item {
+            SsItem::Character(_) | SsItem::Ship(_) | SsItem::Structure(_) => {
+                for modifier in self
+                    .calc_data
+                    .mods
+                    .get_mods_for_changed_domain_owner(item, ss_view.items)
+                {
+                    for item_id in self
+                        .calc_data
+                        .mods
+                        .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
+                    {
+                        self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
+                    }
+                }
+            }
+            _ => (),
+        }
+    }
     pub(in crate::ss::svc) fn calc_item_loaded(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_data.attrs.add_item(item.get_id());
         self.calc_data.mods.reg_tgt(item, ss_view.fits);
