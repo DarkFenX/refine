@@ -99,9 +99,11 @@ def test_same_item_attr_different_effects(client, consts):
     eve_effect2 = client.mk_eve_effect(mod_info=[eve_mod2])
     eve_src_item = client.mk_eve_item(attrs={eve_src_attr.id: 20}, eff_ids=[eve_effect1.id, eve_effect2.id])
     eve_tgt_item = client.mk_eve_item(attrs={eve_tgt_attr.id: 100}, srqs={eve_skill1.id: 1, eve_skill2.id: 1})
+    eve_ship_item = client.mk_eve_item()
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
+    api_fit.set_ship(type_id=eve_ship_item.id)
     api_fit.add_rig(type_id=eve_src_item.id)
     api_item = api_fit.add_mod(type_id=eve_tgt_item.id, rack=consts.Rack.mid)
     value = api_item.update().attrs[eve_tgt_attr.id].dogma

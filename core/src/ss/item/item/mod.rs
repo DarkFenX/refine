@@ -252,22 +252,58 @@ impl SsItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::ss) fn get_parent_domain(&self) -> Option<ModDomain> {
+    pub(in crate::ss) fn can_have_parent_char(&self) -> bool {
         match self {
-            Self::Booster(_) => Some(ModDomain::Char),
-            Self::Character(_) => None,
-            Self::Charge(_) => Some(ModDomain::Ship),
-            Self::Drone(_) => None,
-            Self::Fighter(_) => None,
-            Self::Implant(_) => Some(ModDomain::Char),
-            Self::Module(_) => Some(ModDomain::Ship),
-            Self::Rig(_) => Some(ModDomain::Ship),
-            Self::Ship(_) => None,
-            Self::Skill(_) => Some(ModDomain::Char),
-            Self::Stance(_) => Some(ModDomain::Ship),
-            Self::Structure(_) => None,
-            Self::Subsystem(_) => Some(ModDomain::Ship),
-            Self::SwEffect(_) => None,
+            Self::Booster(_) => true,
+            Self::Character(_) => false,
+            Self::Charge(_) => false,
+            Self::Drone(_) => false,
+            Self::Fighter(_) => false,
+            Self::Implant(_) => true,
+            Self::Module(_) => false,
+            Self::Rig(_) => false,
+            Self::Ship(_) => false,
+            Self::Skill(_) => true,
+            Self::Stance(_) => false,
+            Self::Structure(_) => false,
+            Self::Subsystem(_) => false,
+            Self::SwEffect(_) => false,
+        }
+    }
+    pub(in crate::ss) fn can_have_parent_ship(&self) -> bool {
+        match self {
+            Self::Booster(_) => false,
+            Self::Character(_) => false,
+            Self::Charge(_) => true, // TODO: check if it needs to be true?
+            Self::Drone(_) => false,
+            Self::Fighter(_) => false,
+            Self::Implant(_) => false,
+            Self::Module(_) => true,
+            Self::Rig(_) => true,
+            Self::Ship(_) => false,
+            Self::Skill(_) => false,
+            Self::Stance(_) => true,
+            Self::Structure(_) => false,
+            Self::Subsystem(_) => true,
+            Self::SwEffect(_) => false,
+        }
+    }
+    pub(in crate::ss) fn can_have_parent_struct(&self) -> bool {
+        match self {
+            Self::Booster(_) => false,
+            Self::Character(_) => false,
+            Self::Charge(_) => true, // TODO: check if it needs to be true?
+            Self::Drone(_) => false,
+            Self::Fighter(_) => false,
+            Self::Implant(_) => false,
+            Self::Module(_) => true,
+            Self::Rig(_) => true,
+            Self::Ship(_) => false,
+            Self::Skill(_) => false,
+            Self::Stance(_) => false,
+            Self::Structure(_) => false,
+            Self::Subsystem(_) => false,
+            Self::SwEffect(_) => false,
         }
     }
     pub(in crate::ss) fn get_group_id(&self) -> Result<EItemGrpId> {

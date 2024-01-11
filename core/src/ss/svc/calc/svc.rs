@@ -91,12 +91,12 @@ impl SsSvcs {
         Ok(vals)
     }
     // Modification methods
-    pub(in crate::ss::svc) fn calc_item_loaded(&mut self, item: &SsItem) {
+    pub(in crate::ss::svc) fn calc_item_loaded(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_data.attrs.add_item(item.get_id());
-        self.calc_data.mods.reg_tgt(item);
+        self.calc_data.mods.reg_tgt(item, ss_view.fits);
     }
-    pub(in crate::ss::svc) fn calc_item_unloaded(&mut self, item: &SsItem) {
-        self.calc_data.mods.unreg_tgt(item);
+    pub(in crate::ss::svc) fn calc_item_unloaded(&mut self, ss_view: &SsView, item: &SsItem) {
+        self.calc_data.mods.unreg_tgt(item, ss_view.fits);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
         self.calc_data.caps.clear_item_caps(&item_id);
@@ -107,12 +107,17 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
+        let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
         let mods = generate_ss_attr_mods(item, effects);
         for modifier in mods.iter() {
-            self.calc_data.mods.reg_mod(item.get_fit_id(), *modifier);
+            self.calc_data.mods.reg_mod(fit, *modifier);
         }
         for modifier in mods {
-            for item_id in self.calc_data.mods.get_tgt_items(&modifier, ss_view.items) {
+            for item_id in self
+                .calc_data
+                .mods
+                .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
+            {
                 self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
             }
         }
@@ -123,14 +128,19 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
+        let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
         let mods = generate_ss_attr_mods(item, effects);
         for modifier in mods.iter() {
-            for item_id in self.calc_data.mods.get_tgt_items(&modifier, ss_view.items) {
+            for item_id in self
+                .calc_data
+                .mods
+                .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
+            {
                 self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
             }
         }
         for modifier in mods.iter() {
-            self.calc_data.mods.unreg_mod(item.get_fit_id(), modifier);
+            self.calc_data.mods.unreg_mod(fit, modifier);
         }
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
@@ -158,7 +168,11 @@ impl SsSvcs {
             .map(|v| *v)
             .collect_vec();
         for modifier in mods.iter() {
-            for tgt_item_id in self.calc_data.mods.get_tgt_items(&modifier, ss_view.items) {
+            for tgt_item_id in self
+                .calc_data
+                .mods
+                .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
+            {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
             }
         }
@@ -282,7 +296,7 @@ impl SsSvcs {
     ) -> HashMap<ModKey, Modification> {
         // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = HashMap::new();
-        for modifier in self.calc_data.mods.get_mods_for_tgt(item).iter() {
+        for modifier in self.calc_data.mods.get_mods_for_tgt(item, ss_view.fits).iter() {
             if &modifier.tgt_attr_id != attr_id {
                 continue;
             }

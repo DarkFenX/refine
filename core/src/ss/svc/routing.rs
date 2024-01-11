@@ -86,10 +86,10 @@ impl SsSvcs {
     pub(in crate::ss) fn notify_state_activated(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}
     pub(in crate::ss) fn notify_state_deactivated(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}
     pub(in crate::ss) fn notify_item_loaded(&mut self, ss_view: &SsView, item: &SsItem) {
-        self.calc_item_loaded(item);
+        self.calc_item_loaded(ss_view, item);
     }
     pub(in crate::ss) fn notify_item_unloaded(&mut self, ss_view: &SsView, item: &SsItem) {
-        self.calc_item_unloaded(item);
+        self.calc_item_unloaded(ss_view, item);
     }
     pub(in crate::ss) fn notify_state_activated_loaded(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}
     pub(in crate::ss) fn notify_state_deactivated_loaded(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}
