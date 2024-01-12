@@ -333,6 +333,24 @@ impl SsItem {
             Self::SwEffect(_) => None,
         }
     }
+    pub(in crate::ss) fn is_directly_modifiable(&self) -> bool {
+        match self {
+            Self::Booster(_) => false,
+            Self::Character(_) => false,
+            Self::Charge(_) => false,
+            Self::Drone(_) => true,
+            Self::Fighter(_) => true,
+            Self::Implant(_) => false,
+            Self::Module(_) => false,
+            Self::Rig(_) => false,
+            Self::Ship(_) => true,
+            Self::Skill(_) => false,
+            Self::Stance(_) => false,
+            Self::Structure(_) => true,
+            Self::Subsystem(_) => false,
+            Self::SwEffect(_) => false,
+        }
+    }
     pub(in crate::ss) fn is_owner_modifiable(&self) -> bool {
         match self {
             Self::Booster(_) => false,
