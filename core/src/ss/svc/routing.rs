@@ -107,6 +107,24 @@ impl SsSvcs {
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| v.id));
     }
+    fn notify_effect_applied(
+        &mut self,
+        ss_view: &SsView,
+        item: &SsItem,
+        effect: ad::ArcEffect,
+        tgt_items: &Vec<SsItem>,
+    ) {
+        self.calc_effect_applied(ss_view, item, effect, tgt_items);
+    }
+    fn notify_effect_unapplied(
+        &mut self,
+        ss_view: &SsView,
+        item: &SsItem,
+        effect: ad::ArcEffect,
+        tgt_items: &Vec<SsItem>,
+    ) {
+        self.calc_effect_unapplied(ss_view, item, effect, tgt_items);
+    }
     pub(in crate::ss) fn notify_attr_val_changed(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &EAttrId) {
         self.calc_attr_value_changed(ss_view, item_id, attr_id);
     }

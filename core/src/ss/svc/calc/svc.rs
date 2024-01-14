@@ -148,6 +148,24 @@ impl SsSvcs {
             self.calc_data.mods.unreg_mod(fit, modifier);
         }
     }
+    pub(in crate::ss::svc) fn calc_effect_applied(
+        &mut self,
+        ss_view: &SsView,
+        item: &SsItem,
+        effect: ad::ArcEffect,
+        tgt_items: &Vec<SsItem>,
+    ) {
+        ()
+    }
+    pub(in crate::ss::svc) fn calc_effect_unapplied(
+        &mut self,
+        ss_view: &SsView,
+        item: &SsItem,
+        effect: ad::ArcEffect,
+        tgt_items: &Vec<SsItem>,
+    ) {
+        ()
+    }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
         &mut self,
         ss_view: &SsView,
