@@ -104,3 +104,14 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KeyedStorage2L<A, B, V> {
         self.data.remove(key);
     }
 }
+
+pub(crate) fn extend_vec_from_storage<K: Eq + Hash, V: Eq + Hash + Clone>(
+    vec: &mut Vec<V>,
+    storage: &KeyedStorage1L<K, V>,
+    key: &K,
+) {
+    match storage.get(key) {
+        Some(v) => vec.extend(v.iter().map(|v| v.clone())),
+        _ => (),
+    }
+}
