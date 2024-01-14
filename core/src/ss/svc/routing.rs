@@ -82,10 +82,10 @@ impl SsSvcs {
     }
     // Lower level methods
     pub(in crate::ss) fn notify_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
-        self.calc_item_added_or_removed(ss_view, item);
+        self.calc_item_added(ss_view, item);
     }
     pub(in crate::ss) fn notify_item_removed(&mut self, ss_view: &SsView, item: &SsItem) {
-        self.calc_item_added_or_removed(ss_view, item);
+        self.calc_item_removed(ss_view, item);
     }
     pub(in crate::ss) fn notify_state_activated(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}
     pub(in crate::ss) fn notify_state_deactivated(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}

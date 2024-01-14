@@ -6,6 +6,7 @@ pub(in crate::ss::svc::calc) use mod_reg::ModRegister;
 pub(in crate::ss::svc::calc) use modification::Modification;
 pub(in crate::ss::svc::calc) use modification_key::ModKey;
 pub(in crate::ss::svc::calc) use modifier::SsAttrMod;
+pub(in crate::ss::svc::calc) use proj_reg::ProjRegister;
 
 mod attr_cap_data;
 mod attr_val;
@@ -15,3 +16,4 @@ mod mod_reg;
 mod modification;
 mod modification_key;
 mod modifier;
+mod proj_reg;
