@@ -17,6 +17,8 @@ pub struct AEffect {
     pub state: State,
     /// Defines what kind of target you need to run the effect.
     pub tgt_mode: ATgtMode,
+    /// Defines if effect is applied to all items in system or not.
+    pub is_system_wide: bool,
     /// Defines if the effect is considered as an assistance.
     pub is_assist: bool,
     /// Defines if the effect is offensive or not.
@@ -53,6 +55,7 @@ impl AEffect {
         id: EEffectId,
         state: State,
         tgt_mode: ATgtMode,
+        is_system_wide: bool,
         is_assist: bool,
         is_offense: bool,
         hisec: Option<bool>,
@@ -72,6 +75,7 @@ impl AEffect {
             id,
             state,
             tgt_mode,
+            is_system_wide,
             is_assist,
             is_offense,
             hisec,
