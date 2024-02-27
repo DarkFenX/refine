@@ -69,7 +69,7 @@ async fn main() {
     // Middleware
     let url_mid = NormalizePathLayer::trim_trailing_slash();
     let general_mid = tower::ServiceBuilder::new()
-        .layer(middleware::from_fn(util::ml_trace_reqresp::print_request_response))
+        .layer(RequestIdLayer)
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(|request: &http::Request<Body>| {
@@ -87,7 +87,7 @@ async fn main() {
                     tracing::info!("<<< tx {} generated in {:?}", response.status(), latency)
                 }),
         )
-        .layer(RequestIdLayer);
+        .layer(middleware::from_fn(util::ml_trace_reqresp::print_request_response));
     // App
     let app = url_mid.layer(router.layer(general_mid));
 
