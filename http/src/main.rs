@@ -4,8 +4,7 @@ use std::{env, sync::Arc, time::Duration};
 
 use axum::{
     body::Body,
-    http::{Request, Response},
-    middleware,
+    extract, http, middleware,
     routing::{delete, get, patch, post},
     Router, ServiceExt,
 };
@@ -46,52 +45,55 @@ async fn main() {
     });
 
     // HTTP routing
-    let app = NormalizePathLayer::trim_trailing_slash().layer(
-        Router::new()
-            .route("/", get(handlers::root))
-            .route("/source/:alias", post(handlers::create_source))
-            .route("/source/:alias", delete(handlers::delete_source))
-            .route("/solar_system", post(handlers::create_ss))
-            .route("/solar_system/:ss_id", get(handlers::get_ss))
-            .route("/solar_system/:ss_id", patch(handlers::change_ss))
-            .route("/solar_system/:ss_id", delete(handlers::delete_ss))
-            .route("/solar_system/:ss_id/fit", post(handlers::create_fit))
-            .route("/solar_system/:ss_id/fit/:fit_id", get(handlers::get_fit))
-            .route("/solar_system/:ss_id/fit/:fit_id", patch(handlers::change_fit))
-            .route("/solar_system/:ss_id/fit/:fit_id", delete(handlers::delete_fit))
-            .route("/solar_system/:ss_id/item", post(handlers::create_item))
-            .route("/solar_system/:ss_id/item/:item_id", get(handlers::get_item))
-            .route("/solar_system/:ss_id/item/:item_id", patch(handlers::change_item))
-            .route("/solar_system/:ss_id/item/:item_id", delete(handlers::delete_item))
-            .route("/solar_system/:ss_id/fleet", post(handlers::create_fleet))
-            .route("/solar_system/:ss_id/fleet/:fleet_id", get(handlers::get_fleet))
-            .route("/solar_system/:ss_id/fleet/:fleet_id", patch(handlers::change_fleet))
-            .route("/solar_system/:ss_id/fleet/:fleet_id", delete(handlers::delete_fleet))
-            .layer(middleware::from_fn(util::ml_trace_reqresp::print_request_response))
-            .layer(
-                TraceLayer::new_for_http()
-                    .make_span_with(|request: &Request<Body>| {
-                        let request_id = request
-                            .extensions()
-                            .get::<RequestId>()
-                            .map(ToString::to_string)
-                            .unwrap_or_else(|| "unknown".into());
-                        tracing::trace_span!("http", id = %request_id)
-                    })
-                    .on_request(|request: &Request<Body>, _span: &Span| {
-                        tracing::info!(">>> rx {} {}", request.method(), request.uri())
-                    })
-                    .on_response(|response: &Response<Body>, latency: Duration, _span: &Span| {
-                        tracing::info!("<<< tx {} generated in {:?}", response.status(), latency)
-                    }),
-            )
-            .layer(RequestIdLayer)
-            .with_state(state),
-    );
+    let router = Router::new()
+        .route("/", get(handlers::root))
+        .route("/source/:alias", post(handlers::create_source))
+        .route("/source/:alias", delete(handlers::delete_source))
+        .route("/solar_system", post(handlers::create_ss))
+        .route("/solar_system/:ss_id", get(handlers::get_ss))
+        .route("/solar_system/:ss_id", patch(handlers::change_ss))
+        .route("/solar_system/:ss_id", delete(handlers::delete_ss))
+        .route("/solar_system/:ss_id/fit", post(handlers::create_fit))
+        .route("/solar_system/:ss_id/fit/:fit_id", get(handlers::get_fit))
+        .route("/solar_system/:ss_id/fit/:fit_id", patch(handlers::change_fit))
+        .route("/solar_system/:ss_id/fit/:fit_id", delete(handlers::delete_fit))
+        .route("/solar_system/:ss_id/item", post(handlers::create_item))
+        .route("/solar_system/:ss_id/item/:item_id", get(handlers::get_item))
+        .route("/solar_system/:ss_id/item/:item_id", patch(handlers::change_item))
+        .route("/solar_system/:ss_id/item/:item_id", delete(handlers::delete_item))
+        .route("/solar_system/:ss_id/fleet", post(handlers::create_fleet))
+        .route("/solar_system/:ss_id/fleet/:fleet_id", get(handlers::get_fleet))
+        .route("/solar_system/:ss_id/fleet/:fleet_id", patch(handlers::change_fleet))
+        .route("/solar_system/:ss_id/fleet/:fleet_id", delete(handlers::delete_fleet))
+        .with_state(state);
+    let url_mid = NormalizePathLayer::trim_trailing_slash();
+    let general_mid = tower::ServiceBuilder::new()
+        .layer(middleware::from_fn(util::ml_trace_reqresp::print_request_response))
+        .layer(
+            TraceLayer::new_for_http()
+                .make_span_with(|request: &http::Request<Body>| {
+                    let request_id = request
+                        .extensions()
+                        .get::<RequestId>()
+                        .map(ToString::to_string)
+                        .unwrap_or_else(|| "unknown".into());
+                    tracing::trace_span!("http", id = %request_id)
+                })
+                .on_request(|request: &http::Request<Body>, _span: &Span| {
+                    tracing::info!(">>> rx {} {}", request.method(), request.uri())
+                })
+                .on_response(|response: &http::Response<Body>, latency: Duration, _span: &Span| {
+                    tracing::info!("<<< tx {} generated in {:?}", response.status(), latency)
+                }),
+        )
+        .layer(RequestIdLayer);
+    let app = url_mid.layer(router.layer(general_mid));
 
     // Run app
     let addr = format!("127.0.0.1:{}", settings.server.port);
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     tracing::debug!("listening on {addr}");
-    axum::serve(listener, app.into_make_service()).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    axum::serve(listener, ServiceExt::<extract::Request>::into_make_service(app))
+        .await
+        .unwrap();
 }
