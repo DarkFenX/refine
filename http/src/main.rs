@@ -66,6 +66,7 @@ async fn main() {
         .route("/solar_system/:ss_id/fleet/:fleet_id", patch(handlers::change_fleet))
         .route("/solar_system/:ss_id/fleet/:fleet_id", delete(handlers::delete_fleet))
         .with_state(state);
+    // Middleware
     let url_mid = NormalizePathLayer::trim_trailing_slash();
     let general_mid = tower::ServiceBuilder::new()
         .layer(middleware::from_fn(util::ml_trace_reqresp::print_request_response))
@@ -87,12 +88,13 @@ async fn main() {
                 }),
         )
         .layer(RequestIdLayer);
+    // App
     let app = url_mid.layer(router.layer(general_mid));
 
-    // Run app
+    // Run server
     let addr = format!("127.0.0.1:{}", settings.server.port);
+    let listener = tokio::net::TcpListener::bind(addr.as_str()).await.unwrap();
     tracing::debug!("listening on {addr}");
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, ServiceExt::<extract::Request>::into_make_service(app))
         .await
         .unwrap();
