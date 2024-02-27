@@ -1,5 +1,3 @@
-use std::hash::Hash;
-
 use crate::{
     defs::{EItemGrpId, EItemId, SsFitId, SsItemId},
     shr::ModDomain,

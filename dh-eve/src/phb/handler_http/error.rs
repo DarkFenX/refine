@@ -1,5 +1,3 @@
-use url;
-
 use crate::util::{Error, ErrorKind};
 
 pub(in crate::phb::handler_http) trait FromSuffix<T> {

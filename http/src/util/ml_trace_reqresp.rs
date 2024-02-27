@@ -3,14 +3,16 @@
 
 use axum::{
     body::{Body, Bytes},
-    http::{Request, StatusCode},
+    extract::Request,
+    http::StatusCode,
     middleware::Next,
     response::{IntoResponse, Response},
 };
+use http_body_util::BodyExt;
 
 pub(crate) async fn print_request_response(
-    req: Request<Body>,
-    next: Next<Body>,
+    req: Request,
+    next: Next,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     let (parts, body) = req.into_parts();
     let bytes = buffer_and_print(">>>", "rx", body).await?;
@@ -30,8 +32,8 @@ where
     B: axum::body::HttpBody<Data = Bytes>,
     B::Error: std::fmt::Display,
 {
-    let bytes = match hyper::body::to_bytes(body).await {
-        Ok(bytes) => bytes,
+    let bytes = match body.collect().await {
+        Ok(collected) => collected.to_bytes(),
         Err(err) => {
             return Err((StatusCode::BAD_REQUEST, format!("{arrows} failed to read body: {err}")));
         }

@@ -1,4 +1,4 @@
-use std::{collections::HashSet, hash::Hash};
+use std::collections::HashSet;
 
 use crate::{ss::item::SsItem, util::KeyedStorage1L, ModDomain, SsItemId};
 

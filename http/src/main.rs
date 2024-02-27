@@ -1,9 +1,9 @@
 #![feature(hash_extract_if)]
 
-use std::{env, net::SocketAddr, sync::Arc, time::Duration};
+use std::{env, sync::Arc, time::Duration};
 
 use axum::{
-    body::{Body, BoxBody},
+    body::Body,
     http::{Request, Response},
     middleware,
     routing::{delete, get, patch, post},
@@ -81,7 +81,7 @@ async fn main() {
                     .on_request(|request: &Request<Body>, _span: &Span| {
                         tracing::info!(">>> rx {} {}", request.method(), request.uri())
                     })
-                    .on_response(|response: &Response<BoxBody>, latency: Duration, _span: &Span| {
+                    .on_response(|response: &Response<Body>, latency: Duration, _span: &Span| {
                         tracing::info!("<<< tx {} generated in {:?}", response.status(), latency)
                     }),
             )
@@ -90,7 +90,8 @@ async fn main() {
     );
 
     // Run app
-    let addr = SocketAddr::from(([127, 0, 0, 1], settings.server.port));
+    let addr = format!("127.0.0.1:{}", settings.server.port);
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     tracing::debug!("listening on {addr}");
-    axum::Server::bind(&addr).serve(app.into_make_service()).await.unwrap();
+    axum::serve(listener, app.into_make_service()).await.unwrap();
 }
