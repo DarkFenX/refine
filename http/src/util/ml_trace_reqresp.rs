@@ -2,13 +2,12 @@
 // Might need updates from time to time, due to axum changes
 
 use axum::{
-    body::{Body, Bytes},
+    body::{to_bytes, Body, Bytes},
     extract::Request,
     http::StatusCode,
     middleware::Next,
     response::{IntoResponse, Response},
 };
-use http_body_util::BodyExt;
 
 pub(crate) async fn print_request_response(
     req: Request,
@@ -27,13 +26,9 @@ pub(crate) async fn print_request_response(
     Ok(res)
 }
 
-async fn buffer_and_print<B>(arrows: &str, direction: &str, body: B) -> Result<Bytes, (StatusCode, String)>
-where
-    B: axum::body::HttpBody<Data = Bytes>,
-    B::Error: std::fmt::Display,
-{
-    let bytes = match body.collect().await {
-        Ok(collected) => collected.to_bytes(),
+async fn buffer_and_print(arrows: &str, direction: &str, body: Body) -> Result<Bytes, (StatusCode, String)> {
+    let bytes = match to_bytes(body, usize::MAX).await {
+        Ok(bytes) => bytes,
         Err(err) => {
             return Err((StatusCode::BAD_REQUEST, format!("{arrows} failed to read body: {err}")));
         }
