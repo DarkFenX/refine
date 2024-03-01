@@ -86,17 +86,17 @@ impl SsSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
-        let mods = generate_local_mods(item, effects);
-        for modifier in mods.iter() {
-            self.calc_data.mods.reg_mod(fit, *modifier);
+        let (local_mods, proj_mods, fleet_mods) = generate_mods(item, effects);
+        for local_mod in local_mods.iter() {
+            self.calc_data.mods.reg_local_mod(fit, *local_mod);
         }
-        for modifier in mods {
+        for local_mod in local_mods {
             for item_id in self
                 .calc_data
                 .mods
-                .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
+                .get_tgt_items(&local_mod, ss_view.items, ss_view.fits)
             {
-                self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
+                self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
             }
         }
     }
@@ -107,18 +107,18 @@ impl SsSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
-        let mods = generate_local_mods(item, effects);
-        for modifier in mods.iter() {
+        let (local_mods, proj_mods, fleet_mods) = generate_mods(item, effects);
+        for local_mod in local_mods.iter() {
             for item_id in self
                 .calc_data
                 .mods
-                .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
+                .get_tgt_items(&local_mod, ss_view.items, ss_view.fits)
             {
-                self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
+                self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
             }
         }
-        for modifier in mods.iter() {
-            self.calc_data.mods.unreg_mod(fit, modifier);
+        for local_mod in local_mods.iter() {
+            self.calc_data.mods.unreg_local_mod(fit, local_mod);
         }
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
@@ -212,29 +212,31 @@ impl SsSvcs {
     }
 }
 
-fn generate_local_mods(src_item: &SsItem, src_effects: &Vec<ad::ArcEffect>) -> Vec<SsAttrMod> {
-    let mut mods = Vec::new();
-    // Buff effects and system-wide effects do not have local modifiers by definition
-    for effect in src_effects
-        .iter()
-        .filter(|e| !(e.is_system_wide | e.is_proj_buff | e.is_fleet_buff))
-    {
-        for a_mod in effect.mods.iter() {
-            let ss_mod = SsAttrMod::from_a_data(src_item, effect, a_mod);
-            mods.push(ss_mod);
-        }
-    }
-    mods
-}
+fn generate_mods(
+    src_item: &SsItem,
+    src_effects: &Vec<ad::ArcEffect>,
+) -> (Vec<SsAttrMod>, Vec<SsAttrMod>, Vec<SsAttrMod>) {
+    let mut local_mods = Vec::new();
+    let mut proj_mods = Vec::new();
+    let mut fleet_mods = Vec::new();
 
-fn generate_sw_mods(src_item: &SsItem, src_effects: &Vec<ad::ArcEffect>) -> Vec<SsAttrMod> {
-    let mut mods = Vec::new();
     // Buff effects and system-wide effects do not have local modifiers by definition
-    for effect in src_effects.iter().filter(|e| e.is_system_wide) {
-        for a_mod in effect.mods.iter() {
-            let ss_mod = SsAttrMod::from_a_data(src_item, effect, a_mod);
-            mods.push(ss_mod);
+    for effect in src_effects.iter() {
+        if effect.is_proj_buff || effect.is_system_wide {
+            // Projected buffs and system-wide effects are assumed to have only projected modifiers.
+            // Theoretically, system-wide effects can have modifiers which affect effect beacon itself
+            // via itemID location, but we don't have any in the game
+            proj_mods.extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(src_item, effect, v)));
+        } else if effect.is_fleet_buff {
+            // Fleet buff means fleet modifiers only
+            fleet_mods.extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(src_item, effect, v)));
+        } else if effect.is_targeted() {
+            // For now we assume targeted effects have only projected modifiers
+            proj_mods.extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(src_item, effect, v)));
+        } else {
+            // Untargeted effect means only local modifiers
+            local_mods.extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(src_item, effect, v)));
         }
     }
-    mods
+    (local_mods, proj_mods, fleet_mods)
 }

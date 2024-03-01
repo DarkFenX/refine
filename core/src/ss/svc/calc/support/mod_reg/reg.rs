@@ -56,10 +56,10 @@ impl ModRegister {
     pub(in crate::ss::svc::calc) fn unreg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
         self.tgts.unreg_tgt(tgt_item, fits)
     }
-    pub(in crate::ss::svc::calc) fn reg_mod(&mut self, src_fit_opt: Option<&SsFit>, modifier: SsAttrMod) {
+    pub(in crate::ss::svc::calc) fn reg_local_mod(&mut self, src_fit_opt: Option<&SsFit>, modifier: SsAttrMod) {
         self.mods.reg_mod(src_fit_opt, modifier)
     }
-    pub(in crate::ss::svc::calc) fn unreg_mod(&mut self, src_fit_opt: Option<&SsFit>, modifier: &SsAttrMod) {
+    pub(in crate::ss::svc::calc) fn unreg_local_mod(&mut self, src_fit_opt: Option<&SsFit>, modifier: &SsAttrMod) {
         self.mods.unreg_mod(src_fit_opt, modifier)
     }
 }

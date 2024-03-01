@@ -100,6 +100,9 @@ impl AEffect {
             stop_ids,
         }
     }
+    pub(crate) fn is_targeted(&self) -> bool {
+        !matches!(self.tgt_mode, ATgtMode::None)
+    }
 }
 impl Named for AEffect {
     fn get_name() -> &'static str {
