@@ -86,7 +86,7 @@ impl SsSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
-        let mods = generate_ss_attr_mods(item, effects);
+        let mods = generate_local_mods(item, effects);
         for modifier in mods.iter() {
             self.calc_data.mods.reg_mod(fit, *modifier);
         }
@@ -107,7 +107,7 @@ impl SsSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
-        let mods = generate_ss_attr_mods(item, effects);
+        let mods = generate_local_mods(item, effects);
         for modifier in mods.iter() {
             for item_id in self
                 .calc_data
@@ -216,7 +216,7 @@ impl SsSvcs {
     }
 }
 
-fn generate_ss_attr_mods(src_item: &SsItem, src_effects: &Vec<ad::ArcEffect>) -> Vec<SsAttrMod> {
+fn generate_local_mods(src_item: &SsItem, src_effects: &Vec<ad::ArcEffect>) -> Vec<SsAttrMod> {
     let mut specs = Vec::new();
     for effect in src_effects.iter().filter(|e| matches!(&e.tgt_mode, ad::ATgtMode::None)) {
         for a_mod in effect.mods.iter() {

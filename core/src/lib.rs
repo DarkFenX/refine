@@ -28,8 +28,8 @@ pub use src::Src;
 pub use ss::{
     info::{
         SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsImplantInfo, SsItemInfo,
-        SsModuleInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo, SsSubsystemInfo,
-        SsSwEffectInfo,
+        SsModuleInfo, SsProjEffectInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo,
+        SsSubsystemInfo, SsSwEffectInfo,
     },
     EffectInfo, EffectMode, ModRack, OrdAddMode, OrdRmMode, SolarSystem, SsAttrVal,
 };

@@ -7,6 +7,7 @@ pub(in crate::ss) use drone::SsDrone;
 pub(in crate::ss) use fighter::SsFighter;
 pub(in crate::ss) use implant::SsImplant;
 pub(in crate::ss) use module::SsModule;
+pub(in crate::ss) use proj_effect::SsProjEffect;
 pub(in crate::ss) use rig::SsRig;
 pub(in crate::ss) use ship::SsShip;
 pub(in crate::ss) use skill::SsSkill;
@@ -30,6 +31,7 @@ mod drone;
 mod fighter;
 mod implant;
 mod module;
+mod proj_effect;
 mod rig;
 mod ship;
 mod skill;
@@ -47,6 +49,7 @@ pub(in crate::ss) enum SsItem {
     Fighter(SsFighter),
     Implant(SsImplant),
     Module(SsModule),
+    ProjEffect(SsProjEffect),
     Rig(SsRig),
     Ship(SsShip),
     Structure(SsStructure),
@@ -65,6 +68,7 @@ impl SsItem {
             Self::Fighter(_) => SsFighter::get_name(),
             Self::Implant(_) => SsImplant::get_name(),
             Self::Module(_) => SsModule::get_name(),
+            Self::ProjEffect(_) => SsProjEffect::get_name(),
             Self::Rig(_) => SsRig::get_name(),
             Self::Ship(_) => SsShip::get_name(),
             Self::Skill(_) => SsSkill::get_name(),
@@ -83,6 +87,7 @@ impl SsItem {
             Self::Fighter(fighter) => fighter.id,
             Self::Implant(implant) => implant.id,
             Self::Module(module) => module.id,
+            Self::ProjEffect(proj_effect) => proj_effect.id,
             Self::Rig(rig) => rig.id,
             Self::Ship(ship) => ship.id,
             Self::Skill(skill) => skill.id,
@@ -101,6 +106,7 @@ impl SsItem {
             Self::Fighter(fighter) => Some(fighter.fit_id),
             Self::Implant(implant) => Some(implant.fit_id),
             Self::Module(module) => Some(module.fit_id),
+            Self::ProjEffect(_) => None,
             Self::Rig(rig) => Some(rig.fit_id),
             Self::Ship(ship) => Some(ship.fit_id),
             Self::Skill(skill) => Some(skill.fit_id),
@@ -119,6 +125,7 @@ impl SsItem {
             Self::Fighter(fighter) => &fighter.effect_modes,
             Self::Implant(implant) => &implant.effect_modes,
             Self::Module(module) => &module.effect_modes,
+            Self::ProjEffect(proj_effect) => &proj_effect.effect_modes,
             Self::Rig(rig) => &rig.effect_modes,
             Self::Ship(ship) => &ship.effect_modes,
             Self::Skill(skill) => &skill.effect_modes,
@@ -137,6 +144,7 @@ impl SsItem {
             Self::Fighter(fighter) => &mut fighter.effect_modes,
             Self::Implant(implant) => &mut implant.effect_modes,
             Self::Module(module) => &mut module.effect_modes,
+            Self::ProjEffect(proj_effect) => &mut proj_effect.effect_modes,
             Self::Rig(rig) => &mut rig.effect_modes,
             Self::Ship(ship) => &mut ship.effect_modes,
             Self::Skill(skill) => &mut skill.effect_modes,
@@ -155,6 +163,7 @@ impl SsItem {
             Self::Fighter(fighter) => fighter.a_item_id,
             Self::Implant(implant) => implant.a_item_id,
             Self::Module(module) => module.a_item_id,
+            Self::ProjEffect(proj_effect) => proj_effect.a_item_id,
             Self::Rig(rig) => rig.a_item_id,
             Self::Ship(ship) => ship.a_item_id,
             Self::Skill(skill) => skill.a_item_id,
@@ -173,6 +182,7 @@ impl SsItem {
             Self::Fighter(fighter) => fighter.state,
             Self::Implant(implant) => implant.state,
             Self::Module(module) => module.state,
+            Self::ProjEffect(proj_effect) => proj_effect.state,
             Self::Rig(rig) => rig.state,
             Self::Ship(ship) => ship.state,
             Self::Skill(skill) => skill.state,
@@ -193,6 +203,7 @@ impl SsItem {
             Self::Fighter(fighter) => fighter.a_item = a_item,
             Self::Implant(implant) => implant.a_item = a_item,
             Self::Module(module) => module.a_item = a_item,
+            Self::ProjEffect(proj_effect) => proj_effect.a_item = a_item,
             Self::Rig(rig) => rig.a_item = a_item,
             Self::Ship(ship) => ship.a_item = a_item,
             Self::Skill(skill) => skill.a_item = a_item,
@@ -211,6 +222,7 @@ impl SsItem {
             Self::Fighter(fighter) => fighter.a_item.as_ref(),
             Self::Implant(implant) => implant.a_item.as_ref(),
             Self::Module(module) => module.a_item.as_ref(),
+            Self::ProjEffect(proj_effect) => proj_effect.a_item.as_ref(),
             Self::Rig(rig) => rig.a_item.as_ref(),
             Self::Ship(ship) => ship.a_item.as_ref(),
             Self::Skill(skill) => skill.a_item.as_ref(),
@@ -243,6 +255,7 @@ impl SsItem {
             Self::Fighter(_) => None,
             Self::Implant(_) => None,
             Self::Module(_) => None,
+            Self::ProjEffect(_) => None,
             Self::Rig(_) => None,
             Self::Ship(_) => Some(ModDomain::Ship),
             Self::Skill(_) => None,
@@ -261,6 +274,7 @@ impl SsItem {
             Self::Fighter(_) => false,
             Self::Implant(_) => true,
             Self::Module(_) => false,
+            Self::ProjEffect(_) => false,
             Self::Rig(_) => false,
             Self::Ship(_) => false,
             Self::Skill(_) => true,
@@ -279,6 +293,7 @@ impl SsItem {
             Self::Fighter(_) => false,
             Self::Implant(_) => false,
             Self::Module(_) => true,
+            Self::ProjEffect(_) => false,
             Self::Rig(_) => true,
             Self::Ship(_) => false,
             Self::Skill(_) => false,
@@ -297,6 +312,7 @@ impl SsItem {
             Self::Fighter(_) => false,
             Self::Implant(_) => false,
             Self::Module(_) => true,
+            Self::ProjEffect(_) => false,
             Self::Rig(_) => true,
             Self::Ship(_) => false,
             Self::Skill(_) => false,
@@ -324,6 +340,7 @@ impl SsItem {
             Self::Fighter(_) => None,
             Self::Implant(_) => None,
             Self::Module(module) => module.charge_a_item_id,
+            Self::ProjEffect(_) => None,
             Self::Rig(_) => None,
             Self::Ship(_) => None,
             Self::Skill(_) => None,
@@ -342,6 +359,7 @@ impl SsItem {
             Self::Fighter(_) => true,
             Self::Implant(_) => false,
             Self::Module(_) => false,
+            Self::ProjEffect(_) => false,
             Self::Rig(_) => false,
             Self::Ship(_) => true,
             Self::Skill(_) => false,
@@ -360,6 +378,7 @@ impl SsItem {
             Self::Fighter(_) => true,
             Self::Implant(_) => false,
             Self::Module(_) => false,
+            Self::ProjEffect(_) => false,
             Self::Rig(_) => false,
             Self::Ship(_) => false,
             Self::Skill(_) => false,

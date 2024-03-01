@@ -87,6 +87,7 @@ impl SsFit {
             // Ignore charges and system-wide effects
             SsItem::Charge(_) => (),
             SsItem::SwEffect(_) => (),
+            SsItem::ProjEffect(_) => (),
         };
     }
     pub(in crate::ss) fn remove_item(&mut self, item: &SsItem) {
@@ -149,6 +150,7 @@ impl SsFit {
             // Ignore charges and system-wide effects
             SsItem::Charge(_) => (),
             SsItem::SwEffect(_) => (),
+            SsItem::ProjEffect(_) => (),
         }
     }
 }

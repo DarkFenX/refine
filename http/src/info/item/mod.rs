@@ -5,6 +5,7 @@ use drone::HDroneInfo;
 use fighter::HFighterInfo;
 use implant::HImplantInfo;
 use module::HModuleInfo;
+use proj_effect::HProjEffectInfo;
 use rig::HRigInfo;
 use ship::HShipInfo;
 use skill::HSkillInfo;
@@ -22,6 +23,7 @@ mod drone;
 mod fighter;
 mod implant;
 mod module;
+mod proj_effect;
 mod rig;
 mod ship;
 mod skill;
@@ -51,6 +53,7 @@ pub(crate) enum HItemInfo {
     Fighter(HFighterInfo),
     Charge(HChargeInfo),
     SwEffect(HSwEffectInfo),
+    ProjEffect(HProjEffectInfo),
 }
 impl MkItemInfo<&rc::SsItemInfo> for HItemInfo {
     fn mk_info(core_ss: &mut rc::SolarSystem, core_item_info: &rc::SsItemInfo, item_mode: HItemInfoMode) -> Self {
@@ -69,6 +72,9 @@ impl MkItemInfo<&rc::SsItemInfo> for HItemInfo {
             rc::SsItemInfo::Fighter(core_fighter_info) => Self::mk_info(core_ss, core_fighter_info, item_mode),
             rc::SsItemInfo::Charge(core_charge_info) => Self::mk_info(core_ss, core_charge_info, item_mode),
             rc::SsItemInfo::SwEffect(core_sw_effect_info) => Self::mk_info(core_ss, core_sw_effect_info, item_mode),
+            rc::SsItemInfo::ProjEffect(core_proj_effect_info) => {
+                Self::mk_info(core_ss, core_proj_effect_info, item_mode)
+            }
         }
     }
 }
@@ -156,5 +162,14 @@ impl MkItemInfo<&rc::SsSwEffectInfo> for HItemInfo {
         item_mode: HItemInfoMode,
     ) -> Self {
         Self::SwEffect(HSwEffectInfo::mk_info(core_ss, core_sw_effect_info, item_mode))
+    }
+}
+impl MkItemInfo<&rc::SsProjEffectInfo> for HItemInfo {
+    fn mk_info(
+        core_ss: &mut rc::SolarSystem,
+        core_proj_effect_info: &rc::SsProjEffectInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::ProjEffect(HProjEffectInfo::mk_info(core_ss, core_proj_effect_info, item_mode))
     }
 }
