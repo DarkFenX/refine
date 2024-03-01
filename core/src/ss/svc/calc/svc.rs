@@ -217,12 +217,16 @@ impl SsSvcs {
 }
 
 fn generate_local_mods(src_item: &SsItem, src_effects: &Vec<ad::ArcEffect>) -> Vec<SsAttrMod> {
-    let mut specs = Vec::new();
-    for effect in src_effects.iter().filter(|e| matches!(&e.tgt_mode, ad::ATgtMode::None)) {
+    let mut mods = Vec::new();
+    // Buff effects and system-wide effects do not have local modifiers by definition
+    for effect in src_effects
+        .iter()
+        .filter(|e| !(e.is_system_wide | e.is_proj_buff | e.is_fleet_buff))
+    {
         for a_mod in effect.mods.iter() {
             let ss_mod = SsAttrMod::from_a_data(src_item, effect, a_mod);
-            specs.push(ss_mod);
+            mods.push(ss_mod);
         }
     }
-    specs
+    mods
 }

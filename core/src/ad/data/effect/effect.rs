@@ -19,6 +19,10 @@ pub struct AEffect {
     pub tgt_mode: ATgtMode,
     /// Defines if effect is applied to all items in system or not.
     pub is_system_wide: bool,
+    /// Defines if effect applies any projectable buffs or not.
+    pub is_proj_buff: bool,
+    /// Defines if effect applies any fleet-only buffs or not.
+    pub is_fleet_buff: bool,
     /// Defines if the effect is considered as an assistance.
     pub is_assist: bool,
     /// Defines if the effect is offensive or not.
@@ -56,6 +60,8 @@ impl AEffect {
         state: State,
         tgt_mode: ATgtMode,
         is_system_wide: bool,
+        is_proj_buff: bool,
+        is_fleet_buff: bool,
         is_assist: bool,
         is_offense: bool,
         hisec: Option<bool>,
@@ -76,6 +82,8 @@ impl AEffect {
             state,
             tgt_mode,
             is_system_wide,
+            is_proj_buff,
+            is_fleet_buff,
             is_assist,
             is_offense,
             hisec,

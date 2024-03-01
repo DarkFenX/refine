@@ -1,12 +1,27 @@
 #![allow(dead_code)]
 
 use crate::defs::EEffectId;
+
 // Slot-related
 pub(crate) const HI_POWER: EEffectId = 12;
 pub(crate) const LO_POWER: EEffectId = 11;
 pub(crate) const MED_POWER: EEffectId = 13;
 pub(crate) const RIG_SLOT: EEffectId = 2663;
 pub(crate) const SUBSYSTEM: EEffectId = 3772;
+// Buff-related
+pub(crate) const MOD_BONUS_WARFARE_LINK_ARMOR: EEffectId = 6732;
+pub(crate) const MOD_BONUS_WARFARE_LINK_INFO: EEffectId = 6735;
+pub(crate) const MOD_BONUS_WARFARE_LINK_MINING: EEffectId = 6736;
+pub(crate) const MOD_BONUS_WARFARE_LINK_SHIELD: EEffectId = 6733;
+pub(crate) const MOD_BONUS_WARFARE_LINK_SKIRMISH: EEffectId = 6734;
+pub(crate) const WEATHER_ELECTRIC_STORM: EEffectId = 7061;
+pub(crate) const WEATHER_INFERNAL: EEffectId = 7062;
+pub(crate) const WEATHER_CAUSTIC_TOXIN: EEffectId = 7059;
+pub(crate) const WEATHER_XENON_GAS: EEffectId = 7063;
+pub(crate) const WEATHER_DARKNESS: EEffectId = 7060;
+pub(crate) const AOE_BEACON_BIOLUMINESCENCE_CLOUD: EEffectId = 7050;
+pub(crate) const AOE_BEACON_CAUSTIC_CLOUD: EEffectId = 7050;
+pub(crate) const AOE_BEACON_FILAMENT_CLOUD: EEffectId = 7058;
 // Fighter-related
 pub(crate) const FTR_ABIL_MISSILES: EEffectId = 6431;
 pub(crate) const FTR_ABIL_NEUT: EEffectId = 6434;
@@ -33,3 +48,21 @@ pub(crate) const HARDPOINT_MODIFIER_EFFECT: EEffectId = 3773;
 pub(crate) const SLOT_MODIFIER: EEffectId = 3774;
 // Library-specific effects
 pub(crate) const REE_CHAR_MISSILE_DMG: EEffectId = -1;
+
+pub(crate) const PROJ_BUFF_EFFECT_IDS: [EEffectId; 8] = [
+    WEATHER_ELECTRIC_STORM,
+    WEATHER_INFERNAL,
+    WEATHER_CAUSTIC_TOXIN,
+    WEATHER_XENON_GAS,
+    WEATHER_XENON_GAS,
+    AOE_BEACON_BIOLUMINESCENCE_CLOUD,
+    AOE_BEACON_CAUSTIC_CLOUD,
+    AOE_BEACON_FILAMENT_CLOUD,
+];
+pub(crate) const FLEET_BUFF_EFFECT_IDS: [EEffectId; 5] = [
+    MOD_BONUS_WARFARE_LINK_ARMOR,
+    MOD_BONUS_WARFARE_LINK_INFO,
+    MOD_BONUS_WARFARE_LINK_MINING,
+    MOD_BONUS_WARFARE_LINK_SHIELD,
+    MOD_BONUS_WARFARE_LINK_SKIRMISH,
+];

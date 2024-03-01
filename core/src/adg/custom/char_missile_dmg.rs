@@ -14,6 +14,8 @@ pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) 
         false,
         false,
         false,
+        false,
+        false,
         None,
         None,
         None,

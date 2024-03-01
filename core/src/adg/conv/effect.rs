@@ -45,6 +45,8 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
             state,
             tgt_mode,
             is_system_wide,
+            ec::effects::PROJ_BUFF_EFFECT_IDS.contains(&e_effect.id),
+            ec::effects::FLEET_BUFF_EFFECT_IDS.contains(&e_effect.id),
             e_effect.is_assistance,
             e_effect.is_offensive,
             None,

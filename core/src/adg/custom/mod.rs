@@ -1,3 +1,5 @@
+//! Data customizations which are applied on adapted data generation.
+
 use crate::ad;
 
 mod char_missile_dmg;
