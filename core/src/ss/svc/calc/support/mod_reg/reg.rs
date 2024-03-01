@@ -31,7 +31,7 @@ impl ModRegister {
     pub(in crate::ss::svc::calc) fn get_mods_for_tgt(&self, tgt_item: &SsItem, fits: &SsFits) -> Vec<SsAttrMod> {
         self.mods.get_mods_for_tgt(tgt_item, fits)
     }
-    pub(in crate::ss::svc::calc) fn get_mods_for_changed_domain_owner(
+    pub(in crate::ss::svc::calc) fn get_mods_for_changed_location_owner(
         &mut self,
         item: &SsItem,
         items: &SsItems,

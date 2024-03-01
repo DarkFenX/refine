@@ -61,10 +61,10 @@ impl SsSvcs {
     // Modification methods
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_data.projs.item_added(item);
-        self.handle_loc_owner_change(ss_view, item);
+        self.handle_location_owner_change(ss_view, item);
     }
     pub(in crate::ss::svc) fn calc_item_removed(&mut self, ss_view: &SsView, item: &SsItem) {
-        self.handle_loc_owner_change(ss_view, item);
+        self.handle_location_owner_change(ss_view, item);
         self.calc_data.projs.item_removed(item);
     }
     pub(in crate::ss::svc) fn calc_item_loaded(&mut self, ss_view: &SsView, item: &SsItem) {
@@ -197,12 +197,12 @@ impl SsSvcs {
         }
         mods
     }
-    fn handle_loc_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {
+    fn handle_location_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {
         if let Some(_) = item.get_top_domain() {
             for modifier in self
                 .calc_data
                 .mods
-                .get_mods_for_changed_domain_owner(item, ss_view.items)
+                .get_mods_for_changed_location_owner(item, ss_view.items)
             {
                 for item_id in self
                     .calc_data
