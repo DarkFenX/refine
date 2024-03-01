@@ -44,7 +44,7 @@ impl SsSvcs {
         item_id: &SsItemId,
     ) -> Result<HashMap<EAttrId, SsAttrVal>> {
         // SsItem can have attributes which are not defined on the original EVE item. This happens
-        // when something requested an attr value and it was calculated using base attribute value.
+        // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
         let mut vals = self.calc_data.attrs.get_item_attrs_mut(item_id)?.clone();
@@ -172,12 +172,8 @@ impl SsSvcs {
         item: &SsItem,
         attr_id: &EAttrId,
     ) -> HashMap<ModKey, Modification> {
-        // TODO: optimize to pass attr ID to affector getter, and allocate vector with capacity
         let mut mods = HashMap::new();
-        for modifier in self.calc_data.mods.get_mods_for_tgt(item, ss_view.fits).iter() {
-            if &modifier.tgt_attr_id != attr_id {
-                continue;
-            }
+        for modifier in self.calc_data.mods.get_mods_for_tgt(item, attr_id, ss_view.fits).iter() {
             let val = match self.calc_get_item_attr_val(ss_view, &modifier.src_item_id, &modifier.src_attr_id) {
                 Ok(v) => v,
                 _ => continue,
@@ -223,6 +219,18 @@ fn generate_local_mods(src_item: &SsItem, src_effects: &Vec<ad::ArcEffect>) -> V
         .iter()
         .filter(|e| !(e.is_system_wide | e.is_proj_buff | e.is_fleet_buff))
     {
+        for a_mod in effect.mods.iter() {
+            let ss_mod = SsAttrMod::from_a_data(src_item, effect, a_mod);
+            mods.push(ss_mod);
+        }
+    }
+    mods
+}
+
+fn generate_sw_mods(src_item: &SsItem, src_effects: &Vec<ad::ArcEffect>) -> Vec<SsAttrMod> {
+    let mut mods = Vec::new();
+    // Buff effects and system-wide effects do not have local modifiers by definition
+    for effect in src_effects.iter().filter(|e| e.is_system_wide) {
         for a_mod in effect.mods.iter() {
             let ss_mod = SsAttrMod::from_a_data(src_item, effect, a_mod);
             mods.push(ss_mod);

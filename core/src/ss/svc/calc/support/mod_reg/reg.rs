@@ -1,5 +1,5 @@
 use crate::{
-    defs::SsItemId,
+    defs::{EAttrId, SsItemId},
     ss::{
         fit::{SsFit, SsFits},
         item::{SsItem, SsItems},
@@ -28,8 +28,13 @@ impl ModRegister {
     ) -> Vec<SsItemId> {
         self.tgts.get_tgt_items(modifier, items, fits)
     }
-    pub(in crate::ss::svc::calc) fn get_mods_for_tgt(&self, tgt_item: &SsItem, fits: &SsFits) -> Vec<SsAttrMod> {
-        self.mods.get_mods_for_tgt(tgt_item, fits)
+    pub(in crate::ss::svc::calc) fn get_mods_for_tgt(
+        &self,
+        tgt_item: &SsItem,
+        tgt_attr_id: &EAttrId,
+        fits: &SsFits,
+    ) -> Vec<SsAttrMod> {
+        self.mods.get_mods_for_tgt(tgt_item, tgt_attr_id, fits)
     }
     pub(in crate::ss::svc::calc) fn get_mods_for_changed_location_owner(
         &mut self,

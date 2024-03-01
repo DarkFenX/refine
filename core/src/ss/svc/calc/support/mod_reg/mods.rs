@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 use crate::{
     defs::{EItemGrpId, EItemId, SsFitId, SsItemId},
     shr::ModDomain,
@@ -5,7 +7,8 @@ use crate::{
         fit::{SsFit, SsFits},
         item::{SsItem, SsItems},
     },
-    util::{extend_vec_from_storage, KeyedStorage1L},
+    util::KeyedStorage1L,
+    EAttrId,
 };
 
 use super::{
@@ -54,41 +57,56 @@ impl ModifierRegister {
         }
     }
     // Query methods
-    pub(super) fn get_mods_for_tgt(&self, tgt_item: &SsItem, fits: &SsFits) -> Vec<SsAttrMod> {
+    pub(super) fn get_mods_for_tgt(&self, tgt_item: &SsItem, tgt_attr_id: &EAttrId, fits: &SsFits) -> Vec<SsAttrMod> {
         let tgt_item_id = tgt_item.get_id();
         let tgt_fit_opt = tgt_item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
         let tgt_topdom_opt = tgt_item.get_top_domain();
         let tgt_grp_id_res = tgt_item.get_group_id();
         let tgt_srqs_res = tgt_item.get_skill_reqs();
         let mut mods = Vec::new();
-        extend_vec_from_storage(&mut mods, &self.mods_direct, &tgt_item_id);
+        filter_and_extend(&mut mods, &self.mods_direct, &tgt_item_id, tgt_attr_id);
         if let (Some(tgt_fit), Some(tgt_topdom)) = (tgt_fit_opt, tgt_topdom_opt) {
-            extend_vec_from_storage(&mut mods, &self.mods_topdom, &(tgt_fit.id, tgt_topdom));
+            filter_and_extend(&mut mods, &self.mods_topdom, &(tgt_fit.id, tgt_topdom), tgt_attr_id);
         }
         if let Some(other_item_id) = tgt_item.get_other() {
-            extend_vec_from_storage(&mut mods, &self.mods_other, &other_item_id);
+            filter_and_extend(&mut mods, &self.mods_other, &other_item_id, tgt_attr_id);
         }
         if let Some(tgt_fit) = tgt_fit_opt {
             for dom in DomsAct::new(tgt_item, tgt_fit) {
-                extend_vec_from_storage(&mut mods, &self.mods_pardom, &(tgt_fit.id, dom));
+                filter_and_extend(&mut mods, &self.mods_pardom, &(tgt_fit.id, dom), tgt_attr_id);
             }
         }
         if let (Some(tgt_fit), Ok(tgt_grp_id)) = (tgt_fit_opt, tgt_grp_id_res) {
             for dom in DomsAct::new(tgt_item, tgt_fit) {
-                extend_vec_from_storage(&mut mods, &self.mods_pardom_grp, &(tgt_fit.id, dom, tgt_grp_id));
+                filter_and_extend(
+                    &mut mods,
+                    &self.mods_pardom_grp,
+                    &(tgt_fit.id, dom, tgt_grp_id),
+                    tgt_attr_id,
+                );
             }
         }
         if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
             for dom in DomsAct::new(tgt_item, tgt_fit) {
                 for skill_a_item_id in tgt_srqs.keys() {
-                    extend_vec_from_storage(&mut mods, &self.mods_pardom_srq, &(tgt_fit.id, dom, *skill_a_item_id));
+                    filter_and_extend(
+                        &mut mods,
+                        &self.mods_pardom_srq,
+                        &(tgt_fit.id, dom, *skill_a_item_id),
+                        tgt_attr_id,
+                    );
                 }
             }
         }
         if tgt_item.is_owner_modifiable() {
             if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
                 for skill_a_item_id in tgt_srqs.keys() {
-                    extend_vec_from_storage(&mut mods, &self.mods_own_srq, &(tgt_fit.id, *skill_a_item_id));
+                    filter_and_extend(
+                        &mut mods,
+                        &self.mods_own_srq,
+                        &(tgt_fit.id, *skill_a_item_id),
+                        tgt_attr_id,
+                    );
                 }
             }
         }
@@ -187,5 +205,17 @@ impl ModifierRegister {
                 }
             }
         }
+    }
+}
+
+fn filter_and_extend<K: Eq + Hash>(
+    vec: &mut Vec<SsAttrMod>,
+    storage: &KeyedStorage1L<K, SsAttrMod>,
+    key: &K,
+    attr_id: &EAttrId,
+) {
+    match storage.get(key) {
+        Some(v) => vec.extend(v.iter().filter(|v| &v.tgt_attr_id == attr_id).map(|v| v.clone())),
+        _ => (),
     }
 }
