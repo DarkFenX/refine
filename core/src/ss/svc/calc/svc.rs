@@ -61,38 +61,10 @@ impl SsSvcs {
     // Modification methods
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_data.projs.item_added(item);
-        if let Some(_) = item.get_top_domain() {
-            for modifier in self
-                .calc_data
-                .mods
-                .get_mods_for_changed_domain_owner(item, ss_view.items)
-            {
-                for item_id in self
-                    .calc_data
-                    .mods
-                    .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
-                {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
-                }
-            }
-        }
+        self.handle_loc_owner_change(ss_view, item);
     }
     pub(in crate::ss::svc) fn calc_item_removed(&mut self, ss_view: &SsView, item: &SsItem) {
-        if let Some(_) = item.get_top_domain() {
-            for modifier in self
-                .calc_data
-                .mods
-                .get_mods_for_changed_domain_owner(item, ss_view.items)
-            {
-                for item_id in self
-                    .calc_data
-                    .mods
-                    .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
-                {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
-                }
-            }
-        }
+        self.handle_loc_owner_change(ss_view, item);
         self.calc_data.projs.item_removed(item);
     }
     pub(in crate::ss::svc) fn calc_item_loaded(&mut self, ss_view: &SsView, item: &SsItem) {
@@ -224,6 +196,23 @@ impl SsSvcs {
             mods.insert(mod_key, modification);
         }
         mods
+    }
+    fn handle_loc_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {
+        if let Some(_) = item.get_top_domain() {
+            for modifier in self
+                .calc_data
+                .mods
+                .get_mods_for_changed_domain_owner(item, ss_view.items)
+            {
+                for item_id in self
+                    .calc_data
+                    .mods
+                    .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
+                {
+                    self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
+                }
+            }
+        }
     }
 }
 
