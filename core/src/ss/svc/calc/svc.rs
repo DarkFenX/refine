@@ -43,12 +43,13 @@ impl SsSvcs {
         ss_view: &SsView,
         item_id: &SsItemId,
     ) -> Result<HashMap<EAttrId, SsAttrVal>> {
-        // ssi::Item can have attributes which are not defined on the original EVE item. This happens when
-        // something requested an attr value and it was calculated using base attribute value. Here,
-        // we get already calculated attributes, which includes attributes absent on the EVE item
+        // SsItem can have attributes which are not defined on the original EVE item. This happens
+        // when something requested an attr value and it was calculated using base attribute value.
+        // Here, we get already calculated attributes, which includes attributes absent on the EVE
+        // item
         let mut vals = self.calc_data.attrs.get_item_attrs_mut(item_id)?.clone();
-        // Calculate & store attributes which are not calculated yet,
-        // but are defined on the EVE item
+        // Calculate & store attributes which are not calculated yet, but are defined on the EVE
+        // item
         for attr_id in ss_view.items.get_item(item_id)?.get_orig_attrs()?.keys() {
             match self.calc_get_item_attr_val(ss_view, item_id, attr_id) {
                 Ok(v) => vals.entry(*attr_id).or_insert(v),
@@ -147,24 +148,6 @@ impl SsSvcs {
         for modifier in mods.iter() {
             self.calc_data.mods.unreg_mod(fit, modifier);
         }
-    }
-    pub(in crate::ss::svc) fn calc_effect_applied(
-        &mut self,
-        ss_view: &SsView,
-        item: &SsItem,
-        effect: ad::ArcEffect,
-        tgt_items: &Vec<SsItem>,
-    ) {
-        ()
-    }
-    pub(in crate::ss::svc) fn calc_effect_unapplied(
-        &mut self,
-        ss_view: &SsView,
-        item: &SsItem,
-        effect: ad::ArcEffect,
-        tgt_items: &Vec<SsItem>,
-    ) {
-        ()
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
         &mut self,
