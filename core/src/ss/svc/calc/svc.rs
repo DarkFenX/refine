@@ -88,8 +88,9 @@ impl SsSvcs {
         let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
         let (local_mods, proj_mods, fleet_mods) = generate_mods(item, effects);
         for local_mod in local_mods.iter() {
-            self.calc_data.mods.reg_local_mod(fit, *local_mod);
+            self.calc_data.mods.reg_mod(*local_mod, fit);
         }
+
         for local_mod in local_mods {
             for item_id in self
                 .calc_data
@@ -118,7 +119,7 @@ impl SsSvcs {
             }
         }
         for local_mod in local_mods.iter() {
-            self.calc_data.mods.unreg_local_mod(fit, local_mod);
+            self.calc_data.mods.unreg_mod(local_mod, fit);
         }
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
@@ -219,9 +220,8 @@ fn generate_mods(
     let mut local_mods = Vec::new();
     let mut proj_mods = Vec::new();
     let mut fleet_mods = Vec::new();
-
-    // Buff effects and system-wide effects do not have local modifiers by definition
     for effect in src_effects.iter() {
+        // TODO: buff effects actually don't have any modifiers, we need to "cook" them
         if effect.is_proj_buff || effect.is_system_wide {
             // Projected buffs and system-wide effects are assumed to have only projected modifiers.
             // Theoretically, system-wide effects can have modifiers which affect effect beacon itself

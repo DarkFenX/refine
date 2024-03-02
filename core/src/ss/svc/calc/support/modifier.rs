@@ -14,7 +14,6 @@ pub(in crate::ss::svc::calc) struct SsAttrMod {
     pub(in crate::ss::svc::calc) op: ModOp,
     pub(in crate::ss::svc::calc) aggr_mode: ModAggrMode,
     pub(in crate::ss::svc::calc) tgt_attr_id: EAttrId,
-    pub(in crate::ss::svc::calc) is_system_wide: bool,
 }
 impl SsAttrMod {
     fn new(
@@ -25,7 +24,6 @@ impl SsAttrMod {
         op: ModOp,
         aggr_mode: ModAggrMode,
         tgt_attr_id: EAttrId,
-        is_system_wide: bool,
     ) -> Self {
         Self {
             src_item_id,
@@ -35,7 +33,6 @@ impl SsAttrMod {
             op,
             aggr_mode,
             tgt_attr_id,
-            is_system_wide,
         }
     }
     pub(in crate::ss::svc::calc) fn from_a_data(
@@ -51,7 +48,6 @@ impl SsAttrMod {
             src_a_mod.op,
             ModAggrMode::Stack,
             src_a_mod.tgt_attr_id,
-            src_a_effect.is_system_wide,
         )
     }
 }
