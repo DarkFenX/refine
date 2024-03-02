@@ -329,6 +329,16 @@ class TestClient:
             url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}',
             params={'fit': 'full', 'item': 'id'})
 
+    def remove_fit_request(
+            self,
+            ss_id: str,
+            fit_id: str
+    ) -> Request:
+        return Request(
+            self,
+            method='DELETE',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}')
+
     # Item-related methods
     def get_item_request(
             self,

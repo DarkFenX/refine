@@ -182,3 +182,10 @@ class Fit(AttrDict):
         assert resp.status_code == 200
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
+
+    def remove_request(self) -> Request:
+        return self._client.remove_fit_request(ss_id=self._ss_id, item_id=self.id)
+
+    def remove(self) -> None:
+        resp = self.remove_request().send()
+        assert resp.status_code == 204
