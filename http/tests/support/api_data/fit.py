@@ -184,7 +184,7 @@ class Fit(AttrDict):
         return item
 
     def remove_request(self) -> Request:
-        return self._client.remove_fit_request(ss_id=self._ss_id, item_id=self.id)
+        return self._client.remove_fit_request(ss_id=self._ss_id, fit_id=self.id)
 
     def remove(self) -> None:
         resp = self.remove_request().send()
