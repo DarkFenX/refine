@@ -23,10 +23,10 @@ impl ModRegister {
     pub(in crate::ss::svc::calc) fn get_tgt_items(
         &self,
         modifier: &SsAttrMod,
+        tgt_fits: &Vec<&SsFit>,
         items: &SsItems,
-        fits: &SsFits,
     ) -> Vec<SsItemId> {
-        self.tgts.get_tgt_items(modifier, items, fits)
+        self.tgts.get_tgt_items(modifier, tgt_fits, items)
     }
     pub(in crate::ss::svc::calc) fn get_mods_for_tgt(
         &self,

@@ -7,6 +7,7 @@ use crate::{
     defs::{EAttrId, SsItemId},
     shr::ModAggrMode,
     ss::{
+        fit::{SsFit, SsFits},
         item::SsItem,
         svc::{
             calc::{
@@ -87,17 +88,28 @@ impl SsSvcs {
     ) {
         let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
         let (local_mods, proj_mods, fleet_mods) = generate_mods(item, effects);
+        // Local modifiers
         for local_mod in local_mods.iter() {
             self.calc_data.mods.reg_mod(*local_mod, fit);
         }
-
-        for local_mod in local_mods {
-            for item_id in self
-                .calc_data
-                .mods
-                .get_tgt_items(&local_mod, ss_view.items, ss_view.fits)
-            {
+        let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
+        for local_mod in local_mods.iter() {
+            for item_id in self.calc_data.mods.get_tgt_items(local_mod, &tgt_fits, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
+            }
+        }
+        // Projected modifiers
+        if !proj_mods.is_empty() {
+            let tgt_fits = get_tgt_fits_for_proj(item, ss_view.fits);
+            for proj_mod in proj_mods.iter() {
+                for tgt_fit in tgt_fits.iter() {
+                    self.calc_data.mods.reg_mod(*proj_mod, Some(tgt_fit));
+                }
+            }
+            for proj_mod in proj_mods.iter() {
+                for item_id in self.calc_data.mods.get_tgt_items(proj_mod, &tgt_fits, ss_view.items) {
+                    self.calc_force_attr_recalc(ss_view, &item_id, &proj_mod.tgt_attr_id);
+                }
             }
         }
     }
@@ -109,17 +121,29 @@ impl SsSvcs {
     ) {
         let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
         let (local_mods, proj_mods, fleet_mods) = generate_mods(item, effects);
+        // Local modifiers
+        let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
         for local_mod in local_mods.iter() {
-            for item_id in self
-                .calc_data
-                .mods
-                .get_tgt_items(&local_mod, ss_view.items, ss_view.fits)
-            {
+            for item_id in self.calc_data.mods.get_tgt_items(&local_mod, &tgt_fits, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
             }
         }
         for local_mod in local_mods.iter() {
             self.calc_data.mods.unreg_mod(local_mod, fit);
+        }
+        // Projected modifiers
+        if !proj_mods.is_empty() {
+            let tgt_fits = get_tgt_fits_for_proj(item, ss_view.fits);
+            for proj_mod in proj_mods.iter() {
+                for item_id in self.calc_data.mods.get_tgt_items(proj_mod, &tgt_fits, ss_view.items) {
+                    self.calc_force_attr_recalc(ss_view, &item_id, &proj_mod.tgt_attr_id);
+                }
+            }
+            for proj_mod in proj_mods.iter() {
+                for tgt_fit in tgt_fits.iter() {
+                    self.calc_data.mods.unreg_mod(proj_mod, Some(tgt_fit));
+                }
+            }
         }
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
@@ -146,12 +170,10 @@ impl SsSvcs {
             .filter(|v| v.src_attr_id == *attr_id)
             .map(|v| *v)
             .collect_vec();
+        let item = ss_view.items.get_item(item_id).unwrap();
+        let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
         for modifier in mods.iter() {
-            for tgt_item_id in self
-                .calc_data
-                .mods
-                .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
-            {
+            for tgt_item_id in self.calc_data.mods.get_tgt_items(&modifier, &tgt_fits, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
             }
         }
@@ -196,16 +218,13 @@ impl SsSvcs {
     }
     fn handle_location_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {
         if let Some(_) = item.get_top_domain() {
+            let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
             for modifier in self
                 .calc_data
                 .mods
                 .get_mods_for_changed_location_owner(item, ss_view.items)
             {
-                for item_id in self
-                    .calc_data
-                    .mods
-                    .get_tgt_items(&modifier, ss_view.items, ss_view.fits)
-                {
+                for item_id in self.calc_data.mods.get_tgt_items(&modifier, &tgt_fits, ss_view.items) {
                     self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
                 }
             }
@@ -239,4 +258,21 @@ fn generate_mods(
         }
     }
     (local_mods, proj_mods, fleet_mods)
+}
+
+fn get_tgt_fits_for_local<'a>(item: &SsItem, fits: &'a SsFits) -> Vec<&'a SsFit> {
+    let mut tgt_fits = Vec::new();
+    if let Some(tgt_fit_id) = item.get_fit_id() {
+        if let Ok(tgt_fit) = fits.get_fit(&tgt_fit_id) {
+            tgt_fits.push(tgt_fit);
+        }
+    }
+    tgt_fits
+}
+
+fn get_tgt_fits_for_proj<'a>(item: &SsItem, fits: &'a SsFits) -> Vec<&'a SsFit> {
+    match item {
+        SsItem::SwEffect(_) => fits.iter_fits().collect_vec(),
+        _ => Vec::new(),
+    }
 }

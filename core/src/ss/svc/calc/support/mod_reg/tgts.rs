@@ -47,13 +47,12 @@ impl TgtItemRegister {
         }
     }
     // Query methods
-    pub(super) fn get_tgt_items(&self, modifier: &SsAttrMod, items: &SsItems, fits: &SsFits) -> Vec<SsItemId> {
+    pub(super) fn get_tgt_items(&self, modifier: &SsAttrMod, tgt_fits: &Vec<&SsFit>, items: &SsItems) -> Vec<SsItemId> {
         let mut tgts = Vec::new();
         let src_item = match items.get_item(&modifier.src_item_id) {
             Ok(i) => i,
             _ => return tgts,
         };
-        let src_fit_opt = src_item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 ModDomain::Item => tgts.push(modifier.src_item_id),
@@ -69,29 +68,29 @@ impl TgtItemRegister {
                 }
             },
             SsModTgtFilter::Loc(dom) => {
-                if check_domain_owner(dom, src_fit_opt) {
-                    if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_pardom, &(src_fit_id, dom));
+                for tgt_fit in tgt_fits.iter() {
+                    if check_domain_owner(dom, tgt_fit) {
+                        extend_vec_from_storage(&mut tgts, &self.tgts_pardom, &(tgt_fit.id, dom));
                     }
                 }
             }
             SsModTgtFilter::LocGrp(dom, grp_id) => {
-                if check_domain_owner(dom, src_fit_opt) {
-                    if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_pardom_grp, &(src_fit_id, dom, grp_id));
+                for tgt_fit in tgt_fits.iter() {
+                    if check_domain_owner(dom, tgt_fit) {
+                        extend_vec_from_storage(&mut tgts, &self.tgts_pardom_grp, &(tgt_fit.id, dom, grp_id));
                     }
                 }
             }
             SsModTgtFilter::LocSrq(dom, srq_id) => {
-                if check_domain_owner(dom, src_fit_opt) {
-                    if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_pardom_srq, &(src_fit_id, dom, srq_id));
+                for tgt_fit in tgt_fits.iter() {
+                    if check_domain_owner(dom, tgt_fit) {
+                        extend_vec_from_storage(&mut tgts, &self.tgts_pardom_srq, &(tgt_fit.id, dom, srq_id));
                     }
                 }
             }
             SsModTgtFilter::OwnSrq(srq_id) => {
-                if let Some(src_fit_id) = src_item.get_fit_id() {
-                    extend_vec_from_storage(&mut tgts, &self.tgts_own_srq, &(src_fit_id, srq_id));
+                for tgt_fit in tgt_fits.iter() {
+                    extend_vec_from_storage(&mut tgts, &self.tgts_own_srq, &(tgt_fit.id, srq_id));
                 }
             }
         }
@@ -174,14 +173,11 @@ impl TgtItemRegister {
     }
 }
 
-fn check_domain_owner(dom: ModDomain, fit_opt: Option<&SsFit>) -> bool {
-    match fit_opt {
-        None => false,
-        Some(fit) => match dom {
-            ModDomain::Char => fit.character.is_some(),
-            ModDomain::Ship => fit.ship.is_some(),
-            ModDomain::Structure => fit.structure.is_some(),
-            _ => false,
-        },
+fn check_domain_owner(dom: ModDomain, fit: &SsFit) -> bool {
+    match dom {
+        ModDomain::Char => fit.character.is_some(),
+        ModDomain::Ship => fit.ship.is_some(),
+        ModDomain::Structure => fit.structure.is_some(),
+        _ => false,
     }
 }

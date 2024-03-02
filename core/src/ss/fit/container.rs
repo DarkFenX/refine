@@ -41,6 +41,9 @@ impl SsFits {
     pub(in crate::ss) fn iter_fit_ids(&self) -> impl Iterator<Item = &SsFitId> {
         self.data.keys()
     }
+    pub(in crate::ss) fn iter_fits(&self) -> impl Iterator<Item = &SsFit> {
+        self.data.values()
+    }
     fn alloc_fit_id(&mut self) -> Result<SsFitId> {
         let start = self.counter;
         while self.data.contains_key(&self.counter.0) {
