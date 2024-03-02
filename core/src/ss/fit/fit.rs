@@ -153,4 +153,28 @@ impl SsFit {
             SsItem::ProjEffect(_) => (),
         }
     }
+    pub(in crate::ss) fn all_items(&self) -> Vec<SsItemId> {
+        let mut items = Vec::new();
+        conditional_push(&mut items, self.character);
+        items.extend(&self.skills);
+        items.extend(&self.implants);
+        items.extend(&self.boosters);
+        conditional_push(&mut items, self.ship);
+        conditional_push(&mut items, self.structure);
+        conditional_push(&mut items, self.stance);
+        items.extend(&self.subsystems);
+        items.extend(&self.mods_high);
+        items.extend(&self.mods_mid);
+        items.extend(&self.mods_low);
+        items.extend(&self.rigs);
+        items.extend(&self.drones);
+        items.extend(&self.fighters);
+        items
+    }
+}
+
+fn conditional_push(items: &mut Vec<SsItemId>, opt_value: Option<SsItemId>) {
+    if let Some(value) = opt_value {
+        items.push(value)
+    }
 }

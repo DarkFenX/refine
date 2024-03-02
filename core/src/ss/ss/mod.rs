@@ -42,8 +42,10 @@ impl SolarSystem {
         self.fits.add_fit()
     }
     pub fn remove_fit(&mut self, fit_id: &SsFitId) -> Result<()> {
+        for item_id in self.fits.get_fit(fit_id)?.all_items().iter() {
+            self.remove_item(item_id).unwrap();
+        }
         self.fits.remove_fit(fit_id)?;
-        self.items.remove_fit_items(fit_id);
         Ok(())
     }
     pub fn get_fit_ids(&self) -> Vec<SsFitId> {
