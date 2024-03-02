@@ -60,12 +60,12 @@ impl SsSvcs {
         Ok(vals)
     }
     // Modification methods
-    pub(in crate::ss::svc) fn calc_fit_added(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
+    pub(in crate::ss::svc) fn calc_fit_added(&mut self, fit_id: &SsFitId) {
         for sw_mod in self.calc_data.projs.get_sw_mods() {
             self.calc_data.mods.apply_mod(*sw_mod, Some(*fit_id));
         }
     }
-    pub(in crate::ss::svc) fn calc_fit_removed(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
+    pub(in crate::ss::svc) fn calc_fit_removed(&mut self, fit_id: &SsFitId) {
         for sw_mod in self.calc_data.projs.get_sw_mods() {
             self.calc_data.mods.unapply_mod(sw_mod, Some(*fit_id));
         }

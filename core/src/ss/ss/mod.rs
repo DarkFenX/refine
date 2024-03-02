@@ -39,12 +39,15 @@ impl SolarSystem {
     }
     // Fits
     pub fn add_fit(&mut self) -> Result<SsFitId> {
-        self.fits.add_fit()
+        let fit_id = self.fits.add_fit()?;
+        self.svcs.add_fit(&fit_id);
+        Ok(fit_id)
     }
     pub fn remove_fit(&mut self, fit_id: &SsFitId) -> Result<()> {
         for item_id in self.fits.get_fit(fit_id)?.all_items().iter() {
             self.remove_item(item_id).unwrap();
         }
+        self.svcs.remove_fit(&fit_id);
         self.fits.remove_fit(fit_id)?;
         Ok(())
     }

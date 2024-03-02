@@ -14,11 +14,11 @@ use crate::{
 
 impl SsSvcs {
     // Higher level methods
-    pub(in crate::ss) fn add_fit(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
-        self.notify_fit_added(ss_view, fit_id);
+    pub(in crate::ss) fn add_fit(&mut self, fit_id: &SsFitId) {
+        self.notify_fit_added(fit_id);
     }
-    pub(in crate::ss) fn remove_fit(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
-        self.notify_fit_removed(ss_view, fit_id);
+    pub(in crate::ss) fn remove_fit(&mut self, fit_id: &SsFitId) {
+        self.notify_fit_removed(fit_id);
     }
     pub(in crate::ss) fn add_item(&mut self, ss_view: &SsView, item: &SsItem) {
         let is_a_item_loaded = item.is_loaded();
@@ -87,11 +87,11 @@ impl SsSvcs {
         }
     }
     // Lower level methods
-    pub(in crate::ss) fn notify_fit_added(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
-        self.calc_fit_added(ss_view, fit_id);
+    pub(in crate::ss) fn notify_fit_added(&mut self, fit_id: &SsFitId) {
+        self.calc_fit_added(fit_id);
     }
-    pub(in crate::ss) fn notify_fit_removed(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
-        self.calc_fit_removed(ss_view, fit_id);
+    pub(in crate::ss) fn notify_fit_removed(&mut self, fit_id: &SsFitId) {
+        self.calc_fit_removed(fit_id);
     }
     pub(in crate::ss) fn notify_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_item_added(ss_view, item);
