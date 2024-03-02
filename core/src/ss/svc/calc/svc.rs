@@ -4,7 +4,7 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    defs::{EAttrId, SsItemId},
+    defs::{EAttrId, SsFitId, SsItemId},
     shr::ModAggrMode,
     ss::{
         fit::{SsFit, SsFits},
@@ -12,7 +12,7 @@ use crate::{
         svc::{
             calc::{
                 attr::PENALTY_IMMUNE_CATS,
-                support::{ModKey, Modification, SsAttrMod, SsAttrVal},
+                support::{CategorizedMods, ModKey, Modification, SsAttrMod, SsAttrVal},
             },
             SsSvcs,
         },
@@ -60,21 +60,27 @@ impl SsSvcs {
         Ok(vals)
     }
     // Modification methods
+    pub(in crate::ss::svc) fn calc_fit_added(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
+        for sw_mod in self.calc_data.projs.get_sw_mods() {
+            self.calc_data.mods.apply_mod(*sw_mod, Some(*fit_id));
+        }
+    }
+    pub(in crate::ss::svc) fn calc_fit_removed(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
+        for sw_mod in self.calc_data.projs.get_sw_mods() {
+            self.calc_data.mods.unapply_mod(sw_mod, Some(*fit_id));
+        }
+    }
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
-        self.calc_data.projs.item_added(item);
         self.handle_location_owner_change(ss_view, item);
     }
     pub(in crate::ss::svc) fn calc_item_removed(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
-        self.calc_data.projs.item_removed(item);
     }
     pub(in crate::ss::svc) fn calc_item_loaded(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_data.attrs.add_item(item.get_id());
         self.calc_data.mods.reg_tgt(item, ss_view.fits);
-        self.calc_data.projs.item_loaded(item);
     }
     pub(in crate::ss::svc) fn calc_item_unloaded(&mut self, ss_view: &SsView, item: &SsItem) {
-        self.calc_data.projs.item_unloaded(item);
         self.calc_data.mods.unreg_tgt(item, ss_view.fits);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
@@ -86,29 +92,34 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
-        let (local_mods, proj_mods, fleet_mods) = generate_mods(item, effects);
+        let mods = CategorizedMods::from_item_effects(item, effects);
         // Local modifiers
-        for local_mod in local_mods.iter() {
-            self.calc_data.mods.reg_mod(*local_mod, fit);
-        }
-        let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
-        for local_mod in local_mods.iter() {
-            for item_id in self.calc_data.mods.get_tgt_items(local_mod, &tgt_fits, ss_view.items) {
-                self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
+        if !mods.local.is_empty() {
+            let fit_id_opt = item.get_fit_id();
+            for local_mod in mods.local.iter() {
+                self.calc_data.mods.reg_mod(*local_mod);
+                self.calc_data.mods.apply_mod(*local_mod, fit_id_opt);
             }
-        }
-        // Projected modifiers
-        if !proj_mods.is_empty() {
-            let tgt_fits = get_tgt_fits_for_proj(item, ss_view.fits);
-            for proj_mod in proj_mods.iter() {
-                for tgt_fit in tgt_fits.iter() {
-                    self.calc_data.mods.reg_mod(*proj_mod, Some(tgt_fit));
+            let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
+            for local_mod in mods.local.iter() {
+                for item_id in self.calc_data.mods.get_tgt_items(local_mod, &tgt_fits, ss_view.items) {
+                    self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
                 }
             }
-            for proj_mod in proj_mods.iter() {
-                for item_id in self.calc_data.mods.get_tgt_items(proj_mod, &tgt_fits, ss_view.items) {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &proj_mod.tgt_attr_id);
+        }
+        // System-wide modifiers
+        if !mods.system_wide.is_empty() {
+            let tgt_fits = get_tgt_fits_for_proj(item, ss_view.fits);
+            for sw_mod in mods.system_wide.iter() {
+                for tgt_fit in tgt_fits.iter() {
+                    self.calc_data.mods.reg_mod(*sw_mod);
+                    self.calc_data.mods.apply_mod(*sw_mod, Some(tgt_fit.id));
+                }
+                self.calc_data.projs.add_sw_mod(*sw_mod);
+            }
+            for sw_mod in mods.system_wide.iter() {
+                for item_id in self.calc_data.mods.get_tgt_items(sw_mod, &tgt_fits, ss_view.items) {
+                    self.calc_force_attr_recalc(ss_view, &item_id, &sw_mod.tgt_attr_id);
                 }
             }
         }
@@ -119,29 +130,34 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
-        let (local_mods, proj_mods, fleet_mods) = generate_mods(item, effects);
+        let mods = CategorizedMods::from_item_effects(item, effects);
         // Local modifiers
-        let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
-        for local_mod in local_mods.iter() {
-            for item_id in self.calc_data.mods.get_tgt_items(&local_mod, &tgt_fits, ss_view.items) {
-                self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
-            }
-        }
-        for local_mod in local_mods.iter() {
-            self.calc_data.mods.unreg_mod(local_mod, fit);
-        }
-        // Projected modifiers
-        if !proj_mods.is_empty() {
-            let tgt_fits = get_tgt_fits_for_proj(item, ss_view.fits);
-            for proj_mod in proj_mods.iter() {
-                for item_id in self.calc_data.mods.get_tgt_items(proj_mod, &tgt_fits, ss_view.items) {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &proj_mod.tgt_attr_id);
+        if !mods.local.is_empty() {
+            let fit_id_opt = item.get_fit_id();
+            let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
+            for local_mod in mods.local.iter() {
+                for item_id in self.calc_data.mods.get_tgt_items(&local_mod, &tgt_fits, ss_view.items) {
+                    self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
                 }
             }
-            for proj_mod in proj_mods.iter() {
+            for local_mod in mods.local.iter() {
+                self.calc_data.mods.unapply_mod(local_mod, fit_id_opt);
+                self.calc_data.mods.unreg_mod(local_mod);
+            }
+        }
+        // System-wide modifiers
+        if !mods.system_wide.is_empty() {
+            let tgt_fits = get_tgt_fits_for_proj(item, ss_view.fits);
+            for sw_mod in mods.system_wide.iter() {
+                for item_id in self.calc_data.mods.get_tgt_items(sw_mod, &tgt_fits, ss_view.items) {
+                    self.calc_force_attr_recalc(ss_view, &item_id, &sw_mod.tgt_attr_id);
+                }
+                self.calc_data.projs.remove_sw_mod(*sw_mod);
+            }
+            for sw_mod in mods.system_wide.iter() {
                 for tgt_fit in tgt_fits.iter() {
-                    self.calc_data.mods.unreg_mod(proj_mod, Some(tgt_fit));
+                    self.calc_data.mods.unapply_mod(sw_mod, Some(tgt_fit.id));
+                    self.calc_data.mods.unreg_mod(sw_mod);
                 }
             }
         }
@@ -230,34 +246,6 @@ impl SsSvcs {
             }
         }
     }
-}
-
-fn generate_mods(
-    src_item: &SsItem,
-    src_effects: &Vec<ad::ArcEffect>,
-) -> (Vec<SsAttrMod>, Vec<SsAttrMod>, Vec<SsAttrMod>) {
-    let mut local_mods = Vec::new();
-    let mut proj_mods = Vec::new();
-    let mut fleet_mods = Vec::new();
-    for effect in src_effects.iter() {
-        // TODO: buff effects actually don't have any modifiers, we need to "cook" them
-        if effect.is_proj_buff || effect.is_system_wide {
-            // Projected buffs and system-wide effects are assumed to have only projected modifiers.
-            // Theoretically, system-wide effects can have modifiers which affect effect beacon itself
-            // via itemID location, but we don't have any in the game
-            proj_mods.extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(src_item, effect, v)));
-        } else if effect.is_fleet_buff {
-            // Fleet buff means fleet modifiers only
-            fleet_mods.extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(src_item, effect, v)));
-        } else if effect.is_targeted() {
-            // For now we assume targeted effects have only projected modifiers
-            proj_mods.extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(src_item, effect, v)));
-        } else {
-            // Untargeted effect means only local modifiers
-            local_mods.extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(src_item, effect, v)));
-        }
-    }
-    (local_mods, proj_mods, fleet_mods)
 }
 
 fn get_tgt_fits_for_local<'a>(item: &SsItem, fits: &'a SsFits) -> Vec<&'a SsFit> {

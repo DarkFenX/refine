@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{EAttrId, SsItemId},
+    defs::{EAttrId, SsFitId, SsItemId},
     shr::State,
     ss::{
         item::SsItem,
@@ -14,22 +14,28 @@ use crate::{
 
 impl SsSvcs {
     // Higher level methods
+    pub(in crate::ss) fn add_fit(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
+        self.notify_fit_added(ss_view, fit_id);
+    }
+    pub(in crate::ss) fn remove_fit(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
+        self.notify_fit_removed(ss_view, fit_id);
+    }
     pub(in crate::ss) fn add_item(&mut self, ss_view: &SsView, item: &SsItem) {
         let is_a_item_loaded = item.is_loaded();
         self.notify_item_added(ss_view, item);
         if is_a_item_loaded {
             self.notify_item_loaded(ss_view, item)
         }
-        self.switch_state(ss_view, item, State::Ghost, item.get_state());
+        self.switch_item_state(ss_view, item, State::Ghost, item.get_state());
     }
     pub(in crate::ss) fn remove_item(&mut self, ss_view: &SsView, item: &SsItem) {
-        self.switch_state(ss_view, item, item.get_state(), State::Ghost);
+        self.switch_item_state(ss_view, item, item.get_state(), State::Ghost);
         if item.is_loaded() {
             self.notify_item_unloaded(ss_view, item)
         }
         self.notify_item_removed(ss_view, item);
     }
-    pub(in crate::ss) fn switch_state(
+    pub(in crate::ss) fn switch_item_state(
         &mut self,
         ss_view: &SsView,
         item: &SsItem,
@@ -40,13 +46,13 @@ impl SsSvcs {
             for state in State::iter().filter(|v| **v > old_item_state && **v <= new_item_state) {
                 self.notify_state_activated(ss_view, item, state);
                 if item.is_loaded() {
-                    self.notify_state_activated_loaded(ss_view, item, state);
+                    self.notify_item_state_activated_loaded(ss_view, item, state);
                 }
             }
         } else if new_item_state < old_item_state {
             for state in State::iter().filter(|v| **v > new_item_state && **v <= old_item_state) {
                 if item.is_loaded() {
-                    self.notify_state_deactivated_loaded(ss_view, item, state);
+                    self.notify_item_state_deactivated_loaded(ss_view, item, state);
                 }
                 self.notify_state_deactivated(ss_view, item, state);
             }
@@ -81,6 +87,12 @@ impl SsSvcs {
         }
     }
     // Lower level methods
+    pub(in crate::ss) fn notify_fit_added(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
+        self.calc_fit_added(ss_view, fit_id);
+    }
+    pub(in crate::ss) fn notify_fit_removed(&mut self, ss_view: &SsView, fit_id: &SsFitId) {
+        self.calc_fit_removed(ss_view, fit_id);
+    }
     pub(in crate::ss) fn notify_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_item_added(ss_view, item);
     }
@@ -95,8 +107,15 @@ impl SsSvcs {
     pub(in crate::ss) fn notify_item_unloaded(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_item_unloaded(ss_view, item);
     }
-    pub(in crate::ss) fn notify_state_activated_loaded(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}
-    pub(in crate::ss) fn notify_state_deactivated_loaded(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {}
+    pub(in crate::ss) fn notify_item_state_activated_loaded(&mut self, ss_view: &SsView, item: &SsItem, state: &State) {
+    }
+    pub(in crate::ss) fn notify_item_state_deactivated_loaded(
+        &mut self,
+        ss_view: &SsView,
+        item: &SsItem,
+        state: &State,
+    ) {
+    }
     fn notify_effects_started(&mut self, ss_view: &SsView, item: &SsItem, effects: &Vec<ad::ArcEffect>) {
         self.running_effects
             .effects_started(item.get_id(), effects.iter().map(|v| v.id));

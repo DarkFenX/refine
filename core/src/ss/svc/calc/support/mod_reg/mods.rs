@@ -4,7 +4,7 @@ use crate::{
     defs::{EItemGrpId, EItemId, SsFitId, SsItemId},
     shr::ModDomain,
     ss::{
-        fit::{SsFit, SsFits},
+        fit::SsFits,
         item::{SsItem, SsItems},
     },
     util::KeyedStorage1L,
@@ -138,70 +138,74 @@ impl ModifierRegister {
         self.mods.get(src_item_id).into_iter().flatten()
     }
     // Modification methods
-    pub(super) fn reg_mod(&mut self, modifier: SsAttrMod, tgt_fit_opt: Option<&SsFit>) {
+    pub(super) fn reg_mod(&mut self, modifier: SsAttrMod) {
         self.mods.add(modifier.src_item_id, modifier);
+    }
+    pub(super) fn apply_mod(&mut self, modifier: SsAttrMod, tgt_fit_id_opt: Option<SsFitId>) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 ModDomain::Item => self.mods_direct.add(modifier.src_item_id, modifier),
                 ModDomain::Char | ModDomain::Ship | ModDomain::Structure => {
-                    if let Some(src_fit) = tgt_fit_opt {
-                        self.mods_topdom.add((src_fit.id, dom), modifier);
+                    if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                        self.mods_topdom.add((tgt_fit_id, dom), modifier);
                     }
                 }
                 ModDomain::Other => self.mods_other.add(modifier.src_item_id, modifier),
             },
             SsModTgtFilter::Loc(dom) => {
-                if let Some(src_fit) = tgt_fit_opt {
-                    self.mods_pardom.add((src_fit.id, dom), modifier);
+                if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                    self.mods_pardom.add((tgt_fit_id, dom), modifier);
                 }
             }
             SsModTgtFilter::LocGrp(dom, grp_id) => {
-                if let Some(src_fit) = tgt_fit_opt {
-                    self.mods_pardom_grp.add((src_fit.id, dom, grp_id), modifier);
+                if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                    self.mods_pardom_grp.add((tgt_fit_id, dom, grp_id), modifier);
                 }
             }
             SsModTgtFilter::LocSrq(dom, srq_id) => {
-                if let Some(src_fit) = tgt_fit_opt {
-                    self.mods_pardom_srq.add((src_fit.id, dom, srq_id), modifier);
+                if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                    self.mods_pardom_srq.add((tgt_fit_id, dom, srq_id), modifier);
                 }
             }
             SsModTgtFilter::OwnSrq(srq_id) => {
-                if let Some(src_fit) = tgt_fit_opt {
-                    self.mods_own_srq.add((src_fit.id, srq_id), modifier);
+                if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                    self.mods_own_srq.add((tgt_fit_id, srq_id), modifier);
                 }
             }
         }
     }
-    pub(super) fn unreg_mod(&mut self, modifier: &SsAttrMod, tgt_fit_opt: Option<&SsFit>) {
+    pub(super) fn unreg_mod(&mut self, modifier: &SsAttrMod) {
         self.mods.remove(&modifier.src_item_id, &modifier);
+    }
+    pub(super) fn unapply_mod(&mut self, modifier: &SsAttrMod, tgt_fit_id_opt: Option<SsFitId>) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 ModDomain::Item => self.mods_direct.remove(&modifier.src_item_id, &modifier),
                 ModDomain::Char | ModDomain::Ship | ModDomain::Structure => {
-                    if let Some(src_fit) = tgt_fit_opt {
-                        self.mods_topdom.remove(&(src_fit.id, dom), &modifier);
+                    if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                        self.mods_topdom.remove(&(tgt_fit_id, dom), &modifier);
                     }
                 }
                 ModDomain::Other => self.mods_other.remove(&modifier.src_item_id, &modifier),
             },
             SsModTgtFilter::Loc(dom) => {
-                if let Some(src_fit) = tgt_fit_opt {
-                    self.mods_pardom.remove(&(src_fit.id, dom), &modifier);
+                if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                    self.mods_pardom.remove(&(tgt_fit_id, dom), &modifier);
                 }
             }
             SsModTgtFilter::LocGrp(dom, grp_id) => {
-                if let Some(src_fit) = tgt_fit_opt {
-                    self.mods_pardom_grp.remove(&(src_fit.id, dom, grp_id), &modifier);
+                if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                    self.mods_pardom_grp.remove(&(tgt_fit_id, dom, grp_id), &modifier);
                 }
             }
             SsModTgtFilter::LocSrq(dom, srq_id) => {
-                if let Some(src_fit) = tgt_fit_opt {
-                    self.mods_pardom_srq.remove(&(src_fit.id, dom, srq_id), &modifier);
+                if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                    self.mods_pardom_srq.remove(&(tgt_fit_id, dom, srq_id), &modifier);
                 }
             }
             SsModTgtFilter::OwnSrq(srq) => {
-                if let Some(src_fit) = tgt_fit_opt {
-                    self.mods_own_srq.remove(&(src_fit.id, srq), &modifier);
+                if let Some(tgt_fit_id) = tgt_fit_id_opt {
+                    self.mods_own_srq.remove(&(tgt_fit_id, srq), &modifier);
                 }
             }
         }

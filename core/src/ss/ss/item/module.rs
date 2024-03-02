@@ -96,7 +96,7 @@ impl SolarSystem {
         if state != old_state {
             let item = self.items.get_item(item_id).unwrap();
             self.svcs
-                .switch_state(&SsView::new(&self.src, &self.fits, &self.items), item, old_state, state);
+                .switch_item_state(&SsView::new(&self.src, &self.fits, &self.items), item, old_state, state);
         };
         Ok(())
     }

@@ -1,46 +1,26 @@
 use std::collections::HashSet;
 
-use crate::{ss::item::SsItem, util::KeyedStorage1L, ModDomain, SsItemId};
+use crate::ss::{item::SsItem, svc::calc::support::SsAttrMod};
 
 pub(in crate::ss::svc::calc) struct ProjRegister {
-    // All directly modifiable items
-    // Contains: HashSet<item IDs>
-    direct: HashSet<SsItemId>,
-    // Items which are owners of locations
-    // Contains: KeyedStorage<domain, item IDs>
-    loc_owners: KeyedStorage1L<ModDomain, SsItemId>,
+    // All system-wide modifiers
+    sw_mods: HashSet<SsAttrMod>,
 }
 impl ProjRegister {
     pub(in crate::ss::svc::calc) fn new() -> Self {
         Self {
-            direct: HashSet::new(),
-            loc_owners: KeyedStorage1L::new(),
+            sw_mods: HashSet::new(),
         }
     }
     // Query methods
+    pub(in crate::ss::svc::calc) fn get_sw_mods(&self) -> &HashSet<SsAttrMod> {
+        &self.sw_mods
+    }
     // Modification methods
-    pub(in crate::ss::svc::calc) fn item_added(&mut self, item: &SsItem) {
-        if let Some(dom) = item.get_top_domain() {
-            self.loc_owners.add(dom, item.get_id())
-        }
-        ()
+    pub(in crate::ss::svc::calc) fn add_sw_mod(&mut self, sw_mod: SsAttrMod) {
+        self.sw_mods.insert(sw_mod);
     }
-    pub(in crate::ss::svc::calc) fn item_removed(&mut self, item: &SsItem) {
-        if let Some(dom) = item.get_top_domain() {
-            self.loc_owners.remove(&dom, &item.get_id())
-        }
-        ()
-    }
-    pub(in crate::ss::svc::calc) fn item_loaded(&mut self, item: &SsItem) {
-        if item.is_directly_modifiable() {
-            self.direct.insert(item.get_id());
-            ()
-        }
-    }
-    pub(in crate::ss::svc::calc) fn item_unloaded(&mut self, item: &SsItem) {
-        if item.is_directly_modifiable() {
-            self.direct.remove(&item.get_id());
-            ()
-        }
+    pub(in crate::ss::svc::calc) fn remove_sw_mod(&mut self, sw_mod: SsAttrMod) {
+        self.sw_mods.remove(&sw_mod);
     }
 }

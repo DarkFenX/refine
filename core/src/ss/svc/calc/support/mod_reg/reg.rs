@@ -1,5 +1,5 @@
 use crate::{
-    defs::{EAttrId, SsItemId},
+    defs::{EAttrId, SsFitId, SsItemId},
     ss::{
         fit::{SsFit, SsFits},
         item::{SsItem, SsItems},
@@ -56,10 +56,16 @@ impl ModRegister {
     pub(in crate::ss::svc::calc) fn unreg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
         self.tgts.unreg_tgt(tgt_item, fits)
     }
-    pub(in crate::ss::svc::calc) fn reg_mod(&mut self, modifier: SsAttrMod, tgt_fit_opt: Option<&SsFit>) {
-        self.mods.reg_mod(modifier, tgt_fit_opt)
+    pub(in crate::ss::svc::calc) fn reg_mod(&mut self, modifier: SsAttrMod) {
+        self.mods.reg_mod(modifier)
     }
-    pub(in crate::ss::svc::calc) fn unreg_mod(&mut self, modifier: &SsAttrMod, tgt_fit_opt: Option<&SsFit>) {
-        self.mods.unreg_mod(modifier, tgt_fit_opt)
+    pub(in crate::ss::svc::calc) fn apply_mod(&mut self, modifier: SsAttrMod, tgt_fit_id_opt: Option<SsFitId>) {
+        self.mods.apply_mod(modifier, tgt_fit_id_opt)
+    }
+    pub(in crate::ss::svc::calc) fn unreg_mod(&mut self, modifier: &SsAttrMod) {
+        self.mods.unreg_mod(modifier)
+    }
+    pub(in crate::ss::svc::calc) fn unapply_mod(&mut self, modifier: &SsAttrMod, tgt_fit_id_opt: Option<SsFitId>) {
+        self.mods.unapply_mod(modifier, tgt_fit_id_opt)
     }
 }
