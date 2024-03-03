@@ -17,7 +17,7 @@ def get_dogma_value(
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=False)
     # Pre-assignment
-    eve_mod_pre_ass = client.mk_eve_mod(
+    eve_mod_pre_ass = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.pre_assign,
@@ -28,7 +28,7 @@ def get_dogma_value(
         attrs={eve_src_attr.id: val_pre_ass},
         eff_ids=[eve_effect_pre_ass.id])
     # Pre-multiplication
-    eve_mod_pre_mul = client.mk_eve_mod(
+    eve_mod_pre_mul = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.pre_mul,
@@ -39,7 +39,7 @@ def get_dogma_value(
         attrs={eve_src_attr.id: val_pre_mul},
         eff_ids=[eve_effect_pre_mul.id])
     # Pre-division
-    eve_mod_pre_div = client.mk_eve_mod(
+    eve_mod_pre_div = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.pre_div,
@@ -50,7 +50,7 @@ def get_dogma_value(
         attrs={eve_src_attr.id: val_pre_div},
         eff_ids=[eve_effect_pre_div.id])
     # Addition
-    eve_mod_mod_add = client.mk_eve_mod(
+    eve_mod_mod_add = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.mod_add,
@@ -61,7 +61,7 @@ def get_dogma_value(
         attrs={eve_src_attr.id: val_mod_add},
         eff_ids=[eve_effect_mod_add.id])
     # Subtraction
-    eve_mod_mod_sub = client.mk_eve_mod(
+    eve_mod_mod_sub = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.mod_sub,
@@ -72,7 +72,7 @@ def get_dogma_value(
         attrs={eve_src_attr.id: val_mod_sub},
         eff_ids=[eve_effect_mod_sub.id])
     # Post-multiplication
-    eve_mod_post_mul = client.mk_eve_mod(
+    eve_mod_post_mul = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_mul,
@@ -83,7 +83,7 @@ def get_dogma_value(
         attrs={eve_src_attr.id: val_post_mul},
         eff_ids=[eve_effect_post_mul.id])
     # Post-division
-    eve_mod_post_div = client.mk_eve_mod(
+    eve_mod_post_div = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_div,
@@ -94,7 +94,7 @@ def get_dogma_value(
         attrs={eve_src_attr.id: val_post_div},
         eff_ids=[eve_effect_post_div.id])
     # Post-percent
-    eve_mod_post_perc = client.mk_eve_mod(
+    eve_mod_post_perc = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,
@@ -105,7 +105,7 @@ def get_dogma_value(
         attrs={eve_src_attr.id: val_post_perc},
         eff_ids=[eve_effect_post_perc.id])
     # Post-assignment
-    eve_mod_post_ass = client.mk_eve_mod(
+    eve_mod_post_ass = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_assign,

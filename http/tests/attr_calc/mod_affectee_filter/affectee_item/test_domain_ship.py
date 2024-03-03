@@ -4,7 +4,7 @@ from pytest import approx
 def test_affected(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,
@@ -29,7 +29,7 @@ def test_awaiting(client, consts):
     # test it just in case
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,
@@ -51,7 +51,7 @@ def test_awaiting(client, consts):
 def test_other_domain(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,
@@ -71,7 +71,7 @@ def test_other_domain(client, consts):
 def test_child_item(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,

@@ -8,14 +8,14 @@ def test_state_offline(client, consts):
     eve_src_attr1 = client.mk_eve_attr()
     eve_src_attr2 = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod1 = client.mk_eve_mod(
+    eve_mod1 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr1.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect1 = client.mk_eve_effect(cat_id=consts.EffCat.passive, mod_info=[eve_mod1])
-    eve_mod2 = client.mk_eve_mod(
+    eve_mod2 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
@@ -63,7 +63,7 @@ def test_state_online_running(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_online_effect = client.mk_eve_online_effect()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
@@ -103,7 +103,7 @@ def test_state_online_absent(client, consts):
     # No online effect - other effects from online category are not running
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
@@ -129,14 +129,14 @@ def test_state_active_default(client, consts):
     eve_src_attr1 = client.mk_eve_attr()
     eve_src_attr2 = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod1 = client.mk_eve_mod(
+    eve_mod1 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr1.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect1 = client.mk_eve_effect(cat_id=consts.EffCat.active, mod_info=[eve_mod1])
-    eve_mod2 = client.mk_eve_mod(
+    eve_mod2 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
@@ -172,14 +172,14 @@ def test_state_active_absent(client, consts):
     eve_src_attr1 = client.mk_eve_attr()
     eve_src_attr2 = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod1 = client.mk_eve_mod(
+    eve_mod1 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr1.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect1 = client.mk_eve_effect(cat_id=consts.EffCat.active, mod_info=[eve_mod1])
-    eve_mod2 = client.mk_eve_mod(
+    eve_mod2 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
@@ -213,7 +213,7 @@ def test_state_overload(client, consts):
     # Overload just needs item to be overloaded and nothing else
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,

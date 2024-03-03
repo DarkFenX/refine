@@ -8,8 +8,9 @@ from .exception import TestDataConsistencyError
 if TYPE_CHECKING:
     from typing import Type, Union
 
+    from tests.support.eve_data.containers import TestPrimitives
     from tests.support.util import Absent
-    from .modifier import Modifier
+    from .effect_modifier import EffectModifier
 
 
 class Effect:
@@ -27,7 +28,7 @@ class Effect:
             tracking_attribute_id: Union[int, Type[Absent]],
             usage_chance_attribute_id: Union[int, Type[Absent]],
             resist_attribute_id: Union[int, Type[Absent]],
-            modifier_info: Union[list[Modifier], tuple[Modifier], Type[Absent]],
+            modifier_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent]],
     ):
         self.id = id_
         self.category_id = category_id
@@ -42,7 +43,7 @@ class Effect:
         self.resist_attribute_id = resist_attribute_id
         self.modifier_info = modifier_info
 
-    def to_primitives(self, primitive_data):
+    def to_primitives(self, primitive_data: TestPrimitives) -> None:
         effect_entry = {'effectID': self.id}
         conditional_insert(effect_entry, 'effectCategory', self.category_id, cast_to=int)
         conditional_insert(effect_entry, 'isAssistance', self.is_assistance, cast_to=int)
@@ -54,11 +55,10 @@ class Effect:
         conditional_insert(effect_entry, 'trackingSpeedAttributeID', self.tracking_attribute_id, cast_to=int)
         conditional_insert(effect_entry, 'fittingUsageChanceAttributeID', self.usage_chance_attribute_id, cast_to=int)
         conditional_insert(effect_entry, 'resistanceAttributeID', self.resist_attribute_id, cast_to=int)
-        if isinstance(self.modifier_info, (list, tuple)):
-            modifier_info = [m.to_primitives() for m in self.modifier_info]
-        else:
-            modifier_info = self.modifier_info
-        conditional_insert(effect_entry, 'modifierInfo', modifier_info)
+        conditional_insert(effect_entry, 'modifierInfo', (
+            [m.to_primitives() for m in self.modifier_info]
+            if isinstance(self.modifier_info, (list, tuple))
+            else self.modifier_info))
         if self.id in primitive_data.dogmaeffects:
             raise TestDataConsistencyError(f'attempt to add effect with duplicate ID {self.id}')
         primitive_data.dogmaeffects[self.id] = effect_entry

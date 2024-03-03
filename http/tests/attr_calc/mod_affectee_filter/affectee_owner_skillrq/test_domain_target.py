@@ -7,7 +7,7 @@ def test_affected(client, consts):
     eve_skill = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.own_srq,
         dom=consts.ModDom.tgt,
         srq=eve_skill.id,

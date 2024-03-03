@@ -4,7 +4,7 @@ from pytest import approx
 def test_state_offline(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
@@ -33,7 +33,7 @@ def test_state_offline(client, consts):
 def test_state_online(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
@@ -62,7 +62,7 @@ def test_state_online(client, consts):
 def test_state_active(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
@@ -91,7 +91,7 @@ def test_state_active(client, consts):
 def test_state_overload(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,

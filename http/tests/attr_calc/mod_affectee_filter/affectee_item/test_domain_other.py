@@ -5,7 +5,7 @@ def test_affected_charge_bundled(client, consts):
     # Check that charge is affected by module if they were added simultaneously
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.other,
         op=consts.ModOp.post_percent,
@@ -25,7 +25,7 @@ def test_affected_module_bundled(client, consts):
     # Check that module is affected by charge if they were added simultaneously
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.other,
         op=consts.ModOp.post_percent,

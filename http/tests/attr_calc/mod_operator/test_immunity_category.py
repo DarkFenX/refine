@@ -8,7 +8,7 @@ def get_dogma_value(client, consts, cat_id):
 def get_dogma_value_ext(client, consts, src1_cat_id, src2_cat_id):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=False)
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,

@@ -60,8 +60,8 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
 
 fn conv_buff_aggr_mode(aggr_mode: &str, key: EBuffId) -> IntResult<ModAggrMode> {
     match aggr_mode {
-        "Maximum" => Ok(ModAggrMode::Max(key)),
         "Minimum" => Ok(ModAggrMode::Min(key)),
+        "Maximum" => Ok(ModAggrMode::Max(key)),
         _ => Err(IntError::new(format!("unexpected aggregate mode \"{aggr_mode}\""))),
     }
 }

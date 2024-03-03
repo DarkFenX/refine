@@ -5,14 +5,14 @@ def test_item_addition_removal(client, consts):
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
     eve_attr3 = client.mk_eve_attr()
-    eve_mod1 = client.mk_eve_mod(
+    eve_mod1 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_mul,
         src_attr_id=eve_attr1.id,
         tgt_attr_id=eve_attr2.id)
     eve_effect1 = client.mk_eve_effect(mod_info=[eve_mod1])
-    eve_mod2 = client.mk_eve_mod(
+    eve_mod2 = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,

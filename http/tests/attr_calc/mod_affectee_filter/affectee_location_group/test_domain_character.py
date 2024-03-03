@@ -5,7 +5,7 @@ def test_affected(client, consts):
     eve_grp = client.mk_eve_item_group()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc_grp,
         dom=consts.ModDom.char,
         grp=eve_grp.id,
@@ -31,7 +31,7 @@ def test_other_location(client, consts):
     eve_grp = client.mk_eve_item_group()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc_grp,
         dom=consts.ModDom.char,
         grp=eve_grp.id,
@@ -56,7 +56,7 @@ def test_other_group(client, consts):
     eve_grp2 = client.mk_eve_item_group()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc_grp,
         dom=consts.ModDom.char,
         grp=eve_grp1.id,
@@ -81,7 +81,7 @@ def test_char_toggle(client, consts):
     eve_grp = client.mk_eve_item_group()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc_grp,
         dom=consts.ModDom.char,
         grp=eve_grp.id,

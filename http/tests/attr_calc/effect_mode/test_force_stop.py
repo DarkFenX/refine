@@ -4,7 +4,7 @@ from pytest import approx
 def test_force_stop(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,

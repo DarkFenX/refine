@@ -11,7 +11,7 @@ def test_filter(client, consts):
     eve_attr_missile_kin = client.mk_eve_attr(id_=consts.Attr.kin_dmg)
     eve_attr_missile_expl = client.mk_eve_attr(id_=consts.Attr.expl_dmg)
     eve_effect_online = client.mk_eve_online_effect()
-    eve_mod_bcs = client.mk_eve_mod(
+    eve_mod_bcs = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.char,
         op=consts.ModOp.pre_mul,
@@ -74,28 +74,28 @@ def test_penalization(client, consts):
     eve_attr_missile_kin = client.mk_eve_attr(id_=consts.Attr.kin_dmg, stackable=False)
     eve_attr_missile_expl = client.mk_eve_attr(id_=consts.Attr.expl_dmg, stackable=False)
     # Magnetar, wolf-rayet and plasma storm use post multiplication
-    eve_mod_magnetar_em = client.mk_eve_mod(
+    eve_mod_magnetar_em = client.mk_eve_effect_mod(
         func=consts.ModFunc.own_srq,
         dom=consts.ModDom.char,
         srq=eve_item_skill.id,
         op=consts.ModOp.post_mul,
         src_attr_id=eve_attr_magnetar.id,
         tgt_attr_id=eve_attr_missile_em.id)
-    eve_mod_magnetar_therm = client.mk_eve_mod(
+    eve_mod_magnetar_therm = client.mk_eve_effect_mod(
         func=consts.ModFunc.own_srq,
         dom=consts.ModDom.char,
         srq=eve_item_skill.id,
         op=consts.ModOp.post_mul,
         src_attr_id=eve_attr_magnetar.id,
         tgt_attr_id=eve_attr_missile_therm.id)
-    eve_mod_magnetar_kin = client.mk_eve_mod(
+    eve_mod_magnetar_kin = client.mk_eve_effect_mod(
         func=consts.ModFunc.own_srq,
         dom=consts.ModDom.char,
         srq=eve_item_skill.id,
         op=consts.ModOp.post_mul,
         src_attr_id=eve_attr_magnetar.id,
         tgt_attr_id=eve_attr_missile_kin.id)
-    eve_mod_magnetar_expl = client.mk_eve_mod(
+    eve_mod_magnetar_expl = client.mk_eve_effect_mod(
         func=consts.ModFunc.own_srq,
         dom=consts.ModDom.char,
         srq=eve_item_skill.id,

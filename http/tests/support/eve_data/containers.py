@@ -7,10 +7,10 @@ from tests.support.util import Default
 from .types import Item, Group, Attribute, Effect, Buff
 
 if TYPE_CHECKING:
-    from typing import Any, Type, Union
+    from typing import Type, Union
 
     from tests.support.util import Absent
-    from .types import Modifier
+    from .types import BuffModifier, EffectModifier
 
 ID_START = 1000000
 
@@ -107,7 +107,7 @@ class TestObjects:
             tracking_attribute_id: Union[int, Type[Absent]],
             usage_chance_attribute_id: Union[int, Type[Absent]],
             resist_attribute_id: Union[int, Type[Absent]],
-            modifier_info: Union[list[Modifier], tuple[Modifier], Type[Absent]],
+            modifier_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent]],
     ) -> Effect:
         if id_ is Default:
             id_ = self.effect_id
@@ -131,12 +131,12 @@ class TestObjects:
     def mk_buff(
             self,
             id_: Union[int, Type[Default]],
-            aggregate_mode: Any,
-            operation_name: Any,
-            item_modifiers: Any,
-            location_modifiers: Any,
-            location_group_modifiers: Any,
-            location_skillreq_modifiers: Any,
+            aggregate_mode: Union[str, Type[Absent]],
+            operation_name: Union[str, Type[Absent]],
+            item_modifiers: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
+            location_modifiers: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
+            location_group_modifiers: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
+            location_skillreq_modifiers: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
     ) -> Buff:
         if id_ is Default:
             id_ = self.buff_id

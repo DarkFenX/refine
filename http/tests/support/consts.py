@@ -46,6 +46,7 @@ class Effect(IntEnum):
     online = 16
     self_rof = 1851
     slot_modifier = 3774
+    weather_darkness = 7060
 
 
 @unique
@@ -93,6 +94,25 @@ class ModOp(IntEnum):
 
 
 @unique
+class BuffAggrMode(StrEnum):
+    min = 'Minimum'
+    max = 'Maximum'
+
+
+@unique
+class BuffOp(StrEnum):
+    pre_assign = 'PreAssignment'
+    pre_mul = 'PreMul'
+    pre_div = 'PreDiv'
+    mod_add = 'ModAdd'
+    mod_sub = 'ModSub'
+    post_mul = 'PostMul'
+    post_div = 'PostDiv'
+    post_percent = 'PostPercent'
+    post_assign = 'PostAssignment'
+
+
+@unique
 class Attr(IntEnum):
     # Resources
     cpu = 50
@@ -115,6 +135,15 @@ class Attr(IntEnum):
     turret_hardpoint_modifier = 1368
     launcher_slots_left = 101
     launcher_hardpoint_modifier = 1369
+    # Buffs
+    warfare_buff_1_id = 2468
+    warfare_buff_1_value = 2469
+    warfare_buff_2_id = 2470
+    warfare_buff_2_value = 2471
+    warfare_buff_3_id = 2472
+    warfare_buff_3_value = 2473
+    warfare_buff_4_id = 2536
+    warfare_buff_4_value = 2537
     # Misc
     skill_level = 280
     speed = 51

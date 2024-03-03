@@ -6,7 +6,7 @@ def test_default(client, consts):
     eve_capping_attr = client.mk_eve_attr(def_val=5)
     eve_capped_attr = client.mk_eve_attr(max_attr_id=eve_capping_attr.id)
     eve_src_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_mul,
@@ -29,7 +29,7 @@ def test_unmodified(client, consts):
     eve_capping_attr = client.mk_eve_attr(def_val=5)
     eve_capped_attr = client.mk_eve_attr(max_attr_id=eve_capping_attr.id)
     eve_src_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_mul,
@@ -52,13 +52,13 @@ def test_modified(client, consts):
     eve_capping_attr = client.mk_eve_attr()
     eve_capped_attr = client.mk_eve_attr(max_attr_id=eve_capping_attr.id)
     eve_src_attr = client.mk_eve_attr()
-    eve_mod1 = client.mk_eve_mod(
+    eve_mod1 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_capped_attr.id)
-    eve_mod2 = client.mk_eve_mod(
+    eve_mod2 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_mul,
@@ -81,7 +81,7 @@ def test_update(client, consts):
     eve_capping_attr = client.mk_eve_attr()
     eve_capped_attr = client.mk_eve_attr(max_attr_id=eve_capping_attr.id)
     eve_src_attr = client.mk_eve_attr()
-    eve_capped_mod = client.mk_eve_mod(
+    eve_capped_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_mul,
@@ -91,7 +91,7 @@ def test_update(client, consts):
     eve_capped_item = client.mk_eve_item(
         attrs={eve_capping_attr.id: 2, eve_capped_attr.id: 3, eve_src_attr.id: 6},
         eff_ids=[eve_capped_effect.id])
-    eve_capping_mod = client.mk_eve_mod(
+    eve_capping_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_mul,

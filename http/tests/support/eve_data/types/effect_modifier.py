@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from tests.support.util import Absent
 
 
-class Modifier:
+class EffectModifier:
 
     def __init__(
             self,
@@ -30,7 +30,7 @@ class Modifier:
         self.tgt_attr_id = tgt_attr_id
         self.operation = operation
 
-    def to_primitives(self):
+    def to_primitives(self) -> dict:
         mod_entry = {}
         conditional_insert(mod_entry, 'func', self.func)
         conditional_insert(mod_entry, 'domain', self.domain)

@@ -4,7 +4,7 @@ from pytest import approx
 def get_dogma_value(client, consts, high_is_good):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(high_is_good=high_is_good)
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.pre_assign,

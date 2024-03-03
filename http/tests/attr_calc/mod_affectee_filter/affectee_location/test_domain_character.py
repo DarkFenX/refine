@@ -4,7 +4,7 @@ from pytest import approx
 def test_affected(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc,
         dom=consts.ModDom.char,
         op=consts.ModOp.post_percent,
@@ -28,7 +28,7 @@ def test_affected(client, consts):
 def test_other_location(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc,
         dom=consts.ModDom.char,
         op=consts.ModOp.post_percent,
@@ -51,7 +51,7 @@ def test_char_toggle(client, consts):
     # Modifiers which target items on ship location shouldn't apply when ship isn't set
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc,
         dom=consts.ModDom.char,
         op=consts.ModOp.post_percent,

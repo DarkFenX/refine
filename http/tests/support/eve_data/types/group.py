@@ -1,7 +1,14 @@
-from typing import Type, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from tests.support.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
+
+if TYPE_CHECKING:
+    from typing import Type, Union
+
+    from tests.support.eve_data.containers import TestPrimitives
 
 
 class Group:
@@ -14,7 +21,7 @@ class Group:
         self.id = id_
         self.category_id = category_id
 
-    def to_primitives(self, primitive_data):
+    def to_primitives(self, primitive_data: TestPrimitives) -> None:
         # Groups are duplicated in test object data container. Here, we "deduplicate" them
         if self.id in primitive_data.groups:
             existing_entry = primitive_data.groups[self.id]

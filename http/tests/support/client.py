@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from typing import Type, Union
 
     from tests.support.consts import EffMode
+    from tests.support.eve_data import BuffModifier, EffectModifier
     from tests.support.util import StackKey
 
 data_id: int = 10000000  # pylint: disable=C0103
@@ -124,7 +125,7 @@ class TestClient:
             tracking_attr_id: Union[int, Type[Absent]] = Absent,
             chance_attr_id: Union[int, Type[Absent]] = Absent,
             resist_attr_id: Union[int, Type[Absent]] = Absent,
-            mod_info: Union[dict, Type[Absent]] = Absent,
+            mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent]] = Absent,
     ) -> eve_data.Effect:
         if data is Default:
             data = self.__default_data
@@ -159,16 +160,35 @@ class TestClient:
             resist_attribute_id=Absent,
             modifier_info=Absent)
 
+    def mk_eve_effect_mod(
+            self,
+            func: Union[str, Type[Absent]] = Absent,
+            dom: Union[str, Type[Absent]] = Absent,
+            grp: Union[int, Type[Absent]] = Absent,
+            srq: Union[int, Type[Absent]] = Absent,
+            op: Union[int, Type[Absent]] = Absent,
+            src_attr_id: Union[int, Absent] = Absent,
+            tgt_attr_id: Union[int, Absent] = Absent,
+    ) -> eve_data.EffectModifier:
+        return eve_data.EffectModifier(
+            func=func,
+            domain=dom,
+            group=grp,
+            skill_req=srq,
+            operation=op,
+            src_attr_id=src_attr_id,
+            tgt_attr_id=tgt_attr_id)
+
     def mk_eve_buff(
             self,
             data: Union[eve_data.TestObjects, Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
-            aggr_mode: Type[Default] = Default,
-            op: Type[Default] = Default,
-            item_mods: Type[Default] = Default,
-            loc_mods: Type[Default] = Default,
-            loc_grp_mods: Type[Default] = Default,
-            loc_srq_mods: Type[Default] = Default,
+            aggr_mode: Union[str, Type[Absent]] = Absent,
+            op: Union[str, Type[Absent]] = Absent,
+            item_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]] = Absent,
+            loc_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]] = Absent,
+            loc_grp_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]] = Absent,
+            loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]] = Absent,
     ) -> eve_data.Buff:
         if data is Default:
             data = self.__default_data
@@ -181,24 +201,16 @@ class TestClient:
             location_group_modifiers=loc_grp_mods,
             location_skillreq_modifiers=loc_srq_mods)
 
-    def mk_eve_mod(
+    def mk_eve_buff_mod(
             self,
-            func: Union[str, Type[Absent]] = Absent,
-            dom: Union[str, Type[Absent]] = Absent,
-            grp: Union[int, Type[Absent]] = Absent,
-            srq: Union[int, Type[Absent]] = Absent,
-            op: Union[int, Type[Absent]] = Absent,
-            src_attr_id: Union[int, Absent] = Absent,
-            tgt_attr_id: Union[int, Absent] = Absent,
-    ) -> eve_data.Modifier:
-        return eve_data.Modifier(
-            func=func,
-            domain=dom,
-            group=grp,
-            skill_req=srq,
-            operation=op,
-            src_attr_id=src_attr_id,
-            tgt_attr_id=tgt_attr_id)
+            attr_id: Union[int, Type[Absent]] = Absent,
+            group_id: Union[int, Type[Absent]] = Absent,
+            skill_id: Union[int, Type[Absent]] = Absent,
+    ) -> eve_data.BuffModifier:
+        return eve_data.BuffModifier(
+            attr_id=attr_id,
+            group_id=group_id,
+            skill_id=skill_id)
 
     # Data source-related methods
     def create_source_request(

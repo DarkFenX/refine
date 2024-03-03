@@ -4,13 +4,13 @@ from pytest import approx
 def test_sw_effect_addition_removal(client, consts):
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_mul,
         src_attr_id=eve_attr1.id,
         tgt_attr_id=eve_attr2.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_mod], cat_id=consts.EffCat.system)
+    eve_effect = client.mk_eve_effect(cat_id=consts.EffCat.system, mod_info=[eve_mod])
     eve_sw_effect = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
     eve_ship = client.mk_eve_item()
     eve_rig = client.mk_eve_item(attrs={eve_attr2.id: 7.5})
@@ -29,13 +29,13 @@ def test_sw_effect_addition_removal(client, consts):
 def test_fit_addition_removal(client, consts):
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_mul,
         src_attr_id=eve_attr1.id,
         tgt_attr_id=eve_attr2.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_mod], cat_id=consts.EffCat.system)
+    eve_effect = client.mk_eve_effect(cat_id=consts.EffCat.system, mod_info=[eve_mod])
     eve_sw_effect = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
     eve_ship = client.mk_eve_item()
     eve_rig = client.mk_eve_item(attrs={eve_attr2.id: 7.5})

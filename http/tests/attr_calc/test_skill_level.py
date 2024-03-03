@@ -4,7 +4,7 @@ from pytest import approx
 def test_switch(client, consts):
     eve_tgt_attr = client.mk_eve_attr()
     eve_src_attr = client.mk_eve_attr(id_=consts.Attr.skill_level)
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_mul,

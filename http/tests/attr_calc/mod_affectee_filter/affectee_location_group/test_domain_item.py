@@ -7,7 +7,7 @@ def test_unaffected(client, consts):
     eve_grp = client.mk_eve_item_group()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc_grp,
         dom=consts.ModDom.item,
         grp=eve_grp.id,

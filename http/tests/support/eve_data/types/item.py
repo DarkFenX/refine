@@ -1,7 +1,14 @@
-from typing import Type, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 from tests.support.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
+
+if TYPE_CHECKING:
+    from typing import Type, Union
+
+    from tests.support.eve_data.containers import TestPrimitives
 
 
 class Item:
@@ -30,7 +37,7 @@ class Item:
         self.radius = radius
         self.volume = volume
 
-    def to_primitives(self, primitive_data):
+    def to_primitives(self, primitive_data: TestPrimitives) -> None:
         item_entry = {'typeID': self.id}
         conditional_insert(item_entry, 'groupID', self.group_id)
         self.__add_primitive_item_attributes(primitive_data)
@@ -44,7 +51,7 @@ class Item:
             raise TestDataConsistencyError(f'attempt to add item with duplicate ID {self.id}')
         primitive_data.types[self.id] = item_entry
 
-    def __add_primitive_item_attributes(self, primitive_data):
+    def __add_primitive_item_attributes(self, primitive_data: TestPrimitives) -> None:
         if self.attributes is Absent:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
@@ -55,7 +62,7 @@ class Item:
         else:
             item_entry['dogmaAttributes'] = self.attributes
 
-    def __add_primitive_item_effects(self, primitive_data):
+    def __add_primitive_item_effects(self, primitive_data: TestPrimitives) -> None:
         if self.effect_ids is Absent:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})

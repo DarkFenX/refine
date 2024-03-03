@@ -7,14 +7,14 @@ def test_same_item_different_effects_attrs(client, consts):
     eve_src_attr1 = client.mk_eve_attr()
     eve_src_attr2 = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod1 = client.mk_eve_mod(
+    eve_mod1 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr1.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect1 = client.mk_eve_effect(mod_info=[eve_mod1])
-    eve_mod2 = client.mk_eve_mod(
+    eve_mod2 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
@@ -34,25 +34,25 @@ def test_same_item_different_effects_attrs(client, consts):
 def test_same_item_different_effects_attrs_switching(client, consts):
     # This case is theoretical. We just check that our calculation core properly registers/
     # unregisters affectors, ignoring modifier keys which are needed for some tests in this module
-    # to work. If it did not register properly and used the same keys as logic above it, after
+    # to work. If it would not register properly and used the same keys as logic above it, after
     # disabling one of effects attr value would revert to its base value
     eve_src_attr1 = client.mk_eve_attr()
     eve_src_attr2 = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod1 = client.mk_eve_mod(
+    eve_mod1 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr1.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect1 = client.mk_eve_effect(mod_info=[eve_mod1], cat_id=consts.EffCat.passive)
-    eve_mod2 = client.mk_eve_mod(
+    eve_effect1 = client.mk_eve_effect(cat_id=consts.EffCat.passive, mod_info=[eve_mod1])
+    eve_mod2 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.item,
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr2.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect2 = client.mk_eve_effect(mod_info=[eve_mod2], cat_id=consts.EffCat.active)
+    eve_effect2 = client.mk_eve_effect(cat_id=consts.EffCat.active, mod_info=[eve_mod2])
     eve_item = client.mk_eve_item(
         attrs={eve_src_attr1.id: 20, eve_src_attr2.id: 20, eve_tgt_attr.id: 100},
         eff_ids=[eve_effect1.id, eve_effect2.id],
@@ -77,7 +77,7 @@ def test_same_item_attr_different_effects(client, consts):
     eve_skill2 = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=True)
-    eve_mod1 = client.mk_eve_mod(
+    eve_mod1 = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc_srq,
         dom=consts.ModDom.ship,
         srq=eve_skill1.id,
@@ -85,7 +85,7 @@ def test_same_item_attr_different_effects(client, consts):
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect1 = client.mk_eve_effect(mod_info=[eve_mod1])
-    eve_mod2 = client.mk_eve_mod(
+    eve_mod2 = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc_srq,
         dom=consts.ModDom.ship,
         srq=eve_skill2.id,
@@ -108,26 +108,26 @@ def test_same_item_attr_different_effects(client, consts):
 def test_same_item_attr_different_effects_switch(client, consts):
     # This case is theoretical. We just check that our calculation core properly registers/
     # unregisters affectors, ignoring modifier keys which are needed for some tests in this module
-    # to work. If it did not register properly and used the same keys as logic above it, after
+    # to work. If it would not register properly and used the same keys as logic above it, after
     # disabling one of effects attr value would revert to its base value
     eve_skill1 = client.mk_eve_item()
     eve_skill2 = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=True)
-    eve_mod1 = client.mk_eve_mod(
+    eve_mod1 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect1 = client.mk_eve_effect(mod_info=[eve_mod1], cat_id=consts.EffCat.passive)
-    eve_mod2 = client.mk_eve_mod(
+    eve_effect1 = client.mk_eve_effect(cat_id=consts.EffCat.passive, mod_info=[eve_mod1])
+    eve_mod2 = client.mk_eve_effect_mod(
         func=consts.ModFunc.item,
         dom=consts.ModDom.ship,
         op=consts.ModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect2 = client.mk_eve_effect(mod_info=[eve_mod2], cat_id=consts.EffCat.active)
+    eve_effect2 = client.mk_eve_effect(cat_id=consts.EffCat.active, mod_info=[eve_mod2])
     eve_src_item = client.mk_eve_item(
         attrs={eve_src_attr.id: 20},
         eff_ids=[eve_effect1.id, eve_effect2.id],

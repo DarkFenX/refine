@@ -6,7 +6,7 @@ def test_unaffected(client, consts):
     # domain, so we don't support it either
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
-    eve_mod = client.mk_eve_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.ModFunc.loc,
         dom=consts.ModDom.other,
         op=consts.ModOp.post_percent,
