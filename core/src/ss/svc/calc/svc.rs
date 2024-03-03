@@ -12,7 +12,7 @@ use crate::{
         svc::{
             calc::{
                 attr::PENALTY_IMMUNE_CATS,
-                support::{CategorizedMods, ModKey, Modification, SsAttrMod, SsAttrVal},
+                support::{CategorizedMods, ModKey, Modification, SsAttrVal},
             },
             SsSvcs,
         },

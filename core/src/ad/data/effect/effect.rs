@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AEffectAttrMod, AModBuildStatus, ATgtMode},
+    ad::{ABuffType, AEffectAttrMod, AModBuildStatus, ATgtMode},
     defs::{EAttrId, EEffectId},
     shr::State,
     util::Named,
@@ -16,13 +16,11 @@ pub struct AEffect {
     /// Effect state dictates which state of parent item is needed for the effect to run.
     pub state: State,
     /// Defines what kind of target you need to run the effect.
-    pub tgt_mode: ATgtMode,
+    pub tgt_mode: Option<ATgtMode>,
+    /// Defines how effect buff is applied.
+    pub buff_type: Option<ABuffType>,
     /// Defines if effect is applied to all items in system or not.
     pub is_system_wide: bool,
-    /// Defines if effect applies any projectable buffs or not.
-    pub is_proj_buff: bool,
-    /// Defines if effect applies any fleet-only buffs or not.
-    pub is_fleet_buff: bool,
     /// Defines if the effect is considered as an assistance.
     pub is_assist: bool,
     /// Defines if the effect is offensive or not.
@@ -58,10 +56,9 @@ impl AEffect {
     pub(crate) fn new(
         id: EEffectId,
         state: State,
-        tgt_mode: ATgtMode,
+        tgt_mode: Option<ATgtMode>,
+        buff_type: Option<ABuffType>,
         is_system_wide: bool,
-        is_proj_buff: bool,
-        is_fleet_buff: bool,
         is_assist: bool,
         is_offense: bool,
         hisec: Option<bool>,
@@ -81,9 +78,8 @@ impl AEffect {
             id,
             state,
             tgt_mode,
+            buff_type,
             is_system_wide,
-            is_proj_buff,
-            is_fleet_buff,
             is_assist,
             is_offense,
             hisec,
@@ -101,7 +97,7 @@ impl AEffect {
         }
     }
     pub(crate) fn is_targeted(&self) -> bool {
-        !matches!(self.tgt_mode, ATgtMode::None)
+        self.tgt_mode.is_some()
     }
 }
 impl Named for AEffect {

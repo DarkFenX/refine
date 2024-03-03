@@ -49,7 +49,7 @@ pub(crate) const SLOT_MODIFIER: EEffectId = 3774;
 // Library-specific effects
 pub(crate) const REE_CHAR_MISSILE_DMG: EEffectId = -1;
 
-pub(crate) const PROJ_BUFF_EFFECT_IDS: [EEffectId; 8] = [
+pub(crate) const EVERYTHING_BUFF_EFFECT_IDS: [EEffectId; 8] = [
     WEATHER_ELECTRIC_STORM,
     WEATHER_INFERNAL,
     WEATHER_CAUSTIC_TOXIN,

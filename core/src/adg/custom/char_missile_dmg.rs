@@ -10,9 +10,8 @@ pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) 
     let mut effect = ad::AEffect::new(
         ec::effects::REE_CHAR_MISSILE_DMG,
         State::Offline,
-        ad::ATgtMode::None,
-        false,
-        false,
+        None,
+        None,
         false,
         false,
         false,

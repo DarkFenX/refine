@@ -1,13 +1,12 @@
-use crate::handler_json::data::{CEffectAttrMod, CModBuildStatus, CState, CTgtMode};
+use crate::handler_json::data::{CBuffType, CEffectAttrMod, CModBuildStatus, CState, CTgtMode};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
     id: rc::EEffectId,
     state: CState,
-    tgt_mode: CTgtMode,
+    tgt_mode: Option<CTgtMode>,
+    buff_type: Option<CBuffType>,
     is_system_wide: bool,
-    is_proj_buff: bool,
-    is_fleet_buff: bool,
     is_assist: bool,
     is_offense: bool,
     hisec: Option<bool>,
@@ -28,10 +27,9 @@ impl From<&rc::ad::AEffect> for CEffect {
         CEffect {
             id: a_effect.id,
             state: (&a_effect.state).into(),
-            tgt_mode: (&a_effect.tgt_mode).into(),
+            tgt_mode: a_effect.tgt_mode.as_ref().map(|v| v.into()),
+            buff_type: a_effect.buff_type.as_ref().map(|v| v.into()),
             is_system_wide: a_effect.is_system_wide,
-            is_proj_buff: a_effect.is_proj_buff,
-            is_fleet_buff: a_effect.is_fleet_buff,
             is_assist: a_effect.is_assist,
             is_offense: a_effect.is_offense,
             hisec: a_effect.hisec,
@@ -54,10 +52,9 @@ impl Into<rc::ad::AEffect> for &CEffect {
         rc::ad::AEffect {
             id: self.id,
             state: (&self.state).into(),
-            tgt_mode: (&self.tgt_mode).into(),
+            tgt_mode: self.tgt_mode.as_ref().map(|v| v.into()),
+            buff_type: self.buff_type.as_ref().map(|v| v.into()),
             is_system_wide: self.is_system_wide,
-            is_proj_buff: self.is_proj_buff,
-            is_fleet_buff: self.is_fleet_buff,
             is_assist: self.is_assist,
             is_offense: self.is_offense,
             hisec: self.hisec,

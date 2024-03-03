@@ -21,7 +21,7 @@ impl CategorizedMods {
     pub(in crate::ss::svc::calc) fn from_item_effects(item: &SsItem, effects: &Vec<ad::ArcEffect>) -> Self {
         let mut mods = Self::new();
         for effect in effects.iter() {
-            if effect.is_proj_buff || effect.is_system_wide {
+            if effect.is_system_wide {
                 // Notion of "projected" and "system-wise" differs between the adapted data part and
                 // the calculator part. In adapted data, projected buff is an effect which applied
                 // via the buff system, like abyssal weather, and system-wide modification is an
@@ -33,7 +33,7 @@ impl CategorizedMods {
                 } else {
                     &mut mods.projected
                 }
-            } else if effect.is_fleet_buff {
+            } else if matches!(effect.buff_type, Some(ad::ABuffType::FleetShips)) {
                 // Fleet buff means fleet modifiers only
                 &mut mods.fleet
             } else if effect.is_targeted() {

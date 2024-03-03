@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use crate::ss::{item::SsItem, svc::calc::support::SsAttrMod};
+use crate::ss::svc::calc::support::SsAttrMod;
 
 pub(in crate::ss::svc::calc) struct ProjRegister {
     // All system-wide modifiers

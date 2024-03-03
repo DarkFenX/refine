@@ -28,25 +28,31 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
     let mut a_effects = Vec::new();
     for e_effect in g_data.effects.iter() {
         let (state, tgt_mode, is_system_wide) = match e_effect.category_id {
-            ec::effcats::PASSIVE => (State::Offline, ad::ATgtMode::None, false),
-            ec::effcats::ACTIVE => (State::Active, ad::ATgtMode::None, false),
-            ec::effcats::TARGET => (State::Active, ad::ATgtMode::Item, false),
-            ec::effcats::ONLINE => (State::Online, ad::ATgtMode::None, false),
-            ec::effcats::OVERLOAD => (State::Overload, ad::ATgtMode::None, false),
-            ec::effcats::SYSTEM => (State::Offline, ad::ATgtMode::None, true),
+            ec::effcats::PASSIVE => (State::Offline, None, false),
+            ec::effcats::ACTIVE => (State::Active, None, false),
+            ec::effcats::TARGET => (State::Active, Some(ad::ATgtMode::Item), false),
+            ec::effcats::ONLINE => (State::Online, None, false),
+            ec::effcats::OVERLOAD => (State::Overload, None, false),
+            ec::effcats::SYSTEM => (State::Offline, None, true),
             _ => {
                 let msg = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
                 tracing::warn!("{msg}");
                 continue;
             }
         };
+        let buff_type = if ec::effects::FLEET_BUFF_EFFECT_IDS.contains(&e_effect.id) {
+            Some(ad::ABuffType::FleetShips)
+        } else if ec::effects::EVERYTHING_BUFF_EFFECT_IDS.contains(&e_effect.id) {
+            Some(ad::ABuffType::Everything)
+        } else {
+            None
+        };
         let mut a_effect = ad::AEffect::new(
             e_effect.id,
             state,
             tgt_mode,
+            buff_type,
             is_system_wide,
-            ec::effects::PROJ_BUFF_EFFECT_IDS.contains(&e_effect.id),
-            ec::effects::FLEET_BUFF_EFFECT_IDS.contains(&e_effect.id),
             e_effect.is_assistance,
             e_effect.is_offensive,
             None,
@@ -255,7 +261,7 @@ fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRes
         "shipID" => Ok(ModDomain::Ship),
         "structureID" => Ok(ModDomain::Structure),
         "targetID" => match a_effect.tgt_mode {
-            ad::ATgtMode::Item => Ok(ModDomain::Item),
+            Some(ad::ATgtMode::Item) => Ok(ModDomain::Item),
             _ => Err(IntError::new(format!(
                 "modifier uses {} domain on untargeted effect",
                 domain
@@ -324,11 +330,11 @@ where
     map
 }
 
-fn get_abil_tgt_mode(tgt_mode: &str) -> IntResult<ad::ATgtMode> {
+fn get_abil_tgt_mode(tgt_mode: &str) -> IntResult<Option<ad::ATgtMode>> {
     match tgt_mode {
-        "untargeted" => Ok(ad::ATgtMode::None),
-        "itemTargeted" => Ok(ad::ATgtMode::Item),
-        "pointTargeted" => Ok(ad::ATgtMode::Point),
+        "untargeted" => Ok(None),
+        "itemTargeted" => Ok(Some(ad::ATgtMode::Item)),
+        "pointTargeted" => Ok(Some(ad::ATgtMode::Point)),
         _ => Err(IntError::new(format!("unknown ability target mode \"{tgt_mode}\""))),
     }
 }
