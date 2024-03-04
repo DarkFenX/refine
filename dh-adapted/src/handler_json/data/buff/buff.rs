@@ -9,7 +9,7 @@ pub(in crate::handler_json) struct CBuff {
 }
 impl From<&rc::ad::ABuff> for CBuff {
     fn from(a_buff: &rc::ad::ABuff) -> Self {
-        CBuff {
+        Self {
             id: a_buff.id,
             aggr_mode: (&a_buff.aggr_mode).into(),
             op: (&a_buff.op).into(),

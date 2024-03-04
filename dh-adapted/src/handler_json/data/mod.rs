@@ -2,7 +2,7 @@
 
 use attr::CAttr;
 use buff::{CBuff, CBuffAttrMod, CModAggrMode};
-use effect::{CBuffType, CEffect, CEffectAttrMod, CModBuildStatus, CState, CTgtMode};
+use effect::{CEffect, CEffectAttrMod, CEffectBuffInfo, CModBuildStatus, CState, CTgtMode};
 use item::{CItem, CItemEffData, CItemType};
 use mod_shared::{CModDomain, CModOp, CModSrq, CModTgtFilter};
 use muta::{CMuta, CMutaAttrRange};

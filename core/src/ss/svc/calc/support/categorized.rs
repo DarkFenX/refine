@@ -33,7 +33,7 @@ impl CategorizedMods {
                 } else {
                     &mut mods.projected
                 }
-            } else if matches!(effect.buff_type, Some(ad::ABuffType::FleetShips)) {
+            } else if effect.is_fleet() {
                 // Fleet buff means fleet modifiers only
                 &mut mods.fleet
             } else if effect.is_targeted() {

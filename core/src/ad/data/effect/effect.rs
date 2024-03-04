@@ -1,5 +1,5 @@
 use crate::{
-    ad::{ABuffType, AEffectAttrMod, AModBuildStatus, ATgtMode},
+    ad::{AEffectAttrMod, AEffectBuffInfo, AEffectBuffScope, AModBuildStatus, ATgtMode},
     defs::{EAttrId, EEffectId},
     shr::State,
     util::Named,
@@ -17,8 +17,6 @@ pub struct AEffect {
     pub state: State,
     /// Defines what kind of target you need to run the effect.
     pub tgt_mode: Option<ATgtMode>,
-    /// Defines how effect buff is applied.
-    pub buff_type: Option<ABuffType>,
     /// Defines if effect is applied to all items in system or not.
     pub is_system_wide: bool,
     /// Defines if the effect is considered as an assistance.
@@ -50,6 +48,8 @@ pub struct AEffect {
     pub mods: Vec<AEffectAttrMod>,
     /// Refers effects this effect stops on target.
     pub stop_ids: Vec<EEffectId>,
+    /// Buff carried by the effect..
+    pub buff: Option<AEffectBuffInfo>,
 }
 impl AEffect {
     /// Make a new adapted dogma effect out of passed data.
@@ -57,7 +57,6 @@ impl AEffect {
         id: EEffectId,
         state: State,
         tgt_mode: Option<ATgtMode>,
-        buff_type: Option<ABuffType>,
         is_system_wide: bool,
         is_assist: bool,
         is_offense: bool,
@@ -73,12 +72,12 @@ impl AEffect {
         mod_build_status: AModBuildStatus,
         mods: Vec<AEffectAttrMod>,
         stop_ids: Vec<EEffectId>,
+        buff: Option<AEffectBuffInfo>,
     ) -> Self {
         Self {
             id,
             state,
             tgt_mode,
-            buff_type,
             is_system_wide,
             is_assist,
             is_offense,
@@ -94,10 +93,20 @@ impl AEffect {
             mod_build_status,
             mods,
             stop_ids,
+            buff,
         }
     }
     pub(crate) fn is_targeted(&self) -> bool {
         self.tgt_mode.is_some()
+    }
+    pub(crate) fn is_fleet(&self) -> bool {
+        match &self.buff {
+            Some(buff_info) => match buff_info.scope {
+                AEffectBuffScope::FleetShips => true,
+                _ => false,
+            },
+            None => false,
+        }
     }
 }
 impl Named for AEffect {

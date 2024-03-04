@@ -40,10 +40,16 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                 continue;
             }
         };
-        let buff_type = if ec::effects::FLEET_BUFF_EFFECT_IDS.contains(&e_effect.id) {
-            Some(ad::ABuffType::FleetShips)
+        let buff_info = if ec::effects::FLEET_BUFF_EFFECT_IDS.contains(&e_effect.id) {
+            Some(ad::AEffectBuffInfo::new(
+                ad::AEffectBuffDataSrc::DefaultAttrs,
+                ad::AEffectBuffScope::FleetShips,
+            ))
         } else if ec::effects::EVERYTHING_BUFF_EFFECT_IDS.contains(&e_effect.id) {
-            Some(ad::ABuffType::Everything)
+            Some(ad::AEffectBuffInfo::new(
+                ad::AEffectBuffDataSrc::DefaultAttrs,
+                ad::AEffectBuffScope::Everything,
+            ))
         } else {
             None
         };
@@ -51,7 +57,6 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
             e_effect.id,
             state,
             tgt_mode,
-            buff_type,
             is_system_wide,
             e_effect.is_assistance,
             e_effect.is_offensive,
@@ -67,6 +72,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
             ad::AModBuildStatus::Unbuilt,
             Vec::new(),
             Vec::new(),
+            buff_info,
         );
         let mut mod_errs = 0;
         for e_modifier in e_effect.mods.iter() {

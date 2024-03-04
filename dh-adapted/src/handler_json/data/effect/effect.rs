@@ -1,11 +1,10 @@
-use crate::handler_json::data::{CBuffType, CEffectAttrMod, CModBuildStatus, CState, CTgtMode};
+use crate::handler_json::data::{CEffectAttrMod, CEffectBuffInfo, CModBuildStatus, CState, CTgtMode};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
     id: rc::EEffectId,
     state: CState,
     tgt_mode: Option<CTgtMode>,
-    buff_type: Option<CBuffType>,
     is_system_wide: bool,
     is_assist: bool,
     is_offense: bool,
@@ -21,6 +20,7 @@ pub(in crate::handler_json) struct CEffect {
     mod_build_status: CModBuildStatus,
     mods: Vec<CEffectAttrMod>,
     stop_ids: Vec<rc::EEffectId>,
+    buff: Option<CEffectBuffInfo>,
 }
 impl From<&rc::ad::AEffect> for CEffect {
     fn from(a_effect: &rc::ad::AEffect) -> Self {
@@ -28,7 +28,6 @@ impl From<&rc::ad::AEffect> for CEffect {
             id: a_effect.id,
             state: (&a_effect.state).into(),
             tgt_mode: a_effect.tgt_mode.as_ref().map(|v| v.into()),
-            buff_type: a_effect.buff_type.as_ref().map(|v| v.into()),
             is_system_wide: a_effect.is_system_wide,
             is_assist: a_effect.is_assist,
             is_offense: a_effect.is_offense,
@@ -44,6 +43,7 @@ impl From<&rc::ad::AEffect> for CEffect {
             mod_build_status: (&a_effect.mod_build_status).into(),
             mods: a_effect.mods.iter().map(|v| v.into()).collect(),
             stop_ids: a_effect.stop_ids.clone(),
+            buff: a_effect.buff.as_ref().map(|v| v.into()),
         }
     }
 }
@@ -53,7 +53,6 @@ impl Into<rc::ad::AEffect> for &CEffect {
             id: self.id,
             state: (&self.state).into(),
             tgt_mode: self.tgt_mode.as_ref().map(|v| v.into()),
-            buff_type: self.buff_type.as_ref().map(|v| v.into()),
             is_system_wide: self.is_system_wide,
             is_assist: self.is_assist,
             is_offense: self.is_offense,
@@ -69,6 +68,7 @@ impl Into<rc::ad::AEffect> for &CEffect {
             mod_build_status: (&self.mod_build_status).into(),
             mods: self.mods.iter().map(|v| v.into()).collect(),
             stop_ids: self.stop_ids.clone(),
+            buff: self.buff.as_ref().map(|v| v.into()),
         }
     }
 }

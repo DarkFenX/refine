@@ -11,7 +11,6 @@ pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) 
         ec::effects::REE_CHAR_MISSILE_DMG,
         State::Offline,
         None,
-        None,
         false,
         false,
         false,
@@ -27,6 +26,7 @@ pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) 
         ad::AModBuildStatus::Custom,
         Vec::new(),
         Vec::new(),
+        None,
     );
     effect.mods.push(mk_modifier(ec::attrs::EM_DMG));
     effect.mods.push(mk_modifier(ec::attrs::THERM_DMG));
