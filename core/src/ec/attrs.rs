@@ -41,5 +41,7 @@ pub(crate) const WARFARE_BUFF1_ID: EAttrId = 2468;
 pub(crate) const WARFARE_BUFF2_ID: EAttrId = 2470;
 pub(crate) const WARFARE_BUFF3_ID: EAttrId = 2472;
 pub(crate) const WARFARE_BUFF4_ID: EAttrId = 2536;
+// Repair-related
+pub(crate) const CHARGED_ARMOR_DMG_MULT: EAttrId = 1886;
 
 pub(crate) const BUFF_ID_ATTRS: [EAttrId; 4] = [WARFARE_BUFF1_ID, WARFARE_BUFF2_ID, WARFARE_BUFF3_ID, WARFARE_BUFF4_ID];

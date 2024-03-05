@@ -4,6 +4,8 @@ use crate::{
     util::Result,
 };
 
+use super::custom_aar;
+
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::calc::modifier) enum SsAttrModSrc {
     AttrId(EAttrId),
@@ -26,7 +28,7 @@ impl SsAttrModSrc {
         match self {
             Self::AttrId(attr_id) => Ok(svc.calc_get_item_attr_val(ss_view, item_id, attr_id)?.dogma),
             Self::PropulsionModule => Ok(1.0),
-            Self::AncillaryArmorRep => Ok(1.0),
+            Self::AncillaryArmorRep => custom_aar::get_mod_val(svc, ss_view, item_id),
         }
     }
 }

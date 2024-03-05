@@ -16,7 +16,7 @@ pub(in crate::ss) struct SsModule {
     pub(in crate::ss) state: State,
     pub(in crate::ss) rack: ModRack,
     pub(in crate::ss) pos: Idx,
-    pub(in crate::ss) charge_a_item_id: Option<SsItemId>,
+    pub(in crate::ss) charge_ss_item_id: Option<SsItemId>,
     pub(in crate::ss) effect_modes: EffectModes,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
@@ -38,7 +38,7 @@ impl SsModule {
             state,
             rack,
             pos,
-            charge_a_item_id: charge_a_item_id,
+            charge_ss_item_id: charge_a_item_id,
             effect_modes: EffectModes::new(),
             a_item: src.get_a_item(&a_item_id),
         }
