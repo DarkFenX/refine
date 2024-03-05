@@ -1,8 +1,12 @@
 use crate::{
     defs::{AttrVal, SsItemId},
     ec,
-    ss::{item::SsItem, svc::SsSvcs, view::SsView},
-    util::Result,
+    ss::{
+        item::{SsItem, SsModule},
+        svc::SsSvcs,
+        view::SsView,
+    },
+    util::{Error, ErrorKind, Named, Result},
 };
 
 pub(super) fn get_mod_val(svc: &mut SsSvcs, ss_view: &SsView, item_id: &SsItemId) -> Result<AttrVal> {
@@ -14,12 +18,8 @@ pub(super) fn get_mod_val(svc: &mut SsSvcs, ss_view: &SsView, item_id: &SsItemId
                 // No charge - no extra reps
                 None => return Ok(1.0),
             };
-            let charge = match ss_view.items.get_item(&charge_id) {
-                Ok(charge) => charge,
-                // Can't fetch charge data - no extra reps
-                // Shouldn't ever happen, added just for safety
-                Err(_) => return Ok(1.0),
-            };
+            // Can't fetch charge - return error (since it should never happen)
+            let charge = ss_view.items.get_item(&charge_id)?;
             if charge.get_a_item_id() == ec::items::NANITE_REPAIR_PASTE {
                 match svc.calc_get_item_attr_val(ss_view, item_id, &ec::attrs::CHARGED_ARMOR_DMG_MULT) {
                     Ok(ss_attr) => return Ok(ss_attr.dogma),
@@ -31,7 +31,13 @@ pub(super) fn get_mod_val(svc: &mut SsSvcs, ss_view: &SsView, item_id: &SsItemId
                 return Ok(1.0);
             }
         }
-        // Not a module - no extra reps
-        _ => return Ok(1.0),
+        // Not a module - return error (should never happen with correct data)
+        _ => {
+            return Err(Error::new(ErrorKind::UnexpectedItemType(
+                item.get_id(),
+                item.get_name(),
+                SsModule::get_name(),
+            )))
+        }
     };
 }
