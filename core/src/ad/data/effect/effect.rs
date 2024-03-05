@@ -48,7 +48,7 @@ pub struct AEffect {
     pub mods: Vec<AEffectAttrMod>,
     /// Refers effects this effect stops on target.
     pub stop_ids: Vec<EEffectId>,
-    /// Buff carried by the effect..
+    /// Buff carried by the effect.
     pub buff: Option<AEffectBuffInfo>,
 }
 impl AEffect {

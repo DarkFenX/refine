@@ -3,7 +3,7 @@ use crate::{
     shr::ModOp,
 };
 
-use super::SsAttrMod;
+use super::super::modifier::SsAttrMod;
 
 // This is an auxiliary entity to make sure that overlapping modifications are
 // not applied. We can only guess what's in actual key in EVE, and what we have

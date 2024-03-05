@@ -4,6 +4,6 @@ use crate::defs::EItemId;
 pub enum AModSrq {
     /// Targets items which skill-require item which carries the modifier.
     SelfRef,
-    // Affects items which require specified skill.
+    /// Affects items which require specified skill.
     ItemId(EItemId),
 }

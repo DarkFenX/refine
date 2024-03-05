@@ -12,7 +12,7 @@ use crate::{
 };
 
 use super::{
-    super::modifier::{SsAttrMod, SsModTgtFilter},
+    super::super::modifier::{SsAttrMod, SsModTgtFilter},
     DomsAct,
 };
 

@@ -9,7 +9,10 @@ pub(crate) struct InnerSrc {
     pub(crate) a_handler: Box<dyn ad::AdaptedDataHandler>,
 }
 impl InnerSrc {
-    pub(crate) fn new(e_handler: Box<dyn ed::EveDataHandler>, mut a_handler: Box<dyn ad::AdaptedDataHandler>) -> Result<Self> {
+    pub(crate) fn new(
+        e_handler: Box<dyn ed::EveDataHandler>,
+        mut a_handler: Box<dyn ad::AdaptedDataHandler>,
+    ) -> Result<Self> {
         tracing::info!("initializing new source with {e_handler:?} and {a_handler:?}",);
         let e_version = get_e_version(&e_handler);
         if need_to_adapt(e_version.clone(), &mut a_handler) {

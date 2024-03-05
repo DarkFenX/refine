@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::SsItemId,
     ss::{
-        svc::{calc::support::SsAttrMod, SsSvcs},
+        svc::{calc::modifier::SsAttrMod, SsSvcs},
         SsView,
     },
 };

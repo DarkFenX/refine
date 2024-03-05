@@ -6,7 +6,7 @@ use crate::{
     },
 };
 
-use super::{super::modifier::SsAttrMod, mods::ModifierRegister, tgts::TgtItemRegister};
+use super::{super::super::modifier::SsAttrMod, mods::ModifierRegister, tgts::TgtItemRegister};
 
 pub(in crate::ss::svc::calc) struct ModRegister {
     mods: ModifierRegister,

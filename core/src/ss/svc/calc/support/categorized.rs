@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    ss::{item::SsItem, svc::calc::support::SsAttrMod},
+    ss::{item::SsItem, svc::calc::modifier::SsAttrMod},
 };
 
 pub(in crate::ss::svc::calc) struct CategorizedMods {
