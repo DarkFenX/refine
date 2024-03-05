@@ -183,7 +183,7 @@ impl SsSvcs {
             .calc_data
             .mods
             .iter_mods_for_src(item_id)
-            .filter(|v| v.src_attr_id == *attr_id)
+            .filter(|v| v.get_src_attr_id() == Some(*attr_id))
             .map(|v| *v)
             .collect_vec();
         let item = ss_view.items.get_item(item_id).unwrap();
@@ -213,7 +213,7 @@ impl SsSvcs {
     ) -> HashMap<ModKey, Modification> {
         let mut mods = HashMap::new();
         for modifier in self.calc_data.mods.get_mods_for_tgt(item, attr_id, ss_view.fits).iter() {
-            let val = match self.calc_get_item_attr_val(ss_view, &modifier.src_item_id, &modifier.src_attr_id) {
+            let val = match modifier.get_mod_val(self, ss_view) {
                 Ok(v) => v,
                 _ => continue,
             };
@@ -227,7 +227,7 @@ impl SsSvcs {
             };
             // TODO: implement resistance support (add it to key as well? idk)
             let mod_key = ModKey::from(modifier);
-            let modification = Modification::new(modifier.op, val.dogma, 1.0, ModAggrMode::Stack, pen_immune);
+            let modification = Modification::new(modifier.op, val, 1.0, ModAggrMode::Stack, pen_immune);
             mods.insert(mod_key, modification);
         }
         mods
