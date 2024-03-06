@@ -25,37 +25,39 @@ impl SolarSystem {
         self.items.get_item(item_id).map(|v| SsItemInfo::from_ss_item(v, self))
     }
     pub fn remove_item(&mut self, item_id: &SsItemId) -> Result<()> {
+        // Gather info to remove child or update parent items
+        let main = self.items.get_item(item_id)?;
+        let charge_id_opt = match main {
+            SsItem::Module(m) => m.charge_item_id,
+            _ => None,
+        };
+        let parent_id_opt = match main {
+            SsItem::Charge(charge) => Some(charge.cont_id),
+            _ => None,
+        };
+        // Remove child items
+        if let Some(charge_id) = charge_id_opt {
+            let charge = self.items.get_item(&charge_id)?;
+            self.svcs
+                .remove_item(&SsView::new(&self.src, &self.fits, &self.items), charge);
+            self.items.remove_item(&charge_id);
+        };
+        // Handle item itself
         let main = self.items.get_item(item_id)?;
         self.svcs
             .remove_item(&SsView::new(&self.src, &self.fits, &self.items), &main);
         if let Some(fit_id) = main.get_fit_id() {
-            self.fits.get_fit_mut(&fit_id)?.remove_item(main);
+            let fit = self.fits.get_fit_mut(&fit_id)?;
+            fit.remove_item(main);
         }
-        match main {
-            // Remove reference to charge if it's charge which we're removing
-            // Item::Charge(c) => match self.items.get_mut(&c.cont_id) {
-            //     None => {
-            //         self.items.remove(item_id);
-            //         return Ok(())
-            //     },
-            //     Some(other) => match other {
-            //         Item::Module(m) => m.charge_id = None,
-            //         _ => (),
-            //     },
-            // },
-            // Remove charge if we're removing a module, charges cannot exist without their carrier
-            SsItem::Module(m) => match m.charge_item_id {
-                Some(other_id) => match self.items.remove_item(&other_id) {
-                    Some(charge) => self
-                        .svcs
-                        .remove_item(&SsView::new(&self.src, &self.fits, &self.items), &charge),
-                    _ => (),
-                },
-                _ => (),
-            },
-            _ => (),
-        };
         self.items.remove_item(item_id);
+        // Update parent item
+        if let Some(parent_id) = parent_id_opt {
+            let parent = self.items.get_item_mut(&parent_id)?;
+            if let SsItem::Module(m) = parent {
+                m.charge_item_id = None
+            }
+        }
         Ok(())
     }
     // Non-public

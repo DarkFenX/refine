@@ -103,21 +103,22 @@ impl SolarSystem {
     pub fn set_module_charge(&mut self, item_id: &SsItemId, charge_a_item_id: EItemId) -> Result<SsChargeInfo> {
         let c_item_id = self.items.alloc_item_id()?;
         self.remove_module_charge(item_id)?;
-        let module = self.items.get_module(item_id)?;
-        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_a_item_id, module.id);
         let module = self.items.get_module_mut(item_id)?;
         module.charge_item_id = Some(c_item_id);
+        let module = self.items.get_module(item_id)?;
+        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_a_item_id, module.id);
         Ok(c_info)
     }
     pub fn remove_module_charge(&mut self, item_id: &SsItemId) -> Result<bool> {
-        let module = self.items.get_module_mut(item_id)?;
-        match module.charge_item_id {
+        let module = self.items.get_module(item_id)?;
+        let removed = match module.charge_item_id {
             Some(cid) => {
-                module.charge_item_id = None;
-                Ok(self.items.remove_item(&cid).is_some())
+                self.remove_item(&cid)?;
+                true
             }
-            None => Ok(false),
-        }
+            None => false,
+        };
+        Ok(removed)
     }
     // Non-public
     pub(in crate::ss) fn make_mod_info(&self, module: &SsModule) -> SsModuleInfo {
