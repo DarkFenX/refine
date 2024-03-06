@@ -9,6 +9,8 @@ use crate::{
     util::{Error, ErrorKind, Named, Result},
 };
 
+use super::src_attr::AAR_SRC_ATTR_ID;
+
 pub(in crate::ss::svc::calc::modifier) fn get_mod_val(
     svc: &mut SsSvcs,
     ss_view: &SsView,
@@ -25,7 +27,7 @@ pub(in crate::ss::svc::calc::modifier) fn get_mod_val(
             // Can't fetch charge - return error (since it should never happen)
             let charge = ss_view.items.get_item(&charge_id)?;
             if charge.get_a_item_id() == ec::items::NANITE_REPAIR_PASTE {
-                match svc.calc_get_item_attr_val(ss_view, item_id, &ec::attrs::CHARGED_ARMOR_DMG_MULT) {
+                match svc.calc_get_item_attr_val(ss_view, item_id, &AAR_SRC_ATTR_ID) {
                     Ok(ss_attr) => return Ok(ss_attr.dogma),
                     // Can't fetch multiplier attr - no extra reps
                     Err(_) => return Ok(1.0),

@@ -17,7 +17,7 @@ impl SsAttrModSrc {
         match self {
             Self::AttrId(attr_id) => Some(*attr_id),
             Self::PropulsionModule => None,
-            Self::AncillaryArmorRep => None,
+            Self::AncillaryArmorRep => Some(aar::AAR_SRC_ATTR_ID),
         }
     }
     pub(in crate::ss::svc::calc::modifier) fn get_mod_val(
