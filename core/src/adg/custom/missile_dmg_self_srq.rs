@@ -13,6 +13,7 @@ pub(in crate::adg::custom) fn mk_self_skillreq_modifier_missile_dmg(a_data: &mut
 }
 
 fn add_mod_for_effect_attr(a_data: &mut ad::AData, effect_id: EEffectId, attr_id: EAttrId) {
+    let mut applied = false;
     for effect in a_data.effects.iter_mut().filter(|v| v.id == effect_id) {
         if !effect.mods.is_empty() {
             tracing::info!("self-skillreq missile dmg effect {effect_id} has modifiers, overwriting them");
@@ -26,5 +27,9 @@ fn add_mod_for_effect_attr(a_data: &mut ad::AData, effect_id: EEffectId, attr_id
         );
         effect.mods.push(modifier);
         effect.mod_build_status = ad::AModBuildStatus::Custom;
+        applied = true;
+    }
+    if !applied {
+        tracing::info!("self-skillreq missile dmg effect {effect_id} isn't found for customization");
     }
 }

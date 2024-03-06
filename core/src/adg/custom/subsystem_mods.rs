@@ -1,9 +1,12 @@
 use crate::{
     ad,
-    defs::EAttrId,
+    defs::{EAttrId, EEffectId},
     ec,
     shr::{ModDomain, ModOp},
 };
+
+const SLOT_EFFECT: EEffectId = ec::effects::SLOT_MODIFIER;
+const HARDPOINT_EFFECT: EEffectId = ec::effects::HARDPOINT_MODIFIER_EFFECT;
 
 pub(in crate::adg::custom) fn add_subsystem_modifiers(a_data: &mut ad::AData) {
     add_slot_modifiers(a_data);
@@ -11,7 +14,8 @@ pub(in crate::adg::custom) fn add_subsystem_modifiers(a_data: &mut ad::AData) {
 }
 
 fn add_slot_modifiers(a_data: &mut ad::AData) {
-    for effect in a_data.effects.iter_mut().filter(|v| v.id == ec::effects::SLOT_MODIFIER) {
+    let mut applied = false;
+    for effect in a_data.effects.iter_mut().filter(|v| v.id == SLOT_EFFECT) {
         if !effect.mods.is_empty() {
             tracing::info!("slot modifier effect has modifiers, overwriting them");
             effect.mods.clear();
@@ -26,15 +30,16 @@ fn add_slot_modifiers(a_data: &mut ad::AData) {
             .mods
             .push(mk_modifier(ec::attrs::LOW_SLOT_MODIFIER, ec::attrs::LOW_SLOTS));
         effect.mod_build_status = ad::AModBuildStatus::Custom;
+        applied = true;
+    }
+    if !applied {
+        tracing::info!("slot modifier effect {SLOT_EFFECT} isn't found for customization");
     }
 }
 
 fn add_hardpoint_modifiers(a_data: &mut ad::AData) {
-    for effect in a_data
-        .effects
-        .iter_mut()
-        .filter(|v| v.id == ec::effects::HARDPOINT_MODIFIER_EFFECT)
-    {
+    let mut applied = false;
+    for effect in a_data.effects.iter_mut().filter(|v| v.id == HARDPOINT_EFFECT) {
         if !effect.mods.is_empty() {
             tracing::info!("hardpoint modifier effect has modifiers, overwriting them");
             effect.mods.clear();
@@ -48,6 +53,10 @@ fn add_hardpoint_modifiers(a_data: &mut ad::AData) {
             ec::attrs::LAUNCHER_SLOTS_LEFT,
         ));
         effect.mod_build_status = ad::AModBuildStatus::Custom;
+        applied = true;
+    }
+    if !applied {
+        tracing::info!("hardpoint modifier effect {HARDPOINT_EFFECT} isn't found for customization");
     }
 }
 
