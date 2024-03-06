@@ -62,10 +62,10 @@ impl SsAttrMod {
     }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::ss::svc::calc) fn needs_revision_on_item_add(&self) -> bool {
-        self.src_val_getter.needs_revision_on_item_add()
+        self.src_val_getter.revisable_on_item_add()
     }
     pub(in crate::ss::svc::calc) fn needs_revision_on_item_remove(&self) -> bool {
-        self.src_val_getter.needs_revision_on_item_remove()
+        self.src_val_getter.revisable_on_item_remove()
     }
     pub(in crate::ss::svc::calc) fn revise_on_item_add(&self, added_item: &SsItem, ss_view: &SsView) -> bool {
         let src_item = match ss_view.items.get_item(&self.src_item_id) {

@@ -4,7 +4,7 @@ use crate::{
     util::Result,
 };
 
-use super::custom::aar;
+use super::custom::{aar, prop};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::calc::modifier) enum SsAttrModSrc {
@@ -28,19 +28,19 @@ impl SsAttrModSrc {
     ) -> Result<AttrVal> {
         match self {
             Self::AttrId(attr_id) => Ok(svc.calc_get_item_attr_val(ss_view, item_id, attr_id)?.dogma),
-            Self::PropulsionModule => Ok(1.0),
+            Self::PropulsionModule => prop::get_mod_val(svc, ss_view, item_id),
             Self::AncillaryArmorRep => aar::get_mod_val(svc, ss_view, item_id),
         }
     }
     // Revision methods - define if modification value can change upon some action
-    pub(in crate::ss::svc::calc::modifier) fn needs_revision_on_item_add(&self) -> bool {
+    pub(in crate::ss::svc::calc::modifier) fn revisable_on_item_add(&self) -> bool {
         match self {
             Self::AttrId(_) => false,
             Self::PropulsionModule => false,
             Self::AncillaryArmorRep => true,
         }
     }
-    pub(in crate::ss::svc::calc::modifier) fn needs_revision_on_item_remove(&self) -> bool {
+    pub(in crate::ss::svc::calc::modifier) fn revisable_on_item_remove(&self) -> bool {
         match self {
             Self::AttrId(_) => false,
             Self::PropulsionModule => false,

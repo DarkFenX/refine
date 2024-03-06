@@ -62,10 +62,10 @@ class Item(AttrDict):
             effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_mod_request(
-            ss_id=self._ss_id, 
-            item_id=self.id, 
-            state=state, 
-            charge=charge, 
+            ss_id=self._ss_id,
+            item_id=self.id,
+            state=state,
+            charge=charge,
             effect_modes=effect_modes)
 
     def change_mod(

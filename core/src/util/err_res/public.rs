@@ -2,7 +2,7 @@ use std::{error, fmt, result};
 
 use crate::{
     ad,
-    defs::{EAttrId, EItemId, Idx, SkillLevel, SsFitId, SsItemId},
+    defs::{EAttrId, EEffectId, EItemId, Idx, SkillLevel, SsFitId, SsItemId},
     ss::ModRack,
     util::Named,
 };
@@ -23,6 +23,7 @@ pub enum ErrorKind {
     AAttrNotFound(EAttrId),
     AItemNotLoaded(EItemId),
     NoAttrBaseValue(EAttrId, EItemId),
+    CustomModCalc,
 }
 
 #[derive(Debug)]
@@ -62,6 +63,7 @@ impl fmt::Display for Error {
                 ad::AItem::get_name(),
                 type_id
             ),
+            ErrorKind::CustomModCalc => write!(f, "failed to calculate custom modifier"),
         }
     }
 }

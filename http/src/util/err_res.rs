@@ -49,6 +49,7 @@ impl HError {
                 rc::ErrorKind::AAttrNotFound(_) => "COR-011",
                 rc::ErrorKind::AItemNotLoaded(_) => "COR-012",
                 rc::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
+                rc::ErrorKind::CustomModCalc => "COR-014",
             },
         };
         code.to_string()

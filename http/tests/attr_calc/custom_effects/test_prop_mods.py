@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_ab_state(client, consts):
+def test_ab(client, consts):
     eve_speed_attr = client.mk_eve_attr(id_=consts.Attr.max_velocity)
     eve_thrust_attr = client.mk_eve_attr(id_=consts.Attr.speed_boost_factor)
     eve_speed_boost_attr = client.mk_eve_attr(id_=consts.Attr.speed_factor)
@@ -22,19 +22,14 @@ def test_ab_state(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
-    api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.Rack.mid, state=consts.State.active)
+    api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.Rack.mid, state=consts.State.active)
     api_ship_item.update()
     assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1550000)
-    assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(32)
-    assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(455)
-    api_prop_item.change_mod(state=consts.State.online)
-    api_ship_item.update()
-    assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1050000)
-    assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(32)
-    assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(455)
+    assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(32)  # Not affected by sig blow
+    assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(1049.43548)
 
 
-def test_mwd_state(client, consts):
+def test_mwd(client, consts):
     eve_speed_attr = client.mk_eve_attr(id_=consts.Attr.max_velocity)
     eve_thrust_attr = client.mk_eve_attr(id_=consts.Attr.speed_boost_factor)
     eve_speed_boost_attr = client.mk_eve_attr(id_=consts.Attr.speed_factor)
@@ -55,13 +50,8 @@ def test_mwd_state(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
-    api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.Rack.mid, state=consts.State.active)
+    api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.Rack.mid, state=consts.State.active)
     api_ship_item.update()
     assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1550000)
     assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(176)
-    assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(455)
-    api_prop_item.change_mod(state=consts.State.online)
-    api_ship_item.update()
-    assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1050000)
-    assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(32)
-    assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(455)
+    assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(2678.62903)

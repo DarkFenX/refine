@@ -4,7 +4,7 @@ use crate::{
     ss::svc::calc::modifier::SsAttrMod,
 };
 
-use super::aar;
+use super::{aar, prop};
 
 pub(in crate::ss::svc::calc) fn extend_with_custom_mods(
     item_id: SsItemId,
@@ -13,6 +13,8 @@ pub(in crate::ss::svc::calc) fn extend_with_custom_mods(
 ) {
     match effect_id {
         ec::effects::REE_AAR_PASTE_BOOST => mods.push(aar::make_mod(item_id, effect_id)),
+        ec::effects::MOD_BONUS_AFTERBURNER => mods.push(prop::make_mod(item_id, effect_id)),
+        ec::effects::MOD_BONUS_MICROWARPDRIVE => mods.push(prop::make_mod(item_id, effect_id)),
         _ => (),
     }
 }
