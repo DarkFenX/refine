@@ -503,10 +503,12 @@ class TestClient:
             ss_id: str,
             item_id: str,
             state: Union[State, Type[Absent]] = Absent,
+            charge: Union[int, Type[Absent]] = Absent,
             effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
     ) -> Request:
         command = {'type': 'change_module', 'item_id': item_id}
         conditional_insert(command, 'state', state)
+        conditional_insert(command, 'charge', charge)
         conditional_insert(command, 'effect_modes', effect_modes)
         return Request(
             self,

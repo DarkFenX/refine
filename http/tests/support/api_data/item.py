@@ -58,17 +58,23 @@ class Item(AttrDict):
     def change_mod_request(
             self,
             state: Union[State, Type[Absent]] = Absent,
+            charge: Union[int, Type[Absent]] = Absent,
             effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_mod_request(
-            ss_id=self._ss_id, item_id=self.id, state=state, effect_modes=effect_modes)
+            ss_id=self._ss_id, 
+            item_id=self.id, 
+            state=state, 
+            charge=charge, 
+            effect_modes=effect_modes)
 
     def change_mod(
             self,
             state: Union[State, Type[Absent]] = Absent,
+            charge: Union[int, Type[Absent]] = Absent,
             effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
     ) -> None:
-        resp = self.change_mod_request(state=state, effect_modes=effect_modes).send()
+        resp = self.change_mod_request(state=state, charge=charge, effect_modes=effect_modes).send()
         assert resp.status_code == 200
 
     def remove_request(self) -> Request:

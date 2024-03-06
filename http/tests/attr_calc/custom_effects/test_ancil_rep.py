@@ -40,9 +40,9 @@ def test_charge_switch(client, consts):
     api_fit = api_ss.create_fit()
     api_aar_item = api_fit.add_mod(type_id=eve_aar_item.id, rack=consts.Rack.low)
     assert api_aar_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
-    api_aar_item.change_mod()
+    api_aar_item.change_mod(charge=eve_paste_item.id)
     assert api_aar_item.update().attrs[eve_tgt_attr.id].dogma == approx(300)
-    api_aar_item.change_mod()
+    api_aar_item.change_mod(charge=None)
     assert api_aar_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
