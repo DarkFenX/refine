@@ -45,6 +45,8 @@ class Effect(IntEnum):
     missile_expl_dmg_bonus = 661
     missile_kin_dmg_bonus = 668
     missile_therm_dmg_bonus = 662
+    mod_bonus_afterburner = 6731
+    mod_bonus_microwarpdrive = 6730
     online = 16
     self_rof = 1851
     ship_module_arar = 6651
@@ -157,6 +159,13 @@ class Attr(IntEnum):
     dmg_mult = 64
     dmg_mult_bonus = 292
     missile_dmg_mult = 212
+    max_velocity = 37
+    mass = 4
+    mass_addition = 796
+    sig_radius = 552
+    sig_radius_bonus = 554
+    speed_factor = 20
+    speed_boost_factor = 567
 
 
 @unique
