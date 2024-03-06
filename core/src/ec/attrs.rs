@@ -8,6 +8,10 @@ pub(crate) const ROF_BONUS: EAttrId = 293;
 pub(crate) const DMG_MULT: EAttrId = 64;
 pub(crate) const DMG_MULT_BONUS: EAttrId = 292;
 pub(crate) const MISSILE_DMG_MULT: EAttrId = 212;
+pub(crate) const MASS: EAttrId = 4;
+pub(crate) const MASS_ADDITION: EAttrId = 796;
+pub(crate) const SIG_RADIUS: EAttrId = 552;
+pub(crate) const SIG_RADIUS_BONUS: EAttrId = 554;
 // Damage attrs
 pub(crate) const EM_DMG: EAttrId = 114;
 pub(crate) const THERM_DMG: EAttrId = 118;

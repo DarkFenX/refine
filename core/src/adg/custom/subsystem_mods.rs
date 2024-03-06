@@ -17,7 +17,7 @@ fn add_slot_modifiers(a_data: &mut ad::AData) {
     let mut applied = false;
     for effect in a_data.effects.iter_mut().filter(|v| v.id == SLOT_EFFECT) {
         if !effect.mods.is_empty() {
-            tracing::info!("slot modifier effect has modifiers, overwriting them");
+            tracing::info!("slot modifier effect {SLOT_EFFECT} has modifiers, overwriting them");
             effect.mods.clear();
         }
         effect
@@ -41,7 +41,7 @@ fn add_hardpoint_modifiers(a_data: &mut ad::AData) {
     let mut applied = false;
     for effect in a_data.effects.iter_mut().filter(|v| v.id == HARDPOINT_EFFECT) {
         if !effect.mods.is_empty() {
-            tracing::info!("hardpoint modifier effect has modifiers, overwriting them");
+            tracing::info!("hardpoint modifier effect {HARDPOINT_EFFECT} has modifiers, overwriting them");
             effect.mods.clear();
         }
         effect.mods.push(mk_modifier(
