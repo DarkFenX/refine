@@ -29,7 +29,7 @@ pub(in crate::ss::svc::calc::modifier) fn get_mod_val(
         .calc_get_item_attr_val(ss_view, &ship_id, &ec::attrs::MASS)
         .map_err(|_| Error::new(ErrorKind::CustomModCalc))?;
     let perc = speed_boost.dogma * thrust.dogma / mass.dogma;
-    if perc.is_nan() {
+    if perc.is_infinite() {
         return Err(Error::new(ErrorKind::CustomModCalc));
     }
     let val = 1.0 + perc / 100.0;
