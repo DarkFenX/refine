@@ -25,4 +25,6 @@ pub enum ModOp {
     /// The same as forcing attribute to modification value. When there is at least one such
     /// modification, all other modification operations are ignored.
     PostAssign,
+    /// Non-dogma multiplication operator.
+    ExtraMul,
 }

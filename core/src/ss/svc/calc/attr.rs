@@ -29,7 +29,7 @@ const PENALIZABLE_OPS: [ModOp; 5] = [
     ModOp::PostDiv,
     ModOp::PostPerc,
 ];
-const OP_ORDER: [ModOp; 10] = [
+const DOGMA_OP_ORDER: [ModOp; 10] = [
     ModOp::PreAssign,
     ModOp::PreMul,
     ModOp::PreDiv,
@@ -95,6 +95,7 @@ impl SsSvcs {
                 ModOp::PostDiv => 1.0 / modification.val,
                 ModOp::PostPerc => 1.0 + modification.val / 100.0,
                 ModOp::PostAssign => modification.val,
+                ModOp::ExtraMul => modification.val,
             };
             match modification.aggr_mode {
                 ModAggrMode::Stack if penalize => stacked_penalized
@@ -114,12 +115,10 @@ impl SsSvcs {
             stacked.entry(op).or_insert_with(|| Vec::new()).push(penalized_val);
         }
         let mut dogma_val = base_val;
-        for op in OP_ORDER.iter() {
-            match stacked.get(op) {
-                Some(vals) => match op {
-                    ModOp::PreAssign => {
-                        dogma_val = process_assigns(vals, &attr);
-                    }
+        for op in DOGMA_OP_ORDER.iter() {
+            if let Some(vals) = stacked.get(op) {
+                match op {
+                    ModOp::PreAssign => dogma_val = process_assigns(vals, &attr),
                     ModOp::PreMul => dogma_val *= process_mults(vals),
                     ModOp::PreDiv => dogma_val *= process_mults(vals),
                     ModOp::Add => dogma_val += process_adds(vals),
@@ -128,11 +127,9 @@ impl SsSvcs {
                     ModOp::PostMulImmune => dogma_val *= process_mults(vals),
                     ModOp::PostDiv => dogma_val *= process_mults(vals),
                     ModOp::PostPerc => dogma_val *= process_mults(vals),
-                    ModOp::PostAssign => {
-                        dogma_val = process_assigns(vals, &attr);
-                    }
-                },
-                _ => (),
+                    ModOp::PostAssign => dogma_val = process_assigns(vals, &attr),
+                    ModOp::ExtraMul => (),
+                }
             }
         }
         // Upper cap for the attribute value being calculated
@@ -149,7 +146,12 @@ impl SsSvcs {
         if LIMITED_PRECISION_ATTR_IDS.contains(attr_id) {
             dogma_val = (dogma_val * 100.0).round() / 100.0
         }
-        Ok(SsAttrVal::new(base_val, dogma_val, dogma_val))
+        // Post-dogma calculations
+        let mut extra_val = dogma_val;
+        if let Some(vals) = stacked.get(&ModOp::ExtraMul) {
+            extra_val *= process_mults(vals);
+        }
+        Ok(SsAttrVal::new(base_val, dogma_val, extra_val))
     }
 }
 

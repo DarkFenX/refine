@@ -11,6 +11,7 @@ pub(in crate::handler_json) enum CModOp {
     PostDiv,
     PostPerc,
     PostAssign,
+    ExtraMul,
 }
 impl From<&rc::ModOp> for CModOp {
     fn from(mod_op: &rc::ModOp) -> Self {
@@ -25,6 +26,7 @@ impl From<&rc::ModOp> for CModOp {
             rc::ModOp::PostDiv => Self::PostDiv,
             rc::ModOp::PostPerc => Self::PostPerc,
             rc::ModOp::PostAssign => Self::PostAssign,
+            rc::ModOp::ExtraMul => Self::ExtraMul,
         }
     }
 }
@@ -41,6 +43,7 @@ impl Into<rc::ModOp> for &CModOp {
             CModOp::PostDiv => rc::ModOp::PostDiv,
             CModOp::PostPerc => rc::ModOp::PostPerc,
             CModOp::PostAssign => rc::ModOp::PostAssign,
+            CModOp::ExtraMul => rc::ModOp::ExtraMul,
         }
     }
 }

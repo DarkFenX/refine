@@ -11,7 +11,7 @@ pub(in crate::ss::svc::calc) fn make_mod(src_item_id: SsItemId, src_effect_id: E
         src_item_id,
         src_effect_id,
         SsAttrModSrc::AncillaryArmorRep,
-        ModOp::PostMulImmune,
+        ModOp::ExtraMul,
         ModAggrMode::Stack,
         SsModTgtFilter::Direct(ModDomain::Item),
         ec::attrs::ARMOR_DMG_AMOUNT,
