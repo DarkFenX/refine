@@ -44,7 +44,7 @@ impl SolarSystem {
             //     },
             // },
             // Remove charge if we're removing a module, charges cannot exist without their carrier
-            SsItem::Module(m) => match m.charge_ss_item_id {
+            SsItem::Module(m) => match m.charge_item_id {
                 Some(other_id) => match self.items.remove_item(&other_id) {
                     Some(charge) => self
                         .svcs

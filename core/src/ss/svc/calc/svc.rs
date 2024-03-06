@@ -72,9 +72,25 @@ impl SsSvcs {
     }
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
+        for ss_mod in self.calc_data.revs.get_mods_on_item_add() {
+            if ss_mod.revise_on_item_add(item, ss_view) {
+                let tgt_fits = ss_view.fits.iter_fits().collect();
+                for item_id in self.calc_data.mods.get_tgt_items(&ss_mod, &tgt_fits, ss_view.items) {
+                    self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
+                }
+            }
+        }
     }
     pub(in crate::ss::svc) fn calc_item_removed(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
+        for ss_mod in self.calc_data.revs.get_mods_on_item_remove() {
+            if ss_mod.revise_on_item_remove(item, ss_view) {
+                let tgt_fits = ss_view.fits.iter_fits().collect();
+                for item_id in self.calc_data.mods.get_tgt_items(&ss_mod, &tgt_fits, ss_view.items) {
+                    self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
+                }
+            }
+        }
     }
     pub(in crate::ss::svc) fn calc_item_loaded(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_data.attrs.add_item(item.get_id());
@@ -123,6 +139,10 @@ impl SsSvcs {
                 }
             }
         }
+        // Revisions
+        for ss_mod in mods.iter_all() {
+            self.calc_data.revs.reg_mod(ss_mod);
+        }
     }
     pub(in crate::ss::svc) fn calc_effects_stopped(
         &mut self,
@@ -160,6 +180,10 @@ impl SsSvcs {
                     self.calc_data.mods.unreg_mod(sw_mod);
                 }
             }
+        }
+        // Revisions
+        for ss_mod in mods.iter_all() {
+            self.calc_data.revs.unreg_mod(ss_mod);
         }
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(

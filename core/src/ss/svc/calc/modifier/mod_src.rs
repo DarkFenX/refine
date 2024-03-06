@@ -1,6 +1,6 @@
 use crate::{
     defs::{AttrVal, EAttrId, SsItemId},
-    ss::{svc::SsSvcs, SsView},
+    ss::{item::SsItem, svc::SsSvcs, SsView},
     util::Result,
 };
 
@@ -30,6 +30,43 @@ impl SsAttrModSrc {
             Self::AttrId(attr_id) => Ok(svc.calc_get_item_attr_val(ss_view, item_id, attr_id)?.dogma),
             Self::PropulsionModule => Ok(1.0),
             Self::AncillaryArmorRep => aar::get_mod_val(svc, ss_view, item_id),
+        }
+    }
+    // Revision methods - define if modification value can change upon some action
+    pub(in crate::ss::svc::calc::modifier) fn needs_revision_on_item_add(&self) -> bool {
+        match self {
+            Self::AttrId(_) => false,
+            Self::PropulsionModule => false,
+            Self::AncillaryArmorRep => true,
+        }
+    }
+    pub(in crate::ss::svc::calc::modifier) fn needs_revision_on_item_remove(&self) -> bool {
+        match self {
+            Self::AttrId(_) => false,
+            Self::PropulsionModule => false,
+            Self::AncillaryArmorRep => true,
+        }
+    }
+    pub(in crate::ss::svc::calc::modifier) fn revise_on_item_add(
+        &self,
+        src_item: &SsItem,
+        changed_item: &SsItem,
+    ) -> bool {
+        match self {
+            Self::AttrId(_) => false,
+            Self::PropulsionModule => false,
+            Self::AncillaryArmorRep => aar::revise_on_item_add_removal(src_item, changed_item),
+        }
+    }
+    pub(in crate::ss::svc::calc::modifier) fn revise_on_item_remove(
+        &self,
+        src_item: &SsItem,
+        changed_item: &SsItem,
+    ) -> bool {
+        match self {
+            Self::AttrId(_) => false,
+            Self::PropulsionModule => false,
+            Self::AncillaryArmorRep => aar::revise_on_item_add_removal(src_item, changed_item),
         }
     }
 }

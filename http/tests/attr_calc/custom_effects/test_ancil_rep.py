@@ -72,4 +72,3 @@ def test_mult_change(client, consts):
     assert api_aar_item.update().attrs[eve_aar_tgt_attr.id].dogma == approx(375)
     api_mod_item.remove()
     assert api_aar_item.update().attrs[eve_aar_tgt_attr.id].dogma == approx(300)
-

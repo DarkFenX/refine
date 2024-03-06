@@ -54,4 +54,7 @@ impl CategorizedMods {
         }
         mods
     }
+    pub(in crate::ss::svc::calc) fn iter_all(&self) -> impl Iterator<Item = &SsAttrMod> {
+        itertools::chain![&self.local, &self.system_wide, &self.projected, &self.fleet]
+    }
 }

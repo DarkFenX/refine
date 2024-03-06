@@ -60,4 +60,25 @@ impl SsAttrMod {
     pub(in crate::ss::svc::calc) fn get_mod_val(&self, svc: &mut SsSvcs, ss_view: &SsView) -> Result<AttrVal> {
         self.src_val_getter.get_mod_val(svc, ss_view, &self.src_item_id)
     }
+    // Revision methods - define if modification value can change upon some action
+    pub(in crate::ss::svc::calc) fn needs_revision_on_item_add(&self) -> bool {
+        self.src_val_getter.needs_revision_on_item_add()
+    }
+    pub(in crate::ss::svc::calc) fn needs_revision_on_item_remove(&self) -> bool {
+        self.src_val_getter.needs_revision_on_item_remove()
+    }
+    pub(in crate::ss::svc::calc) fn revise_on_item_add(&self, added_item: &SsItem, ss_view: &SsView) -> bool {
+        let src_item = match ss_view.items.get_item(&self.src_item_id) {
+            Ok(item) => item,
+            _ => return false,
+        };
+        self.src_val_getter.revise_on_item_add(src_item, added_item)
+    }
+    pub(in crate::ss::svc::calc) fn revise_on_item_remove(&self, added_item: &SsItem, ss_view: &SsView) -> bool {
+        let src_item = match ss_view.items.get_item(&self.src_item_id) {
+            Ok(item) => item,
+            _ => return false,
+        };
+        self.src_val_getter.revise_on_item_add(src_item, added_item)
+    }
 }

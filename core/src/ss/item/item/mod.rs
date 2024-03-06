@@ -339,7 +339,7 @@ impl SsItem {
             Self::Drone(_) => None,
             Self::Fighter(_) => None,
             Self::Implant(_) => None,
-            Self::Module(module) => module.charge_ss_item_id,
+            Self::Module(module) => module.charge_item_id,
             Self::ProjEffect(_) => None,
             Self::Rig(_) => None,
             Self::Ship(_) => None,

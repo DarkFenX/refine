@@ -17,7 +17,7 @@ pub(in crate::ss::svc::calc::modifier) fn get_mod_val(
     let item = ss_view.items.get_item(item_id)?;
     match item {
         SsItem::Module(module) => {
-            let charge_id = match module.charge_ss_item_id {
+            let charge_id = match module.charge_item_id {
                 Some(charge_id) => charge_id,
                 // No charge - no extra reps
                 None => return Ok(1.0),
