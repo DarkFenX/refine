@@ -1,6 +1,9 @@
 use crate::{
     ad,
-    ss::{item::SsItem, svc::calc::modifier::SsAttrMod},
+    ss::{
+        item::SsItem,
+        svc::calc::modifier::{extend_with_custom_mods, SsAttrMod},
+    },
 };
 
 pub(in crate::ss::svc::calc) struct CategorizedMods {
@@ -19,9 +22,10 @@ impl CategorizedMods {
         }
     }
     pub(in crate::ss::svc::calc) fn from_item_effects(item: &SsItem, effects: &Vec<ad::ArcEffect>) -> Self {
+        let item_id = item.get_id();
         let mut mods = Self::new();
         for effect in effects.iter() {
-            if effect.is_system_wide {
+            let vec = if effect.is_system_wide {
                 // Notion of "projected" and "system-wise" differs between the adapted data part and
                 // the calculator part. In adapted data, projected buff is an effect which applied
                 // via the buff system, like abyssal weather, and system-wide modification is an
@@ -42,8 +46,11 @@ impl CategorizedMods {
             } else {
                 // Untargeted effect means only local modifiers
                 &mut mods.local
-            }
-            .extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(item, effect, v)));
+            };
+            // Regular modifiers
+            vec.extend(effect.mods.iter().map(|v| SsAttrMod::from_a_data(item, effect, v)));
+            // Custom modifiers
+            extend_with_custom_mods(item_id, effect.id, vec);
         }
         mods
     }

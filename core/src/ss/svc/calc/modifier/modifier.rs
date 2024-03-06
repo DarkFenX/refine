@@ -20,7 +20,7 @@ pub(in crate::ss::svc::calc) struct SsAttrMod {
     pub(in crate::ss::svc::calc) tgt_attr_id: EAttrId,
 }
 impl SsAttrMod {
-    fn new(
+    pub(in crate::ss::svc::calc::modifier) fn new(
         src_item_id: SsItemId,
         src_effect_id: EEffectId,
         src_val_getter: SsAttrModSrc,

@@ -14,6 +14,7 @@ class State(StrEnum):
 @unique
 class Item(IntEnum):
     missile_launcher_operation = 3319
+    nanite_repair_paste = 28668
 
 
 @unique
@@ -38,6 +39,7 @@ class ItemCat(IntEnum):
 @unique
 class Effect(IntEnum):
     drone_dmg_bonus = 1730
+    fueled_armor_repair = 5275
     hardpoint_modifier_effect = 3773
     missile_em_dmg_bonus = 660
     missile_expl_dmg_bonus = 661
@@ -45,6 +47,7 @@ class Effect(IntEnum):
     missile_therm_dmg_bonus = 662
     online = 16
     self_rof = 1851
+    ship_module_arar = 6651
     slot_modifier = 3774
     weather_darkness = 7060
 
@@ -124,6 +127,9 @@ class Attr(IntEnum):
     therm_dmg = 118
     kin_dmg = 117
     expl_dmg = 116
+    # Repairing
+    armor_dmg_amount = 84
+    charged_armor_dmg_mult = 1886
     # Slots
     hi_slots = 14
     hi_slot_modifier = 1374

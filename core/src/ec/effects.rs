@@ -46,8 +46,12 @@ pub(crate) const MISSILE_KIN_DMG_BONUS: EEffectId = 668;
 pub(crate) const MISSILE_EXPL_DMG_BONUS: EEffectId = 661;
 pub(crate) const HARDPOINT_MODIFIER_EFFECT: EEffectId = 3773;
 pub(crate) const SLOT_MODIFIER: EEffectId = 3774;
+// Don't need customization by themselves, but are one of criteria for customizations
+pub(crate) const FUELED_ARMOR_REPAIR: EEffectId = 5275;
+pub(crate) const SHIP_MODULE_ARAR: EEffectId = 6651;
 // Library-specific effects
 pub(crate) const REE_CHAR_MISSILE_DMG: EEffectId = -1;
+pub(crate) const REE_AAR_PASTE_BOOST: EEffectId = -2;
 
 pub(crate) const EVERYTHING_BUFF_EFFECT_IDS: [EEffectId; 8] = [
     WEATHER_ELECTRIC_STORM,

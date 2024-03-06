@@ -9,7 +9,11 @@ use crate::{
     util::{Error, ErrorKind, Named, Result},
 };
 
-pub(super) fn get_mod_val(svc: &mut SsSvcs, ss_view: &SsView, item_id: &SsItemId) -> Result<AttrVal> {
+pub(in crate::ss::svc::calc::modifier) fn get_mod_val(
+    svc: &mut SsSvcs,
+    ss_view: &SsView,
+    item_id: &SsItemId,
+) -> Result<AttrVal> {
     let item = ss_view.items.get_item(item_id)?;
     match item {
         SsItem::Module(module) => {
