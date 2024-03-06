@@ -57,7 +57,7 @@ def test_mwd(client, consts):
     assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(2678.62903)
 
 
-def test_speed_stacking(client, consts):
+def test_speed_mod_stacking(client, consts):
     # Actual EVE scenario, AB speed boost + black hole speed boost
     eve_speed_attr = client.mk_eve_attr(id_=consts.Attr.max_velocity, stackable=False)
     eve_thrust_attr = client.mk_eve_attr(id_=consts.Attr.speed_boost_factor)
@@ -89,7 +89,7 @@ def test_speed_stacking(client, consts):
     assert api_ship_item.update().attrs[eve_speed_attr.id].dogma == approx(1833.82888)
 
 
-def test_mwd_sig_stacking(client, consts):
+def test_sig_mod_stacking(client, consts):
     # Actual EVE scenario, MWD sig bloom + shield rigs
     eve_sig_src_attr_prop = client.mk_eve_attr(id_=consts.Attr.sig_radius_bonus)
     eve_sig_tgt_attr = client.mk_eve_attr(id_=consts.Attr.sig_radius, stackable=False)
@@ -121,7 +121,7 @@ def test_mwd_sig_stacking(client, consts):
     assert api_ship_item.update().attrs[eve_sig_tgt_attr.id].dogma == approx(191.29651)
 
 
-def test_zero_div(client, consts):
+def test_speed_mod_mass_zero(client, consts):
     # Part of speed boost calculation is division by mass, just check what happens if it's 0
     eve_speed_attr = client.mk_eve_attr(id_=consts.Attr.max_velocity)
     eve_thrust_attr = client.mk_eve_attr(id_=consts.Attr.speed_boost_factor)
