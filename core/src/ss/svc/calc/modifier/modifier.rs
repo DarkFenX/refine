@@ -13,7 +13,7 @@ pub(in crate::ss::svc::calc) struct SsAttrMod {
     pub(in crate::ss::svc::calc) src_item_id: SsItemId,
     // This field is here just for hash
     pub(in crate::ss::svc::calc) src_effect_id: EEffectId,
-    pub(in crate::ss::svc::calc) src_val_getter: SsAttrModSrc,
+    src_val_getter: SsAttrModSrc,
     pub(in crate::ss::svc::calc) op: ModOp,
     pub(in crate::ss::svc::calc) aggr_mode: ModAggrMode,
     pub(in crate::ss::svc::calc) tgt_filter: SsModTgtFilter,
