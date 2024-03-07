@@ -1,3 +1,5 @@
+//! Service extension methods which handle attribute calculation.
+
 pub(in crate::ss::svc) use data::CalcData;
 pub use misc::SsAttrVal;
 
