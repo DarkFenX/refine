@@ -1,5 +1,5 @@
 pub(in crate::ss::svc) use data::CalcData;
-pub use misc::{SsAttrVal};
+pub use misc::SsAttrVal;
 
 mod data;
 mod misc;
