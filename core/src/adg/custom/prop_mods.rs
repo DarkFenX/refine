@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::EEffectId,
     ec,
-    shr::{ModDomain, ModOp, State},
+    shr::{ModDomain, ModOp},
 };
 
 const AB_EFFECT: EEffectId = ec::effects::MOD_BONUS_AFTERBURNER;

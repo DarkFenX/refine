@@ -2,7 +2,7 @@ use std::{error, fmt, result};
 
 use crate::{
     ad,
-    defs::{EAttrId, EEffectId, EItemId, Idx, SkillLevel, SsFitId, SsItemId},
+    defs::{EAttrId, EItemId, Idx, SkillLevel, SsFitId, SsItemId},
     ss::ModRack,
     util::Named,
 };
