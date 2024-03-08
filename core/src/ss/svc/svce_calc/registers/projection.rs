@@ -2,11 +2,11 @@ use std::collections::HashSet;
 
 use crate::ss::svc::svce_calc::modifier::SsAttrMod;
 
-pub(in crate::ss::svc::svce_calc) struct ProjRegister {
+pub(in crate::ss::svc::svce_calc) struct ProjectionRegister {
     // All system-wide modifiers
     sw_mods: HashSet<SsAttrMod>,
 }
-impl ProjRegister {
+impl ProjectionRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
             sw_mods: HashSet::new(),
