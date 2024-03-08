@@ -8,6 +8,7 @@ edition = "2021"
 rc = { package = "reefast-core", path = "../../core" }
 rdhe = { package = "reefast-dh-eve", path = "../../dh-eve", features = ["phb-file"] }
 rdha = { package = "reefast-dh-adapted", path = "../../dh-adapted", features = ["json"] }
+chrono = ">=0.4.35"
 itertools = ">=0.10.5"
 time = { version = ">=0.3.22", features = ["macros"] }
 tracing = ">=0.1"

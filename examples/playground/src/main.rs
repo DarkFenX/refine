@@ -3,6 +3,7 @@
 
 use std::{intrinsics::black_box, path::PathBuf, sync::Arc, thread::sleep, time::Duration};
 
+use chrono::Utc;
 use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
@@ -63,8 +64,11 @@ fn main() {
     for skill_id in skill_ids.iter() {
         sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
     }
+
+    let iterations = 1000000;
     tracing::error!("starting");
-    for _ in 0..1000000 {
+    let before = Utc::now();
+    for _ in 0..iterations {
         let anp = sol_sys
             .add_module(fit, ModRack::Low, OrdAddMode::Equip, 1306, State::Online, None)
             .unwrap();
@@ -72,7 +76,12 @@ fn main() {
         sol_sys.remove_item(&anp.id);
         black_box(sol_sys.get_item_attrs(&ship.id));
     }
+    let after = Utc::now();
     tracing::error!("done");
+    let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
+    let ips = iterations as f64 / delta_seconds;
+    println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
+
     // println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
     // sol_sys.set_module_state(&anp.id, State::Online);
     // println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
