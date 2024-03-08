@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use crate::ss::svc::svce_calc::modifier::SsAttrMod;
 
+// Intended to hold modifiers which need special handling, e.g. custom prop module modifiers
 pub(in crate::ss::svc::svce_calc) struct RevisionRegister {
     item_add: HashSet<SsAttrMod>,
     item_remove: HashSet<SsAttrMod>,

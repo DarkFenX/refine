@@ -7,13 +7,18 @@ use crate::{
     util::Result,
 };
 
+// Solar system glues everything together and is actual "god object" of the lib. It controls source
+// which will be used for data and general item structure - including their type, IDs, which fit
+// they belong to, which charges they have etc. But all the processing for those items (e.g.
+// attribute calculation) happens in services, which are also stored on solar system, but are
+// somewhat isolated.
 pub struct SolarSystem {
     pub(in crate::ss) src: Src,
     pub(in crate::ss) fits: SsFits,
-    // fleets will go here
+    // TODO: fleets will go here
     pub(in crate::ss) items: SsItems,
-    pub(in crate::ss) svcs: SsSvcs,
     pub(in crate::ss) sw_effects: HashSet<SsItemId>,
+    pub(in crate::ss) svcs: SsSvcs,
 }
 impl SolarSystem {
     pub fn new(src: Src) -> Self {
@@ -21,8 +26,8 @@ impl SolarSystem {
             src,
             fits: SsFits::new(),
             items: SsItems::new(),
-            svcs: SsSvcs::new(),
             sw_effects: HashSet::new(),
+            svcs: SsSvcs::new(),
         }
     }
     pub fn set_src(&mut self, src: Src) {

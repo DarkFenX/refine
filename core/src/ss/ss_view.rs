@@ -3,6 +3,8 @@ use crate::{
     ss::{fit::SsFits, item::SsItems},
 };
 
+// Should include all the solar system data, except for services
+// (since it's intended to be passed to services)
 pub(in crate::ss) struct SsView<'a> {
     pub(in crate::ss) src: &'a Src,
     pub(in crate::ss) fits: &'a SsFits,

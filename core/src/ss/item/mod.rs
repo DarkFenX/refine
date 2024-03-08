@@ -1,3 +1,5 @@
+//! Solar system item definitions.
+
 pub(in crate::ss) use container::SsItems;
 pub(in crate::ss) use item::SsItem;
 pub(in crate::ss) use item_booster::SsBooster;

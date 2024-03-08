@@ -1,3 +1,5 @@
+//! Exposed information about solar system items.
+
 pub use info::SsItemInfo;
 pub use info_booster::SsBoosterInfo;
 pub use info_character::SsCharacterInfo;

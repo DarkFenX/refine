@@ -72,6 +72,7 @@ impl SsSvcs {
     }
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
+        // Custom modifiers
         for ss_mod in self.calc_data.revs.get_mods_on_item_add() {
             if ss_mod.revise_on_item_add(item, ss_view) {
                 let tgt_fits = ss_view.fits.iter_fits().collect();
@@ -83,6 +84,7 @@ impl SsSvcs {
     }
     pub(in crate::ss::svc) fn calc_item_removed(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
+        // Custom modifiers
         for ss_mod in self.calc_data.revs.get_mods_on_item_remove() {
             if ss_mod.revise_on_item_remove(item, ss_view) {
                 let tgt_fits = ss_view.fits.iter_fits().collect();
@@ -257,7 +259,7 @@ impl SsSvcs {
         mods
     }
     fn handle_location_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {
-        if let Some(_) = item.get_top_domain() {
+        if item.get_top_domain().is_some() {
             let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
             for modifier in self
                 .calc_data
