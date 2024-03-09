@@ -1,8 +1,13 @@
 use crate::{
     defs::{AttrVal, SsItemId},
-    ec,
     ss::{svc::SsSvcs, SsView},
     util::{Error, ErrorKind, Result},
+};
+
+use super::{
+    attr::{PROP_BOOST, PROP_THRUST, SHIP_MASS},
+    deps::reg_dependencies,
+    misc::get_ship_id,
 };
 
 pub(in crate::ss::svc::svce_calc::modifier) fn get_mod_val(
@@ -11,22 +16,16 @@ pub(in crate::ss::svc::svce_calc::modifier) fn get_mod_val(
     item_id: &SsItemId,
 ) -> Result<AttrVal> {
     let speed_boost = svc
-        .calc_get_item_attr_val(ss_view, item_id, &ec::attrs::SPEED_FACTOR)
+        .calc_get_item_attr_val(ss_view, item_id, &PROP_BOOST)
         .map_err(|_| Error::new(ErrorKind::CustomModCalc))?;
     let thrust = svc
-        .calc_get_item_attr_val(ss_view, item_id, &ec::attrs::SPEED_BOOST_FACTOR)
+        .calc_get_item_attr_val(ss_view, item_id, &PROP_THRUST)
         .map_err(|_| Error::new(ErrorKind::CustomModCalc))?;
-    let prop_item = ss_view
-        .items
-        .get_item(item_id)
-        .map_err(|_| Error::new(ErrorKind::CustomModCalc))?;
-    let fit_id = prop_item
-        .get_fit_id()
+    let ship_id = get_ship_id(ss_view, item_id)
+        .map_err(|_| Error::new(ErrorKind::CustomModCalc))?
         .ok_or_else(|| Error::new(ErrorKind::CustomModCalc))?;
-    let fit = ss_view.fits.get_fit(&fit_id)?;
-    let ship_id = fit.ship.ok_or_else(|| Error::new(ErrorKind::CustomModCalc))?;
     let mass = svc
-        .calc_get_item_attr_val(ss_view, &ship_id, &ec::attrs::MASS)
+        .calc_get_item_attr_val(ss_view, &ship_id, &SHIP_MASS)
         .map_err(|_| Error::new(ErrorKind::CustomModCalc))?;
     let perc = speed_boost.dogma * thrust.dogma / mass.dogma;
     if perc.is_infinite() {
@@ -35,17 +34,6 @@ pub(in crate::ss::svc::svce_calc::modifier) fn get_mod_val(
     let val = 1.0 + perc / 100.0;
     // Register dependencies, so that target attribute is properly cleared up when any of source
     // attributes change
-    svc.calc_data
-        .deps
-        .add_dependency(*item_id, ec::attrs::SPEED_FACTOR, ship_id, ec::attrs::MAX_VELOCITY);
-    svc.calc_data.deps.add_dependency(
-        *item_id,
-        ec::attrs::SPEED_BOOST_FACTOR,
-        ship_id,
-        ec::attrs::MAX_VELOCITY,
-    );
-    svc.calc_data
-        .deps
-        .add_dependency(ship_id, ec::attrs::MASS, ship_id, ec::attrs::MAX_VELOCITY);
+    reg_dependencies(svc, *item_id, ship_id);
     Ok(val)
 }

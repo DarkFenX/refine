@@ -27,6 +27,13 @@ impl SsAttrModSrc {
             Self::AncillaryArmorRep => aar::get_mod_val(svc, ss_view, item_id),
         }
     }
+    pub(super) fn on_effect_stop(&self, svc: &mut SsSvcs, ss_view: &SsView, item_id: &SsItemId) {
+        match self {
+            Self::AttrId(_) => (),
+            Self::PropulsionModule => prop::on_effect_stop(svc, ss_view, item_id),
+            Self::AncillaryArmorRep => (),
+        }
+    }
     // Revision methods - define if modification value can change upon some action
     pub(super) fn revisable_on_item_add(&self) -> bool {
         match self {

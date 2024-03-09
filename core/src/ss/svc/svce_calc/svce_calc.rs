@@ -183,9 +183,10 @@ impl SsSvcs {
                 }
             }
         }
-        // Revisions
+        // Revisions and effect-specific processing
         for ss_mod in mods.iter_all() {
             self.calc_data.revs.unreg_mod(ss_mod);
+            ss_mod.on_effect_stop(self, ss_view);
         }
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(

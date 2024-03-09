@@ -60,6 +60,9 @@ impl SsAttrMod {
     pub(in crate::ss::svc::svce_calc) fn get_mod_val(&self, svc: &mut SsSvcs, ss_view: &SsView) -> Result<AttrVal> {
         self.src_val_getter.get_mod_val(svc, ss_view, &self.src_item_id)
     }
+    pub(in crate::ss::svc::svce_calc) fn on_effect_stop(&self, svc: &mut SsSvcs, ss_view: &SsView) {
+        self.src_val_getter.on_effect_stop(svc, ss_view, &self.src_item_id)
+    }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::ss::svc::svce_calc) fn needs_revision_on_item_add(&self) -> bool {
         self.src_val_getter.revisable_on_item_add()

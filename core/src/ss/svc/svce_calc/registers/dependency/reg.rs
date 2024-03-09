@@ -45,6 +45,20 @@ impl DependencyRegister {
         self.item_src_map.add_entry(src_item_id, src_attr_spec);
         self.item_tgt_map.add_entry(tgt_item_id, src_attr_spec, tgt_attr_spec);
     }
+    pub(in crate::ss::svc::svce_calc) fn remove_dependency(
+        &mut self,
+        src_item_id: &SsItemId,
+        src_attr_id: &EAttrId,
+        tgt_item_id: &SsItemId,
+        tgt_attr_id: &EAttrId,
+    ) {
+        let src_attr_spec = AttrSpec::new(*src_item_id, *src_attr_id);
+        let tgt_attr_spec = AttrSpec::new(*tgt_item_id, *tgt_attr_id);
+        self.data.add_entry(src_attr_spec, tgt_attr_spec);
+        self.item_src_map.remove_entry(src_item_id, &src_attr_spec);
+        self.item_tgt_map
+            .remove_entry(tgt_item_id, &src_attr_spec, &tgt_attr_spec);
+    }
     pub(in crate::ss::svc::svce_calc) fn clear_item_data(&mut self, item_id: &SsItemId) {
         // Remove data where item is source of dependency
         if let Some(attr_specs) = self.item_src_map.remove_key(item_id) {
