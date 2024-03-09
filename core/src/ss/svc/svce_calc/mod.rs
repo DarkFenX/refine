@@ -25,7 +25,7 @@
 //! relations and fetch attribute data.
 
 pub(in crate::ss::svc) use data::CalcData;
-pub use misc::SsAttrVal;
+pub use misc::{ModificationInfo, SsAttrVal};
 
 mod data;
 mod misc;

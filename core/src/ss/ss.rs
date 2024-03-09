@@ -5,6 +5,7 @@ use crate::{
     src::Src,
     ss::{fit::SsFits, item::SsItems, svc::SsSvcs, EffectInfo, EffectMode, SsAttrVal, SsView},
     util::Result,
+    ModificationInfo,
 };
 
 // Solar system glues everything together and is actual "god object" of the lib. It controls source
@@ -63,6 +64,11 @@ impl SolarSystem {
     pub fn get_item_attrs(&mut self, item_id: &SsItemId) -> Result<HashMap<EAttrId, SsAttrVal>> {
         self.svcs
             .calc_get_item_attr_vals(&SsView::new(&self.src, &self.fits, &self.items), item_id)
+    }
+    // Item modifications
+    pub fn get_item_modifiers(&mut self, item_id: &SsItemId) -> Result<HashMap<EAttrId, Vec<ModificationInfo>>> {
+        self.svcs
+            .calc_get_item_mods(&SsView::new(&self.src, &self.fits, &self.items), item_id)
     }
     // Item effects
     pub fn get_item_effects(&self, item_id: &SsItemId) -> Result<HashMap<EEffectId, EffectInfo>> {

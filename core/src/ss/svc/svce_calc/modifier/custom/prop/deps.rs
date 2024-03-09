@@ -20,11 +20,7 @@ pub(super) fn reg_dependencies(svc: &mut SsSvcs, prop_id: SsItemId, ship_id: SsI
         .add_dependency(ship_id, SHIP_MASS, ship_id, SHIP_SPEED);
 }
 
-pub(in crate::ss::svc::svce_calc::modifier) fn on_effect_stop(
-    svc: &mut SsSvcs,
-    ss_view: &SsView,
-    prop_id: &SsItemId,
-) {
+pub(in crate::ss::svc::svce_calc::modifier) fn on_effect_stop(svc: &mut SsSvcs, ss_view: &SsView, prop_id: &SsItemId) {
     // No dependencies if fit doesn't have a ship
     let ship_id = match get_ship_id(ss_view, prop_id) {
         Ok(ship_id_opt) => match ship_id_opt {

@@ -19,6 +19,7 @@ use crate::{
         SsView,
     },
     util::Result,
+    ModificationInfo,
 };
 
 impl SsSvcs {
@@ -58,6 +59,13 @@ impl SsSvcs {
             };
         }
         Ok(vals)
+    }
+    pub(in crate::ss) fn calc_get_item_mods(
+        &mut self,
+        ss_view: &SsView,
+        item_id: &SsItemId,
+    ) -> Result<HashMap<EAttrId, Vec<ModificationInfo>>> {
+        Ok(HashMap::new())
     }
     // Modification methods
     pub(in crate::ss::svc) fn calc_fit_added(&mut self, fit_id: &SsFitId) {
