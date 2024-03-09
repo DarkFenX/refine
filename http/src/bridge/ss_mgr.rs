@@ -63,7 +63,13 @@ impl HSsMgr {
     async fn cleanup_ss(&self, lifetime: u64) {
         tracing::debug!("starting cleanup");
         let now = chrono::Utc::now();
-        let lifetime = chrono::Duration::seconds(lifetime as i64);
+        let lifetime = match chrono::TimeDelta::try_seconds(lifetime as i64) {
+            Some(lifetime) => lifetime,
+            None => {
+                tracing::warn!("unable to initialize timedelta with {lifetime}, cleanup failed");
+                return;
+            }
+        };
         let to_clean: Vec<_> = self
             .id_ss_map
             .read()

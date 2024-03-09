@@ -102,7 +102,7 @@ impl SsSvcs {
         self.calc_data.tgts.unreg_tgt(item, ss_view.fits);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
-        self.calc_data.caps.clear_item_caps(&item_id);
+        self.calc_data.deps.clear_src_item_data(&item_id);
     }
     pub(in crate::ss::svc) fn calc_effects_started(
         &mut self,
@@ -195,14 +195,14 @@ impl SsSvcs {
         attr_id: &EAttrId,
     ) {
         // Clear up attribute values which rely on passed attribute as an upper cap
-        let capped_attr_ids = self
+        let dependents = self
             .calc_data
-            .caps
-            .get_capped_attr_ids(item_id, attr_id)
+            .deps
+            .get_tgt_attr_specs(item_id, attr_id)
             .map(|v| v.iter().map(|v| *v).collect_vec());
-        if let Some(capped_attr_ids) = capped_attr_ids {
-            for capped_attr_id in capped_attr_ids.iter() {
-                self.calc_force_attr_recalc(ss_view, item_id, capped_attr_id);
+        if let Some(attr_specs) = dependents {
+            for attr_spec in attr_specs.iter() {
+                self.calc_force_attr_recalc(ss_view, &attr_spec.item_id, &attr_spec.attr_id);
             }
         };
         let mods = self

@@ -1,11 +1,10 @@
 use super::{
-    misc::{AttrCapData, AttrValData},
+    misc::AttrValData,
     registers::{DependencyRegister, ModifierRegister, ProjectionRegister, RevisionRegister, TargetRegister},
 };
 
 pub(in crate::ss::svc) struct CalcData {
     pub(in crate::ss::svc::svce_calc) attrs: AttrValData,
-    pub(in crate::ss::svc::svce_calc) caps: AttrCapData,
     pub(in crate::ss::svc::svce_calc) mods: ModifierRegister,
     pub(in crate::ss::svc::svce_calc) tgts: TargetRegister,
     pub(in crate::ss::svc::svce_calc) deps: DependencyRegister,
@@ -16,7 +15,6 @@ impl CalcData {
     pub(in crate::ss::svc) fn new() -> Self {
         Self {
             attrs: AttrValData::new(),
-            caps: AttrCapData::new(),
             mods: ModifierRegister::new(),
             tgts: TargetRegister::new(),
             deps: DependencyRegister::new(),

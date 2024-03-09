@@ -136,7 +136,9 @@ impl SsSvcs {
         let mut dogma_val = match attr.max_attr_id {
             Some(capping_attr_id) => match self.calc_get_item_attr_val(ss_view, item_id, &capping_attr_id) {
                 Ok(capping_vals) => {
-                    self.calc_data.caps.add_cap(*item_id, capping_attr_id, *attr_id);
+                    self.calc_data
+                        .deps
+                        .add_dependency(*item_id, capping_attr_id, *item_id, *attr_id);
                     AttrVal::min(dogma_val, capping_vals.dogma)
                 }
                 Err(_) => dogma_val,
