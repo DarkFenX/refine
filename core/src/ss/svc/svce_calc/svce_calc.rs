@@ -102,7 +102,7 @@ impl SsSvcs {
         self.calc_data.tgts.unreg_tgt(item, ss_view.fits);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
-        self.calc_data.deps.clear_src_item_data(&item_id);
+        self.calc_data.deps.clear_item_data(&item_id);
     }
     pub(in crate::ss::svc) fn calc_effects_started(
         &mut self,

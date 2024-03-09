@@ -33,5 +33,19 @@ pub(in crate::ss::svc::svce_calc::modifier) fn get_mod_val(
         return Err(Error::new(ErrorKind::CustomModCalc));
     }
     let val = 1.0 + perc / 100.0;
+    // Register dependencies, so that target attribute is properly cleared up when any of source
+    // attributes change
+    svc.calc_data
+        .deps
+        .add_dependency(*item_id, ec::attrs::SPEED_FACTOR, ship_id, ec::attrs::MAX_VELOCITY);
+    svc.calc_data.deps.add_dependency(
+        *item_id,
+        ec::attrs::SPEED_BOOST_FACTOR,
+        ship_id,
+        ec::attrs::MAX_VELOCITY,
+    );
+    svc.calc_data
+        .deps
+        .add_dependency(ship_id, ec::attrs::MASS, ship_id, ec::attrs::MAX_VELOCITY);
     Ok(val)
 }

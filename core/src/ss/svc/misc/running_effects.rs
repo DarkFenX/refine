@@ -24,12 +24,12 @@ impl RunningEffects {
     where
         I: Iterator<Item = EEffectId> + ExactSizeIterator,
     {
-        self.data.extend(item_id, effects);
+        self.data.extend_entries(item_id, effects);
     }
     pub(in crate::ss::svc) fn effects_stopped<I>(&mut self, item_id: &SsItemId, effects: I)
     where
         I: Iterator<Item = EEffectId>,
     {
-        self.data.drain(item_id, effects);
+        self.data.drain_entries(item_id, effects);
     }
 }

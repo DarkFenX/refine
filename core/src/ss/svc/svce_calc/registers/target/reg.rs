@@ -108,31 +108,31 @@ impl TargetRegister {
         let tgt_srqs_res = tgt_item.get_skill_reqs();
         self.tgts.insert(tgt_item_id);
         if let (Some(tgt_fit), Some(tgt_topdom)) = (tgt_fit_opt, tgt_topdom_opt) {
-            self.tgts_topdom.add((tgt_fit.id, tgt_topdom), tgt_item_id);
+            self.tgts_topdom.add_entry((tgt_fit.id, tgt_topdom), tgt_item_id);
         }
         if let Some(tgt_fit) = tgt_fit_opt {
             for tgt_pardom in DomsPot::new(tgt_item) {
-                self.tgts_pardom.add((tgt_fit.id, tgt_pardom), tgt_item_id);
+                self.tgts_pardom.add_entry((tgt_fit.id, tgt_pardom), tgt_item_id);
             }
         }
         if let (Some(tgt_fit), Ok(tgt_grp_id)) = (tgt_fit_opt, tgt_grp_id_res) {
             for tgt_pardom in DomsPot::new(tgt_item) {
                 self.tgts_pardom_grp
-                    .add((tgt_fit.id, tgt_pardom, tgt_grp_id), tgt_item_id);
+                    .add_entry((tgt_fit.id, tgt_pardom, tgt_grp_id), tgt_item_id);
             }
         }
         if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
             for tgt_pardom in DomsPot::new(tgt_item) {
                 for skill_a_item_id in tgt_srqs.keys() {
                     self.tgts_pardom_srq
-                        .add((tgt_fit.id, tgt_pardom, *skill_a_item_id), tgt_item_id);
+                        .add_entry((tgt_fit.id, tgt_pardom, *skill_a_item_id), tgt_item_id);
                 }
             }
         }
         if tgt_item.is_owner_modifiable() {
             if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
                 for skill_a_item_id in tgt_srqs.keys() {
-                    self.tgts_own_srq.add((tgt_fit.id, *skill_a_item_id), tgt_item_id);
+                    self.tgts_own_srq.add_entry((tgt_fit.id, *skill_a_item_id), tgt_item_id);
                 }
             }
         }
@@ -145,31 +145,32 @@ impl TargetRegister {
         let tgt_srqs_res = tgt_item.get_skill_reqs();
         self.tgts.insert(tgt_item_id);
         if let (Some(tgt_fit), Some(tgt_topdom)) = (tgt_fit_opt, tgt_topdom_opt) {
-            self.tgts_topdom.remove(&(tgt_fit.id, tgt_topdom), &tgt_item_id);
+            self.tgts_topdom.remove_entry(&(tgt_fit.id, tgt_topdom), &tgt_item_id);
         }
         if let Some(tgt_fit) = tgt_fit_opt {
             for tgt_pardom in DomsPot::new(tgt_item) {
-                self.tgts_pardom.remove(&(tgt_fit.id, tgt_pardom), &tgt_item_id);
+                self.tgts_pardom.remove_entry(&(tgt_fit.id, tgt_pardom), &tgt_item_id);
             }
         }
         if let (Some(tgt_fit), Ok(tgt_grp_id)) = (tgt_fit_opt, tgt_grp_id_res) {
             for tgt_pardom in DomsPot::new(tgt_item) {
                 self.tgts_pardom_grp
-                    .remove(&(tgt_fit.id, tgt_pardom, tgt_grp_id), &tgt_item_id);
+                    .remove_entry(&(tgt_fit.id, tgt_pardom, tgt_grp_id), &tgt_item_id);
             }
         }
         if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
             for tgt_pardom in DomsPot::new(tgt_item) {
                 for skill_a_item_id in tgt_srqs.keys() {
                     self.tgts_pardom_srq
-                        .remove(&(tgt_fit.id, tgt_pardom, *skill_a_item_id), &tgt_item_id);
+                        .remove_entry(&(tgt_fit.id, tgt_pardom, *skill_a_item_id), &tgt_item_id);
                 }
             }
         }
         if tgt_item.is_owner_modifiable() {
             if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
                 for skill_a_item_id in tgt_srqs.keys() {
-                    self.tgts_own_srq.remove(&(tgt_fit.id, *skill_a_item_id), &tgt_item_id);
+                    self.tgts_own_srq
+                        .remove_entry(&(tgt_fit.id, *skill_a_item_id), &tgt_item_id);
                 }
             }
         }
