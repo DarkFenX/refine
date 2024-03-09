@@ -6,16 +6,14 @@ use crate::{
     ss::{
         fit::{SsFit, SsFits},
         item::{SsItem, SsItems},
+        svc::svce_calc::modifier::{SsAttrMod, SsModTgtFilter},
     },
     util::{extend_vec_from_storage, KeyedStorage1L},
 };
 
-use super::{
-    super::super::modifier::{SsAttrMod, SsModTgtFilter},
-    DomsPot,
-};
+use super::iter_dom_pot::DomsPot;
 
-pub(super) struct TgtItemRegister {
+pub(in crate::ss::svc::svce_calc) struct TargetRegister {
     // All known target items
     // Contains: HashSet<target item IDs>
     tgts: HashSet<SsItemId>,
@@ -35,8 +33,8 @@ pub(super) struct TgtItemRegister {
     // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), target item IDs>
     tgts_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsItemId>,
 }
-impl TgtItemRegister {
-    pub(super) fn new() -> Self {
+impl TargetRegister {
+    pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
             tgts: HashSet::new(),
             tgts_topdom: KeyedStorage1L::new(),
@@ -47,7 +45,12 @@ impl TgtItemRegister {
         }
     }
     // Query methods
-    pub(super) fn get_tgt_items(&self, modifier: &SsAttrMod, tgt_fits: &Vec<&SsFit>, items: &SsItems) -> Vec<SsItemId> {
+    pub(in crate::ss::svc::svce_calc) fn get_tgt_items(
+        &self,
+        modifier: &SsAttrMod,
+        tgt_fits: &Vec<&SsFit>,
+        items: &SsItems,
+    ) -> Vec<SsItemId> {
         let mut tgts = Vec::new();
         let src_item = match items.get_item(&modifier.src_item_id) {
             Ok(i) => i,
@@ -97,7 +100,7 @@ impl TgtItemRegister {
         tgts
     }
     // Modification methods
-    pub(super) fn reg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
+    pub(in crate::ss::svc::svce_calc) fn reg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
         let tgt_item_id = tgt_item.get_id();
         let tgt_fit_opt = tgt_item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
         let tgt_topdom_opt = tgt_item.get_top_domain();
@@ -134,7 +137,7 @@ impl TgtItemRegister {
             }
         }
     }
-    pub(super) fn unreg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
+    pub(in crate::ss::svc::svce_calc) fn unreg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
         let tgt_item_id = tgt_item.get_id();
         let tgt_fit_opt = tgt_item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
         let tgt_topdom_opt = tgt_item.get_top_domain();

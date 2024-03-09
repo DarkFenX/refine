@@ -76,7 +76,7 @@ impl SsSvcs {
         for ss_mod in self.calc_data.revs.get_mods_on_item_add() {
             if ss_mod.revise_on_item_add(item, ss_view) {
                 let tgt_fits = ss_view.fits.iter_fits().collect();
-                for item_id in self.calc_data.mods.get_tgt_items(&ss_mod, &tgt_fits, ss_view.items) {
+                for item_id in self.calc_data.tgts.get_tgt_items(&ss_mod, &tgt_fits, ss_view.items) {
                     self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
                 }
             }
@@ -88,7 +88,7 @@ impl SsSvcs {
         for ss_mod in self.calc_data.revs.get_mods_on_item_remove() {
             if ss_mod.revise_on_item_remove(item, ss_view) {
                 let tgt_fits = ss_view.fits.iter_fits().collect();
-                for item_id in self.calc_data.mods.get_tgt_items(&ss_mod, &tgt_fits, ss_view.items) {
+                for item_id in self.calc_data.tgts.get_tgt_items(&ss_mod, &tgt_fits, ss_view.items) {
                     self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
                 }
             }
@@ -96,10 +96,10 @@ impl SsSvcs {
     }
     pub(in crate::ss::svc) fn calc_item_loaded(&mut self, ss_view: &SsView, item: &SsItem) {
         self.calc_data.attrs.add_item(item.get_id());
-        self.calc_data.mods.reg_tgt(item, ss_view.fits);
+        self.calc_data.tgts.reg_tgt(item, ss_view.fits);
     }
     pub(in crate::ss::svc) fn calc_item_unloaded(&mut self, ss_view: &SsView, item: &SsItem) {
-        self.calc_data.mods.unreg_tgt(item, ss_view.fits);
+        self.calc_data.tgts.unreg_tgt(item, ss_view.fits);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
         self.calc_data.caps.clear_item_caps(&item_id);
@@ -120,7 +120,7 @@ impl SsSvcs {
             }
             let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
             for local_mod in mods.local.iter() {
-                for item_id in self.calc_data.mods.get_tgt_items(local_mod, &tgt_fits, ss_view.items) {
+                for item_id in self.calc_data.tgts.get_tgt_items(local_mod, &tgt_fits, ss_view.items) {
                     self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
                 }
             }
@@ -136,7 +136,7 @@ impl SsSvcs {
                 self.calc_data.projs.add_sw_mod(*sw_mod);
             }
             for sw_mod in mods.system_wide.iter() {
-                for item_id in self.calc_data.mods.get_tgt_items(sw_mod, &tgt_fits, ss_view.items) {
+                for item_id in self.calc_data.tgts.get_tgt_items(sw_mod, &tgt_fits, ss_view.items) {
                     self.calc_force_attr_recalc(ss_view, &item_id, &sw_mod.tgt_attr_id);
                 }
             }
@@ -158,7 +158,7 @@ impl SsSvcs {
             let fit_id_opt = item.get_fit_id();
             let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
             for local_mod in mods.local.iter() {
-                for item_id in self.calc_data.mods.get_tgt_items(&local_mod, &tgt_fits, ss_view.items) {
+                for item_id in self.calc_data.tgts.get_tgt_items(&local_mod, &tgt_fits, ss_view.items) {
                     self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
                 }
             }
@@ -171,7 +171,7 @@ impl SsSvcs {
         if !mods.system_wide.is_empty() {
             let tgt_fits = get_tgt_fits_for_proj(item, ss_view.fits);
             for sw_mod in mods.system_wide.iter() {
-                for item_id in self.calc_data.mods.get_tgt_items(sw_mod, &tgt_fits, ss_view.items) {
+                for item_id in self.calc_data.tgts.get_tgt_items(sw_mod, &tgt_fits, ss_view.items) {
                     self.calc_force_attr_recalc(ss_view, &item_id, &sw_mod.tgt_attr_id);
                 }
                 self.calc_data.projs.remove_sw_mod(*sw_mod);
@@ -215,7 +215,7 @@ impl SsSvcs {
         let item = ss_view.items.get_item(item_id).unwrap();
         let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
         for modifier in mods.iter() {
-            for tgt_item_id in self.calc_data.mods.get_tgt_items(&modifier, &tgt_fits, ss_view.items) {
+            for tgt_item_id in self.calc_data.tgts.get_tgt_items(&modifier, &tgt_fits, ss_view.items) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
             }
         }
@@ -266,7 +266,7 @@ impl SsSvcs {
                 .mods
                 .get_mods_for_changed_location_owner(item, ss_view.items)
             {
-                for item_id in self.calc_data.mods.get_tgt_items(&modifier, &tgt_fits, ss_view.items) {
+                for item_id in self.calc_data.tgts.get_tgt_items(&modifier, &tgt_fits, ss_view.items) {
                     self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
                 }
             }
