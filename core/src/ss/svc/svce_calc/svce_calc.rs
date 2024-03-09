@@ -23,50 +23,6 @@ use crate::{
 };
 
 impl SsSvcs {
-    // Query methods
-    pub(in crate::ss) fn calc_get_item_attr_val(
-        &mut self,
-        ss_view: &SsView,
-        item_id: &SsItemId,
-        attr_id: &EAttrId,
-    ) -> Result<SsAttrVal> {
-        // Try accessing cached value
-        match self.calc_data.attrs.get_item_attrs(item_id)?.get(attr_id) {
-            Some(v) => return Ok(*v),
-            _ => (),
-        };
-        // If it is not cached, calculate and cache it
-        let val = self.calc_calc_item_attr_val(ss_view, item_id, attr_id)?;
-        self.calc_data.attrs.get_item_attrs_mut(item_id)?.insert(*attr_id, val);
-        Ok(val)
-    }
-    pub(in crate::ss) fn calc_get_item_attr_vals(
-        &mut self,
-        ss_view: &SsView,
-        item_id: &SsItemId,
-    ) -> Result<HashMap<EAttrId, SsAttrVal>> {
-        // SsItem can have attributes which are not defined on the original EVE item. This happens
-        // when something requested an attr value, and it was calculated using base attribute value.
-        // Here, we get already calculated attributes, which includes attributes absent on the EVE
-        // item
-        let mut vals = self.calc_data.attrs.get_item_attrs_mut(item_id)?.clone();
-        // Calculate & store attributes which are not calculated yet, but are defined on the EVE
-        // item
-        for attr_id in ss_view.items.get_item(item_id)?.get_orig_attrs()?.keys() {
-            match self.calc_get_item_attr_val(ss_view, item_id, attr_id) {
-                Ok(v) => vals.entry(*attr_id).or_insert(v),
-                _ => continue,
-            };
-        }
-        Ok(vals)
-    }
-    pub(in crate::ss) fn calc_get_item_mods(
-        &mut self,
-        ss_view: &SsView,
-        item_id: &SsItemId,
-    ) -> Result<HashMap<EAttrId, Vec<ModificationInfo>>> {
-        Ok(HashMap::new())
-    }
     // Modification methods
     pub(in crate::ss::svc) fn calc_fit_added(&mut self, fit_id: &SsFitId) {
         for sw_mod in self.calc_data.projs.get_sw_mods() {

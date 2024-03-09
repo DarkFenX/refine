@@ -34,3 +34,4 @@ mod registers;
 mod svce_attr;
 mod svce_buff;
 mod svce_calc;
+mod svce_modinfo;

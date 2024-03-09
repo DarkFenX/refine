@@ -9,7 +9,10 @@ use crate::{
     shr::{ModAggrMode, ModOp},
     ss::{
         item::SsItem,
-        svc::{svce_calc::misc::SsAttrVal, SsSvcs},
+        svc::{
+            svce_calc::misc::{Modification, SsAttrVal},
+            SsSvcs,
+        },
         SsView,
     },
     util::{Error, ErrorKind, Result},
@@ -51,7 +54,45 @@ const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
 const PENALTY_BASE: f64 = 0.86911998080039742919922218788997270166873931884765625;
 
 impl SsSvcs {
-    pub(in crate::ss::svc::svce_calc) fn calc_calc_item_attr_val(
+    // Query methods
+    pub(in crate::ss) fn calc_get_item_attr_val(
+        &mut self,
+        ss_view: &SsView,
+        item_id: &SsItemId,
+        attr_id: &EAttrId,
+    ) -> Result<SsAttrVal> {
+        // Try accessing cached value
+        match self.calc_data.attrs.get_item_attrs(item_id)?.get(attr_id) {
+            Some(v) => return Ok(*v),
+            _ => (),
+        };
+        // If it is not cached, calculate and cache it
+        let val = self.calc_calc_item_attr_val(ss_view, item_id, attr_id)?;
+        self.calc_data.attrs.get_item_attrs_mut(item_id)?.insert(*attr_id, val);
+        Ok(val)
+    }
+    pub(in crate::ss) fn calc_get_item_attr_vals(
+        &mut self,
+        ss_view: &SsView,
+        item_id: &SsItemId,
+    ) -> Result<HashMap<EAttrId, SsAttrVal>> {
+        // SsItem can have attributes which are not defined on the original EVE item. This happens
+        // when something requested an attr value, and it was calculated using base attribute value.
+        // Here, we get already calculated attributes, which includes attributes absent on the EVE
+        // item
+        let mut vals = self.calc_data.attrs.get_item_attrs_mut(item_id)?.clone();
+        // Calculate & store attributes which are not calculated yet, but are defined on the EVE
+        // item
+        for attr_id in ss_view.items.get_item(item_id)?.get_orig_attrs()?.keys() {
+            match self.calc_get_item_attr_val(ss_view, item_id, attr_id) {
+                Ok(v) => vals.entry(*attr_id).or_insert(v),
+                _ => continue,
+            };
+        }
+        Ok(vals)
+    }
+    // Private methods
+    fn calc_calc_item_attr_val(
         &mut self,
         ss_view: &SsView,
         item_id: &SsItemId,
@@ -82,8 +123,7 @@ impl SsSvcs {
         // let aggregate_min = Vec::new();
         // let aggregate_max = Vec::new();
         for modification in self.calc_get_modifications(ss_view, item, attr_id).values() {
-            let penalize =
-                attr.penalizable && !modification.src_pen_immune && PENALIZABLE_OPS.contains(&modification.op);
+            let penalize = is_penalizable(modification, &attr);
             let mod_val = match modification.op {
                 ModOp::PreAssign => modification.val,
                 ModOp::PreMul => modification.val,
@@ -155,6 +195,10 @@ impl SsSvcs {
         }
         Ok(SsAttrVal::new(base_val, dogma_val, extra_val))
     }
+}
+
+pub(in crate::ss::svc::svce_calc) fn is_penalizable(modification: &Modification, attr: &ad::AAttr) -> bool {
+    attr.penalizable && !modification.src_pen_immune && PENALIZABLE_OPS.contains(&modification.op)
 }
 
 fn penalize_vals(mut vals: Vec<AttrVal>) -> AttrVal {
