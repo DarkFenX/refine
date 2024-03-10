@@ -35,7 +35,9 @@ impl SsSvcs {
                 );
                 attr_infos.push(mod_info);
             }
-            info_map.insert(attr_id, attr_infos);
+            if !attr_infos.is_empty() {
+                info_map.insert(attr_id, attr_infos);
+            }
         }
         Ok(info_map)
     }
