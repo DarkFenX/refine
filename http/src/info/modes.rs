@@ -6,10 +6,7 @@ pub(crate) enum HSsInfoMode {
 }
 impl From<Option<HSsInfoMode>> for HSsInfoMode {
     fn from(mode_opt: Option<HSsInfoMode>) -> Self {
-        match mode_opt {
-            Some(v) => v,
-            None => Self::Full,
-        }
+        mode_opt.unwrap_or_else(|| Self::Full)
     }
 }
 
@@ -21,10 +18,7 @@ pub(crate) enum HFitInfoMode {
 }
 impl From<Option<HFitInfoMode>> for HFitInfoMode {
     fn from(mode_opt: Option<HFitInfoMode>) -> Self {
-        match mode_opt {
-            Some(v) => v,
-            None => Self::Full,
-        }
+        mode_opt.unwrap_or_else(|| Self::Full)
     }
 }
 
@@ -37,9 +31,6 @@ pub(crate) enum HItemInfoMode {
 }
 impl From<Option<HItemInfoMode>> for HItemInfoMode {
     fn from(mode_opt: Option<HItemInfoMode>) -> Self {
-        match mode_opt {
-            Some(v) => v,
-            None => Self::Partial,
-        }
+        mode_opt.unwrap_or_else(|| Self::Partial)
     }
 }

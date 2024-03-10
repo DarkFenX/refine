@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::info::{HAttrVal, HEffect};
+use crate::info::{HAttrVal, HEffect, HModificationInfo};
 
 use super::HBoosterInfoPartial;
 
@@ -10,6 +10,7 @@ pub(crate) struct HBoosterInfoFull {
     pub(crate) partial_info: HBoosterInfoPartial,
     pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
     pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
+    pub(crate) mods: HashMap<rc::EAttrId, Vec<HModificationInfo>>,
 }
 impl HBoosterInfoFull {
     pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_booster_info: &rc::SsBoosterInfo) -> Self {
@@ -22,10 +23,18 @@ impl HBoosterInfoFull {
             Ok(core_effects) => core_effects.into_iter().map(|(k, v)| (k, HEffect::from(&v))).collect(),
             _ => HashMap::new(),
         };
+        let mods = match core_ss.get_item_modifiers(&partial_info.id) {
+            Ok(core_mods) => core_mods
+                .into_iter()
+                .map(|(k, v)| (k, v.into_iter().map(|m| HModificationInfo::from(&m)).collect()))
+                .collect(),
+            _ => HashMap::new(),
+        };
         Self {
             partial_info,
             attrs,
             effects,
+            mods,
         }
     }
 }

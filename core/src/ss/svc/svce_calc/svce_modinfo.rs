@@ -28,10 +28,10 @@ impl SsSvcs {
                 let mod_info = ModificationInfo::new(
                     mod_key.src_item_id,
                     mod_key.src_attr_id,
+                    modification.val,
                     modification.op,
                     is_penalizable(&modification, &attr),
                     modification.aggr_mode,
-                    modification.val,
                 );
                 attr_infos.push(mod_info);
             }
