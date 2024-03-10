@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 
 AttrVals = namedtuple('AttrVals', ('base', 'dogma', 'extra'))
 EffectInfo = namedtuple('EffectInfo', ('running', 'mode'))
+ModInfo = namedtuple('ModInfo', ('src_item', 'src_attr', 'val', 'op', 'penalized', 'aggr_mode'))
 
 
 class Item(AttrDict):
@@ -24,7 +25,8 @@ class Item(AttrDict):
             data=data,
             hooks={
                 'attrs': lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()},
-                'effects': lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()}})
+                'effects': lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()},
+                'mods': lambda mods: {int(k): [ModInfo(*m) for m in v] for k, v in mods.items()}})
         self._client = client
         self._ss_id = ss_id
 
