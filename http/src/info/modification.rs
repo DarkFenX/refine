@@ -1,5 +1,6 @@
 #[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HModificationInfo {
+    #[serde(with = "crate::util::serde_string")]
     pub src_item_id: rc::SsItemId,
     pub src_attr_id: Option<rc::EAttrId>,
     pub val: rc::AttrVal,

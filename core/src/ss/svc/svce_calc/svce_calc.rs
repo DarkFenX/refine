@@ -11,15 +11,13 @@ use crate::{
         item::SsItem,
         svc::{
             svce_calc::{
-                misc::{CategorizedMods, ModKey, Modification, SsAttrVal},
+                misc::{CategorizedMods, ModKey, Modification},
                 svce_attr::PENALTY_IMMUNE_CATS,
             },
             SsSvcs,
         },
         SsView,
     },
-    util::Result,
-    ModificationInfo,
 };
 
 impl SsSvcs {

@@ -83,11 +83,15 @@ def test_state(client, consts):
     assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1550000)
     assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(176)
     assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(2678.62903)
+    # Check that ship is being modified by the prop
+    api_ship_item.mods.find_by_src_item(tgt_attr_id=eve_speed_attr.id, src_item_id=api_prop.id).one()
     api_prop.change_mod(state=consts.State.online)
     api_ship_item.update()
     assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1050000)
     assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(32)
     assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(455)
+    # Check that modification is gone after state change
+    assert len(api_ship_item.mods) == 0
 
 
 def test_speed_mod_stacking(client, consts):
