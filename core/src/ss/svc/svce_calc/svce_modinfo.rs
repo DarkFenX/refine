@@ -30,19 +30,17 @@ impl SsSvcs {
             };
             let mut attr_infos = Vec::new();
             for (mod_key, modification) in self.calc_get_modifications(ss_view, item, &attr_id) {
-                let src_attr_id = match mod_key.src_attr_id {
-                    Some(src_attr_id) => src_attr_id,
-                    // TODO: for now, we skip modification info if we can't get source modifier, change it so that we
-                    // TODO: always get source of modification
-                    None => continue,
+                let mut srcs = Vec::with_capacity(1);
+                if let Some(src_attr_id) = mod_key.src_attr_id {
+                    let src = ModSrcInfo::new(mod_key.src_item_id, ModSrcValInfo::AttrId(src_attr_id));
+                    srcs.push(src);
                 };
-                let mod_src = ModSrcInfo::new(mod_key.src_item_id, ModSrcValInfo::AttrId(src_attr_id));
                 let mod_info = ModInfo::new(
                     modification.val,
                     (&modification.op).into(),
                     is_penalizable(&modification, &attr),
                     modification.aggr_mode,
-                    vec![mod_src],
+                    srcs,
                 );
                 attr_infos.push(mod_info);
             }
