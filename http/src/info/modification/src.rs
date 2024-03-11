@@ -18,7 +18,9 @@ impl From<&rc::ModSrcInfo> for HModSrcInfo {
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum HModSrcValInfo {
+    #[serde(rename = "attr")]
     AttrId(rc::EAttrId),
+    #[serde(rename = "hc")]
     Hardcoded(rc::AttrVal),
 }
 impl From<&rc::ModSrcValInfo> for HModSrcValInfo {
