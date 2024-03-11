@@ -2,10 +2,15 @@ use std::collections::{HashMap, HashSet};
 
 use crate::{
     defs::{EAttrId, SsItemId},
-    ss::{svc::SsSvcs, SsView},
+    ss::{
+        svc::{
+            svce_calc::mod_info::{ModSrcInfo, ModSrcValInfo},
+            SsSvcs,
+        },
+        SsView,
+    },
     util::Result,
 };
-use crate::ss::svc::svce_calc::mod_info::{ModSrcInfo, ModSrcValInfo};
 
 use super::{mod_info::ModInfo, svce_attr::is_penalizable};
 

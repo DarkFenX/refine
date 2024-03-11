@@ -26,7 +26,7 @@
 
 pub(in crate::ss::svc) use data::CalcData;
 pub use misc::SsAttrVal;
-pub use mod_info::ModInfo;
+pub use mod_info::{ModInfo, ModOpInfo, ModSrcInfo, ModSrcValInfo};
 
 mod data;
 mod misc;
