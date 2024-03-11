@@ -3,7 +3,7 @@ use crate::{
     shr::{ModAggrMode, ModOp},
 };
 
-pub struct ModificationInfo {
+pub struct ModInfo {
     pub src_item_id: SsItemId,
     pub src_attr_id: Option<EAttrId>,
     pub val: AttrVal,
@@ -11,7 +11,7 @@ pub struct ModificationInfo {
     pub penalized: bool,
     pub aggr_mode: ModAggrMode,
 }
-impl ModificationInfo {
+impl ModInfo {
     pub(in crate::ss::svc::svce_calc) fn new(
         src_item_id: SsItemId,
         src_attr_id: Option<EAttrId>,

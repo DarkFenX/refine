@@ -27,8 +27,8 @@ impl HModificationInfo {
         }
     }
 }
-impl From<&rc::ModificationInfo> for HModificationInfo {
-    fn from(core_mod_info: &rc::ModificationInfo) -> Self {
+impl From<&rc::ModInfo> for HModificationInfo {
+    fn from(core_mod_info: &rc::ModInfo) -> Self {
         Self::new(
             core_mod_info.src_item_id,
             core_mod_info.src_attr_id,

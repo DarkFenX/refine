@@ -25,10 +25,12 @@
 //! relations and fetch attribute data.
 
 pub(in crate::ss::svc) use data::CalcData;
-pub use misc::{ModificationInfo, SsAttrVal};
+pub use misc::SsAttrVal;
+pub use mod_info::ModInfo;
 
 mod data;
 mod misc;
+mod mod_info;
 mod modifier;
 mod registers;
 mod svce_attr;

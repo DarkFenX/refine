@@ -4,7 +4,7 @@ use crate::{
     defs::{EAttrId, SsItemId},
     ss::{svc::SsSvcs, SsView},
     util::Result,
-    ModificationInfo,
+    ModInfo,
 };
 
 use super::svce_attr::is_penalizable;
@@ -15,7 +15,7 @@ impl SsSvcs {
         &mut self,
         ss_view: &SsView,
         item_id: &SsItemId,
-    ) -> Result<HashMap<EAttrId, Vec<ModificationInfo>>> {
+    ) -> Result<HashMap<EAttrId, Vec<ModInfo>>> {
         let item = ss_view.items.get_item(item_id)?;
         let mut info_map = HashMap::new();
         for attr_id in self.calc_get_item_attr_ids(ss_view, item_id)? {
@@ -25,7 +25,7 @@ impl SsSvcs {
             };
             let mut attr_infos = Vec::new();
             for (mod_key, modification) in self.calc_get_modifications(ss_view, item, &attr_id) {
-                let mod_info = ModificationInfo::new(
+                let mod_info = ModInfo::new(
                     mod_key.src_item_id,
                     mod_key.src_attr_id,
                     modification.val,
