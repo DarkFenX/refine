@@ -4,10 +4,10 @@ use crate::{
     defs::{EAttrId, SsItemId},
     ss::{svc::SsSvcs, SsView},
     util::Result,
-    ModInfo,
 };
+use crate::ss::svc::svce_calc::mod_info::{ModSrcInfo, ModSrcValInfo};
 
-use super::svce_attr::is_penalizable;
+use super::{mod_info::ModInfo, svce_attr::is_penalizable};
 
 impl SsSvcs {
     // Query methods
@@ -25,13 +25,19 @@ impl SsSvcs {
             };
             let mut attr_infos = Vec::new();
             for (mod_key, modification) in self.calc_get_modifications(ss_view, item, &attr_id) {
+                let src_attr_id = match mod_key.src_attr_id {
+                    Some(src_attr_id) => src_attr_id,
+                    // TODO: for now, we skip modification info if we can't get source modifier, change it so that we
+                    // TODO: always get source of modification
+                    None => continue,
+                };
+                let mod_src = ModSrcInfo::new(mod_key.src_item_id, ModSrcValInfo::AttrId(src_attr_id));
                 let mod_info = ModInfo::new(
-                    mod_key.src_item_id,
-                    mod_key.src_attr_id,
                     modification.val,
-                    modification.op,
+                    (&modification.op).into(),
                     is_penalizable(&modification, &attr),
                     modification.aggr_mode,
+                    vec![mod_src],
                 );
                 attr_infos.push(mod_info);
             }
