@@ -13,11 +13,20 @@ pub(super) enum SsAttrModSrc {
     AncillaryArmorRep,
 }
 impl SsAttrModSrc {
+    // Simple and fast way to get source attribute
     pub(super) fn get_src_attr_id(&self) -> Option<EAttrId> {
         match self {
             Self::AttrId(attr_id) => Some(*attr_id),
             Self::PropulsionModule => None,
             Self::AncillaryArmorRep => Some(aar::AAR_SRC_ATTR_ID),
+        }
+    }
+    // More expensive, but comprehensive info about modification sources
+    pub(super) fn get_srcs(&self, ss_view: &SsView, src_item_id: &SsItemId) -> Vec<(SsItemId, EAttrId)> {
+        match self {
+            Self::AttrId(attr_id) => vec![(*src_item_id, *attr_id)],
+            Self::PropulsionModule => prop::get_srcs(ss_view, src_item_id),
+            Self::AncillaryArmorRep => vec![(*src_item_id, aar::AAR_SRC_ATTR_ID)],
         }
     }
     pub(super) fn get_mod_val(&self, svc: &mut SsSvcs, ss_view: &SsView, item_id: &SsItemId) -> Result<AttrVal> {

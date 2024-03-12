@@ -57,6 +57,9 @@ impl SsAttrMod {
     pub(in crate::ss::svc::svce_calc) fn get_src_attr_id(&self) -> Option<EAttrId> {
         self.src_val_getter.get_src_attr_id()
     }
+    pub(in crate::ss::svc::svce_calc) fn get_srcs(&self, ss_view: &SsView) -> Vec<(SsItemId, EAttrId)> {
+        self.src_val_getter.get_srcs(ss_view, &self.src_item_id)
+    }
     pub(in crate::ss::svc::svce_calc) fn get_mod_val(&self, svc: &mut SsSvcs, ss_view: &SsView) -> Result<AttrVal> {
         self.src_val_getter.get_mod_val(svc, ss_view, &self.src_item_id)
     }
