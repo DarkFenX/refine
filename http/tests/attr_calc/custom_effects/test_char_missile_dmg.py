@@ -132,7 +132,7 @@ def test_penalization(client, consts):
     assert api_launcher.charge.attrs[eve_attr_missile_therm.id].dogma == approx(131.04)
     assert api_launcher.charge.attrs[eve_attr_missile_kin.id].dogma == approx(149.76)
     assert api_launcher.charge.attrs[eve_attr_missile_expl.id].dogma == approx(187.2)
-    # On modification info, check that both operators are exposed as post-multiplication (despite
+    # In modification info, check that both operators are exposed as post-multiplication (despite
     # on-character effect actually using a bit different operator), and that penalization flag is
     # reported as expected - that on-character effect modification is not getting penalized
     api_em_mods = api_launcher.charge.mods[eve_attr_missile_em.id]
