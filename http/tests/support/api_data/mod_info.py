@@ -8,7 +8,7 @@ class AttrModInfoMap(dict):
     def __init__(self, data: dict):
         super().__init__({
             int(k): ModInfoList(
-                ModInfo(m[0], m[1], m[2], m[3], [ModSrcInfo.from_mixed(n) for n in m[4]]) for m in v)
+                ModInfo(m[0], m[1], m[2], m[3], ModSrcInfoList(ModSrcInfo.from_mixed(n) for n in m[4])) for m in v)
             for k, v in data.items()})
 
     def find_by_src_item(self, tgt_attr_id: int, src_item_id: int) -> ModInfoList:
@@ -43,6 +43,19 @@ class ModInfo(NamedTuple):
     penalized: bool
     aggr_mode: str
     src: list[ModSrcInfo]
+
+
+class ModSrcInfoList(list):
+
+    def one(self) -> ModInfo:
+        if len(self) != 1:
+            raise ValueError(f'expected 1 item, {len(self)} found')
+        return self[0]
+
+    def __repr__(self) -> str:
+        class_name = type(self).__name__
+        super_repr = super().__repr__()
+        return f'{class_name}({super_repr})'
 
 
 class ModSrcInfo(NamedTuple):

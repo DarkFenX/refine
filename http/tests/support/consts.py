@@ -181,3 +181,22 @@ class EffMode(StrEnum):
     state_compliance = 'state'
     force_run = 'run'
     force_stop = 'stop'
+
+
+@unique
+class InfoOp(StrEnum):
+    pre_assign = 'pre_assign'
+    pre_mul = 'pre_mul'
+    pre_div = 'pre_div'
+    mod_add = 'add'
+    mod_sub = 'sub'
+    post_mul = 'post_mul'
+    post_div = 'post_div'
+    post_percent = 'post_percent'
+    post_assign = 'post_assign'
+    extra_mul = 'extra_mul'
+
+
+@unique
+class InfoAggrMode(StrEnum):
+    stack = 'stack'
