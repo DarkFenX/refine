@@ -15,10 +15,7 @@ use crate::{
     util::Result,
 };
 
-use super::{
-    mod_info::ModInfo,
-    svce_attr::{is_penalizable, process_assigns},
-};
+use super::{mod_info::ModInfo, svce_attr::is_penalizable};
 
 impl SsSvcs {
     // Query methods
@@ -104,13 +101,10 @@ fn filter_neutral_invalid_operands(mods: &mut Vec<ModInfo>) {
 fn filter_ineffective_assigns(mods: &mut Vec<ModInfo>, attr: &ad::AAttr, op: ModOpInfo) {
     let assign_mods = mods.extract_if(|m| op == m.op).collect_vec();
     if !assign_mods.is_empty() {
-        let assign_vals = assign_mods.iter().map(|m| m.val).collect_vec();
-        let chosen_val = process_assigns(&assign_vals, attr);
-        let chosen_mod = assign_mods
-            .into_iter()
-            .filter(|m| m.val == chosen_val)
-            .exactly_one()
-            .unwrap();
-        mods.push(chosen_mod);
+        let effective_mod = match attr.hig {
+            true => assign_mods.into_iter().max_by(|a, b| a.val.total_cmp(&b.val)).unwrap(),
+            false => assign_mods.into_iter().min_by(|a, b| a.val.total_cmp(&b.val)).unwrap(),
+        };
+        mods.push(effective_mod);
     }
 }
