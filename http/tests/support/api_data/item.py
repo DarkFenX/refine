@@ -4,7 +4,7 @@ from collections import namedtuple
 from typing import TYPE_CHECKING
 
 from tests.support.util import AttrDict, Absent
-from .mod_info import ModInfo, ModInfoList, ModInfoMap
+from .mod_info import AttrModInfoMap
 
 if TYPE_CHECKING:
     from typing import Type, Union
@@ -26,9 +26,7 @@ class Item(AttrDict):
             hooks={
                 'attrs': lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()},
                 'effects': lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()},
-                'mods': lambda mods: ModInfoMap({
-                    int(k): ModInfoList(ModInfo(*m) for m in v)
-                    for k, v in mods.items()})})
+                'mods': AttrModInfoMap})
         self._client = client
         self._ss_id = ss_id
 
