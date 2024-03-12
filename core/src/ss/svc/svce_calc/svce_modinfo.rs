@@ -89,16 +89,21 @@ impl SsSvcs {
             mod_map.insert(mod_key, mod_info);
         }
         let mut mod_vec = mod_map.into_values().collect_vec();
+        // Expose limit modification only if attribute value matches value of limiting attributed
         if let Some(max_attr_id) = attr.max_attr_id {
-            if let Ok(val) = self.calc_get_item_attr_val(ss_view, &item.get_id(), &max_attr_id) {
-                let mod_info = ModInfo::new(
-                    val.dogma,
-                    ModOpInfo::Limit,
-                    false,
-                    ModAggrMode::Stack,
-                    vec![ModSrcInfo::new(item.get_id(), ModSrcValInfo::AttrId(max_attr_id))],
-                );
-                mod_vec.push(mod_info);
+            if let Ok(cap_val) = self.calc_get_item_attr_val(ss_view, &item.get_id(), &max_attr_id) {
+                if let Ok(capped_val) = self.calc_get_item_attr_val(ss_view, &item.get_id(), &attr.id) {
+                    if cap_val.dogma == capped_val.dogma {
+                        let mod_info = ModInfo::new(
+                            cap_val.dogma,
+                            ModOpInfo::Limit,
+                            false,
+                            ModAggrMode::Stack,
+                            vec![ModSrcInfo::new(item.get_id(), ModSrcValInfo::AttrId(max_attr_id))],
+                        );
+                        mod_vec.push(mod_info);
+                    }
+                }
             }
         }
         mod_vec
