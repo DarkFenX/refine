@@ -10,7 +10,7 @@ use crate::{
     ss::{
         item::SsItem,
         svc::{
-            svce_calc::misc::{Modification, SsAttrVal},
+            svce_calc::misc::{ModKey, Modification, SsAttrVal},
             SsSvcs,
         },
         SsView,
@@ -92,6 +92,33 @@ impl SsSvcs {
         Ok(vals)
     }
     // Private methods
+    fn calc_get_modifications(
+        &mut self,
+        ss_view: &SsView,
+        item: &SsItem,
+        attr_id: &EAttrId,
+    ) -> HashMap<ModKey, Modification> {
+        let mut mods = HashMap::new();
+        for modifier in self.calc_data.mods.get_mods_for_tgt(item, attr_id, ss_view.fits).iter() {
+            let val = match modifier.get_mod_val(self, ss_view) {
+                Ok(v) => v,
+                _ => continue,
+            };
+            let src_item = match ss_view.items.get_item(&modifier.src_item_id) {
+                Ok(i) => i,
+                _ => continue,
+            };
+            let src_item_cat_id = match src_item.get_category_id() {
+                Ok(src_item_cat_id) => src_item_cat_id,
+                _ => continue,
+            };
+            // TODO: implement resistance support (add it to key as well? idk)
+            let mod_key = ModKey::from(modifier);
+            let modification = Modification::new(modifier.op, val, 1.0, ModAggrMode::Stack, src_item_cat_id);
+            mods.insert(mod_key, modification);
+        }
+        mods
+    }
     fn calc_calc_item_attr_val(
         &mut self,
         ss_view: &SsView,
@@ -123,7 +150,7 @@ impl SsSvcs {
         // let aggregate_min = Vec::new();
         // let aggregate_max = Vec::new();
         for modification in self.calc_get_modifications(ss_view, item, attr_id).values() {
-            let penalize = is_penalizable(modification, &attr);
+            let penalize = is_penalizable(&attr, &modification.src_item_cat_id, &modification.op);
             let mod_val = match modification.op {
                 ModOp::PreAssign => modification.val,
                 ModOp::PreMul => modification.val,
@@ -209,8 +236,12 @@ impl SsSvcs {
     }
 }
 
-pub(in crate::ss::svc::svce_calc) fn is_penalizable(modification: &Modification, attr: &ad::AAttr) -> bool {
-    attr.penalizable && !modification.src_pen_immune && PENALIZABLE_OPS.contains(&modification.op)
+pub(in crate::ss::svc::svce_calc) fn is_penalizable(
+    attr: &ad::AAttr,
+    src_item_cat_id: &EItemCatId,
+    op: &ModOp,
+) -> bool {
+    attr.penalizable && !PENALTY_IMMUNE_CATS.contains(src_item_cat_id) && PENALIZABLE_OPS.contains(op)
 }
 
 fn penalize_vals(mut vals: Vec<AttrVal>) -> AttrVal {

@@ -1,21 +1,12 @@
-use std::collections::HashMap;
-
 use itertools::Itertools;
 
 use crate::{
     ad,
     defs::{EAttrId, SsFitId, SsItemId},
-    shr::ModAggrMode,
     ss::{
         fit::{SsFit, SsFits},
         item::SsItem,
-        svc::{
-            svce_calc::{
-                misc::{CategorizedMods, ModKey, Modification},
-                svce_attr::PENALTY_IMMUNE_CATS,
-            },
-            SsSvcs,
-        },
+        svc::{svce_calc::misc::CategorizedMods, SsSvcs},
         SsView,
     },
 };
@@ -148,6 +139,9 @@ impl SsSvcs {
         // Revisions and effect-specific processing
         for ss_mod in mods.iter_all() {
             self.calc_data.revs.unreg_mod(ss_mod);
+            // This bit is just for propulsion mode effect, so that when effect is not running (but
+            // item is not removed), changes to parent attributes like ship mass do not clear the
+            // child attribute - ship speed
             ss_mod.on_effect_stop(self, ss_view);
         }
     }
@@ -194,33 +188,6 @@ impl SsSvcs {
         }
     }
     // Private methods
-    pub(in crate::ss::svc::svce_calc) fn calc_get_modifications(
-        &mut self,
-        ss_view: &SsView,
-        item: &SsItem,
-        attr_id: &EAttrId,
-    ) -> HashMap<ModKey, Modification> {
-        let mut mods = HashMap::new();
-        for modifier in self.calc_data.mods.get_mods_for_tgt(item, attr_id, ss_view.fits).iter() {
-            let val = match modifier.get_mod_val(self, ss_view) {
-                Ok(v) => v,
-                _ => continue,
-            };
-            let src_item = match ss_view.items.get_item(&modifier.src_item_id) {
-                Ok(i) => i,
-                _ => continue,
-            };
-            let pen_immune = match src_item.get_category_id() {
-                Ok(cid) => PENALTY_IMMUNE_CATS.contains(&cid),
-                _ => continue,
-            };
-            // TODO: implement resistance support (add it to key as well? idk)
-            let mod_key = ModKey::from(modifier);
-            let modification = Modification::new(modifier.op, val, 1.0, ModAggrMode::Stack, pen_immune);
-            mods.insert(mod_key, modification);
-        }
-        mods
-    }
     fn handle_location_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {
         if item.get_top_domain().is_some() {
             let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);

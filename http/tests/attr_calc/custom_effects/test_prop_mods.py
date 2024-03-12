@@ -22,11 +22,29 @@ def test_ab(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
-    api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    # Verification
     api_ship_item.update()
     assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1550000)
     assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(32)  # Not affected by sig blow
     assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(1049.43548)
+    assert len(api_ship_item.mods) == 2
+    # Mass modification
+    api_mod_mass = api_ship_item.mods.find_by_src_attr(
+        tgt_attr_id=eve_mass_attr.id, src_attr_id=eve_mass_add_attr.id).one()
+    assert api_mod_mass.val == approx(500000)
+    assert api_mod_mass.op == consts.ApiModOp.mod_add
+    assert api_mod_mass.src.one().item_id == api_prop_item.id
+    assert api_mod_mass.src.one().attr_id == eve_mass_add_attr.id
+    # Speed modification
+    api_mod_prop = api_ship_item.mods.find_by_src_attr(
+        tgt_attr_id=eve_speed_attr.id, src_attr_id=eve_speed_boost_attr.id).one()
+    assert api_mod_prop.val == approx(2.30645)
+    assert api_mod_prop.op == consts.ApiModOp.post_mul
+    assert len(api_mod_prop.src) == 3
+    assert api_mod_prop.src.find_by_attr(attr_id=eve_speed_boost_attr.id).one().item_id == api_prop_item.id
+    assert api_mod_prop.src.find_by_attr(attr_id=eve_thrust_attr.id).one().item_id == api_prop_item.id
+    assert api_mod_prop.src.find_by_attr(attr_id=eve_mass_attr.id).one().item_id == api_ship_item.id
 
 
 def test_mwd(client, consts):
@@ -52,11 +70,36 @@ def test_mwd(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
-    api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    # Verification
     api_ship_item.update()
     assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1550000)
     assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(176)
     assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(2678.62903)
+    assert len(api_ship_item.mods) == 3
+    # Mass modification
+    api_mod_mass = api_ship_item.mods.find_by_src_attr(
+        tgt_attr_id=eve_mass_attr.id, src_attr_id=eve_mass_add_attr.id).one()
+    assert api_mod_mass.val == approx(500000)
+    assert api_mod_mass.op == consts.ApiModOp.mod_add
+    assert api_mod_mass.src.one().item_id == api_prop_item.id
+    assert api_mod_mass.src.one().attr_id == eve_mass_add_attr.id
+    # Sig modification
+    api_mod_sig = api_ship_item.mods.find_by_src_attr(
+        tgt_attr_id=eve_sig_tgt_attr.id, src_attr_id=eve_sig_src_attr.id).one()
+    assert api_mod_sig.val == approx(450)
+    assert api_mod_sig.op == consts.ApiModOp.post_percent
+    assert api_mod_sig.src.one().item_id == api_prop_item.id
+    assert api_mod_sig.src.one().attr_id == eve_sig_src_attr.id
+    # Speed modification
+    api_mod_prop = api_ship_item.mods.find_by_src_attr(
+        tgt_attr_id=eve_speed_attr.id, src_attr_id=eve_speed_boost_attr.id).one()
+    assert api_mod_prop.val == approx(5.8871)
+    assert api_mod_prop.op == consts.ApiModOp.post_mul
+    assert len(api_mod_prop.src) == 3
+    assert api_mod_prop.src.find_by_attr(attr_id=eve_speed_boost_attr.id).one().item_id == api_prop_item.id
+    assert api_mod_prop.src.find_by_attr(attr_id=eve_thrust_attr.id).one().item_id == api_prop_item.id
+    assert api_mod_prop.src.find_by_attr(attr_id=eve_mass_attr.id).one().item_id == api_ship_item.id
 
 
 def test_state(client, consts):
@@ -83,15 +126,20 @@ def test_state(client, consts):
     api_fit = api_ss.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_prop = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    # Verification
     api_ship_item.update()
     assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1550000)
     assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(176)
     assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(2678.62903)
+    assert len(api_ship_item.mods) == 3
+    # Action
     api_prop.change_mod(state=consts.ApiState.online)
+    # Verification
     api_ship_item.update()
     assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(1050000)
     assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(32)
     assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(455)
+    assert len(api_ship_item.mods) == 0
 
 
 def test_speed_mod_stacking(client, consts):
@@ -122,8 +170,20 @@ def test_speed_mod_stacking(client, consts):
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     api_ss.add_sw_effect(type_id=eve_sw_item.id)
-    # If prop speed boost wasn't penalized against BH speed boost, speed would be 1951.95
-    assert api_ship_item.update().attrs[eve_speed_attr.id].dogma == approx(1833.82888)
+    # Verification - if prop speed boost wasn't penalized against BH speed boost, speed would be
+    # 1951.95
+    api_ship_item.update()
+    assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(1833.82888)
+    api_ship_mod_prop = api_ship_item.mods.find_by_src_attr(
+        tgt_attr_id=eve_speed_attr.id, src_attr_id=eve_speed_boost_attr_prop.id).one()
+    assert api_ship_mod_prop.val == approx(2.30645)
+    assert api_ship_mod_prop.op == consts.ApiModOp.post_mul
+    assert api_ship_mod_prop.penalized is True
+    api_ship_mod_sw = api_ship_item.mods.find_by_src_attr(
+        tgt_attr_id=eve_speed_attr.id, src_attr_id=eve_speed_boost_attr_sw.id).one()
+    assert api_ship_mod_sw.val == approx(1.86)
+    assert api_ship_mod_sw.op == consts.ApiModOp.post_mul
+    assert api_ship_mod_sw.penalized is True
 
 
 def test_sig_mod_stacking(client, consts):
@@ -153,8 +213,20 @@ def test_sig_mod_stacking(client, consts):
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     api_fit.add_rig(type_id=eve_rig_item.id)
-    # If MWD sig bloom wasn't stacking penalized against rig sig penalty, it'd be 193.6
-    assert api_ship_item.update().attrs[eve_sig_tgt_attr.id].dogma == approx(191.29651)
+    # Verification - if MWD sig bloom wasn't stacking penalized against rig sig penalty, it'd be
+    # 193.6
+    api_ship_item.update()
+    assert api_ship_item.attrs[eve_sig_tgt_attr.id].dogma == approx(191.29651)
+    api_ship_mod_prop = api_ship_item.mods.find_by_src_attr(
+        tgt_attr_id=eve_sig_tgt_attr.id, src_attr_id=eve_sig_src_attr_prop.id).one()
+    assert api_ship_mod_prop.val == approx(450)
+    assert api_ship_mod_prop.op == consts.ApiModOp.post_percent
+    assert api_ship_mod_prop.penalized is True
+    api_ship_mod_rig = api_ship_item.mods.find_by_src_attr(
+        tgt_attr_id=eve_sig_tgt_attr.id, src_attr_id=eve_sig_src_attr_rig.id).one()
+    assert api_ship_mod_rig.val == approx(10)
+    assert api_ship_mod_rig.op == consts.ApiModOp.post_percent
+    assert api_ship_mod_rig.penalized is True
 
 
 def test_speed_mod_mass_zero(client, consts):
@@ -174,9 +246,11 @@ def test_speed_mod_mass_zero(client, consts):
     api_fit = api_ss.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    # Verification
     api_ship_item.update()
     assert api_ship_item.attrs[eve_mass_attr.id].dogma == approx(0)
     assert api_ship_item.attrs[eve_speed_attr.id].dogma == approx(455)
+    assert len(api_ship_item.mods) == 0
 
 
 def test_speed_mod_mass_changed(client, consts):
@@ -205,31 +279,47 @@ def test_speed_mod_mass_changed(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_ship1_item = api_fit.set_ship(type_id=eve_ship1_item.id)
-    api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    # Verification
     api_ship1_item.update()
     assert api_ship1_item.attrs[eve_mass_attr.id].dogma == approx(1550000)
     assert api_ship1_item.attrs[eve_speed_attr.id].dogma == approx(1049.43548)
+    assert len(api_ship1_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
+    # Action
     api_rig_item = api_fit.add_rig(type_id=eve_rig_item.id)
+    # Verification
     api_ship1_item.update()
     assert api_ship1_item.attrs[eve_mass_attr.id].dogma == approx(3100000)
     assert api_ship1_item.attrs[eve_speed_attr.id].dogma == approx(752.21774)
+    assert len(api_ship1_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
+    # Action
     api_rig_item.remove()
+    # Verification
     api_ship1_item.update()
     assert api_ship1_item.attrs[eve_mass_attr.id].dogma == approx(1550000)
     assert api_ship1_item.attrs[eve_speed_attr.id].dogma == approx(1049.43548)
-    # Make sure it works even after we switch ship
+    assert len(api_ship1_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
+    # Action - make sure it works even after we switch ship
     api_ship2_item = api_fit.set_ship(type_id=eve_ship2_item.id)
+    # Verification
     api_ship2_item.update()
     assert api_ship2_item.attrs[eve_mass_attr.id].dogma == approx(1560000)
     assert api_ship2_item.attrs[eve_speed_attr.id].dogma == approx(965.19231)
+    assert len(api_ship2_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
+    # Action
     api_rig_item = api_fit.add_rig(type_id=eve_rig_item.id)
+    # Verification
     api_ship2_item.update()
     assert api_ship2_item.attrs[eve_mass_attr.id].dogma == approx(3120000)
     assert api_ship2_item.attrs[eve_speed_attr.id].dogma == approx(692.59615)
+    assert len(api_ship2_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
+    # Action
     api_rig_item.remove()
+    # Verification
     api_ship2_item.update()
     assert api_ship2_item.attrs[eve_mass_attr.id].dogma == approx(1560000)
     assert api_ship2_item.attrs[eve_speed_attr.id].dogma == approx(965.19231)
+    assert len(api_ship2_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
 
 
 def test_speed_mod_boost_changed(client, consts):
@@ -259,24 +349,46 @@ def test_speed_mod_boost_changed(client, consts):
     api_fit = api_ss.create_fit()
     api_ship1_item = api_fit.set_ship(type_id=eve_ship1_item.id)
     api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    # Verification
+    api_ship1_item.update()
+    assert api_ship1_item.attrs[eve_speed_attr.id].dogma == approx(1049.43548)
+    assert len(api_ship1_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_speed_boost_attr.id].dogma == approx(135)
-    assert api_ship1_item.update().attrs[eve_speed_attr.id].dogma == approx(1049.43548)
+    # Action
     api_implant_item = api_fit.add_implant(type_id=eve_implant_item.id)
+    # Verification
+    api_ship1_item.update()
+    assert api_ship1_item.attrs[eve_speed_attr.id].dogma == approx(1108.87903)
+    assert len(api_ship1_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_speed_boost_attr.id].dogma == approx(148.5)
-    assert api_ship1_item.update().attrs[eve_speed_attr.id].dogma == approx(1108.87903)
+    # Action
     api_implant_item.remove()
+    # Verification
+    api_ship1_item.update()
+    assert api_ship1_item.attrs[eve_speed_attr.id].dogma == approx(1049.43548)
+    assert len(api_ship1_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_speed_boost_attr.id].dogma == approx(135)
-    assert api_ship1_item.update().attrs[eve_speed_attr.id].dogma == approx(1049.43548)
-    # Make sure it works even after we switch ship
+    # Action - make sure it works even after we switch ship
     api_ship2_item = api_fit.set_ship(type_id=eve_ship2_item.id)
+    # Verification
+    api_ship2_item.update()
+    assert api_ship2_item.attrs[eve_speed_attr.id].dogma == approx(965.19231)
+    assert len(api_ship2_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_speed_boost_attr.id].dogma == approx(135)
-    assert api_ship2_item.update().attrs[eve_speed_attr.id].dogma == approx(965.19231)
+    # Action
     api_implant_item = api_fit.add_implant(type_id=eve_implant_item.id)
+    # Verification
+    api_ship2_item.update()
+    assert api_ship2_item.attrs[eve_speed_attr.id].dogma == approx(1019.71154)
+    assert len(api_ship2_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_speed_boost_attr.id].dogma == approx(148.5)
-    assert api_ship2_item.update().attrs[eve_speed_attr.id].dogma == approx(1019.71154)
+    # Action
     api_implant_item.remove()
+    # Verification
+    api_ship2_item.update()
+    assert api_ship2_item.attrs[eve_speed_attr.id].dogma == approx(965.19231)
+    assert len(api_ship2_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_speed_boost_attr.id].dogma == approx(135)
-    assert api_ship2_item.update().attrs[eve_speed_attr.id].dogma == approx(965.19231)
 
 
 def test_speed_mod_thrust_changed(client, consts):
@@ -306,21 +418,43 @@ def test_speed_mod_thrust_changed(client, consts):
     api_fit = api_ss.create_fit()
     api_ship1_item = api_fit.set_ship(type_id=eve_ship1_item.id)
     api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
+    # Verification
+    api_ship1_item.update()
+    assert api_ship1_item.attrs[eve_speed_attr.id].dogma == approx(1049.43548)
+    assert len(api_ship1_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_thrust_attr.id].dogma == approx(1500000)
-    assert api_ship1_item.update().attrs[eve_speed_attr.id].dogma == approx(1049.43548)
+    # Action
     api_rig_item = api_fit.add_implant(type_id=eve_rig_item.id)
+    # Verification
+    api_ship1_item.update()
+    assert api_ship1_item.attrs[eve_speed_attr.id].dogma == approx(1227.76613)
+    assert len(api_ship1_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_thrust_attr.id].dogma == approx(1950000)
-    assert api_ship1_item.update().attrs[eve_speed_attr.id].dogma == approx(1227.76613)
+    # Action
     api_rig_item.remove()
+    # Verification
+    api_ship1_item.update()
+    assert api_ship1_item.attrs[eve_speed_attr.id].dogma == approx(1049.43548)
+    assert len(api_ship1_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_thrust_attr.id].dogma == approx(1500000)
-    assert api_ship1_item.update().attrs[eve_speed_attr.id].dogma == approx(1049.43548)
-    # Make sure it works even after we switch ship
+    # Action - make sure it works even after we switch ship
     api_ship2_item = api_fit.set_ship(type_id=eve_ship2_item.id)
+    # Verification
+    api_ship2_item.update()
+    assert api_ship2_item.attrs[eve_speed_attr.id].dogma == approx(965.19231)
+    assert len(api_ship2_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_thrust_attr.id].dogma == approx(1500000)
-    assert api_ship2_item.update().attrs[eve_speed_attr.id].dogma == approx(965.19231)
+    # Action
     api_rig_item = api_fit.add_implant(type_id=eve_rig_item.id)
+    # Verification
+    api_ship2_item.update()
+    assert api_ship2_item.attrs[eve_speed_attr.id].dogma == approx(1128.75)
+    assert len(api_ship2_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_thrust_attr.id].dogma == approx(1950000)
-    assert api_ship2_item.update().attrs[eve_speed_attr.id].dogma == approx(1128.75)
+    # Action
     api_rig_item.remove()
+    # Verification
+    api_ship2_item.update()
+    assert api_ship2_item.attrs[eve_speed_attr.id].dogma == approx(965.19231)
+    assert len(api_ship2_item.mods[eve_speed_attr.id].find_by_src_item(src_item_id=api_prop_item.id)) == 1
     assert api_prop_item.update().attrs[eve_thrust_attr.id].dogma == approx(1500000)
-    assert api_ship2_item.update().attrs[eve_speed_attr.id].dogma == approx(965.19231)

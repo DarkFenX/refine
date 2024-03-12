@@ -105,8 +105,8 @@ def test_state_online_running(client, consts):
     assert api_item.attrs[eve_tgt_attr.id].dogma == approx(100)
     assert api_item.effects[eve_online_effect.id] == (False, consts.ApiEffMode.force_stop)
     assert api_item.effects[eve_effect.id] == (False, consts.ApiEffMode.full_compliance)
-    # Action
-    # Effects from online category rely only on actual "online" effect, ignoring everything else
+    # Action - effects from online category rely only on actual "online" effect, ignoring everything
+    # else
     api_item.change_mod(state=consts.ApiState.offline, effect_modes={eve_online_effect.id: consts.ApiEffMode.force_run})
     # Verification
     api_item.update()

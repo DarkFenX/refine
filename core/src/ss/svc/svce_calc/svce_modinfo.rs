@@ -1,3 +1,6 @@
+//! Methods here largely reimplement attribute calculation counterparts to provide extended info
+//! while not bloating calculation part, which is supposed to be used much more often.
+
 use std::collections::{HashMap, HashSet};
 
 use itertools::Itertools;
@@ -6,8 +9,12 @@ use crate::{
     ad,
     defs::{EAttrId, SsItemId},
     ss::{
+        item::SsItem,
         svc::{
-            svce_calc::mod_info::{ModOpInfo, ModSrcInfo, ModSrcValInfo},
+            svce_calc::{
+                misc::ModKey,
+                mod_info::{ModOpInfo, ModSrcInfo, ModSrcValInfo},
+            },
             SsSvcs,
         },
         SsView,
@@ -31,22 +38,7 @@ impl SsSvcs {
                 Some(attr) => attr,
                 None => continue,
             };
-            let mut infos = Vec::new();
-            for (mod_key, modification) in self.calc_get_modifications(ss_view, item, &attr_id) {
-                let mut srcs = Vec::with_capacity(1);
-                if let Some(src_attr_id) = mod_key.src_attr_id {
-                    let src = ModSrcInfo::new(mod_key.src_item_id, ModSrcValInfo::AttrId(src_attr_id));
-                    srcs.push(src);
-                };
-                let info = ModInfo::new(
-                    modification.val,
-                    (&modification.op).into(),
-                    is_penalizable(&modification, &attr),
-                    modification.aggr_mode,
-                    srcs,
-                );
-                infos.push(info);
-            }
+            let mut infos = self.calc_get_item_attr_mods(ss_view, item, &attr);
             filter_useless(&attr_id, &mut infos, ss_view);
             if !infos.is_empty() {
                 info_map.insert(attr_id, infos);
@@ -64,6 +56,38 @@ impl SsSvcs {
             attr_ids.insert(*attr_id);
         }
         Ok(attr_ids)
+    }
+    fn calc_get_item_attr_mods(&mut self, ss_view: &SsView, item: &SsItem, attr: &ad::AAttr) -> Vec<ModInfo> {
+        let mut mod_map = HashMap::new();
+        for modifier in self
+            .calc_data
+            .mods
+            .get_mods_for_tgt(item, &attr.id, ss_view.fits)
+            .iter()
+        {
+            let val = match modifier.get_mod_val(self, ss_view) {
+                Ok(v) => v,
+                _ => continue,
+            };
+            let src_item = match ss_view.items.get_item(&modifier.src_item_id) {
+                Ok(i) => i,
+                _ => continue,
+            };
+            let src_item_cat_id = match src_item.get_category_id() {
+                Ok(src_item_cat_id) => src_item_cat_id,
+                _ => continue,
+            };
+            let penalizable = is_penalizable(attr, &src_item_cat_id, &modifier.op);
+            let srcs = modifier
+                .get_srcs(ss_view)
+                .into_iter()
+                .map(|(i, a)| ModSrcInfo::new(i, ModSrcValInfo::AttrId(a)))
+                .collect();
+            let mod_key = ModKey::from(modifier);
+            let mod_info = ModInfo::new(val, (&modifier.op).into(), penalizable, modifier.aggr_mode, srcs);
+            mod_map.insert(mod_key, mod_info);
+        }
+        mod_map.into_values().collect()
     }
 }
 

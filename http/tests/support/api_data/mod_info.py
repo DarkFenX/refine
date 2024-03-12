@@ -14,7 +14,7 @@ class AttrModInfoMap(dict):
     def find_by_op(self, tgt_attr_id: int, op: str) -> ModInfoList:
         return self.get(tgt_attr_id, ModInfoList()).find_by_op(op=op)
 
-    def find_by_src_item(self, tgt_attr_id: int, src_item_id: int) -> ModInfoList:
+    def find_by_src_item(self, tgt_attr_id: int, src_item_id: str) -> ModInfoList:
         return self.get(tgt_attr_id, ModInfoList()).find_by_src_item(src_item_id=src_item_id)
 
     def find_by_src_attr(self, tgt_attr_id: int, src_attr_id: int) -> ModInfoList:
@@ -31,11 +31,11 @@ class ModInfoList(list):
     def find_by_op(self, op: str) -> ModInfoList:
         return ModInfoList(i for i in self if i.op == op)
 
-    def find_by_src_item(self, src_item_id: int) -> ModInfoList:
-        return ModInfoList(i for i in self if any(s.item_id == src_item_id for s in i.src))
+    def find_by_src_item(self, src_item_id: str) -> ModInfoList:
+        return ModInfoList(i for i in self if i.src.find_by_item(item_id=src_item_id))
 
     def find_by_src_attr(self, src_attr_id: int) -> ModInfoList:
-        return ModInfoList(i for i in self if any(s.attr_id == src_attr_id for s in i.src))
+        return ModInfoList(i for i in self if i.src.find_by_attr(attr_id=src_attr_id))
 
     def one(self) -> ModInfo:
         if len(self) != 1:
@@ -58,6 +58,12 @@ class ModInfo(NamedTuple):
 
 
 class ModSrcInfoList(list):
+
+    def find_by_item(self, item_id: str) -> ModSrcInfoList:
+        return ModSrcInfoList(i for i in self if i.item_id == item_id)
+
+    def find_by_attr(self, attr_id: int) -> ModSrcInfoList:
+        return ModSrcInfoList(i for i in self if i.attr_id == attr_id)
 
     def one(self) -> ModInfo:
         if len(self) != 1:
