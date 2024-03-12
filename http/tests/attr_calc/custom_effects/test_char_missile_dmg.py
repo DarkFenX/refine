@@ -127,23 +127,35 @@ def test_penalization(client, consts):
         rack=consts.Rack.high,
         charge_type_id=eve_item_missile.id)
     api_launcher.update()
+    # Just check values
     assert api_launcher.charge.attrs[eve_attr_missile_em.id].dogma == approx(93.6)
     assert api_launcher.charge.attrs[eve_attr_missile_therm.id].dogma == approx(131.04)
     assert api_launcher.charge.attrs[eve_attr_missile_kin.id].dogma == approx(149.76)
     assert api_launcher.charge.attrs[eve_attr_missile_expl.id].dogma == approx(187.2)
+    # On modification info, check that both operators are exposed as post-multiplication (despite
+    # on-character effect actually using a bit different operator), and that penalization flag is
+    # reported as expected - that on-character effect modification is not getting penalized
     api_em_mods = api_launcher.charge.mods[eve_attr_missile_em.id]
     assert len(api_em_mods) == 2
     assert api_em_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
+    assert api_em_mods.find_by_src_item(src_item_id=api_magnetar.id).one().op == consts.InfoOp.post_mul
     assert api_em_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
+    assert api_em_mods.find_by_src_item(src_item_id=api_char.id).one().op == consts.InfoOp.post_mul
     api_therm_mods = api_launcher.charge.mods[eve_attr_missile_therm.id]
     assert len(api_therm_mods) == 2
     assert api_therm_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
+    assert api_therm_mods.find_by_src_item(src_item_id=api_magnetar.id).one().op == consts.InfoOp.post_mul
     assert api_therm_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
+    assert api_therm_mods.find_by_src_item(src_item_id=api_char.id).one().op == consts.InfoOp.post_mul
     api_kin_mods = api_launcher.charge.mods[eve_attr_missile_kin.id]
     assert len(api_kin_mods) == 2
     assert api_kin_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
+    assert api_kin_mods.find_by_src_item(src_item_id=api_magnetar.id).one().op == consts.InfoOp.post_mul
     assert api_kin_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
+    assert api_kin_mods.find_by_src_item(src_item_id=api_char.id).one().op == consts.InfoOp.post_mul
     api_expl_mods = api_launcher.charge.mods[eve_attr_missile_expl.id]
     assert len(api_expl_mods) == 2
     assert api_expl_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
+    assert api_expl_mods.find_by_src_item(src_item_id=api_magnetar.id).one().op == consts.InfoOp.post_mul
     assert api_expl_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
+    assert api_expl_mods.find_by_src_item(src_item_id=api_char.id).one().op == consts.InfoOp.post_mul
