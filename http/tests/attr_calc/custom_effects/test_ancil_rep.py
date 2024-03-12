@@ -62,17 +62,17 @@ def test_charge_switch(client, consts):
     api_aar_item.update()
     assert api_aar_item.attrs[eve_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_tgt_attr.id].extra == approx(100)
-    assert len(api_aar_item.mods) == 1
+    assert len(api_aar_item.mods) == 0
     api_aar_item.change_mod(charge=eve_paste_item.id)
     api_aar_item.update()
     assert api_aar_item.attrs[eve_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_tgt_attr.id].extra == approx(300)
-    assert len(api_aar_item.mods) == 0
+    assert len(api_aar_item.mods[eve_tgt_attr.id]) == 1
     api_aar_item.change_mod(charge=None)
     api_aar_item.update()
     assert api_aar_item.attrs[eve_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_tgt_attr.id].extra == approx(100)
-    assert len(api_aar_item.mods) == 1
+    assert len(api_aar_item.mods) == 0
 
 
 def test_mult_change(client, consts):

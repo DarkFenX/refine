@@ -1,5 +1,3 @@
-#![feature(hash_extract_if)]
-
 use std::{env, sync::Arc, time::Duration};
 
 use axum::{

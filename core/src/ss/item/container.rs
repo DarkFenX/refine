@@ -51,7 +51,7 @@ impl SsItems {
         self.data.remove(item_id)
     }
     pub(in crate::ss) fn remove_fit_items(&mut self, fit_id: &SsFitId) {
-        self.data.extract_if(|_, v| v.get_fit_id() == Some(*fit_id));
+        self.data.retain(|_, v| v.get_fit_id() != Some(*fit_id));
     }
 
     pub(in crate::ss) fn iter(&self) -> impl Iterator<Item = &SsItem> {
