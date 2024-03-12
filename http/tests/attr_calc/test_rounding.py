@@ -31,12 +31,15 @@ def test_cpu_modified(client, consts):
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_item = client.mk_eve_item(attrs={eve_src_attr.id: 20, eve_tgt_attr.id: 1.9444}, eff_ids=[eve_effect.id])
+    eve_item = client.mk_eve_item(attrs={eve_src_attr.id: 20.005, eve_tgt_attr.id: 1.9444}, eff_ids=[eve_effect.id])
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_implant(type_id=eve_item.id)
-    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(2.33)
+    # Verification
+    api_item.update()
+    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(2.33)
+    assert api_item.mods[eve_tgt_attr.id].find_by_src_item(src_item_id=api_item.id).one().val == approx(20.005)
 
 
 def test_cpu_output(client, consts):
