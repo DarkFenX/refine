@@ -17,11 +17,27 @@ def test_slots(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
-    api_fit.add_subsystem(type_id=eve_subsystem.id)
+    api_subsystem = api_fit.add_subsystem(type_id=eve_subsystem.id)
+    # Verification
     api_ship.update()
+    # High slots
     assert api_ship.attrs[eve_tgt_attr_hi.id].dogma == approx(3)
+    api_mod_hi = api_ship.mods.find_by_src_item(tgt_attr_id=eve_tgt_attr_hi.id, src_item_id=api_subsystem.id).one()
+    assert api_mod_hi.val == approx(3)
+    assert api_mod_hi.op == consts.ApiModOp.mod_add
+    assert api_mod_hi.penalized is False
+    # Medium slots
     assert api_ship.attrs[eve_tgt_attr_mid.id].dogma == approx(6)
+    api_mod_mid = api_ship.mods.find_by_src_item(tgt_attr_id=eve_tgt_attr_mid.id, src_item_id=api_subsystem.id).one()
+    assert api_mod_mid.val == approx(4)
+    assert api_mod_mid.op == consts.ApiModOp.mod_add
+    assert api_mod_mid.penalized is False
+    # Low slots
     assert api_ship.attrs[eve_tgt_attr_low.id].dogma == approx(2)
+    api_mod_low = api_ship.mods.find_by_src_item(tgt_attr_id=eve_tgt_attr_low.id, src_item_id=api_subsystem.id).one()
+    assert api_mod_low.val == approx(1)
+    assert api_mod_low.op == consts.ApiModOp.mod_add
+    assert api_mod_low.penalized is False
 
 
 def test_hardpoints(client, consts):
@@ -38,7 +54,20 @@ def test_hardpoints(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
-    api_fit.add_subsystem(type_id=eve_subsystem.id)
+    api_subsystem = api_fit.add_subsystem(type_id=eve_subsystem.id)
+    # Verification
     api_ship.update()
+    # Turrets
     assert api_ship.attrs[eve_tgt_attr_turret.id].dogma == approx(4)
+    api_mod_turret = api_ship.mods.find_by_src_item(
+        tgt_attr_id=eve_tgt_attr_turret.id, src_item_id=api_subsystem.id).one()
+    assert api_mod_turret.val == approx(4)
+    assert api_mod_turret.op == consts.ApiModOp.mod_add
+    assert api_mod_turret.penalized is False
+    # Launchers
     assert api_ship.attrs[eve_tgt_attr_launcher.id].dogma == approx(8)
+    api_mod_launcher = api_ship.mods.find_by_src_item(
+        tgt_attr_id=eve_tgt_attr_launcher.id, src_item_id=api_subsystem.id).one()
+    assert api_mod_launcher.val == approx(6)
+    assert api_mod_launcher.op == consts.ApiModOp.mod_add
+    assert api_mod_launcher.penalized is False

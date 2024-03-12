@@ -16,6 +16,19 @@ def test_switch(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_skill(type_id=eve_item.id, level=5)
-    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(500)
+    # Verification
+    api_item.update()
+    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(500)
+    api_mod = api_item.mods.find_by_src_item(tgt_attr_id=eve_tgt_attr.id, src_item_id=api_item.id).one()
+    assert api_mod.val == approx(5)
+    assert api_mod.op == consts.ApiModOp.post_mul
+    assert api_mod.penalized is False
+    # Action
     api_item.change_skill(level=3)
-    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(300)
+    # Verification
+    api_item.update()
+    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(300)
+    api_mod = api_item.mods.find_by_src_item(tgt_attr_id=eve_tgt_attr.id, src_item_id=api_item.id).one()
+    assert api_mod.val == approx(3)
+    assert api_mod.op == consts.ApiModOp.post_mul
+    assert api_mod.penalized is False
