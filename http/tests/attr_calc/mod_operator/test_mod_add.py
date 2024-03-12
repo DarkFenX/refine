@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def setup_test(client, consts, stackable):
+def setup_penalization_test(client, consts, stackable):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=stackable)
     eve_mod = client.mk_eve_effect_mod(
@@ -14,6 +14,8 @@ def setup_test(client, consts, stackable):
     eve_item_src1 = client.mk_eve_item(attrs={eve_src_attr.id: 10}, eff_ids=[eve_effect.id])
     eve_item_src2 = client.mk_eve_item(attrs={eve_src_attr.id: -20}, eff_ids=[eve_effect.id])
     eve_item_src3 = client.mk_eve_item(attrs={eve_src_attr.id: 53.02}, eff_ids=[eve_effect.id])
+    # Addition of 0 is considered insignificant, and won't be exposed as modification
+    eve_item_src4 = client.mk_eve_item(attrs={eve_src_attr.id: 0}, eff_ids=[eve_effect.id])
     eve_item_tgt = client.mk_eve_item(attrs={eve_tgt_attr.id: 100})
     client.create_sources()
     api_ss = client.create_ss()
@@ -21,6 +23,7 @@ def setup_test(client, consts, stackable):
     api_item_src1 = api_fit.add_rig(type_id=eve_item_src1.id)
     api_item_src2 = api_fit.add_rig(type_id=eve_item_src2.id)
     api_item_src3 = api_fit.add_rig(type_id=eve_item_src3.id)
+    api_fit.add_rig(type_id=eve_item_src4.id)
     api_item_tgt = api_fit.set_ship(type_id=eve_item_tgt.id)
     api_item_tgt.update()
     return (
@@ -32,7 +35,11 @@ def setup_test(client, consts, stackable):
 
 
 def test_non_penalized(client, consts):
-    attr_val, attr_mods, api_item_src1, api_item_src2, api_item_src3 = setup_test(client, consts, stackable=True)
+    (attr_val,
+     attr_mods,
+     api_item_src1,
+     api_item_src2,
+     api_item_src3) = setup_penalization_test(client, consts, stackable=True)
     assert attr_val == approx(143.02)
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one()
@@ -50,7 +57,11 @@ def test_non_penalized(client, consts):
 
 
 def test_penalized(client, consts):
-    attr_val, attr_mods, api_item_src1, api_item_src2, api_item_src3 = setup_test(client, consts, stackable=False)
+    (attr_val,
+     attr_mods,
+     api_item_src1,
+     api_item_src2,
+     api_item_src3) = setup_penalization_test(client, consts, stackable=False)
     assert attr_val == approx(143.02)
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one()

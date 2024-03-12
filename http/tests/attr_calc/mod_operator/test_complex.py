@@ -154,7 +154,7 @@ def test_almost_all_in(client, consts):
         val_post_mul=val_post_mul,
         val_post_div=val_post_div,
         val_post_perc=val_post_perc,
-        val_post_ass=0)
+        val_post_ass=None)
     expected_value = (
             (val_pre_ass * val_pre_mul / val_pre_div + val_mod_add - val_mod_sub)
             * val_post_mul / val_post_div * (1 + val_post_perc / 100))

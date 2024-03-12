@@ -75,9 +75,8 @@ fn filter_useless(mods: &mut Vec<ModInfo>) {
     };
     // Filter out modifications where right hand operand doesn't do anything because of its value
     mods.retain(|m| match m.op {
-        ModOpInfo::PreMul | ModOpInfo::PreDiv | ModOpInfo::PostMul | ModOpInfo::PostDiv | ModOpInfo::ExtraMul => {
-            m.val != 1.0
-        }
+        ModOpInfo::PreMul | ModOpInfo::PostMul | ModOpInfo::ExtraMul => m.val != 1.0,
+        ModOpInfo::PreDiv | ModOpInfo::PostDiv => m.val != 1.0 && m.val != 0.0,
         ModOpInfo::Add | ModOpInfo::Sub | ModOpInfo::PostPerc => m.val != 0.0,
         _ => true,
     });

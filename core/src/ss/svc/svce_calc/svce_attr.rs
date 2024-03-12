@@ -127,12 +127,24 @@ impl SsSvcs {
             let mod_val = match modification.op {
                 ModOp::PreAssign => modification.val,
                 ModOp::PreMul => modification.val,
-                ModOp::PreDiv => 1.0 / modification.val,
+                ModOp::PreDiv => {
+                    if modification.val == 0.0 {
+                        continue;
+                    } else {
+                        1.0 / modification.val
+                    }
+                }
                 ModOp::Add => modification.val,
                 ModOp::Sub => -modification.val,
                 ModOp::PostMul => modification.val,
                 ModOp::PostMulImmune => modification.val,
-                ModOp::PostDiv => 1.0 / modification.val,
+                ModOp::PostDiv => {
+                    if modification.val == 0.0 {
+                        continue;
+                    } else {
+                        1.0 / modification.val
+                    }
+                }
                 ModOp::PostPerc => 1.0 + modification.val / 100.0,
                 ModOp::PostAssign => modification.val,
                 ModOp::ExtraMul => modification.val,
