@@ -20,6 +20,7 @@ use crate::{
         SsView,
     },
     util::Result,
+    ModAggrMode,
 };
 
 use super::{mod_info::ModInfo, svce_attr::is_penalizable};
@@ -87,7 +88,20 @@ impl SsSvcs {
             let mod_info = ModInfo::new(val, (&modifier.op).into(), penalizable, modifier.aggr_mode, srcs);
             mod_map.insert(mod_key, mod_info);
         }
-        mod_map.into_values().collect()
+        let mut mod_vec = mod_map.into_values().collect_vec();
+        if let Some(max_attr_id) = attr.max_attr_id {
+            if let Ok(val) = self.calc_get_item_attr_val(ss_view, &item.get_id(), &max_attr_id) {
+                let mod_info = ModInfo::new(
+                    val.dogma,
+                    ModOpInfo::Limit,
+                    false,
+                    ModAggrMode::Stack,
+                    vec![ModSrcInfo::new(item.get_id(), ModSrcValInfo::AttrId(max_attr_id))],
+                );
+                mod_vec.push(mod_info);
+            }
+        }
+        mod_vec
     }
 }
 

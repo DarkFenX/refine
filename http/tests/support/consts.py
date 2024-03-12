@@ -195,6 +195,7 @@ class ApiModOp(StrEnum):
     post_percent = 'post_perc'
     post_assign = 'post_assign'
     extra_mul = 'extra_mul'
+    limit = 'limit'
 
 
 @unique
