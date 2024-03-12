@@ -120,8 +120,8 @@ def test_penalization(client, consts):
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
-    api_fit.set_char(type_id=eve_item_char.id)
-    api_ss.add_sw_effect(type_id=eve_item_magnetar.id)
+    api_char = api_fit.set_char(type_id=eve_item_char.id)
+    api_magnetar = api_ss.add_sw_effect(type_id=eve_item_magnetar.id)
     api_launcher = api_fit.add_mod(
         type_id=eve_item_launcher.id,
         rack=consts.Rack.high,
@@ -131,3 +131,19 @@ def test_penalization(client, consts):
     assert api_launcher.charge.attrs[eve_attr_missile_therm.id].dogma == approx(131.04)
     assert api_launcher.charge.attrs[eve_attr_missile_kin.id].dogma == approx(149.76)
     assert api_launcher.charge.attrs[eve_attr_missile_expl.id].dogma == approx(187.2)
+    api_em_mods = api_launcher.charge.mods[eve_attr_missile_em.id]
+    assert len(api_em_mods) == 2
+    assert api_em_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
+    assert api_em_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
+    api_therm_mods = api_launcher.charge.mods[eve_attr_missile_therm.id]
+    assert len(api_therm_mods) == 2
+    assert api_therm_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
+    assert api_therm_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
+    api_kin_mods = api_launcher.charge.mods[eve_attr_missile_kin.id]
+    assert len(api_kin_mods) == 2
+    assert api_kin_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
+    assert api_kin_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
+    api_expl_mods = api_launcher.charge.mods[eve_attr_missile_expl.id]
+    assert len(api_expl_mods) == 2
+    assert api_expl_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
+    assert api_expl_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False

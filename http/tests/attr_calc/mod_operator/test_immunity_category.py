@@ -1,11 +1,11 @@
 from pytest import approx
 
 
-def get_dogma_value(client, consts, cat_id):
-    return get_dogma_value_ext(client=client, consts=consts, src1_cat_id=cat_id, src2_cat_id=cat_id)
+def setup_immunity_test(client, consts, cat_id):
+    return setup_immunity_test_ext(client=client, consts=consts, src1_cat_id=cat_id, src2_cat_id=cat_id)
 
 
-def get_dogma_value_ext(client, consts, src1_cat_id, src2_cat_id):
+def setup_immunity_test_ext(client, consts, src1_cat_id, src2_cat_id):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=False)
     eve_mod = client.mk_eve_effect_mod(
@@ -21,37 +21,75 @@ def get_dogma_value_ext(client, consts, src1_cat_id, src2_cat_id):
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
-    api_fit.add_rig(type_id=eve_item_src1.id)
-    api_fit.add_rig(type_id=eve_item_src2.id)
+    api_item_src1 = api_fit.add_rig(type_id=eve_item_src1.id)
+    api_item_src2 = api_fit.add_rig(type_id=eve_item_src2.id)
     api_item_tgt = api_fit.set_ship(type_id=eve_item_tgt.id)
-    return api_item_tgt.update().attrs[eve_tgt_attr.id].dogma
+    api_item_tgt.update()
+    return (
+        api_item_tgt.attrs[eve_tgt_attr.id].dogma,
+        api_item_tgt.mods[eve_tgt_attr.id],
+        api_item_src1,
+        api_item_src2)
 
 
 def test_ship(client, consts):
-    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.ship) == approx(300)
+    attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
+        client, consts, cat_id=consts.ItemCat.ship)
+    assert attr_val == approx(300)
+    assert len(attr_mods) == 2
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src2.id).one().penalized is False
 
 
 def test_charge(client, consts):
-    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.charge) == approx(300)
+    attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
+        client, consts, cat_id=consts.ItemCat.charge)
+    assert attr_val == approx(300)
+    assert len(attr_mods) == 2
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src2.id).one().penalized is False
 
 
 def test_skill(client, consts):
-    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.skill) == approx(300)
+    attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
+        client, consts, cat_id=consts.ItemCat.skill)
+    assert attr_val == approx(300)
+    assert len(attr_mods) == 2
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src2.id).one().penalized is False
 
 
 def test_implant(client, consts):
-    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.implant) == approx(300)
+    attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
+        client, consts, cat_id=consts.ItemCat.implant)
+    assert attr_val == approx(300)
+    assert len(attr_mods) == 2
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src2.id).one().penalized is False
 
 
 def test_subsystem(client, consts):
-    assert get_dogma_value(client, consts, cat_id=consts.ItemCat.subsystem) == approx(300)
+    attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
+        client, consts, cat_id=consts.ItemCat.subsystem)
+    assert attr_val == approx(300)
+    assert len(attr_mods) == 2
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src2.id).one().penalized is False
 
 
 def test_mixed(client, consts):
-    value = get_dogma_value_ext(client, consts, src1_cat_id=consts.ItemCat.charge, src2_cat_id=consts.ItemCat.implant)
-    assert value == approx(300)
+    attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test_ext(
+        client, consts, src1_cat_id=consts.ItemCat.charge, src2_cat_id=consts.ItemCat.implant)
+    assert attr_val == approx(300)
+    assert len(attr_mods) == 2
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src2.id).one().penalized is False
 
 
 def test_with_not_immune(client, consts):
-    value = get_dogma_value_ext(client, consts, src1_cat_id=consts.ItemCat.charge, src2_cat_id=consts.ItemCat.module)
-    assert value == approx(300)
+    attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test_ext(
+        client, consts, src1_cat_id=consts.ItemCat.charge, src2_cat_id=consts.ItemCat.module)
+    assert attr_val == approx(300)
+    assert len(attr_mods) == 2
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
+    assert attr_mods.find_by_src_item(src_item_id=api_item_src2.id).one().penalized is True

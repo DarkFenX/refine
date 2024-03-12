@@ -24,6 +24,7 @@ class Item(AttrDict):
         super().__init__(
             data=data,
             hooks={
+                'charge': lambda charge: Item(client=client, data=charge, ss_id=ss_id),
                 'attrs': lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()},
                 'effects': lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()},
                 'mods': AttrModInfoMap})
