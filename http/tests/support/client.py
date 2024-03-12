@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import requests
 
-from tests.support.consts import EffCat, Effect, ItemCat, Rack, State
+from tests.support.consts import ApiRack, ApiState, EveEffCat, EveEffect, EveItemCat
 from tests.support.request import Request
 from tests.support.util import Absent, Default, conditional_insert, get_stack_key
 from tests.support import api_data, eve_data
@@ -12,7 +12,7 @@ from tests.support import api_data, eve_data
 if TYPE_CHECKING:
     from typing import Type, Union
 
-    from tests.support.consts import EffMode
+    from tests.support.consts import ApiEffMode
     from tests.support.eve_data import BuffModifier, EffectModifier
     from tests.support.util import StackKey
 
@@ -56,7 +56,7 @@ class TestClient:
             data: Union[eve_data.TestObjects, Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             grp_id: Union[int, Type[Default]] = Default,
-            cat_id: Union[int, Type[Default]] = ItemCat.module,
+            cat_id: Union[int, Type[Default]] = EveItemCat.module,
             attrs: Union[dict[int, float], Type[Default]] = Default,
             eff_ids: Union[list[int], Type[Default]] = Default,
             defeff_id: Union[int, None] = None,
@@ -85,7 +85,7 @@ class TestClient:
             self,
             data: Union[eve_data.TestObjects, Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
-            cat_id: Union[int, Type[Default]] = ItemCat.module,
+            cat_id: Union[int, Type[Default]] = EveItemCat.module,
     ) -> eve_data.Group:
         if data is Default:
             data = self.__default_data
@@ -115,7 +115,7 @@ class TestClient:
             self,
             data: Union[eve_data.TestObjects, Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
-            cat_id: int = EffCat.passive,
+            cat_id: int = EveEffCat.passive,
             is_assistance: bool = False,
             is_offensive: bool = False,
             discharge_attr_id: Union[int, Type[Absent]] = Absent,
@@ -147,8 +147,8 @@ class TestClient:
         if data is Default:
             data = self.__default_data
         return data.mk_effect(
-            id_=Effect.online,
-            category_id=EffCat.active,
+            id_=EveEffect.online,
+            category_id=EveEffCat.active,
             is_assistance=False,
             is_offensive=False,
             discharge_attribute_id=Absent,
@@ -414,7 +414,7 @@ class TestClient:
             item_id: str,
             level: Union[int, Type[Absent]] = Absent,
             state: Union[bool, Type[Absent]] = Absent,
-            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> Request:
         command = {'type': 'change_skill', 'item_id': item_id}
         conditional_insert(command, 'level', level)
@@ -478,8 +478,8 @@ class TestClient:
             ss_id: str,
             fit_id: str,
             type_id: int,
-            rack: Rack = Rack.high,
-            state: str = State.offline,
+            rack: ApiRack = ApiRack.high,
+            state: str = ApiState.offline,
             charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: str = 'equip',
     ) -> Request:
@@ -502,9 +502,9 @@ class TestClient:
             self,
             ss_id: str,
             item_id: str,
-            state: Union[State, Type[Absent]] = Absent,
+            state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, Type[Absent]] = Absent,
-            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> Request:
         command = {'type': 'change_module', 'item_id': item_id}
         conditional_insert(command, 'state', state)
@@ -531,7 +531,7 @@ class TestClient:
             ss_id: str,
             fit_id: str,
             type_id: int,
-            state: str = State.offline
+            state: str = ApiState.offline
     ) -> Request:
         return self.__add_simple_item('add_drone', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 

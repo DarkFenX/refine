@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from typing import Type, Union
 
     from tests.support.client import TestClient
-    from tests.support.consts import EffMode, State
+    from tests.support.consts import ApiEffMode, ApiState
     from tests.support.eve_data import TestObjects
     from tests.support.request import Request
 
@@ -44,7 +44,7 @@ class Item(AttrDict):
             self,
             level: Union[int, Type[Absent]] = Absent,
             state: Union[bool, Type[Absent]] = Absent,
-            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_skill_request(
             ss_id=self._ss_id, item_id=self.id, level=level, state=state, effect_modes=effect_modes)
@@ -53,16 +53,16 @@ class Item(AttrDict):
             self,
             level: Union[int, Type[Absent]] = Absent,
             state: Union[bool, Type[Absent]] = Absent,
-            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> None:
         resp = self.change_skill_request(level=level, state=state, effect_modes=effect_modes).send()
         assert resp.status_code == 200
 
     def change_mod_request(
             self,
-            state: Union[State, Type[Absent]] = Absent,
+            state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, Type[Absent]] = Absent,
-            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_mod_request(
             ss_id=self._ss_id,
@@ -73,9 +73,9 @@ class Item(AttrDict):
 
     def change_mod(
             self,
-            state: Union[State, Type[Absent]] = Absent,
+            state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, Type[Absent]] = Absent,
-            effect_modes: Union[dict[int, EffMode], Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> None:
         resp = self.change_mod_request(state=state, charge=charge, effect_modes=effect_modes).send()
         assert resp.status_code == 200

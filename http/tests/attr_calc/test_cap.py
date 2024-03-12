@@ -7,9 +7,9 @@ def test_default(client, consts):
     eve_capped_attr = client.mk_eve_attr(max_attr_id=eve_capping_attr.id)
     eve_src_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_capped_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
@@ -30,9 +30,9 @@ def test_unmodified(client, consts):
     eve_capped_attr = client.mk_eve_attr(max_attr_id=eve_capping_attr.id)
     eve_src_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_capped_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
@@ -53,15 +53,15 @@ def test_modified(client, consts):
     eve_capped_attr = client.mk_eve_attr(max_attr_id=eve_capping_attr.id)
     eve_src_attr = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_capped_attr.id)
     eve_mod2 = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_capping_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod1, eve_mod2])
@@ -82,9 +82,9 @@ def test_update(client, consts):
     eve_capped_attr = client.mk_eve_attr(max_attr_id=eve_capping_attr.id)
     eve_src_attr = client.mk_eve_attr()
     eve_capped_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_capped_attr.id)
     eve_capped_effect = client.mk_eve_effect(mod_info=[eve_capped_mod])
@@ -92,9 +92,9 @@ def test_update(client, consts):
         attrs={eve_capping_attr.id: 2, eve_capped_attr.id: 3, eve_src_attr.id: 6},
         eff_ids=[eve_capped_effect.id])
     eve_capping_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.loc,
-        dom=consts.ModDom.ship,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.loc,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_capping_attr.id)
     eve_capping_effect = client.mk_eve_effect(mod_info=[eve_capping_mod])

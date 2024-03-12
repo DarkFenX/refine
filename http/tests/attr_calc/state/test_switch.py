@@ -9,33 +9,33 @@ def get_value_after_switch(client, consts, state_from, state_to):
     eve_src_attr_overload = client.mk_eve_attr()
     eve_effect_online = client.mk_eve_online_effect()
     eve_mod_cat_offline = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr_offline.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect_cat_offline = client.mk_eve_effect(cat_id=consts.EffCat.passive, mod_info=[eve_mod_cat_offline])
+    eve_effect_cat_offline = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_mod_cat_offline])
     eve_mod_cat_online = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr_online.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect_cat_online = client.mk_eve_effect(cat_id=consts.EffCat.online, mod_info=[eve_mod_cat_online])
+    eve_effect_cat_online = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod_cat_online])
     eve_mod_cat_active = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr_active.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect_cat_active = client.mk_eve_effect(cat_id=consts.EffCat.active, mod_info=[eve_mod_cat_active])
+    eve_effect_cat_active = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod_cat_active])
     eve_mod_cat_overload = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr_overload.id,
         tgt_attr_id=eve_tgt_attr.id)
-    eve_effect_cat_overload = client.mk_eve_effect(cat_id=consts.EffCat.overload, mod_info=[eve_mod_cat_overload])
+    eve_effect_cat_overload = client.mk_eve_effect(cat_id=consts.EveEffCat.overload, mod_info=[eve_mod_cat_overload])
     eve_item = client.mk_eve_item(
         attrs={
             eve_tgt_attr.id: 100, eve_src_attr_offline.id: 1.1, eve_src_attr_online.id: 1.3,
@@ -53,20 +53,20 @@ def get_value_after_switch(client, consts, state_from, state_to):
 
 
 def test_switch_up_single(client, consts):
-    value = get_value_after_switch(client, consts, state_from=consts.State.offline, state_to=consts.State.online)
+    value = get_value_after_switch(client, consts, state_from=consts.ApiState.offline, state_to=consts.ApiState.online)
     assert value == approx(143)
 
 
 def test_switch_up_multiple(client, consts):
-    value = get_value_after_switch(client, consts, state_from=consts.State.online, state_to=consts.State.overload)
+    value = get_value_after_switch(client, consts, state_from=consts.ApiState.online, state_to=consts.ApiState.overload)
     assert value == approx(364.65)
 
 
 def test_switch_down_single(client, consts):
-    value = get_value_after_switch(client, consts, state_from=consts.State.overload, state_to=consts.State.active)
+    value = get_value_after_switch(client, consts, state_from=consts.ApiState.overload, state_to=consts.ApiState.active)
     assert value == approx(214.5)
 
 
 def test_switch_down_multiple(client, consts):
-    value = get_value_after_switch(client, consts, state_from=consts.State.active, state_to=consts.State.offline)
+    value = get_value_after_switch(client, consts, state_from=consts.ApiState.active, state_to=consts.ApiState.offline)
     assert value == approx(110)

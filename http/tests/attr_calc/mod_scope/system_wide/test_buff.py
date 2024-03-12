@@ -2,16 +2,16 @@ from pytest import approx
 
 
 def test_sw_effect_addition_removal(client, consts):
-    eve_buff_type_attr = client.mk_eve_attr(id_=consts.Attr.warfare_buff_1_id)
-    eve_buff_val_attr = client.mk_eve_attr(id_=consts.Attr.warfare_buff_1_value)
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
-        aggr_mode=consts.BuffAggrMode.max,
-        op=consts.BuffOp.post_mul,
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
     eve_effect = client.mk_eve_effect(
-        id_=consts.Effect.weather_darkness,
-        cat_id=consts.EffCat.active)
+        id_=consts.EveEffect.weather_darkness,
+        cat_id=consts.EveEffCat.active)
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id])

@@ -8,10 +8,10 @@ def test_domain_other(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.own_srq,
-        dom=consts.ModDom.other,
+        func=consts.EveModFunc.own_srq,
+        dom=consts.EveModDom.other,
         srq=eve_skill.id,
-        op=consts.ModOp.post_percent,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])

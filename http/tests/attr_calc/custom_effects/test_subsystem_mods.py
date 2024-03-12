@@ -2,13 +2,13 @@ from pytest import approx
 
 
 def test_slots(client, consts):
-    eve_src_attr_hi = client.mk_eve_attr(id_=consts.Attr.hi_slot_modifier)
-    eve_src_attr_mid = client.mk_eve_attr(id_=consts.Attr.med_slot_modifier)
-    eve_src_attr_low = client.mk_eve_attr(id_=consts.Attr.low_slot_modifier)
-    eve_tgt_attr_hi = client.mk_eve_attr(id_=consts.Attr.hi_slots)
-    eve_tgt_attr_mid = client.mk_eve_attr(id_=consts.Attr.med_slots)
-    eve_tgt_attr_low = client.mk_eve_attr(id_=consts.Attr.low_slots)
-    eve_effect = client.mk_eve_effect(id_=consts.Effect.slot_modifier)
+    eve_src_attr_hi = client.mk_eve_attr(id_=consts.EveAttr.hi_slot_modifier)
+    eve_src_attr_mid = client.mk_eve_attr(id_=consts.EveAttr.med_slot_modifier)
+    eve_src_attr_low = client.mk_eve_attr(id_=consts.EveAttr.low_slot_modifier)
+    eve_tgt_attr_hi = client.mk_eve_attr(id_=consts.EveAttr.hi_slots)
+    eve_tgt_attr_mid = client.mk_eve_attr(id_=consts.EveAttr.med_slots)
+    eve_tgt_attr_low = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.slot_modifier)
     eve_subsystem = client.mk_eve_item(
         attrs={eve_src_attr_hi.id: 3, eve_src_attr_mid.id: 4, eve_src_attr_low.id: 1},
         eff_ids=[eve_effect.id])
@@ -25,11 +25,11 @@ def test_slots(client, consts):
 
 
 def test_hardpoints(client, consts):
-    eve_src_attr_turret = client.mk_eve_attr(id_=consts.Attr.turret_hardpoint_modifier)
-    eve_src_attr_launcher = client.mk_eve_attr(id_=consts.Attr.launcher_hardpoint_modifier)
-    eve_tgt_attr_turret = client.mk_eve_attr(id_=consts.Attr.turret_slots_left)
-    eve_tgt_attr_launcher = client.mk_eve_attr(id_=consts.Attr.launcher_slots_left)
-    eve_effect = client.mk_eve_effect(id_=consts.Effect.hardpoint_modifier_effect)
+    eve_src_attr_turret = client.mk_eve_attr(id_=consts.EveAttr.turret_hardpoint_modifier)
+    eve_src_attr_launcher = client.mk_eve_attr(id_=consts.EveAttr.launcher_hardpoint_modifier)
+    eve_tgt_attr_turret = client.mk_eve_attr(id_=consts.EveAttr.turret_slots_left)
+    eve_tgt_attr_launcher = client.mk_eve_attr(id_=consts.EveAttr.launcher_slots_left)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.hardpoint_modifier_effect)
     eve_subsystem = client.mk_eve_item(
         attrs={eve_src_attr_turret.id: 4, eve_src_attr_launcher.id: 6},
         eff_ids=[eve_effect.id])

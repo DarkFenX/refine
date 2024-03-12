@@ -5,9 +5,9 @@ def setup_penalization_test(client, consts, stackable):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=stackable)
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.ship,
-        op=consts.ModOp.pre_div,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_div,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
@@ -52,23 +52,23 @@ def test_non_penalized(client, consts):
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one()
     assert api_mod1.val == approx(1.2)
-    assert api_mod1.op == consts.InfoOp.pre_div
+    assert api_mod1.op == consts.ApiModOp.pre_div
     assert api_mod1.penalized is False
     api_mod2 = attr_mods.find_by_src_item(src_item_id=api_item_src2.id).one()
     assert api_mod2.val == approx(1.5)
-    assert api_mod2.op == consts.InfoOp.pre_div
+    assert api_mod2.op == consts.ApiModOp.pre_div
     assert api_mod2.penalized is False
     api_mod3 = attr_mods.find_by_src_item(src_item_id=api_item_src3.id).one()
     assert api_mod3.val == approx(0.1)
-    assert api_mod3.op == consts.InfoOp.pre_div
+    assert api_mod3.op == consts.ApiModOp.pre_div
     assert api_mod3.penalized is False
     api_mod4 = attr_mods.find_by_src_item(src_item_id=api_item_src4.id).one()
     assert api_mod4.val == approx(0.75)
-    assert api_mod4.op == consts.InfoOp.pre_div
+    assert api_mod4.op == consts.ApiModOp.pre_div
     assert api_mod4.penalized is False
     api_mod5 = attr_mods.find_by_src_item(src_item_id=api_item_src5.id).one()
     assert api_mod5.val == approx(5)
-    assert api_mod5.op == consts.InfoOp.pre_div
+    assert api_mod5.op == consts.ApiModOp.pre_div
     assert api_mod5.penalized is False
 
 
@@ -84,23 +84,23 @@ def test_penalized(client, consts):
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one()
     assert api_mod1.val == approx(1.2)
-    assert api_mod1.op == consts.InfoOp.pre_div
+    assert api_mod1.op == consts.ApiModOp.pre_div
     assert api_mod1.penalized is True
     api_mod2 = attr_mods.find_by_src_item(src_item_id=api_item_src2.id).one()
     assert api_mod2.val == approx(1.5)
-    assert api_mod2.op == consts.InfoOp.pre_div
+    assert api_mod2.op == consts.ApiModOp.pre_div
     assert api_mod2.penalized is True
     api_mod3 = attr_mods.find_by_src_item(src_item_id=api_item_src3.id).one()
     assert api_mod3.val == approx(0.1)
-    assert api_mod3.op == consts.InfoOp.pre_div
+    assert api_mod3.op == consts.ApiModOp.pre_div
     assert api_mod3.penalized is True
     api_mod4 = attr_mods.find_by_src_item(src_item_id=api_item_src4.id).one()
     assert api_mod4.val == approx(0.75)
-    assert api_mod4.op == consts.InfoOp.pre_div
+    assert api_mod4.op == consts.ApiModOp.pre_div
     assert api_mod4.penalized is True
     api_mod5 = attr_mods.find_by_src_item(src_item_id=api_item_src5.id).one()
     assert api_mod5.val == approx(5)
-    assert api_mod5.op == consts.InfoOp.pre_div
+    assert api_mod5.op == consts.ApiModOp.pre_div
     assert api_mod5.penalized is True
 
 
@@ -108,9 +108,9 @@ def test_zero(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.ship,
-        op=consts.ModOp.pre_div,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_div,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])

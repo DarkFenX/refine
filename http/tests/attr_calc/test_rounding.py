@@ -14,20 +14,20 @@ def get_value_simple(client, attr_id, base_value):
 
 
 def test_cpu_down(client, consts):
-    assert get_value_simple(client, attr_id=consts.Attr.cpu, base_value=2.3333) == approx(2.33)
+    assert get_value_simple(client, attr_id=consts.EveAttr.cpu, base_value=2.3333) == approx(2.33)
 
 
 def test_cpu_up(client, consts):
-    assert get_value_simple(client, attr_id=consts.Attr.cpu, base_value=2.6666) == approx(2.67)
+    assert get_value_simple(client, attr_id=consts.EveAttr.cpu, base_value=2.6666) == approx(2.67)
 
 
 def test_cpu_modified(client, consts):
     eve_src_attr = client.mk_eve_attr()
-    eve_tgt_attr = client.mk_eve_attr(id_=consts.Attr.cpu)
+    eve_tgt_attr = client.mk_eve_attr(id_=consts.EveAttr.cpu)
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_percent,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
@@ -40,15 +40,15 @@ def test_cpu_modified(client, consts):
 
 
 def test_cpu_output(client, consts):
-    assert get_value_simple(client, attr_id=consts.Attr.cpu_output, base_value=2.6666) == approx(2.67)
+    assert get_value_simple(client, attr_id=consts.EveAttr.cpu_output, base_value=2.6666) == approx(2.67)
 
 
 def test_power(client, consts):
-    assert get_value_simple(client, attr_id=consts.Attr.power, base_value=2.6666) == approx(2.67)
+    assert get_value_simple(client, attr_id=consts.EveAttr.power, base_value=2.6666) == approx(2.67)
 
 
 def test_power_output(client, consts):
-    assert get_value_simple(client, attr_id=consts.Attr.power_output, base_value=2.6666) == approx(2.67)
+    assert get_value_simple(client, attr_id=consts.EveAttr.power_output, base_value=2.6666) == approx(2.67)
 
 
 def test_other(client):

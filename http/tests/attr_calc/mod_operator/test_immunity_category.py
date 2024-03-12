@@ -9,9 +9,9 @@ def setup_immunity_test_ext(client, consts, src1_cat_id, src2_cat_id):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(stackable=False)
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.ship,
-        op=consts.ModOp.post_percent,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
@@ -34,7 +34,7 @@ def setup_immunity_test_ext(client, consts, src1_cat_id, src2_cat_id):
 
 def test_ship(client, consts):
     attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
-        client, consts, cat_id=consts.ItemCat.ship)
+        client, consts, cat_id=consts.EveItemCat.ship)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
@@ -43,7 +43,7 @@ def test_ship(client, consts):
 
 def test_charge(client, consts):
     attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
-        client, consts, cat_id=consts.ItemCat.charge)
+        client, consts, cat_id=consts.EveItemCat.charge)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
@@ -52,7 +52,7 @@ def test_charge(client, consts):
 
 def test_skill(client, consts):
     attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
-        client, consts, cat_id=consts.ItemCat.skill)
+        client, consts, cat_id=consts.EveItemCat.skill)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
@@ -61,7 +61,7 @@ def test_skill(client, consts):
 
 def test_implant(client, consts):
     attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
-        client, consts, cat_id=consts.ItemCat.implant)
+        client, consts, cat_id=consts.EveItemCat.implant)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
@@ -70,7 +70,7 @@ def test_implant(client, consts):
 
 def test_subsystem(client, consts):
     attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test(
-        client, consts, cat_id=consts.ItemCat.subsystem)
+        client, consts, cat_id=consts.EveItemCat.subsystem)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
@@ -79,7 +79,7 @@ def test_subsystem(client, consts):
 
 def test_mixed(client, consts):
     attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test_ext(
-        client, consts, src1_cat_id=consts.ItemCat.charge, src2_cat_id=consts.ItemCat.implant)
+        client, consts, src1_cat_id=consts.EveItemCat.charge, src2_cat_id=consts.EveItemCat.implant)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False
@@ -88,7 +88,7 @@ def test_mixed(client, consts):
 
 def test_with_not_immune(client, consts):
     attr_val, attr_mods, api_item_src1, api_item_src2 = setup_immunity_test_ext(
-        client, consts, src1_cat_id=consts.ItemCat.charge, src2_cat_id=consts.ItemCat.module)
+        client, consts, src1_cat_id=consts.EveItemCat.charge, src2_cat_id=consts.EveItemCat.module)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_src_item(src_item_id=api_item_src1.id).one().penalized is False

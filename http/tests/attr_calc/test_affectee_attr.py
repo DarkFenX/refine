@@ -7,15 +7,15 @@ def test_multiple(client, consts):
     eve_tgt_attr2 = client.mk_eve_attr()
     eve_tgt_attr3 = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_percent,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr1.id)
     eve_mod2 = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_percent,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr2.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod1, eve_mod2])

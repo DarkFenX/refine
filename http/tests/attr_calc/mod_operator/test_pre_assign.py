@@ -5,9 +5,9 @@ def setup_hig_test(client, consts, high_is_good):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(high_is_good=high_is_good)
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.ship,
-        op=consts.ModOp.pre_assign,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_assign,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
@@ -34,12 +34,12 @@ def setup_hig_test(client, consts, high_is_good):
 def test_high_is_good(client, consts):
     attr_val, attr_mods, _, _, api_item_src3 = setup_hig_test(client, consts, high_is_good=True)
     assert attr_val == approx(53.02)
-    assert attr_mods.one().op == consts.InfoOp.pre_assign
+    assert attr_mods.one().op == consts.ApiModOp.pre_assign
     assert attr_mods.one().src.one().item_id == api_item_src3.id
 
 
 def test_high_is_bad(client, consts):
     attr_val, attr_mods, _, api_item_src2, _ = setup_hig_test(client, consts, high_is_good=False)
     assert attr_val == approx(-20)
-    assert attr_mods.one().op == consts.InfoOp.pre_assign
+    assert attr_mods.one().op == consts.ApiModOp.pre_assign
     assert attr_mods.one().src.one().item_id == api_item_src2.id

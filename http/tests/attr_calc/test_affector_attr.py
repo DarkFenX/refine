@@ -7,15 +7,15 @@ def test_absent_attr_combination(client, consts):
     eve_tgt_attr = client.mk_eve_attr()
     eve_abs_attr = client.mk_eve_attr()
     eve_invalid_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_percent,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_abs_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_valid_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_invalid_mod, eve_valid_mod])

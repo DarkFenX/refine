@@ -7,9 +7,9 @@ def test_unaffected(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.loc,
-        dom=consts.ModDom.other,
-        op=consts.ModOp.post_percent,
+        func=consts.EveModFunc.loc,
+        dom=consts.EveModDom.other,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])

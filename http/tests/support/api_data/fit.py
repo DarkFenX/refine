@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.consts import State, Rack
+from tests.support.consts import ApiRack, ApiState
 from tests.support.util import AttrDict, Absent
 from .item import Item
 
@@ -122,8 +122,8 @@ class Fit(AttrDict):
     def add_mod_request(
             self,
             type_id: int,
-            rack: Rack = Rack.high,
-            state: str = State.offline,
+            rack: ApiRack = ApiRack.high,
+            state: str = ApiState.offline,
             charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: str = 'equip',
     ) -> Request:
@@ -134,8 +134,8 @@ class Fit(AttrDict):
     def add_mod(
             self,
             type_id: int,
-            rack: Rack = Rack.high,
-            state: str = State.offline,
+            rack: ApiRack = ApiRack.high,
+            state: str = ApiState.offline,
             charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: str = 'equip',
     ) -> Item:
@@ -169,14 +169,14 @@ class Fit(AttrDict):
     def add_drone_request(
             self,
             type_id: int,
-            state: str = State.offline,
+            state: str = ApiState.offline,
     ) -> Request:
         return self._client.add_drone_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_drone(
             self,
             type_id,
-            state: str = State.offline,
+            state: str = ApiState.offline,
     ) -> Item:
         resp = self.add_drone_request(type_id=type_id, state=state).send()
         assert resp.status_code == 200

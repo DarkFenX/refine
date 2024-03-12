@@ -3,11 +3,11 @@ from pytest import approx
 
 def test_switch(client, consts):
     eve_tgt_attr = client.mk_eve_attr()
-    eve_src_attr = client.mk_eve_attr(id_=consts.Attr.skill_level)
+    eve_src_attr = client.mk_eve_attr(id_=consts.EveAttr.skill_level)
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.item,
-        dom=consts.ModDom.item,
-        op=consts.ModOp.post_mul,
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])

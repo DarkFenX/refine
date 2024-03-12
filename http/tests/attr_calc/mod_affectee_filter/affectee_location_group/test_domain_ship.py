@@ -6,10 +6,10 @@ def test_affected(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.loc_grp,
-        dom=consts.ModDom.ship,
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
         grp=eve_grp.id,
-        op=consts.ModOp.post_percent,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
@@ -32,10 +32,10 @@ def test_other_location(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.loc_grp,
-        dom=consts.ModDom.ship,
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
         grp=eve_grp.id,
-        op=consts.ModOp.post_percent,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
@@ -57,10 +57,10 @@ def test_other_group(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.loc_grp,
-        dom=consts.ModDom.ship,
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
         grp=eve_grp1.id,
-        op=consts.ModOp.post_percent,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
@@ -82,10 +82,10 @@ def test_ship_toggle(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.ModFunc.loc_grp,
-        dom=consts.ModDom.ship,
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
         grp=eve_grp.id,
-        op=consts.ModOp.post_percent,
+        op=consts.EveModOp.post_percent,
         src_attr_id=eve_src_attr.id,
         tgt_attr_id=eve_tgt_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])

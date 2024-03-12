@@ -3,28 +3,19 @@ from enum import StrEnum, IntEnum, unique
 
 
 @unique
-class State(StrEnum):
-    ghost = 'ghost'
-    offline = 'offline'
-    online = 'online'
-    active = 'active'
-    overload = 'overload'
-
-
-@unique
-class Item(IntEnum):
+class ApiItem(IntEnum):
     missile_launcher_operation = 3319
     nanite_repair_paste = 28668
 
 
 @unique
-class ItemGrp(IntEnum):
+class EveItemGrp(IntEnum):
     character = 1
     effect_beacon = 920
 
 
 @unique
-class ItemCat(IntEnum):
+class EveItemCat(IntEnum):
     celestial = 2
     charge = 8
     drone = 18
@@ -37,7 +28,7 @@ class ItemCat(IntEnum):
 
 
 @unique
-class Effect(IntEnum):
+class EveEffect(IntEnum):
     drone_dmg_bonus = 1730
     fueled_armor_repair = 5275
     hardpoint_modifier_effect = 3773
@@ -55,7 +46,7 @@ class Effect(IntEnum):
 
 
 @unique
-class EffCat(IntEnum):
+class EveEffCat(IntEnum):
     passive = 0
     active = 1
     target = 2
@@ -67,7 +58,7 @@ class EffCat(IntEnum):
 
 
 @unique
-class ModFunc(StrEnum):
+class EveModFunc(StrEnum):
     item = 'ItemModifier'
     loc = 'LocationModifier'
     loc_grp = 'LocationGroupModifier'
@@ -76,7 +67,7 @@ class ModFunc(StrEnum):
 
 
 @unique
-class ModDom(StrEnum):
+class EveModDom(StrEnum):
     item = 'itemID'
     char = 'charID'
     ship = 'shipID'
@@ -86,7 +77,7 @@ class ModDom(StrEnum):
 
 
 @unique
-class ModOp(IntEnum):
+class EveModOp(IntEnum):
     pre_assign = -1
     pre_mul = 0
     pre_div = 1
@@ -99,13 +90,13 @@ class ModOp(IntEnum):
 
 
 @unique
-class BuffAggrMode(StrEnum):
+class EveBuffAggrMode(StrEnum):
     min = 'Minimum'
     max = 'Maximum'
 
 
 @unique
-class BuffOp(StrEnum):
+class EveBuffOp(StrEnum):
     pre_assign = 'PreAssignment'
     pre_mul = 'PreMul'
     pre_div = 'PreDiv'
@@ -118,7 +109,7 @@ class BuffOp(StrEnum):
 
 
 @unique
-class Attr(IntEnum):
+class EveAttr(IntEnum):
     # Resources
     cpu = 50
     cpu_output = 48
@@ -169,14 +160,23 @@ class Attr(IntEnum):
 
 
 @unique
-class Rack(StrEnum):
+class ApiState(StrEnum):
+    ghost = 'ghost'
+    offline = 'offline'
+    online = 'online'
+    active = 'active'
+    overload = 'overload'
+
+
+@unique
+class ApiRack(StrEnum):
     high = 'high'
     mid = 'mid'
     low = 'low'
 
 
 @unique
-class EffMode(StrEnum):
+class ApiEffMode(StrEnum):
     full_compliance = 'full'
     state_compliance = 'state'
     force_run = 'run'
@@ -184,7 +184,7 @@ class EffMode(StrEnum):
 
 
 @unique
-class InfoOp(StrEnum):
+class ApiModOp(StrEnum):
     pre_assign = 'pre_assign'
     pre_mul = 'pre_mul'
     pre_div = 'pre_div'
@@ -198,5 +198,5 @@ class InfoOp(StrEnum):
 
 
 @unique
-class InfoAggrMode(StrEnum):
+class ApiAggrMode(StrEnum):
     stack = 'stack'
