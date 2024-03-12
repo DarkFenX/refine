@@ -192,6 +192,5 @@ def test_all_in(client, consts):
         val_post_perc=val_post_perc,
         val_post_ass=val_post_ass)
     assert value == approx(val_post_ass)
-    mod = mods.one()
-    assert mod.val == approx(val_post_ass)
-    assert mod.op == consts.InfoOp.post_assign
+    assert mods.one().val == approx(val_post_ass)
+    assert mods.one().op == consts.InfoOp.post_assign

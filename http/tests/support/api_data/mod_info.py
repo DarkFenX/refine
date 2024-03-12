@@ -17,6 +17,9 @@ class AttrModInfoMap(dict):
     def find_by_src_item(self, tgt_attr_id: int, src_item_id: int) -> ModInfoList:
         return self.get(tgt_attr_id, ModInfoList()).find_by_src_item(src_item_id=src_item_id)
 
+    def find_by_src_attr(self, tgt_attr_id: int, src_attr_id: int) -> ModInfoList:
+        return self.get(tgt_attr_id, ModInfoList()).find_by_src_attr(src_attr_id=src_attr_id)
+
     def __repr__(self) -> str:
         class_name = type(self).__name__
         super_repr = super().__repr__()
@@ -30,6 +33,9 @@ class ModInfoList(list):
 
     def find_by_src_item(self, src_item_id: int) -> ModInfoList:
         return ModInfoList(i for i in self if any(s.item_id == src_item_id for s in i.src))
+
+    def find_by_src_attr(self, src_attr_id: int) -> ModInfoList:
+        return ModInfoList(i for i in self if any(s.attr_id == src_attr_id for s in i.src))
 
     def one(self) -> ModInfo:
         if len(self) != 1:

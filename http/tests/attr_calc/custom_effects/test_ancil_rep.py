@@ -12,11 +12,10 @@ def test_local_aar(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_aar_item = api_fit.add_mod(type_id=eve_aar_item.id, rack=consts.Rack.low, charge_type_id=eve_paste_item.id)
+    # Verification
     api_aar_item.update()
-    # Attributes
     assert api_aar_item.attrs[eve_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_tgt_attr.id].extra == approx(300)
-    # Modification
     api_mod = api_aar_item.mods[eve_tgt_attr.id].one()
     assert api_mod.val == approx(3)
     assert api_mod.op == consts.InfoOp.extra_mul
@@ -36,11 +35,10 @@ def test_remote_aar(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_aar_item = api_fit.add_mod(type_id=eve_aar_item.id, rack=consts.Rack.high, charge_type_id=eve_paste_item.id)
+    # Verification
     api_aar_item.update()
-    # Attributes
     assert api_aar_item.attrs[eve_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_tgt_attr.id].extra == approx(300)
-    # Modification
     api_mod = api_aar_item.mods[eve_tgt_attr.id].one()
     assert api_mod.val == approx(3)
     assert api_mod.op == consts.InfoOp.extra_mul
@@ -59,16 +57,21 @@ def test_charge_switch(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_aar_item = api_fit.add_mod(type_id=eve_aar_item.id, rack=consts.Rack.low)
+    # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_tgt_attr.id].extra == approx(100)
     assert len(api_aar_item.mods) == 0
+    # Action
     api_aar_item.change_mod(charge=eve_paste_item.id)
+    # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_tgt_attr.id].extra == approx(300)
     assert len(api_aar_item.mods[eve_tgt_attr.id]) == 1
+    # Action
     api_aar_item.change_mod(charge=None)
+    # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_tgt_attr.id].extra == approx(100)
@@ -98,14 +101,19 @@ def test_mult_change(client, consts):
     api_fit = api_ss.create_fit()
     api_fit.set_ship(eve_ship_item.id)
     api_aar_item = api_fit.add_mod(type_id=eve_aar_item.id, rack=consts.Rack.low, charge_type_id=eve_paste_item.id)
+    # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_aar_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_aar_tgt_attr.id].extra == approx(300)
+    # Action
     api_mod_item = api_fit.add_rig(type_id=eve_mod_item.id)
+    # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_aar_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_aar_tgt_attr.id].extra == approx(375)
+    # Action
     api_mod_item.remove()
+    # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_aar_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_aar_tgt_attr.id].extra == approx(300)
