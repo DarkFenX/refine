@@ -2,6 +2,7 @@ use crate::{defs::AttrVal, shr::ModAggrMode};
 
 use super::{op::ModOpInfo, src::ModSrcInfo};
 
+#[derive(Debug)]
 pub struct ModInfo {
     pub val: AttrVal,
     pub op: ModOpInfo,

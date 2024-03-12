@@ -237,7 +237,7 @@ fn get_chain_val(vals: Vec<AttrVal>) -> AttrVal {
     val
 }
 
-fn process_assigns(assigns: &Vec<AttrVal>, attr: &ad::AAttr) -> AttrVal {
+pub(in crate::ss::svc::svce_calc) fn process_assigns(assigns: &Vec<AttrVal>, attr: &ad::AAttr) -> AttrVal {
     match attr.hig {
         true => *assigns.iter().max_by(|a, b| a.total_cmp(b)).unwrap(),
         false => *assigns.iter().min_by(|a, b| a.total_cmp(b)).unwrap(),

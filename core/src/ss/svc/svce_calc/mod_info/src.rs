@@ -1,5 +1,6 @@
 use crate::defs::{AttrVal, EAttrId, SsItemId};
 
+#[derive(Debug)]
 pub struct ModSrcInfo {
     pub item_id: SsItemId,
     pub val: ModSrcValInfo,
@@ -10,6 +11,7 @@ impl ModSrcInfo {
     }
 }
 
+#[derive(Debug)]
 pub enum ModSrcValInfo {
     AttrId(EAttrId),
     Hardcoded(AttrVal),

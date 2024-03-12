@@ -4,7 +4,7 @@ use crate::defs::EBuffId;
 ///
 /// When in the non-stack mode, multiple values which share the same aggregation mode and the same
 /// aggregation key (the mode argument) are converted into a single value.
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum ModAggrMode {
     /// All modifications are applied.
     Stack,

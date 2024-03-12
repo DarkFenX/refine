@@ -1,5 +1,6 @@
 use crate::shr::ModOp;
 
+#[derive(Debug, PartialEq)]
 pub enum ModOpInfo {
     PreAssign,
     PreMul,

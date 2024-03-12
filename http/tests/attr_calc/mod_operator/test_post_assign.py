@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def get_dogma_value(client, consts, high_is_good):
+def setup_hig_test(client, consts, high_is_good):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr(high_is_good=high_is_good)
     eve_mod = client.mk_eve_effect_mod(
@@ -18,16 +18,28 @@ def get_dogma_value(client, consts, high_is_good):
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
-    api_fit.add_rig(type_id=eve_item_src1.id)
-    api_fit.add_rig(type_id=eve_item_src2.id)
-    api_fit.add_rig(type_id=eve_item_src3.id)
+    api_item_src1 = api_fit.add_rig(type_id=eve_item_src1.id)
+    api_item_src2 = api_fit.add_rig(type_id=eve_item_src2.id)
+    api_item_src3 = api_fit.add_rig(type_id=eve_item_src3.id)
     api_item_tgt = api_fit.set_ship(type_id=eve_item_tgt.id)
-    return api_item_tgt.update().attrs[eve_tgt_attr.id].dogma
+    api_item_tgt.update()
+    return (
+        api_item_tgt.attrs[eve_tgt_attr.id].dogma,
+        api_item_tgt.mods[eve_tgt_attr.id],
+        api_item_src1,
+        api_item_src2,
+        api_item_src3)
 
 
 def test_high_is_good(client, consts):
-    assert get_dogma_value(client, consts, high_is_good=True) == approx(53.02)
+    attr_val, attr_mods, _, _, api_item_src3 = setup_hig_test(client, consts, high_is_good=True)
+    assert attr_val == approx(53.02)
+    assert attr_mods.one().op == consts.InfoOp.post_assign
+    assert attr_mods.one().src.one().item_id == api_item_src3.id
 
 
 def test_high_is_bad(client, consts):
-    assert get_dogma_value(client, consts, high_is_good=False) == approx(-20)
+    attr_val, attr_mods, _, api_item_src2, _ = setup_hig_test(client, consts, high_is_good=False)
+    assert attr_val == approx(-20)
+    assert attr_mods.one().op == consts.InfoOp.post_assign
+    assert attr_mods.one().src.one().item_id == api_item_src2.id

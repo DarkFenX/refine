@@ -1,6 +1,9 @@
 use std::collections::{HashMap, HashSet};
 
+use itertools::Itertools;
+
 use crate::{
+    ad,
     defs::{EAttrId, SsItemId},
     ss::{
         svc::{
@@ -12,7 +15,10 @@ use crate::{
     util::Result,
 };
 
-use super::{mod_info::ModInfo, svce_attr::is_penalizable};
+use super::{
+    mod_info::ModInfo,
+    svce_attr::{is_penalizable, process_assigns},
+};
 
 impl SsSvcs {
     // Query methods
@@ -44,7 +50,7 @@ impl SsSvcs {
                 );
                 infos.push(info);
             }
-            filter_useless(&mut infos);
+            filter_useless(&attr_id, &mut infos, ss_view);
             if !infos.is_empty() {
                 info_map.insert(attr_id, infos);
             }
@@ -64,8 +70,19 @@ impl SsSvcs {
     }
 }
 
-fn filter_useless(mods: &mut Vec<ModInfo>) {
+fn filter_useless(attr_id: &EAttrId, mods: &mut Vec<ModInfo>, ss_view: &SsView) {
     // Filter out modifications which get overridden by post-assigment
+    filter_pre_postassign(mods);
+    // Filter out modifications where right hand operand doesn't do anything because of its value
+    filter_neutral_invalid_operands(mods);
+    // Since only one of assignment operations is effective, include only that one
+    if let Some(attr) = ss_view.src.get_a_attr(attr_id) {
+        filter_ineffective_assigns(mods, &attr, ModOpInfo::PreAssign);
+        filter_ineffective_assigns(mods, &attr, ModOpInfo::PostAssign);
+    }
+}
+
+fn filter_pre_postassign(mods: &mut Vec<ModInfo>) {
     if mods.iter().any(|v| matches!(v.op, ModOpInfo::PostAssign)) {
         mods.retain(|m| match m.op {
             // Only those 2 modifications are processed after post-assignment
@@ -73,11 +90,27 @@ fn filter_useless(mods: &mut Vec<ModInfo>) {
             _ => false,
         });
     };
-    // Filter out modifications where right hand operand doesn't do anything because of its value
+}
+
+fn filter_neutral_invalid_operands(mods: &mut Vec<ModInfo>) {
     mods.retain(|m| match m.op {
         ModOpInfo::PreMul | ModOpInfo::PostMul | ModOpInfo::ExtraMul => m.val != 1.0,
         ModOpInfo::PreDiv | ModOpInfo::PostDiv => m.val != 1.0 && m.val != 0.0,
         ModOpInfo::Add | ModOpInfo::Sub | ModOpInfo::PostPerc => m.val != 0.0,
         _ => true,
     });
+}
+
+fn filter_ineffective_assigns(mods: &mut Vec<ModInfo>, attr: &ad::AAttr, op: ModOpInfo) {
+    let assign_mods = mods.extract_if(|m| op == m.op).collect_vec();
+    if !assign_mods.is_empty() {
+        let assign_vals = assign_mods.iter().map(|m| m.val).collect_vec();
+        let chosen_val = process_assigns(&assign_vals, attr);
+        let chosen_mod = assign_mods
+            .into_iter()
+            .filter(|m| m.val == chosen_val)
+            .exactly_one()
+            .unwrap();
+        mods.push(chosen_mod);
+    }
 }

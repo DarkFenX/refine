@@ -192,5 +192,6 @@ def test_all_in(client, consts):
         val_post_perc=val_post_perc,
         val_post_ass=val_post_ass)
     assert attr_value == approx(val_post_ass)
+    # When there is a post-assignment, all modifications before it are considered insignificant
     assert attr_mods.one().val == approx(val_post_ass)
     assert attr_mods.one().op == consts.InfoOp.post_assign
