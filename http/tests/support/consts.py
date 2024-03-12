@@ -192,7 +192,7 @@ class InfoOp(StrEnum):
     mod_sub = 'sub'
     post_mul = 'post_mul'
     post_div = 'post_div'
-    post_percent = 'post_percent'
+    post_percent = 'post_perc'
     post_assign = 'post_assign'
     extra_mul = 'extra_mul'
 

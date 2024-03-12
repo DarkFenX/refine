@@ -130,7 +130,8 @@ def get_dogma_value(
     if val_post_ass:
         api_fit.add_rig(type_id=eve_item_src_post_ass.id)
     api_item_tgt = api_fit.set_ship(type_id=eve_item_tgt.id)
-    return api_item_tgt.update().attrs[eve_tgt_attr.id].dogma
+    api_item_tgt.update()
+    return api_item_tgt.attrs[eve_tgt_attr.id].dogma, api_item_tgt.mods[eve_tgt_attr.id]
 
 
 def test_almost_all_in(client, consts):
@@ -142,7 +143,7 @@ def test_almost_all_in(client, consts):
     val_post_mul = 1.35
     val_post_div = 2.7
     val_post_perc = 15
-    value = get_dogma_value(
+    value, mods = get_dogma_value(
         client=client,
         consts=consts,
         val_pre_ass=val_pre_ass,
@@ -158,6 +159,14 @@ def test_almost_all_in(client, consts):
             (val_pre_ass * val_pre_mul / val_pre_div + val_mod_add - val_mod_sub)
             * val_post_mul / val_post_div * (1 + val_post_perc / 100))
     assert value == approx(expected_value)
+    assert mods.find_by_op(op=consts.InfoOp.pre_assign).one().val == approx(val_pre_ass)
+    assert mods.find_by_op(op=consts.InfoOp.pre_mul).one().val == approx(val_pre_mul)
+    assert mods.find_by_op(op=consts.InfoOp.pre_div).one().val == approx(val_pre_div)
+    assert mods.find_by_op(op=consts.InfoOp.mod_add).one().val == approx(val_mod_add)
+    assert mods.find_by_op(op=consts.InfoOp.mod_sub).one().val == approx(val_mod_sub)
+    assert mods.find_by_op(op=consts.InfoOp.post_mul).one().val == approx(val_post_mul)
+    assert mods.find_by_op(op=consts.InfoOp.post_div).one().val == approx(val_post_div)
+    assert mods.find_by_op(op=consts.InfoOp.post_percent).one().val == approx(val_post_perc)
 
 
 def test_all_in(client, consts):
@@ -170,7 +179,7 @@ def test_all_in(client, consts):
     val_post_div = 2.7
     val_post_perc = 15
     val_post_ass = 68
-    value = get_dogma_value(
+    value, mods = get_dogma_value(
         client=client,
         consts=consts,
         val_pre_ass=val_pre_ass,
@@ -183,3 +192,6 @@ def test_all_in(client, consts):
         val_post_perc=val_post_perc,
         val_post_ass=val_post_ass)
     assert value == approx(val_post_ass)
+    mod = mods.one()
+    assert mod.val == approx(val_post_ass)
+    assert mod.op == consts.InfoOp.post_assign
