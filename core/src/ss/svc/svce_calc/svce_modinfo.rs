@@ -1,5 +1,6 @@
-//! Methods here largely reimplement attribute calculation counterparts to provide extended info
-//! while not bloating calculation part, which is supposed to be used much more often.
+//! Methods here reimplement attribute calculation counterparts to some extent, to provide extended
+//! info while not bloating calculation part (since calculation is supposed to be used much more
+//! often than modification info fetching).
 
 use std::collections::{HashMap, HashSet};
 

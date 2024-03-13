@@ -12,17 +12,26 @@
 //! - Projection register - provides extra info about effects which apply to items which do not
 //! belong to fit of modifier, or which apply to multiple targets;
 //! - Dependency register - tracks direct dependencies between attribute values, which cannot be
-//! tracked otherwise. Information here isn't added when items are added or effects are started, but
-//! only when calculator realizes that there is a dependency, which usually happens during dependent
-//! attribute calculation. Information is removed whenever one of items is removed, or when modifier
-//! which establishes this dependency is stopped. Attribute value limits and custom propulsion
-//! module modifier use this register;
+//! tracked otherwise;
 //! - Revision register - keeps track of custom modifiers which depend on various events not related
 //! to attribute changes, and whenever significant events happen, forces recalculation of attribute
 //! values it modifies. Custom ancillary armor repairer modifier uses this register.
 //!
-//! Calculation service methods tie everything together, and provide a few methods to manipulate
-//! relations and fetch attribute data.
+//! Next, there are a few scenarios on how those registers are used:
+//!
+//! - Fit-local dogma modifiers: those use modifier register and target register to provide info for
+//! both directions: finding modifiers which affect an attr on an item, and finding items which are
+//! affected by a modifier;
+//! - System-wide and projected dogma modifiers: same as fit-local dogma modifier, but also use data
+//! from projection register to define which fits are affected;
+//! - Attribute value caps/limits: they are using dependency register, and relation between a
+//! limiting attribute and a limited attribute is registered during calculation of the limited
+//! attribute. Relation is removed only when item is unloaded;
+//! - Custom ancillary repairer modifier: uses revision register to clear rep amount attribute
+//! whenever it loads/unloads paste as its charge;
+//! - Custom AB/MWD modifier: uses dependency register to establish relationship between ship speed,
+//! ship mass, prop speed boost, and prop thrust during modifier calculation. This relationship is
+//! removed whenever ship or prop is removed, or when effect/modifier is stopped.
 
 pub(in crate::ss::svc) use data::CalcData;
 pub use misc::SsAttrVal;
