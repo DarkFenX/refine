@@ -1,8 +1,8 @@
 use crate::{
     defs::SsItemId,
     ec,
-    shr::{ModAggrMode, ModDomain, ModOp},
-    ss::svc::svce_calc::modifier::{mod_src::SsAttrModSrc, SsAttrMod, SsModTgtFilter},
+    shr::{ModAggrMode, ModOp},
+    ss::svc::svce_calc::modifier::{mod_src::SsAttrModSrc, SsAttrMod, SsModDomain, SsModTgtFilter},
     EEffectId,
 };
 
@@ -13,7 +13,7 @@ pub(in crate::ss::svc::svce_calc) fn make_mod(src_item_id: SsItemId, src_effect_
         SsAttrModSrc::AncillaryArmorRep,
         ModOp::ExtraMul,
         ModAggrMode::Stack,
-        SsModTgtFilter::Direct(ModDomain::Item),
+        SsModTgtFilter::Direct(SsModDomain::Item),
         ec::attrs::ARMOR_DMG_AMOUNT,
     )
 }

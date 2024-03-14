@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{EAttrId, EEffectId},
     ec,
-    shr::{ModDomain, ModOp},
+    shr::ModOp,
 };
 
 const SLOT_EFFECT: EEffectId = ec::effects::SLOT_MODIFIER;
@@ -64,7 +64,7 @@ fn mk_modifier(src_attr_id: EAttrId, tgt_attr_id: EAttrId) -> ad::AEffectAttrMod
     ad::AEffectAttrMod::new(
         src_attr_id,
         ModOp::Add,
-        ad::AModTgtFilter::Direct(ModDomain::Ship),
+        ad::AModTgtFilter::Direct(ad::AModDomain::Ship),
         tgt_attr_id,
     )
 }

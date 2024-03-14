@@ -1,6 +1,6 @@
 /// Defines domain (or scope) which is target for a modification.
-#[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub enum ModDomain {
+#[derive(PartialEq)]
+pub enum AModDomain {
     /// Ship or items belonging to it.
     Ship,
     /// Structure or items belonging to it.

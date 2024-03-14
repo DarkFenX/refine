@@ -1,25 +1,26 @@
 use crate::{
     ad,
     defs::{EItemGrpId, EItemId},
-    shr::ModDomain,
     ss::item::SsItem,
 };
 
+use super::SsModDomain;
+
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::svce_calc) enum SsModTgtFilter {
-    Direct(ModDomain),
-    Loc(ModDomain),
-    LocGrp(ModDomain, EItemGrpId),
-    LocSrq(ModDomain, EItemId),
+    Direct(SsModDomain),
+    Loc(SsModDomain),
+    LocGrp(SsModDomain, EItemGrpId),
+    LocSrq(SsModDomain, EItemId),
     OwnSrq(EItemId),
 }
 impl SsModTgtFilter {
     pub(super) fn from_a_mod_tgt_filter(a_mod_tgt_filter: &ad::AModTgtFilter, ss_item: &SsItem) -> Self {
         match a_mod_tgt_filter {
-            ad::AModTgtFilter::Direct(dom) => Self::Direct(*dom),
-            ad::AModTgtFilter::Loc(dom) => Self::Loc(*dom),
-            ad::AModTgtFilter::LocGrp(domain, grp_id) => Self::LocGrp(*domain, *grp_id),
-            ad::AModTgtFilter::LocSrq(domain, mod_srq) => Self::LocSrq(*domain, get_srq(mod_srq, ss_item)),
+            ad::AModTgtFilter::Direct(dom) => Self::Direct(dom.into()),
+            ad::AModTgtFilter::Loc(dom) => Self::Loc(dom.into()),
+            ad::AModTgtFilter::LocGrp(dom, grp_id) => Self::LocGrp(dom.into(), *grp_id),
+            ad::AModTgtFilter::LocSrq(dom, mod_srq) => Self::LocSrq(dom.into(), get_srq(mod_srq, ss_item)),
             ad::AModTgtFilter::OwnSrq(mod_srq) => Self::OwnSrq(get_srq(mod_srq, ss_item)),
         }
     }

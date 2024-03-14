@@ -4,7 +4,7 @@ use crate::{
     ad,
     adg::GData,
     defs::EBuffId,
-    shr::{ModAggrMode, ModDomain, ModOp},
+    shr::{ModAggrMode, ModOp},
     util::{IntError, IntResult},
 };
 
@@ -30,25 +30,25 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
         let mut a_mods = Vec::new();
         for e_item_mod in e_buff.item_mods.iter() {
             a_mods.push(ad::ABuffAttrMod::new(
-                ad::AModTgtFilter::Direct(ModDomain::Ship),
+                ad::AModTgtFilter::Direct(ad::AModDomain::Ship),
                 e_item_mod.attr_id,
             ));
         }
         for e_loc_mod in e_buff.loc_mods.iter() {
             a_mods.push(ad::ABuffAttrMod::new(
-                ad::AModTgtFilter::Loc(ModDomain::Ship),
+                ad::AModTgtFilter::Loc(ad::AModDomain::Ship),
                 e_loc_mod.attr_id,
             ));
         }
         for e_locgroup_mod in e_buff.locgroup_mods.iter() {
             a_mods.push(ad::ABuffAttrMod::new(
-                ad::AModTgtFilter::LocGrp(ModDomain::Ship, e_locgroup_mod.group_id),
+                ad::AModTgtFilter::LocGrp(ad::AModDomain::Ship, e_locgroup_mod.group_id),
                 e_locgroup_mod.attr_id,
             ));
         }
         for e_locsrq_mod in e_buff.locsrq_mods.iter() {
             a_mods.push(ad::ABuffAttrMod::new(
-                ad::AModTgtFilter::LocSrq(ModDomain::Ship, ad::AModSrq::ItemId(e_locsrq_mod.skill_id)),
+                ad::AModTgtFilter::LocSrq(ad::AModDomain::Ship, ad::AModSrq::ItemId(e_locsrq_mod.skill_id)),
                 e_locsrq_mod.attr_id,
             ));
         }

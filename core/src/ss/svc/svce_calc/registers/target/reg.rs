@@ -1,34 +1,37 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, convert::TryInto};
 
 use crate::{
     defs::{EItemGrpId, EItemId, SsFitId, SsItemId},
-    shr::ModDomain,
     ss::{
         fit::{SsFit, SsFits},
         item::{SsItem, SsItems},
-        svc::svce_calc::modifier::{SsAttrMod, SsModTgtFilter},
+        svc::svce_calc::{
+            modifier::{SsAttrMod, SsModDomain, SsModTgtFilter},
+            SsLocType,
+        },
     },
     util::{extend_vec_from_storage, KeyedStorage1L},
 };
 
-use super::iter_dom_pot::DomsPot;
+use super::iter_loc_pot::LocsPot;
 
 pub(in crate::ss::svc::svce_calc) struct TargetRegister {
     // All known target items
     // Contains: HashSet<target item IDs>
     tgts: HashSet<SsItemId>,
-    // Top-level items which are representing an "owner" of domain (char, ship)
-    // Contains: KeyedStorage<(target's fit ID, target's domain), target item IDs>
-    tgts_topdom: KeyedStorage1L<(SsFitId, ModDomain), SsItemId>,
-    // Items belonging to certain fit and domain (e.g. char's implants, ship's modules)
-    // Contains: KeyedStorage<(target's fit ID, target's domain), target item IDs>
-    tgts_pardom: KeyedStorage1L<(SsFitId, ModDomain), SsItemId>,
-    // Items belonging to certain fit, domain and group
-    // Contains: KeyedStorage<(target's fit ID, target's domain, target's group ID), target item IDs>
-    tgts_pardom_grp: KeyedStorage1L<(SsFitId, ModDomain, EItemGrpId), SsItemId>,
-    // Items belonging to certain fit and domain, and having certain skill requirement
-    // Contains: KeyedStorage<(target's fit ID, target's domain, target's skillreq type ID), target item IDs>
-    tgts_pardom_srq: KeyedStorage1L<(SsFitId, ModDomain, EItemId), SsItemId>,
+    // Items which are holders of a location type (like char, ship)
+    // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
+    // TODO: check if we need keyed storage over hashmap here, and check if we need it altogether
+    tgts_root: KeyedStorage1L<(SsFitId, SsLocType), SsItemId>,
+    // Items belonging to certain fit and location type (e.g. char's implants, ship's modules)
+    // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
+    tgts_loc: KeyedStorage1L<(SsFitId, SsLocType), SsItemId>,
+    // Items belonging to certain fit, location type and group
+    // Contains: KeyedStorage<(target's fit ID, target's location type, target's group ID), target item IDs>
+    tgts_loc_grp: KeyedStorage1L<(SsFitId, SsLocType, EItemGrpId), SsItemId>,
+    // Items belonging to certain fit and location type, and having certain skill requirement
+    // Contains: KeyedStorage<(target's fit ID, target's location type, target's skillreq type ID), target item IDs>
+    tgts_loc_srq: KeyedStorage1L<(SsFitId, SsLocType, EItemId), SsItemId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), target item IDs>
     tgts_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsItemId>,
@@ -37,10 +40,10 @@ impl TargetRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
             tgts: HashSet::new(),
-            tgts_topdom: KeyedStorage1L::new(),
-            tgts_pardom: KeyedStorage1L::new(),
-            tgts_pardom_grp: KeyedStorage1L::new(),
-            tgts_pardom_srq: KeyedStorage1L::new(),
+            tgts_root: KeyedStorage1L::new(),
+            tgts_loc: KeyedStorage1L::new(),
+            tgts_loc_grp: KeyedStorage1L::new(),
+            tgts_loc_srq: KeyedStorage1L::new(),
             tgts_own_srq: KeyedStorage1L::new(),
         }
     }
@@ -58,36 +61,52 @@ impl TargetRegister {
         };
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
-                ModDomain::Item => tgts.push(modifier.src_item_id),
-                ModDomain::Char | ModDomain::Ship | ModDomain::Structure => {
+                SsModDomain::Item => tgts.push(modifier.src_item_id),
+                SsModDomain::Char => {
                     if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_topdom, &(src_fit_id, dom));
+                        extend_vec_from_storage(&mut tgts, &self.tgts_root, &(src_fit_id, SsLocType::Character));
                     }
                 }
-                ModDomain::Other => {
+                SsModDomain::Ship => {
+                    if let Some(src_fit_id) = src_item.get_fit_id() {
+                        extend_vec_from_storage(&mut tgts, &self.tgts_root, &(src_fit_id, SsLocType::Ship));
+                    }
+                }
+                SsModDomain::Structure => {
+                    if let Some(src_fit_id) = src_item.get_fit_id() {
+                        extend_vec_from_storage(&mut tgts, &self.tgts_root, &(src_fit_id, SsLocType::Structure));
+                    }
+                }
+                SsModDomain::Other => {
                     if let Some(other_item_id) = src_item.get_other() {
                         tgts.push(other_item_id);
                     }
                 }
             },
             SsModTgtFilter::Loc(dom) => {
-                for tgt_fit in tgt_fits.iter() {
-                    if check_domain_owner(dom, tgt_fit) {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_pardom, &(tgt_fit.id, dom));
+                if let Ok(loc) = dom.try_into() {
+                    for tgt_fit in tgt_fits.iter() {
+                        if check_domain_owner(dom, tgt_fit) {
+                            extend_vec_from_storage(&mut tgts, &self.tgts_loc, &(tgt_fit.id, loc));
+                        }
                     }
                 }
             }
             SsModTgtFilter::LocGrp(dom, grp_id) => {
-                for tgt_fit in tgt_fits.iter() {
-                    if check_domain_owner(dom, tgt_fit) {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_pardom_grp, &(tgt_fit.id, dom, grp_id));
+                if let Ok(loc) = dom.try_into() {
+                    for tgt_fit in tgt_fits.iter() {
+                        if check_domain_owner(dom, tgt_fit) {
+                            extend_vec_from_storage(&mut tgts, &self.tgts_loc_grp, &(tgt_fit.id, loc, grp_id));
+                        }
                     }
                 }
             }
             SsModTgtFilter::LocSrq(dom, srq_id) => {
-                for tgt_fit in tgt_fits.iter() {
-                    if check_domain_owner(dom, tgt_fit) {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_pardom_srq, &(tgt_fit.id, dom, srq_id));
+                if let Ok(loc) = dom.try_into() {
+                    for tgt_fit in tgt_fits.iter() {
+                        if check_domain_owner(dom, tgt_fit) {
+                            extend_vec_from_storage(&mut tgts, &self.tgts_loc_srq, &(tgt_fit.id, loc, srq_id));
+                        }
                     }
                 }
             }
@@ -103,28 +122,28 @@ impl TargetRegister {
     pub(in crate::ss::svc::svce_calc) fn reg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
         let tgt_item_id = tgt_item.get_id();
         let tgt_fit_opt = tgt_item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
-        let tgt_topdom_opt = tgt_item.get_top_domain();
+        let tgt_root_loc_opt = tgt_item.get_root_loc_type();
         let tgt_grp_id_res = tgt_item.get_group_id();
         let tgt_srqs_res = tgt_item.get_skill_reqs();
         self.tgts.insert(tgt_item_id);
-        if let (Some(tgt_fit), Some(tgt_topdom)) = (tgt_fit_opt, tgt_topdom_opt) {
-            self.tgts_topdom.add_entry((tgt_fit.id, tgt_topdom), tgt_item_id);
+        if let (Some(tgt_fit), Some(tgt_root_loc)) = (tgt_fit_opt, tgt_root_loc_opt) {
+            self.tgts_root.add_entry((tgt_fit.id, tgt_root_loc), tgt_item_id);
         }
         if let Some(tgt_fit) = tgt_fit_opt {
-            for tgt_pardom in DomsPot::new(tgt_item) {
-                self.tgts_pardom.add_entry((tgt_fit.id, tgt_pardom), tgt_item_id);
+            for tgt_loc in LocsPot::new(tgt_item) {
+                self.tgts_loc.add_entry((tgt_fit.id, tgt_loc), tgt_item_id);
             }
         }
         if let (Some(tgt_fit), Ok(tgt_grp_id)) = (tgt_fit_opt, tgt_grp_id_res) {
-            for tgt_pardom in DomsPot::new(tgt_item) {
-                self.tgts_pardom_grp
+            for tgt_pardom in LocsPot::new(tgt_item) {
+                self.tgts_loc_grp
                     .add_entry((tgt_fit.id, tgt_pardom, tgt_grp_id), tgt_item_id);
             }
         }
         if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
-            for tgt_pardom in DomsPot::new(tgt_item) {
+            for tgt_pardom in LocsPot::new(tgt_item) {
                 for skill_a_item_id in tgt_srqs.keys() {
-                    self.tgts_pardom_srq
+                    self.tgts_loc_srq
                         .add_entry((tgt_fit.id, tgt_pardom, *skill_a_item_id), tgt_item_id);
                 }
             }
@@ -140,28 +159,28 @@ impl TargetRegister {
     pub(in crate::ss::svc::svce_calc) fn unreg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
         let tgt_item_id = tgt_item.get_id();
         let tgt_fit_opt = tgt_item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
-        let tgt_topdom_opt = tgt_item.get_top_domain();
+        let tgt_topdom_opt = tgt_item.get_root_loc_type();
         let tgt_grp_id_res = tgt_item.get_group_id();
         let tgt_srqs_res = tgt_item.get_skill_reqs();
         self.tgts.insert(tgt_item_id);
         if let (Some(tgt_fit), Some(tgt_topdom)) = (tgt_fit_opt, tgt_topdom_opt) {
-            self.tgts_topdom.remove_entry(&(tgt_fit.id, tgt_topdom), &tgt_item_id);
+            self.tgts_root.remove_entry(&(tgt_fit.id, tgt_topdom), &tgt_item_id);
         }
         if let Some(tgt_fit) = tgt_fit_opt {
-            for tgt_pardom in DomsPot::new(tgt_item) {
-                self.tgts_pardom.remove_entry(&(tgt_fit.id, tgt_pardom), &tgt_item_id);
+            for tgt_pardom in LocsPot::new(tgt_item) {
+                self.tgts_loc.remove_entry(&(tgt_fit.id, tgt_pardom), &tgt_item_id);
             }
         }
         if let (Some(tgt_fit), Ok(tgt_grp_id)) = (tgt_fit_opt, tgt_grp_id_res) {
-            for tgt_pardom in DomsPot::new(tgt_item) {
-                self.tgts_pardom_grp
+            for tgt_pardom in LocsPot::new(tgt_item) {
+                self.tgts_loc_grp
                     .remove_entry(&(tgt_fit.id, tgt_pardom, tgt_grp_id), &tgt_item_id);
             }
         }
         if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
-            for tgt_pardom in DomsPot::new(tgt_item) {
+            for tgt_pardom in LocsPot::new(tgt_item) {
                 for skill_a_item_id in tgt_srqs.keys() {
-                    self.tgts_pardom_srq
+                    self.tgts_loc_srq
                         .remove_entry(&(tgt_fit.id, tgt_pardom, *skill_a_item_id), &tgt_item_id);
                 }
             }
@@ -177,11 +196,11 @@ impl TargetRegister {
     }
 }
 
-fn check_domain_owner(dom: ModDomain, fit: &SsFit) -> bool {
+fn check_domain_owner(dom: SsModDomain, fit: &SsFit) -> bool {
     match dom {
-        ModDomain::Char => fit.character.is_some(),
-        ModDomain::Ship => fit.ship.is_some(),
-        ModDomain::Structure => fit.structure.is_some(),
+        SsModDomain::Char => fit.character.is_some(),
+        SsModDomain::Ship => fit.ship.is_some(),
+        SsModDomain::Structure => fit.structure.is_some(),
         _ => false,
     }
 }

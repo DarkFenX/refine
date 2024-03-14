@@ -1,9 +1,4 @@
-use crate::{
-    ad,
-    defs::EEffectId,
-    ec,
-    shr::{ModDomain, ModOp},
-};
+use crate::{ad, defs::EEffectId, ec, shr::ModOp};
 
 const AB_EFFECT: EEffectId = ec::effects::MOD_BONUS_AFTERBURNER;
 const MWD_EFFECT: EEffectId = ec::effects::MOD_BONUS_MICROWARPDRIVE;
@@ -45,7 +40,7 @@ fn mk_mass_mod() -> ad::AEffectAttrMod {
     ad::AEffectAttrMod::new(
         ec::attrs::MASS_ADDITION,
         ModOp::Add,
-        ad::AModTgtFilter::Direct(ModDomain::Ship),
+        ad::AModTgtFilter::Direct(ad::AModDomain::Ship),
         ec::attrs::MASS,
     )
 }
@@ -54,7 +49,7 @@ fn mk_sig_mod() -> ad::AEffectAttrMod {
     ad::AEffectAttrMod::new(
         ec::attrs::SIG_RADIUS_BONUS,
         ModOp::PostPerc,
-        ad::AModTgtFilter::Direct(ModDomain::Ship),
+        ad::AModTgtFilter::Direct(ad::AModDomain::Ship),
         ec::attrs::SIG_RADIUS,
     )
 }

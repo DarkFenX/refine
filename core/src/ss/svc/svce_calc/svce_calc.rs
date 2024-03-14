@@ -189,7 +189,7 @@ impl SsSvcs {
     }
     // Private methods
     fn handle_location_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {
-        if item.get_top_domain().is_some() {
+        if item.get_root_loc_type().is_some() {
             let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
             for modifier in self
                 .calc_data
