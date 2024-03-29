@@ -171,7 +171,7 @@ def test_uncapped(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_item = api_fit.add_implant(type_id=eve_item.id)
-    # Verification - should be 3 * 6 = 18 without cap, but 2 with cap
+    # Verification - should be 3 * 6 = 18 without cap, and cap is higher - 20, so 18 is exposed
     api_item.update()
     assert api_item.attrs[eve_capped_attr.id].dogma == approx(18)
     assert len(api_item.mods.find_by_src_attr(tgt_attr_id=eve_capped_attr.id, src_attr_id=eve_capping_attr.id)) == 0
