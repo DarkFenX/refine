@@ -1,8 +1,8 @@
 use crate::ss::{item::SsItem, SolarSystem};
 
 use super::{
-    SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsImplantInfo, SsModuleInfo,
-    SsProjEffectInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo, SsSubsystemInfo,
+    SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsFwEffectInfo, SsImplantInfo,
+    SsModuleInfo, SsProjEffectInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo, SsSubsystemInfo,
     SsSwEffectInfo,
 };
 
@@ -12,6 +12,7 @@ pub enum SsItemInfo {
     Charge(SsChargeInfo),
     Drone(SsDroneInfo),
     Fighter(SsFighterInfo),
+    FwEffect(SsFwEffectInfo),
     Implant(SsImplantInfo),
     Module(SsModuleInfo),
     Rig(SsRigInfo),
@@ -31,6 +32,7 @@ impl SsItemInfo {
             SsItem::Charge(ss_charge) => SsItemInfo::Charge(ss_charge.into()),
             SsItem::Drone(ss_drone) => SsItemInfo::Drone(ss_drone.into()),
             SsItem::Fighter(ss_fighter) => SsItemInfo::Fighter(ss_fighter.into()),
+            SsItem::FwEffect(ss_fw_effect) => SsItemInfo::FwEffect(ss_fw_effect.into()),
             SsItem::Implant(ss_implant) => SsItemInfo::Implant(ss_implant.into()),
             SsItem::Module(ss_module) => SsItemInfo::Module(ss.make_mod_info(ss_module)),
             SsItem::ProjEffect(ss_proj_effect) => SsItemInfo::ProjEffect(ss_proj_effect.into()),

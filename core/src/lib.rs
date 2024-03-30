@@ -27,8 +27,8 @@ pub use shr::{ModAggrMode, ModOp, State};
 pub use src::Src;
 pub use ss::{
     info::{
-        SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsImplantInfo, SsItemInfo,
-        SsModuleInfo, SsProjEffectInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo,
+        SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsFwEffectInfo, SsImplantInfo,
+        SsItemInfo, SsModuleInfo, SsProjEffectInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo,
         SsSubsystemInfo, SsSwEffectInfo,
     },
     EffectInfo, EffectMode, ModInfo, ModOpInfo, ModRack, ModSrcInfo, ModSrcValInfo, OrdAddMode, OrdRmMode, SolarSystem,

@@ -3,8 +3,8 @@ use std::{collections::HashMap, num::Wrapping};
 use crate::{
     defs::{SsFitId, SsItemId},
     ss::item::{
-        SsBooster, SsCharacter, SsCharge, SsDrone, SsFighter, SsImplant, SsItem, SsModule, SsRig, SsShip, SsSkill,
-        SsStance, SsStructure, SsSubsystem, SsSwEffect,
+        SsBooster, SsCharacter, SsCharge, SsDrone, SsFighter, SsFwEffect, SsImplant, SsItem, SsModule, SsRig, SsShip,
+        SsSkill, SsStance, SsStructure, SsSubsystem, SsSwEffect,
     },
     util::{Error, ErrorKind, Named, Result},
 };
@@ -368,6 +368,29 @@ impl SsItems {
                 *item_id,
                 item.get_name(),
                 SsSwEffect::get_name(),
+            ))),
+        }
+    }
+    // Fit-wide effect methods
+    pub(in crate::ss) fn get_fw_effect(&self, item_id: &SsItemId) -> Result<&SsFwEffect> {
+        let item = self.get_item(item_id)?;
+        match item {
+            SsItem::FwEffect(fw_effect) => Ok(fw_effect),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                SsFwEffect::get_name(),
+            ))),
+        }
+    }
+    pub(in crate::ss) fn get_fw_effect_mut(&mut self, item_id: &SsItemId) -> Result<&mut SsFwEffect> {
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            SsItem::FwEffect(fw_effect) => Ok(fw_effect),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                SsFwEffect::get_name(),
             ))),
         }
     }

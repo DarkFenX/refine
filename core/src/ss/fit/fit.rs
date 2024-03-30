@@ -21,6 +21,7 @@ pub(in crate::ss) struct SsFit {
     pub(in crate::ss) rigs: HashSet<SsItemId>,
     pub(in crate::ss) drones: HashSet<SsItemId>,
     pub(in crate::ss) fighters: HashSet<SsItemId>,
+    pub(in crate::ss) fw_effects: HashSet<SsItemId>,
 }
 impl SsFit {
     pub(in crate::ss) fn new(id: SsFitId) -> Self {
@@ -40,6 +41,7 @@ impl SsFit {
             rigs: HashSet::new(),
             drones: HashSet::new(),
             fighters: HashSet::new(),
+            fw_effects: HashSet::new(),
         }
     }
     pub(in crate::ss) fn add_item(&mut self, item: &SsItem) {
@@ -82,6 +84,10 @@ impl SsFit {
             }
             SsItem::Fighter(fighter) => {
                 self.fighters.insert(fighter.id);
+                ()
+            }
+            SsItem::FwEffect(fw_effect) => {
+                self.fw_effects.insert(fw_effect.id);
                 ()
             }
             // Ignore charges and system-wide effects
@@ -147,6 +153,10 @@ impl SsFit {
                 self.fighters.remove(&fighter.id);
                 ()
             }
+            SsItem::FwEffect(fw_effect) => {
+                self.fw_effects.remove(&fw_effect.id);
+                ()
+            }
             // Ignore charges and system-wide effects
             SsItem::Charge(_) => (),
             SsItem::SwEffect(_) => (),
@@ -169,6 +179,7 @@ impl SsFit {
         items.extend(&self.rigs);
         items.extend(&self.drones);
         items.extend(&self.fighters);
+        items.extend(&self.fw_effects);
         items
     }
 }

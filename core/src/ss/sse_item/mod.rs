@@ -8,6 +8,7 @@ mod sse_character;
 mod sse_charge;
 mod sse_drone;
 mod sse_fighter;
+mod sse_fw_effect;
 mod sse_implant;
 mod sse_item;
 mod sse_module;
