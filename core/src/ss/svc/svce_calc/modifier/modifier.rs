@@ -6,10 +6,11 @@ use crate::{
     util::Result,
 };
 
-use super::{mod_src::SsAttrModSrc, SsModTgtFilter};
+use super::{mod_src::SsAttrModSrc, SsModTgtFilter, SsModType};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::svce_calc) struct SsAttrMod {
+    pub(in crate::ss::svc::svce_calc) mod_type: SsModType,
     pub(in crate::ss::svc::svce_calc) src_item_id: SsItemId,
     // This field is here just for hash
     pub(in crate::ss::svc::svce_calc) src_effect_id: EEffectId,
@@ -21,6 +22,7 @@ pub(in crate::ss::svc::svce_calc) struct SsAttrMod {
 }
 impl SsAttrMod {
     pub(super) fn new(
+        mod_type: SsModType,
         src_item_id: SsItemId,
         src_effect_id: EEffectId,
         src_val_getter: SsAttrModSrc,
@@ -30,6 +32,7 @@ impl SsAttrMod {
         tgt_attr_id: EAttrId,
     ) -> Self {
         Self {
+            mod_type,
             src_item_id,
             src_effect_id,
             src_val_getter,
@@ -45,6 +48,7 @@ impl SsAttrMod {
         src_a_mod: &ad::AEffectAttrMod,
     ) -> Self {
         Self::new(
+            SsModType::Local,
             src_ss_item.get_id(),
             src_a_effect.id,
             SsAttrModSrc::AttrId(src_a_mod.src_attr_id),
