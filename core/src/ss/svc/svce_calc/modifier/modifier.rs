@@ -47,8 +47,13 @@ impl SsAttrMod {
         src_a_effect: &ad::ArcEffect,
         src_a_mod: &ad::AEffectAttrMod,
     ) -> Self {
+        let mod_type = match src_ss_item {
+            SsItem::SwEffect(_) => SsModType::SystemWide,
+            SsItem::FwEffect(_) => SsModType::FitWide,
+            _ => SsModType::Local,
+        };
         Self::new(
-            SsModType::Local,
+            mod_type,
             src_ss_item.get_id(),
             src_a_effect.id,
             SsAttrModSrc::AttrId(src_a_mod.src_attr_id),
