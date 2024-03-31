@@ -2,7 +2,7 @@ use crate::shr::State;
 
 pub(in crate::ss::item) fn bool_to_state(bool_state: bool) -> State {
     match bool_state {
-        true => State::Offline,
+        true => State::Active,
         false => State::Ghost,
     }
 }
