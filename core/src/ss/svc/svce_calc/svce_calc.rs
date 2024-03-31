@@ -3,34 +3,24 @@ use itertools::Itertools;
 use crate::{
     ad,
     defs::{EAttrId, SsFitId, SsItemId},
-    ss::{
-        fit::{SsFit, SsFits},
-        item::SsItem,
-        svc::{svce_calc::misc::CategorizedMods, SsSvcs},
-        SsView,
-    },
+    ss::{item::SsItem, svc::SsSvcs, SsView},
 };
+
+use super::misc::a_data_to_ss_mods;
 
 impl SsSvcs {
     // Modification methods
-    pub(in crate::ss::svc) fn calc_fit_added(&mut self, fit_id: &SsFitId) {
-        for sw_mod in self.calc_data.projs.get_sw_mods() {
-            self.calc_data.mods.apply_mod(*sw_mod, Some(*fit_id));
-        }
-    }
-    pub(in crate::ss::svc) fn calc_fit_removed(&mut self, fit_id: &SsFitId) {
-        for sw_mod in self.calc_data.projs.get_sw_mods() {
-            self.calc_data.mods.unapply_mod(sw_mod, Some(*fit_id));
-        }
-    }
+    pub(in crate::ss::svc) fn calc_fit_added(&mut self, fit_id: &SsFitId) {}
+    pub(in crate::ss::svc) fn calc_fit_removed(&mut self, fit_id: &SsFitId) {}
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
         // Custom modifiers
         for ss_mod in self.calc_data.revs.get_mods_on_item_add() {
             if ss_mod.revise_on_item_add(item, ss_view) {
-                let tgt_fits = ss_view.fits.iter_fits().collect();
-                for item_id in self.calc_data.tgts.get_tgt_items(&ss_mod, &tgt_fits, ss_view.items) {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
+                if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
+                    for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, src_item, &ss_mod) {
+                        self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+                    }
                 }
             }
         }
@@ -40,9 +30,10 @@ impl SsSvcs {
         // Custom modifiers
         for ss_mod in self.calc_data.revs.get_mods_on_item_remove() {
             if ss_mod.revise_on_item_remove(item, ss_view) {
-                let tgt_fits = ss_view.fits.iter_fits().collect();
-                for item_id in self.calc_data.tgts.get_tgt_items(&ss_mod, &tgt_fits, ss_view.items) {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
+                if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
+                    for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, src_item, &ss_mod) {
+                        self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+                    }
                 }
             }
         }
@@ -63,40 +54,16 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        let mods = CategorizedMods::from_item_effects(item, effects);
-        // Local modifiers
-        if !mods.local.is_empty() {
-            let fit_id_opt = item.get_fit_id();
-            for local_mod in mods.local.iter() {
-                self.calc_data.mods.reg_mod(*local_mod);
-                self.calc_data.mods.apply_mod(*local_mod, fit_id_opt);
-            }
-            let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
-            for local_mod in mods.local.iter() {
-                for item_id in self.calc_data.tgts.get_tgt_items(local_mod, &tgt_fits, ss_view.items) {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
-                }
-            }
-        }
-        // System-wide modifiers
-        if !mods.system_wide.is_empty() {
-            let tgt_fits = get_tgt_fits_for_proj(item, ss_view.fits);
-            for sw_mod in mods.system_wide.iter() {
-                for tgt_fit in tgt_fits.iter() {
-                    self.calc_data.mods.reg_mod(*sw_mod);
-                    self.calc_data.mods.apply_mod(*sw_mod, Some(tgt_fit.id));
-                }
-                self.calc_data.projs.add_sw_mod(*sw_mod);
-            }
-            for sw_mod in mods.system_wide.iter() {
-                for item_id in self.calc_data.tgts.get_tgt_items(sw_mod, &tgt_fits, ss_view.items) {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &sw_mod.tgt_attr_id);
-                }
+        let mods = a_data_to_ss_mods(item, effects);
+        for ss_mod in mods.iter() {
+            self.calc_data.mods.reg_mod(ss_view, item, *ss_mod);
+            for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, ss_mod) {
+                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
             }
         }
         // Revisions
-        for ss_mod in mods.iter_all() {
-            self.calc_data.revs.reg_mod(ss_mod);
+        for ss_mod in mods.iter() {
+            self.calc_data.revs.reg_mod(*ss_mod);
         }
     }
     pub(in crate::ss::svc) fn calc_effects_stopped(
@@ -105,39 +72,15 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        let mods = CategorizedMods::from_item_effects(item, effects);
-        // Local modifiers
-        if !mods.local.is_empty() {
-            let fit_id_opt = item.get_fit_id();
-            let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
-            for local_mod in mods.local.iter() {
-                for item_id in self.calc_data.tgts.get_tgt_items(&local_mod, &tgt_fits, ss_view.items) {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &local_mod.tgt_attr_id);
-                }
+        let mods = a_data_to_ss_mods(item, effects);
+        for ss_mod in mods.iter() {
+            for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, ss_mod) {
+                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
             }
-            for local_mod in mods.local.iter() {
-                self.calc_data.mods.unapply_mod(local_mod, fit_id_opt);
-                self.calc_data.mods.unreg_mod(local_mod);
-            }
-        }
-        // System-wide modifiers
-        if !mods.system_wide.is_empty() {
-            let tgt_fits = get_tgt_fits_for_proj(item, ss_view.fits);
-            for sw_mod in mods.system_wide.iter() {
-                for item_id in self.calc_data.tgts.get_tgt_items(sw_mod, &tgt_fits, ss_view.items) {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &sw_mod.tgt_attr_id);
-                }
-                self.calc_data.projs.remove_sw_mod(*sw_mod);
-            }
-            for sw_mod in mods.system_wide.iter() {
-                for tgt_fit in tgt_fits.iter() {
-                    self.calc_data.mods.unapply_mod(sw_mod, Some(tgt_fit.id));
-                    self.calc_data.mods.unreg_mod(sw_mod);
-                }
-            }
+            self.calc_data.mods.unreg_mod(ss_view, item, ss_mod);
         }
         // Revisions and effect-specific processing
-        for ss_mod in mods.iter_all() {
+        for ss_mod in mods.iter() {
             self.calc_data.revs.unreg_mod(ss_mod);
             // This bit is just for propulsion mode effect, so that when effect is not running (but
             // item is not removed), changes to parent attributes like ship mass do not clear the
@@ -170,9 +113,8 @@ impl SsSvcs {
             .map(|v| *v)
             .collect_vec();
         let item = ss_view.items.get_item(item_id).unwrap();
-        let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
         for modifier in mods.iter() {
-            for tgt_item_id in self.calc_data.tgts.get_tgt_items(&modifier, &tgt_fits, ss_view.items) {
+            for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, &modifier) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
             }
         }
@@ -190,33 +132,17 @@ impl SsSvcs {
     // Private methods
     fn handle_location_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {
         if item.get_root_loc_type().is_some() {
-            let tgt_fits = get_tgt_fits_for_local(item, ss_view.fits);
-            for modifier in self
+            for ss_mod in self
                 .calc_data
                 .mods
                 .get_mods_for_changed_location_owner(item, ss_view.items)
             {
-                for item_id in self.calc_data.tgts.get_tgt_items(&modifier, &tgt_fits, ss_view.items) {
-                    self.calc_force_attr_recalc(ss_view, &item_id, &modifier.tgt_attr_id);
+                if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
+                    for item_id in self.calc_data.tgts.get_tgt_items(ss_view, src_item, &ss_mod) {
+                        self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
+                    }
                 }
             }
         }
-    }
-}
-
-fn get_tgt_fits_for_local<'a>(item: &SsItem, fits: &'a SsFits) -> Vec<&'a SsFit> {
-    let mut tgt_fits = Vec::new();
-    if let Some(tgt_fit_id) = item.get_fit_id() {
-        if let Ok(tgt_fit) = fits.get_fit(&tgt_fit_id) {
-            tgt_fits.push(tgt_fit);
-        }
-    }
-    tgt_fits
-}
-
-fn get_tgt_fits_for_proj<'a>(item: &SsItem, fits: &'a SsFits) -> Vec<&'a SsFit> {
-    match item {
-        SsItem::SwEffect(_) => fits.iter_fits().collect_vec(),
-        _ => Vec::new(),
     }
 }

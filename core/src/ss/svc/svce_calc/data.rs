@@ -1,6 +1,6 @@
 use super::{
     misc::AttrValData,
-    registers::{DependencyRegister, ModifierRegister, ProjectionRegister, RevisionRegister, TargetRegister},
+    registers::{DependencyRegister, ModifierRegister, RevisionRegister, TargetRegister},
 };
 
 pub(in crate::ss::svc) struct CalcData {
@@ -9,7 +9,6 @@ pub(in crate::ss::svc) struct CalcData {
     pub(in crate::ss::svc::svce_calc) tgts: TargetRegister,
     pub(in crate::ss::svc::svce_calc) deps: DependencyRegister,
     pub(in crate::ss::svc::svce_calc) revs: RevisionRegister,
-    pub(in crate::ss::svc::svce_calc) projs: ProjectionRegister,
 }
 impl CalcData {
     pub(in crate::ss::svc) fn new() -> Self {
@@ -19,7 +18,6 @@ impl CalcData {
             tgts: TargetRegister::new(),
             deps: DependencyRegister::new(),
             revs: RevisionRegister::new(),
-            projs: ProjectionRegister::new(),
         }
     }
 }

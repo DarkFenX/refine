@@ -22,12 +22,12 @@ impl RevisionRegister {
         self.item_remove.iter().map(|v| *v).collect()
     }
     // Modification methods
-    pub(in crate::ss::svc::svce_calc) fn reg_mod(&mut self, ss_mod: &SsAttrMod) {
+    pub(in crate::ss::svc::svce_calc) fn reg_mod(&mut self, ss_mod: SsAttrMod) {
         if ss_mod.needs_revision_on_item_add() {
-            self.item_add.insert(*ss_mod);
+            self.item_add.insert(ss_mod);
         }
         if ss_mod.needs_revision_on_item_remove() {
-            self.item_remove.insert(*ss_mod);
+            self.item_remove.insert(ss_mod);
         }
     }
     pub(in crate::ss::svc::svce_calc) fn unreg_mod(&mut self, ss_mod: &SsAttrMod) {

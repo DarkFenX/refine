@@ -6,9 +6,10 @@ use crate::{
         fit::{SsFit, SsFits},
         item::{SsItem, SsItems},
         svc::svce_calc::{
-            modifier::{SsAttrMod, SsModDomain, SsModTgtFilter},
+            modifier::{SsAttrMod, SsModDomain, SsModTgtFilter, SsModType},
             SsLocType,
         },
+        SsView,
     },
     util::{extend_vec_from_storage, KeyedStorage1L},
 };
@@ -50,15 +51,28 @@ impl TargetRegister {
     // Query methods
     pub(in crate::ss::svc::svce_calc) fn get_tgt_items(
         &self,
+        ss_view: &SsView,
+        mod_item: &SsItem,
         modifier: &SsAttrMod,
-        tgt_fits: &Vec<&SsFit>,
-        items: &SsItems,
     ) -> Vec<SsItemId> {
         let mut tgts = Vec::new();
-        let src_item = match items.get_item(&modifier.src_item_id) {
+        let src_item = match ss_view.items.get_item(&modifier.src_item_id) {
             Ok(i) => i,
             _ => return tgts,
         };
+        let mut tgt_fits = Vec::new();
+        match modifier.mod_type {
+            SsModType::Local | SsModType::FitWide => {
+                if let Some(tgt_fit_id) = mod_item.get_fit_id() {
+                    if let Ok(tgt_fit) = ss_view.fits.get_fit(&tgt_fit_id) {
+                        tgt_fits.push(tgt_fit);
+                    }
+                }
+            }
+            SsModType::SystemWide => tgt_fits.extend(ss_view.fits.iter_fits()),
+            SsModType::Projected => (),
+            SsModType::Fleet => (),
+        }
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Item => tgts.push(modifier.src_item_id),
