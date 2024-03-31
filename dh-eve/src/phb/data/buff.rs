@@ -9,13 +9,13 @@ pub(in crate::phb) struct PBuff {
     pub(in crate::phb) aggregate_mode: String,
     #[serde(rename = "operationName")]
     pub(in crate::phb) operation: String,
-    #[serde(rename = "itemModifiers")]
+    #[serde(rename = "itemModifiers", default)]
     pub(in crate::phb) item_mods: Vec<PBuffIM>,
-    #[serde(rename = "locationModifiers")]
+    #[serde(rename = "locationModifiers", default)]
     pub(in crate::phb) loc_mods: Vec<PBuffLM>,
-    #[serde(rename = "locationGroupModifiers")]
+    #[serde(rename = "locationGroupModifiers", default)]
     pub(in crate::phb) locgroup_mods: Vec<PBuffLGM>,
-    #[serde(rename = "locationRequiredSkillModifiers")]
+    #[serde(rename = "locationRequiredSkillModifiers", default)]
     pub(in crate::phb) locsrq_mods: Vec<PBuffLRSM>,
 }
 impl FsdMerge<rc::ed::EBuff> for PBuff {
