@@ -96,18 +96,6 @@ impl AEffect {
             buff,
         }
     }
-    pub(crate) fn is_targeted(&self) -> bool {
-        self.tgt_mode.is_some()
-    }
-    pub(crate) fn is_fleet(&self) -> bool {
-        match &self.buff {
-            Some(buff_info) => match buff_info.scope {
-                AEffectBuffScope::FleetShips => true,
-                _ => false,
-            },
-            None => false,
-        }
-    }
 }
 impl Named for AEffect {
     fn get_name() -> &'static str {

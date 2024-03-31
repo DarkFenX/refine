@@ -1,11 +1,11 @@
 use crate::{
     ad,
-    defs::{AttrVal, EBuffId},
+    defs::{EBuffId},
     ec,
     ss::{
         item::SsItem,
         svc::{
-            svce_calc::modifier::{extend_with_custom_mods, SsAttrMod, SsModTgtFilter, SsModType},
+            svce_calc::modifier::{extend_with_custom_mods, SsAttrMod, SsModType},
             SsSvcs,
         },
         SsView,
