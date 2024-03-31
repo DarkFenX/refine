@@ -77,18 +77,18 @@ impl TargetRegister {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Item => tgts.push(modifier.src_item_id),
                 SsModDomain::Char => {
-                    if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_root, &(src_fit_id, SsLocType::Character));
+                    for tgt_fit in tgt_fits.iter() {
+                        extend_vec_from_storage(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Character));
                     }
                 }
                 SsModDomain::Ship => {
-                    if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_root, &(src_fit_id, SsLocType::Ship));
+                    for tgt_fit in tgt_fits.iter() {
+                        extend_vec_from_storage(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Ship));
                     }
                 }
                 SsModDomain::Structure => {
-                    if let Some(src_fit_id) = src_item.get_fit_id() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_root, &(src_fit_id, SsLocType::Structure));
+                    for tgt_fit in tgt_fits.iter() {
+                        extend_vec_from_storage(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Structure));
                     }
                 }
                 SsModDomain::Other => {
