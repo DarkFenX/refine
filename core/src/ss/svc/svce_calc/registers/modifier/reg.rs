@@ -153,7 +153,31 @@ impl ModifierRegister {
         self.mods.get(src_item_id).into_iter().flatten()
     }
     // Modification methods
+    pub(in crate::ss::svc::svce_calc) fn reg_fit(&mut self, fit_id: &SsFitId) {
+        let sw_mods = self.sw_mods.clone();
+        for modifier in sw_mods.iter() {
+            self.apply_mod_to_fits(*modifier, vec![*fit_id]);
+        }
+    }
+    pub(in crate::ss::svc::svce_calc) fn unreg_fit(&mut self, fit_id: &SsFitId) {
+        let sw_mods = self.sw_mods.clone();
+        for modifier in sw_mods.iter() {
+            self.unapply_mods_from_fits(modifier, vec![*fit_id]);
+        }
+    }
     pub(in crate::ss::svc::svce_calc) fn reg_mod(&mut self, ss_view: &SsView, mod_item: &SsItem, modifier: SsAttrMod) {
+        self.mods.add_entry(modifier.src_item_id, modifier);
+        if matches!(modifier.mod_type, SsModType::SystemWide) {
+            self.sw_mods.insert(modifier);
+        }
+        match modifier.tgt_filter {
+            SsModTgtFilter::Direct(dom) => match dom {
+                SsModDomain::Item => self.mods_direct.add_entry(modifier.src_item_id, modifier),
+                SsModDomain::Other => self.mods_other.add_entry(modifier.src_item_id, modifier),
+                _ => (),
+            },
+            _ => (),
+        }
         let mut tgt_fit_ids = Vec::new();
         match modifier.mod_type {
             SsModType::Local | SsModType::FitWide => {
@@ -165,13 +189,43 @@ impl ModifierRegister {
             SsModType::Projected => (),
             SsModType::Fleet => (),
         }
-        self.mods.add_entry(modifier.src_item_id, modifier);
+        self.apply_mod_to_fits(modifier, tgt_fit_ids);
+    }
+    pub(in crate::ss::svc::svce_calc) fn unreg_mod(
+        &mut self,
+        ss_view: &SsView,
+        mod_item: &SsItem,
+        modifier: &SsAttrMod,
+    ) {
+        self.mods.remove_entry(&modifier.src_item_id, &modifier);
         if matches!(modifier.mod_type, SsModType::SystemWide) {
-            self.sw_mods.insert(modifier);
+            self.sw_mods.remove(modifier);
         }
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
-                SsModDomain::Item => self.mods_direct.add_entry(modifier.src_item_id, modifier),
+                SsModDomain::Item => self.mods_direct.remove_entry(&modifier.src_item_id, &modifier),
+                SsModDomain::Other => self.mods_other.remove_entry(&modifier.src_item_id, &modifier),
+                _ => (),
+            },
+            _ => (),
+        }
+        let mut tgt_fit_ids = Vec::new();
+        match modifier.mod_type {
+            SsModType::Local | SsModType::FitWide => {
+                if let Some(tgt_fit_id) = mod_item.get_fit_id() {
+                    tgt_fit_ids.push(tgt_fit_id);
+                }
+            }
+            SsModType::SystemWide => tgt_fit_ids.extend(ss_view.fits.iter_fit_ids()),
+            SsModType::Projected => (),
+            SsModType::Fleet => (),
+        }
+        self.unapply_mods_from_fits(modifier, tgt_fit_ids);
+    }
+    // Private methods
+    fn apply_mod_to_fits(&mut self, modifier: SsAttrMod, tgt_fit_ids: Vec<SsFitId>) {
+        match modifier.tgt_filter {
+            SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Char => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_toploc
@@ -189,7 +243,7 @@ impl ModifierRegister {
                             .add_entry((*tgt_fit_id, SsLocType::Structure), modifier);
                     }
                 }
-                SsModDomain::Other => self.mods_other.add_entry(modifier.src_item_id, modifier),
+                _ => (),
             },
             SsModTgtFilter::Loc(dom) => {
                 if let Ok(loc) = dom.try_into() {
@@ -219,30 +273,9 @@ impl ModifierRegister {
             }
         }
     }
-    pub(in crate::ss::svc::svce_calc) fn unreg_mod(
-        &mut self,
-        ss_view: &SsView,
-        mod_item: &SsItem,
-        modifier: &SsAttrMod,
-    ) {
-        let mut tgt_fit_ids = Vec::new();
-        match modifier.mod_type {
-            SsModType::Local | SsModType::FitWide => {
-                if let Some(tgt_fit_id) = mod_item.get_fit_id() {
-                    tgt_fit_ids.push(tgt_fit_id);
-                }
-            }
-            SsModType::SystemWide => tgt_fit_ids.extend(ss_view.fits.iter_fit_ids()),
-            SsModType::Projected => (),
-            SsModType::Fleet => (),
-        }
-        self.mods.remove_entry(&modifier.src_item_id, &modifier);
-        if matches!(modifier.mod_type, SsModType::SystemWide) {
-            self.sw_mods.remove(modifier);
-        }
+    fn unapply_mods_from_fits(&mut self, modifier: &SsAttrMod, tgt_fit_ids: Vec<SsFitId>) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
-                SsModDomain::Item => self.mods_direct.remove_entry(&modifier.src_item_id, &modifier),
                 SsModDomain::Char => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_toploc
@@ -261,7 +294,7 @@ impl ModifierRegister {
                             .remove_entry(&(*tgt_fit_id, SsLocType::Structure), &modifier);
                     }
                 }
-                SsModDomain::Other => self.mods_other.remove_entry(&modifier.src_item_id, &modifier),
+                _ => (),
             },
             SsModTgtFilter::Loc(dom) => {
                 if let Ok(loc) = dom.try_into() {

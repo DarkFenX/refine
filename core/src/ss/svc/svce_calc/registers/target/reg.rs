@@ -4,7 +4,7 @@ use crate::{
     defs::{EItemGrpId, EItemId, SsFitId, SsItemId},
     ss::{
         fit::{SsFit, SsFits},
-        item::{SsItem, SsItems},
+        item::SsItem,
         svc::svce_calc::{
             modifier::{SsAttrMod, SsModDomain, SsModTgtFilter, SsModType},
             SsLocType,

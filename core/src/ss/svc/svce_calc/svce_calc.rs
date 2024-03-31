@@ -10,8 +10,12 @@ use super::misc::a_data_to_ss_mods;
 
 impl SsSvcs {
     // Modification methods
-    pub(in crate::ss::svc) fn calc_fit_added(&mut self, fit_id: &SsFitId) {}
-    pub(in crate::ss::svc) fn calc_fit_removed(&mut self, fit_id: &SsFitId) {}
+    pub(in crate::ss::svc) fn calc_fit_added(&mut self, fit_id: &SsFitId) {
+        self.calc_data.mods.reg_fit(fit_id)
+    }
+    pub(in crate::ss::svc) fn calc_fit_removed(&mut self, fit_id: &SsFitId) {
+        self.calc_data.mods.unreg_fit(fit_id)
+    }
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
         // Custom modifiers
