@@ -2,7 +2,11 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, SsItemId},
     shr::{ModAggrMode, ModOp},
-    ss::{item::SsItem, svc::SsSvcs, SsView},
+    ss::{
+        item::SsItem,
+        svc::{svce_calc::modifier::SsModDomain, SsSvcs},
+        SsView,
+    },
     util::Result,
 };
 
@@ -42,7 +46,7 @@ impl SsAttrMod {
             tgt_attr_id,
         }
     }
-    pub(in crate::ss::svc::svce_calc) fn from_a_data(
+    pub(in crate::ss::svc::svce_calc) fn from_a_effect(
         src_ss_item: &SsItem,
         src_a_effect: &ad::ArcEffect,
         src_a_mod: &ad::AEffectAttrMod,
@@ -55,7 +59,27 @@ impl SsAttrMod {
             SsAttrModSrc::AttrId(src_a_mod.src_attr_id),
             src_a_mod.op,
             ModAggrMode::Stack,
-            SsModTgtFilter::from_a_mod_tgt_filter(&src_a_mod.tgt_filter, src_ss_item),
+            SsModTgtFilter::from_a_effect_tgt_filter(&src_a_mod.tgt_filter, src_ss_item),
+            src_a_mod.tgt_attr_id,
+        )
+    }
+    pub(in crate::ss::svc::svce_calc) fn from_a_buff(
+        src_ss_item: &SsItem,
+        src_a_effect: &ad::ArcEffect,
+        src_a_buff: &ad::ArcBuff,
+        src_a_mod: &ad::ABuffAttrMod,
+        src_attr_id: EAttrId,
+        mod_type: SsModType,
+        ss_domain: SsModDomain,
+    ) -> Self {
+        Self::new(
+            mod_type,
+            src_ss_item.get_id(),
+            src_a_effect.id,
+            SsAttrModSrc::AttrId(src_attr_id),
+            src_a_buff.op,
+            src_a_buff.aggr_mode,
+            SsModTgtFilter::from_a_buff_tgt_filter(&src_a_mod.tgt_filter, ss_domain, src_ss_item),
             src_a_mod.tgt_attr_id,
         )
     }

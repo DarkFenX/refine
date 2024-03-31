@@ -1,4 +1,6 @@
-use crate::{ad::AModTgtFilter, defs::EAttrId};
+use crate::defs::EAttrId;
+
+use super::ABuffTgtFilter;
 
 /// An attribute modifier.
 ///
@@ -7,13 +9,13 @@ use crate::{ad::AModTgtFilter, defs::EAttrId};
 pub struct ABuffAttrMod {
     /// Defines a target filter, that is a filter which defines which items will be targeted for
     /// modification.
-    pub tgt_filter: AModTgtFilter,
+    pub tgt_filter: ABuffTgtFilter,
     /// Refers an attribute, whose value will be target for modification.
     pub tgt_attr_id: EAttrId,
 }
 impl ABuffAttrMod {
     /// Make a new buff-specific attribute modifier out of passed data.
-    pub(crate) fn new(tgt_filter: AModTgtFilter, tgt_attr_id: EAttrId) -> Self {
+    pub(crate) fn new(tgt_filter: ABuffTgtFilter, tgt_attr_id: EAttrId) -> Self {
         Self {
             tgt_filter,
             tgt_attr_id,

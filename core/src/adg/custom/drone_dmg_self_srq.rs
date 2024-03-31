@@ -12,7 +12,7 @@ pub(in crate::adg::custom) fn mk_self_skillreq_drone_dmg(a_data: &mut ad::AData)
         let modifier = ad::AEffectAttrMod::new(
             ec::attrs::DMG_MULT_BONUS,
             ModOp::PostPerc,
-            ad::AModTgtFilter::OwnSrq(ad::AModSrq::SelfRef),
+            ad::AEffectTgtFilter::OwnSrq(ad::AModSrq::SelfRef),
             ec::attrs::DMG_MULT,
         );
         effect.mods.push(modifier);

@@ -8,14 +8,23 @@ pub enum SsModDomain {
     Item,
     Other,
 }
-impl From<&ad::AModDomain> for SsModDomain {
-    fn from(a_mod_domain: &ad::AModDomain) -> Self {
-        match a_mod_domain {
-            ad::AModDomain::Ship => Self::Ship,
-            ad::AModDomain::Structure => Self::Structure,
-            ad::AModDomain::Char => Self::Char,
-            ad::AModDomain::Item => Self::Item,
-            ad::AModDomain::Other => Self::Other,
+impl From<&ad::AEffectDomain> for SsModDomain {
+    fn from(a_effect_domain: &ad::AEffectDomain) -> Self {
+        match a_effect_domain {
+            ad::AEffectDomain::Ship => Self::Ship,
+            ad::AEffectDomain::Structure => Self::Structure,
+            ad::AEffectDomain::Char => Self::Char,
+            ad::AEffectDomain::Item => Self::Item,
+            ad::AEffectDomain::Other => Self::Other,
+        }
+    }
+}
+impl From<&ad::AEffectBuffScope> for SsModDomain {
+    fn from(a_buff_scope: &ad::AEffectBuffScope) -> Self {
+        match a_buff_scope {
+            ad::AEffectBuffScope::Everything => Self::Ship,
+            ad::AEffectBuffScope::Ships => Self::Ship,
+            ad::AEffectBuffScope::FleetShips => Self::Ship,
         }
     }
 }

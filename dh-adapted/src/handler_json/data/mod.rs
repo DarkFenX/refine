@@ -1,10 +1,12 @@
 //! Cacheable data types.
 
 use attr::CAttr;
-use buff::{CBuff, CBuffAttrMod, CModAggrMode};
-use effect::{CEffect, CEffectAttrMod, CEffectBuffInfo, CModBuildStatus, CState, CTgtMode};
+use buff::{CBuff, CBuffAttrMod, CBuffTgtFilter, CModAggrMode};
+use effect::{
+    CEffect, CEffectAttrMod, CEffectBuffInfo, CEffectDomain, CEffectTgtFilter, CModBuildStatus, CState, CTgtMode,
+};
 use item::{CItem, CItemEffData, CItemType};
-use mod_shared::{CModDomain, CModOp, CModSrq, CModTgtFilter};
+use mod_shared::{CModOp, CModSrq};
 use muta::{CMuta, CMutaAttrRange};
 
 mod attr;

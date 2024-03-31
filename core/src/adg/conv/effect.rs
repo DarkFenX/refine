@@ -201,7 +201,7 @@ fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResu
     Ok(ad::AEffectAttrMod::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AModTgtFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
+        ad::AEffectTgtFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
@@ -210,7 +210,7 @@ fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResul
     Ok(ad::AEffectAttrMod::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AModTgtFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
+        ad::AEffectTgtFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
@@ -219,7 +219,7 @@ fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
     Ok(ad::AEffectAttrMod::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AModTgtFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
+        ad::AEffectTgtFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
@@ -228,7 +228,7 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
     Ok(ad::AEffectAttrMod::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AModTgtFilter::LocSrq(
+        ad::AEffectTgtFilter::LocSrq(
             get_mod_domain(e_modifier, a_effect)?,
             ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?),
         ),
@@ -237,7 +237,7 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
 }
 
 fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
-    if get_mod_domain(e_modifier, a_effect)? != ad::AModDomain::Char {
+    if !matches!(get_mod_domain(e_modifier, a_effect)?, ad::AEffectDomain::Char) {
         return Err(IntError::new(format!(
             "unexpected domain \"{}\" for owner-filtered modification",
             get_arg_str(&e_modifier.args, "domain")?
@@ -246,7 +246,7 @@ fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
     Ok(ad::AEffectAttrMod::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AModTgtFilter::OwnSrq(ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?)),
+        ad::AEffectTgtFilter::OwnSrq(ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?)),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
@@ -259,21 +259,21 @@ fn get_mod_tgt_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<EAttrId> {
     get_arg_int(&e_modifier.args, "modifiedAttributeID")
 }
 
-fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AModDomain> {
+fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectDomain> {
     let domain = get_arg_str(&e_modifier.args, "domain")?;
     match domain.as_str() {
-        "itemID" => Ok(ad::AModDomain::Item),
-        "charID" => Ok(ad::AModDomain::Char),
-        "shipID" => Ok(ad::AModDomain::Ship),
-        "structureID" => Ok(ad::AModDomain::Structure),
+        "itemID" => Ok(ad::AEffectDomain::Item),
+        "charID" => Ok(ad::AEffectDomain::Char),
+        "shipID" => Ok(ad::AEffectDomain::Ship),
+        "structureID" => Ok(ad::AEffectDomain::Structure),
         "targetID" => match a_effect.tgt_mode {
-            Some(ad::ATgtMode::Item) => Ok(ad::AModDomain::Item),
+            Some(ad::ATgtMode::Item) => Ok(ad::AEffectDomain::Item),
             _ => Err(IntError::new(format!(
                 "modifier uses {} domain on untargeted effect",
                 domain
             ))),
         },
-        "otherID" => Ok(ad::AModDomain::Other),
+        "otherID" => Ok(ad::AEffectDomain::Other),
         _ => Err(IntError::new(format!("unknown domain {domain}"))),
     }
 }

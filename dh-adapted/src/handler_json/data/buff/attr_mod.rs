@@ -1,8 +1,8 @@
-use crate::handler_json::data::CModTgtFilter;
+use crate::handler_json::data::CBuffTgtFilter;
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CBuffAttrMod {
-    tgt_filter: CModTgtFilter,
+    tgt_filter: CBuffTgtFilter,
     tgt_attr_id: rc::EAttrId,
 }
 impl From<&rc::ad::ABuffAttrMod> for CBuffAttrMod {

@@ -56,7 +56,7 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        let mods = self.calc_generate_mods(item, effects);
+        let mods = self.calc_generate_mods(ss_view, item, effects);
         for ss_mod in mods.iter() {
             self.calc_data.mods.reg_mod(ss_view, item, *ss_mod);
             for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, ss_mod) {
@@ -74,7 +74,7 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        let mods = self.calc_generate_mods(item, effects);
+        let mods = self.calc_generate_mods(ss_view, item, effects);
         for ss_mod in mods.iter() {
             for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, ss_mod) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);

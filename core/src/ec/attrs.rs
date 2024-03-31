@@ -48,8 +48,18 @@ pub(crate) const FTR_SQ_IS_LIGHT: EAttrId = 2212;
 pub(crate) const FTR_SQ_IS_SUPPORT: EAttrId = 2213;
 // Buff-related
 pub(crate) const WARFARE_BUFF1_ID: EAttrId = 2468;
+pub(crate) const WARFARE_BUFF1_VAL: EAttrId = 2469;
 pub(crate) const WARFARE_BUFF2_ID: EAttrId = 2470;
+pub(crate) const WARFARE_BUFF2_VAL: EAttrId = 2471;
 pub(crate) const WARFARE_BUFF3_ID: EAttrId = 2472;
+pub(crate) const WARFARE_BUFF3_VAL: EAttrId = 2473;
 pub(crate) const WARFARE_BUFF4_ID: EAttrId = 2536;
+pub(crate) const WARFARE_BUFF4_VAL: EAttrId = 2537;
 
 pub(crate) const BUFF_ID_ATTRS: [EAttrId; 4] = [WARFARE_BUFF1_ID, WARFARE_BUFF2_ID, WARFARE_BUFF3_ID, WARFARE_BUFF4_ID];
+pub(crate) const BUFF_ATTRS: [(EAttrId, EAttrId); 4] = [
+    (WARFARE_BUFF1_ID, WARFARE_BUFF1_VAL),
+    (WARFARE_BUFF2_ID, WARFARE_BUFF2_VAL),
+    (WARFARE_BUFF3_ID, WARFARE_BUFF3_VAL),
+    (WARFARE_BUFF4_ID, WARFARE_BUFF4_VAL),
+];

@@ -22,7 +22,7 @@ fn add_mod_for_effect_attr(a_data: &mut ad::AData, effect_id: EEffectId, attr_id
         let modifier = ad::AEffectAttrMod::new(
             ec::attrs::DMG_MULT_BONUS,
             ModOp::PostPerc,
-            ad::AModTgtFilter::OwnSrq(ad::AModSrq::SelfRef),
+            ad::AEffectTgtFilter::OwnSrq(ad::AModSrq::SelfRef),
             attr_id,
         );
         effect.mods.push(modifier);

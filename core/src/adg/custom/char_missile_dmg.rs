@@ -44,7 +44,7 @@ fn mk_modifier(tgt_attr_id: EAttrId) -> ad::AEffectAttrMod {
     ad::AEffectAttrMod::new(
         ec::attrs::MISSILE_DMG_MULT,
         ModOp::PostMulImmune,
-        ad::AModTgtFilter::OwnSrq(ad::AModSrq::ItemId(ec::items::MISSILE_LAUNCHER_OPERATION)),
+        ad::AEffectTgtFilter::OwnSrq(ad::AModSrq::ItemId(ec::items::MISSILE_LAUNCHER_OPERATION)),
         tgt_attr_id,
     )
 }

@@ -1,4 +1,6 @@
-use crate::{ad::AModTgtFilter, defs::EAttrId, shr::ModOp};
+use crate::{defs::EAttrId, shr::ModOp};
+
+use super::AEffectTgtFilter;
 
 /// An adapted attribute modifier.
 ///
@@ -11,13 +13,13 @@ pub struct AEffectAttrMod {
     pub op: ModOp,
     /// Defines a target filter, that is a filter which defines which items will be targeted for
     /// modification.
-    pub tgt_filter: AModTgtFilter,
+    pub tgt_filter: AEffectTgtFilter,
     /// Refers an attribute, whose value will be target for modification.
     pub tgt_attr_id: EAttrId,
 }
 impl AEffectAttrMod {
     /// Make a new attribute modifier out of passed data.
-    pub(crate) fn new(src_attr_id: EAttrId, op: ModOp, tgt_filter: AModTgtFilter, tgt_attr_id: EAttrId) -> Self {
+    pub(crate) fn new(src_attr_id: EAttrId, op: ModOp, tgt_filter: AEffectTgtFilter, tgt_attr_id: EAttrId) -> Self {
         Self {
             src_attr_id,
             op,

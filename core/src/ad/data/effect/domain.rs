@@ -1,6 +1,5 @@
-/// Defines domain (or scope) which is target for a modification.
-#[derive(PartialEq)]
-pub enum AModDomain {
+/// Defines domain which is target for a modification.
+pub enum AEffectDomain {
     /// Ship or items belonging to it.
     Ship,
     /// Structure or items belonging to it.

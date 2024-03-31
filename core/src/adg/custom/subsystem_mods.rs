@@ -64,7 +64,7 @@ fn mk_modifier(src_attr_id: EAttrId, tgt_attr_id: EAttrId) -> ad::AEffectAttrMod
     ad::AEffectAttrMod::new(
         src_attr_id,
         ModOp::Add,
-        ad::AModTgtFilter::Direct(ad::AModDomain::Ship),
+        ad::AEffectTgtFilter::Direct(ad::AEffectDomain::Ship),
         tgt_attr_id,
     )
 }
