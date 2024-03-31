@@ -3,9 +3,9 @@ use crate::handler_json::data::{CEffectAttrMod, CEffectBuffInfo, CModBuildStatus
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
     id: rc::EEffectId,
+    category: rc::EEffectCatId,
     state: CState,
     tgt_mode: Option<CTgtMode>,
-    is_system_wide: bool,
     is_assist: bool,
     is_offense: bool,
     hisec: Option<bool>,
@@ -26,9 +26,9 @@ impl From<&rc::ad::AEffect> for CEffect {
     fn from(a_effect: &rc::ad::AEffect) -> Self {
         CEffect {
             id: a_effect.id,
+            category: a_effect.category,
             state: (&a_effect.state).into(),
             tgt_mode: a_effect.tgt_mode.as_ref().map(|v| v.into()),
-            is_system_wide: a_effect.is_system_wide,
             is_assist: a_effect.is_assist,
             is_offense: a_effect.is_offense,
             hisec: a_effect.hisec,
@@ -51,9 +51,9 @@ impl Into<rc::ad::AEffect> for &CEffect {
     fn into(self) -> rc::ad::AEffect {
         rc::ad::AEffect {
             id: self.id,
+            category: self.category,
             state: (&self.state).into(),
             tgt_mode: self.tgt_mode.as_ref().map(|v| v.into()),
-            is_system_wide: self.is_system_wide,
             is_assist: self.is_assist,
             is_offense: self.is_offense,
             hisec: self.hisec,

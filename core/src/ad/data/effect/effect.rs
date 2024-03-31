@@ -1,6 +1,6 @@
 use crate::{
     ad::{AEffectAttrMod, AEffectBuffInfo, AEffectBuffScope, AModBuildStatus, ATgtMode},
-    defs::{EAttrId, EEffectId},
+    defs::{EAttrId, EEffectCatId, EEffectId},
     shr::State,
     util::Named,
 };
@@ -13,12 +13,12 @@ use crate::{
 pub struct AEffect {
     /// Effect ID.
     pub id: EEffectId,
+    /// Effect category ID, part of definition how effect is applied.
+    pub category: EEffectCatId,
     /// Effect state dictates which state of parent item is needed for the effect to run.
     pub state: State,
     /// Defines what kind of target you need to run the effect.
     pub tgt_mode: Option<ATgtMode>,
-    /// Defines if effect is applied to all items in system or not.
-    pub is_system_wide: bool,
     /// Defines if the effect is considered as an assistance.
     pub is_assist: bool,
     /// Defines if the effect is offensive or not.
@@ -55,9 +55,9 @@ impl AEffect {
     /// Make a new adapted dogma effect out of passed data.
     pub(crate) fn new(
         id: EEffectId,
+        category: EEffectCatId,
         state: State,
         tgt_mode: Option<ATgtMode>,
-        is_system_wide: bool,
         is_assist: bool,
         is_offense: bool,
         hisec: Option<bool>,
@@ -76,9 +76,9 @@ impl AEffect {
     ) -> Self {
         Self {
             id,
+            category,
             state,
             tgt_mode,
-            is_system_wide,
             is_assist,
             is_offense,
             hisec,

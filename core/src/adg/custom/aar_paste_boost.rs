@@ -3,9 +3,9 @@ use crate::{ad, ec, shr::State};
 pub(in crate::adg::custom) fn add_aar_paste_boost_effect(a_data: &mut ad::AData) {
     let effect = ad::AEffect::new(
         ec::effects::REE_AAR_PASTE_BOOST,
+        ec::effcats::PASSIVE,
         State::Offline,
         None,
-        false,
         false,
         false,
         None,

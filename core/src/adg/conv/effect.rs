@@ -27,13 +27,13 @@ impl ed::EFighterAbil {
 pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
     let mut a_effects = Vec::new();
     for e_effect in g_data.effects.iter() {
-        let (state, tgt_mode, is_system_wide) = match e_effect.category_id {
-            ec::effcats::PASSIVE => (State::Offline, None, false),
-            ec::effcats::ACTIVE => (State::Active, None, false),
-            ec::effcats::TARGET => (State::Active, Some(ad::ATgtMode::Item), false),
-            ec::effcats::ONLINE => (State::Online, None, false),
-            ec::effcats::OVERLOAD => (State::Overload, None, false),
-            ec::effcats::SYSTEM => (State::Offline, None, true),
+        let (state, tgt_mode) = match e_effect.category_id {
+            ec::effcats::PASSIVE => (State::Offline, None),
+            ec::effcats::ACTIVE => (State::Active, None),
+            ec::effcats::TARGET => (State::Active, Some(ad::ATgtMode::Item)),
+            ec::effcats::ONLINE => (State::Online, None),
+            ec::effcats::OVERLOAD => (State::Overload, None),
+            ec::effcats::SYSTEM => (State::Offline, None),
             _ => {
                 let msg = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
                 tracing::warn!("{msg}");
@@ -55,9 +55,9 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
         };
         let mut a_effect = ad::AEffect::new(
             e_effect.id,
+            e_effect.category_id,
             state,
             tgt_mode,
-            is_system_wide,
             e_effect.is_assistance,
             e_effect.is_offensive,
             None,
