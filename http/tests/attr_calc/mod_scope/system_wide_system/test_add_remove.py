@@ -1,7 +1,8 @@
 from pytest import approx
 
 
-def test_sw_effect_addition_removal(client, consts):
+def test_src_addition_removal(client, consts):
+    # Check that effects are applied/removed when system-wide effect is added/removed
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -27,6 +28,8 @@ def test_sw_effect_addition_removal(client, consts):
 
 
 def test_fit_addition_removal(client, consts):
+    # Check that effects are applied/removed when fit is added/removed with system-wide effect
+    # already being there
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(

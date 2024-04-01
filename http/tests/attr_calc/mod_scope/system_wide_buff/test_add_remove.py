@@ -1,7 +1,8 @@
 from pytest import approx
 
 
-def test_sw_effect_addition_removal(client, consts):
+def test_src_addition_removal(client, consts):
+    # Check that effects are applied/removed when system-wide effect is added/removed
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
