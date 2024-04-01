@@ -108,7 +108,7 @@ def test_other_fit(client, consts):
 
 
 def test_char_toggle(client, consts):
-    # Modifiers which target items on ship location shouldn't apply when ship isn't set
+    # Modifiers which target items on character location shouldn't apply when character isn't set
     eve_skill = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()

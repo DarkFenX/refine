@@ -129,7 +129,9 @@ impl ModifierRegister {
         if let (Some(fit_id), Some(loc_type)) = (item.get_fit_id(), item.get_root_loc_type()) {
             for (sub_item_id, sub_mods) in self.mods.iter() {
                 if let Ok(sub_item) = items.get_item(sub_item_id) {
-                    if sub_item.get_fit_id() == Some(fit_id) {
+                    // Local modifications which come from this fit or system-wide modifications may
+                    // be affected
+                    if sub_item.get_fit_id() == Some(fit_id) || matches!(sub_item, SsItem::SwEffect(_)) {
                         for sub_mod in sub_mods.iter() {
                             if match sub_mod.tgt_filter {
                                 SsModTgtFilter::Loc(sub_dom) => compare_loc_dom(loc_type, sub_dom),
