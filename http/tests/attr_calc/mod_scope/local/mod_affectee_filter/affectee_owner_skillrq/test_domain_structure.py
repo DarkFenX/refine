@@ -1,9 +1,9 @@
 from pytest import approx
 
 
-def test_domain_structure(client, consts):
+def test_unaffected(client, consts):
     # EVE does not use effects with "structureID" domain with owner modifiable filter, so it's an
-    # undefined behavior. Reefast just ignores domain and applies modification
+    # undefined behavior. Reefast just discards this modification as invalid
     eve_skill = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
