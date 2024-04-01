@@ -27,7 +27,7 @@ def test_affected(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_other_location(client, consts):
+def test_other_domain(client, consts):
     eve_skill = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
