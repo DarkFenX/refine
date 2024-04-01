@@ -2,7 +2,7 @@ from pytest import approx
 
 
 def test_affected_top(client, consts):
-    # Check that item which is top of a domain can affect itself
+    # Check that item which is "owner" of a location can affect itself
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -21,7 +21,7 @@ def test_affected_top(client, consts):
 
 
 def test_affected_child(client, consts):
-    # Check that item which belongs to some domain can affect itself
+    # Check that item which belongs to some location can affect itself
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
