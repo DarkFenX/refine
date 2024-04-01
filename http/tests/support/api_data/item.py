@@ -61,7 +61,7 @@ class Item(AttrDict):
     def change_mod_request(
             self,
             state: Union[ApiState, Type[Absent]] = Absent,
-            charge: Union[int, Type[Absent]] = Absent,
+            charge: Union[int, None, Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_mod_request(

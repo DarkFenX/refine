@@ -503,7 +503,7 @@ class TestClient:
             ss_id: str,
             item_id: str,
             state: Union[ApiState, Type[Absent]] = Absent,
-            charge: Union[int, Type[Absent]] = Absent,
+            charge: Union[int, None, Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> Request:
         command = {'type': 'change_module', 'item_id': item_id}
