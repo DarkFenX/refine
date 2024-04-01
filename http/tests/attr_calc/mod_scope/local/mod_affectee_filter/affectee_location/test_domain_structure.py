@@ -49,6 +49,7 @@ def test_other_domain(client, consts):
 
 
 def test_other_fit(client, consts):
+    # Check that local modifications are not carried over to another fit
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(

@@ -79,6 +79,7 @@ def test_other_group(client, consts):
 
 
 def test_other_fit(client, consts):
+    # Check that local modifications are not carried over to another fit
     eve_grp = client.mk_eve_item_group()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
