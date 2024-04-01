@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{EBuffId},
+    defs::EBuffId,
     ec,
     ss::{
         item::SsItem,

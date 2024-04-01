@@ -64,7 +64,12 @@ impl RamJsonAdh {
     }
     fn update_persistent_cache(&self, c_data: &data::CData) {
         let full_path = self.get_full_path();
-        let file = match OpenOptions::new().create(true).write(true).open(full_path) {
+        let file = match OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true)
+            .open(full_path)
+        {
             Ok(f) => f,
             Err(e) => {
                 tracing::error!("unable to open cache file for writing: {e}");
