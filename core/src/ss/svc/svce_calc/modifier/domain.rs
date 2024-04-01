@@ -2,6 +2,7 @@ use crate::ad;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub enum SsModDomain {
+    Everything,
     Ship,
     Structure,
     Char,
@@ -22,7 +23,7 @@ impl From<&ad::AEffectDomain> for SsModDomain {
 impl From<&ad::AEffectBuffScope> for SsModDomain {
     fn from(a_buff_scope: &ad::AEffectBuffScope) -> Self {
         match a_buff_scope {
-            ad::AEffectBuffScope::Everything => Self::Ship,
+            ad::AEffectBuffScope::Everything => Self::Everything,
             ad::AEffectBuffScope::Ships => Self::Ship,
             ad::AEffectBuffScope::FleetShips => Self::Ship,
         }

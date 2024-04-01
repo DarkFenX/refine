@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AEffectAttrMod, AEffectBuffInfo, AEffectBuffScope, AModBuildStatus, ATgtMode},
+    ad::{AEffectAttrMod, AEffectBuffInfo, AModBuildStatus, ATgtMode},
     defs::{EAttrId, EEffectCatId, EEffectId},
     shr::State,
     util::Named,
