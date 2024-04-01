@@ -2,8 +2,9 @@ from pytest import approx
 
 
 def test_unaffected(client, consts):
-    # Currently there are no effects used by EVE which affect multiple items filtered "other"
-    # domain, so we don't support it either
+    # Currently there are no effects used by EVE which affect multiple items filtered by "other"
+    # domain (i.e. when affecting item references ship via "other" reference), so we don't support
+    # it either
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
