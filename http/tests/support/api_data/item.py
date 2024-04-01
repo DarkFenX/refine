@@ -80,6 +80,22 @@ class Item(AttrDict):
         resp = self.change_mod_request(state=state, charge=charge, effect_modes=effect_modes).send()
         assert resp.status_code == 200
 
+    def change_sw_effect_request(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.change_sw_effect_request(
+            ss_id=self._ss_id,
+            item_id=self.id,
+            state=state)
+
+    def change_sw_effect(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> None:
+        resp = self.change_sw_effect_request(state=state).send()
+        assert resp.status_code == 200
+
     def remove_request(self) -> Request:
         return self._client.remove_item_request(ss_id=self._ss_id, item_id=self.id)
 

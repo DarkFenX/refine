@@ -69,6 +69,13 @@ class SolarSystem(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self.id)
         return item
 
+    def change_sw_effect_request(
+            self,
+            item_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.change_sw_effect_request(ss_id=self.id, item_id=item_id, state=state)
+
     # Item-related methods
     def get_item_request(self, item_id: str) -> Request:
         return self._client.get_item_request(ss_id=self.id, item_id=item_id)

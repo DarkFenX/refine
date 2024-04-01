@@ -56,3 +56,30 @@ def test_fit_addition_removal(client, consts):
     assert api_rig2.update().attrs[eve_attr2.id].dogma == approx(37.5)
     api_fit2.remove()
     assert api_rig1.update().attrs[eve_attr2.id].dogma == approx(37.5)
+
+
+def test_src_state_change(client, consts):
+    # Check that effects are applied/removed when system-wide effect is enabled/disabled
+    eve_attr1 = client.mk_eve_attr()
+    eve_attr2 = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_mul,
+        src_attr_id=eve_attr1.id,
+        tgt_attr_id=eve_attr2.id)
+    eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
+    eve_sw_effect = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
+    eve_ship = client.mk_eve_item()
+    eve_rig = client.mk_eve_item(attrs={eve_attr2.id: 7.5})
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fit = api_ss.create_fit()
+    api_fit.set_ship(type_id=eve_ship.id)
+    api_rig = api_fit.add_rig(type_id=eve_rig.id)
+    eve_sw_effect = api_ss.add_sw_effect(type_id=eve_sw_effect.id, state=False)
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(7.5)
+    eve_sw_effect.change_sw_effect(state=True)
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(37.5)
+    eve_sw_effect.change_sw_effect(state=False)
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(7.5)

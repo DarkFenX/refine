@@ -3,7 +3,7 @@ use crate::{
     ss::{
         info::SsSwEffectInfo,
         item::{SsItem, SsSwEffect},
-        SolarSystem,
+        SolarSystem, SsView,
     },
     util::Result,
 };
@@ -28,7 +28,19 @@ impl SolarSystem {
         Ok(info)
     }
     pub fn set_sw_effect_state(&mut self, item_id: &SsItemId, state: bool) -> Result<()> {
-        self.items.get_sw_effect_mut(item_id)?.set_bool_state(state);
+        let sw_effect = self.items.get_sw_effect_mut(item_id)?;
+        let old_state = sw_effect.state;
+        sw_effect.set_bool_state(state);
+        let new_state = sw_effect.state;
+        if new_state != old_state {
+            let item = self.items.get_item(item_id).unwrap();
+            self.svcs.switch_item_state(
+                &SsView::new(&self.src, &self.fits, &self.items),
+                item,
+                old_state,
+                new_state,
+            );
+        }
         Ok(())
     }
 }
