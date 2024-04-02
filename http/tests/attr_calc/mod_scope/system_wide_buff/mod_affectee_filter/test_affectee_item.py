@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_ships(client, consts):
+def test_affected_ships(client, consts):
     # Make sure ship is affected by system-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -31,7 +31,7 @@ def test_ships(client, consts):
     assert api_ship2.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_drones(client, consts):
+def test_affected_drones(client, consts):
     # Make sure drones are affected by system-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -64,7 +64,7 @@ def test_drones(client, consts):
     assert api_drone3.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_non_buff_modifiable_parent(client, consts):
+def test_unaffected_non_buff_modifiable_parent(client, consts):
     # Check that top-level entities which are not supposed to receive modification (e.g. characters)
     # do not receive it
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
@@ -89,7 +89,7 @@ def test_non_buff_modifiable_parent(client, consts):
     assert api_char.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_non_buff_modifiable_child(client, consts):
+def test_unaffected_non_buff_modifiable_child(client, consts):
     # Check that non-top-level entities do not receive modification, even if they are part of domain
     # whose owner is getting it
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
