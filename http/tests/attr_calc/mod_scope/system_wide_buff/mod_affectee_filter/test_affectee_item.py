@@ -114,3 +114,27 @@ def test_unaffected_non_buff_modifiable_child(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_tgt_item.id)
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
     assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+
+
+def test_unaffected_other_sw_effect(client, consts):
+    # This is undefined behavior, and it's possible that it works differently in EVE, but in reefast
+    # one system-wide buff cannot affect another.
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_tgt_attr = client.mk_eve_attr()
+    eve_buff = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+    eve_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.weather_darkness,
+        cat_id=consts.EveEffCat.active)
+    eve_sw_effect = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
+        eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_tgt_item = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_ss.add_sw_effect(type_id=eve_sw_effect.id)
+    api_tgt_item = api_ss.add_sw_effect(type_id=eve_tgt_item.id)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
