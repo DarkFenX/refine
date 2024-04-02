@@ -107,7 +107,7 @@ def test_other_fit(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_struct_toggle(client, consts):
+def test_struct_swap(client, consts):
     # Modifiers which target items on structure location shouldn't apply when structure isn't set
     eve_grp = client.mk_eve_item_group()
     eve_src_attr = client.mk_eve_attr()

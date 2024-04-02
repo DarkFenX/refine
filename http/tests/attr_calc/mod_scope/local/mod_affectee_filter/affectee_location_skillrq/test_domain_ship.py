@@ -107,7 +107,7 @@ def test_other_fit(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_ship_toggle(client, consts):
+def test_ship_swap(client, consts):
     # Modifiers which target items on ship location shouldn't apply when ship isn't set
     eve_skill = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
