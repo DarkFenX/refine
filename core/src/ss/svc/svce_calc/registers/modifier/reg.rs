@@ -261,13 +261,22 @@ impl ModifierRegister {
                 }
                 _ => (),
             },
-            SsModTgtFilter::Loc(dom) => {
-                if let Ok(loc) = dom.try_into() {
+            SsModTgtFilter::Loc(dom) => match dom {
+                SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.mods_parloc.add_entry((*tgt_fit_id, loc), modifier);
+                        self.mods_parloc.add_entry((*tgt_fit_id, SsLocType::Ship), modifier);
+                        self.mods_parloc
+                            .add_entry((*tgt_fit_id, SsLocType::Structure), modifier);
                     }
                 }
-            }
+                _ => {
+                    if let Ok(loc) = dom.try_into() {
+                        for tgt_fit_id in tgt_fit_ids.iter() {
+                            self.mods_parloc.add_entry((*tgt_fit_id, loc), modifier);
+                        }
+                    }
+                }
+            },
             SsModTgtFilter::LocGrp(dom, grp_id) => {
                 if let Ok(loc) = dom.try_into() {
                     for tgt_fit_id in tgt_fit_ids.iter() {
@@ -317,13 +326,23 @@ impl ModifierRegister {
                 }
                 _ => (),
             },
-            SsModTgtFilter::Loc(dom) => {
-                if let Ok(loc) = dom.try_into() {
+            SsModTgtFilter::Loc(dom) => match dom {
+                SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.mods_parloc.remove_entry(&(*tgt_fit_id, loc), &modifier);
+                        self.mods_parloc
+                            .remove_entry(&(*tgt_fit_id, SsLocType::Ship), &modifier);
+                        self.mods_parloc
+                            .remove_entry(&(*tgt_fit_id, SsLocType::Structure), &modifier);
                     }
                 }
-            }
+                _ => {
+                    if let Ok(loc) = dom.try_into() {
+                        for tgt_fit_id in tgt_fit_ids.iter() {
+                            self.mods_parloc.remove_entry(&(*tgt_fit_id, loc), &modifier);
+                        }
+                    }
+                }
+            },
             SsModTgtFilter::LocGrp(dom, grp_id) => {
                 if let Ok(loc) = dom.try_into() {
                     for tgt_fit_id in tgt_fit_ids.iter() {

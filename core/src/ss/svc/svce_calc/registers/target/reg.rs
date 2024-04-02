@@ -106,15 +106,27 @@ impl TargetRegister {
                     }
                 }
             },
-            SsModTgtFilter::Loc(dom) => {
-                if let Ok(loc) = dom.try_into() {
+            SsModTgtFilter::Loc(dom) => match dom {
+                SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
-                        if check_domain_owner(dom, tgt_fit) {
-                            extend_vec_from_storage(&mut tgts, &self.tgts_loc, &(tgt_fit.id, loc));
+                        if check_domain_owner(SsModDomain::Ship, tgt_fit) {
+                            extend_vec_from_storage(&mut tgts, &self.tgts_loc, &(tgt_fit.id, SsLocType::Ship));
+                        }
+                        if check_domain_owner(SsModDomain::Structure, tgt_fit) {
+                            extend_vec_from_storage(&mut tgts, &self.tgts_loc, &(tgt_fit.id, SsLocType::Structure));
                         }
                     }
                 }
-            }
+                _ => {
+                    if let Ok(loc) = dom.try_into() {
+                        for tgt_fit in tgt_fits.iter() {
+                            if check_domain_owner(dom, tgt_fit) {
+                                extend_vec_from_storage(&mut tgts, &self.tgts_loc, &(tgt_fit.id, loc));
+                            }
+                        }
+                    }
+                }
+            },
             SsModTgtFilter::LocGrp(dom, grp_id) => {
                 if let Ok(loc) = dom.try_into() {
                     for tgt_fit in tgt_fits.iter() {
