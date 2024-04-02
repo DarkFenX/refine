@@ -370,7 +370,9 @@ impl ModifierRegister {
 
 fn compare_loc_dom(loc: SsLocType, dom: SsModDomain) -> bool {
     match (loc, dom) {
+        (SsLocType::Ship, SsModDomain::Everything) => true,
         (SsLocType::Ship, SsModDomain::Ship) => true,
+        (SsLocType::Structure, SsModDomain::Everything) => true,
         (SsLocType::Structure, SsModDomain::Structure) => true,
         (SsLocType::Character, SsModDomain::Char) => true,
         _ => false,
