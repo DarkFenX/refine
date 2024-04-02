@@ -277,13 +277,23 @@ impl ModifierRegister {
                     }
                 }
             },
-            SsModTgtFilter::LocGrp(dom, grp_id) => {
-                if let Ok(loc) = dom.try_into() {
+            SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
+                SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.mods_parloc_grp.add_entry((*tgt_fit_id, loc, grp_id), modifier);
+                        self.mods_parloc_grp
+                            .add_entry((*tgt_fit_id, SsLocType::Ship, grp_id), modifier);
+                        self.mods_parloc_grp
+                            .add_entry((*tgt_fit_id, SsLocType::Structure, grp_id), modifier);
                     }
                 }
-            }
+                _ => {
+                    if let Ok(loc) = dom.try_into() {
+                        for tgt_fit_id in tgt_fit_ids.iter() {
+                            self.mods_parloc_grp.add_entry((*tgt_fit_id, loc, grp_id), modifier);
+                        }
+                    }
+                }
+            },
             SsModTgtFilter::LocSrq(dom, srq_id) => {
                 if let Ok(loc) = dom.try_into() {
                     for tgt_fit_id in tgt_fit_ids.iter() {
@@ -343,14 +353,24 @@ impl ModifierRegister {
                     }
                 }
             },
-            SsModTgtFilter::LocGrp(dom, grp_id) => {
-                if let Ok(loc) = dom.try_into() {
+            SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
+                SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_parloc_grp
-                            .remove_entry(&(*tgt_fit_id, loc, grp_id), &modifier);
+                            .remove_entry(&(*tgt_fit_id, SsLocType::Ship, grp_id), &modifier);
+                        self.mods_parloc_grp
+                            .remove_entry(&(*tgt_fit_id, SsLocType::Structure, grp_id), &modifier);
                     }
                 }
-            }
+                _ => {
+                    if let Ok(loc) = dom.try_into() {
+                        for tgt_fit_id in tgt_fit_ids.iter() {
+                            self.mods_parloc_grp
+                                .remove_entry(&(*tgt_fit_id, loc, grp_id), &modifier);
+                        }
+                    }
+                }
+            },
             SsModTgtFilter::LocSrq(dom, srq_id) => {
                 if let Ok(loc) = dom.try_into() {
                     for tgt_fit_id in tgt_fit_ids.iter() {
