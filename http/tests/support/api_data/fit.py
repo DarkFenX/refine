@@ -183,6 +183,23 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    def add_fw_effect_request(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.add_fw_effect_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+
+    def add_fw_effect(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Item:
+        resp = self.add_fw_effect_request(type_id=type_id, state=state).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        return item
+
     def remove_request(self) -> Request:
         return self._client.remove_fit_request(ss_id=self._ss_id, fit_id=self.id)
 

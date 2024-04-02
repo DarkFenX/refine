@@ -69,6 +69,11 @@ impl From<rc::SsSwEffectInfo> for HCmdResp {
         HCmdResp::ItemIds(ss_sw_effect_info.into())
     }
 }
+impl From<rc::SsFwEffectInfo> for HCmdResp {
+    fn from(ss_fw_effect_info: rc::SsFwEffectInfo) -> Self {
+        HCmdResp::ItemIds(ss_fw_effect_info.into())
+    }
+}
 
 #[derive(serde::Serialize)]
 pub(crate) struct HItemIdsResp {
@@ -147,5 +152,10 @@ impl From<rc::SsFighterInfo> for HItemIdsResp {
 impl From<rc::SsSwEffectInfo> for HItemIdsResp {
     fn from(ss_sw_effect_info: rc::SsSwEffectInfo) -> Self {
         HItemIdsResp::new(ss_sw_effect_info.id, None)
+    }
+}
+impl From<rc::SsFwEffectInfo> for HItemIdsResp {
+    fn from(ss_fw_effect_info: rc::SsFwEffectInfo) -> Self {
+        HItemIdsResp::new(ss_fw_effect_info.id, None)
     }
 }

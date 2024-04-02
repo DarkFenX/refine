@@ -3,6 +3,7 @@ pub(in crate::cmd) use character::HChangeCharacterCmd;
 pub(in crate::cmd) use charge::HChangeChargeCmd;
 pub(in crate::cmd) use drone::HChangeDroneCmd;
 pub(in crate::cmd) use fighter::HChangeFighterCmd;
+pub(in crate::cmd) use fw_effect::HChangeFwEffectCmd;
 pub(in crate::cmd) use implant::HChangeImplantCmd;
 pub(in crate::cmd) use module::HChangeModuleCmd;
 pub(in crate::cmd) use rig::HChangeRigCmd;
@@ -20,6 +21,7 @@ mod character;
 mod charge;
 mod drone;
 mod fighter;
+mod fw_effect;
 mod implant;
 mod module;
 mod rig;
@@ -47,6 +49,7 @@ pub(crate) enum HItemCommand {
     ChangeFighter(HChangeFighterCmd),
     ChangeCharge(HChangeChargeCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
+    ChangeFwEffect(HChangeFwEffectCmd),
 }
 impl HItemCommand {
     pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem, item_id: &rc::SsItemId) -> rc::Result<HCmdResp> {
@@ -65,6 +68,7 @@ impl HItemCommand {
             Self::ChangeFighter(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeCharge(cmd) => cmd.execute(core_ss, item_id),
             Self::ChangeSwEffect(cmd) => cmd.execute(core_ss, item_id),
+            Self::ChangeFwEffect(cmd) => cmd.execute(core_ss, item_id),
         }
     }
 }
