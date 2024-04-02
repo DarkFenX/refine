@@ -42,6 +42,9 @@ pub(in crate::ss::svc::svce_calc) struct ModifierRegister {
     // Modifiers influencing owner-modifiable items belonging to certain fit and having certain skill requirement
     // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), modifiers>
     mods_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsAttrMod>,
+    // Modifiers influencing all buff-modifiable items
+    // Contains: KeyedStorage<target's fit ID, modifiers>
+    mods_buff_all: KeyedStorage1L<SsFitId, SsAttrMod>,
     // System-wide modifiers
     sw_mods: HashSet<SsAttrMod>,
 }
@@ -56,6 +59,7 @@ impl ModifierRegister {
             mods_parloc_grp: KeyedStorage1L::new(),
             mods_parloc_srq: KeyedStorage1L::new(),
             mods_own_srq: KeyedStorage1L::new(),
+            mods_buff_all: KeyedStorage1L::new(),
             sw_mods: HashSet::new(),
         }
     }
@@ -116,6 +120,11 @@ impl ModifierRegister {
                         tgt_attr_id,
                     );
                 }
+            }
+        }
+        if tgt_item.is_buff_modifiable() {
+            if let Some(tgt_fit) = tgt_fit_opt {
+                filter_and_extend(&mut mods, &self.mods_buff_all, &tgt_fit.id, tgt_attr_id);
             }
         }
         mods
@@ -228,6 +237,11 @@ impl ModifierRegister {
     fn apply_mod_to_fits(&mut self, modifier: SsAttrMod, tgt_fit_ids: Vec<SsFitId>) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
+                SsModDomain::Everything => {
+                    for tgt_fit_id in tgt_fit_ids.iter() {
+                        self.mods_buff_all.add_entry(*tgt_fit_id, modifier);
+                    }
+                }
                 SsModDomain::Char => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_toploc
@@ -278,6 +292,11 @@ impl ModifierRegister {
     fn unapply_mods_from_fits(&mut self, modifier: &SsAttrMod, tgt_fit_ids: Vec<SsFitId>) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
+                SsModDomain::Everything => {
+                    for tgt_fit_id in tgt_fit_ids.iter() {
+                        self.mods_buff_all.remove_entry(tgt_fit_id, &modifier);
+                    }
+                }
                 SsModDomain::Char => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_toploc

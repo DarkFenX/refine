@@ -38,7 +38,7 @@ pub(in crate::ss::svc::svce_calc) struct TargetRegister {
     tgts_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsItemId>,
     // Everything-buff-modifiable items which belong to certain fit
     // Contains: KeyedStorage<target's fit ID, target item IDs>
-    tgts_buff: KeyedStorage1L<SsFitId, SsItemId>,
+    tgts_buff_all: KeyedStorage1L<SsFitId, SsItemId>,
 }
 impl TargetRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
@@ -49,7 +49,7 @@ impl TargetRegister {
             tgts_loc_grp: KeyedStorage1L::new(),
             tgts_loc_srq: KeyedStorage1L::new(),
             tgts_own_srq: KeyedStorage1L::new(),
-            tgts_buff: KeyedStorage1L::new(),
+            tgts_buff_all: KeyedStorage1L::new(),
         }
     }
     // Query methods
@@ -81,7 +81,7 @@ impl TargetRegister {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_storage(&mut tgts, &self.tgts_buff, &tgt_fit.id)
+                        extend_vec_from_storage(&mut tgts, &self.tgts_buff_all, &tgt_fit.id)
                     }
                 }
                 SsModDomain::Item => tgts.push(modifier.src_item_id),
@@ -180,7 +180,7 @@ impl TargetRegister {
         }
         if tgt_item.is_buff_modifiable() {
             if let Some(tgt_fit) = tgt_fit_opt {
-                self.tgts_buff.add_entry(tgt_fit.id, tgt_item_id);
+                self.tgts_buff_all.add_entry(tgt_fit.id, tgt_item_id);
             }
         }
     }
@@ -223,7 +223,7 @@ impl TargetRegister {
         }
         if tgt_item.is_buff_modifiable() {
             if let Some(tgt_fit) = tgt_fit_opt {
-                self.tgts_buff.remove_entry(&tgt_fit.id, &tgt_item_id);
+                self.tgts_buff_all.remove_entry(&tgt_fit.id, &tgt_item_id);
             }
         }
     }
