@@ -91,7 +91,7 @@ def test_child_item(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_other_fit(client, consts):
+def test_unaffected_other_fit(client, consts):
     # Check that fit-wide modifications are not carried over to another fit
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
