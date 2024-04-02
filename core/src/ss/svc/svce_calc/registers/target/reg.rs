@@ -156,15 +156,35 @@ impl TargetRegister {
                     }
                 }
             },
-            SsModTgtFilter::LocSrq(dom, srq_id) => {
-                if let Ok(loc) = dom.try_into() {
+            SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
+                SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
-                        if check_domain_owner(dom, tgt_fit) {
-                            extend_vec_from_storage(&mut tgts, &self.tgts_loc_srq, &(tgt_fit.id, loc, srq_id));
+                        if check_domain_owner(SsModDomain::Ship, tgt_fit) {
+                            extend_vec_from_storage(
+                                &mut tgts,
+                                &self.tgts_loc_srq,
+                                &(tgt_fit.id, SsLocType::Ship, srq_id),
+                            );
+                        }
+                        if check_domain_owner(SsModDomain::Structure, tgt_fit) {
+                            extend_vec_from_storage(
+                                &mut tgts,
+                                &self.tgts_loc_srq,
+                                &(tgt_fit.id, SsLocType::Structure, srq_id),
+                            );
                         }
                     }
                 }
-            }
+                _ => {
+                    if let Ok(loc) = dom.try_into() {
+                        for tgt_fit in tgt_fits.iter() {
+                            if check_domain_owner(dom, tgt_fit) {
+                                extend_vec_from_storage(&mut tgts, &self.tgts_loc_srq, &(tgt_fit.id, loc, srq_id));
+                            }
+                        }
+                    }
+                }
+            },
             SsModTgtFilter::OwnSrq(srq_id) => {
                 for tgt_fit in tgt_fits.iter() {
                     extend_vec_from_storage(&mut tgts, &self.tgts_own_srq, &(tgt_fit.id, srq_id));
