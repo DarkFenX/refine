@@ -19,6 +19,7 @@ pub struct SolarSystem {
     // TODO: fleets will go here
     pub(in crate::ss) items: SsItems,
     pub(in crate::ss) sw_effects: HashSet<SsItemId>,
+    pub(in crate::ss) proj_effects: HashSet<SsItemId>,
     pub(in crate::ss) svcs: SsSvcs,
 }
 impl SolarSystem {
@@ -28,6 +29,7 @@ impl SolarSystem {
             fits: SsFits::new(),
             items: SsItems::new(),
             sw_effects: HashSet::new(),
+            proj_effects: HashSet::new(),
             svcs: SsSvcs::new(),
         }
     }

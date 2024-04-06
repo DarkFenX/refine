@@ -3,8 +3,8 @@ use std::{collections::HashMap, num::Wrapping};
 use crate::{
     defs::{SsFitId, SsItemId},
     ss::item::{
-        SsBooster, SsCharacter, SsCharge, SsDrone, SsFighter, SsFwEffect, SsImplant, SsItem, SsModule, SsRig, SsShip,
-        SsSkill, SsStance, SsStructure, SsSubsystem, SsSwEffect,
+        SsBooster, SsCharacter, SsCharge, SsDrone, SsFighter, SsFwEffect, SsImplant, SsItem, SsModule, SsProjEffect,
+        SsRig, SsShip, SsSkill, SsStance, SsStructure, SsSubsystem, SsSwEffect,
     },
     util::{Error, ErrorKind, Named, Result},
 };
@@ -391,6 +391,29 @@ impl SsItems {
                 *item_id,
                 item.get_name(),
                 SsFwEffect::get_name(),
+            ))),
+        }
+    }
+    // Projected effect methods
+    pub(in crate::ss) fn get_proj_effect(&self, item_id: &SsItemId) -> Result<&SsProjEffect> {
+        let item = self.get_item(item_id)?;
+        match item {
+            SsItem::ProjEffect(proj_effect) => Ok(proj_effect),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                SsProjEffect::get_name(),
+            ))),
+        }
+    }
+    pub(in crate::ss) fn get_proj_effect_mut(&mut self, item_id: &SsItemId) -> Result<&mut SsProjEffect> {
+        let item = self.get_item_mut(item_id)?;
+        match item {
+            SsItem::ProjEffect(proj_effect) => Ok(proj_effect),
+            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+                *item_id,
+                item.get_name(),
+                SsProjEffect::get_name(),
             ))),
         }
     }

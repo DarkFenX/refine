@@ -12,6 +12,7 @@ mod sse_fw_effect;
 mod sse_implant;
 mod sse_item;
 mod sse_module;
+mod sse_proj_effect;
 mod sse_rig;
 mod sse_ship;
 mod sse_skill;
