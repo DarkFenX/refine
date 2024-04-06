@@ -8,12 +8,12 @@ import requests
 if TYPE_CHECKING:
     from typing import Union
 
-    from tests.support.client import TestClient
+    from tests.support.api import ApiClient
 
 
 class Request(requests.PreparedRequest):
 
-    def __init__(self, client: TestClient, *args, **kwargs):  # pylint: disable=W0231
+    def __init__(self, client: ApiClient, *args, **kwargs):  # pylint: disable=W0231
         prepared_request = requests.Request(*args, **kwargs).prepare()
         self.__dict__.update(prepared_request.__dict__)
         self.__client = client

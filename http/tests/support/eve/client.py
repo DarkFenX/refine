@@ -19,15 +19,11 @@ data_id: int = 10000000  # pylint: disable=C0103
 class EveDataClient:
 
     def __init__(self, data_server):
-        super().__init__()
         self.__data_server = data_server
         self.__datas: dict[str, EveObjects] = {}
         self.__defsrc_stack_alias_map: dict[StackKey, str] = {}
 
-    @property
-    def _datas(self) -> dict[str, EveObjects]:
-        return self.__datas
-
+    # Data container-related methods
     def mk_eve_data(self) -> EveObjects:
         global data_id  # pylint: disable=C0103,W0603
         alias = str(data_id)
@@ -35,8 +31,13 @@ class EveDataClient:
         data_id += 1
         return data
 
+    def _get_eve_data(self, data: Union[EveObjects, Type[Default]] = Default) -> EveObjects:
+        if data is Default:
+            data = self.__default_eve_data
+        return data
+
     @property
-    def _default_data(self) -> EveObjects:
+    def __default_eve_data(self) -> EveObjects:
         key = get_stack_key()
         if key in self.__defsrc_stack_alias_map:
             alias = self.__defsrc_stack_alias_map[key]
@@ -45,6 +46,11 @@ class EveDataClient:
         self.__defsrc_stack_alias_map[key] = data.alias
         return data
 
+    @property
+    def _eve_datas(self) -> dict[str, EveObjects]:
+        return self.__datas
+
+    # EVE entity creation methods
     def mk_eve_item(
             self,
             data: Union[EveObjects, Type[Default]] = Default,
@@ -61,7 +67,7 @@ class EveDataClient:
             volume: Union[float, Type[Default]] = Default,
     ) -> Item:
         if data is Default:
-            data = self._default_data
+            data = self.__default_eve_data
         return data.mk_item(
             id_=id_,
             group_id=grp_id,
@@ -82,7 +88,7 @@ class EveDataClient:
             cat_id: Union[int, Type[Default]] = EveItemCat.module,
     ) -> Group:
         if data is Default:
-            data = self._default_data
+            data = self.__default_eve_data
         return data.mk_item_group(
             id_=id_,
             category_id=cat_id)
@@ -97,7 +103,7 @@ class EveDataClient:
             max_attr_id: Union[int, Type[Absent]] = Absent,
     ) -> Attribute:
         if data is Default:
-            data = self._default_data
+            data = self.__default_eve_data
         return data.mk_attr(
             id_=id_,
             stackable=stackable,
@@ -122,7 +128,7 @@ class EveDataClient:
             mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent]] = Absent,
     ) -> Effect:
         if data is Default:
-            data = self._default_data
+            data = self.__default_eve_data
         return data.mk_effect(
             id_=id_,
             category_id=cat_id,
@@ -139,7 +145,7 @@ class EveDataClient:
 
     def mk_eve_online_effect(self, data: Union[EveObjects, Type[Default]] = Default) -> Effect:
         if data is Default:
-            data = self._default_data
+            data = self.__default_eve_data
         return data.mk_effect(
             id_=EveEffect.online,
             category_id=EveEffCat.active,
@@ -185,7 +191,7 @@ class EveDataClient:
             loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]] = Absent,
     ) -> Buff:
         if data is Default:
-            data = self._default_data
+            data = self.__default_eve_data
         return data.mk_buff(
             id_=id_,
             aggregate_mode=aggr_mode,
@@ -206,6 +212,7 @@ class EveDataClient:
             group_id=group_id,
             skill_id=skill_id)
 
+    # Server setup-related methods
     def _setup_eve_data_server(self, data: EveObjects) -> None:
         str_data = data.render()
         suffix_cont_map = {
@@ -226,6 +233,5 @@ class EveDataClient:
         self.__data_server.expect_request(url).respond_with_data(data)
 
     @property
-    def _eve_data_server_base_url(self):
+    def _eve_data_server_base_url(self) -> str:
         return f'http://localhost:{self.__data_server.port}'
-

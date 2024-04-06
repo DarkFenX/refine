@@ -8,7 +8,7 @@ from .exception import TestDataConsistencyError
 if TYPE_CHECKING:
     from typing import Type, Union
 
-    from tests.support.eve_data.containers import EvePrimitives
+    from tests.support.eve.containers import EvePrimitives
     from tests.support.util import Absent
 
 
