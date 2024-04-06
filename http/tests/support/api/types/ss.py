@@ -40,7 +40,7 @@ class SolarSystem(AttrDict):
         assert resp.status_code == 204
         self._client.created_sss.remove(self)
 
-    # Fit-related methods
+    # Fit methods
     def create_fit_request(self) -> Request:
         return self._client.create_fit_request(ss_id=self.id)
 
@@ -51,7 +51,16 @@ class SolarSystem(AttrDict):
         self.update()
         return fit
 
-    # Item-related methods
+    # Generic item methods
+    def get_item_request(self, item_id: str) -> Request:
+        return self._client.get_item_request(ss_id=self.id, item_id=item_id)
+
+    def get_item(self, item_id: str) -> Item:
+        resp = self.get_item_request(item_id=item_id).send()
+        assert resp.status_code == 200
+        return Item(client=self._client, data=resp.json(), ss_id=self.id)
+
+    # System-wide effect methods
     def add_sw_effect_request(
             self,
             type_id: int,
@@ -75,12 +84,3 @@ class SolarSystem(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_sw_effect_request(ss_id=self.id, item_id=item_id, state=state)
-
-    # Item-related methods
-    def get_item_request(self, item_id: str) -> Request:
-        return self._client.get_item_request(ss_id=self.id, item_id=item_id)
-
-    def get_item(self, item_id: str) -> Item:
-        resp = self.get_item_request(item_id=item_id).send()
-        assert resp.status_code == 200
-        return Item(client=self._client, data=resp.json(), ss_id=self.id)

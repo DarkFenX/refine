@@ -40,6 +40,14 @@ class Item(AttrDict):
         self._data = resp.json()
         return self
 
+    def remove_request(self) -> Request:
+        return self._client.remove_item_request(ss_id=self._ss_id, item_id=self.id)
+
+    def remove(self) -> None:
+        resp = self.remove_request().send()
+        assert resp.status_code == 204
+
+    # Skill methods
     def change_skill_request(
             self,
             level: Union[int, Type[Absent]] = Absent,
@@ -58,6 +66,7 @@ class Item(AttrDict):
         resp = self.change_skill_request(level=level, state=state, effect_modes=effect_modes).send()
         assert resp.status_code == 200
 
+    # Module methods
     def change_mod_request(
             self,
             state: Union[ApiState, Type[Absent]] = Absent,
@@ -80,6 +89,7 @@ class Item(AttrDict):
         resp = self.change_mod_request(state=state, charge=charge, effect_modes=effect_modes).send()
         assert resp.status_code == 200
 
+    # System-wide effect methods
     def change_sw_effect_request(
             self,
             state: Union[bool, Type[Absent]] = Absent,
@@ -96,6 +106,7 @@ class Item(AttrDict):
         resp = self.change_sw_effect_request(state=state).send()
         assert resp.status_code == 200
 
+    # Fit-wide effect methods
     def change_fw_effect_request(
             self,
             state: Union[bool, Type[Absent]] = Absent,
@@ -111,10 +122,3 @@ class Item(AttrDict):
     ) -> None:
         resp = self.change_fw_effect_request(state=state).send()
         assert resp.status_code == 200
-
-    def remove_request(self) -> Request:
-        return self._client.remove_item_request(ss_id=self._ss_id, item_id=self.id)
-
-    def remove(self) -> None:
-        resp = self.remove_request().send()
-        assert resp.status_code == 204

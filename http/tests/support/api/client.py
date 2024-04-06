@@ -47,7 +47,7 @@ class ApiClient(metaclass=ABCMeta):
     def _eve_datas(self) -> dict[str, eve.EveObjects]:
         ...
 
-    # Data source-related methods
+    # Data source methods
     def create_source_request(
             self,
             data: Union[eve.EveObjects, Type[Default]] = Default,
@@ -65,7 +65,6 @@ class ApiClient(metaclass=ABCMeta):
     ) -> None:
         data = self._get_eve_data(data=data)
         self._setup_eve_data_server(data=data)
-        # Get request and send it
         resp = self.create_source_request(data=data).send()
         assert resp.status_code == 201
         self.__created_data_aliases.add(data.alias)
@@ -89,7 +88,7 @@ class ApiClient(metaclass=ABCMeta):
         for alias in self.__created_data_aliases.copy():
             self.remove_source(src_alias=alias)
 
-    # Solar system-related methods
+    # Solar system methods
     def create_ss_request(
             self,
             data: Union[eve.EveObjects, Type[Default]] = Default,
@@ -137,7 +136,7 @@ class ApiClient(metaclass=ABCMeta):
         for ss in self.__created_sss.copy():
             ss.remove()
 
-    # Fit-related methods
+    # Fit methods
     def create_fit_request(
             self,
             ss_id: str
@@ -169,7 +168,7 @@ class ApiClient(metaclass=ABCMeta):
             method='DELETE',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}')
 
-    # Item-related methods
+    # Generic item methods
     def get_item_request(
             self,
             ss_id: str,
@@ -191,6 +190,7 @@ class ApiClient(metaclass=ABCMeta):
             method='DELETE',
             url=f'{self.__base_url}/solar_system/{ss_id}/item/{item_id}')
 
+    # Character methods
     def set_char_request(
             self,
             ss_id: str,
@@ -205,6 +205,7 @@ class ApiClient(metaclass=ABCMeta):
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
+    # Skill methods
     def add_skill_request(
             self,
             ss_id: str,
@@ -245,6 +246,7 @@ class ApiClient(metaclass=ABCMeta):
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json={'commands': [command]})
 
+    # Implant methods
     def add_implant_request(
             self,
             ss_id: str,
@@ -254,6 +256,17 @@ class ApiClient(metaclass=ABCMeta):
     ) -> Request:
         return self.__add_simple_item('add_implant', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
+    # Booster methods
+    def add_booster_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self.__add_simple_item('add_booster', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+
+    # Ship methods
     def set_ship_request(
             self,
             ss_id: str,
@@ -268,6 +281,7 @@ class ApiClient(metaclass=ABCMeta):
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
+    # Structure methods
     def set_struct_request(
             self,
             ss_id: str,
@@ -282,6 +296,7 @@ class ApiClient(metaclass=ABCMeta):
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json=payload)
 
+    # Subsystem methods
     def add_subsystem_request(
             self,
             ss_id: str,
@@ -291,6 +306,7 @@ class ApiClient(metaclass=ABCMeta):
     ) -> Request:
         return self.__add_simple_item('add_subsystem', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
+    # Module methods
     def add_mod_request(
             self,
             ss_id: str,
@@ -335,6 +351,7 @@ class ApiClient(metaclass=ABCMeta):
             params={'ss': 'full', 'fit': 'full', 'item': 'id'},
             json={'commands': [command]})
 
+    # Rig methods
     def add_rig_request(
             self,
             ss_id: str,
@@ -344,6 +361,7 @@ class ApiClient(metaclass=ABCMeta):
     ) -> Request:
         return self.__add_simple_item('add_rig', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
+    # Drone methods
     def add_drone_request(
             self,
             ss_id: str,
@@ -353,6 +371,7 @@ class ApiClient(metaclass=ABCMeta):
     ) -> Request:
         return self.__add_simple_item('add_drone', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
+    # System-wide effect methods
     def add_sw_effect_request(
             self,
             ss_id: str,
@@ -376,6 +395,7 @@ class ApiClient(metaclass=ABCMeta):
     ) -> Request:
         return self.__change_simple_item('change_sw_effect', ss_id=ss_id, item_id=item_id, state=state)
 
+    # Fit-wide effect methods
     def add_fw_effect_request(
             self,
             ss_id: str,
@@ -393,6 +413,7 @@ class ApiClient(metaclass=ABCMeta):
     ) -> Request:
         return self.__change_simple_item('change_fw_effect', ss_id=ss_id, item_id=item_id, state=state)
 
+    # Auxiliary methods
     def __add_simple_item(
             self,
             cmd_name: str,

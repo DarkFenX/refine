@@ -30,7 +30,14 @@ class Fit(AttrDict):
         self._data = resp.json()
         return self
 
-    # Item-related methods
+    def remove_request(self) -> Request:
+        return self._client.remove_fit_request(ss_id=self._ss_id, fit_id=self.id)
+
+    def remove(self) -> None:
+        resp = self.remove_request().send()
+        assert resp.status_code == 204
+
+    # Generic item methods
     def remove_item_request(self, item_id: str) -> Request:
         return self._client.remove_item_request(ss_id=self._ss_id, item_id=item_id)
 
@@ -38,6 +45,7 @@ class Fit(AttrDict):
         resp = self.remove_item_request(item_id=item_id).send()
         assert resp.status_code == 204
 
+    # Character methods
     def set_char_request(self, type_id: int) -> Request:
         return self._client.set_char_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
 
@@ -47,6 +55,7 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Skill methods
     def add_skill_request(
             self,
             type_id: int,
@@ -67,6 +76,7 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Implant methods
     def add_implant_request(
             self,
             type_id: int,
@@ -84,6 +94,25 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Booster methods
+    def add_booster_request(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.add_booster_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+
+    def add_booster(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Item:
+        resp = self.add_booster_request(type_id=type_id, state=state).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        return item
+
+    # Ship methods
     def set_ship_request(self, type_id: int) -> Request:
         return self._client.set_ship_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
 
@@ -93,6 +122,7 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Structure methods
     def set_struct_request(self, type_id: int) -> Request:
         return self._client.set_struct_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
 
@@ -102,6 +132,7 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Subsystem methods
     def add_subsystem_request(
             self,
             type_id: int,
@@ -119,6 +150,7 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Module methods
     def add_mod_request(
             self,
             type_id: int,
@@ -149,6 +181,7 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Rig methods
     def add_rig_request(
             self,
             type_id: int,
@@ -166,6 +199,7 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Drone methods
     def add_drone_request(
             self,
             type_id: int,
@@ -183,6 +217,7 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Fit-wide effect methods
     def add_fw_effect_request(
             self,
             type_id: int,
@@ -199,10 +234,3 @@ class Fit(AttrDict):
         assert resp.status_code == 200
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
-
-    def remove_request(self) -> Request:
-        return self._client.remove_fit_request(ss_id=self._ss_id, fit_id=self.id)
-
-    def remove(self) -> None:
-        resp = self.remove_request().send()
-        assert resp.status_code == 204
