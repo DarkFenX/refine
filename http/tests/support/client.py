@@ -20,11 +20,10 @@ data_id: int = 10000000  # pylint: disable=C0103
 
 class TestClient(EveDataClient):
 
-    def __init__(self, data_server, port: int):
-        super().__init__()
-        self.__data_server = data_server
+    def __init__(self, eve_data_server, api_port: int):
+        EveDataClient.__init__(self, data_server=eve_data_server)
         self.__session: requests.Session = requests.Session()
-        self.__base_url: str = f'http://localhost:{port}'
+        self.__base_url: str = f'http://localhost:{api_port}'
         self.__created_data_aliases: set[str] = set()
         self.created_sss: set[api_data.SolarSystem] = set()
 
@@ -42,7 +41,7 @@ class TestClient(EveDataClient):
             self,
             method='POST',
             url=f'{self.__base_url}/source/{data.alias}',
-            json={'data_version': '1', 'data_base_url': f'http://localhost:{self.__data_server.port}/{data.alias}/'})
+            json={'data_version': '1', 'data_base_url': f'{self._eve_data_server_base_url}/{data.alias}/'})
 
     def create_source(
             self,
@@ -50,21 +49,7 @@ class TestClient(EveDataClient):
     ) -> None:
         if data is Default:
             data = self._default_data
-        # Set up server with local data
-        str_data = data.render()
-        suffix_cont_map = {
-            'fsd_binary/types.json': str_data.types,
-            'fsd_binary/groups.json': str_data.groups,
-            'fsd_binary/dogmaattributes.json': str_data.dogmaattributes,
-            'fsd_binary/typedogma.json': str_data.typedogma,
-            'fsd_binary/dogmaeffects.json': str_data.dogmaeffects,
-            'fsd_lite/fighterabilities.json': str_data.fighterabilities,
-            'fsd_lite/fighterabilitiesbytype.json': str_data.fighterabilitiesbytype,
-            'fsd_lite/dbuffcollections.json': str_data.dbuffcollections,
-            'fsd_binary/requiredskillsfortypes.json': str_data.requiredskillsfortypes,
-            'fsd_binary/dynamicitemattributes.json': str_data.dynamicitemattributes}
-        for suffix, container in suffix_cont_map.items():
-            self.__setup_handler(f'/{data.alias}/{suffix}', container)
+        self._setup_eve_data_server(data=data)
         # Get request and send it
         resp = self.create_source_request(data=data).send()
         assert resp.status_code == 201
@@ -80,9 +65,6 @@ class TestClient(EveDataClient):
         resp = self.remove_source_request(src_alias=src_alias).send()
         assert resp.status_code == 204
         self.__created_data_aliases.remove(src_alias)
-
-    def __setup_handler(self, url: str, data: str) -> None:
-        self.__data_server.expect_request(url).respond_with_data(data)
 
     def create_sources(self) -> None:
         for data in self._datas.values():
