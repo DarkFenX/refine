@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from tests.support.consts import ApiEffMode
 
 
-class ApiClient(eve.EveDataClient):
+class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     def __init__(self, port: int, **kwargs):
         super().__init__(**kwargs)

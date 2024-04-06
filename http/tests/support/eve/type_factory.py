@@ -3,55 +3,19 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tests.support.consts import EveEffCat, EveEffect, EveItemCat
-from tests.support.util import Absent, Default, get_stack_key
-from .containers import EveObjects
+from tests.support.util import Absent, Default
+from .data_manager import EveDataManager
 from .types import BuffModifier, EffectModifier
 
 if TYPE_CHECKING:
     from typing import Type, Union
 
-    from tests.support.util import StackKey
+    from .containers import EveObjects
     from .types import Attribute, Buff, Effect, Group, Item
 
-data_id: int = 10000000  # pylint: disable=C0103
 
+class EveTypeFactory(EveDataManager):
 
-class EveDataClient:
-
-    def __init__(self, data_server, **kwargs):
-        super().__init__(**kwargs)
-        self.__data_server = data_server
-        self.__datas: dict[str, EveObjects] = {}
-        self.__defsrc_stack_alias_map: dict[StackKey, str] = {}
-
-    # Data container-related methods
-    def mk_eve_data(self) -> EveObjects:
-        global data_id  # pylint: disable=C0103,W0603
-        alias = str(data_id)
-        data = self.__datas[alias] = EveObjects(alias)
-        data_id += 1
-        return data
-
-    def _get_eve_data(self, data: Union[EveObjects, Type[Default]] = Default) -> EveObjects:
-        if data is Default:
-            data = self.__default_eve_data
-        return data
-
-    @property
-    def __default_eve_data(self) -> EveObjects:
-        key = get_stack_key()
-        if key in self.__defsrc_stack_alias_map:
-            alias = self.__defsrc_stack_alias_map[key]
-            return self.__datas[alias]
-        data = self.mk_eve_data()
-        self.__defsrc_stack_alias_map[key] = data.alias
-        return data
-
-    @property
-    def _eve_datas(self) -> dict[str, EveObjects]:
-        return self.__datas
-
-    # EVE entity creation methods
     def mk_eve_item(
             self,
             data: Union[EveObjects, Type[Default]] = Default,
@@ -206,27 +170,3 @@ class EveDataClient:
             attr_id=attr_id,
             group_id=group_id,
             skill_id=skill_id)
-
-    # Server setup-related methods
-    def _setup_eve_data_server(self, data: EveObjects) -> None:
-        str_data = data.render()
-        suffix_cont_map = {
-            'fsd_binary/types.json': str_data.types,
-            'fsd_binary/groups.json': str_data.groups,
-            'fsd_binary/dogmaattributes.json': str_data.dogmaattributes,
-            'fsd_binary/typedogma.json': str_data.typedogma,
-            'fsd_binary/dogmaeffects.json': str_data.dogmaeffects,
-            'fsd_lite/fighterabilities.json': str_data.fighterabilities,
-            'fsd_lite/fighterabilitiesbytype.json': str_data.fighterabilitiesbytype,
-            'fsd_lite/dbuffcollections.json': str_data.dbuffcollections,
-            'fsd_binary/requiredskillsfortypes.json': str_data.requiredskillsfortypes,
-            'fsd_binary/dynamicitemattributes.json': str_data.dynamicitemattributes}
-        for suffix, container in suffix_cont_map.items():
-            self.__setup_handler(f'/{data.alias}/{suffix}', container)
-
-    def __setup_handler(self, url: str, data: str) -> None:
-        self.__data_server.expect_request(url).respond_with_data(data)
-
-    @property
-    def _eve_data_server_base_url(self) -> str:
-        return f'http://localhost:{self.__data_server.port}'
