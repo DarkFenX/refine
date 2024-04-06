@@ -18,7 +18,8 @@ data_id: int = 10000000  # pylint: disable=C0103
 
 class EveDataClient:
 
-    def __init__(self, data_server):
+    def __init__(self, data_server, **kwargs):
+        super().__init__(**kwargs)
         self.__data_server = data_server
         self.__datas: dict[str, EveObjects] = {}
         self.__defsrc_stack_alias_map: dict[StackKey, str] = {}
@@ -66,8 +67,7 @@ class EveDataClient:
             radius: Union[float, Type[Default]] = Default,
             volume: Union[float, Type[Default]] = Default,
     ) -> Item:
-        if data is Default:
-            data = self.__default_eve_data
+        data = self._get_eve_data(data=data)
         return data.mk_item(
             id_=id_,
             group_id=grp_id,
@@ -87,8 +87,7 @@ class EveDataClient:
             id_: Union[int, Type[Default]] = Default,
             cat_id: Union[int, Type[Default]] = EveItemCat.module,
     ) -> Group:
-        if data is Default:
-            data = self.__default_eve_data
+        data = self._get_eve_data(data=data)
         return data.mk_item_group(
             id_=id_,
             category_id=cat_id)
@@ -102,8 +101,7 @@ class EveDataClient:
             def_val: float = 0.0,
             max_attr_id: Union[int, Type[Absent]] = Absent,
     ) -> Attribute:
-        if data is Default:
-            data = self.__default_eve_data
+        data = self._get_eve_data(data=data)
         return data.mk_attr(
             id_=id_,
             stackable=stackable,
@@ -127,8 +125,7 @@ class EveDataClient:
             resist_attr_id: Union[int, Type[Absent]] = Absent,
             mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent]] = Absent,
     ) -> Effect:
-        if data is Default:
-            data = self.__default_eve_data
+        data = self._get_eve_data(data=data)
         return data.mk_effect(
             id_=id_,
             category_id=cat_id,
@@ -144,8 +141,7 @@ class EveDataClient:
             modifier_info=mod_info)
 
     def mk_eve_online_effect(self, data: Union[EveObjects, Type[Default]] = Default) -> Effect:
-        if data is Default:
-            data = self.__default_eve_data
+        data = self._get_eve_data(data=data)
         return data.mk_effect(
             id_=EveEffect.online,
             category_id=EveEffCat.active,
@@ -190,8 +186,7 @@ class EveDataClient:
             loc_grp_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]] = Absent,
             loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]] = Absent,
     ) -> Buff:
-        if data is Default:
-            data = self.__default_eve_data
+        data = self._get_eve_data(data=data)
         return data.mk_buff(
             id_=id_,
             aggregate_mode=aggr_mode,

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING
 
 import requests
@@ -17,9 +16,10 @@ if TYPE_CHECKING:
     from tests.support.consts import ApiEffMode
 
 
-class ApiClient(metaclass=ABCMeta):
+class ApiClient(eve.EveDataClient):
 
-    def __init__(self, port: int):
+    def __init__(self, port: int, **kwargs):
+        super().__init__(**kwargs)
         self.__session: requests.Session = requests.Session()
         self.__base_url: str = f'http://localhost:{port}'
         self.__created_data_aliases: set[str] = set()
@@ -27,25 +27,6 @@ class ApiClient(metaclass=ABCMeta):
 
     def send_prepared(self, req: Request) -> requests.models.Response:
         return self.__session.send(req)
-
-    # Methods related to EVE data which are needed for API to work
-    @property
-    @abstractmethod
-    def _eve_data_server_base_url(self) -> str:
-        ...
-
-    @abstractmethod
-    def _setup_eve_data_server(self, data: eve.EveObjects) -> None:
-        ...
-
-    @abstractmethod
-    def _get_eve_data(self, data: Union[eve.EveObjects, Type[Default]] = Default) -> eve.EveObjects:
-        ...
-
-    @property
-    @abstractmethod
-    def _eve_datas(self) -> dict[str, eve.EveObjects]:
-        ...
 
     # Data source methods
     def create_source_request(
