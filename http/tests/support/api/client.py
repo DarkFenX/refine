@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 import requests
 
+from tests.support import eve
 from tests.support.consts import ApiRack, ApiState
 from tests.support.request import Request
 from tests.support.util import Absent, Default, conditional_insert
-from tests.support import eve
 from .types import SolarSystem
 
 if TYPE_CHECKING:

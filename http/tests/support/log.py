@@ -8,8 +8,12 @@ import re
 import time
 from enum import StrEnum, unique
 from threading import Thread
+from typing import TYPE_CHECKING
 
 from tests.support.util import Timer, make_repr_str
+
+if TYPE_CHECKING:
+    from typing import Union
 
 
 class ParseError(Exception):
@@ -32,13 +36,18 @@ class Level(StrEnum):
 
 class LogEntry:
 
-    def __init__(self, timestamp, level, span, msg):
+    def __init__(self, timestamp: str, level: Level, span: str, msg: str):
         self.timestamp = timestamp
         self.level = level
         self.span = span
         self.msg = msg
 
-    def check(self, msg, level=None, span=None):
+    def check(
+            self,
+            msg: str,
+            level: Union[Level, str, None] = None,
+            span: Union[str, None] = None,
+    ) -> bool:
         # Span of None just means no span specified
         if span != self.span:
             return False
@@ -69,7 +78,7 @@ class LogReader:
         fr'((?P<span>\S+): )?'
         fr'(?P<msg>.*)\n$')
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str):
         self.__path: str = path
         self.__collectors: list[LogCollector] = []
         self.__execute_flag: bool = False
@@ -148,7 +157,13 @@ class LogCollector:
     def append_entry(self, entry: LogEntry) -> None:
         self.__buffer.put(entry)
 
-    def wait_log_entry(self, msg, level=None, span=None, timeout=1) -> None:
+    def wait_log_entry(
+            self,
+            msg: str,
+            level: Union[Level, str, None] = None,
+            span: Union[str, None] = None,
+            timeout: Union[int, float] = 1,
+    ) -> None:
         timer = Timer(timeout=timeout)
         while timer.remainder > 0:
             try:
