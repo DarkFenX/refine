@@ -1,8 +1,12 @@
 
 
 def convert(data, hooks):
-    if isinstance(data, (dict, list)):
+    if isinstance(data, dict):
         return AttrDict(data=data, hooks=hooks)
+    if isinstance(data, tuple):
+        return tuple(convert(data=i, hooks=hooks) for i in data)
+    if isinstance(data, list):
+        return list(convert(data=i, hooks=hooks) for i in data)
     return data
 
 
