@@ -8,7 +8,7 @@ from .exception import TestDataConsistencyError
 if TYPE_CHECKING:
     from typing import Type, Union
 
-    from tests.support.eve_data.containers import TestPrimitives
+    from tests.support.eve_data.containers import EvePrimitives
     from tests.support.util import Absent
     from .effect_modifier import EffectModifier
 
@@ -43,7 +43,7 @@ class Effect:
         self.resist_attribute_id = resist_attribute_id
         self.modifier_info = modifier_info
 
-    def to_primitives(self, primitive_data: TestPrimitives) -> None:
+    def to_primitives(self, primitive_data: EvePrimitives) -> None:
         effect_entry = {'effectID': self.id}
         conditional_insert(effect_entry, 'effectCategory', self.category_id, cast_to=int)
         conditional_insert(effect_entry, 'isAssistance', self.is_assistance, cast_to=int)

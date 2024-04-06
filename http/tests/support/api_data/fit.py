@@ -10,13 +10,13 @@ if TYPE_CHECKING:
     from typing import Type, Union
 
     from tests.support.client import TestClient
-    from tests.support.eve_data import TestObjects
+    from tests.support.eve_data import EveObjects
     from tests.support.request import Request
 
 
 class Fit(AttrDict):
 
-    def __init__(self, client: TestClient, data: TestObjects, ss_id: str):
+    def __init__(self, client: TestClient, data: EveObjects, ss_id: str):
         super().__init__(data=data)
         self._client = client
         self._ss_id = ss_id

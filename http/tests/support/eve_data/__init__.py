@@ -1,2 +1,2 @@
-from .containers import TestObjects
-from .types import Attribute, Buff, BuffModifier, Effect, EffectModifier, Item, Group
+from .client import EveDataClient
+from .containers import EveObjects

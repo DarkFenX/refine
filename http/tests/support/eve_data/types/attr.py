@@ -8,7 +8,7 @@ from .exception import TestDataConsistencyError
 if TYPE_CHECKING:
     from typing import Type, Union
 
-    from tests.support.eve_data.containers import TestPrimitives
+    from tests.support.eve_data.containers import EvePrimitives
     from tests.support.util import Absent
 
 
@@ -28,7 +28,7 @@ class Attribute:
         self.default_value = default_value
         self.max_attribute_id = max_attribute_id
 
-    def to_primitives(self, primitive_data: TestPrimitives) -> None:
+    def to_primitives(self, primitive_data: EvePrimitives) -> None:
         attr_entry = {'attributeID': self.id}
         conditional_insert(attr_entry, 'stackable', self.stackable, cast_to=int)
         conditional_insert(attr_entry, 'highIsGood', self.high_is_good, cast_to=int)

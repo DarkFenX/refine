@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
     from tests.support.client import TestClient
     from tests.support.consts import ApiEffMode, ApiState
-    from tests.support.eve_data import TestObjects
+    from tests.support.eve_data import EveObjects
     from tests.support.request import Request
 
 AttrVals = namedtuple('AttrVals', ('base', 'dogma', 'extra'))
@@ -20,7 +20,7 @@ EffectInfo = namedtuple('EffectInfo', ('running', 'mode'))
 
 class Item(AttrDict):
 
-    def __init__(self, client: TestClient, data: TestObjects, ss_id: str):
+    def __init__(self, client: TestClient, data: EveObjects, ss_id: str):
         super().__init__(
             data=data,
             hooks={

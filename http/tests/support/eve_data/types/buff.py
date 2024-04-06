@@ -8,7 +8,7 @@ from .exception import TestDataConsistencyError
 if TYPE_CHECKING:
     from typing import Type, Union
 
-    from tests.support.eve_data.containers import TestPrimitives
+    from tests.support.eve_data.containers import EvePrimitives
     from tests.support.util import Absent
     from .buff_modifier import BuffModifier
 
@@ -33,7 +33,7 @@ class Buff:
         self.location_group_modifiers = location_group_modifiers
         self.location_skillreq_modifiers = location_skillreq_modifiers
 
-    def to_primitives(self, primitive_data: TestPrimitives) -> None:
+    def to_primitives(self, primitive_data: EvePrimitives) -> None:
         effect_entry = {}
         conditional_insert(effect_entry, 'aggregateMode', self.aggregate_mode, cast_to=str)
         conditional_insert(effect_entry, 'operationName', self.operation_name, cast_to=str)

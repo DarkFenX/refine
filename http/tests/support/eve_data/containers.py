@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 ID_START = 1000000
 
 
-class TestObjects:
+class EveObjects:
 
     def __init__(self, alias: str):
         self.alias = alias
@@ -152,13 +152,13 @@ class TestObjects:
         self.buffs.append(buff)
         return buff
 
-    def render(self) -> TestStrings:
+    def render(self) -> EveStrings:
         primitives = self.to_primitives()
         strings = primitives.to_strings()
         return strings
 
-    def to_primitives(self) -> TestPrimitives:
-        primitive_data = TestPrimitives(self.alias)
+    def to_primitives(self) -> EvePrimitives:
+        primitive_data = EvePrimitives(self.alias)
         for item in self.items:
             item.to_primitives(primitive_data)
         for item_group in self.item_groups:
@@ -172,7 +172,7 @@ class TestObjects:
         return primitive_data
 
 
-class TestPrimitives:
+class EvePrimitives:
 
     def __init__(self, alias: str):
         self.alias = alias
@@ -187,8 +187,8 @@ class TestPrimitives:
         self.requiredskillsfortypes = {}
         self.dynamicitemattributes = {}
 
-    def to_strings(self) -> TestStrings:
-        string_data = TestStrings(self.alias)
+    def to_strings(self) -> EveStrings:
+        string_data = EveStrings(self.alias)
         string_data.types = json.dumps(self.types)
         string_data.groups = json.dumps(self.groups)
         string_data.typedogma = json.dumps(self.typedogma)
@@ -202,7 +202,7 @@ class TestPrimitives:
         return string_data
 
 
-class TestStrings:
+class EveStrings:
 
     def __init__(self, alias: str):
         self.alias = alias
