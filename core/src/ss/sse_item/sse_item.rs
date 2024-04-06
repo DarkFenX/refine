@@ -35,6 +35,17 @@ impl SolarSystem {
             let fit = self.fits.get_fit_mut(&fit_id)?;
             fit.remove_item(main);
         }
+        match main {
+            SsItem::SwEffect(_) => {
+                self.sw_effects.remove(item_id);
+                ()
+            }
+            SsItem::ProjEffect(_) => {
+                self.proj_effects.remove(item_id);
+                ()
+            }
+            _ => (),
+        }
         self.items.remove_item(item_id);
         // Update parent item
         if let Some(parent_id) = parent_id_opt {
@@ -48,6 +59,17 @@ impl SolarSystem {
     // Non-public
     pub(in crate::ss::sse_item) fn add_item(&mut self, item: SsItem) {
         let item_id = item.get_id();
+        match item {
+            SsItem::SwEffect(_) => {
+                self.sw_effects.insert(item_id);
+                ()
+            }
+            SsItem::ProjEffect(_) => {
+                self.proj_effects.insert(item_id);
+                ()
+            }
+            _ => (),
+        }
         if let Some(fit_id) = item.get_fit_id() {
             let fit = self.fits.get_fit_mut(&fit_id).unwrap();
             fit.add_item(&item)
