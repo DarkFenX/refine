@@ -84,3 +84,21 @@ class SolarSystem(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_sw_effect_request(ss_id=self.id, item_id=item_id, state=state)
+
+    # Projected effect methods
+    def add_proj_effect_request(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.add_proj_effect_request(ss_id=self.id, type_id=type_id, state=state)
+
+    def add_proj_effect(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Item:
+        resp = self.add_proj_effect_request(type_id=type_id, state=state).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self.id)
+        return item

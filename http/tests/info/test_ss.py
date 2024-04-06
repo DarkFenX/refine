@@ -3,6 +3,34 @@
 from pytest import raises
 
 
+def test_fit(client):
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fit = api_ss.create_fit()
+    api_ss.update()
+    assert len(api_ss.fits) == 1
+    assert api_fit.id in api_ss.fits
+    assert api_ss.fits[api_fit.id].id == api_fit.id
+    api_fit.remove()
+    with raises(AttributeError):
+        api_ss.update().fits  # pylint: disable=W0106
+
+
+def test_fit_item(client):
+    eve_item = client.mk_eve_item()
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fit = api_ss.create_fit()
+    api_item = api_fit.set_char(type_id=eve_item.id)
+    api_ss.update()
+    assert len(api_ss.fits) == 1
+    assert api_fit.id in api_ss.fits
+    assert api_ss.fits[api_fit.id].character.id == api_item.id
+    api_item.remove()
+    with raises(AttributeError):
+        api_ss.update().fits[api_fit.id].character  # pylint: disable=W0106
+
+
 def test_sw_effect(client):
     eve_item = client.mk_eve_item()
     client.create_sources()

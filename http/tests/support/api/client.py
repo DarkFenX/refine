@@ -418,6 +418,22 @@ class ApiClient(metaclass=ABCMeta):
     ) -> Request:
         return self.__change_simple_item('change_fw_effect', ss_id=ss_id, item_id=item_id, state=state)
 
+    # Projected effect methods
+    def add_proj_effect_request(
+            self,
+            ss_id: str,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        command = {'type': 'add_proj_effect', 'type_id': type_id}
+        conditional_insert(command, 'state', state)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            json={'commands': [command]})
+
     # Auxiliary methods
     def __add_simple_item(
             self,

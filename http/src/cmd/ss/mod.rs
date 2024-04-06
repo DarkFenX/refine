@@ -6,6 +6,7 @@ pub(in crate::cmd) use fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(in crate::cmd) use fw_effect::{HAddFwEffectCmd, HChangeFwEffectCmd};
 pub(in crate::cmd) use implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(in crate::cmd) use module::{HAddModuleCmd, HChangeModuleCmd};
+pub(in crate::cmd) use proj_effect::{HAddProjEffectCmd, HChangeProjEffectCmd};
 pub(in crate::cmd) use rig::{HAddRigCmd, HChangeRigCmd};
 pub(in crate::cmd) use ship::{HChangeShipCmd, HSetShipCmd};
 pub(in crate::cmd) use skill::{HAddSkillCmd, HChangeSkillCmd};
@@ -24,6 +25,7 @@ mod fighter;
 mod fw_effect;
 mod implant;
 mod module;
+mod proj_effect;
 mod rig;
 mod ship;
 mod skill;
@@ -64,6 +66,8 @@ pub(crate) enum HSsCommand {
     ChangeSwEffect(HChangeSwEffectCmd),
     AddFwEffect(HAddFwEffectCmd),
     ChangeFwEffect(HChangeFwEffectCmd),
+    AddProjEffect(HAddProjEffectCmd),
+    ChangeProjEffect(HChangeProjEffectCmd),
 }
 impl HSsCommand {
     pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
@@ -97,6 +101,8 @@ impl HSsCommand {
             Self::ChangeSwEffect(cmd) => cmd.execute(core_ss),
             Self::AddFwEffect(cmd) => cmd.execute(core_ss),
             Self::ChangeFwEffect(cmd) => cmd.execute(core_ss),
+            Self::AddProjEffect(cmd) => cmd.execute(core_ss),
+            Self::ChangeProjEffect(cmd) => cmd.execute(core_ss),
         }
     }
 }
