@@ -81,6 +81,9 @@ class ApiClient(metaclass=ABCMeta):
         self.__created_data_aliases.remove(src_alias)
 
     def create_sources(self) -> None:
+        # If no data was created, create default one
+        if not self._eve_datas:
+            self._get_eve_data()
         for data in self._eve_datas.values():
             self.create_source(data)
 
