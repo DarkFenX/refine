@@ -9,6 +9,8 @@ pub(crate) struct HSsInfoFull {
     pub(crate) fleets: Vec<()>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) sw_effects: Vec<HItemInfo>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) proj_effects: Vec<HItemInfo>,
 }
 impl HSsInfoFull {
     pub(in crate::info::ss) fn mk_info(
@@ -27,6 +29,11 @@ impl HSsInfoFull {
             fleets: Vec::new(),
             sw_effects: core_ss
                 .get_sw_effect_infos()
+                .iter()
+                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .collect(),
+            proj_effects: core_ss
+                .get_proj_effect_infos()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
                 .collect(),
