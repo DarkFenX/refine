@@ -195,15 +195,10 @@ class ApiClient(metaclass=ABCMeta):
             self,
             ss_id: str,
             fit_id: str,
-            type_id: int
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
-        payload = {'commands': [{'type': 'set_character', 'fit_id': fit_id, 'type_id': type_id}]}
-        return Request(
-            self,
-            method='PATCH',
-            url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
-            json=payload)
+        return self.__add_simple_item('set_character', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
     # Skill methods
     def add_skill_request(
@@ -272,14 +267,9 @@ class ApiClient(metaclass=ABCMeta):
             ss_id: str,
             fit_id: str,
             type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
-        payload = {'commands': [{'type': 'set_ship', 'fit_id': fit_id, 'type_id': type_id}]}
-        return Request(
-            self,
-            method='PATCH',
-            url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
-            json=payload)
+        return self.__add_simple_item('set_ship', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
     # Structure methods
     def set_struct_request(
@@ -287,14 +277,19 @@ class ApiClient(metaclass=ABCMeta):
             ss_id: str,
             fit_id: str,
             type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
-        payload = {'commands': [{'type': 'set_structure', 'fit_id': fit_id, 'type_id': type_id}]}
-        return Request(
+        return self.__add_simple_item('set_structure', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+
+    # Stance methods
+    def set_stance_request(
             self,
-            method='PATCH',
-            url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
-            json=payload)
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self.__add_simple_item('set_stance', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
     # Subsystem methods
     def add_subsystem_request(
@@ -370,6 +365,16 @@ class ApiClient(metaclass=ABCMeta):
             state: str = ApiState.offline,
     ) -> Request:
         return self.__add_simple_item('add_drone', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+
+    # Fighter methods
+    def add_fighter_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            type_id: int,
+            state: str = ApiState.offline,
+    ) -> Request:
+        return self.__add_simple_item('add_fighter', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
 
     # System-wide effect methods
     def add_sw_effect_request(

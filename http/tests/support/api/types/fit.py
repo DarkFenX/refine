@@ -132,6 +132,16 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item
 
+    # Stance methods
+    def set_stance_request(self, type_id: int) -> Request:
+        return self._client.set_stance_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
+
+    def set_stance(self, type_id: int) -> Item:
+        resp = self.set_stance_request(type_id=type_id).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        return item
+
     # Subsystem methods
     def add_subsystem_request(
             self,
@@ -213,6 +223,24 @@ class Fit(AttrDict):
             state: str = ApiState.offline,
     ) -> Item:
         resp = self.add_drone_request(type_id=type_id, state=state).send()
+        assert resp.status_code == 200
+        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        return item
+
+    # Fighter methods
+    def add_fighter_request(
+            self,
+            type_id: int,
+            state: str = ApiState.offline,
+    ) -> Request:
+        return self._client.add_fighter_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+
+    def add_fighter(
+            self,
+            type_id,
+            state: str = ApiState.offline,
+    ) -> Item:
+        resp = self.add_fighter_request(type_id=type_id, state=state).send()
         assert resp.status_code == 200
         item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
         return item

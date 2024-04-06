@@ -30,5 +30,8 @@ class AttrDict:
             return hook(val)
         return convert(data=val, hooks=self._hooks)
 
+    def __len__(self):
+        return len(self._data)
+
     def __repr__(self) -> str:
         return f'{type(self).__name__}({repr(self._data)})'
