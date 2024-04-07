@@ -20,13 +20,22 @@ impl SolarSystem {
             SsItem::Charge(charge) => Some(charge.cont_id),
             _ => None,
         };
-        // Remove projections which target item being removed
         let mut proj_item_ids = Vec::new();
         if let Some(src_item_ids) = self.tgt_tracker.get_srcs(item_id) {
             proj_item_ids.extend(src_item_ids);
         }
+        let mut targeted_item_ids = Vec::new();
+        match main {
+            SsItem::ProjEffect(proj_effect) => targeted_item_ids.extend(proj_effect.tgts.iter()),
+            _ => (),
+        };
+        // Remove projections which target item being removed
         for proj_item_id in proj_item_ids.iter() {
             let _ = self.remove_proj_effect_tgt(proj_item_id, item_id);
+        }
+        // Remove projections of current item upon others
+        for targeted_item_id in targeted_item_ids.iter() {
+            let _ = self.remove_proj_effect_tgt(item_id, targeted_item_id);
         }
         // Remove child items
         if let Some(charge_id) = charge_id_opt {
