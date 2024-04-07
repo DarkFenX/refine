@@ -1,4 +1,4 @@
-from .attr_dict import AttrDict
+from .attr_dict import AttrDict, AttrHookDef
 from .insert import conditional_insert
 from .port import next_free_port
 from .repr import make_repr_str

@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import namedtuple
 from typing import TYPE_CHECKING
 
-from tests.support.util import AttrDict, Absent
+from tests.support.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
 
 if TYPE_CHECKING:
@@ -24,10 +24,11 @@ class Item(AttrDict):
         super().__init__(
             data=data,
             hooks={
-                'charge': lambda charge: Item(client=client, data=charge, ss_id=ss_id),
-                'attrs': lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()},
-                'effects': lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()},
-                'mods': AttrModInfoMap})
+                'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, ss_id=ss_id)),
+                'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()}, default={}),
+                'effects': AttrHookDef(
+                    func=lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()}, default={}),
+                'mods': AttrHookDef(func=AttrModInfoMap, default={})})
         self._client = client
         self._ss_id = ss_id
 

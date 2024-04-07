@@ -1,3 +1,4 @@
+from .singletons import Default as NoValue
 
 
 def convert(data, hooks):
@@ -10,6 +11,18 @@ def convert(data, hooks):
     return data
 
 
+class AttrHookDef:
+
+    def __init__(self, func, default=NoValue):
+        self.func = func
+        self.default = default
+
+    @property
+    def provides_default(self):
+        # This is confusing, but Default means lack of default value here
+        return self.default is not NoValue
+
+
 class AttrDict:
 
     def __init__(self, data, hooks=None):
@@ -20,14 +33,18 @@ class AttrDict:
         return convert(data=self._data[index], hooks=self._hooks)
 
     def __getattr__(self, key: str):
-        default = object()
-        val = self._data.get(key, default)
-        if val is default:
-            keys = sorted(self._data.keys())
-            raise AttributeError(f"no key '{key}' in keys {keys}")
         hook = self._hooks.get(key)
+        val = self._data.get(key, NoValue)
+        # No value on data or default on hook raises an error
+        if val is NoValue and hook is not None and hook.provides_default:
+            val = hook.default
+        if val is NoValue:
+            hook_keys = set(k for k, v in self._hooks.items() if v.provides_default)
+            data_keys = set(self._data.keys())
+            keys = sorted(hook_keys.union(data_keys))
+            raise AttributeError(f"no key '{key}' in keys {keys}")
         if hook is not None:
-            return hook(val)
+            return hook.func(val)
         return convert(data=val, hooks=self._hooks)
 
     def __len__(self):

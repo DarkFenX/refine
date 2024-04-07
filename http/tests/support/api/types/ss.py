@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.util import Absent, AttrDict
+from tests.support.util import Absent, AttrDict, AttrHookDef
 from .fit import Fit
 from .item import Item
 
@@ -19,8 +19,9 @@ class SolarSystem(AttrDict):
     def __init__(self, client: ApiClient, data: EveObjects):
         super().__init__(
             data=data,
-            hooks={
-                'fits': lambda fits: {f.id: f for f in [Fit(client=client, data=fit, ss_id=self.id) for fit in fits]}})
+            hooks={'fits': AttrHookDef(
+                func=lambda fits: {f.id: f for f in [Fit(client=client, data=fit, ss_id=self.id) for fit in fits]},
+                default={})})
         self._client = client
 
     def update_request(self) -> Request:

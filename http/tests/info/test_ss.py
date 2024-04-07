@@ -12,8 +12,7 @@ def test_fit(client):
     assert api_fit.id in api_ss.fits
     assert api_ss.fits[api_fit.id].id == api_fit.id
     api_fit.remove()
-    with raises(AttributeError):
-        api_ss.update().fits  # pylint: disable=W0106
+    assert len(api_ss.update().fits) == 0
 
 
 def test_fit_item(client):
