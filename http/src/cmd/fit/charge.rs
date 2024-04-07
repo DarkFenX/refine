@@ -1,8 +1,9 @@
 use crate::cmd::{item, HCmdResp};
 
+#[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeChargeCmd {
-    #[serde(with = "crate::util::serde_string")]
+    #[serde_as(as = "serde_with::DisplayFromStr")]
     item_id: rc::SsItemId,
     #[serde(flatten)]
     item_cmd: item::HChangeChargeCmd,

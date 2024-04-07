@@ -1,3 +1,4 @@
+# Rename it just to avoid confusion, as it's used to mean no value in this module
 from .singletons import Default as NoValue
 
 

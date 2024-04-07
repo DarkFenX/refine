@@ -1,6 +1,7 @@
+#[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HShipInfoId {
-    #[serde(with = "crate::util::serde_string")]
+    #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SsItemId,
 }
 impl From<&rc::SsShipInfo> for HShipInfoId {

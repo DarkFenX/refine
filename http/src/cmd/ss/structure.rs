@@ -1,8 +1,9 @@
 use crate::cmd::{fit, HCmdResp};
 
+#[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HSetStructureCmd {
-    #[serde(with = "crate::util::serde_string")]
+    #[serde_as(as = "serde_with::DisplayFromStr")]
     fit_id: rc::SsFitId,
     #[serde(flatten)]
     fit_cmd: fit::HSetStructureCmd,
@@ -39,9 +40,10 @@ impl HChangeStructureViaItemIdCmd {
     }
 }
 
+#[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeStructureViaFitIdCmd {
-    #[serde(with = "crate::util::serde_string")]
+    #[serde_as(as = "serde_with::DisplayFromStr")]
     fit_id: rc::SsFitId,
     #[serde(flatten)]
     fit_cmd: fit::HChangeStructureViaFitIdCmd,

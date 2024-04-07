@@ -1,10 +1,11 @@
 use crate::shared::HState;
 
+#[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HFighterInfoPartial {
-    #[serde(with = "crate::util::serde_string")]
+    #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SsItemId,
-    #[serde(with = "crate::util::serde_string")]
+    #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SsFitId,
     pub(crate) type_id: rc::EItemId,
     pub(crate) state: HState,

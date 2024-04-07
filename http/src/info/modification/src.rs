@@ -1,6 +1,7 @@
+#[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 pub struct HModSrcInfo {
-    #[serde(with = "crate::util::serde_string")]
+    #[serde_as(as = "serde_with::DisplayFromStr")]
     pub item_id: rc::SsItemId,
     pub val: HModSrcValInfo,
 }

@@ -1,6 +1,7 @@
+#[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HProjEffectInfoPartial {
-    #[serde(with = "crate::util::serde_string")]
+    #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SsItemId,
     pub(crate) type_id: rc::EItemId,
     pub(crate) enabled: bool,
