@@ -5,6 +5,7 @@ pub(crate) struct HProjEffectInfoPartial {
     pub(crate) id: rc::SsItemId,
     pub(crate) type_id: rc::EItemId,
     pub(crate) enabled: bool,
+    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     pub(crate) tgts: Vec<rc::SsItemId>,
 }
 impl From<&rc::SsProjEffectInfo> for HProjEffectInfoPartial {
