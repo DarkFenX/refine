@@ -7,6 +7,7 @@ from tests.support.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from typing import Type, Union
 
     from tests.support.api import ApiClient
@@ -122,4 +123,27 @@ class Item(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> None:
         resp = self.change_fw_effect_request(state=state).send()
+        assert resp.status_code == 200
+
+    # Projected effect methods
+    def change_proj_effect_request(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+            add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            remove_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.change_proj_effect_request(
+            ss_id=self._ss_id,
+            item_id=self.id,
+            state=state,
+            add_tgts=add_tgts,
+            remove_tgts=remove_tgts)
+
+    def change_proj_effect(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+            add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            remove_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+    ) -> None:
+        resp = self.change_proj_effect_request(state=state, add_tgts=add_tgts, remove_tgts=remove_tgts).send()
         assert resp.status_code == 200

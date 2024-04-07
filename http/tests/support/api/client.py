@@ -11,6 +11,7 @@ from tests.support.util import Absent, Default, conditional_insert
 from .types import SolarSystem
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
     from typing import Type, Union
 
     from tests.support.consts import ApiEffMode
@@ -411,6 +412,25 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     ) -> Request:
         command = {'type': 'add_proj_effect', 'type_id': type_id}
         conditional_insert(command, 'state', state)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}',
+            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            json={'commands': [command]})
+
+    def change_proj_effect_request(
+            self,
+            ss_id: str,
+            item_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+            add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            remove_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+    ) -> Request:
+        command = {'type': 'change_proj_effect', 'item_id': item_id}
+        conditional_insert(command, 'state', state)
+        conditional_insert(command, 'add_tgts', add_tgts)
+        conditional_insert(command, 'remove_tgts', remove_tgts)
         return Request(
             self,
             method='PATCH',
