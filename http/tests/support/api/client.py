@@ -425,12 +425,12 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_id: int,
             state: Union[bool, Type[Absent]] = Absent,
             add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
-            remove_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
     ) -> Request:
         command = {'type': 'change_proj_effect', 'item_id': item_id}
         conditional_insert(command, 'state', state)
         conditional_insert(command, 'add_tgts', add_tgts)
-        conditional_insert(command, 'remove_tgts', remove_tgts)
+        conditional_insert(command, 'rm_tgts', rm_tgts)
         return Request(
             self,
             method='PATCH',

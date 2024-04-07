@@ -130,20 +130,20 @@ class Item(AttrDict):
             self,
             state: Union[bool, Type[Absent]] = Absent,
             add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
-            remove_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_proj_effect_request(
             ss_id=self._ss_id,
             item_id=self.id,
             state=state,
             add_tgts=add_tgts,
-            remove_tgts=remove_tgts)
+            rm_tgts=rm_tgts)
 
     def change_proj_effect(
             self,
             state: Union[bool, Type[Absent]] = Absent,
             add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
-            remove_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
     ) -> None:
-        resp = self.change_proj_effect_request(state=state, add_tgts=add_tgts, remove_tgts=remove_tgts).send()
+        resp = self.change_proj_effect_request(state=state, add_tgts=add_tgts, rm_tgts=rm_tgts).send()
         assert resp.status_code == 200

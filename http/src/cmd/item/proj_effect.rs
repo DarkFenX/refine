@@ -7,9 +7,11 @@ use crate::cmd::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeProjEffectCmd {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde(default)]
     add_tgts: Vec<rc::SsItemId>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
-    remove_tgts: Vec<rc::SsItemId>,
+    #[serde(default)]
+    rm_tgts: Vec<rc::SsItemId>,
     state: Option<bool>,
     // Workaround for https://github.com/serde-rs/serde/issues/1183
     #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
@@ -24,7 +26,7 @@ impl HChangeProjEffectCmd {
         for tgt_item_id in self.add_tgts.iter() {
             core_ss.add_proj_effect_tgt(item_id, tgt_item_id)?;
         }
-        for tgt_item_id in self.remove_tgts.iter() {
+        for tgt_item_id in self.rm_tgts.iter() {
             core_ss.remove_proj_effect_tgt(item_id, tgt_item_id)?;
         }
         if let Some(state) = self.state {
