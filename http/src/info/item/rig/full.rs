@@ -8,8 +8,11 @@ use super::HRigInfoPartial;
 pub(crate) struct HRigInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HRigInfoPartial,
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) mods: HashMap<rc::EAttrId, Vec<HModificationInfo>>,
 }
 impl HRigInfoFull {

@@ -7,10 +7,16 @@ pub struct SsProjEffectInfo {
     pub id: SsItemId,
     pub a_item_id: EItemId,
     pub enabled: bool,
+    pub tgts: Vec<SsItemId>,
 }
 impl SsProjEffectInfo {
-    fn new(id: SsItemId, a_item_id: EItemId, enabled: bool) -> Self {
-        Self { id, a_item_id, enabled }
+    fn new(id: SsItemId, a_item_id: EItemId, enabled: bool, tgts: Vec<SsItemId>) -> Self {
+        Self {
+            id,
+            a_item_id,
+            enabled,
+            tgts,
+        }
     }
 }
 impl From<&SsProjEffect> for SsProjEffectInfo {
@@ -19,6 +25,7 @@ impl From<&SsProjEffect> for SsProjEffectInfo {
             ss_proj_effect.id,
             ss_proj_effect.a_item_id,
             ss_proj_effect.get_bool_state(),
+            ss_proj_effect.tgts.clone(),
         )
     }
 }

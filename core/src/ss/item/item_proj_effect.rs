@@ -12,6 +12,7 @@ pub(in crate::ss) struct SsProjEffect {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) state: State,
+    pub(in crate::ss) tgts: Vec<SsItemId>,
     pub(in crate::ss) effect_modes: EffectModes,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
@@ -21,6 +22,7 @@ impl SsProjEffect {
             id,
             a_item_id,
             state: bool_to_state(state),
+            tgts: Vec::new(),
             effect_modes: EffectModes::new(),
             a_item: src.get_a_item(&a_item_id),
         }

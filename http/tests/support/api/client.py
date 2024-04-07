@@ -140,7 +140,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}',
-            params={'fit': 'full', 'item': 'id'})
+            params={'fit': 'full', 'item': 'full'})
 
     def remove_fit_request(
             self,

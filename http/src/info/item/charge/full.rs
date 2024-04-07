@@ -8,8 +8,11 @@ use super::HChargeInfoPartial;
 pub(crate) struct HChargeInfoFull {
     #[serde(flatten)]
     pub(crate) partial_info: HChargeInfoPartial,
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) effects: HashMap<rc::EEffectId, HEffect>,
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) mods: HashMap<rc::EAttrId, Vec<HModificationInfo>>,
 }
 impl HChargeInfoFull {
