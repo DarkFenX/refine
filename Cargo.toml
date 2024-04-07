@@ -5,7 +5,6 @@ members = [
     "dh-eve",
     "http",
     "examples/playground",
-    "examples/benchmark",
 ]
 
 [profile.dev]
