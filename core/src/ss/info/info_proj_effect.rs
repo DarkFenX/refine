@@ -25,7 +25,7 @@ impl From<&SsProjEffect> for SsProjEffectInfo {
             ss_proj_effect.id,
             ss_proj_effect.a_item_id,
             ss_proj_effect.get_bool_state(),
-            ss_proj_effect.tgts.clone(),
+            ss_proj_effect.tgts.iter().map(|v| *v).collect(),
         )
     }
 }

@@ -105,24 +105,7 @@ impl SsItem {
         }
     }
     pub(in crate::ss::svc::svce_calc) fn is_buff_modifiable(&self) -> bool {
-        match self {
-            Self::Booster(_) => false,
-            Self::Character(_) => false,
-            Self::Charge(_) => false,
-            Self::Drone(_) => true,
-            Self::Fighter(_) => true,
-            Self::FwEffect(_) => false,
-            Self::Implant(_) => false,
-            Self::Module(_) => false,
-            Self::ProjEffect(_) => false,
-            Self::Rig(_) => false,
-            Self::Ship(_) => true,
-            Self::Skill(_) => false,
-            Self::Stance(_) => false,
-            Self::Structure(_) => true,
-            Self::Subsystem(_) => false,
-            Self::SwEffect(_) => false,
-        }
+        self.is_targetable()
     }
     pub(in crate::ss::svc::svce_calc) fn get_other(&self) -> Option<SsItemId> {
         match self {

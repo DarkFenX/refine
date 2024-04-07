@@ -24,6 +24,7 @@ pub enum ErrorKind {
     AItemNotLoaded(EItemId),
     NoAttrBaseValue(EAttrId, EItemId),
     CustomModCalc,
+    ItemNotTargetable(SsItemId),
 }
 
 #[derive(Debug)]
@@ -64,6 +65,7 @@ impl fmt::Display for Error {
                 type_id
             ),
             ErrorKind::CustomModCalc => write!(f, "failed to calculate custom modifier"),
+            ErrorKind::ItemNotTargetable(item_id) => write!(f, "item {item_id} is not targetable"),
         }
     }
 }

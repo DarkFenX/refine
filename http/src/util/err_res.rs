@@ -50,6 +50,7 @@ impl HError {
                 rc::ErrorKind::AItemNotLoaded(_) => "COR-012",
                 rc::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
                 rc::ErrorKind::CustomModCalc => "COR-014",
+                rc::ErrorKind::ItemNotTargetable(_) => "COR-015",
             },
         };
         code.to_string()
