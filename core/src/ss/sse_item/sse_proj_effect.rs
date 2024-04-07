@@ -43,17 +43,18 @@ impl SolarSystem {
         }
         Ok(())
     }
-    pub fn add_proj_effect_tgt(&mut self, item_id: &SsItemId, tgt_item_id: SsItemId) -> Result<()> {
+    pub fn add_proj_effect_tgt(&mut self, item_id: &SsItemId, tgt_item_id: &SsItemId) -> Result<()> {
         let proj_effect = self.items.get_proj_effect(item_id)?;
-        if proj_effect.tgts.contains(&tgt_item_id) {
+        if proj_effect.tgts.contains(tgt_item_id) {
             return Ok(());
         }
         let tgt_item = self.items.get_item(&tgt_item_id)?;
         if !tgt_item.is_targetable() {
-            return Err(Error::new(ErrorKind::ItemNotTargetable(tgt_item_id)));
+            return Err(Error::new(ErrorKind::ItemNotTargetable(*tgt_item_id)));
         }
+        self.tgt_tracker.reg_tgt(*item_id, *tgt_item_id);
         let proj_effect = self.items.get_proj_effect_mut(item_id)?;
-        proj_effect.tgts.add(tgt_item_id);
+        proj_effect.tgts.add(*tgt_item_id);
         Ok(())
     }
     pub fn remove_proj_effect_tgt(&mut self, item_id: &SsItemId, tgt_item_id: &SsItemId) -> Result<()> {
@@ -61,6 +62,7 @@ impl SolarSystem {
         if !proj_effect.tgts.contains(&tgt_item_id) {
             return Ok(());
         }
+        self.tgt_tracker.unreg_tgt(item_id, tgt_item_id);
         proj_effect.tgts.remove(tgt_item_id);
         Ok(())
     }

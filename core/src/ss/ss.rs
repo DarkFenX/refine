@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use crate::{
     defs::{EAttrId, EEffectId, SsFitId, SsItemId},
     src::Src,
-    ss::{fit::SsFits, item::SsItems, svc::SsSvcs, EffectInfo, EffectMode, SsAttrVal, SsView},
+    ss::{fit::SsFits, item::SsItems, misc::TgtTracker, svc::SsSvcs, EffectInfo, EffectMode, SsAttrVal, SsView},
     util::Result,
     ModInfo,
 };
@@ -20,6 +20,7 @@ pub struct SolarSystem {
     pub(in crate::ss) items: SsItems,
     pub(in crate::ss) sw_effects: HashSet<SsItemId>,
     pub(in crate::ss) proj_effects: HashSet<SsItemId>,
+    pub(in crate::ss) tgt_tracker: TgtTracker,
     pub(in crate::ss) svcs: SsSvcs,
 }
 impl SolarSystem {
@@ -30,6 +31,7 @@ impl SolarSystem {
             items: SsItems::new(),
             sw_effects: HashSet::new(),
             proj_effects: HashSet::new(),
+            tgt_tracker: TgtTracker::new(),
             svcs: SsSvcs::new(),
         }
     }
