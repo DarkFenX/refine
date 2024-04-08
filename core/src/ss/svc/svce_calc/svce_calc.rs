@@ -204,13 +204,25 @@ impl SsSvcs {
     // Private methods
     fn handle_location_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {
         if item.get_root_loc_type().is_some() {
+            let fit_id = match item.get_fit_id() {
+                Some(fit_id) => fit_id,
+                _ => return,
+            };
+            let fit = match ss_view.fits.get_fit(&fit_id) {
+                Ok(fit) => fit,
+                _ => return,
+            };
             for ss_mod in self
                 .calc_data
                 .mods
                 .get_mods_for_changed_location_owner(item, ss_view.items)
             {
                 if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
-                    for item_id in self.calc_data.tgts.get_tgt_items(ss_view, src_item, &ss_mod) {
+                    for item_id in self
+                        .calc_data
+                        .tgts
+                        .get_tgt_items_for_fits(src_item, &ss_mod, &vec![fit])
+                    {
                         self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
                     }
                 }
