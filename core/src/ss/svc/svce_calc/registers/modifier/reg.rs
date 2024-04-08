@@ -245,6 +245,10 @@ impl ModifierRegister {
                     self.apply_mod_to_fits(modifier, vec![ship.fit_id]);
                     true
                 }
+                SsItem::Structure(structure) => {
+                    self.apply_mod_to_fits(modifier, vec![structure.fit_id]);
+                    true
+                }
                 _ => false,
             },
             _ => false,
@@ -260,6 +264,10 @@ impl ModifierRegister {
             SsItem::ProjEffect(_) => match tgt_item {
                 SsItem::Ship(ship) => {
                     self.unapply_mods_from_fits(modifier, vec![ship.fit_id]);
+                    true
+                }
+                SsItem::Structure(structure) => {
+                    self.unapply_mods_from_fits(modifier, vec![structure.fit_id]);
                     true
                 }
                 _ => false,
