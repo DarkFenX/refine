@@ -25,7 +25,7 @@ def test_affected(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_other_domain(client, consts):
+def test_unaffected_other_domain(client, consts):
     # Check that entities from other domains are not affected
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
@@ -75,7 +75,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_char_swap(client, consts):
+def test_replace_char(client, consts):
     # Modifiers which target items on character location shouldn't apply when character isn't set
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()

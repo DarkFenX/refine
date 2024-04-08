@@ -26,7 +26,7 @@ def test_affected(client, consts):
     assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_other_domain(client, consts):
+def test_unaffected_other_domain(client, consts):
     # Check that entities from other domains are not affected
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
@@ -78,7 +78,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_ship_replace(client, consts):
+def test_replace_ship(client, consts):
     # Check ship replacement process in context of projected effect. This is not usual replacement
     # test since projection is dropped as soon as we replace ship
     eve_src_attr = client.mk_eve_attr()

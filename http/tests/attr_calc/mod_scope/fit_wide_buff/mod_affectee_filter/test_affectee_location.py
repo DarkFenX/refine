@@ -183,7 +183,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_ship_swap(client, consts):
+def test_replace_ship(client, consts):
     # Modifiers which target items on ship location shouldn't apply when ship isn't set
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -213,7 +213,7 @@ def test_ship_swap(client, consts):
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
 
 
-def test_struct_swap(client, consts):
+def test_replace_struct(client, consts):
     # Modifiers which target items on structure location shouldn't apply when structure isn't set
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)

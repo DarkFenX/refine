@@ -104,7 +104,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_char_swap(client, consts):
+def test_replace_char(client, consts):
     # This behavior isn't defined in EVE, but we check how character presence influences
     # modifications with owner-skillreq filter. In our case it doesn't, because those are tracked
     # by fit ID
