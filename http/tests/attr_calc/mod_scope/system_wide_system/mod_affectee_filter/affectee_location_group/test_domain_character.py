@@ -59,7 +59,7 @@ def test_unaffected_other_domain(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_other_group(client, consts):
+def test_unaffected_other_group(client, consts):
     # Check that entities belonging to other item groups are not affected
     eve_grp1 = client.mk_eve_item_group()
     eve_grp2 = client.mk_eve_item_group()

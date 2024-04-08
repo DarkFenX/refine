@@ -52,7 +52,7 @@ def test_non_owner_modifiable(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_other_skillreq(client, consts):
+def test_unaffected_other_skillreq(client, consts):
     # Check that entities which don't have needed skill requirement are not affected
     eve_skill1 = client.mk_eve_item()
     eve_skill2 = client.mk_eve_item()
