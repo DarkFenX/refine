@@ -233,6 +233,40 @@ impl ModifierRegister {
         }
         self.unapply_mods_from_fits(modifier, tgt_fit_ids);
     }
+    pub(in crate::ss::svc::svce_calc) fn add_mod_tgt(
+        &mut self,
+        mod_item: &SsItem,
+        modifier: SsAttrMod,
+        tgt_item: &SsItem,
+    ) -> bool {
+        match mod_item {
+            SsItem::ProjEffect(_) => match tgt_item {
+                SsItem::Ship(ship) => {
+                    self.apply_mod_to_fits(modifier, vec![ship.fit_id]);
+                    true
+                }
+                _ => false,
+            },
+            _ => false,
+        }
+    }
+    pub(in crate::ss::svc::svce_calc) fn rm_mod_tgt(
+        &mut self,
+        mod_item: &SsItem,
+        modifier: &SsAttrMod,
+        tgt_item: &SsItem,
+    ) -> bool {
+        match mod_item {
+            SsItem::ProjEffect(_) => match tgt_item {
+                SsItem::Ship(ship) => {
+                    self.unapply_mods_from_fits(modifier, vec![ship.fit_id]);
+                    true
+                }
+                _ => false,
+            },
+            _ => false,
+        }
+    }
     // Private methods
     fn apply_mod_to_fits(&mut self, modifier: SsAttrMod, tgt_fit_ids: Vec<SsFitId>) {
         match modifier.tgt_filter {

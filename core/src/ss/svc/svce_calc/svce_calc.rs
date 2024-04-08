@@ -90,6 +90,76 @@ impl SsSvcs {
             ss_mod.on_effect_stop(self, ss_view);
         }
     }
+    pub(in crate::ss::svc) fn calc_item_tgt_added(&mut self, ss_view: &SsView, item: &SsItem, tgt_item_id: SsItemId) {
+        let item_id = item.get_id();
+        let ss_mods = self
+            .calc_data
+            .mods
+            .iter_mods_for_src(&item_id)
+            .map(|v| *v)
+            .collect_vec();
+        let tgt_item = match ss_view.items.get_item(&tgt_item_id) {
+            Ok(item) => item,
+            _ => return,
+        };
+        let tgt_fit_id = match tgt_item.get_fit_id() {
+            Some(fit_id) => fit_id,
+            _ => return,
+        };
+        let tgt_fit = match ss_view.fits.get_fit(&tgt_fit_id) {
+            Ok(fit) => fit,
+            _ => return,
+        };
+        let tgt_fits = vec![tgt_fit];
+        for ss_mod in ss_mods.iter() {
+            if self.calc_data.mods.add_mod_tgt(item, *ss_mod, tgt_item) {
+                let mod_item = match ss_view.items.get_item(&ss_mod.src_item_id) {
+                    Ok(item) => item,
+                    _ => continue,
+                };
+                for tgt_item_id in self.calc_data.tgts.get_tgt_items_for_fits(mod_item, ss_mod, &tgt_fits) {
+                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+                }
+            }
+        }
+    }
+    pub(in crate::ss::svc) fn calc_item_tgt_removed(
+        &mut self,
+        ss_view: &SsView,
+        item: &SsItem,
+        tgt_item_id: &SsItemId,
+    ) {
+        let item_id = item.get_id();
+        let ss_mods = self
+            .calc_data
+            .mods
+            .iter_mods_for_src(&item_id)
+            .map(|v| *v)
+            .collect_vec();
+        let tgt_item = match ss_view.items.get_item(&tgt_item_id) {
+            Ok(item) => item,
+            _ => return,
+        };
+        let tgt_fit_id = match tgt_item.get_fit_id() {
+            Some(fit_id) => fit_id,
+            _ => return,
+        };
+        let tgt_fit = match ss_view.fits.get_fit(&tgt_fit_id) {
+            Ok(fit) => fit,
+            _ => return,
+        };
+        let tgt_fits = vec![tgt_fit];
+        for ss_mod in ss_mods.iter() {
+            let mod_item = match ss_view.items.get_item(&ss_mod.src_item_id) {
+                Ok(item) => item,
+                _ => continue,
+            };
+            for tgt_item_id in self.calc_data.tgts.get_tgt_items_for_fits(mod_item, ss_mod, &tgt_fits) {
+                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+            }
+            self.calc_data.mods.rm_mod_tgt(item, ss_mod, tgt_item);
+        }
+    }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
         &mut self,
         ss_view: &SsView,
