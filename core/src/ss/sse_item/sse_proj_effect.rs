@@ -55,14 +55,17 @@ impl SolarSystem {
         self.tgt_tracker.reg_tgt(*item_id, *tgt_item_id);
         let proj_effect = self.items.get_proj_effect_mut(item_id)?;
         proj_effect.tgts.add(*tgt_item_id);
+        let item = self.items.get_item(item_id).unwrap();
+        self.svcs
+            .add_item_tgt(&SsView::new(&self.src, &self.fits, &self.items), &item, *tgt_item_id);
         Ok(())
     }
     pub fn remove_proj_effect_tgt(&mut self, item_id: &SsItemId, tgt_item_id: &SsItemId) -> Result<()> {
-        let proj_effect = self.items.get_proj_effect_mut(item_id)?;
-        if !proj_effect.tgts.contains(&tgt_item_id) {
-            return Ok(());
-        }
+        let item = self.items.get_item(item_id)?;
+        self.svcs
+            .remove_item_tgt(&SsView::new(&self.src, &self.fits, &self.items), item, tgt_item_id);
         self.tgt_tracker.unreg_tgt(item_id, tgt_item_id);
+        let proj_effect = self.items.get_proj_effect_mut(item_id)?;
         proj_effect.tgts.remove(tgt_item_id);
         Ok(())
     }

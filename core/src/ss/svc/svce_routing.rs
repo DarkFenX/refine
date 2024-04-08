@@ -81,6 +81,12 @@ impl SsSvcs {
             self.notify_effects_started(ss_view, item, &to_start)
         }
     }
+    pub(in crate::ss) fn add_item_tgt(&mut self, ss_view: &SsView, item: &SsItem, tgt_item_id: SsItemId) {
+        self.notify_item_tgt_added(ss_view, item, tgt_item_id);
+    }
+    pub(in crate::ss) fn remove_item_tgt(&mut self, ss_view: &SsView, item: &SsItem, tgt_item_id: &SsItemId) {
+        self.notify_item_tgt_removed(ss_view, item, tgt_item_id);
+    }
     // Lower level methods
     fn notify_fit_added(&mut self, fit_id: &SsFitId) {
         self.calc_fit_added(fit_id);
@@ -114,6 +120,8 @@ impl SsSvcs {
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| v.id));
     }
+    pub(in crate::ss) fn notify_item_tgt_added(&mut self, ss_view: &SsView, item: &SsItem, tgt_item_id: SsItemId) {}
+    pub(in crate::ss) fn notify_item_tgt_removed(&mut self, ss_view: &SsView, item: &SsItem, tgt_item_id: &SsItemId) {}
     pub(super) fn notify_attr_val_changed(&mut self, ss_view: &SsView, item_id: &SsItemId, attr_id: &EAttrId) {
         self.calc_attr_value_changed(ss_view, item_id, attr_id);
     }
