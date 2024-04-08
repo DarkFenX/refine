@@ -241,12 +241,13 @@ def test_ship_swap(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_fit.add_fw_effect(type_id=eve_fw_effect.id)
-    api_module = api_fit.add_mod(type_id=eve_module.id)
-    assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
+    api_module = api_fit.add_mod(type_id=eve_module.id)
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
     api_ship.remove()
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+    api_fit.set_ship(type_id=eve_ship.id)
+    assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
 
 
 def test_struct_swap(client, consts):
@@ -271,9 +272,10 @@ def test_struct_swap(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_fit.add_fw_effect(type_id=eve_fw_effect.id)
-    api_module = api_fit.add_mod(type_id=eve_module.id)
-    assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
     api_struct = api_fit.set_struct(type_id=eve_struct.id)
+    api_module = api_fit.add_mod(type_id=eve_module.id)
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
     api_struct.remove()
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+    api_fit.set_struct(type_id=eve_struct.id)
+    assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)

@@ -130,10 +130,11 @@ def test_struct_swap(client, consts):
     # Ship shouldn't interfere with this logic, despite rig being able to receive modifications via
     # ship or structure domains
     api_fit.set_ship(type_id=eve_ship_item.id)
+    api_struct_item = api_fit.set_struct(type_id=eve_struct_item.id)
     api_fit.add_rig(type_id=eve_src_item.id)
     api_tgt_item = api_fit.add_rig(type_id=eve_tgt_item.id)
-    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
-    api_struct_item = api_fit.set_struct(type_id=eve_struct_item.id)
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
     api_struct_item.remove()
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_fit.set_struct(type_id=eve_struct_item.id)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)

@@ -131,9 +131,10 @@ def test_ship_swap(client, consts):
     # via ship or structure domains
     api_fit.set_struct(type_id=eve_struct_item.id)
     api_fit.add_implant(type_id=eve_src_item.id)
-    api_tgt_item = api_fit.add_rig(type_id=eve_tgt_item.id)
-    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
+    api_tgt_item = api_fit.add_rig(type_id=eve_tgt_item.id)
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
     api_ship_item.remove()
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_fit.set_ship(type_id=eve_ship_item.id)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
