@@ -25,7 +25,7 @@ def test_affected(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_non_owner_modifiable(client, consts):
+def test_unaffected_non_owner_modifiable(client, consts):
     # Check that items which are not marked as owner-modifiable do not receive modification
     eve_skill = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
