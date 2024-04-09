@@ -246,6 +246,7 @@ impl ModifierRegister {
                 self.apply_mod_to_fits(modifier, vec![structure.fit_id]);
                 true
             }
+            (SsItem::ProjEffect(_), _) => self.apply_mod_to_item(modifier, tgt_item),
             _ => false,
         }
     }
@@ -255,18 +256,16 @@ impl ModifierRegister {
         modifier: &SsAttrMod,
         tgt_item: &SsItem,
     ) -> bool {
-        match mod_item {
-            SsItem::ProjEffect(_) => match tgt_item {
-                SsItem::Ship(ship) => {
-                    self.unapply_mods_from_fits(modifier, vec![ship.fit_id]);
-                    true
-                }
-                SsItem::Structure(structure) => {
-                    self.unapply_mods_from_fits(modifier, vec![structure.fit_id]);
-                    true
-                }
-                _ => false,
-            },
+        match (mod_item, tgt_item) {
+            (SsItem::ProjEffect(_), SsItem::Ship(ship)) => {
+                self.unapply_mods_from_fits(modifier, vec![ship.fit_id]);
+                true
+            }
+            (SsItem::ProjEffect(_), SsItem::Structure(structure)) => {
+                self.unapply_mods_from_fits(modifier, vec![structure.fit_id]);
+                true
+            }
+            (SsItem::ProjEffect(_), _) => self.unapply_mod_from_item(modifier, tgt_item),
             _ => false,
         }
     }
@@ -441,6 +440,30 @@ impl ModifierRegister {
                     self.mods_own_srq.remove_entry(&(*tgt_fit_id, srq), &modifier);
                 }
             }
+        }
+    }
+    fn apply_mod_to_item(&mut self, modifier: SsAttrMod, tgt_item: &SsItem) -> bool {
+        match modifier.tgt_filter {
+            SsModTgtFilter::Direct(dom) => match dom {
+                SsModDomain::Everything if tgt_item.is_buff_modifiable() => {
+                    self.mods_direct.add_entry(tgt_item.get_id(), modifier);
+                    true
+                }
+                _ => false,
+            },
+            _ => false,
+        }
+    }
+    fn unapply_mod_from_item(&mut self, modifier: &SsAttrMod, tgt_item: &SsItem) -> bool {
+        match modifier.tgt_filter {
+            SsModTgtFilter::Direct(dom) => match dom {
+                SsModDomain::Everything if tgt_item.is_buff_modifiable() => {
+                    self.mods_direct.remove_entry(&tgt_item.get_id(), modifier);
+                    true
+                }
+                _ => false,
+            },
+            _ => false,
         }
     }
 }
