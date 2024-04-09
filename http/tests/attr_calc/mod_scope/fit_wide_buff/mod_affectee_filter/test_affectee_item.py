@@ -232,7 +232,7 @@ def test_replace_ship(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_ship1 = api_fit.set_ship(type_id=eve_ship1.id)
-    eve_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id)
+    api_fit.add_fw_effect(type_id=eve_fw_effect.id)
     assert api_ship1.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
     api_ship2 = api_fit.set_ship(type_id=eve_ship2.id)
     assert api_ship2.update().attrs[eve_tgt_attr.id].dogma == approx(75)
