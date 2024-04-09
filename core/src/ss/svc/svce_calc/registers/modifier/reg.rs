@@ -237,18 +237,15 @@ impl ModifierRegister {
         modifier: SsAttrMod,
         tgt_item: &SsItem,
     ) -> bool {
-        match mod_item {
-            SsItem::ProjEffect(_) => match tgt_item {
-                SsItem::Ship(ship) => {
-                    self.apply_mod_to_fits(modifier, vec![ship.fit_id]);
-                    true
-                }
-                SsItem::Structure(structure) => {
-                    self.apply_mod_to_fits(modifier, vec![structure.fit_id]);
-                    true
-                }
-                _ => false,
-            },
+        match (mod_item, tgt_item) {
+            (SsItem::ProjEffect(_), SsItem::Ship(ship)) => {
+                self.apply_mod_to_fits(modifier, vec![ship.fit_id]);
+                true
+            }
+            (SsItem::ProjEffect(_), SsItem::Structure(structure)) => {
+                self.apply_mod_to_fits(modifier, vec![structure.fit_id]);
+                true
+            }
             _ => false,
         }
     }
