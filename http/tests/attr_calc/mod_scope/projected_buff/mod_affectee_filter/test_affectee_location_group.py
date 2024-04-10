@@ -2,14 +2,16 @@ from pytest import approx
 
 
 def test_affected_child_ship(client, consts):
-    # Make sure ship items (such as modules) are affected by location-filtered buff modification
+    # Make sure ship items (such as modules) are affected by location-group-filtered buff
+    # modification
+    eve_grp = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
@@ -17,7 +19,7 @@ def test_affected_child_ship(client, consts):
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_ship = client.mk_eve_item()
-    eve_module = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_module = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -31,15 +33,16 @@ def test_affected_child_ship(client, consts):
 
 
 def test_affected_child_struct(client, consts):
-    # Make sure structure items (such as modules) are affected by location-filtered buff
+    # Make sure structure items (such as modules) are affected by location-group-filtered buff
     # modification
+    eve_grp = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
@@ -47,7 +50,7 @@ def test_affected_child_struct(client, consts):
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_struct = client.mk_eve_item()
-    eve_module = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_module = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -60,15 +63,45 @@ def test_affected_child_struct(client, consts):
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_child_of_non_buff_modifiable_parent(client, consts):
-    # Character isn't buff-modifiable, so items which are located on it are not affected
+def test_unaffected_other_group(client, consts):
+    # Check that entities belonging to other item groups are not affected
+    eve_grp1 = client.mk_eve_item_group()
+    eve_grp2 = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp1.id)])
+    eve_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.weather_darkness,
+        cat_id=consts.EveEffCat.active)
+    eve_proj_effect = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
+        eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_ship = client.mk_eve_item()
+    eve_module = client.mk_eve_item(grp_id=eve_grp2.id, attrs={eve_tgt_attr.id: 7.5})
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fit = api_ss.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship.id)
+    api_module = api_fit.add_mod(type_id=eve_module.id)
+    api_proj_effect = api_ss.add_proj_effect(type_id=eve_proj_effect.id)
+    api_proj_effect.change_proj_effect(add_tgts=[api_ship.id])
+    assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+
+
+def test_unaffected_child_of_non_buff_modifiable_parent(client, consts):
+    # Character isn't buff-modifiable, so items which are located on it are not affected
+    eve_grp = client.mk_eve_item_group()
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_tgt_attr = client.mk_eve_attr()
+    eve_buff = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_mul,
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
@@ -77,7 +110,7 @@ def test_unaffected_child_of_non_buff_modifiable_parent(client, consts):
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_char = client.mk_eve_item()
     eve_ship = client.mk_eve_item()
-    eve_implant = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_implant = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -91,20 +124,21 @@ def test_unaffected_child_of_non_buff_modifiable_parent(client, consts):
 
 def test_unaffected_parent_ship(client, consts):
     # Location owners shouldn't be affected by location modifications
+    eve_grp = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
     eve_proj_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_ship = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -116,20 +150,21 @@ def test_unaffected_parent_ship(client, consts):
 
 def test_unaffected_parent_struct(client, consts):
     # Location owners shouldn't be affected by location modifications
+    eve_grp = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
     eve_proj_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_struct = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_struct = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -141,20 +176,21 @@ def test_unaffected_parent_struct(client, consts):
 
 def test_unaffected_parent_char(client, consts):
     # Location owners shouldn't be affected by location modifications
+    eve_grp = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
     eve_proj_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_char = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_char = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     eve_ship = client.mk_eve_item()
     client.create_sources()
     api_ss = client.create_ss()
@@ -167,14 +203,15 @@ def test_unaffected_parent_char(client, consts):
 
 
 def test_unaffected_other_fit(client, consts):
-    # Check that projected modifications are not carried over to another fit
+    # Check that fit-wide modifications are not carried over to another fit
+    eve_grp = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
@@ -182,7 +219,7 @@ def test_unaffected_other_fit(client, consts):
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_ship = client.mk_eve_item()
-    eve_module = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_module = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit1 = api_ss.create_fit()
@@ -197,22 +234,23 @@ def test_unaffected_other_fit(client, consts):
 
 def test_unaffected_via_child(client, consts):
     # Check that modification is not applied directly - it can be applied only via parent item
+    eve_grp = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
     eve_proj_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
-    eve_module = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
-    eve_drone = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_ship = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
+    eve_module = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
+    eve_drone = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -228,13 +266,14 @@ def test_unaffected_via_child(client, consts):
 
 def test_replace_parent_ship(client, consts):
     # Modifiers which target items on ship location shouldn't apply when ship isn't set
+    eve_grp = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
@@ -242,7 +281,7 @@ def test_replace_parent_ship(client, consts):
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_ship = client.mk_eve_item()
-    eve_module = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_module = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -261,13 +300,14 @@ def test_replace_parent_ship(client, consts):
 
 def test_replace_parent_struct(client, consts):
     # Modifiers which target items on structure location shouldn't apply when structure isn't set
+    eve_grp = client.mk_eve_item_group()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, group_id=eve_grp.id)])
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
@@ -275,7 +315,7 @@ def test_replace_parent_struct(client, consts):
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_struct = client.mk_eve_item()
-    eve_module = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_module = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
