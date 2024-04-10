@@ -21,9 +21,9 @@ def test_affected_ship(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
-    eve_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id)
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id)
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
-    eve_fw_effect.remove()
+    api_fw_effect.remove()
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
@@ -47,9 +47,9 @@ def test_affected_struct(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_struct = api_fit.set_struct(type_id=eve_struct.id)
-    eve_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id)
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id)
     assert api_struct.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
-    eve_fw_effect.remove()
+    api_fw_effect.remove()
     assert api_struct.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
@@ -68,16 +68,16 @@ def test_affected_drones(client, consts):
     eve_fw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_drone = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
-    api_drone1 = api_fit.add_drone(type_id=eve_ship.id)
-    eve_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id)
-    api_drone2 = api_fit.add_drone(type_id=eve_ship.id)
+    api_drone1 = api_fit.add_drone(type_id=eve_drone.id)
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id)
+    api_drone2 = api_fit.add_drone(type_id=eve_drone.id)
     assert api_drone1.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
     assert api_drone2.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
-    eve_fw_effect.remove()
+    api_fw_effect.remove()
     assert api_drone1.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
     assert api_drone2.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
@@ -199,14 +199,14 @@ def test_unaffected_other_fit_drones(client, consts):
     eve_fw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_drone = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()
     api_fit1 = api_ss.create_fit()
     api_fit2 = api_ss.create_fit()
-    api_drone1 = api_fit1.add_drone(type_id=eve_ship.id)
+    api_drone1 = api_fit1.add_drone(type_id=eve_drone.id)
     api_fit2.add_fw_effect(type_id=eve_fw_effect.id)
-    api_drone2 = api_fit1.add_drone(type_id=eve_ship.id)
+    api_drone2 = api_fit1.add_drone(type_id=eve_drone.id)
     assert api_drone1.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
     assert api_drone2.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
