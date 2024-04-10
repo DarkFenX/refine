@@ -1,9 +1,12 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::{
-    defs::{EAttrId, EEffectId, SsFitId, SsItemId},
+    defs::{EAttrId, EEffectId, SsItemId},
     src::Src,
-    ss::{fit::SsFits, item::SsItems, misc::TgtTracker, svc::SsSvcs, EffectInfo, EffectMode, SsAttrVal, SsView},
+    ss::{
+        fit::SsFits, fleet::SsFleets, item::SsItems, misc::TgtTracker, svc::SsSvcs, EffectInfo, EffectMode, SsAttrVal,
+        SsView,
+    },
     util::Result,
     ModInfo,
 };
@@ -16,7 +19,7 @@ use crate::{
 pub struct SolarSystem {
     pub(in crate::ss) src: Src,
     pub(in crate::ss) fits: SsFits,
-    // TODO: fleets will go here
+    pub(in crate::ss) fleets: SsFleets,
     pub(in crate::ss) items: SsItems,
     pub(in crate::ss) sw_effects: HashSet<SsItemId>,
     pub(in crate::ss) proj_effects: HashSet<SsItemId>,
@@ -28,6 +31,7 @@ impl SolarSystem {
         Self {
             src,
             fits: SsFits::new(),
+            fleets: SsFleets::new(),
             items: SsItems::new(),
             sw_effects: HashSet::new(),
             proj_effects: HashSet::new(),
@@ -42,23 +46,6 @@ impl SolarSystem {
         self.src = src;
         // TODO: make sure attributes and attribute caps are cleared when source
         // is switched or item is reloaded (as well as stuff in other services)
-    }
-    // Fits
-    pub fn add_fit(&mut self) -> Result<SsFitId> {
-        let fit_id = self.fits.add_fit()?;
-        self.svcs.add_fit(&fit_id);
-        Ok(fit_id)
-    }
-    pub fn remove_fit(&mut self, fit_id: &SsFitId) -> Result<()> {
-        for item_id in self.fits.get_fit(fit_id)?.all_items().iter() {
-            self.remove_item(item_id).unwrap();
-        }
-        self.svcs.remove_fit(&fit_id);
-        self.fits.remove_fit(fit_id)?;
-        Ok(())
-    }
-    pub fn get_fit_ids(&self) -> Vec<SsFitId> {
-        self.fits.iter_fit_ids().map(|v| *v).collect()
     }
     // Item attributes
     pub fn get_item_attr(&mut self, item_id: &SsItemId, attr_id: &EAttrId) -> Result<SsAttrVal> {

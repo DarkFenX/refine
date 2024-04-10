@@ -51,6 +51,8 @@ impl HError {
                 rc::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
                 rc::ErrorKind::CustomModCalc => "COR-014",
                 rc::ErrorKind::ItemNotTargetable(_) => "COR-015",
+                rc::ErrorKind::FleetIdAllocFailed => "COR-016",
+                rc::ErrorKind::FleetNotFound(_) => "COR-017",
             },
         };
         code.to_string()

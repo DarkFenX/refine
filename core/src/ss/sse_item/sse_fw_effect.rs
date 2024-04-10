@@ -3,7 +3,7 @@ use crate::{
     ss::{
         info::SsFwEffectInfo,
         item::{SsFwEffect, SsItem},
-        ss_view::SsView,
+        view::SsView,
         SolarSystem,
     },
     util::Result,

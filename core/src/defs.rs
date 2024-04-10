@@ -19,6 +19,7 @@ pub type EMutaId = i32;
 // Aliases for solar system-specific entities
 pub type SsItemId = u32;
 pub type SsFitId = u32;
+pub type SsFleetId = u32;
 
 /// Full version of the library as a string.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

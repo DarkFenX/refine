@@ -21,7 +21,7 @@
 
 pub use defs::{
     Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
-    EMutaId, Idx, SkillLevel, SsFitId, SsItemId, VERSION,
+    EMutaId, Idx, SkillLevel, SsFitId, SsFleetId, SsItemId, VERSION,
 };
 pub use shr::{ModAggrMode, ModOp, State};
 pub use src::Src;

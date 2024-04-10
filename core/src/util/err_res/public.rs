@@ -2,7 +2,7 @@ use std::{error, fmt, result};
 
 use crate::{
     ad,
-    defs::{EAttrId, EItemId, Idx, SkillLevel, SsFitId, SsItemId},
+    defs::{EAttrId, EItemId, Idx, SkillLevel, SsFitId, SsFleetId, SsItemId},
     ss::ModRack,
     util::Named,
 };
@@ -12,11 +12,13 @@ use crate::{
 pub enum ErrorKind {
     DhHttpInvalidBaseUrl(String, String),
     SrcADataGenFailed(String),
-    FitNotFound(SsFitId),
     ItemIdNotFound(SsItemId),
+    FitNotFound(SsFitId),
+    FleetNotFound(SsFleetId),
     SsItemTypeNotFound(&'static str),
-    FitIdAllocFailed,
     ItemIdAllocFailed,
+    FitIdAllocFailed,
+    FleetIdAllocFailed,
     InvalidSkillLevel(SkillLevel),
     UnexpectedItemType(SsItemId, &'static str, &'static str),
     ModuleSlotTaken(ModRack, Idx, SsItemId),
@@ -42,11 +44,13 @@ impl fmt::Display for Error {
         match &self.kind {
             ErrorKind::DhHttpInvalidBaseUrl(url, msg) => write!(f, "invalid \"{url}\": {msg}"),
             ErrorKind::SrcADataGenFailed(reason) => write!(f, "adapted data generation failed: {reason}"),
-            ErrorKind::FitNotFound(fit_id) => write!(f, "fit {fit_id} not found"),
             ErrorKind::ItemIdNotFound(item_id) => write!(f, "item {item_id} not found"),
+            ErrorKind::FitNotFound(fit_id) => write!(f, "fit {fit_id} not found"),
+            ErrorKind::FleetNotFound(fleet_id) => write!(f, "fleet {fleet_id} not found"),
             ErrorKind::SsItemTypeNotFound(item_type) => write!(f, "{item_type} not found"),
-            ErrorKind::FitIdAllocFailed => write!(f, "fit ID allocation failed"),
             ErrorKind::ItemIdAllocFailed => write!(f, "item ID allocation failed"),
+            ErrorKind::FitIdAllocFailed => write!(f, "fit ID allocation failed"),
+            ErrorKind::FleetIdAllocFailed => write!(f, "fit ID allocation failed"),
             ErrorKind::InvalidSkillLevel(level) => write!(f, "skill level {level} is out of allowed range [0, 5]"),
             ErrorKind::UnexpectedItemType(item_id, actual, expected) => {
                 write!(f, "item {item_id} was requested as {expected}. but is {actual}")
