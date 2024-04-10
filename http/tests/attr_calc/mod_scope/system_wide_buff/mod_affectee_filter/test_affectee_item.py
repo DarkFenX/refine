@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_affected_ships(client, consts):
+def test_affected_parent_ship_multiple(client, consts):
     # Make sure ships are affected by system-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -31,7 +31,7 @@ def test_affected_ships(client, consts):
     assert api_ship2.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_affected_structure(client, consts):
+def test_affected_parent_structure(client, consts):
     # Make sure structures are affected by system-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -57,7 +57,7 @@ def test_affected_structure(client, consts):
     assert api_struct.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_affected_drones(client, consts):
+def test_affected_child(client, consts):
     # Make sure drones are affected by system-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -166,7 +166,7 @@ def test_unaffected_other_sw_effect(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_replace_ship(client, consts):
+def test_replace_parent(client, consts):
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()

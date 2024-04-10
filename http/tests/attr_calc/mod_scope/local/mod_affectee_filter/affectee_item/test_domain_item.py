@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_affected_top(client, consts):
+def test_affected_parent(client, consts):
     # Check that item which is "owner" of a location can affect itself
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
@@ -39,9 +39,9 @@ def test_affected_child(client, consts):
     assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
 
 
-def test_unaffected_top(client, consts):
-    # Check that item which is top of domain does not affect top items of other domains and children
-    # of its domain
+def test_unaffected_parent(client, consts):
+    # Check that item which is parent of domain does not affect parent items of other domains and
+    # children of its domain
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -57,10 +57,10 @@ def test_unaffected_top(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_fit.set_char(type_id=eve_affecting_item.id)
-    api_unaffected_top_item = api_fit.set_ship(type_id=eve_unaffected_item.id)
-    assert api_unaffected_top_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
-    api_unaffected_child_item = api_fit.add_implant(type_id=eve_unaffected_item.id)
-    assert api_unaffected_child_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_unaffected_parent = api_fit.set_ship(type_id=eve_unaffected_item.id)
+    assert api_unaffected_parent.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_unaffected_child = api_fit.add_implant(type_id=eve_unaffected_item.id)
+    assert api_unaffected_child.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_unaffected_child(client, consts):
@@ -81,7 +81,7 @@ def test_unaffected_child(client, consts):
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
     api_fit.add_rig(type_id=eve_affecting_item.id)
-    api_unaffected_top_item = api_fit.set_ship(type_id=eve_unaffected_item.id)
-    assert api_unaffected_top_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
-    api_unaffected_child_item = api_fit.add_rig(type_id=eve_unaffected_item.id)
-    assert api_unaffected_child_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_unaffected_parent = api_fit.set_ship(type_id=eve_unaffected_item.id)
+    assert api_unaffected_parent.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_unaffected_child = api_fit.add_rig(type_id=eve_unaffected_item.id)
+    assert api_unaffected_child.update().attrs[eve_tgt_attr.id].dogma == approx(100)

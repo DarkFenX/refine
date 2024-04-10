@@ -50,7 +50,7 @@ def test_unaffected_domain_owner(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_unaffected_domain_child(client, consts):
+def test_unaffected_child(client, consts):
     # EVE does not use effects with "itemID" domain with owner modifiable filter, so it's an
     # undefined behavior. Reefast just discards this modification as invalid
     eve_skill = client.mk_eve_item()

@@ -20,7 +20,7 @@ def test_unaffected_self(client, consts):
     assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_unaffected_top(client, consts):
+def test_unaffected_parent(client, consts):
     # Check that other reference from fit-wide effect doesn't affect anything
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()

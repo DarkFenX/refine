@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_affected_ship_modules(client, consts):
+def test_affected_child_ship(client, consts):
     # Make sure ship items (such as modules) are affected by location-skillreq-filtered buff
     # modification
     eve_skill = client.mk_eve_item()
@@ -31,7 +31,7 @@ def test_affected_ship_modules(client, consts):
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_affected_struct_modules(client, consts):
+def test_affected_child_struct(client, consts):
     # Make sure structure items (such as modules) are affected by location-skillreq-filtered buff
     # modification
     eve_skill = client.mk_eve_item()
@@ -61,7 +61,7 @@ def test_affected_struct_modules(client, consts):
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_other_skillrq_ship(client, consts):
+def test_unaffected_other_skillrq(client, consts):
     # Check that entities which don't have needed skill requirement are not affected
     eve_skill1 = client.mk_eve_item()
     eve_skill2 = client.mk_eve_item()
@@ -89,7 +89,7 @@ def test_unaffected_other_skillrq_ship(client, consts):
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_char_implant(client, consts):
+def test_unaffected_child_of_non_buff_modifiable_parent(client, consts):
     # Character isn't buff-modifiable, so items which are located on it are not affected
     eve_skill = client.mk_eve_item()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
@@ -116,7 +116,7 @@ def test_unaffected_char_implant(client, consts):
     assert api_implant.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_ship(client, consts):
+def test_unaffected_parent_ship(client, consts):
     # Location owners shouldn't be affected by location modifications
     eve_skill = client.mk_eve_item()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
@@ -141,7 +141,7 @@ def test_unaffected_ship(client, consts):
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_struct(client, consts):
+def test_unaffected_parent_struct(client, consts):
     # Location owners shouldn't be affected by location modifications
     eve_skill = client.mk_eve_item()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
@@ -166,7 +166,7 @@ def test_unaffected_struct(client, consts):
     assert api_struct.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_char(client, consts):
+def test_unaffected_parent_char(client, consts):
     # Location owners shouldn't be affected by location modifications
     eve_skill = client.mk_eve_item()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
@@ -219,7 +219,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_replace_ship(client, consts):
+def test_replace_parent_ship(client, consts):
     # Modifiers which target items on ship location shouldn't apply when ship isn't set
     eve_skill = client.mk_eve_item()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
@@ -250,7 +250,7 @@ def test_replace_ship(client, consts):
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
 
 
-def test_replace_struct(client, consts):
+def test_replace_parent_struct(client, consts):
     # Modifiers which target items on structure location shouldn't apply when structure isn't set
     eve_skill = client.mk_eve_item()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)

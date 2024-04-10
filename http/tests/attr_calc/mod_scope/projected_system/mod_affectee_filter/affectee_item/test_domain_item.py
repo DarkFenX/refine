@@ -21,7 +21,7 @@ def test_affected(client, consts):
     assert api_proj_effect.update().attrs[eve_tgt_attr.id].dogma == approx(120)
 
 
-def test_unaffected_top(client, consts):
+def test_unaffected_parent(client, consts):
     # Check that direct item modification from projected effect doesn't affect fit top-level
     # entities
     eve_src_attr = client.mk_eve_attr()

@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_affected_ship(client, consts):
+def test_affected_parent_ship(client, consts):
     # Make sure ship is affected by fit-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -27,7 +27,7 @@ def test_affected_ship(client, consts):
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_affected_struct(client, consts):
+def test_affected_parent_struct(client, consts):
     # Make sure structure is affected by fit-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -53,7 +53,7 @@ def test_affected_struct(client, consts):
     assert api_struct.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_affected_drones(client, consts):
+def test_affected_child(client, consts):
     # Make sure drones are affected by fit-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -159,7 +159,7 @@ def test_unaffected_other_fw_effect(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_other_fit_ship(client, consts):
+def test_unaffected_other_fit_parent(client, consts):
     # Check that fit-wide modifications are not carried over to another fit
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -184,7 +184,7 @@ def test_unaffected_other_fit_ship(client, consts):
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_other_fit_drones(client, consts):
+def test_unaffected_other_fit_child(client, consts):
     # Check that fit-wide modifications are not carried over to another fit
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -211,7 +211,7 @@ def test_unaffected_other_fit_drones(client, consts):
     assert api_drone2.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_replace_ship(client, consts):
+def test_replace_parent(client, consts):
     # Make sure ship is affected by fit-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)

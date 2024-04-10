@@ -78,7 +78,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_replace_ship(client, consts):
+def test_replace_parent(client, consts):
     # Check ship replacement process in context of projected effect. This is not usual replacement
     # test since projection is dropped as soon as we replace ship
     eve_src_attr = client.mk_eve_attr()

@@ -48,7 +48,7 @@ def test_unaffected_other_domain(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_unaffected_child_item(client, consts):
+def test_unaffected_child(client, consts):
     # Check that items (in this case rig) are not affected if they belong to location even if
     # its "owner" (in this case ship) is affected
     eve_src_attr = client.mk_eve_attr()
@@ -72,7 +72,7 @@ def test_unaffected_child_item(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_replace_ship(client, consts):
+def test_replace_parent(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
