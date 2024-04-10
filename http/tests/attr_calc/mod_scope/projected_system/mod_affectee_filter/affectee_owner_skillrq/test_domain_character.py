@@ -88,7 +88,7 @@ def test_unaffected_other_skillreq(client, consts):
 
 
 def test_unaffected_other_fit(client, consts):
-    # Check that fit-wide modifications are not carried over to another fit
+    # Check that projected modifications are not carried over to another fit
     eve_skill = client.mk_eve_item()
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()

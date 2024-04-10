@@ -203,7 +203,7 @@ def test_unaffected_parent_char(client, consts):
 
 
 def test_unaffected_other_fit(client, consts):
-    # Check that fit-wide modifications are not carried over to another fit
+    # Check that projected modifications are not carried over to another fit
     eve_skill = client.mk_eve_item()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
