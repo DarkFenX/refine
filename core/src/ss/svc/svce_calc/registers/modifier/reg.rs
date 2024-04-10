@@ -238,11 +238,11 @@ impl ModifierRegister {
         tgt_item: &SsItem,
     ) -> bool {
         match (mod_item, tgt_item) {
-            (SsItem::ProjEffect(_), SsItem::Ship(ship)) => {
+            (SsItem::ProjEffect(_), SsItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
                 self.apply_mod_to_fits(modifier, vec![ship.fit_id]);
                 true
             }
-            (SsItem::ProjEffect(_), SsItem::Structure(structure)) => {
+            (SsItem::ProjEffect(_), SsItem::Structure(structure)) if !is_mod_direct_everything(&modifier) => {
                 self.apply_mod_to_fits(modifier, vec![structure.fit_id]);
                 true
             }
@@ -257,11 +257,11 @@ impl ModifierRegister {
         tgt_item: &SsItem,
     ) -> bool {
         match (mod_item, tgt_item) {
-            (SsItem::ProjEffect(_), SsItem::Ship(ship)) => {
+            (SsItem::ProjEffect(_), SsItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
                 self.unapply_mods_from_fits(modifier, vec![ship.fit_id]);
                 true
             }
-            (SsItem::ProjEffect(_), SsItem::Structure(structure)) => {
+            (SsItem::ProjEffect(_), SsItem::Structure(structure)) if !is_mod_direct_everything(&modifier) => {
                 self.unapply_mods_from_fits(modifier, vec![structure.fit_id]);
                 true
             }
@@ -488,5 +488,12 @@ fn filter_and_extend<K: Eq + Hash>(
     match storage.get(key) {
         Some(v) => vec.extend(v.iter().filter(|v| &v.tgt_attr_id == attr_id).map(|v| v.clone())),
         _ => (),
+    }
+}
+
+fn is_mod_direct_everything(modifier: &SsAttrMod) -> bool {
+    match modifier.tgt_filter {
+        SsModTgtFilter::Direct(dom) => matches!(dom, SsModDomain::Everything),
+        _ => false,
     }
 }
