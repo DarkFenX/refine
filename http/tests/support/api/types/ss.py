@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .fit import Fit
+from .fleet import Fleet
 from .item import Item
 
 if TYPE_CHECKING:
@@ -18,9 +19,13 @@ class SolarSystem(AttrDict):
     def __init__(self, client: ApiClient, data: dict):
         super().__init__(
             data=data,
-            hooks={'fits': AttrHookDef(
-                func=lambda fits: {f.id: f for f in [Fit(client=client, data=fit, ss_id=self.id) for fit in fits]},
-                default={})})
+            hooks={
+                'fits': AttrHookDef(
+                    func=lambda fs: {f.id: f for f in [Fit(client=client, data=f, ss_id=self.id) for f in fs]},
+                    default={}),
+                'fleets': AttrHookDef(
+                    func=lambda fs: {f.id: f for f in [Fleet(client=client, data=f, ss_id=self.id) for f in fs]},
+                    default={})})
         self._client = client
 
     def update_request(self) -> Request:
@@ -50,6 +55,17 @@ class SolarSystem(AttrDict):
         fit = Fit(client=self._client, data=resp.json(), ss_id=self.id)
         self.update()
         return fit
+
+    # Fleet methods
+    def create_fleet_request(self) -> Request:
+        return self._client.create_fleet_request(ss_id=self.id)
+
+    def create_fleet(self) -> Fleet:
+        resp = self.create_fleet_request().send()
+        assert resp.status_code == 201
+        fleet = Fleet(client=self._client, data=resp.json(), ss_id=self.id)
+        self.update()
+        return fleet
 
     # Generic item methods
     def get_item_request(self, item_id: str) -> Request:
