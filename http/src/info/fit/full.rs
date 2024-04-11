@@ -1,4 +1,9 @@
-use crate::info::{HItemInfo, HItemInfoMode, MkItemInfo};
+use itertools::Itertools;
+
+use crate::{
+    info::{HItemInfo, HItemInfoMode, MkItemInfo},
+    util::HResult,
+};
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
@@ -37,94 +42,122 @@ impl HFitInfoFull {
         core_ss: &mut rc::SolarSystem,
         fit_id: &rc::SsFitId,
         item_mode: HItemInfoMode,
-    ) -> Self {
-        Self {
+    ) -> HResult<Self> {
+        let core_fit = core_ss.get_fit_info(fit_id)?;
+        let fit = Self {
             id: *fit_id,
-            character: core_ss
-                .get_fit_character_info(&fit_id)
-                .ok()
+            character: core_fit
+                .character
+                .map(|v| core_ss.get_item_info(&v).ok())
+                .flatten()
                 .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode)),
-            skills: core_ss
-                .get_fit_skill_infos(&fit_id)
-                .unwrap()
+            skills: core_fit
+                .skills
                 .iter()
-                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .filter_map(|v| core_ss.get_item_info(&v).ok())
+                .collect_vec()
+                .into_iter()
+                .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                 .collect(),
-            implants: core_ss
-                .get_fit_implant_infos(&fit_id)
-                .unwrap()
+            implants: core_fit
+                .implants
                 .iter()
-                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .filter_map(|v| core_ss.get_item_info(&v).ok())
+                .collect_vec()
+                .into_iter()
+                .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                 .collect(),
-            boosters: core_ss
-                .get_fit_booster_infos(&fit_id)
-                .unwrap()
+            boosters: core_fit
+                .boosters
                 .iter()
-                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .filter_map(|v| core_ss.get_item_info(&v).ok())
+                .collect_vec()
+                .into_iter()
+                .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                 .collect(),
-            ship: core_ss
-                .get_fit_ship_info(&fit_id)
-                .ok()
+            ship: core_fit
+                .ship
+                .map(|v| core_ss.get_item_info(&v).ok())
+                .flatten()
                 .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode)),
-            structure: core_ss
-                .get_fit_structure_info(&fit_id)
-                .ok()
+            structure: core_fit
+                .structure
+                .map(|v| core_ss.get_item_info(&v).ok())
+                .flatten()
                 .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode)),
-            stance: core_ss
-                .get_fit_stance_info(&fit_id)
-                .ok()
+            stance: core_fit
+                .stance
+                .map(|v| core_ss.get_item_info(&v).ok())
+                .flatten()
                 .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode)),
-            subsystems: core_ss
-                .get_fit_subsystem_infos(&fit_id)
-                .unwrap()
+            subsystems: core_fit
+                .subsystems
                 .iter()
-                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .filter_map(|v| core_ss.get_item_info(&v).ok())
+                .collect_vec()
+                .into_iter()
+                .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                 .collect(),
             modules: HModuleRacks {
-                high: core_ss
-                    .get_module_infos(&fit_id, rc::ModRack::High)
-                    .unwrap()
+                high: core_fit
+                    .mods_high
                     .iter()
-                    .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                    .filter_map(|v| core_ss.get_item_info(&v).ok())
+                    .collect_vec()
+                    .into_iter()
+                    .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                     .collect(),
-                mid: core_ss
-                    .get_module_infos(&fit_id, rc::ModRack::Mid)
-                    .unwrap()
+                mid: core_fit
+                    .mods_mid
                     .iter()
-                    .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                    .filter_map(|v| core_ss.get_item_info(&v).ok())
+                    .collect_vec()
+                    .into_iter()
+                    .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                     .collect(),
-                low: core_ss
-                    .get_module_infos(&fit_id, rc::ModRack::Low)
-                    .unwrap()
+                low: core_fit
+                    .mods_low
                     .iter()
-                    .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                    .filter_map(|v| core_ss.get_item_info(&v).ok())
+                    .collect_vec()
+                    .into_iter()
+                    .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                     .collect(),
             },
-            rigs: core_ss
-                .get_fit_rig_infos(&fit_id)
-                .unwrap()
+            rigs: core_fit
+                .rigs
                 .iter()
-                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .filter_map(|v| core_ss.get_item_info(&v).ok())
+                .collect_vec()
+                .into_iter()
+                .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                 .collect(),
-            drones: core_ss
-                .get_fit_drone_infos(&fit_id)
-                .unwrap()
+            drones: core_fit
+                .drones
                 .iter()
-                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .filter_map(|v| core_ss.get_item_info(&v).ok())
+                .collect_vec()
+                .into_iter()
+                .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                 .collect(),
-            fighters: core_ss
-                .get_fit_fighter_infos(&fit_id)
-                .unwrap()
+            fighters: core_fit
+                .fighters
                 .iter()
-                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .filter_map(|v| core_ss.get_item_info(&v).ok())
+                .collect_vec()
+                .into_iter()
+                .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                 .collect(),
-            fw_effects: core_ss
-                .get_fit_fw_effect_infos(&fit_id)
-                .unwrap()
+            fw_effects: core_fit
+                .fw_effects
                 .iter()
-                .map(|v| HItemInfo::mk_info(core_ss, v, item_mode))
+                .filter_map(|v| core_ss.get_item_info(&v).ok())
+                .collect_vec()
+                .into_iter()
+                .map(|v| HItemInfo::mk_info(core_ss, &v, item_mode))
                 .collect(),
-        }
+        };
+        Ok(fit)
     }
 }
 

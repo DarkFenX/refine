@@ -47,7 +47,7 @@ impl HSolarSystem {
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
             let result = match core_ss.add_fit() {
-                Ok(fit_id) => Ok(HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode)),
+                Ok(fit_id) => HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode),
                 Err(e) => Err(e.into()),
             };
             (result, core_ss)
@@ -73,7 +73,7 @@ impl HSolarSystem {
         })
         .await;
         self.put_ss_back(core_ss);
-        Ok(result)
+        result
     }
     #[tracing::instrument(name = "ss-fit-del", level = "trace", skip_all)]
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> HResult<()> {
@@ -172,7 +172,7 @@ impl HSolarSystem {
         })
         .await;
         self.put_ss_back(core_ss);
-        Ok((fit_info, cmd_resps))
+        Ok((fit_info?, cmd_resps))
     }
     #[tracing::instrument(name = "ss-item-cmd", level = "trace", skip_all)]
     pub(crate) async fn execute_item_commands(

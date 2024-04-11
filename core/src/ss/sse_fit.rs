@@ -10,6 +10,9 @@ impl SolarSystem {
         let fit = self.fits.get_fit(fit_id)?;
         Ok(fit.into())
     }
+    pub fn get_fit_infos(&self) -> Vec<SsFitInfo> {
+        self.fits.iter_fits().map(|v| v.into()).collect()
+    }
     pub fn add_fit(&mut self) -> Result<SsFitId> {
         let fit_id = self.fits.add_fit()?;
         self.svcs.add_fit(&fit_id);

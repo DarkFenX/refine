@@ -1,7 +1,10 @@
 use full::HFitInfoFull;
 use id::HFitInfoId;
 
-use crate::info::{HFitInfoMode, HItemInfoMode};
+use crate::{
+    info::{HFitInfoMode, HItemInfoMode},
+    util::HResult,
+};
 
 mod full;
 mod id;
@@ -18,10 +21,11 @@ impl HFitInfo {
         fit_id: &rc::SsFitId,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> Self {
-        match fit_mode {
+    ) -> HResult<Self> {
+        let info = match fit_mode {
             HFitInfoMode::Id => Self::Id(fit_id.into()),
-            HFitInfoMode::Full => Self::Full(HFitInfoFull::mk_info(core_ss, fit_id, item_mode)),
-        }
+            HFitInfoMode::Full => Self::Full(HFitInfoFull::mk_info(core_ss, fit_id, item_mode)?),
+        };
+        Ok(info)
     }
 }

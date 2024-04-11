@@ -7,6 +7,7 @@ import requests
 from tests.support import eve
 from tests.support.consts import ApiRack, ApiState
 from tests.support.request import Request
+from tests.support.response import Response
 from tests.support.util import Absent, Default, conditional_insert
 from .types import SolarSystem
 
@@ -26,8 +27,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         self.__created_data_aliases: set[str] = set()
         self.__created_sss: set[SolarSystem] = set()
 
-    def send_prepared(self, req: Request) -> requests.models.Response:
-        return self.__session.send(req)
+    def send_prepared(self, req: Request) -> Response:
+        response = self.__session.send(req)
+        return Response(response)
 
     # Data source methods
     def create_source_request(

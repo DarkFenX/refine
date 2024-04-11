@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from typing import Union
 
     from tests.support.api import ApiClient
+    from tests.support.response import Response
 
 
 class Request(requests.PreparedRequest):
@@ -45,5 +46,5 @@ class Request(requests.PreparedRequest):
     def json(self, data):
         self.body = json.dumps(data)
 
-    def send(self) -> requests.models.Response:
+    def send(self) -> Response:
         return self.__client.send_prepared(self)
