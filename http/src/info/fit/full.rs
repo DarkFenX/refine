@@ -1,8 +1,10 @@
 use crate::info::{HItemInfo, HItemInfoMode, MkItemInfo};
 
+#[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HFitInfoFull {
-    pub(crate) id: String,
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    pub(crate) id: rc::SsFitId,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) character: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -37,7 +39,7 @@ impl HFitInfoFull {
         item_mode: HItemInfoMode,
     ) -> Self {
         Self {
-            id: fit_id.to_string(),
+            id: *fit_id,
             character: core_ss
                 .get_fit_character_info(&fit_id)
                 .ok()
