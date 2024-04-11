@@ -1,8 +1,8 @@
 use crate::{
     defs::{EItemId, SsFitId, SsItemId},
     ss::{
-        info::SsChargeInfo,
         item::{SsCharge, SsItem},
+        item_info::SsChargeInfo,
         SolarSystem,
     },
     util::{Error, ErrorKind, Named, Result},

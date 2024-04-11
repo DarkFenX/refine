@@ -1,8 +1,8 @@
 use crate::{
     defs::{EItemId, SsFitId, SsItemId},
     ss::{
-        info::SsImplantInfo,
         item::{SsImplant, SsItem},
+        item_info::SsImplantInfo,
         SolarSystem,
     },
     util::Result,

@@ -2,8 +2,8 @@ use crate::{
     defs::{EItemId, SsFitId, SsItemId},
     shr::State,
     ss::{
-        info::SsDroneInfo,
         item::{SsDrone, SsItem},
+        item_info::SsDroneInfo,
         SolarSystem,
     },
     util::Result,

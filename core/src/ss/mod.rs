@@ -5,9 +5,10 @@ pub use svc::{ModInfo, ModOpInfo, ModSrcInfo, ModSrcValInfo, SsAttrVal};
 pub(in crate::ss) use view::SsView;
 
 mod fit;
+pub(crate) mod fit_info;
 mod fleet;
-pub(crate) mod info;
 mod item;
+pub(crate) mod item_info;
 mod misc;
 mod ss;
 mod sse_fit;

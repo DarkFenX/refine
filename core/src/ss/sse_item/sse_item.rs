@@ -1,6 +1,6 @@
 use crate::{
     defs::SsItemId,
-    ss::{info::SsItemInfo, item::SsItem, SolarSystem, SsView},
+    ss::{item::SsItem, item_info::SsItemInfo, SolarSystem, SsView},
     util::Result,
 };
 

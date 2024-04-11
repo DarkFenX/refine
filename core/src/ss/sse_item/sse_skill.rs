@@ -2,8 +2,8 @@ use crate::{
     defs::{EItemId, SkillLevel, SsFitId, SsItemId},
     ec,
     ss::{
-        info::SsSkillInfo,
         item::{SsItem, SsSkill},
+        item_info::SsSkillInfo,
         SolarSystem, SsView,
     },
     util::{Error, ErrorKind, Result},

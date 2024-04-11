@@ -2,8 +2,8 @@ use crate::{
     defs::{EItemId, SsFitId, SsItemId},
     shr::State,
     ss::{
-        info::{SsChargeInfo, SsModuleInfo},
         item::{SsItem, SsModule},
+        item_info::{SsChargeInfo, SsModuleInfo},
         ModRack, OrdAddMode, SolarSystem, SsView,
     },
     util::{Error, ErrorKind, Result},

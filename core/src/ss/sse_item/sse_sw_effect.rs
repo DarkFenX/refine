@@ -1,8 +1,8 @@
 use crate::{
     defs::{EItemId, SsItemId},
     ss::{
-        info::SsSwEffectInfo,
         item::{SsItem, SsSwEffect},
+        item_info::SsSwEffectInfo,
         SolarSystem, SsView,
     },
     util::Result,

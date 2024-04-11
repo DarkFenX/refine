@@ -1,8 +1,8 @@
 use crate::{
     defs::{EItemId, SsItemId},
     ss::{
-        info::SsProjEffectInfo,
         item::{SsItem, SsProjEffect},
+        item_info::SsProjEffectInfo,
         SolarSystem, SsView,
     },
     util::{Error, ErrorKind, Result},
