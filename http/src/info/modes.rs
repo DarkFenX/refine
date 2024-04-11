@@ -34,3 +34,15 @@ impl From<Option<HItemInfoMode>> for HItemInfoMode {
         mode_opt.unwrap_or_else(|| Self::Partial)
     }
 }
+
+#[derive(Copy, Clone, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum HFleetInfoMode {
+    Id,
+    Full,
+}
+impl From<Option<HFleetInfoMode>> for HFleetInfoMode {
+    fn from(mode_opt: Option<HFleetInfoMode>) -> Self {
+        mode_opt.unwrap_or_else(|| Self::Id)
+    }
+}
