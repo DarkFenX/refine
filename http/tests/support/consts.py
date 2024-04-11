@@ -201,3 +201,22 @@ class ApiModOp(StrEnum):
 @unique
 class ApiAggrMode(StrEnum):
     stack = 'stack'
+
+
+@unique
+class ApiSsInfoMode(StrEnum):
+    id = 'id'
+    full = 'full'
+
+
+@unique
+class ApiFitInfoMode(StrEnum):
+    id = 'id'
+    full = 'full'
+
+
+@unique
+class ApiItemInfoMode(StrEnum):
+    id = 'id'
+    partial = 'partial'
+    full = 'full'

@@ -23,7 +23,7 @@ impl HFitInfo {
         item_mode: HItemInfoMode,
     ) -> HResult<Self> {
         let info = match fit_mode {
-            HFitInfoMode::Id => Self::Id(fit_id.into()),
+            HFitInfoMode::Id => Self::Id(HFitInfoId::mk_info(core_ss, fit_id)?),
             HFitInfoMode::Full => Self::Full(HFitInfoFull::mk_info(core_ss, fit_id, item_mode)?),
         };
         Ok(info)

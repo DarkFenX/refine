@@ -1,9 +1,18 @@
+use crate::util::HResult;
+
+#[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HFitInfoId {
-    pub(crate) id: String,
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    pub(crate) id: rc::SsFitId,
 }
-impl From<&rc::SsFitId> for HFitInfoId {
-    fn from(fit_id: &rc::SsFitId) -> Self {
-        Self { id: fit_id.to_string() }
+impl HFitInfoId {
+    pub(in crate::info::fit) fn mk_info(
+        core_ss: &rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> HResult<Self> {
+        let core_fit = core_ss.get_fit_info(fit_id)?;
+        let info = Self { id: core_fit.id };
+        Ok(info)
     }
 }

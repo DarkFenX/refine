@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import requests
 
 from tests.support import eve
-from tests.support.consts import ApiRack, ApiState
+from tests.support.consts import ApiRack, ApiState, ApiSsInfoMode, ApiFitInfoMode, ApiItemInfoMode
 from tests.support.request import Request
 from tests.support.response import Response
 from tests.support.util import Absent, Default, conditional_insert
@@ -79,6 +79,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     def create_ss_request(
             self,
             data: Union[eve.EveObjects, Type[Default]] = Default,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         data = self._get_eve_data(data=data)
         body = {}
@@ -88,7 +91,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='POST',
             url=f'{self.__base_url}/solar_system',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json=body)
 
     def create_ss(
@@ -106,12 +109,18 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     def created_sss(self):
         return self.__created_sss
 
-    def update_ss_request(self, ss_id: str) -> Request:
+    def update_ss_request(
+            self,
+            ss_id: str,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+    ) -> Request:
         return Request(
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'})
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode})
 
     def remove_ss_request(self, ss_id: str) -> Request:
         return Request(
@@ -126,29 +135,33 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     # Fit methods
     def create_fit_request(
             self,
-            ss_id: str
+            ss_id: str,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         return Request(
             self,
             method='POST',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit',
-            params={'fit': 'full', 'item': 'id'})
+            params={'fit': fit_info_mode, 'item': item_info_mode})
 
     def update_fit_request(
             self,
             ss_id: str,
-            fit_id: str
+            fit_id: str,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
     ) -> Request:
         return Request(
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}',
-            params={'fit': 'full', 'item': 'full'})
+            params={'fit': fit_info_mode, 'item': item_info_mode})
 
     def remove_fit_request(
             self,
             ss_id: str,
-            fit_id: str
+            fit_id: str,
     ) -> Request:
         return Request(
             self,
@@ -159,18 +172,19 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     def get_item_request(
             self,
             ss_id: str,
-            item_id: str
+            item_id: str,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
     ) -> Request:
         return Request(
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}/item/{item_id}',
-            params={'item': 'full'})
+            params={'item': item_info_mode})
 
     def remove_item_request(
             self,
             ss_id: str,
-            item_id: str
+            item_id: str,
     ) -> Request:
         return Request(
             self,
@@ -184,8 +198,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('set_character', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='set_character', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Skill methods
     def add_skill_request(
@@ -194,7 +213,10 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             level: int,
-            state: Union[bool, Type[Absent]] = Absent
+            state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {
             'type': 'add_skill',
@@ -206,7 +228,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json={'commands': [command]})
 
     def change_skill_request(
@@ -216,6 +238,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             level: Union[int, Type[Absent]] = Absent,
             state: Union[bool, Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {'type': 'change_skill', 'item_id': item_id}
         conditional_insert(command, 'level', level)
@@ -225,7 +250,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json={'commands': [command]})
 
     # Implant methods
@@ -235,8 +260,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('add_implant', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='add_implant', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Booster methods
     def add_booster_request(
@@ -245,8 +275,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('add_booster', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='add_booster', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Ship methods
     def set_ship_request(
@@ -255,8 +290,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('set_ship', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='set_ship', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Structure methods
     def set_struct_request(
@@ -265,8 +305,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('set_structure', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='set_structure', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Stance methods
     def set_stance_request(
@@ -275,8 +320,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('set_stance', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='set_stance', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Subsystem methods
     def add_subsystem_request(
@@ -285,8 +335,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('add_subsystem', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='add_subsystem', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Module methods
     def add_mod_request(
@@ -298,6 +353,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             state: str = ApiState.offline,
             charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: str = 'equip',
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {
             'type': 'add_module',
@@ -311,7 +369,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json={'commands': [command]})
 
     def change_mod_request(
@@ -321,6 +379,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, None, Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {'type': 'change_module', 'item_id': item_id}
         conditional_insert(command, 'state', state)
@@ -330,7 +391,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json={'commands': [command]})
 
     # Rig methods
@@ -340,8 +401,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('add_rig', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='add_rig', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Drone methods
     def add_drone_request(
@@ -350,8 +416,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: str = ApiState.offline,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('add_drone', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='add_drone', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Fighter methods
     def add_fighter_request(
@@ -360,8 +431,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: str = ApiState.offline,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('add_fighter', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='add_fighter', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # System-wide effect methods
     def add_sw_effect_request(
@@ -384,8 +460,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             ss_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__change_simple_item('change_sw_effect', ss_id=ss_id, item_id=item_id, state=state)
+        return self.__change_simple_item(
+            cmd_name='change_sw_effect', ss_id=ss_id, item_id=item_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Fit-wide effect methods
     def add_fw_effect_request(
@@ -394,16 +475,26 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__add_simple_item('add_fw_effect', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state)
+        return self.__add_simple_item(
+            cmd_name='add_fw_effect', ss_id=ss_id, fit_id=fit_id, type_id=type_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     def change_fw_effect_request(
             self,
             ss_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
-        return self.__change_simple_item('change_fw_effect', ss_id=ss_id, item_id=item_id, state=state)
+        return self.__change_simple_item(
+            cmd_name='change_fw_effect', ss_id=ss_id, item_id=item_id, state=state,
+            ss_info_mode=ss_info_mode, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode)
 
     # Projected effect methods
     def add_proj_effect_request(
@@ -411,6 +502,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             ss_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {'type': 'add_proj_effect', 'type_id': type_id}
         conditional_insert(command, 'state', state)
@@ -418,7 +512,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json={'commands': [command]})
 
     def change_proj_effect_request(
@@ -428,6 +522,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             state: Union[bool, Type[Absent]] = Absent,
             add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
             rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {'type': 'change_proj_effect', 'item_id': item_id}
         conditional_insert(command, 'state', state)
@@ -437,7 +534,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json={'commands': [command]})
 
     # Auxiliary methods
@@ -448,6 +545,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, str, Type[Absent]],
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {
             'type': cmd_name,
@@ -458,7 +558,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json={'commands': [command]})
 
     def __change_simple_item(
@@ -467,6 +567,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             ss_id: str,
             item_id: int,
             state: Union[bool, str, Type[Absent]],
+            ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {'type': cmd_name, 'item_id': item_id}
         conditional_insert(command, 'state', state)
@@ -474,5 +577,5 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='PATCH',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': 'full', 'fit': 'full', 'item': 'id'},
+            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json={'commands': [command]})

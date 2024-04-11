@@ -267,9 +267,17 @@ def test_fw_effect(client):
         api_fit.fw_effects  # pylint: disable=W0104
 
 
-def test_error_no_fit(client):
+def test_error_no_fit_full(client, consts):
     # Send ID in correct format, but there is no fit with such ID
     client.create_sources()
     api_ss = client.create_ss()
-    resp = client.update_fit_request(ss_id=api_ss.id, fit_id='1').send()
+    resp = client.update_fit_request(ss_id=api_ss.id, fit_id='1', fit_info_mode=consts.ApiFitInfoMode.full).send()
+    resp.check(status_code=404, json_predicate={'code': 'COR-003', 'message': 'core library error: fit 1 not found'})
+
+
+def test_error_no_fit_id(client, consts):
+    # Send ID in correct format, but there is no fit with such ID
+    client.create_sources()
+    api_ss = client.create_ss()
+    resp = client.update_fit_request(ss_id=api_ss.id, fit_id='1', fit_info_mode=consts.ApiFitInfoMode.id).send()
     resp.check(status_code=404, json_predicate={'code': 'COR-003', 'message': 'core library error: fit 1 not found'})

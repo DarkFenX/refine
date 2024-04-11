@@ -37,7 +37,7 @@ def run_server(proj_root: str, config_path: str) -> ServerInfo:
     binary_path = os.path.join(proj_root, 'target', 'release', 'reefast-http')
     return ServerInfo(pid=subprocess.Popen(
         [binary_path, config_path],
-        #stdout=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL).pid)
 
 
