@@ -1,8 +1,15 @@
 use crate::{defs::SsFitId, util::Result};
 
-use super::SolarSystem;
+use super::{fit_info::SsFitInfo, SolarSystem};
 
 impl SolarSystem {
+    pub fn get_fit_ids(&self) -> Vec<SsFitId> {
+        self.fits.iter_fit_ids().map(|v| *v).collect()
+    }
+    pub fn get_fit_info(&self, fit_id: &SsFitId) -> Result<SsFitInfo> {
+        let fit = self.fits.get_fit(fit_id)?;
+        Ok(fit.into())
+    }
     pub fn add_fit(&mut self) -> Result<SsFitId> {
         let fit_id = self.fits.add_fit()?;
         self.svcs.add_fit(&fit_id);
@@ -15,8 +22,5 @@ impl SolarSystem {
         self.svcs.remove_fit(&fit_id);
         self.fits.remove_fit(fit_id)?;
         Ok(())
-    }
-    pub fn get_fit_ids(&self) -> Vec<SsFitId> {
-        self.fits.iter_fit_ids().map(|v| *v).collect()
     }
 }
