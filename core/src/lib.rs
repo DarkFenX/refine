@@ -27,6 +27,7 @@ pub use shr::{ModAggrMode, ModOp, State};
 pub use src::Src;
 pub use ss::{
     fit_info::SsFitInfo,
+    fleet_info::SsFleetInfo,
     item_info::{
         SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsFwEffectInfo, SsImplantInfo,
         SsItemInfo, SsModuleInfo, SsProjEffectInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo,
