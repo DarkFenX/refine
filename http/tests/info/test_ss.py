@@ -54,3 +54,17 @@ def test_proj_effect(client):
     api_item.remove()
     with raises(AttributeError):
         api_ss.update().proj_effects  # pylint: disable=W0106
+
+
+def test_error_no_ss_full(client, consts):
+    # Send ID in correct format, but there is no solar system with such ID
+    client.create_sources()
+    resp = client.update_ss_request(ss_id='1', ss_info_mode=consts.ApiSsInfoMode.full).send()
+    resp.check(status_code=404, json_predicate={'code': 'SOL-001', 'message': 'no solar system with ID "1"'})
+
+
+def test_error_no_ss_id(client, consts):
+    # Send ID in correct format, but there is no solar system with such ID
+    client.create_sources()
+    resp = client.update_ss_request(ss_id='1', ss_info_mode=consts.ApiSsInfoMode.id).send()
+    resp.check(status_code=404, json_predicate={'code': 'SOL-001', 'message': 'no solar system with ID "1"'})
