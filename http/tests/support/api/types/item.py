@@ -12,7 +12,6 @@ if TYPE_CHECKING:
 
     from tests.support.api import ApiClient
     from tests.support.consts import ApiEffMode, ApiState
-    from tests.support.eve import EveObjects
     from tests.support.request import Request
 
 AttrVals = namedtuple('AttrVals', ('base', 'dogma', 'extra'))
@@ -21,7 +20,7 @@ EffectInfo = namedtuple('EffectInfo', ('running', 'mode'))
 
 class Item(AttrDict):
 
-    def __init__(self, client: ApiClient, data: EveObjects, ss_id: str):
+    def __init__(self, client: ApiClient, data: dict, ss_id: str):
         super().__init__(
             data=data,
             hooks={

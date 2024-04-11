@@ -216,6 +216,12 @@ class ApiFitInfoMode(StrEnum):
 
 
 @unique
+class ApiFleetInfoMode(StrEnum):
+    id = 'id'
+    full = 'full'
+
+
+@unique
 class ApiItemInfoMode(StrEnum):
     id = 'id'
     partial = 'partial'

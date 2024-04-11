@@ -10,13 +10,12 @@ if TYPE_CHECKING:
     from typing import Type, Union
 
     from tests.support.api import ApiClient
-    from tests.support.eve import EveObjects
     from tests.support.request import Request
 
 
 class SolarSystem(AttrDict):
 
-    def __init__(self, client: ApiClient, data: EveObjects):
+    def __init__(self, client: ApiClient, data: dict):
         super().__init__(
             data=data,
             hooks={'fits': AttrHookDef(

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import requests
 
 from tests.support import eve
-from tests.support.consts import ApiRack, ApiState, ApiSsInfoMode, ApiFitInfoMode, ApiItemInfoMode
+from tests.support.consts import ApiRack, ApiState, ApiSsInfoMode, ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
 from tests.support.request import Request
 from tests.support.response import Response
 from tests.support.util import Absent, Default, conditional_insert
@@ -167,6 +167,40 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='DELETE',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}')
+
+    # Fleet methods
+    def create_fleet_request(
+            self,
+            ss_id: str,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+    ) -> Request:
+        return Request(
+            self,
+            method='POST',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fleet',
+            params={'fleet': fleet_info_mode})
+
+    def update_fleet_request(
+            self,
+            ss_id: str,
+            fleet_id: str,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+    ) -> Request:
+        return Request(
+            self,
+            method='GET',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fleet/{fleet_id}',
+            params={'fleet': fleet_info_mode})
+
+    def remove_fleet_request(
+            self,
+            ss_id: str,
+            fleet_id: str,
+    ) -> Request:
+        return Request(
+            self,
+            method='DELETE',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fleet/{fleet_id}')
 
     # Generic item methods
     def get_item_request(
