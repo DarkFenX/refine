@@ -47,6 +47,7 @@ pub(crate) async fn change_ss(
         .execute_ss_commands(
             payload.commands,
             params.ss.into(),
+            params.fleet.into(),
             params.fit.into(),
             params.item.into(),
         )

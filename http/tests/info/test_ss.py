@@ -3,6 +3,18 @@
 from pytest import raises
 
 
+def test_fleet(client):
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fleet = api_ss.create_fleet()
+    api_ss.update()
+    assert len(api_ss.fleets) == 1
+    assert api_fleet.id in api_ss.fleets
+    assert api_ss.fleets[api_fleet.id].id == api_fleet.id
+    api_fleet.remove()
+    assert len(api_ss.update().fits) == 0
+
+
 def test_fit(client):
     client.create_sources()
     api_ss = client.create_ss()

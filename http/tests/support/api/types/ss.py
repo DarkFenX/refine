@@ -45,17 +45,6 @@ class SolarSystem(AttrDict):
         assert resp.status_code == 204
         self._client.created_sss.remove(self)
 
-    # Fit methods
-    def create_fit_request(self) -> Request:
-        return self._client.create_fit_request(ss_id=self.id)
-
-    def create_fit(self) -> Fit:
-        resp = self.create_fit_request().send()
-        assert resp.status_code == 201
-        fit = Fit(client=self._client, data=resp.json(), ss_id=self.id)
-        self.update()
-        return fit
-
     # Fleet methods
     def create_fleet_request(self) -> Request:
         return self._client.create_fleet_request(ss_id=self.id)
@@ -66,6 +55,17 @@ class SolarSystem(AttrDict):
         fleet = Fleet(client=self._client, data=resp.json(), ss_id=self.id)
         self.update()
         return fleet
+
+    # Fit methods
+    def create_fit_request(self) -> Request:
+        return self._client.create_fit_request(ss_id=self.id)
+
+    def create_fit(self) -> Fit:
+        resp = self.create_fit_request().send()
+        assert resp.status_code == 201
+        fit = Fit(client=self._client, data=resp.json(), ss_id=self.id)
+        self.update()
+        return fit
 
     # Generic item methods
     def get_item_request(self, item_id: str) -> Request:

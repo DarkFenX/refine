@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 use crate::{
     bridge::HGuardedSs,
-    info::{HFitInfoMode, HItemInfoMode, HSsInfo, HSsInfoMode},
+    info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSsInfo, HSsInfoMode},
     util::{HError, HErrorKind, HResult},
 };
 
@@ -24,6 +24,7 @@ impl HSsMgr {
         &self,
         src: rc::Src,
         ss_mode: HSsInfoMode,
+        fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> HSsInfo {
@@ -33,7 +34,7 @@ impl HSsMgr {
         let (core_ss, ss_info) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
             let mut core_ss = rc::SolarSystem::new(src);
-            let ss_info = HSsInfo::mk_info(id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            let ss_info = HSsInfo::mk_info(id_mv, &mut core_ss, ss_mode, fleet_mode, fit_mode, item_mode);
             (core_ss, ss_info)
         })
         .await;

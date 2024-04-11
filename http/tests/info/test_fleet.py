@@ -16,7 +16,7 @@ def test_error_no_fleet_id(client, consts):
     resp.check(status_code=404, json_predicate={'code': 'COR-017', 'message': 'core library error: fleet 1 not found'})
 
 
-def test_error_no_fleet_malformed(client, consts):
+def test_error_no_fleet_malformed(client):
     # Send ID in incorrect format
     client.create_sources()
     api_ss = client.create_ss()

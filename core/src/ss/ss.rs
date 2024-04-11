@@ -18,8 +18,8 @@ use crate::{
 // somewhat isolated.
 pub struct SolarSystem {
     pub(in crate::ss) src: Src,
-    pub(in crate::ss) fits: SsFits,
     pub(in crate::ss) fleets: SsFleets,
+    pub(in crate::ss) fits: SsFits,
     pub(in crate::ss) items: SsItems,
     pub(in crate::ss) sw_effects: HashSet<SsItemId>,
     pub(in crate::ss) proj_effects: HashSet<SsItemId>,
@@ -30,8 +30,8 @@ impl SolarSystem {
     pub fn new(src: Src) -> Self {
         Self {
             src,
-            fits: SsFits::new(),
             fleets: SsFleets::new(),
+            fits: SsFits::new(),
             items: SsItems::new(),
             sw_effects: HashSet::new(),
             proj_effects: HashSet::new(),

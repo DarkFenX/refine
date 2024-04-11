@@ -34,7 +34,13 @@ pub(crate) async fn create_ss(
     };
     let ss_info = state
         .ss_mgr
-        .add_ss(src, params.ss.into(), params.fit.into(), params.item.into())
+        .add_ss(
+            src,
+            params.ss.into(),
+            params.fleet.into(),
+            params.fit.into(),
+            params.item.into(),
+        )
         .await;
     (StatusCode::CREATED, Json(ss_info)).into_response()
 }

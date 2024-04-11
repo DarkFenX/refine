@@ -80,6 +80,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             data: Union[eve.EveObjects, Type[Default]] = Default,
             ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.id,
             fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
@@ -91,7 +92,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='POST',
             url=f'{self.__base_url}/solar_system',
-            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
+            params={'ss': ss_info_mode, 'fleet': fleet_info_mode, 'fit': fit_info_mode, 'item': item_info_mode},
             json=body)
 
     def create_ss(
@@ -113,6 +114,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             ss_id: str,
             ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.id,
             fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
@@ -120,7 +122,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}',
-            params={'ss': ss_info_mode, 'fit': fit_info_mode, 'item': item_info_mode})
+            params={'ss': ss_info_mode, 'fleet': fleet_info_mode, 'fit': fit_info_mode, 'item': item_info_mode})
 
     def remove_ss_request(self, ss_id: str) -> Request:
         return Request(
@@ -131,6 +133,40 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     def cleanup_sss(self) -> None:
         for ss in self.__created_sss.copy():
             ss.remove()
+
+    # Fleet methods
+    def create_fleet_request(
+            self,
+            ss_id: str,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+    ) -> Request:
+        return Request(
+            self,
+            method='POST',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fleet',
+            params={'fleet': fleet_info_mode})
+
+    def update_fleet_request(
+            self,
+            ss_id: str,
+            fleet_id: str,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+    ) -> Request:
+        return Request(
+            self,
+            method='GET',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fleet/{fleet_id}',
+            params={'fleet': fleet_info_mode})
+
+    def remove_fleet_request(
+            self,
+            ss_id: str,
+            fleet_id: str,
+    ) -> Request:
+        return Request(
+            self,
+            method='DELETE',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fleet/{fleet_id}')
 
     # Fit methods
     def create_fit_request(
@@ -167,40 +203,6 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='DELETE',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}')
-
-    # Fleet methods
-    def create_fleet_request(
-            self,
-            ss_id: str,
-            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
-    ) -> Request:
-        return Request(
-            self,
-            method='POST',
-            url=f'{self.__base_url}/solar_system/{ss_id}/fleet',
-            params={'fleet': fleet_info_mode})
-
-    def update_fleet_request(
-            self,
-            ss_id: str,
-            fleet_id: str,
-            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
-    ) -> Request:
-        return Request(
-            self,
-            method='GET',
-            url=f'{self.__base_url}/solar_system/{ss_id}/fleet/{fleet_id}',
-            params={'fleet': fleet_info_mode})
-
-    def remove_fleet_request(
-            self,
-            ss_id: str,
-            fleet_id: str,
-    ) -> Request:
-        return Request(
-            self,
-            method='DELETE',
-            url=f'{self.__base_url}/solar_system/{ss_id}/fleet/{fleet_id}')
 
     # Generic item methods
     def get_item_request(

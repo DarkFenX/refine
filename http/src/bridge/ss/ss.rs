@@ -26,6 +26,7 @@ impl HSolarSystem {
     pub(crate) async fn get_info(
         &mut self,
         ss_mode: HSsInfoMode,
+        fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> HResult<HSsInfo> {
@@ -34,7 +35,7 @@ impl HSolarSystem {
         let sync_span = tracing::trace_span!("sync");
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            let result = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fleet_mode, fit_mode, item_mode);
             (result, core_ss)
         })
         .await;
@@ -176,6 +177,7 @@ impl HSolarSystem {
         &mut self,
         commands: Vec<HSsCommand>,
         ss_mode: HSsInfoMode,
+        fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> HResult<(HSsInfo, Vec<HCmdResp>)> {
@@ -189,7 +191,7 @@ impl HSolarSystem {
                 let resp = command.execute(&mut core_ss).unwrap();
                 cmd_resps.push(resp);
             }
-            let ss_info = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fit_mode, item_mode);
+            let ss_info = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fleet_mode, fit_mode, item_mode);
             (core_ss, ss_info, cmd_resps)
         })
         .await;

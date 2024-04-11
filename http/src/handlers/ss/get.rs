@@ -22,7 +22,12 @@ pub(crate) async fn get_ss(
     let resp = match guarded_ss
         .lock()
         .await
-        .get_info(params.ss.into(), params.fit.into(), params.item.into())
+        .get_info(
+            params.ss.into(),
+            params.fleet.into(),
+            params.fit.into(),
+            params.item.into(),
+        )
         .await
     {
         Ok(ss_info) => (StatusCode::OK, Json(ss_info)).into_response(),
