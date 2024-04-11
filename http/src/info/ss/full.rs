@@ -14,13 +14,13 @@ pub(crate) struct HSsInfoFull {
 }
 impl HSsInfoFull {
     pub(in crate::info::ss) fn mk_info(
-        core_id: String,
+        ss_id: String,
         core_ss: &mut rc::SolarSystem,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> Self {
         Self {
-            id: core_id,
+            id: ss_id,
             fits: core_ss
                 .get_fit_ids()
                 .iter()
