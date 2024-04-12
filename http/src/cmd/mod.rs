@@ -4,6 +4,7 @@ pub(crate) use shared::HCmdResp;
 pub(crate) use ss::HSsCommand;
 
 mod fit;
+mod fleet;
 mod item;
 mod shared;
 mod ss;

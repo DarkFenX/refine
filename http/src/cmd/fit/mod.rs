@@ -1,38 +1,38 @@
-pub(in crate::cmd) use booster::{HAddBoosterCmd, HChangeBoosterCmd};
-pub(in crate::cmd) use character::{
+pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
+pub(in crate::cmd) use item_character::{
     HChangeCharacterCmd, HChangeCharacterViaFitIdCmd, HChangeCharacterViaItemIdCmd, HSetCharacterCmd,
 };
-pub(in crate::cmd) use charge::HChangeChargeCmd;
-pub(in crate::cmd) use drone::{HAddDroneCmd, HChangeDroneCmd};
-pub(in crate::cmd) use fighter::{HAddFighterCmd, HChangeFighterCmd};
-pub(in crate::cmd) use fw_effect::{HAddFwEffectCmd, HChangeFwEffectCmd};
-pub(in crate::cmd) use implant::{HAddImplantCmd, HChangeImplantCmd};
-pub(in crate::cmd) use module::{HAddModuleCmd, HChangeModuleCmd};
-pub(in crate::cmd) use rig::{HAddRigCmd, HChangeRigCmd};
-pub(in crate::cmd) use ship::{HChangeShipCmd, HChangeShipViaFitIdCmd, HChangeShipViaItemIdCmd, HSetShipCmd};
-pub(in crate::cmd) use skill::{HAddSkillCmd, HChangeSkillCmd};
-pub(in crate::cmd) use stance::{HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd};
-pub(in crate::cmd) use structure::{
+pub(in crate::cmd) use item_charge::HChangeChargeCmd;
+pub(in crate::cmd) use item_drone::{HAddDroneCmd, HChangeDroneCmd};
+pub(in crate::cmd) use item_fighter::{HAddFighterCmd, HChangeFighterCmd};
+pub(in crate::cmd) use item_fw_effect::{HAddFwEffectCmd, HChangeFwEffectCmd};
+pub(in crate::cmd) use item_implant::{HAddImplantCmd, HChangeImplantCmd};
+pub(in crate::cmd) use item_module::{HAddModuleCmd, HChangeModuleCmd};
+pub(in crate::cmd) use item_rig::{HAddRigCmd, HChangeRigCmd};
+pub(in crate::cmd) use item_ship::{HChangeShipCmd, HChangeShipViaFitIdCmd, HChangeShipViaItemIdCmd, HSetShipCmd};
+pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
+pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd};
+pub(in crate::cmd) use item_structure::{
     HChangeStructureCmd, HChangeStructureViaFitIdCmd, HChangeStructureViaItemIdCmd, HSetStructureCmd,
 };
-pub(in crate::cmd) use subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
+pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 
 use crate::cmd::HCmdResp;
 
-mod booster;
-mod character;
-mod charge;
-mod drone;
-mod fighter;
-mod fw_effect;
-mod implant;
-mod module;
-mod rig;
-mod ship;
-mod skill;
-mod stance;
-mod structure;
-mod subsystem;
+mod item_booster;
+mod item_character;
+mod item_charge;
+mod item_drone;
+mod item_fighter;
+mod item_fw_effect;
+mod item_implant;
+mod item_module;
+mod item_rig;
+mod item_ship;
+mod item_skill;
+mod item_stance;
+mod item_structure;
+mod item_subsystem;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
