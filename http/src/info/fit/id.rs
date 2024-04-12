@@ -8,7 +8,7 @@ pub(crate) struct HFitInfoId {
 }
 impl HFitInfoId {
     pub(in crate::info::fit) fn mk_info(core_ss: &rc::SolarSystem, fit_id: &rc::SsFitId) -> HResult<Self> {
-        let core_fit = core_ss.get_fit_info(fit_id)?;
+        let core_fit = core_ss.get_fit(fit_id)?;
         let info = Self { id: core_fit.id };
         Ok(info)
     }

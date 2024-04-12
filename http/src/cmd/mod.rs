@@ -1,7 +1,7 @@
-pub(crate) use fit::HFitCommand;
-pub(crate) use item::HItemCommand;
+pub(crate) use fit::HChangeFitCommand;
+pub(crate) use item::HChangeItemCommand;
 pub(crate) use shared::HCmdResp;
-pub(crate) use ss::HSsCommand;
+pub(crate) use ss::HChangeSsCommand;
 
 mod fit;
 mod fleet;

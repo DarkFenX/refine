@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HCmdResp, HFitCommand, HItemCommand, HSsCommand},
+    cmd::{HChangeFitCommand, HChangeItemCommand, HChangeSsCommand, HCmdResp},
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSsInfo, HSsInfoMode, MkItemInfo,
     },
@@ -50,7 +50,7 @@ impl HSolarSystem {
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
             let result = match core_ss.add_fit() {
-                Ok(fit_id) => HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode),
+                Ok(core_fit) => HFitInfo::mk_info(&mut core_ss, &core_fit.id, fit_mode, item_mode),
                 Err(e) => Err(e.into()),
             };
             (result, core_ss)
@@ -175,7 +175,7 @@ impl HSolarSystem {
     #[tracing::instrument(name = "ss-ss-cmd", level = "trace", skip_all)]
     pub(crate) async fn execute_ss_commands(
         &mut self,
-        commands: Vec<HSsCommand>,
+        commands: Vec<HChangeSsCommand>,
         ss_mode: HSsInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
@@ -202,7 +202,7 @@ impl HSolarSystem {
     pub(crate) async fn execute_fit_commands(
         &mut self,
         fit_id: &str,
-        commands: Vec<HFitCommand>,
+        commands: Vec<HChangeFitCommand>,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> HResult<(HFitInfo, Vec<HCmdResp>)> {
@@ -227,7 +227,7 @@ impl HSolarSystem {
     pub(crate) async fn execute_item_commands(
         &mut self,
         item_id: &str,
-        commands: Vec<HItemCommand>,
+        commands: Vec<HChangeItemCommand>,
         item_mode: HItemInfoMode,
     ) -> HResult<(HItemInfo, Vec<HCmdResp>)> {
         let item_id = self.str_to_item_id(item_id)?;

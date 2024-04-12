@@ -36,7 +36,7 @@ mod sw_effect;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-pub(crate) enum HItemCommand {
+pub(crate) enum HChangeItemCommand {
     ChangeCharacter(HChangeCharacterCmd),
     ChangeSkill(HChangeSkillCmd),
     ChangeImplant(HChangeImplantCmd),
@@ -54,7 +54,7 @@ pub(crate) enum HItemCommand {
     ChangeFwEffect(HChangeFwEffectCmd),
     ChangeProjEffect(HChangeProjEffectCmd),
 }
-impl HItemCommand {
+impl HChangeItemCommand {
     pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem, item_id: &rc::SsItemId) -> rc::Result<HCmdResp> {
         match self {
             Self::ChangeCharacter(cmd) => cmd.execute(core_ss, item_id),

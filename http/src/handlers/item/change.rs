@@ -6,7 +6,7 @@ use axum::{
 };
 
 use crate::{
-    cmd::{HCmdResp, HItemCommand},
+    cmd::{HChangeItemCommand, HCmdResp},
     handlers::{get_guarded_ss, item::HItemInfoParams, HGSsResult, HSingleErr},
     info::HItemInfo,
     state::HAppState,
@@ -15,7 +15,7 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HItemChangeReq {
-    commands: Vec<HItemCommand>,
+    commands: Vec<HChangeItemCommand>,
 }
 
 #[derive(serde::Serialize)]

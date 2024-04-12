@@ -11,7 +11,9 @@ pub(in crate::cmd) use item_module::{HAddModuleCmd, HChangeModuleCmd};
 pub(in crate::cmd) use item_rig::{HAddRigCmd, HChangeRigCmd};
 pub(in crate::cmd) use item_ship::{HChangeShipCmd, HChangeShipViaFitIdCmd, HChangeShipViaItemIdCmd, HSetShipCmd};
 pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
-pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd};
+pub(in crate::cmd) use item_stance::{
+    HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd,
+};
 pub(in crate::cmd) use item_structure::{
     HChangeStructureCmd, HChangeStructureViaFitIdCmd, HChangeStructureViaItemIdCmd, HSetStructureCmd,
 };
@@ -36,7 +38,7 @@ mod item_subsystem;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-pub(crate) enum HFitCommand {
+pub(crate) enum HChangeFitCommand {
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
     AddSkill(HAddSkillCmd),
@@ -65,7 +67,7 @@ pub(crate) enum HFitCommand {
     AddFwEffect(HAddFwEffectCmd),
     ChangeFwEffect(HChangeFwEffectCmd),
 }
-impl HFitCommand {
+impl HChangeFitCommand {
     pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
         match self {
             Self::SetCharacter(cmd) => cmd.execute(core_ss, fit_id),

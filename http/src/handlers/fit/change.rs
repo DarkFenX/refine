@@ -6,7 +6,7 @@ use axum::{
 };
 
 use crate::{
-    cmd::{HCmdResp, HFitCommand},
+    cmd::{HChangeFitCommand, HCmdResp},
     handlers::{fit::HFitInfoParams, get_guarded_ss, HGSsResult, HSingleErr},
     info::HFitInfo,
     state::HAppState,
@@ -15,7 +15,7 @@ use crate::{
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HFitChangeReq {
-    commands: Vec<HFitCommand>,
+    commands: Vec<HChangeFitCommand>,
 }
 
 #[derive(serde::Serialize)]

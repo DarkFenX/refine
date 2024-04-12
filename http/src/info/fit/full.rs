@@ -43,7 +43,7 @@ impl HFitInfoFull {
         fit_id: &rc::SsFitId,
         item_mode: HItemInfoMode,
     ) -> HResult<Self> {
-        let core_fit = core_ss.get_fit_info(fit_id)?;
+        let core_fit = core_ss.get_fit(fit_id)?;
         let fit = Self {
             id: *fit_id,
             character: core_fit

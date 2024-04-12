@@ -28,9 +28,9 @@ impl HSsInfoFull {
                 .filter_map(|fleet_id| HFleetInfo::mk_info(core_ss, fleet_id, fleet_mode).ok())
                 .collect(),
             fits: core_ss
-                .get_fit_ids()
+                .get_fits()
                 .iter()
-                .filter_map(|fit_id| HFitInfo::mk_info(core_ss, fit_id, fit_mode, item_mode).ok())
+                .filter_map(|fit| HFitInfo::mk_info(core_ss, &fit.id, fit_mode, item_mode).ok())
                 .collect(),
             sw_effects: core_ss
                 .get_sw_effect_infos()
