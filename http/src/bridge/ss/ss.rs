@@ -100,7 +100,7 @@ impl HSolarSystem {
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
             let result = match core_ss.add_fleet() {
-                Ok(fleet_id) => HFleetInfo::mk_info(&mut core_ss, &fleet_id, fleet_mode),
+                Ok(core_fleet) => HFleetInfo::mk_info(&mut core_ss, &core_fleet.id, fleet_mode),
                 Err(e) => Err(e.into()),
             };
             (result, core_ss)

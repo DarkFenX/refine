@@ -2,8 +2,14 @@
 #[serde(untagged)]
 pub(crate) enum HCmdResp {
     NoData,
-    ItemIds(HItemIdsResp),
     FitId(HFitIdResp),
+    FleetId(HFleetIdResp),
+    ItemIds(HItemIdsResp),
+}
+impl From<rc::SsFleetInfo> for HCmdResp {
+    fn from(core_fleet: rc::SsFleetInfo) -> Self {
+        HCmdResp::FleetId(core_fleet.into())
+    }
 }
 impl From<rc::SsFitInfo> for HCmdResp {
     fn from(core_fit: rc::SsFitInfo) -> Self {
@@ -83,6 +89,23 @@ impl From<rc::SsFwEffectInfo> for HCmdResp {
 impl From<rc::SsProjEffectInfo> for HCmdResp {
     fn from(core_proj_effect: rc::SsProjEffectInfo) -> Self {
         HCmdResp::ItemIds(core_proj_effect.into())
+    }
+}
+
+#[serde_with::serde_as]
+#[derive(serde::Serialize)]
+pub(crate) struct HFleetIdResp {
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    id: rc::SsFleetId,
+}
+impl HFleetIdResp {
+    fn new(fleet_id: rc::SsFleetId) -> Self {
+        Self { id: fleet_id }
+    }
+}
+impl From<rc::SsFleetInfo> for HFleetIdResp {
+    fn from(core_fleet: rc::SsFleetInfo) -> Self {
+        HFleetIdResp::new(core_fleet.id)
     }
 }
 

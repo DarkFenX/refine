@@ -1,4 +1,5 @@
 pub(in crate::cmd) use fit::{HCreateFitCmd, HDeleteFitCmd};
+pub(in crate::cmd) use fleet::{HCreateFleetCmd, HDeleteFleetCmd};
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(in crate::cmd) use item_character::{HChangeCharacterCmd, HSetCharacterCmd};
 pub(in crate::cmd) use item_charge::HChangeChargeCmd;
@@ -19,6 +20,7 @@ pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
 use crate::cmd::HCmdResp;
 
 mod fit;
+mod fleet;
 mod item_booster;
 mod item_character;
 mod item_charge;
@@ -39,6 +41,9 @@ mod item_sw_effect;
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeSsCommand {
+    // Fleet commands
+    CreateFleet(HCreateFleetCmd),
+    DeleteFleet(HDeleteFleetCmd),
     // Fit commands
     CreateFit(HCreateFitCmd),
     DeleteFit(HDeleteFitCmd),
@@ -78,6 +83,9 @@ pub(crate) enum HChangeSsCommand {
 impl HChangeSsCommand {
     pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
         match self {
+            // Fleet commands
+            Self::CreateFleet(cmd) => cmd.execute(core_ss),
+            Self::DeleteFleet(cmd) => cmd.execute(core_ss),
             // Fit commands
             Self::CreateFit(cmd) => cmd.execute(core_ss),
             Self::DeleteFit(cmd) => cmd.execute(core_ss),

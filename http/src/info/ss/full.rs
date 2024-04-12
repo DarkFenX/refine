@@ -23,14 +23,14 @@ impl HSsInfoFull {
         Self {
             id: ss_id,
             fleets: core_ss
-                .get_fleet_ids()
+                .get_fleets()
                 .iter()
-                .filter_map(|fleet_id| HFleetInfo::mk_info(core_ss, fleet_id, fleet_mode).ok())
+                .filter_map(|core_fleet| HFleetInfo::mk_info(core_ss, &core_fleet.id, fleet_mode).ok())
                 .collect(),
             fits: core_ss
                 .get_fits()
                 .iter()
-                .filter_map(|fit| HFitInfo::mk_info(core_ss, &fit.id, fit_mode, item_mode).ok())
+                .filter_map(|core_fit| HFitInfo::mk_info(core_ss, &core_fit.id, fit_mode, item_mode).ok())
                 .collect(),
             sw_effects: core_ss
                 .get_sw_effect_infos()

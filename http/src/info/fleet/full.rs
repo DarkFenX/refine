@@ -11,7 +11,7 @@ pub(crate) struct HFleetInfoFull {
 }
 impl HFleetInfoFull {
     pub(in crate::info::fleet) fn mk_info(core_ss: &mut rc::SolarSystem, fleet_id: &rc::SsFleetId) -> HResult<Self> {
-        let core_fleet = core_ss.get_fleet_info(fleet_id)?;
+        let core_fleet = core_ss.get_fleet(fleet_id)?;
         let fleet = Self {
             id: *fleet_id,
             fits: core_fleet.fits.clone(),
