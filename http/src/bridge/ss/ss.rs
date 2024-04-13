@@ -22,8 +22,8 @@ impl HSolarSystem {
     pub(crate) fn last_accessed(&self) -> &chrono::DateTime<chrono::Utc> {
         &self.accessed
     }
-    #[tracing::instrument(name = "ss-ss-info", level = "trace", skip_all)]
-    pub(crate) async fn get_info(
+    #[tracing::instrument(name = "ss-ss-get", level = "trace", skip_all)]
+    pub(crate) async fn get_ss(
         &mut self,
         ss_mode: HSsInfoMode,
         fleet_mode: HFleetInfoMode,
@@ -42,24 +42,34 @@ impl HSolarSystem {
         self.put_ss_back(core_ss);
         Ok(result)
     }
-    // Fit methods
-    #[tracing::instrument(name = "ss-fit-add", level = "trace", skip_all)]
-    pub(crate) async fn add_fit(&mut self, fit_mode: HFitInfoMode, item_mode: HItemInfoMode) -> HResult<HFitInfo> {
+    #[tracing::instrument(name = "ss-ss-chg", level = "trace", skip_all)]
+    pub(crate) async fn change_ss(
+        &mut self,
+        commands: Vec<HChangeSsCommand>,
+        ss_mode: HSsInfoMode,
+        fleet_mode: HFleetInfoMode,
+        fit_mode: HFitInfoMode,
+        item_mode: HItemInfoMode,
+    ) -> HResult<(HSsInfo, Vec<HCmdResp>)> {
         let mut core_ss = self.take_ss()?;
+        let ss_id_mv = self.id.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+        let (core_ss, ss_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = match core_ss.add_fit() {
-                Ok(core_fit) => HFitInfo::mk_info(&mut core_ss, &core_fit.id, fit_mode, item_mode),
-                Err(e) => Err(e.into()),
-            };
-            (result, core_ss)
+            let mut cmd_resps = Vec::with_capacity(commands.len());
+            for command in commands.iter() {
+                let resp = command.execute(&mut core_ss).unwrap();
+                cmd_resps.push(resp);
+            }
+            let ss_info = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fleet_mode, fit_mode, item_mode);
+            (core_ss, ss_info, cmd_resps)
         })
         .await;
         self.put_ss_back(core_ss);
-        result
+        Ok((ss_info, cmd_resps))
     }
-    #[tracing::instrument(name = "ss-fit-info", level = "trace", skip_all)]
+    // Fit methods
+    #[tracing::instrument(name = "ss-fit-get", level = "trace", skip_all)]
     pub(crate) async fn get_fit(
         &mut self,
         fit_id: &str,
@@ -78,6 +88,47 @@ impl HSolarSystem {
         self.put_ss_back(core_ss);
         result
     }
+    #[tracing::instrument(name = "ss-fit-add", level = "trace", skip_all)]
+    pub(crate) async fn add_fit(&mut self, fit_mode: HFitInfoMode, item_mode: HItemInfoMode) -> HResult<HFitInfo> {
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let result = match core_ss.add_fit() {
+                Ok(core_fit) => HFitInfo::mk_info(&mut core_ss, &core_fit.id, fit_mode, item_mode),
+                Err(e) => Err(e.into()),
+            };
+            (result, core_ss)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        result
+    }
+    #[tracing::instrument(name = "ss-fit-chg", level = "trace", skip_all)]
+    pub(crate) async fn change_fit(
+        &mut self,
+        fit_id: &str,
+        commands: Vec<HChangeFitCommand>,
+        fit_mode: HFitInfoMode,
+        item_mode: HItemInfoMode,
+    ) -> HResult<(HFitInfo, Vec<HCmdResp>)> {
+        let fit_id = self.str_to_fit_id(fit_id)?;
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_ss, fit_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let mut cmd_resps = Vec::with_capacity(commands.len());
+            for command in commands.iter() {
+                let resp = command.execute(&mut core_ss, &fit_id).unwrap();
+                cmd_resps.push(resp);
+            }
+            let info = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
+            (core_ss, info, cmd_resps)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        Ok((fit_info?, cmd_resps))
+    }
     #[tracing::instrument(name = "ss-fit-del", level = "trace", skip_all)]
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> HResult<()> {
         let fit_id = self.str_to_fit_id(fit_id)?;
@@ -93,6 +144,20 @@ impl HSolarSystem {
         result
     }
     // Fleet methods
+    #[tracing::instrument(name = "ss-fleet-get", level = "trace", skip_all)]
+    pub(crate) async fn get_fleet(&mut self, fleet_id: &str, fleet_mode: HFleetInfoMode) -> HResult<HFleetInfo> {
+        let fleet_id = self.str_to_fleet_id(fleet_id)?;
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let result = HFleetInfo::mk_info(&mut core_ss, &fleet_id, fleet_mode);
+            (result, core_ss)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        result
+    }
     #[tracing::instrument(name = "ss-fleet-add", level = "trace", skip_all)]
     pub(crate) async fn add_fleet(&mut self, fleet_mode: HFleetInfoMode) -> HResult<HFleetInfo> {
         let mut core_ss = self.take_ss()?;
@@ -103,20 +168,6 @@ impl HSolarSystem {
                 Ok(core_fleet) => HFleetInfo::mk_info(&mut core_ss, &core_fleet.id, fleet_mode),
                 Err(e) => Err(e.into()),
             };
-            (result, core_ss)
-        })
-        .await;
-        self.put_ss_back(core_ss);
-        result
-    }
-    #[tracing::instrument(name = "ss-fleet-info", level = "trace", skip_all)]
-    pub(crate) async fn get_fleet(&mut self, fleet_id: &str, fleet_mode: HFleetInfoMode) -> HResult<HFleetInfo> {
-        let fleet_id = self.str_to_fleet_id(fleet_id)?;
-        let mut core_ss = self.take_ss()?;
-        let sync_span = tracing::trace_span!("sync");
-        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let result = HFleetInfo::mk_info(&mut core_ss, &fleet_id, fleet_mode);
             (result, core_ss)
         })
         .await;
@@ -170,7 +221,7 @@ impl HSolarSystem {
         self.put_ss_back(core_ss);
         Ok(item_info)
     }
-    #[tracing::instrument(name = "ss-item-change", level = "trace", skip_all)]
+    #[tracing::instrument(name = "ss-item-chg", level = "trace", skip_all)]
     pub(crate) async fn change_item(
         &mut self,
         item_id: &str,
@@ -204,58 +255,6 @@ impl HSolarSystem {
         .await;
         self.put_ss_back(core_ss);
         result
-    }
-    // Command methods
-    #[tracing::instrument(name = "ss-ss-cmd", level = "trace", skip_all)]
-    pub(crate) async fn execute_change_ss_commands(
-        &mut self,
-        commands: Vec<HChangeSsCommand>,
-        ss_mode: HSsInfoMode,
-        fleet_mode: HFleetInfoMode,
-        fit_mode: HFitInfoMode,
-        item_mode: HItemInfoMode,
-    ) -> HResult<(HSsInfo, Vec<HCmdResp>)> {
-        let mut core_ss = self.take_ss()?;
-        let ss_id_mv = self.id.clone();
-        let sync_span = tracing::trace_span!("sync");
-        let (core_ss, ss_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let mut cmd_resps = Vec::with_capacity(commands.len());
-            for command in commands.iter() {
-                let resp = command.execute(&mut core_ss).unwrap();
-                cmd_resps.push(resp);
-            }
-            let ss_info = HSsInfo::mk_info(ss_id_mv, &mut core_ss, ss_mode, fleet_mode, fit_mode, item_mode);
-            (core_ss, ss_info, cmd_resps)
-        })
-        .await;
-        self.put_ss_back(core_ss);
-        Ok((ss_info, cmd_resps))
-    }
-    #[tracing::instrument(name = "ss-fit-cmd", level = "trace", skip_all)]
-    pub(crate) async fn execute_change_fit_commands(
-        &mut self,
-        fit_id: &str,
-        commands: Vec<HChangeFitCommand>,
-        fit_mode: HFitInfoMode,
-        item_mode: HItemInfoMode,
-    ) -> HResult<(HFitInfo, Vec<HCmdResp>)> {
-        let fit_id = self.str_to_fit_id(fit_id)?;
-        let mut core_ss = self.take_ss()?;
-        let sync_span = tracing::trace_span!("sync");
-        let (core_ss, fit_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let mut cmd_resps = Vec::with_capacity(commands.len());
-            for command in commands.iter() {
-                let resp = command.execute(&mut core_ss, &fit_id).unwrap();
-                cmd_resps.push(resp);
-            }
-            let info = HFitInfo::mk_info(&mut core_ss, &fit_id, fit_mode, item_mode);
-            (core_ss, info, cmd_resps)
-        })
-        .await;
-        self.put_ss_back(core_ss);
-        Ok((fit_info?, cmd_resps))
     }
     // Helper methods
     fn take_ss(&mut self) -> HResult<rc::SolarSystem> {

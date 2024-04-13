@@ -22,7 +22,7 @@ pub(crate) async fn get_ss(
     let resp = match guarded_ss
         .lock()
         .await
-        .get_info(
+        .get_ss(
             params.ss.into(),
             params.fleet.into(),
             params.fit.into(),

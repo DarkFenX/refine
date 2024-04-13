@@ -44,7 +44,7 @@ pub(crate) async fn change_ss(
     let resp = match guarded_ss
         .lock()
         .await
-        .execute_change_ss_commands(
+        .change_ss(
             payload.commands,
             params.ss.into(),
             params.fleet.into(),
