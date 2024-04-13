@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HAddItemCommand, HChangeFitCommand, HChangeItemCommand, HChangeSsCommand, HCmdResp},
+    cmd::{HAddItemCommand, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSsCommand, HCmdResp},
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSsInfo, HSsInfoMode, MkItemInfo,
     },
@@ -22,6 +22,7 @@ impl HSolarSystem {
     pub(crate) fn last_accessed(&self) -> &chrono::DateTime<chrono::Utc> {
         &self.accessed
     }
+    // Solar system methods
     #[tracing::instrument(name = "ss-ss-get", level = "trace", skip_all)]
     pub(crate) async fn get_ss(
         &mut self,
@@ -67,6 +68,72 @@ impl HSolarSystem {
         .await;
         self.put_ss_back(core_ss);
         Ok((ss_info, cmd_resps))
+    }
+    // Fleet methods
+    #[tracing::instrument(name = "ss-fleet-get", level = "trace", skip_all)]
+    pub(crate) async fn get_fleet(&mut self, fleet_id: &str, fleet_mode: HFleetInfoMode) -> HResult<HFleetInfo> {
+        let fleet_id = self.str_to_fleet_id(fleet_id)?;
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let result = HFleetInfo::mk_info(&mut core_ss, &fleet_id, fleet_mode);
+            (result, core_ss)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        result
+    }
+    #[tracing::instrument(name = "ss-fleet-add", level = "trace", skip_all)]
+    pub(crate) async fn add_fleet(&mut self, fleet_mode: HFleetInfoMode) -> HResult<HFleetInfo> {
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let result = match core_ss.add_fleet() {
+                Ok(core_fleet) => HFleetInfo::mk_info(&mut core_ss, &core_fleet.id, fleet_mode),
+                Err(e) => Err(e.into()),
+            };
+            (result, core_ss)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        result
+    }
+    #[tracing::instrument(name = "ss-fleet-chg", level = "trace", skip_all)]
+    pub(crate) async fn change_fleet(
+        &mut self,
+        fleet_id: &str,
+        command: HChangeFleetCmd,
+        fleet_mode: HFleetInfoMode,
+    ) -> HResult<HFleetInfo> {
+        let fleet_id = self.str_to_fleet_id(fleet_id)?;
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_ss, fleet_info) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            command.execute(&mut core_ss, &fleet_id).unwrap();
+            let core_info = core_ss.get_fleet(&fleet_id).unwrap();
+            let info = HFleetInfo::mk_info(&mut core_ss, &core_info.id, fleet_mode).unwrap();
+            (core_ss, info)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        Ok(fleet_info)
+    }
+    #[tracing::instrument(name = "ss-fleet-del", level = "trace", skip_all)]
+    pub(crate) async fn remove_fleet(&mut self, fleet_id: &str) -> HResult<()> {
+        let fleet_id = self.str_to_fleet_id(fleet_id)?;
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let result = core_ss.remove_fleet(&fleet_id).map_err(|e| e.into());
+            (result, core_ss)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        result
     }
     // Fit methods
     #[tracing::instrument(name = "ss-fit-get", level = "trace", skip_all)]
@@ -137,51 +204,6 @@ impl HSolarSystem {
         let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
             let result = core_ss.remove_fit(&fit_id).map_err(|e| e.into());
-            (result, core_ss)
-        })
-        .await;
-        self.put_ss_back(core_ss);
-        result
-    }
-    // Fleet methods
-    #[tracing::instrument(name = "ss-fleet-get", level = "trace", skip_all)]
-    pub(crate) async fn get_fleet(&mut self, fleet_id: &str, fleet_mode: HFleetInfoMode) -> HResult<HFleetInfo> {
-        let fleet_id = self.str_to_fleet_id(fleet_id)?;
-        let mut core_ss = self.take_ss()?;
-        let sync_span = tracing::trace_span!("sync");
-        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let result = HFleetInfo::mk_info(&mut core_ss, &fleet_id, fleet_mode);
-            (result, core_ss)
-        })
-        .await;
-        self.put_ss_back(core_ss);
-        result
-    }
-    #[tracing::instrument(name = "ss-fleet-add", level = "trace", skip_all)]
-    pub(crate) async fn add_fleet(&mut self, fleet_mode: HFleetInfoMode) -> HResult<HFleetInfo> {
-        let mut core_ss = self.take_ss()?;
-        let sync_span = tracing::trace_span!("sync");
-        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let result = match core_ss.add_fleet() {
-                Ok(core_fleet) => HFleetInfo::mk_info(&mut core_ss, &core_fleet.id, fleet_mode),
-                Err(e) => Err(e.into()),
-            };
-            (result, core_ss)
-        })
-        .await;
-        self.put_ss_back(core_ss);
-        result
-    }
-    #[tracing::instrument(name = "ss-fleet-del", level = "trace", skip_all)]
-    pub(crate) async fn remove_fleet(&mut self, fleet_id: &str) -> HResult<()> {
-        let fleet_id = self.str_to_fleet_id(fleet_id)?;
-        let mut core_ss = self.take_ss()?;
-        let sync_span = tracing::trace_span!("sync");
-        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let result = core_ss.remove_fleet(&fleet_id).map_err(|e| e.into());
             (result, core_ss)
         })
         .await;

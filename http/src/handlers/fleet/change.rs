@@ -6,7 +6,7 @@ use axum::{
 };
 
 use crate::{
-    cmd::HChangeItemCommand,
+    cmd::HChangeFleetCmd,
     handlers::{fleet::HFleetInfoParams, get_guarded_ss, HGSsResult, HSingleErr},
     state::HAppState,
     util::HErrorKind,
@@ -16,7 +16,7 @@ pub(crate) async fn change_fleet(
     State(state): State<HAppState>,
     Path((ss_id, fleet_id)): Path<(String, String)>,
     Query(params): Query<HFleetInfoParams>,
-    Json(payload): Json<HChangeItemCommand>,
+    Json(payload): Json<HChangeFleetCmd>,
 ) -> impl IntoResponse {
     let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
         HGSsResult::Ss(ss) => ss,
@@ -25,7 +25,7 @@ pub(crate) async fn change_fleet(
     let resp = match guarded_ss
         .lock()
         .await
-        .change_item(&item_id, payload, params.item.into())
+        .change_fleet(&fleet_id, payload, params.fleet.into())
         .await
     {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),
