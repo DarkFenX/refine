@@ -42,7 +42,7 @@ impl SolarSystem {
         self.items.get_skill_mut(item_id)?.level = level;
         // TODO: change it to use attribute overrides, and make calc_force_attr_recalc private
         self.svcs.calc_force_attr_recalc(
-            &SsView::new(&self.src, &self.fits, &self.items),
+            &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
             item_id,
             &ec::attrs::SKILL_LEVEL,
         );

@@ -35,7 +35,7 @@ impl SolarSystem {
         if new_state != old_state {
             let item = self.items.get_item(item_id).unwrap();
             self.svcs.switch_item_state(
-                &SsView::new(&self.src, &self.fits, &self.items),
+                &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
                 item,
                 old_state,
                 new_state,

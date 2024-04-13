@@ -41,13 +41,13 @@ impl SolarSystem {
         if let Some(charge_id) = charge_id_opt {
             let charge = self.items.get_item(&charge_id)?;
             self.svcs
-                .remove_item(&SsView::new(&self.src, &self.fits, &self.items), charge);
+                .remove_item(&SsView::new(&self.src, &self.fleets, &self.fits, &self.items), charge);
             self.items.remove_item(&charge_id);
         };
         // Handle item itself
         let main = self.items.get_item(item_id)?;
         self.svcs
-            .remove_item(&SsView::new(&self.src, &self.fits, &self.items), &main);
+            .remove_item(&SsView::new(&self.src, &self.fleets, &self.fits, &self.items), &main);
         if let Some(fit_id) = main.get_fit_id() {
             let fit = self.fits.get_fit_mut(&fit_id)?;
             fit.remove_item(main);
@@ -94,6 +94,6 @@ impl SolarSystem {
         self.items.add_item(item);
         let item = self.items.get_item(&item_id).unwrap();
         self.svcs
-            .add_item(&SsView::new(&self.src, &self.fits, &self.items), item);
+            .add_item(&SsView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
     }
 }

@@ -49,17 +49,20 @@ impl SolarSystem {
     }
     // Item attributes
     pub fn get_item_attr(&mut self, item_id: &SsItemId, attr_id: &EAttrId) -> Result<SsAttrVal> {
-        self.svcs
-            .calc_get_item_attr_val(&SsView::new(&self.src, &self.fits, &self.items), item_id, attr_id)
+        self.svcs.calc_get_item_attr_val(
+            &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            item_id,
+            attr_id,
+        )
     }
     pub fn get_item_attrs(&mut self, item_id: &SsItemId) -> Result<HashMap<EAttrId, SsAttrVal>> {
         self.svcs
-            .calc_get_item_attr_vals(&SsView::new(&self.src, &self.fits, &self.items), item_id)
+            .calc_get_item_attr_vals(&SsView::new(&self.src, &self.fleets, &self.fits, &self.items), item_id)
     }
     // Item modifications
     pub fn get_item_modifiers(&mut self, item_id: &SsItemId) -> Result<HashMap<EAttrId, Vec<ModInfo>>> {
         self.svcs
-            .calc_get_item_mods(&SsView::new(&self.src, &self.fits, &self.items), item_id)
+            .calc_get_item_mods(&SsView::new(&self.src, &self.fleets, &self.fits, &self.items), item_id)
     }
     // Item effects
     pub fn get_item_effects(&self, item_id: &SsItemId) -> Result<HashMap<EEffectId, EffectInfo>> {
@@ -80,8 +83,11 @@ impl SolarSystem {
             .get_effect_modes_mut()
             .set(*effect_id, mode);
         let item = self.items.get_item(item_id).unwrap();
-        self.svcs
-            .process_effects(&SsView::new(&self.src, &self.fits, &self.items), item, item.get_state());
+        self.svcs.process_effects(
+            &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            item,
+            item.get_state(),
+        );
         Ok(())
     }
     pub fn set_item_effect_modes(
@@ -94,8 +100,11 @@ impl SolarSystem {
             effect_modes.set(*effect_id, *effect_mode)
         }
         let item = self.items.get_item(item_id).unwrap();
-        self.svcs
-            .process_effects(&SsView::new(&self.src, &self.fits, &self.items), item, item.get_state());
+        self.svcs.process_effects(
+            &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            item,
+            item.get_state(),
+        );
         Ok(())
     }
 }
