@@ -1,10 +1,11 @@
-pub(crate) use fit::HChangeFitCommand;
-pub(crate) use item::HChangeItemCommand;
+pub(crate) use change_fit::HChangeFitCommand;
+pub(crate) use change_item::HChangeItemCommand;
+pub(crate) use change_ss::HChangeSsCommand;
 pub(crate) use shared::HCmdResp;
-pub(crate) use ss::HChangeSsCommand;
 
-mod fit;
-mod fleet;
-mod item;
+mod add_item;
+mod change_fit;
+mod change_fleet;
+mod change_item;
+mod change_ss;
 mod shared;
-mod ss;
