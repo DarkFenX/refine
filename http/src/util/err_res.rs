@@ -11,8 +11,8 @@ pub(crate) enum HErrorKind {
     FleetIdCastFailed(String),
     ItemIdCastFailed(String),
     SettingsInitFailed(String),
-    EdhInitFailed(rdhe::ErrorKind, String),
-    SrcInitFailed(rc::ErrorKind, String),
+    EdhInitFailed(String),
+    SrcInitFailed(String),
     CoreError(rc::ErrorKind, String),
 }
 
@@ -35,8 +35,8 @@ impl HError {
             HErrorKind::FleetIdCastFailed(_) => "IDC-002",
             HErrorKind::ItemIdCastFailed(_) => "IDC-003",
             HErrorKind::SettingsInitFailed(_) => "CFG-001",
-            HErrorKind::EdhInitFailed(_, _) => "EDH-001",
-            HErrorKind::SrcInitFailed(_, _) => "SIN-001",
+            HErrorKind::EdhInitFailed(_) => "EDH-001",
+            HErrorKind::SrcInitFailed(_) => "SIN-001",
             HErrorKind::CoreError(k, _) => match k {
                 rc::ErrorKind::DhHttpInvalidBaseUrl(_, _) => "COR-001",
                 rc::ErrorKind::SrcADataGenFailed(_) => "COR-002",
@@ -79,8 +79,8 @@ impl fmt::Display for HError {
             HErrorKind::FleetIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
             HErrorKind::ItemIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
             HErrorKind::SettingsInitFailed(reason) => write!(f, "config initialization failed: {reason}"),
-            HErrorKind::EdhInitFailed(_, reason) => write!(f, "EVE data handler initialization failed: {reason}"),
-            HErrorKind::SrcInitFailed(_, reason) => write!(f, "source initialization failed: {reason}"),
+            HErrorKind::EdhInitFailed(reason) => write!(f, "EVE data handler initialization failed: {reason}"),
+            HErrorKind::SrcInitFailed(reason) => write!(f, "source initialization failed: {reason}"),
             HErrorKind::CoreError(_, reason) => write!(f, "core library error: {reason}"),
         }
     }

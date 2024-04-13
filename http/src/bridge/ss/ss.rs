@@ -138,20 +138,7 @@ impl HSolarSystem {
         result
     }
     // Item methods
-    #[tracing::instrument(name = "ss-item-add", level = "trace", skip_all)]
-    pub(crate) async fn add_item(&mut self, command: HAddItemCommand, item_mode: HItemInfoMode) -> HResult<HItemInfo> {
-        let mut core_ss = self.take_ss()?;
-        let sync_span = tracing::trace_span!("sync");
-        let (core_ss, item_info) = tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let item_info = command.execute(&mut core_ss, item_mode).unwrap();
-            (core_ss, item_info)
-        })
-        .await;
-        self.put_ss_back(core_ss);
-        Ok(item_info)
-    }
-    #[tracing::instrument(name = "ss-item-info", level = "trace", skip_all)]
+    #[tracing::instrument(name = "ss-item-get", level = "trace", skip_all)]
     pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: HItemInfoMode) -> HResult<HItemInfo> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_ss = self.take_ss()?;
@@ -169,6 +156,40 @@ impl HSolarSystem {
         .await;
         self.put_ss_back(core_ss);
         result
+    }
+    #[tracing::instrument(name = "ss-item-add", level = "trace", skip_all)]
+    pub(crate) async fn add_item(&mut self, command: HAddItemCommand, item_mode: HItemInfoMode) -> HResult<HItemInfo> {
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_ss, item_info) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let item_info = command.execute(&mut core_ss, item_mode).unwrap();
+            (core_ss, item_info)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        Ok(item_info)
+    }
+    #[tracing::instrument(name = "ss-item-change", level = "trace", skip_all)]
+    pub(crate) async fn change_item(
+        &mut self,
+        item_id: &str,
+        command: HChangeItemCommand,
+        item_mode: HItemInfoMode,
+    ) -> HResult<HItemInfo> {
+        let item_id = self.str_to_item_id(item_id)?;
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_ss, item_info) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            command.execute(&mut core_ss, &item_id).unwrap();
+            let core_info = core_ss.get_item_info(&item_id).unwrap();
+            let info = HItemInfo::mk_info(&mut core_ss, &core_info, item_mode);
+            (core_ss, info)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        Ok(item_info)
     }
     #[tracing::instrument(name = "ss-item-del", level = "trace", skip_all)]
     pub(crate) async fn remove_item(&mut self, item_id: &str) -> HResult<()> {
@@ -235,31 +256,6 @@ impl HSolarSystem {
         .await;
         self.put_ss_back(core_ss);
         Ok((fit_info?, cmd_resps))
-    }
-    #[tracing::instrument(name = "ss-item-cmd", level = "trace", skip_all)]
-    pub(crate) async fn execute_change_item_commands(
-        &mut self,
-        item_id: &str,
-        commands: Vec<HChangeItemCommand>,
-        item_mode: HItemInfoMode,
-    ) -> HResult<(HItemInfo, Vec<HCmdResp>)> {
-        let item_id = self.str_to_item_id(item_id)?;
-        let mut core_ss = self.take_ss()?;
-        let sync_span = tracing::trace_span!("sync");
-        let (core_ss, item_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
-            let _sg = sync_span.enter();
-            let mut cmd_resps = Vec::with_capacity(commands.len());
-            for command in commands.iter() {
-                let resp = command.execute(&mut core_ss, &item_id).unwrap();
-                cmd_resps.push(resp);
-            }
-            let core_info = core_ss.get_item_info(&item_id).unwrap();
-            let info = HItemInfo::mk_info(&mut core_ss, &core_info, item_mode);
-            (core_ss, info, cmd_resps)
-        })
-        .await;
-        self.put_ss_back(core_ss);
-        Ok((item_info, cmd_resps))
     }
     // Helper methods
     fn take_ss(&mut self) -> HResult<rc::SolarSystem> {

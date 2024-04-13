@@ -50,8 +50,8 @@ class Fit(AttrDict):
 
     def set_char(self, type_id: int) -> Item:
         resp = self.set_char_request(type_id=type_id).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Skill methods
@@ -71,8 +71,8 @@ class Fit(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Item:
         resp = self.add_skill_request(type_id=type_id, level=level, state=state).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Implant methods
@@ -89,8 +89,8 @@ class Fit(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Item:
         resp = self.add_implant_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Booster methods
@@ -107,8 +107,8 @@ class Fit(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Item:
         resp = self.add_booster_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Ship methods
@@ -117,8 +117,8 @@ class Fit(AttrDict):
 
     def set_ship(self, type_id: int) -> Item:
         resp = self.set_ship_request(type_id=type_id).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Structure methods
@@ -127,8 +127,8 @@ class Fit(AttrDict):
 
     def set_struct(self, type_id: int) -> Item:
         resp = self.set_struct_request(type_id=type_id).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Stance methods
@@ -137,8 +137,8 @@ class Fit(AttrDict):
 
     def set_stance(self, type_id: int) -> Item:
         resp = self.set_stance_request(type_id=type_id).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Subsystem methods
@@ -155,8 +155,8 @@ class Fit(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Item:
         resp = self.add_subsystem_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Module methods
@@ -186,8 +186,8 @@ class Fit(AttrDict):
             state=state,
             charge_type_id=charge_type_id,
             mode=mode).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Rig methods
@@ -204,8 +204,8 @@ class Fit(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Item:
         resp = self.add_rig_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Drone methods
@@ -222,8 +222,8 @@ class Fit(AttrDict):
             state: str = ApiState.offline,
     ) -> Item:
         resp = self.add_drone_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Fighter methods
@@ -240,8 +240,8 @@ class Fit(AttrDict):
             state: str = ApiState.offline,
     ) -> Item:
         resp = self.add_fighter_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
     # Fit-wide effect methods
@@ -258,6 +258,6 @@ class Fit(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Item:
         resp = self.add_fw_effect_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 200
-        item = Item(client=self._client, data=resp.json()['cmd_results'][0], ss_id=self._ss_id)
+        assert resp.status_code == 201
+        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item

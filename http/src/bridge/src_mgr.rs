@@ -118,7 +118,7 @@ fn create_src(
     let dh = Box::new(
         rdhe::PhbHttpEdh::new(data_base_url.as_str(), data_version).map_err(|e| {
             let reason = format!("{e}");
-            HError::new(HErrorKind::EdhInitFailed(e.kind, reason))
+            HError::new(HErrorKind::EdhInitFailed(reason))
         })?,
     );
     let ch: Box<dyn rc::ad::AdaptedDataHandler> = match cache_folder {
@@ -129,6 +129,6 @@ fn create_src(
     };
     rc::Src::new(dh, ch).map_err(|e| {
         let reason = format!("{e}");
-        HError::new(HErrorKind::SrcInitFailed(e.kind, reason))
+        HError::new(HErrorKind::SrcInitFailed(reason))
     })
 }

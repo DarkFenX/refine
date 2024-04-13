@@ -31,8 +31,8 @@ pub(crate) async fn create_source(
         Err(e) => {
             let code = match e.kind {
                 HErrorKind::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
-                HErrorKind::EdhInitFailed(_, _) => StatusCode::BAD_REQUEST,
-                HErrorKind::SrcInitFailed(_, _) => StatusCode::UNPROCESSABLE_ENTITY,
+                HErrorKind::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
+                HErrorKind::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(HSingleErr::from(e))).into_response()
