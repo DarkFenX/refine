@@ -31,8 +31,8 @@ pub(crate) async fn change_fleet(
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),
         Err(e) => {
             let code = match e.kind {
-                HErrorKind::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HErrorKind::CoreError(rc::ErrorKind::ItemIdNotFound(_), _) => StatusCode::NOT_FOUND,
+                HErrorKind::FleetIdCastFailed(_) => StatusCode::NOT_FOUND,
+                HErrorKind::CoreError(rc::ErrorKind::FleetNotFound(_), _) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(HSingleErr::from(e))).into_response()
