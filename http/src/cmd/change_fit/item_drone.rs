@@ -9,8 +9,12 @@ pub(crate) struct HAddDroneCmd {
     state: HState,
 }
 impl HAddDroneCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        Ok(core_ss.add_drone(*fit_id, self.type_id, (&self.state).into())?.into())
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> rc::Result<rc::SsDroneInfo> {
+        core_ss.add_drone(*fit_id, self.type_id, (&self.state).into())
     }
 }
 

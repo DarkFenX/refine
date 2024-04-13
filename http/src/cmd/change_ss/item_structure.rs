@@ -9,7 +9,7 @@ pub(crate) struct HSetStructureCmd {
     fit_cmd: change_fit::HSetStructureCmd,
 }
 impl HSetStructureCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<rc::SsStructureInfo> {
         self.fit_cmd.execute(core_ss, &self.fit_id)
     }
 }

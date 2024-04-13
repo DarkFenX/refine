@@ -12,17 +12,19 @@ pub(crate) struct HAddModuleCmd {
     charge_type_id: Option<rc::EItemId>,
 }
 impl HAddModuleCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        Ok(core_ss
-            .add_module(
-                *fit_id,
-                (&self.rack).into(),
-                (&self.add_mode).into(),
-                self.type_id,
-                (&self.state).into(),
-                self.charge_type_id,
-            )?
-            .into())
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> rc::Result<rc::SsModuleInfo> {
+        core_ss.add_module(
+            *fit_id,
+            (&self.rack).into(),
+            (&self.add_mode).into(),
+            self.type_id,
+            (&self.state).into(),
+            self.charge_type_id,
+        )
     }
 }
 

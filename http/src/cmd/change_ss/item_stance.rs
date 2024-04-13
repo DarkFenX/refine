@@ -9,7 +9,7 @@ pub(crate) struct HSetStanceCmd {
     fit_cmd: change_fit::HSetStanceCmd,
 }
 impl HSetStanceCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<rc::SsStanceInfo> {
         self.fit_cmd.execute(core_ss, &self.fit_id)
     }
 }

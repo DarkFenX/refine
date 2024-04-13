@@ -6,10 +6,12 @@ pub(crate) struct HSetStructureCmd {
     state: Option<bool>,
 }
 impl HSetStructureCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        Ok(core_ss
-            .set_fit_structure(*fit_id, self.type_id, self.state.unwrap_or(true))?
-            .into())
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> rc::Result<rc::SsStructureInfo> {
+        core_ss.set_fit_structure(*fit_id, self.type_id, self.state.unwrap_or(true))
     }
 }
 

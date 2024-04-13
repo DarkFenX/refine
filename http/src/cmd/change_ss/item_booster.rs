@@ -9,7 +9,7 @@ pub(crate) struct HAddBoosterCmd {
     fit_cmd: change_fit::HAddBoosterCmd,
 }
 impl HAddBoosterCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<rc::SsBoosterInfo> {
         self.fit_cmd.execute(core_ss, &self.fit_id)
     }
 }

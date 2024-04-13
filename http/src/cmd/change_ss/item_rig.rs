@@ -9,7 +9,7 @@ pub(crate) struct HAddRigCmd {
     fit_cmd: change_fit::HAddRigCmd,
 }
 impl HAddRigCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<rc::SsRigInfo> {
         self.fit_cmd.execute(core_ss, &self.fit_id)
     }
 }

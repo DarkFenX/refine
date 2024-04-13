@@ -9,8 +9,12 @@ pub(crate) struct HAddFighterCmd {
     state: HState,
 }
 impl HAddFighterCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        Ok(core_ss.add_fighter(*fit_id, self.type_id, (&self.state).into())?.into())
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> rc::Result<rc::SsFighterInfo> {
+        core_ss.add_fighter(*fit_id, self.type_id, (&self.state).into())
     }
 }
 

@@ -6,10 +6,12 @@ pub(crate) struct HAddFwEffectCmd {
     state: Option<bool>,
 }
 impl HAddFwEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        Ok(core_ss
-            .add_fw_effect(*fit_id, self.type_id, self.state.unwrap_or(true))?
-            .into())
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> rc::Result<rc::SsFwEffectInfo> {
+        core_ss.add_fw_effect(*fit_id, self.type_id, self.state.unwrap_or(true))
     }
 }
 

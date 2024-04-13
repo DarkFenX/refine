@@ -6,10 +6,8 @@ pub(crate) struct HAddProjEffectCmd {
     state: Option<bool>,
 }
 impl HAddProjEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
-        Ok(core_ss
-            .add_proj_effect(self.type_id, self.state.unwrap_or(true))?
-            .into())
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<rc::SsProjEffectInfo> {
+        core_ss.add_proj_effect(self.type_id, self.state.unwrap_or(true))
     }
 }
 

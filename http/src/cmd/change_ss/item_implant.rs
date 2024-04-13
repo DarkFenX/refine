@@ -9,7 +9,7 @@ pub(crate) struct HAddImplantCmd {
     fit_cmd: change_fit::HAddImplantCmd,
 }
 impl HAddImplantCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<rc::SsImplantInfo> {
         self.fit_cmd.execute(core_ss, &self.fit_id)
     }
 }

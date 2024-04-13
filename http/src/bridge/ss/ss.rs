@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{HChangeFitCommand, HChangeItemCommand, HChangeSsCommand, HCmdResp},
+    cmd::{HAddItemCommand, HChangeFitCommand, HChangeItemCommand, HChangeSsCommand, HCmdResp},
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSsInfo, HSsInfoMode, MkItemInfo,
     },
@@ -138,6 +138,19 @@ impl HSolarSystem {
         result
     }
     // Item methods
+    #[tracing::instrument(name = "ss-item-add", level = "trace", skip_all)]
+    pub(crate) async fn add_item(&mut self, command: HAddItemCommand, item_mode: HItemInfoMode) -> HResult<HItemInfo> {
+        let mut core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_ss, item_info) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let item_info = command.execute(&mut core_ss, item_mode).unwrap();
+            (core_ss, item_info)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        Ok(item_info)
+    }
     #[tracing::instrument(name = "ss-item-info", level = "trace", skip_all)]
     pub(crate) async fn get_item(&mut self, item_id: &str, item_mode: HItemInfoMode) -> HResult<HItemInfo> {
         let item_id = self.str_to_item_id(item_id)?;
@@ -173,7 +186,7 @@ impl HSolarSystem {
     }
     // Command methods
     #[tracing::instrument(name = "ss-ss-cmd", level = "trace", skip_all)]
-    pub(crate) async fn execute_ss_commands(
+    pub(crate) async fn execute_change_ss_commands(
         &mut self,
         commands: Vec<HChangeSsCommand>,
         ss_mode: HSsInfoMode,
@@ -199,7 +212,7 @@ impl HSolarSystem {
         Ok((ss_info, cmd_resps))
     }
     #[tracing::instrument(name = "ss-fit-cmd", level = "trace", skip_all)]
-    pub(crate) async fn execute_fit_commands(
+    pub(crate) async fn execute_change_fit_commands(
         &mut self,
         fit_id: &str,
         commands: Vec<HChangeFitCommand>,
@@ -224,7 +237,7 @@ impl HSolarSystem {
         Ok((fit_info?, cmd_resps))
     }
     #[tracing::instrument(name = "ss-item-cmd", level = "trace", skip_all)]
-    pub(crate) async fn execute_item_commands(
+    pub(crate) async fn execute_change_item_commands(
         &mut self,
         item_id: &str,
         commands: Vec<HChangeItemCommand>,

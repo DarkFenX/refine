@@ -20,15 +20,15 @@ pub(crate) async fn create_fleet(
         HGSsResult::Ss(ss) => ss,
         HGSsResult::ErrResp(r) => return r,
     };
-    let fleet_info = match guarded_ss.lock().await.add_fleet(params.fleet.into()).await {
-        Ok(fleet_info) => fleet_info,
+    let resp = match guarded_ss.lock().await.add_fleet(params.fleet.into()).await {
+        Ok(fleet_info) => (StatusCode::CREATED, Json(fleet_info)).into_response(),
         Err(e) => {
             let code = match e.kind {
                 HErrorKind::CoreError(rc::ErrorKind::FleetIdAllocFailed, _) => StatusCode::SERVICE_UNAVAILABLE,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            return (code, Json(HSingleErr::from(e))).into_response();
+            (code, Json(HSingleErr::from(e))).into_response()
         }
     };
-    (StatusCode::CREATED, Json(fleet_info)).into_response()
+    resp
 }

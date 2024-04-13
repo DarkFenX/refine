@@ -21,26 +21,28 @@ pub(crate) async fn create_ss(
     Query(params): Query<HSsInfoParams>,
     Json(payload): Json<HCreateSsReq>,
 ) -> impl IntoResponse {
-    let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
-        Ok(s) => s,
+    let resp = match state.src_mgr.get(payload.src_alias.as_deref()).await {
+        Ok(src) => {
+            let ss_info = state
+                .ss_mgr
+                .add_ss(
+                    src,
+                    params.ss.into(),
+                    params.fleet.into(),
+                    params.fit.into(),
+                    params.item.into(),
+                )
+                .await;
+            (StatusCode::CREATED, Json(ss_info)).into_response()
+        }
         Err(e) => {
             let code = match e.kind {
                 HErrorKind::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 HErrorKind::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            return (code, Json(HSingleErr::from(e))).into_response();
+            (code, Json(HSingleErr::from(e))).into_response()
         }
     };
-    let ss_info = state
-        .ss_mgr
-        .add_ss(
-            src,
-            params.ss.into(),
-            params.fleet.into(),
-            params.fit.into(),
-            params.item.into(),
-        )
-        .await;
-    (StatusCode::CREATED, Json(ss_info)).into_response()
+    resp
 }

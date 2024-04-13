@@ -9,7 +9,7 @@ pub(crate) struct HAddSubsystemCmd {
     fit_cmd: change_fit::HAddSubsystemCmd,
 }
 impl HAddSubsystemCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<rc::SsSubsystemInfo> {
         self.fit_cmd.execute(core_ss, &self.fit_id)
     }
 }

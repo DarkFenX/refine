@@ -42,7 +42,7 @@ pub(crate) async fn change_fit(
     let resp = match guarded_ss
         .lock()
         .await
-        .execute_fit_commands(&fit_id, payload.commands, params.fit.into(), params.item.into())
+        .execute_change_fit_commands(&fit_id, payload.commands, params.fit.into(), params.item.into())
         .await
     {
         Ok((fit_info, cmd_results)) => {

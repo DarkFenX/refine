@@ -42,7 +42,7 @@ pub(crate) async fn change_item(
     let resp = match guarded_ss
         .lock()
         .await
-        .execute_item_commands(&item_id, payload.commands, params.item.into())
+        .execute_change_item_commands(&item_id, payload.commands, params.item.into())
         .await
     {
         Ok((item_info, cmd_results)) => {

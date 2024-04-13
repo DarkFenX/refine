@@ -6,10 +6,12 @@ pub(crate) struct HSetShipCmd {
     state: Option<bool>,
 }
 impl HSetShipCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        Ok(core_ss
-            .set_fit_ship(*fit_id, self.type_id, self.state.unwrap_or(true))?
-            .into())
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> rc::Result<rc::SsShipInfo> {
+        core_ss.set_fit_ship(*fit_id, self.type_id, self.state.unwrap_or(true))
     }
 }
 

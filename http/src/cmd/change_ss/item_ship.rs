@@ -9,7 +9,7 @@ pub(crate) struct HSetShipCmd {
     fit_cmd: change_fit::HSetShipCmd,
 }
 impl HSetShipCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<rc::SsShipInfo> {
         self.fit_cmd.execute(core_ss, &self.fit_id)
     }
 }

@@ -20,13 +20,13 @@ pub(crate) async fn create_fit(
         HGSsResult::Ss(ss) => ss,
         HGSsResult::ErrResp(r) => return r,
     };
-    let fit_info = match guarded_ss
+    let resp = match guarded_ss
         .lock()
         .await
         .add_fit(params.fit.into(), params.item.into())
         .await
     {
-        Ok(fit_info) => fit_info,
+        Ok(fit_info) => (StatusCode::CREATED, Json(fit_info)).into_response(),
         Err(e) => {
             let code = match e.kind {
                 HErrorKind::CoreError(rc::ErrorKind::FitIdAllocFailed, _) => StatusCode::SERVICE_UNAVAILABLE,
@@ -35,5 +35,5 @@ pub(crate) async fn create_fit(
             return (code, Json(HSingleErr::from(e))).into_response();
         }
     };
-    (StatusCode::CREATED, Json(fit_info)).into_response()
+    resp
 }

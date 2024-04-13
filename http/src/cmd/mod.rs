@@ -1,3 +1,4 @@
+pub(crate) use add_item::HAddItemCommand;
 pub(crate) use change_fit::HChangeFitCommand;
 pub(crate) use change_item::HChangeItemCommand;
 pub(crate) use change_ss::HChangeSsCommand;

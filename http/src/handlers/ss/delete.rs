@@ -8,7 +8,7 @@ use axum::{
 use crate::{handlers::HSingleErr, state::HAppState, util::HErrorKind};
 
 pub(crate) async fn delete_ss(State(state): State<HAppState>, Path(id): Path<String>) -> impl IntoResponse {
-    match state.ss_mgr.delete_ss(&id).await {
+    let resp = match state.ss_mgr.delete_ss(&id).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(e) => {
             let code = match e.kind {
@@ -17,5 +17,6 @@ pub(crate) async fn delete_ss(State(state): State<HAppState>, Path(id): Path<Str
             };
             (code, Json(HSingleErr::from(e))).into_response()
         }
-    }
+    };
+    resp
 }

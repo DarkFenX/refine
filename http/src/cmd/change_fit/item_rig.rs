@@ -6,10 +6,12 @@ pub(crate) struct HAddRigCmd {
     state: Option<bool>,
 }
 impl HAddRigCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        Ok(core_ss
-            .add_rig(*fit_id, self.type_id, self.state.unwrap_or(true))?
-            .into())
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> rc::Result<rc::SsRigInfo> {
+        core_ss.add_rig(*fit_id, self.type_id, self.state.unwrap_or(true))
     }
 }
 

@@ -6,10 +6,12 @@ pub(crate) struct HSetStanceCmd {
     state: Option<bool>,
 }
 impl HSetStanceCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        Ok(core_ss
-            .set_fit_stance(*fit_id, self.type_id, self.state.unwrap_or(true))?
-            .into())
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> rc::Result<rc::SsStanceInfo> {
+        core_ss.set_fit_stance(*fit_id, self.type_id, self.state.unwrap_or(true))
     }
 }
 

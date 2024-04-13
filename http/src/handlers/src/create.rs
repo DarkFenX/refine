@@ -22,7 +22,7 @@ pub(crate) async fn create_source(
     let data_version = payload.data_version;
     let data_base_url = payload.data_base_url;
     let make_default = payload.make_default.unwrap_or(false);
-    match state
+    let resp = match state
         .src_mgr
         .add(alias, data_version, data_base_url, make_default)
         .await
@@ -37,5 +37,6 @@ pub(crate) async fn create_source(
             };
             (code, Json(HSingleErr::from(e))).into_response()
         }
-    }
+    };
+    resp
 }

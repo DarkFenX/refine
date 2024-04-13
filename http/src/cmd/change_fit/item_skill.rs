@@ -7,10 +7,12 @@ pub(crate) struct HAddSkillCmd {
     state: Option<bool>,
 }
 impl HAddSkillCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        Ok(core_ss
-            .add_skill(*fit_id, self.type_id, self.level, self.state.unwrap_or(true))?
-            .into())
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_ss: &mut rc::SolarSystem,
+        fit_id: &rc::SsFitId,
+    ) -> rc::Result<rc::SsSkillInfo> {
+        core_ss.add_skill(*fit_id, self.type_id, self.level, self.state.unwrap_or(true))
     }
 }
 
