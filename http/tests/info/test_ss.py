@@ -71,12 +71,12 @@ def test_proj_effect(client):
 def test_error_no_ss_full(client, consts):
     # Check case when there is no solar system with such ID
     client.create_sources()
-    resp = client.update_ss_request(ss_id='1', ss_info_mode=consts.ApiSsInfoMode.full).send()
+    resp = client.get_ss_request(ss_id='1', ss_info_mode=consts.ApiSsInfoMode.full).send()
     resp.check(status_code=404, json_predicate={'code': 'SOL-001', 'message': 'no solar system with ID "1"'})
 
 
 def test_error_no_ss_id(client, consts):
     # Check case when there is no solar system with such ID
     client.create_sources()
-    resp = client.update_ss_request(ss_id='1', ss_info_mode=consts.ApiSsInfoMode.id).send()
+    resp = client.get_ss_request(ss_id='1', ss_info_mode=consts.ApiSsInfoMode.id).send()
     resp.check(status_code=404, json_predicate={'code': 'SOL-001', 'message': 'no solar system with ID "1"'})

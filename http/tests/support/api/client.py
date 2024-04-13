@@ -111,7 +111,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     def created_sss(self):
         return self.__created_sss
 
-    def update_ss_request(
+    def get_ss_request(
             self,
             ss_id: str,
             ss_info_mode: ApiSsInfoMode = ApiSsInfoMode.full,
@@ -147,7 +147,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             url=f'{self.__base_url}/solar_system/{ss_id}/fleet',
             params={'fleet': fleet_info_mode})
 
-    def update_fleet_request(
+    def get_fleet_request(
             self,
             ss_id: str,
             fleet_id: str,
@@ -182,7 +182,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             url=f'{self.__base_url}/solar_system/{ss_id}/fit',
             params={'fit': fit_info_mode, 'item': item_info_mode})
 
-    def update_fit_request(
+    def get_fit_request(
             self,
             ss_id: str,
             fit_id: str,

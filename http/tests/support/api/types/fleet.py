@@ -17,7 +17,7 @@ class Fleet(AttrDict):
         self._ss_id = ss_id
 
     def update_request(self) -> Request:
-        return self._client.update_fleet_request(ss_id=self._ss_id, fleet_id=self.id)
+        return self._client.get_fleet_request(ss_id=self._ss_id, fleet_id=self.id)
 
     def update(self) -> Fleet:
         resp = self.update_request().send()

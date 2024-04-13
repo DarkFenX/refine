@@ -21,7 +21,7 @@ class Fit(AttrDict):
         self._ss_id = ss_id
 
     def update_request(self) -> Request:
-        return self._client.update_fit_request(ss_id=self._ss_id, fit_id=self.id)
+        return self._client.get_fit_request(ss_id=self._ss_id, fit_id=self.id)
 
     def update(self) -> Fit:
         resp = self.update_request().send()

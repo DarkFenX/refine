@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tests.support.consts import ApiItemInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .fit import Fit
 from .fleet import Fleet
@@ -29,7 +30,7 @@ class SolarSystem(AttrDict):
         self._client = client
 
     def update_request(self) -> Request:
-        return self._client.update_ss_request(ss_id=self.id)
+        return self._client.get_ss_request(ss_id=self.id)
 
     def update(self) -> SolarSystem:
         resp = self.update_request().send()
@@ -68,8 +69,12 @@ class SolarSystem(AttrDict):
         return fit
 
     # Generic item methods
-    def get_item_request(self, item_id: str) -> Request:
-        return self._client.get_item_request(ss_id=self.id, item_id=item_id)
+    def get_item_request(
+            self,
+            item_id: str,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+    ) -> Request:
+        return self._client.get_item_request(ss_id=self.id, item_id=item_id, item_info_mode=item_info_mode)
 
     def get_item(self, item_id: str) -> Item:
         resp = self.get_item_request(item_id=item_id).send()
