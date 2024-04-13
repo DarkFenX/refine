@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.consts import ApiItemInfoMode
+from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .fit import Fit
 from .fleet import Fleet
@@ -54,10 +54,32 @@ class SolarSystem(AttrDict):
         resp = self.create_fleet_request().send()
         assert resp.status_code == 201
         fleet = Fleet(client=self._client, data=resp.json(), ss_id=self.id)
-        self.update()
         return fleet
 
     # Fit methods
+    def get_fit_request(
+            self,
+            fit_id: str,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+    ) -> Request:
+        return self._client.get_fit_request(
+            ss_id=self.id,
+            fit_id=fit_id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
+
+    def get_fit(
+            self,
+            fit_id: str,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+    ) -> Fit:
+        resp = self.get_fit_request(fit_id=fit_id, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode).send()
+        assert resp.status_code == 200
+        fit = Fit(client=self._client, data=resp.json(), ss_id=self.id)
+        return fit
+
     def create_fit_request(self) -> Request:
         return self._client.create_fit_request(ss_id=self.id)
 
@@ -65,7 +87,6 @@ class SolarSystem(AttrDict):
         resp = self.create_fit_request().send()
         assert resp.status_code == 201
         fit = Fit(client=self._client, data=resp.json(), ss_id=self.id)
-        self.update()
         return fit
 
     # Generic item methods
