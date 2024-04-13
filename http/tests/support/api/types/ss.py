@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode
+from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .fit import Fit
 from .fleet import Fleet
@@ -47,6 +47,26 @@ class SolarSystem(AttrDict):
         self._client.created_sss.remove(self)
 
     # Fleet methods
+    def get_fleet_request(
+            self,
+            fleet_id: str,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+    ) -> Request:
+        return self._client.get_fleet_request(
+            ss_id=self.id,
+            fleet_id=fleet_id,
+            fleet_info_mode=fleet_info_mode)
+
+    def get_fleet(
+            self,
+            fleet_id: str,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+    ) -> Fleet:
+        resp = self.get_fleet_request(fleet_id=fleet_id, fleet_info_mode=fleet_info_mode).send()
+        assert resp.status_code == 200
+        fleet = Fleet(client=self._client, data=resp.json(), ss_id=self.id)
+        return fleet
+
     def create_fleet_request(self) -> Request:
         return self._client.create_fleet_request(ss_id=self.id)
 
