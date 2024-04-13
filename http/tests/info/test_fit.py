@@ -3,6 +3,22 @@
 from pytest import raises
 
 
+def test_fleet(client):
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fit = api_ss.create_fit()
+    api_fleet = api_ss.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
+    # Verification
+    assert api_fit.update().fleet == api_fleet.id
+    # Action
+    api_fleet.change(remove_fits=[api_fit.id])
+    # Verification
+    api_fit.update()
+    with raises(AttributeError):
+        api_fit.fleet  # pylint: disable=W0104
+
+
 def test_char(client):
     eve_item = client.mk_eve_item()
     client.create_sources()
