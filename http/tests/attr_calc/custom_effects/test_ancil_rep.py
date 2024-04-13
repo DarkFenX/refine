@@ -7,7 +7,7 @@ def test_local_aar(client, consts):
     eve_tgt_attr = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
     eve_effect = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair)
     eve_aar_item = client.mk_eve_item(attrs={eve_src_attr.id: 3, eve_tgt_attr.id: 100}, eff_ids=[eve_effect.id])
-    eve_paste_item = client.mk_eve_item(id_=consts.ApiItem.nanite_repair_paste)
+    eve_paste_item = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -30,7 +30,7 @@ def test_remote_aar(client, consts):
     eve_tgt_attr = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
     eve_effect = client.mk_eve_effect(id_=consts.EveEffect.ship_module_arar)
     eve_aar_item = client.mk_eve_item(attrs={eve_src_attr.id: 3, eve_tgt_attr.id: 100}, eff_ids=[eve_effect.id])
-    eve_paste_item = client.mk_eve_item(id_=consts.ApiItem.nanite_repair_paste)
+    eve_paste_item = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -52,7 +52,7 @@ def test_charge_switch(client, consts):
     eve_tgt_attr = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
     eve_effect = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair)
     eve_aar_item = client.mk_eve_item(attrs={eve_src_attr.id: 3, eve_tgt_attr.id: 100}, eff_ids=[eve_effect.id])
-    eve_paste_item = client.mk_eve_item(id_=consts.ApiItem.nanite_repair_paste)
+    eve_paste_item = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     client.create_sources()
     api_ss = client.create_ss()
     api_fit = api_ss.create_fit()
@@ -87,7 +87,7 @@ def test_mult_change(client, consts):
     eve_aar_item = client.mk_eve_item(
         attrs={eve_aar_src_attr.id: 3, eve_aar_tgt_attr.id: 100},
         eff_ids=[eve_aar_effect.id])
-    eve_paste_item = client.mk_eve_item(id_=consts.ApiItem.nanite_repair_paste)
+    eve_paste_item = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
         dom=consts.EveModDom.ship,

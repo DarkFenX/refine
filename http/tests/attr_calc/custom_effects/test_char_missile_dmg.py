@@ -18,7 +18,7 @@ def test_filter(client, consts):
         src_attr_id=eve_attr_bcs.id,
         tgt_attr_id=eve_attr_char.id)
     eve_effect_bcs = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod_bcs])
-    eve_item_skill1 = client.mk_eve_item(id_=consts.ApiItem.missile_launcher_operation)
+    eve_item_skill1 = client.mk_eve_item(id_=consts.EveItem.missile_launcher_operation)
     eve_item_skill2 = client.mk_eve_item()
     eve_item_bcs = client.mk_eve_item(
         cat_id=consts.EveItemCat.module,
@@ -66,7 +66,7 @@ def test_penalization(client, consts):
     # penalties thanks to their carriers being in immune categories, but some are not - like
     # magnetar, wolf-rayet, and plasma storm effect. Here, we check that character modification is
     # not stacking penalized against those.
-    eve_item_skill = client.mk_eve_item(id_=consts.ApiItem.missile_launcher_operation)
+    eve_item_skill = client.mk_eve_item(id_=consts.EveItem.missile_launcher_operation)
     eve_attr_magnetar = client.mk_eve_attr()
     eve_attr_char = client.mk_eve_attr(id_=consts.EveAttr.missile_dmg_mult)
     eve_attr_missile_em = client.mk_eve_attr(id_=consts.EveAttr.em_dmg, stackable=False)

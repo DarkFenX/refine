@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING
 import requests
 
 from tests.support import eve
-from tests.support.consts import ApiRack, ApiState, ApiSsInfoMode, ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
+from tests.support.consts import (
+    ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiModAddMode, ApiRack, ApiSsInfoMode, ApiState)
 from tests.support.request import Request
 from tests.support.response import Response
 from tests.support.util import Absent, Default, conditional_insert
@@ -368,9 +369,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             rack: ApiRack = ApiRack.high,
-            state: str = ApiState.offline,
+            state: ApiState = ApiState.offline,
             charge_type_id: Union[int, Type[Absent]] = Absent,
-            mode: str = 'equip',
+            mode: ApiModAddMode = ApiModAddMode.equip,
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {
@@ -427,7 +428,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             ss_id: str,
             fit_id: str,
             type_id: int,
-            state: str = ApiState.offline,
+            state: ApiState = ApiState.offline,
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         return self.__add_simple_item(
@@ -440,7 +441,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             ss_id: str,
             fit_id: str,
             type_id: int,
-            state: str = ApiState.offline,
+            state: ApiState = ApiState.offline,
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         return self.__add_simple_item(

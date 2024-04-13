@@ -3,7 +3,7 @@ from enum import StrEnum, IntEnum, unique
 
 
 @unique
-class ApiItem(IntEnum):
+class EveItem(IntEnum):
     missile_launcher_operation = 3319
     nanite_repair_paste = 28668
 
@@ -201,6 +201,11 @@ class ApiModOp(StrEnum):
 @unique
 class ApiAggrMode(StrEnum):
     stack = 'stack'
+
+
+@unique
+class ApiModAddMode(StrEnum):
+    equip = 'equip'
 
 
 @unique

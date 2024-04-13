@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.consts import ApiRack, ApiState
+from tests.support.consts import ApiRack, ApiState, ApiModAddMode
 from tests.support.util import AttrDict, Absent
 from .item import Item
 
@@ -164,9 +164,9 @@ class Fit(AttrDict):
             self,
             type_id: int,
             rack: ApiRack = ApiRack.high,
-            state: str = ApiState.offline,
+            state: ApiState = ApiState.offline,
             charge_type_id: Union[int, Type[Absent]] = Absent,
-            mode: str = 'equip',
+            mode: ApiModAddMode = ApiModAddMode.equip,
     ) -> Request:
         return self._client.add_mod_request(
             ss_id=self._ss_id, fit_id=self.id, rack=rack, type_id=type_id,
@@ -176,9 +176,9 @@ class Fit(AttrDict):
             self,
             type_id: int,
             rack: ApiRack = ApiRack.high,
-            state: str = ApiState.offline,
+            state: ApiState = ApiState.offline,
             charge_type_id: Union[int, Type[Absent]] = Absent,
-            mode: str = 'equip',
+            mode: ApiModAddMode = ApiModAddMode.equip,
     ) -> Item:
         resp = self.add_mod_request(
             rack=rack,
@@ -212,14 +212,14 @@ class Fit(AttrDict):
     def add_drone_request(
             self,
             type_id: int,
-            state: str = ApiState.offline,
+            state: ApiState = ApiState.offline,
     ) -> Request:
         return self._client.add_drone_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_drone(
             self,
             type_id,
-            state: str = ApiState.offline,
+            state: ApiState = ApiState.offline,
     ) -> Item:
         resp = self.add_drone_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
@@ -230,14 +230,14 @@ class Fit(AttrDict):
     def add_fighter_request(
             self,
             type_id: int,
-            state: str = ApiState.offline,
+            state: ApiState = ApiState.offline,
     ) -> Request:
         return self._client.add_fighter_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_fighter(
             self,
             type_id,
-            state: str = ApiState.offline,
+            state: ApiState = ApiState.offline,
     ) -> Item:
         resp = self.add_fighter_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
