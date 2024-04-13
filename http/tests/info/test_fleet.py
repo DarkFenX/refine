@@ -1,4 +1,21 @@
 
+def test_fit(client):
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fit = api_ss.create_fit()
+    api_fleet = api_ss.create_fleet()
+    api_fleet.change(add_fits=[api_fit.id])
+    # Verification
+    api_fleet.update()
+    assert len(api_fleet.fits) == 1
+    assert api_fit.id in api_fleet.fits
+    # Action
+    api_fleet.change(remove_fits=[api_fit.id])
+    # Verification
+    api_fleet.update()
+    assert len(api_fleet.fits) == 0
+
+
 def test_error_no_fleet_full(client, consts):
     # Send ID in correct format, but there is no fleet with such ID
     client.create_sources()

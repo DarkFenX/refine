@@ -1,10 +1,11 @@
 use crate::{
-    defs::{SsFitId, SsItemId},
+    defs::{SsFitId, SsFleetId, SsItemId},
     ss::fit::SsFit,
 };
 
 pub struct SsFitInfo {
     pub id: SsFitId,
+    pub fleet: Option<SsFleetId>,
     pub character: Option<SsItemId>,
     pub skills: Vec<SsItemId>,
     pub implants: Vec<SsItemId>,
@@ -24,6 +25,7 @@ pub struct SsFitInfo {
 impl SsFitInfo {
     pub(in crate::ss) fn new(
         id: SsFitId,
+        fleet: Option<SsFleetId>,
         character: Option<SsItemId>,
         skills: Vec<SsItemId>,
         implants: Vec<SsItemId>,
@@ -42,6 +44,7 @@ impl SsFitInfo {
     ) -> Self {
         Self {
             id,
+            fleet,
             character,
             skills,
             implants,
@@ -64,6 +67,7 @@ impl From<&SsFit> for SsFitInfo {
     fn from(fit: &SsFit) -> Self {
         Self::new(
             fit.id,
+            fit.fleet,
             fit.character,
             fit.skills.iter().map(|v| *v).collect(),
             fit.implants.iter().map(|v| *v).collect(),

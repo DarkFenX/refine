@@ -136,17 +136,6 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             ss.remove()
 
     # Fleet methods
-    def create_fleet_request(
-            self,
-            ss_id: str,
-            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
-    ) -> Request:
-        return Request(
-            self,
-            method='POST',
-            url=f'{self.__base_url}/solar_system/{ss_id}/fleet',
-            params={'fleet': fleet_info_mode})
-
     def get_fleet_request(
             self,
             ss_id: str,
@@ -159,6 +148,35 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             url=f'{self.__base_url}/solar_system/{ss_id}/fleet/{fleet_id}',
             params={'fleet': fleet_info_mode})
 
+    def create_fleet_request(
+            self,
+            ss_id: str,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+    ) -> Request:
+        return Request(
+            self,
+            method='POST',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fleet',
+            params={'fleet': fleet_info_mode})
+
+    def change_fleet_request(
+            self,
+            ss_id: str,
+            fleet_id: str,
+            add_fits: list[str] = (),
+            remove_fits: list[str] = (),
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+    ) -> Request:
+        command = {}
+        conditional_insert(command, 'add_fits', add_fits)
+        conditional_insert(command, 'remove_fits', remove_fits)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fleet/{fleet_id}',
+            params={'fleet': fleet_info_mode},
+            json=command)
+
     def remove_fleet_request(
             self,
             ss_id: str,
@@ -170,18 +188,6 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             url=f'{self.__base_url}/solar_system/{ss_id}/fleet/{fleet_id}')
 
     # Fit methods
-    def create_fit_request(
-            self,
-            ss_id: str,
-            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
-    ) -> Request:
-        return Request(
-            self,
-            method='POST',
-            url=f'{self.__base_url}/solar_system/{ss_id}/fit',
-            params={'fit': fit_info_mode, 'item': item_info_mode})
-
     def get_fit_request(
             self,
             ss_id: str,
@@ -193,6 +199,18 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             method='GET',
             url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}',
+            params={'fit': fit_info_mode, 'item': item_info_mode})
+
+    def create_fit_request(
+            self,
+            ss_id: str,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+    ) -> Request:
+        return Request(
+            self,
+            method='POST',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fit',
             params={'fit': fit_info_mode, 'item': item_info_mode})
 
     def remove_fit_request(

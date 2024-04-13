@@ -10,6 +10,9 @@ use crate::{
 pub(crate) struct HFitInfoFull {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SsFitId,
+    #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) fleet: Option<rc::SsFleetId>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) character: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -46,6 +49,7 @@ impl HFitInfoFull {
         let core_fit = core_ss.get_fit(fit_id)?;
         let fit = Self {
             id: *fit_id,
+            fleet: core_fit.fleet,
             character: core_fit
                 .character
                 .map(|v| core_ss.get_item_info(&v).ok())
