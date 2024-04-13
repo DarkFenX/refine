@@ -1,5 +1,6 @@
 use crate::{
     defs::{SsFitId, SsFleetId},
+    ss::SsView,
     util::Result,
 };
 
@@ -19,30 +20,48 @@ impl SolarSystem {
         self.get_fit(&fit_id)
     }
     pub fn set_fit_fleet(&mut self, fit_id: &SsFitId, fleet_id_opt: Option<SsFleetId>) -> Result<()> {
-        let fit = self.fits.get_fit_mut(fit_id)?;
+        let fit = self.fits.get_fit(fit_id)?;
         let old_fleet_id_opt = fit.fleet;
         // Unassign from old fleet
         if let Some(old_fleet_id) = old_fleet_id_opt {
+            self.svcs.remove_fit_from_fleet(
+                &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                fit_id,
+                &old_fleet_id,
+            );
             if let Ok(old_fleet) = self.fleets.get_fleet_mut(&old_fleet_id) {
                 old_fleet.fits.remove(fit_id);
             }
+            let fit = self.fits.get_fit_mut(fit_id)?;
+            fit.fleet = None;
         }
-        fit.fleet = None;
         if let Some(new_fleet_id) = fleet_id_opt {
             match self.fleets.get_fleet_mut(&new_fleet_id) {
                 // Assign to new fleet
                 Ok(new_fleet) => {
                     new_fleet.fits.insert(*fit_id);
+                    let fit = self.fits.get_fit_mut(fit_id)?;
                     fit.fleet = Some(new_fleet_id);
+                    self.svcs.add_fit_to_fleet(
+                        &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                        fit_id,
+                        &new_fleet_id,
+                    );
                 }
                 // If assignment failed, revert to old fleet. Since we started with a clear state
                 // before we tried to assign new fleet, do something only if there was an old fleet
                 _ => {
                     if let Some(old_fleet_id) = old_fleet_id_opt {
+                        let fit = self.fits.get_fit_mut(fit_id)?;
                         fit.fleet = Some(old_fleet_id);
                         if let Ok(old_fleet) = self.fleets.get_fleet_mut(&old_fleet_id) {
                             old_fleet.fits.insert(old_fleet_id);
                         }
+                        self.svcs.add_fit_to_fleet(
+                            &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                            fit_id,
+                            &old_fleet_id,
+                        );
                     }
                 }
             }
