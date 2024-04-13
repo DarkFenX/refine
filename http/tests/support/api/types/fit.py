@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.consts import ApiRack, ApiState, ApiModAddMode
+from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiModAddMode, ApiRack, ApiState
 from tests.support.util import AttrDict, Absent
 from .item import Item
 
@@ -35,6 +35,24 @@ class Fit(AttrDict):
     def remove(self) -> None:
         resp = self.remove_request().send()
         assert resp.status_code == 204
+
+    # Fleet methods
+    def set_fleet_request(
+            self,
+            fleet_id: Union[str, None],
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+    ) -> Request:
+        return self._client.set_fit_fleet_request(
+            ss_id=self._ss_id,
+            fit_id=self.id,
+            fleet_id=fleet_id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
+
+    def set_fleet(self, fleet_id: Union[str, None]) -> None:
+        resp = self.set_fleet_request(fleet_id=fleet_id).send()
+        assert resp.status_code == 200
 
     # Generic item methods
     def remove_item_request(self, item_id: str) -> Request:

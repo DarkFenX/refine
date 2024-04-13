@@ -1,3 +1,4 @@
+pub(in crate::cmd) use fleet::HSetFleetCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(in crate::cmd) use item_character::{
     HChangeCharacterCmd, HChangeCharacterViaFitIdCmd, HChangeCharacterViaItemIdCmd, HSetCharacterCmd,
@@ -21,6 +22,7 @@ pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 
 use crate::cmd::HCmdResp;
 
+mod fleet;
 mod item_booster;
 mod item_character;
 mod item_charge;
@@ -39,6 +41,8 @@ mod item_subsystem;
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeFitCommand {
+    SetFleet(HSetFleetCmd),
+    // Item commands
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
     AddSkill(HAddSkillCmd),
@@ -70,6 +74,8 @@ pub(crate) enum HChangeFitCommand {
 impl HChangeFitCommand {
     pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
         match self {
+            Self::SetFleet(cmd) => cmd.execute(core_ss, fit_id),
+            // Item commands
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_ss, fit_id)?.into()),
             Self::ChangeCharacter(cmd) => cmd.execute(core_ss, fit_id),
             Self::AddSkill(cmd) => Ok(cmd.execute(core_ss, fit_id)?.into()),

@@ -213,6 +213,22 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             url=f'{self.__base_url}/solar_system/{ss_id}/fit',
             params={'fit': fit_info_mode, 'item': item_info_mode})
 
+    def set_fit_fleet_request(
+            self,
+            ss_id: str,
+            fit_id: str,
+            fleet_id: Union[str, None],
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+    ) -> Request:
+        command = {'type': 'set_fleet', 'fleet_id': fleet_id}
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/solar_system/{ss_id}/fit/{fit_id}',
+            params={'fit': fit_info_mode, 'item': item_info_mode},
+            json={'commands': [command]})
+
     def remove_fit_request(
             self,
             ss_id: str,
