@@ -60,9 +60,9 @@ fn main() {
     let src = Src::new(dh, ch).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit().unwrap();
-    let ship = sol_sys.set_fit_ship(fit, 11184, true).unwrap();
+    let ship = sol_sys.set_fit_ship(fit.id, 11184, true).unwrap();
     for skill_id in skill_ids.iter() {
-        sol_sys.add_skill(fit, skill_id.to_owned(), 5, true);
+        sol_sys.add_skill(fit.id, skill_id.to_owned(), 5, true);
     }
 
     let iterations = 1000000;
@@ -70,7 +70,7 @@ fn main() {
     let before = Utc::now();
     for _ in 0..iterations {
         let anp = sol_sys
-            .add_module(fit, ModRack::Low, OrdAddMode::Equip, 1306, State::Online, None)
+            .add_module(fit.id, ModRack::Low, OrdAddMode::Equip, 1306, State::Online, None)
             .unwrap();
         black_box(sol_sys.get_item_attrs(&ship.id));
         sol_sys.remove_item(&anp.id);
