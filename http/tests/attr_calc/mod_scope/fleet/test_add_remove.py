@@ -29,7 +29,7 @@ def test_self_state_switch(client, consts):
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_self_fleet_add_remove(client, consts):
+def test_self_after_fleet_removal(client, consts):
     # Check that fleet effects stay even after a fit has been removed from a fleet
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)

@@ -1,5 +1,7 @@
 use std::{collections::HashSet, convert::TryInto, hash::Hash};
 
+use itertools::Itertools;
+
 use crate::{
     defs::{EAttrId, EItemGrpId, EItemId, SsFitId, SsFleetId, SsItemId},
     ss::{
@@ -167,22 +169,34 @@ impl ModifierRegister {
     }
     // Modification methods
     pub(in crate::ss::svc::svce_calc) fn reg_fit(&mut self, fit_id: &SsFitId) {
-        let sw_mods = self.sw_mods.clone();
+        let sw_mods = self.sw_mods.iter().map(|v| *v).collect_vec();
         for modifier in sw_mods.iter() {
             self.apply_mod_to_fits(*modifier, vec![*fit_id]);
         }
     }
     pub(in crate::ss::svc::svce_calc) fn unreg_fit(&mut self, fit_id: &SsFitId) {
-        let sw_mods = self.sw_mods.clone();
+        let sw_mods = self.sw_mods.iter().map(|v| *v).collect_vec();
         for modifier in sw_mods.iter() {
             self.unapply_mods_from_fits(modifier, vec![*fit_id]);
         }
     }
     pub(in crate::ss::svc::svce_calc) fn reg_mod(&mut self, ss_view: &SsView, mod_item: &SsItem, modifier: SsAttrMod) {
         self.mods.add_entry(modifier.src_item_id, modifier);
-        if matches!(modifier.mod_type, SsModType::SystemWide) {
-            self.sw_mods.insert(modifier);
-        }
+        match modifier.mod_type {
+            SsModType::SystemWide => {
+                self.sw_mods.insert(modifier);
+                ()
+            }
+            SsModType::Fleet => {
+                if let Some(fit_id) = mod_item.get_fit_id() {
+                    let fit = ss_view.fits.get_fit(&fit_id).unwrap();
+                    if let Some(fleet_id) = fit.fleet {
+                        self.mods_buff_fleet.add_entry(fleet_id, modifier);
+                    }
+                }
+            }
+            _ => (),
+        };
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Item => self.mods_direct.add_entry(modifier.src_item_id, modifier),
@@ -222,9 +236,21 @@ impl ModifierRegister {
         modifier: &SsAttrMod,
     ) {
         self.mods.remove_entry(&modifier.src_item_id, &modifier);
-        if matches!(modifier.mod_type, SsModType::SystemWide) {
-            self.sw_mods.remove(modifier);
-        }
+        match modifier.mod_type {
+            SsModType::SystemWide => {
+                self.sw_mods.remove(modifier);
+                ()
+            }
+            SsModType::Fleet => {
+                if let Some(fit_id) = mod_item.get_fit_id() {
+                    let fit = ss_view.fits.get_fit(&fit_id).unwrap();
+                    if let Some(fleet_id) = fit.fleet {
+                        self.mods_buff_fleet.remove_entry(&fleet_id, modifier);
+                    }
+                }
+            }
+            _ => (),
+        };
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Item => self.mods_direct.remove_entry(&modifier.src_item_id, &modifier),
