@@ -6,6 +6,7 @@ use crate::{
     defs::{EAttrId, EItemGrpId, EItemId, SsFitId, SsFleetId, SsItemId},
     ss::{
         fit::SsFits,
+        fleet::SsFleet,
         item::{SsItem, SsItems},
         svc::svce_calc::{
             modifier::{SsAttrMod, SsModDomain, SsModTgtFilter, SsModType},
@@ -16,7 +17,7 @@ use crate::{
     util::KeyedStorage1L,
 };
 
-use super::iter_loc_act::LocsAct;
+use super::{fleet_upd::FleetUpdates, iter_loc_act::LocsAct};
 
 pub(in crate::ss::svc::svce_calc) struct ModifierRegister {
     // Modifiers registered for an item
@@ -47,9 +48,12 @@ pub(in crate::ss::svc::svce_calc) struct ModifierRegister {
     // Modifiers influencing all buff-modifiable items
     // Contains: KeyedStorage<target's fit ID, modifiers>
     mods_buff_all: KeyedStorage1L<SsFitId, SsAttrMod>,
-    // Modifiers influencing specific fleet
+    // Fleet modifiers on a per-fit basis
+    // Contains: KeyedStorage<source fit ID, modifiers>
+    mods_fleet_fit: KeyedStorage1L<SsFitId, SsAttrMod>,
+    // Modifiers active for a specific fleet
     // Contains: KeyedStorage<target's fleet ID, modifiers>
-    mods_buff_fleet: KeyedStorage1L<SsFleetId, SsAttrMod>,
+    mods_fleet_fleet: KeyedStorage1L<SsFleetId, SsAttrMod>,
     // System-wide modifiers
     sw_mods: HashSet<SsAttrMod>,
 }
@@ -65,7 +69,8 @@ impl ModifierRegister {
             mods_parloc_srq: KeyedStorage1L::new(),
             mods_own_srq: KeyedStorage1L::new(),
             mods_buff_all: KeyedStorage1L::new(),
-            mods_buff_fleet: KeyedStorage1L::new(),
+            mods_fleet_fit: KeyedStorage1L::new(),
+            mods_fleet_fleet: KeyedStorage1L::new(),
             sw_mods: HashSet::new(),
         }
     }
@@ -180,6 +185,26 @@ impl ModifierRegister {
             self.unapply_mods_from_fits(modifier, vec![*fit_id]);
         }
     }
+    pub(in crate::ss::svc::svce_calc) fn reg_fleet_for_fit(
+        &mut self,
+        fleet: &SsFleet,
+        fit_id: &SsFitId,
+    ) -> FleetUpdates {
+        let updates = self.get_fleet_updates(fleet, fit_id);
+        self.mods_fleet_fleet
+            .extend_entries(fleet.id, updates.outgoing.iter().map(|v| *v));
+        updates
+    }
+    pub(in crate::ss::svc::svce_calc) fn unreg_fleet_for_fit(
+        &mut self,
+        fleet: &SsFleet,
+        fit_id: &SsFitId,
+    ) -> FleetUpdates {
+        let updates = self.get_fleet_updates(fleet, fit_id);
+        self.mods_fleet_fleet
+            .drain_entries(&fleet.id, updates.outgoing.iter().map(|v| *v));
+        updates
+    }
     pub(in crate::ss::svc::svce_calc) fn reg_mod(&mut self, ss_view: &SsView, mod_item: &SsItem, modifier: SsAttrMod) {
         self.mods.add_entry(modifier.src_item_id, modifier);
         match modifier.mod_type {
@@ -189,9 +214,10 @@ impl ModifierRegister {
             }
             SsModType::Fleet => {
                 if let Some(fit_id) = mod_item.get_fit_id() {
+                    self.mods_fleet_fit.add_entry(fit_id, modifier);
                     let fit = ss_view.fits.get_fit(&fit_id).unwrap();
                     if let Some(fleet_id) = fit.fleet {
-                        self.mods_buff_fleet.add_entry(fleet_id, modifier);
+                        self.mods_fleet_fleet.add_entry(fleet_id, modifier);
                     }
                 }
             }
@@ -243,9 +269,10 @@ impl ModifierRegister {
             }
             SsModType::Fleet => {
                 if let Some(fit_id) = mod_item.get_fit_id() {
+                    self.mods_fleet_fit.remove_entry(&fit_id, &modifier);
                     let fit = ss_view.fits.get_fit(&fit_id).unwrap();
                     if let Some(fleet_id) = fit.fleet {
-                        self.mods_buff_fleet.remove_entry(&fleet_id, modifier);
+                        self.mods_fleet_fleet.remove_entry(&fleet_id, modifier);
                     }
                 }
             }
@@ -517,6 +544,21 @@ impl ModifierRegister {
             },
             _ => false,
         }
+    }
+    fn get_fleet_updates(&self, fleet: &SsFleet, fit_id: &SsFitId) -> FleetUpdates {
+        let mut updates = FleetUpdates::new();
+        if let Some(mods) = self.mods_fleet_fit.get(fit_id) {
+            updates.outgoing.extend(mods);
+        };
+        for fleet_fit_id in fleet.fits.iter() {
+            if fleet_fit_id == fit_id {
+                continue;
+            }
+            if let Some(mods) = self.mods_fleet_fit.get(fleet_fit_id) {
+                updates.incoming.extend(mods);
+            }
+        }
+        updates
     }
 }
 

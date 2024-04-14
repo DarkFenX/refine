@@ -54,4 +54,4 @@ def test_self_after_fleet_removal(client, consts):
     api_fit.add_mod(type_id=eve_mod.id, state=consts.ApiState.active)
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
     api_fit.set_fleet(fleet_id=None)
-    assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+    assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)

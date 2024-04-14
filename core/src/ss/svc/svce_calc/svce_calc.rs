@@ -3,7 +3,12 @@ use itertools::Itertools;
 use crate::{
     ad,
     defs::{EAttrId, SsFitId, SsItemId},
-    ss::{item::SsItem, svc::SsSvcs, SsView},
+    ss::{
+        fleet::SsFleet,
+        item::SsItem,
+        svc::{svce_calc::registers::FleetUpdates, SsSvcs},
+        SsView,
+    },
 };
 
 impl SsSvcs {
@@ -13,6 +18,19 @@ impl SsSvcs {
     }
     pub(in crate::ss::svc) fn calc_fit_removed(&mut self, fit_id: &SsFitId) {
         self.calc_data.mods.unreg_fit(fit_id)
+    }
+    pub(in crate::ss::svc) fn calc_fit_added_to_fleet(&mut self, ss_view: &SsView, fleet: &SsFleet, fit_id: &SsFitId) {
+        let updates = self.calc_data.mods.reg_fleet_for_fit(fleet, fit_id);
+        self.process_fleet_updates(ss_view, fleet, fit_id, updates);
+    }
+    pub(in crate::ss::svc) fn calc_fit_removed_from_fleet(
+        &mut self,
+        ss_view: &SsView,
+        fleet: &SsFleet,
+        fit_id: &SsFitId,
+    ) {
+        let updates = self.calc_data.mods.unreg_fleet_for_fit(fleet, fit_id);
+        self.process_fleet_updates(ss_view, fleet, fit_id, updates);
     }
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
@@ -225,6 +243,31 @@ impl SsSvcs {
                     {
                         self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
                     }
+                }
+            }
+        }
+    }
+    fn process_fleet_updates(&mut self, ss_view: &SsView, fleet: &SsFleet, fit_id: &SsFitId, updates: FleetUpdates) {
+        if !updates.incoming.is_empty() {
+            let tgt_fits = vec![ss_view.fits.get_fit(fit_id).unwrap()];
+            for ss_mod in updates.incoming.iter() {
+                let src_item = ss_view.items.get_item(&ss_mod.src_item_id).unwrap();
+                for tgt_item_id in self.calc_data.tgts.get_tgt_items_for_fits(src_item, ss_mod, &tgt_fits) {
+                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+                }
+            }
+        }
+        if !updates.outgoing.is_empty() {
+            let tgt_fits = fleet
+                .fits
+                .iter()
+                .filter(|v| *v != fit_id)
+                .map(|v| ss_view.fits.get_fit(v).unwrap())
+                .collect();
+            for ss_mod in updates.outgoing.iter() {
+                let src_item = ss_view.items.get_item(&ss_mod.src_item_id).unwrap();
+                for tgt_item_id in self.calc_data.tgts.get_tgt_items_for_fits(src_item, ss_mod, &tgt_fits) {
+                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
                 }
             }
         }

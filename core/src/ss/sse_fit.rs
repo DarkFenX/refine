@@ -24,11 +24,14 @@ impl SolarSystem {
         let old_fleet_id_opt = fit.fleet;
         // Unassign from old fleet
         if let Some(old_fleet_id) = old_fleet_id_opt {
-            self.svcs.remove_fit_from_fleet(
-                &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
-                fit_id,
-                &old_fleet_id,
-            );
+            if let Ok(old_fleet) = self.fleets.get_fleet(&old_fleet_id) {
+                self.svcs.remove_fit_from_fleet(
+                    &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                    old_fleet,
+                    fit_id,
+                );
+            }
+
             if let Ok(old_fleet) = self.fleets.get_fleet_mut(&old_fleet_id) {
                 old_fleet.fits.remove(fit_id);
             }
@@ -44,8 +47,8 @@ impl SolarSystem {
                     fit.fleet = Some(new_fleet_id);
                     self.svcs.add_fit_to_fleet(
                         &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                        self.fleets.get_fleet(&new_fleet_id).unwrap(),
                         fit_id,
-                        &new_fleet_id,
                     );
                 }
                 // If assignment failed, revert to old fleet. Since we started with a clear state
@@ -56,12 +59,12 @@ impl SolarSystem {
                         fit.fleet = Some(old_fleet_id);
                         if let Ok(old_fleet) = self.fleets.get_fleet_mut(&old_fleet_id) {
                             old_fleet.fits.insert(old_fleet_id);
+                            self.svcs.add_fit_to_fleet(
+                                &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                                self.fleets.get_fleet(&old_fleet_id).unwrap(),
+                                fit_id,
+                            );
                         }
-                        self.svcs.add_fit_to_fleet(
-                            &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
-                            fit_id,
-                            &old_fleet_id,
-                        );
                     }
                 }
             }
