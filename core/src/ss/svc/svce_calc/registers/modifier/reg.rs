@@ -1,7 +1,7 @@
 use std::{collections::HashSet, convert::TryInto, hash::Hash};
 
 use crate::{
-    defs::{EAttrId, EItemGrpId, EItemId, SsFitId, SsItemId},
+    defs::{EAttrId, EItemGrpId, EItemId, SsFitId, SsFleetId, SsItemId},
     ss::{
         fit::SsFits,
         item::{SsItem, SsItems},
@@ -45,6 +45,9 @@ pub(in crate::ss::svc::svce_calc) struct ModifierRegister {
     // Modifiers influencing all buff-modifiable items
     // Contains: KeyedStorage<target's fit ID, modifiers>
     mods_buff_all: KeyedStorage1L<SsFitId, SsAttrMod>,
+    // Modifiers influencing specific fleet
+    // Contains: KeyedStorage<target's fleet ID, modifiers>
+    mods_buff_fleet: KeyedStorage1L<SsFleetId, SsAttrMod>,
     // System-wide modifiers
     sw_mods: HashSet<SsAttrMod>,
 }
@@ -60,6 +63,7 @@ impl ModifierRegister {
             mods_parloc_srq: KeyedStorage1L::new(),
             mods_own_srq: KeyedStorage1L::new(),
             mods_buff_all: KeyedStorage1L::new(),
+            mods_buff_fleet: KeyedStorage1L::new(),
             sw_mods: HashSet::new(),
         }
     }
@@ -196,7 +200,21 @@ impl ModifierRegister {
             }
             SsModType::SystemWide => tgt_fit_ids.extend(ss_view.fits.iter_fit_ids()),
             SsModType::Projected => (),
-            SsModType::Fleet => (),
+            SsModType::Fleet => {
+                if let Some(src_fit_id) = mod_item.get_fit_id() {
+                    // Fleet modifications always affect fit itself
+                    tgt_fit_ids.push(src_fit_id);
+                    if let Ok(src_fit) = ss_view.fits.get_fit(&src_fit_id) {
+                        if let Some(fleet_id) = src_fit.fleet {
+                            for tgt_fit in ss_view.fits.iter_fits() {
+                                if tgt_fit.fleet == Some(fleet_id) {
+                                    tgt_fit_ids.push(tgt_fit.id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         self.apply_mod_to_fits(modifier, tgt_fit_ids);
     }
@@ -227,7 +245,21 @@ impl ModifierRegister {
             }
             SsModType::SystemWide => tgt_fit_ids.extend(ss_view.fits.iter_fit_ids()),
             SsModType::Projected => (),
-            SsModType::Fleet => (),
+            SsModType::Fleet => {
+                if let Some(src_fit_id) = mod_item.get_fit_id() {
+                    // Fleet modifications always affect fit itself
+                    tgt_fit_ids.push(src_fit_id);
+                    if let Ok(src_fit) = ss_view.fits.get_fit(&src_fit_id) {
+                        if let Some(fleet_id) = src_fit.fleet {
+                            for tgt_fit in ss_view.fits.iter_fits() {
+                                if tgt_fit.fleet == Some(fleet_id) {
+                                    tgt_fit_ids.push(tgt_fit.id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         self.unapply_mods_from_fits(modifier, tgt_fit_ids);
     }
