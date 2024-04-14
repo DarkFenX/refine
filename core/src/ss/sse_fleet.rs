@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{defs::SsFleetId, util::Result};
 
 use super::{fleet_info::SsFleetInfo, SolarSystem};
@@ -15,6 +17,10 @@ impl SolarSystem {
         self.get_fleet(&fleet_id)
     }
     pub fn remove_fleet(&mut self, fleet_id: &SsFleetId) -> Result<()> {
+        let fit_ids = self.fleets.get_fleet(fleet_id)?.fits.iter().map(|v| *v).collect_vec();
+        for fit_id in fit_ids.iter() {
+            self.set_fit_fleet(fit_id, None).unwrap();
+        }
         self.fleets.remove_fleet(fleet_id)?;
         Ok(())
     }
