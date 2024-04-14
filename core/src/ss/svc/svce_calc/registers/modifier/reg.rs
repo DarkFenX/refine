@@ -202,16 +202,13 @@ impl ModifierRegister {
             SsModType::Projected => (),
             SsModType::Fleet => {
                 if let Some(src_fit_id) = mod_item.get_fit_id() {
-                    // Fleet modifications always affect fit itself
-                    tgt_fit_ids.push(src_fit_id);
-                    if let Ok(src_fit) = ss_view.fits.get_fit(&src_fit_id) {
-                        if let Some(fleet_id) = src_fit.fleet {
-                            for tgt_fit in ss_view.fits.iter_fits() {
-                                if tgt_fit.fleet == Some(fleet_id) {
-                                    tgt_fit_ids.push(tgt_fit.id);
-                                }
-                            }
+                    let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();
+                    match src_fit.fleet {
+                        Some(fleet_id) => {
+                            let fleet = ss_view.fleets.get_fleet(&fleet_id).unwrap();
+                            tgt_fit_ids.extend(fleet.fits.iter());
                         }
+                        None => tgt_fit_ids.push(src_fit_id),
                     }
                 }
             }
@@ -247,16 +244,13 @@ impl ModifierRegister {
             SsModType::Projected => (),
             SsModType::Fleet => {
                 if let Some(src_fit_id) = mod_item.get_fit_id() {
-                    // Fleet modifications always affect fit itself
-                    tgt_fit_ids.push(src_fit_id);
-                    if let Ok(src_fit) = ss_view.fits.get_fit(&src_fit_id) {
-                        if let Some(fleet_id) = src_fit.fleet {
-                            for tgt_fit in ss_view.fits.iter_fits() {
-                                if tgt_fit.fleet == Some(fleet_id) {
-                                    tgt_fit_ids.push(tgt_fit.id);
-                                }
-                            }
+                    let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();
+                    match src_fit.fleet {
+                        Some(fleet_id) => {
+                            let fleet = ss_view.fleets.get_fleet(&fleet_id).unwrap();
+                            tgt_fit_ids.extend(fleet.fits.iter());
                         }
+                        None => tgt_fit_ids.push(src_fit_id),
                     }
                 }
             }
