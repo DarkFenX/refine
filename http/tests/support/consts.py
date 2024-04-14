@@ -38,6 +38,7 @@ class EveEffect(IntEnum):
     missile_therm_dmg_bonus = 662
     mod_bonus_afterburner = 6731
     mod_bonus_microwarpdrive = 6730
+    mod_bonus_warfare_link_armor = 6732
     online = 16
     self_rof = 1851
     ship_module_arar = 6651
