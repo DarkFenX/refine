@@ -185,15 +185,25 @@ impl TargetRegister {
         let mut tgt_fits = Vec::new();
         match modifier.mod_type {
             SsModType::Local | SsModType::FitWide => {
-                if let Some(tgt_fit_id) = mod_item.get_fit_id() {
-                    if let Ok(tgt_fit) = ss_view.fits.get_fit(&tgt_fit_id) {
-                        tgt_fits.push(tgt_fit);
-                    }
+                if let Some(src_fit_id) = mod_item.get_fit_id() {
+                    let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();
+                    tgt_fits.push(src_fit);
                 }
             }
             SsModType::SystemWide => tgt_fits.extend(ss_view.fits.iter_fits()),
             SsModType::Projected => (),
-            SsModType::Fleet => (),
+            SsModType::Fleet => {
+                if let Some(src_fit_id) = mod_item.get_fit_id() {
+                    let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();
+                    match src_fit.fleet {
+                        Some(fleet_id) => {
+                            let fleet = ss_view.fleets.get_fleet(&fleet_id).unwrap();
+                            tgt_fits.extend(fleet.fits.iter().map(|v| ss_view.fits.get_fit(v).unwrap()));
+                        }
+                        None => tgt_fits.push(src_fit),
+                    }
+                }
+            }
         };
         self.get_tgt_items_for_fits(mod_item, modifier, &tgt_fits)
     }
