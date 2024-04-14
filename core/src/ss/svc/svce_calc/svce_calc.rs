@@ -20,7 +20,7 @@ impl SsSvcs {
         self.calc_data.mods.unreg_fit(fit_id)
     }
     pub(in crate::ss::svc) fn calc_fit_added_to_fleet(&mut self, ss_view: &SsView, fleet: &SsFleet, fit_id: &SsFitId) {
-        let updates = self.calc_data.mods.reg_fleet_for_fit(fleet, fit_id);
+        let updates = self.calc_data.mods.reg_fleet_for_fit(ss_view, fleet, fit_id);
         self.process_fleet_updates(ss_view, fleet, fit_id, updates);
     }
     pub(in crate::ss::svc) fn calc_fit_removed_from_fleet(
@@ -29,7 +29,7 @@ impl SsSvcs {
         fleet: &SsFleet,
         fit_id: &SsFitId,
     ) {
-        let updates = self.calc_data.mods.unreg_fleet_for_fit(fleet, fit_id);
+        let updates = self.calc_data.mods.unreg_fleet_for_fit(ss_view, fleet, fit_id);
         self.process_fleet_updates(ss_view, fleet, fit_id, updates);
     }
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {

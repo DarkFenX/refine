@@ -51,9 +51,6 @@ pub(in crate::ss::svc::svce_calc) struct ModifierRegister {
     // Fleet modifiers on a per-fit basis
     // Contains: KeyedStorage<source fit ID, modifiers>
     mods_fleet_fit: KeyedStorage1L<SsFitId, SsAttrMod>,
-    // Modifiers active for a specific fleet
-    // Contains: KeyedStorage<target's fleet ID, modifiers>
-    mods_fleet_fleet: KeyedStorage1L<SsFleetId, SsAttrMod>,
     // System-wide modifiers
     sw_mods: HashSet<SsAttrMod>,
 }
@@ -70,7 +67,6 @@ impl ModifierRegister {
             mods_own_srq: KeyedStorage1L::new(),
             mods_buff_all: KeyedStorage1L::new(),
             mods_fleet_fit: KeyedStorage1L::new(),
-            mods_fleet_fleet: KeyedStorage1L::new(),
             sw_mods: HashSet::new(),
         }
     }
@@ -175,34 +171,72 @@ impl ModifierRegister {
     // Modification methods
     pub(in crate::ss::svc::svce_calc) fn reg_fit(&mut self, fit_id: &SsFitId) {
         let sw_mods = self.sw_mods.iter().map(|v| *v).collect_vec();
-        for modifier in sw_mods.iter() {
-            self.apply_mod_to_fits(*modifier, vec![*fit_id]);
+        if !sw_mods.is_empty() {
+            let tgt_fit_ids = vec![*fit_id];
+            for modifier in sw_mods.iter() {
+                self.apply_mod_to_fits(*modifier, &tgt_fit_ids);
+            }
         }
     }
     pub(in crate::ss::svc::svce_calc) fn unreg_fit(&mut self, fit_id: &SsFitId) {
         let sw_mods = self.sw_mods.iter().map(|v| *v).collect_vec();
-        for modifier in sw_mods.iter() {
-            self.unapply_mods_from_fits(modifier, vec![*fit_id]);
+        if !sw_mods.is_empty() {
+            let tgt_fit_ids = vec![*fit_id];
+            for modifier in sw_mods.iter() {
+                self.unapply_mod_from_fits(modifier, &tgt_fit_ids);
+            }
         }
     }
     pub(in crate::ss::svc::svce_calc) fn reg_fleet_for_fit(
         &mut self,
+        ss_view: &SsView,
         fleet: &SsFleet,
         fit_id: &SsFitId,
     ) -> FleetUpdates {
         let updates = self.get_fleet_updates(fleet, fit_id);
-        self.mods_fleet_fleet
-            .extend_entries(fleet.id, updates.outgoing.iter().map(|v| *v));
+        if !updates.incoming.is_empty() {
+            let tgt_fit_ids = vec![*fit_id];
+            for ss_mod in updates.incoming.iter() {
+                self.apply_mod_to_fits(*ss_mod, &tgt_fit_ids);
+            }
+        }
+        if !updates.outgoing.is_empty() {
+            let tgt_fit_ids = ss_view
+                .fits
+                .iter_fit_ids()
+                .map(|v| *v)
+                .filter(|v| v != fit_id)
+                .collect();
+            for ss_mod in updates.outgoing.iter() {
+                self.apply_mod_to_fits(*ss_mod, &tgt_fit_ids);
+            }
+        }
         updates
     }
     pub(in crate::ss::svc::svce_calc) fn unreg_fleet_for_fit(
         &mut self,
+        ss_view: &SsView,
         fleet: &SsFleet,
         fit_id: &SsFitId,
     ) -> FleetUpdates {
         let updates = self.get_fleet_updates(fleet, fit_id);
-        self.mods_fleet_fleet
-            .drain_entries(&fleet.id, updates.outgoing.iter().map(|v| *v));
+        if !updates.incoming.is_empty() {
+            let tgt_fit_ids = vec![*fit_id];
+            for ss_mod in updates.incoming.iter() {
+                self.unapply_mod_from_fits(ss_mod, &tgt_fit_ids);
+            }
+        }
+        if !updates.outgoing.is_empty() {
+            let tgt_fit_ids = ss_view
+                .fits
+                .iter_fit_ids()
+                .map(|v| *v)
+                .filter(|v| v != fit_id)
+                .collect();
+            for ss_mod in updates.outgoing.iter() {
+                self.unapply_mod_from_fits(ss_mod, &tgt_fit_ids);
+            }
+        }
         updates
     }
     pub(in crate::ss::svc::svce_calc) fn reg_mod(&mut self, ss_view: &SsView, mod_item: &SsItem, modifier: SsAttrMod) {
@@ -215,10 +249,6 @@ impl ModifierRegister {
             SsModType::Fleet => {
                 if let Some(fit_id) = mod_item.get_fit_id() {
                     self.mods_fleet_fit.add_entry(fit_id, modifier);
-                    let fit = ss_view.fits.get_fit(&fit_id).unwrap();
-                    if let Some(fleet_id) = fit.fleet {
-                        self.mods_fleet_fleet.add_entry(fleet_id, modifier);
-                    }
                 }
             }
             _ => (),
@@ -253,7 +283,7 @@ impl ModifierRegister {
                 }
             }
         }
-        self.apply_mod_to_fits(modifier, tgt_fit_ids);
+        self.apply_mod_to_fits(modifier, &tgt_fit_ids);
     }
     pub(in crate::ss::svc::svce_calc) fn unreg_mod(
         &mut self,
@@ -270,10 +300,6 @@ impl ModifierRegister {
             SsModType::Fleet => {
                 if let Some(fit_id) = mod_item.get_fit_id() {
                     self.mods_fleet_fit.remove_entry(&fit_id, &modifier);
-                    let fit = ss_view.fits.get_fit(&fit_id).unwrap();
-                    if let Some(fleet_id) = fit.fleet {
-                        self.mods_fleet_fleet.remove_entry(&fleet_id, modifier);
-                    }
                 }
             }
             _ => (),
@@ -308,7 +334,7 @@ impl ModifierRegister {
                 }
             }
         }
-        self.unapply_mods_from_fits(modifier, tgt_fit_ids);
+        self.unapply_mod_from_fits(modifier, &tgt_fit_ids);
     }
     pub(in crate::ss::svc::svce_calc) fn add_mod_tgt(
         &mut self,
@@ -318,11 +344,11 @@ impl ModifierRegister {
     ) -> bool {
         match (mod_item, tgt_item) {
             (SsItem::ProjEffect(_), SsItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
-                self.apply_mod_to_fits(modifier, vec![ship.fit_id]);
+                self.apply_mod_to_fits(modifier, &vec![ship.fit_id]);
                 true
             }
             (SsItem::ProjEffect(_), SsItem::Structure(structure)) if !is_mod_direct_everything(&modifier) => {
-                self.apply_mod_to_fits(modifier, vec![structure.fit_id]);
+                self.apply_mod_to_fits(modifier, &vec![structure.fit_id]);
                 true
             }
             (SsItem::ProjEffect(_), _) => self.apply_mod_to_item(modifier, tgt_item),
@@ -337,11 +363,11 @@ impl ModifierRegister {
     ) -> bool {
         match (mod_item, tgt_item) {
             (SsItem::ProjEffect(_), SsItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
-                self.unapply_mods_from_fits(modifier, vec![ship.fit_id]);
+                self.unapply_mod_from_fits(modifier, &vec![ship.fit_id]);
                 true
             }
             (SsItem::ProjEffect(_), SsItem::Structure(structure)) if !is_mod_direct_everything(&modifier) => {
-                self.unapply_mods_from_fits(modifier, vec![structure.fit_id]);
+                self.unapply_mod_from_fits(modifier, &vec![structure.fit_id]);
                 true
             }
             (SsItem::ProjEffect(_), _) => self.unapply_mod_from_item(modifier, tgt_item),
@@ -349,7 +375,7 @@ impl ModifierRegister {
         }
     }
     // Private methods
-    fn apply_mod_to_fits(&mut self, modifier: SsAttrMod, tgt_fit_ids: Vec<SsFitId>) {
+    fn apply_mod_to_fits(&mut self, modifier: SsAttrMod, tgt_fit_ids: &Vec<SsFitId>) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Everything => {
@@ -433,7 +459,7 @@ impl ModifierRegister {
             }
         }
     }
-    fn unapply_mods_from_fits(&mut self, modifier: &SsAttrMod, tgt_fit_ids: Vec<SsFitId>) {
+    fn unapply_mod_from_fits(&mut self, modifier: &SsAttrMod, tgt_fit_ids: &Vec<SsFitId>) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Everything => {
