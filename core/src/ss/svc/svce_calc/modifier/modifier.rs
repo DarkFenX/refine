@@ -48,7 +48,7 @@ impl SsAttrMod {
     }
     pub(in crate::ss::svc::svce_calc) fn from_a_effect(
         src_ss_item: &SsItem,
-        src_a_effect: &ad::ArcEffect,
+        src_a_effect: &ad::AEffect,
         src_a_mod: &ad::AEffectAttrMod,
         mod_type: SsModType,
     ) -> Self {
@@ -65,8 +65,8 @@ impl SsAttrMod {
     }
     pub(in crate::ss::svc::svce_calc) fn from_a_buff(
         src_ss_item: &SsItem,
-        src_a_effect: &ad::ArcEffect,
-        src_a_buff: &ad::ArcBuff,
+        src_a_effect: &ad::AEffect,
+        src_a_buff: &ad::ABuff,
         src_a_mod: &ad::ABuffAttrMod,
         src_attr_id: EAttrId,
         mod_type: SsModType,

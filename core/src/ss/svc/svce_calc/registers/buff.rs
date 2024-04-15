@@ -9,34 +9,45 @@ use crate::{
 
 // Intended to hold data about buffs which use on-item attributes which define buff type
 pub(in crate::ss::svc::svce_calc) struct BuffRegister {
-    effects: HashSet<(SsItemId, EEffectId)>,
+    effects: KeyedStorage1L<SsItemId, EEffectId>,
     modifiers: KeyedStorage1L<(SsItemId, EAttrId), SsAttrMod>,
 }
 impl BuffRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
-            effects: HashSet::new(),
+            effects: KeyedStorage1L::new(),
             modifiers: KeyedStorage1L::new(),
         }
+    }
+    // Query methods
+    pub(in crate::ss::svc::svce_calc) fn get_effects(&mut self, item_id: &SsItemId) -> Option<&HashSet<EEffectId>> {
+        self.effects.get(&item_id)
+    }
+    pub(in crate::ss::svc::svce_calc) fn extract_mod_attr_dep(
+        &mut self,
+        item_id: &SsItemId,
+        buff_type_attr_id: &EAttrId,
+    ) -> Option<HashSet<SsAttrMod>> {
+        self.modifiers.remove_key(&(*item_id, *buff_type_attr_id))
     }
     // Modification methods
     pub(in crate::ss::svc::svce_calc) fn reg_effect(&mut self, item_id: SsItemId, effect: &ad::AEffect) {
         if uses_default_attrs(effect) {
-            self.effects.insert((item_id, effect.id));
+            self.effects.add_entry(item_id, effect.id);
         }
     }
     pub(in crate::ss::svc::svce_calc) fn unreg_effect(&mut self, item_id: SsItemId, effect: &ad::AEffect) {
         if uses_default_attrs(effect) {
-            self.effects.remove(&(item_id, effect.id));
+            self.effects.remove_entry(&item_id, &effect.id);
         }
     }
     pub(in crate::ss::svc::svce_calc) fn reg_mod_attr_dep(
         &mut self,
         item_id: SsItemId,
-        attr_id: EAttrId,
+        buff_type_attr_id: EAttrId,
         ss_mod: SsAttrMod,
     ) {
-        self.modifiers.add_entry((item_id, attr_id), ss_mod)
+        self.modifiers.add_entry((item_id, buff_type_attr_id), ss_mod)
     }
 }
 
