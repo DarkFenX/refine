@@ -88,7 +88,7 @@ impl SsSvcs {
             for dependent_mod in dependent_mods {
                 self.calc_data
                     .buffs
-                    .reg_mod_attr_dep(item.get_id(), *buff_type_attr_id, *dependent_mod);
+                    .reg_dependent_mod(item.get_id(), *buff_type_attr_id, *dependent_mod);
             }
         }
     }
@@ -114,7 +114,7 @@ impl SsSvcs {
             for dependent_mod in dependent_mods {
                 self.calc_data
                     .buffs
-                    .unreg_mod_attr_dep(&item.get_id(), buff_type_attr_id, dependent_mod);
+                    .unreg_dependent_mod(&item.get_id(), buff_type_attr_id, dependent_mod);
             }
         }
     }
@@ -194,6 +194,7 @@ impl SsSvcs {
         item_id: &SsItemId,
         attr_id: &EAttrId,
     ) {
+        let item = ss_view.items.get_item(item_id).unwrap();
         // Clear up attribute values which rely on passed attribute as an upper cap
         let dependents = self
             .calc_data
@@ -213,7 +214,6 @@ impl SsSvcs {
             .filter(|v| v.get_src_attr_id() == Some(*attr_id))
             .map(|v| *v)
             .collect_vec();
-        let item = ss_view.items.get_item(item_id).unwrap();
         for modifier in mods.iter() {
             for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, &modifier) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
@@ -221,17 +221,17 @@ impl SsSvcs {
         }
         // Process buffs which rely on attribute being modified
         if ec::attrs::BUFF_ID_ATTRS.contains(attr_id) {
-            if let Some(mods) = self.calc_data.buffs.extract_mod_attr_dep(item_id, attr_id) {
-                // Remove modifiers of buffs which relied on the attribute
+            // Remove modifiers of buffs which rely on the attribute
+            if let Some(mods) = self.calc_data.buffs.extract_dependent_mods(item_id, attr_id) {
                 let ss_mods = mods.into_iter().collect();
                 self.unreg_mods(ss_view, item, &ss_mods);
             }
-            // Generate new modifiers using new values and apply them
+            // Generate new modifiers using new value and apply them
             if let Some(effect_ids) = self.calc_data.buffs.get_effects(item_id) {
                 let effect_ids = effect_ids.iter().map(|v| *v).collect();
                 let ss_mods = self.calc_generate_dependent_buff_mods(ss_view, item, &effect_ids, attr_id);
                 for ss_mod in ss_mods.iter() {
-                    self.calc_data.buffs.reg_mod_attr_dep(*item_id, *attr_id, *ss_mod);
+                    self.calc_data.buffs.reg_dependent_mod(*item_id, *attr_id, *ss_mod);
                 }
                 self.reg_mods(ss_view, item, &ss_mods);
             }
@@ -264,10 +264,10 @@ impl SsSvcs {
     fn unreg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
         // Regular modifiers
         for ss_mod in ss_mods.iter() {
+            self.calc_data.mods.unreg_mod(ss_view, item, ss_mod);
             for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, ss_mod) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
             }
-            self.calc_data.mods.unreg_mod(ss_view, item, ss_mod);
         }
         // Revisions and effect-specific processing
         for ss_mod in ss_mods.iter() {
