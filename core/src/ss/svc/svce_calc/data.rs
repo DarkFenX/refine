@@ -1,12 +1,13 @@
 use super::{
     misc::AttrValData,
-    registers::{DependencyRegister, ModifierRegister, RevisionRegister, TargetRegister},
+    registers::{BuffRegister, DependencyRegister, ModifierRegister, RevisionRegister, TargetRegister},
 };
 
 pub(in crate::ss::svc) struct CalcData {
     pub(in crate::ss::svc::svce_calc) attrs: AttrValData,
     pub(in crate::ss::svc::svce_calc) mods: ModifierRegister,
     pub(in crate::ss::svc::svce_calc) tgts: TargetRegister,
+    pub(in crate::ss::svc::svce_calc) buffs: BuffRegister,
     pub(in crate::ss::svc::svce_calc) deps: DependencyRegister,
     pub(in crate::ss::svc::svce_calc) revs: RevisionRegister,
 }
@@ -16,6 +17,7 @@ impl CalcData {
             attrs: AttrValData::new(),
             mods: ModifierRegister::new(),
             tgts: TargetRegister::new(),
+            buffs: BuffRegister::new(),
             deps: DependencyRegister::new(),
             revs: RevisionRegister::new(),
         }

@@ -74,6 +74,11 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
+        // Buff maintenance
+        for effect in effects.iter() {
+            self.calc_data.buffs.reg_effect(item.get_id(), effect);
+        }
+        // Regular modifiers
         let mods = self.calc_generate_mods(ss_view, item, effects);
         for ss_mod in mods.iter() {
             self.calc_data.mods.reg_mod(ss_view, item, *ss_mod);
@@ -92,6 +97,7 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
+        // Regular modifiers
         let mods = self.calc_generate_mods(ss_view, item, effects);
         for ss_mod in mods.iter() {
             for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, ss_mod) {
@@ -106,6 +112,10 @@ impl SsSvcs {
             // item is not removed), changes to parent attributes like ship mass do not clear the
             // child attribute - ship speed
             ss_mod.on_effect_stop(self, ss_view);
+        }
+        // Buff maintenance
+        for effect in effects.iter() {
+            self.calc_data.buffs.reg_effect(item.get_id(), effect);
         }
     }
     pub(in crate::ss::svc) fn calc_item_tgt_added(&mut self, ss_view: &SsView, item: &SsItem, tgt_item_id: SsItemId) {
