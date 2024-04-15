@@ -56,8 +56,7 @@ impl SsSvcs {
                     ad::AEffectBuffDataSrc::DefaultAttrs => {
                         for (buff_attr_id, buff_val_id) in ec::attrs::BUFF_ATTRS {
                             if let Ok(buff_id) = self.calc_get_item_attr_val(ss_view, &item_id, &buff_attr_id) {
-                                insert_buff_mods(
-                                    &mut mods,
+                                let buff_mods = get_buff_mods(
                                     ss_view,
                                     item,
                                     effect,
@@ -66,6 +65,10 @@ impl SsSvcs {
                                     buff_val_id,
                                     mod_type,
                                 );
+                                for buff_mod in buff_mods.iter() {
+                                    self.calc_data.buffs.reg_mod_attr_dep(item_id, buff_attr_id, *buff_mod);
+                                }
+                                mods.extend(buff_mods);
                             }
                         }
                     }
@@ -85,8 +88,7 @@ impl SsSvcs {
     }
 }
 
-fn insert_buff_mods(
-    mods: &mut Vec<SsAttrMod>,
+fn get_buff_mods(
     ss_view: &SsView,
     item: &SsItem,
     effect: &ad::ArcEffect,
@@ -94,7 +96,8 @@ fn insert_buff_mods(
     buff_scope: &ad::AEffectBuffScope,
     buff_val_id: EAttrId,
     mod_type: SsModType,
-) {
+) -> Vec<SsAttrMod> {
+    let mut mods = Vec::new();
     if let Some(buff) = ss_view.src.get_a_buff(buff_id) {
         for buff_mod in buff.mods.iter() {
             let ss_mod =
@@ -102,4 +105,5 @@ fn insert_buff_mods(
             mods.push(ss_mod);
         }
     }
+    mods
 }
