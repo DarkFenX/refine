@@ -251,6 +251,9 @@ impl SsSvcs {
     fn reg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
         // Regular modifiers
         for ss_mod in ss_mods.iter() {
+            // Modifications have to be added before target attributes are cleared, because for case
+            // of fleet buff ID attributes new value will be fetched instantly after cleanup, and
+            // that value has to be new
             self.calc_data.mods.reg_mod(ss_view, item, *ss_mod);
             for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, ss_mod) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
@@ -264,6 +267,9 @@ impl SsSvcs {
     fn unreg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
         // Regular modifiers
         for ss_mod in ss_mods.iter() {
+            // Modifications have to be removed before target attributes are cleared, because for
+            // case of fleet buff ID attributes new value will be fetched instantly after cleanup,
+            // and that value has to be new
             self.calc_data.mods.unreg_mod(ss_view, item, ss_mod);
             for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, ss_mod) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
