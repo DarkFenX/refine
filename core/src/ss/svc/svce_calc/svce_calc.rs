@@ -83,7 +83,14 @@ impl SsSvcs {
             self.calc_data.buffs.reg_effect(item.get_id(), effect);
         }
         let ss_mods = self.calc_generate_mods_for_effects(ss_view, item, effects);
-        self.reg_mods(ss_view, item, ss_mods);
+        self.reg_mods(ss_view, item, &ss_mods.all);
+        for (attr_id, dependent_mods) in ss_mods.dependent_buffs.iter() {
+            for dependent_mod in dependent_mods {
+                self.calc_data
+                    .buffs
+                    .reg_mod_attr_dep(item.get_id(), *attr_id, *dependent_mod);
+            }
+        }
     }
     pub(in crate::ss::svc) fn calc_effects_stopped(
         &mut self,
@@ -92,10 +99,23 @@ impl SsSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         let ss_mods = self.calc_generate_mods_for_effects(ss_view, item, effects);
-        self.unreg_mods(ss_view, item, ss_mods);
+        self.unreg_mods(ss_view, item, &ss_mods.all);
+        // This bit is just for propulsion mode effect, so that when effect is not running (but item
+        // is not removed), changes to parent attributes like ship mass do not clear the child
+        // attribute - ship speed
+        for ss_mod in ss_mods.all.iter() {
+            ss_mod.on_effect_stop(self, ss_view);
+        }
         // Buff maintenance
         for effect in effects.iter() {
-            self.calc_data.buffs.reg_effect(item.get_id(), effect);
+            self.calc_data.buffs.unreg_effect(item.get_id(), effect);
+        }
+        for (attr_id, dependent_mods) in ss_mods.dependent_buffs.iter() {
+            for dependent_mod in dependent_mods {
+                self.calc_data
+                    .buffs
+                    .unreg_mod_attr_dep(&item.get_id(), attr_id, dependent_mod);
+            }
         }
     }
     pub(in crate::ss::svc) fn calc_item_tgt_added(&mut self, ss_view: &SsView, item: &SsItem, tgt_item_id: SsItemId) {
@@ -204,13 +224,16 @@ impl SsSvcs {
             if let Some(mods) = self.calc_data.buffs.extract_mod_attr_dep(item_id, attr_id) {
                 // Remove modifiers of buffs which relied on the attribute
                 let ss_mods = mods.into_iter().collect();
-                self.unreg_mods(ss_view, item, ss_mods);
+                self.unreg_mods(ss_view, item, &ss_mods);
             }
             // Generate new modifiers using new values and apply them
             if let Some(effect_ids) = self.calc_data.buffs.get_effects(item_id) {
                 let effect_ids = effect_ids.iter().map(|v| *v).collect();
-                let ss_mods = self.calc_generate_mods_for_buff_attr(ss_view, item, &effect_ids, attr_id);
-                self.reg_mods(ss_view, item, ss_mods);
+                let ss_mods = self.calc_generate_dependent_buff_mods(ss_view, item, &effect_ids, attr_id);
+                for ss_mod in ss_mods.iter() {
+                    self.calc_data.buffs.reg_mod_attr_dep(*item_id, *attr_id, *ss_mod);
+                }
+                self.reg_mods(ss_view, item, &ss_mods);
             }
         }
     }
@@ -225,7 +248,7 @@ impl SsSvcs {
         }
     }
     // Private methods
-    fn reg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: Vec<SsAttrMod>) {
+    fn reg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
         // Regular modifiers
         for ss_mod in ss_mods.iter() {
             self.calc_data.mods.reg_mod(ss_view, item, *ss_mod);
@@ -238,7 +261,7 @@ impl SsSvcs {
             self.calc_data.revs.reg_mod(*ss_mod);
         }
     }
-    fn unreg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: Vec<SsAttrMod>) {
+    fn unreg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
         // Regular modifiers
         for ss_mod in ss_mods.iter() {
             for tgt_item_id in self.calc_data.tgts.get_tgt_items(ss_view, item, ss_mod) {

@@ -49,6 +49,14 @@ impl BuffRegister {
     ) {
         self.modifiers.add_entry((item_id, buff_type_attr_id), ss_mod)
     }
+    pub(in crate::ss::svc::svce_calc) fn unreg_mod_attr_dep(
+        &mut self,
+        item_id: &SsItemId,
+        buff_type_attr_id: &EAttrId,
+        ss_mod: &SsAttrMod,
+    ) {
+        self.modifiers.remove_entry(&(*item_id, *buff_type_attr_id), &ss_mod)
+    }
 }
 
 fn uses_default_attrs(effect: &ad::AEffect) -> bool {

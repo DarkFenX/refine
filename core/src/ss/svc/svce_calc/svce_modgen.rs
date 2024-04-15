@@ -10,7 +10,21 @@ use crate::{
         },
         SsView,
     },
+    util::KeyedStorage1L,
 };
+
+pub(super) struct GeneratedMods {
+    pub(super) all: Vec<SsAttrMod>,
+    pub(super) dependent_buffs: KeyedStorage1L<EAttrId, SsAttrMod>,
+}
+impl GeneratedMods {
+    fn new() -> Self {
+        Self {
+            all: Vec::new(),
+            dependent_buffs: KeyedStorage1L::new(),
+        }
+    }
+}
 
 impl SsSvcs {
     pub(super) fn calc_generate_mods_for_effects(
@@ -18,9 +32,9 @@ impl SsSvcs {
         ss_view: &SsView,
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
-    ) -> Vec<SsAttrMod> {
+    ) -> GeneratedMods {
         let item_id = item.get_id();
-        let mut mods = Vec::new();
+        let mut mods = GeneratedMods::new();
         for effect in effects.iter() {
             let mod_type = match get_mod_type(item, effect) {
                 Some(mod_type) => mod_type,
@@ -43,30 +57,27 @@ impl SsSvcs {
                                     buff_val_attr_id,
                                     mod_type,
                                 );
-                                for buff_mod in buff_mods.iter() {
-                                    self.calc_data
-                                        .buffs
-                                        .reg_mod_attr_dep(item_id, buff_type_attr_id, *buff_mod);
-                                }
-                                mods.extend(buff_mods);
+                                mods.dependent_buffs
+                                    .extend_entries(buff_type_attr_id, buff_mods.iter().map(|v| *v));
+                                mods.all.extend(buff_mods);
                             }
                         }
                     }
                 }
             }
             // Regular modifiers
-            mods.extend(
+            mods.all.extend(
                 effect
                     .mods
                     .iter()
                     .map(|v| SsAttrMod::from_a_effect(item, effect, v, mod_type)),
             );
             // Custom modifiers
-            extend_with_custom_mods(item_id, effect.id, &mut mods);
+            extend_with_custom_mods(item_id, effect.id, &mut mods.all);
         }
         mods
     }
-    pub(super) fn calc_generate_mods_for_buff_attr(
+    pub(super) fn calc_generate_dependent_buff_mods(
         &mut self,
         ss_view: &SsView,
         item: &SsItem,
@@ -100,11 +111,6 @@ impl SsSvcs {
                             buff_value_attr_id,
                             mod_type,
                         );
-                        for buff_mod in buff_mods.iter() {
-                            self.calc_data
-                                .buffs
-                                .reg_mod_attr_dep(item_id, *buff_type_attr_id, *buff_mod);
-                        }
                         mods.extend(buff_mods);
                     }
                 }
