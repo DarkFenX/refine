@@ -84,11 +84,11 @@ impl SsSvcs {
         }
         let ss_mods = self.calc_generate_mods_for_effects(ss_view, item, effects);
         self.reg_mods(ss_view, item, &ss_mods.all);
-        for (attr_id, dependent_mods) in ss_mods.dependent_buffs.iter() {
+        for (buff_type_attr_id, dependent_mods) in ss_mods.dependent_buffs.iter() {
             for dependent_mod in dependent_mods {
                 self.calc_data
                     .buffs
-                    .reg_mod_attr_dep(item.get_id(), *attr_id, *dependent_mod);
+                    .reg_mod_attr_dep(item.get_id(), *buff_type_attr_id, *dependent_mod);
             }
         }
     }
@@ -110,11 +110,11 @@ impl SsSvcs {
         for effect in effects.iter() {
             self.calc_data.buffs.unreg_effect(item.get_id(), effect);
         }
-        for (attr_id, dependent_mods) in ss_mods.dependent_buffs.iter() {
+        for (buff_type_attr_id, dependent_mods) in ss_mods.dependent_buffs.iter() {
             for dependent_mod in dependent_mods {
                 self.calc_data
                     .buffs
-                    .unreg_mod_attr_dep(&item.get_id(), attr_id, dependent_mod);
+                    .unreg_mod_attr_dep(&item.get_id(), buff_type_attr_id, dependent_mod);
             }
         }
     }
@@ -219,7 +219,7 @@ impl SsSvcs {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
             }
         }
-        // Process any buffs if any relied on attribute being modified
+        // Process buffs which rely on attribute being modified
         if ec::attrs::BUFF_ID_ATTRS.contains(attr_id) {
             if let Some(mods) = self.calc_data.buffs.extract_mod_attr_dep(item_id, attr_id) {
                 // Remove modifiers of buffs which relied on the attribute
