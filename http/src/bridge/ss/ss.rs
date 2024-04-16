@@ -22,6 +22,19 @@ impl HSolarSystem {
     pub(crate) fn last_accessed(&self) -> &chrono::DateTime<chrono::Utc> {
         &self.accessed
     }
+    #[tracing::instrument(name = "ss-ss-check", level = "trace", skip_all)]
+    pub(crate) async fn debug_consistency_check(&mut self) -> HResult<bool> {
+        let core_ss = self.take_ss()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (result, core_ss) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let result = core_ss.debug_consistency_check();
+            (result, core_ss)
+        })
+        .await;
+        self.put_ss_back(core_ss);
+        Ok(result)
+    }
     // Solar system methods
     #[tracing::instrument(name = "ss-ss-get", level = "trace", skip_all)]
     pub(crate) async fn get_ss(

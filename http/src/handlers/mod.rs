@@ -1,3 +1,4 @@
+pub(crate) use debug::debug_check_ss;
 pub(crate) use fit::{change_fit, create_fit, delete_fit, get_fit};
 pub(crate) use fleet::{change_fleet, create_fleet, delete_fleet, get_fleet};
 pub(crate) use item::{change_item, create_item, delete_item, get_item};
@@ -6,6 +7,7 @@ use shared::{get_guarded_ss, HGSsResult, HSingleErr};
 pub(crate) use src::{create_source, delete_source};
 pub(crate) use ss::{change_ss, create_ss, delete_ss, get_ss};
 
+mod debug;
 mod fit;
 mod fleet;
 mod item;

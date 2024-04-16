@@ -63,6 +63,8 @@ async fn main() {
         .route("/solar_system/:ss_id/fleet/:fleet_id", get(handlers::get_fleet))
         .route("/solar_system/:ss_id/fleet/:fleet_id", patch(handlers::change_fleet))
         .route("/solar_system/:ss_id/fleet/:fleet_id", delete(handlers::delete_fleet))
+        // Debug handlers
+        .route("/solar_system/:ss_id/check", get(handlers::debug_check_ss))
         .with_state(state);
     // Middleware
     let url_mid = NormalizePathLayer::trim_trailing_slash();
