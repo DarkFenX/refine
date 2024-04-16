@@ -10,16 +10,26 @@ use super::SolarSystem;
 impl SolarSystem {
     pub fn debug_consistency_check(&self) -> bool {
         let view = SsView::new(&self.src, &self.fleets, &self.fits, &self.items);
-        let mut used_item_ids = Vec::new();
+        let mut seen_items = Vec::new();
         // Fleets
-        for fleet in self.fleets.iter_fleets() {
-            if !fleet.debug_consistency_check(&view) {
-                return false;
-            }
+        if !self
+            .fleets
+            .iter_fleets()
+            .all(|fleet| fleet.debug_consistency_check(&view))
+        {
+            return false;
         }
-        // On-solar system items
+        // Fits
+        if !self
+            .fits
+            .iter_fits()
+            .all(|fit| fit.debug_consistency_check(&view, &mut seen_items))
+        {
+            return false;
+        }
+        // System-wide effects
         for item_id in self.sw_effects.iter() {
-            used_item_ids.push(*item_id);
+            seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return false,
@@ -28,8 +38,9 @@ impl SolarSystem {
                 return false;
             }
         }
+        // Projected effects
         for item_id in self.proj_effects.iter() {
-            used_item_ids.push(*item_id);
+            seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return false,
@@ -38,8 +49,12 @@ impl SolarSystem {
                 return false;
             }
         }
-        // Checks on data we gathered throughout the process
-        if check_item_duplicates(&used_item_ids) {
+        // Check if we have any duplicate references to items
+        if check_item_duplicates(&seen_items) {
+            return false;
+        }
+        // Check if we have any unreferenced items
+        if !self.items.iter().all(|item| seen_items.contains(&item.get_id())) {
             return false;
         }
         true
