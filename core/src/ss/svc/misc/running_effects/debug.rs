@@ -5,7 +5,12 @@ use super::RunningEffects;
 impl RunningEffects {
     pub(in crate::ss::svc) fn debug_consistency_check(&self, ss_view: &SsView) -> bool {
         for (item_id, effect_ids) in self.data.iter() {
-            if ss_view.items.get_item(item_id).is_err() {
+            // All items are supposed to have adapted item available
+            let item = match ss_view.items.get_item(item_id) {
+                Ok(item) => item,
+                _ => return false,
+            };
+            if item.get_a_item().is_err() {
                 return false;
             }
             // All effects which are running are supposed to be available in data source
