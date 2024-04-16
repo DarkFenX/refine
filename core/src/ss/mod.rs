@@ -12,6 +12,7 @@ mod item;
 pub(crate) mod item_info;
 mod misc;
 mod ss;
+mod sse_debug;
 mod sse_fit;
 mod sse_fleet;
 mod sse_item;

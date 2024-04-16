@@ -47,9 +47,6 @@ impl SolarSystem {
         // TODO: make sure attributes and attribute caps are cleared when source
         // is switched or item is reloaded (as well as stuff in other services)
     }
-    pub fn debug_consistency_check(&self) -> bool {
-        true
-    }
     // Item attributes
     pub fn get_item_attr(&mut self, item_id: &SsItemId, attr_id: &EAttrId) -> Result<SsAttrVal> {
         self.svcs.calc_get_item_attr_val(
