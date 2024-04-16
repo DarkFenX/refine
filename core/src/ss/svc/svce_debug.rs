@@ -5,6 +5,9 @@ impl SsSvcs {
         if !self.running_effects.debug_consistency_check(ss_view) {
             return false;
         }
+        if !self.calc_data.debug_consistency_check(ss_view) {
+            return false;
+        }
         true
     }
 }

@@ -2,13 +2,12 @@ use std::collections::HashMap;
 
 use crate::{
     defs::{EAttrId, SsItemId},
+    ss::svc::svce_calc::SsAttrVal,
     util::{Error, ErrorKind, Result},
 };
 
-use super::SsAttrVal;
-
 pub(in crate::ss::svc::svce_calc) struct AttrValData {
-    data: HashMap<SsItemId, HashMap<EAttrId, SsAttrVal>>,
+    pub(super) data: HashMap<SsItemId, HashMap<EAttrId, SsAttrVal>>,
 }
 impl AttrValData {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
