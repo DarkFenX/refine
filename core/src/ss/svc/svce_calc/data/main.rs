@@ -1,4 +1,4 @@
-use super::{
+use crate::ss::svc::svce_calc::{
     misc::AttrValData,
     registers::{BuffRegister, DependencyRegister, ModifierRegister, RevisionRegister, TargetRegister},
 };

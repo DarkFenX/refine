@@ -5,31 +5,36 @@ use crate::{
         item::{SsItem, SsModule},
         ModRack, SsView,
     },
+    util::{DebugError, DebugResult},
 };
 
 impl SsFit {
-    pub(in crate::ss) fn debug_consistency_check(&self, ss_view: &SsView, seen_items: &mut Vec<SsItemId>) -> bool {
+    pub(in crate::ss) fn debug_consistency_check(
+        &self,
+        ss_view: &SsView,
+        seen_items: &mut Vec<SsItemId>,
+    ) -> DebugResult {
         // If fleet is defined, it should exist and refer fit back
         if let Some(fleet_id) = self.fleet {
             let fleet = match ss_view.fleets.get_fleet(&fleet_id) {
                 Ok(fleet) => fleet,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if !fleet.fits.contains(&self.id) {
-                return false;
+                return Err(DebugError::new());
             }
         }
         // Character
         if let Some(item_id) = self.character {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Character(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(item_id);
         }
@@ -37,13 +42,13 @@ impl SsFit {
         for item_id in self.skills.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Skill(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(*item_id);
         }
@@ -51,13 +56,13 @@ impl SsFit {
         for item_id in self.implants.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Implant(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(*item_id);
         }
@@ -65,13 +70,13 @@ impl SsFit {
         for item_id in self.boosters.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Booster(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(*item_id);
         }
@@ -79,13 +84,13 @@ impl SsFit {
         if let Some(item_id) = self.ship {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Ship(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(item_id);
         }
@@ -93,13 +98,13 @@ impl SsFit {
         if let Some(item_id) = self.structure {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Structure(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(item_id);
         }
@@ -107,13 +112,13 @@ impl SsFit {
         if let Some(item_id) = self.stance {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Stance(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(item_id);
         }
@@ -121,13 +126,13 @@ impl SsFit {
         for item_id in self.subsystems.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Subsystem(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(*item_id);
         }
@@ -135,70 +140,70 @@ impl SsFit {
         for item_id in self.mods_high.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             let module = match item {
                 SsItem::Module(module) => module,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if !matches!(module.rack, ModRack::High) {
-                return false;
+                return Err(DebugError::new());
             }
-            check_module_charge(ss_view, &self.id, module, seen_items);
+            check_module_charge(ss_view, &self.id, module, seen_items)?;
             seen_items.push(*item_id);
         }
         // Mid slot modules
         for item_id in self.mods_mid.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             let module = match item {
                 SsItem::Module(module) => module,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if !matches!(module.rack, ModRack::Mid) {
-                return false;
+                return Err(DebugError::new());
             }
-            check_module_charge(ss_view, &self.id, module, seen_items);
+            check_module_charge(ss_view, &self.id, module, seen_items)?;
             seen_items.push(*item_id);
         }
         // Low slot modules
         for item_id in self.mods_low.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             let module = match item {
                 SsItem::Module(module) => module,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if !matches!(module.rack, ModRack::Low) {
-                return false;
+                return Err(DebugError::new());
             }
-            check_module_charge(ss_view, &self.id, module, seen_items);
+            check_module_charge(ss_view, &self.id, module, seen_items)?;
             seen_items.push(*item_id);
         }
         // Rigs
         for item_id in self.rigs.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Rig(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(*item_id);
         }
@@ -206,13 +211,13 @@ impl SsFit {
         for item_id in self.drones.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Drone(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(*item_id);
         }
@@ -220,13 +225,13 @@ impl SsFit {
         for item_id in self.fighters.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::Fighter(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(*item_id);
         }
@@ -234,37 +239,42 @@ impl SsFit {
         for item_id in self.fw_effects.iter() {
             let item = match ss_view.items.get_item(&item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
-                return false;
+                return Err(DebugError::new());
             }
             if !matches!(item, SsItem::FwEffect(_)) {
-                return false;
+                return Err(DebugError::new());
             }
             seen_items.push(*item_id);
         }
-        true
+        Ok(())
     }
 }
 
-fn check_module_charge(ss_view: &SsView, fit_id: &SsFitId, module: &SsModule, seen_items: &mut Vec<SsItemId>) -> bool {
+fn check_module_charge(
+    ss_view: &SsView,
+    fit_id: &SsFitId,
+    module: &SsModule,
+    seen_items: &mut Vec<SsItemId>,
+) -> DebugResult {
     if let Some(item_id) = module.charge_item_id {
         let item = match ss_view.items.get_item(&item_id) {
             Ok(item) => item,
-            _ => return false,
+            _ => return Err(DebugError::new()),
         };
         if item.get_fit_id() != Some(*fit_id) {
-            return false;
+            return Err(DebugError::new());
         }
         let charge = match item {
             SsItem::Charge(charge) => charge,
-            _ => return false,
+            _ => return Err(DebugError::new()),
         };
         if charge.cont_id != module.id {
-            return false;
+            return Err(DebugError::new());
         }
         seen_items.push(item_id);
     }
-    true
+    Ok(())
 }

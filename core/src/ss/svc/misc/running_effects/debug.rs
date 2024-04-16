@@ -1,25 +1,18 @@
-use crate::ss::SsView;
+use crate::{
+    ss::{svc::debug, SsView},
+    util::DebugResult,
+};
 
 use super::RunningEffects;
 
 impl RunningEffects {
-    pub(in crate::ss::svc) fn debug_consistency_check(&self, ss_view: &SsView) -> bool {
+    pub(in crate::ss::svc) fn debug_consistency_check(&self, ss_view: &SsView) -> DebugResult {
         for (item_id, effect_ids) in self.data.iter() {
-            // All items are supposed to have adapted item available
-            let item = match ss_view.items.get_item(item_id) {
-                Ok(item) => item,
-                _ => return false,
-            };
-            if item.get_a_item().is_err() {
-                return false;
-            }
-            // All effects which are running are supposed to be available in data source
+            debug::check_item(ss_view, item_id)?;
             for effect_id in effect_ids.iter() {
-                if ss_view.src.get_a_effect(effect_id).is_none() {
-                    return false;
-                }
+                debug::check_effect(ss_view, effect_id)?;
             }
         }
-        true
+        Ok(())
     }
 }

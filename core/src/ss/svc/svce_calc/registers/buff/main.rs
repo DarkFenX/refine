@@ -9,8 +9,8 @@ use crate::{
 
 // Intended to hold data about modifiers which originated from buffs defined using on-item attribute
 pub(in crate::ss::svc::svce_calc) struct BuffRegister {
-    effects: KeyedStorage1L<SsItemId, EEffectId>,
-    modifiers: KeyedStorage1L<(SsItemId, EAttrId), SsAttrMod>,
+    pub(super) effects: KeyedStorage1L<SsItemId, EEffectId>,
+    pub(super) modifiers: KeyedStorage1L<(SsItemId, EAttrId), SsAttrMod>,
 }
 impl BuffRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {

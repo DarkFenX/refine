@@ -45,7 +45,6 @@ pub(in crate::ss::svc::svce_calc) use misc::SsLocType;
 pub use mod_info::{ModInfo, ModOpInfo, ModSrcInfo, ModSrcValInfo};
 
 mod data;
-mod datae_debug;
 mod misc;
 mod mod_info;
 mod modifier;

@@ -15,7 +15,7 @@ impl SolarSystem {
         if !self
             .fleets
             .iter_fleets()
-            .all(|fleet| fleet.debug_consistency_check(&view))
+            .all(|fleet| fleet.debug_consistency_check(&view).is_ok())
         {
             return false;
         }
@@ -23,7 +23,7 @@ impl SolarSystem {
         if !self
             .fits
             .iter_fits()
-            .all(|fit| fit.debug_consistency_check(&view, &mut seen_items))
+            .all(|fit| fit.debug_consistency_check(&view, &mut seen_items).is_ok())
         {
             return false;
         }
@@ -64,7 +64,7 @@ impl SolarSystem {
             return false;
         }
         // Services
-        if !self.svcs.debug_consistency_check(&view) {
+        if self.svcs.debug_consistency_check(&view).is_err() {
             return false;
         }
         true
