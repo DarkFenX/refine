@@ -45,8 +45,14 @@ impl SolarSystem {
                 Ok(item) => item,
                 _ => return false,
             };
-            if !matches!(item, SsItem::ProjEffect(_)) {
-                return false;
+            let proj_effect = match item {
+                SsItem::ProjEffect(proj_effect) => proj_effect,
+                _ => return false,
+            };
+            for tgt_item_id in proj_effect.tgts.iter() {
+                if view.items.get_item(tgt_item_id).is_err() {
+                    return false;
+                }
             }
         }
         // Check if we have any duplicate references to items
