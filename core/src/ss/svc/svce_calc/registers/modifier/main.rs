@@ -22,37 +22,37 @@ use super::{fleet_upd::FleetUpdates, iter_loc_act::LocsAct};
 pub(in crate::ss::svc::svce_calc) struct ModifierRegister {
     // Modifiers registered for an item
     // Contains: KeyedStorage<modifier item ID, modifiers>
-    mods: KeyedStorage1L<SsItemId, SsAttrMod>,
+    pub(super) mods: KeyedStorage1L<SsItemId, SsAttrMod>,
     // Modifiers which modify item directly
     // Contains: KeyedStorage<modifier item ID, modifiers>
-    mods_direct: KeyedStorage1L<SsItemId, SsAttrMod>,
+    pub(super) mods_direct: KeyedStorage1L<SsItemId, SsAttrMod>,
     // All modifiers which modify top-level entities (via ship or character reference) are kept here
     // Contains: KeyedStorage<(target's fit ID, target's location type), modifiers>
-    mods_toploc: KeyedStorage1L<(SsFitId, SsLocType), SsAttrMod>,
+    pub(super) mods_toploc: KeyedStorage1L<(SsFitId, SsLocType), SsAttrMod>,
     // Modifiers which modify 'other' domain are always stored here, regardless if they actually
     // modify something or not
     // Contains: KeyedStorage<modifier item ID, modifiers>
-    mods_other: KeyedStorage1L<SsItemId, SsAttrMod>,
+    pub(super) mods_other: KeyedStorage1L<SsItemId, SsAttrMod>,
     // Modifiers influencing all items belonging to certain fit and location type
     // Contains: KeyedStorage<(target's fit ID, target's location type), modifiers>
-    mods_parloc: KeyedStorage1L<(SsFitId, SsLocType), SsAttrMod>,
+    pub(super) mods_parloc: KeyedStorage1L<(SsFitId, SsLocType), SsAttrMod>,
     // Modifiers influencing items belonging to certain fit, location and group
     // Contains: KeyedStorage<(target's fit ID, target's location, target's group ID), modifiers>
-    mods_parloc_grp: KeyedStorage1L<(SsFitId, SsLocType, EItemGrpId), SsAttrMod>,
+    pub(super) mods_parloc_grp: KeyedStorage1L<(SsFitId, SsLocType, EItemGrpId), SsAttrMod>,
     // Modifiers influencing items belonging to certain fit and location, and having certain skill requirement
     // Contains: KeyedStorage<(target's fit ID, target's location, target's skillreq type ID), modifiers>
-    mods_parloc_srq: KeyedStorage1L<(SsFitId, SsLocType, EItemId), SsAttrMod>,
+    pub(super) mods_parloc_srq: KeyedStorage1L<(SsFitId, SsLocType, EItemId), SsAttrMod>,
     // Modifiers influencing owner-modifiable items belonging to certain fit and having certain skill requirement
     // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), modifiers>
-    mods_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsAttrMod>,
+    pub(super) mods_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsAttrMod>,
     // Modifiers influencing all buff-modifiable items
     // Contains: KeyedStorage<target's fit ID, modifiers>
-    mods_buff_all: KeyedStorage1L<SsFitId, SsAttrMod>,
+    pub(super) mods_buff_all: KeyedStorage1L<SsFitId, SsAttrMod>,
     // Fleet modifiers on a per-fit basis
     // Contains: KeyedStorage<source fit ID, modifiers>
-    mods_fleet_fit: KeyedStorage1L<SsFitId, SsAttrMod>,
+    pub(super) mods_fleet_fit: KeyedStorage1L<SsFitId, SsAttrMod>,
     // System-wide modifiers
-    sw_mods: HashSet<SsAttrMod>,
+    pub(super) sw_mods: HashSet<SsAttrMod>,
 }
 impl ModifierRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {

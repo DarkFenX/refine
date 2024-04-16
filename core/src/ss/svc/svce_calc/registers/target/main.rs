@@ -19,26 +19,26 @@ use super::iter_loc_pot::LocsPot;
 pub(in crate::ss::svc::svce_calc) struct TargetRegister {
     // All known target items
     // Contains: HashSet<target item IDs>
-    tgts: HashSet<SsItemId>,
+    pub(super) tgts: HashSet<SsItemId>,
     // Items which are holders of a location type (like char, ship)
     // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
     // TODO: check if we need keyed storage over hashmap here, and check if we need it altogether
-    tgts_root: KeyedStorage1L<(SsFitId, SsLocType), SsItemId>,
+    pub(super) tgts_root: KeyedStorage1L<(SsFitId, SsLocType), SsItemId>,
     // Items belonging to certain fit and location type (e.g. char's implants, ship's modules)
     // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
-    tgts_loc: KeyedStorage1L<(SsFitId, SsLocType), SsItemId>,
+    pub(super) tgts_loc: KeyedStorage1L<(SsFitId, SsLocType), SsItemId>,
     // Items belonging to certain fit, location type and group
     // Contains: KeyedStorage<(target's fit ID, target's location type, target's group ID), target item IDs>
-    tgts_loc_grp: KeyedStorage1L<(SsFitId, SsLocType, EItemGrpId), SsItemId>,
+    pub(super) tgts_loc_grp: KeyedStorage1L<(SsFitId, SsLocType, EItemGrpId), SsItemId>,
     // Items belonging to certain fit and location type, and having certain skill requirement
     // Contains: KeyedStorage<(target's fit ID, target's location type, target's skillreq type ID), target item IDs>
-    tgts_loc_srq: KeyedStorage1L<(SsFitId, SsLocType, EItemId), SsItemId>,
+    pub(super) tgts_loc_srq: KeyedStorage1L<(SsFitId, SsLocType, EItemId), SsItemId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), target item IDs>
-    tgts_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsItemId>,
+    pub(super) tgts_own_srq: KeyedStorage1L<(SsFitId, EItemId), SsItemId>,
     // Everything-buff-modifiable items which belong to certain fit
     // Contains: KeyedStorage<target's fit ID, target item IDs>
-    tgts_buff_all: KeyedStorage1L<SsFitId, SsItemId>,
+    pub(super) tgts_buff_all: KeyedStorage1L<SsFitId, SsItemId>,
 }
 impl TargetRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {

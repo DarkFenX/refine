@@ -1,8 +1,15 @@
 use crate::{
-    defs::{EAttrId, EEffectId, SsItemId},
+    defs::{EAttrId, EEffectId, SsFitId, SsItemId},
     ss::SsView,
     util::{DebugError, DebugResult},
 };
+
+pub(in crate::ss::svc) fn check_fit(ss_view: &SsView, fit_id: &SsFitId) -> DebugResult {
+    if ss_view.fits.get_fit(fit_id).is_err() {
+        return Err(DebugError::new());
+    }
+    Ok(())
+}
 
 pub(in crate::ss::svc) fn check_item(ss_view: &SsView, item_id: &SsItemId) -> DebugResult {
     let item = match ss_view.items.get_item(item_id) {
