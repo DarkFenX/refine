@@ -86,6 +86,9 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KeyedStorage2L<A, B, V> {
             None => None,
         }
     }
+    pub(crate) fn iter(&self) -> impl Iterator<Item = (&A, &KeyedStorage1L<B, V>)> {
+        self.data.iter()
+    }
     // Modification methods
     pub(crate) fn add_entry(&mut self, key1: A, key2: B, entry: V) {
         let ks1l = self.data.entry(key1).or_insert_with(|| KeyedStorage1L::new());

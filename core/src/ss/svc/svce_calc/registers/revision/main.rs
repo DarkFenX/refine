@@ -4,8 +4,8 @@ use crate::ss::svc::svce_calc::modifier::SsAttrMod;
 
 // Intended to hold modifiers which need special handling, e.g. custom prop module modifiers
 pub(in crate::ss::svc::svce_calc) struct RevisionRegister {
-    item_add: HashSet<SsAttrMod>,
-    item_remove: HashSet<SsAttrMod>,
+    pub(super) item_add: HashSet<SsAttrMod>,
+    pub(super) item_remove: HashSet<SsAttrMod>,
 }
 impl RevisionRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {

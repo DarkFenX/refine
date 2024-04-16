@@ -1,4 +1,5 @@
-pub(in crate::ss::svc::svce_calc) use reg::DependencyRegister;
+pub(in crate::ss::svc::svce_calc) use main::DependencyRegister;
 
 mod attr_spec;
-mod reg;
+mod debug;
+mod main;
