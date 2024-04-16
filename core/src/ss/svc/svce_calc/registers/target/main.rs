@@ -256,7 +256,7 @@ impl TargetRegister {
         let tgt_topdom_opt = tgt_item.get_root_loc_type();
         let tgt_grp_id_res = tgt_item.get_group_id();
         let tgt_srqs_res = tgt_item.get_skill_reqs();
-        self.tgts.insert(tgt_item_id);
+        self.tgts.remove(&tgt_item_id);
         if let (Some(tgt_fit), Some(tgt_topdom)) = (tgt_fit_opt, tgt_topdom_opt) {
             self.tgts_root.remove_entry(&(tgt_fit.id, tgt_topdom), &tgt_item_id);
         }
