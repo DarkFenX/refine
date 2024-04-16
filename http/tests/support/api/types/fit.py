@@ -26,6 +26,7 @@ class Fit(AttrDict):
     def update(self) -> Fit:
         resp = self.update_request().send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
         self._data = resp.json()
         return self
 
@@ -35,6 +36,7 @@ class Fit(AttrDict):
     def remove(self) -> None:
         resp = self.remove_request().send()
         assert resp.status_code == 204
+        self._client.check_ss(ss_id=self._ss_id)
 
     # Fleet methods
     def set_fleet_request(
@@ -53,6 +55,7 @@ class Fit(AttrDict):
     def set_fleet(self, fleet_id: Union[str, None]) -> None:
         resp = self.set_fleet_request(fleet_id=fleet_id).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
 
     # Generic item methods
     def remove_item_request(self, item_id: str) -> Request:
@@ -61,6 +64,7 @@ class Fit(AttrDict):
     def remove_item(self, item_id: str) -> None:
         resp = self.remove_item_request(item_id=item_id).send()
         assert resp.status_code == 204
+        self._client.check_ss(ss_id=self._ss_id)
 
     # Character methods
     def set_char_request(self, type_id: int) -> Request:
@@ -69,6 +73,7 @@ class Fit(AttrDict):
     def set_char(self, type_id: int) -> Item:
         resp = self.set_char_request(type_id=type_id).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -90,6 +95,7 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_skill_request(type_id=type_id, level=level, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -108,6 +114,7 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_implant_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -126,6 +133,7 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_booster_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -136,6 +144,7 @@ class Fit(AttrDict):
     def set_ship(self, type_id: int) -> Item:
         resp = self.set_ship_request(type_id=type_id).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -146,6 +155,7 @@ class Fit(AttrDict):
     def set_struct(self, type_id: int) -> Item:
         resp = self.set_struct_request(type_id=type_id).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -156,6 +166,7 @@ class Fit(AttrDict):
     def set_stance(self, type_id: int) -> Item:
         resp = self.set_stance_request(type_id=type_id).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -174,6 +185,7 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_subsystem_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -205,6 +217,7 @@ class Fit(AttrDict):
             charge_type_id=charge_type_id,
             mode=mode).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -223,6 +236,7 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_rig_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -241,6 +255,7 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_drone_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -259,6 +274,7 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_fighter_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item
 
@@ -277,5 +293,6 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_fw_effect_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self._ss_id)
         item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
         return item

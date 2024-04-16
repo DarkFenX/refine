@@ -35,6 +35,7 @@ class SolarSystem(AttrDict):
     def update(self) -> SolarSystem:
         resp = self.update_request().send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self.id)
         self._data = resp.json()
         return self
 
@@ -64,6 +65,7 @@ class SolarSystem(AttrDict):
     ) -> Fleet:
         resp = self.get_fleet_request(fleet_id=fleet_id, fleet_info_mode=fleet_info_mode).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self.id)
         fleet = Fleet(client=self._client, data=resp.json(), ss_id=self.id)
         return fleet
 
@@ -73,6 +75,7 @@ class SolarSystem(AttrDict):
     def create_fleet(self) -> Fleet:
         resp = self.create_fleet_request().send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self.id)
         fleet = Fleet(client=self._client, data=resp.json(), ss_id=self.id)
         return fleet
 
@@ -97,6 +100,7 @@ class SolarSystem(AttrDict):
     ) -> Fit:
         resp = self.get_fit_request(fit_id=fit_id, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self.id)
         fit = Fit(client=self._client, data=resp.json(), ss_id=self.id)
         return fit
 
@@ -106,6 +110,7 @@ class SolarSystem(AttrDict):
     def create_fit(self) -> Fit:
         resp = self.create_fit_request().send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self.id)
         fit = Fit(client=self._client, data=resp.json(), ss_id=self.id)
         return fit
 
@@ -120,6 +125,7 @@ class SolarSystem(AttrDict):
     def get_item(self, item_id: str) -> Item:
         resp = self.get_item_request(item_id=item_id).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self.id)
         return Item(client=self._client, data=resp.json(), ss_id=self.id)
 
     # System-wide effect methods
@@ -137,6 +143,7 @@ class SolarSystem(AttrDict):
     ) -> Item:
         resp = self.add_sw_effect_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self.id)
         item = Item(client=self._client, data=resp.json(), ss_id=self.id)
         return item
 
@@ -162,5 +169,6 @@ class SolarSystem(AttrDict):
     ) -> Item:
         resp = self.add_proj_effect_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
+        self._client.check_ss(ss_id=self.id)
         item = Item(client=self._client, data=resp.json(), ss_id=self.id)
         return item

@@ -131,6 +131,16 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             method='DELETE',
             url=f'{self.__base_url}/solar_system/{ss_id}')
 
+    def check_ss(self, ss_id: str) -> None:
+        resp = self.check_ss_request(ss_id=ss_id).send()
+        assert resp.status_code == 200
+
+    def check_ss_request(self, ss_id: str) -> Request:
+        return Request(
+            self,
+            method='GET',
+            url=f'{self.__base_url}/solar_system/{ss_id}/check')
+
     def cleanup_sss(self) -> None:
         for ss in self.__created_sss.copy():
             ss.remove()

@@ -25,6 +25,7 @@ class Fleet(AttrDict):
     def update(self) -> Fleet:
         resp = self.update_request().send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
         self._data = resp.json()
         return self
 
@@ -44,6 +45,7 @@ class Fleet(AttrDict):
     def change(self, add_fits: list[str] = (), remove_fits: list[str] = ()):
         resp = self.change_request(add_fits=add_fits, remove_fits=remove_fits).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
         self._data = resp.json()
         return self
 
@@ -53,3 +55,4 @@ class Fleet(AttrDict):
     def remove(self) -> None:
         resp = self.remove_request().send()
         assert resp.status_code == 204
+        self._client.check_ss(ss_id=self._ss_id)

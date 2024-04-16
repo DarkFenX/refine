@@ -38,6 +38,7 @@ class Item(AttrDict):
     def update(self) -> Item:
         resp = self.update_request().send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
         self._data = resp.json()
         return self
 
@@ -47,6 +48,7 @@ class Item(AttrDict):
     def remove(self) -> None:
         resp = self.remove_request().send()
         assert resp.status_code == 204
+        self._client.check_ss(ss_id=self._ss_id)
 
     # Skill methods
     def change_skill_request(
@@ -66,6 +68,7 @@ class Item(AttrDict):
     ) -> None:
         resp = self.change_skill_request(level=level, state=state, effect_modes=effect_modes).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
 
     # Module methods
     def change_mod_request(
@@ -89,6 +92,7 @@ class Item(AttrDict):
     ) -> None:
         resp = self.change_mod_request(state=state, charge=charge, effect_modes=effect_modes).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
 
     # System-wide effect methods
     def change_sw_effect_request(
@@ -106,6 +110,7 @@ class Item(AttrDict):
     ) -> None:
         resp = self.change_sw_effect_request(state=state).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
 
     # Fit-wide effect methods
     def change_fw_effect_request(
@@ -123,6 +128,7 @@ class Item(AttrDict):
     ) -> None:
         resp = self.change_fw_effect_request(state=state).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
 
     # Projected effect methods
     def change_proj_effect_request(
@@ -146,3 +152,4 @@ class Item(AttrDict):
     ) -> None:
         resp = self.change_proj_effect_request(state=state, add_tgts=add_tgts, rm_tgts=rm_tgts).send()
         assert resp.status_code == 200
+        self._client.check_ss(ss_id=self._ss_id)
