@@ -1,41 +1,46 @@
 use std::collections::HashSet;
 
 use crate::{
+    defs::SsItemId,
     ss::{item::SsItem, SsView},
-    SsItemId,
+    util::{DebugError, DebugResult},
 };
 
 use super::SolarSystem;
 
 impl SolarSystem {
+    // This function is intended to be used in tests, to make sure inner state is consistent, i.e.
+    // no links broken, mutual references are correct, etc.
     pub fn debug_consistency_check(&self) -> bool {
-        let view = SsView::new(&self.src, &self.fleets, &self.fits, &self.items);
-        let mut seen_items = Vec::new();
-        // Fleets
-        if !self
-            .fleets
-            .iter_fleets()
-            .all(|fleet| fleet.debug_consistency_check(&view).is_ok())
-        {
+        let ss_view = SsView::new(&self.src, &self.fleets, &self.fits, &self.items);
+        if self.check_ss_structure(&ss_view).is_err() {
             return false;
         }
-        // Fits
-        if !self
-            .fits
-            .iter_fits()
-            .all(|fit| fit.debug_consistency_check(&view, &mut seen_items).is_ok())
-        {
+        if self.svcs.debug_consistency_check(&ss_view).is_err() {
             return false;
+        }
+        true
+    }
+    // Check that entities which define solar system object structure are consistent
+    fn check_ss_structure(&self, ss_view: &SsView) -> DebugResult {
+        let mut seen_items = Vec::new();
+        // Fleets
+        for fleet in self.fleets.iter_fleets() {
+            fleet.debug_consistency_check(&ss_view)?;
+        }
+        // Fits
+        for fit in self.fits.iter_fits() {
+            fit.debug_consistency_check(&ss_view, &mut seen_items)?;
         }
         // System-wide effects
         for item_id in self.sw_effects.iter() {
             seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             if !matches!(item, SsItem::SwEffect(_)) {
-                return false;
+                return Err(DebugError::new());
             }
         }
         // Projected effects
@@ -43,31 +48,27 @@ impl SolarSystem {
             seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             let proj_effect = match item {
                 SsItem::ProjEffect(proj_effect) => proj_effect,
-                _ => return false,
+                _ => return Err(DebugError::new()),
             };
             for tgt_item_id in proj_effect.tgts.iter() {
-                if view.items.get_item(tgt_item_id).is_err() {
-                    return false;
+                if ss_view.items.get_item(tgt_item_id).is_err() {
+                    return Err(DebugError::new());
                 }
             }
         }
         // Check if we have any duplicate references to items
         if check_item_duplicates(&seen_items) {
-            return false;
+            return Err(DebugError::new());
         }
         // Check if we have any unreferenced items
         if !self.items.iter().all(|item| seen_items.contains(&item.get_id())) {
-            return false;
+            return Err(DebugError::new());
         }
-        // Services
-        if self.svcs.debug_consistency_check(&view).is_err() {
-            return false;
-        }
-        true
+        Ok(())
     }
 }
 
