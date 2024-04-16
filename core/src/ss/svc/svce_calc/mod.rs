@@ -9,8 +9,8 @@
 //! attr on a specific item;
 //! - Target register - primary register which provides info on which items are modified by a
 //! modifier;
-//! - Projection register - provides extra info about effects which apply to items which do not
-//! belong to fit of modifier, or which apply to multiple targets;
+//! - Buff register - collects data about buff modifiers which rely on on-item attributes to define
+//! buff type;
 //! - Dependency register - tracks direct dependencies between attribute values, which cannot be
 //! tracked otherwise;
 //! - Revision register - keeps track of custom modifiers which depend on various events not related
@@ -22,8 +22,14 @@
 //! - Fit-local dogma modifiers: those use modifier register and target register to provide info for
 //! both directions: finding modifiers which affect an attr on an item, and finding items which are
 //! affected by a modifier;
-//! - System-wide and projected dogma modifiers: same as fit-local dogma modifier, but also use data
-//! from projection register to define which fits are affected;
+//! - Fit-wide modifiers: work similarly to fit-local modifiers, but they can use buffs which can
+//! potentially affect everything directly, e.g. abyssal weather affecting drone stats, with logic
+//! for that implemented in modifier register and target register;
+//! - System-wide and projected dogma modifiers: same as fit-wide modifiers, but span outside of
+//! fit, with controlling logic spread between the two primary registers and the service itself
+//! - Fleet modifiers (or buffs in general): processed like the rest of modifiers, with extra logic
+//! for fleets (implemented in the two primary registers), and using buff register to make sure
+//! that buff types are properly switched when on-item attribute which controls them changes;
 //! - Attribute value caps/limits: they are using dependency register, and relation between a
 //! limiting attribute and a limited attribute is registered during calculation of the limited
 //! attribute. Relation is removed only when item is unloaded;
