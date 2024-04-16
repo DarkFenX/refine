@@ -65,6 +65,30 @@ def test_affected_propagation(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
 
 
+def test_affected_charge(client, consts):
+    # Reflects currently real EVE scenario: ninazu/lif cap boost amount bonus
+    eve_grp = client.mk_eve_item_group()
+    eve_src_attr = client.mk_eve_attr()
+    eve_tgt_attr = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp.id,
+        op=consts.EveModOp.post_percent,
+        src_attr_id=eve_src_attr.id,
+        tgt_attr_id=eve_tgt_attr.id)
+    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_module = client.mk_eve_item()
+    eve_charge = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_tgt_attr.id: 3200})
+    eve_ship = client.mk_eve_item(attrs={eve_src_attr.id: 50}, eff_ids=[eve_effect.id])
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fit = api_ss.create_fit()
+    api_fit.set_ship(type_id=eve_ship.id)
+    api_module = api_fit.add_mod(type_id=eve_module.id, charge_type_id=eve_charge.id)
+    assert api_module.update().charge.attrs[eve_tgt_attr.id].dogma == approx(4800)
+
+
 def test_unaffected_other_domain(client, consts):
     # Check that entities from other domains are not affected
     eve_grp = client.mk_eve_item_group()
