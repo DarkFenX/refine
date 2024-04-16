@@ -63,6 +63,10 @@ impl SolarSystem {
         if !self.items.iter().all(|item| seen_items.contains(&item.get_id())) {
             return false;
         }
+        // Services
+        if !self.svcs.debug_consistency_check(&view) {
+            return false;
+        }
         true
     }
 }

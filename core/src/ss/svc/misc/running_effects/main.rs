@@ -4,7 +4,7 @@ use crate::{
 };
 
 pub(in crate::ss::svc) struct RunningEffects {
-    data: KeyedStorage1L<SsItemId, EEffectId>,
+    pub(super) data: KeyedStorage1L<SsItemId, EEffectId>,
 }
 impl RunningEffects {
     pub(in crate::ss::svc) fn new() -> Self {
