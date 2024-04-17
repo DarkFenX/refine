@@ -2,6 +2,7 @@
 pub type Idx = usize;
 pub type Amount = u32;
 // EVE-specific aliases, but not specific to any entity category
+pub type AggrKey = i32;
 pub type AttrVal = f64;
 pub type SkillLevel = u8;
 pub type SlotNumber = i32;

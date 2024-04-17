@@ -9,6 +9,7 @@ use itertools::Itertools;
 use crate::{
     ad,
     defs::{EAttrId, SsItemId},
+    shr::ModOp,
     ss::{
         item::SsItem,
         svc::{
@@ -21,10 +22,18 @@ use crate::{
         SsView,
     },
     util::Result,
-    ModAggrMode,
+    EItemCatId, ModAggrMode,
 };
 
-use super::{mod_info::ModInfo, svce_attr::is_penalizable};
+use super::{attr, mod_info::ModInfo};
+
+const PENALIZABLE_OPS: [ModOp; 5] = [
+    ModOp::PreMul,
+    ModOp::PreDiv,
+    ModOp::PostMul,
+    ModOp::PostDiv,
+    ModOp::PostPerc,
+];
 
 impl SsSvcs {
     // Query methods
@@ -109,6 +118,10 @@ impl SsSvcs {
         }
         mod_vec
     }
+}
+
+fn is_penalizable(attr: &ad::AAttr, src_item_cat_id: &EItemCatId, op: &ModOp) -> bool {
+    attr::is_penal(attr.penalizable, src_item_cat_id) && PENALIZABLE_OPS.contains(op)
 }
 
 fn filter_useless(attr_id: &EAttrId, mods: &mut Vec<ModInfo>, ss_view: &SsView) {

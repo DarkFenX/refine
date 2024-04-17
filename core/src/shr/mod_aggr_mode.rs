@@ -1,4 +1,4 @@
-use crate::defs::EBuffId;
+use crate::defs::AggrKey;
 
 /// Defines how a modification will be aggregated.
 ///
@@ -9,7 +9,7 @@ pub enum ModAggrMode {
     /// All modifications are applied.
     Stack,
     /// Min value will be used, from values with provided key.
-    Min(EBuffId),
+    Min(AggrKey),
     /// Max value will be used, from values with provided key.
-    Max(EBuffId),
+    Max(AggrKey),
 }

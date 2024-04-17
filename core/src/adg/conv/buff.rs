@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad,
     adg::GData,
-    defs::EBuffId,
+    defs::{AggrKey, EBuffId},
     shr::{ModAggrMode, ModOp},
     util::{IntError, IntResult},
 };
@@ -19,7 +19,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
                 continue;
             }
         };
-        let aggr_mode = match conv_buff_aggr_mode(&e_buff.aggregate_mode, e_buff.id) {
+        let aggr_mode = match conv_buff_aggr_mode(&e_buff.aggregate_mode, e_buff.id as AggrKey) {
             Ok(am) => am,
             Err(e) => {
                 let msg = format!("{}: {}", e_buff, e.msg);
@@ -52,7 +52,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
     a_buffs
 }
 
-fn conv_buff_aggr_mode(aggr_mode: &str, key: EBuffId) -> IntResult<ModAggrMode> {
+fn conv_buff_aggr_mode(aggr_mode: &str, key: AggrKey) -> IntResult<ModAggrMode> {
     match aggr_mode {
         "Minimum" => Ok(ModAggrMode::Min(key)),
         "Maximum" => Ok(ModAggrMode::Max(key)),
