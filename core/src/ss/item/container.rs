@@ -1,4 +1,4 @@
-use std::{collections::HashMap, num::Wrapping};
+use std::num::Wrapping;
 
 use crate::{
     defs::{SsFitId, SsItemId},
@@ -6,18 +6,18 @@ use crate::{
         SsBooster, SsCharacter, SsCharge, SsDrone, SsFighter, SsFwEffect, SsImplant, SsItem, SsModule, SsProjEffect,
         SsRig, SsShip, SsSkill, SsStance, SsStructure, SsSubsystem, SsSwEffect,
     },
-    util::{Error, ErrorKind, Named, Result},
+    util::{Error, ErrorKind, Named, Result, StMap},
 };
 
 pub(in crate::ss) struct SsItems {
     counter: Wrapping<SsItemId>,
-    data: HashMap<SsItemId, SsItem>,
+    data: StMap<SsItemId, SsItem>,
 }
 impl SsItems {
     pub(in crate::ss) fn new() -> Self {
         Self {
             counter: Wrapping(0),
-            data: HashMap::new(),
+            data: StMap::new(),
         }
     }
     pub(in crate::ss) fn alloc_item_id(&mut self) -> Result<SsItemId> {

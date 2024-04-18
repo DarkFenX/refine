@@ -41,7 +41,7 @@ impl BuffRegister {
         &mut self,
         item_id: &SsItemId,
         buff_type_attr_id: &EAttrId,
-    ) -> Option<HashSet<SsAttrMod>> {
+    ) -> Option<impl ExactSizeIterator<Item = SsAttrMod>> {
         self.modifiers.remove_key(&(*item_id, *buff_type_attr_id))
     }
     pub(in crate::ss::svc::svce_calc) fn reg_dependent_mod(

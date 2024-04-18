@@ -60,8 +60,8 @@ impl DependencyRegister {
     pub(in crate::ss::svc::svce_calc) fn clear_item_data(&mut self, item_id: &SsItemId) {
         // Remove data where item is source of dependency
         if let Some(attr_specs) = self.item_src_map.remove_key(item_id) {
-            for attr_spec in attr_specs.iter() {
-                self.data.remove_key(attr_spec);
+            for attr_spec in attr_specs {
+                self.data.remove_key(&attr_spec);
             }
         }
         // Remove data where item is target of dependency

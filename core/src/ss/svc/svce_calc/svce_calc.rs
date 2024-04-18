@@ -222,7 +222,7 @@ impl SsSvcs {
         if ec::attrs::BUFF_ID_ATTRS.contains(attr_id) {
             // Remove modifiers of buffs which rely on the attribute
             if let Some(mods) = self.calc_data.buffs.extract_dependent_mods(item_id, attr_id) {
-                let ss_mods = mods.into_iter().collect();
+                let ss_mods = mods.collect();
                 self.unreg_mods(ss_view, item, &ss_mods);
             }
             // Generate new modifiers using new value and apply them

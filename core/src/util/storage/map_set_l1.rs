@@ -50,8 +50,8 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
             self.data.remove(key);
         }
     }
-    pub(crate) fn remove_key(&mut self, key: &K) -> Option<HashSet<V>> {
-        self.data.remove(key)
+    pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V>> {
+        self.data.remove(key).map(|v| v.into_iter())
     }
     pub(crate) fn drain_entries<'a>(&mut self, key: &K, entries: impl Iterator<Item = &'a V>)
     where

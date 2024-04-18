@@ -1,20 +1,20 @@
-use std::{collections::HashMap, num::Wrapping};
+use std::num::Wrapping;
 
 use crate::{
     defs::SsFitId,
     ss::fit::SsFit,
-    util::{Error, ErrorKind, Result},
+    util::{Error, ErrorKind, Result, StMap},
 };
 
 pub(in crate::ss) struct SsFits {
     counter: Wrapping<SsFitId>,
-    data: HashMap<SsFitId, SsFit>,
+    data: StMap<SsFitId, SsFit>,
 }
 impl SsFits {
     pub(in crate::ss) fn new() -> Self {
         Self {
             counter: Wrapping(0),
-            data: HashMap::new(),
+            data: StMap::new(),
         }
     }
     pub(in crate::ss) fn add_fit(&mut self) -> Result<SsFitId> {
