@@ -10,5 +10,11 @@ members = [
 [profile.dev]
 opt-level = 0
 
+[profile.test]
+opt-level = 3
+
 [profile.release]
 opt-level = 3
+codegen-units = 1
+lto = "fat"
+panic = "abort"
