@@ -48,7 +48,7 @@ impl SsSvcs {
         &mut self,
         ss_view: &SsView,
         item_id: &SsItemId,
-    ) -> Result<impl Iterator<Item = (EAttrId, SsAttrVal)>> {
+    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SsAttrVal)>> {
         // SsItem can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE

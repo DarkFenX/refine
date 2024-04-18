@@ -14,7 +14,7 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
     pub(crate) fn get(&self, key: &K) -> Option<&HashSet<V>> {
         self.data.get(key)
     }
-    pub(crate) fn iter(&self) -> impl Iterator<Item = (&K, &HashSet<V>)> {
+    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, &HashSet<V>)> {
         self.data.iter()
     }
     fn is_empty(&self) -> bool {
@@ -86,7 +86,7 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KeyedStorage2L<A, B, V> {
             None => None,
         }
     }
-    pub(crate) fn iter(&self) -> impl Iterator<Item = (&A, &KeyedStorage1L<B, V>)> {
+    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&A, &KeyedStorage1L<B, V>)> {
         self.data.iter()
     }
     // Modification methods

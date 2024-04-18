@@ -38,10 +38,10 @@ impl SsFleets {
             None => Err(Error::new(ErrorKind::FleetNotFound(*fleet_id))),
         }
     }
-    pub(in crate::ss) fn iter_fleet_ids(&self) -> impl Iterator<Item = &SsFleetId> {
+    pub(in crate::ss) fn iter_fleet_ids(&self) -> impl ExactSizeIterator<Item = &SsFleetId> {
         self.data.keys()
     }
-    pub(in crate::ss) fn iter_fleets(&self) -> impl Iterator<Item = &SsFleet> {
+    pub(in crate::ss) fn iter_fleets(&self) -> impl ExactSizeIterator<Item = &SsFleet> {
         self.data.values()
     }
     fn alloc_fleet_id(&mut self) -> Result<SsFleetId> {

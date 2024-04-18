@@ -38,10 +38,10 @@ impl SsFits {
             None => Err(Error::new(ErrorKind::FitNotFound(*fit_id))),
         }
     }
-    pub(in crate::ss) fn iter_fit_ids(&self) -> impl Iterator<Item = &SsFitId> {
+    pub(in crate::ss) fn iter_fit_ids(&self) -> impl ExactSizeIterator<Item = &SsFitId> {
         self.data.keys()
     }
-    pub(in crate::ss) fn iter_fits(&self) -> impl Iterator<Item = &SsFit> {
+    pub(in crate::ss) fn iter_fits(&self) -> impl ExactSizeIterator<Item = &SsFit> {
         self.data.values()
     }
     fn alloc_fit_id(&mut self) -> Result<SsFitId> {

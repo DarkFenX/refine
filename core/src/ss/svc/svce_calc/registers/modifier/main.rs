@@ -3,7 +3,7 @@ use std::{collections::HashSet, convert::TryInto, hash::Hash};
 use itertools::Itertools;
 
 use crate::{
-    defs::{EAttrId, EItemGrpId, EItemId, SsFitId, SsFleetId, SsItemId},
+    defs::{EAttrId, EItemGrpId, EItemId, SsFitId, SsItemId},
     ss::{
         fit::SsFits,
         fleet::SsFleet,
