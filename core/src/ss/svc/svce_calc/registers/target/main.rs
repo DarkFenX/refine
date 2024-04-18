@@ -40,7 +40,6 @@ pub(in crate::ss::svc::svce_calc) struct TargetRegister {
 impl TargetRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
-            tgts: HashSet::new(),
             tgts_root: KeyedStorage1L::new(),
             tgts_loc: KeyedStorage1L::new(),
             tgts_loc_grp: KeyedStorage1L::new(),
