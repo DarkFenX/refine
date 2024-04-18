@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad,
     adg::GData,
-    defs::{AggrKey, EBuffId},
+    defs::AggrKey,
     shr::{ModAggrMode, ModOp},
     util::{IntError, IntResult},
 };

@@ -3,6 +3,40 @@ use std::{
     hash::Hash,
 };
 
+pub(crate) enum KsIter<'a, I, T>
+where
+    I: ExactSizeIterator<Item = &'a T>,
+    T: 'a,
+{
+    Iter(I),
+    Empty,
+}
+impl<'a, I, T> Iterator for KsIter<'a, I, T>
+where
+    I: ExactSizeIterator<Item = &'a T>,
+    T: 'a,
+{
+    type Item = &'a T;
+    fn next(&mut self) -> Option<Self::Item> {
+        match self {
+            Self::Iter(i) => i.next(),
+            Self::Empty => None,
+        }
+    }
+}
+impl<'a, I, T> ExactSizeIterator for KsIter<'a, I, T>
+where
+    I: ExactSizeIterator<Item = &'a T>,
+    T: 'a,
+{
+    fn len(&self) -> usize {
+        match self {
+            Self::Iter(i) => i.len(),
+            Self::Empty => 0,
+        }
+    }
+}
+
 pub(crate) struct KeyedStorage1L<K, V> {
     data: HashMap<K, HashSet<V>>,
 }
@@ -10,12 +44,14 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
     pub(crate) fn new() -> KeyedStorage1L<K, V> {
         Self { data: HashMap::new() }
     }
-    // Query methods
-    pub(crate) fn get(&self, key: &K) -> Option<&HashSet<V>> {
-        self.data.get(key)
+    pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> {
+        match self.data.get(key) {
+            Some(v) => KsIter::Iter(v.iter()),
+            None => KsIter::Empty,
+        }
     }
-    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, &HashSet<V>)> {
-        self.data.iter()
+    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, impl ExactSizeIterator<Item = &V>)> {
+        self.data.iter().map(|(k, v)| (k, v.iter()))
     }
     fn is_empty(&self) -> bool {
         self.data.is_empty()
@@ -25,10 +61,7 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
         let values = self.data.entry(key).or_insert_with(|| HashSet::with_capacity(1));
         values.insert(entry);
     }
-    pub(crate) fn extend_entries<I>(&mut self, key: K, entries: I)
-    where
-        I: Iterator<Item = V> + ExactSizeIterator,
-    {
+    pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
         let values = self
             .data
             .entry(key)
@@ -50,15 +83,15 @@ impl<K: Eq + Hash, V: Eq + Hash> KeyedStorage1L<K, V> {
     pub(crate) fn remove_key(&mut self, key: &K) -> Option<HashSet<V>> {
         self.data.remove(key)
     }
-    pub(crate) fn drain_entries<I>(&mut self, key: &K, entries: I)
+    pub(crate) fn drain_entries<'a>(&mut self, key: &K, entries: impl Iterator<Item = &'a V>)
     where
-        I: Iterator<Item = V>,
+        V: 'a,
     {
         let need_cleanup = match self.data.get_mut(key) {
             None => return,
             Some(v) => {
                 for entry in entries {
-                    v.remove(&entry);
+                    v.remove(entry);
                 }
                 v.is_empty()
             }
@@ -80,10 +113,10 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KeyedStorage2L<A, B, V> {
     pub(crate) fn get_l1(&self, key1: &A) -> Option<&KeyedStorage1L<B, V>> {
         self.data.get(key1)
     }
-    pub(crate) fn get_l2(&self, key1: &A, key2: &B) -> Option<&HashSet<V>> {
+    pub(crate) fn get_l2(&self, key1: &A, key2: &B) -> impl ExactSizeIterator<Item = &V> {
         match self.get_l1(key1) {
-            Some(ks1l) => ks1l.get(key2),
-            None => None,
+            Some(ks1l) => KsIter::Iter(ks1l.get(key2)),
+            None => KsIter::Empty,
         }
     }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&A, &KeyedStorage1L<B, V>)> {
@@ -116,8 +149,5 @@ pub(crate) fn extend_vec_from_storage<K: Eq + Hash, V: Eq + Hash + Clone>(
     storage: &KeyedStorage1L<K, V>,
     key: &K,
 ) {
-    match storage.get(key) {
-        Some(v) => vec.extend(v.iter().map(|v| v.clone())),
-        _ => (),
-    }
+    vec.extend(storage.get(key).map(|v| v.clone()));
 }

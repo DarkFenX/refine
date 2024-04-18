@@ -14,10 +14,7 @@ impl RunningEffects {
     }
     // Query methods
     pub(in crate::ss::svc) fn is_running(&self, item_id: &SsItemId, effect_id: &EEffectId) -> bool {
-        match self.data.get(item_id) {
-            Some(effect_ids) => effect_ids.contains(effect_id),
-            None => false,
-        }
+        self.data.get(item_id).any(|v| v == effect_id)
     }
     // Modification methods
     pub(in crate::ss::svc) fn effects_started<I>(&mut self, item_id: SsItemId, effects: I)
@@ -26,10 +23,11 @@ impl RunningEffects {
     {
         self.data.extend_entries(item_id, effects);
     }
-    pub(in crate::ss::svc) fn effects_stopped<I>(&mut self, item_id: &SsItemId, effects: I)
-    where
-        I: Iterator<Item = EEffectId>,
-    {
+    pub(in crate::ss::svc) fn effects_stopped<'a>(
+        &mut self,
+        item_id: &SsItemId,
+        effects: impl Iterator<Item = &'a EEffectId>,
+    ) {
         self.data.drain_entries(item_id, effects);
     }
 }

@@ -13,14 +13,14 @@ impl DependencyRegister {
         for (src_attr_spec, tgt_attr_specs) in self.data.iter() {
             check_item(ss_view, &src_attr_spec.item_id)?;
             check_attr(ss_view, &src_attr_spec.attr_id)?;
-            for tgt_attr_spec in tgt_attr_specs.iter() {
+            for tgt_attr_spec in tgt_attr_specs {
                 check_item(ss_view, &tgt_attr_spec.item_id)?;
                 check_attr(ss_view, &tgt_attr_spec.attr_id)?;
             }
         }
         for (item_id, attr_specs) in self.item_src_map.iter() {
             check_item(ss_view, item_id)?;
-            for attr_spec in attr_specs.iter() {
+            for attr_spec in attr_specs {
                 check_item(ss_view, &attr_spec.item_id)?;
                 check_attr(ss_view, &attr_spec.attr_id)?;
             }
@@ -30,7 +30,7 @@ impl DependencyRegister {
             for (src_attr_spec, tgt_attr_specs) in spec_map.iter() {
                 check_item(ss_view, &src_attr_spec.item_id)?;
                 check_attr(ss_view, &src_attr_spec.attr_id)?;
-                for tgt_attr_spec in tgt_attr_specs.iter() {
+                for tgt_attr_spec in tgt_attr_specs {
                     check_item(ss_view, &tgt_attr_spec.item_id)?;
                     check_attr(ss_view, &tgt_attr_spec.attr_id)?;
                 }

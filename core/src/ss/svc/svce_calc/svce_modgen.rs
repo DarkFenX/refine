@@ -77,11 +77,11 @@ impl SsSvcs {
         }
         mods
     }
-    pub(super) fn calc_generate_dependent_buff_mods(
+    pub(super) fn calc_generate_dependent_buff_mods<'a>(
         &mut self,
         ss_view: &SsView,
         item: &SsItem,
-        effect_ids: &Vec<EEffectId>,
+        effect_ids: impl Iterator<Item = &'a EEffectId>,
         buff_type_attr_id: &EAttrId,
     ) -> Vec<SsAttrMod> {
         let mut mods = Vec::new();
@@ -93,7 +93,7 @@ impl SsSvcs {
             _ => return mods,
         };
         let item_id = item.get_id();
-        for effect_id in effect_ids.iter() {
+        for effect_id in effect_ids {
             let effect = ss_view.src.get_a_effect(effect_id).unwrap();
             let mod_type = match get_mod_type(item, &effect) {
                 Some(mod_type) => mod_type,

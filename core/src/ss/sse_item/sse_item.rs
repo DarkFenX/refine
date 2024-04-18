@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{
     defs::SsItemId,
     ss::{item::SsItem, item_info::SsItemInfo, SolarSystem, SsView},
@@ -20,10 +22,7 @@ impl SolarSystem {
             SsItem::Charge(charge) => Some(charge.cont_id),
             _ => None,
         };
-        let mut proj_item_ids = Vec::new();
-        if let Some(src_item_ids) = self.tgt_tracker.get_srcs(item_id) {
-            proj_item_ids.extend(src_item_ids);
-        }
+        let proj_item_ids = self.tgt_tracker.iter_srcs(item_id).map(|v| *v).collect_vec();
         let mut targeted_item_ids = Vec::new();
         match main {
             SsItem::ProjEffect(proj_effect) => targeted_item_ids.extend(proj_effect.tgts.iter()),

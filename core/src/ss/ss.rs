@@ -55,7 +55,10 @@ impl SolarSystem {
             attr_id,
         )
     }
-    pub fn get_item_attrs(&mut self, item_id: &SsItemId) -> Result<impl ExactSizeIterator<Item = (EAttrId, SsAttrVal)>> {
+    pub fn get_item_attrs(
+        &mut self,
+        item_id: &SsItemId,
+    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SsAttrVal)>> {
         self.svcs
             .calc_get_item_attr_vals(&SsView::new(&self.src, &self.fleets, &self.fits, &self.items), item_id)
     }

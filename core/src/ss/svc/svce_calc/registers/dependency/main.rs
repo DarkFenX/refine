@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use crate::{
     defs::{EAttrId, SsItemId},
     util::{KeyedStorage1L, KeyedStorage2L},
@@ -27,7 +25,7 @@ impl DependencyRegister {
         &self,
         src_item_id: &SsItemId,
         src_attr_id: &EAttrId,
-    ) -> Option<&HashSet<AttrSpec>> {
+    ) -> impl ExactSizeIterator<Item = &AttrSpec> {
         let src_attr_spec = AttrSpec::new(*src_item_id, *src_attr_id);
         self.data.get(&src_attr_spec)
     }
@@ -69,7 +67,7 @@ impl DependencyRegister {
         // Remove data where item is target of dependency
         if let Some(attr_spec_map) = self.item_tgt_map.remove_l1(item_id) {
             for (src_attr_spec, tgt_attr_specs) in attr_spec_map.iter() {
-                for tgt_attr_spec in tgt_attr_specs.iter() {
+                for tgt_attr_spec in tgt_attr_specs {
                     self.data.remove_entry(src_attr_spec, tgt_attr_spec);
                 }
             }

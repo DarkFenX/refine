@@ -147,7 +147,7 @@ impl ModifierRegister {
                 if let Ok(sub_item) = items.get_item(sub_item_id) {
                     // TODO: This should be refined/optimized. It should pick only modifiers which
                     // TODO: target fit of item being changed.
-                    for sub_mod in sub_mods.iter() {
+                    for sub_mod in sub_mods {
                         if match sub_mod.tgt_filter {
                             SsModTgtFilter::Loc(sub_dom) => compare_loc_dom(loc_type, sub_dom),
                             SsModTgtFilter::LocGrp(sub_dom, _) => compare_loc_dom(loc_type, sub_dom),
@@ -165,8 +165,8 @@ impl ModifierRegister {
     pub(in crate::ss::svc::svce_calc) fn iter_mods_for_src(
         &self,
         src_item_id: &SsItemId,
-    ) -> impl Iterator<Item = &SsAttrMod> {
-        self.mods.get(src_item_id).into_iter().flatten()
+    ) -> impl ExactSizeIterator<Item = &SsAttrMod> {
+        self.mods.get(src_item_id)
     }
     // Modification methods
     pub(in crate::ss::svc::svce_calc) fn reg_fit(&mut self, fit_id: &SsFitId) {
@@ -573,16 +573,12 @@ impl ModifierRegister {
     }
     fn get_fleet_updates(&self, fleet: &SsFleet, fit_id: &SsFitId) -> FleetUpdates {
         let mut updates = FleetUpdates::new();
-        if let Some(mods) = self.mods_fleet_fit.get(fit_id) {
-            updates.outgoing.extend(mods);
-        };
+        updates.outgoing.extend(self.mods_fleet_fit.get(fit_id));
         for fleet_fit_id in fleet.fits.iter() {
             if fleet_fit_id == fit_id {
                 continue;
             }
-            if let Some(mods) = self.mods_fleet_fit.get(fleet_fit_id) {
-                updates.incoming.extend(mods);
-            }
+            updates.incoming.extend(self.mods_fleet_fit.get(fleet_fit_id));
         }
         updates
     }
@@ -605,10 +601,7 @@ fn filter_and_extend<K: Eq + Hash>(
     key: &K,
     attr_id: &EAttrId,
 ) {
-    match storage.get(key) {
-        Some(v) => vec.extend(v.iter().filter(|v| &v.tgt_attr_id == attr_id).map(|v| v.clone())),
-        _ => (),
-    }
+    vec.extend(storage.get(key).filter(|v| &v.tgt_attr_id == attr_id).map(|v| *v))
 }
 
 fn is_mod_direct_everything(modifier: &SsAttrMod) -> bool {

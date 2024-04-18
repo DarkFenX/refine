@@ -1,4 +1,4 @@
-use std::{collections::HashSet, convert::TryInto};
+use std::convert::TryInto;
 
 use crate::{
     defs::{EItemGrpId, EItemId, SsFitId, SsItemId},

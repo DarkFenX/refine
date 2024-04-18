@@ -130,7 +130,7 @@ impl SsSvcs {
     fn notify_effects_stopped(&mut self, ss_view: &SsView, item: &SsItem, effects: &Vec<ad::ArcEffect>) {
         self.calc_effects_stopped(ss_view, item, effects);
         self.running_effects
-            .effects_stopped(&item.get_id(), effects.iter().map(|v| v.id));
+            .effects_stopped(&item.get_id(), effects.iter().map(|v| &v.id));
     }
     pub(in crate::ss) fn notify_item_tgt_added(&mut self, ss_view: &SsView, item: &SsItem, tgt_item_id: SsItemId) {
         self.calc_item_tgt_added(ss_view, item, tgt_item_id);

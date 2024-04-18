@@ -20,7 +20,10 @@ impl BuffRegister {
         }
     }
     // Effect methods
-    pub(in crate::ss::svc::svce_calc) fn get_effects(&mut self, item_id: &SsItemId) -> Option<&HashSet<EEffectId>> {
+    pub(in crate::ss::svc::svce_calc) fn get_effects(
+        &self,
+        item_id: &SsItemId,
+    ) -> impl ExactSizeIterator<Item = &EEffectId> {
         self.effects.get(&item_id)
     }
     pub(in crate::ss::svc::svce_calc) fn reg_effect(&mut self, item_id: SsItemId, effect: &ad::AEffect) {

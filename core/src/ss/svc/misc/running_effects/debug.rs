@@ -12,7 +12,7 @@ impl RunningEffects {
     pub(in crate::ss::svc) fn debug_consistency_check(&self, ss_view: &SsView) -> DebugResult {
         for (item_id, effect_ids) in self.data.iter() {
             check_item(ss_view, item_id)?;
-            for effect_id in effect_ids.iter() {
+            for effect_id in effect_ids {
                 check_effect(ss_view, effect_id)?;
             }
         }

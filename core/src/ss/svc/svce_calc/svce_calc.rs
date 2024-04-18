@@ -196,16 +196,15 @@ impl SsSvcs {
     ) {
         let item = ss_view.items.get_item(item_id).unwrap();
         // Clear up attribute values which rely on passed attribute as an upper cap
-        let dependents = self
+        let attr_specs = self
             .calc_data
             .deps
             .get_tgt_attr_specs(item_id, attr_id)
-            .map(|v| v.iter().map(|v| *v).collect_vec());
-        if let Some(attr_specs) = dependents {
-            for attr_spec in attr_specs.iter() {
-                self.calc_force_attr_recalc(ss_view, &attr_spec.item_id, &attr_spec.attr_id);
-            }
-        };
+            .map(|v| *v)
+            .collect_vec();
+        for attr_spec in attr_specs.iter() {
+            self.calc_force_attr_recalc(ss_view, &attr_spec.item_id, &attr_spec.attr_id);
+        }
         // Clear up attribute values which rely on passed attribute as a modification source
         let mods = self
             .calc_data
@@ -227,9 +226,10 @@ impl SsSvcs {
                 self.unreg_mods(ss_view, item, &ss_mods);
             }
             // Generate new modifiers using new value and apply them
-            if let Some(effect_ids) = self.calc_data.buffs.get_effects(item_id) {
-                let effect_ids = effect_ids.iter().map(|v| *v).collect();
-                let ss_mods = self.calc_generate_dependent_buff_mods(ss_view, item, &effect_ids, attr_id);
+            let effect_ids = self.calc_data.buffs.get_effects(item_id);
+            if !effect_ids.is_empty() {
+                let effect_ids = effect_ids.map(|v| *v).collect_vec();
+                let ss_mods = self.calc_generate_dependent_buff_mods(ss_view, item, effect_ids.iter(), attr_id);
                 for ss_mod in ss_mods.iter() {
                     self.calc_data.buffs.reg_dependent_mod(*item_id, *attr_id, *ss_mod);
                 }
