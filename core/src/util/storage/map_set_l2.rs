@@ -1,15 +1,17 @@
-use std::{collections::HashMap, hash::Hash};
+use std::hash::Hash;
+
+use rustc_hash::FxHashMap;
 
 use super::StMapSetL1;
 
 pub(crate) struct StMapSetL2<A, B, V> {
-    data: HashMap<A, StMapSetL1<B, V>>,
+    data: FxHashMap<A, StMapSetL1<B, V>>,
     empty: StMapSetL1<B, V>,
 }
 impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> StMapSetL2<A, B, V> {
     pub(crate) fn new() -> StMapSetL2<A, B, V> {
         Self {
-            data: HashMap::new(),
+            data: FxHashMap::default(),
             empty: StMapSetL1::new(),
         }
     }

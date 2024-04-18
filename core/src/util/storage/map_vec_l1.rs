@@ -1,13 +1,17 @@
-use std::{collections::HashMap, hash::Hash};
+use std::{
+    hash::{BuildHasherDefault, Hash},
+};
+
+use rustc_hash::FxHashMap;
 
 pub(crate) struct StMapVecL1<K, V> {
-    data: HashMap<K, Vec<V>>,
+    data: FxHashMap<K, Vec<V>>,
     empty: Vec<V>,
 }
 impl<K: Eq + Hash, V> StMapVecL1<K, V> {
     pub(crate) fn new() -> StMapVecL1<K, V> {
         Self {
-            data: HashMap::new(),
+            data: FxHashMap::default(),
             empty: Vec::new(),
         }
     }

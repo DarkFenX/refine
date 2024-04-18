@@ -5,13 +5,17 @@ use std::{
     iter::FromIterator,
 };
 
+use rustc_hash::FxHashMap;
+
 #[derive(Clone)]
 pub struct StMap<K, V> {
-    data: HashMap<K, V>,
+    data: FxHashMap<K, V>,
 }
 impl<K: Eq + Hash, V> StMap<K, V> {
     pub(crate) fn new() -> StMap<K, V> {
-        Self { data: HashMap::new() }
+        Self {
+            data: FxHashMap::default(),
+        }
     }
     pub(crate) fn get<Q: ?Sized>(&self, key: &Q) -> Option<&V>
     where
@@ -65,14 +69,14 @@ impl<K: Eq + Hash, V> StMap<K, V> {
 impl<K: Eq + Hash, V> FromIterator<(K, V)> for StMap<K, V> {
     fn from_iter<I: IntoIterator<Item = (K, V)>>(iter: I) -> Self {
         Self {
-            data: HashMap::from_iter(iter),
+            data: FxHashMap::from_iter(iter),
         }
     }
 }
 impl<K: Eq + Hash + Clone, V: Clone> From<&HashMap<K, V>> for StMap<K, V> {
     fn from(hmap: &HashMap<K, V>) -> Self {
         Self {
-            data: HashMap::from_iter(hmap.iter().map(|(k, v)| (k.clone(), v.clone()))),
+            data: FxHashMap::from_iter(hmap.iter().map(|(k, v)| (k.clone(), v.clone()))),
         }
     }
 }

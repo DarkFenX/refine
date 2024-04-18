@@ -1,17 +1,16 @@
-use std::{
-    collections::{HashMap, HashSet},
-    hash::Hash,
-};
+use std::hash::{BuildHasherDefault, Hash};
+
+use rustc_hash::{FxHashMap, FxHashSet};
 
 pub(crate) struct StMapSetL1<K, V> {
-    data: HashMap<K, HashSet<V>>,
-    empty: HashSet<V>,
+    data: FxHashMap<K, FxHashSet<V>>,
+    empty: FxHashSet<V>,
 }
 impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     pub(crate) fn new() -> StMapSetL1<K, V> {
         Self {
-            data: HashMap::new(),
-            empty: HashSet::new(),
+            data: FxHashMap::default(),
+            empty: FxHashSet::default(),
         }
     }
     pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> {
@@ -28,15 +27,16 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     }
     // Modification methods
     pub(crate) fn add_entry(&mut self, key: K, entry: V) {
-        let values = self.data.entry(key).or_insert_with(|| HashSet::with_capacity(1));
-        values.insert(entry);
+        self.data
+            .entry(key)
+            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(1, BuildHasherDefault::default()))
+            .insert(entry);
     }
     pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
-        let values = self
-            .data
+        self.data
             .entry(key)
-            .or_insert_with(|| HashSet::with_capacity(entries.len()));
-        values.extend(entries);
+            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(entries.len(), BuildHasherDefault::default()))
+            .extend(entries);
     }
     pub(crate) fn remove_entry(&mut self, key: &K, entry: &V) {
         let need_cleanup = match self.data.get_mut(key) {

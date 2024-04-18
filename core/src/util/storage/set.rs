@@ -1,11 +1,16 @@
-use std::{collections::HashSet, hash::Hash, iter::FromIterator};
+use std::{
+    hash::{BuildHasherDefault, Hash},
+    iter::FromIterator,
+};
+
+use rustc_hash::FxHashSet;
 
 pub(crate) struct StSet<V> {
-    data: HashSet<V>,
+    data: FxHashSet<V>,
 }
 impl<V: Eq + Hash> StSet<V> {
     pub(crate) fn new() -> StSet<V> {
-        Self { data: HashSet::new() }
+        Self { data: FxHashSet::default() }
     }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = &V> {
         self.data.iter()
@@ -37,7 +42,7 @@ impl<V: Eq + Hash> StSet<V> {
 impl<V: Eq + Hash> FromIterator<V> for StSet<V> {
     fn from_iter<I: IntoIterator<Item = V>>(iter: I) -> Self {
         Self {
-            data: HashSet::from_iter(iter),
+            data: FxHashSet::from_iter(iter),
         }
     }
 }

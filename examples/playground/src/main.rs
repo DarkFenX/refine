@@ -65,7 +65,7 @@ fn main() {
         sol_sys.add_skill(fit.id, skill_id.to_owned(), 5, true);
     }
 
-    let iterations = 1000000;
+    let iterations = 10000000;
     tracing::error!("starting");
     let before = Utc::now();
     for _ in 0..iterations {
