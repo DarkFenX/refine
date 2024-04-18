@@ -48,7 +48,7 @@ impl SsSvcs {
         &mut self,
         ss_view: &SsView,
         item_id: &SsItemId,
-    ) -> Result<HashMap<EAttrId, SsAttrVal>> {
+    ) -> Result<impl Iterator<Item = (EAttrId, SsAttrVal)>> {
         // SsItem can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
@@ -62,7 +62,7 @@ impl SsSvcs {
                 _ => continue,
             };
         }
-        Ok(vals)
+        Ok(vals.into_iter())
     }
     // Private methods
     fn calc_get_modifications(

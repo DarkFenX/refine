@@ -72,9 +72,9 @@ fn main() {
         let anp = sol_sys
             .add_module(fit.id, ModRack::Low, OrdAddMode::Equip, 1306, State::Online, None)
             .unwrap();
-        black_box(sol_sys.get_item_attrs(&ship.id));
+        black_box(sol_sys.get_item_attrs(&ship.id).iter().for_each(drop));
         sol_sys.remove_item(&anp.id);
-        black_box(sol_sys.get_item_attrs(&ship.id));
+        black_box(sol_sys.get_item_attrs(&ship.id).iter().for_each(drop));
     }
     let after = Utc::now();
     tracing::error!("done");
