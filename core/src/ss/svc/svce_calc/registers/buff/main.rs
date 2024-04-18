@@ -4,19 +4,19 @@ use crate::{
     ad,
     defs::{EAttrId, EEffectId, SsItemId},
     ss::svc::svce_calc::modifier::SsAttrMod,
-    util::KsL1Set,
+    util::StMapSetL1,
 };
 
 // Intended to hold data about modifiers which originated from buffs defined using on-item attribute
 pub(in crate::ss::svc::svce_calc) struct BuffRegister {
-    pub(super) effects: KsL1Set<SsItemId, EEffectId>,
-    pub(super) modifiers: KsL1Set<(SsItemId, EAttrId), SsAttrMod>,
+    pub(super) effects: StMapSetL1<SsItemId, EEffectId>,
+    pub(super) modifiers: StMapSetL1<(SsItemId, EAttrId), SsAttrMod>,
 }
 impl BuffRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
-            effects: KsL1Set::new(),
-            modifiers: KsL1Set::new(),
+            effects: StMapSetL1::new(),
+            modifiers: StMapSetL1::new(),
         }
     }
     // Effect methods

@@ -3,12 +3,12 @@ use std::{
     hash::Hash,
 };
 
-pub(crate) struct KsL1Set<K, V> {
+pub(crate) struct StMapSetL1<K, V> {
     data: HashMap<K, HashSet<V>>,
     empty: HashSet<V>,
 }
-impl<K: Eq + Hash, V: Eq + Hash> KsL1Set<K, V> {
-    pub(crate) fn new() -> KsL1Set<K, V> {
+impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
+    pub(crate) fn new() -> StMapSetL1<K, V> {
         Self {
             data: HashMap::new(),
             empty: HashSet::new(),
@@ -72,9 +72,9 @@ impl<K: Eq + Hash, V: Eq + Hash> KsL1Set<K, V> {
     }
 }
 
-pub(crate) fn extend_vec_from_l1set<K: Eq + Hash, V: Eq + Hash + Clone>(
+pub(crate) fn extend_vec_from_map_set_l1<K: Eq + Hash, V: Eq + Hash + Clone>(
     vec: &mut Vec<V>,
-    storage: &KsL1Set<K, V>,
+    storage: &StMapSetL1<K, V>,
     key: &K,
 ) {
     vec.extend(storage.get(key).map(|v| v.clone()));

@@ -1,6 +1,6 @@
 use crate::{
     defs::{EAttrId, SsItemId},
-    util::{KsL1Set, KsL2Set},
+    util::{StMapSetL1, StMapSetL2},
 };
 
 use super::attr_spec::AttrSpec;
@@ -8,16 +8,16 @@ use super::attr_spec::AttrSpec;
 // Intended to hold direct dependencies between attributes, which are not covered by regular
 // modifiers
 pub(in crate::ss::svc::svce_calc) struct DependencyRegister {
-    pub(super) data: KsL1Set<AttrSpec, AttrSpec>,
-    pub(super) item_src_map: KsL1Set<SsItemId, AttrSpec>,
-    pub(super) item_tgt_map: KsL2Set<SsItemId, AttrSpec, AttrSpec>,
+    pub(super) data: StMapSetL1<AttrSpec, AttrSpec>,
+    pub(super) item_src_map: StMapSetL1<SsItemId, AttrSpec>,
+    pub(super) item_tgt_map: StMapSetL2<SsItemId, AttrSpec, AttrSpec>,
 }
 impl DependencyRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
-            data: KsL1Set::new(),
-            item_src_map: KsL1Set::new(),
-            item_tgt_map: KsL2Set::new(),
+            data: StMapSetL1::new(),
+            item_src_map: StMapSetL1::new(),
+            item_tgt_map: StMapSetL2::new(),
         }
     }
     // Query methods

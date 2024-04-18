@@ -11,7 +11,7 @@ use crate::{
         },
         SsView,
     },
-    util::{extend_vec_from_l1set, KsL1Set},
+    util::{extend_vec_from_map_set_l1, StMapSetL1},
 };
 
 use super::iter_loc_pot::LocsPot;
@@ -20,32 +20,32 @@ pub(in crate::ss::svc::svce_calc) struct TargetRegister {
     // Items which are holders of a location type (like char, ship)
     // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
     // TODO: check if we need keyed storage over hashmap here, and check if we need it altogether
-    pub(super) tgts_root: KsL1Set<(SsFitId, SsLocType), SsItemId>,
+    pub(super) tgts_root: StMapSetL1<(SsFitId, SsLocType), SsItemId>,
     // Items belonging to certain fit and location type (e.g. char's implants, ship's modules)
     // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
-    pub(super) tgts_loc: KsL1Set<(SsFitId, SsLocType), SsItemId>,
+    pub(super) tgts_loc: StMapSetL1<(SsFitId, SsLocType), SsItemId>,
     // Items belonging to certain fit, location type and group
     // Contains: KeyedStorage<(target's fit ID, target's location type, target's group ID), target item IDs>
-    pub(super) tgts_loc_grp: KsL1Set<(SsFitId, SsLocType, EItemGrpId), SsItemId>,
+    pub(super) tgts_loc_grp: StMapSetL1<(SsFitId, SsLocType, EItemGrpId), SsItemId>,
     // Items belonging to certain fit and location type, and having certain skill requirement
     // Contains: KeyedStorage<(target's fit ID, target's location type, target's skillreq type ID), target item IDs>
-    pub(super) tgts_loc_srq: KsL1Set<(SsFitId, SsLocType, EItemId), SsItemId>,
+    pub(super) tgts_loc_srq: StMapSetL1<(SsFitId, SsLocType, EItemId), SsItemId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
     // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), target item IDs>
-    pub(super) tgts_own_srq: KsL1Set<(SsFitId, EItemId), SsItemId>,
+    pub(super) tgts_own_srq: StMapSetL1<(SsFitId, EItemId), SsItemId>,
     // Everything-buff-modifiable items which belong to certain fit
     // Contains: KeyedStorage<target's fit ID, target item IDs>
-    pub(super) tgts_buff_all: KsL1Set<SsFitId, SsItemId>,
+    pub(super) tgts_buff_all: StMapSetL1<SsFitId, SsItemId>,
 }
 impl TargetRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
-            tgts_root: KsL1Set::new(),
-            tgts_loc: KsL1Set::new(),
-            tgts_loc_grp: KsL1Set::new(),
-            tgts_loc_srq: KsL1Set::new(),
-            tgts_own_srq: KsL1Set::new(),
-            tgts_buff_all: KsL1Set::new(),
+            tgts_root: StMapSetL1::new(),
+            tgts_loc: StMapSetL1::new(),
+            tgts_loc_grp: StMapSetL1::new(),
+            tgts_loc_srq: StMapSetL1::new(),
+            tgts_own_srq: StMapSetL1::new(),
+            tgts_buff_all: StMapSetL1::new(),
         }
     }
     // Query methods
@@ -60,23 +60,23 @@ impl TargetRegister {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_l1set(&mut tgts, &self.tgts_buff_all, &tgt_fit.id)
+                        extend_vec_from_map_set_l1(&mut tgts, &self.tgts_buff_all, &tgt_fit.id)
                     }
                 }
                 SsModDomain::Item => tgts.push(modifier.src_item_id),
                 SsModDomain::Char => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_l1set(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Character));
+                        extend_vec_from_map_set_l1(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Character));
                     }
                 }
                 SsModDomain::Ship => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_l1set(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Ship));
+                        extend_vec_from_map_set_l1(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Ship));
                     }
                 }
                 SsModDomain::Structure => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_l1set(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Structure));
+                        extend_vec_from_map_set_l1(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Structure));
                     }
                 }
                 SsModDomain::Other => {
@@ -89,10 +89,10 @@ impl TargetRegister {
                 SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
                         if check_domain_owner(SsModDomain::Ship, tgt_fit) {
-                            extend_vec_from_l1set(&mut tgts, &self.tgts_loc, &(tgt_fit.id, SsLocType::Ship));
+                            extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc, &(tgt_fit.id, SsLocType::Ship));
                         }
                         if check_domain_owner(SsModDomain::Structure, tgt_fit) {
-                            extend_vec_from_l1set(&mut tgts, &self.tgts_loc, &(tgt_fit.id, SsLocType::Structure));
+                            extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc, &(tgt_fit.id, SsLocType::Structure));
                         }
                     }
                 }
@@ -100,7 +100,7 @@ impl TargetRegister {
                     if let Ok(loc) = dom.try_into() {
                         for tgt_fit in tgt_fits.iter() {
                             if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_l1set(&mut tgts, &self.tgts_loc, &(tgt_fit.id, loc));
+                                extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc, &(tgt_fit.id, loc));
                             }
                         }
                     }
@@ -110,14 +110,14 @@ impl TargetRegister {
                 SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
                         if check_domain_owner(SsModDomain::Ship, tgt_fit) {
-                            extend_vec_from_l1set(
+                            extend_vec_from_map_set_l1(
                                 &mut tgts,
                                 &self.tgts_loc_grp,
                                 &(tgt_fit.id, SsLocType::Ship, grp_id),
                             );
                         }
                         if check_domain_owner(SsModDomain::Structure, tgt_fit) {
-                            extend_vec_from_l1set(
+                            extend_vec_from_map_set_l1(
                                 &mut tgts,
                                 &self.tgts_loc_grp,
                                 &(tgt_fit.id, SsLocType::Structure, grp_id),
@@ -129,7 +129,7 @@ impl TargetRegister {
                     if let Ok(loc) = dom.try_into() {
                         for tgt_fit in tgt_fits.iter() {
                             if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_l1set(&mut tgts, &self.tgts_loc_grp, &(tgt_fit.id, loc, grp_id));
+                                extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc_grp, &(tgt_fit.id, loc, grp_id));
                             }
                         }
                     }
@@ -139,14 +139,14 @@ impl TargetRegister {
                 SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
                         if check_domain_owner(SsModDomain::Ship, tgt_fit) {
-                            extend_vec_from_l1set(
+                            extend_vec_from_map_set_l1(
                                 &mut tgts,
                                 &self.tgts_loc_srq,
                                 &(tgt_fit.id, SsLocType::Ship, srq_id),
                             );
                         }
                         if check_domain_owner(SsModDomain::Structure, tgt_fit) {
-                            extend_vec_from_l1set(
+                            extend_vec_from_map_set_l1(
                                 &mut tgts,
                                 &self.tgts_loc_srq,
                                 &(tgt_fit.id, SsLocType::Structure, srq_id),
@@ -158,7 +158,7 @@ impl TargetRegister {
                     if let Ok(loc) = dom.try_into() {
                         for tgt_fit in tgt_fits.iter() {
                             if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_l1set(&mut tgts, &self.tgts_loc_srq, &(tgt_fit.id, loc, srq_id));
+                                extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc_srq, &(tgt_fit.id, loc, srq_id));
                             }
                         }
                     }
@@ -166,7 +166,7 @@ impl TargetRegister {
             },
             SsModTgtFilter::OwnSrq(srq_id) => {
                 for tgt_fit in tgt_fits.iter() {
-                    extend_vec_from_l1set(&mut tgts, &self.tgts_own_srq, &(tgt_fit.id, srq_id));
+                    extend_vec_from_map_set_l1(&mut tgts, &self.tgts_own_srq, &(tgt_fit.id, srq_id));
                 }
             }
         }

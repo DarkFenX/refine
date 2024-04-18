@@ -10,18 +10,18 @@ use crate::{
         },
         SsView,
     },
-    util::KsL1Set,
+    util::StMapSetL1,
 };
 
 pub(super) struct GeneratedMods {
     pub(super) all: Vec<SsAttrMod>,
-    pub(super) dependent_buffs: KsL1Set<EAttrId, SsAttrMod>,
+    pub(super) dependent_buffs: StMapSetL1<EAttrId, SsAttrMod>,
 }
 impl GeneratedMods {
     fn new() -> Self {
         Self {
             all: Vec::new(),
-            dependent_buffs: KsL1Set::new(),
+            dependent_buffs: StMapSetL1::new(),
         }
     }
 }

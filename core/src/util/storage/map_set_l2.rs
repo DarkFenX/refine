@@ -1,20 +1,20 @@
 use std::{collections::HashMap, hash::Hash};
 
-use super::KsL1Set;
+use super::StMapSetL1;
 
-pub(crate) struct KsL2Set<A, B, V> {
-    data: HashMap<A, KsL1Set<B, V>>,
-    empty: KsL1Set<B, V>,
+pub(crate) struct StMapSetL2<A, B, V> {
+    data: HashMap<A, StMapSetL1<B, V>>,
+    empty: StMapSetL1<B, V>,
 }
-impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KsL2Set<A, B, V> {
-    pub(crate) fn new() -> KsL2Set<A, B, V> {
+impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> StMapSetL2<A, B, V> {
+    pub(crate) fn new() -> StMapSetL2<A, B, V> {
         Self {
             data: HashMap::new(),
-            empty: KsL1Set::new(),
+            empty: StMapSetL1::new(),
         }
     }
     // Query methods
-    pub(crate) fn get_l1(&self, key1: &A) -> Option<&KsL1Set<B, V>> {
+    pub(crate) fn get_l1(&self, key1: &A) -> Option<&StMapSetL1<B, V>> {
         self.data.get(key1)
     }
     pub(crate) fn get_l2(&self, key1: &A, key2: &B) -> impl ExactSizeIterator<Item = &V> {
@@ -23,12 +23,12 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KsL2Set<A, B, V> {
             None => self.empty.get(key2),
         }
     }
-    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&A, &KsL1Set<B, V>)> {
+    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&A, &StMapSetL1<B, V>)> {
         self.data.iter()
     }
     // Modification methods
     pub(crate) fn add_entry(&mut self, key1: A, key2: B, entry: V) {
-        let ks1l = self.data.entry(key1).or_insert_with(|| KsL1Set::new());
+        let ks1l = self.data.entry(key1).or_insert_with(|| StMapSetL1::new());
         ks1l.add_entry(key2, entry);
     }
     pub(crate) fn remove_entry(&mut self, key1: &A, key2: &B, entry: &V) {
@@ -43,7 +43,7 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> KsL2Set<A, B, V> {
             self.data.remove(key1);
         }
     }
-    pub(crate) fn remove_l1(&mut self, key: &A) -> Option<KsL1Set<B, V>> {
+    pub(crate) fn remove_l1(&mut self, key: &A) -> Option<StMapSetL1<B, V>> {
         self.data.remove(key)
     }
 }
