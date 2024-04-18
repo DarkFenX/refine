@@ -17,9 +17,6 @@ use crate::{
 use super::iter_loc_pot::LocsPot;
 
 pub(in crate::ss::svc::svce_calc) struct TargetRegister {
-    // All known target items
-    // Contains: HashSet<target item IDs>
-    pub(super) tgts: HashSet<SsItemId>,
     // Items which are holders of a location type (like char, ship)
     // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
     // TODO: check if we need keyed storage over hashmap here, and check if we need it altogether
@@ -214,7 +211,6 @@ impl TargetRegister {
         let tgt_root_loc_opt = tgt_item.get_root_loc_type();
         let tgt_grp_id_res = tgt_item.get_group_id();
         let tgt_srqs_res = tgt_item.get_skill_reqs();
-        self.tgts.insert(tgt_item_id);
         if let (Some(tgt_fit), Some(tgt_root_loc)) = (tgt_fit_opt, tgt_root_loc_opt) {
             self.tgts_root.add_entry((tgt_fit.id, tgt_root_loc), tgt_item_id);
         }
@@ -256,7 +252,6 @@ impl TargetRegister {
         let tgt_topdom_opt = tgt_item.get_root_loc_type();
         let tgt_grp_id_res = tgt_item.get_group_id();
         let tgt_srqs_res = tgt_item.get_skill_reqs();
-        self.tgts.remove(&tgt_item_id);
         if let (Some(tgt_fit), Some(tgt_topdom)) = (tgt_fit_opt, tgt_topdom_opt) {
             self.tgts_root.remove_entry(&(tgt_fit.id, tgt_topdom), &tgt_item_id);
         }

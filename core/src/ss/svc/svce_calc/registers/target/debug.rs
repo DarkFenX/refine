@@ -10,9 +10,6 @@ use super::TargetRegister;
 
 impl TargetRegister {
     pub(in crate::ss) fn debug_consistency_check(&self, ss_view: &SsView) -> DebugResult {
-        for item_id in self.tgts.iter() {
-            check_item(ss_view, item_id)?;
-        }
         for ((fit_id, _), item_ids) in self.tgts_root.iter() {
             check_fit(ss_view, fit_id)?;
             for item_id in item_ids.iter() {
