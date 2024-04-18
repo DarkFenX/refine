@@ -1,16 +1,14 @@
 use crate::{
     defs::{EEffectId, SsItemId},
-    util::KeyedStorage1L,
+    util::KsL1Set,
 };
 
 pub(in crate::ss::svc) struct RunningEffects {
-    pub(super) data: KeyedStorage1L<SsItemId, EEffectId>,
+    pub(super) data: KsL1Set<SsItemId, EEffectId>,
 }
 impl RunningEffects {
     pub(in crate::ss::svc) fn new() -> Self {
-        Self {
-            data: KeyedStorage1L::new(),
-        }
+        Self { data: KsL1Set::new() }
     }
     // Query methods
     pub(in crate::ss::svc) fn is_running(&self, item_id: &SsItemId, effect_id: &EEffectId) -> bool {

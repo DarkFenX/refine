@@ -1,13 +1,11 @@
-use crate::{defs::SsItemId, util::KeyedStorage1L};
+use crate::{defs::SsItemId, util::KsL1Set};
 
 pub(in crate::ss) struct TgtTracker {
-    data: KeyedStorage1L<SsItemId, SsItemId>,
+    data: KsL1Set<SsItemId, SsItemId>,
 }
 impl TgtTracker {
     pub(in crate::ss) fn new() -> Self {
-        Self {
-            data: KeyedStorage1L::new(),
-        }
+        Self { data: KsL1Set::new() }
     }
     pub(in crate::ss) fn reg_tgt(&mut self, src_item_id: SsItemId, tgt_item_id: SsItemId) {
         self.data.add_entry(tgt_item_id, src_item_id)
