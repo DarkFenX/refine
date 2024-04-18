@@ -14,6 +14,6 @@ impl SsFleetInfo {
 }
 impl From<&SsFleet> for SsFleetInfo {
     fn from(fleet: &SsFleet) -> Self {
-        Self::new(fleet.id, fleet.fits.iter().map(|v| *v).collect())
+        Self::new(fleet.id, fleet.iter_fits().map(|v| *v).collect())
     }
 }

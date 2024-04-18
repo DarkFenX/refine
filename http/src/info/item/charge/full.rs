@@ -22,11 +22,11 @@ impl HChargeInfoFull {
             Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),
         };
-        let effects = match core_ss.get_item_effects(&partial_info.id) {
+        let effects = match core_ss.iter_item_effects(&partial_info.id) {
             Ok(core_effects) => core_effects.into_iter().map(|(k, v)| (k, HEffect::from(&v))).collect(),
             _ => HashMap::new(),
         };
-        let mods = match core_ss.get_item_modifiers(&partial_info.id) {
+        let mods = match core_ss.iter_item_modifiers(&partial_info.id) {
             Ok(core_mods) => core_mods
                 .into_iter()
                 .map(|(k, v)| (k, v.into_iter().map(|m| HModificationInfo::from(&m)).collect()))

@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use itertools::Itertools;
 
 use crate::{
@@ -7,6 +5,7 @@ use crate::{
     adg::{GData, GSupport},
     defs::{EEffectId, EItemId},
     ec,
+    util::StMap,
 };
 
 pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec<ad::AItem> {
@@ -16,8 +15,8 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
         .iter()
         .filter(|v| v.is_default)
         .map(|v| (v.item_id, v.effect_id))
-        .collect::<HashMap<EItemId, EEffectId>>();
-    let mut a_item_map = HashMap::new();
+        .collect::<StMap<EItemId, EEffectId>>();
+    let mut a_item_map = StMap::new();
     for e_item in g_data.items.iter() {
         // Item category ID
         let cat_id = match g_supp.grp_cat_map.get(&e_item.group_id) {
@@ -36,10 +35,10 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
             None,
             e_item.group_id,
             cat_id,
-            HashMap::new(),
-            HashMap::new(),
+            StMap::new(),
+            StMap::new(),
             defeff_id,
-            HashMap::new(),
+            StMap::new(),
         );
         a_item_map.insert(a_item.id, a_item);
     }

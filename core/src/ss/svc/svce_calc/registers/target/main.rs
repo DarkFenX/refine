@@ -19,7 +19,6 @@ use super::iter_loc_pot::LocsPot;
 pub(in crate::ss::svc::svce_calc) struct TargetRegister {
     // Items which are holders of a location type (like char, ship)
     // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
-    // TODO: check if we need keyed storage over hashmap here, and check if we need it altogether
     pub(super) tgts_root: StMapSetL1<(SsFitId, SsLocType), SsItemId>,
     // Items belonging to certain fit and location type (e.g. char's implants, ship's modules)
     // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
@@ -194,7 +193,7 @@ impl TargetRegister {
                     match src_fit.fleet {
                         Some(fleet_id) => {
                             let fleet = ss_view.fleets.get_fleet(&fleet_id).unwrap();
-                            tgt_fits.extend(fleet.fits.iter().map(|v| ss_view.fits.get_fit(v).unwrap()));
+                            tgt_fits.extend(fleet.iter_fits().map(|v| ss_view.fits.get_fit(v).unwrap()));
                         }
                         None => tgt_fits.push(src_fit),
                     }

@@ -2,14 +2,12 @@
 //! info while not bloating calculation part (since calculation is supposed to be used much more
 //! often than modification info fetching).
 
-use std::collections::{HashMap, HashSet};
-
 use itertools::Itertools;
 
 use crate::{
     ad,
-    defs::{EAttrId, SsItemId},
-    shr::ModOp,
+    defs::{EAttrId, EItemCatId, SsItemId},
+    shr::{ModAggrMode, ModOp},
     ss::{
         item::SsItem,
         svc::{
@@ -21,8 +19,7 @@ use crate::{
         },
         SsView,
     },
-    util::Result,
-    EItemCatId, ModAggrMode,
+    util::{Result, StMap, StMapVecL1, StSet},
 };
 
 use super::{attr, mod_info::ModInfo};
@@ -37,13 +34,13 @@ const PENALIZABLE_OPS: [ModOp; 5] = [
 
 impl SsSvcs {
     // Query methods
-    pub(in crate::ss) fn calc_get_item_mods(
+    pub(in crate::ss) fn calc_iter_item_mods(
         &mut self,
         ss_view: &SsView,
         item_id: &SsItemId,
-    ) -> Result<HashMap<EAttrId, Vec<ModInfo>>> {
+    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<ModInfo>)>> {
         let item = ss_view.items.get_item(item_id)?;
-        let mut info_map = HashMap::new();
+        let mut info_map = StMapVecL1::new();
         for attr_id in self.calc_get_item_attr_ids(ss_view, item_id)? {
             let attr = match ss_view.src.get_a_attr(&attr_id) {
                 Some(attr) => attr,
@@ -52,24 +49,28 @@ impl SsSvcs {
             let mut infos = self.calc_get_item_attr_mods(ss_view, item, &attr);
             filter_useless(&attr_id, &mut infos, ss_view);
             if !infos.is_empty() {
-                info_map.insert(attr_id, infos);
+                info_map.extend_entries(attr_id, infos.into_iter());
             }
         }
-        Ok(info_map)
+        Ok(info_map.into_iter())
     }
     // Private methods
-    fn calc_get_item_attr_ids(&self, ss_view: &SsView, item_id: &SsItemId) -> Result<HashSet<EAttrId>> {
-        let mut attr_ids = HashSet::new();
+    fn calc_get_item_attr_ids(
+        &self,
+        ss_view: &SsView,
+        item_id: &SsItemId,
+    ) -> Result<impl ExactSizeIterator<Item = EAttrId>> {
+        let mut attr_ids = StSet::new();
         for attr_id in ss_view.items.get_item(item_id)?.get_orig_attrs()?.keys() {
             attr_ids.insert(*attr_id);
         }
         for attr_id in self.calc_data.attrs.get_item_attrs(item_id)?.keys() {
             attr_ids.insert(*attr_id);
         }
-        Ok(attr_ids)
+        Ok(attr_ids.into_iter())
     }
     fn calc_get_item_attr_mods(&mut self, ss_view: &SsView, item: &SsItem, attr: &ad::AAttr) -> Vec<ModInfo> {
-        let mut mod_map = HashMap::new();
+        let mut mod_map = StMap::new();
         for modifier in self
             .calc_data
             .mods

@@ -20,7 +20,7 @@ impl SsFit {
                 Ok(fleet) => fleet,
                 _ => return Err(DebugError::new()),
             };
-            if !fleet.fits.contains(&self.id) {
+            if !fleet.contains_fit(&self.id) {
                 return Err(DebugError::new());
             }
         }

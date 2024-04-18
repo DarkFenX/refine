@@ -1,9 +1,7 @@
-use std::collections::HashMap;
-
 use crate::{
     ad::{AItemEffData, AItemType},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
-    util::Named,
+    util::{Named, StMap},
 };
 
 /// Represents an adapted item.
@@ -20,13 +18,13 @@ pub struct AItem {
     /// Item category ID.
     pub cat_id: EItemCatId,
     /// Attribute values of the item.
-    pub attr_vals: HashMap<EAttrId, AttrVal>,
+    pub attr_vals: StMap<EAttrId, AttrVal>,
     /// Refers effects of the item.
-    pub effect_datas: HashMap<EEffectId, AItemEffData>,
+    pub effect_datas: StMap<EEffectId, AItemEffData>,
     /// Refers an effect which is default for the item.
     pub defeff_id: Option<EEffectId>,
     /// Skill requirement map.
-    pub srqs: HashMap<EItemId, SkillLevel>,
+    pub srqs: StMap<EItemId, SkillLevel>,
 }
 impl AItem {
     /// Make a new adapted item type out of passed data.
@@ -35,10 +33,10 @@ impl AItem {
         itype: Option<AItemType>,
         grp_id: EItemGrpId,
         cat_id: EItemCatId,
-        attr_vals: HashMap<EAttrId, AttrVal>,
-        effect_datas: HashMap<EEffectId, AItemEffData>,
+        attr_vals: StMap<EAttrId, AttrVal>,
+        effect_datas: StMap<EEffectId, AItemEffData>,
         defeff_id: Option<EEffectId>,
-        srqs: HashMap<EItemId, SkillLevel>,
+        srqs: StMap<EItemId, SkillLevel>,
     ) -> Self {
         Self {
             id,

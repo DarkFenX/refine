@@ -1,11 +1,9 @@
-use std::collections::HashMap;
-
 use itertools::Itertools;
 
-use crate::{ad, adg::GData};
+use crate::{ad, adg::GData, util::StMap};
 
 pub(in crate::adg::conv) fn conv_mutas(g_data: &GData) -> Vec<ad::AMuta> {
-    let mut a_muta_map = HashMap::new();
+    let mut a_muta_map = StMap::new();
     for e_muta in g_data.muta_items.iter() {
         let a_muta = a_muta_map
             .entry(e_muta.muta_id)

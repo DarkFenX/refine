@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use itertools::Itertools;
 
 use crate::{
@@ -9,7 +7,7 @@ use crate::{
     },
     defs::Amount,
     ec,
-    util::{IntError, IntResult, Named},
+    util::{IntError, IntResult, Named, StSet},
 };
 
 const MAX_CYCLES: Amount = 100;
@@ -86,7 +84,7 @@ fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
 // Cyclic restoration functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn restore_item_data(alive: &mut GData, trash: &mut GData) -> bool {
-    let mut item_ids = HashSet::new();
+    let mut item_ids = StSet::new();
     for item in alive.items.iter() {
         item_ids.extend(item.get_pk());
     }

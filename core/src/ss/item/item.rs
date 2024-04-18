@@ -1,11 +1,9 @@
-use std::collections::HashMap;
-
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SsFitId, SsItemId},
     shr::State,
     src::Src,
-    util::{Error, ErrorKind, Named, Result},
+    util::{Error, ErrorKind, Named, Result, StMap},
 };
 
 use super::{
@@ -239,10 +237,10 @@ impl SsItem {
         }
     }
     // Calculator-specific getters
-    pub(in crate::ss) fn get_orig_attrs(&self) -> Result<&HashMap<EAttrId, AttrVal>> {
+    pub(in crate::ss) fn get_orig_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>> {
         Ok(&self.get_a_item()?.attr_vals)
     }
-    pub(in crate::ss) fn get_effect_datas(&self) -> Result<&HashMap<EEffectId, ad::AItemEffData>> {
+    pub(in crate::ss) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffData>> {
         Ok(&self.get_a_item()?.effect_datas)
     }
     pub(in crate::ss) fn get_defeff_id(&self) -> Result<&Option<EEffectId>> {
@@ -254,7 +252,7 @@ impl SsItem {
     pub(in crate::ss) fn get_category_id(&self) -> Result<EItemCatId> {
         Ok(self.get_a_item()?.cat_id)
     }
-    pub(in crate::ss) fn get_skill_reqs(&self) -> Result<&HashMap<EItemId, SkillLevel>> {
+    pub(in crate::ss) fn get_skill_reqs(&self) -> Result<&StMap<EItemId, SkillLevel>> {
         Ok(&self.get_a_item()?.srqs)
     }
 }

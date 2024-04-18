@@ -1,28 +1,27 @@
-use std::collections::HashSet;
-
 use crate::{
     defs::{SsFitId, SsFleetId, SsItemId},
     ss::{item::SsItem, ModRack},
+    util::StSet,
 };
 
 pub(in crate::ss) struct SsFit {
     pub(in crate::ss) id: SsFitId,
     pub(in crate::ss) fleet: Option<SsFleetId>,
     pub(in crate::ss) character: Option<SsItemId>,
-    pub(in crate::ss) skills: HashSet<SsItemId>,
-    pub(in crate::ss) implants: HashSet<SsItemId>,
-    pub(in crate::ss) boosters: HashSet<SsItemId>,
+    pub(in crate::ss) skills: StSet<SsItemId>,
+    pub(in crate::ss) implants: StSet<SsItemId>,
+    pub(in crate::ss) boosters: StSet<SsItemId>,
     pub(in crate::ss) ship: Option<SsItemId>,
     pub(in crate::ss) structure: Option<SsItemId>,
     pub(in crate::ss) stance: Option<SsItemId>,
-    pub(in crate::ss) subsystems: HashSet<SsItemId>,
-    pub(in crate::ss) mods_high: HashSet<SsItemId>,
-    pub(in crate::ss) mods_mid: HashSet<SsItemId>,
-    pub(in crate::ss) mods_low: HashSet<SsItemId>,
-    pub(in crate::ss) rigs: HashSet<SsItemId>,
-    pub(in crate::ss) drones: HashSet<SsItemId>,
-    pub(in crate::ss) fighters: HashSet<SsItemId>,
-    pub(in crate::ss) fw_effects: HashSet<SsItemId>,
+    pub(in crate::ss) subsystems: StSet<SsItemId>,
+    pub(in crate::ss) mods_high: StSet<SsItemId>,
+    pub(in crate::ss) mods_mid: StSet<SsItemId>,
+    pub(in crate::ss) mods_low: StSet<SsItemId>,
+    pub(in crate::ss) rigs: StSet<SsItemId>,
+    pub(in crate::ss) drones: StSet<SsItemId>,
+    pub(in crate::ss) fighters: StSet<SsItemId>,
+    pub(in crate::ss) fw_effects: StSet<SsItemId>,
 }
 impl SsFit {
     pub(in crate::ss) fn new(id: SsFitId) -> Self {
@@ -30,20 +29,20 @@ impl SsFit {
             id,
             fleet: None,
             character: None,
-            skills: HashSet::new(),
-            implants: HashSet::new(),
-            boosters: HashSet::new(),
+            skills: StSet::new(),
+            implants: StSet::new(),
+            boosters: StSet::new(),
             ship: None,
             structure: None,
             stance: None,
-            subsystems: HashSet::new(),
-            mods_high: HashSet::new(),
-            mods_mid: HashSet::new(),
-            mods_low: HashSet::new(),
-            rigs: HashSet::new(),
-            drones: HashSet::new(),
-            fighters: HashSet::new(),
-            fw_effects: HashSet::new(),
+            subsystems: StSet::new(),
+            mods_high: StSet::new(),
+            mods_mid: StSet::new(),
+            mods_low: StSet::new(),
+            rigs: StSet::new(),
+            drones: StSet::new(),
+            fighters: StSet::new(),
+            fw_effects: StSet::new(),
         }
     }
     pub(in crate::ss) fn add_item(&mut self, item: &SsItem) {
@@ -168,20 +167,20 @@ impl SsFit {
     pub(in crate::ss) fn all_items(&self) -> Vec<SsItemId> {
         let mut items = Vec::new();
         conditional_push(&mut items, self.character);
-        items.extend(&self.skills);
-        items.extend(&self.implants);
-        items.extend(&self.boosters);
+        items.extend(self.skills.iter());
+        items.extend(self.implants.iter());
+        items.extend(self.boosters.iter());
         conditional_push(&mut items, self.ship);
         conditional_push(&mut items, self.structure);
         conditional_push(&mut items, self.stance);
-        items.extend(&self.subsystems);
-        items.extend(&self.mods_high);
-        items.extend(&self.mods_mid);
-        items.extend(&self.mods_low);
-        items.extend(&self.rigs);
-        items.extend(&self.drones);
-        items.extend(&self.fighters);
-        items.extend(&self.fw_effects);
+        items.extend(self.subsystems.iter());
+        items.extend(self.mods_high.iter());
+        items.extend(self.mods_mid.iter());
+        items.extend(self.mods_low.iter());
+        items.extend(self.rigs.iter());
+        items.extend(self.drones.iter());
+        items.extend(self.fighters.iter());
+        items.extend(self.fw_effects.iter());
         items
     }
 }

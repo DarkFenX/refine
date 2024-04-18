@@ -1,9 +1,8 @@
-use std::collections::HashMap;
-
 use crate::{
     defs::{AggrKey, AttrVal, EItemCatId},
     ec,
     shr::{ModAggrMode, ModOp},
+    util::StMap,
 };
 
 const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
@@ -128,15 +127,15 @@ impl StackValues {
 
 struct AggrValues {
     stack: Vec<AttrVal>,
-    aggr_min: HashMap<AggrKey, Vec<AttrVal>>,
-    aggr_max: HashMap<AggrKey, Vec<AttrVal>>,
+    aggr_min: StMap<AggrKey, Vec<AttrVal>>,
+    aggr_max: StMap<AggrKey, Vec<AttrVal>>,
 }
 impl AggrValues {
     fn new() -> Self {
         Self {
             stack: Vec::new(),
-            aggr_min: HashMap::new(),
-            aggr_max: HashMap::new(),
+            aggr_min: StMap::new(),
+            aggr_max: StMap::new(),
         }
     }
     fn add_val<F>(&mut self, val: AttrVal, norm_func: F, aggr_mode: &ModAggrMode)
@@ -170,17 +169,6 @@ impl AggrValues {
         }
         comb_func(&self.stack, high_is_good)
     }
-}
-
-fn process_mults(mults: &Vec<AttrVal>) -> AttrVal {
-    let mut val = 1.0;
-    mults.iter().for_each(|v| val *= v);
-    val
-}
-fn process_adds(adds: &Vec<AttrVal>) -> AttrVal {
-    let mut val = 0.0;
-    adds.iter().for_each(|v| val += v);
-    val
 }
 
 // Normalization functions

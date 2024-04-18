@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use crate::{
     ad,
     defs::{EAttrId, EEffectId, SsItemId},

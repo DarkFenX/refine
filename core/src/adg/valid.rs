@@ -1,5 +1,3 @@
-use std::collections::{HashMap, HashSet};
-
 use itertools::Itertools;
 
 use crate::{
@@ -8,7 +6,7 @@ use crate::{
         GData, GSupport,
     },
     ec, ed,
-    util::Named,
+    util::{Named, StMap, StSet},
 };
 
 /// Ensure that assumptions reefast makes about the data are true.
@@ -62,12 +60,12 @@ fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, g_supp: &GSup
     );
     fk_check_referee(rer_vec, &pkdb.buffs, g_supp, T::get_buff_fks, ed::EBuff::get_name());
 }
-fn fk_check_referee<T, F>(rer_vec: &Vec<T>, ree_pks: &HashSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
+fn fk_check_referee<T, F>(rer_vec: &Vec<T>, ree_pks: &StSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
 where
     T: Fk + Named,
     F: Fn(&T, &GSupport) -> Vec<KeyPart>,
 {
-    let mut fks = HashSet::new();
+    let mut fks = StSet::new();
     rer_vec.iter().for_each(|v| fks.extend(func(v, g_supp)));
     let missing = fks.difference(ree_pks).collect_vec();
     if missing.len() > 0 {
@@ -85,7 +83,7 @@ where
 /// One default effect per item max. Needed for adapted item generation.
 fn default_effects(g_data: &mut GData) {
     let mut unsets = 0;
-    let mut seen_defeffs = HashSet::new();
+    let mut seen_defeffs = StSet::new();
     for e_item_effect in g_data.item_effects.iter_mut() {
         if e_item_effect.is_default {
             if !seen_defeffs.insert(e_item_effect.get_pk()) {
@@ -102,7 +100,7 @@ fn default_effects(g_data: &mut GData) {
 
 /// Remove unknown fighter abilities.
 fn known_fighter_abilities(g_data: &mut GData) {
-    let mut unknown_ids = HashSet::new();
+    let mut unknown_ids = StSet::new();
     let abils = g_data
         .abils
         .extract_if(|v| ec::abils::get_abil_effect(v.id).is_none())
@@ -132,14 +130,14 @@ fn known_fighter_abilities(g_data: &mut GData) {
 
 /// Remove item abilities which have no effects to handle them.
 fn fighter_ability_effect(g_data: &mut GData) {
-    let mut item_eff_map = HashMap::new();
+    let mut item_eff_map = StMap::new();
     for item_eff in g_data.item_effects.iter() {
         item_eff_map
             .entry(item_eff.item_id)
-            .or_insert_with(|| HashSet::new())
+            .or_insert_with(|| StSet::new())
             .insert(item_eff.effect_id);
     }
-    let mut invalids = HashSet::new();
+    let mut invalids = StSet::new();
     g_data
         .item_abils
         .extract_if(|v| match ec::abils::get_abil_effect(v.abil_id) {

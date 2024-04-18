@@ -1,4 +1,5 @@
 /// Auxiliary entity for "primitive" data.
+#[derive(Clone)]
 pub enum EPrimitive {
     /// Represents absence of a value.
     Null,

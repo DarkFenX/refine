@@ -1,11 +1,9 @@
 //! Adapted data generator
-use std::collections::HashMap;
-
 use crate::{
     ad,
     defs::{EAttrId, EAttrUnitId, EItemCatId, EItemGrpId},
     ed,
-    util::IntResult,
+    util::{IntResult, StMap},
 };
 
 mod clean;
@@ -70,14 +68,14 @@ impl GData {
 
 /// Container for auxiliary data.
 pub(in crate::adg) struct GSupport {
-    pub(in crate::adg) attr_unit_map: HashMap<EAttrId, EAttrUnitId>,
-    pub(in crate::adg) grp_cat_map: HashMap<EItemGrpId, EItemCatId>,
+    pub(in crate::adg) attr_unit_map: StMap<EAttrId, EAttrUnitId>,
+    pub(in crate::adg) grp_cat_map: StMap<EItemGrpId, EItemCatId>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {
         Self {
-            attr_unit_map: HashMap::new(),
-            grp_cat_map: HashMap::new(),
+            attr_unit_map: StMap::new(),
+            grp_cat_map: StMap::new(),
         }
     }
     pub(in crate::adg) fn fill(&mut self, g_data: &GData) {

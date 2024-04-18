@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use crate::{
     adg::{
         rels::{KeyPart, Pk},
@@ -7,6 +5,7 @@ use crate::{
     },
     defs::{AttrVal, EAttrId, EItemId},
     ed::EItemAttr,
+    util::StSet,
 };
 
 pub(in crate::adg) fn normalize(g_data: &mut GData) {
@@ -14,7 +13,7 @@ pub(in crate::adg) fn normalize(g_data: &mut GData) {
 }
 
 fn move_basic_attrs(g_data: &mut GData) {
-    let mut seen_pks = HashSet::new();
+    let mut seen_pks = StSet::new();
     for item_attr in g_data.item_attrs.iter() {
         let pk = item_attr.get_pk();
         seen_pks.insert(pk);
@@ -33,8 +32,8 @@ fn move_basic_attr(
     attr_id: EAttrId,
     basic_value: AttrVal,
     g_data_item_attrs: &mut Vec<EItemAttr>,
-    attr_ids: &HashSet<EAttrId>,
-    seen_pks: &HashSet<Vec<KeyPart>>,
+    attr_ids: &StSet<EAttrId>,
+    seen_pks: &StSet<Vec<KeyPart>>,
 ) {
     // Shouldn't be useful on actual data, but causes lots of broken relations when running tests
     if !attr_ids.contains(&attr_id) {

@@ -60,7 +60,7 @@ pub(in crate::phb) struct PEffectMod {
 }
 impl Into<rc::ed::EEffectMod> for PEffectMod {
     fn into(self) -> rc::ed::EEffectMod {
-        rc::ed::EEffectMod::new(self.func, self.args)
+        rc::ed::EEffectMod::new(self.func, (&self.args).into())
     }
 }
 

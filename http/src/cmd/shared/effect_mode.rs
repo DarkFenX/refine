@@ -11,8 +11,7 @@ pub(in crate::cmd) fn apply_effect_modes(
 ) -> rc::Result<()> {
     if let Some(mode_map) = &effect_modes {
         if !mode_map.is_empty() {
-            let mode_map = mode_map.into_iter().map(|(k, v)| (*k, v.into())).collect();
-            core_ss.set_item_effect_modes(item_id, &mode_map)?;
+            core_ss.set_item_effect_modes(item_id, mode_map.iter().map(|(k, v)| (*k, v.into())))?;
         }
     }
     Ok(())

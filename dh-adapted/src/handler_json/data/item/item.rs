@@ -20,10 +20,10 @@ impl From<&rc::ad::AItem> for CItem {
             itype: a_item.itype.as_ref().map(|v| v.into()),
             grp_id: a_item.grp_id,
             cat_id: a_item.cat_id,
-            attr_vals: a_item.attr_vals.clone(),
+            attr_vals: (&a_item.attr_vals).into(),
             effect_datas: a_item.effect_datas.iter().map(|(k, v)| (*k, v.into())).collect(),
             defeff_id: a_item.defeff_id,
-            srqs: a_item.srqs.clone(),
+            srqs: (&a_item.srqs).into(),
         }
     }
 }
@@ -34,10 +34,10 @@ impl Into<rc::ad::AItem> for &CItem {
             itype: self.itype.as_ref().map(|v| v.into()),
             grp_id: self.grp_id,
             cat_id: self.cat_id,
-            attr_vals: self.attr_vals.clone(),
+            attr_vals: (&self.attr_vals).into(),
             effect_datas: self.effect_datas.iter().map(|(k, v)| (*k, v.into())).collect(),
             defeff_id: self.defeff_id,
-            srqs: self.srqs.clone(),
+            srqs: (&self.srqs).into(),
         }
     }
 }

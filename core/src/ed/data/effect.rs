@@ -1,8 +1,6 @@
-use std::collections::HashMap;
-
 use crate::{
     defs::{EAttrId, EEffectCatId, EEffectId},
-    util::Named,
+    util::{Named, StMap},
 };
 
 use super::EPrimitive;
@@ -83,11 +81,11 @@ pub struct EEffectMod {
     /// Function which the effect modifier calls to apply its modification.
     pub func: String,
     /// Arguments to the function call.
-    pub args: HashMap<String, EPrimitive>,
+    pub args: StMap<String, EPrimitive>,
 }
 impl EEffectMod {
     /// Make a new EVE dogma effect modifier out of passed data.
-    pub fn new(func: String, args: HashMap<String, EPrimitive>) -> Self {
+    pub fn new(func: String, args: StMap<String, EPrimitive>) -> Self {
         Self { func, args }
     }
 }

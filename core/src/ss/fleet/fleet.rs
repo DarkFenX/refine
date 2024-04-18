@@ -1,17 +1,21 @@
-use std::collections::HashSet;
-
-use crate::defs::{SsFitId, SsFleetId};
+use crate::{
+    defs::{SsFitId, SsFleetId},
+    util::StSet,
+};
 
 pub(in crate::ss) struct SsFleet {
     pub(in crate::ss) id: SsFleetId,
-    pub(in crate::ss) fits: HashSet<SsFitId>,
+    fits: StSet<SsFitId>,
 }
 impl SsFleet {
     pub(in crate::ss) fn new(id: SsFleetId) -> Self {
-        Self {
-            id,
-            fits: HashSet::new(),
-        }
+        Self { id, fits: StSet::new() }
+    }
+    pub(in crate::ss) fn iter_fits(&self) -> impl ExactSizeIterator<Item = &SsFitId> {
+        self.fits.iter()
+    }
+    pub(in crate::ss) fn contains_fit(&self, fit: &SsFitId) -> bool {
+        self.fits.contains(fit)
     }
     pub(in crate::ss) fn add_fit(&mut self, fit_id: SsFitId) {
         self.fits.insert(fit_id);

@@ -1,14 +1,12 @@
 //! Contains facilities which clean up data to ensure no duplicate primary keys exist.
 
-use std::collections::HashSet;
-
 use crate::{
     adg::{rels::Pk, GData},
-    util::Named,
+    util::{Named, StSet},
 };
 
 fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
-    let mut seen_pks = HashSet::new();
+    let mut seen_pks = StSet::new();
     let removed = vec
         .extract_if(|v| {
             let pk = v.get_pk();

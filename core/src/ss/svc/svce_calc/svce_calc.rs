@@ -323,8 +323,7 @@ impl SsSvcs {
         }
         if !updates.outgoing.is_empty() {
             let tgt_fits = fleet
-                .fits
-                .iter()
+                .iter_fits()
                 .filter(|v| *v != fit_id)
                 .map(|v| ss_view.fits.get_fit(v).unwrap())
                 .collect();

@@ -1,7 +1,3 @@
-use std::collections::HashMap;
-
-use itertools::Itertools;
-
 use crate::{
     defs::{AttrVal, EAttrId, SsItemId},
     ec,
@@ -16,7 +12,7 @@ use crate::{
         },
         SsView,
     },
-    util::{Error, ErrorKind, Result},
+    util::{Error, ErrorKind, Result, StMap},
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
@@ -44,7 +40,7 @@ impl SsSvcs {
         self.calc_data.attrs.get_item_attrs_mut(item_id)?.insert(*attr_id, val);
         Ok(val)
     }
-    pub(in crate::ss) fn calc_get_item_attr_vals(
+    pub(in crate::ss) fn calc_iter_item_attr_vals(
         &mut self,
         ss_view: &SsView,
         item_id: &SsItemId,
@@ -70,8 +66,8 @@ impl SsSvcs {
         ss_view: &SsView,
         item: &SsItem,
         attr_id: &EAttrId,
-    ) -> HashMap<ModKey, Modification> {
-        let mut mods = HashMap::new();
+    ) -> StMap<ModKey, Modification> {
+        let mut mods = StMap::new();
         for modifier in self.calc_data.mods.get_mods_for_tgt(item, attr_id, ss_view.fits).iter() {
             let val = match modifier.get_mod_val(self, ss_view) {
                 Ok(v) => v,

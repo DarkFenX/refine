@@ -1,9 +1,7 @@
-use std::collections::HashSet;
-
 use crate::{
     defs::SsItemId,
     ss::{item::SsItem, SsView},
-    util::{DebugError, DebugResult},
+    util::{DebugError, DebugResult, StSet},
 };
 
 use super::SolarSystem;
@@ -73,6 +71,6 @@ impl SolarSystem {
 }
 
 fn check_item_duplicates(item_ids: &Vec<SsItemId>) -> bool {
-    let mut uniq = HashSet::new();
+    let mut uniq = StSet::new();
     !item_ids.iter().all(|x| uniq.insert(x))
 }

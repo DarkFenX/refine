@@ -33,7 +33,7 @@ impl SolarSystem {
             }
 
             if let Ok(old_fleet) = self.fleets.get_fleet_mut(&old_fleet_id) {
-                old_fleet.fits.remove(fit_id);
+                old_fleet.remove_fit(fit_id);
             }
             let fit = self.fits.get_fit_mut(fit_id)?;
             fit.fleet = None;
@@ -42,7 +42,7 @@ impl SolarSystem {
             match self.fleets.get_fleet_mut(&new_fleet_id) {
                 // Assign to new fleet
                 Ok(new_fleet) => {
-                    new_fleet.fits.insert(*fit_id);
+                    new_fleet.add_fit(*fit_id);
                     let fit = self.fits.get_fit_mut(fit_id)?;
                     fit.fleet = Some(new_fleet_id);
                     self.svcs.add_fit_to_fleet(
@@ -58,7 +58,7 @@ impl SolarSystem {
                         let fit = self.fits.get_fit_mut(fit_id)?;
                         fit.fleet = Some(old_fleet_id);
                         if let Ok(old_fleet) = self.fleets.get_fleet_mut(&old_fleet_id) {
-                            old_fleet.fits.insert(old_fleet_id);
+                            old_fleet.add_fit(old_fleet_id);
                             self.svcs.add_fit_to_fleet(
                                 &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
                                 self.fleets.get_fleet(&old_fleet_id).unwrap(),

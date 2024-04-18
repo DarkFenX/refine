@@ -12,7 +12,7 @@ impl From<&rc::ad::AMuta> for CMuta {
     fn from(a_muta: &rc::ad::AMuta) -> Self {
         CMuta {
             id: a_muta.id,
-            item_map: a_muta.item_map.clone(),
+            item_map: (&a_muta.item_map).into(),
             attr_mods: a_muta.attr_mods.iter().map(|(k, v)| (*k, v.into())).collect(),
         }
     }
@@ -21,7 +21,7 @@ impl Into<rc::ad::AMuta> for &CMuta {
     fn into(self) -> rc::ad::AMuta {
         rc::ad::AMuta {
             id: self.id,
-            item_map: self.item_map.clone(),
+            item_map: (&self.item_map).into(),
             attr_mods: self.attr_mods.iter().map(|(k, v)| (*k, v.into())).collect(),
         }
     }

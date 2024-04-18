@@ -1,13 +1,11 @@
-use std::collections::HashSet;
-
-use crate::defs::SsItemId;
+use crate::{defs::SsItemId, util::StSet};
 
 pub(in crate::ss) struct TgtItems {
-    data: HashSet<SsItemId>,
+    data: StSet<SsItemId>,
 }
 impl TgtItems {
     pub(in crate::ss::item) fn new() -> Self {
-        Self { data: HashSet::new() }
+        Self { data: StSet::new() }
     }
     pub(in crate::ss) fn add(&mut self, item_id: SsItemId) {
         self.data.insert(item_id);

@@ -44,7 +44,7 @@ impl SsSvcs {
             if let Some(buff_info) = effect.buff.as_ref() {
                 match buff_info.data_source {
                     // TODO: implement buffs with hardcoded values (e.g. disruption lance)
-                    ad::AEffectBuffDataSrc::Hardcoded(buff_id, buff_val) => continue,
+                    ad::AEffectBuffDataSrc::Hardcoded(_, _) => continue,
                     ad::AEffectBuffDataSrc::DefaultAttrs => {
                         for (buff_type_attr_id, buff_val_attr_id) in ec::attrs::BUFF_ATTRS {
                             if let Ok(buff_id) = self.calc_get_item_attr_val(ss_view, &item_id, &buff_type_attr_id) {

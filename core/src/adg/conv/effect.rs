@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    hash::Hash,
-};
+use std::hash::Hash;
 
 use crate::{
     ad,
@@ -9,7 +6,7 @@ use crate::{
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
     ec, ed,
     shr::{ModOp, State},
-    util::{IntError, IntResult},
+    util::{IntError, IntResult, StMap, StSet},
 };
 
 impl ed::EFighterAbil {
@@ -302,7 +299,7 @@ fn get_mod_skill_id(e_modifier: &ed::EEffectMod) -> IntResult<EItemId> {
     get_arg_int(&e_modifier.args, "skillTypeID")
 }
 
-fn get_arg_int(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<i32> {
+fn get_arg_int(args: &StMap<String, ed::EPrimitive>, name: &str) -> IntResult<i32> {
     let primitive = args.get(name).ok_or(IntError::new(format!("no \"{name}\" in args")))?;
     match primitive {
         ed::EPrimitive::Int(i) => Ok(*i),
@@ -310,7 +307,7 @@ fn get_arg_int(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<
     }
 }
 
-fn get_arg_str(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<String> {
+fn get_arg_str(args: &StMap<String, ed::EPrimitive>, name: &str) -> IntResult<String> {
     let primitive = args.get(name).ok_or(IntError::new(format!("no \"{name}\" in args")))?;
     match primitive {
         ed::EPrimitive::String(s) => Ok(s.into()),
@@ -318,18 +315,18 @@ fn get_arg_str(args: &HashMap<String, ed::EPrimitive>, name: &str) -> IntResult<
     }
 }
 
-fn extract_ability_map<F, T>(g_data: &GData, getter: F) -> HashMap<EEffectId, HashSet<T>>
+fn extract_ability_map<F, T>(g_data: &GData, getter: F) -> StMap<EEffectId, StSet<T>>
 where
     F: Fn(&ed::EFighterAbil) -> T,
     T: Eq + Hash,
 {
-    let mut map = HashMap::new();
+    let mut map = StMap::new();
     for e_abil in g_data.abils.iter() {
         match ec::abils::get_abil_effect(e_abil.id) {
             None => continue,
             Some(effect_id) => map
                 .entry(effect_id)
-                .or_insert_with(|| HashSet::new())
+                .or_insert_with(|| StSet::new())
                 .insert(getter(&e_abil)),
         };
     }

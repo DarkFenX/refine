@@ -1,17 +1,15 @@
-use std::collections::HashSet;
-
-use crate::ss::svc::svce_calc::modifier::SsAttrMod;
+use crate::{ss::svc::svce_calc::modifier::SsAttrMod, util::StSet};
 
 // Intended to hold modifiers which need special handling, e.g. custom prop module modifiers
 pub(in crate::ss::svc::svce_calc) struct RevisionRegister {
-    pub(super) item_add: HashSet<SsAttrMod>,
-    pub(super) item_remove: HashSet<SsAttrMod>,
+    pub(super) item_add: StSet<SsAttrMod>,
+    pub(super) item_remove: StSet<SsAttrMod>,
 }
 impl RevisionRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
-            item_add: HashSet::new(),
-            item_remove: HashSet::new(),
+            item_add: StSet::new(),
+            item_remove: StSet::new(),
         }
     }
     // Query methods

@@ -1,4 +1,4 @@
-use std::{collections::HashSet, convert::TryInto, hash::Hash};
+use std::{convert::TryInto, hash::Hash};
 
 use itertools::Itertools;
 
@@ -14,7 +14,7 @@ use crate::{
         },
         SsView,
     },
-    util::StMapSetL1,
+    util::{StMapSetL1, StSet},
 };
 
 use super::{fleet_upd::FleetUpdates, iter_loc_act::LocsAct};
@@ -52,7 +52,7 @@ pub(in crate::ss::svc::svce_calc) struct ModifierRegister {
     // Contains: KeyedStorage<source fit ID, modifiers>
     pub(super) mods_fleet_fit: StMapSetL1<SsFitId, SsAttrMod>,
     // System-wide modifiers
-    pub(super) sw_mods: HashSet<SsAttrMod>,
+    pub(super) sw_mods: StSet<SsAttrMod>,
 }
 impl ModifierRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
@@ -67,7 +67,7 @@ impl ModifierRegister {
             mods_own_srq: StMapSetL1::new(),
             mods_buff_all: StMapSetL1::new(),
             mods_fleet_fit: StMapSetL1::new(),
-            sw_mods: HashSet::new(),
+            sw_mods: StSet::new(),
         }
     }
     // Query methods
@@ -142,9 +142,9 @@ impl ModifierRegister {
         items: &SsItems,
     ) -> Vec<SsAttrMod> {
         let mut mods = Vec::new();
-        if let (Some(fit_id), Some(loc_type)) = (item.get_fit_id(), item.get_root_loc_type()) {
+        if let (Some(_), Some(loc_type)) = (item.get_fit_id(), item.get_root_loc_type()) {
             for (sub_item_id, sub_mods) in self.mods.iter() {
-                if let Ok(sub_item) = items.get_item(sub_item_id) {
+                if let Ok(_) = items.get_item(sub_item_id) {
                     // TODO: This should be refined/optimized. It should pick only modifiers which
                     // TODO: target fit of item being changed.
                     for sub_mod in sub_mods {
@@ -276,7 +276,7 @@ impl ModifierRegister {
                     match src_fit.fleet {
                         Some(fleet_id) => {
                             let fleet = ss_view.fleets.get_fleet(&fleet_id).unwrap();
-                            tgt_fit_ids.extend(fleet.fits.iter());
+                            tgt_fit_ids.extend(fleet.iter_fits());
                         }
                         None => tgt_fit_ids.push(src_fit_id),
                     }
@@ -327,7 +327,7 @@ impl ModifierRegister {
                     match src_fit.fleet {
                         Some(fleet_id) => {
                             let fleet = ss_view.fleets.get_fleet(&fleet_id).unwrap();
-                            tgt_fit_ids.extend(fleet.fits.iter());
+                            tgt_fit_ids.extend(fleet.iter_fits());
                         }
                         None => tgt_fit_ids.push(src_fit_id),
                     }
@@ -574,7 +574,7 @@ impl ModifierRegister {
     fn get_fleet_updates(&self, fleet: &SsFleet, fit_id: &SsFitId) -> FleetUpdates {
         let mut updates = FleetUpdates::new();
         updates.outgoing.extend(self.mods_fleet_fit.get(fit_id));
-        for fleet_fit_id in fleet.fits.iter() {
+        for fleet_fit_id in fleet.iter_fits() {
             if fleet_fit_id == fit_id {
                 continue;
             }

@@ -1,30 +1,29 @@
-use std::collections::HashSet;
-
 use crate::{
     adg::{
         rels::{Fk, KeyPart, Pk},
         GData, GSupport,
     },
     defs::{EAbilId, EAttrId, EBuffId, EEffectId, EItemGrpId, EItemId},
+    util::StSet,
 };
 
 pub(in crate::adg) struct KeyDb {
-    pub(in crate::adg) items: HashSet<EItemId>,
-    pub(in crate::adg) groups: HashSet<EItemGrpId>,
-    pub(in crate::adg) attrs: HashSet<EAttrId>,
-    pub(in crate::adg) effects: HashSet<EEffectId>,
-    pub(in crate::adg) abils: HashSet<EAbilId>,
-    pub(in crate::adg) buffs: HashSet<EBuffId>,
+    pub(in crate::adg) items: StSet<EItemId>,
+    pub(in crate::adg) groups: StSet<EItemGrpId>,
+    pub(in crate::adg) attrs: StSet<EAttrId>,
+    pub(in crate::adg) effects: StSet<EEffectId>,
+    pub(in crate::adg) abils: StSet<EAbilId>,
+    pub(in crate::adg) buffs: StSet<EBuffId>,
 }
 impl KeyDb {
     pub(in crate::adg) fn new() -> Self {
         Self {
-            items: HashSet::new(),
-            groups: HashSet::new(),
-            attrs: HashSet::new(),
-            effects: HashSet::new(),
-            abils: HashSet::new(),
-            buffs: HashSet::new(),
+            items: StSet::new(),
+            groups: StSet::new(),
+            attrs: StSet::new(),
+            effects: StSet::new(),
+            abils: StSet::new(),
+            buffs: StSet::new(),
         }
     }
     // Primary keys
@@ -38,7 +37,7 @@ impl KeyDb {
         Self::extend_pk_vec(&mut pkdb.buffs, &g_data.buffs);
         pkdb
     }
-    fn extend_pk_vec<T: Pk>(set: &mut HashSet<KeyPart>, vec: &Vec<T>) {
+    fn extend_pk_vec<T: Pk>(set: &mut StSet<KeyPart>, vec: &Vec<T>) {
         for i in vec.iter() {
             set.extend(i.get_pk())
         }
