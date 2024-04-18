@@ -10,7 +10,9 @@ pub(crate) struct StSet<V> {
 }
 impl<V: Eq + Hash> StSet<V> {
     pub(crate) fn new() -> StSet<V> {
-        Self { data: FxHashSet::default() }
+        Self {
+            data: FxHashSet::default(),
+        }
     }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = &V> {
         self.data.iter()

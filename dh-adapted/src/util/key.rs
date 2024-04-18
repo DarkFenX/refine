@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
+use std::sync::Arc;
 
 type KeyVal = i32;
 
@@ -31,7 +31,7 @@ impl Key for rc::ad::ABuff {
     }
 }
 
-pub(crate) fn move_vec_to_map<T: Key>(vec: Vec<T>, map: &mut HashMap<KeyVal, Arc<T>>) {
+pub(crate) fn move_vec_to_map<T: Key>(vec: Vec<T>, map: &mut rc::util::StMap<KeyVal, Arc<T>>) {
     map.clear();
     map.shrink_to_fit();
     map.reserve(vec.len());

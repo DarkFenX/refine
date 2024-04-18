@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fmt};
+use std::fmt;
 
 use crate::util::{move_vec_to_map, Error, ErrorKind};
 
@@ -7,20 +7,20 @@ use crate::util::{move_vec_to_map, Error, ErrorKind};
 /// This handler stores everything only in RAM. Access to data is fast, but has noticeable RAM
 /// consumption and adapted data has to be rebuilt every time.
 pub struct RamOnlyAdh {
-    storage_items: HashMap<rc::EItemId, rc::ad::ArcItem>,
-    storage_attrs: HashMap<rc::EAttrId, rc::ad::ArcAttr>,
-    storage_effects: HashMap<rc::EEffectId, rc::ad::ArcEffect>,
-    storage_mutas: HashMap<rc::EMutaId, rc::ad::ArcMuta>,
-    storage_buffs: HashMap<rc::EBuffId, rc::ad::ArcBuff>,
+    storage_items: rc::util::StMap<rc::EItemId, rc::ad::ArcItem>,
+    storage_attrs: rc::util::StMap<rc::EAttrId, rc::ad::ArcAttr>,
+    storage_effects: rc::util::StMap<rc::EEffectId, rc::ad::ArcEffect>,
+    storage_mutas: rc::util::StMap<rc::EMutaId, rc::ad::ArcMuta>,
+    storage_buffs: rc::util::StMap<rc::EBuffId, rc::ad::ArcBuff>,
 }
 impl RamOnlyAdh {
     pub fn new() -> Self {
         Self {
-            storage_items: HashMap::new(),
-            storage_attrs: HashMap::new(),
-            storage_effects: HashMap::new(),
-            storage_mutas: HashMap::new(),
-            storage_buffs: HashMap::new(),
+            storage_items: rc::util::StMap::new(),
+            storage_attrs: rc::util::StMap::new(),
+            storage_effects: rc::util::StMap::new(),
+            storage_mutas: rc::util::StMap::new(),
+            storage_buffs: rc::util::StMap::new(),
         }
     }
 }

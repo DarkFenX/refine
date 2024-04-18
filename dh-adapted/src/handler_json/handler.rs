@@ -1,5 +1,4 @@
 use std::{
-    collections::HashMap,
     fmt,
     fs::{create_dir_all, OpenOptions},
     io,
@@ -18,24 +17,24 @@ use super::data;
 pub struct RamJsonAdh {
     folder: PathBuf,
     name: String,
-    storage_items: HashMap<rc::EItemId, rc::ad::ArcItem>,
-    storage_attrs: HashMap<rc::EAttrId, rc::ad::ArcAttr>,
-    storage_effects: HashMap<rc::EEffectId, rc::ad::ArcEffect>,
-    storage_mutas: HashMap<rc::EMutaId, rc::ad::ArcMuta>,
-    storage_buffs: HashMap<rc::EBuffId, rc::ad::ArcBuff>,
+    storage_items: rc::util::StMap<rc::EItemId, rc::ad::ArcItem>,
+    storage_attrs: rc::util::StMap<rc::EAttrId, rc::ad::ArcAttr>,
+    storage_effects: rc::util::StMap<rc::EEffectId, rc::ad::ArcEffect>,
+    storage_mutas: rc::util::StMap<rc::EMutaId, rc::ad::ArcMuta>,
+    storage_buffs: rc::util::StMap<rc::EBuffId, rc::ad::ArcBuff>,
     fingerprint: Option<String>,
 }
 impl RamJsonAdh {
     /// Constructs new handler using path to cache folder and cache file name (without extension).
     pub fn new(folder: PathBuf, name: String) -> Self {
         Self {
-            folder: folder,
-            name: name,
-            storage_items: HashMap::new(),
-            storage_attrs: HashMap::new(),
-            storage_effects: HashMap::new(),
-            storage_mutas: HashMap::new(),
-            storage_buffs: HashMap::new(),
+            folder,
+            name,
+            storage_items: rc::util::StMap::new(),
+            storage_attrs: rc::util::StMap::new(),
+            storage_effects: rc::util::StMap::new(),
+            storage_mutas: rc::util::StMap::new(),
+            storage_buffs: rc::util::StMap::new(),
             fingerprint: None,
         }
     }

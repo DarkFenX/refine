@@ -48,4 +48,4 @@ pub mod ed;
 mod shr;
 mod src;
 mod ss;
-mod util;
+pub mod util;
