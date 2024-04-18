@@ -47,6 +47,9 @@ class SolarSystem(AttrDict):
         assert resp.status_code == 204
         self._client.created_sss.remove(self)
 
+    def check(self) -> None:
+        self._client.check_ss(ss_id=self.id)
+
     # Fleet methods
     def get_fleet_request(
             self,

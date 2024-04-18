@@ -289,6 +289,7 @@ def test_error_no_fit_full(client, consts):
     api_ss = client.create_ss()
     resp = api_ss.get_fit_request(fit_id='1', fit_info_mode=consts.ApiFitInfoMode.full).send()
     resp.check(status_code=404, json_predicate={'code': 'COR-003', 'message': 'core library error: fit 1 not found'})
+    api_ss.check()
 
 
 def test_error_no_fit_id(client, consts):
@@ -297,6 +298,7 @@ def test_error_no_fit_id(client, consts):
     api_ss = client.create_ss()
     resp = api_ss.get_fit_request(fit_id='1', fit_info_mode=consts.ApiFitInfoMode.id).send()
     resp.check(status_code=404, json_predicate={'code': 'COR-003', 'message': 'core library error: fit 1 not found'})
+    api_ss.check()
 
 
 def test_error_no_fit_malformed(client):
@@ -305,3 +307,4 @@ def test_error_no_fit_malformed(client):
     api_ss = client.create_ss()
     resp = api_ss.get_fit_request(fit_id='abc').send()
     resp.check(status_code=404, json_predicate={'code': 'IDC-001', 'message': 'unable to cast string "abc" to id'})
+    api_ss.check()
