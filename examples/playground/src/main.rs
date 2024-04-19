@@ -7,7 +7,7 @@ use chrono::Utc;
 use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
-use rc::{ed::EveDataHandler, ModRack, OrdAddMode, SolarSystem, Src, State, VERSION};
+use rc::{ed::EveDataHandler, ModRack, OrdAddMode, SolarSystem, Src, SsItemState, VERSION};
 
 fn setup_logger() -> () {
     let time_format_full = time::macros::format_description!(
@@ -70,7 +70,7 @@ fn main() {
     let before = Utc::now();
     for _ in 0..iterations {
         let anp = sol_sys
-            .add_module(fit.id, ModRack::Low, OrdAddMode::Equip, 1306, State::Online, None)
+            .add_module(fit.id, ModRack::Low, OrdAddMode::Equip, 1306, SsItemState::Online, None)
             .unwrap();
         black_box(sol_sys.get_item_attrs(&ship.id).iter().for_each(drop));
         sol_sys.remove_item(&anp.id);
