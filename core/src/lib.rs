@@ -21,8 +21,8 @@
 //! and items, and fetch data and stats
 
 pub use defs::{
-    AggrKey, Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId,
-    EItemId, EMutaId, Idx, SkillLevel, SsFitId, SsFleetId, SsItemId, VERSION,
+    Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
+    EMutaId, Idx, SkillLevel, SsFitId, SsFleetId, SsItemId, VERSION,
 };
 pub use src::Src;
 pub use ss::{
