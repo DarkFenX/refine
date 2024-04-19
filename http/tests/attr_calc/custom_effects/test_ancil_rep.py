@@ -115,3 +115,34 @@ def test_mult_change(client, consts):
     api_aar_item.update()
     assert api_aar_item.attrs[eve_aar_tgt_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_aar_tgt_attr.id].extra == approx(300)
+
+
+def test_penalties(client, consts):
+    # Check that paste multiplier is not stacking penalized against other multiplications
+    eve_ship_item = client.mk_eve_item()
+    eve_aar_src_attr = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
+    eve_aar_tgt_attr = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount, stackable=False)
+    eve_mod_src_attr = client.mk_eve_attr()
+    eve_aar_effect = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair)
+    eve_aar_item = client.mk_eve_item(
+        attrs={eve_aar_src_attr.id: 3, eve_aar_tgt_attr.id: 100},
+        eff_ids=[eve_aar_effect.id])
+    eve_paste_item = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_mul,
+        src_attr_id=eve_mod_src_attr.id,
+        tgt_attr_id=eve_aar_tgt_attr.id)
+    eve_mod_effect = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_mod_item = client.mk_eve_item(attrs={eve_mod_src_attr.id: 1.5}, eff_ids=[eve_mod_effect.id])
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fit = api_ss.create_fit()
+    api_fit.set_ship(eve_ship_item.id)
+    api_aar_item = api_fit.add_mod(type_id=eve_aar_item.id, rack=consts.ApiRack.low, charge_type_id=eve_paste_item.id)
+    api_fit.add_rig(type_id=eve_mod_item.id)
+    # Verification
+    api_aar_item.update()
+    assert api_aar_item.attrs[eve_aar_tgt_attr.id].dogma == approx(150)
+    assert api_aar_item.attrs[eve_aar_tgt_attr.id].extra == approx(450)
