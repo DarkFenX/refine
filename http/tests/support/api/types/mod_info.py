@@ -8,7 +8,7 @@ class AttrModInfoMap(dict):
     def __init__(self, data: dict):
         super().__init__({
             int(k): ModInfoList(
-                ModInfo(m[0], m[1], m[2], m[3], ModSrcInfoList(ModSrcInfo.from_mixed(n) for n in m[4])) for m in v)
+                ModInfo(m[0], m[1], m[2], ModSrcInfoList(ModSrcInfo.from_mixed(n) for n in m[3])) for m in v)
             for k, v in data.items()})
 
     def find_by_op(self, tgt_attr_id: int, op: str) -> ModInfoList:
@@ -53,7 +53,6 @@ class ModInfo(NamedTuple):
     val: float
     op: str
     penalized: bool
-    aggr_mode: str
     src: list[ModSrcInfo]
 
 

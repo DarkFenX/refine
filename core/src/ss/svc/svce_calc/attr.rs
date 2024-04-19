@@ -1,8 +1,7 @@
 use crate::{
     defs::{AggrKey, AttrVal, EItemCatId},
     ec,
-    shr::ModAggrMode,
-    ss::svc::svce_calc::SsModOp,
+    ss::svc::svce_calc::{SsModAggrMode, SsModOp},
     util::StMap,
 };
 
@@ -49,7 +48,7 @@ impl Values {
         op: &SsModOp,
         attr_pen: bool,
         item_cat: &EItemCatId,
-        aggr_mode: &ModAggrMode,
+        aggr_mode: &SsModAggrMode,
     ) {
         match op {
             SsModOp::PreAssign => self.pre_assign.add_val(val, norm_noop, aggr_mode),
@@ -104,7 +103,7 @@ impl StackValues {
             penalized: AggrValues::new(),
         }
     }
-    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, penalizable: bool, aggr_mode: &ModAggrMode)
+    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, penalizable: bool, aggr_mode: &SsModAggrMode)
     where
         F: Fn(AttrVal) -> Option<AttrVal>,
     {
@@ -120,7 +119,7 @@ impl StackValues {
         F2: Fn(&Vec<AttrVal>, bool) -> Option<AttrVal>,
     {
         if let Some(val) = self.penalized.get_comb_val(pen_func, hig) {
-            self.stacked.add_val(val, norm_noop, &ModAggrMode::Stack);
+            self.stacked.add_val(val, norm_noop, &SsModAggrMode::Stack);
         }
         self.stacked.get_comb_val(comb_func, hig)
     }
@@ -139,7 +138,7 @@ impl AggrValues {
             aggr_max: StMap::new(),
         }
     }
-    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, aggr_mode: &ModAggrMode)
+    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, aggr_mode: &SsModAggrMode)
     where
         F: Fn(AttrVal) -> Option<AttrVal>,
     {
@@ -148,9 +147,9 @@ impl AggrValues {
             None => return,
         };
         match aggr_mode {
-            ModAggrMode::Stack => self.stack.push(val),
-            ModAggrMode::Min(key) => self.aggr_min.entry(*key).or_insert_with(|| Vec::new()).push(val),
-            ModAggrMode::Max(key) => self.aggr_max.entry(*key).or_insert_with(|| Vec::new()).push(val),
+            SsModAggrMode::Stack => self.stack.push(val),
+            SsModAggrMode::Min(key) => self.aggr_min.entry(*key).or_insert_with(|| Vec::new()).push(val),
+            SsModAggrMode::Max(key) => self.aggr_max.entry(*key).or_insert_with(|| Vec::new()).push(val),
         }
     }
     fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool) -> Option<AttrVal>

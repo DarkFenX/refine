@@ -19,7 +19,6 @@ def test_local_aar(client, consts):
     api_mod = api_aar_item.mods[eve_tgt_attr.id].one()
     assert api_mod.val == approx(3)
     assert api_mod.op == consts.ApiModOp.extra_mul
-    assert api_mod.aggr_mode == consts.ApiAggrMode.stack
     assert api_mod.src.one().item_id == api_aar_item.id
     assert api_mod.src.one().attr_id == eve_src_attr.id
 
@@ -42,7 +41,6 @@ def test_remote_aar(client, consts):
     api_mod = api_aar_item.mods[eve_tgt_attr.id].one()
     assert api_mod.val == approx(3)
     assert api_mod.op == consts.ApiModOp.extra_mul
-    assert api_mod.aggr_mode == consts.ApiAggrMode.stack
     assert api_mod.src.one().item_id == api_aar_item.id
     assert api_mod.src.one().attr_id == eve_src_attr.id
 

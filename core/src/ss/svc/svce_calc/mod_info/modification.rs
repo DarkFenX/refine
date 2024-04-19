@@ -1,4 +1,4 @@
-use crate::{defs::AttrVal, shr::ModAggrMode};
+use crate::defs::AttrVal;
 
 use super::{op::ModOpInfo, src::ModSrcInfo};
 
@@ -6,7 +6,6 @@ pub struct ModInfo {
     pub val: AttrVal,
     pub op: ModOpInfo,
     pub penalized: bool,
-    pub aggr_mode: ModAggrMode,
     pub src: Vec<ModSrcInfo>,
 }
 impl ModInfo {
@@ -14,14 +13,12 @@ impl ModInfo {
         val: AttrVal,
         op: ModOpInfo,
         penalized: bool,
-        aggr_mode: ModAggrMode,
         src: Vec<ModSrcInfo>,
     ) -> Self {
         Self {
             val,
             op,
             penalized,
-            aggr_mode,
             src,
         }
     }

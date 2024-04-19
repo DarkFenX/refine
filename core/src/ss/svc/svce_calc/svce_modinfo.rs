@@ -7,14 +7,13 @@ use itertools::Itertools;
 use crate::{
     ad,
     defs::{EAttrId, EItemCatId, SsItemId},
-    shr::ModAggrMode,
     ss::{
         item::SsItem,
         svc::{
             svce_calc::{
                 misc::ModKey,
                 mod_info::{ModOpInfo, ModSrcInfo, ModSrcValInfo},
-                SsModOp,
+                SsModAggrMode, SsModOp,
             },
             SsSvcs,
         },
@@ -97,7 +96,7 @@ impl SsSvcs {
                 .map(|(i, a)| ModSrcInfo::new(i, ModSrcValInfo::AttrId(a)))
                 .collect();
             let mod_key = ModKey::from(modifier);
-            let mod_info = ModInfo::new(val, (&modifier.op).into(), penalizable, modifier.aggr_mode, srcs);
+            let mod_info = ModInfo::new(val, (&modifier.op).into(), penalizable, srcs);
             mod_map.insert(mod_key, mod_info);
         }
         let mut mod_vec = mod_map.into_values().collect_vec();
@@ -110,7 +109,6 @@ impl SsSvcs {
                             cap_val.dogma,
                             ModOpInfo::MaxLimit,
                             false,
-                            ModAggrMode::Stack,
                             vec![ModSrcInfo::new(item.get_id(), ModSrcValInfo::AttrId(max_attr_id))],
                         );
                         mod_vec.push(mod_info);

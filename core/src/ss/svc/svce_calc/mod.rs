@@ -43,7 +43,9 @@ pub(in crate::ss::svc) use data::CalcData;
 pub use misc::SsAttrVal;
 pub(in crate::ss::svc::svce_calc) use misc::SsLocType;
 pub use mod_info::{ModInfo, ModOpInfo, ModSrcInfo, ModSrcValInfo};
-pub(in crate::ss::svc::svce_calc) use modifier::{debug, SsAttrMod, SsModDomain, SsModOp, SsModTgtFilter, SsModType};
+pub(in crate::ss::svc::svce_calc) use modifier::{
+    debug, SsAttrMod, SsModAggrMode, SsModDomain, SsModOp, SsModTgtFilter, SsModType,
+};
 
 mod attr;
 mod data;

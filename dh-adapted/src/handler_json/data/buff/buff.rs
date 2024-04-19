@@ -1,9 +1,9 @@
-use crate::handler_json::data::{CBuffAttrMod, CModAggrMode, CModOp};
+use crate::handler_json::data::{CBuffAggrMode, CBuffAttrMod, CModOp};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CBuff {
     id: rc::EBuffId,
-    aggr_mode: CModAggrMode,
+    aggr_mode: CBuffAggrMode,
     op: CModOp,
     mods: Vec<CBuffAttrMod>,
 }

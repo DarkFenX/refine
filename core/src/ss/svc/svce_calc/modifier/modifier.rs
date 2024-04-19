@@ -1,11 +1,10 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, SsItemId},
-    shr::ModAggrMode,
     ss::{
         item::SsItem,
         svc::{
-            svce_calc::{modifier::SsModDomain, SsModOp},
+            svce_calc::{modifier::SsModDomain, SsModAggrMode, SsModOp},
             SsSvcs,
         },
         SsView,
@@ -23,7 +22,7 @@ pub(in crate::ss::svc::svce_calc) struct SsAttrMod {
     pub(in crate::ss::svc::svce_calc) src_effect_id: EEffectId,
     src_val_getter: SsAttrModSrc,
     pub(in crate::ss::svc::svce_calc) op: SsModOp,
-    pub(in crate::ss::svc::svce_calc) aggr_mode: ModAggrMode,
+    pub(in crate::ss::svc::svce_calc) aggr_mode: SsModAggrMode,
     pub(in crate::ss::svc::svce_calc) tgt_filter: SsModTgtFilter,
     pub(in crate::ss::svc::svce_calc) tgt_attr_id: EAttrId,
 }
@@ -34,7 +33,7 @@ impl SsAttrMod {
         src_effect_id: EEffectId,
         src_val_getter: SsAttrModSrc,
         op: SsModOp,
-        aggr_mode: ModAggrMode,
+        aggr_mode: SsModAggrMode,
         tgt_filter: SsModTgtFilter,
         tgt_attr_id: EAttrId,
     ) -> Self {
@@ -61,7 +60,7 @@ impl SsAttrMod {
             src_a_effect.id,
             SsAttrModSrc::AttrId(src_a_mod.src_attr_id),
             (&src_a_mod.op).into(),
-            ModAggrMode::Stack,
+            SsModAggrMode::Stack,
             SsModTgtFilter::from_a_effect_tgt_filter(&src_a_mod.tgt_filter, src_ss_item),
             src_a_mod.tgt_attr_id,
         )
@@ -81,7 +80,7 @@ impl SsAttrMod {
             src_a_effect.id,
             SsAttrModSrc::AttrId(src_attr_id),
             (&src_a_buff.op).into(),
-            src_a_buff.aggr_mode,
+            SsModAggrMode::from_a_buff(src_a_buff),
             SsModTgtFilter::from_a_buff_tgt_filter(&src_a_mod.tgt_filter, ss_domain, src_ss_item),
             src_a_mod.tgt_attr_id,
         )

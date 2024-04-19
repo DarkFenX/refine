@@ -27,7 +27,6 @@ def test_default(client, consts):
     assert api_mod.val == approx(5)
     assert api_mod.op == consts.ApiModOp.limit
     assert api_mod.penalized is False
-    assert api_mod.aggr_mode == consts.ApiAggrMode.stack
     assert api_mod.src.one().item_id == api_item.id
     assert api_mod.src.one().attr_id == eve_capping_attr.id
 
@@ -58,7 +57,6 @@ def test_unmodified(client, consts):
     assert api_mod.val == approx(2)
     assert api_mod.op == consts.ApiModOp.limit
     assert api_mod.penalized is False
-    assert api_mod.aggr_mode == consts.ApiAggrMode.stack
     assert api_mod.src.one().item_id == api_item.id
     assert api_mod.src.one().attr_id == eve_capping_attr.id
 
@@ -95,7 +93,6 @@ def test_modified(client, consts):
     assert api_mod.val == approx(0.6)
     assert api_mod.op == consts.ApiModOp.limit
     assert api_mod.penalized is False
-    assert api_mod.aggr_mode == consts.ApiAggrMode.stack
     assert api_mod.src.one().item_id == api_item.id
     assert api_mod.src.one().attr_id == eve_capping_attr.id
 

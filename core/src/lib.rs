@@ -24,7 +24,6 @@ pub use defs::{
     AggrKey, Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId,
     EItemId, EMutaId, Idx, SkillLevel, SsFitId, SsFleetId, SsItemId, VERSION,
 };
-pub use shr::ModAggrMode;
 pub use src::Src;
 pub use ss::{
     fit_info::SsFitInfo,
@@ -45,7 +44,6 @@ pub(crate) mod config;
 mod defs;
 pub mod ec;
 pub mod ed;
-mod shr;
 mod src;
 mod ss;
 pub mod util;

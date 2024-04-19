@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 pub use attr::AAttr;
-pub use buff::{ABuff, ABuffAttrMod, ABuffTgtFilter};
+pub use buff::{ABuff, ABuffAggrMode, ABuffAttrMod, ABuffTgtFilter};
 pub use effect::{
     AEffect, AEffectAttrMod, AEffectBuffDataSrc, AEffectBuffInfo, AEffectBuffScope, AEffectDomain, AEffectTgtFilter,
     AModBuildStatus, ATgtMode,

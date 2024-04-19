@@ -1,7 +1,7 @@
 //! Cacheable data types.
 
 use attr::CAttr;
-use buff::{CBuff, CBuffAttrMod, CBuffTgtFilter, CModAggrMode};
+use buff::{CBuff, CBuffAggrMode, CBuffAttrMod, CBuffTgtFilter};
 use effect::{
     CEffect, CEffectAttrMod, CEffectBuffInfo, CEffectDomain, CEffectTgtFilter, CModBuildStatus, CState, CTgtMode,
 };
