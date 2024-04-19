@@ -3,7 +3,7 @@ use crate::{
     ss::{
         item::{SsItem, SsItemState, SsModule},
         item_info::{SsChargeInfo, SsModuleInfo},
-        ModRack, OrdAddMode, SolarSystem, SsView,
+        SolarSystem, SsModRack, SsOrdAddMode, SsView,
     },
     util::{Error, ErrorKind, Result},
 };
@@ -15,12 +15,12 @@ impl SolarSystem {
     pub fn get_module_info(&self, item_id: &SsItemId) -> Result<SsModuleInfo> {
         Ok(self.make_mod_info(self.items.get_module(item_id)?))
     }
-    pub fn get_module_infos(&self, fit_id: &SsFitId, rack: ModRack) -> Result<Vec<SsModuleInfo>> {
+    pub fn get_module_infos(&self, fit_id: &SsFitId, rack: SsModRack) -> Result<Vec<SsModuleInfo>> {
         let fit = self.fits.get_fit(fit_id)?;
         let module_ids = match rack {
-            ModRack::High => &fit.mods_high,
-            ModRack::Mid => &fit.mods_mid,
-            ModRack::Low => &fit.mods_low,
+            SsModRack::High => &fit.mods_high,
+            SsModRack::Mid => &fit.mods_mid,
+            SsModRack::Low => &fit.mods_low,
         };
         let module_infos = module_ids
             .iter()
@@ -31,8 +31,8 @@ impl SolarSystem {
     pub fn add_module(
         &mut self,
         fit_id: SsFitId,
-        rack: ModRack,
-        pos_mode: OrdAddMode,
+        rack: SsModRack,
+        pos_mode: SsOrdAddMode,
         a_item_id: EItemId,
         state: SsItemState,
         charge_a_item_id: Option<EItemId>,
@@ -46,12 +46,12 @@ impl SolarSystem {
         // Calculate position for the module and make necessary changes to positions of other modules
         let infos = self.get_module_infos(&fit_id, rack)?;
         let pos = match pos_mode {
-            OrdAddMode::Append => infos.iter().map(|v| v.pos).max().map(|v| 1 + v).unwrap_or(0),
-            OrdAddMode::Equip => {
+            SsOrdAddMode::Append => infos.iter().map(|v| v.pos).max().map(|v| 1 + v).unwrap_or(0),
+            SsOrdAddMode::Equip => {
                 let positions = infos.iter().map(|v| v.pos).collect();
                 find_equip_pos(positions)
             }
-            OrdAddMode::Insert(pos) => {
+            SsOrdAddMode::Insert(pos) => {
                 for info in infos.iter() {
                     match self.items.get_item_mut(&info.id) {
                         Ok(SsItem::Module(m)) if m.rack == rack && m.pos >= pos => m.pos += 1,
@@ -60,7 +60,7 @@ impl SolarSystem {
                 }
                 pos
             }
-            OrdAddMode::Place(pos, repl) => {
+            SsOrdAddMode::Place(pos, repl) => {
                 let mut old_item_id = None;
                 for info in infos.iter() {
                     match self.items.get_item(&info.id) {

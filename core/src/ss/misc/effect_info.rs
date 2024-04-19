@@ -1,11 +1,11 @@
-use super::EffectMode;
+use super::SsEffectMode;
 
-pub struct EffectInfo {
+pub struct SsEffectInfo {
     pub running: bool,
-    pub mode: EffectMode,
+    pub mode: SsEffectMode,
 }
-impl EffectInfo {
-    pub(in crate::ss) fn new(running: bool, mode: EffectMode) -> Self {
+impl SsEffectInfo {
+    pub(in crate::ss) fn new(running: bool, mode: SsEffectMode) -> Self {
         Self { running, mode }
     }
 }

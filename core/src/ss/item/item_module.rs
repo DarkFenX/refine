@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{EItemId, Idx, SsFitId, SsItemId},
     src::Src,
-    ss::ModRack,
+    ss::SsModRack,
     util::Named,
 };
 
@@ -13,7 +13,7 @@ pub(in crate::ss) struct SsModule {
     pub(in crate::ss) fit_id: SsFitId,
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) state: SsItemState,
-    pub(in crate::ss) rack: ModRack,
+    pub(in crate::ss) rack: SsModRack,
     pub(in crate::ss) pos: Idx,
     pub(in crate::ss) charge_item_id: Option<SsItemId>,
     pub(in crate::ss) effect_modes: EffectModes,
@@ -26,7 +26,7 @@ impl SsModule {
         fit_id: SsFitId,
         a_item_id: EItemId,
         state: SsItemState,
-        rack: ModRack,
+        rack: SsModRack,
         pos: Idx,
         charge_a_item_id: Option<SsItemId>,
     ) -> Self {

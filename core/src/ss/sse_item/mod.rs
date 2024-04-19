@@ -1,6 +1,6 @@
 //! Solar system extension methods which handle item manipulation.
 
-pub use misc::{OrdAddMode, OrdRmMode};
+pub use misc::{SsOrdAddMode, SsOrdRmMode};
 
 mod misc;
 mod sse_booster;

@@ -2,7 +2,7 @@ use crate::{
     defs::{EItemId, Idx, SsFitId, SsItemId},
     ss::{
         item::{SsItemState, SsModule},
-        ModRack,
+        SsModRack,
     },
 };
 
@@ -13,7 +13,7 @@ pub struct SsModuleInfo {
     pub fit_id: SsFitId,
     pub a_item_id: EItemId,
     pub state: SsItemState,
-    pub rack: ModRack,
+    pub rack: SsModRack,
     pub pos: Idx,
     pub ss_charge_info: Option<SsChargeInfo>,
 }
@@ -23,7 +23,7 @@ impl SsModuleInfo {
         fit_id: SsFitId,
         a_item_id: EItemId,
         state: SsItemState,
-        rack: ModRack,
+        rack: SsModRack,
         pos: Idx,
         ss_charge_info: Option<SsChargeInfo>,
     ) -> Self {

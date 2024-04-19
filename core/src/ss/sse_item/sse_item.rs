@@ -25,7 +25,7 @@ impl SolarSystem {
         let proj_item_ids = self.tgt_tracker.iter_srcs(item_id).map(|v| *v).collect_vec();
         let mut targeted_item_ids = Vec::new();
         match main {
-            SsItem::ProjEffect(proj_effect) => targeted_item_ids.extend(proj_effect.tgts.iter()),
+            SsItem::ProjEffect(proj_effect) => targeted_item_ids.extend(proj_effect.tgts.iter_tgts()),
             _ => (),
         };
         // Remove projections which target item being removed

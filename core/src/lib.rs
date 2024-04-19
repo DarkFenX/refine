@@ -33,8 +33,8 @@ pub use ss::{
         SsItemInfo, SsModuleInfo, SsProjEffectInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo,
         SsSubsystemInfo, SsSwEffectInfo,
     },
-    EffectInfo, EffectMode, ModRack, OrdAddMode, OrdRmMode, SolarSystem, SsAttrVal, SsItemState, SsModInfo,
-    SsModOpInfo, SsModSrcInfo, SsModSrcValInfo,
+    SolarSystem, SsAttrVal, SsEffectInfo, SsEffectMode, SsItemState, SsModInfo, SsModOpInfo, SsModRack, SsModSrcInfo,
+    SsModSrcValInfo, SsOrdAddMode, SsOrdRmMode,
 };
 pub use util::{Error, ErrorKind, Result};
 

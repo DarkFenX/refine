@@ -58,7 +58,7 @@ impl SolarSystem {
                 SsItem::ProjEffect(proj_effect) => proj_effect,
                 _ => return Err(DebugError::new()),
             };
-            for tgt_item_id in proj_effect.tgts.iter() {
+            for tgt_item_id in proj_effect.tgts.iter_tgts() {
                 if ss_view.items.get_item(tgt_item_id).is_err() {
                     return Err(DebugError::new());
                 }

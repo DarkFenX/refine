@@ -1,7 +1,7 @@
-pub use effect_info::EffectInfo;
-pub use effect_mode::EffectMode;
-pub use mod_rack::ModRack;
-pub(in crate::ss) use tgt_tracker::TgtTracker;
+pub use effect_info::SsEffectInfo;
+pub use effect_mode::SsEffectMode;
+pub use mod_rack::SsModRack;
+pub(in crate::ss) use tgt_tracker::SsTgtTracker;
 
 mod effect_info;
 mod effect_mode;

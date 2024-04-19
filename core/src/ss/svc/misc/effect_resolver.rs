@@ -2,7 +2,7 @@ use crate::{
     ad, ec,
     ss::{
         item::{SsItem, SsItemState},
-        EffectMode, SsView,
+        SsEffectMode, SsView,
     },
 };
 
@@ -17,10 +17,10 @@ pub(in crate::ss::svc) fn resolve_effect_status(
         return false;
     }
     match item.get_effect_modes().get(&effect.id) {
-        EffectMode::FullCompliance => resolve_effect_status_full(item, item_state, &effect, online_running),
-        EffectMode::StateCompliance => item_state >= effect.state,
-        EffectMode::ForceRun => true,
-        EffectMode::ForceStop => false,
+        SsEffectMode::FullCompliance => resolve_effect_status_full(item, item_state, &effect, online_running),
+        SsEffectMode::StateCompliance => item_state >= effect.state,
+        SsEffectMode::ForceRun => true,
+        SsEffectMode::ForceStop => false,
     }
 }
 

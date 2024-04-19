@@ -1,6 +1,6 @@
 /// Item effect operation modes.
 #[derive(Copy, Clone, PartialEq)]
-pub enum EffectMode {
+pub enum SsEffectMode {
     /// In this mode rules vary, depending on effect category:
     /// - Offline: effects from this category are run when item is in offline+
     /// state, and when they do not have fitting usage chance specified

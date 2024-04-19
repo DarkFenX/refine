@@ -1,9 +1,9 @@
 use crate::{defs::SsItemId, util::StMapSetL1};
 
-pub(in crate::ss) struct TgtTracker {
+pub(in crate::ss) struct SsTgtTracker {
     pub(super) data: StMapSetL1<SsItemId, SsItemId>,
 }
-impl TgtTracker {
+impl SsTgtTracker {
     pub(in crate::ss) fn new() -> Self {
         Self {
             data: StMapSetL1::new(),

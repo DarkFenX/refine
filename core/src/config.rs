@@ -1,3 +1,3 @@
-use crate::ss::EffectMode;
+use crate::ss::SsEffectMode;
 
-pub(crate) const DEFAULT_EFFECT_MODE: EffectMode = EffectMode::FullCompliance;
+pub(crate) const DEFAULT_EFFECT_MODE: SsEffectMode = SsEffectMode::FullCompliance;

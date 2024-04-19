@@ -1,6 +1,6 @@
 use crate::{
     defs::{SsFitId, SsFleetId, SsItemId},
-    ss::{item::SsItem, ModRack},
+    ss::{item::SsItem, SsModRack},
     util::StSet,
 };
 
@@ -69,9 +69,9 @@ impl SsFit {
             }
             SsItem::Module(module) => {
                 match module.rack {
-                    ModRack::High => self.mods_high.insert(module.id),
-                    ModRack::Mid => self.mods_mid.insert(module.id),
-                    ModRack::Low => self.mods_low.insert(module.id),
+                    SsModRack::High => self.mods_high.insert(module.id),
+                    SsModRack::Mid => self.mods_mid.insert(module.id),
+                    SsModRack::Low => self.mods_low.insert(module.id),
                 };
                 ()
             }
@@ -137,9 +137,9 @@ impl SsFit {
             }
             SsItem::Module(module) => {
                 match module.rack {
-                    ModRack::High => self.mods_high.remove(&module.id),
-                    ModRack::Mid => self.mods_mid.remove(&module.id),
-                    ModRack::Low => self.mods_low.remove(&module.id),
+                    SsModRack::High => self.mods_high.remove(&module.id),
+                    SsModRack::Mid => self.mods_mid.remove(&module.id),
+                    SsModRack::Low => self.mods_low.remove(&module.id),
                 };
                 ()
             }

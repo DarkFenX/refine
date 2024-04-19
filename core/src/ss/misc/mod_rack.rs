@@ -1,10 +1,10 @@
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub enum ModRack {
+pub enum SsModRack {
     High,
     Mid,
     Low,
 }
-impl std::fmt::Display for ModRack {
+impl std::fmt::Display for SsModRack {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::High => write!(f, "high"),

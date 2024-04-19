@@ -54,7 +54,7 @@ impl SolarSystem {
         }
         self.tgt_tracker.reg_tgt(*item_id, *tgt_item_id);
         let proj_effect = self.items.get_proj_effect_mut(item_id)?;
-        proj_effect.tgts.add(*tgt_item_id);
+        proj_effect.tgts.add(*tgt_item_id, None);
         let item = self.items.get_item(item_id).unwrap();
         self.svcs.add_item_tgt(
             &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),

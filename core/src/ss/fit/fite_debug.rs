@@ -3,7 +3,7 @@ use crate::{
     ss::{
         fit::SsFit,
         item::{SsItem, SsModule},
-        ModRack, SsView,
+        SsModRack, SsView,
     },
     util::{DebugError, DebugResult},
 };
@@ -149,7 +149,7 @@ impl SsFit {
                 SsItem::Module(module) => module,
                 _ => return Err(DebugError::new()),
             };
-            if !matches!(module.rack, ModRack::High) {
+            if !matches!(module.rack, SsModRack::High) {
                 return Err(DebugError::new());
             }
             check_module_charge(ss_view, &self.id, module, seen_items)?;
@@ -168,7 +168,7 @@ impl SsFit {
                 SsItem::Module(module) => module,
                 _ => return Err(DebugError::new()),
             };
-            if !matches!(module.rack, ModRack::Mid) {
+            if !matches!(module.rack, SsModRack::Mid) {
                 return Err(DebugError::new());
             }
             check_module_charge(ss_view, &self.id, module, seen_items)?;
@@ -187,7 +187,7 @@ impl SsFit {
                 SsItem::Module(module) => module,
                 _ => return Err(DebugError::new()),
             };
-            if !matches!(module.rack, ModRack::Low) {
+            if !matches!(module.rack, SsModRack::Low) {
                 return Err(DebugError::new());
             }
             check_module_charge(ss_view, &self.id, module, seen_items)?;

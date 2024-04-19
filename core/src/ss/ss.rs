@@ -2,7 +2,7 @@ use crate::{
     defs::{EAttrId, EEffectId, SsItemId},
     src::Src,
     ss::{
-        fit::SsFits, fleet::SsFleets, item::SsItems, misc::TgtTracker, svc::SsSvcs, EffectInfo, EffectMode, SsAttrVal,
+        fit::SsFits, fleet::SsFleets, item::SsItems, svc::SsSvcs, SsAttrVal, SsEffectInfo, SsEffectMode, SsTgtTracker,
         SsView,
     },
     util::{Result, StSet},
@@ -21,7 +21,7 @@ pub struct SolarSystem {
     pub(in crate::ss) items: SsItems,
     pub(in crate::ss) sw_effects: StSet<SsItemId>,
     pub(in crate::ss) proj_effects: StSet<SsItemId>,
-    pub(in crate::ss) tgt_tracker: TgtTracker,
+    pub(in crate::ss) tgt_tracker: SsTgtTracker,
     pub(in crate::ss) svcs: SsSvcs,
 }
 impl SolarSystem {
@@ -33,7 +33,7 @@ impl SolarSystem {
             items: SsItems::new(),
             sw_effects: StSet::new(),
             proj_effects: StSet::new(),
-            tgt_tracker: TgtTracker::new(),
+            tgt_tracker: SsTgtTracker::new(),
             svcs: SsSvcs::new(),
         }
     }
@@ -72,17 +72,22 @@ impl SolarSystem {
     pub fn iter_item_effects<'a>(
         &'a self,
         item_id: &'a SsItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EEffectId, EffectInfo)> + 'a> {
+    ) -> Result<impl ExactSizeIterator<Item = (EEffectId, SsEffectInfo)> + 'a> {
         let item = self.items.get_item(item_id)?;
         let a_effect_ids = item.get_effect_datas()?.keys();
         let effect_infos = a_effect_ids.map(move |v| {
             let running = self.svcs.is_effect_running(item_id, v);
             let mode = item.get_effect_modes().get(v);
-            (*v, EffectInfo::new(running, *mode))
+            (*v, SsEffectInfo::new(running, *mode))
         });
         Ok(effect_infos)
     }
-    pub fn set_item_effect_mode(&mut self, item_id: &SsItemId, effect_id: &EEffectId, mode: EffectMode) -> Result<()> {
+    pub fn set_item_effect_mode(
+        &mut self,
+        item_id: &SsItemId,
+        effect_id: &EEffectId,
+        mode: SsEffectMode,
+    ) -> Result<()> {
         self.items
             .get_item_mut(item_id)?
             .get_effect_modes_mut()
@@ -98,7 +103,7 @@ impl SolarSystem {
     pub fn set_item_effect_modes(
         &mut self,
         item_id: &SsItemId,
-        modes: impl Iterator<Item = (EEffectId, EffectMode)>,
+        modes: impl Iterator<Item = (EEffectId, SsEffectMode)>,
     ) -> Result<()> {
         let effect_modes = self.items.get_item_mut(item_id)?.get_effect_modes_mut();
         for (effect_id, effect_mode) in modes {

@@ -1,7 +1,8 @@
 pub use item::SsItemState;
-pub use misc::{EffectInfo, EffectMode, ModRack};
+pub(in crate::ss) use misc::SsTgtTracker;
+pub use misc::{SsEffectInfo, SsEffectMode, SsModRack};
 pub use ss::SolarSystem;
-pub use sse_item::{OrdAddMode, OrdRmMode};
+pub use sse_item::{SsOrdAddMode, SsOrdRmMode};
 pub use svc::{SsAttrVal, SsModInfo, SsModOpInfo, SsModSrcInfo, SsModSrcValInfo};
 pub(in crate::ss) use view::SsView;
 

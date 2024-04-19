@@ -9,23 +9,23 @@ pub(crate) enum HEffectMode {
     #[serde(rename = "stop")]
     ForceStop,
 }
-impl From<&rc::EffectMode> for HEffectMode {
-    fn from(core_effect_mode: &rc::EffectMode) -> Self {
+impl From<&rc::SsEffectMode> for HEffectMode {
+    fn from(core_effect_mode: &rc::SsEffectMode) -> Self {
         match core_effect_mode {
-            rc::EffectMode::FullCompliance => Self::FullCompliance,
-            rc::EffectMode::StateCompliance => Self::StateCompliance,
-            rc::EffectMode::ForceRun => Self::ForceRun,
-            rc::EffectMode::ForceStop => Self::ForceStop,
+            rc::SsEffectMode::FullCompliance => Self::FullCompliance,
+            rc::SsEffectMode::StateCompliance => Self::StateCompliance,
+            rc::SsEffectMode::ForceRun => Self::ForceRun,
+            rc::SsEffectMode::ForceStop => Self::ForceStop,
         }
     }
 }
-impl Into<rc::EffectMode> for &HEffectMode {
-    fn into(self) -> rc::EffectMode {
+impl Into<rc::SsEffectMode> for &HEffectMode {
+    fn into(self) -> rc::SsEffectMode {
         match self {
-            HEffectMode::FullCompliance => rc::EffectMode::FullCompliance,
-            HEffectMode::StateCompliance => rc::EffectMode::StateCompliance,
-            HEffectMode::ForceRun => rc::EffectMode::ForceRun,
-            HEffectMode::ForceStop => rc::EffectMode::ForceStop,
+            HEffectMode::FullCompliance => rc::SsEffectMode::FullCompliance,
+            HEffectMode::StateCompliance => rc::SsEffectMode::StateCompliance,
+            HEffectMode::ForceRun => rc::SsEffectMode::ForceRun,
+            HEffectMode::ForceStop => rc::SsEffectMode::ForceStop,
         }
     }
 }

@@ -1,7 +1,7 @@
 use crate::defs::Idx;
 
 /// Defines how an item is added to an ordered container.
-pub enum OrdAddMode {
+pub enum SsOrdAddMode {
     /// Add to the end of container.
     Append,
     /// Add to first free position of container.
@@ -13,7 +13,7 @@ pub enum OrdAddMode {
 }
 
 /// Defines how an item is removed from an ordered container.
-pub enum OrdRmMode {
+pub enum SsOrdRmMode {
     /// Shift all items after the item being removed to the left.
     Remove,
     /// Just free up item's place without shifting anything.
