@@ -6,7 +6,7 @@ use crate::{
         SsView,
     },
     util::{Result, StSet},
-    ModInfo,
+    SsModInfo,
 };
 
 // Solar system glues everything together and is actual "god object" of the lib. It controls source
@@ -64,7 +64,7 @@ impl SolarSystem {
     pub fn iter_item_modifiers(
         &mut self,
         item_id: &SsItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<ModInfo>)>> {
+    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<SsModInfo>)>> {
         self.svcs
             .calc_iter_item_mods(&SsView::new(&self.src, &self.fleets, &self.fits, &self.items), item_id)
     }

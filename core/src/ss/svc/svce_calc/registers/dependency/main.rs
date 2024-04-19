@@ -1,18 +1,17 @@
 use crate::{
     defs::{EAttrId, SsItemId},
+    ss::svc::svce_calc::SsAttrSpec,
     util::{StMapSetL1, StMapSetL2},
 };
 
-use super::attr_spec::AttrSpec;
-
 // Intended to hold direct dependencies between attributes, which are not covered by regular
 // modifiers
-pub(in crate::ss::svc::svce_calc) struct DependencyRegister {
-    pub(super) data: StMapSetL1<AttrSpec, AttrSpec>,
-    pub(super) item_src_map: StMapSetL1<SsItemId, AttrSpec>,
-    pub(super) item_tgt_map: StMapSetL2<SsItemId, AttrSpec, AttrSpec>,
+pub(in crate::ss::svc::svce_calc) struct SsDependencyRegister {
+    pub(super) data: StMapSetL1<SsAttrSpec, SsAttrSpec>,
+    pub(super) item_src_map: StMapSetL1<SsItemId, SsAttrSpec>,
+    pub(super) item_tgt_map: StMapSetL2<SsItemId, SsAttrSpec, SsAttrSpec>,
 }
-impl DependencyRegister {
+impl SsDependencyRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
             data: StMapSetL1::new(),
@@ -25,8 +24,8 @@ impl DependencyRegister {
         &self,
         src_item_id: &SsItemId,
         src_attr_id: &EAttrId,
-    ) -> impl ExactSizeIterator<Item = &AttrSpec> {
-        let src_attr_spec = AttrSpec::new(*src_item_id, *src_attr_id);
+    ) -> impl ExactSizeIterator<Item = &SsAttrSpec> {
+        let src_attr_spec = SsAttrSpec::new(*src_item_id, *src_attr_id);
         self.data.get(&src_attr_spec)
     }
     // Modification methods
@@ -37,8 +36,8 @@ impl DependencyRegister {
         tgt_item_id: SsItemId,
         tgt_attr_id: EAttrId,
     ) {
-        let src_attr_spec = AttrSpec::new(src_item_id, src_attr_id);
-        let tgt_attr_spec = AttrSpec::new(tgt_item_id, tgt_attr_id);
+        let src_attr_spec = SsAttrSpec::new(src_item_id, src_attr_id);
+        let tgt_attr_spec = SsAttrSpec::new(tgt_item_id, tgt_attr_id);
         self.data.add_entry(src_attr_spec, tgt_attr_spec);
         self.item_src_map.add_entry(src_item_id, src_attr_spec);
         self.item_tgt_map.add_entry(tgt_item_id, src_attr_spec, tgt_attr_spec);
@@ -50,8 +49,8 @@ impl DependencyRegister {
         tgt_item_id: &SsItemId,
         tgt_attr_id: &EAttrId,
     ) {
-        let src_attr_spec = AttrSpec::new(*src_item_id, *src_attr_id);
-        let tgt_attr_spec = AttrSpec::new(*tgt_item_id, *tgt_attr_id);
+        let src_attr_spec = SsAttrSpec::new(*src_item_id, *src_attr_id);
+        let tgt_attr_spec = SsAttrSpec::new(*tgt_item_id, *tgt_attr_id);
         self.data.add_entry(src_attr_spec, tgt_attr_spec);
         self.item_src_map.remove_entry(src_item_id, &src_attr_spec);
         self.item_tgt_map

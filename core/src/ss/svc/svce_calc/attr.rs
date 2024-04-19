@@ -15,31 +15,31 @@ const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
 // Source expression: 1 / e^((1 / 2.67)^2)
 const PENALTY_BASE: f64 = 0.86911998080039742919922218788997270166873931884765625;
 
-pub(super) struct Values {
-    pre_assign: AggrValues,
-    pre_mul: StackValues,
-    pre_div: StackValues,
-    add: AggrValues,
-    sub: AggrValues,
-    post_mul: StackValues,
-    post_div: StackValues,
-    post_perc: StackValues,
-    post_assign: AggrValues,
-    extra_mul: AggrValues,
+pub(super) struct SsAttrValues {
+    pre_assign: SsAttrAggr,
+    pre_mul: SsAttrStack,
+    pre_div: SsAttrStack,
+    add: SsAttrAggr,
+    sub: SsAttrAggr,
+    post_mul: SsAttrStack,
+    post_div: SsAttrStack,
+    post_perc: SsAttrStack,
+    post_assign: SsAttrAggr,
+    extra_mul: SsAttrAggr,
 }
-impl Values {
+impl SsAttrValues {
     pub(super) fn new() -> Self {
         Self {
-            pre_assign: AggrValues::new(),
-            pre_mul: StackValues::new(),
-            pre_div: StackValues::new(),
-            add: AggrValues::new(),
-            sub: AggrValues::new(),
-            post_mul: StackValues::new(),
-            post_div: StackValues::new(),
-            post_perc: StackValues::new(),
-            post_assign: AggrValues::new(),
-            extra_mul: AggrValues::new(),
+            pre_assign: SsAttrAggr::new(),
+            pre_mul: SsAttrStack::new(),
+            pre_div: SsAttrStack::new(),
+            add: SsAttrAggr::new(),
+            sub: SsAttrAggr::new(),
+            post_mul: SsAttrStack::new(),
+            post_div: SsAttrStack::new(),
+            post_perc: SsAttrStack::new(),
+            post_assign: SsAttrAggr::new(),
+            extra_mul: SsAttrAggr::new(),
         }
     }
     pub(super) fn add_val(
@@ -92,15 +92,15 @@ impl Values {
     }
 }
 
-struct StackValues {
-    stacked: AggrValues,
-    penalized: AggrValues,
+struct SsAttrStack {
+    stacked: SsAttrAggr,
+    penalized: SsAttrAggr,
 }
-impl StackValues {
+impl SsAttrStack {
     fn new() -> Self {
         Self {
-            stacked: AggrValues::new(),
-            penalized: AggrValues::new(),
+            stacked: SsAttrAggr::new(),
+            penalized: SsAttrAggr::new(),
         }
     }
     fn add_val<F>(&mut self, val: AttrVal, norm_func: F, penalizable: bool, aggr_mode: &SsModAggrMode)
@@ -125,12 +125,12 @@ impl StackValues {
     }
 }
 
-struct AggrValues {
+struct SsAttrAggr {
     stack: Vec<AttrVal>,
     aggr_min: StMap<AggrKey, Vec<AttrVal>>,
     aggr_max: StMap<AggrKey, Vec<AttrVal>>,
 }
-impl AggrValues {
+impl SsAttrAggr {
     fn new() -> Self {
         Self {
             stack: Vec::new(),

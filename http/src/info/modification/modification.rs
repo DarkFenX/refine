@@ -17,8 +17,8 @@ impl HModificationInfo {
         }
     }
 }
-impl From<&rc::ModInfo> for HModificationInfo {
-    fn from(core_mod_info: &rc::ModInfo) -> Self {
+impl From<&rc::SsModInfo> for HModificationInfo {
+    fn from(core_mod_info: &rc::SsModInfo) -> Self {
         Self::new(
             core_mod_info.val,
             (&core_mod_info.op).into(),

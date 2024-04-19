@@ -9,9 +9,9 @@ use crate::{
     util::DebugResult,
 };
 
-use super::ModifierRegister;
+use super::SsModifierRegister;
 
-impl ModifierRegister {
+impl SsModifierRegister {
     pub(in crate::ss) fn debug_consistency_check(&self, ss_view: &SsView) -> DebugResult {
         for (item_id, ss_mods) in self.mods.iter() {
             check_item(ss_view, item_id)?;

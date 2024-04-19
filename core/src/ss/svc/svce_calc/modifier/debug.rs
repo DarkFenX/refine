@@ -2,7 +2,7 @@ use crate::{
     ss::{
         svc::{
             debug::{check_effect, check_item},
-            svce_calc::modifier::SsAttrMod,
+            svce_calc::SsAttrMod,
         },
         SsView,
     },

@@ -1,7 +1,7 @@
 use crate::{
     defs::{EEffectId, SsItemId},
     ss::svc::svce_calc::{
-        modifier::{mod_src::SsAttrModSrc, SsAttrMod, SsModDomain, SsModTgtFilter, SsModType},
+        modifier::{src::SsAttrModSrc, SsAttrMod, SsModDomain, SsModTgtFilter, SsModType},
         SsModAggrMode, SsModOp,
     },
 };

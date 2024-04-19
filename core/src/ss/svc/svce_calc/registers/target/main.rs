@@ -5,18 +5,15 @@ use crate::{
     ss::{
         fit::{SsFit, SsFits},
         item::SsItem,
-        svc::svce_calc::{
-            modifier::{SsAttrMod, SsModDomain, SsModTgtFilter, SsModType},
-            SsLocType,
-        },
+        svc::svce_calc::{SsAttrMod, SsLocType, SsModDomain, SsModTgtFilter, SsModType},
         SsView,
     },
     util::{extend_vec_from_map_set_l1, StMapSetL1},
 };
 
-use super::iter_loc_pot::LocsPot;
+use super::LocsPot;
 
-pub(in crate::ss::svc::svce_calc) struct TargetRegister {
+pub(in crate::ss::svc::svce_calc) struct SsTargetRegister {
     // Items which are holders of a location type (like char, ship)
     // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
     pub(super) tgts_root: StMapSetL1<(SsFitId, SsLocType), SsItemId>,
@@ -36,7 +33,7 @@ pub(in crate::ss::svc::svce_calc) struct TargetRegister {
     // Contains: KeyedStorage<target's fit ID, target item IDs>
     pub(super) tgts_buff_all: StMapSetL1<SsFitId, SsItemId>,
 }
-impl TargetRegister {
+impl SsTargetRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
             tgts_root: StMapSetL1::new(),

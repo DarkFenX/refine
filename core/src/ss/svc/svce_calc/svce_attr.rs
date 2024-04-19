@@ -4,10 +4,7 @@ use crate::{
     ss::{
         item::SsItem,
         svc::{
-            svce_calc::{
-                attr::Values,
-                misc::{ModKey, Modification, SsAttrVal},
-            },
+            svce_calc::{SsAttrVal, SsAttrValues, SsModKey, SsModification},
             SsSvcs,
         },
         SsView,
@@ -66,7 +63,7 @@ impl SsSvcs {
         ss_view: &SsView,
         item: &SsItem,
         attr_id: &EAttrId,
-    ) -> StMap<ModKey, Modification> {
+    ) -> StMap<SsModKey, SsModification> {
         let mut mods = StMap::new();
         for modifier in self.calc_data.mods.get_mods_for_tgt(item, attr_id, ss_view.fits).iter() {
             let val = match modifier.get_mod_val(self, ss_view) {
@@ -82,8 +79,8 @@ impl SsSvcs {
                 _ => continue,
             };
             // TODO: implement resistance support (add it to key as well? idk)
-            let mod_key = ModKey::from(modifier);
-            let modification = Modification::new(modifier.op, val, 1.0, modifier.aggr_mode, src_item_cat_id);
+            let mod_key = SsModKey::from(modifier);
+            let modification = SsModification::new(modifier.op, val, 1.0, modifier.aggr_mode, src_item_cat_id);
             mods.insert(mod_key, modification);
         }
         mods
@@ -114,7 +111,7 @@ impl SsSvcs {
             }
             _ => (),
         }
-        let mut vals = Values::new();
+        let mut vals = SsAttrValues::new();
         for modification in self.calc_get_modifications(ss_view, item, attr_id).values() {
             vals.add_val(
                 modification.val,

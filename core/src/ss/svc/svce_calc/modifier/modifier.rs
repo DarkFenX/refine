@@ -4,7 +4,7 @@ use crate::{
     ss::{
         item::SsItem,
         svc::{
-            svce_calc::{modifier::SsModDomain, SsModAggrMode, SsModOp},
+            svce_calc::{SsModAggrMode, SsModDomain, SsModOp, SsModTgtFilter, SsModType},
             SsSvcs,
         },
         SsView,
@@ -12,7 +12,7 @@ use crate::{
     util::Result,
 };
 
-use super::{mod_src::SsAttrModSrc, SsModTgtFilter, SsModType};
+use super::SsAttrModSrc;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::svce_calc) struct SsAttrMod {

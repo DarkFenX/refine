@@ -6,9 +6,9 @@ use crate::{
     util::DebugResult,
 };
 
-use super::AttrValData;
+use super::SsAttrValData;
 
-impl AttrValData {
+impl SsAttrValData {
     pub(in crate::ss) fn debug_consistency_check(&self, ss_view: &SsView) -> DebugResult {
         for (item_id, attr_map) in self.data.iter() {
             check_item(ss_view, item_id)?;

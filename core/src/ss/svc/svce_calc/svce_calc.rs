@@ -8,7 +8,7 @@ use crate::{
         fleet::SsFleet,
         item::SsItem,
         svc::{
-            svce_calc::{modifier::SsAttrMod, registers::FleetUpdates},
+            svce_calc::{SsAttrMod, SsFleetUpdates},
             SsSvcs,
         },
         SsView,
@@ -311,7 +311,7 @@ impl SsSvcs {
             }
         }
     }
-    fn process_fleet_updates(&mut self, ss_view: &SsView, fleet: &SsFleet, fit_id: &SsFitId, updates: FleetUpdates) {
+    fn process_fleet_updates(&mut self, ss_view: &SsView, fleet: &SsFleet, fit_id: &SsFitId, updates: SsFleetUpdates) {
         if !updates.incoming.is_empty() {
             let tgt_fits = vec![ss_view.fits.get_fit(fit_id).unwrap()];
             for ss_mod in updates.incoming.iter() {

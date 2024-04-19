@@ -6,9 +6,9 @@ use crate::{
     util::DebugResult,
 };
 
-use super::DependencyRegister;
+use super::SsDependencyRegister;
 
-impl DependencyRegister {
+impl SsDependencyRegister {
     pub(in crate::ss) fn debug_consistency_check(&self, ss_view: &SsView) -> DebugResult {
         for (src_attr_spec, tgt_attr_specs) in self.data.iter() {
             check_item(ss_view, &src_attr_spec.item_id)?;

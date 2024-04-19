@@ -1,7 +1,7 @@
 use crate::ad;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub enum SsModDomain {
+pub(in crate::ss::svc::svce_calc) enum SsModDomain {
     Everything,
     Ship,
     Structure,

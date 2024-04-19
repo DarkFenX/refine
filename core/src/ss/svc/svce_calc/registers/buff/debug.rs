@@ -9,9 +9,9 @@ use crate::{
     util::DebugResult,
 };
 
-use super::BuffRegister;
+use super::SsBuffRegister;
 
-impl BuffRegister {
+impl SsBuffRegister {
     pub(in crate::ss) fn debug_consistency_check(&self, ss_view: &SsView) -> DebugResult {
         for (item_id, effect_ids) in self.effects.iter() {
             check_item(ss_view, item_id)?;

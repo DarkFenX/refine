@@ -1,11 +1,11 @@
-use crate::{ss::svc::svce_calc::modifier::SsAttrMod, util::StSet};
+use crate::{ss::svc::svce_calc::SsAttrMod, util::StSet};
 
 // Intended to hold modifiers which need special handling, e.g. custom prop module modifiers
-pub(in crate::ss::svc::svce_calc) struct RevisionRegister {
+pub(in crate::ss::svc::svce_calc) struct SsRevisionRegister {
     pub(super) item_add: StSet<SsAttrMod>,
     pub(super) item_remove: StSet<SsAttrMod>,
 }
-impl RevisionRegister {
+impl SsRevisionRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
             item_add: StSet::new(),

@@ -1,8 +1,8 @@
-pub(in crate::ss::svc::svce_calc) use buff::BuffRegister;
-pub(in crate::ss::svc::svce_calc) use dependency::DependencyRegister;
-pub(in crate::ss::svc::svce_calc) use modifier::{FleetUpdates, ModifierRegister};
-pub(in crate::ss::svc::svce_calc) use revision::RevisionRegister;
-pub(in crate::ss::svc::svce_calc) use target::TargetRegister;
+pub(in crate::ss::svc::svce_calc) use buff::SsBuffRegister;
+pub(in crate::ss::svc::svce_calc) use dependency::{SsAttrSpec, SsDependencyRegister};
+pub(in crate::ss::svc::svce_calc) use modifier::{SsFleetUpdates, SsModifierRegister};
+pub(in crate::ss::svc::svce_calc) use revision::SsRevisionRegister;
+pub(in crate::ss::svc::svce_calc) use target::SsTargetRegister;
 
 mod buff;
 mod dependency;

@@ -3,9 +3,9 @@ use crate::{
     util::DebugResult,
 };
 
-use super::RevisionRegister;
+use super::SsRevisionRegister;
 
-impl RevisionRegister {
+impl SsRevisionRegister {
     pub(in crate::ss) fn debug_consistency_check(&self, ss_view: &SsView) -> DebugResult {
         for ss_mod in self.item_add.iter() {
             check_modifier(ss_view, ss_mod)?;

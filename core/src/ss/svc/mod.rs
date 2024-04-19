@@ -2,7 +2,7 @@
 
 pub(in crate::ss::svc) use misc::debug;
 pub(in crate::ss) use svc::SsSvcs;
-pub use svce_calc::{ModInfo, ModOpInfo, ModSrcInfo, ModSrcValInfo, SsAttrVal};
+pub use svce_calc::{SsAttrVal, SsModInfo, SsModOpInfo, SsModSrcInfo, SsModSrcValInfo};
 
 mod misc;
 mod svc;

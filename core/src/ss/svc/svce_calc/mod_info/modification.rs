@@ -1,19 +1,20 @@
-use crate::defs::AttrVal;
+use crate::{
+    defs::AttrVal,
+    ss::svc::svce_calc::{SsModOpInfo, SsModSrcInfo},
+};
 
-use super::{op::ModOpInfo, src::ModSrcInfo};
-
-pub struct ModInfo {
+pub struct SsModInfo {
     pub val: AttrVal,
-    pub op: ModOpInfo,
+    pub op: SsModOpInfo,
     pub penalized: bool,
-    pub src: Vec<ModSrcInfo>,
+    pub src: Vec<SsModSrcInfo>,
 }
-impl ModInfo {
+impl SsModInfo {
     pub(in crate::ss::svc::svce_calc) fn new(
         val: AttrVal,
-        op: ModOpInfo,
+        op: SsModOpInfo,
         penalized: bool,
-        src: Vec<ModSrcInfo>,
+        src: Vec<SsModSrcInfo>,
     ) -> Self {
         Self {
             val,

@@ -6,9 +6,9 @@ use crate::{
     util::DebugResult,
 };
 
-use super::TargetRegister;
+use super::SsTargetRegister;
 
-impl TargetRegister {
+impl SsTargetRegister {
     pub(in crate::ss) fn debug_consistency_check(&self, ss_view: &SsView) -> DebugResult {
         for ((fit_id, _), item_ids) in self.tgts_root.iter() {
             check_fit(ss_view, fit_id)?;

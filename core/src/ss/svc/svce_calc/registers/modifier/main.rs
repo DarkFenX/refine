@@ -8,18 +8,15 @@ use crate::{
         fit::SsFits,
         fleet::SsFleet,
         item::{SsItem, SsItems},
-        svc::svce_calc::{
-            modifier::{SsAttrMod, SsModDomain, SsModTgtFilter, SsModType},
-            SsLocType,
-        },
+        svc::svce_calc::{SsAttrMod, SsFleetUpdates, SsLocType, SsModDomain, SsModTgtFilter, SsModType},
         SsView,
     },
     util::{StMapSetL1, StSet},
 };
 
-use super::{fleet_upd::FleetUpdates, iter_loc_act::LocsAct};
+use super::LocsAct;
 
-pub(in crate::ss::svc::svce_calc) struct ModifierRegister {
+pub(in crate::ss::svc::svce_calc) struct SsModifierRegister {
     // Modifiers registered for an item
     // Contains: KeyedStorage<modifier item ID, modifiers>
     pub(super) mods: StMapSetL1<SsItemId, SsAttrMod>,
@@ -54,7 +51,7 @@ pub(in crate::ss::svc::svce_calc) struct ModifierRegister {
     // System-wide modifiers
     pub(super) sw_mods: StSet<SsAttrMod>,
 }
-impl ModifierRegister {
+impl SsModifierRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
             mods: StMapSetL1::new(),
@@ -192,7 +189,7 @@ impl ModifierRegister {
         ss_view: &SsView,
         fleet: &SsFleet,
         fit_id: &SsFitId,
-    ) -> FleetUpdates {
+    ) -> SsFleetUpdates {
         let updates = self.get_fleet_updates(fleet, fit_id);
         if !updates.incoming.is_empty() {
             let tgt_fit_ids = vec![*fit_id];
@@ -218,7 +215,7 @@ impl ModifierRegister {
         ss_view: &SsView,
         fleet: &SsFleet,
         fit_id: &SsFitId,
-    ) -> FleetUpdates {
+    ) -> SsFleetUpdates {
         let updates = self.get_fleet_updates(fleet, fit_id);
         if !updates.incoming.is_empty() {
             let tgt_fit_ids = vec![*fit_id];
@@ -571,8 +568,8 @@ impl ModifierRegister {
             _ => false,
         }
     }
-    fn get_fleet_updates(&self, fleet: &SsFleet, fit_id: &SsFitId) -> FleetUpdates {
-        let mut updates = FleetUpdates::new();
+    fn get_fleet_updates(&self, fleet: &SsFleet, fit_id: &SsFitId) -> SsFleetUpdates {
+        let mut updates = SsFleetUpdates::new();
         updates.outgoing.extend(self.mods_fleet_fit.get(fit_id));
         for fleet_fit_id in fleet.iter_fits() {
             if fleet_fit_id == fit_id {

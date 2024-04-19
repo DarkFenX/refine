@@ -10,11 +10,7 @@ use crate::{
     ss::{
         item::SsItem,
         svc::{
-            svce_calc::{
-                misc::ModKey,
-                mod_info::{ModOpInfo, ModSrcInfo, ModSrcValInfo},
-                SsModAggrMode, SsModOp,
-            },
+            svce_calc::{SsModKey, SsModOp, SsModOpInfo, SsModSrcInfo, SsModSrcValInfo},
             SsSvcs,
         },
         SsView,
@@ -22,7 +18,7 @@ use crate::{
     util::{Result, StMap, StMapVecL1, StSet},
 };
 
-use super::{attr, mod_info::ModInfo};
+use super::{attr, mod_info::SsModInfo};
 
 const PENALIZABLE_OPS: [SsModOp; 5] = [
     SsModOp::PreMul,
@@ -38,7 +34,7 @@ impl SsSvcs {
         &mut self,
         ss_view: &SsView,
         item_id: &SsItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<ModInfo>)>> {
+    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<SsModInfo>)>> {
         let item = ss_view.items.get_item(item_id)?;
         let mut info_map = StMapVecL1::new();
         for attr_id in self.calc_get_item_attr_ids(ss_view, item_id)? {
@@ -69,7 +65,7 @@ impl SsSvcs {
         }
         Ok(attr_ids.into_iter())
     }
-    fn calc_get_item_attr_mods(&mut self, ss_view: &SsView, item: &SsItem, attr: &ad::AAttr) -> Vec<ModInfo> {
+    fn calc_get_item_attr_mods(&mut self, ss_view: &SsView, item: &SsItem, attr: &ad::AAttr) -> Vec<SsModInfo> {
         let mut mod_map = StMap::new();
         for modifier in self
             .calc_data
@@ -93,10 +89,10 @@ impl SsSvcs {
             let srcs = modifier
                 .get_srcs(ss_view)
                 .into_iter()
-                .map(|(i, a)| ModSrcInfo::new(i, ModSrcValInfo::AttrId(a)))
+                .map(|(i, a)| SsModSrcInfo::new(i, SsModSrcValInfo::AttrId(a)))
                 .collect();
-            let mod_key = ModKey::from(modifier);
-            let mod_info = ModInfo::new(val, (&modifier.op).into(), penalizable, srcs);
+            let mod_key = SsModKey::from(modifier);
+            let mod_info = SsModInfo::new(val, (&modifier.op).into(), penalizable, srcs);
             mod_map.insert(mod_key, mod_info);
         }
         let mut mod_vec = mod_map.into_values().collect_vec();
@@ -105,11 +101,11 @@ impl SsSvcs {
             if let Ok(cap_val) = self.calc_get_item_attr_val(ss_view, &item.get_id(), &max_attr_id) {
                 if let Ok(capped_val) = self.calc_get_item_attr_val(ss_view, &item.get_id(), &attr.id) {
                     if cap_val.dogma == capped_val.dogma {
-                        let mod_info = ModInfo::new(
+                        let mod_info = SsModInfo::new(
                             cap_val.dogma,
-                            ModOpInfo::MaxLimit,
+                            SsModOpInfo::MaxLimit,
                             false,
-                            vec![ModSrcInfo::new(item.get_id(), ModSrcValInfo::AttrId(max_attr_id))],
+                            vec![SsModSrcInfo::new(item.get_id(), SsModSrcValInfo::AttrId(max_attr_id))],
                         );
                         mod_vec.push(mod_info);
                     }
@@ -124,38 +120,38 @@ fn is_penalizable(attr: &ad::AAttr, src_item_cat_id: &EItemCatId, op: &SsModOp) 
     attr::is_penal(attr.penalizable, src_item_cat_id) && PENALIZABLE_OPS.contains(op)
 }
 
-fn filter_useless(attr_id: &EAttrId, mods: &mut Vec<ModInfo>, ss_view: &SsView) {
+fn filter_useless(attr_id: &EAttrId, mods: &mut Vec<SsModInfo>, ss_view: &SsView) {
     // Filter out modifications which get overridden by post-assigment
     filter_pre_postassign(mods);
     // Filter out modifications where right hand operand doesn't do anything because of its value
     filter_neutral_invalid_operands(mods);
     // Since only one of assignment operations is effective, include only that one
     if let Some(attr) = ss_view.src.get_a_attr(attr_id) {
-        filter_ineffective_assigns(mods, &attr, ModOpInfo::PreAssign);
-        filter_ineffective_assigns(mods, &attr, ModOpInfo::PostAssign);
+        filter_ineffective_assigns(mods, &attr, SsModOpInfo::PreAssign);
+        filter_ineffective_assigns(mods, &attr, SsModOpInfo::PostAssign);
     }
 }
 
-fn filter_pre_postassign(mods: &mut Vec<ModInfo>) {
-    if mods.iter().any(|v| matches!(v.op, ModOpInfo::PostAssign)) {
+fn filter_pre_postassign(mods: &mut Vec<SsModInfo>) {
+    if mods.iter().any(|v| matches!(v.op, SsModOpInfo::PostAssign)) {
         mods.retain(|m| match m.op {
             // Only those 2 modifications are processed after post-assignment
-            ModOpInfo::PostAssign | ModOpInfo::MaxLimit | ModOpInfo::ExtraMul => true,
+            SsModOpInfo::PostAssign | SsModOpInfo::MaxLimit | SsModOpInfo::ExtraMul => true,
             _ => false,
         });
     };
 }
 
-fn filter_neutral_invalid_operands(mods: &mut Vec<ModInfo>) {
+fn filter_neutral_invalid_operands(mods: &mut Vec<SsModInfo>) {
     mods.retain(|m| match m.op {
-        ModOpInfo::PreMul | ModOpInfo::PostMul | ModOpInfo::ExtraMul => m.val != 1.0,
-        ModOpInfo::PreDiv | ModOpInfo::PostDiv => m.val != 1.0 && m.val != 0.0,
-        ModOpInfo::Add | ModOpInfo::Sub | ModOpInfo::PostPerc => m.val != 0.0,
+        SsModOpInfo::PreMul | SsModOpInfo::PostMul | SsModOpInfo::ExtraMul => m.val != 1.0,
+        SsModOpInfo::PreDiv | SsModOpInfo::PostDiv => m.val != 1.0 && m.val != 0.0,
+        SsModOpInfo::Add | SsModOpInfo::Sub | SsModOpInfo::PostPerc => m.val != 0.0,
         _ => true,
     });
 }
 
-fn filter_ineffective_assigns(mods: &mut Vec<ModInfo>, attr: &ad::AAttr, op: ModOpInfo) {
+fn filter_ineffective_assigns(mods: &mut Vec<SsModInfo>, attr: &ad::AAttr, op: SsModOpInfo) {
     let assign_mods = mods.extract_if(|m| op == m.op).collect_vec();
     if !assign_mods.is_empty() {
         let effective_mod = match attr.hig {

@@ -1,4 +1,4 @@
-use crate::ss::svc::svce_calc::modifier::SsModDomain;
+use crate::ss::svc::svce_calc::SsModDomain;
 
 #[derive(Copy, Clone, Eq, Hash, PartialEq)]
 pub(in crate::ss::svc::svce_calc) enum SsLocType {

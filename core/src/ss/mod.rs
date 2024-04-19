@@ -2,7 +2,7 @@ pub use item::SsItemState;
 pub use misc::{EffectInfo, EffectMode, ModRack};
 pub use ss::SolarSystem;
 pub use sse_item::{OrdAddMode, OrdRmMode};
-pub use svc::{ModInfo, ModOpInfo, ModSrcInfo, ModSrcValInfo, SsAttrVal};
+pub use svc::{SsAttrVal, SsModInfo, SsModOpInfo, SsModSrcInfo, SsModSrcValInfo};
 pub(in crate::ss) use view::SsView;
 
 mod fit;

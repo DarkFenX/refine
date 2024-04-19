@@ -4,10 +4,10 @@ use crate::{
     util::{Error, ErrorKind, Result, StMap},
 };
 
-pub(in crate::ss::svc::svce_calc) struct AttrValData {
+pub(in crate::ss::svc::svce_calc) struct SsAttrValData {
     pub(super) data: StMap<SsItemId, StMap<EAttrId, SsAttrVal>>,
 }
-impl AttrValData {
+impl SsAttrValData {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self { data: StMap::new() }
     }

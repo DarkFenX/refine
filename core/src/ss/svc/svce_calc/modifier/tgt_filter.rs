@@ -1,10 +1,8 @@
 use crate::{
     ad,
     defs::{EItemGrpId, EItemId},
-    ss::item::SsItem,
+    ss::{item::SsItem, svc::svce_calc::SsModDomain},
 };
-
-use super::SsModDomain;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::svce_calc) enum SsModTgtFilter {

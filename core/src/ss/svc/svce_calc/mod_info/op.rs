@@ -4,7 +4,7 @@ use crate::ss::svc::svce_calc::SsModOp;
 ///
 /// All the operations are applied in the order they are defined in this enum.
 #[derive(PartialEq)]
-pub enum ModOpInfo {
+pub enum SsModOpInfo {
     /// Assigns modification value to the target item attribute before all other operations are
     /// applied.
     PreAssign,
@@ -30,7 +30,7 @@ pub enum ModOpInfo {
     /// Non-dogma multiplication operator.
     ExtraMul,
 }
-impl From<&SsModOp> for ModOpInfo {
+impl From<&SsModOp> for SsModOpInfo {
     fn from(mod_op: &SsModOp) -> Self {
         match mod_op {
             SsModOp::PreAssign => Self::PreAssign,

@@ -39,13 +39,15 @@
 //! ship mass, prop speed boost, and prop thrust during modifier calculation. This relationship is
 //! removed whenever ship or prop is removed, or when effect/modifier is stopped.
 
-pub(in crate::ss::svc) use data::CalcData;
+use attr::SsAttrValues;
+pub(in crate::ss::svc) use data::SsSvcCalcData;
 pub use misc::SsAttrVal;
-pub(in crate::ss::svc::svce_calc) use misc::SsLocType;
-pub use mod_info::{ModInfo, ModOpInfo, ModSrcInfo, ModSrcValInfo};
-pub(in crate::ss::svc::svce_calc) use modifier::{
-    debug, SsAttrMod, SsModAggrMode, SsModDomain, SsModOp, SsModTgtFilter, SsModType,
+use misc::{SsLocType, SsModKey, SsModification};
+pub use mod_info::{SsModInfo, SsModOpInfo, SsModSrcInfo, SsModSrcValInfo};
+use modifier::{
+    debug, extend_with_custom_mods, SsAttrMod, SsModAggrMode, SsModDomain, SsModOp, SsModTgtFilter, SsModType,
 };
+use registers::{SsAttrSpec, SsFleetUpdates};
 
 mod attr;
 mod data;

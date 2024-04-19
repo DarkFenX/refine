@@ -1,16 +1,16 @@
 use crate::defs::{AttrVal, EAttrId, SsItemId};
 
-pub struct ModSrcInfo {
+pub struct SsModSrcInfo {
     pub item_id: SsItemId,
-    pub val: ModSrcValInfo,
+    pub val: SsModSrcValInfo,
 }
-impl ModSrcInfo {
-    pub(in crate::ss::svc::svce_calc) fn new(item_id: SsItemId, val: ModSrcValInfo) -> Self {
+impl SsModSrcInfo {
+    pub(in crate::ss::svc::svce_calc) fn new(item_id: SsItemId, val: SsModSrcValInfo) -> Self {
         Self { item_id, val }
     }
 }
 
-pub enum ModSrcValInfo {
+pub enum SsModSrcValInfo {
     AttrId(EAttrId),
     Hardcoded(AttrVal),
 }

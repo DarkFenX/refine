@@ -1,5 +1,6 @@
-pub(in crate::ss::svc::svce_calc) use fleet_upd::FleetUpdates;
-pub(in crate::ss::svc::svce_calc) use main::ModifierRegister;
+pub(in crate::ss::svc::svce_calc) use fleet_upd::SsFleetUpdates;
+use iter_loc_act::LocsAct;
+pub(in crate::ss::svc::svce_calc) use main::SsModifierRegister;
 
 mod debug;
 mod fleet_upd;
