@@ -5,7 +5,6 @@ use crate::{
     adg::GData,
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
     ec, ed,
-    shr::ModOp,
     util::{IntError, IntResult, StMap, StSet},
 };
 
@@ -275,18 +274,18 @@ fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRes
     }
 }
 
-fn get_mod_operation(e_modifier: &ed::EEffectMod) -> IntResult<ModOp> {
+fn get_mod_operation(e_modifier: &ed::EEffectMod) -> IntResult<ad::AModOp> {
     let op = get_arg_int(&e_modifier.args, "operation")?;
     match op {
-        -1 => Ok(ModOp::PreAssign),
-        0 => Ok(ModOp::PreMul),
-        1 => Ok(ModOp::PreDiv),
-        2 => Ok(ModOp::Add),
-        3 => Ok(ModOp::Sub),
-        4 => Ok(ModOp::PostMul),
-        5 => Ok(ModOp::PostDiv),
-        6 => Ok(ModOp::PostPerc),
-        7 => Ok(ModOp::PostAssign),
+        -1 => Ok(ad::AModOp::PreAssign),
+        0 => Ok(ad::AModOp::PreMul),
+        1 => Ok(ad::AModOp::PreDiv),
+        2 => Ok(ad::AModOp::Add),
+        3 => Ok(ad::AModOp::Sub),
+        4 => Ok(ad::AModOp::PostMul),
+        5 => Ok(ad::AModOp::PostDiv),
+        6 => Ok(ad::AModOp::PostPerc),
+        7 => Ok(ad::AModOp::PostAssign),
         _ => Err(IntError::new(format!("unknown operation {op}"))),
     }
 }

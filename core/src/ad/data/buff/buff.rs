@@ -1,7 +1,7 @@
 use crate::{
-    ad::ABuffAttrMod,
+    ad::{ABuffAttrMod, AModOp},
     defs::EBuffId,
-    shr::{ModAggrMode, ModOp},
+    shr::ModAggrMode,
 };
 
 /// Represents an adapted dogma buff.
@@ -14,13 +14,13 @@ pub struct ABuff {
     /// Defines how multiple modifications of the same attribute value are aggregated.
     pub aggr_mode: ModAggrMode,
     /// Operation to use when applying the buff's modifiers.
-    pub op: ModOp,
+    pub op: AModOp,
     /// Attribute modifiers carried by the buff
     pub mods: Vec<ABuffAttrMod>,
 }
 impl ABuff {
     /// Make a new dogma buff out of passed data.
-    pub(crate) fn new(id: EBuffId, aggr_mode: ModAggrMode, op: ModOp, mods: Vec<ABuffAttrMod>) -> Self {
+    pub(crate) fn new(id: EBuffId, aggr_mode: ModAggrMode, op: AModOp, mods: Vec<ABuffAttrMod>) -> Self {
         Self {
             id,
             aggr_mode,

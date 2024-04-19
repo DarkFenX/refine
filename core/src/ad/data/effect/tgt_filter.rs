@@ -1,6 +1,7 @@
-use crate::{ad::AModSrq, defs::EItemGrpId};
-
-use super::AEffectDomain;
+use crate::{
+    ad::{AEffectDomain, AModSrq},
+    defs::EItemGrpId,
+};
 
 /// Defines which items will be targeted for a modifier.
 pub enum AEffectTgtFilter {

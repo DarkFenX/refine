@@ -1,6 +1,6 @@
 use crate::{
     defs::{EAttrId, SsItemId},
-    shr::ModOp,
+    ss::svc::svce_calc::SsModOp,
 };
 
 use super::super::modifier::SsAttrMod;
@@ -13,10 +13,10 @@ use super::super::modifier::SsAttrMod;
 pub(in crate::ss::svc::svce_calc) struct ModKey {
     pub(in crate::ss::svc::svce_calc) src_item_id: SsItemId,
     pub(in crate::ss::svc::svce_calc) src_attr_id: Option<EAttrId>,
-    pub(in crate::ss::svc::svce_calc) op: ModOp,
+    pub(in crate::ss::svc::svce_calc) op: SsModOp,
 }
 impl ModKey {
-    fn new(src_item_id: SsItemId, src_attr_id: Option<EAttrId>, op: ModOp) -> Self {
+    fn new(src_item_id: SsItemId, src_attr_id: Option<EAttrId>, op: SsModOp) -> Self {
         Self {
             src_item_id,
             src_attr_id,

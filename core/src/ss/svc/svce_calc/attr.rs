@@ -1,7 +1,8 @@
 use crate::{
     defs::{AggrKey, AttrVal, EItemCatId},
     ec,
-    shr::{ModAggrMode, ModOp},
+    shr::ModAggrMode,
+    ss::svc::svce_calc::SsModOp,
     util::StMap,
 };
 
@@ -45,33 +46,33 @@ impl Values {
     pub(super) fn add_val(
         &mut self,
         val: AttrVal,
-        op: &ModOp,
+        op: &SsModOp,
         attr_pen: bool,
         item_cat: &EItemCatId,
         aggr_mode: &ModAggrMode,
     ) {
         match op {
-            ModOp::PreAssign => self.pre_assign.add_val(val, norm_noop, aggr_mode),
-            ModOp::PreMul => self
+            SsModOp::PreAssign => self.pre_assign.add_val(val, norm_noop, aggr_mode),
+            SsModOp::PreMul => self
                 .pre_mul
                 .add_val(val, norm_noop, is_penal(attr_pen, item_cat), aggr_mode),
-            ModOp::PreDiv => self
+            SsModOp::PreDiv => self
                 .pre_div
                 .add_val(val, norm_div, is_penal(attr_pen, item_cat), aggr_mode),
-            ModOp::Add => self.add.add_val(val, norm_noop, aggr_mode),
-            ModOp::Sub => self.sub.add_val(val, norm_sub, aggr_mode),
-            ModOp::PostMul => self
+            SsModOp::Add => self.add.add_val(val, norm_noop, aggr_mode),
+            SsModOp::Sub => self.sub.add_val(val, norm_sub, aggr_mode),
+            SsModOp::PostMul => self
                 .post_mul
                 .add_val(val, norm_noop, is_penal(attr_pen, item_cat), aggr_mode),
-            ModOp::PostMulImmune => self.post_mul.add_val(val, norm_noop, false, aggr_mode),
-            ModOp::PostDiv => self
+            SsModOp::PostMulImmune => self.post_mul.add_val(val, norm_noop, false, aggr_mode),
+            SsModOp::PostDiv => self
                 .post_div
                 .add_val(val, norm_div, is_penal(attr_pen, item_cat), aggr_mode),
-            ModOp::PostPerc => self
+            SsModOp::PostPerc => self
                 .post_perc
                 .add_val(val, norm_perc, is_penal(attr_pen, item_cat), aggr_mode),
-            ModOp::PostAssign => self.post_assign.add_val(val, norm_noop, aggr_mode),
-            ModOp::ExtraMul => self.extra_mul.add_val(val, norm_noop, aggr_mode),
+            SsModOp::PostAssign => self.post_assign.add_val(val, norm_noop, aggr_mode),
+            SsModOp::ExtraMul => self.extra_mul.add_val(val, norm_noop, aggr_mode),
         };
     }
     pub(super) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {

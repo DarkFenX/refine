@@ -26,7 +26,7 @@ impl From<&rc::ModOpInfo> for HModOp {
             rc::ModOpInfo::PostPerc => Self::PostPerc,
             rc::ModOpInfo::PostAssign => Self::PostAssign,
             rc::ModOpInfo::ExtraMul => Self::ExtraMul,
-            rc::ModOpInfo::Limit => Self::Limit,
+            rc::ModOpInfo::MaxLimit => Self::Limit,
         }
     }
 }

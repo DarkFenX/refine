@@ -1,4 +1,4 @@
-use crate::{ad, defs::EAttrId, ec, shr::ModOp};
+use crate::{ad, defs::EAttrId, ec};
 
 pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) {
     let mut effect = ad::AEffect::new(
@@ -38,7 +38,7 @@ pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) 
 fn mk_modifier(tgt_attr_id: EAttrId) -> ad::AEffectAttrMod {
     ad::AEffectAttrMod::new(
         ec::attrs::MISSILE_DMG_MULT,
-        ModOp::PostMulImmune,
+        ad::AModOp::PostMulImmune,
         ad::AEffectTgtFilter::OwnSrq(ad::AModSrq::ItemId(ec::items::MISSILE_LAUNCHER_OPERATION)),
         tgt_attr_id,
     )

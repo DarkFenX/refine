@@ -1,10 +1,11 @@
 use crate::{
     defs::{AttrVal, EItemCatId},
-    shr::{ModAggrMode, ModOp},
+    shr::ModAggrMode,
+    ss::svc::svce_calc::SsModOp,
 };
 
 pub(in crate::ss::svc::svce_calc) struct Modification {
-    pub(in crate::ss::svc::svce_calc) op: ModOp,
+    pub(in crate::ss::svc::svce_calc) op: SsModOp,
     pub(in crate::ss::svc::svce_calc) val: AttrVal,
     pub(in crate::ss::svc::svce_calc) res_val: AttrVal,
     pub(in crate::ss::svc::svce_calc) aggr_mode: ModAggrMode,
@@ -12,7 +13,7 @@ pub(in crate::ss::svc::svce_calc) struct Modification {
 }
 impl Modification {
     pub(in crate::ss::svc::svce_calc) fn new(
-        op: ModOp,
+        op: SsModOp,
         val: AttrVal,
         res_val: AttrVal,
         aggr_mode: ModAggrMode,

@@ -1,4 +1,4 @@
-use crate::{ad, defs::EEffectId, ec, shr::ModOp};
+use crate::{ad, defs::EEffectId, ec};
 
 const MISSILE_ROF_EFFECT: EEffectId = ec::effects::SELF_ROF;
 
@@ -11,7 +11,7 @@ pub(in crate::adg::custom) fn mk_self_skillreq_modifiers_launcher_rof(a_data: &m
         }
         let modifier = ad::AEffectAttrMod::new(
             ec::attrs::ROF_BONUS,
-            ModOp::PostPerc,
+            ad::AModOp::PostPerc,
             ad::AEffectTgtFilter::LocSrq(ad::AEffectDomain::Ship, ad::AModSrq::SelfRef),
             ec::attrs::SPEED,
         );

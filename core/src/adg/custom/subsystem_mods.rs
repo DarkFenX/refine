@@ -2,7 +2,6 @@ use crate::{
     ad,
     defs::{EAttrId, EEffectId},
     ec,
-    shr::ModOp,
 };
 
 const SLOT_EFFECT: EEffectId = ec::effects::SLOT_MODIFIER;
@@ -63,7 +62,7 @@ fn add_hardpoint_modifiers(a_data: &mut ad::AData) {
 fn mk_modifier(src_attr_id: EAttrId, tgt_attr_id: EAttrId) -> ad::AEffectAttrMod {
     ad::AEffectAttrMod::new(
         src_attr_id,
-        ModOp::Add,
+        ad::AModOp::Add,
         ad::AEffectTgtFilter::Direct(ad::AEffectDomain::Ship),
         tgt_attr_id,
     )

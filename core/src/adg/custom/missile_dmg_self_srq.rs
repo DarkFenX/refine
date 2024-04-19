@@ -2,7 +2,6 @@ use crate::{
     ad,
     defs::{EAttrId, EEffectId},
     ec,
-    shr::ModOp,
 };
 
 pub(in crate::adg::custom) fn mk_self_skillreq_modifier_missile_dmg(a_data: &mut ad::AData) {
@@ -21,7 +20,7 @@ fn add_mod_for_effect_attr(a_data: &mut ad::AData, effect_id: EEffectId, attr_id
         }
         let modifier = ad::AEffectAttrMod::new(
             ec::attrs::DMG_MULT_BONUS,
-            ModOp::PostPerc,
+            ad::AModOp::PostPerc,
             ad::AEffectTgtFilter::OwnSrq(ad::AModSrq::SelfRef),
             attr_id,
         );

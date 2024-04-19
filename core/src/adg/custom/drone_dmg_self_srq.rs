@@ -1,4 +1,4 @@
-use crate::{ad, defs::EEffectId, ec, shr::ModOp};
+use crate::{ad, defs::EEffectId, ec};
 
 const DRONE_DMG_EFFECT: EEffectId = ec::effects::DRONE_DMG_BONUS;
 
@@ -11,7 +11,7 @@ pub(in crate::adg::custom) fn mk_self_skillreq_drone_dmg(a_data: &mut ad::AData)
         }
         let modifier = ad::AEffectAttrMod::new(
             ec::attrs::DMG_MULT_BONUS,
-            ModOp::PostPerc,
+            ad::AModOp::PostPerc,
             ad::AEffectTgtFilter::OwnSrq(ad::AModSrq::SelfRef),
             ec::attrs::DMG_MULT,
         );

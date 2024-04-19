@@ -4,7 +4,7 @@ use crate::{
     ad,
     adg::GData,
     defs::AggrKey,
-    shr::{ModAggrMode, ModOp},
+    shr::ModAggrMode,
     util::{IntError, IntResult},
 };
 
@@ -60,17 +60,17 @@ fn conv_buff_aggr_mode(aggr_mode: &str, key: AggrKey) -> IntResult<ModAggrMode> 
     }
 }
 
-fn conv_buff_op(operation: &str) -> IntResult<ModOp> {
+fn conv_buff_op(operation: &str) -> IntResult<ad::AModOp> {
     match operation {
-        "PreAssignment" => Ok(ModOp::PreAssign),
-        "PreMul" => Ok(ModOp::PreMul),
-        "PreDiv" => Ok(ModOp::PreDiv),
-        "ModAdd" => Ok(ModOp::Add),
-        "ModSub" => Ok(ModOp::Sub),
-        "PostMul" => Ok(ModOp::PostMul),
-        "PostDiv" => Ok(ModOp::PostDiv),
-        "PostPercent" => Ok(ModOp::PostPerc),
-        "PostAssignment" => Ok(ModOp::PostAssign),
+        "PreAssignment" => Ok(ad::AModOp::PreAssign),
+        "PreMul" => Ok(ad::AModOp::PreMul),
+        "PreDiv" => Ok(ad::AModOp::PreDiv),
+        "ModAdd" => Ok(ad::AModOp::Add),
+        "ModSub" => Ok(ad::AModOp::Sub),
+        "PostMul" => Ok(ad::AModOp::PostMul),
+        "PostDiv" => Ok(ad::AModOp::PostDiv),
+        "PostPercent" => Ok(ad::AModOp::PostPerc),
+        "PostAssignment" => Ok(ad::AModOp::PostAssign),
         _ => Err(IntError::new(format!("unexpected operation \"{operation}\""))),
     }
 }

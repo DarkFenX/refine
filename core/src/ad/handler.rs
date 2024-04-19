@@ -1,10 +1,8 @@
 use std::fmt;
 
-use crate::defs::{EAttrId, EBuffId, EEffectId, EItemId, EMutaId};
-
-use super::{
-    data::{AData, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta},
-    AResult,
+use crate::{
+    ad::{AData, AResult, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta},
+    defs::{EAttrId, EBuffId, EEffectId, EItemId, EMutaId},
 };
 
 /// Adapted data handler interface definition.

@@ -24,7 +24,7 @@ pub use defs::{
     AggrKey, Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId,
     EItemId, EMutaId, Idx, SkillLevel, SsFitId, SsFleetId, SsItemId, VERSION,
 };
-pub use shr::{ModAggrMode, ModOp};
+pub use shr::ModAggrMode;
 pub use src::Src;
 pub use ss::{
     fit_info::SsFitInfo,

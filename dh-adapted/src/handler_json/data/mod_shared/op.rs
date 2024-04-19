@@ -11,39 +11,36 @@ pub(in crate::handler_json) enum CModOp {
     PostDiv,
     PostPerc,
     PostAssign,
-    ExtraMul,
 }
-impl From<&rc::ModOp> for CModOp {
-    fn from(mod_op: &rc::ModOp) -> Self {
+impl From<&rc::ad::AModOp> for CModOp {
+    fn from(mod_op: &rc::ad::AModOp) -> Self {
         match mod_op {
-            rc::ModOp::PreAssign => Self::PreAssign,
-            rc::ModOp::PreMul => Self::PreMul,
-            rc::ModOp::PreDiv => Self::PreDiv,
-            rc::ModOp::Add => Self::Add,
-            rc::ModOp::Sub => Self::Sub,
-            rc::ModOp::PostMul => Self::PostMul,
-            rc::ModOp::PostMulImmune => Self::PostMulImmune,
-            rc::ModOp::PostDiv => Self::PostDiv,
-            rc::ModOp::PostPerc => Self::PostPerc,
-            rc::ModOp::PostAssign => Self::PostAssign,
-            rc::ModOp::ExtraMul => Self::ExtraMul,
+            rc::ad::AModOp::PreAssign => Self::PreAssign,
+            rc::ad::AModOp::PreMul => Self::PreMul,
+            rc::ad::AModOp::PreDiv => Self::PreDiv,
+            rc::ad::AModOp::Add => Self::Add,
+            rc::ad::AModOp::Sub => Self::Sub,
+            rc::ad::AModOp::PostMul => Self::PostMul,
+            rc::ad::AModOp::PostMulImmune => Self::PostMulImmune,
+            rc::ad::AModOp::PostDiv => Self::PostDiv,
+            rc::ad::AModOp::PostPerc => Self::PostPerc,
+            rc::ad::AModOp::PostAssign => Self::PostAssign,
         }
     }
 }
-impl Into<rc::ModOp> for &CModOp {
-    fn into(self) -> rc::ModOp {
+impl Into<rc::ad::AModOp> for &CModOp {
+    fn into(self) -> rc::ad::AModOp {
         match self {
-            CModOp::PreAssign => rc::ModOp::PreAssign,
-            CModOp::PreMul => rc::ModOp::PreMul,
-            CModOp::PreDiv => rc::ModOp::PreDiv,
-            CModOp::Add => rc::ModOp::Add,
-            CModOp::Sub => rc::ModOp::Sub,
-            CModOp::PostMul => rc::ModOp::PostMul,
-            CModOp::PostMulImmune => rc::ModOp::PostMulImmune,
-            CModOp::PostDiv => rc::ModOp::PostDiv,
-            CModOp::PostPerc => rc::ModOp::PostPerc,
-            CModOp::PostAssign => rc::ModOp::PostAssign,
-            CModOp::ExtraMul => rc::ModOp::ExtraMul,
+            CModOp::PreAssign => rc::ad::AModOp::PreAssign,
+            CModOp::PreMul => rc::ad::AModOp::PreMul,
+            CModOp::PreDiv => rc::ad::AModOp::PreDiv,
+            CModOp::Add => rc::ad::AModOp::Add,
+            CModOp::Sub => rc::ad::AModOp::Sub,
+            CModOp::PostMul => rc::ad::AModOp::PostMul,
+            CModOp::PostMulImmune => rc::ad::AModOp::PostMulImmune,
+            CModOp::PostDiv => rc::ad::AModOp::PostDiv,
+            CModOp::PostPerc => rc::ad::AModOp::PostPerc,
+            CModOp::PostAssign => rc::ad::AModOp::PostAssign,
         }
     }
 }

@@ -8,7 +8,7 @@ pub use effect::{
 };
 pub use item::{AItem, AItemEffData, AItemType};
 pub use muta::{AMuta, AMutaAttrRange};
-pub use shared::{AModSrq, AState};
+pub use shared::{AModOp, AModSrq, AState};
 
 mod attr;
 mod buff;

@@ -7,13 +7,14 @@ use itertools::Itertools;
 use crate::{
     ad,
     defs::{EAttrId, EItemCatId, SsItemId},
-    shr::{ModAggrMode, ModOp},
+    shr::ModAggrMode,
     ss::{
         item::SsItem,
         svc::{
             svce_calc::{
                 misc::ModKey,
                 mod_info::{ModOpInfo, ModSrcInfo, ModSrcValInfo},
+                SsModOp,
             },
             SsSvcs,
         },
@@ -24,12 +25,12 @@ use crate::{
 
 use super::{attr, mod_info::ModInfo};
 
-const PENALIZABLE_OPS: [ModOp; 5] = [
-    ModOp::PreMul,
-    ModOp::PreDiv,
-    ModOp::PostMul,
-    ModOp::PostDiv,
-    ModOp::PostPerc,
+const PENALIZABLE_OPS: [SsModOp; 5] = [
+    SsModOp::PreMul,
+    SsModOp::PreDiv,
+    SsModOp::PostMul,
+    SsModOp::PostDiv,
+    SsModOp::PostPerc,
 ];
 
 impl SsSvcs {
@@ -107,7 +108,7 @@ impl SsSvcs {
                     if cap_val.dogma == capped_val.dogma {
                         let mod_info = ModInfo::new(
                             cap_val.dogma,
-                            ModOpInfo::Limit,
+                            ModOpInfo::MaxLimit,
                             false,
                             ModAggrMode::Stack,
                             vec![ModSrcInfo::new(item.get_id(), ModSrcValInfo::AttrId(max_attr_id))],
@@ -121,7 +122,7 @@ impl SsSvcs {
     }
 }
 
-fn is_penalizable(attr: &ad::AAttr, src_item_cat_id: &EItemCatId, op: &ModOp) -> bool {
+fn is_penalizable(attr: &ad::AAttr, src_item_cat_id: &EItemCatId, op: &SsModOp) -> bool {
     attr::is_penal(attr.penalizable, src_item_cat_id) && PENALIZABLE_OPS.contains(op)
 }
 
@@ -141,7 +142,7 @@ fn filter_pre_postassign(mods: &mut Vec<ModInfo>) {
     if mods.iter().any(|v| matches!(v.op, ModOpInfo::PostAssign)) {
         mods.retain(|m| match m.op {
             // Only those 2 modifications are processed after post-assignment
-            ModOpInfo::PostAssign | ModOpInfo::Limit | ModOpInfo::ExtraMul => true,
+            ModOpInfo::PostAssign | ModOpInfo::MaxLimit | ModOpInfo::ExtraMul => true,
             _ => false,
         });
     };

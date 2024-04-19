@@ -1,6 +1,4 @@
-use crate::defs::EAttrId;
-
-use super::ABuffTgtFilter;
+use crate::{ad::ABuffTgtFilter, defs::EAttrId};
 
 /// An attribute modifier.
 ///
