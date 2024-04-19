@@ -11,9 +11,15 @@ impl SolarSystem {
     // no links broken, mutual references are correct, etc.
     pub fn debug_consistency_check(&self) -> bool {
         let ss_view = SsView::new(&self.src, &self.fleets, &self.fits, &self.items);
+        // Check solar system structure
         if self.check_ss_structure(&ss_view).is_err() {
             return false;
         }
+        // Check solar system helper data containers
+        if self.tgt_tracker.debug_consistency_check(&ss_view).is_err() {
+            return false;
+        }
+        // Check services
         if self.svcs.debug_consistency_check(&ss_view).is_err() {
             return false;
         }
