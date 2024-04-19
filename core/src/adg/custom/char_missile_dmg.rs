@@ -1,15 +1,10 @@
-use crate::{
-    ad,
-    defs::EAttrId,
-    ec,
-    shr::{ModOp, State},
-};
+use crate::{ad, defs::EAttrId, ec, shr::ModOp};
 
 pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) {
     let mut effect = ad::AEffect::new(
         ec::effects::REE_CHAR_MISSILE_DMG,
         ec::effcats::PASSIVE,
-        State::Offline,
+        ad::AState::Offline,
         None,
         false,
         false,

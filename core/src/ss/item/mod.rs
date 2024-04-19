@@ -18,6 +18,7 @@ pub(in crate::ss) use item_stance::SsStance;
 pub(in crate::ss) use item_structure::SsStructure;
 pub(in crate::ss) use item_subsystem::SsSubsystem;
 pub(in crate::ss) use item_sw_effect::SsSwEffect;
+pub use misc::SsItemState;
 
 mod container;
 mod item;

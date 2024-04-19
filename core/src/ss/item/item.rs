@@ -1,14 +1,14 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SsFitId, SsItemId},
-    shr::State,
     src::Src,
     util::{Error, ErrorKind, Named, Result, StMap},
 };
 
 use super::{
-    misc::EffectModes, SsBooster, SsCharacter, SsCharge, SsDrone, SsFighter, SsFwEffect, SsImplant, SsModule,
-    SsProjEffect, SsRig, SsShip, SsSkill, SsStance, SsStructure, SsSubsystem, SsSwEffect,
+    misc::{EffectModes, SsItemState},
+    SsBooster, SsCharacter, SsCharge, SsDrone, SsFighter, SsFwEffect, SsImplant, SsModule, SsProjEffect, SsRig, SsShip,
+    SsSkill, SsStance, SsStructure, SsSubsystem, SsSwEffect,
 };
 
 pub(in crate::ss) enum SsItem {
@@ -150,11 +150,11 @@ impl SsItem {
             Self::SwEffect(sw_effect) => sw_effect.a_item_id,
         }
     }
-    pub(in crate::ss) fn get_state(&self) -> State {
+    pub(in crate::ss) fn get_state(&self) -> SsItemState {
         match self {
             Self::Booster(booster) => booster.state,
             Self::Character(character) => character.state,
-            Self::Charge(_) => State::Offline,
+            Self::Charge(_) => SsItemState::Offline,
             Self::Drone(drone) => drone.state,
             Self::Fighter(fighter) => fighter.state,
             Self::FwEffect(fw_effect) => fw_effect.state,

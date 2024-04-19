@@ -1,31 +1,28 @@
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
 pub(in crate::handler_json) enum CState {
-    Ghost,
     Offline,
     Online,
     Active,
     Overload,
 }
-impl From<&rc::State> for CState {
-    fn from(state: &rc::State) -> Self {
+impl From<&rc::ad::AState> for CState {
+    fn from(state: &rc::ad::AState) -> Self {
         match state {
-            rc::State::Ghost => Self::Ghost,
-            rc::State::Offline => Self::Offline,
-            rc::State::Online => Self::Online,
-            rc::State::Active => Self::Active,
-            rc::State::Overload => Self::Overload,
+            rc::ad::AState::Offline => Self::Offline,
+            rc::ad::AState::Online => Self::Online,
+            rc::ad::AState::Active => Self::Active,
+            rc::ad::AState::Overload => Self::Overload,
         }
     }
 }
-impl Into<rc::State> for &CState {
-    fn into(self) -> rc::State {
+impl Into<rc::ad::AState> for &CState {
+    fn into(self) -> rc::ad::AState {
         match self {
-            CState::Ghost => rc::State::Ghost,
-            CState::Offline => rc::State::Offline,
-            CState::Online => rc::State::Online,
-            CState::Active => rc::State::Active,
-            CState::Overload => rc::State::Overload,
+            CState::Offline => rc::ad::AState::Offline,
+            CState::Online => rc::ad::AState::Online,
+            CState::Active => rc::ad::AState::Active,
+            CState::Overload => rc::ad::AState::Overload,
         }
     }
 }

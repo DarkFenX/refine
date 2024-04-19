@@ -5,7 +5,7 @@ use crate::{
     adg::GData,
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
     ec, ed,
-    shr::{ModOp, State},
+    shr::ModOp,
     util::{IntError, IntResult, StMap, StSet},
 };
 
@@ -25,12 +25,12 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
     let mut a_effects = Vec::new();
     for e_effect in g_data.effects.iter() {
         let (state, tgt_mode) = match e_effect.category_id {
-            ec::effcats::PASSIVE => (State::Offline, None),
-            ec::effcats::ACTIVE => (State::Active, None),
-            ec::effcats::TARGET => (State::Active, Some(ad::ATgtMode::Item)),
-            ec::effcats::ONLINE => (State::Online, None),
-            ec::effcats::OVERLOAD => (State::Overload, None),
-            ec::effcats::SYSTEM => (State::Offline, None),
+            ec::effcats::PASSIVE => (ad::AState::Offline, None),
+            ec::effcats::ACTIVE => (ad::AState::Active, None),
+            ec::effcats::TARGET => (ad::AState::Active, Some(ad::ATgtMode::Item)),
+            ec::effcats::ONLINE => (ad::AState::Online, None),
+            ec::effcats::OVERLOAD => (ad::AState::Overload, None),
+            ec::effcats::SYSTEM => (ad::AState::Offline, None),
             _ => {
                 let msg = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
                 tracing::warn!("{msg}");

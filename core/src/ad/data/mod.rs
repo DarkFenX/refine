@@ -7,15 +7,15 @@ pub use effect::{
     AModBuildStatus, ATgtMode,
 };
 pub use item::{AItem, AItemEffData, AItemType};
-pub use mod_shared::AModSrq;
 pub use muta::{AMuta, AMutaAttrRange};
+pub use shared::{AModSrq, AState};
 
 mod attr;
 mod buff;
 mod effect;
 mod item;
-mod mod_shared;
 mod muta;
+mod shared;
 
 pub type ArcAttr = Arc<AAttr>;
 pub type ArcBuff = Arc<ABuff>;

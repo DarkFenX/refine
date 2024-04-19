@@ -1,19 +1,18 @@
 use crate::{
     ad,
     defs::{EItemId, Idx, SsFitId, SsItemId},
-    shr::State,
     src::Src,
     ss::ModRack,
     util::Named,
 };
 
-use super::misc::EffectModes;
+use super::misc::{EffectModes, SsItemState};
 
 pub(in crate::ss) struct SsModule {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) fit_id: SsFitId,
     pub(in crate::ss) a_item_id: EItemId,
-    pub(in crate::ss) state: State,
+    pub(in crate::ss) state: SsItemState,
     pub(in crate::ss) rack: ModRack,
     pub(in crate::ss) pos: Idx,
     pub(in crate::ss) charge_item_id: Option<SsItemId>,
@@ -26,7 +25,7 @@ impl SsModule {
         id: SsItemId,
         fit_id: SsFitId,
         a_item_id: EItemId,
-        state: State,
+        state: SsItemState,
         rack: ModRack,
         pos: Idx,
         charge_a_item_id: Option<SsItemId>,

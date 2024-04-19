@@ -24,7 +24,7 @@ pub use defs::{
     AggrKey, Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId,
     EItemId, EMutaId, Idx, SkillLevel, SsFitId, SsFleetId, SsItemId, VERSION,
 };
-pub use shr::{ModAggrMode, ModOp, State};
+pub use shr::{ModAggrMode, ModOp};
 pub use src::Src;
 pub use ss::{
     fit_info::SsFitInfo,
@@ -35,7 +35,7 @@ pub use ss::{
         SsSubsystemInfo, SsSwEffectInfo,
     },
     EffectInfo, EffectMode, ModInfo, ModOpInfo, ModRack, ModSrcInfo, ModSrcValInfo, OrdAddMode, OrdRmMode, SolarSystem,
-    SsAttrVal,
+    SsAttrVal, SsItemState,
 };
 pub use util::{Error, ErrorKind, Result};
 

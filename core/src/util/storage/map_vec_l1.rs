@@ -1,4 +1,4 @@
-use std::hash::{BuildHasherDefault, Hash};
+use std::hash::Hash;
 
 use rustc_hash::FxHashMap;
 

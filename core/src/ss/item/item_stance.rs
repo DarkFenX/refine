@@ -1,18 +1,17 @@
 use crate::{
     ad,
     defs::{EItemId, SsFitId, SsItemId},
-    shr::State,
     src::Src,
     util::Named,
 };
 
-use super::misc::{bool_to_state, state_to_bool, EffectModes};
+use super::misc::{bool_to_state, state_to_bool, EffectModes, SsItemState};
 
 pub(in crate::ss) struct SsStance {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) fit_id: SsFitId,
     pub(in crate::ss) a_item_id: EItemId,
-    pub(in crate::ss) state: State,
+    pub(in crate::ss) state: SsItemState,
     pub(in crate::ss) effect_modes: EffectModes,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }

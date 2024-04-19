@@ -1,7 +1,4 @@
-use std::{
-    hash::{BuildHasherDefault, Hash},
-    iter::FromIterator,
-};
+use std::{hash::Hash, iter::FromIterator};
 
 use rustc_hash::FxHashSet;
 

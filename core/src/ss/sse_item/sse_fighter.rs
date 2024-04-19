@@ -1,8 +1,7 @@
 use crate::{
     defs::{EItemId, SsFitId, SsItemId},
-    shr::State,
     ss::{
-        item::{SsFighter, SsItem},
+        item::{SsFighter, SsItem, SsItemState},
         item_info::SsFighterInfo,
         SolarSystem,
     },
@@ -23,7 +22,7 @@ impl SolarSystem {
             .collect();
         Ok(fighter_infos)
     }
-    pub fn add_fighter(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: State) -> Result<SsFighterInfo> {
+    pub fn add_fighter(&mut self, fit_id: SsFitId, a_item_id: EItemId, state: SsItemState) -> Result<SsFighterInfo> {
         let item_id = self.items.alloc_item_id()?;
         let fighter = SsFighter::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SsFighterInfo::from(&fighter);
@@ -31,7 +30,7 @@ impl SolarSystem {
         self.add_item(item);
         Ok(info)
     }
-    pub fn set_fighter_state(&mut self, item_id: &SsItemId, state: State) -> Result<()> {
+    pub fn set_fighter_state(&mut self, item_id: &SsItemId, state: SsItemState) -> Result<()> {
         self.items.get_fighter_mut(item_id)?.state = state;
         Ok(())
     }

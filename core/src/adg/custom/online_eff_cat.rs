@@ -1,12 +1,12 @@
-use crate::{ad, defs::EEffectId, ec, shr::State};
+use crate::{ad, defs::EEffectId, ec};
 
 const ONLINE_EFFECT: EEffectId = ec::effects::ONLINE;
 
 pub(in crate::adg::custom) fn fix_online_effect_cat(a_data: &mut ad::AData) {
     let mut fixed = false;
     for effect in a_data.effects.iter_mut().filter(|v| v.id == ONLINE_EFFECT) {
-        if effect.state == State::Active {
-            effect.state = State::Online;
+        if matches!(effect.state, ad::AState::Active) {
+            effect.state = ad::AState::Online;
             fixed = true;
         }
     }

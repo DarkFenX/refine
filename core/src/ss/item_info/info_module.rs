@@ -1,7 +1,9 @@
 use crate::{
     defs::{EItemId, Idx, SsFitId, SsItemId},
-    shr::State,
-    ss::{item::SsModule, ModRack},
+    ss::{
+        item::{SsItemState, SsModule},
+        ModRack,
+    },
 };
 
 use super::SsChargeInfo;
@@ -10,7 +12,7 @@ pub struct SsModuleInfo {
     pub id: SsItemId,
     pub fit_id: SsFitId,
     pub a_item_id: EItemId,
-    pub state: State,
+    pub state: SsItemState,
     pub rack: ModRack,
     pub pos: Idx,
     pub ss_charge_info: Option<SsChargeInfo>,
@@ -20,7 +22,7 @@ impl SsModuleInfo {
         id: SsItemId,
         fit_id: SsFitId,
         a_item_id: EItemId,
-        state: State,
+        state: SsItemState,
         rack: ModRack,
         pos: Idx,
         ss_charge_info: Option<SsChargeInfo>,

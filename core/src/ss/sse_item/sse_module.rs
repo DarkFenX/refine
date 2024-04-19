@@ -1,8 +1,7 @@
 use crate::{
     defs::{EItemId, SsFitId, SsItemId},
-    shr::State,
     ss::{
-        item::{SsItem, SsModule},
+        item::{SsItem, SsItemState, SsModule},
         item_info::{SsChargeInfo, SsModuleInfo},
         ModRack, OrdAddMode, SolarSystem, SsView,
     },
@@ -35,7 +34,7 @@ impl SolarSystem {
         rack: ModRack,
         pos_mode: OrdAddMode,
         a_item_id: EItemId,
-        state: State,
+        state: SsItemState,
         charge_a_item_id: Option<EItemId>,
     ) -> Result<SsModuleInfo> {
         // Allocate resources early, to make sure if we fail we don't need to roll anything back
@@ -91,7 +90,7 @@ impl SolarSystem {
         self.add_item(m_item);
         Ok(m_info)
     }
-    pub fn set_module_state(&mut self, item_id: &SsItemId, state: State) -> Result<()> {
+    pub fn set_module_state(&mut self, item_id: &SsItemId, state: SsItemState) -> Result<()> {
         let module = self.items.get_module_mut(item_id)?;
         let old_state = module.state;
         module.state = state;

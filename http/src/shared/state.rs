@@ -7,25 +7,25 @@ pub(crate) enum HState {
     Active,
     Overload,
 }
-impl From<&rc::State> for HState {
-    fn from(core_state: &rc::State) -> Self {
+impl From<&rc::SsItemState> for HState {
+    fn from(core_state: &rc::SsItemState) -> Self {
         match core_state {
-            rc::State::Offline => Self::Offline,
-            rc::State::Online => Self::Online,
-            rc::State::Active => Self::Active,
-            rc::State::Ghost => Self::Ghost,
-            rc::State::Overload => Self::Overload,
+            rc::SsItemState::Offline => Self::Offline,
+            rc::SsItemState::Online => Self::Online,
+            rc::SsItemState::Active => Self::Active,
+            rc::SsItemState::Ghost => Self::Ghost,
+            rc::SsItemState::Overload => Self::Overload,
         }
     }
 }
-impl Into<rc::State> for &HState {
-    fn into(self) -> rc::State {
+impl Into<rc::SsItemState> for &HState {
+    fn into(self) -> rc::SsItemState {
         match self {
-            HState::Offline => rc::State::Offline,
-            HState::Online => rc::State::Online,
-            HState::Active => rc::State::Active,
-            HState::Ghost => rc::State::Ghost,
-            HState::Overload => rc::State::Overload,
+            HState::Offline => rc::SsItemState::Offline,
+            HState::Online => rc::SsItemState::Online,
+            HState::Active => rc::SsItemState::Active,
+            HState::Ghost => rc::SsItemState::Ghost,
+            HState::Overload => rc::SsItemState::Overload,
         }
     }
 }

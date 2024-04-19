@@ -1,17 +1,19 @@
 use crate::{
     ad, ec,
-    shr::State,
-    ss::{item::SsItem, EffectMode, SsView},
+    ss::{
+        item::{SsItem, SsItemState},
+        EffectMode, SsView,
+    },
 };
 
 pub(in crate::ss::svc) fn resolve_effect_status(
     item: &SsItem,
-    item_state: State,
+    item_state: SsItemState,
     effect: &ad::ArcEffect,
     online_running: bool,
 ) -> bool {
     // Ghosted items should never affect anything regardless of effect mode
-    if item_state == State::Ghost {
+    if item_state == SsItemState::Ghost {
         return false;
     }
     match item.get_effect_modes().get(&effect.id) {
@@ -22,13 +24,18 @@ pub(in crate::ss::svc) fn resolve_effect_status(
     }
 }
 
-fn resolve_effect_status_full(item: &SsItem, item_state: State, effect: &ad::ArcEffect, online_running: bool) -> bool {
+fn resolve_effect_status_full(
+    item: &SsItem,
+    item_state: SsItemState,
+    effect: &ad::ArcEffect,
+    online_running: bool,
+) -> bool {
     match effect.state {
         // Offline effects require item in offline+ state, and no fitting usage chance attribute
         // (not to run booster side effects by default)
-        State::Offline => item_state >= effect.state && effect.chance_attr_id.is_none(),
+        ad::AState::Offline => item_state >= effect.state && effect.chance_attr_id.is_none(),
         // Online effects depend on 'online' effect, ignoring everything else
-        State::Online => {
+        ad::AState::Online => {
             // Online effect itself runs unconditionally if item is online+
             if effect.id == ec::effects::ONLINE {
                 item_state >= effect.state
@@ -38,7 +45,7 @@ fn resolve_effect_status_full(item: &SsItem, item_state: State, effect: &ad::Arc
             }
         }
         // Only default active effect is run, and only if item is in active+ state
-        State::Active => {
+        ad::AState::Active => {
             if effect.state > item_state {
                 return false;
             };
@@ -51,13 +58,15 @@ fn resolve_effect_status_full(item: &SsItem, item_state: State, effect: &ad::Arc
             }
         }
         // No additional restrictions for overload effects except for item being overloaded
-        State::Overload => item_state >= effect.state,
-        // None of effects should have ghost state, this is custom state for items
-        State::Ghost => false,
+        ad::AState::Overload => item_state >= effect.state,
     }
 }
 
-pub(in crate::ss::svc) fn resolve_online_effect_status(ss_view: &SsView, item: &SsItem, item_state: State) -> bool {
+pub(in crate::ss::svc) fn resolve_online_effect_status(
+    ss_view: &SsView,
+    item: &SsItem,
+    item_state: SsItemState,
+) -> bool {
     if !item.get_effect_datas().unwrap().contains_key(&ec::effects::ONLINE) {
         return false;
     }

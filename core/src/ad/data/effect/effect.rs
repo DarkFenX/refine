@@ -1,7 +1,6 @@
 use crate::{
-    ad::{AEffectAttrMod, AEffectBuffInfo, AModBuildStatus, ATgtMode},
+    ad::{AEffectAttrMod, AEffectBuffInfo, AModBuildStatus, AState, ATgtMode},
     defs::{EAttrId, EEffectCatId, EEffectId},
-    shr::State,
     util::Named,
 };
 
@@ -16,7 +15,7 @@ pub struct AEffect {
     /// Effect category ID, part of definition how effect is applied.
     pub category: EEffectCatId,
     /// Effect state dictates which state of parent item is needed for the effect to run.
-    pub state: State,
+    pub state: AState,
     /// Defines what kind of target you need to run the effect.
     pub tgt_mode: Option<ATgtMode>,
     /// Defines if the effect is considered as an assistance.
@@ -56,7 +55,7 @@ impl AEffect {
     pub(crate) fn new(
         id: EEffectId,
         category: EEffectCatId,
-        state: State,
+        state: AState,
         tgt_mode: Option<ATgtMode>,
         is_assist: bool,
         is_offense: bool,
