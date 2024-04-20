@@ -32,7 +32,7 @@ impl HChangeModuleCmd {
         item_id: &rc::SsItemId,
     ) -> rc::Result<HCmdResp> {
         for (tgt_item_id, range) in self.add_tgts.iter() {
-            core_ss.add_module_tgt(item_id, tgt_item_id, *range)?;
+            core_ss.add_module_tgt(item_id, *tgt_item_id, *range)?;
         }
         for (tgt_item_id, range) in self.change_tgts.iter() {
             core_ss.change_module_tgt(item_id, tgt_item_id, *range)?;

@@ -24,7 +24,7 @@ impl HChangeProjEffectCmd {
         item_id: &rc::SsItemId,
     ) -> rc::Result<HCmdResp> {
         for tgt_item_id in self.add_tgts.iter() {
-            core_ss.add_proj_effect_tgt(item_id, tgt_item_id)?;
+            core_ss.add_proj_effect_tgt(item_id, *tgt_item_id)?;
         }
         for tgt_item_id in self.rm_tgts.iter() {
             core_ss.remove_proj_effect_tgt(item_id, tgt_item_id)?;

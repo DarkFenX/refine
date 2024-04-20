@@ -125,7 +125,28 @@ impl SolarSystem {
         };
         Ok(removed)
     }
-    pub fn add_module_tgt(&mut self, item_id: &SsItemId, tgt_item_id: &SsItemId, range: Option<AttrVal>) -> Result<()> {
+    pub fn add_module_tgt(&mut self, item_id: &SsItemId, tgt_item_id: SsItemId, range: Option<AttrVal>) -> Result<()> {
+        // Execute change command if target is already defined
+        let module = self.items.get_module(item_id)?;
+        if module.tgts.contains(&tgt_item_id) {
+            return self.change_module_tgt(item_id, &tgt_item_id, range);
+        }
+        // Check if item is targetable
+        let tgt_item = self.items.get_item(&tgt_item_id)?;
+        if !tgt_item.is_targetable() {
+            return Err(Error::new(ErrorKind::ItemNotTargetable(tgt_item_id)));
+        }
+        // Add info to the skeleton
+        self.tgt_tracker.reg_tgt(*item_id, tgt_item_id);
+        let module = self.items.get_module_mut(item_id)?;
+        module.tgts.add(tgt_item_id, range);
+        // Process request in services
+        let item = self.items.get_item(item_id).unwrap();
+        self.svcs.add_item_tgt(
+            &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &item,
+            tgt_item_id,
+        );
         Ok(())
     }
     pub fn change_module_tgt(
@@ -134,9 +155,38 @@ impl SolarSystem {
         tgt_item_id: &SsItemId,
         range: Option<AttrVal>,
     ) -> Result<()> {
+        // Check if target is defined before changing it
+        let module = self.items.get_module(item_id)?;
+        let old_range = match module.tgts.get(tgt_item_id) {
+            Some(old_range) => *old_range,
+            None => return Err(Error::new(ErrorKind::TargetNotFound(*item_id, *tgt_item_id))),
+        };
+        // Do nothing if ranges are equal
+        if range == old_range {
+            return Ok(());
+        }
+        // Adjust skeleton
+        let module = self.items.get_module_mut(item_id).unwrap();
+        module.tgts.add(*tgt_item_id, range);
         Ok(())
     }
     pub fn remove_module_tgt(&mut self, item_id: &SsItemId, tgt_item_id: &SsItemId) -> Result<()> {
+        // Check if target is defined
+        let module = self.items.get_module(item_id)?;
+        if !module.tgts.contains(tgt_item_id) {
+            return Err(Error::new(ErrorKind::TargetNotFound(*item_id, *tgt_item_id)));
+        };
+        // Process request in services
+        let item = self.items.get_item(item_id).unwrap();
+        self.svcs.remove_item_tgt(
+            &SsView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &item,
+            tgt_item_id,
+        );
+        // Update the skeleton
+        self.tgt_tracker.unreg_tgt(item_id, tgt_item_id);
+        let module = self.items.get_module_mut(item_id).unwrap();
+        module.tgts.remove(tgt_item_id);
         Ok(())
     }
     // Non-public

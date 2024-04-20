@@ -27,6 +27,7 @@ pub enum ErrorKind {
     NoAttrBaseValue(EAttrId, EItemId),
     CustomModCalc,
     ItemNotTargetable(SsItemId),
+    TargetNotFound(SsItemId, SsItemId),
 }
 
 #[derive(Debug)]
@@ -70,6 +71,9 @@ impl fmt::Display for Error {
             ),
             ErrorKind::CustomModCalc => write!(f, "failed to calculate custom modifier"),
             ErrorKind::ItemNotTargetable(item_id) => write!(f, "item {item_id} is not targetable"),
+            ErrorKind::TargetNotFound(src_item_id, tgt_item_id) => {
+                write!(f, "item {src_item_id} doesn't have item {tgt_item_id} as target")
+            }
         }
     }
 }

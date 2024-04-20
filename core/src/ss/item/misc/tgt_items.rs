@@ -13,8 +13,11 @@ impl SsTgtItems {
     pub(in crate::ss) fn add(&mut self, item_id: SsItemId, range: Option<AttrVal>) {
         self.data.insert(item_id, range);
     }
-    pub(in crate::ss) fn remove(&mut self, item_id: &SsItemId) {
-        self.data.remove(item_id);
+    pub(in crate::ss) fn remove(&mut self, item_id: &SsItemId) -> Option<Option<AttrVal>> {
+        self.data.remove(item_id)
+    }
+    pub(in crate::ss) fn get(&self, item_id: &SsItemId) -> Option<&Option<AttrVal>> {
+        self.data.get(item_id)
     }
     pub(in crate::ss) fn iter(&self) -> impl ExactSizeIterator<Item = (&SsItemId, &Option<AttrVal>)> {
         self.data.iter()

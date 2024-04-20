@@ -55,6 +55,7 @@ impl HError {
                 rc::ErrorKind::ItemNotTargetable(_) => "COR-015",
                 rc::ErrorKind::FleetIdAllocFailed => "COR-016",
                 rc::ErrorKind::FleetNotFound(_) => "COR-017",
+                rc::ErrorKind::TargetNotFound(_, _) => "COR-018",
             },
         };
         code.to_string()
