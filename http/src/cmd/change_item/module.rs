@@ -9,6 +9,15 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
+    #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
+    #[serde(default)]
+    add_tgts: Vec<(rc::SsItemId, Option<rc::AttrVal>)>,
+    #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
+    #[serde(default)]
+    change_tgts: Vec<(rc::SsItemId, Option<rc::AttrVal>)>,
+    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde(default)]
+    rm_tgts: Vec<rc::SsItemId>,
     state: Option<HState>,
     #[serde(default, with = "::serde_with::rust::double_option")]
     charge: Option<Option<rc::EItemId>>,
@@ -22,6 +31,15 @@ impl HChangeModuleCmd {
         core_ss: &mut rc::SolarSystem,
         item_id: &rc::SsItemId,
     ) -> rc::Result<HCmdResp> {
+        for (tgt_item_id, range) in self.add_tgts.iter() {
+            core_ss.add_module_tgt(item_id, tgt_item_id, *range)?;
+        }
+        for (tgt_item_id, range) in self.change_tgts.iter() {
+            core_ss.change_module_tgt(item_id, tgt_item_id, *range)?;
+        }
+        for tgt_item_id in self.rm_tgts.iter() {
+            core_ss.remove_module_tgt(item_id, tgt_item_id)?;
+        }
         if let Some(state) = &self.state {
             core_ss.set_module_state(item_id, state.into())?;
         }

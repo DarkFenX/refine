@@ -1,5 +1,5 @@
 use crate::{
-    defs::{EItemId, SsFitId, SsItemId},
+    defs::{AttrVal, EItemId, SsFitId, SsItemId},
     ss::{
         item::{SsItem, SsItemState, SsModule},
         item_info::{SsChargeInfo, SsModuleInfo},
@@ -124,6 +124,20 @@ impl SolarSystem {
             None => false,
         };
         Ok(removed)
+    }
+    pub fn add_module_tgt(&mut self, item_id: &SsItemId, tgt_item_id: &SsItemId, range: Option<AttrVal>) -> Result<()> {
+        Ok(())
+    }
+    pub fn change_module_tgt(
+        &mut self,
+        item_id: &SsItemId,
+        tgt_item_id: &SsItemId,
+        range: Option<AttrVal>,
+    ) -> Result<()> {
+        Ok(())
+    }
+    pub fn remove_module_tgt(&mut self, item_id: &SsItemId, tgt_item_id: &SsItemId) -> Result<()> {
+        Ok(())
     }
     // Non-public
     pub(in crate::ss) fn make_mod_info(&self, module: &SsModule) -> SsModuleInfo {
