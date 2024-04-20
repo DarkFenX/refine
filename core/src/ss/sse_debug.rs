@@ -46,6 +46,7 @@ impl SolarSystem {
             if !matches!(item, SsItem::SwEffect(_)) {
                 return Err(DebugError::new());
             }
+            item.debug_consistency_check(ss_view)?;
         }
         // Projected effects
         for item_id in self.proj_effects.iter() {
@@ -54,15 +55,10 @@ impl SolarSystem {
                 Ok(item) => item,
                 _ => return Err(DebugError::new()),
             };
-            let proj_effect = match item {
-                SsItem::ProjEffect(proj_effect) => proj_effect,
-                _ => return Err(DebugError::new()),
-            };
-            for tgt_item_id in proj_effect.tgts.iter_tgts() {
-                if ss_view.items.get_item(tgt_item_id).is_err() {
-                    return Err(DebugError::new());
-                }
+            if !matches!(item, SsItem::ProjEffect(_)) {
+                return Err(DebugError::new());
             }
+            item.debug_consistency_check(ss_view)?;
         }
         // Check if we have any duplicate references to items
         if check_item_duplicates(&seen_items) {

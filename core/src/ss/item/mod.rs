@@ -19,7 +19,7 @@ pub(in crate::ss) use item_structure::SsStructure;
 pub(in crate::ss) use item_subsystem::SsSubsystem;
 pub(in crate::ss) use item_sw_effect::SsSwEffect;
 pub use misc::SsItemState;
-pub(in crate::ss::item) use misc::{bool_to_state, state_to_bool, SsEffectModes, SsTgtItems};
+pub(in crate::ss::item) use misc::{bool_to_state, debug, state_to_bool, SsEffectModes, SsTgtItems};
 
 mod container;
 mod item;
