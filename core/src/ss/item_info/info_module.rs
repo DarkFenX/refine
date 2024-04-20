@@ -6,7 +6,7 @@ use crate::{
     },
 };
 
-use super::SsChargeInfo;
+use super::{SsChargeInfo, SsTgtInfo};
 
 pub struct SsModuleInfo {
     pub id: SsItemId,
@@ -16,6 +16,7 @@ pub struct SsModuleInfo {
     pub rack: SsModRack,
     pub pos: Idx,
     pub ss_charge_info: Option<SsChargeInfo>,
+    pub tgts: Vec<SsTgtInfo>,
 }
 impl SsModuleInfo {
     fn new(
@@ -26,6 +27,7 @@ impl SsModuleInfo {
         rack: SsModRack,
         pos: Idx,
         ss_charge_info: Option<SsChargeInfo>,
+        tgts: Vec<SsTgtInfo>,
     ) -> Self {
         Self {
             id,
@@ -35,6 +37,7 @@ impl SsModuleInfo {
             rack,
             pos,
             ss_charge_info,
+            tgts,
         }
     }
     pub(in crate::ss) fn from_mod_and_charge(ss_module: &SsModule, ss_charge_info: Option<SsChargeInfo>) -> Self {
@@ -46,6 +49,11 @@ impl SsModuleInfo {
             ss_module.rack,
             ss_module.pos,
             ss_charge_info,
+            ss_module
+                .tgts
+                .iter()
+                .map(|(item_id, range)| SsTgtInfo::new(*item_id, *range))
+                .collect(),
         )
     }
 }

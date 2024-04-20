@@ -16,6 +16,9 @@ pub(crate) struct HModuleInfoPartial {
     pub(crate) pos: rc::Idx,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) charge: Option<HChargeInfo>,
+    #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) tgts: Vec<(rc::SsItemId, Option<rc::AttrVal>)>,
 }
 impl HModuleInfoPartial {
     pub(super) fn mk_info(
@@ -34,6 +37,7 @@ impl HModuleInfoPartial {
                 .ss_charge_info
                 .as_ref()
                 .map(|v| HChargeInfo::mk_info(core_ss, v, item_mode)),
+            tgts: core_module_info.tgts.iter().map(|v| (v.item_id, v.range)).collect(),
         }
     }
 }

@@ -17,6 +17,7 @@ pub use info_stance::SsStanceInfo;
 pub use info_structure::SsStructureInfo;
 pub use info_subsystem::SsSubsystemInfo;
 pub use info_sw_effect::SsSwEffectInfo;
+pub use misc::SsTgtInfo;
 
 mod info;
 mod info_booster;
@@ -35,3 +36,4 @@ mod info_stance;
 mod info_structure;
 mod info_subsystem;
 mod info_sw_effect;
+mod misc;

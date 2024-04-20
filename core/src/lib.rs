@@ -31,7 +31,7 @@ pub use ss::{
     item_info::{
         SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsFwEffectInfo, SsImplantInfo,
         SsItemInfo, SsModuleInfo, SsProjEffectInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo,
-        SsSubsystemInfo, SsSwEffectInfo,
+        SsSubsystemInfo, SsSwEffectInfo, SsTgtInfo,
     },
     SolarSystem, SsAttrVal, SsEffectInfo, SsEffectMode, SsItemState, SsModInfo, SsModOpInfo, SsModRack, SsModSrcInfo,
     SsModSrcValInfo, SsOrdAddMode, SsOrdRmMode,
