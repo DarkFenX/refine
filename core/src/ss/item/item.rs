@@ -2,13 +2,11 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SsFitId, SsItemId},
     src::Src,
+    ss::item::{
+        SsBooster, SsCharacter, SsCharge, SsDrone, SsEffectModes, SsFighter, SsFwEffect, SsImplant, SsItemState,
+        SsModule, SsProjEffect, SsRig, SsShip, SsSkill, SsStance, SsStructure, SsSubsystem, SsSwEffect,
+    },
     util::{Error, ErrorKind, Named, Result, StMap},
-};
-
-use super::{
-    misc::{EffectModes, SsItemState},
-    SsBooster, SsCharacter, SsCharge, SsDrone, SsFighter, SsFwEffect, SsImplant, SsModule, SsProjEffect, SsRig, SsShip,
-    SsSkill, SsStance, SsStructure, SsSubsystem, SsSwEffect,
 };
 
 pub(in crate::ss) enum SsItem {
@@ -90,7 +88,7 @@ impl SsItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::ss) fn get_effect_modes(&self) -> &EffectModes {
+    pub(in crate::ss) fn get_effect_modes(&self) -> &SsEffectModes {
         match self {
             Self::Booster(booster) => &booster.effect_modes,
             Self::Character(character) => &character.effect_modes,
@@ -110,7 +108,7 @@ impl SsItem {
             Self::SwEffect(sw_effect) => &sw_effect.effect_modes,
         }
     }
-    pub(in crate::ss) fn get_effect_modes_mut(&mut self) -> &mut EffectModes {
+    pub(in crate::ss) fn get_effect_modes_mut(&mut self) -> &mut SsEffectModes {
         match self {
             Self::Booster(booster) => &mut booster.effect_modes,
             Self::Character(character) => &mut character.effect_modes,

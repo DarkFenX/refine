@@ -1,9 +1,9 @@
 use crate::{config::DEFAULT_EFFECT_MODE, defs::EEffectId, ss::SsEffectMode, util::StMap};
 
-pub(in crate::ss) struct EffectModes {
+pub(in crate::ss) struct SsEffectModes {
     data: StMap<EEffectId, SsEffectMode>,
 }
-impl EffectModes {
+impl SsEffectModes {
     pub(in crate::ss::item) fn new() -> Self {
         Self { data: StMap::new() }
     }

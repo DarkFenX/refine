@@ -3,10 +3,10 @@ use crate::{
     util::StMap,
 };
 
-pub(in crate::ss) struct TgtItems {
+pub(in crate::ss) struct SsTgtItems {
     data: StMap<SsItemId, Option<AttrVal>>,
 }
-impl TgtItems {
+impl SsTgtItems {
     pub(in crate::ss::item) fn new() -> Self {
         Self { data: StMap::new() }
     }

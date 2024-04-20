@@ -2,17 +2,16 @@ use crate::{
     ad,
     defs::{EItemId, SsItemId},
     src::Src,
+    ss::item::{bool_to_state, state_to_bool, SsEffectModes, SsItemState, SsTgtItems},
     util::Named,
 };
-
-use super::misc::{bool_to_state, state_to_bool, EffectModes, SsItemState, TgtItems};
 
 pub(in crate::ss) struct SsProjEffect {
     pub(in crate::ss) id: SsItemId,
     pub(in crate::ss) a_item_id: EItemId,
     pub(in crate::ss) state: SsItemState,
-    pub(in crate::ss) tgts: TgtItems,
-    pub(in crate::ss) effect_modes: EffectModes,
+    pub(in crate::ss) tgts: SsTgtItems,
+    pub(in crate::ss) effect_modes: SsEffectModes,
     pub(in crate::ss) a_item: Option<ad::ArcItem>,
 }
 impl SsProjEffect {
@@ -21,8 +20,8 @@ impl SsProjEffect {
             id,
             a_item_id,
             state: bool_to_state(state),
-            tgts: TgtItems::new(),
-            effect_modes: EffectModes::new(),
+            tgts: SsTgtItems::new(),
+            effect_modes: SsEffectModes::new(),
             a_item: src.get_a_item(&a_item_id),
         }
     }
