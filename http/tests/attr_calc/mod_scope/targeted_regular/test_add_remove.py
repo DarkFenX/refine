@@ -12,7 +12,7 @@ def test_tgt_untgt(client, consts):
         src_attr_id=eve_attr1.id,
         tgt_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
-    eve_module = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
+    eve_module = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_ship = client.mk_eve_item(attrs={eve_attr2.id: 7.5})
     client.create_sources()
     api_ss = client.create_ss()

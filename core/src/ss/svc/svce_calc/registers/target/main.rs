@@ -80,6 +80,7 @@ impl SsTargetRegister {
                         tgts.push(other_item_id);
                     }
                 }
+                SsModDomain::Target => todo!(),
             },
             SsModTgtFilter::Loc(dom) => match dom {
                 SsModDomain::Everything => {

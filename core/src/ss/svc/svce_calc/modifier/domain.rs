@@ -8,6 +8,7 @@ pub(in crate::ss::svc::svce_calc) enum SsModDomain {
     Char,
     Item,
     Other,
+    Target,
 }
 impl From<&ad::AEffectDomain> for SsModDomain {
     fn from(a_effect_domain: &ad::AEffectDomain) -> Self {
@@ -17,6 +18,7 @@ impl From<&ad::AEffectDomain> for SsModDomain {
             ad::AEffectDomain::Char => Self::Char,
             ad::AEffectDomain::Item => Self::Item,
             ad::AEffectDomain::Other => Self::Other,
+            ad::AEffectDomain::Target => Self::Target,
         }
     }
 }

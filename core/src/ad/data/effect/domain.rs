@@ -10,4 +10,6 @@ pub enum AEffectDomain {
     Item,
     /// Charge for module, module for charge.
     Other,
+    /// Affects target or items belonging to it.
+    Target,
 }

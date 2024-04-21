@@ -6,6 +6,7 @@ pub(in crate::handler_json) enum CEffectDomain {
     Char,
     Item,
     Other,
+    Target,
 }
 impl From<&rc::ad::AEffectDomain> for CEffectDomain {
     fn from(effect_domain: &rc::ad::AEffectDomain) -> Self {
@@ -15,6 +16,7 @@ impl From<&rc::ad::AEffectDomain> for CEffectDomain {
             rc::ad::AEffectDomain::Char => Self::Char,
             rc::ad::AEffectDomain::Item => Self::Item,
             rc::ad::AEffectDomain::Other => Self::Other,
+            rc::ad::AEffectDomain::Target => Self::Target,
         }
     }
 }
@@ -26,6 +28,7 @@ impl Into<rc::ad::AEffectDomain> for &CEffectDomain {
             CEffectDomain::Char => rc::ad::AEffectDomain::Char,
             CEffectDomain::Item => rc::ad::AEffectDomain::Item,
             CEffectDomain::Other => rc::ad::AEffectDomain::Other,
+            CEffectDomain::Target => rc::ad::AEffectDomain::Target,
         }
     }
 }
