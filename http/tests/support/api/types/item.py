@@ -75,6 +75,8 @@ class Item(AttrDict):
             self,
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, None, Type[Absent]] = Absent,
+            add_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_mod_request(
@@ -82,15 +84,24 @@ class Item(AttrDict):
             item_id=self.id,
             state=state,
             charge=charge,
+            add_tgts=add_tgts,
+            rm_tgts=rm_tgts,
             effect_modes=effect_modes)
 
     def change_mod(
             self,
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, Type[Absent]] = Absent,
+            add_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> None:
-        resp = self.change_mod_request(state=state, charge=charge, effect_modes=effect_modes).send()
+        resp = self.change_mod_request(
+            state=state,
+            charge=charge,
+            add_tgts=add_tgts,
+            rm_tgts=rm_tgts,
+            effect_modes=effect_modes).send()
         assert resp.status_code == 200
         self._client.check_ss(ss_id=self._ss_id)
 

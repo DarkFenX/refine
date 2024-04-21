@@ -439,12 +439,16 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_id: str,
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, None, Type[Absent]] = Absent,
+            add_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {'type': 'module'}
         conditional_insert(command, 'state', state)
         conditional_insert(command, 'charge', charge)
+        conditional_insert(command, 'add_tgts', add_tgts)
+        conditional_insert(command, 'rm_tgts', rm_tgts)
         conditional_insert(command, 'effect_modes', effect_modes)
         return Request(
             self,
