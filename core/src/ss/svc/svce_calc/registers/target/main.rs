@@ -185,6 +185,7 @@ impl SsTargetRegister {
             }
             SsModType::SystemWide => tgt_fits.extend(ss_view.fits.iter_fits()),
             SsModType::Projected => (),
+            SsModType::Targeted => (),
             SsModType::Fleet => {
                 if let Some(src_fit_id) = mod_item.get_fit_id() {
                     let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();

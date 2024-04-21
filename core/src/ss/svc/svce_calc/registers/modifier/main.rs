@@ -267,6 +267,7 @@ impl SsModifierRegister {
             }
             SsModType::SystemWide => tgt_fit_ids.extend(ss_view.fits.iter_fit_ids()),
             SsModType::Projected => (),
+            SsModType::Targeted => (),
             SsModType::Fleet => {
                 if let Some(src_fit_id) = mod_item.get_fit_id() {
                     let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();
@@ -318,6 +319,7 @@ impl SsModifierRegister {
             }
             SsModType::SystemWide => tgt_fit_ids.extend(ss_view.fits.iter_fit_ids()),
             SsModType::Projected => (),
+            SsModType::Targeted => (),
             SsModType::Fleet => {
                 if let Some(src_fit_id) = mod_item.get_fit_id() {
                     let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();
@@ -339,16 +341,19 @@ impl SsModifierRegister {
         modifier: SsAttrMod,
         tgt_item: &SsItem,
     ) -> bool {
+        if matches!(modifier.mod_type, SsModType::Targeted) {
+            return self.apply_mod_to_item(modifier, tgt_item);
+        }
         match (mod_item, tgt_item) {
             (SsItem::ProjEffect(_), SsItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
                 self.apply_mod_to_fits(modifier, &vec![ship.fit_id]);
-                true
+                return true;
             }
             (SsItem::ProjEffect(_), SsItem::Structure(structure)) if !is_mod_direct_everything(&modifier) => {
                 self.apply_mod_to_fits(modifier, &vec![structure.fit_id]);
-                true
+                return true;
             }
-            (SsItem::ProjEffect(_), _) => self.apply_mod_to_item(modifier, tgt_item),
+            (SsItem::ProjEffect(_), _) => return self.apply_mod_to_item(modifier, tgt_item),
             _ => false,
         }
     }
@@ -358,6 +363,9 @@ impl SsModifierRegister {
         modifier: &SsAttrMod,
         tgt_item: &SsItem,
     ) -> bool {
+        if matches!(modifier.mod_type, SsModType::Targeted) {
+            return self.unapply_mod_from_item(modifier, tgt_item);
+        }
         match (mod_item, tgt_item) {
             (SsItem::ProjEffect(_), SsItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
                 self.unapply_mod_from_fits(modifier, &vec![ship.fit_id]);
@@ -551,6 +559,82 @@ impl SsModifierRegister {
                     self.mods_direct.add_entry(tgt_item.get_id(), modifier);
                     true
                 }
+                SsModDomain::Target if tgt_item.is_targetable() => {
+                    // Could do parent location container here, but it's not really needed, since
+                    // there is no scenario where modifier needs to target item with it being absent
+                    self.mods_direct.add_entry(tgt_item.get_id(), modifier);
+                    true
+                }
+                _ => false,
+            },
+            SsModTgtFilter::Loc(dom) => match dom {
+                SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                    SsItem::Ship(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc.add_entry((tgt_fit_id, SsLocType::Ship), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    SsItem::Structure(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc.add_entry((tgt_fit_id, SsLocType::Structure), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    _ => false,
+                },
+                _ => false,
+            },
+            SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
+                SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                    SsItem::Ship(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc_grp
+                                .add_entry((tgt_fit_id, SsLocType::Ship, grp_id), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    SsItem::Structure(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc_grp
+                                .add_entry((tgt_fit_id, SsLocType::Structure, grp_id), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    _ => false,
+                },
+                _ => false,
+            },
+            SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
+                SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                    SsItem::Ship(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc_srq
+                                .add_entry((tgt_fit_id, SsLocType::Ship, srq_id), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    SsItem::Structure(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc_srq
+                                .add_entry((tgt_fit_id, SsLocType::Structure, srq_id), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    _ => false,
+                },
                 _ => false,
             },
             _ => false,
@@ -563,6 +647,83 @@ impl SsModifierRegister {
                     self.mods_direct.remove_entry(&tgt_item.get_id(), modifier);
                     true
                 }
+                SsModDomain::Target if tgt_item.is_targetable() => {
+                    // Could do parent location container here, but it's not really needed, since
+                    // there is no scenario where modifier needs to target item with it being absent
+                    self.mods_direct.remove_entry(&tgt_item.get_id(), modifier);
+                    true
+                }
+                _ => false,
+            },
+            SsModTgtFilter::Loc(dom) => match dom {
+                SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                    SsItem::Ship(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc.remove_entry(&(tgt_fit_id, SsLocType::Ship), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    SsItem::Structure(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc
+                                .remove_entry(&(tgt_fit_id, SsLocType::Structure), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    _ => false,
+                },
+                _ => false,
+            },
+            SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
+                SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                    SsItem::Ship(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc_grp
+                                .remove_entry(&(tgt_fit_id, SsLocType::Ship, grp_id), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    SsItem::Structure(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc_grp
+                                .remove_entry(&(tgt_fit_id, SsLocType::Structure, grp_id), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    _ => false,
+                },
+                _ => false,
+            },
+            SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
+                SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                    SsItem::Ship(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc_srq
+                                .remove_entry(&(tgt_fit_id, SsLocType::Ship, srq_id), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    SsItem::Structure(_) => {
+                        if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                            self.mods_parloc_srq
+                                .remove_entry(&(tgt_fit_id, SsLocType::Structure, srq_id), modifier);
+                            true
+                        } else {
+                            false
+                        }
+                    }
+                    _ => false,
+                },
                 _ => false,
             },
             _ => false,

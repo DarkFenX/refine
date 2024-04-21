@@ -138,6 +138,8 @@ fn get_mod_type(item: &SsItem, effect: &ad::AEffect) -> Option<SsModType> {
         }
         // Fleet buffs
         (SsItem::Module(_), ec::effcats::ACTIVE, Some(ad::AEffectBuffScope::FleetShips)) => Some(SsModType::Fleet),
+        // Targeted effects
+        (_, ec::effcats::TARGET, None) => Some(SsModType::Targeted),
         // Local modifications
         (_, ec::effcats::PASSIVE | ec::effcats::ACTIVE | ec::effcats::ONLINE | ec::effcats::OVERLOAD, None) => {
             Some(SsModType::Local)
