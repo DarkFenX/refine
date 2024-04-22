@@ -31,7 +31,7 @@ def test_affected_parent_ship_multiple(client, consts):
     assert api_ship2.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_affected_parent_structure(client, consts):
+def test_affected_parent_struct(client, consts):
     # Make sure structures are affected by system-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
