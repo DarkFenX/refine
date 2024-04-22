@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_proj_unproj(client, consts):
+def test_project_unproject(client, consts):
     # Check that effects are applied/removed when projected effect is applied/unapplied
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
