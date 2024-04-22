@@ -58,6 +58,50 @@ def test_affected_fleeted_child_ship(client, consts):
     assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
 
 
+def test_affected_change_chain(client, consts):
+    # Check that when buff value is changed, affectee attribute value is updated
+    eve_skill = client.mk_eve_item()
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
+    eve_buff_mult_attr = client.mk_eve_attr()
+    eve_tgt_attr = client.mk_eve_attr()
+    eve_buff = client.mk_eve_buff(
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_percent,
+        loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id, skill_id=eve_skill.id)])
+    eve_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_bonus_warfare_link_armor,
+        cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 50},
+        eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_implant_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_mul,
+        src_attr_id=eve_buff_mult_attr.id,
+        tgt_attr_id=eve_buff_val_attr.id)
+    eve_implant_effect = client.mk_eve_effect(mod_info=[eve_implant_mod])
+    eve_implant = client.mk_eve_item(attrs={eve_buff_mult_attr.id: 2}, eff_ids=[eve_implant_effect.id])
+    eve_rig = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5}, srqs={eve_skill.id: 1})
+    eve_ship = client.mk_eve_item()
+    client.create_sources()
+    api_ss = client.create_ss()
+    api_fit1 = api_ss.create_fit()
+    api_fit2 = api_ss.create_fit()
+    api_fleet = api_ss.create_fleet()
+    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
+    api_fit1.set_ship(type_id=eve_ship.id)
+    api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
+    api_fit2.set_ship(type_id=eve_ship.id)
+    api_rig = api_fit2.add_rig(type_id=eve_rig.id)
+    assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(11.25)
+    api_implant = api_fit1.add_implant(type_id=eve_implant.id)
+    assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(15)
+    api_implant.remove()
+    assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(11.25)
+
+
 def test_affected_charge(client, consts):
     # Reflects currently real EVE scenario: mining preservation fleet bonus
     eve_skill = client.mk_eve_item()
