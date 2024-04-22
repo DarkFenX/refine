@@ -7,7 +7,7 @@ use chrono::Utc;
 use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
-use rc::{ed::EveDataHandler, SolarSystem, Src, SsItemState, SsModRack, SsOrdAddMode, VERSION};
+use rc::{ed::EveDataHandler, SolItemState, SolModRack, SolOrdAddMode, SolarSystem, Src, VERSION};
 
 fn setup_logger() -> () {
     let time_format_full = time::macros::format_description!(
@@ -72,10 +72,10 @@ fn main() {
         let anp = sol_sys
             .add_module(
                 fit.id,
-                SsModRack::Low,
-                SsOrdAddMode::Equip,
+                SolModRack::Low,
+                SolOrdAddMode::Equip,
                 1306,
-                SsItemState::Online,
+                SolItemState::Online,
                 None,
             )
             .unwrap();

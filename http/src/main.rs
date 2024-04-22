@@ -37,7 +37,7 @@ async fn main() {
     let state_cleanup = state.clone();
     tokio::spawn(async move {
         state_cleanup
-            .ss_mgr
+            .sol_mgr
             .periodic_cleanup(settings.server.solsys_cleanup_interval, settings.server.solsys_lifetime)
             .await
     });
@@ -45,26 +45,26 @@ async fn main() {
     // HTTP routing
     let router = Router::new()
         .route("/", get(handlers::root))
-        .route("/source/:alias", post(handlers::create_source))
-        .route("/source/:alias", delete(handlers::delete_source))
-        .route("/solar_system", post(handlers::create_ss))
-        .route("/solar_system/:ss_id", get(handlers::get_ss))
-        .route("/solar_system/:ss_id", patch(handlers::change_ss))
-        .route("/solar_system/:ss_id", delete(handlers::delete_ss))
-        .route("/solar_system/:ss_id/fit", post(handlers::create_fit))
-        .route("/solar_system/:ss_id/fit/:fit_id", get(handlers::get_fit))
-        .route("/solar_system/:ss_id/fit/:fit_id", patch(handlers::change_fit))
-        .route("/solar_system/:ss_id/fit/:fit_id", delete(handlers::delete_fit))
-        .route("/solar_system/:ss_id/item", post(handlers::create_item))
-        .route("/solar_system/:ss_id/item/:item_id", get(handlers::get_item))
-        .route("/solar_system/:ss_id/item/:item_id", patch(handlers::change_item))
-        .route("/solar_system/:ss_id/item/:item_id", delete(handlers::delete_item))
-        .route("/solar_system/:ss_id/fleet", post(handlers::create_fleet))
-        .route("/solar_system/:ss_id/fleet/:fleet_id", get(handlers::get_fleet))
-        .route("/solar_system/:ss_id/fleet/:fleet_id", patch(handlers::change_fleet))
-        .route("/solar_system/:ss_id/fleet/:fleet_id", delete(handlers::delete_fleet))
+        .route("/src/:alias", post(handlers::create_source))
+        .route("/src/:alias", delete(handlers::delete_source))
+        .route("/sol", post(handlers::create_sol))
+        .route("/sol/:sol_id", get(handlers::get_sol))
+        .route("/sol/:sol_id", patch(handlers::change_sol))
+        .route("/sol/:sol_id", delete(handlers::delete_sol))
+        .route("/sol/:sol_id/fit", post(handlers::create_fit))
+        .route("/sol/:sol_id/fit/:fit_id", get(handlers::get_fit))
+        .route("/sol/:sol_id/fit/:fit_id", patch(handlers::change_fit))
+        .route("/sol/:sol_id/fit/:fit_id", delete(handlers::delete_fit))
+        .route("/sol/:sol_id/item", post(handlers::create_item))
+        .route("/sol/:sol_id/item/:item_id", get(handlers::get_item))
+        .route("/sol/:sol_id/item/:item_id", patch(handlers::change_item))
+        .route("/sol/:sol_id/item/:item_id", delete(handlers::delete_item))
+        .route("/sol/:sol_id/fleet", post(handlers::create_fleet))
+        .route("/sol/:sol_id/fleet/:fleet_id", get(handlers::get_fleet))
+        .route("/sol/:sol_id/fleet/:fleet_id", patch(handlers::change_fleet))
+        .route("/sol/:sol_id/fleet/:fleet_id", delete(handlers::delete_fleet))
         // Debug handlers
-        .route("/solar_system/:ss_id/check", get(handlers::debug_check_ss))
+        .route("/sol/:sol_id/check", get(handlers::debug_check_sol))
         .with_state(state);
     // Middleware
     let url_mid = NormalizePathLayer::trim_trailing_slash();

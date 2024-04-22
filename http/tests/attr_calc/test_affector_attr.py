@@ -23,8 +23,8 @@ def test_absent_attr_combination(client, consts):
         attrs={eve_src_attr.id: 1.5, eve_tgt_attr.id: 100},
         eff_ids=[eve_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_rig(type_id=eve_item.id)
     # Invalid source value shouldn't screw whole calculation process
     assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(150)

@@ -8,10 +8,10 @@ pub(crate) struct HAddFwEffectCmd {
 impl HAddFwEffectCmd {
     pub(in crate::cmd) fn execute(
         &self,
-        core_ss: &mut rc::SolarSystem,
-        fit_id: &rc::SsFitId,
-    ) -> rc::Result<rc::SsFwEffectInfo> {
-        core_ss.add_fw_effect(*fit_id, self.type_id, self.state.unwrap_or(true))
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::SolFitId,
+    ) -> rc::Result<rc::SolFwEffectInfo> {
+        core_sol.add_fw_effect(*fit_id, self.type_id, self.state.unwrap_or(true))
     }
 }
 
@@ -19,12 +19,12 @@ impl HAddFwEffectCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeFwEffectCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SsItemId,
+    item_id: rc::SolItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeFwEffectCmd,
 }
 impl HChangeFwEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
-        self.item_cmd.execute(core_ss, &self.item_id)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

@@ -42,7 +42,7 @@ def reefast_server(reefast_config, log_reader):  # pylint: disable=W0621
 def client(httpserver, reefast_config):  # pylint: disable=W0621
     test_client = TestClient(eve_data_server=httpserver, api_port=reefast_config.port)
     yield test_client
-    test_client.cleanup_sss()
+    test_client.cleanup_sols()
     test_client.cleanup_sources()
 
 

@@ -1,0 +1,62 @@
+use crate::{
+    defs::{EItemId, SkillLevel, SolFitId, SolItemId},
+    ec,
+    sol::{
+        item::{SolItem, SolSkill},
+        item_info::SolSkillInfo,
+        SolView, SolarSystem,
+    },
+    util::{Error, ErrorKind, Result},
+};
+
+impl SolarSystem {
+    // Public
+    pub fn get_skill_info(&self, item_id: &SolItemId) -> Result<SolSkillInfo> {
+        Ok(self.items.get_skill(item_id)?.into())
+    }
+    pub fn get_fit_skill_infos(&self, fit_id: &SolFitId) -> Result<Vec<SolSkillInfo>> {
+        let fit = self.fits.get_fit(fit_id)?;
+        let skill_infos = fit
+            .skills
+            .iter()
+            .map(|v| self.items.get_skill(v).unwrap().into())
+            .collect();
+        Ok(skill_infos)
+    }
+    pub fn add_skill(
+        &mut self,
+        fit_id: SolFitId,
+        a_item_id: EItemId,
+        level: SkillLevel,
+        state: bool,
+    ) -> Result<SolSkillInfo> {
+        let item_id = self.items.alloc_item_id()?;
+        let skill = SolSkill::new(&self.src, item_id, fit_id, a_item_id, level, state);
+        let info = SolSkillInfo::from(&skill);
+        let item = SolItem::Skill(skill);
+        self.add_item(item);
+        Ok(info)
+    }
+    pub fn set_skill_level(&mut self, item_id: &SolItemId, level: SkillLevel) -> Result<()> {
+        check_skill_level(level)?;
+        self.items.get_skill_mut(item_id)?.level = level;
+        // TODO: change it to use attribute overrides, and make calc_force_attr_recalc private
+        self.svcs.calc_force_attr_recalc(
+            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            item_id,
+            &ec::attrs::SKILL_LEVEL,
+        );
+        Ok(())
+    }
+    pub fn set_skill_state(&mut self, item_id: &SolItemId, state: bool) -> Result<()> {
+        self.items.get_skill_mut(item_id)?.set_bool_state(state);
+        Ok(())
+    }
+}
+
+fn check_skill_level(level: SkillLevel) -> Result<()> {
+    if level > 5 as SkillLevel || level < 0 as SkillLevel {
+        return Err(Error::new(ErrorKind::InvalidSkillLevel(level)));
+    };
+    Ok(())
+}

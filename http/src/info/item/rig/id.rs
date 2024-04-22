@@ -2,10 +2,10 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HRigInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SsItemId,
+    pub(crate) id: rc::SolItemId,
 }
-impl From<&rc::SsRigInfo> for HRigInfoId {
-    fn from(core_rig_info: &rc::SsRigInfo) -> Self {
+impl From<&rc::SolRigInfo> for HRigInfoId {
+    fn from(core_rig_info: &rc::SolRigInfo) -> Self {
         Self { id: core_rig_info.id }
     }
 }

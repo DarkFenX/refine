@@ -1,11 +1,11 @@
 #[derive(Copy, Clone, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum HSsInfoMode {
+pub(crate) enum HSolInfoMode {
     Id,
     Full,
 }
-impl From<Option<HSsInfoMode>> for HSsInfoMode {
-    fn from(mode_opt: Option<HSsInfoMode>) -> Self {
+impl From<Option<HSolInfoMode>> for HSolInfoMode {
+    fn from(mode_opt: Option<HSolInfoMode>) -> Self {
         mode_opt.unwrap_or_else(|| Self::Full)
     }
 }

@@ -16,17 +16,17 @@ pub(crate) struct HStructureInfoFull {
     pub(crate) mods: HashMap<rc::EAttrId, Vec<HModificationInfo>>,
 }
 impl HStructureInfoFull {
-    pub(super) fn mk_info(core_ss: &mut rc::SolarSystem, core_structure_info: &rc::SsStructureInfo) -> Self {
+    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_structure_info: &rc::SolStructureInfo) -> Self {
         let partial_info = HStructureInfoPartial::from(core_structure_info);
-        let attrs = match core_ss.get_item_attrs(&partial_info.id) {
+        let attrs = match core_sol.get_item_attrs(&partial_info.id) {
             Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),
         };
-        let effects = match core_ss.iter_item_effects(&partial_info.id) {
+        let effects = match core_sol.iter_item_effects(&partial_info.id) {
             Ok(core_effects) => core_effects.into_iter().map(|(k, v)| (k, HEffect::from(&v))).collect(),
             _ => HashMap::new(),
         };
-        let mods = match core_ss.iter_item_modifiers(&partial_info.id) {
+        let mods = match core_sol.iter_item_modifiers(&partial_info.id) {
             Ok(core_mods) => core_mods
                 .into_iter()
                 .map(|(k, v)| (k, v.into_iter().map(|m| HModificationInfo::from(&m)).collect()))

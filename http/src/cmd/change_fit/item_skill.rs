@@ -9,10 +9,10 @@ pub(crate) struct HAddSkillCmd {
 impl HAddSkillCmd {
     pub(in crate::cmd) fn execute(
         &self,
-        core_ss: &mut rc::SolarSystem,
-        fit_id: &rc::SsFitId,
-    ) -> rc::Result<rc::SsSkillInfo> {
-        core_ss.add_skill(*fit_id, self.type_id, self.level, self.state.unwrap_or(true))
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::SolFitId,
+    ) -> rc::Result<rc::SolSkillInfo> {
+        core_sol.add_skill(*fit_id, self.type_id, self.level, self.state.unwrap_or(true))
     }
 }
 
@@ -20,12 +20,12 @@ impl HAddSkillCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeSkillCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SsItemId,
+    item_id: rc::SolItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeSkillCmd,
 }
 impl HChangeSkillCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
-        self.item_cmd.execute(core_ss, &self.item_id)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

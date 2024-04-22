@@ -17,14 +17,14 @@ pub(crate) enum HFitInfo {
 }
 impl HFitInfo {
     pub(crate) fn mk_info(
-        core_ss: &mut rc::SolarSystem,
-        fit_id: &rc::SsFitId,
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::SolFitId,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> HResult<Self> {
         let info = match fit_mode {
-            HFitInfoMode::Id => Self::Id(HFitInfoId::mk_info(core_ss, fit_id)?),
-            HFitInfoMode::Full => Self::Full(HFitInfoFull::mk_info(core_ss, fit_id, item_mode)?),
+            HFitInfoMode::Id => Self::Id(HFitInfoId::mk_info(core_sol, fit_id)?),
+            HFitInfoMode::Full => Self::Full(HFitInfoFull::mk_info(core_sol, fit_id, item_mode)?),
         };
         Ok(info)
     }

@@ -6,21 +6,21 @@ use axum::{
 };
 
 use crate::{
-    handlers::{fit::HFitInfoParams, get_guarded_ss, HGSsResult, HSingleErr},
+    handlers::{fit::HFitInfoParams, get_guarded_sol, HGSolResult, HSingleErr},
     state::HAppState,
     util::HErrorKind,
 };
 
 pub(crate) async fn create_fit(
     State(state): State<HAppState>,
-    Path(ss_id): Path<String>,
+    Path(sol_id): Path<String>,
     Query(params): Query<HFitInfoParams>,
 ) -> impl IntoResponse {
-    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        HGSsResult::Ss(ss) => ss,
-        HGSsResult::ErrResp(r) => return r,
+    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
+        HGSolResult::Sol(sol) => sol,
+        HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_ss
+    let resp = match guarded_sol
         .lock()
         .await
         .add_fit(params.fit.into(), params.item.into())

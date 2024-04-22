@@ -2,16 +2,16 @@
 #[derive(serde_tuple::Serialize_tuple)]
 pub struct HModSrcInfo {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub item_id: rc::SsItemId,
+    pub item_id: rc::SolItemId,
     pub val: HModSrcValInfo,
 }
 impl HModSrcInfo {
-    fn new(item_id: rc::SsItemId, val: HModSrcValInfo) -> Self {
+    fn new(item_id: rc::SolItemId, val: HModSrcValInfo) -> Self {
         Self { item_id, val }
     }
 }
-impl From<&rc::SsModSrcInfo> for HModSrcInfo {
-    fn from(core_src: &rc::SsModSrcInfo) -> Self {
+impl From<&rc::SolModSrcInfo> for HModSrcInfo {
+    fn from(core_src: &rc::SolModSrcInfo) -> Self {
         Self::new(core_src.item_id, (&core_src.val).into())
     }
 }
@@ -24,11 +24,11 @@ pub enum HModSrcValInfo {
     #[serde(rename = "hc")]
     Hardcoded(rc::AttrVal),
 }
-impl From<&rc::SsModSrcValInfo> for HModSrcValInfo {
-    fn from(core_src_val: &rc::SsModSrcValInfo) -> Self {
+impl From<&rc::SolModSrcValInfo> for HModSrcValInfo {
+    fn from(core_src_val: &rc::SolModSrcValInfo) -> Self {
         match core_src_val {
-            rc::SsModSrcValInfo::AttrId(attr_id) => Self::AttrId(*attr_id),
-            rc::SsModSrcValInfo::Hardcoded(attr_val) => Self::Hardcoded(*attr_val),
+            rc::SolModSrcValInfo::AttrId(attr_id) => Self::AttrId(*attr_id),
+            rc::SolModSrcValInfo::Hardcoded(attr_val) => Self::Hardcoded(*attr_val),
         }
     }
 }

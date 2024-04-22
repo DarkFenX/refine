@@ -2,8 +2,8 @@ use std::{error, fmt, result};
 
 use crate::{
     ad,
-    defs::{EAttrId, EItemId, Idx, SkillLevel, SsFitId, SsFleetId, SsItemId},
-    ss::SsModRack,
+    defs::{EAttrId, EItemId, Idx, SkillLevel, SolFitId, SolFleetId, SolItemId},
+    sol::SolModRack,
     util::Named,
 };
 
@@ -12,22 +12,22 @@ use crate::{
 pub enum ErrorKind {
     DhHttpInvalidBaseUrl(String, String),
     SrcADataGenFailed(String),
-    ItemIdNotFound(SsItemId),
-    FitNotFound(SsFitId),
-    FleetNotFound(SsFleetId),
-    SsItemTypeNotFound(&'static str),
+    ItemIdNotFound(SolItemId),
+    FitNotFound(SolFitId),
+    FleetNotFound(SolFleetId),
+    SolItemTypeNotFound(&'static str),
     ItemIdAllocFailed,
     FitIdAllocFailed,
     FleetIdAllocFailed,
     InvalidSkillLevel(SkillLevel),
-    UnexpectedItemType(SsItemId, &'static str, &'static str),
-    ModuleSlotTaken(SsModRack, Idx, SsItemId),
+    UnexpectedItemType(SolItemId, &'static str, &'static str),
+    ModuleSlotTaken(SolModRack, Idx, SolItemId),
     AAttrNotFound(EAttrId),
     AItemNotLoaded(EItemId),
     NoAttrBaseValue(EAttrId, EItemId),
     CustomModCalc,
-    ItemNotTargetable(SsItemId),
-    TargetNotFound(SsItemId, SsItemId),
+    ItemNotTargetable(SolItemId),
+    TargetNotFound(SolItemId, SolItemId),
 }
 
 #[derive(Debug)]
@@ -48,7 +48,7 @@ impl fmt::Display for Error {
             ErrorKind::ItemIdNotFound(item_id) => write!(f, "item {item_id} not found"),
             ErrorKind::FitNotFound(fit_id) => write!(f, "fit {fit_id} not found"),
             ErrorKind::FleetNotFound(fleet_id) => write!(f, "fleet {fleet_id} not found"),
-            ErrorKind::SsItemTypeNotFound(item_type) => write!(f, "{item_type} not found"),
+            ErrorKind::SolItemTypeNotFound(item_type) => write!(f, "{item_type} not found"),
             ErrorKind::ItemIdAllocFailed => write!(f, "item ID allocation failed"),
             ErrorKind::FitIdAllocFailed => write!(f, "fit ID allocation failed"),
             ErrorKind::FleetIdAllocFailed => write!(f, "fit ID allocation failed"),

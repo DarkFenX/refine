@@ -13,10 +13,10 @@ pub(crate) struct HChangeChargeCmd {
 impl HChangeChargeCmd {
     pub(in crate::cmd) fn execute(
         &self,
-        core_ss: &mut rc::SolarSystem,
-        item_id: &rc::SsItemId,
+        core_sol: &mut rc::SolarSystem,
+        item_id: &rc::SolItemId,
     ) -> rc::Result<HCmdResp> {
-        apply_effect_modes(core_ss, item_id, &self.effect_modes)?;
+        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)
     }
 }

@@ -2,15 +2,15 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HProjEffectInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SsItemId,
+    pub(crate) id: rc::SolItemId,
     pub(crate) type_id: rc::EItemId,
     pub(crate) enabled: bool,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) tgts: Vec<rc::SsItemId>,
+    pub(crate) tgts: Vec<rc::SolItemId>,
 }
-impl From<&rc::SsProjEffectInfo> for HProjEffectInfoPartial {
-    fn from(core_proj_effect_info: &rc::SsProjEffectInfo) -> Self {
+impl From<&rc::SolProjEffectInfo> for HProjEffectInfoPartial {
+    fn from(core_proj_effect_info: &rc::SolProjEffectInfo) -> Self {
         Self {
             id: core_proj_effect_info.id,
             type_id: core_proj_effect_info.a_item_id,

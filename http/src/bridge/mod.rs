@@ -1,10 +1,10 @@
 // This module contains entities which bridge synchronous core lib and async HTTP interface
 // together.
 
+pub(crate) use sol::HGuardedSol;
+pub(crate) use sol_mgr::HSolMgr;
 pub(crate) use src_mgr::HSrcMgr;
-pub(crate) use ss::HGuardedSs;
-pub(crate) use ss_mgr::HSsMgr;
 
+mod sol;
+mod sol_mgr;
 mod src_mgr;
-mod ss;
-mod ss_mgr;

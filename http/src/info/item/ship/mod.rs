@@ -17,14 +17,14 @@ pub(crate) enum HShipInfo {
 }
 impl HShipInfo {
     pub(crate) fn mk_info(
-        core_ss: &mut rc::SolarSystem,
-        core_ship_info: &rc::SsShipInfo,
+        core_sol: &mut rc::SolarSystem,
+        core_ship_info: &rc::SolShipInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_ship_info.into()),
             HItemInfoMode::Partial => Self::Partial(core_ship_info.into()),
-            HItemInfoMode::Full => Self::Full(HShipInfoFull::mk_info(core_ss, core_ship_info)),
+            HItemInfoMode::Full => Self::Full(HShipInfoFull::mk_info(core_sol, core_ship_info)),
         }
     }
 }

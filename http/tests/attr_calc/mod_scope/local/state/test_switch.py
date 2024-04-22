@@ -45,8 +45,8 @@ def get_value_after_switch(client, consts, state_from, state_to):
             eve_effect_cat_active.id, eve_effect_cat_overload.id],
         defeff_id=eve_effect_cat_active.id)
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=state_from)
     api_item.change_mod(state=state_to)
     return api_item.update().attrs[eve_tgt_attr.id].dogma

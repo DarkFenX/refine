@@ -11,13 +11,13 @@ use crate::{
 pub(crate) struct HChangeModuleCmd {
     #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
     #[serde(default)]
-    add_tgts: Vec<(rc::SsItemId, Option<rc::AttrVal>)>,
+    add_tgts: Vec<(rc::SolItemId, Option<rc::AttrVal>)>,
     #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
     #[serde(default)]
-    change_tgts: Vec<(rc::SsItemId, Option<rc::AttrVal>)>,
+    change_tgts: Vec<(rc::SolItemId, Option<rc::AttrVal>)>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
-    rm_tgts: Vec<rc::SsItemId>,
+    rm_tgts: Vec<rc::SolItemId>,
     state: Option<HState>,
     #[serde(default, with = "::serde_with::rust::double_option")]
     charge: Option<Option<rc::EItemId>>,
@@ -28,32 +28,32 @@ pub(crate) struct HChangeModuleCmd {
 impl HChangeModuleCmd {
     pub(in crate::cmd) fn execute(
         &self,
-        core_ss: &mut rc::SolarSystem,
-        item_id: &rc::SsItemId,
+        core_sol: &mut rc::SolarSystem,
+        item_id: &rc::SolItemId,
     ) -> rc::Result<HCmdResp> {
         for (tgt_item_id, range) in self.add_tgts.iter() {
-            core_ss.add_module_tgt(item_id, *tgt_item_id, *range)?;
+            core_sol.add_module_tgt(item_id, *tgt_item_id, *range)?;
         }
         for (tgt_item_id, range) in self.change_tgts.iter() {
-            core_ss.change_module_tgt(item_id, tgt_item_id, *range)?;
+            core_sol.change_module_tgt(item_id, tgt_item_id, *range)?;
         }
         for tgt_item_id in self.rm_tgts.iter() {
-            core_ss.remove_module_tgt(item_id, tgt_item_id)?;
+            core_sol.remove_module_tgt(item_id, tgt_item_id)?;
         }
         if let Some(state) = &self.state {
-            core_ss.set_module_state(item_id, state.into())?;
+            core_sol.set_module_state(item_id, state.into())?;
         }
         if let Some(charge_opt) = &self.charge {
             match charge_opt {
                 Some(charge) => {
-                    core_ss.set_module_charge(item_id, *charge)?;
+                    core_sol.set_module_charge(item_id, *charge)?;
                 }
                 None => {
-                    core_ss.remove_module_charge(item_id)?;
+                    core_sol.remove_module_charge(item_id)?;
                 }
             }
         }
-        apply_effect_modes(core_ss, item_id, &self.effect_modes)?;
+        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)
     }
 }

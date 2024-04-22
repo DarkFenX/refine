@@ -15,28 +15,28 @@ if TYPE_CHECKING:
 
 class Fit(AttrDict):
 
-    def __init__(self, client: ApiClient, data: dict, ss_id: str):
+    def __init__(self, client: ApiClient, data: dict, sol_id: str):
         super().__init__(data=data)
         self._client = client
-        self._ss_id = ss_id
+        self._sol_id = sol_id
 
     def update_request(self) -> Request:
-        return self._client.get_fit_request(ss_id=self._ss_id, fit_id=self.id)
+        return self._client.get_fit_request(sol_id=self._sol_id, fit_id=self.id)
 
     def update(self) -> Fit:
         resp = self.update_request().send()
         assert resp.status_code == 200
-        self._client.check_ss(ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
         self._data = resp.json()
         return self
 
     def remove_request(self) -> Request:
-        return self._client.remove_fit_request(ss_id=self._ss_id, fit_id=self.id)
+        return self._client.remove_fit_request(sol_id=self._sol_id, fit_id=self.id)
 
     def remove(self) -> None:
         resp = self.remove_request().send()
         assert resp.status_code == 204
-        self._client.check_ss(ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
 
     # Fleet methods
     def set_fleet_request(
@@ -46,7 +46,7 @@ class Fit(AttrDict):
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         return self._client.set_fit_fleet_request(
-            ss_id=self._ss_id,
+            sol_id=self._sol_id,
             fit_id=self.id,
             fleet_id=fleet_id,
             fit_info_mode=fit_info_mode,
@@ -55,26 +55,26 @@ class Fit(AttrDict):
     def set_fleet(self, fleet_id: Union[str, None]) -> None:
         resp = self.set_fleet_request(fleet_id=fleet_id).send()
         assert resp.status_code == 200
-        self._client.check_ss(ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
 
     # Generic item methods
     def remove_item_request(self, item_id: str) -> Request:
-        return self._client.remove_item_request(ss_id=self._ss_id, item_id=item_id)
+        return self._client.remove_item_request(sol_id=self._sol_id, item_id=item_id)
 
     def remove_item(self, item_id: str) -> None:
         resp = self.remove_item_request(item_id=item_id).send()
         assert resp.status_code == 204
-        self._client.check_ss(ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
 
     # Character methods
     def set_char_request(self, type_id: int) -> Request:
-        return self._client.set_char_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
+        return self._client.set_char_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)
 
     def set_char(self, type_id: int) -> Item:
         resp = self.set_char_request(type_id=type_id).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Skill methods
@@ -85,7 +85,7 @@ class Fit(AttrDict):
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
         return self._client.add_skill_request(
-            ss_id=self._ss_id, fit_id=self.id, type_id=type_id, level=level, state=state)
+            sol_id=self._sol_id, fit_id=self.id, type_id=type_id, level=level, state=state)
 
     def add_skill(
             self,
@@ -95,8 +95,8 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_skill_request(type_id=type_id, level=level, state=state).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Implant methods
@@ -105,7 +105,7 @@ class Fit(AttrDict):
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
-        return self._client.add_implant_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_implant_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_implant(
             self,
@@ -114,8 +114,8 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_implant_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Booster methods
@@ -124,7 +124,7 @@ class Fit(AttrDict):
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
-        return self._client.add_booster_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_booster_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_booster(
             self,
@@ -133,41 +133,41 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_booster_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Ship methods
     def set_ship_request(self, type_id: int) -> Request:
-        return self._client.set_ship_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
+        return self._client.set_ship_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)
 
     def set_ship(self, type_id: int) -> Item:
         resp = self.set_ship_request(type_id=type_id).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Structure methods
     def set_struct_request(self, type_id: int) -> Request:
-        return self._client.set_struct_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
+        return self._client.set_struct_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)
 
     def set_struct(self, type_id: int) -> Item:
         resp = self.set_struct_request(type_id=type_id).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Stance methods
     def set_stance_request(self, type_id: int) -> Request:
-        return self._client.set_stance_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id)
+        return self._client.set_stance_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)
 
     def set_stance(self, type_id: int) -> Item:
         resp = self.set_stance_request(type_id=type_id).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Subsystem methods
@@ -176,7 +176,7 @@ class Fit(AttrDict):
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
-        return self._client.add_subsystem_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_subsystem_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_subsystem(
             self,
@@ -185,8 +185,8 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_subsystem_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Module methods
@@ -199,7 +199,7 @@ class Fit(AttrDict):
             mode: ApiModAddMode = ApiModAddMode.equip,
     ) -> Request:
         return self._client.add_mod_request(
-            ss_id=self._ss_id, fit_id=self.id, rack=rack, type_id=type_id,
+            sol_id=self._sol_id, fit_id=self.id, rack=rack, type_id=type_id,
             state=state, charge_type_id=charge_type_id, mode=mode)
 
     def add_mod(
@@ -217,8 +217,8 @@ class Fit(AttrDict):
             charge_type_id=charge_type_id,
             mode=mode).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Rig methods
@@ -227,7 +227,7 @@ class Fit(AttrDict):
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
-        return self._client.add_rig_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_rig_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_rig(
             self,
@@ -236,8 +236,8 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_rig_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Drone methods
@@ -246,7 +246,7 @@ class Fit(AttrDict):
             type_id: int,
             state: ApiState = ApiState.offline,
     ) -> Request:
-        return self._client.add_drone_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_drone_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_drone(
             self,
@@ -255,8 +255,8 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_drone_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Fighter methods
@@ -265,7 +265,7 @@ class Fit(AttrDict):
             type_id: int,
             state: ApiState = ApiState.offline,
     ) -> Request:
-        return self._client.add_fighter_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_fighter_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_fighter(
             self,
@@ -274,8 +274,8 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_fighter_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
     # Fit-wide effect methods
@@ -284,7 +284,7 @@ class Fit(AttrDict):
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
     ) -> Request:
-        return self._client.add_fw_effect_request(ss_id=self._ss_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_fw_effect_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
 
     def add_fw_effect(
             self,
@@ -293,6 +293,6 @@ class Fit(AttrDict):
     ) -> Item:
         resp = self.add_fw_effect_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
-        self._client.check_ss(ss_id=self._ss_id)
-        item = Item(client=self._client, data=resp.json(), ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
+        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item

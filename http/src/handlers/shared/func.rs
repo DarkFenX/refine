@@ -5,26 +5,26 @@ use axum::{
 };
 
 use crate::{
-    bridge::{HGuardedSs, HSsMgr},
+    bridge::{HGuardedSol, HSolMgr},
     handlers::HSingleErr,
     util::HErrorKind,
 };
 
-pub(in crate::handlers) enum HGSsResult {
-    Ss(HGuardedSs),
+pub(in crate::handlers) enum HGSolResult {
+    Sol(HGuardedSol),
     ErrResp(Response),
 }
 
-pub(in crate::handlers) async fn get_guarded_ss(ss_mgr: &HSsMgr, ss_id: &str) -> HGSsResult {
-    match ss_mgr.get_ss(&ss_id).await {
-        Ok(ss) => HGSsResult::Ss(ss),
+pub(in crate::handlers) async fn get_guarded_sol(sol_mgr: &HSolMgr, sol_id: &str) -> HGSolResult {
+    match sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => HGSolResult::Sol(sol),
         Err(e) => {
             let code = match e.kind {
-                HErrorKind::SsNotFound(_) => StatusCode::NOT_FOUND,
+                HErrorKind::SolNotFound(_) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             let resp = (code, Json(HSingleErr::from(e))).into_response();
-            HGSsResult::ErrResp(resp)
+            HGSolResult::ErrResp(resp)
         }
     }
 }

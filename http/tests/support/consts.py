@@ -210,7 +210,7 @@ class ApiModAddMode(StrEnum):
 
 
 @unique
-class ApiSsInfoMode(StrEnum):
+class ApiSolInfoMode(StrEnum):
     id = 'id'
     full = 'full'
 

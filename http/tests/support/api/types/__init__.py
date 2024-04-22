@@ -1,1 +1,1 @@
-from .ss import SolarSystem
+from .sol import SolarSystem

@@ -8,10 +8,10 @@ pub(crate) struct HSetShipCmd {
 impl HSetShipCmd {
     pub(in crate::cmd) fn execute(
         &self,
-        core_ss: &mut rc::SolarSystem,
-        fit_id: &rc::SsFitId,
-    ) -> rc::Result<rc::SsShipInfo> {
-        core_ss.set_fit_ship(*fit_id, self.type_id, self.state.unwrap_or(true))
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::SolFitId,
+    ) -> rc::Result<rc::SolShipInfo> {
+        core_sol.set_fit_ship(*fit_id, self.type_id, self.state.unwrap_or(true))
     }
 }
 
@@ -22,10 +22,14 @@ pub(crate) enum HChangeShipCmd {
     ViaFitId(HChangeShipViaFitIdCmd),
 }
 impl HChangeShipCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::SolFitId,
+    ) -> rc::Result<HCmdResp> {
         match self {
-            Self::ViaItemId(cmd) => cmd.execute(core_ss),
-            Self::ViaFitId(cmd) => cmd.execute(core_ss, fit_id),
+            Self::ViaItemId(cmd) => cmd.execute(core_sol),
+            Self::ViaFitId(cmd) => cmd.execute(core_sol, fit_id),
         }
     }
 }
@@ -34,13 +38,13 @@ impl HChangeShipCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeShipViaItemIdCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SsItemId,
+    item_id: rc::SolItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeShipCmd,
 }
 impl HChangeShipViaItemIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
-        self.item_cmd.execute(core_ss, &self.item_id)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        self.item_cmd.execute(core_sol, &self.item_id)
     }
 }
 
@@ -50,8 +54,12 @@ pub(crate) struct HChangeShipViaFitIdCmd {
     item_cmd: change_item::HChangeShipCmd,
 }
 impl HChangeShipViaFitIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        let item_id = core_ss.get_fit_ship_info(fit_id)?.id;
-        self.item_cmd.execute(core_ss, &item_id)
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::SolFitId,
+    ) -> rc::Result<HCmdResp> {
+        let item_id = core_sol.get_fit_ship_info(fit_id)?.id;
+        self.item_cmd.execute(core_sol, &item_id)
     }
 }

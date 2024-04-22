@@ -22,20 +22,20 @@
 
 pub use defs::{
     Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
-    EMutaId, Idx, SkillLevel, SsFitId, SsFleetId, SsItemId, VERSION,
+    EMutaId, Idx, SkillLevel, SolFitId, SolFleetId, SolItemId, VERSION,
+};
+pub use sol::{
+    fit_info::SolFitInfo,
+    fleet_info::SolFleetInfo,
+    item_info::{
+        SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo, SolFwEffectInfo, SolImplantInfo,
+        SolItemInfo, SolModuleInfo, SolProjEffectInfo, SolRigInfo, SolShipInfo, SolSkillInfo, SolStanceInfo,
+        SolStructureInfo, SolSubsystemInfo, SolSwEffectInfo, SolTgtInfo,
+    },
+    SolAttrVal, SolEffectInfo, SolEffectMode, SolItemState, SolModInfo, SolModOpInfo, SolModRack, SolModSrcInfo,
+    SolModSrcValInfo, SolOrdAddMode, SolOrdRmMode, SolarSystem,
 };
 pub use src::Src;
-pub use ss::{
-    fit_info::SsFitInfo,
-    fleet_info::SsFleetInfo,
-    item_info::{
-        SsBoosterInfo, SsCharacterInfo, SsChargeInfo, SsDroneInfo, SsFighterInfo, SsFwEffectInfo, SsImplantInfo,
-        SsItemInfo, SsModuleInfo, SsProjEffectInfo, SsRigInfo, SsShipInfo, SsSkillInfo, SsStanceInfo, SsStructureInfo,
-        SsSubsystemInfo, SsSwEffectInfo, SsTgtInfo,
-    },
-    SolarSystem, SsAttrVal, SsEffectInfo, SsEffectMode, SsItemState, SsModInfo, SsModOpInfo, SsModRack, SsModSrcInfo,
-    SsModSrcValInfo, SsOrdAddMode, SsOrdRmMode,
-};
 pub use util::{Error, ErrorKind, Result};
 
 pub mod ad;
@@ -44,6 +44,6 @@ pub(crate) mod config;
 mod defs;
 pub mod ec;
 pub mod ed;
+mod sol;
 mod src;
-mod ss;
 pub mod util;

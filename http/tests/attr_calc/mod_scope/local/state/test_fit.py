@@ -45,8 +45,8 @@ def get_value_for_state(client, consts, state):
             eve_effect_cat_active.id, eve_effect_cat_overload.id],
         defeff_id=eve_effect_cat_active.id)
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=state)
     return api_item.update().attrs[eve_tgt_attr.id].dogma
 

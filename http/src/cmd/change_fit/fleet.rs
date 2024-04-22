@@ -4,11 +4,15 @@ use crate::cmd::HCmdResp;
 #[derive(serde::Deserialize)]
 pub(crate) struct HSetFleetCmd {
     #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
-    fleet_id: Option<rc::SsFleetId>,
+    fleet_id: Option<rc::SolFleetId>,
 }
 impl HSetFleetCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem, fit_id: &rc::SsFitId) -> rc::Result<HCmdResp> {
-        core_ss.set_fit_fleet(fit_id, self.fleet_id)?;
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::SolFitId,
+    ) -> rc::Result<HCmdResp> {
+        core_sol.set_fit_fleet(fit_id, self.fleet_id)?;
         Ok(HCmdResp::NoData)
     }
 }

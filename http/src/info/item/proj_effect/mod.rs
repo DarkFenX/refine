@@ -17,14 +17,14 @@ pub(crate) enum HProjEffectInfo {
 }
 impl HProjEffectInfo {
     pub(crate) fn mk_info(
-        core_ss: &mut rc::SolarSystem,
-        core_proj_effect_info: &rc::SsProjEffectInfo,
+        core_sol: &mut rc::SolarSystem,
+        core_proj_effect_info: &rc::SolProjEffectInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_proj_effect_info.into()),
             HItemInfoMode::Partial => Self::Partial(core_proj_effect_info.into()),
-            HItemInfoMode::Full => Self::Full(HProjEffectInfoFull::mk_info(core_ss, core_proj_effect_info)),
+            HItemInfoMode::Full => Self::Full(HProjEffectInfoFull::mk_info(core_sol, core_proj_effect_info)),
         }
     }
 }

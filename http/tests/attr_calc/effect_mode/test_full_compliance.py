@@ -29,8 +29,8 @@ def test_state_offline(client, consts):
         attrs={eve_chance_attr.id: 0.2, eve_src_attr1.id: 20, eve_src_attr2.id: 30, eve_tgt_attr.id: 100},
         eff_ids=[eve_effect1.id, eve_effect2.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.ApiState.ghost)
     # Verification
     api_item.update()
@@ -83,8 +83,8 @@ def test_state_online_running(client, consts):
         attrs={eve_src_attr.id: 20, eve_tgt_attr.id: 100},
         eff_ids=[eve_online_effect.id, eve_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.ApiState.offline)
     # Verification
     api_item.update()
@@ -128,8 +128,8 @@ def test_state_online_absent(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
     eve_item = client.mk_eve_item(attrs={eve_src_attr.id: 20, eve_tgt_attr.id: 100}, eff_ids=[eve_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.ApiState.online)
     # Verification
     api_item.update()
@@ -167,8 +167,8 @@ def test_state_active_default(client, consts):
         eff_ids=[eve_effect1.id, eve_effect2.id],
         defeff_id=eve_effect1.id)
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.ApiState.online)
     # Verification
     api_item.update()
@@ -214,8 +214,8 @@ def test_state_active_absent(client, consts):
         attrs={eve_src_attr1.id: 20, eve_src_attr2.id: 30, eve_tgt_attr.id: 100},
         eff_ids=[eve_effect1.id, eve_effect2.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.ApiState.online)
     # Verification
     api_item.update()
@@ -251,8 +251,8 @@ def test_state_overload(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.overload, mod_info=[eve_mod])
     eve_item = client.mk_eve_item(attrs={eve_src_attr.id: 20, eve_tgt_attr.id: 100}, eff_ids=[eve_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.ApiState.online)
     # Verification
     api_item.update()

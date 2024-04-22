@@ -25,8 +25,8 @@ def test_same_item_different_effects_attrs(client, consts):
         attrs={eve_src_attr1.id: 20, eve_src_attr2.id: 20, eve_tgt_attr.id: 100},
         eff_ids=[eve_effect1.id, eve_effect2.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.set_ship(type_id=eve_item.id)
     # Verification
     api_item.update()
@@ -63,8 +63,8 @@ def test_same_item_different_effects_attrs_switching(client, consts):
         eff_ids=[eve_effect1.id, eve_effect2.id],
         defeff_id=eve_effect2.id)
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.ApiState.offline)
     # Verification
     api_item.update()
@@ -118,8 +118,8 @@ def test_same_item_attr_different_effects(client, consts):
     eve_tgt_item = client.mk_eve_item(attrs={eve_tgt_attr.id: 100}, srqs={eve_skill1.id: 1, eve_skill2.id: 1})
     eve_ship_item = client.mk_eve_item()
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_item.id)
     api_fit.add_rig(type_id=eve_src_item.id)
     api_item = api_fit.add_mod(type_id=eve_tgt_item.id, rack=consts.ApiRack.mid)
@@ -159,8 +159,8 @@ def test_same_item_attr_different_effects_switch(client, consts):
         defeff_id=eve_effect2.id)
     eve_tgt_item = client.mk_eve_item(attrs={eve_tgt_attr.id: 100}, srqs={eve_skill1.id: 1, eve_skill2.id: 1})
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_src_item = api_fit.add_mod(type_id=eve_src_item.id, state=consts.ApiState.offline)
     api_tgt_item = api_fit.set_ship(type_id=eve_tgt_item.id)
     # Verification

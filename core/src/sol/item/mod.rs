@@ -1,0 +1,42 @@
+//! Solar system item definitions.
+
+pub(in crate::sol) use container::SolItems;
+pub(in crate::sol) use item::SolItem;
+pub(in crate::sol) use item_booster::SolBooster;
+pub(in crate::sol) use item_character::SolCharacter;
+pub(in crate::sol) use item_charge::SolCharge;
+pub(in crate::sol) use item_drone::SolDrone;
+pub(in crate::sol) use item_fighter::SolFighter;
+pub(in crate::sol) use item_fw_effect::SolFwEffect;
+pub(in crate::sol) use item_implant::SolImplant;
+pub(in crate::sol) use item_module::SolModule;
+pub(in crate::sol) use item_proj_effect::SolProjEffect;
+pub(in crate::sol) use item_rig::SolRig;
+pub(in crate::sol) use item_ship::SolShip;
+pub(in crate::sol) use item_skill::SolSkill;
+pub(in crate::sol) use item_stance::SolStance;
+pub(in crate::sol) use item_structure::SolStructure;
+pub(in crate::sol) use item_subsystem::SolSubsystem;
+pub(in crate::sol) use item_sw_effect::SolSwEffect;
+pub use misc::SolItemState;
+pub(in crate::sol::item) use misc::{bool_to_state, debug, state_to_bool, SolEffectModes, SolTgtItems};
+
+mod container;
+mod item;
+mod item_booster;
+mod item_character;
+mod item_charge;
+mod item_drone;
+mod item_fighter;
+mod item_fw_effect;
+mod item_implant;
+mod item_module;
+mod item_proj_effect;
+mod item_rig;
+mod item_ship;
+mod item_skill;
+mod item_stance;
+mod item_structure;
+mod item_subsystem;
+mod item_sw_effect;
+mod misc;

@@ -6,21 +6,21 @@ use axum::{
 };
 
 use crate::{
-    handlers::{get_guarded_ss, item::HItemInfoParams, HGSsResult, HSingleErr},
+    handlers::{get_guarded_sol, item::HItemInfoParams, HGSolResult, HSingleErr},
     state::HAppState,
     util::HErrorKind,
 };
 
 pub(crate) async fn get_item(
     State(state): State<HAppState>,
-    Path((ss_id, item_id)): Path<(String, String)>,
+    Path((sol_id, item_id)): Path<(String, String)>,
     Query(params): Query<HItemInfoParams>,
 ) -> impl IntoResponse {
-    let guarded_ss = match get_guarded_ss(&state.ss_mgr, &ss_id).await {
-        HGSsResult::Ss(ss) => ss,
-        HGSsResult::ErrResp(r) => return r,
+    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
+        HGSolResult::Sol(sol) => sol,
+        HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_ss.lock().await.get_item(&item_id, params.item.into()).await {
+    let resp = match guarded_sol.lock().await.get_item(&item_id, params.item.into()).await {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),
         Err(e) => {
             let code = match e.kind {

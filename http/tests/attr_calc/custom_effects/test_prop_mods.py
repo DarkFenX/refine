@@ -19,8 +19,8 @@ def test_ab(client, consts):
         eff_ids=[eve_prop_effect.id],
         defeff_id=eve_prop_effect.id)
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     # Verification
@@ -67,8 +67,8 @@ def test_mwd(client, consts):
         eff_ids=[eve_prop_effect.id],
         defeff_id=eve_prop_effect.id)
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     # Verification
@@ -122,8 +122,8 @@ def test_state(client, consts):
         eff_ids=[eve_prop_effect.id],
         defeff_id=eve_prop_effect.id)
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_prop = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     # Verification
@@ -165,11 +165,11 @@ def test_speed_mod_stacking(client, consts):
     eve_sw_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_sw_mod])
     eve_sw_item = client.mk_eve_item(attrs={eve_speed_boost_attr_sw.id: 1.86}, eff_ids=[eve_sw_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
-    api_ss.add_sw_effect(type_id=eve_sw_item.id)
+    api_sol.add_sw_effect(type_id=eve_sw_item.id)
     # Verification - if prop speed boost wasn't penalized against BH speed boost, speed would be
     # 1951.95
     api_ship_item.update()
@@ -208,8 +208,8 @@ def test_sig_mod_stacking(client, consts):
     eve_rig_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_rig_mod])
     eve_rig_item = client.mk_eve_item(attrs={eve_sig_src_attr_rig.id: 10}, eff_ids=[eve_rig_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     api_fit.add_rig(type_id=eve_rig_item.id)
@@ -242,8 +242,8 @@ def test_speed_mod_mass_zero(client, consts):
         eff_ids=[eve_prop_effect.id],
         defeff_id=eve_prop_effect.id)
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_ship_item = api_fit.set_ship(type_id=eve_ship_item.id)
     api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     # Verification
@@ -276,8 +276,8 @@ def test_speed_mod_mass_changed(client, consts):
     eve_rig_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_rig_mod])
     eve_rig_item = client.mk_eve_item(attrs={eve_mass_boost_attr.id: 100}, eff_ids=[eve_rig_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_ship1_item = api_fit.set_ship(type_id=eve_ship1_item.id)
     api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     # Verification
@@ -345,8 +345,8 @@ def test_speed_mod_boost_changed(client, consts):
     eve_implant_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_implant_mod])
     eve_implant_item = client.mk_eve_item(attrs={eve_boost_booster_attr.id: 10}, eff_ids=[eve_implant_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_ship1_item = api_fit.set_ship(type_id=eve_ship1_item.id)
     api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     # Verification
@@ -414,8 +414,8 @@ def test_speed_mod_thrust_changed(client, consts):
     eve_rig_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_rig_mod])
     eve_rig_item = client.mk_eve_item(attrs={eve_thrust_booster_attr.id: 30}, eff_ids=[eve_rig_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_ship1_item = api_fit.set_ship(type_id=eve_ship1_item.id)
     api_prop_item = api_fit.add_mod(type_id=eve_prop_item.id, rack=consts.ApiRack.mid, state=consts.ApiState.active)
     # Verification

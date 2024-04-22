@@ -7,9 +7,9 @@ use crate::{
 #[derive(serde::Serialize)]
 pub(crate) struct HModuleInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SsItemId,
+    pub(crate) id: rc::SolItemId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) fit_id: rc::SsFitId,
+    pub(crate) fit_id: rc::SolFitId,
     pub(crate) type_id: rc::EItemId,
     pub(crate) state: HState,
     pub(crate) rack: HModRack,
@@ -18,12 +18,12 @@ pub(crate) struct HModuleInfoPartial {
     pub(crate) charge: Option<HChargeInfo>,
     #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) tgts: Vec<(rc::SsItemId, Option<rc::AttrVal>)>,
+    pub(crate) tgts: Vec<(rc::SolItemId, Option<rc::AttrVal>)>,
 }
 impl HModuleInfoPartial {
     pub(super) fn mk_info(
-        core_ss: &mut rc::SolarSystem,
-        core_module_info: &rc::SsModuleInfo,
+        core_sol: &mut rc::SolarSystem,
+        core_module_info: &rc::SolModuleInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         Self {
@@ -34,9 +34,9 @@ impl HModuleInfoPartial {
             rack: (&core_module_info.rack).into(),
             pos: core_module_info.pos,
             charge: core_module_info
-                .ss_charge_info
+                .charge_info
                 .as_ref()
-                .map(|v| HChargeInfo::mk_info(core_ss, v, item_mode)),
+                .map(|v| HChargeInfo::mk_info(core_sol, v, item_mode)),
             tgts: core_module_info.tgts.iter().map(|v| (v.item_id, v.range)).collect(),
         }
     }

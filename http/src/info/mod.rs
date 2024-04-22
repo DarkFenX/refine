@@ -3,9 +3,9 @@ pub(crate) use effect::HEffect;
 pub(crate) use fit::HFitInfo;
 pub(crate) use fleet::HFleetInfo;
 pub(crate) use item::{HItemInfo, MkItemInfo};
-pub(crate) use modes::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSsInfoMode};
+pub(crate) use modes::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfoMode};
 pub(crate) use modification::HModificationInfo;
-pub(crate) use ss::HSsInfo;
+pub(crate) use sol::HSolInfo;
 
 mod attr;
 mod effect;
@@ -14,4 +14,4 @@ mod fleet;
 mod item;
 mod modes;
 mod modification;
-mod ss;
+mod sol;

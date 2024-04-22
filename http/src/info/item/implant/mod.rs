@@ -17,14 +17,14 @@ pub(crate) enum HImplantInfo {
 }
 impl HImplantInfo {
     pub(crate) fn mk_info(
-        core_ss: &mut rc::SolarSystem,
-        core_implant_info: &rc::SsImplantInfo,
+        core_sol: &mut rc::SolarSystem,
+        core_implant_info: &rc::SolImplantInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_implant_info.into()),
             HItemInfoMode::Partial => Self::Partial(core_implant_info.into()),
-            HItemInfoMode::Full => Self::Full(HImplantInfoFull::mk_info(core_ss, core_implant_info)),
+            HItemInfoMode::Full => Self::Full(HImplantInfoFull::mk_info(core_sol, core_implant_info)),
         }
     }
 }

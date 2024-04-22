@@ -17,14 +17,14 @@ pub(crate) enum HFighterInfo {
 }
 impl HFighterInfo {
     pub(crate) fn mk_info(
-        core_ss: &mut rc::SolarSystem,
-        core_fighter_info: &rc::SsFighterInfo,
+        core_sol: &mut rc::SolarSystem,
+        core_fighter_info: &rc::SolFighterInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_fighter_info.into()),
             HItemInfoMode::Partial => Self::Partial(core_fighter_info.into()),
-            HItemInfoMode::Full => Self::Full(HFighterInfoFull::mk_info(core_ss, core_fighter_info)),
+            HItemInfoMode::Full => Self::Full(HFighterInfoFull::mk_info(core_sol, core_fighter_info)),
         }
     }
 }

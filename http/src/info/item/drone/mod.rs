@@ -17,14 +17,14 @@ pub(crate) enum HDroneInfo {
 }
 impl HDroneInfo {
     pub(crate) fn mk_info(
-        core_ss: &mut rc::SolarSystem,
-        core_drone_info: &rc::SsDroneInfo,
+        core_sol: &mut rc::SolarSystem,
+        core_drone_info: &rc::SolDroneInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_drone_info.into()),
             HItemInfoMode::Partial => Self::Partial(core_drone_info.into()),
-            HItemInfoMode::Full => Self::Full(HDroneInfoFull::mk_info(core_ss, core_drone_info)),
+            HItemInfoMode::Full => Self::Full(HDroneInfoFull::mk_info(core_sol, core_drone_info)),
         }
     }
 }

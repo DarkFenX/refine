@@ -12,20 +12,20 @@ if TYPE_CHECKING:
 
 class Fleet(AttrDict):
 
-    def __init__(self, client: ApiClient, data: dict, ss_id: str):
+    def __init__(self, client: ApiClient, data: dict, sol_id: str):
         super().__init__(
             data=data,
             hooks={'fits': AttrHookDef(func=lambda fits: fits, default=())})
         self._client = client
-        self._ss_id = ss_id
+        self._sol_id = sol_id
 
     def update_request(self) -> Request:
-        return self._client.get_fleet_request(ss_id=self._ss_id, fleet_id=self.id)
+        return self._client.get_fleet_request(sol_id=self._sol_id, fleet_id=self.id)
 
     def update(self) -> Fleet:
         resp = self.update_request().send()
         assert resp.status_code == 200
-        self._client.check_ss(ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
         self._data = resp.json()
         return self
 
@@ -36,7 +36,7 @@ class Fleet(AttrDict):
             fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
     ) -> Request:
         return self._client.change_fleet_request(
-            ss_id=self._ss_id,
+            sol_id=self._sol_id,
             fleet_id=self.id,
             add_fits=add_fits,
             remove_fits=remove_fits,
@@ -45,14 +45,14 @@ class Fleet(AttrDict):
     def change(self, add_fits: list[str] = (), remove_fits: list[str] = ()):
         resp = self.change_request(add_fits=add_fits, remove_fits=remove_fits).send()
         assert resp.status_code == 200
-        self._client.check_ss(ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)
         self._data = resp.json()
         return self
 
     def remove_request(self) -> Request:
-        return self._client.remove_fleet_request(ss_id=self._ss_id, fleet_id=self.id)
+        return self._client.remove_fleet_request(sol_id=self._sol_id, fleet_id=self.id)
 
     def remove(self) -> None:
         resp = self.remove_request().send()
         assert resp.status_code == 204
-        self._client.check_ss(ss_id=self._ss_id)
+        self._client.check_sol(sol_id=self._sol_id)

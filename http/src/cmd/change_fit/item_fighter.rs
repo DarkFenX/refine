@@ -11,10 +11,10 @@ pub(crate) struct HAddFighterCmd {
 impl HAddFighterCmd {
     pub(in crate::cmd) fn execute(
         &self,
-        core_ss: &mut rc::SolarSystem,
-        fit_id: &rc::SsFitId,
-    ) -> rc::Result<rc::SsFighterInfo> {
-        core_ss.add_fighter(*fit_id, self.type_id, (&self.state).into())
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::SolFitId,
+    ) -> rc::Result<rc::SolFighterInfo> {
+        core_sol.add_fighter(*fit_id, self.type_id, (&self.state).into())
     }
 }
 
@@ -22,12 +22,12 @@ impl HAddFighterCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeFighterCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SsItemId,
+    item_id: rc::SolItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeFighterCmd,
 }
 impl HChangeFighterCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
-        self.item_cmd.execute(core_ss, &self.item_id)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

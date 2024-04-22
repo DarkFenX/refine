@@ -8,10 +8,10 @@ pub(crate) struct HAddSubsystemCmd {
 impl HAddSubsystemCmd {
     pub(in crate::cmd) fn execute(
         &self,
-        core_ss: &mut rc::SolarSystem,
-        fit_id: &rc::SsFitId,
-    ) -> rc::Result<rc::SsSubsystemInfo> {
-        core_ss.add_subsystem(*fit_id, self.type_id, self.state.unwrap_or(true))
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::SolFitId,
+    ) -> rc::Result<rc::SolSubsystemInfo> {
+        core_sol.add_subsystem(*fit_id, self.type_id, self.state.unwrap_or(true))
     }
 }
 
@@ -19,12 +19,12 @@ impl HAddSubsystemCmd {
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeSubsystemCmd {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SsItemId,
+    item_id: rc::SolItemId,
     #[serde(flatten)]
     item_cmd: change_item::HChangeSubsystemCmd,
 }
 impl HChangeSubsystemCmd {
-    pub(in crate::cmd) fn execute(&self, core_ss: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
-        self.item_cmd.execute(core_ss, &self.item_id)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+        self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

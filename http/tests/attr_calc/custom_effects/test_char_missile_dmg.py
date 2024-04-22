@@ -37,8 +37,8 @@ def test_filter(client, consts):
             eve_attr_missile_kin.id: 80, eve_attr_missile_expl.id: 100},
         srqs={eve_item_skill2.id: 1})
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_fit.set_char(type_id=eve_item_char.id)
     api_fit.add_mod(type_id=eve_item_bcs.id, rack=consts.ApiRack.low, state=consts.ApiState.online)
     api_launcher1 = api_fit.add_mod(
@@ -118,10 +118,10 @@ def test_penalization(client, consts):
             eve_attr_missile_kin.id: 80, eve_attr_missile_expl.id: 100},
         srqs={eve_item_skill.id: 1})
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_char = api_fit.set_char(type_id=eve_item_char.id)
-    api_magnetar = api_ss.add_sw_effect(type_id=eve_item_magnetar.id)
+    api_magnetar = api_sol.add_sw_effect(type_id=eve_item_magnetar.id)
     api_launcher = api_fit.add_mod(
         type_id=eve_item_launcher.id,
         rack=consts.ApiRack.high,

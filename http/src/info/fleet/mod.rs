@@ -14,13 +14,13 @@ pub(crate) enum HFleetInfo {
 }
 impl HFleetInfo {
     pub(crate) fn mk_info(
-        core_ss: &mut rc::SolarSystem,
-        fleet_id: &rc::SsFleetId,
+        core_sol: &mut rc::SolarSystem,
+        fleet_id: &rc::SolFleetId,
         fleet_mode: HFleetInfoMode,
     ) -> HResult<Self> {
         let info = match fleet_mode {
-            HFleetInfoMode::Id => Self::Id(HFleetInfoId::mk_info(core_ss, fleet_id)?),
-            HFleetInfoMode::Full => Self::Full(HFleetInfoFull::mk_info(core_ss, fleet_id)?),
+            HFleetInfoMode::Id => Self::Id(HFleetInfoId::mk_info(core_sol, fleet_id)?),
+            HFleetInfoMode::Full => Self::Full(HFleetInfoFull::mk_info(core_sol, fleet_id)?),
         };
         Ok(info)
     }

@@ -2,10 +2,10 @@
 #[derive(serde::Serialize)]
 pub(crate) struct HChargeInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub(crate) id: rc::SsItemId,
+    pub(crate) id: rc::SolItemId,
 }
-impl From<&rc::SsChargeInfo> for HChargeInfoId {
-    fn from(core_charge_info: &rc::SsChargeInfo) -> Self {
+impl From<&rc::SolChargeInfo> for HChargeInfoId {
+    fn from(core_charge_info: &rc::SolChargeInfo) -> Self {
         Self {
             id: core_charge_info.id,
         }

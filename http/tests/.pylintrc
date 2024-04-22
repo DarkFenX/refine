@@ -9,7 +9,7 @@ max-statements = 100
 max-line-length = 120
 
 [BASIC]
-good-names = id, s, op, f, ss
+good-names = id, s, op, f
 
 [MESSAGE CONTROL]
 disable = missing-docstring, too-few-public-methods, duplicate-code

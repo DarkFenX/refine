@@ -14,13 +14,13 @@ pub(crate) struct HChangeShipCmd {
 impl HChangeShipCmd {
     pub(in crate::cmd) fn execute(
         &self,
-        core_ss: &mut rc::SolarSystem,
-        item_id: &rc::SsItemId,
+        core_sol: &mut rc::SolarSystem,
+        item_id: &rc::SolItemId,
     ) -> rc::Result<HCmdResp> {
         if let Some(state) = self.state {
-            core_ss.set_ship_state(item_id, state)?;
+            core_sol.set_ship_state(item_id, state)?;
         }
-        apply_effect_modes(core_ss, item_id, &self.effect_modes)?;
+        apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)
     }
 }

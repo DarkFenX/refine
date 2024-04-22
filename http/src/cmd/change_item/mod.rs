@@ -55,24 +55,24 @@ pub(crate) enum HChangeItemCommand {
     ProjEffect(HChangeProjEffectCmd),
 }
 impl HChangeItemCommand {
-    pub(crate) fn execute(&self, core_ss: &mut rc::SolarSystem, item_id: &rc::SsItemId) -> rc::Result<HCmdResp> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, item_id: &rc::SolItemId) -> rc::Result<HCmdResp> {
         match self {
-            Self::Character(cmd) => cmd.execute(core_ss, item_id),
-            Self::Skill(cmd) => cmd.execute(core_ss, item_id),
-            Self::Implant(cmd) => cmd.execute(core_ss, item_id),
-            Self::Booster(cmd) => cmd.execute(core_ss, item_id),
-            Self::Ship(cmd) => cmd.execute(core_ss, item_id),
-            Self::Structure(cmd) => cmd.execute(core_ss, item_id),
-            Self::Stance(cmd) => cmd.execute(core_ss, item_id),
-            Self::Subsystem(cmd) => cmd.execute(core_ss, item_id),
-            Self::Module(cmd) => cmd.execute(core_ss, item_id),
-            Self::Rig(cmd) => cmd.execute(core_ss, item_id),
-            Self::Drone(cmd) => cmd.execute(core_ss, item_id),
-            Self::Fighter(cmd) => cmd.execute(core_ss, item_id),
-            Self::Charge(cmd) => cmd.execute(core_ss, item_id),
-            Self::SwEffect(cmd) => cmd.execute(core_ss, item_id),
-            Self::FwEffect(cmd) => cmd.execute(core_ss, item_id),
-            Self::ProjEffect(cmd) => cmd.execute(core_ss, item_id),
+            Self::Character(cmd) => cmd.execute(core_sol, item_id),
+            Self::Skill(cmd) => cmd.execute(core_sol, item_id),
+            Self::Implant(cmd) => cmd.execute(core_sol, item_id),
+            Self::Booster(cmd) => cmd.execute(core_sol, item_id),
+            Self::Ship(cmd) => cmd.execute(core_sol, item_id),
+            Self::Structure(cmd) => cmd.execute(core_sol, item_id),
+            Self::Stance(cmd) => cmd.execute(core_sol, item_id),
+            Self::Subsystem(cmd) => cmd.execute(core_sol, item_id),
+            Self::Module(cmd) => cmd.execute(core_sol, item_id),
+            Self::Rig(cmd) => cmd.execute(core_sol, item_id),
+            Self::Drone(cmd) => cmd.execute(core_sol, item_id),
+            Self::Fighter(cmd) => cmd.execute(core_sol, item_id),
+            Self::Charge(cmd) => cmd.execute(core_sol, item_id),
+            Self::SwEffect(cmd) => cmd.execute(core_sol, item_id),
+            Self::FwEffect(cmd) => cmd.execute(core_sol, item_id),
+            Self::ProjEffect(cmd) => cmd.execute(core_sol, item_id),
         }
     }
 }

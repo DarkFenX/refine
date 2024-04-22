@@ -23,8 +23,8 @@ def test_multiple(client, consts):
         attrs={eve_src_attr.id: 20, eve_tgt_attr1.id: 50, eve_tgt_attr2.id: 80, eve_tgt_attr3.id: 100},
         eff_ids=[eve_effect.id])
     client.create_sources()
-    api_ss = client.create_ss()
-    api_fit = api_ss.create_fit()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
     api_item = api_fit.add_rig(type_id=eve_item.id)
     api_item.update()
     # First attribute should be modified by modifier 1
