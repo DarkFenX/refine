@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_proj_unproj_ship(client, consts):
+def test_project_unproject_parent(client, consts):
     # Check that there is no strange side effects when buff isn't defined
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
