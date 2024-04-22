@@ -49,34 +49,55 @@ impl SolAffecteeRegister {
         &self,
         affectees: &mut Vec<SsItemId>,
         ss_view: &SsView,
-        mod_item: &SsItem,
+        item: &SsItem,
         modifier: &SsAttrMod,
     ) {
-        match modifier.mod_type {
-            SsModType::Local | SsModType::FitWide => {
-                if let Some(src_fit_id) = mod_item.get_fit_id() {
-                    let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();
-                    self.fill_affectees_for_fit(affectees, mod_item, modifier, src_fit);
+        // Those modifiers work the same regardless of context
+        match modifier.tgt_filter {
+            SsModTgtFilter::Direct(dom) => match dom {
+                SsModDomain::Item => affectees.push(modifier.src_item_id),
+                SsModDomain::Other => {
+                    if let Some(other_item_id) = item.get_other() {
+                        affectees.push(other_item_id);
+                    }
                 }
+                _ => (),
+            },
+            _ => (),
+        }
+        match modifier.mod_type {
+            // Local and fit-wide modifications affect only source fit itself
+            SsModType::Local | SsModType::FitWide => {
+                let fit = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).unwrap()).unwrap();
+                self.fill_affectees_for_fit(affectees, modifier, fit);
             }
+            // System-wide modifications affect all fits
             SsModType::SystemWide => {
                 for fit in ss_view.fits.iter_fits() {
-                    self.fill_affectees_for_fit(affectees, mod_item, modifier, fit);
+                    self.fill_affectees_for_fit(affectees, modifier, fit);
                 }
             }
-            SsModType::Projected => (),
-            SsModType::Targeted => (),
+            // Projected and targeted modifications are processed depending on what they target
+            SsModType::Projected | SsModType::Targeted => {
+                if let Some(tgt_item_ids) = item.iter_targets() {
+                    for tgt_item_id in tgt_item_ids {
+                        let tgt_item = ss_view.items.get_item(tgt_item_id).unwrap();
+                        self.fill_affectees_for_tgt_item(affectees, ss_view, modifier, tgt_item);
+                    }
+                }
+            }
+            // Fleet modifications affect whole fleet, or just source fit itself, if fleet isn't set
             SsModType::Fleet => {
-                if let Some(src_fit_id) = mod_item.get_fit_id() {
+                if let Some(src_fit_id) = item.get_fit_id() {
                     let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();
                     match src_fit.fleet {
                         Some(fleet_id) => {
                             let fleet = ss_view.fleets.get_fleet(&fleet_id).unwrap();
-                            for fit in fleet.iter_fits().map(|v| ss_view.fits.get_fit(v).unwrap()) {
-                                self.fill_affectees_for_fit(affectees, mod_item, modifier, fit);
+                            for dst_fit in fleet.iter_fits().map(|v| ss_view.fits.get_fit(v).unwrap()) {
+                                self.fill_affectees_for_fit(affectees, modifier, dst_fit);
                             }
                         }
-                        None => self.fill_affectees_for_fit(affectees, mod_item, modifier, src_fit),
+                        None => self.fill_affectees_for_fit(affectees, modifier, src_fit),
                     }
                 }
             }
@@ -85,29 +106,19 @@ impl SolAffecteeRegister {
     pub(in crate::ss::svc::svce_calc) fn fill_affectees_for_fit(
         &self,
         affectees: &mut Vec<SsItemId>,
-        mod_item: &SsItem,
         modifier: &SsAttrMod,
         tgt_fit: &SsFit,
     ) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Everything => extend_vec_from_map_set_l1(affectees, &self.buff_all, &tgt_fit.id),
-                SsModDomain::Item => affectees.push(modifier.src_item_id),
-                SsModDomain::Char => {
-                    extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Character));
-                }
-                SsModDomain::Ship => {
-                    extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Ship));
-                }
-                SsModDomain::Structure => {
-                    extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Structure));
-                }
-                SsModDomain::Other => {
-                    if let Some(other_item_id) = mod_item.get_other() {
-                        affectees.push(other_item_id);
+                _ => {
+                    if let Ok(loc) = dom.try_into() {
+                        if check_domain_owner(dom, tgt_fit) {
+                            extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, loc));
+                        }
                     }
                 }
-                SsModDomain::Target => (),
             },
             SsModTgtFilter::Loc(dom) => match dom {
                 SsModDomain::Everything => {
