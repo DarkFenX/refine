@@ -132,7 +132,11 @@ impl SsSvcs {
         };
         for ss_mod in ss_mods.iter() {
             if self.calc_data.mods.add_mod_tgt(item, *ss_mod, tgt_item) {
-                for tgt_item_id in self.calc_data.affectee.get_affectees_for_tgt_item(ss_mod, &tgt_item) {
+                for tgt_item_id in self
+                    .calc_data
+                    .affectee
+                    .get_affectees_for_tgt_item(ss_view, ss_mod, &tgt_item)
+                {
                     self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
                 }
             }
@@ -156,7 +160,11 @@ impl SsSvcs {
             _ => return,
         };
         for ss_mod in ss_mods.iter() {
-            for tgt_item_id in self.calc_data.affectee.get_affectees_for_tgt_item(ss_mod, &tgt_item) {
+            for tgt_item_id in self
+                .calc_data
+                .affectee
+                .get_affectees_for_tgt_item(ss_view, ss_mod, &tgt_item)
+            {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
             }
             self.calc_data.mods.rm_mod_tgt(item, ss_mod, tgt_item);

@@ -72,10 +72,10 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     }
 }
 
-pub(crate) fn extend_vec_from_map_set_l1<K: Eq + Hash, V: Eq + Hash + Clone>(
+pub(crate) fn extend_vec_from_map_set_l1<K: Eq + Hash, V: Eq + Hash + Copy>(
     vec: &mut Vec<V>,
     storage: &StMapSetL1<K, V>,
     key: &K,
 ) {
-    vec.extend(storage.get(key).map(|v| v.clone()));
+    vec.extend(storage.get(key).map(|v| *v));
 }

@@ -203,6 +203,7 @@ impl SolAffecteeRegister {
     }
     pub(in crate::ss::svc::svce_calc) fn get_affectees_for_tgt_item(
         &self,
+        ss_view: &SsView,
         modifier: &SsAttrMod,
         tgt_item: &SsItem,
     ) -> Vec<SsItemId> {
@@ -212,6 +213,25 @@ impl SolAffecteeRegister {
                 SsModDomain::Everything | SsModDomain::Target => affectees.push(tgt_item.get_id()),
                 SsModDomain::Ship if matches!(tgt_item, SsItem::Ship(_)) => affectees.push(tgt_item.get_id()),
                 SsModDomain::Structure if matches!(tgt_item, SsItem::Structure(_)) => affectees.push(tgt_item.get_id()),
+                SsModDomain::Char => match tgt_item {
+                    SsItem::Ship(ship) => {
+                        if let Some(char_id) = ss_view.fits.get_fit(&ship.fit_id).ok().map(|v| v.character).flatten() {
+                            affectees.push(char_id);
+                        }
+                    }
+                    SsItem::Structure(structure) => {
+                        if let Some(char_id) = ss_view
+                            .fits
+                            .get_fit(&structure.fit_id)
+                            .ok()
+                            .map(|v| v.character)
+                            .flatten()
+                        {
+                            affectees.push(char_id);
+                        }
+                    }
+                    _ => (),
+                },
                 _ => (),
             },
             SsModTgtFilter::Loc(dom) => match dom {
@@ -233,6 +253,15 @@ impl SolAffecteeRegister {
                 SsModDomain::Structure => match tgt_item {
                     SsItem::Structure(structure) => {
                         extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(structure.fit_id, SsLocType::Structure))
+                    }
+                    _ => (),
+                },
+                SsModDomain::Char => match tgt_item {
+                    SsItem::Ship(ship) => {
+                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(ship.fit_id, SsLocType::Character))
+                    }
+                    SsItem::Structure(structure) => {
+                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(structure.fit_id, SsLocType::Character))
                     }
                     _ => (),
                 },
@@ -268,6 +297,19 @@ impl SolAffecteeRegister {
                     ),
                     _ => (),
                 },
+                SsModDomain::Char => match tgt_item {
+                    SsItem::Ship(ship) => extend_vec_from_map_set_l1(
+                        &mut affectees,
+                        &self.loc_grp,
+                        &(ship.fit_id, SsLocType::Character, grp_id),
+                    ),
+                    SsItem::Structure(structure) => extend_vec_from_map_set_l1(
+                        &mut affectees,
+                        &self.loc_grp,
+                        &(structure.fit_id, SsLocType::Character, grp_id),
+                    ),
+                    _ => (),
+                },
                 _ => (),
             },
             SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
@@ -297,6 +339,19 @@ impl SolAffecteeRegister {
                         &mut affectees,
                         &self.loc_srq,
                         &(structure.fit_id, SsLocType::Structure, srq_id),
+                    ),
+                    _ => (),
+                },
+                SsModDomain::Char => match tgt_item {
+                    SsItem::Ship(ship) => extend_vec_from_map_set_l1(
+                        &mut affectees,
+                        &self.loc_srq,
+                        &(ship.fit_id, SsLocType::Character, srq_id),
+                    ),
+                    SsItem::Structure(structure) => extend_vec_from_map_set_l1(
+                        &mut affectees,
+                        &self.loc_srq,
+                        &(structure.fit_id, SsLocType::Character, srq_id),
                     ),
                     _ => (),
                 },
