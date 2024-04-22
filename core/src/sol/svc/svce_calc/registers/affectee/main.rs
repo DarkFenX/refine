@@ -337,8 +337,8 @@ impl SolAffecteeRegister {
         let root_loc_opt = item.get_root_loc_type();
         let grp_id_opt = item.get_group_id().ok();
         let srqs_opt = item.get_skill_reqs().ok();
-        if let (Some(fit), Some(loc_type)) = (fit_opt, root_loc_opt) {
-            self.root.add_entry((fit.id, loc_type), item_id);
+        if let (Some(fit), Some(root_loc)) = (fit_opt, root_loc_opt) {
+            self.root.add_entry((fit.id, root_loc), item_id);
         }
         if let Some(fit) = fit_opt {
             for loc_type in PotentialLocations::new(item) {
@@ -376,8 +376,8 @@ impl SolAffecteeRegister {
         let root_loc_opt = item.get_root_loc_type();
         let grp_id_opt = item.get_group_id().ok();
         let srqs_opt = item.get_skill_reqs().ok();
-        if let (Some(fit), Some(loc_type)) = (fit_opt, root_loc_opt) {
-            self.root.remove_entry(&(fit.id, loc_type), &item_id);
+        if let (Some(fit), Some(root_loc)) = (fit_opt, root_loc_opt) {
+            self.root.remove_entry(&(fit.id, root_loc), &item_id);
         }
         if let Some(fit) = fit_opt {
             for loc_type in PotentialLocations::new(item) {

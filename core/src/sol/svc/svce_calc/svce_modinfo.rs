@@ -70,7 +70,7 @@ impl SolSvcs {
         for modifier in self
             .calc_data
             .mods
-            .get_mods_for_tgt(item, &attr.id, sol_view.fits)
+            .get_mods_for_affectee(item, &attr.id, sol_view.fits)
             .iter()
         {
             let val = match modifier.get_mod_val(self, sol_view) {

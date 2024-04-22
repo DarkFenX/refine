@@ -167,7 +167,7 @@ impl SolSvcs {
         let modifiers = self
             .calc_data
             .mods
-            .iter_mods_for_src(&item_id)
+            .iter_mods_for_affector(&item_id)
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
@@ -186,7 +186,7 @@ impl SolSvcs {
         let modifiers = self
             .calc_data
             .mods
-            .iter_mods_for_src(&item_id)
+            .iter_mods_for_affector(&item_id)
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
@@ -216,7 +216,7 @@ impl SolSvcs {
         let mods = self
             .calc_data
             .mods
-            .iter_mods_for_src(item_id)
+            .iter_mods_for_affector(item_id)
             .filter(|v| v.get_src_attr_id() == Some(*attr_id))
             .map(|v| *v)
             .collect_vec();
@@ -376,7 +376,7 @@ impl SolSvcs {
             for modifier in self
                 .calc_data
                 .mods
-                .get_mods_for_changed_location_owner(item, sol_view.items)
+                .get_mods_for_changed_root(sol_view, item)
             {
                 self.calc_data
                     .affectee

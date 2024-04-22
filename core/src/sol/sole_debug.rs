@@ -8,7 +8,9 @@ use super::SolarSystem;
 
 impl SolarSystem {
     // This function is intended to be used in tests, to make sure inner state is consistent, i.e.
-    // no links broken, mutual references are correct, etc.
+    // no links broken, mutual references are correct, etc. All the entities which contain data
+    // should be checked, and this function should be called from tests, to ensure there are no
+    // memory leaks.
     pub fn debug_consistency_check(&self) -> bool {
         let sol_view = SolView::new(&self.src, &self.fleets, &self.fits, &self.items);
         // Check solar system structure

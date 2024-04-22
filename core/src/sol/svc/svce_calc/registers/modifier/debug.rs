@@ -13,67 +13,67 @@ use super::SolModifierRegister;
 
 impl SolModifierRegister {
     pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> DebugResult {
-        for (item_id, modifiers) in self.mods.iter() {
+        for (item_id, modifiers) in self.by_affector.iter() {
             check_item(sol_view, item_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for (item_id, modifiers) in self.mods_direct.iter() {
+        for (item_id, modifiers) in self.direct.iter() {
             check_item(sol_view, item_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for ((fit_id, _), modifiers) in self.mods_toploc.iter() {
+        for ((fit_id, _), modifiers) in self.root.iter() {
             check_fit(sol_view, fit_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for (item_id, modifiers) in self.mods_other.iter() {
+        for (item_id, modifiers) in self.other.iter() {
             check_item(sol_view, item_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for ((fit_id, _), modifiers) in self.mods_parloc.iter() {
+        for ((fit_id, _), modifiers) in self.loc.iter() {
             check_fit(sol_view, fit_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for ((fit_id, _, _), modifiers) in self.mods_parloc_grp.iter() {
+        for ((fit_id, _, _), modifiers) in self.loc_grp.iter() {
             check_fit(sol_view, fit_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for ((fit_id, _, _), modifiers) in self.mods_parloc_srq.iter() {
+        for ((fit_id, _, _), modifiers) in self.loc_srq.iter() {
             check_fit(sol_view, fit_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for ((fit_id, _), modifiers) in self.mods_own_srq.iter() {
+        for ((fit_id, _), modifiers) in self.own_srq.iter() {
             check_fit(sol_view, fit_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for (fit_id, modifiers) in self.mods_buff_all.iter() {
+        for (fit_id, modifiers) in self.buff_all.iter() {
             check_fit(sol_view, fit_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for (fit_id, modifiers) in self.mods_fleet_fit.iter() {
+        for (fit_id, modifiers) in self.fleet_fit.iter() {
             check_fit(sol_view, fit_id)?;
             for modifier in modifiers {
                 check_modifier(sol_view, modifier)?;
             }
         }
-        for modifiers in self.sw_mods.iter() {
+        for modifiers in self.sw.iter() {
             check_modifier(sol_view, modifiers)?;
         }
         Ok(())
