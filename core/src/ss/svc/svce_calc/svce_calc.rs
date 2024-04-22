@@ -39,11 +39,19 @@ impl SsSvcs {
     pub(in crate::ss::svc) fn calc_item_added(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
         // Custom modifiers
-        for ss_mod in self.calc_data.revs.get_mods_on_item_add() {
-            if ss_mod.revise_on_item_add(item, ss_view) {
-                if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
-                    for tgt_item_id in self.calc_data.affectee.get_affectees(ss_view, src_item, &ss_mod) {
-                        self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+        let ss_mods = self.calc_data.revs.get_mods_on_item_add();
+        if !ss_mods.is_empty() {
+            let mut affectees = Vec::new();
+            for ss_mod in ss_mods.iter() {
+                if ss_mod.revise_on_item_add(item, ss_view) {
+                    if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
+                        self.calc_data
+                            .affectee
+                            .fill_affectees(&mut affectees, ss_view, src_item, ss_mod);
+                        for tgt_item_id in affectees.iter() {
+                            self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
+                        }
+                        affectees.clear();
                     }
                 }
             }
@@ -52,11 +60,19 @@ impl SsSvcs {
     pub(in crate::ss::svc) fn calc_item_removed(&mut self, ss_view: &SsView, item: &SsItem) {
         self.handle_location_owner_change(ss_view, item);
         // Custom modifiers
-        for ss_mod in self.calc_data.revs.get_mods_on_item_remove() {
-            if ss_mod.revise_on_item_remove(item, ss_view) {
-                if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
-                    for tgt_item_id in self.calc_data.affectee.get_affectees(ss_view, src_item, &ss_mod) {
-                        self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+        let ss_mods = self.calc_data.revs.get_mods_on_item_remove();
+        if !ss_mods.is_empty() {
+            let mut affectees = Vec::new();
+            for ss_mod in ss_mods.iter() {
+                if ss_mod.revise_on_item_remove(item, ss_view) {
+                    if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
+                        self.calc_data
+                            .affectee
+                            .fill_affectees(&mut affectees, ss_view, src_item, ss_mod);
+                        for tgt_item_id in affectees.iter() {
+                            self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
+                        }
+                        affectees.clear();
                     }
                 }
             }
@@ -126,18 +142,21 @@ impl SsSvcs {
             .iter_mods_for_src(&item_id)
             .map(|v| *v)
             .collect_vec();
-        let tgt_item = match ss_view.items.get_item(&tgt_item_id) {
-            Ok(item) => item,
-            _ => return,
-        };
-        for ss_mod in ss_mods.iter() {
-            if self.calc_data.mods.add_mod_tgt(item, *ss_mod, tgt_item) {
-                for tgt_item_id in self
-                    .calc_data
-                    .affectee
-                    .get_affectees_for_tgt_item(ss_view, ss_mod, &tgt_item)
-                {
-                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+        if !ss_mods.is_empty() {
+            let tgt_item = match ss_view.items.get_item(&tgt_item_id) {
+                Ok(item) => item,
+                _ => return,
+            };
+            let mut affectees = Vec::new();
+            for ss_mod in ss_mods.iter() {
+                if self.calc_data.mods.add_mod_tgt(item, *ss_mod, tgt_item) {
+                    self.calc_data
+                        .affectee
+                        .fill_affectees_for_tgt_item(&mut affectees, ss_view, ss_mod, &tgt_item);
+                    for tgt_item_id in affectees.iter() {
+                        self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
+                    }
+                    affectees.clear();
                 }
             }
         }
@@ -155,19 +174,22 @@ impl SsSvcs {
             .iter_mods_for_src(&item_id)
             .map(|v| *v)
             .collect_vec();
-        let tgt_item = match ss_view.items.get_item(&tgt_item_id) {
-            Ok(item) => item,
-            _ => return,
-        };
-        for ss_mod in ss_mods.iter() {
-            for tgt_item_id in self
-                .calc_data
-                .affectee
-                .get_affectees_for_tgt_item(ss_view, ss_mod, &tgt_item)
-            {
-                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+        if !ss_mods.is_empty() {
+            let tgt_item = match ss_view.items.get_item(&tgt_item_id) {
+                Ok(item) => item,
+                _ => return,
+            };
+            let mut affectees = Vec::new();
+            for ss_mod in ss_mods.iter() {
+                self.calc_data
+                    .affectee
+                    .fill_affectees_for_tgt_item(&mut affectees, ss_view, ss_mod, &tgt_item);
+                for tgt_item_id in affectees.iter() {
+                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+                }
+                affectees.clear();
+                self.calc_data.mods.rm_mod_tgt(item, ss_mod, tgt_item);
             }
-            self.calc_data.mods.rm_mod_tgt(item, ss_mod, tgt_item);
         }
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
@@ -195,9 +217,16 @@ impl SsSvcs {
             .filter(|v| v.get_src_attr_id() == Some(*attr_id))
             .map(|v| *v)
             .collect_vec();
-        for modifier in mods.iter() {
-            for tgt_item_id in self.calc_data.affectee.get_affectees(ss_view, item, &modifier) {
-                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &modifier.tgt_attr_id);
+        if !mods.is_empty() {
+            let mut affectees = Vec::new();
+            for modifier in mods.iter() {
+                self.calc_data
+                    .affectee
+                    .fill_affectees(&mut affectees, ss_view, item, &modifier);
+                for tgt_item_id in affectees.iter() {
+                    self.calc_force_attr_recalc(ss_view, tgt_item_id, &modifier.tgt_attr_id);
+                }
+                affectees.clear();
             }
         }
         // Process buffs which rely on attribute being modified
@@ -231,15 +260,23 @@ impl SsSvcs {
     }
     // Private methods
     fn reg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
+        if ss_mods.is_empty() {
+            return;
+        }
         // Regular modifiers
+        let mut affectees = Vec::new();
         for ss_mod in ss_mods.iter() {
             // Modifications have to be added before target attributes are cleared, because for case
             // of fleet buff ID attributes new value will be fetched instantly after cleanup, and
             // that value has to be new
             self.calc_data.mods.reg_mod(ss_view, item, *ss_mod);
-            for tgt_item_id in self.calc_data.affectee.get_affectees(ss_view, item, ss_mod) {
-                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+            self.calc_data
+                .affectee
+                .fill_affectees(&mut affectees, ss_view, item, ss_mod);
+            for tgt_item_id in affectees.iter() {
+                self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
             }
+            affectees.clear();
         }
         // Revisions
         for ss_mod in ss_mods.iter() {
@@ -247,15 +284,23 @@ impl SsSvcs {
         }
     }
     fn unreg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
+        if ss_mods.is_empty() {
+            return;
+        }
         // Regular modifiers
+        let mut affectees = Vec::new();
         for ss_mod in ss_mods.iter() {
             // Modifications have to be removed before target attributes are cleared, because for
             // case of fleet buff ID attributes new value will be fetched instantly after cleanup,
             // and that value has to be new
             self.calc_data.mods.unreg_mod(ss_view, item, ss_mod);
-            for tgt_item_id in self.calc_data.affectee.get_affectees(ss_view, item, ss_mod) {
-                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+            self.calc_data
+                .affectee
+                .fill_affectees(&mut affectees, ss_view, item, ss_mod);
+            for tgt_item_id in affectees.iter() {
+                self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
             }
+            affectees.clear();
         }
         // Revisions and effect-specific processing
         for ss_mod in ss_mods.iter() {
@@ -276,35 +321,37 @@ impl SsSvcs {
                 Ok(fit) => fit,
                 _ => return,
             };
+            let mut affectees = Vec::new();
             for ss_mod in self
                 .calc_data
                 .mods
                 .get_mods_for_changed_location_owner(item, ss_view.items)
             {
                 if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
-                    for item_id in self
-                        .calc_data
+                    self.calc_data
                         .affectee
-                        .get_affectees_for_fits(src_item, &ss_mod, &vec![fit])
-                    {
-                        self.calc_force_attr_recalc(ss_view, &item_id, &ss_mod.tgt_attr_id);
+                        .fill_affectees_for_fits(&mut affectees, src_item, &ss_mod, &vec![fit]);
+                    for item_id in affectees.iter() {
+                        self.calc_force_attr_recalc(ss_view, item_id, &ss_mod.tgt_attr_id);
                     }
+                    affectees.clear();
                 }
             }
         }
     }
     fn process_fleet_updates(&mut self, ss_view: &SsView, fleet: &SsFleet, fit_id: &SsFitId, updates: SsFleetUpdates) {
+        let mut affectees = Vec::new();
         if !updates.incoming.is_empty() {
             let tgt_fits = vec![ss_view.fits.get_fit(fit_id).unwrap()];
             for ss_mod in updates.incoming.iter() {
                 let src_item = ss_view.items.get_item(&ss_mod.src_item_id).unwrap();
-                for tgt_item_id in self
-                    .calc_data
+                self.calc_data
                     .affectee
-                    .get_affectees_for_fits(src_item, ss_mod, &tgt_fits)
-                {
+                    .fill_affectees_for_fits(&mut affectees, src_item, ss_mod, &tgt_fits);
+                for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
                 }
+                affectees.clear();
             }
         }
         if !updates.outgoing.is_empty() {
@@ -315,13 +362,13 @@ impl SsSvcs {
                 .collect();
             for ss_mod in updates.outgoing.iter() {
                 let src_item = ss_view.items.get_item(&ss_mod.src_item_id).unwrap();
-                for tgt_item_id in self
-                    .calc_data
+                self.calc_data
                     .affectee
-                    .get_affectees_for_fits(src_item, ss_mod, &tgt_fits)
-                {
+                    .fill_affectees_for_fits(&mut affectees, src_item, ss_mod, &tgt_fits);
+                for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
                 }
+                affectees.clear();
             }
         }
     }

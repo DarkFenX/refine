@@ -45,12 +45,13 @@ impl SolAffecteeRegister {
         }
     }
     // Query methods
-    pub(in crate::ss::svc::svce_calc) fn get_affectees(
+    pub(in crate::ss::svc::svce_calc) fn fill_affectees(
         &self,
+        affectees: &mut Vec<SsItemId>,
         ss_view: &SsView,
         mod_item: &SsItem,
         modifier: &SsAttrMod,
-    ) -> Vec<SsItemId> {
+    ) {
         let mut tgt_fits = Vec::new();
         match modifier.mod_type {
             SsModType::Local | SsModType::FitWide => {
@@ -75,36 +76,36 @@ impl SolAffecteeRegister {
                 }
             }
         };
-        self.get_affectees_for_fits(mod_item, modifier, &tgt_fits)
+        self.fill_affectees_for_fits(affectees, mod_item, modifier, &tgt_fits)
     }
-    pub(in crate::ss::svc::svce_calc) fn get_affectees_for_fits(
+    pub(in crate::ss::svc::svce_calc) fn fill_affectees_for_fits(
         &self,
+        affectees: &mut Vec<SsItemId>,
         mod_item: &SsItem,
         modifier: &SsAttrMod,
         tgt_fits: &Vec<&SsFit>,
-    ) -> Vec<SsItemId> {
-        let mut affectees = Vec::new();
+    ) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.buff_all, &tgt_fit.id)
+                        extend_vec_from_map_set_l1(affectees, &self.buff_all, &tgt_fit.id)
                     }
                 }
                 SsModDomain::Item => affectees.push(modifier.src_item_id),
                 SsModDomain::Char => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.root, &(tgt_fit.id, SsLocType::Character));
+                        extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Character));
                     }
                 }
                 SsModDomain::Ship => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.root, &(tgt_fit.id, SsLocType::Ship));
+                        extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Ship));
                     }
                 }
                 SsModDomain::Structure => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.root, &(tgt_fit.id, SsLocType::Structure));
+                        extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Structure));
                     }
                 }
                 SsModDomain::Other => {
@@ -118,10 +119,10 @@ impl SolAffecteeRegister {
                 SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
                         if check_domain_owner(SsModDomain::Ship, tgt_fit) {
-                            extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(tgt_fit.id, SsLocType::Ship));
+                            extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_fit.id, SsLocType::Ship));
                         }
                         if check_domain_owner(SsModDomain::Structure, tgt_fit) {
-                            extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(tgt_fit.id, SsLocType::Structure));
+                            extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_fit.id, SsLocType::Structure));
                         }
                     }
                 }
@@ -129,7 +130,7 @@ impl SolAffecteeRegister {
                     if let Ok(loc) = dom.try_into() {
                         for tgt_fit in tgt_fits.iter() {
                             if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(tgt_fit.id, loc));
+                                extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_fit.id, loc));
                             }
                         }
                     }
@@ -140,14 +141,14 @@ impl SolAffecteeRegister {
                     for tgt_fit in tgt_fits.iter() {
                         if check_domain_owner(SsModDomain::Ship, tgt_fit) {
                             extend_vec_from_map_set_l1(
-                                &mut affectees,
+                                affectees,
                                 &self.loc_grp,
                                 &(tgt_fit.id, SsLocType::Ship, grp_id),
                             );
                         }
                         if check_domain_owner(SsModDomain::Structure, tgt_fit) {
                             extend_vec_from_map_set_l1(
-                                &mut affectees,
+                                affectees,
                                 &self.loc_grp,
                                 &(tgt_fit.id, SsLocType::Structure, grp_id),
                             );
@@ -158,7 +159,7 @@ impl SolAffecteeRegister {
                     if let Ok(loc) = dom.try_into() {
                         for tgt_fit in tgt_fits.iter() {
                             if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_map_set_l1(&mut affectees, &self.loc_grp, &(tgt_fit.id, loc, grp_id));
+                                extend_vec_from_map_set_l1(affectees, &self.loc_grp, &(tgt_fit.id, loc, grp_id));
                             }
                         }
                     }
@@ -169,14 +170,14 @@ impl SolAffecteeRegister {
                     for tgt_fit in tgt_fits.iter() {
                         if check_domain_owner(SsModDomain::Ship, tgt_fit) {
                             extend_vec_from_map_set_l1(
-                                &mut affectees,
+                                affectees,
                                 &self.loc_srq,
                                 &(tgt_fit.id, SsLocType::Ship, srq_id),
                             );
                         }
                         if check_domain_owner(SsModDomain::Structure, tgt_fit) {
                             extend_vec_from_map_set_l1(
-                                &mut affectees,
+                                affectees,
                                 &self.loc_srq,
                                 &(tgt_fit.id, SsLocType::Structure, srq_id),
                             );
@@ -187,7 +188,7 @@ impl SolAffecteeRegister {
                     if let Ok(loc) = dom.try_into() {
                         for tgt_fit in tgt_fits.iter() {
                             if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_map_set_l1(&mut affectees, &self.loc_srq, &(tgt_fit.id, loc, srq_id));
+                                extend_vec_from_map_set_l1(affectees, &self.loc_srq, &(tgt_fit.id, loc, srq_id));
                             }
                         }
                     }
@@ -195,19 +196,18 @@ impl SolAffecteeRegister {
             },
             SsModTgtFilter::OwnSrq(srq_id) => {
                 for tgt_fit in tgt_fits.iter() {
-                    extend_vec_from_map_set_l1(&mut affectees, &self.own_srq, &(tgt_fit.id, srq_id));
+                    extend_vec_from_map_set_l1(affectees, &self.own_srq, &(tgt_fit.id, srq_id));
                 }
             }
         }
-        affectees
     }
-    pub(in crate::ss::svc::svce_calc) fn get_affectees_for_tgt_item(
+    pub(in crate::ss::svc::svce_calc) fn fill_affectees_for_tgt_item(
         &self,
+        affectees: &mut Vec<SsItemId>,
         ss_view: &SsView,
         modifier: &SsAttrMod,
         tgt_item: &SsItem,
-    ) -> Vec<SsItemId> {
-        let mut affectees = Vec::new();
+    ) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Everything | SsModDomain::Target => affectees.push(tgt_item.get_id()),
@@ -237,31 +237,31 @@ impl SolAffecteeRegister {
             SsModTgtFilter::Loc(dom) => match dom {
                 SsModDomain::Everything | SsModDomain::Target => match tgt_item {
                     SsItem::Ship(ship) => {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(ship.fit_id, SsLocType::Ship))
+                        extend_vec_from_map_set_l1(affectees, &self.loc, &(ship.fit_id, SsLocType::Ship))
                     }
                     SsItem::Structure(structure) => {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(structure.fit_id, SsLocType::Structure))
+                        extend_vec_from_map_set_l1(affectees, &self.loc, &(structure.fit_id, SsLocType::Structure))
                     }
                     _ => (),
                 },
                 SsModDomain::Ship => match tgt_item {
                     SsItem::Ship(ship) => {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(ship.fit_id, SsLocType::Ship))
+                        extend_vec_from_map_set_l1(affectees, &self.loc, &(ship.fit_id, SsLocType::Ship))
                     }
                     _ => (),
                 },
                 SsModDomain::Structure => match tgt_item {
                     SsItem::Structure(structure) => {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(structure.fit_id, SsLocType::Structure))
+                        extend_vec_from_map_set_l1(affectees, &self.loc, &(structure.fit_id, SsLocType::Structure))
                     }
                     _ => (),
                 },
                 SsModDomain::Char => match tgt_item {
                     SsItem::Ship(ship) => {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(ship.fit_id, SsLocType::Character))
+                        extend_vec_from_map_set_l1(affectees, &self.loc, &(ship.fit_id, SsLocType::Character))
                     }
                     SsItem::Structure(structure) => {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(structure.fit_id, SsLocType::Character))
+                        extend_vec_from_map_set_l1(affectees, &self.loc, &(structure.fit_id, SsLocType::Character))
                     }
                     _ => (),
                 },
@@ -269,29 +269,25 @@ impl SolAffecteeRegister {
             },
             SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
                 SsModDomain::Everything | SsModDomain::Target => match tgt_item {
-                    SsItem::Ship(ship) => extend_vec_from_map_set_l1(
-                        &mut affectees,
-                        &self.loc_grp,
-                        &(ship.fit_id, SsLocType::Ship, grp_id),
-                    ),
+                    SsItem::Ship(ship) => {
+                        extend_vec_from_map_set_l1(affectees, &self.loc_grp, &(ship.fit_id, SsLocType::Ship, grp_id))
+                    }
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
-                        &mut affectees,
+                        affectees,
                         &self.loc_grp,
                         &(structure.fit_id, SsLocType::Structure, grp_id),
                     ),
                     _ => (),
                 },
                 SsModDomain::Ship => match tgt_item {
-                    SsItem::Ship(ship) => extend_vec_from_map_set_l1(
-                        &mut affectees,
-                        &self.loc_grp,
-                        &(ship.fit_id, SsLocType::Ship, grp_id),
-                    ),
+                    SsItem::Ship(ship) => {
+                        extend_vec_from_map_set_l1(affectees, &self.loc_grp, &(ship.fit_id, SsLocType::Ship, grp_id))
+                    }
                     _ => (),
                 },
                 SsModDomain::Structure => match tgt_item {
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
-                        &mut affectees,
+                        affectees,
                         &self.loc_grp,
                         &(structure.fit_id, SsLocType::Structure, grp_id),
                     ),
@@ -299,12 +295,12 @@ impl SolAffecteeRegister {
                 },
                 SsModDomain::Char => match tgt_item {
                     SsItem::Ship(ship) => extend_vec_from_map_set_l1(
-                        &mut affectees,
+                        affectees,
                         &self.loc_grp,
                         &(ship.fit_id, SsLocType::Character, grp_id),
                     ),
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
-                        &mut affectees,
+                        affectees,
                         &self.loc_grp,
                         &(structure.fit_id, SsLocType::Character, grp_id),
                     ),
@@ -314,29 +310,25 @@ impl SolAffecteeRegister {
             },
             SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
                 SsModDomain::Everything | SsModDomain::Target => match tgt_item {
-                    SsItem::Ship(ship) => extend_vec_from_map_set_l1(
-                        &mut affectees,
-                        &self.loc_srq,
-                        &(ship.fit_id, SsLocType::Ship, srq_id),
-                    ),
+                    SsItem::Ship(ship) => {
+                        extend_vec_from_map_set_l1(affectees, &self.loc_srq, &(ship.fit_id, SsLocType::Ship, srq_id))
+                    }
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
-                        &mut affectees,
+                        affectees,
                         &self.loc_srq,
                         &(structure.fit_id, SsLocType::Structure, srq_id),
                     ),
                     _ => (),
                 },
                 SsModDomain::Ship => match tgt_item {
-                    SsItem::Ship(ship) => extend_vec_from_map_set_l1(
-                        &mut affectees,
-                        &self.loc_srq,
-                        &(ship.fit_id, SsLocType::Ship, srq_id),
-                    ),
+                    SsItem::Ship(ship) => {
+                        extend_vec_from_map_set_l1(affectees, &self.loc_srq, &(ship.fit_id, SsLocType::Ship, srq_id))
+                    }
                     _ => (),
                 },
                 SsModDomain::Structure => match tgt_item {
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
-                        &mut affectees,
+                        affectees,
                         &self.loc_srq,
                         &(structure.fit_id, SsLocType::Structure, srq_id),
                     ),
@@ -344,12 +336,12 @@ impl SolAffecteeRegister {
                 },
                 SsModDomain::Char => match tgt_item {
                     SsItem::Ship(ship) => extend_vec_from_map_set_l1(
-                        &mut affectees,
+                        affectees,
                         &self.loc_srq,
                         &(ship.fit_id, SsLocType::Character, srq_id),
                     ),
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
-                        &mut affectees,
+                        affectees,
                         &self.loc_srq,
                         &(structure.fit_id, SsLocType::Character, srq_id),
                     ),
@@ -358,14 +350,13 @@ impl SolAffecteeRegister {
                 _ => (),
             },
             SsModTgtFilter::OwnSrq(srq_id) => match tgt_item {
-                SsItem::Ship(ship) => extend_vec_from_map_set_l1(&mut affectees, &self.own_srq, &(ship.fit_id, srq_id)),
+                SsItem::Ship(ship) => extend_vec_from_map_set_l1(affectees, &self.own_srq, &(ship.fit_id, srq_id)),
                 SsItem::Structure(structure) => {
-                    extend_vec_from_map_set_l1(&mut affectees, &self.own_srq, &(structure.fit_id, srq_id))
+                    extend_vec_from_map_set_l1(affectees, &self.own_srq, &(structure.fit_id, srq_id))
                 }
                 _ => (),
             },
         }
-        affectees
     }
     // Modification methods
     pub(in crate::ss::svc::svce_calc) fn reg_affectee(&mut self, ss_view: &SsView, item: &SsItem) {
