@@ -130,22 +130,9 @@ impl SsSvcs {
             Ok(item) => item,
             _ => return,
         };
-        let tgt_fit_id = match tgt_item.get_fit_id() {
-            Some(fit_id) => fit_id,
-            _ => return,
-        };
-        let tgt_fit = match ss_view.fits.get_fit(&tgt_fit_id) {
-            Ok(fit) => fit,
-            _ => return,
-        };
-        let tgt_fits = vec![tgt_fit];
         for ss_mod in ss_mods.iter() {
             if self.calc_data.mods.add_mod_tgt(item, *ss_mod, tgt_item) {
-                let mod_item = match ss_view.items.get_item(&ss_mod.src_item_id) {
-                    Ok(item) => item,
-                    _ => continue,
-                };
-                for tgt_item_id in self.calc_data.tgts.get_tgt_items_for_fits(mod_item, ss_mod, &tgt_fits) {
+                for tgt_item_id in self.calc_data.tgts.get_affectees_for_tgt_item(ss_mod, &tgt_item) {
                     self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
                 }
             }
@@ -168,21 +155,8 @@ impl SsSvcs {
             Ok(item) => item,
             _ => return,
         };
-        let tgt_fit_id = match tgt_item.get_fit_id() {
-            Some(fit_id) => fit_id,
-            _ => return,
-        };
-        let tgt_fit = match ss_view.fits.get_fit(&tgt_fit_id) {
-            Ok(fit) => fit,
-            _ => return,
-        };
-        let tgt_fits = vec![tgt_fit];
         for ss_mod in ss_mods.iter() {
-            let mod_item = match ss_view.items.get_item(&ss_mod.src_item_id) {
-                Ok(item) => item,
-                _ => continue,
-            };
-            for tgt_item_id in self.calc_data.tgts.get_tgt_items_for_fits(mod_item, ss_mod, &tgt_fits) {
+            for tgt_item_id in self.calc_data.tgts.get_affectees_for_tgt_item(ss_mod, &tgt_item) {
                 self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
             }
             self.calc_data.mods.rm_mod_tgt(item, ss_mod, tgt_item);

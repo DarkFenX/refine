@@ -263,7 +263,7 @@ fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRes
         "shipID" => Ok(ad::AEffectDomain::Ship),
         "structureID" => Ok(ad::AEffectDomain::Structure),
         "targetID" => match a_effect.tgt_mode {
-            Some(ad::ATgtMode::Item) => Ok(ad::AEffectDomain::Item),
+            Some(ad::ATgtMode::Item) => Ok(ad::AEffectDomain::Target),
             _ => Err(IntError::new(format!(
                 "modifier uses {} domain on untargeted effect",
                 domain
