@@ -58,8 +58,8 @@ def test_affected_fleeted_child_ship(client, consts):
     assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
 
 
-def test_affected_change_chain(client, consts):
-    # Check that when buff value is changed, affectee attribute value is updated
+def test_affected_propagation(client, consts):
+    # Check that changes to attribute value which is source of modification are propagated to target
     eve_skill = client.mk_eve_item()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
