@@ -24,6 +24,6 @@ impl SsModKey {
 }
 impl From<&SsAttrMod> for SsModKey {
     fn from(modifier: &SsAttrMod) -> Self {
-        SsModKey::new(modifier.src_item_id, modifier.get_src_attr_id(), modifier.op)
+        SsModKey::new(modifier.affector_item_id, modifier.get_src_attr_id(), modifier.op)
     }
 }

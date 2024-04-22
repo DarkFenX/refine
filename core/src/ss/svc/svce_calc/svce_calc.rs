@@ -44,12 +44,12 @@ impl SsSvcs {
             let mut affectees = Vec::new();
             for ss_mod in ss_mods.iter() {
                 if ss_mod.revise_on_item_add(item, ss_view) {
-                    if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
+                    if let Ok(src_item) = ss_view.items.get_item(&ss_mod.affector_item_id) {
                         self.calc_data
                             .affectee
                             .fill_affectees(&mut affectees, ss_view, src_item, ss_mod);
                         for tgt_item_id in affectees.iter() {
-                            self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
+                            self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.affectee_attr_id);
                         }
                         affectees.clear();
                     }
@@ -65,12 +65,12 @@ impl SsSvcs {
             let mut affectees = Vec::new();
             for ss_mod in ss_mods.iter() {
                 if ss_mod.revise_on_item_remove(item, ss_view) {
-                    if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
+                    if let Ok(src_item) = ss_view.items.get_item(&ss_mod.affector_item_id) {
                         self.calc_data
                             .affectee
                             .fill_affectees(&mut affectees, ss_view, src_item, ss_mod);
                         for tgt_item_id in affectees.iter() {
-                            self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
+                            self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.affectee_attr_id);
                         }
                         affectees.clear();
                     }
@@ -217,7 +217,7 @@ impl SsSvcs {
                     .affectee
                     .fill_affectees(&mut affectees, ss_view, item, &modifier);
                 for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(ss_view, tgt_item_id, &modifier.tgt_attr_id);
+                    self.calc_force_attr_recalc(ss_view, tgt_item_id, &modifier.affectee_attr_id);
                 }
                 affectees.clear();
             }
@@ -262,7 +262,7 @@ impl SsSvcs {
             self.calc_data.mods.reg_mod(ss_view, item, *ss_mod);
             self.calc_data.affectee.fill_affectees(affectees, ss_view, item, ss_mod);
             for tgt_item_id in affectees.iter() {
-                self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
+                self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.affectee_attr_id);
             }
             affectees.clear();
         }
@@ -279,7 +279,7 @@ impl SsSvcs {
             self.calc_data.mods.unreg_mod(ss_view, item, ss_mod);
             self.calc_data.affectee.fill_affectees(affectees, ss_view, item, ss_mod);
             for tgt_item_id in affectees.iter() {
-                self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
+                self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.affectee_attr_id);
             }
             affectees.clear();
         }
@@ -306,7 +306,7 @@ impl SsSvcs {
                     .affectee
                     .fill_affectees_for_tgt_item(affectees, ss_view, ss_mod, &tgt_item);
                 for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
+                    self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.affectee_attr_id);
                 }
                 affectees.clear();
             }
@@ -325,7 +325,7 @@ impl SsSvcs {
                 .affectee
                 .fill_affectees_for_tgt_item(affectees, ss_view, ss_mod, &tgt_item);
             for tgt_item_id in affectees.iter() {
-                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.affectee_attr_id);
             }
             affectees.clear();
             self.calc_data.mods.rm_mod_tgt(item, ss_mod, tgt_item);
@@ -351,7 +351,7 @@ impl SsSvcs {
                     .affectee
                     .fill_affectees_for_fit(&mut affectees, &ss_mod, fit);
                 for item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(ss_view, item_id, &ss_mod.tgt_attr_id);
+                    self.calc_force_attr_recalc(ss_view, item_id, &ss_mod.affectee_attr_id);
                 }
                 affectees.clear();
             }
@@ -366,7 +366,7 @@ impl SsSvcs {
                     .affectee
                     .fill_affectees_for_fit(&mut affectees, ss_mod, tgt_fit);
                 for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.affectee_attr_id);
                 }
                 affectees.clear();
             }
@@ -383,7 +383,7 @@ impl SsSvcs {
                         .fill_affectees_for_fit(&mut affectees, ss_mod, tgt_fit);
                 }
                 for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.affectee_attr_id);
                 }
                 affectees.clear();
             }

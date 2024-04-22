@@ -70,7 +70,7 @@ impl SsSvcs {
                 Ok(v) => v,
                 _ => continue,
             };
-            let src_item = match ss_view.items.get_item(&modifier.src_item_id) {
+            let src_item = match ss_view.items.get_item(&modifier.affector_item_id) {
                 Ok(i) => i,
                 _ => continue,
             };

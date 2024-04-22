@@ -1,7 +1,7 @@
 use crate::{
     defs::{EEffectId, SsItemId},
     ss::svc::svce_calc::{
-        modifier::{src::SsAttrModSrc, SsAttrMod, SsModDomain, SsModTgtFilter, SsModType},
+        modifier::{src::SsAttrModSrc, SsAffecteeFilter, SsAttrMod, SsModDomain, SsModType},
         SsModAggrMode, SsModOp,
     },
 };
@@ -16,7 +16,7 @@ pub(in crate::ss::svc::svce_calc) fn make_mod(src_item_id: SsItemId, src_effect_
         SsAttrModSrc::PropulsionModule,
         SsModOp::PostMul,
         SsModAggrMode::Stack,
-        SsModTgtFilter::Direct(SsModDomain::Ship),
+        SsAffecteeFilter::Direct(SsModDomain::Ship),
         SHIP_SPEED,
     )
 }

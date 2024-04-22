@@ -45,7 +45,7 @@ pub use misc::SsAttrVal;
 use misc::{SsLocType, SsModKey, SsModification};
 pub use mod_info::{SsModInfo, SsModOpInfo, SsModSrcInfo, SsModSrcValInfo};
 use modifier::{
-    debug, extend_with_custom_mods, SsAttrMod, SsModAggrMode, SsModDomain, SsModOp, SsModTgtFilter, SsModType,
+    debug, extend_with_custom_mods, SsAffecteeFilter, SsAttrMod, SsModAggrMode, SsModDomain, SsModOp, SsModType,
 };
 use registers::{SsAttrSpec, SsFleetUpdates};
 

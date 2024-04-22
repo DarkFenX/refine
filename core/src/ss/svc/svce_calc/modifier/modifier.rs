@@ -4,7 +4,7 @@ use crate::{
     ss::{
         item::SsItem,
         svc::{
-            svce_calc::{SsModAggrMode, SsModDomain, SsModOp, SsModTgtFilter, SsModType},
+            svce_calc::{SsAffecteeFilter, SsModAggrMode, SsModDomain, SsModOp, SsModType},
             SsSvcs,
         },
         SsView,
@@ -17,105 +17,105 @@ use super::SsAttrModSrc;
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::ss::svc::svce_calc) struct SsAttrMod {
     pub(in crate::ss::svc::svce_calc) mod_type: SsModType,
-    pub(in crate::ss::svc::svce_calc) src_item_id: SsItemId,
+    pub(in crate::ss::svc::svce_calc) affector_item_id: SsItemId,
     // This field is here just for hash
-    pub(in crate::ss::svc::svce_calc) src_effect_id: EEffectId,
-    src_val_getter: SsAttrModSrc,
+    pub(in crate::ss::svc::svce_calc) effect_id: EEffectId,
+    val_getter: SsAttrModSrc,
     pub(in crate::ss::svc::svce_calc) op: SsModOp,
     pub(in crate::ss::svc::svce_calc) aggr_mode: SsModAggrMode,
-    pub(in crate::ss::svc::svce_calc) tgt_filter: SsModTgtFilter,
-    pub(in crate::ss::svc::svce_calc) tgt_attr_id: EAttrId,
+    pub(in crate::ss::svc::svce_calc) affectee_filter: SsAffecteeFilter,
+    pub(in crate::ss::svc::svce_calc) affectee_attr_id: EAttrId,
 }
 impl SsAttrMod {
     pub(super) fn new(
         mod_type: SsModType,
-        src_item_id: SsItemId,
-        src_effect_id: EEffectId,
-        src_val_getter: SsAttrModSrc,
+        affector_item_id: SsItemId,
+        effect_id: EEffectId,
+        val_getter: SsAttrModSrc,
         op: SsModOp,
         aggr_mode: SsModAggrMode,
-        tgt_filter: SsModTgtFilter,
-        tgt_attr_id: EAttrId,
+        affectee_filter: SsAffecteeFilter,
+        affectee_attr_id: EAttrId,
     ) -> Self {
         Self {
             mod_type,
-            src_item_id,
-            src_effect_id,
-            src_val_getter,
+            affector_item_id,
+            effect_id,
+            val_getter,
             op,
             aggr_mode,
-            tgt_filter,
-            tgt_attr_id,
+            affectee_filter,
+            affectee_attr_id,
         }
     }
     pub(in crate::ss::svc::svce_calc) fn from_a_effect(
-        src_ss_item: &SsItem,
-        src_a_effect: &ad::AEffect,
-        src_a_mod: &ad::AEffectAttrMod,
+        affector_item: &SsItem,
+        a_effect: &ad::AEffect,
+        a_mod: &ad::AEffectAttrMod,
         mod_type: SsModType,
     ) -> Self {
         Self::new(
             mod_type,
-            src_ss_item.get_id(),
-            src_a_effect.id,
-            SsAttrModSrc::AttrId(src_a_mod.src_attr_id),
-            (&src_a_mod.op).into(),
+            affector_item.get_id(),
+            a_effect.id,
+            SsAttrModSrc::AttrId(a_mod.src_attr_id),
+            (&a_mod.op).into(),
             SsModAggrMode::Stack,
-            SsModTgtFilter::from_a_effect_tgt_filter(&src_a_mod.tgt_filter, src_ss_item),
-            src_a_mod.tgt_attr_id,
+            SsAffecteeFilter::from_a_effect_tgt_filter(&a_mod.tgt_filter, affector_item),
+            a_mod.tgt_attr_id,
         )
     }
     pub(in crate::ss::svc::svce_calc) fn from_a_buff(
-        src_ss_item: &SsItem,
-        src_a_effect: &ad::AEffect,
-        src_a_buff: &ad::ABuff,
-        src_a_mod: &ad::ABuffAttrMod,
-        src_attr_id: EAttrId,
+        affector_item: &SsItem,
+        a_effect: &ad::AEffect,
+        a_buff: &ad::ABuff,
+        a_mod: &ad::ABuffAttrMod,
+        affector_attr_id: EAttrId,
         mod_type: SsModType,
-        ss_domain: SsModDomain,
+        domain: SsModDomain,
     ) -> Self {
         Self::new(
             mod_type,
-            src_ss_item.get_id(),
-            src_a_effect.id,
-            SsAttrModSrc::AttrId(src_attr_id),
-            (&src_a_buff.op).into(),
-            SsModAggrMode::from_a_buff(src_a_buff),
-            SsModTgtFilter::from_a_buff_tgt_filter(&src_a_mod.tgt_filter, ss_domain, src_ss_item),
-            src_a_mod.tgt_attr_id,
+            affector_item.get_id(),
+            a_effect.id,
+            SsAttrModSrc::AttrId(affector_attr_id),
+            (&a_buff.op).into(),
+            SsModAggrMode::from_a_buff(a_buff),
+            SsAffecteeFilter::from_a_buff_tgt_filter(&a_mod.tgt_filter, domain, affector_item),
+            a_mod.tgt_attr_id,
         )
     }
     pub(in crate::ss::svc::svce_calc) fn get_src_attr_id(&self) -> Option<EAttrId> {
-        self.src_val_getter.get_src_attr_id()
+        self.val_getter.get_src_attr_id()
     }
     pub(in crate::ss::svc::svce_calc) fn get_srcs(&self, ss_view: &SsView) -> Vec<(SsItemId, EAttrId)> {
-        self.src_val_getter.get_srcs(ss_view, &self.src_item_id)
+        self.val_getter.get_srcs(ss_view, &self.affector_item_id)
     }
     pub(in crate::ss::svc::svce_calc) fn get_mod_val(&self, svc: &mut SsSvcs, ss_view: &SsView) -> Result<AttrVal> {
-        self.src_val_getter.get_mod_val(svc, ss_view, &self.src_item_id)
+        self.val_getter.get_mod_val(svc, ss_view, &self.affector_item_id)
     }
     pub(in crate::ss::svc::svce_calc) fn on_effect_stop(&self, svc: &mut SsSvcs, ss_view: &SsView) {
-        self.src_val_getter.on_effect_stop(svc, ss_view, &self.src_item_id)
+        self.val_getter.on_effect_stop(svc, ss_view, &self.affector_item_id)
     }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::ss::svc::svce_calc) fn needs_revision_on_item_add(&self) -> bool {
-        self.src_val_getter.revisable_on_item_add()
+        self.val_getter.revisable_on_item_add()
     }
     pub(in crate::ss::svc::svce_calc) fn needs_revision_on_item_remove(&self) -> bool {
-        self.src_val_getter.revisable_on_item_remove()
+        self.val_getter.revisable_on_item_remove()
     }
     pub(in crate::ss::svc::svce_calc) fn revise_on_item_add(&self, added_item: &SsItem, ss_view: &SsView) -> bool {
-        let src_item = match ss_view.items.get_item(&self.src_item_id) {
+        let src_item = match ss_view.items.get_item(&self.affector_item_id) {
             Ok(item) => item,
             _ => return false,
         };
-        self.src_val_getter.revise_on_item_add(src_item, added_item)
+        self.val_getter.revise_on_item_add(src_item, added_item)
     }
     pub(in crate::ss::svc::svce_calc) fn revise_on_item_remove(&self, added_item: &SsItem, ss_view: &SsView) -> bool {
-        let src_item = match ss_view.items.get_item(&self.src_item_id) {
+        let src_item = match ss_view.items.get_item(&self.affector_item_id) {
             Ok(item) => item,
             _ => return false,
         };
-        self.src_val_getter.revise_on_item_remove(src_item, added_item)
+        self.val_getter.revise_on_item_remove(src_item, added_item)
     }
 }

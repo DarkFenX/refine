@@ -8,7 +8,7 @@ use crate::{
         fit::SsFits,
         fleet::SsFleet,
         item::{SsItem, SsItems},
-        svc::svce_calc::{SsAttrMod, SsFleetUpdates, SsLocType, SsModDomain, SsModTgtFilter, SsModType},
+        svc::svce_calc::{SsAffecteeFilter, SsAttrMod, SsFleetUpdates, SsLocType, SsModDomain, SsModType},
         SsView,
     },
     util::{StMapSetL1, StSet},
@@ -145,10 +145,10 @@ impl SsModifierRegister {
                     // TODO: This should be refined/optimized. It should pick only modifiers which
                     // TODO: target fit of item being changed.
                     for sub_mod in sub_mods {
-                        if match sub_mod.tgt_filter {
-                            SsModTgtFilter::Loc(sub_dom) => compare_loc_dom(loc_type, sub_dom),
-                            SsModTgtFilter::LocGrp(sub_dom, _) => compare_loc_dom(loc_type, sub_dom),
-                            SsModTgtFilter::LocSrq(sub_dom, _) => compare_loc_dom(loc_type, sub_dom),
+                        if match sub_mod.affectee_filter {
+                            SsAffecteeFilter::Loc(sub_dom) => compare_loc_dom(loc_type, sub_dom),
+                            SsAffecteeFilter::LocGrp(sub_dom, _) => compare_loc_dom(loc_type, sub_dom),
+                            SsAffecteeFilter::LocSrq(sub_dom, _) => compare_loc_dom(loc_type, sub_dom),
                             _ => false,
                         } {
                             mods.push(*sub_mod);
@@ -237,7 +237,7 @@ impl SsModifierRegister {
         updates
     }
     pub(in crate::ss::svc::svce_calc) fn reg_mod(&mut self, ss_view: &SsView, mod_item: &SsItem, modifier: SsAttrMod) {
-        self.mods.add_entry(modifier.src_item_id, modifier);
+        self.mods.add_entry(modifier.affector_item_id, modifier);
         match modifier.mod_type {
             SsModType::SystemWide => {
                 self.sw_mods.insert(modifier);
@@ -250,10 +250,10 @@ impl SsModifierRegister {
             }
             _ => (),
         };
-        match modifier.tgt_filter {
-            SsModTgtFilter::Direct(dom) => match dom {
-                SsModDomain::Item => self.mods_direct.add_entry(modifier.src_item_id, modifier),
-                SsModDomain::Other => self.mods_other.add_entry(modifier.src_item_id, modifier),
+        match modifier.affectee_filter {
+            SsAffecteeFilter::Direct(dom) => match dom {
+                SsModDomain::Item => self.mods_direct.add_entry(modifier.affector_item_id, modifier),
+                SsModDomain::Other => self.mods_other.add_entry(modifier.affector_item_id, modifier),
                 _ => (),
             },
             _ => (),
@@ -289,7 +289,7 @@ impl SsModifierRegister {
         mod_item: &SsItem,
         modifier: &SsAttrMod,
     ) {
-        self.mods.remove_entry(&modifier.src_item_id, &modifier);
+        self.mods.remove_entry(&modifier.affector_item_id, &modifier);
         match modifier.mod_type {
             SsModType::SystemWide => {
                 self.sw_mods.remove(modifier);
@@ -302,10 +302,10 @@ impl SsModifierRegister {
             }
             _ => (),
         };
-        match modifier.tgt_filter {
-            SsModTgtFilter::Direct(dom) => match dom {
-                SsModDomain::Item => self.mods_direct.remove_entry(&modifier.src_item_id, &modifier),
-                SsModDomain::Other => self.mods_other.remove_entry(&modifier.src_item_id, &modifier),
+        match modifier.affectee_filter {
+            SsAffecteeFilter::Direct(dom) => match dom {
+                SsModDomain::Item => self.mods_direct.remove_entry(&modifier.affector_item_id, &modifier),
+                SsModDomain::Other => self.mods_other.remove_entry(&modifier.affector_item_id, &modifier),
                 _ => (),
             },
             _ => (),
@@ -381,8 +381,8 @@ impl SsModifierRegister {
     }
     // Private methods
     fn apply_mod_to_fits(&mut self, modifier: SsAttrMod, tgt_fit_ids: &Vec<SsFitId>) {
-        match modifier.tgt_filter {
-            SsModTgtFilter::Direct(dom) => match dom {
+        match modifier.affectee_filter {
+            SsAffecteeFilter::Direct(dom) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_buff_all.add_entry(*tgt_fit_id, modifier);
@@ -407,7 +407,7 @@ impl SsModifierRegister {
                 }
                 _ => (),
             },
-            SsModTgtFilter::Loc(dom) => match dom {
+            SsAffecteeFilter::Loc(dom) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_parloc.add_entry((*tgt_fit_id, SsLocType::Ship), modifier);
@@ -423,7 +423,7 @@ impl SsModifierRegister {
                     }
                 }
             },
-            SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
+            SsAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_parloc_grp
@@ -440,7 +440,7 @@ impl SsModifierRegister {
                     }
                 }
             },
-            SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
+            SsAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_parloc_srq
@@ -457,7 +457,7 @@ impl SsModifierRegister {
                     }
                 }
             },
-            SsModTgtFilter::OwnSrq(srq_id) => {
+            SsAffecteeFilter::OwnSrq(srq_id) => {
                 for tgt_fit_id in tgt_fit_ids.iter() {
                     self.mods_own_srq.add_entry((*tgt_fit_id, srq_id), modifier);
                 }
@@ -465,8 +465,8 @@ impl SsModifierRegister {
         }
     }
     fn unapply_mod_from_fits(&mut self, modifier: &SsAttrMod, tgt_fit_ids: &Vec<SsFitId>) {
-        match modifier.tgt_filter {
-            SsModTgtFilter::Direct(dom) => match dom {
+        match modifier.affectee_filter {
+            SsAffecteeFilter::Direct(dom) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_buff_all.remove_entry(tgt_fit_id, &modifier);
@@ -492,7 +492,7 @@ impl SsModifierRegister {
                 }
                 _ => (),
             },
-            SsModTgtFilter::Loc(dom) => match dom {
+            SsAffecteeFilter::Loc(dom) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_parloc
@@ -509,7 +509,7 @@ impl SsModifierRegister {
                     }
                 }
             },
-            SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
+            SsAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_parloc_grp
@@ -527,7 +527,7 @@ impl SsModifierRegister {
                     }
                 }
             },
-            SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
+            SsAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit_id in tgt_fit_ids.iter() {
                         self.mods_parloc_srq
@@ -545,7 +545,7 @@ impl SsModifierRegister {
                     }
                 }
             },
-            SsModTgtFilter::OwnSrq(srq) => {
+            SsAffecteeFilter::OwnSrq(srq) => {
                 for tgt_fit_id in tgt_fit_ids.iter() {
                     self.mods_own_srq.remove_entry(&(*tgt_fit_id, srq), &modifier);
                 }
@@ -553,8 +553,8 @@ impl SsModifierRegister {
         }
     }
     fn apply_mod_to_item(&mut self, modifier: SsAttrMod, tgt_item: &SsItem) -> bool {
-        match modifier.tgt_filter {
-            SsModTgtFilter::Direct(dom) => match dom {
+        match modifier.affectee_filter {
+            SsAffecteeFilter::Direct(dom) => match dom {
                 SsModDomain::Everything if tgt_item.is_buff_modifiable() => {
                     self.mods_direct.add_entry(tgt_item.get_id(), modifier);
                     true
@@ -567,7 +567,7 @@ impl SsModifierRegister {
                 }
                 _ => false,
             },
-            SsModTgtFilter::Loc(dom) => match dom {
+            SsAffecteeFilter::Loc(dom) => match dom {
                 SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
                     SsItem::Ship(_) => {
                         if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
@@ -589,7 +589,7 @@ impl SsModifierRegister {
                 },
                 _ => false,
             },
-            SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
+            SsAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
                     SsItem::Ship(_) => {
                         if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
@@ -613,7 +613,7 @@ impl SsModifierRegister {
                 },
                 _ => false,
             },
-            SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
+            SsAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
                     SsItem::Ship(_) => {
                         if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
@@ -641,8 +641,8 @@ impl SsModifierRegister {
         }
     }
     fn unapply_mod_from_item(&mut self, modifier: &SsAttrMod, tgt_item: &SsItem) -> bool {
-        match modifier.tgt_filter {
-            SsModTgtFilter::Direct(dom) => match dom {
+        match modifier.affectee_filter {
+            SsAffecteeFilter::Direct(dom) => match dom {
                 SsModDomain::Everything if tgt_item.is_buff_modifiable() => {
                     self.mods_direct.remove_entry(&tgt_item.get_id(), modifier);
                     true
@@ -655,7 +655,7 @@ impl SsModifierRegister {
                 }
                 _ => false,
             },
-            SsModTgtFilter::Loc(dom) => match dom {
+            SsAffecteeFilter::Loc(dom) => match dom {
                 SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
                     SsItem::Ship(_) => {
                         if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
@@ -678,7 +678,7 @@ impl SsModifierRegister {
                 },
                 _ => false,
             },
-            SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
+            SsAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
                     SsItem::Ship(_) => {
                         if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
@@ -702,7 +702,7 @@ impl SsModifierRegister {
                 },
                 _ => false,
             },
-            SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
+            SsAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SsModDomain::Target if tgt_item.is_targetable() => match tgt_item {
                     SsItem::Ship(_) => {
                         if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
@@ -759,12 +759,12 @@ fn filter_and_extend<K: Eq + Hash>(
     key: &K,
     attr_id: &EAttrId,
 ) {
-    vec.extend(storage.get(key).filter(|v| &v.tgt_attr_id == attr_id).map(|v| *v))
+    vec.extend(storage.get(key).filter(|v| &v.affectee_attr_id == attr_id).map(|v| *v))
 }
 
 fn is_mod_direct_everything(modifier: &SsAttrMod) -> bool {
-    match modifier.tgt_filter {
-        SsModTgtFilter::Direct(dom) => matches!(dom, SsModDomain::Everything),
+    match modifier.affectee_filter {
+        SsAffecteeFilter::Direct(dom) => matches!(dom, SsModDomain::Everything),
         _ => false,
     }
 }

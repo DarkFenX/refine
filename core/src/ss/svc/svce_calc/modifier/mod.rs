@@ -5,7 +5,7 @@ pub(in crate::ss::svc::svce_calc) use mod_type::SsModType;
 pub(in crate::ss::svc::svce_calc) use modifier::SsAttrMod;
 pub(in crate::ss::svc::svce_calc) use op::SsModOp;
 use src::SsAttrModSrc;
-pub(in crate::ss::svc::svce_calc) use tgt_filter::SsModTgtFilter;
+pub(in crate::ss::svc::svce_calc) use tgt_filter::SsAffecteeFilter;
 
 mod aggr_mode;
 mod custom;

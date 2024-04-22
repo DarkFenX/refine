@@ -10,7 +10,7 @@ use crate::{
 };
 
 pub(in crate::ss::svc) fn check_modifier(ss_view: &SsView, ss_mod: &SsAttrMod) -> DebugResult {
-    check_item(ss_view, &ss_mod.src_item_id)?;
-    check_effect(ss_view, &ss_mod.src_effect_id)?;
+    check_item(ss_view, &ss_mod.affector_item_id)?;
+    check_effect(ss_view, &ss_mod.effect_id)?;
     Ok(())
 }

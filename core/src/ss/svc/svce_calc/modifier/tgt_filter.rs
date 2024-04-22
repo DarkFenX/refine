@@ -5,14 +5,14 @@ use crate::{
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::ss::svc::svce_calc) enum SsModTgtFilter {
+pub(in crate::ss::svc::svce_calc) enum SsAffecteeFilter {
     Direct(SsModDomain),
     Loc(SsModDomain),
     LocGrp(SsModDomain, EItemGrpId),
     LocSrq(SsModDomain, EItemId),
     OwnSrq(EItemId),
 }
-impl SsModTgtFilter {
+impl SsAffecteeFilter {
     pub(super) fn from_a_effect_tgt_filter(a_effect_tgt_filter: &ad::AEffectTgtFilter, ss_item: &SsItem) -> Self {
         match a_effect_tgt_filter {
             ad::AEffectTgtFilter::Direct(dom) => Self::Direct(dom.into()),
