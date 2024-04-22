@@ -350,7 +350,7 @@ impl SsSvcs {
                 if let Ok(src_item) = ss_view.items.get_item(&ss_mod.src_item_id) {
                     self.calc_data
                         .affectee
-                        .fill_affectees_for_fits(&mut affectees, src_item, &ss_mod, &vec![fit]);
+                        .fill_affectees_for_fit(&mut affectees, src_item, &ss_mod, fit);
                     for item_id in affectees.iter() {
                         self.calc_force_attr_recalc(ss_view, item_id, &ss_mod.tgt_attr_id);
                     }
@@ -362,12 +362,12 @@ impl SsSvcs {
     fn process_fleet_updates(&mut self, ss_view: &SsView, fleet: &SsFleet, fit_id: &SsFitId, updates: SsFleetUpdates) {
         let mut affectees = Vec::new();
         if !updates.incoming.is_empty() {
-            let tgt_fits = vec![ss_view.fits.get_fit(fit_id).unwrap()];
+            let tgt_fit = ss_view.fits.get_fit(fit_id).unwrap();
             for ss_mod in updates.incoming.iter() {
                 let src_item = ss_view.items.get_item(&ss_mod.src_item_id).unwrap();
                 self.calc_data
                     .affectee
-                    .fill_affectees_for_fits(&mut affectees, src_item, ss_mod, &tgt_fits);
+                    .fill_affectees_for_fit(&mut affectees, src_item, ss_mod, tgt_fit);
                 for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
                 }
@@ -375,16 +375,17 @@ impl SsSvcs {
             }
         }
         if !updates.outgoing.is_empty() {
-            let tgt_fits = fleet
-                .iter_fits()
-                .filter(|v| *v != fit_id)
-                .map(|v| ss_view.fits.get_fit(v).unwrap())
-                .collect();
             for ss_mod in updates.outgoing.iter() {
                 let src_item = ss_view.items.get_item(&ss_mod.src_item_id).unwrap();
-                self.calc_data
-                    .affectee
-                    .fill_affectees_for_fits(&mut affectees, src_item, ss_mod, &tgt_fits);
+                for tgt_fit in fleet
+                    .iter_fits()
+                    .filter(|v| *v != fit_id)
+                    .map(|v| ss_view.fits.get_fit(v).unwrap())
+                {
+                    self.calc_data
+                        .affectee
+                        .fill_affectees_for_fit(&mut affectees, src_item, ss_mod, tgt_fit);
+                }
                 for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
                 }

@@ -52,15 +52,18 @@ impl SolAffecteeRegister {
         mod_item: &SsItem,
         modifier: &SsAttrMod,
     ) {
-        let mut tgt_fits = Vec::new();
         match modifier.mod_type {
             SsModType::Local | SsModType::FitWide => {
                 if let Some(src_fit_id) = mod_item.get_fit_id() {
                     let src_fit = ss_view.fits.get_fit(&src_fit_id).unwrap();
-                    tgt_fits.push(src_fit);
+                    self.fill_affectees_for_fit(affectees, mod_item, modifier, src_fit);
                 }
             }
-            SsModType::SystemWide => tgt_fits.extend(ss_view.fits.iter_fits()),
+            SsModType::SystemWide => {
+                for fit in ss_view.fits.iter_fits() {
+                    self.fill_affectees_for_fit(affectees, mod_item, modifier, fit);
+                }
+            }
             SsModType::Projected => (),
             SsModType::Targeted => (),
             SsModType::Fleet => {
@@ -69,44 +72,35 @@ impl SolAffecteeRegister {
                     match src_fit.fleet {
                         Some(fleet_id) => {
                             let fleet = ss_view.fleets.get_fleet(&fleet_id).unwrap();
-                            tgt_fits.extend(fleet.iter_fits().map(|v| ss_view.fits.get_fit(v).unwrap()));
+                            for fit in fleet.iter_fits().map(|v| ss_view.fits.get_fit(v).unwrap()) {
+                                self.fill_affectees_for_fit(affectees, mod_item, modifier, fit);
+                            }
                         }
-                        None => tgt_fits.push(src_fit),
+                        None => self.fill_affectees_for_fit(affectees, mod_item, modifier, src_fit),
                     }
                 }
             }
         };
-        self.fill_affectees_for_fits(affectees, mod_item, modifier, &tgt_fits)
     }
-    pub(in crate::ss::svc::svce_calc) fn fill_affectees_for_fits(
+    pub(in crate::ss::svc::svce_calc) fn fill_affectees_for_fit(
         &self,
         affectees: &mut Vec<SsItemId>,
         mod_item: &SsItem,
         modifier: &SsAttrMod,
-        tgt_fits: &Vec<&SsFit>,
+        tgt_fit: &SsFit,
     ) {
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
-                SsModDomain::Everything => {
-                    for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(affectees, &self.buff_all, &tgt_fit.id)
-                    }
-                }
+                SsModDomain::Everything => extend_vec_from_map_set_l1(affectees, &self.buff_all, &tgt_fit.id),
                 SsModDomain::Item => affectees.push(modifier.src_item_id),
                 SsModDomain::Char => {
-                    for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Character));
-                    }
+                    extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Character));
                 }
                 SsModDomain::Ship => {
-                    for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Ship));
-                    }
+                    extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Ship));
                 }
                 SsModDomain::Structure => {
-                    for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Structure));
-                    }
+                    extend_vec_from_map_set_l1(affectees, &self.root, &(tgt_fit.id, SsLocType::Structure));
                 }
                 SsModDomain::Other => {
                     if let Some(other_item_id) = mod_item.get_other() {
@@ -117,87 +111,65 @@ impl SolAffecteeRegister {
             },
             SsModTgtFilter::Loc(dom) => match dom {
                 SsModDomain::Everything => {
-                    for tgt_fit in tgt_fits.iter() {
-                        if check_domain_owner(SsModDomain::Ship, tgt_fit) {
-                            extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_fit.id, SsLocType::Ship));
-                        }
-                        if check_domain_owner(SsModDomain::Structure, tgt_fit) {
-                            extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_fit.id, SsLocType::Structure));
-                        }
+                    if check_domain_owner(SsModDomain::Ship, tgt_fit) {
+                        extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_fit.id, SsLocType::Ship));
+                    }
+                    if check_domain_owner(SsModDomain::Structure, tgt_fit) {
+                        extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_fit.id, SsLocType::Structure));
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        for tgt_fit in tgt_fits.iter() {
-                            if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_fit.id, loc));
-                            }
+                        if check_domain_owner(dom, tgt_fit) {
+                            extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_fit.id, loc));
                         }
                     }
                 }
             },
             SsModTgtFilter::LocGrp(dom, grp_id) => match dom {
                 SsModDomain::Everything => {
-                    for tgt_fit in tgt_fits.iter() {
-                        if check_domain_owner(SsModDomain::Ship, tgt_fit) {
-                            extend_vec_from_map_set_l1(
-                                affectees,
-                                &self.loc_grp,
-                                &(tgt_fit.id, SsLocType::Ship, grp_id),
-                            );
-                        }
-                        if check_domain_owner(SsModDomain::Structure, tgt_fit) {
-                            extend_vec_from_map_set_l1(
-                                affectees,
-                                &self.loc_grp,
-                                &(tgt_fit.id, SsLocType::Structure, grp_id),
-                            );
-                        }
+                    if check_domain_owner(SsModDomain::Ship, tgt_fit) {
+                        extend_vec_from_map_set_l1(affectees, &self.loc_grp, &(tgt_fit.id, SsLocType::Ship, grp_id));
+                    }
+                    if check_domain_owner(SsModDomain::Structure, tgt_fit) {
+                        extend_vec_from_map_set_l1(
+                            affectees,
+                            &self.loc_grp,
+                            &(tgt_fit.id, SsLocType::Structure, grp_id),
+                        );
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        for tgt_fit in tgt_fits.iter() {
-                            if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_map_set_l1(affectees, &self.loc_grp, &(tgt_fit.id, loc, grp_id));
-                            }
+                        if check_domain_owner(dom, tgt_fit) {
+                            extend_vec_from_map_set_l1(affectees, &self.loc_grp, &(tgt_fit.id, loc, grp_id));
                         }
                     }
                 }
             },
             SsModTgtFilter::LocSrq(dom, srq_id) => match dom {
                 SsModDomain::Everything => {
-                    for tgt_fit in tgt_fits.iter() {
-                        if check_domain_owner(SsModDomain::Ship, tgt_fit) {
-                            extend_vec_from_map_set_l1(
-                                affectees,
-                                &self.loc_srq,
-                                &(tgt_fit.id, SsLocType::Ship, srq_id),
-                            );
-                        }
-                        if check_domain_owner(SsModDomain::Structure, tgt_fit) {
-                            extend_vec_from_map_set_l1(
-                                affectees,
-                                &self.loc_srq,
-                                &(tgt_fit.id, SsLocType::Structure, srq_id),
-                            );
-                        }
+                    if check_domain_owner(SsModDomain::Ship, tgt_fit) {
+                        extend_vec_from_map_set_l1(affectees, &self.loc_srq, &(tgt_fit.id, SsLocType::Ship, srq_id));
+                    }
+                    if check_domain_owner(SsModDomain::Structure, tgt_fit) {
+                        extend_vec_from_map_set_l1(
+                            affectees,
+                            &self.loc_srq,
+                            &(tgt_fit.id, SsLocType::Structure, srq_id),
+                        );
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        for tgt_fit in tgt_fits.iter() {
-                            if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_map_set_l1(affectees, &self.loc_srq, &(tgt_fit.id, loc, srq_id));
-                            }
+                        if check_domain_owner(dom, tgt_fit) {
+                            extend_vec_from_map_set_l1(affectees, &self.loc_srq, &(tgt_fit.id, loc, srq_id));
                         }
                     }
                 }
             },
             SsModTgtFilter::OwnSrq(srq_id) => {
-                for tgt_fit in tgt_fits.iter() {
-                    extend_vec_from_map_set_l1(affectees, &self.own_srq, &(tgt_fit.id, srq_id));
-                }
+                extend_vec_from_map_set_l1(affectees, &self.own_srq, &(tgt_fit.id, srq_id));
             }
         }
     }
