@@ -1,13 +1,13 @@
 use crate::ss::{item::SsItem, svc::svce_calc::SsLocType};
 
 // Iterator over item's potential parent domains
-pub(super) struct LocsPot<'a> {
+pub(super) struct PotentialLocations<'a> {
     item: &'a SsItem,
     char_done: bool,
     ship_done: bool,
     struct_done: bool,
 }
-impl<'a> LocsPot<'a> {
+impl<'a> PotentialLocations<'a> {
     pub(super) fn new(item: &'a SsItem) -> Self {
         Self {
             item,
@@ -17,7 +17,7 @@ impl<'a> LocsPot<'a> {
         }
     }
 }
-impl<'a> Iterator for LocsPot<'a> {
+impl<'a> Iterator for PotentialLocations<'a> {
     type Item = SsLocType;
 
     fn next(&mut self) -> Option<Self::Item> {

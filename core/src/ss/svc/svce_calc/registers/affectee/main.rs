@@ -3,7 +3,7 @@ use std::convert::TryInto;
 use crate::{
     defs::{EItemGrpId, EItemId, SsFitId, SsItemId},
     ss::{
-        fit::{SsFit, SsFits},
+        fit::SsFit,
         item::SsItem,
         svc::svce_calc::{SsAttrMod, SsLocType, SsModDomain, SsModTgtFilter, SsModType},
         SsView,
@@ -11,41 +11,41 @@ use crate::{
     util::{extend_vec_from_map_set_l1, StMapSetL1},
 };
 
-use super::LocsPot;
+use super::PotentialLocations;
 
-pub(in crate::ss::svc::svce_calc) struct SsTargetRegister {
+pub(in crate::ss::svc::svce_calc) struct SolAffecteeRegister {
     // Items which are holders of a location type (like char, ship)
-    // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
-    pub(super) tgts_root: StMapSetL1<(SsFitId, SsLocType), SsItemId>,
+    // Map<(affectee fit ID, affectee location type), affectee item IDs>
+    pub(super) root: StMapSetL1<(SsFitId, SsLocType), SsItemId>,
     // Items belonging to certain fit and location type (e.g. char's implants, ship's modules)
-    // Contains: KeyedStorage<(target's fit ID, target's location type), target item IDs>
-    pub(super) tgts_loc: StMapSetL1<(SsFitId, SsLocType), SsItemId>,
+    // Map<(affectee fit ID, affectee location type), affectee item IDs>
+    pub(super) loc: StMapSetL1<(SsFitId, SsLocType), SsItemId>,
     // Items belonging to certain fit, location type and group
-    // Contains: KeyedStorage<(target's fit ID, target's location type, target's group ID), target item IDs>
-    pub(super) tgts_loc_grp: StMapSetL1<(SsFitId, SsLocType, EItemGrpId), SsItemId>,
+    // Map<(affectee fit ID, affectee location type, affectee group ID), affectee item IDs>
+    pub(super) loc_grp: StMapSetL1<(SsFitId, SsLocType, EItemGrpId), SsItemId>,
     // Items belonging to certain fit and location type, and having certain skill requirement
-    // Contains: KeyedStorage<(target's fit ID, target's location type, target's skillreq type ID), target item IDs>
-    pub(super) tgts_loc_srq: StMapSetL1<(SsFitId, SsLocType, EItemId), SsItemId>,
+    // Map<(affectee fit ID, affectee location type, affectee skillreq type ID), affectee item IDs>
+    pub(super) loc_srq: StMapSetL1<(SsFitId, SsLocType, EItemId), SsItemId>,
     // Owner-modifiable items which belong to certain fit and have certain skill requirement
-    // Contains: KeyedStorage<(target's fit ID, target's skillreq type ID), target item IDs>
-    pub(super) tgts_own_srq: StMapSetL1<(SsFitId, EItemId), SsItemId>,
+    // Map<(affectee fit ID, affectee skillreq type ID), affectee item IDs>
+    pub(super) own_srq: StMapSetL1<(SsFitId, EItemId), SsItemId>,
     // Everything-buff-modifiable items which belong to certain fit
-    // Contains: KeyedStorage<target's fit ID, target item IDs>
-    pub(super) tgts_buff_all: StMapSetL1<SsFitId, SsItemId>,
+    // Map<affectee fit ID, affectee item IDs>
+    pub(super) buff_all: StMapSetL1<SsFitId, SsItemId>,
 }
-impl SsTargetRegister {
+impl SolAffecteeRegister {
     pub(in crate::ss::svc::svce_calc) fn new() -> Self {
         Self {
-            tgts_root: StMapSetL1::new(),
-            tgts_loc: StMapSetL1::new(),
-            tgts_loc_grp: StMapSetL1::new(),
-            tgts_loc_srq: StMapSetL1::new(),
-            tgts_own_srq: StMapSetL1::new(),
-            tgts_buff_all: StMapSetL1::new(),
+            root: StMapSetL1::new(),
+            loc: StMapSetL1::new(),
+            loc_grp: StMapSetL1::new(),
+            loc_srq: StMapSetL1::new(),
+            own_srq: StMapSetL1::new(),
+            buff_all: StMapSetL1::new(),
         }
     }
     // Query methods
-    pub(in crate::ss::svc::svce_calc) fn get_tgt_items(
+    pub(in crate::ss::svc::svce_calc) fn get_affectees(
         &self,
         ss_view: &SsView,
         mod_item: &SsItem,
@@ -75,41 +75,41 @@ impl SsTargetRegister {
                 }
             }
         };
-        self.get_tgt_items_for_fits(mod_item, modifier, &tgt_fits)
+        self.get_affectees_for_fits(mod_item, modifier, &tgt_fits)
     }
-    pub(in crate::ss::svc::svce_calc) fn get_tgt_items_for_fits(
+    pub(in crate::ss::svc::svce_calc) fn get_affectees_for_fits(
         &self,
         mod_item: &SsItem,
         modifier: &SsAttrMod,
         tgt_fits: &Vec<&SsFit>,
     ) -> Vec<SsItemId> {
-        let mut tgts = Vec::new();
+        let mut affectees = Vec::new();
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(&mut tgts, &self.tgts_buff_all, &tgt_fit.id)
+                        extend_vec_from_map_set_l1(&mut affectees, &self.buff_all, &tgt_fit.id)
                     }
                 }
-                SsModDomain::Item => tgts.push(modifier.src_item_id),
+                SsModDomain::Item => affectees.push(modifier.src_item_id),
                 SsModDomain::Char => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Character));
+                        extend_vec_from_map_set_l1(&mut affectees, &self.root, &(tgt_fit.id, SsLocType::Character));
                     }
                 }
                 SsModDomain::Ship => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Ship));
+                        extend_vec_from_map_set_l1(&mut affectees, &self.root, &(tgt_fit.id, SsLocType::Ship));
                     }
                 }
                 SsModDomain::Structure => {
                     for tgt_fit in tgt_fits.iter() {
-                        extend_vec_from_map_set_l1(&mut tgts, &self.tgts_root, &(tgt_fit.id, SsLocType::Structure));
+                        extend_vec_from_map_set_l1(&mut affectees, &self.root, &(tgt_fit.id, SsLocType::Structure));
                     }
                 }
                 SsModDomain::Other => {
                     if let Some(other_item_id) = mod_item.get_other() {
-                        tgts.push(other_item_id);
+                        affectees.push(other_item_id);
                     }
                 }
                 SsModDomain::Target => (),
@@ -118,10 +118,10 @@ impl SsTargetRegister {
                 SsModDomain::Everything => {
                     for tgt_fit in tgt_fits.iter() {
                         if check_domain_owner(SsModDomain::Ship, tgt_fit) {
-                            extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc, &(tgt_fit.id, SsLocType::Ship));
+                            extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(tgt_fit.id, SsLocType::Ship));
                         }
                         if check_domain_owner(SsModDomain::Structure, tgt_fit) {
-                            extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc, &(tgt_fit.id, SsLocType::Structure));
+                            extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(tgt_fit.id, SsLocType::Structure));
                         }
                     }
                 }
@@ -129,7 +129,7 @@ impl SsTargetRegister {
                     if let Ok(loc) = dom.try_into() {
                         for tgt_fit in tgt_fits.iter() {
                             if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc, &(tgt_fit.id, loc));
+                                extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(tgt_fit.id, loc));
                             }
                         }
                     }
@@ -140,15 +140,15 @@ impl SsTargetRegister {
                     for tgt_fit in tgt_fits.iter() {
                         if check_domain_owner(SsModDomain::Ship, tgt_fit) {
                             extend_vec_from_map_set_l1(
-                                &mut tgts,
-                                &self.tgts_loc_grp,
+                                &mut affectees,
+                                &self.loc_grp,
                                 &(tgt_fit.id, SsLocType::Ship, grp_id),
                             );
                         }
                         if check_domain_owner(SsModDomain::Structure, tgt_fit) {
                             extend_vec_from_map_set_l1(
-                                &mut tgts,
-                                &self.tgts_loc_grp,
+                                &mut affectees,
+                                &self.loc_grp,
                                 &(tgt_fit.id, SsLocType::Structure, grp_id),
                             );
                         }
@@ -158,7 +158,7 @@ impl SsTargetRegister {
                     if let Ok(loc) = dom.try_into() {
                         for tgt_fit in tgt_fits.iter() {
                             if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc_grp, &(tgt_fit.id, loc, grp_id));
+                                extend_vec_from_map_set_l1(&mut affectees, &self.loc_grp, &(tgt_fit.id, loc, grp_id));
                             }
                         }
                     }
@@ -169,15 +169,15 @@ impl SsTargetRegister {
                     for tgt_fit in tgt_fits.iter() {
                         if check_domain_owner(SsModDomain::Ship, tgt_fit) {
                             extend_vec_from_map_set_l1(
-                                &mut tgts,
-                                &self.tgts_loc_srq,
+                                &mut affectees,
+                                &self.loc_srq,
                                 &(tgt_fit.id, SsLocType::Ship, srq_id),
                             );
                         }
                         if check_domain_owner(SsModDomain::Structure, tgt_fit) {
                             extend_vec_from_map_set_l1(
-                                &mut tgts,
-                                &self.tgts_loc_srq,
+                                &mut affectees,
+                                &self.loc_srq,
                                 &(tgt_fit.id, SsLocType::Structure, srq_id),
                             );
                         }
@@ -187,7 +187,7 @@ impl SsTargetRegister {
                     if let Ok(loc) = dom.try_into() {
                         for tgt_fit in tgt_fits.iter() {
                             if check_domain_owner(dom, tgt_fit) {
-                                extend_vec_from_map_set_l1(&mut tgts, &self.tgts_loc_srq, &(tgt_fit.id, loc, srq_id));
+                                extend_vec_from_map_set_l1(&mut affectees, &self.loc_srq, &(tgt_fit.id, loc, srq_id));
                             }
                         }
                     }
@@ -195,11 +195,11 @@ impl SsTargetRegister {
             },
             SsModTgtFilter::OwnSrq(srq_id) => {
                 for tgt_fit in tgt_fits.iter() {
-                    extend_vec_from_map_set_l1(&mut tgts, &self.tgts_own_srq, &(tgt_fit.id, srq_id));
+                    extend_vec_from_map_set_l1(&mut affectees, &self.own_srq, &(tgt_fit.id, srq_id));
                 }
             }
         }
-        tgts
+        affectees
     }
     pub(in crate::ss::svc::svce_calc) fn get_affectees_for_tgt_item(
         &self,
@@ -217,27 +217,23 @@ impl SsTargetRegister {
             SsModTgtFilter::Loc(dom) => match dom {
                 SsModDomain::Everything | SsModDomain::Target => match tgt_item {
                     SsItem::Ship(ship) => {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.tgts_loc, &(ship.fit_id, SsLocType::Ship))
+                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(ship.fit_id, SsLocType::Ship))
                     }
-                    SsItem::Structure(structure) => extend_vec_from_map_set_l1(
-                        &mut affectees,
-                        &self.tgts_loc,
-                        &(structure.fit_id, SsLocType::Structure),
-                    ),
+                    SsItem::Structure(structure) => {
+                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(structure.fit_id, SsLocType::Structure))
+                    }
                     _ => (),
                 },
                 SsModDomain::Ship => match tgt_item {
                     SsItem::Ship(ship) => {
-                        extend_vec_from_map_set_l1(&mut affectees, &self.tgts_loc, &(ship.fit_id, SsLocType::Ship))
+                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(ship.fit_id, SsLocType::Ship))
                     }
                     _ => (),
                 },
                 SsModDomain::Structure => match tgt_item {
-                    SsItem::Structure(structure) => extend_vec_from_map_set_l1(
-                        &mut affectees,
-                        &self.tgts_loc,
-                        &(structure.fit_id, SsLocType::Structure),
-                    ),
+                    SsItem::Structure(structure) => {
+                        extend_vec_from_map_set_l1(&mut affectees, &self.loc, &(structure.fit_id, SsLocType::Structure))
+                    }
                     _ => (),
                 },
                 _ => (),
@@ -246,12 +242,12 @@ impl SsTargetRegister {
                 SsModDomain::Everything | SsModDomain::Target => match tgt_item {
                     SsItem::Ship(ship) => extend_vec_from_map_set_l1(
                         &mut affectees,
-                        &self.tgts_loc_grp,
+                        &self.loc_grp,
                         &(ship.fit_id, SsLocType::Ship, grp_id),
                     ),
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
                         &mut affectees,
-                        &self.tgts_loc_grp,
+                        &self.loc_grp,
                         &(structure.fit_id, SsLocType::Structure, grp_id),
                     ),
                     _ => (),
@@ -259,7 +255,7 @@ impl SsTargetRegister {
                 SsModDomain::Ship => match tgt_item {
                     SsItem::Ship(ship) => extend_vec_from_map_set_l1(
                         &mut affectees,
-                        &self.tgts_loc_grp,
+                        &self.loc_grp,
                         &(ship.fit_id, SsLocType::Ship, grp_id),
                     ),
                     _ => (),
@@ -267,7 +263,7 @@ impl SsTargetRegister {
                 SsModDomain::Structure => match tgt_item {
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
                         &mut affectees,
-                        &self.tgts_loc_grp,
+                        &self.loc_grp,
                         &(structure.fit_id, SsLocType::Structure, grp_id),
                     ),
                     _ => (),
@@ -278,12 +274,12 @@ impl SsTargetRegister {
                 SsModDomain::Everything | SsModDomain::Target => match tgt_item {
                     SsItem::Ship(ship) => extend_vec_from_map_set_l1(
                         &mut affectees,
-                        &self.tgts_loc_srq,
+                        &self.loc_srq,
                         &(ship.fit_id, SsLocType::Ship, srq_id),
                     ),
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
                         &mut affectees,
-                        &self.tgts_loc_srq,
+                        &self.loc_srq,
                         &(structure.fit_id, SsLocType::Structure, srq_id),
                     ),
                     _ => (),
@@ -291,7 +287,7 @@ impl SsTargetRegister {
                 SsModDomain::Ship => match tgt_item {
                     SsItem::Ship(ship) => extend_vec_from_map_set_l1(
                         &mut affectees,
-                        &self.tgts_loc_srq,
+                        &self.loc_srq,
                         &(ship.fit_id, SsLocType::Ship, srq_id),
                     ),
                     _ => (),
@@ -299,7 +295,7 @@ impl SsTargetRegister {
                 SsModDomain::Structure => match tgt_item {
                     SsItem::Structure(structure) => extend_vec_from_map_set_l1(
                         &mut affectees,
-                        &self.tgts_loc_srq,
+                        &self.loc_srq,
                         &(structure.fit_id, SsLocType::Structure, srq_id),
                     ),
                     _ => (),
@@ -307,11 +303,9 @@ impl SsTargetRegister {
                 _ => (),
             },
             SsModTgtFilter::OwnSrq(srq_id) => match tgt_item {
-                SsItem::Ship(ship) => {
-                    extend_vec_from_map_set_l1(&mut affectees, &self.tgts_own_srq, &(ship.fit_id, srq_id))
-                }
+                SsItem::Ship(ship) => extend_vec_from_map_set_l1(&mut affectees, &self.own_srq, &(ship.fit_id, srq_id)),
                 SsItem::Structure(structure) => {
-                    extend_vec_from_map_set_l1(&mut affectees, &self.tgts_own_srq, &(structure.fit_id, srq_id))
+                    extend_vec_from_map_set_l1(&mut affectees, &self.own_srq, &(structure.fit_id, srq_id))
                 }
                 _ => (),
             },
@@ -319,86 +313,81 @@ impl SsTargetRegister {
         affectees
     }
     // Modification methods
-    pub(in crate::ss::svc::svce_calc) fn reg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
-        let tgt_item_id = tgt_item.get_id();
-        let tgt_fit_opt = tgt_item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
-        let tgt_root_loc_opt = tgt_item.get_root_loc_type();
-        let tgt_grp_id_res = tgt_item.get_group_id();
-        let tgt_srqs_res = tgt_item.get_skill_reqs();
-        if let (Some(tgt_fit), Some(tgt_root_loc)) = (tgt_fit_opt, tgt_root_loc_opt) {
-            self.tgts_root.add_entry((tgt_fit.id, tgt_root_loc), tgt_item_id);
+    pub(in crate::ss::svc::svce_calc) fn reg_affectee(&mut self, ss_view: &SsView, item: &SsItem) {
+        let item_id = item.get_id();
+        let fit_opt = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
+        let root_loc_opt = item.get_root_loc_type();
+        let grp_id_opt = item.get_group_id().ok();
+        let srqs_opt = item.get_skill_reqs().ok();
+        if let (Some(fit), Some(loc_type)) = (fit_opt, root_loc_opt) {
+            self.root.add_entry((fit.id, loc_type), item_id);
         }
-        if let Some(tgt_fit) = tgt_fit_opt {
-            for tgt_loc in LocsPot::new(tgt_item) {
-                self.tgts_loc.add_entry((tgt_fit.id, tgt_loc), tgt_item_id);
+        if let Some(fit) = fit_opt {
+            for loc_type in PotentialLocations::new(item) {
+                self.loc.add_entry((fit.id, loc_type), item_id);
             }
         }
-        if let (Some(tgt_fit), Ok(tgt_grp_id)) = (tgt_fit_opt, tgt_grp_id_res) {
-            for tgt_pardom in LocsPot::new(tgt_item) {
-                self.tgts_loc_grp
-                    .add_entry((tgt_fit.id, tgt_pardom, tgt_grp_id), tgt_item_id);
+        if let (Some(fit), Some(grp_id)) = (fit_opt, grp_id_opt) {
+            for loc_type in PotentialLocations::new(item) {
+                self.loc_grp.add_entry((fit.id, loc_type, grp_id), item_id);
             }
         }
-        if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
-            for tgt_pardom in LocsPot::new(tgt_item) {
-                for skill_a_item_id in tgt_srqs.keys() {
-                    self.tgts_loc_srq
-                        .add_entry((tgt_fit.id, tgt_pardom, *skill_a_item_id), tgt_item_id);
+        if let (Some(fit), Some(srqs)) = (fit_opt, &srqs_opt) {
+            for loc_type in PotentialLocations::new(item) {
+                for srq_id in srqs.keys() {
+                    self.loc_srq.add_entry((fit.id, loc_type, *srq_id), item_id);
                 }
             }
         }
-        if tgt_item.is_owner_modifiable() {
-            if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
-                for skill_a_item_id in tgt_srqs.keys() {
-                    self.tgts_own_srq.add_entry((tgt_fit.id, *skill_a_item_id), tgt_item_id);
+        if item.is_owner_modifiable() {
+            if let (Some(fit), Some(srqs)) = (fit_opt, &srqs_opt) {
+                for skill_a_item_id in srqs.keys() {
+                    self.own_srq.add_entry((fit.id, *skill_a_item_id), item_id);
                 }
             }
         }
-        if tgt_item.is_buff_modifiable() {
-            if let Some(tgt_fit) = tgt_fit_opt {
-                self.tgts_buff_all.add_entry(tgt_fit.id, tgt_item_id);
+        if item.is_buff_modifiable() {
+            if let Some(fit) = fit_opt {
+                self.buff_all.add_entry(fit.id, item_id);
             }
         }
     }
-    pub(in crate::ss::svc::svce_calc) fn unreg_tgt(&mut self, tgt_item: &SsItem, fits: &SsFits) {
-        let tgt_item_id = tgt_item.get_id();
-        let tgt_fit_opt = tgt_item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
-        let tgt_topdom_opt = tgt_item.get_root_loc_type();
-        let tgt_grp_id_res = tgt_item.get_group_id();
-        let tgt_srqs_res = tgt_item.get_skill_reqs();
-        if let (Some(tgt_fit), Some(tgt_topdom)) = (tgt_fit_opt, tgt_topdom_opt) {
-            self.tgts_root.remove_entry(&(tgt_fit.id, tgt_topdom), &tgt_item_id);
+    pub(in crate::ss::svc::svce_calc) fn unreg_affectee(&mut self, ss_view: &SsView, item: &SsItem) {
+        let item_id = item.get_id();
+        let fit_opt = item.get_fit_id().map(|v| ss_view.fits.get_fit(&v).ok()).flatten();
+        let root_loc_opt = item.get_root_loc_type();
+        let grp_id_opt = item.get_group_id().ok();
+        let srqs_opt = item.get_skill_reqs().ok();
+        if let (Some(fit), Some(loc_type)) = (fit_opt, root_loc_opt) {
+            self.root.remove_entry(&(fit.id, loc_type), &item_id);
         }
-        if let Some(tgt_fit) = tgt_fit_opt {
-            for tgt_pardom in LocsPot::new(tgt_item) {
-                self.tgts_loc.remove_entry(&(tgt_fit.id, tgt_pardom), &tgt_item_id);
+        if let Some(fit) = fit_opt {
+            for loc_type in PotentialLocations::new(item) {
+                self.loc.remove_entry(&(fit.id, loc_type), &item_id);
             }
         }
-        if let (Some(tgt_fit), Ok(tgt_grp_id)) = (tgt_fit_opt, tgt_grp_id_res) {
-            for tgt_pardom in LocsPot::new(tgt_item) {
-                self.tgts_loc_grp
-                    .remove_entry(&(tgt_fit.id, tgt_pardom, tgt_grp_id), &tgt_item_id);
+        if let (Some(fit), Some(grp_id)) = (fit_opt, grp_id_opt) {
+            for loc_type in PotentialLocations::new(item) {
+                self.loc_grp.remove_entry(&(fit.id, loc_type, grp_id), &item_id);
             }
         }
-        if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
-            for tgt_pardom in LocsPot::new(tgt_item) {
-                for skill_a_item_id in tgt_srqs.keys() {
-                    self.tgts_loc_srq
-                        .remove_entry(&(tgt_fit.id, tgt_pardom, *skill_a_item_id), &tgt_item_id);
+        if let (Some(fit), Some(srqs)) = (fit_opt, &srqs_opt) {
+            for loc_type in PotentialLocations::new(item) {
+                for srq_id in srqs.keys() {
+                    self.loc_srq.remove_entry(&(fit.id, loc_type, *srq_id), &item_id);
                 }
             }
         }
-        if tgt_item.is_owner_modifiable() {
-            if let (Some(tgt_fit), Ok(tgt_srqs)) = (tgt_fit_opt, &tgt_srqs_res) {
-                for skill_a_item_id in tgt_srqs.keys() {
-                    self.tgts_own_srq
-                        .remove_entry(&(tgt_fit.id, *skill_a_item_id), &tgt_item_id);
+        if item.is_owner_modifiable() {
+            if let (Some(fit), Some(srqs)) = (fit_opt, &srqs_opt) {
+                for srq_id in srqs.keys() {
+                    self.own_srq.remove_entry(&(fit.id, *srq_id), &item_id);
                 }
             }
         }
-        if tgt_item.is_buff_modifiable() {
-            if let Some(tgt_fit) = tgt_fit_opt {
-                self.tgts_buff_all.remove_entry(&tgt_fit.id, &tgt_item_id);
+        if item.is_buff_modifiable() {
+            if let Some(fit) = fit_opt {
+                self.buff_all.remove_entry(&fit.id, &item_id);
             }
         }
     }
