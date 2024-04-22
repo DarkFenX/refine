@@ -95,8 +95,16 @@ impl SsSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         // Register new mods
+        let mut affectees = Vec::new();
         let ss_mods = self.calc_generate_mods_for_effects(ss_view, item, effects);
-        self.reg_mods(ss_view, item, &ss_mods.all);
+        self.reg_mods(&mut affectees, ss_view, item, &ss_mods.all);
+        // Apply mods to targets, if needed
+        if let Some(tgt_item_ids) = item.iter_targets() {
+            for tgt_item_id in tgt_item_ids {
+                let tgt_item = ss_view.items.get_item(&tgt_item_id).unwrap();
+                self.reg_mods_for_tgt(&mut affectees, ss_view, item, &ss_mods.all, tgt_item);
+            }
+        }
         // Buff maintenance - add info about effects/modifiers which use default buff attributes
         for effect in effects.iter() {
             self.calc_data.buffs.reg_effect(item.get_id(), effect);
@@ -116,8 +124,16 @@ impl SsSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         // Unregister mods
+        let mut affectees = Vec::new();
         let ss_mods = self.calc_generate_mods_for_effects(ss_view, item, effects);
-        self.unreg_mods(ss_view, item, &ss_mods.all);
+        self.unreg_mods(&mut affectees, ss_view, item, &ss_mods.all);
+        // Remove mods from targets, if needed
+        if let Some(tgt_item_ids) = item.iter_targets() {
+            for tgt_item_id in tgt_item_ids {
+                let tgt_item = ss_view.items.get_item(&tgt_item_id).unwrap();
+                self.unreg_mods_for_tgt(&mut affectees, ss_view, item, &ss_mods.all, tgt_item);
+            }
+        }
         // This bit is just for propulsion mode effect, so that when effect is not running (but item
         // is not removed), changes to parent attributes like ship mass do not clear the child
         // attribute - ship speed
@@ -145,22 +161,9 @@ impl SsSvcs {
             .map(|v| *v)
             .collect_vec();
         if !ss_mods.is_empty() {
-            let tgt_item = match ss_view.items.get_item(&tgt_item_id) {
-                Ok(item) => item,
-                _ => return,
-            };
+            let tgt_item = ss_view.items.get_item(&tgt_item_id).unwrap();
             let mut affectees = Vec::new();
-            for ss_mod in ss_mods.iter() {
-                if self.calc_data.mods.add_mod_tgt(item, *ss_mod, tgt_item) {
-                    self.calc_data
-                        .affectee
-                        .fill_affectees_for_tgt_item(&mut affectees, ss_view, ss_mod, &tgt_item);
-                    for tgt_item_id in affectees.iter() {
-                        self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
-                    }
-                    affectees.clear();
-                }
-            }
+            self.reg_mods_for_tgt(&mut affectees, ss_view, item, &ss_mods, tgt_item);
         }
     }
     pub(in crate::ss::svc) fn calc_item_tgt_removed(
@@ -177,21 +180,9 @@ impl SsSvcs {
             .map(|v| *v)
             .collect_vec();
         if !ss_mods.is_empty() {
-            let tgt_item = match ss_view.items.get_item(&tgt_item_id) {
-                Ok(item) => item,
-                _ => return,
-            };
+            let tgt_item = ss_view.items.get_item(&tgt_item_id).unwrap();
             let mut affectees = Vec::new();
-            for ss_mod in ss_mods.iter() {
-                self.calc_data
-                    .affectee
-                    .fill_affectees_for_tgt_item(&mut affectees, ss_view, ss_mod, &tgt_item);
-                for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
-                }
-                affectees.clear();
-                self.calc_data.mods.rm_mod_tgt(item, ss_mod, tgt_item);
-            }
+            self.unreg_mods_for_tgt(&mut affectees, ss_view, item, &ss_mods, tgt_item);
         }
     }
     pub(in crate::ss::svc) fn calc_attr_value_changed(
@@ -233,10 +224,11 @@ impl SsSvcs {
         }
         // Process buffs which rely on attribute being modified
         if ec::attrs::BUFF_ID_ATTRS.contains(attr_id) {
+            let mut affectees = Vec::new();
             // Remove modifiers of buffs which rely on the attribute
             if let Some(mods) = self.calc_data.buffs.extract_dependent_mods(item_id, attr_id) {
                 let ss_mods = mods.collect();
-                self.unreg_mods(ss_view, item, &ss_mods);
+                self.unreg_mods(&mut affectees, ss_view, item, &ss_mods);
             }
             // Generate new modifiers using new value and apply them
             let effect_ids = self.calc_data.buffs.get_effects(item_id);
@@ -246,7 +238,7 @@ impl SsSvcs {
                 for ss_mod in ss_mods.iter() {
                     self.calc_data.buffs.reg_dependent_mod(*item_id, *attr_id, *ss_mod);
                 }
-                self.reg_mods(ss_view, item, &ss_mods);
+                self.reg_mods(&mut affectees, ss_view, item, &ss_mods);
             }
         }
     }
@@ -261,20 +253,14 @@ impl SsSvcs {
         }
     }
     // Private methods
-    fn reg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
-        if ss_mods.is_empty() {
-            return;
-        }
+    fn reg_mods(&mut self, affectees: &mut Vec<SsItemId>, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
         // Regular modifiers
-        let mut affectees = Vec::new();
         for ss_mod in ss_mods.iter() {
             // Modifications have to be added before target attributes are cleared, because for case
             // of fleet buff ID attributes new value will be fetched instantly after cleanup, and
             // that value has to be new
             self.calc_data.mods.reg_mod(ss_view, item, *ss_mod);
-            self.calc_data
-                .affectee
-                .fill_affectees(&mut affectees, ss_view, item, ss_mod);
+            self.calc_data.affectee.fill_affectees(affectees, ss_view, item, ss_mod);
             for tgt_item_id in affectees.iter() {
                 self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
             }
@@ -285,20 +271,13 @@ impl SsSvcs {
             self.calc_data.revs.reg_mod(*ss_mod);
         }
     }
-    fn unreg_mods(&mut self, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
-        if ss_mods.is_empty() {
-            return;
-        }
-        // Regular modifiers
-        let mut affectees = Vec::new();
+    fn unreg_mods(&mut self, affectees: &mut Vec<SsItemId>, ss_view: &SsView, item: &SsItem, ss_mods: &Vec<SsAttrMod>) {
         for ss_mod in ss_mods.iter() {
             // Modifications have to be removed before target attributes are cleared, because for
             // case of fleet buff ID attributes new value will be fetched instantly after cleanup,
             // and that value has to be new
             self.calc_data.mods.unreg_mod(ss_view, item, ss_mod);
-            self.calc_data
-                .affectee
-                .fill_affectees(&mut affectees, ss_view, item, ss_mod);
+            self.calc_data.affectee.fill_affectees(affectees, ss_view, item, ss_mod);
             for tgt_item_id in affectees.iter() {
                 self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
             }
@@ -311,6 +290,45 @@ impl SsSvcs {
             // item is not removed), changes to parent attributes like ship mass do not clear the
             // child attribute - ship speed
             ss_mod.on_effect_stop(self, ss_view);
+        }
+    }
+    fn reg_mods_for_tgt(
+        &mut self,
+        affectees: &mut Vec<SsItemId>,
+        ss_view: &SsView,
+        item: &SsItem,
+        ss_mods: &Vec<SsAttrMod>,
+        tgt_item: &SsItem,
+    ) {
+        for ss_mod in ss_mods.iter() {
+            if self.calc_data.mods.add_mod_tgt(item, *ss_mod, tgt_item) {
+                self.calc_data
+                    .affectee
+                    .fill_affectees_for_tgt_item(affectees, ss_view, ss_mod, &tgt_item);
+                for tgt_item_id in affectees.iter() {
+                    self.calc_force_attr_recalc(ss_view, tgt_item_id, &ss_mod.tgt_attr_id);
+                }
+                affectees.clear();
+            }
+        }
+    }
+    fn unreg_mods_for_tgt(
+        &mut self,
+        affectees: &mut Vec<SsItemId>,
+        ss_view: &SsView,
+        item: &SsItem,
+        ss_mods: &Vec<SsAttrMod>,
+        tgt_item: &SsItem,
+    ) {
+        for ss_mod in ss_mods.iter() {
+            self.calc_data
+                .affectee
+                .fill_affectees_for_tgt_item(affectees, ss_view, ss_mod, &tgt_item);
+            for tgt_item_id in affectees.iter() {
+                self.calc_force_attr_recalc(ss_view, &tgt_item_id, &ss_mod.tgt_attr_id);
+            }
+            affectees.clear();
+            self.calc_data.mods.rm_mod_tgt(item, ss_mod, tgt_item);
         }
     }
     fn handle_location_owner_change(&mut self, ss_view: &SsView, item: &SsItem) {

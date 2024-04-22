@@ -234,6 +234,26 @@ impl SsItem {
             Self::SwEffect(_) => false,
         }
     }
+    pub(in crate::ss) fn iter_targets(&self) -> Option<impl ExactSizeIterator<Item = &SsItemId>> {
+        match self {
+            Self::Booster(_) => None,
+            Self::Character(_) => None,
+            Self::Charge(_) => None,
+            Self::Drone(_) => None,
+            Self::Fighter(_) => None,
+            Self::FwEffect(_) => None,
+            Self::Implant(_) => None,
+            Self::Module(module) => Some(module.tgts.iter_tgts()),
+            Self::ProjEffect(proj_effect) => Some(proj_effect.tgts.iter_tgts()),
+            Self::Rig(_) => None,
+            Self::Ship(_) => None,
+            Self::Skill(_) => None,
+            Self::Stance(_) => None,
+            Self::Structure(_) => None,
+            Self::Subsystem(_) => None,
+            Self::SwEffect(_) => None,
+        }
+    }
     // Calculator-specific getters
     pub(in crate::ss) fn get_orig_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>> {
         Ok(&self.get_a_item()?.attr_vals)
