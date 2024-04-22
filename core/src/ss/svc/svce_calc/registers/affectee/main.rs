@@ -52,7 +52,8 @@ impl SolAffecteeRegister {
         item: &SsItem,
         modifier: &SsAttrMod,
     ) {
-        // Those modifiers work the same regardless of context
+        // Those modifiers work the same regardless of broader context. They just need an item which
+        // carries them.
         match modifier.tgt_filter {
             SsModTgtFilter::Direct(dom) => match dom {
                 SsModDomain::Item => affectees.push(modifier.src_item_id),
@@ -198,18 +199,12 @@ impl SolAffecteeRegister {
                 SsModDomain::Structure if matches!(tgt_item, SsItem::Structure(_)) => affectees.push(tgt_item.get_id()),
                 SsModDomain::Char => match tgt_item {
                     SsItem::Ship(ship) => {
-                        if let Some(char_id) = ss_view.fits.get_fit(&ship.fit_id).ok().map(|v| v.character).flatten() {
+                        if let Some(char_id) = get_fit_character(ss_view, &ship.fit_id) {
                             affectees.push(char_id);
                         }
                     }
                     SsItem::Structure(structure) => {
-                        if let Some(char_id) = ss_view
-                            .fits
-                            .get_fit(&structure.fit_id)
-                            .ok()
-                            .map(|v| v.character)
-                            .flatten()
-                        {
+                        if let Some(char_id) = get_fit_character(ss_view, &structure.fit_id) {
                             affectees.push(char_id);
                         }
                     }
@@ -420,6 +415,10 @@ impl SolAffecteeRegister {
             }
         }
     }
+}
+
+fn get_fit_character(ss_view: &SsView, fit_id: &SsFitId) -> Option<SsItemId> {
+    ss_view.fits.get_fit(fit_id).ok().map(|v| v.character).flatten()
 }
 
 fn check_domain_owner(dom: SsModDomain, fit: &SsFit) -> bool {
