@@ -94,12 +94,13 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        // Buff maintenance
+        // Register new mods
+        let ss_mods = self.calc_generate_mods_for_effects(ss_view, item, effects);
+        self.reg_mods(ss_view, item, &ss_mods.all);
+        // Buff maintenance - add info about effects/modifiers which use default buff attributes
         for effect in effects.iter() {
             self.calc_data.buffs.reg_effect(item.get_id(), effect);
         }
-        let ss_mods = self.calc_generate_mods_for_effects(ss_view, item, effects);
-        self.reg_mods(ss_view, item, &ss_mods.all);
         for (buff_type_attr_id, dependent_mods) in ss_mods.dependent_buffs.iter() {
             for dependent_mod in dependent_mods {
                 self.calc_data
@@ -114,6 +115,7 @@ impl SsSvcs {
         item: &SsItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
+        // Unregister mods
         let ss_mods = self.calc_generate_mods_for_effects(ss_view, item, effects);
         self.unreg_mods(ss_view, item, &ss_mods.all);
         // This bit is just for propulsion mode effect, so that when effect is not running (but item
@@ -122,7 +124,7 @@ impl SsSvcs {
         for ss_mod in ss_mods.all.iter() {
             ss_mod.on_effect_stop(self, ss_view);
         }
-        // Buff maintenance
+        // Buff maintenance - remove info about effects/modifiers which use default buff attributes
         for effect in effects.iter() {
             self.calc_data.buffs.unreg_effect(item.get_id(), effect);
         }
