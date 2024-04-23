@@ -275,12 +275,16 @@ impl SolSvcs {
         item: &SolItem,
         modifiers: &Vec<SolAttrMod>,
     ) {
+        if modifiers.is_empty() {
+            return;
+        }
         // Regular modifiers
+        let mut fit_ids = Vec::new();
         for modifier in modifiers.iter() {
             // Modifications have to be added before target attributes are cleared, because for case
             // of fleet buff ID attributes new value will be fetched instantly after cleanup, and
             // that value has to be new
-            self.calc_data.mods.reg_mod(sol_view, item, *modifier);
+            self.calc_data.mods.reg_mod(&mut fit_ids, sol_view, item, *modifier);
             self.calc_data.afee.fill_affectees(affectees, sol_view, item, modifier);
             for tgt_item_id in affectees.iter() {
                 self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
@@ -299,11 +303,15 @@ impl SolSvcs {
         item: &SolItem,
         modifiers: &Vec<SolAttrMod>,
     ) {
+        if modifiers.is_empty() {
+            return;
+        }
+        let mut fit_ids = Vec::new();
         for modifier in modifiers.iter() {
             // Modifications have to be removed before target attributes are cleared, because for
             // case of fleet buff ID attributes new value will be fetched instantly after cleanup,
             // and that value has to be new
-            self.calc_data.mods.unreg_mod(sol_view, item, modifier);
+            self.calc_data.mods.unreg_mod(&mut fit_ids, sol_view, item, modifier);
             self.calc_data.afee.fill_affectees(affectees, sol_view, item, modifier);
             for tgt_item_id in affectees.iter() {
                 self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);

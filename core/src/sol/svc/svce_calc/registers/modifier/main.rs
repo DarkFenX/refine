@@ -154,19 +154,19 @@ impl SolModifierRegister {
     }
     // Modification methods
     pub(in crate::sol::svc::svce_calc) fn reg_fit(&mut self, fit_id: &SolFitId) {
-        let sw_mods = self.sw.iter().map(|v| *v).collect_vec();
-        if !sw_mods.is_empty() {
+        let sw_modifiers = self.sw.iter().map(|v| *v).collect_vec();
+        if !sw_modifiers.is_empty() {
             let fit_ids = vec![*fit_id];
-            for modifier in sw_mods.iter() {
+            for modifier in sw_modifiers.iter() {
                 self.apply_mod_to_fits(*modifier, &fit_ids);
             }
         }
     }
     pub(in crate::sol::svc::svce_calc) fn unreg_fit(&mut self, fit_id: &SolFitId) {
-        let sw_mods = self.sw.iter().map(|v| *v).collect_vec();
-        if !sw_mods.is_empty() {
+        let sw_modifiers = self.sw.iter().map(|v| *v).collect_vec();
+        if !sw_modifiers.is_empty() {
             let fit_ids = vec![*fit_id];
-            for modifier in sw_mods.iter() {
+            for modifier in sw_modifiers.iter() {
                 self.unapply_mod_from_fits(modifier, &fit_ids);
             }
         }
@@ -211,7 +211,14 @@ impl SolModifierRegister {
         }
         updates
     }
-    pub(in crate::sol::svc::svce_calc) fn reg_mod(&mut self, sol_view: &SolView, item: &SolItem, modifier: SolAttrMod) {
+    pub(in crate::sol::svc::svce_calc) fn reg_mod(
+        &mut self,
+        fit_ids: &mut Vec<SolFitId>,
+        sol_view: &SolView,
+        item: &SolItem,
+        modifier: SolAttrMod,
+    ) {
+        fit_ids.clear();
         self.by_affector.add_entry(modifier.affector_item_id, modifier);
         match modifier.mod_type {
             SolModType::SystemWide => {
@@ -233,7 +240,6 @@ impl SolModifierRegister {
             },
             _ => (),
         }
-        let mut fit_ids = Vec::new();
         match modifier.mod_type {
             SolModType::Local | SolModType::FitWide => {
                 if let Some(fit_id) = item.get_fit_id() {
@@ -256,14 +262,16 @@ impl SolModifierRegister {
                 }
             }
         }
-        self.apply_mod_to_fits(modifier, &fit_ids);
+        self.apply_mod_to_fits(modifier, fit_ids);
     }
     pub(in crate::sol::svc::svce_calc) fn unreg_mod(
         &mut self,
+        fit_ids: &mut Vec<SolFitId>,
         sol_view: &SolView,
         item: &SolItem,
         modifier: &SolAttrMod,
     ) {
+        fit_ids.clear();
         self.by_affector.remove_entry(&modifier.affector_item_id, &modifier);
         match modifier.mod_type {
             SolModType::SystemWide => {
@@ -285,7 +293,6 @@ impl SolModifierRegister {
             },
             _ => (),
         }
-        let mut fit_ids = Vec::new();
         match modifier.mod_type {
             SolModType::Local | SolModType::FitWide => {
                 if let Some(fit_id) = item.get_fit_id() {
@@ -308,7 +315,7 @@ impl SolModifierRegister {
                 }
             }
         }
-        self.unapply_mod_from_fits(modifier, &fit_ids);
+        self.unapply_mod_from_fits(modifier, fit_ids);
     }
     pub(in crate::sol::svc::svce_calc) fn add_mod_tgt(
         &mut self,
