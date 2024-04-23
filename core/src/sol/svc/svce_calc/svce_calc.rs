@@ -29,7 +29,7 @@ impl SolSvcs {
         fleet: &SolFleet,
         fit_id: &SolFitId,
     ) {
-        let updates = self.calc_data.mods.reg_fleet_for_fit(sol_view, fleet, fit_id);
+        let updates = self.calc_data.mods.reg_fleet_for_fit(fleet, fit_id);
         self.process_fleet_updates(sol_view, fleet, fit_id, updates);
     }
     pub(in crate::sol::svc) fn calc_fit_removed_from_fleet(
@@ -38,7 +38,7 @@ impl SolSvcs {
         fleet: &SolFleet,
         fit_id: &SolFitId,
     ) {
-        let updates = self.calc_data.mods.unreg_fleet_for_fit(sol_view, fleet, fit_id);
+        let updates = self.calc_data.mods.unreg_fleet_for_fit(fleet, fit_id);
         self.process_fleet_updates(sol_view, fleet, fit_id, updates);
     }
     pub(in crate::sol::svc) fn calc_item_added(&mut self, sol_view: &SolView, item: &SolItem) {

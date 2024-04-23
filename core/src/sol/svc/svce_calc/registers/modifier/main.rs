@@ -173,7 +173,6 @@ impl SolModifierRegister {
     }
     pub(in crate::sol::svc::svce_calc) fn reg_fleet_for_fit(
         &mut self,
-        sol_view: &SolView,
         fleet: &SolFleet,
         fit_id: &SolFitId,
     ) -> SolFleetUpdates {
@@ -194,7 +193,6 @@ impl SolModifierRegister {
     }
     pub(in crate::sol::svc::svce_calc) fn unreg_fleet_for_fit(
         &mut self,
-        sol_view: &SolView,
         fleet: &SolFleet,
         fit_id: &SolFitId,
     ) -> SolFleetUpdates {
