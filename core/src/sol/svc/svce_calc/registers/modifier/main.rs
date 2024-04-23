@@ -218,7 +218,6 @@ impl SolModifierRegister {
         item: &SolItem,
         modifier: SolAttrMod,
     ) {
-        fit_ids.clear();
         self.by_affector.add_entry(modifier.affector_item_id, modifier);
         match modifier.mod_type {
             SolModType::SystemWide => {
@@ -243,15 +242,22 @@ impl SolModifierRegister {
         match modifier.mod_type {
             SolModType::Local | SolModType::FitWide => {
                 if let Some(fit_id) = item.get_fit_id() {
+                    fit_ids.clear();
                     fit_ids.push(fit_id);
+                    self.apply_mod_to_fits(modifier, fit_ids);
                 }
             }
-            SolModType::SystemWide => fit_ids.extend(sol_view.fits.iter_fit_ids()),
+            SolModType::SystemWide => {
+                fit_ids.clear();
+                fit_ids.extend(sol_view.fits.iter_fit_ids());
+                self.apply_mod_to_fits(modifier, fit_ids);
+            }
             SolModType::Projected => (),
             SolModType::Targeted => (),
             SolModType::Fleet => {
                 if let Some(src_fit_id) = item.get_fit_id() {
                     let src_fit = sol_view.fits.get_fit(&src_fit_id).unwrap();
+                    fit_ids.clear();
                     match src_fit.fleet {
                         Some(fleet_id) => {
                             let fleet = sol_view.fleets.get_fleet(&fleet_id).unwrap();
@@ -259,10 +265,10 @@ impl SolModifierRegister {
                         }
                         None => fit_ids.push(src_fit_id),
                     }
+                    self.apply_mod_to_fits(modifier, fit_ids);
                 }
             }
         }
-        self.apply_mod_to_fits(modifier, fit_ids);
     }
     pub(in crate::sol::svc::svce_calc) fn unreg_mod(
         &mut self,
@@ -271,7 +277,6 @@ impl SolModifierRegister {
         item: &SolItem,
         modifier: &SolAttrMod,
     ) {
-        fit_ids.clear();
         self.by_affector.remove_entry(&modifier.affector_item_id, &modifier);
         match modifier.mod_type {
             SolModType::SystemWide => {
@@ -296,15 +301,22 @@ impl SolModifierRegister {
         match modifier.mod_type {
             SolModType::Local | SolModType::FitWide => {
                 if let Some(fit_id) = item.get_fit_id() {
+                    fit_ids.clear();
                     fit_ids.push(fit_id);
+                    self.unapply_mod_from_fits(modifier, fit_ids);
                 }
             }
-            SolModType::SystemWide => fit_ids.extend(sol_view.fits.iter_fit_ids()),
+            SolModType::SystemWide => {
+                fit_ids.clear();
+                fit_ids.extend(sol_view.fits.iter_fit_ids());
+                self.unapply_mod_from_fits(modifier, fit_ids);
+            }
             SolModType::Projected => (),
             SolModType::Targeted => (),
             SolModType::Fleet => {
                 if let Some(src_fit_id) = item.get_fit_id() {
                     let src_fit = sol_view.fits.get_fit(&src_fit_id).unwrap();
+                    fit_ids.clear();
                     match src_fit.fleet {
                         Some(fleet_id) => {
                             let fleet = sol_view.fleets.get_fleet(&fleet_id).unwrap();
@@ -312,10 +324,10 @@ impl SolModifierRegister {
                         }
                         None => fit_ids.push(src_fit_id),
                     }
+                    self.unapply_mod_from_fits(modifier, fit_ids);
                 }
             }
         }
-        self.unapply_mod_from_fits(modifier, fit_ids);
     }
     pub(in crate::sol::svc::svce_calc) fn add_mod_tgt(
         &mut self,
