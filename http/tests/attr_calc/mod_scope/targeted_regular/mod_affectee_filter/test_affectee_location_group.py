@@ -2,7 +2,7 @@ from pytest import approx
 
 
 def test_affected_child_ship(client, consts):
-    # Make sure items on ship location are affected
+    # Make sure items on ship location which pass group check are affected
     eve_grp = client.mk_eve_item_group()
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
@@ -31,7 +31,7 @@ def test_affected_child_ship(client, consts):
 
 
 def test_affected_child_struct(client, consts):
-    # Make sure items on structure location are affected
+    # Make sure items on structure location which pass group check are affected
     eve_grp = client.mk_eve_item_group()
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()

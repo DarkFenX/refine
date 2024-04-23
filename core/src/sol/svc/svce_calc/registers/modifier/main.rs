@@ -610,7 +610,26 @@ impl SolModifierRegister {
                 },
                 _ => false,
             },
-            _ => false,
+            SolAffecteeFilter::OwnSrq(srq_id) => match tgt_item {
+                SolItem::Ship(_) => {
+                    if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                        self.own_srq.add_entry((tgt_fit_id, srq_id), modifier);
+                        true
+                    } else {
+                        false
+                    }
+                }
+                SolItem::Structure(_) => {
+                    if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                        self.own_srq
+                            .add_entry((tgt_fit_id, srq_id), modifier);
+                        true
+                    } else {
+                        false
+                    }
+                }
+                _ => false,
+            },
         }
     }
     fn unapply_mod_from_tgt_item(&mut self, modifier: &SolAttrMod, tgt_item: &SolItem) -> bool {
@@ -698,7 +717,27 @@ impl SolModifierRegister {
                 },
                 _ => false,
             },
-            _ => false,
+            SolAffecteeFilter::OwnSrq(srq_id) => match tgt_item {
+                SolItem::Ship(_) => {
+                    if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                        self.own_srq
+                            .remove_entry(&(tgt_fit_id, srq_id), modifier);
+                        true
+                    } else {
+                        false
+                    }
+                }
+                SolItem::Structure(_) => {
+                    if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
+                        self.own_srq
+                            .remove_entry(&(tgt_fit_id, srq_id), modifier);
+                        true
+                    } else {
+                        false
+                    }
+                }
+                _ => false,
+            },
         }
     }
     fn get_fleet_updates(&self, fleet: &SolFleet, fit_id: &SolFitId) -> SolFleetUpdates {
