@@ -233,7 +233,10 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
 }
 
 fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
-    if !matches!(get_mod_domain(e_modifier, a_effect)?, ad::AEffectDomain::Char) {
+    if !matches!(
+        get_mod_domain(e_modifier, a_effect)?,
+        ad::AEffectDomain::Char | ad::AEffectDomain::Target
+    ) {
         return Err(IntError::new(format!(
             "unexpected domain \"{}\" for owner-filtered modification",
             get_arg_str(&e_modifier.args, "domain")?

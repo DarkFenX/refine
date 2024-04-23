@@ -32,7 +32,7 @@ fn add_slot_modifiers(a_data: &mut ad::AData) {
         applied = true;
     }
     if !applied {
-        tracing::info!("slot modifier effect {SLOT_EFFECT} isn't found for customization");
+        tracing::info!("slot modifier effect {SLOT_EFFECT} is not found for customization");
     }
 }
 
@@ -55,7 +55,7 @@ fn add_hardpoint_modifiers(a_data: &mut ad::AData) {
         applied = true;
     }
     if !applied {
-        tracing::info!("hardpoint modifier effect {HARDPOINT_EFFECT} isn't found for customization");
+        tracing::info!("hardpoint modifier effect {HARDPOINT_EFFECT} is not found for customization");
     }
 }
 

@@ -20,6 +20,6 @@ pub(in crate::adg::custom) fn mk_self_skillreq_drone_dmg(a_data: &mut ad::AData)
         applied = true;
     }
     if !applied {
-        tracing::info!("self-skillreq drone dmg effect {DRONE_DMG_EFFECT} isn't found for customization");
+        tracing::info!("self-skillreq drone dmg effect {DRONE_DMG_EFFECT} is not found for customization");
     }
 }

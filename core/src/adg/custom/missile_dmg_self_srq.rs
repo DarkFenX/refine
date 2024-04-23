@@ -29,6 +29,6 @@ fn add_mod_for_effect_attr(a_data: &mut ad::AData, effect_id: EEffectId, attr_id
         applied = true;
     }
     if !applied {
-        tracing::info!("self-skillreq missile dmg effect {effect_id} isn't found for customization");
+        tracing::info!("self-skillreq missile dmg effect {effect_id} is not found for customization");
     }
 }

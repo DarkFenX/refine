@@ -20,6 +20,6 @@ pub(in crate::adg::custom) fn mk_self_skillreq_modifiers_launcher_rof(a_data: &m
         applied = true;
     }
     if !applied {
-        tracing::info!("self-skillreq missile rof effect {MISSILE_ROF_EFFECT} isn't found for customization");
+        tracing::info!("self-skillreq missile rof effect {MISSILE_ROF_EFFECT} is not found for customization");
     }
 }

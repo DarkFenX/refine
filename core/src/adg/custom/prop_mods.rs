@@ -15,7 +15,7 @@ pub(in crate::adg::custom) fn add_ab_modifiers(a_data: &mut ad::AData) {
         applied = true;
     }
     if !applied {
-        tracing::info!("slot modifier effect {AB_EFFECT} isn't found for customization");
+        tracing::info!("slot modifier effect {AB_EFFECT} is not found for customization");
     }
 }
 
@@ -32,7 +32,7 @@ pub(in crate::adg::custom) fn add_mwd_modifiers(a_data: &mut ad::AData) {
         applied = true;
     }
     if !applied {
-        tracing::info!("slot modifier effect {MWD_EFFECT} isn't found for customization");
+        tracing::info!("slot modifier effect {MWD_EFFECT} is not found for customization");
     }
 }
 
