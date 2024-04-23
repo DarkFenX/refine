@@ -373,11 +373,7 @@ impl SolSvcs {
                 _ => return,
             };
             let mut affectees = Vec::new();
-            for modifier in self
-                .calc_data
-                .mods
-                .get_mods_for_changed_root(sol_view, item)
-            {
+            for modifier in self.calc_data.mods.get_mods_for_changed_root(sol_view, item) {
                 self.calc_data
                     .affectee
                     .fill_affectees_for_fit(&mut affectees, &modifier, fit);

@@ -7,7 +7,7 @@ use crate::{
     sol::{
         fit::SolFits,
         fleet::SolFleet,
-        item::{SolItem, SolItems},
+        item::SolItem,
         svc::svce_calc::{SolAffecteeFilter, SolAttrMod, SolFleetUpdates, SolLocType, SolModDomain, SolModType},
         SolView,
     },
@@ -36,10 +36,12 @@ pub(in crate::sol::svc::svce_calc) struct SolModifierRegister {
     // Modifiers influencing items belonging to certain fit, location and group
     // Map<(affectee fit ID, affectee location, affectee group ID), modifiers>
     pub(super) loc_grp: StMapSetL1<(SolFitId, SolLocType, EItemGrpId), SolAttrMod>,
-    // Modifiers influencing items belonging to certain fit and location, and having certain skill requirement
+    // Modifiers influencing items belonging to certain fit and location, and having certain skill
+    // requirement
     // Map<(affectee fit ID, affectee location, affectee skillreq type ID), modifiers>
     pub(super) loc_srq: StMapSetL1<(SolFitId, SolLocType, EItemId), SolAttrMod>,
-    // Modifiers influencing owner-modifiable items belonging to certain fit and having certain skill requirement
+    // Modifiers influencing owner-modifiable items belonging to certain fit and having certain
+    // skill requirement
     // Map<(affectee fit ID, affectee skillreq type ID), modifiers>
     pub(super) own_srq: StMapSetL1<(SolFitId, EItemId), SolAttrMod>,
     // Modifiers influencing all buff-modifiable items
@@ -121,7 +123,7 @@ impl SolModifierRegister {
     pub(in crate::sol::svc::svce_calc) fn get_mods_for_changed_root(
         &mut self,
         sol_view: &SolView,
-        item: &SolItem
+        item: &SolItem,
     ) -> Vec<SolAttrMod> {
         let mut mods = Vec::new();
         if let (Some(_), Some(loc_type)) = (item.get_fit_id(), item.get_root_loc_type()) {
@@ -154,18 +156,18 @@ impl SolModifierRegister {
     pub(in crate::sol::svc::svce_calc) fn reg_fit(&mut self, fit_id: &SolFitId) {
         let sw_mods = self.sw.iter().map(|v| *v).collect_vec();
         if !sw_mods.is_empty() {
-            let tgt_fit_ids = vec![*fit_id];
+            let fit_ids = vec![*fit_id];
             for modifier in sw_mods.iter() {
-                self.apply_mod_to_fits(*modifier, &tgt_fit_ids);
+                self.apply_mod_to_fits(*modifier, &fit_ids);
             }
         }
     }
     pub(in crate::sol::svc::svce_calc) fn unreg_fit(&mut self, fit_id: &SolFitId) {
         let sw_mods = self.sw.iter().map(|v| *v).collect_vec();
         if !sw_mods.is_empty() {
-            let tgt_fit_ids = vec![*fit_id];
+            let fit_ids = vec![*fit_id];
             for modifier in sw_mods.iter() {
-                self.unapply_mod_from_fits(modifier, &tgt_fit_ids);
+                self.unapply_mod_from_fits(modifier, &fit_ids);
             }
         }
     }
@@ -177,20 +179,20 @@ impl SolModifierRegister {
     ) -> SolFleetUpdates {
         let updates = self.get_fleet_updates(fleet, fit_id);
         if !updates.incoming.is_empty() {
-            let tgt_fit_ids = vec![*fit_id];
+            let fit_ids = vec![*fit_id];
             for modifier in updates.incoming.iter() {
-                self.apply_mod_to_fits(*modifier, &tgt_fit_ids);
+                self.apply_mod_to_fits(*modifier, &fit_ids);
             }
         }
         if !updates.outgoing.is_empty() {
-            let tgt_fit_ids = sol_view
+            let fit_ids = sol_view
                 .fits
                 .iter_fit_ids()
                 .map(|v| *v)
                 .filter(|v| v != fit_id)
                 .collect();
             for modifier in updates.outgoing.iter() {
-                self.apply_mod_to_fits(*modifier, &tgt_fit_ids);
+                self.apply_mod_to_fits(*modifier, &fit_ids);
             }
         }
         updates
@@ -203,30 +205,25 @@ impl SolModifierRegister {
     ) -> SolFleetUpdates {
         let updates = self.get_fleet_updates(fleet, fit_id);
         if !updates.incoming.is_empty() {
-            let tgt_fit_ids = vec![*fit_id];
+            let fit_ids = vec![*fit_id];
             for modifier in updates.incoming.iter() {
-                self.unapply_mod_from_fits(modifier, &tgt_fit_ids);
+                self.unapply_mod_from_fits(modifier, &fit_ids);
             }
         }
         if !updates.outgoing.is_empty() {
-            let tgt_fit_ids = sol_view
+            let fit_ids = sol_view
                 .fits
                 .iter_fit_ids()
                 .map(|v| *v)
                 .filter(|v| v != fit_id)
                 .collect();
             for modifier in updates.outgoing.iter() {
-                self.unapply_mod_from_fits(modifier, &tgt_fit_ids);
+                self.unapply_mod_from_fits(modifier, &fit_ids);
             }
         }
         updates
     }
-    pub(in crate::sol::svc::svce_calc) fn reg_mod(
-        &mut self,
-        sol_view: &SolView,
-        mod_item: &SolItem,
-        modifier: SolAttrMod,
-    ) {
+    pub(in crate::sol::svc::svce_calc) fn reg_mod(&mut self, sol_view: &SolView, item: &SolItem, modifier: SolAttrMod) {
         self.by_affector.add_entry(modifier.affector_item_id, modifier);
         match modifier.mod_type {
             SolModType::SystemWide => {
@@ -234,7 +231,7 @@ impl SolModifierRegister {
                 ()
             }
             SolModType::Fleet => {
-                if let Some(fit_id) = mod_item.get_fit_id() {
+                if let Some(fit_id) = item.get_fit_id() {
                     self.fleet_fit.add_entry(fit_id, modifier);
                 }
             }
@@ -248,35 +245,35 @@ impl SolModifierRegister {
             },
             _ => (),
         }
-        let mut tgt_fit_ids = Vec::new();
+        let mut fit_ids = Vec::new();
         match modifier.mod_type {
             SolModType::Local | SolModType::FitWide => {
-                if let Some(tgt_fit_id) = mod_item.get_fit_id() {
-                    tgt_fit_ids.push(tgt_fit_id);
+                if let Some(fit_id) = item.get_fit_id() {
+                    fit_ids.push(fit_id);
                 }
             }
-            SolModType::SystemWide => tgt_fit_ids.extend(sol_view.fits.iter_fit_ids()),
+            SolModType::SystemWide => fit_ids.extend(sol_view.fits.iter_fit_ids()),
             SolModType::Projected => (),
             SolModType::Targeted => (),
             SolModType::Fleet => {
-                if let Some(src_fit_id) = mod_item.get_fit_id() {
+                if let Some(src_fit_id) = item.get_fit_id() {
                     let src_fit = sol_view.fits.get_fit(&src_fit_id).unwrap();
                     match src_fit.fleet {
                         Some(fleet_id) => {
                             let fleet = sol_view.fleets.get_fleet(&fleet_id).unwrap();
-                            tgt_fit_ids.extend(fleet.iter_fits());
+                            fit_ids.extend(fleet.iter_fits());
                         }
-                        None => tgt_fit_ids.push(src_fit_id),
+                        None => fit_ids.push(src_fit_id),
                     }
                 }
             }
         }
-        self.apply_mod_to_fits(modifier, &tgt_fit_ids);
+        self.apply_mod_to_fits(modifier, &fit_ids);
     }
     pub(in crate::sol::svc::svce_calc) fn unreg_mod(
         &mut self,
         sol_view: &SolView,
-        mod_item: &SolItem,
+        item: &SolItem,
         modifier: &SolAttrMod,
     ) {
         self.by_affector.remove_entry(&modifier.affector_item_id, &modifier);
@@ -286,7 +283,7 @@ impl SolModifierRegister {
                 ()
             }
             SolModType::Fleet => {
-                if let Some(fit_id) = mod_item.get_fit_id() {
+                if let Some(fit_id) = item.get_fit_id() {
                     self.fleet_fit.remove_entry(&fit_id, &modifier);
                 }
             }
@@ -300,30 +297,30 @@ impl SolModifierRegister {
             },
             _ => (),
         }
-        let mut tgt_fit_ids = Vec::new();
+        let mut fit_ids = Vec::new();
         match modifier.mod_type {
             SolModType::Local | SolModType::FitWide => {
-                if let Some(tgt_fit_id) = mod_item.get_fit_id() {
-                    tgt_fit_ids.push(tgt_fit_id);
+                if let Some(fit_id) = item.get_fit_id() {
+                    fit_ids.push(fit_id);
                 }
             }
-            SolModType::SystemWide => tgt_fit_ids.extend(sol_view.fits.iter_fit_ids()),
+            SolModType::SystemWide => fit_ids.extend(sol_view.fits.iter_fit_ids()),
             SolModType::Projected => (),
             SolModType::Targeted => (),
             SolModType::Fleet => {
-                if let Some(src_fit_id) = mod_item.get_fit_id() {
+                if let Some(src_fit_id) = item.get_fit_id() {
                     let src_fit = sol_view.fits.get_fit(&src_fit_id).unwrap();
                     match src_fit.fleet {
                         Some(fleet_id) => {
                             let fleet = sol_view.fleets.get_fleet(&fleet_id).unwrap();
-                            tgt_fit_ids.extend(fleet.iter_fits());
+                            fit_ids.extend(fleet.iter_fits());
                         }
-                        None => tgt_fit_ids.push(src_fit_id),
+                        None => fit_ids.push(src_fit_id),
                     }
                 }
             }
         }
-        self.unapply_mod_from_fits(modifier, &tgt_fit_ids);
+        self.unapply_mod_from_fits(modifier, &fit_ids);
     }
     pub(in crate::sol::svc::svce_calc) fn add_mod_tgt(
         &mut self,
@@ -332,7 +329,7 @@ impl SolModifierRegister {
         tgt_item: &SolItem,
     ) -> bool {
         if matches!(modifier.mod_type, SolModType::Targeted) {
-            return self.apply_mod_to_item(modifier, tgt_item);
+            return self.apply_mod_to_tgt_item(modifier, tgt_item);
         }
         match (mod_item, tgt_item) {
             (SolItem::ProjEffect(_), SolItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
@@ -343,7 +340,7 @@ impl SolModifierRegister {
                 self.apply_mod_to_fits(modifier, &vec![structure.fit_id]);
                 return true;
             }
-            (SolItem::ProjEffect(_), _) => return self.apply_mod_to_item(modifier, tgt_item),
+            (SolItem::ProjEffect(_), _) => return self.apply_mod_to_tgt_item(modifier, tgt_item),
             _ => false,
         }
     }
@@ -354,7 +351,7 @@ impl SolModifierRegister {
         tgt_item: &SolItem,
     ) -> bool {
         if matches!(modifier.mod_type, SolModType::Targeted) {
-            return self.unapply_mod_from_item(modifier, tgt_item);
+            return self.unapply_mod_from_tgt_item(modifier, tgt_item);
         }
         match (mod_item, tgt_item) {
             (SolItem::ProjEffect(_), SolItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
@@ -365,174 +362,172 @@ impl SolModifierRegister {
                 self.unapply_mod_from_fits(modifier, &vec![structure.fit_id]);
                 true
             }
-            (SolItem::ProjEffect(_), _) => self.unapply_mod_from_item(modifier, tgt_item),
+            (SolItem::ProjEffect(_), _) => self.unapply_mod_from_tgt_item(modifier, tgt_item),
             _ => false,
         }
     }
     // Private methods
-    fn apply_mod_to_fits(&mut self, modifier: SolAttrMod, tgt_fit_ids: &Vec<SolFitId>) {
+    fn apply_mod_to_fits(&mut self, modifier: SolAttrMod, fit_ids: &Vec<SolFitId>) {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolModDomain::Everything => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.buff_all.add_entry(*tgt_fit_id, modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.buff_all.add_entry(*fit_id, modifier);
                     }
                 }
                 SolModDomain::Char => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.root.add_entry((*tgt_fit_id, SolLocType::Character), modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.root.add_entry((*fit_id, SolLocType::Character), modifier);
                     }
                 }
                 SolModDomain::Ship => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.root.add_entry((*tgt_fit_id, SolLocType::Ship), modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.root.add_entry((*fit_id, SolLocType::Ship), modifier);
                     }
                 }
                 SolModDomain::Structure => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.root.add_entry((*tgt_fit_id, SolLocType::Structure), modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.root.add_entry((*fit_id, SolLocType::Structure), modifier);
                     }
                 }
                 _ => (),
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolModDomain::Everything => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.loc.add_entry((*tgt_fit_id, SolLocType::Ship), modifier);
-                        self.loc.add_entry((*tgt_fit_id, SolLocType::Structure), modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.loc.add_entry((*fit_id, SolLocType::Ship), modifier);
+                        self.loc.add_entry((*fit_id, SolLocType::Structure), modifier);
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        for tgt_fit_id in tgt_fit_ids.iter() {
-                            self.loc.add_entry((*tgt_fit_id, loc), modifier);
+                        for fit_id in fit_ids.iter() {
+                            self.loc.add_entry((*fit_id, loc), modifier);
                         }
                     }
                 }
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolModDomain::Everything => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
+                    for fit_id in fit_ids.iter() {
+                        self.loc_grp.add_entry((*fit_id, SolLocType::Ship, grp_id), modifier);
                         self.loc_grp
-                            .add_entry((*tgt_fit_id, SolLocType::Ship, grp_id), modifier);
-                        self.loc_grp
-                            .add_entry((*tgt_fit_id, SolLocType::Structure, grp_id), modifier);
+                            .add_entry((*fit_id, SolLocType::Structure, grp_id), modifier);
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        for tgt_fit_id in tgt_fit_ids.iter() {
-                            self.loc_grp.add_entry((*tgt_fit_id, loc, grp_id), modifier);
+                        for fit_id in fit_ids.iter() {
+                            self.loc_grp.add_entry((*fit_id, loc, grp_id), modifier);
                         }
                     }
                 }
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolModDomain::Everything => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
+                    for fit_id in fit_ids.iter() {
+                        self.loc_srq.add_entry((*fit_id, SolLocType::Ship, srq_id), modifier);
                         self.loc_srq
-                            .add_entry((*tgt_fit_id, SolLocType::Ship, srq_id), modifier);
-                        self.loc_srq
-                            .add_entry((*tgt_fit_id, SolLocType::Structure, srq_id), modifier);
+                            .add_entry((*fit_id, SolLocType::Structure, srq_id), modifier);
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        for tgt_fit_id in tgt_fit_ids.iter() {
-                            self.loc_srq.add_entry((*tgt_fit_id, loc, srq_id), modifier);
+                        for fit_id in fit_ids.iter() {
+                            self.loc_srq.add_entry((*fit_id, loc, srq_id), modifier);
                         }
                     }
                 }
             },
             SolAffecteeFilter::OwnSrq(srq_id) => {
-                for tgt_fit_id in tgt_fit_ids.iter() {
-                    self.own_srq.add_entry((*tgt_fit_id, srq_id), modifier);
+                for fit_id in fit_ids.iter() {
+                    self.own_srq.add_entry((*fit_id, srq_id), modifier);
                 }
             }
         }
     }
-    fn unapply_mod_from_fits(&mut self, modifier: &SolAttrMod, tgt_fit_ids: &Vec<SolFitId>) {
+    fn unapply_mod_from_fits(&mut self, modifier: &SolAttrMod, fit_ids: &Vec<SolFitId>) {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolModDomain::Everything => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.buff_all.remove_entry(tgt_fit_id, &modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.buff_all.remove_entry(fit_id, &modifier);
                     }
                 }
                 SolModDomain::Char => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.root.remove_entry(&(*tgt_fit_id, SolLocType::Character), &modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.root.remove_entry(&(*fit_id, SolLocType::Character), &modifier);
                     }
                 }
                 SolModDomain::Ship => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.root.remove_entry(&(*tgt_fit_id, SolLocType::Ship), &modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.root.remove_entry(&(*fit_id, SolLocType::Ship), &modifier);
                     }
                 }
                 SolModDomain::Structure => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.root.remove_entry(&(*tgt_fit_id, SolLocType::Structure), &modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.root.remove_entry(&(*fit_id, SolLocType::Structure), &modifier);
                     }
                 }
                 _ => (),
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolModDomain::Everything => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
-                        self.loc.remove_entry(&(*tgt_fit_id, SolLocType::Ship), &modifier);
-                        self.loc.remove_entry(&(*tgt_fit_id, SolLocType::Structure), &modifier);
+                    for fit_id in fit_ids.iter() {
+                        self.loc.remove_entry(&(*fit_id, SolLocType::Ship), &modifier);
+                        self.loc.remove_entry(&(*fit_id, SolLocType::Structure), &modifier);
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        for tgt_fit_id in tgt_fit_ids.iter() {
-                            self.loc.remove_entry(&(*tgt_fit_id, loc), &modifier);
+                        for fit_id in fit_ids.iter() {
+                            self.loc.remove_entry(&(*fit_id, loc), &modifier);
                         }
                     }
                 }
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolModDomain::Everything => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
+                    for fit_id in fit_ids.iter() {
                         self.loc_grp
-                            .remove_entry(&(*tgt_fit_id, SolLocType::Ship, grp_id), &modifier);
+                            .remove_entry(&(*fit_id, SolLocType::Ship, grp_id), &modifier);
                         self.loc_grp
-                            .remove_entry(&(*tgt_fit_id, SolLocType::Structure, grp_id), &modifier);
+                            .remove_entry(&(*fit_id, SolLocType::Structure, grp_id), &modifier);
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        for tgt_fit_id in tgt_fit_ids.iter() {
-                            self.loc_grp.remove_entry(&(*tgt_fit_id, loc, grp_id), &modifier);
+                        for fit_id in fit_ids.iter() {
+                            self.loc_grp.remove_entry(&(*fit_id, loc, grp_id), &modifier);
                         }
                     }
                 }
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolModDomain::Everything => {
-                    for tgt_fit_id in tgt_fit_ids.iter() {
+                    for fit_id in fit_ids.iter() {
                         self.loc_srq
-                            .remove_entry(&(*tgt_fit_id, SolLocType::Ship, srq_id), &modifier);
+                            .remove_entry(&(*fit_id, SolLocType::Ship, srq_id), &modifier);
                         self.loc_srq
-                            .remove_entry(&(*tgt_fit_id, SolLocType::Structure, srq_id), &modifier);
+                            .remove_entry(&(*fit_id, SolLocType::Structure, srq_id), &modifier);
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        for tgt_fit_id in tgt_fit_ids.iter() {
-                            self.loc_srq.remove_entry(&(*tgt_fit_id, loc, srq_id), &modifier);
+                        for fit_id in fit_ids.iter() {
+                            self.loc_srq.remove_entry(&(*fit_id, loc, srq_id), &modifier);
                         }
                     }
                 }
             },
             SolAffecteeFilter::OwnSrq(srq) => {
-                for tgt_fit_id in tgt_fit_ids.iter() {
-                    self.own_srq.remove_entry(&(*tgt_fit_id, srq), &modifier);
+                for fit_id in fit_ids.iter() {
+                    self.own_srq.remove_entry(&(*fit_id, srq), &modifier);
                 }
             }
         }
     }
-    fn apply_mod_to_item(&mut self, modifier: SolAttrMod, tgt_item: &SolItem) -> bool {
+    fn apply_mod_to_tgt_item(&mut self, modifier: SolAttrMod, tgt_item: &SolItem) -> bool {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolModDomain::Everything if tgt_item.is_buff_modifiable() => {
@@ -618,7 +613,7 @@ impl SolModifierRegister {
             _ => false,
         }
     }
-    fn unapply_mod_from_item(&mut self, modifier: &SolAttrMod, tgt_item: &SolItem) -> bool {
+    fn unapply_mod_from_tgt_item(&mut self, modifier: &SolAttrMod, tgt_item: &SolItem) -> bool {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolModDomain::Everything if tgt_item.is_buff_modifiable() => {
