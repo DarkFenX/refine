@@ -621,8 +621,7 @@ impl SolModifierRegister {
                 }
                 SolItem::Structure(_) => {
                     if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
-                        self.own_srq
-                            .add_entry((tgt_fit_id, srq_id), modifier);
+                        self.own_srq.add_entry((tgt_fit_id, srq_id), modifier);
                         true
                     } else {
                         false
@@ -720,8 +719,7 @@ impl SolModifierRegister {
             SolAffecteeFilter::OwnSrq(srq_id) => match tgt_item {
                 SolItem::Ship(_) => {
                     if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
-                        self.own_srq
-                            .remove_entry(&(tgt_fit_id, srq_id), modifier);
+                        self.own_srq.remove_entry(&(tgt_fit_id, srq_id), modifier);
                         true
                     } else {
                         false
@@ -729,8 +727,7 @@ impl SolModifierRegister {
                 }
                 SolItem::Structure(_) => {
                     if let Some(tgt_fit_id) = tgt_item.get_fit_id() {
-                        self.own_srq
-                            .remove_entry(&(tgt_fit_id, srq_id), modifier);
+                        self.own_srq.remove_entry(&(tgt_fit_id, srq_id), modifier);
                         true
                     } else {
                         false

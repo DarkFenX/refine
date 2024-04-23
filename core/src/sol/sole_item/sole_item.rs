@@ -14,7 +14,7 @@ impl SolarSystem {
             .map(|v| SolItemInfo::from_sol_item(v, self))
     }
     pub fn remove_item(&mut self, item_id: &SolItemId) -> Result<()> {
-        // Gather info to remove child or update parent items
+        // Gather info for further process
         let main = self.items.get_item(item_id)?;
         let charge_id_opt = match main {
             SolItem::Module(m) => m.charge_item_id,
@@ -24,22 +24,31 @@ impl SolarSystem {
             SolItem::Charge(charge) => Some(charge.cont_id),
             _ => None,
         };
-        let proj_item_ids = self.tgt_tracker.iter_srcs(item_id).map(|v| *v).collect_vec();
-        let mut targeted_item_ids = Vec::new();
+        // Remove outgoing projections
         match main {
-            SolItem::ProjEffect(proj_effect) => targeted_item_ids.extend(proj_effect.tgts.iter_tgts()),
-            SolItem::Module(module) => targeted_item_ids.extend(module.tgts.iter_tgts()),
+            SolItem::ProjEffect(proj_effect) => {
+                let proj_outgoing = proj_effect.tgts.iter_tgts().map(|v| *v).collect_vec();
+                for targeted_item_id in proj_outgoing.iter() {
+                    self.remove_proj_effect_tgt(item_id, targeted_item_id).unwrap();
+                }
+            }
+            SolItem::Module(module) => {
+                let proj_outgoing = module.tgts.iter_tgts().map(|v| *v).collect_vec();
+                for targeted_item_id in proj_outgoing.iter() {
+                    self.remove_module_tgt(item_id, targeted_item_id).unwrap();
+                }
+            }
             _ => (),
         };
-        // Remove projections which target item being removed
-        for proj_item_id in proj_item_ids.iter() {
-            let _ = self.remove_proj_effect_tgt(proj_item_id, item_id);
-            let _ = self.remove_module_tgt(proj_item_id, item_id);
-        }
-        // Remove projections of current item upon others
-        for targeted_item_id in targeted_item_ids.iter() {
-            let _ = self.remove_proj_effect_tgt(item_id, targeted_item_id);
-            let _ = self.remove_module_tgt(item_id, targeted_item_id);
+        // Remove incoming projections
+        let proj_incoming = self.tgt_tracker.iter_srcs(item_id).map(|v| *v).collect_vec();
+        for proj_item_id in proj_incoming.iter() {
+            let proj_item = self.items.get_item(proj_item_id).unwrap();
+            match proj_item {
+                SolItem::Module(_) => self.remove_module_tgt(proj_item_id, item_id).unwrap(),
+                SolItem::ProjEffect(_) => self.remove_proj_effect_tgt(proj_item_id, item_id).unwrap(),
+                _ => (),
+            }
         }
         // Remove child items
         if let Some(charge_id) = charge_id_opt {
