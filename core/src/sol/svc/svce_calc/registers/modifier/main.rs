@@ -146,7 +146,7 @@ impl SolModifierRegister {
         }
         mods
     }
-    pub(in crate::sol::svc::svce_calc) fn iter_mods_for_affector(
+    pub(in crate::sol::svc::svce_calc) fn iter_affector_item_mods(
         &self,
         affector_item_id: &SolItemId,
     ) -> impl ExactSizeIterator<Item = &SolAttrMod> {
@@ -185,12 +185,7 @@ impl SolModifierRegister {
             }
         }
         if !updates.outgoing.is_empty() {
-            let fit_ids = sol_view
-                .fits
-                .iter_fit_ids()
-                .map(|v| *v)
-                .filter(|v| v != fit_id)
-                .collect();
+            let fit_ids = fleet.iter_fits().map(|v| *v).filter(|v| v != fit_id).collect();
             for modifier in updates.outgoing.iter() {
                 self.apply_mod_to_fits(*modifier, &fit_ids);
             }
@@ -211,12 +206,7 @@ impl SolModifierRegister {
             }
         }
         if !updates.outgoing.is_empty() {
-            let fit_ids = sol_view
-                .fits
-                .iter_fit_ids()
-                .map(|v| *v)
-                .filter(|v| v != fit_id)
-                .collect();
+            let fit_ids = fleet.iter_fits().map(|v| *v).filter(|v| v != fit_id).collect();
             for modifier in updates.outgoing.iter() {
                 self.unapply_mod_from_fits(modifier, &fit_ids);
             }

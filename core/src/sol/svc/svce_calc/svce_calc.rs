@@ -51,7 +51,7 @@ impl SolSvcs {
                 if modifier.revise_on_item_add(item, sol_view) {
                     if let Ok(src_item) = sol_view.items.get_item(&modifier.affector_item_id) {
                         self.calc_data
-                            .affectee
+                            .afee
                             .fill_affectees(&mut affectees, sol_view, src_item, modifier);
                         for tgt_item_id in affectees.iter() {
                             self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
@@ -72,7 +72,7 @@ impl SolSvcs {
                 if modifier.revise_on_item_remove(item, sol_view) {
                     if let Ok(src_item) = sol_view.items.get_item(&modifier.affector_item_id) {
                         self.calc_data
-                            .affectee
+                            .afee
                             .fill_affectees(&mut affectees, sol_view, src_item, modifier);
                         for tgt_item_id in affectees.iter() {
                             self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
@@ -85,10 +85,10 @@ impl SolSvcs {
     }
     pub(in crate::sol::svc) fn calc_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
         self.calc_data.attrs.add_item(item.get_id());
-        self.calc_data.affectee.reg_affectee(sol_view, item);
+        self.calc_data.afee.reg_affectee(sol_view, item);
     }
     pub(in crate::sol::svc) fn calc_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.calc_data.affectee.unreg_affectee(sol_view, item);
+        self.calc_data.afee.unreg_affectee(sol_view, item);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
         self.calc_data.deps.clear_item_data(&item_id);
@@ -167,7 +167,7 @@ impl SolSvcs {
         let modifiers = self
             .calc_data
             .mods
-            .iter_mods_for_affector(&item_id)
+            .iter_affector_item_mods(&item_id)
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
@@ -186,7 +186,7 @@ impl SolSvcs {
         let modifiers = self
             .calc_data
             .mods
-            .iter_mods_for_affector(&item_id)
+            .iter_affector_item_mods(&item_id)
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
@@ -216,7 +216,7 @@ impl SolSvcs {
         let mods = self
             .calc_data
             .mods
-            .iter_mods_for_affector(item_id)
+            .iter_affector_item_mods(item_id)
             .filter(|v| v.get_src_attr_id() == Some(*attr_id))
             .map(|v| *v)
             .collect_vec();
@@ -224,7 +224,7 @@ impl SolSvcs {
             let mut affectees = Vec::new();
             for modifier in mods.iter() {
                 self.calc_data
-                    .affectee
+                    .afee
                     .fill_affectees(&mut affectees, sol_view, item, &modifier);
                 for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
@@ -281,9 +281,7 @@ impl SolSvcs {
             // of fleet buff ID attributes new value will be fetched instantly after cleanup, and
             // that value has to be new
             self.calc_data.mods.reg_mod(sol_view, item, *modifier);
-            self.calc_data
-                .affectee
-                .fill_affectees(affectees, sol_view, item, modifier);
+            self.calc_data.afee.fill_affectees(affectees, sol_view, item, modifier);
             for tgt_item_id in affectees.iter() {
                 self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
             }
@@ -306,9 +304,7 @@ impl SolSvcs {
             // case of fleet buff ID attributes new value will be fetched instantly after cleanup,
             // and that value has to be new
             self.calc_data.mods.unreg_mod(sol_view, item, modifier);
-            self.calc_data
-                .affectee
-                .fill_affectees(affectees, sol_view, item, modifier);
+            self.calc_data.afee.fill_affectees(affectees, sol_view, item, modifier);
             for tgt_item_id in affectees.iter() {
                 self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
             }
@@ -334,7 +330,7 @@ impl SolSvcs {
         for modifier in modifiers.iter() {
             if self.calc_data.mods.add_mod_tgt(item, *modifier, tgt_item) {
                 self.calc_data
-                    .affectee
+                    .afee
                     .fill_affectees_for_tgt_item(affectees, sol_view, modifier, &tgt_item);
                 for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
@@ -353,7 +349,7 @@ impl SolSvcs {
     ) {
         for modifier in modifiers.iter() {
             self.calc_data
-                .affectee
+                .afee
                 .fill_affectees_for_tgt_item(affectees, sol_view, modifier, &tgt_item);
             for tgt_item_id in affectees.iter() {
                 self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
@@ -375,7 +371,7 @@ impl SolSvcs {
             let mut affectees = Vec::new();
             for modifier in self.calc_data.mods.get_mods_for_changed_root(sol_view, item) {
                 self.calc_data
-                    .affectee
+                    .afee
                     .fill_affectees_for_fit(&mut affectees, &modifier, fit);
                 for item_id in affectees.iter() {
                     self.calc_force_attr_recalc(sol_view, item_id, &modifier.affectee_attr_id);
@@ -396,7 +392,7 @@ impl SolSvcs {
             let tgt_fit = sol_view.fits.get_fit(fit_id).unwrap();
             for modifier in updates.incoming.iter() {
                 self.calc_data
-                    .affectee
+                    .afee
                     .fill_affectees_for_fit(&mut affectees, modifier, tgt_fit);
                 for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
@@ -412,7 +408,7 @@ impl SolSvcs {
                     .map(|v| sol_view.fits.get_fit(v).unwrap())
                 {
                     self.calc_data
-                        .affectee
+                        .afee
                         .fill_affectees_for_fit(&mut affectees, modifier, tgt_fit);
                 }
                 for tgt_item_id in affectees.iter() {
