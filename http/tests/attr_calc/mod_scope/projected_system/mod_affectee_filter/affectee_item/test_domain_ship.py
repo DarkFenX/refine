@@ -95,7 +95,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_ship2.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_replace_parent(client, consts):
+def test_replace_target(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(

@@ -78,7 +78,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_rig.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_replace_parent(client, consts):
+def test_replace_root(client, consts):
     # Check structure replacement process in context of projected effect. This is not usual
     # replacement test since projection is dropped as soon as we replace structure
     eve_src_attr = client.mk_eve_attr()

@@ -109,7 +109,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_implant.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_replace_parent(client, consts):
+def test_replace_root(client, consts):
     # Modifiers which target items on character location shouldn't apply when character isn't set
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
