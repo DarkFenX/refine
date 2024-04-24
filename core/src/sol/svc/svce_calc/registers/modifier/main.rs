@@ -592,20 +592,15 @@ impl SolModifierRegister {
                     true
                 }
                 SolModDomain::Char => match tgt_item {
-                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
-                        Some(char_id) => {
-                            self.direct.add_entry(char_id, modifier);
-                            true
-                        }
-                        _ => false,
-                    },
-                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
-                        Some(char_id) => {
-                            self.direct.add_entry(char_id, modifier);
-                            true
-                        }
-                        _ => false,
-                    },
+                    SolItem::Ship(tgt_ship) => {
+                        self.root.add_entry((tgt_ship.fit_id, SolLocType::Character), modifier);
+                        true
+                    }
+                    SolItem::Structure(tgt_struct) => {
+                        self.root
+                            .add_entry((tgt_struct.fit_id, SolLocType::Character), modifier);
+                        true
+                    }
                     _ => false,
                 },
                 SolModDomain::Target => {
@@ -829,20 +824,16 @@ impl SolModifierRegister {
                     true
                 }
                 SolModDomain::Char => match tgt_item {
-                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
-                        Some(char_id) => {
-                            self.direct.remove_entry(&char_id, modifier);
-                            true
-                        }
-                        _ => false,
-                    },
-                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
-                        Some(char_id) => {
-                            self.direct.remove_entry(&char_id, modifier);
-                            true
-                        }
-                        _ => false,
-                    },
+                    SolItem::Ship(tgt_ship) => {
+                        self.root
+                            .remove_entry(&(tgt_ship.fit_id, SolLocType::Character), modifier);
+                        true
+                    }
+                    SolItem::Structure(tgt_struct) => {
+                        self.root
+                            .remove_entry(&(tgt_struct.fit_id, SolLocType::Character), modifier);
+                        true
+                    }
                     _ => false,
                 },
                 SolModDomain::Target => {
@@ -1027,7 +1018,7 @@ impl SolModifierRegister {
                     },
                     _ => false,
                 },
-                SolModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                SolModDomain::Target => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         self.loc_srq
                             .remove_entry(&(tgt_ship.fit_id, SolLocType::Ship, srq_id), modifier);
