@@ -1,7 +1,7 @@
 use std::num::Wrapping;
 
 use crate::{
-    defs::SolFitId,
+    defs::{SolFitId, SolItemId},
     sol::fit::SolFit,
     util::{Error, ErrorKind, Result, StMap},
 };
@@ -43,6 +43,9 @@ impl SolFits {
     }
     pub(in crate::sol) fn iter_fits(&self) -> impl ExactSizeIterator<Item = &SolFit> {
         self.data.values()
+    }
+    pub(in crate::sol) fn get_fit_char(&self, fit_id: &SolFitId) -> Option<SolItemId> {
+        self.get_fit(fit_id).ok().map(|v| v.character).flatten()
     }
     fn alloc_fit_id(&mut self) -> Result<SolFitId> {
         let start = self.counter;

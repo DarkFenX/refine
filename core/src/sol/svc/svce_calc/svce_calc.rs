@@ -158,7 +158,7 @@ impl SolSvcs {
             let tgt_item = sol_view.items.get_item(&tgt_item_id).unwrap();
             let mut affectees = Vec::new();
             for modifier in modifiers.iter() {
-                if self.calc_data.mods.add_mod_tgt(item, *modifier, tgt_item) {
+                if self.calc_data.mods.add_mod_tgt(sol_view, item, *modifier, tgt_item) {
                     affectees.clear();
                     self.calc_data
                         .afee
@@ -194,7 +194,7 @@ impl SolSvcs {
                 for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
                 }
-                self.calc_data.mods.rm_mod_tgt(item, modifier, tgt_item);
+                self.calc_data.mods.rm_mod_tgt(sol_view, item, modifier, tgt_item);
             }
         }
     }

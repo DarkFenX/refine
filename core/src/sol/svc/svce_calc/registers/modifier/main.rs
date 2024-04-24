@@ -21,7 +21,7 @@ pub(in crate::sol::svc::svce_calc) struct SolModifierRegister {
     // Map<affector item ID, modifiers>
     pub(super) by_affector: StMapSetL1<SolItemId, SolAttrMod>,
     // Modifiers which modify item directly
-    // Map<affector item ID, modifiers>
+    // Map<affectee item ID, modifiers>
     pub(super) direct: StMapSetL1<SolItemId, SolAttrMod>,
     // Modifiers which modify 'other' domain are always stored here, regardless if they actually
     // modify something or not
@@ -277,7 +277,7 @@ impl SolModifierRegister {
                 if let Some(tgt_item_ids) = item.iter_targets() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
-                        changed = changed | self.apply_mod_to_tgt_item(modifier, tgt_item);
+                        changed = changed | self.apply_mod_to_tgt_item(sol_view, modifier, tgt_item);
                     }
                 }
                 changed
@@ -350,7 +350,7 @@ impl SolModifierRegister {
                 if let Some(tgt_item_ids) = item.iter_targets() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
-                        changed = changed | self.unapply_mod_from_tgt_item(modifier, tgt_item);
+                        changed = changed | self.unapply_mod_from_tgt_item(sol_view, modifier, tgt_item);
                     }
                 }
                 changed
@@ -359,12 +359,13 @@ impl SolModifierRegister {
     }
     pub(in crate::sol::svc::svce_calc) fn add_mod_tgt(
         &mut self,
+        sol_view: &SolView,
         mod_item: &SolItem,
         modifier: SolAttrMod,
         tgt_item: &SolItem,
     ) -> bool {
         if matches!(modifier.mod_type, SolModType::Targeted) {
-            return self.apply_mod_to_tgt_item(modifier, tgt_item);
+            return self.apply_mod_to_tgt_item(sol_view, modifier, tgt_item);
         }
         match (mod_item, tgt_item) {
             (SolItem::ProjEffect(_), SolItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
@@ -375,18 +376,19 @@ impl SolModifierRegister {
                 self.apply_mod_to_fits(modifier, &vec![structure.fit_id]);
                 return true;
             }
-            (SolItem::ProjEffect(_), _) => return self.apply_mod_to_tgt_item(modifier, tgt_item),
+            (SolItem::ProjEffect(_), _) => return self.apply_mod_to_tgt_item(sol_view, modifier, tgt_item),
             _ => false,
         }
     }
     pub(in crate::sol::svc::svce_calc) fn rm_mod_tgt(
         &mut self,
+        sol_view: &SolView,
         mod_item: &SolItem,
         modifier: &SolAttrMod,
         tgt_item: &SolItem,
     ) -> bool {
         if matches!(modifier.mod_type, SolModType::Targeted) {
-            return self.unapply_mod_from_tgt_item(modifier, tgt_item);
+            return self.unapply_mod_from_tgt_item(sol_view, modifier, tgt_item);
         }
         match (mod_item, tgt_item) {
             (SolItem::ProjEffect(_), SolItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
@@ -397,7 +399,7 @@ impl SolModifierRegister {
                 self.unapply_mod_from_fits(modifier, &vec![structure.fit_id]);
                 true
             }
-            (SolItem::ProjEffect(_), _) => self.unapply_mod_from_tgt_item(modifier, tgt_item),
+            (SolItem::ProjEffect(_), _) => self.unapply_mod_from_tgt_item(sol_view, modifier, tgt_item),
             _ => false,
         }
     }
@@ -590,13 +592,38 @@ impl SolModifierRegister {
             }
         }
     }
-    fn apply_mod_to_tgt_item(&mut self, modifier: SolAttrMod, tgt_item: &SolItem) -> bool {
+    fn apply_mod_to_tgt_item(&mut self, sol_view: &SolView, modifier: SolAttrMod, tgt_item: &SolItem) -> bool {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolModDomain::Everything if tgt_item.is_buff_modifiable() => {
                     self.direct.add_entry(tgt_item.get_id(), modifier);
                     true
                 }
+                SolModDomain::Ship if matches!(tgt_item, SolItem::Ship(_)) => {
+                    self.direct.add_entry(tgt_item.get_id(), modifier);
+                    true
+                }
+                SolModDomain::Structure if matches!(tgt_item, SolItem::Structure(_)) => {
+                    self.direct.add_entry(tgt_item.get_id(), modifier);
+                    true
+                }
+                SolModDomain::Char => match tgt_item {
+                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
+                        Some(char_id) => {
+                            self.direct.add_entry(char_id, modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
+                        Some(char_id) => {
+                            self.direct.add_entry(char_id, modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                },
                 SolModDomain::Target if tgt_item.is_targetable() => {
                     // Could do parent location container here, but it's not really needed, since
                     // there is no scenario where modifier needs to target item with it being absent
@@ -664,13 +691,38 @@ impl SolModifierRegister {
             },
         }
     }
-    fn unapply_mod_from_tgt_item(&mut self, modifier: &SolAttrMod, tgt_item: &SolItem) -> bool {
+    fn unapply_mod_from_tgt_item(&mut self, sol_view: &SolView, modifier: &SolAttrMod, tgt_item: &SolItem) -> bool {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolModDomain::Everything if tgt_item.is_buff_modifiable() => {
                     self.direct.remove_entry(&tgt_item.get_id(), modifier);
                     true
                 }
+                SolModDomain::Ship if matches!(tgt_item, SolItem::Ship(_)) => {
+                    self.direct.remove_entry(&tgt_item.get_id(), modifier);
+                    true
+                }
+                SolModDomain::Structure if matches!(tgt_item, SolItem::Structure(_)) => {
+                    self.direct.remove_entry(&tgt_item.get_id(), modifier);
+                    true
+                }
+                SolModDomain::Char => match tgt_item {
+                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
+                        Some(char_id) => {
+                            self.direct.remove_entry(&char_id, modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
+                        Some(char_id) => {
+                            self.direct.remove_entry(&char_id, modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                },
                 SolModDomain::Target if tgt_item.is_targetable() => {
                     // Could do parent location container here, but it's not really needed, since
                     // there is no scenario where modifier needs to target item with it being absent
