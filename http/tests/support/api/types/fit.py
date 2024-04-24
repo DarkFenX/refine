@@ -67,11 +67,19 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
 
     # Character methods
-    def set_char_request(self, type_id: int) -> Request:
-        return self._client.set_char_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)
+    def set_char_request(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent
+    ) -> Request:
+        return self._client.set_char_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
 
-    def set_char(self, type_id: int) -> Item:
-        resp = self.set_char_request(type_id=type_id).send()
+    def set_char(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent
+    ) -> Item:
+        resp = self.set_char_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
@@ -138,11 +146,19 @@ class Fit(AttrDict):
         return item
 
     # Ship methods
-    def set_ship_request(self, type_id: int) -> Request:
-        return self._client.set_ship_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)
+    def set_ship_request(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent
+    ) -> Request:
+        return self._client.set_ship_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
 
-    def set_ship(self, type_id: int) -> Item:
-        resp = self.set_ship_request(type_id=type_id).send()
+    def set_ship(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent
+    ) -> Item:
+        resp = self.set_ship_request(type_id=type_id, state=state).send()
         assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)

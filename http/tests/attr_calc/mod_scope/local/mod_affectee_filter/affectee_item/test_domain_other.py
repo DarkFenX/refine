@@ -17,8 +17,12 @@ def test_affected_charge_bundled(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(type_id=eve_src_item.id, charge_type_id=eve_tgt_item.id)
+    api_module = api_fit.add_mod(type_id=eve_src_item.id, charge_type_id=eve_tgt_item.id, state=consts.ApiState.ghost)
+    assert api_module.update().charge.attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_module.change_mod(state=consts.ApiState.offline)
     assert api_module.update().charge.attrs[eve_tgt_attr.id].dogma == approx(120)
+    api_module.change_mod(state=consts.ApiState.ghost)
+    assert api_module.update().charge.attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_affected_charge_separate(client, consts):
@@ -37,9 +41,13 @@ def test_affected_charge_separate(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(type_id=eve_src_item.id)
+    api_module = api_fit.add_mod(type_id=eve_src_item.id, state=consts.ApiState.ghost)
     api_module.change_mod(charge=eve_tgt_item.id)
+    assert api_module.update().charge.attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_module.change_mod(state=consts.ApiState.offline)
     assert api_module.update().charge.attrs[eve_tgt_attr.id].dogma == approx(120)
+    api_module.change_mod(state=consts.ApiState.ghost)
+    assert api_module.update().charge.attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_affected_charge_propagation(client, consts):

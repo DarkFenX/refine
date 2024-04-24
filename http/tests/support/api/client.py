@@ -285,6 +285,17 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             cmd_name='character', sol_id=sol_id, fit_id=fit_id, type_id=type_id, state=state,
             item_info_mode=item_info_mode)
 
+    def change_char_request(
+            self,
+            sol_id: str,
+            item_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+    ) -> Request:
+        return self.__change_simple_item(
+            cmd_name='character', sol_id=sol_id, item_id=item_id, state=state,
+            item_info_mode=item_info_mode)
+
     # Skill methods
     def add_skill_request(
             self,
@@ -341,6 +352,17 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             cmd_name='implant', sol_id=sol_id, fit_id=fit_id, type_id=type_id, state=state,
             item_info_mode=item_info_mode)
 
+    def change_implant_request(
+            self,
+            sol_id: str,
+            item_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+    ) -> Request:
+        return self.__change_simple_item(
+            cmd_name='implant', sol_id=sol_id, item_id=item_id, state=state,
+            item_info_mode=item_info_mode)
+
     # Booster methods
     def add_booster_request(
             self,
@@ -365,6 +387,17 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     ) -> Request:
         return self.__add_simple_item(
             cmd_name='ship', sol_id=sol_id, fit_id=fit_id, type_id=type_id, state=state,
+            item_info_mode=item_info_mode)
+
+    def change_ship_request(
+            self,
+            sol_id: str,
+            item_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+    ) -> Request:
+        return self.__change_simple_item(
+            cmd_name='ship', sol_id=sol_id, item_id=item_id, state=state,
             item_info_mode=item_info_mode)
 
     # Structure methods
@@ -468,6 +501,17 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     ) -> Request:
         return self.__add_simple_item(
             cmd_name='rig', sol_id=sol_id, fit_id=fit_id, type_id=type_id, state=state,
+            item_info_mode=item_info_mode)
+
+    def change_rig_request(
+            self,
+            sol_id: str,
+            item_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+    ) -> Request:
+        return self.__change_simple_item(
+            cmd_name='rig', sol_id=sol_id, item_id=item_id, state=state,
             item_info_mode=item_info_mode)
 
     # Drone methods

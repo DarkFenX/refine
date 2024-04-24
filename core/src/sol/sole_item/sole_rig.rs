@@ -3,7 +3,7 @@ use crate::{
     sol::{
         item::{SolItem, SolRig},
         item_info::SolRigInfo,
-        SolarSystem,
+        SolView, SolarSystem,
     },
     util::Result,
 };
@@ -27,7 +27,19 @@ impl SolarSystem {
         Ok(info)
     }
     pub fn set_rig_state(&mut self, item_id: &SolItemId, state: bool) -> Result<()> {
-        self.items.get_rig_mut(item_id)?.set_bool_state(state);
+        let rig = self.items.get_rig_mut(item_id)?;
+        let old_state = rig.state;
+        rig.set_bool_state(state);
+        let new_state = rig.state;
+        if new_state != old_state {
+            let item = self.items.get_item(item_id).unwrap();
+            self.svcs.switch_item_state(
+                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                item,
+                old_state,
+                new_state,
+            );
+        }
         Ok(())
     }
 }

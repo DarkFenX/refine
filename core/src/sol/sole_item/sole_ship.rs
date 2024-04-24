@@ -3,7 +3,7 @@ use crate::{
     sol::{
         item::{SolItem, SolShip},
         item_info::SolShipInfo,
-        SolarSystem,
+        SolView, SolarSystem,
     },
     util::{Error, ErrorKind, Named, Result},
 };
@@ -31,12 +31,24 @@ impl SolarSystem {
         Ok(info)
     }
     pub fn set_ship_state(&mut self, item_id: &SolItemId, state: bool) -> Result<()> {
-        self.items.get_ship_mut(item_id)?.set_bool_state(state);
+        let ship = self.items.get_ship_mut(item_id)?;
+        let old_state = ship.state;
+        ship.set_bool_state(state);
+        let new_state = ship.state;
+        if new_state != old_state {
+            let item = self.items.get_item(item_id).unwrap();
+            self.svcs.switch_item_state(
+                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                item,
+                old_state,
+                new_state,
+            );
+        }
         Ok(())
     }
     pub fn set_fit_ship_state(&mut self, fit_id: &SolFitId, state: bool) -> Result<()> {
-        self.get_fit_ship_mut(fit_id)?.set_bool_state(state);
-        Ok(())
+        let ship = self.get_fit_ship_id(fit_id)?;
+        self.set_ship_state(&ship, state)
     }
     pub fn remove_fit_ship(&mut self, fit_id: &SolFitId) -> Result<()> {
         let item_id = self.get_fit_ship_id(fit_id)?;

@@ -3,7 +3,7 @@ use crate::{
     sol::{
         item::{SolImplant, SolItem},
         item_info::SolImplantInfo,
-        SolarSystem,
+        SolView, SolarSystem,
     },
     util::Result,
 };
@@ -31,7 +31,19 @@ impl SolarSystem {
         Ok(info)
     }
     pub fn set_implant_state(&mut self, item_id: &SolItemId, state: bool) -> Result<()> {
-        self.items.get_implant_mut(item_id)?.set_bool_state(state);
+        let implant = self.items.get_implant_mut(item_id)?;
+        let old_state = implant.state;
+        implant.set_bool_state(state);
+        let new_state = implant.state;
+        if new_state != old_state {
+            let item = self.items.get_item(item_id).unwrap();
+            self.svcs.switch_item_state(
+                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                item,
+                old_state,
+                new_state,
+            );
+        }
         Ok(())
     }
 }

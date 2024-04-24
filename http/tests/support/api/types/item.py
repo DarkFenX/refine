@@ -50,6 +50,24 @@ class Item(AttrDict):
         assert resp.status_code == 204
         self._client.check_sol(sol_id=self._sol_id)
 
+    # Character methods
+    def change_char_request(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.change_char_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state)
+
+    def change_char(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> None:
+        resp = self.change_char_request(state=state).send()
+        assert resp.status_code == 200
+        self._client.check_sol(sol_id=self._sol_id)
+
     # Skill methods
     def change_skill_request(
             self,
@@ -67,6 +85,42 @@ class Item(AttrDict):
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> None:
         resp = self.change_skill_request(level=level, state=state, effect_modes=effect_modes).send()
+        assert resp.status_code == 200
+        self._client.check_sol(sol_id=self._sol_id)
+
+    # Implant methods
+    def change_implant_request(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.change_implant_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state)
+
+    def change_implant(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> None:
+        resp = self.change_implant_request(state=state).send()
+        assert resp.status_code == 200
+        self._client.check_sol(sol_id=self._sol_id)
+
+    # Ship methods
+    def change_ship_request(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.change_ship_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state)
+
+    def change_ship(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> None:
+        resp = self.change_ship_request(state=state).send()
         assert resp.status_code == 200
         self._client.check_sol(sol_id=self._sol_id)
 
@@ -102,6 +156,24 @@ class Item(AttrDict):
             add_tgts=add_tgts,
             rm_tgts=rm_tgts,
             effect_modes=effect_modes).send()
+        assert resp.status_code == 200
+        self._client.check_sol(sol_id=self._sol_id)
+
+    # Rig methods
+    def change_rig_request(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> Request:
+        return self._client.change_rig_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state)
+
+    def change_rig(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+    ) -> None:
+        resp = self.change_rig_request(state=state).send()
         assert resp.status_code == 200
         self._client.check_sol(sol_id=self._sol_id)
 

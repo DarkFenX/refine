@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_affected(client, consts):
+def test_affected_state_change(client, consts):
     eve_src_attr = client.mk_eve_attr()
     eve_tgt_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -17,9 +17,11 @@ def test_affected(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_tgt_item = api_fit.set_struct(type_id=eve_tgt_item.id)
-    api_src_item = api_fit.add_rig(type_id=eve_src_item.id)
+    api_src_item = api_fit.add_rig(type_id=eve_src_item.id, state=False)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_src_item.change_rig(state=True)
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
-    api_src_item.remove()
+    api_src_item.change_rig(state=False)
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 

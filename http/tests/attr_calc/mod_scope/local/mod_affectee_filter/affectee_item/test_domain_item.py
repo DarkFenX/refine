@@ -16,8 +16,12 @@ def test_affected_parent(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.set_char(type_id=eve_item.id)
+    api_item = api_fit.set_char(type_id=eve_item.id, state=False)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_item.change_char(state=True)
     assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
+    api_item.change_char(state=False)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_affected_child(client, consts):
@@ -35,8 +39,12 @@ def test_affected_child(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_rig(type_id=eve_item.id)
+    api_item = api_fit.add_rig(type_id=eve_item.id, state=False)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_item.change_rig(state=True)
     assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
+    api_item.change_rig(state=False)
+    assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
 def test_affected_propagation(client, consts):
