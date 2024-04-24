@@ -121,31 +121,20 @@ impl SolSvcs {
 }
 
 fn get_mod_type(item: &SolItem, effect: &ad::AEffect) -> Option<SolModType> {
-    let buff_scope = effect.buff.as_ref().map(|v| &v.scope);
-    match (item, effect.category, buff_scope) {
-        // Lib system-wide effects are EVE system effects and buffs
-        (SolItem::SwEffect(_), ec::effcats::SYSTEM, None) => Some(SolModType::SystemWide),
-        (SolItem::SwEffect(_), ec::effcats::ACTIVE, Some(ad::AEffectBuffScope::Everything)) => {
-            Some(SolModType::SystemWide)
-        }
-        // Lib fit-wide effects are EVE system effects and buffs
-        (SolItem::FwEffect(_), ec::effcats::SYSTEM, None) => Some(SolModType::FitWide),
-        (SolItem::FwEffect(_), ec::effcats::ACTIVE, Some(ad::AEffectBuffScope::Everything)) => {
-            Some(SolModType::FitWide)
-        }
-        // Lib projected effects are EVE system effects and buffs
-        (SolItem::ProjEffect(_), ec::effcats::SYSTEM, None) => Some(SolModType::Projected),
-        (SolItem::ProjEffect(_), ec::effcats::ACTIVE, Some(ad::AEffectBuffScope::Everything)) => {
-            Some(SolModType::Projected)
-        }
-        // Fleet buffs
-        (SolItem::Module(_), ec::effcats::ACTIVE, Some(ad::AEffectBuffScope::FleetShips)) => Some(SolModType::Fleet),
-        // Targeted effects
-        (_, ec::effcats::TARGET, None) => Some(SolModType::Targeted),
+    match (item, effect.category, &effect.buff) {
         // Local modifications
         (_, ec::effcats::PASSIVE | ec::effcats::ACTIVE | ec::effcats::ONLINE | ec::effcats::OVERLOAD, None) => {
             Some(SolModType::Local)
         }
+        // Buffs
+        (_, ec::effcats::ACTIVE, Some(buff_info)) => match buff_info.scope {
+            ad::AEffectBuffScope::FleetShips => Some(SolModType::FleetBuff),
+            _ => Some(SolModType::Buff),
+        },
+        // Lib system-wide effects are EVE system effects and buffs
+        (_, ec::effcats::SYSTEM, None) => Some(SolModType::System),
+        // Targeted effects
+        (_, ec::effcats::TARGET, None) => Some(SolModType::Targeted),
         _ => None,
     }
 }
