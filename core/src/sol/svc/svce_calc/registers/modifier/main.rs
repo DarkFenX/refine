@@ -367,18 +367,10 @@ impl SolModifierRegister {
         if matches!(modifier.mod_type, SolModType::Targeted) {
             return self.apply_mod_to_tgt_item(sol_view, modifier, tgt_item);
         }
-        match (mod_item, tgt_item) {
-            (SolItem::ProjEffect(_), SolItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
-                self.apply_mod_to_fits(modifier, &vec![ship.fit_id]);
-                return true;
-            }
-            (SolItem::ProjEffect(_), SolItem::Structure(structure)) if !is_mod_direct_everything(&modifier) => {
-                self.apply_mod_to_fits(modifier, &vec![structure.fit_id]);
-                return true;
-            }
-            (SolItem::ProjEffect(_), _) => return self.apply_mod_to_tgt_item(sol_view, modifier, tgt_item),
-            _ => false,
+        if matches!(mod_item, SolItem::ProjEffect(_)) {
+            return self.apply_mod_to_tgt_item(sol_view, modifier, tgt_item);
         }
+        return false;
     }
     pub(in crate::sol::svc::svce_calc) fn rm_mod_tgt(
         &mut self,
@@ -390,18 +382,10 @@ impl SolModifierRegister {
         if matches!(modifier.mod_type, SolModType::Targeted) {
             return self.unapply_mod_from_tgt_item(sol_view, modifier, tgt_item);
         }
-        match (mod_item, tgt_item) {
-            (SolItem::ProjEffect(_), SolItem::Ship(ship)) if !is_mod_direct_everything(&modifier) => {
-                self.unapply_mod_from_fits(modifier, &vec![ship.fit_id]);
-                true
-            }
-            (SolItem::ProjEffect(_), SolItem::Structure(structure)) if !is_mod_direct_everything(&modifier) => {
-                self.unapply_mod_from_fits(modifier, &vec![structure.fit_id]);
-                true
-            }
-            (SolItem::ProjEffect(_), _) => self.unapply_mod_from_tgt_item(sol_view, modifier, tgt_item),
-            _ => false,
+        if matches!(mod_item, SolItem::ProjEffect(_)) {
+            return self.unapply_mod_from_tgt_item(sol_view, modifier, tgt_item);
         }
+        return false;
     }
     // Private methods
     fn apply_mod_to_fits(&mut self, modifier: SolAttrMod, fit_ids: &Vec<SolFitId>) -> bool {
@@ -624,7 +608,7 @@ impl SolModifierRegister {
                     },
                     _ => false,
                 },
-                SolModDomain::Target if tgt_item.is_targetable() => {
+                SolModDomain::Target => {
                     // Could do parent location container here, but it's not really needed, since
                     // there is no scenario where modifier needs to target item with it being absent
                     self.direct.add_entry(tgt_item.get_id(), modifier);
@@ -633,7 +617,7 @@ impl SolModifierRegister {
                 _ => false,
             },
             SolAffecteeFilter::Loc(dom) => match dom {
-                SolModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                SolModDomain::Everything => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         self.loc.add_entry((tgt_ship.fit_id, SolLocType::Ship), modifier);
                         true
@@ -644,10 +628,100 @@ impl SolModifierRegister {
                     }
                     _ => false,
                 },
+                SolModDomain::Ship => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc.add_entry((tgt_ship.fit_id, SolLocType::Ship), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Structure => match tgt_item {
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc.add_entry((tgt_struct.fit_id, SolLocType::Structure), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Char => match tgt_item {
+                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
+                        Some(_) => {
+                            self.loc.add_entry((tgt_ship.fit_id, SolLocType::Character), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
+                        Some(_) => {
+                            self.loc.add_entry((tgt_struct.fit_id, SolLocType::Character), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                },
+                SolModDomain::Target => match tgt_item {
+                    SolItem::Ship(tgt_ship) if matches!(tgt_item, SolItem::Ship(_)) => {
+                        self.loc.add_entry((tgt_ship.fit_id, SolLocType::Ship), modifier);
+                        true
+                    }
+                    SolItem::Structure(tgt_struct) if matches!(tgt_item, SolItem::Structure(_)) => {
+                        self.loc.add_entry((tgt_struct.fit_id, SolLocType::Structure), modifier);
+                        true
+                    }
+                    _ => false,
+                },
                 _ => false,
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
-                SolModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                SolModDomain::Everything => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc_grp
+                            .add_entry((tgt_ship.fit_id, SolLocType::Ship, grp_id), modifier);
+                        true
+                    }
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc_grp
+                            .add_entry((tgt_struct.fit_id, SolLocType::Structure, grp_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Ship => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc_grp
+                            .add_entry((tgt_ship.fit_id, SolLocType::Ship, grp_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Structure => match tgt_item {
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc_grp
+                            .add_entry((tgt_struct.fit_id, SolLocType::Structure, grp_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Char => match tgt_item {
+                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
+                        Some(_) => {
+                            self.loc_grp
+                                .add_entry((tgt_ship.fit_id, SolLocType::Character, grp_id), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
+                        Some(_) => {
+                            self.loc_grp
+                                .add_entry((tgt_struct.fit_id, SolLocType::Character, grp_id), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                },
+                SolModDomain::Target => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         self.loc_grp
                             .add_entry((tgt_ship.fit_id, SolLocType::Ship, grp_id), modifier);
@@ -663,7 +737,55 @@ impl SolModifierRegister {
                 _ => false,
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
-                SolModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                SolModDomain::Everything => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc_srq
+                            .add_entry((tgt_ship.fit_id, SolLocType::Ship, srq_id), modifier);
+                        true
+                    }
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc_srq
+                            .add_entry((tgt_struct.fit_id, SolLocType::Structure, srq_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Ship => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc_srq
+                            .add_entry((tgt_ship.fit_id, SolLocType::Ship, srq_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Structure => match tgt_item {
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc_srq
+                            .add_entry((tgt_struct.fit_id, SolLocType::Structure, srq_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Char => match tgt_item {
+                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
+                        Some(_) => {
+                            self.loc_srq
+                                .add_entry((tgt_ship.fit_id, SolLocType::Character, srq_id), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
+                        Some(_) => {
+                            self.loc_srq
+                                .add_entry((tgt_struct.fit_id, SolLocType::Character, srq_id), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                },
+                SolModDomain::Target => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         self.loc_srq
                             .add_entry((tgt_ship.fit_id, SolLocType::Ship, srq_id), modifier);
@@ -723,7 +845,7 @@ impl SolModifierRegister {
                     },
                     _ => false,
                 },
-                SolModDomain::Target if tgt_item.is_targetable() => {
+                SolModDomain::Target => {
                     // Could do parent location container here, but it's not really needed, since
                     // there is no scenario where modifier needs to target item with it being absent
                     self.direct.remove_entry(&tgt_item.get_id(), modifier);
@@ -732,7 +854,7 @@ impl SolModifierRegister {
                 _ => false,
             },
             SolAffecteeFilter::Loc(dom) => match dom {
-                SolModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                SolModDomain::Everything => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         self.loc.remove_entry(&(tgt_ship.fit_id, SolLocType::Ship), modifier);
                         true
@@ -744,10 +866,104 @@ impl SolModifierRegister {
                     }
                     _ => false,
                 },
+                SolModDomain::Ship => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc.remove_entry(&(tgt_ship.fit_id, SolLocType::Ship), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Structure => match tgt_item {
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc
+                            .remove_entry(&(tgt_struct.fit_id, SolLocType::Structure), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Char => match tgt_item {
+                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
+                        Some(_) => {
+                            self.loc
+                                .remove_entry(&(tgt_ship.fit_id, SolLocType::Character), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
+                        Some(_) => {
+                            self.loc
+                                .remove_entry(&(tgt_struct.fit_id, SolLocType::Character), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                },
+                SolModDomain::Target => match tgt_item {
+                    SolItem::Ship(tgt_ship) if matches!(tgt_item, SolItem::Ship(_)) => {
+                        self.loc.remove_entry(&(tgt_ship.fit_id, SolLocType::Ship), modifier);
+                        true
+                    }
+                    SolItem::Structure(tgt_struct) if matches!(tgt_item, SolItem::Structure(_)) => {
+                        self.loc
+                            .remove_entry(&(tgt_struct.fit_id, SolLocType::Structure), modifier);
+                        true
+                    }
+                    _ => false,
+                },
                 _ => false,
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
-                SolModDomain::Target if tgt_item.is_targetable() => match tgt_item {
+                SolModDomain::Everything => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc_grp
+                            .remove_entry(&(tgt_ship.fit_id, SolLocType::Ship, grp_id), modifier);
+                        true
+                    }
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc_grp
+                            .remove_entry(&(tgt_struct.fit_id, SolLocType::Structure, grp_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Ship => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc_grp
+                            .remove_entry(&(tgt_ship.fit_id, SolLocType::Ship, grp_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Structure => match tgt_item {
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc_grp
+                            .remove_entry(&(tgt_struct.fit_id, SolLocType::Structure, grp_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Char => match tgt_item {
+                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
+                        Some(_) => {
+                            self.loc_grp
+                                .remove_entry(&(tgt_ship.fit_id, SolLocType::Character, grp_id), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
+                        Some(_) => {
+                            self.loc_grp
+                                .remove_entry(&(tgt_struct.fit_id, SolLocType::Character, grp_id), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                },
+                SolModDomain::Target => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         self.loc_grp
                             .remove_entry(&(tgt_ship.fit_id, SolLocType::Ship, grp_id), modifier);
@@ -763,6 +979,54 @@ impl SolModifierRegister {
                 _ => false,
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
+                SolModDomain::Everything => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc_srq
+                            .remove_entry(&(tgt_ship.fit_id, SolLocType::Ship, srq_id), modifier);
+                        true
+                    }
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc_srq
+                            .remove_entry(&(tgt_struct.fit_id, SolLocType::Structure, srq_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Ship => match tgt_item {
+                    SolItem::Ship(tgt_ship) => {
+                        self.loc_srq
+                            .remove_entry(&(tgt_ship.fit_id, SolLocType::Ship, srq_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Structure => match tgt_item {
+                    SolItem::Structure(tgt_struct) => {
+                        self.loc_srq
+                            .remove_entry(&(tgt_struct.fit_id, SolLocType::Structure, srq_id), modifier);
+                        true
+                    }
+                    _ => false,
+                },
+                SolModDomain::Char => match tgt_item {
+                    SolItem::Ship(tgt_ship) => match sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
+                        Some(_) => {
+                            self.loc_srq
+                                .remove_entry(&(tgt_ship.fit_id, SolLocType::Character, srq_id), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    SolItem::Structure(tgt_struct) => match sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
+                        Some(_) => {
+                            self.loc_srq
+                                .remove_entry(&(tgt_struct.fit_id, SolLocType::Character, srq_id), modifier);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                },
                 SolModDomain::Target if tgt_item.is_targetable() => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         self.loc_srq
@@ -833,12 +1097,5 @@ fn fill_fleet_fits(fit_ids: &mut Vec<SolFitId>, sol_view: &SolView, fit_id: SolF
             fit_ids.extend(fleet.iter_fits());
         }
         None => fit_ids.push(fit_id),
-    }
-}
-
-fn is_mod_direct_everything(modifier: &SolAttrMod) -> bool {
-    match modifier.affectee_filter {
-        SolAffecteeFilter::Direct(dom) => matches!(dom, SolModDomain::Everything),
-        _ => false,
     }
 }
