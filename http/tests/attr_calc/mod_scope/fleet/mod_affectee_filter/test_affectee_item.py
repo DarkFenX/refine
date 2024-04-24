@@ -21,8 +21,12 @@ def test_affected_self_parent_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
-    api_fit.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
+    api_module = api_fit.add_mod(type_id=eve_module.id, state=consts.ApiState.online)
+    assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+    api_module.change_mod(state=consts.ApiState.active)
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
+    api_module.change_mod(state=consts.ApiState.online)
+    assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
 def test_affected_fleeted_parent_ship(client, consts):
@@ -47,9 +51,13 @@ def test_affected_fleeted_parent_ship(client, consts):
     api_fit2 = api_sol.create_fit()
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
-    api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
+    api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.online)
     api_ship = api_fit2.set_ship(type_id=eve_ship.id)
+    assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+    api_module.change_mod(state=consts.ApiState.active)
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
+    api_module.change_mod(state=consts.ApiState.online)
+    assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
 def test_affected_propagation(client, consts):
