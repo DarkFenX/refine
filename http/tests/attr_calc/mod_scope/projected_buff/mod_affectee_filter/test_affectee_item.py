@@ -172,7 +172,7 @@ def test_affected_targeting_child(client, consts):
     assert api_drone.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_non_buff_modifiable_parent(client, consts):
+def test_unaffected_non_buff_modifiable_root(client, consts):
     # Character can't be affected via ship since it's not buff-modifiable
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -199,7 +199,7 @@ def test_unaffected_non_buff_modifiable_parent(client, consts):
     assert api_char.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_other_fit_parent(client, consts):
+def test_unaffected_other_fit_root(client, consts):
     # Check that projected modifications are not carried over to another fit
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -253,7 +253,7 @@ def test_unaffected_other_fit_child(client, consts):
     assert api_drone2.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_parent_via_child(client, consts):
+def test_unaffected_root_via_child(client, consts):
     # Check that targeting drone doesn't affect ship
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -281,7 +281,7 @@ def test_unaffected_parent_via_child(client, consts):
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_child_via_parent(client, consts):
+def test_unaffected_child_via_root(client, consts):
     # Check that targeting ship doesn't affect drone
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -309,7 +309,7 @@ def test_unaffected_child_via_parent(client, consts):
     assert api_drone.update().attrs[eve_tgt_attr.id].dogma == approx(15)
 
 
-def test_replace_parent(client, consts):
+def test_replace_root(client, consts):
     # Make sure ship is affected by projected buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)

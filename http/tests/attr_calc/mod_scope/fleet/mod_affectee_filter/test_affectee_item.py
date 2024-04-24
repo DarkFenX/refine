@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_affected_self_parent_ship(client, consts):
+def test_affected_self_root_ship(client, consts):
     # Make sure ship is affected by fleet buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -29,7 +29,7 @@ def test_affected_self_parent_ship(client, consts):
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_affected_fleeted_parent_ship(client, consts):
+def test_affected_fleeted_root_ship(client, consts):
     # Make sure ship is affected by fleet buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -102,7 +102,7 @@ def test_affected_propagation(client, consts):
     assert api_ship2.update().attrs[eve_tgt_attr.id].dogma == approx(11.25)
 
 
-def test_unaffected_self_parent_struct(client, consts):
+def test_unaffected_self_root_struct(client, consts):
     # Make sure structures are not affected by fleet buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -152,7 +152,7 @@ def test_unaffected_self_child(client, consts):
     assert api_drone.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_fleeted_parent_struct(client, consts):
+def test_unaffected_fleeted_root_struct(client, consts):
     # Make sure structures are not affected by fleet buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -233,7 +233,7 @@ def test_unaffected_other_fleet(client, consts):
     assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_self_replace_parent(client, consts):
+def test_self_replace_root(client, consts):
     # Make sure ship is affected by fleet buffs even if it was replaced
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -260,7 +260,7 @@ def test_self_replace_parent(client, consts):
     assert api_ship2.update().attrs[eve_tgt_attr.id].dogma == approx(75)
 
 
-def test_fleeted_replace_parent(client, consts):
+def test_fleeted_replace_root(client, consts):
     # Make sure ship is affected by fleet buffs even if it was replaced
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)

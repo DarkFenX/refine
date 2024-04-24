@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_project_unproject_parent(client, consts):
+def test_project_unproject_root(client, consts):
     # Check that effects are applied/removed when projected effect is applied/unapplied
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -57,7 +57,7 @@ def test_project_unproject_child(client, consts):
     assert api_drone.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_src_state_change_parent(client, consts):
+def test_src_state_change_root(client, consts):
     # Check that effects are applied/removed when projected effect is enabled/disabled
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -115,7 +115,7 @@ def test_src_state_change_child(client, consts):
     assert api_drone.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_remove_parent(client, consts):
+def test_remove_root(client, consts):
     # Check that effects are removed when projected effect is removed
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)

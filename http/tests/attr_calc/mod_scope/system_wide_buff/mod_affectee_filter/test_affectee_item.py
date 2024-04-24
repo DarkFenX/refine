@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_affected_parent_ship_multiple(client, consts):
+def test_affected_root_ship_multiple(client, consts):
     # Make sure ships are affected by system-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -34,7 +34,7 @@ def test_affected_parent_ship_multiple(client, consts):
     assert api_ship2.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_affected_parent_struct(client, consts):
+def test_affected_root_struct(client, consts):
     # Make sure structures are affected by system-wide buffs
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
@@ -99,7 +99,7 @@ def test_affected_child(client, consts):
     assert api_drone3.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_non_buff_modifiable_parent(client, consts):
+def test_unaffected_non_buff_modifiable_root(client, consts):
     # Check that top-level entities which are not supposed to receive modification (e.g. characters)
     # do not receive it
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
@@ -175,7 +175,7 @@ def test_unaffected_other_sw_effect(client, consts):
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
-def test_replace_parent(client, consts):
+def test_replace_root(client, consts):
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_tgt_attr = client.mk_eve_attr()

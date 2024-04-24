@@ -24,7 +24,7 @@ def test_affected(client, consts):
     assert api_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 
-def test_unaffected_parent(client, consts):
+def test_unaffected_root(client, consts):
     # Check that direct item modification from system-wide effect doesn't affect fit top-level
     # entities
     eve_src_attr = client.mk_eve_attr()

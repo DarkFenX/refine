@@ -1,6 +1,6 @@
 use crate::sol::{fit::SolFit, item::SolItem, svc::svce_calc::SolLocType};
 
-// Iterator over item's parent location types which are actually assigned to a fit
+// Iterator over item's root location types which are actually assigned to a fit
 pub(super) struct ActiveLocations<'a> {
     item: &'a SolItem,
     fit: &'a SolFit,
@@ -25,19 +25,19 @@ impl<'a> Iterator for ActiveLocations<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         if !self.char_done {
             self.char_done = true;
-            if self.item.can_have_parent_char() && self.fit.character.is_some() {
+            if self.item.is_on_char_root() && self.fit.character.is_some() {
                 return Some(SolLocType::Character);
             }
         }
         if !self.ship_done {
             self.ship_done = true;
-            if self.item.can_have_parent_ship() && self.fit.ship.is_some() {
+            if self.item.is_on_ship_root() && self.fit.ship.is_some() {
                 return Some(SolLocType::Ship);
             }
         }
         if !self.struct_done {
             self.struct_done = true;
-            if self.item.can_have_parent_struct() && self.fit.structure.is_some() {
+            if self.item.is_on_struct_root() && self.fit.structure.is_some() {
                 return Some(SolLocType::Structure);
             }
         }

@@ -24,7 +24,7 @@ impl SolItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::sol::svc::svce_calc) fn can_have_parent_char(&self) -> bool {
+    pub(in crate::sol::svc::svce_calc) fn is_on_char_root(&self) -> bool {
         match self {
             Self::Booster(_) => true,
             Self::Character(_) => false,
@@ -44,7 +44,7 @@ impl SolItem {
             Self::SwEffect(_) => false,
         }
     }
-    pub(in crate::sol::svc::svce_calc) fn can_have_parent_ship(&self) -> bool {
+    pub(in crate::sol::svc::svce_calc) fn is_on_ship_root(&self) -> bool {
         match self {
             Self::Booster(_) => false,
             Self::Character(_) => false,
@@ -64,7 +64,7 @@ impl SolItem {
             Self::SwEffect(_) => false,
         }
     }
-    pub(in crate::sol::svc::svce_calc) fn can_have_parent_struct(&self) -> bool {
+    pub(in crate::sol::svc::svce_calc) fn is_on_struct_root(&self) -> bool {
         match self {
             Self::Booster(_) => false,
             Self::Character(_) => false,

@@ -1,6 +1,6 @@
 use crate::sol::{item::SolItem, svc::svce_calc::SolLocType};
 
-// Iterator over item's potential parent domains
+// Iterator over item's potential location roots
 pub(super) struct PotentialLocations<'a> {
     item: &'a SolItem,
     char_done: bool,
@@ -23,19 +23,19 @@ impl<'a> Iterator for PotentialLocations<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         if !self.char_done {
             self.char_done = true;
-            if self.item.can_have_parent_char() {
+            if self.item.is_on_char_root() {
                 return Some(SolLocType::Character);
             }
         }
         if !self.ship_done {
             self.ship_done = true;
-            if self.item.can_have_parent_ship() {
+            if self.item.is_on_ship_root() {
                 return Some(SolLocType::Ship);
             }
         }
         if !self.struct_done {
             self.struct_done = true;
-            if self.item.can_have_parent_struct() {
+            if self.item.is_on_struct_root() {
                 return Some(SolLocType::Structure);
             }
         }
