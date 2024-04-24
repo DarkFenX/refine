@@ -1,7 +1,7 @@
 use std::num::Wrapping;
 
 use crate::{
-    defs::{SolFitId, SolItemId},
+    defs::SolFitId,
     sol::fit::SolFit,
     util::{Error, ErrorKind, Result, StMap},
 };
