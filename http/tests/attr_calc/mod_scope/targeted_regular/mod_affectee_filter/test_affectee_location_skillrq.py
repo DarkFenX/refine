@@ -1,7 +1,69 @@
 from pytest import approx
 
 
-def test_affected_child_ship(client, consts):
+def test_affected_state_change_child_ship(client, consts):
+    # Make sure items on ship location which pass skill requirement check are affected
+    eve_skill = client.mk_eve_item()
+    eve_attr1 = client.mk_eve_attr()
+    eve_attr2 = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_srq,
+        dom=consts.EveModDom.tgt,
+        srq=eve_skill.id,
+        op=consts.EveModOp.post_percent,
+        src_attr_id=eve_attr1.id,
+        tgt_attr_id=eve_attr2.id)
+    eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_rig = client.mk_eve_item(attrs={eve_attr2.id: 80}, srqs={eve_skill.id: 1})
+    eve_ship = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.online)
+    api_ship = api_fit2.set_ship(type_id=eve_ship.id)
+    api_rig = api_fit2.add_rig(type_id=eve_rig.id)
+    api_module.change_mod(add_tgts=[(api_ship.id, None)])
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
+    api_module.change_mod(state=consts.ApiState.active)
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(96)
+    api_module.change_mod(state=consts.ApiState.online)
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
+
+
+def test_affected_state_change_child_struct(client, consts):
+    # Make sure items on structure location which pass skill requirement check are affected
+    eve_skill = client.mk_eve_item()
+    eve_attr1 = client.mk_eve_attr()
+    eve_attr2 = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_srq,
+        dom=consts.EveModDom.tgt,
+        srq=eve_skill.id,
+        op=consts.EveModOp.post_percent,
+        src_attr_id=eve_attr1.id,
+        tgt_attr_id=eve_attr2.id)
+    eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
+    eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_rig = client.mk_eve_item(attrs={eve_attr2.id: 80}, srqs={eve_skill.id: 1})
+    eve_struct = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.online)
+    api_struct = api_fit2.set_struct(type_id=eve_struct.id)
+    api_rig = api_fit2.add_rig(type_id=eve_rig.id)
+    api_module.change_mod(add_tgts=[(api_struct.id, None)])
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
+    api_module.change_mod(state=consts.ApiState.active)
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(96)
+    api_module.change_mod(state=consts.ApiState.online)
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
+
+
+def test_affected_targeting_child_ship(client, consts):
     # Make sure items on ship location which pass skill requirement check are affected
     eve_skill = client.mk_eve_item()
     eve_attr1 = client.mk_eve_attr()
@@ -24,13 +86,14 @@ def test_affected_child_ship(client, consts):
     api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
     api_ship = api_fit2.set_ship(type_id=eve_ship.id)
     api_rig = api_fit2.add_rig(type_id=eve_rig.id)
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
     api_module.change_mod(add_tgts=[(api_ship.id, None)])
     assert api_rig.update().attrs[eve_attr2.id].dogma == approx(96)
-    api_module.remove()
+    api_module.change_mod(rm_tgts=[api_ship.id])
     assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
 
 
-def test_affected_child_struct(client, consts):
+def test_affected_targeting_child_struct(client, consts):
     # Make sure items on structure location which pass skill requirement check are affected
     eve_skill = client.mk_eve_item()
     eve_attr1 = client.mk_eve_attr()
@@ -53,9 +116,10 @@ def test_affected_child_struct(client, consts):
     api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
     api_struct = api_fit2.set_struct(type_id=eve_struct.id)
     api_rig = api_fit2.add_rig(type_id=eve_rig.id)
+    assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
     api_module.change_mod(add_tgts=[(api_struct.id, None)])
     assert api_rig.update().attrs[eve_attr2.id].dogma == approx(96)
-    api_module.remove()
+    api_module.change_mod(rm_tgts=[api_struct.id])
     assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
 
 
