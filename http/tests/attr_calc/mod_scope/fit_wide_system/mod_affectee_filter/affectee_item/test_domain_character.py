@@ -17,9 +17,11 @@ def test_affected(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_tgt_item = api_fit.set_char(type_id=eve_tgt_item.id)
-    api_src_item = api_fit.add_fw_effect(type_id=eve_src_item.id)
+    api_src_item = api_fit.add_fw_effect(type_id=eve_src_item.id, state=False)
+    assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
+    api_src_item.change_fw_effect(state=True)
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(120)
-    api_src_item.remove()
+    api_src_item.change_fw_effect(state=False)
     assert api_tgt_item.update().attrs[eve_tgt_attr.id].dogma == approx(100)
 
 

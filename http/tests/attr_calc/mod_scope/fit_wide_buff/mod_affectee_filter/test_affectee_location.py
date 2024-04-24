@@ -23,9 +23,11 @@ def test_affected_child_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship.id)
     api_module = api_fit.add_mod(type_id=eve_module.id)
-    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id)
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id, state=False)
+    assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+    api_fw_effect.change_fw_effect(state=True)
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
-    api_fw_effect.remove()
+    api_fw_effect.change_fw_effect(state=False)
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
@@ -52,9 +54,11 @@ def test_affected_child_struct(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_struct(type_id=eve_struct.id)
     api_module = api_fit.add_mod(type_id=eve_module.id)
-    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id)
+    api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect.id, state=False)
+    assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+    api_fw_effect.change_fw_effect(state=True)
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(37.5)
-    api_fw_effect.remove()
+    api_fw_effect.change_fw_effect(state=False)
     assert api_module.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
 
 
