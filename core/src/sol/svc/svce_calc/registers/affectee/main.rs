@@ -310,12 +310,12 @@ impl SolAffecteeRegister {
                 }
                 SolModDomain::Char => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
-                        if let Some(char_id) = sol_view.fits.get_fit_char(&tgt_ship.fit_id) {
+                        if let Some(char_id) = get_fit_character(sol_view, &tgt_ship.fit_id) {
                             affectees.push(char_id);
                         }
                     }
                     SolItem::Structure(tgt_struct) => {
-                        if let Some(char_id) = sol_view.fits.get_fit_char(&tgt_struct.fit_id) {
+                        if let Some(char_id) = get_fit_character(sol_view, &tgt_struct.fit_id) {
                             affectees.push(char_id);
                         }
                     }
@@ -569,6 +569,10 @@ impl SolAffecteeRegister {
             _ => (),
         }
     }
+}
+
+fn get_fit_character(sol_view: &SolView, fit_id: &SolFitId) -> Option<SolItemId> {
+    sol_view.fits.get_fit(fit_id).ok().map(|v| v.character).flatten()
 }
 
 fn check_domain_owner(dom: SolModDomain, fit: &SolFit) -> bool {
