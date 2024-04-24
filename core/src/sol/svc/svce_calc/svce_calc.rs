@@ -45,20 +45,9 @@ impl SolSvcs {
         self.handle_location_owner_change(sol_view, item);
         // Custom modifiers
         let modifiers = self.calc_data.revs.get_mods_on_item_add();
-        if !modifiers.is_empty() {
-            let mut affectees = Vec::new();
-            for modifier in modifiers.iter() {
-                if modifier.revise_on_item_add(item, sol_view) {
-                    if let Ok(src_item) = sol_view.items.get_item(&modifier.affector_item_id) {
-                        affectees.clear();
-                        self.calc_data
-                            .afee
-                            .fill_affectees(&mut affectees, sol_view, src_item, modifier);
-                        for tgt_item_id in affectees.iter() {
-                            self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
-                        }
-                    }
-                }
+        for modifier in modifiers.iter() {
+            if modifier.revise_on_item_add(item, sol_view) {
+                self.revise_modifier(sol_view, modifier);
             }
         }
     }
@@ -66,20 +55,9 @@ impl SolSvcs {
         self.handle_location_owner_change(sol_view, item);
         // Custom modifiers
         let modifiers = self.calc_data.revs.get_mods_on_item_remove();
-        if !modifiers.is_empty() {
-            let mut affectees = Vec::new();
-            for modifier in modifiers.iter() {
-                if modifier.revise_on_item_remove(item, sol_view) {
-                    if let Ok(src_item) = sol_view.items.get_item(&modifier.affector_item_id) {
-                        affectees.clear();
-                        self.calc_data
-                            .afee
-                            .fill_affectees(&mut affectees, sol_view, src_item, modifier);
-                        for tgt_item_id in affectees.iter() {
-                            self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
-                        }
-                    }
-                }
+        for modifier in modifiers.iter() {
+            if modifier.revise_on_item_remove(item, sol_view) {
+                self.revise_modifier(sol_view, modifier);
             }
         }
     }
@@ -384,6 +362,16 @@ impl SolSvcs {
                     }
                 }
             }
+        }
+    }
+    fn revise_modifier(&mut self, sol_view: &SolView, modifier: &SolAttrMod) {
+        let src_item = sol_view.items.get_item(&modifier.affector_item_id).unwrap();
+        let mut affectees = Vec::new();
+        self.calc_data
+            .afee
+            .fill_affectees(&mut affectees, sol_view, src_item, modifier);
+        for tgt_item_id in affectees.iter() {
+            self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
         }
     }
 }

@@ -105,10 +105,7 @@ impl SolAttrMod {
         self.val_getter.revisable_on_item_remove()
     }
     pub(in crate::sol::svc::svce_calc) fn revise_on_item_add(&self, added_item: &SolItem, sol_view: &SolView) -> bool {
-        let src_item = match sol_view.items.get_item(&self.affector_item_id) {
-            Ok(item) => item,
-            _ => return false,
-        };
+        let src_item = sol_view.items.get_item(&self.affector_item_id).unwrap();
         self.val_getter.revise_on_item_add(src_item, added_item)
     }
     pub(in crate::sol::svc::svce_calc) fn revise_on_item_remove(
@@ -116,10 +113,7 @@ impl SolAttrMod {
         added_item: &SolItem,
         sol_view: &SolView,
     ) -> bool {
-        let src_item = match sol_view.items.get_item(&self.affector_item_id) {
-            Ok(item) => item,
-            _ => return false,
-        };
+        let src_item = sol_view.items.get_item(&self.affector_item_id).unwrap();
         self.val_getter.revise_on_item_remove(src_item, added_item)
     }
 }
