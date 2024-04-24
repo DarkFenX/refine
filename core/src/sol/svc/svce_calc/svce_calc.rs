@@ -50,13 +50,13 @@ impl SolSvcs {
             for modifier in modifiers.iter() {
                 if modifier.revise_on_item_add(item, sol_view) {
                     if let Ok(src_item) = sol_view.items.get_item(&modifier.affector_item_id) {
+                        affectees.clear();
                         self.calc_data
                             .afee
                             .fill_affectees(&mut affectees, sol_view, src_item, modifier);
                         for tgt_item_id in affectees.iter() {
                             self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
                         }
-                        affectees.clear();
                     }
                 }
             }
@@ -71,13 +71,13 @@ impl SolSvcs {
             for modifier in modifiers.iter() {
                 if modifier.revise_on_item_remove(item, sol_view) {
                     if let Ok(src_item) = sol_view.items.get_item(&modifier.affector_item_id) {
+                        affectees.clear();
                         self.calc_data
                             .afee
                             .fill_affectees(&mut affectees, sol_view, src_item, modifier);
                         for tgt_item_id in affectees.iter() {
                             self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
                         }
-                        affectees.clear();
                     }
                 }
             }
@@ -100,16 +100,8 @@ impl SolSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         // Register new mods
-        let mut affectees = Vec::new();
         let modifiers = self.calc_generate_mods_for_effects(sol_view, item, effects);
-        self.reg_mods(&mut affectees, sol_view, item, &modifiers.all);
-        // Apply mods to targets, if needed
-        if let Some(tgt_item_ids) = item.iter_targets() {
-            for tgt_item_id in tgt_item_ids {
-                let tgt_item = sol_view.items.get_item(&tgt_item_id).unwrap();
-                self.reg_mods_for_tgt(&mut affectees, sol_view, item, &modifiers.all, tgt_item);
-            }
-        }
+        self.reg_mods(sol_view, item, &modifiers.all);
         // Buff maintenance - add info about effects/modifiers which use default buff attributes
         for effect in effects.iter() {
             self.calc_data.buffs.reg_effect(item.get_id(), effect);
@@ -129,16 +121,8 @@ impl SolSvcs {
         effects: &Vec<ad::ArcEffect>,
     ) {
         // Unregister mods
-        let mut affectees = Vec::new();
         let modifiers = self.calc_generate_mods_for_effects(sol_view, item, effects);
-        self.unreg_mods(&mut affectees, sol_view, item, &modifiers.all);
-        // Remove mods from targets, if needed
-        if let Some(tgt_item_ids) = item.iter_targets() {
-            for tgt_item_id in tgt_item_ids {
-                let tgt_item = sol_view.items.get_item(&tgt_item_id).unwrap();
-                self.unreg_mods_for_tgt(&mut affectees, sol_view, item, &modifiers.all, tgt_item);
-            }
-        }
+        self.unreg_mods(sol_view, item, &modifiers.all);
         // This bit is just for propulsion mode effect, so that when effect is not running (but item
         // is not removed), changes to parent attributes like ship mass do not clear the child
         // attribute - ship speed
@@ -173,7 +157,17 @@ impl SolSvcs {
         if !modifiers.is_empty() {
             let tgt_item = sol_view.items.get_item(&tgt_item_id).unwrap();
             let mut affectees = Vec::new();
-            self.reg_mods_for_tgt(&mut affectees, sol_view, item, &modifiers, tgt_item);
+            for modifier in modifiers.iter() {
+                if self.calc_data.mods.add_mod_tgt(item, *modifier, tgt_item) {
+                    affectees.clear();
+                    self.calc_data
+                        .afee
+                        .fill_affectees_for_tgt_item(&mut affectees, sol_view, modifier, &tgt_item);
+                    for tgt_item_id in affectees.iter() {
+                        self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
+                    }
+                }
+            }
         }
     }
     pub(in crate::sol::svc) fn calc_item_tgt_removed(
@@ -192,7 +186,16 @@ impl SolSvcs {
         if !modifiers.is_empty() {
             let tgt_item = sol_view.items.get_item(&tgt_item_id).unwrap();
             let mut affectees = Vec::new();
-            self.unreg_mods_for_tgt(&mut affectees, sol_view, item, &modifiers, tgt_item);
+            for modifier in modifiers.iter() {
+                affectees.clear();
+                self.calc_data
+                    .afee
+                    .fill_affectees_for_tgt_item(&mut affectees, sol_view, modifier, &tgt_item);
+                for tgt_item_id in affectees.iter() {
+                    self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
+                }
+                self.calc_data.mods.rm_mod_tgt(item, modifier, tgt_item);
+            }
         }
     }
     pub(in crate::sol::svc) fn calc_attr_value_changed(
@@ -223,22 +226,21 @@ impl SolSvcs {
         if !mods.is_empty() {
             let mut affectees = Vec::new();
             for modifier in mods.iter() {
+                affectees.clear();
                 self.calc_data
                     .afee
                     .fill_affectees(&mut affectees, sol_view, item, &modifier);
                 for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
                 }
-                affectees.clear();
             }
         }
         // Process buffs which rely on attribute being modified
         if ec::attrs::BUFF_ID_ATTRS.contains(attr_id) {
-            let mut affectees = Vec::new();
             // Remove modifiers of buffs which rely on the attribute
             if let Some(modifiers) = self.calc_data.buffs.extract_dependent_mods(item_id, attr_id) {
                 let modifiers = modifiers.collect();
-                self.unreg_mods(&mut affectees, sol_view, item, &modifiers);
+                self.unreg_mods(sol_view, item, &modifiers);
             }
             // Generate new modifiers using new value and apply them
             let effect_ids = self.calc_data.buffs.get_effects(item_id);
@@ -248,7 +250,7 @@ impl SolSvcs {
                 for modifier in modifiers.iter() {
                     self.calc_data.buffs.reg_dependent_mod(*item_id, *attr_id, *modifier);
                 }
-                self.reg_mods(&mut affectees, sol_view, item, &modifiers);
+                self.reg_mods(sol_view, item, &modifiers);
             }
         }
     }
@@ -268,55 +270,52 @@ impl SolSvcs {
         }
     }
     // Private methods
-    fn reg_mods(
-        &mut self,
-        affectees: &mut Vec<SolItemId>,
-        sol_view: &SolView,
-        item: &SolItem,
-        modifiers: &Vec<SolAttrMod>,
-    ) {
+    fn reg_mods(&mut self, sol_view: &SolView, item: &SolItem, modifiers: &Vec<SolAttrMod>) {
         if modifiers.is_empty() {
             return;
         }
         // Regular modifiers
         let mut fit_ids = Vec::new();
+        let mut affectees = Vec::new();
         for modifier in modifiers.iter() {
             // Modifications have to be added before target attributes are cleared, because for case
             // of fleet buff ID attributes new value will be fetched instantly after cleanup, and
             // that value has to be new
-            self.calc_data.mods.reg_mod(&mut fit_ids, sol_view, item, *modifier);
-            self.calc_data.afee.fill_affectees(affectees, sol_view, item, modifier);
-            for tgt_item_id in affectees.iter() {
-                self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
+            if self.calc_data.mods.reg_mod(&mut fit_ids, sol_view, item, *modifier) {
+                affectees.clear();
+                self.calc_data
+                    .afee
+                    .fill_affectees(&mut affectees, sol_view, item, modifier);
+                for tgt_item_id in affectees.iter() {
+                    self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
+                }
             }
-            affectees.clear();
         }
         // Revisions
         for modifier in modifiers.iter() {
             self.calc_data.revs.reg_mod(*modifier);
         }
     }
-    fn unreg_mods(
-        &mut self,
-        affectees: &mut Vec<SolItemId>,
-        sol_view: &SolView,
-        item: &SolItem,
-        modifiers: &Vec<SolAttrMod>,
-    ) {
+    fn unreg_mods(&mut self, sol_view: &SolView, item: &SolItem, modifiers: &Vec<SolAttrMod>) {
         if modifiers.is_empty() {
             return;
         }
+        // Regular modifiers
         let mut fit_ids = Vec::new();
+        let mut affectees = Vec::new();
         for modifier in modifiers.iter() {
             // Modifications have to be removed before target attributes are cleared, because for
             // case of fleet buff ID attributes new value will be fetched instantly after cleanup,
             // and that value has to be new
-            self.calc_data.mods.unreg_mod(&mut fit_ids, sol_view, item, modifier);
-            self.calc_data.afee.fill_affectees(affectees, sol_view, item, modifier);
-            for tgt_item_id in affectees.iter() {
-                self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
+            if self.calc_data.mods.unreg_mod(&mut fit_ids, sol_view, item, modifier) {
+                affectees.clear();
+                self.calc_data
+                    .afee
+                    .fill_affectees(&mut affectees, sol_view, item, modifier);
+                for tgt_item_id in affectees.iter() {
+                    self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
+                }
             }
-            affectees.clear();
         }
         // Revisions and effect-specific processing
         for modifier in modifiers.iter() {
@@ -325,45 +324,6 @@ impl SolSvcs {
             // item is not removed), changes to parent attributes like ship mass do not clear the
             // child attribute - ship speed
             modifier.on_effect_stop(self, sol_view);
-        }
-    }
-    fn reg_mods_for_tgt(
-        &mut self,
-        affectees: &mut Vec<SolItemId>,
-        sol_view: &SolView,
-        item: &SolItem,
-        modifiers: &Vec<SolAttrMod>,
-        tgt_item: &SolItem,
-    ) {
-        for modifier in modifiers.iter() {
-            if self.calc_data.mods.add_mod_tgt(item, *modifier, tgt_item) {
-                self.calc_data
-                    .afee
-                    .fill_affectees_for_tgt_item(affectees, sol_view, modifier, &tgt_item);
-                for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
-                }
-                affectees.clear();
-            }
-        }
-    }
-    fn unreg_mods_for_tgt(
-        &mut self,
-        affectees: &mut Vec<SolItemId>,
-        sol_view: &SolView,
-        item: &SolItem,
-        modifiers: &Vec<SolAttrMod>,
-        tgt_item: &SolItem,
-    ) {
-        for modifier in modifiers.iter() {
-            self.calc_data
-                .afee
-                .fill_affectees_for_tgt_item(affectees, sol_view, modifier, &tgt_item);
-            for tgt_item_id in affectees.iter() {
-                self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
-            }
-            affectees.clear();
-            self.calc_data.mods.rm_mod_tgt(item, modifier, tgt_item);
         }
     }
     fn handle_location_owner_change(&mut self, sol_view: &SolView, item: &SolItem) {
@@ -378,13 +338,13 @@ impl SolSvcs {
             };
             let mut affectees = Vec::new();
             for modifier in self.calc_data.mods.get_mods_for_changed_root(sol_view, item) {
+                affectees.clear();
                 self.calc_data
                     .afee
                     .fill_affectees_for_fit(&mut affectees, &modifier, fit);
                 for item_id in affectees.iter() {
                     self.calc_force_attr_recalc(sol_view, item_id, &modifier.affectee_attr_id);
                 }
-                affectees.clear();
             }
         }
     }
@@ -399,30 +359,30 @@ impl SolSvcs {
         if !updates.incoming.is_empty() {
             let tgt_fit = sol_view.fits.get_fit(fit_id).unwrap();
             for modifier in updates.incoming.iter() {
+                affectees.clear();
                 self.calc_data
                     .afee
                     .fill_affectees_for_fit(&mut affectees, modifier, tgt_fit);
                 for tgt_item_id in affectees.iter() {
                     self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
                 }
-                affectees.clear();
             }
         }
         if !updates.outgoing.is_empty() {
-            for modifier in updates.outgoing.iter() {
-                for tgt_fit in fleet
-                    .iter_fits()
-                    .filter(|v| *v != fit_id)
-                    .map(|v| sol_view.fits.get_fit(v).unwrap())
-                {
+            for tgt_fit in fleet
+                .iter_fits()
+                .filter(|v| *v != fit_id)
+                .map(|v| sol_view.fits.get_fit(v).unwrap())
+            {
+                for modifier in updates.outgoing.iter() {
+                    affectees.clear();
                     self.calc_data
                         .afee
                         .fill_affectees_for_fit(&mut affectees, modifier, tgt_fit);
+                    for tgt_item_id in affectees.iter() {
+                        self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
+                    }
                 }
-                for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
-                }
-                affectees.clear();
             }
         }
     }

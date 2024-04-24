@@ -78,15 +78,6 @@ impl SolAffecteeRegister {
                     self.fill_affectees_for_fit(affectees, modifier, fit);
                 }
             }
-            // Projected and targeted modifications are processed depending on what they target
-            SolModType::Projected | SolModType::Targeted => {
-                if let Some(tgt_item_ids) = item.iter_targets() {
-                    for tgt_item_id in tgt_item_ids {
-                        let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
-                        self.fill_affectees_for_tgt_item(affectees, sol_view, modifier, tgt_item);
-                    }
-                }
-            }
             // Fleet modifications affect whole fleet, or just source fit itself, if fleet isn't set
             SolModType::Fleet => {
                 if let Some(src_fit_id) = item.get_fit_id() {
@@ -99,6 +90,15 @@ impl SolAffecteeRegister {
                             }
                         }
                         None => self.fill_affectees_for_fit(affectees, modifier, src_fit),
+                    }
+                }
+            }
+            // Projected and targeted modifications are processed depending on what they target
+            SolModType::Projected | SolModType::Targeted => {
+                if let Some(tgt_item_ids) = item.iter_targets() {
+                    for tgt_item_id in tgt_item_ids {
+                        let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
+                        self.fill_affectees_for_tgt_item(affectees, sol_view, modifier, tgt_item);
                     }
                 }
             }
