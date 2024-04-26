@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        shared::{apply_effect_modes, HEffectModeMap},
+        shared::{apply_effect_modes, HEffectModeMap, HTgtDef},
         HCmdResp,
     },
     shared::HState,
@@ -9,12 +9,10 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
-    #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
     #[serde(default)]
-    add_tgts: Vec<(rc::SolItemId, Option<rc::AttrVal>)>,
-    #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
+    add_tgts: Vec<HTgtDef>,
     #[serde(default)]
-    change_tgts: Vec<(rc::SolItemId, Option<rc::AttrVal>)>,
+    change_tgts: Vec<HTgtDef>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     rm_tgts: Vec<rc::SolItemId>,
@@ -31,11 +29,11 @@ impl HChangeModuleCmd {
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
     ) -> rc::Result<HCmdResp> {
-        for (tgt_item_id, range) in self.add_tgts.iter() {
-            core_sol.add_module_tgt(item_id, *tgt_item_id, *range)?;
+        for tgt_def in self.add_tgts.iter() {
+            core_sol.add_module_tgt(item_id, tgt_def.get_item_id(), tgt_def.get_range())?;
         }
-        for (tgt_item_id, range) in self.change_tgts.iter() {
-            core_sol.change_module_tgt(item_id, tgt_item_id, *range)?;
+        for tgt_def in self.change_tgts.iter() {
+            core_sol.change_module_tgt(item_id, &tgt_def.get_item_id(), tgt_def.get_range())?;
         }
         for tgt_item_id in self.rm_tgts.iter() {
             core_sol.remove_module_tgt(item_id, tgt_item_id)?;
