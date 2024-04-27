@@ -147,10 +147,11 @@ impl SolarSystem {
         module.tgts.add(tgt_item_id, range);
         // Process request in services
         let item = self.items.get_item(item_id).unwrap();
+        let tgt_item = self.items.get_item(&tgt_item_id).unwrap();
         self.svcs.add_item_tgt(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
-            tgt_item_id,
+            tgt_item,
         );
         Ok(())
     }
@@ -183,10 +184,11 @@ impl SolarSystem {
         };
         // Process request in services
         let item = self.items.get_item(item_id).unwrap();
+        let tgt_item = self.items.get_item(tgt_item_id).unwrap();
         self.svcs.remove_item_tgt(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
-            tgt_item_id,
+            tgt_item,
         );
         // Update the skeleton
         self.tgt_tracker.unreg_tgt(item_id, tgt_item_id);

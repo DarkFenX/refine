@@ -119,11 +119,12 @@ impl SolSvcs {
             }
         }
     }
-    pub(in crate::sol::svc) fn calc_item_tgt_added(
+    pub(in crate::sol::svc) fn calc_effect_tgt_added(
         &mut self,
         sol_view: &SolView,
         item: &SolItem,
-        tgt_item_id: SolItemId,
+        effect: &ad::AEffect,
+        tgt_item: &SolItem,
     ) {
         let item_id = item.get_id();
         let modifiers = self
@@ -133,7 +134,6 @@ impl SolSvcs {
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
-            let tgt_item = sol_view.items.get_item(&tgt_item_id).unwrap();
             let mut affectees = Vec::new();
             for modifier in modifiers.iter() {
                 if self.calc_data.mods.add_mod_tgt(*modifier, tgt_item) {
@@ -148,11 +148,12 @@ impl SolSvcs {
             }
         }
     }
-    pub(in crate::sol::svc) fn calc_item_tgt_removed(
+    pub(in crate::sol::svc) fn calc_effect_tgt_removed(
         &mut self,
         sol_view: &SolView,
         item: &SolItem,
-        tgt_item_id: &SolItemId,
+        effect: &ad::AEffect,
+        tgt_item: &SolItem,
     ) {
         let item_id = item.get_id();
         let modifiers = self
@@ -162,7 +163,6 @@ impl SolSvcs {
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
-            let tgt_item = sol_view.items.get_item(&tgt_item_id).unwrap();
             let mut affectees = Vec::new();
             for modifier in modifiers.iter() {
                 affectees.clear();

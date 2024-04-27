@@ -56,19 +56,26 @@ impl SolarSystem {
         let proj_effect = self.items.get_proj_effect_mut(item_id)?;
         proj_effect.tgts.add(tgt_item_id, None);
         let item = self.items.get_item(item_id).unwrap();
+        let tgt_item = self.items.get_item(&tgt_item_id).unwrap();
         self.svcs.add_item_tgt(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
-            tgt_item_id,
+            tgt_item,
         );
         Ok(())
     }
     pub fn remove_proj_effect_tgt(&mut self, item_id: &SolItemId, tgt_item_id: &SolItemId) -> Result<()> {
+        // Check if target is defined
+        let proj_effect = self.items.get_proj_effect(item_id)?;
+        if !proj_effect.tgts.contains(tgt_item_id) {
+            return Err(Error::new(ErrorKind::TargetNotFound(*item_id, *tgt_item_id)));
+        };
         let item = self.items.get_item(item_id)?;
+        let tgt_item = self.items.get_item(tgt_item_id)?;
         self.svcs.remove_item_tgt(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             item,
-            tgt_item_id,
+            tgt_item,
         );
         self.tgt_tracker.unreg_tgt(item_id, tgt_item_id);
         let proj_effect = self.items.get_proj_effect_mut(item_id)?;

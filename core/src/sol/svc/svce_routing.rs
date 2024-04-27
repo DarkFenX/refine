@@ -1,6 +1,9 @@
+use itertools::Itertools;
+
 use crate::{
     ad,
     defs::{EAttrId, SolFitId, SolItemId},
+    ec,
     sol::{
         fleet::SolFleet,
         item::{SolItem, SolItemState},
@@ -85,17 +88,59 @@ impl SolSvcs {
             };
         }
         if !to_stop.is_empty() {
-            self.notify_effects_stopped(sol_view, item, &to_stop)
+            if let Some(tgt_item_ids) = item.iter_targets() {
+                for tgt_item_id in tgt_item_ids {
+                    let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
+                    for effect in to_stop.iter() {
+                        if is_effect_targetable(effect) {
+                            self.notify_effect_tgt_removed(sol_view, item, effect, tgt_item);
+                        }
+                    }
+                }
+            }
+            self.notify_effects_stopped(sol_view, item, &to_stop);
         }
         if !to_start.is_empty() {
-            self.notify_effects_started(sol_view, item, &to_start)
+            self.notify_effects_started(sol_view, item, &to_start);
+            if let Some(tgt_item_ids) = item.iter_targets() {
+                for tgt_item_id in tgt_item_ids {
+                    let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
+                    for effect in to_stop.iter() {
+                        if is_effect_targetable(effect) {
+                            self.notify_effect_tgt_added(sol_view, item, effect, tgt_item);
+                        }
+                    }
+                }
+            }
         }
     }
-    pub(in crate::sol) fn add_item_tgt(&mut self, sol_view: &SolView, item: &SolItem, tgt_item_id: SolItemId) {
-        self.notify_item_tgt_added(sol_view, item, tgt_item_id);
+    pub(in crate::sol) fn add_item_tgt(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {
+        self.notify_item_tgt_added(sol_view, item, tgt_item);
+        let running_effects = self.running_effects.iter_running(&item.get_id());
+        if !running_effects.is_empty() {
+            let effect_ids = running_effects.map(|v| *v).collect_vec();
+            for effect_id in effect_ids.iter() {
+                let effect = sol_view.src.get_a_effect(effect_id).unwrap();
+                if is_effect_targetable(&effect) {
+                    self.notify_effect_tgt_added(sol_view, item, &effect, tgt_item);
+                }
+            }
+        }
     }
-    pub(in crate::sol) fn remove_item_tgt(&mut self, sol_view: &SolView, item: &SolItem, tgt_item_id: &SolItemId) {
-        self.notify_item_tgt_removed(sol_view, item, tgt_item_id);
+    pub(in crate::sol) fn remove_item_tgt(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {
+        let running_effects = self.running_effects.iter_running(&item.get_id());
+        if !running_effects.is_empty() {
+            let effect_ids = running_effects.map(|v| *v).collect_vec();
+            for effect_id in effect_ids.iter() {
+                let effect = sol_view.src.get_a_effect(effect_id).unwrap();
+                if is_effect_targetable(&effect) {
+                    self.notify_effect_tgt_removed(sol_view, item, &effect, tgt_item);
+                }
+            }
+        } else {
+            drop(running_effects);
+        }
+        self.notify_item_tgt_removed(sol_view, item, tgt_item);
     }
     // Lower level methods
     fn notify_fit_added(&mut self, fit_id: &SolFitId) {
@@ -136,18 +181,31 @@ impl SolSvcs {
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| &v.id));
     }
-    pub(in crate::sol) fn notify_item_tgt_added(&mut self, sol_view: &SolView, item: &SolItem, tgt_item_id: SolItemId) {
-        self.calc_item_tgt_added(sol_view, item, tgt_item_id);
-    }
-    pub(in crate::sol) fn notify_item_tgt_removed(
+    pub(in crate::sol) fn notify_item_tgt_added(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {}
+    pub(in crate::sol) fn notify_item_tgt_removed(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {}
+    pub(in crate::sol) fn notify_effect_tgt_added(
         &mut self,
         sol_view: &SolView,
         item: &SolItem,
-        tgt_item_id: &SolItemId,
+        effect: &ad::ArcEffect,
+        tgt_item: &SolItem,
     ) {
-        self.calc_item_tgt_removed(sol_view, item, tgt_item_id);
+        self.calc_effect_tgt_added(sol_view, item, effect, tgt_item);
+    }
+    pub(in crate::sol) fn notify_effect_tgt_removed(
+        &mut self,
+        sol_view: &SolView,
+        item: &SolItem,
+        effect: &ad::ArcEffect,
+        tgt_item: &SolItem,
+    ) {
+        self.calc_effect_tgt_removed(sol_view, item, effect, tgt_item);
     }
     pub(super) fn notify_attr_val_changed(&mut self, sol_view: &SolView, item_id: &SolItemId, attr_id: &EAttrId) {
         self.calc_attr_value_changed(sol_view, item_id, attr_id);
     }
+}
+
+fn is_effect_targetable(effect: &ad::AEffect) -> bool {
+    effect.category == ec::effcats::TARGET || effect.category == ec::effcats::SYSTEM || effect.buff.is_some()
 }
