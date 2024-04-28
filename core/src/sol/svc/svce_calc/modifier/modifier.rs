@@ -18,7 +18,6 @@ use super::SolAttrModSrc;
 pub(in crate::sol::svc::svce_calc) struct SolAttrMod {
     pub(in crate::sol::svc::svce_calc) mod_type: SolModType,
     pub(in crate::sol::svc::svce_calc) affector_item_id: SolItemId,
-    // This field is here just for hash
     pub(in crate::sol::svc::svce_calc) effect_id: EEffectId,
     val_getter: SolAttrModSrc,
     pub(in crate::sol::svc::svce_calc) op: SolModOp,
