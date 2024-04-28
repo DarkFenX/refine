@@ -1,4 +1,4 @@
-use crate::defs::{AttrVal, EBuffId};
+use crate::defs::{AttrVal, EAttrId, EBuffId};
 
 /// Effect-specific buff information.
 pub struct AEffectBuffInfo {
@@ -28,6 +28,8 @@ pub enum AEffectBuffScope {
 pub enum AEffectBuffDataSrc {
     /// Standard set of attributes on carrying item.
     DefaultAttrs,
+    /// Hardcoded buff ID, but buff value is stored on source item.
+    HardcodedId(EBuffId, EAttrId),
     /// Hardcoded buff ID and buff value for the effect.
-    Hardcoded(EBuffId, AttrVal),
+    HardcodedAll(EBuffId, AttrVal),
 }
