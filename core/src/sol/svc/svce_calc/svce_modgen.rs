@@ -36,7 +36,7 @@ impl SolSvcs {
         let item_id = item.get_id();
         let mut mods = GeneratedMods::new();
         for effect in effects.iter() {
-            let mod_type = match get_mod_type(item, effect) {
+            let mod_type = match get_mod_type(effect) {
                 Some(mod_type) => mod_type,
                 None => continue,
             };
@@ -95,7 +95,7 @@ impl SolSvcs {
         let item_id = item.get_id();
         for effect_id in effect_ids {
             let effect = sol_view.src.get_a_effect(effect_id).unwrap();
-            let mod_type = match get_mod_type(item, effect) {
+            let mod_type = match get_mod_type(effect) {
                 Some(mod_type) => mod_type,
                 None => continue,
             };
@@ -120,21 +120,21 @@ impl SolSvcs {
     }
 }
 
-fn get_mod_type(item: &SolItem, effect: &ad::AEffect) -> Option<SolModType> {
-    match (item, effect.category, &effect.buff) {
+fn get_mod_type(effect: &ad::AEffect) -> Option<SolModType> {
+    match (effect.category, &effect.buff) {
         // Local modifications
-        (_, ec::effcats::PASSIVE | ec::effcats::ACTIVE | ec::effcats::ONLINE | ec::effcats::OVERLOAD, None) => {
+        (ec::effcats::PASSIVE | ec::effcats::ACTIVE | ec::effcats::ONLINE | ec::effcats::OVERLOAD, None) => {
             Some(SolModType::Local)
         }
         // Buffs
-        (_, ec::effcats::ACTIVE, Some(buff_info)) => match buff_info.scope {
+        (ec::effcats::ACTIVE, Some(buff_info)) => match buff_info.scope {
             ad::AEffectBuffScope::FleetShips => Some(SolModType::FleetBuff),
             _ => Some(SolModType::Buff),
         },
         // Lib system-wide effects are EVE system effects and buffs
-        (_, ec::effcats::SYSTEM, None) => Some(SolModType::System),
+        (ec::effcats::SYSTEM, None) => Some(SolModType::System),
         // Targeted effects
-        (_, ec::effcats::TARGET, None) => Some(SolModType::Targeted),
+        (ec::effcats::TARGET, None) => Some(SolModType::Targeted),
         _ => None,
     }
 }
