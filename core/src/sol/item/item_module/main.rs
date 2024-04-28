@@ -42,7 +42,7 @@ impl SolModule {
             charge_item_id: charge_a_item_id,
             tgts: SolTgtItems::new(),
             effect_modes: SolEffectModes::new(),
-            a_item: src.get_a_item(&a_item_id),
+            a_item: src.get_a_item(&a_item_id).cloned(),
         }
     }
 }

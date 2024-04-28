@@ -31,24 +31,24 @@ impl fmt::Debug for RamOnlyAdh {
 }
 impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     /// Get adapted item.
-    fn get_item(&self, id: &rc::EItemId) -> Option<rc::ad::ArcItem> {
-        self.storage_items.get(&id).cloned()
+    fn get_item(&self, id: &rc::EItemId) -> Option<&rc::ad::ArcItem> {
+        self.storage_items.get(&id)
     }
     /// Get adapted attribute.
-    fn get_attr(&self, id: &rc::EAttrId) -> Option<rc::ad::ArcAttr> {
-        self.storage_attrs.get(&id).cloned()
+    fn get_attr(&self, id: &rc::EAttrId) -> Option<&rc::ad::ArcAttr> {
+        self.storage_attrs.get(&id)
     }
     /// Get adapted effect.
-    fn get_effect(&self, id: &rc::EEffectId) -> Option<rc::ad::ArcEffect> {
-        self.storage_effects.get(&id).cloned()
+    fn get_effect(&self, id: &rc::EEffectId) -> Option<&rc::ad::ArcEffect> {
+        self.storage_effects.get(&id)
     }
     /// Get adapted mutaplasmid.
-    fn get_muta(&self, id: &rc::EMutaId) -> Option<rc::ad::ArcMuta> {
-        self.storage_mutas.get(&id).cloned()
+    fn get_muta(&self, id: &rc::EMutaId) -> Option<&rc::ad::ArcMuta> {
+        self.storage_mutas.get(&id)
     }
     /// Get adapted warfare buff.
-    fn get_buff(&self, id: &rc::EBuffId) -> Option<rc::ad::ArcBuff> {
-        self.storage_buffs.get(&id).cloned()
+    fn get_buff(&self, id: &rc::EBuffId) -> Option<&rc::ad::ArcBuff> {
+        self.storage_buffs.get(&id)
     }
     /// Get adapted data fingerprint.
     ///

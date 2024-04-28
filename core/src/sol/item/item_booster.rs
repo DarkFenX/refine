@@ -23,7 +23,7 @@ impl SolBooster {
             a_item_id,
             state: bool_to_state(state),
             effect_modes: SolEffectModes::new(),
-            a_item: src.get_a_item(&a_item_id),
+            a_item: src.get_a_item(&a_item_id).cloned(),
         }
     }
     pub(in crate::sol) fn get_bool_state(&self) -> bool {

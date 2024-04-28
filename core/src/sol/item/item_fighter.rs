@@ -30,7 +30,7 @@ impl SolFighter {
             state,
             amt_override: None,
             effect_modes: SolEffectModes::new(),
-            a_item: src.get_a_item(&a_item_id),
+            a_item: src.get_a_item(&a_item_id).cloned(),
         }
     }
 }

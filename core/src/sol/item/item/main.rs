@@ -171,7 +171,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn reload_a_item(&mut self, src: &Src) {
         let a_item_id = self.get_a_item_id();
-        let a_item = src.get_a_item(&a_item_id);
+        let a_item = src.get_a_item(&a_item_id).cloned();
         match self {
             Self::Booster(booster) => booster.a_item = a_item,
             Self::Character(character) => character.a_item = a_item,

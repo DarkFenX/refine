@@ -28,7 +28,7 @@ impl SolDrone {
             a_item_id,
             state,
             effect_modes: SolEffectModes::new(),
-            a_item: src.get_a_item(&a_item_id),
+            a_item: src.get_a_item(&a_item_id).cloned(),
         }
     }
 }

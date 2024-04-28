@@ -95,7 +95,7 @@ impl SolSvcs {
         let item_id = item.get_id();
         for effect_id in effect_ids {
             let effect = sol_view.src.get_a_effect(effect_id).unwrap();
-            let mod_type = match get_mod_type(item, &effect) {
+            let mod_type = match get_mod_type(item, effect) {
                 Some(mod_type) => mod_type,
                 None => continue,
             };
@@ -105,7 +105,7 @@ impl SolSvcs {
                         let buff_mods = get_buff_mods(
                             sol_view,
                             item,
-                            &effect,
+                            effect,
                             &(buff_id.extra as EBuffId),
                             &buff_info.scope,
                             buff_value_attr_id,

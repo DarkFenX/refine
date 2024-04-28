@@ -79,12 +79,12 @@ impl SolSvcs {
                 Some(e) => e,
                 None => continue,
             };
-            let should_run = resolve_effect_status(item, item_state, &effect, online_should_run);
+            let should_run = resolve_effect_status(item, item_state, effect, online_should_run);
             let running = self.running_effects.is_running(&item.get_id(), effect_id);
             if running && !should_run {
-                to_stop.push(effect);
+                to_stop.push(effect.clone());
             } else if !running && should_run {
-                to_start.push(effect)
+                to_start.push(effect.clone())
             };
         }
         if !to_stop.is_empty() {
@@ -121,8 +121,8 @@ impl SolSvcs {
             let effect_ids = running_effects.map(|v| *v).collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = sol_view.src.get_a_effect(effect_id).unwrap();
-                if is_effect_targetable(&effect) {
-                    self.notify_effect_tgt_added(sol_view, item, &effect, tgt_item);
+                if is_effect_targetable(effect) {
+                    self.notify_effect_tgt_added(sol_view, item, effect, tgt_item);
                 }
             }
         }
@@ -133,8 +133,8 @@ impl SolSvcs {
             let effect_ids = running_effects.map(|v| *v).collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = sol_view.src.get_a_effect(effect_id).unwrap();
-                if is_effect_targetable(&effect) {
-                    self.notify_effect_tgt_removed(sol_view, item, &effect, tgt_item);
+                if is_effect_targetable(effect) {
+                    self.notify_effect_tgt_removed(sol_view, item, effect, tgt_item);
                 }
             }
         } else {

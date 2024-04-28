@@ -12,15 +12,15 @@ use crate::{
 /// adapted data on every run.
 pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Get adapted item.
-    fn get_item(&self, id: &EItemId) -> Option<ArcItem>;
+    fn get_item(&self, id: &EItemId) -> Option<&ArcItem>;
     /// Get adapted attribute.
-    fn get_attr(&self, id: &EAttrId) -> Option<ArcAttr>;
+    fn get_attr(&self, id: &EAttrId) -> Option<&ArcAttr>;
     /// Get adapted effect.
-    fn get_effect(&self, id: &EEffectId) -> Option<ArcEffect>;
+    fn get_effect(&self, id: &EEffectId) -> Option<&ArcEffect>;
     /// Get adapted mutaplasmid.
-    fn get_muta(&self, id: &EMutaId) -> Option<ArcMuta>;
+    fn get_muta(&self, id: &EMutaId) -> Option<&ArcMuta>;
     /// Get adapted warfare buff.
-    fn get_buff(&self, id: &EBuffId) -> Option<ArcBuff>;
+    fn get_buff(&self, id: &EBuffId) -> Option<&ArcBuff>;
     /// Get adapted data fingerprint.
     fn get_data_fingerprint(&self) -> Option<&str>;
     /// Load cache from persistent storage.

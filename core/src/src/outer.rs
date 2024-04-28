@@ -26,19 +26,19 @@ impl Src {
         };
         Ok(src)
     }
-    pub(crate) fn get_a_item(&self, id: &EItemId) -> Option<ad::ArcItem> {
+    pub(crate) fn get_a_item(&self, id: &EItemId) -> Option<&ad::ArcItem> {
         self.inner.a_handler.get_item(id)
     }
-    pub(crate) fn get_a_attr(&self, id: &EAttrId) -> Option<ad::ArcAttr> {
+    pub(crate) fn get_a_attr(&self, id: &EAttrId) -> Option<&ad::ArcAttr> {
         self.inner.a_handler.get_attr(id)
     }
-    pub(crate) fn get_a_effect(&self, id: &EEffectId) -> Option<ad::ArcEffect> {
+    pub(crate) fn get_a_effect(&self, id: &EEffectId) -> Option<&ad::ArcEffect> {
         self.inner.a_handler.get_effect(id)
     }
-    pub(crate) fn get_a_muta(&self, id: &EMutaId) -> Option<ad::ArcMuta> {
+    pub(crate) fn get_a_muta(&self, id: &EMutaId) -> Option<&ad::ArcMuta> {
         self.inner.a_handler.get_muta(id)
     }
-    pub(crate) fn get_a_buff(&self, id: &EBuffId) -> Option<ad::ArcBuff> {
+    pub(crate) fn get_a_buff(&self, id: &EBuffId) -> Option<&ad::ArcBuff> {
         self.inner.a_handler.get_buff(id)
     }
 }

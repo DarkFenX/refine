@@ -74,5 +74,5 @@ pub(in crate::sol::svc) fn resolve_online_effect_status(
         Some(effect) => effect,
         None => return false,
     };
-    resolve_effect_status(item, item_state, &effect, false)
+    resolve_effect_status(item, item_state, effect, false)
 }
