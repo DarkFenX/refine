@@ -9,6 +9,7 @@ use super::custom::{aar, prop};
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) enum SolAttrModSrc {
     AttrId(EAttrId),
+    Hardcoded(EAttrId),
     PropulsionModule,
     AncillaryArmorRep,
 }
@@ -17,6 +18,7 @@ impl SolAttrModSrc {
     pub(super) fn get_src_attr_id(&self) -> Option<EAttrId> {
         match self {
             Self::AttrId(attr_id) => Some(*attr_id),
+            Self::Hardcoded(_) => None,
             Self::PropulsionModule => None,
             Self::AncillaryArmorRep => Some(aar::AAR_SRC_ATTR_ID),
         }
@@ -25,6 +27,7 @@ impl SolAttrModSrc {
     pub(super) fn get_srcs(&self, sol_view: &SolView, src_item_id: &SolItemId) -> Vec<(SolItemId, EAttrId)> {
         match self {
             Self::AttrId(attr_id) => vec![(*src_item_id, *attr_id)],
+            Self::Hardcoded(_) => Vec::new(),
             Self::PropulsionModule => prop::get_srcs(sol_view, src_item_id),
             Self::AncillaryArmorRep => vec![(*src_item_id, aar::AAR_SRC_ATTR_ID)],
         }
@@ -32,6 +35,7 @@ impl SolAttrModSrc {
     pub(super) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView, item_id: &SolItemId) -> Result<AttrVal> {
         match self {
             Self::AttrId(attr_id) => Ok(svc.calc_get_item_attr_val(sol_view, item_id, attr_id)?.dogma),
+            Self::Hardcoded(_) => Ok(-50.0),
             Self::PropulsionModule => prop::get_mod_val(svc, sol_view, item_id),
             Self::AncillaryArmorRep => aar::get_mod_val(svc, sol_view, item_id),
         }
@@ -39,6 +43,7 @@ impl SolAttrModSrc {
     pub(super) fn on_effect_stop(&self, svc: &mut SolSvcs, sol_view: &SolView, item_id: &SolItemId) {
         match self {
             Self::AttrId(_) => (),
+            Self::Hardcoded(_) => (),
             Self::PropulsionModule => prop::on_effect_stop(svc, sol_view, item_id),
             Self::AncillaryArmorRep => (),
         }
@@ -47,6 +52,7 @@ impl SolAttrModSrc {
     pub(super) fn revisable_on_item_add(&self) -> bool {
         match self {
             Self::AttrId(_) => false,
+            Self::Hardcoded(_) => false,
             Self::PropulsionModule => false,
             Self::AncillaryArmorRep => true,
         }
@@ -54,6 +60,7 @@ impl SolAttrModSrc {
     pub(super) fn revisable_on_item_remove(&self) -> bool {
         match self {
             Self::AttrId(_) => false,
+            Self::Hardcoded(_) => false,
             Self::PropulsionModule => false,
             Self::AncillaryArmorRep => true,
         }
@@ -61,6 +68,7 @@ impl SolAttrModSrc {
     pub(super) fn revise_on_item_add(&self, src_item: &SolItem, changed_item: &SolItem) -> bool {
         match self {
             Self::AttrId(_) => false,
+            Self::Hardcoded(_) => false,
             Self::PropulsionModule => false,
             Self::AncillaryArmorRep => aar::revise_on_item_add_removal(src_item, changed_item),
         }
@@ -68,6 +76,7 @@ impl SolAttrModSrc {
     pub(super) fn revise_on_item_remove(&self, src_item: &SolItem, changed_item: &SolItem) -> bool {
         match self {
             Self::AttrId(_) => false,
+            Self::Hardcoded(_) => false,
             Self::PropulsionModule => false,
             Self::AncillaryArmorRep => aar::revise_on_item_add_removal(src_item, changed_item),
         }

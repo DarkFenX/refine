@@ -61,8 +61,18 @@ impl SolSvcs {
                             }
                         }
                     }
-                    // TODO: implement buffs with hardcoded IDs (e.g. remote web bursts)
-                    ad::AEffectBuffDataSrc::HardcodedId(_, _) => continue,
+                    ad::AEffectBuffDataSrc::HardcodedId(buff_id, buff_val_attr_id) => {
+                        let buff_mods = get_buff_mods(
+                            sol_view,
+                            item,
+                            effect,
+                            &buff_id,
+                            &buff_info.scope,
+                            buff_val_attr_id,
+                            mod_type,
+                        );
+                        mods.all.extend(buff_mods);
+                    }
                     // TODO: implement buffs with hardcoded values (e.g. disruption lance)
                     ad::AEffectBuffDataSrc::HardcodedAll(_, _) => continue,
                 }
