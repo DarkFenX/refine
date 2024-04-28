@@ -131,6 +131,7 @@ impl SolSvcs {
             .calc_data
             .mods
             .iter_affector_item_mods(&item_id)
+            .filter(|v| v.effect_id == effect.id)
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
@@ -160,6 +161,7 @@ impl SolSvcs {
             .calc_data
             .mods
             .iter_affector_item_mods(&item_id)
+            .filter(|v| v.effect_id == effect.id)
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
