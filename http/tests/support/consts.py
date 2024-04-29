@@ -29,6 +29,7 @@ class EveItemCat(IntEnum):
 
 @unique
 class EveEffect(IntEnum):
+    doomsday_aoe_web = 6476
     drone_dmg_bonus = 1730
     fueled_armor_repair = 5275
     hardpoint_modifier_effect = 3773
@@ -88,6 +89,11 @@ class EveModOp(IntEnum):
     post_div = 5
     post_percent = 6
     post_assign = 7
+
+
+@unique
+class EveBuff(IntEnum):
+    stasis_webification_burst = 27
 
 
 @unique
