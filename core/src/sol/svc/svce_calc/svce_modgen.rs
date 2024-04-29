@@ -44,7 +44,7 @@ impl SolSvcs {
             if let Some(buff_info) = effect.buff.as_ref() {
                 match buff_info.data_source {
                     ad::AEffectBuffDataSrc::DefaultAttrs => {
-                        for (buff_type_attr_id, buff_val_attr_id) in ec::extras::BUFF_ATTRS {
+                        for (buff_type_attr_id, buff_val_attr_id) in ec::extras::BUFF_STDATTRS {
                             if let Ok(buff_id) = self.calc_get_item_attr_val(sol_view, &item_id, &buff_type_attr_id) {
                                 let buff_mods = get_buff_mods(
                                     sol_view,

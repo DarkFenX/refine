@@ -36,12 +36,12 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                 continue;
             }
         };
-        let buff_info = if ec::extras::FLEET_BUFF_EFFECT_IDS.contains(&e_effect.id) {
+        let buff_info = if ec::extras::EFFECTS_BUFF_STDATTRS_FLEET.contains(&e_effect.id) {
             Some(ad::AEffectBuffInfo::new(
                 ad::AEffectBuffDataSrc::DefaultAttrs,
                 ad::AEffectBuffScope::FleetShips,
             ))
-        } else if ec::extras::EVERYTHING_BUFF_EFFECT_IDS.contains(&e_effect.id) {
+        } else if ec::extras::EFFECTS_BUFF_STDATTRS_EVERYTHING.contains(&e_effect.id) {
             Some(ad::AEffectBuffInfo::new(
                 ad::AEffectBuffDataSrc::DefaultAttrs,
                 ad::AEffectBuffScope::Everything,
