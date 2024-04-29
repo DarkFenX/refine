@@ -2,6 +2,7 @@
 
 pub(crate) mod abils;
 pub(crate) mod attrs;
+pub(crate) mod buffs;
 pub(crate) mod effcats;
 pub(crate) mod effects;
 pub(crate) mod itemcats;
