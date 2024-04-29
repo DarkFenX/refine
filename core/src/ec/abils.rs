@@ -1,9 +1,6 @@
 #![allow(dead_code)]
 
-use crate::{
-    defs::{EAbilId, EEffectId},
-    ec::effects,
-};
+use crate::defs::EAbilId;
 
 pub(crate) const WEB: EAbilId = 2;
 pub(crate) const MWD: EAbilId = 4;
@@ -36,24 +33,3 @@ pub(crate) const ROCKET_EXP: EAbilId = 36;
 pub(crate) const KAMIKAZE: EAbilId = 38;
 pub(crate) const ATK_BLASTER_KIN: EAbilId = 44;
 pub(crate) const ATK_RAIL_KIN: EAbilId = 45;
-
-pub(crate) fn get_abil_effect(abil_id: EAbilId) -> Option<EEffectId> {
-    match abil_id {
-        ATK_PULSE | ATK_BEAM | ATK_BLASTER_THERM | ATK_BLASTER_KIN | ATK_RAIL_THERM | ATK_RAIL_KIN | ATK_AUTOCANNON
-        | ATK_ARTY => Some(effects::FTR_ABIL_ATK_MISSILE),
-        UMISSILE_EM | UMISSILE_THERM | UMISSILE_KIN | UMISSILE_EXP | ROCKET_EM | ROCKET_THERM | ROCKET_KIN
-        | ROCKET_EXP | TORP_EM | TORP_THERM | TORP_KIN | TORP_EXP => Some(effects::FTR_ABIL_MISSILES),
-        BOMB => Some(effects::FTR_ABIL_BOMB),
-        KAMIKAZE => Some(effects::FTR_ABIL_KAMIKAZE),
-        POINT => Some(effects::FTR_ABIL_POINT),
-        WEB => Some(effects::FTR_ABIL_WEB),
-        TACKLE => Some(effects::FTR_ABIL_TACKLE),
-        NEUT => Some(effects::FTR_ABIL_NEUT),
-        ECM => Some(effects::FTR_ABIL_ECM),
-        MWD => Some(effects::FTR_ABIL_MWD),
-        AB => Some(effects::FTR_ABIL_AB),
-        MJD => Some(effects::FTR_ABIL_MJD),
-        EVASION => Some(effects::FTR_ABIL_EVASION),
-        _ => None,
-    }
-}

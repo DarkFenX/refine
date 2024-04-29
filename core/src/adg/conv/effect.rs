@@ -36,12 +36,12 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                 continue;
             }
         };
-        let buff_info = if ec::effects::FLEET_BUFF_EFFECT_IDS.contains(&e_effect.id) {
+        let buff_info = if ec::extras::FLEET_BUFF_EFFECT_IDS.contains(&e_effect.id) {
             Some(ad::AEffectBuffInfo::new(
                 ad::AEffectBuffDataSrc::DefaultAttrs,
                 ad::AEffectBuffScope::FleetShips,
             ))
-        } else if ec::effects::EVERYTHING_BUFF_EFFECT_IDS.contains(&e_effect.id) {
+        } else if ec::extras::EVERYTHING_BUFF_EFFECT_IDS.contains(&e_effect.id) {
             Some(ad::AEffectBuffInfo::new(
                 ad::AEffectBuffDataSrc::DefaultAttrs,
                 ad::AEffectBuffScope::Everything,
@@ -324,7 +324,7 @@ where
 {
     let mut map = StMap::new();
     for e_abil in g_data.abils.iter() {
-        match ec::abils::get_abil_effect(e_abil.id) {
+        match ec::extras::get_abil_effect(e_abil.id) {
             None => continue,
             Some(effect_id) => map
                 .entry(effect_id)

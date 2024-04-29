@@ -40,7 +40,7 @@ impl Fk for ed::EAttr {
     fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         if let (true, Some(dv_fk)) = (
-            ec::attrs::BUFF_ID_ATTRS.contains(&self.id),
+            ec::extras::BUFF_ID_ATTRS.contains(&self.id),
             attrval_to_fk(self.default_value),
         ) {
             vec.push(dv_fk);

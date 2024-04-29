@@ -216,7 +216,7 @@ impl SolSvcs {
             }
         }
         // Process buffs which rely on attribute being modified
-        if ec::attrs::BUFF_ID_ATTRS.contains(attr_id) {
+        if ec::extras::BUFF_ID_ATTRS.contains(attr_id) {
             // Remove modifiers of buffs which rely on the attribute
             if let Some(modifiers) = self.calc_data.buffs.extract_dependent_mods(item_id, attr_id) {
                 let modifiers = modifiers.collect();

@@ -58,7 +58,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
     for e_item_abil in g_data.item_abils.iter() {
         match a_item_map.get_mut(&e_item_abil.item_id) {
             None => continue,
-            Some(a_item) => match ec::abils::get_abil_effect(e_item_abil.abil_id) {
+            Some(a_item) => match ec::extras::get_abil_effect(e_item_abil.abil_id) {
                 None => continue,
                 Some(effect_id) => match a_item.effect_datas.get_mut(&effect_id) {
                     None => continue,
