@@ -131,7 +131,7 @@ impl GSupport {
         self.eff_buff_map.insert(
             ec::effects::DOOMSDAY_AOE_WEB,
             ad::AEffectBuffInfo::new(
-                ad::AEffectBuffDataSrc::HardcodedId(ec::buffs::STASIS_WEBIFICATION_BURST, ec::attrs::SPEED_FACTOR),
+                ad::AEffectBuffDataSrc::Customized(ec::buffs::STASIS_WEBIFICATION_BURST, ec::attrs::SPEED_FACTOR),
                 ad::AEffectBuffScope::Everything,
             ),
         );

@@ -32,7 +32,7 @@ pub enum AEffectBuffDataSrc {
     /// Standard set of attributes on carrying item.
     DefaultAttrs,
     /// Hardcoded buff ID, but buff value is stored on source item.
-    HardcodedId(EBuffId, EAttrId),
+    Customized(EBuffId, EAttrId),
     /// Hardcoded buff ID and buff value for the effect.
-    HardcodedAll(EBuffId, Rational),
+    Hardcoded(EBuffId, Rational),
 }

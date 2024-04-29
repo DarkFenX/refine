@@ -57,8 +57,8 @@ impl From<&rc::ad::AEffectBuffDataSrc> for CEffectBuffDataSrc {
     fn from(buff_data_src: &rc::ad::AEffectBuffDataSrc) -> Self {
         match buff_data_src {
             rc::ad::AEffectBuffDataSrc::DefaultAttrs => Self::DefaultAttrs,
-            rc::ad::AEffectBuffDataSrc::HardcodedId(buff_id, attr_id) => Self::HardcodedId(*buff_id, *attr_id),
-            rc::ad::AEffectBuffDataSrc::HardcodedAll(buff_id, buff_val) => Self::HardcodedAll(*buff_id, *buff_val),
+            rc::ad::AEffectBuffDataSrc::Customized(buff_id, attr_id) => Self::HardcodedId(*buff_id, *attr_id),
+            rc::ad::AEffectBuffDataSrc::Hardcoded(buff_id, buff_val) => Self::HardcodedAll(*buff_id, *buff_val),
         }
     }
 }
@@ -67,10 +67,10 @@ impl Into<rc::ad::AEffectBuffDataSrc> for &CEffectBuffDataSrc {
         match self {
             CEffectBuffDataSrc::DefaultAttrs => rc::ad::AEffectBuffDataSrc::DefaultAttrs,
             CEffectBuffDataSrc::HardcodedId(buff_id, attr_id) => {
-                rc::ad::AEffectBuffDataSrc::HardcodedId(*buff_id, *attr_id)
+                rc::ad::AEffectBuffDataSrc::Customized(*buff_id, *attr_id)
             }
             CEffectBuffDataSrc::HardcodedAll(buff_id, buff_val) => {
-                rc::ad::AEffectBuffDataSrc::HardcodedAll(*buff_id, *buff_val)
+                rc::ad::AEffectBuffDataSrc::Hardcoded(*buff_id, *buff_val)
             }
         }
     }

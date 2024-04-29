@@ -61,7 +61,7 @@ impl SolSvcs {
                             }
                         }
                     }
-                    ad::AEffectBuffDataSrc::HardcodedId(buff_id, buff_val_attr_id) => {
+                    ad::AEffectBuffDataSrc::Customized(buff_id, buff_val_attr_id) => {
                         let buff_mods = get_buff_mods(
                             sol_view,
                             item,
@@ -74,7 +74,7 @@ impl SolSvcs {
                         mods.all.extend(buff_mods);
                     }
                     // TODO: implement buffs with hardcoded values (e.g. disruption lance)
-                    ad::AEffectBuffDataSrc::HardcodedAll(_, _) => continue,
+                    ad::AEffectBuffDataSrc::Hardcoded(_, _) => continue,
                 }
             }
             // Regular modifiers
