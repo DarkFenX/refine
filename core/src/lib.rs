@@ -22,7 +22,7 @@
 
 pub use defs::{
     Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
-    EMutaId, Idx, SkillLevel, SolFitId, SolFleetId, SolItemId, VERSION,
+    EMutaId, Idx, Rational, SkillLevel, SolFitId, SolFleetId, SolItemId, VERSION,
 };
 pub use sol::{
     fit_info::SolFitInfo,

@@ -51,7 +51,7 @@ impl Into<rc::ad::AEffectBuffScope> for &CEffectBuffScope {
 pub(in crate::handler_json) enum CEffectBuffDataSrc {
     DefaultAttrs,
     HardcodedId(rc::EBuffId, rc::EAttrId),
-    HardcodedAll(rc::EBuffId, rc::AttrVal),
+    HardcodedAll(rc::EBuffId, rc::Rational),
 }
 impl From<&rc::ad::AEffectBuffDataSrc> for CEffectBuffDataSrc {
     fn from(buff_data_src: &rc::ad::AEffectBuffDataSrc) -> Self {

@@ -1,6 +1,9 @@
+use num_rational::Rational64;
+
 // Generic aliases
 pub type Idx = usize;
 pub type Amount = u32;
+pub type Rational = Rational64;
 // EVE-specific aliases, but not specific to any entity category
 pub(crate) type AggrKey = i32;
 pub type AttrVal = f64;

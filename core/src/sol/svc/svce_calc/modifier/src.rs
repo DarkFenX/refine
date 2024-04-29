@@ -1,5 +1,7 @@
+use num_traits::cast::ToPrimitive;
+
 use crate::{
-    defs::{AttrVal, EAttrId, SolItemId},
+    defs::{AttrVal, EAttrId, Rational, SolItemId},
     sol::{item::SolItem, svc::SolSvcs, SolView},
     util::Result,
 };
@@ -9,7 +11,7 @@ use super::custom::{aar, prop};
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) enum SolAttrModSrc {
     AttrId(EAttrId),
-    Hardcoded(EAttrId),
+    Hardcoded(Rational),
     PropulsionModule,
     AncillaryArmorRep,
 }
@@ -35,7 +37,7 @@ impl SolAttrModSrc {
     pub(super) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView, item_id: &SolItemId) -> Result<AttrVal> {
         match self {
             Self::AttrId(attr_id) => Ok(svc.calc_get_item_attr_val(sol_view, item_id, attr_id)?.dogma),
-            Self::Hardcoded(_) => Ok(-50.0),
+            Self::Hardcoded(val_rational) => Ok(val_rational.to_f64().unwrap()),
             Self::PropulsionModule => prop::get_mod_val(svc, sol_view, item_id),
             Self::AncillaryArmorRep => aar::get_mod_val(svc, sol_view, item_id),
         }

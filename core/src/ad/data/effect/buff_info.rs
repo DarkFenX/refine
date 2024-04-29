@@ -1,4 +1,4 @@
-use crate::defs::{AttrVal, EAttrId, EBuffId};
+use crate::defs::{EAttrId, EBuffId, Rational};
 
 /// Effect-specific buff information.
 pub struct AEffectBuffInfo {
@@ -31,5 +31,5 @@ pub enum AEffectBuffDataSrc {
     /// Hardcoded buff ID, but buff value is stored on source item.
     HardcodedId(EBuffId, EAttrId),
     /// Hardcoded buff ID and buff value for the effect.
-    HardcodedAll(EBuffId, AttrVal),
+    HardcodedAll(EBuffId, Rational),
 }
