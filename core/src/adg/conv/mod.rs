@@ -14,6 +14,6 @@ pub(in crate::adg) fn convert(g_data: &GData, g_supp: &GSupport, a_data: &mut ad
     a_data.items = item::conv_items(g_data, g_supp);
     a_data.attrs = attr::conv_attrs(g_data);
     a_data.mutas = muta::conv_mutas(g_data);
-    a_data.effects = effect::conv_effects(g_data);
+    a_data.effects = effect::conv_effects(g_data, g_supp);
     a_data.buffs = buff::conv_buffs(g_data);
 }

@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use crate::{
     ad,
-    adg::GData,
+    adg::{GData, GSupport},
     defs::{EAttrId, EEffectId, EItemGrpId, EItemId},
     ec, ed,
     util::{IntError, IntResult, StMap, StSet},
@@ -20,7 +20,7 @@ impl ed::EFighterAbil {
     }
 }
 
-pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
+pub(in crate::adg::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> Vec<ad::AEffect> {
     let mut a_effects = Vec::new();
     for e_effect in g_data.effects.iter() {
         let (state, tgt_mode) = match e_effect.category_id {
@@ -36,19 +36,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData) -> Vec<ad::AEffect> {
                 continue;
             }
         };
-        let buff_info = if ec::extras::EFFECTS_BUFF_STDATTRS_FLEET.contains(&e_effect.id) {
-            Some(ad::AEffectBuffInfo::new(
-                ad::AEffectBuffDataSrc::DefaultAttrs,
-                ad::AEffectBuffScope::FleetShips,
-            ))
-        } else if ec::extras::EFFECTS_BUFF_STDATTRS_EVERYTHING.contains(&e_effect.id) {
-            Some(ad::AEffectBuffInfo::new(
-                ad::AEffectBuffDataSrc::DefaultAttrs,
-                ad::AEffectBuffScope::Everything,
-            ))
-        } else {
-            None
-        };
+        let buff_info = g_supp.eff_buff_map.get(&e_effect.id).cloned();
         let mut a_effect = ad::AEffect::new(
             e_effect.id,
             e_effect.category_id,

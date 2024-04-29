@@ -1,8 +1,8 @@
 //! Adapted data generator
 use crate::{
     ad,
-    defs::{EAttrId, EAttrUnitId, EItemCatId, EItemGrpId},
-    ed,
+    defs::{EAttrId, EAttrUnitId, EBuffId, EItemCatId, EItemGrpId},
+    ec, ed,
     util::{IntResult, StMap},
 };
 
@@ -70,17 +70,20 @@ impl GData {
 pub(in crate::adg) struct GSupport {
     pub(in crate::adg) attr_unit_map: StMap<EAttrId, EAttrUnitId>,
     pub(in crate::adg) grp_cat_map: StMap<EItemGrpId, EItemCatId>,
+    pub(in crate::adg) eff_buff_map: StMap<EBuffId, ad::AEffectBuffInfo>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {
         Self {
             attr_unit_map: StMap::new(),
             grp_cat_map: StMap::new(),
+            eff_buff_map: StMap::new(),
         }
     }
     pub(in crate::adg) fn fill(&mut self, g_data: &GData) {
         self.fill_attr_unit_map(&g_data);
         self.fill_grp_cat_map(&g_data);
+        self.fill_eff_buff_map();
     }
     fn fill_attr_unit_map(&mut self, g_data: &GData) {
         for attr in g_data.attrs.iter() {
@@ -93,5 +96,44 @@ impl GSupport {
         for grp in g_data.groups.iter() {
             self.grp_cat_map.insert(grp.id, grp.category_id);
         }
+    }
+    fn fill_eff_buff_map(&mut self) {
+        // Fleet buffs which rely on standard on-item attributes to define buffs
+        for effect_id in [
+            ec::effects::MOD_BONUS_WARFARE_LINK_ARMOR,
+            ec::effects::MOD_BONUS_WARFARE_LINK_INFO,
+            ec::effects::MOD_BONUS_WARFARE_LINK_MINING,
+            ec::effects::MOD_BONUS_WARFARE_LINK_SHIELD,
+            ec::effects::MOD_BONUS_WARFARE_LINK_SKIRMISH,
+        ] {
+            self.eff_buff_map.insert(
+                effect_id,
+                ad::AEffectBuffInfo::new(ad::AEffectBuffDataSrc::DefaultAttrs, ad::AEffectBuffScope::FleetShips),
+            );
+        }
+        // Buffs which affect everything and rely on standard on-item attributes to define buffs
+        for effect_id in [
+            ec::effects::WEATHER_ELECTRIC_STORM,
+            ec::effects::WEATHER_INFERNAL,
+            ec::effects::WEATHER_CAUSTIC_TOXIN,
+            ec::effects::WEATHER_XENON_GAS,
+            ec::effects::WEATHER_DARKNESS,
+            ec::effects::AOE_BEACON_BIOLUMINESCENCE_CLOUD,
+            ec::effects::AOE_BEACON_CAUSTIC_CLOUD,
+            ec::effects::AOE_BEACON_FILAMENT_CLOUD,
+        ] {
+            self.eff_buff_map.insert(
+                effect_id,
+                ad::AEffectBuffInfo::new(ad::AEffectBuffDataSrc::DefaultAttrs, ad::AEffectBuffScope::Everything),
+            );
+        }
+        // Bursts with hardcoded IDs
+        self.eff_buff_map.insert(
+            ec::effects::DOOMSDAY_AOE_WEB,
+            ad::AEffectBuffInfo::new(
+                ad::AEffectBuffDataSrc::HardcodedId(ec::buffs::STASIS_WEBIFICATION_BURST, ec::attrs::SPEED_FACTOR),
+                ad::AEffectBuffScope::Everything,
+            ),
+        );
     }
 }

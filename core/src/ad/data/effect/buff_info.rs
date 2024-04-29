@@ -1,6 +1,7 @@
 use crate::defs::{EAttrId, EBuffId, Rational};
 
 /// Effect-specific buff information.
+#[derive(Copy, Clone)]
 pub struct AEffectBuffInfo {
     /// Defines where to look for buff type and value.
     pub data_source: AEffectBuffDataSrc,
@@ -15,6 +16,7 @@ impl AEffectBuffInfo {
 }
 
 /// Defines what items the buff is applied to.
+#[derive(Copy, Clone)]
 pub enum AEffectBuffScope {
     /// Directly affects all items the effect is applied to.
     Everything,
@@ -25,6 +27,7 @@ pub enum AEffectBuffScope {
 }
 
 /// Defines where to look for buff type and value.
+#[derive(Copy, Clone)]
 pub enum AEffectBuffDataSrc {
     /// Standard set of attributes on carrying item.
     DefaultAttrs,

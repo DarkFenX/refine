@@ -15,23 +15,6 @@ pub(crate) const BUFF_STDATTRS: [(EAttrId, EAttrId); 4] = [
     (attrs::WARFARE_BUFF3_ID, attrs::WARFARE_BUFF3_VAL),
     (attrs::WARFARE_BUFF4_ID, attrs::WARFARE_BUFF4_VAL),
 ];
-pub(crate) const EFFECTS_BUFF_STDATTRS_EVERYTHING: [EEffectId; 8] = [
-    effects::WEATHER_ELECTRIC_STORM,
-    effects::WEATHER_INFERNAL,
-    effects::WEATHER_CAUSTIC_TOXIN,
-    effects::WEATHER_XENON_GAS,
-    effects::WEATHER_DARKNESS,
-    effects::AOE_BEACON_BIOLUMINESCENCE_CLOUD,
-    effects::AOE_BEACON_CAUSTIC_CLOUD,
-    effects::AOE_BEACON_FILAMENT_CLOUD,
-];
-pub(crate) const EFFECTS_BUFF_STDATTRS_FLEET: [EEffectId; 5] = [
-    effects::MOD_BONUS_WARFARE_LINK_ARMOR,
-    effects::MOD_BONUS_WARFARE_LINK_INFO,
-    effects::MOD_BONUS_WARFARE_LINK_MINING,
-    effects::MOD_BONUS_WARFARE_LINK_SHIELD,
-    effects::MOD_BONUS_WARFARE_LINK_SKIRMISH,
-];
 
 pub(crate) fn get_abil_effect(abil_id: EAbilId) -> Option<EEffectId> {
     match abil_id {
