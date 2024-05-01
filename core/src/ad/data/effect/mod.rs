@@ -1,9 +1,9 @@
-pub use attr_mod::AEffectAttrMod;
+pub use attr_mod::AEffectModifier;
 pub use buff_info::{AEffectBuffDataSrc, AEffectBuffInfo, AEffectBuffScope};
 pub use build_status::AModBuildStatus;
 pub use domain::AEffectDomain;
 pub use effect::AEffect;
-pub use tgt_filter::AEffectTgtFilter;
+pub use tgt_filter::AEffectAffecteeFilter;
 pub use tgt_mode::ATgtMode;
 
 mod attr_mod;

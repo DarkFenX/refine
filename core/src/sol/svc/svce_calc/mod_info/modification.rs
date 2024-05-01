@@ -1,26 +1,26 @@
 use crate::{
     defs::AttrVal,
-    sol::svc::svce_calc::{SolModOpInfo, SolModSrcInfo},
+    sol::svc::svce_calc::{SolAffectorInfo, SolOpInfo},
 };
 
-pub struct SolModInfo {
+pub struct SolModificationInfo {
     pub val: AttrVal,
-    pub op: SolModOpInfo,
+    pub op: SolOpInfo,
     pub penalized: bool,
-    pub src: Vec<SolModSrcInfo>,
+    pub affectors: Vec<SolAffectorInfo>,
 }
-impl SolModInfo {
+impl SolModificationInfo {
     pub(in crate::sol::svc::svce_calc) fn new(
         val: AttrVal,
-        op: SolModOpInfo,
+        op: SolOpInfo,
         penalized: bool,
-        src: Vec<SolModSrcInfo>,
+        affectors: Vec<SolAffectorInfo>,
     ) -> Self {
         Self {
             val,
             op,
             penalized,
-            src,
+            affectors,
         }
     }
 }

@@ -5,7 +5,7 @@ use crate::{
     sol::{
         fit::SolFit,
         item::SolItem,
-        svc::svce_calc::{SolAffecteeFilter, SolAttrMod, SolLocType, SolModDomain, SolModType},
+        svc::svce_calc::{SolAffecteeFilter, SolDomain, SolLocType, SolModifier, SolModifierKind},
         SolView,
     },
     util::{extend_vec_from_map_set_l1, StMapSetL1},
@@ -50,17 +50,17 @@ impl SolAffecteeRegister {
         affectees: &mut Vec<SolItemId>,
         sol_view: &SolView,
         item: &SolItem,
-        modifier: &SolAttrMod,
+        modifier: &SolModifier,
     ) {
         // Those modifiers work the same regardless of broader context. They just need an item which
         // carries them.
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
-                SolModDomain::Item => {
+                SolDomain::Item => {
                     affectees.push(modifier.affector_item_id);
                     return;
                 }
-                SolModDomain::Other => {
+                SolDomain::Other => {
                     if let Some(other_item_id) = item.get_other() {
                         affectees.push(other_item_id);
                     }
@@ -70,46 +70,46 @@ impl SolAffecteeRegister {
             },
             _ => (),
         }
-        match (modifier.mod_type, item) {
+        match (modifier.kind, item) {
             // System-wide modifications affect all fits
-            (SolModType::System | SolModType::Buff, SolItem::SwEffect(_)) => {
+            (SolModifierKind::System | SolModifierKind::Buff, SolItem::SwEffect(_)) => {
                 for fit in sol_view.fits.iter_fits() {
                     self.fill_affectees_for_fit(affectees, modifier, fit);
                 }
             }
-            // Fit-wide modifications affect only source fit itself
-            (SolModType::System | SolModType::Buff, SolItem::FwEffect(fw_effect)) => {
+            // Fit-wide modifications affect only affecting fit itself
+            (SolModifierKind::System | SolModifierKind::Buff, SolItem::FwEffect(fw_effect)) => {
                 let fit = sol_view.fits.get_fit(&fw_effect.fit_id).unwrap();
                 self.fill_affectees_for_fit(affectees, modifier, fit);
             }
             // Local modifications are the same
-            (SolModType::Local, _) => {
+            (SolModifierKind::Local, _) => {
                 if let Some(fit_id) = item.get_fit_id() {
                     let fit = sol_view.fits.get_fit(&fit_id).unwrap();
                     self.fill_affectees_for_fit(affectees, modifier, fit);
                 }
             }
-            // Fleet modifications affect whole fleet, or just source fit itself, if fleet isn't set
-            (SolModType::FleetBuff, SolItem::Module(module)) => {
-                let src_fit = sol_view.fits.get_fit(&module.fit_id).unwrap();
-                match src_fit.fleet {
+            // Fleet modifications affect whole fleet, or just affecting fit itself, if fleet isn't set
+            (SolModifierKind::FleetBuff, SolItem::Module(module)) => {
+                let affector_fit = sol_view.fits.get_fit(&module.fit_id).unwrap();
+                match affector_fit.fleet {
                     Some(fleet_id) => {
                         let fleet = sol_view.fleets.get_fleet(&fleet_id).unwrap();
-                        for dst_fit in fleet.iter_fits().map(|v| sol_view.fits.get_fit(v).unwrap()) {
-                            self.fill_affectees_for_fit(affectees, modifier, dst_fit);
+                        for fleeted_fit in fleet.iter_fits().map(|v| sol_view.fits.get_fit(v).unwrap()) {
+                            self.fill_affectees_for_fit(affectees, modifier, fleeted_fit);
                         }
                     }
-                    None => self.fill_affectees_for_fit(affectees, modifier, src_fit),
+                    None => self.fill_affectees_for_fit(affectees, modifier, affector_fit),
                 }
             }
             // Various targetable effects affect only what they are target, depending on mod type
-            (SolModType::System, SolItem::ProjEffect(proj_effect)) => {
+            (SolModifierKind::System, SolItem::ProjEffect(proj_effect)) => {
                 for tgt_item_id in proj_effect.tgts.iter_tgts() {
                     let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                     self.fill_tgt_for_system_mod(affectees, sol_view, modifier, tgt_item);
                 }
             }
-            (SolModType::Targeted, _) => {
+            (SolModifierKind::Targeted, _) => {
                 if let Some(tgt_item_ids) = item.iter_targets() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
@@ -117,7 +117,7 @@ impl SolAffecteeRegister {
                     }
                 }
             }
-            (SolModType::Buff, _) => {
+            (SolModifierKind::Buff, _) => {
                 if let Some(tgt_item_ids) = item.iter_targets() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
@@ -131,12 +131,12 @@ impl SolAffecteeRegister {
     pub(in crate::sol::svc::svce_calc) fn fill_affectees_for_fit(
         &self,
         affectees: &mut Vec<SolItemId>,
-        modifier: &SolAttrMod,
+        modifier: &SolModifier,
         fit: &SolFit,
     ) {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
-                SolModDomain::Everything => extend_vec_from_map_set_l1(affectees, &self.buff_all, &fit.id),
+                SolDomain::Everything => extend_vec_from_map_set_l1(affectees, &self.buff_all, &fit.id),
                 _ => {
                     if let Ok(loc) = dom.try_into() {
                         if check_domain_owner(dom, fit) {
@@ -146,11 +146,11 @@ impl SolAffecteeRegister {
                 }
             },
             SolAffecteeFilter::Loc(dom) => match dom {
-                SolModDomain::Everything => {
-                    if check_domain_owner(SolModDomain::Ship, fit) {
+                SolDomain::Everything => {
+                    if check_domain_owner(SolDomain::Ship, fit) {
                         extend_vec_from_map_set_l1(affectees, &self.loc, &(fit.id, SolLocType::Ship));
                     }
-                    if check_domain_owner(SolModDomain::Structure, fit) {
+                    if check_domain_owner(SolDomain::Structure, fit) {
                         extend_vec_from_map_set_l1(affectees, &self.loc, &(fit.id, SolLocType::Structure));
                     }
                 }
@@ -163,11 +163,11 @@ impl SolAffecteeRegister {
                 }
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
-                SolModDomain::Everything => {
-                    if check_domain_owner(SolModDomain::Ship, fit) {
+                SolDomain::Everything => {
+                    if check_domain_owner(SolDomain::Ship, fit) {
                         extend_vec_from_map_set_l1(affectees, &self.loc_grp, &(fit.id, SolLocType::Ship, grp_id));
                     }
-                    if check_domain_owner(SolModDomain::Structure, fit) {
+                    if check_domain_owner(SolDomain::Structure, fit) {
                         extend_vec_from_map_set_l1(affectees, &self.loc_grp, &(fit.id, SolLocType::Structure, grp_id));
                     }
                 }
@@ -180,11 +180,11 @@ impl SolAffecteeRegister {
                 }
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
-                SolModDomain::Everything => {
-                    if check_domain_owner(SolModDomain::Ship, fit) {
+                SolDomain::Everything => {
+                    if check_domain_owner(SolDomain::Ship, fit) {
                         extend_vec_from_map_set_l1(affectees, &self.loc_srq, &(fit.id, SolLocType::Ship, srq_id));
                     }
-                    if check_domain_owner(SolModDomain::Structure, fit) {
+                    if check_domain_owner(SolDomain::Structure, fit) {
                         extend_vec_from_map_set_l1(affectees, &self.loc_srq, &(fit.id, SolLocType::Structure, srq_id));
                     }
                 }
@@ -205,13 +205,13 @@ impl SolAffecteeRegister {
         &self,
         affectees: &mut Vec<SolItemId>,
         sol_view: &SolView,
-        modifier: &SolAttrMod,
+        modifier: &SolModifier,
         tgt_item: &SolItem,
     ) {
-        match modifier.mod_type {
-            SolModType::System => self.fill_tgt_for_system_mod(affectees, sol_view, modifier, tgt_item),
-            SolModType::Targeted => self.fill_tgt_for_targeted_mod(affectees, modifier, tgt_item),
-            SolModType::Buff => self.fill_tgt_for_buff_mod(affectees, modifier, tgt_item),
+        match modifier.kind {
+            SolModifierKind::System => self.fill_tgt_for_system_mod(affectees, sol_view, modifier, tgt_item),
+            SolModifierKind::Targeted => self.fill_tgt_for_targeted_mod(affectees, modifier, tgt_item),
+            SolModifierKind::Buff => self.fill_tgt_for_buff_mod(affectees, modifier, tgt_item),
             _ => (),
         }
     }
@@ -299,16 +299,14 @@ impl SolAffecteeRegister {
         &self,
         affectees: &mut Vec<SolItemId>,
         sol_view: &SolView,
-        modifier: &SolAttrMod,
+        modifier: &SolModifier,
         tgt_item: &SolItem,
     ) {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
-                SolModDomain::Ship if matches!(tgt_item, SolItem::Ship(_)) => affectees.push(tgt_item.get_id()),
-                SolModDomain::Structure if matches!(tgt_item, SolItem::Structure(_)) => {
-                    affectees.push(tgt_item.get_id())
-                }
-                SolModDomain::Char => match tgt_item {
+                SolDomain::Ship if matches!(tgt_item, SolItem::Ship(_)) => affectees.push(tgt_item.get_id()),
+                SolDomain::Structure if matches!(tgt_item, SolItem::Structure(_)) => affectees.push(tgt_item.get_id()),
+                SolDomain::Char => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         if let Some(char_id) = get_fit_character(sol_view, &tgt_ship.fit_id) {
                             affectees.push(char_id);
@@ -324,19 +322,19 @@ impl SolAffecteeRegister {
                 _ => (),
             },
             SolAffecteeFilter::Loc(dom) => match dom {
-                SolModDomain::Ship => match tgt_item {
+                SolDomain::Ship => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocType::Ship))
                     }
                     _ => (),
                 },
-                SolModDomain::Structure => match tgt_item {
+                SolDomain::Structure => match tgt_item {
                     SolItem::Structure(tgt_struct) => {
                         extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_struct.fit_id, SolLocType::Structure))
                     }
                     _ => (),
                 },
-                SolModDomain::Char => match tgt_item {
+                SolDomain::Char => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocType::Character))
                     }
@@ -348,7 +346,7 @@ impl SolAffecteeRegister {
                 _ => (),
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
-                SolModDomain::Ship => match tgt_item {
+                SolDomain::Ship => match tgt_item {
                     SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_grp,
@@ -356,7 +354,7 @@ impl SolAffecteeRegister {
                     ),
                     _ => (),
                 },
-                SolModDomain::Structure => match tgt_item {
+                SolDomain::Structure => match tgt_item {
                     SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_grp,
@@ -364,7 +362,7 @@ impl SolAffecteeRegister {
                     ),
                     _ => (),
                 },
-                SolModDomain::Char => match tgt_item {
+                SolDomain::Char => match tgt_item {
                     SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_grp,
@@ -380,7 +378,7 @@ impl SolAffecteeRegister {
                 _ => (),
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
-                SolModDomain::Ship => match tgt_item {
+                SolDomain::Ship => match tgt_item {
                     SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_srq,
@@ -388,7 +386,7 @@ impl SolAffecteeRegister {
                     ),
                     _ => (),
                 },
-                SolModDomain::Structure => match tgt_item {
+                SolDomain::Structure => match tgt_item {
                     SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_srq,
@@ -396,7 +394,7 @@ impl SolAffecteeRegister {
                     ),
                     _ => (),
                 },
-                SolModDomain::Char => match tgt_item {
+                SolDomain::Char => match tgt_item {
                     SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_srq,
@@ -422,15 +420,15 @@ impl SolAffecteeRegister {
             },
         }
     }
-    fn fill_tgt_for_targeted_mod(&self, affectees: &mut Vec<SolItemId>, modifier: &SolAttrMod, tgt_item: &SolItem) {
+    fn fill_tgt_for_targeted_mod(&self, affectees: &mut Vec<SolItemId>, modifier: &SolModifier, tgt_item: &SolItem) {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => {
-                if matches!(dom, SolModDomain::Target) {
+                if matches!(dom, SolDomain::Target) {
                     affectees.push(tgt_item.get_id())
                 }
             }
             SolAffecteeFilter::Loc(dom) => {
-                if matches!(dom, SolModDomain::Target) {
+                if matches!(dom, SolDomain::Target) {
                     match tgt_item {
                         SolItem::Ship(tgt_ship) => {
                             extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocType::Ship))
@@ -445,7 +443,7 @@ impl SolAffecteeRegister {
                 }
             }
             SolAffecteeFilter::LocGrp(dom, grp_id) => {
-                if matches!(dom, SolModDomain::Target) {
+                if matches!(dom, SolDomain::Target) {
                     match tgt_item {
                         SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                             affectees,
@@ -462,7 +460,7 @@ impl SolAffecteeRegister {
                 }
             }
             SolAffecteeFilter::LocSrq(dom, srq_id) => {
-                if matches!(dom, SolModDomain::Target) {
+                if matches!(dom, SolDomain::Target) {
                     match tgt_item {
                         SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                             affectees,
@@ -489,19 +487,19 @@ impl SolAffecteeRegister {
             },
         }
     }
-    fn fill_tgt_for_buff_mod(&self, affectees: &mut Vec<SolItemId>, modifier: &SolAttrMod, tgt_item: &SolItem) {
+    fn fill_tgt_for_buff_mod(&self, affectees: &mut Vec<SolItemId>, modifier: &SolModifier, tgt_item: &SolItem) {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
-                SolModDomain::Everything => {
+                SolDomain::Everything => {
                     if tgt_item.is_buff_modifiable() {
                         affectees.push(tgt_item.get_id())
                     }
                 }
-                SolModDomain::Ship if matches!(tgt_item, SolItem::Ship(_)) => affectees.push(tgt_item.get_id()),
+                SolDomain::Ship if matches!(tgt_item, SolItem::Ship(_)) => affectees.push(tgt_item.get_id()),
                 _ => (),
             },
             SolAffecteeFilter::Loc(dom) => match dom {
-                SolModDomain::Everything => match tgt_item {
+                SolDomain::Everything => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocType::Ship))
                     }
@@ -510,7 +508,7 @@ impl SolAffecteeRegister {
                     }
                     _ => (),
                 },
-                SolModDomain::Ship => match tgt_item {
+                SolDomain::Ship => match tgt_item {
                     SolItem::Ship(tgt_ship) => {
                         extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocType::Ship))
                     }
@@ -519,7 +517,7 @@ impl SolAffecteeRegister {
                 _ => (),
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
-                SolModDomain::Everything => match tgt_item {
+                SolDomain::Everything => match tgt_item {
                     SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_grp,
@@ -532,7 +530,7 @@ impl SolAffecteeRegister {
                     ),
                     _ => (),
                 },
-                SolModDomain::Ship => match tgt_item {
+                SolDomain::Ship => match tgt_item {
                     SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_grp,
@@ -543,7 +541,7 @@ impl SolAffecteeRegister {
                 _ => (),
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
-                SolModDomain::Everything => match tgt_item {
+                SolDomain::Everything => match tgt_item {
                     SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_srq,
@@ -556,7 +554,7 @@ impl SolAffecteeRegister {
                     ),
                     _ => (),
                 },
-                SolModDomain::Ship => match tgt_item {
+                SolDomain::Ship => match tgt_item {
                     SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
                         affectees,
                         &self.loc_srq,
@@ -575,11 +573,11 @@ fn get_fit_character(sol_view: &SolView, fit_id: &SolFitId) -> Option<SolItemId>
     sol_view.fits.get_fit(fit_id).ok().map(|v| v.character).flatten()
 }
 
-fn check_domain_owner(dom: SolModDomain, fit: &SolFit) -> bool {
+fn check_domain_owner(dom: SolDomain, fit: &SolFit) -> bool {
     match dom {
-        SolModDomain::Char => fit.character.is_some(),
-        SolModDomain::Ship => fit.ship.is_some(),
-        SolModDomain::Structure => fit.structure.is_some(),
+        SolDomain::Char => fit.character.is_some(),
+        SolDomain::Ship => fit.ship.is_some(),
+        SolDomain::Structure => fit.structure.is_some(),
         _ => false,
     }
 }

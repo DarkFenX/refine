@@ -13,20 +13,20 @@ pub(crate) enum HModOp {
     ExtraMul,
     Limit,
 }
-impl From<&rc::SolModOpInfo> for HModOp {
-    fn from(core_op: &rc::SolModOpInfo) -> Self {
+impl From<&rc::SolOpInfo> for HModOp {
+    fn from(core_op: &rc::SolOpInfo) -> Self {
         match core_op {
-            rc::SolModOpInfo::PreAssign => Self::PreAssign,
-            rc::SolModOpInfo::PreMul => Self::PreMul,
-            rc::SolModOpInfo::PreDiv => Self::PreDiv,
-            rc::SolModOpInfo::Add => Self::Add,
-            rc::SolModOpInfo::Sub => Self::Sub,
-            rc::SolModOpInfo::PostMul => Self::PostMul,
-            rc::SolModOpInfo::PostDiv => Self::PostDiv,
-            rc::SolModOpInfo::PostPerc => Self::PostPerc,
-            rc::SolModOpInfo::PostAssign => Self::PostAssign,
-            rc::SolModOpInfo::ExtraMul => Self::ExtraMul,
-            rc::SolModOpInfo::MaxLimit => Self::Limit,
+            rc::SolOpInfo::PreAssign => Self::PreAssign,
+            rc::SolOpInfo::PreMul => Self::PreMul,
+            rc::SolOpInfo::PreDiv => Self::PreDiv,
+            rc::SolOpInfo::Add => Self::Add,
+            rc::SolOpInfo::Sub => Self::Sub,
+            rc::SolOpInfo::PostMul => Self::PostMul,
+            rc::SolOpInfo::PostDiv => Self::PostDiv,
+            rc::SolOpInfo::PostPerc => Self::PostPerc,
+            rc::SolOpInfo::PostAssign => Self::PostAssign,
+            rc::SolOpInfo::ExtraMul => Self::ExtraMul,
+            rc::SolOpInfo::MaxLimit => Self::Limit,
         }
     }
 }

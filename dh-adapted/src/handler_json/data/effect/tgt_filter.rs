@@ -9,25 +9,25 @@ pub(in crate::handler_json) enum CEffectTgtFilter {
     LocSrq(CEffectDomain, CModSrq),
     OwnSrq(CModSrq),
 }
-impl From<&rc::ad::AEffectTgtFilter> for CEffectTgtFilter {
-    fn from(effect_tgt_filter: &rc::ad::AEffectTgtFilter) -> Self {
+impl From<&rc::ad::AEffectAffecteeFilter> for CEffectTgtFilter {
+    fn from(effect_tgt_filter: &rc::ad::AEffectAffecteeFilter) -> Self {
         match effect_tgt_filter {
-            rc::ad::AEffectTgtFilter::Direct(dom) => Self::Direct(dom.into()),
-            rc::ad::AEffectTgtFilter::Loc(dom) => Self::Loc(dom.into()),
-            rc::ad::AEffectTgtFilter::LocGrp(dom, grp) => Self::LocGrp(dom.into(), *grp),
-            rc::ad::AEffectTgtFilter::LocSrq(dom, srq) => Self::LocSrq(dom.into(), srq.into()),
-            rc::ad::AEffectTgtFilter::OwnSrq(srq) => Self::OwnSrq(srq.into()),
+            rc::ad::AEffectAffecteeFilter::Direct(dom) => Self::Direct(dom.into()),
+            rc::ad::AEffectAffecteeFilter::Loc(dom) => Self::Loc(dom.into()),
+            rc::ad::AEffectAffecteeFilter::LocGrp(dom, grp) => Self::LocGrp(dom.into(), *grp),
+            rc::ad::AEffectAffecteeFilter::LocSrq(dom, srq) => Self::LocSrq(dom.into(), srq.into()),
+            rc::ad::AEffectAffecteeFilter::OwnSrq(srq) => Self::OwnSrq(srq.into()),
         }
     }
 }
-impl Into<rc::ad::AEffectTgtFilter> for &CEffectTgtFilter {
-    fn into(self) -> rc::ad::AEffectTgtFilter {
+impl Into<rc::ad::AEffectAffecteeFilter> for &CEffectTgtFilter {
+    fn into(self) -> rc::ad::AEffectAffecteeFilter {
         match self {
-            CEffectTgtFilter::Direct(dom) => rc::ad::AEffectTgtFilter::Direct(dom.into()),
-            CEffectTgtFilter::Loc(dom) => rc::ad::AEffectTgtFilter::Loc(dom.into()),
-            CEffectTgtFilter::LocGrp(dom, grp) => rc::ad::AEffectTgtFilter::LocGrp(dom.into(), *grp),
-            CEffectTgtFilter::LocSrq(dom, srq) => rc::ad::AEffectTgtFilter::LocSrq(dom.into(), srq.into()),
-            CEffectTgtFilter::OwnSrq(srq) => rc::ad::AEffectTgtFilter::OwnSrq(srq.into()),
+            CEffectTgtFilter::Direct(dom) => rc::ad::AEffectAffecteeFilter::Direct(dom.into()),
+            CEffectTgtFilter::Loc(dom) => rc::ad::AEffectAffecteeFilter::Loc(dom.into()),
+            CEffectTgtFilter::LocGrp(dom, grp) => rc::ad::AEffectAffecteeFilter::LocGrp(dom.into(), *grp),
+            CEffectTgtFilter::LocSrq(dom, srq) => rc::ad::AEffectAffecteeFilter::LocSrq(dom.into(), srq.into()),
+            CEffectTgtFilter::OwnSrq(srq) => rc::ad::AEffectAffecteeFilter::OwnSrq(srq.into()),
         }
     }
 }

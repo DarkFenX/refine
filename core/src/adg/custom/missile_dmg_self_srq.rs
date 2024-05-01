@@ -18,10 +18,10 @@ fn add_mod_for_effect_attr(a_data: &mut ad::AData, effect_id: EEffectId, attr_id
             tracing::info!("self-skillreq missile dmg effect {effect_id} has modifiers, overwriting them");
             effect.mods.clear();
         }
-        let modifier = ad::AEffectAttrMod::new(
+        let modifier = ad::AEffectModifier::new(
             ec::attrs::DMG_MULT_BONUS,
             ad::AModOp::PostPerc,
-            ad::AEffectTgtFilter::OwnSrq(ad::AModSrq::SelfRef),
+            ad::AEffectAffecteeFilter::OwnSrq(ad::AModSrq::SelfRef),
             attr_id,
         );
         effect.mods.push(modifier);

@@ -2,7 +2,7 @@ use crate::{ad, ad::ABuff, defs::AggrKey};
 
 // Defines how a modification will be aggregated.
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::svce_calc) enum SolModAggrMode {
+pub(in crate::sol::svc::svce_calc) enum SolAggrMode {
     // All modifications are applied.
     Stack,
     // Min value will be used, from values with provided key.
@@ -10,7 +10,7 @@ pub(in crate::sol::svc::svce_calc) enum SolModAggrMode {
     // Max value will be used, from values with provided key.
     Max(AggrKey),
 }
-impl SolModAggrMode {
+impl SolAggrMode {
     pub(in crate::sol::svc::svce_calc) fn from_a_buff(a_buff: &ABuff) -> Self {
         match a_buff.aggr_mode {
             ad::ABuffAggrMode::Min => Self::Min(a_buff.id),

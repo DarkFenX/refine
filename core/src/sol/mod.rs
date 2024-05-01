@@ -3,7 +3,7 @@ pub(in crate::sol) use misc::SolTgtTracker;
 pub use misc::{SolEffectInfo, SolEffectMode, SolModRack};
 pub use sol::SolarSystem;
 pub use sole_item::{SolOrdAddMode, SolOrdRmMode};
-pub use svc::{SolAttrVal, SolModInfo, SolModOpInfo, SolModSrcInfo, SolModSrcValInfo};
+pub use svc::{SolAffectorInfo, SolAffectorValueInfo, SolAttrVal, SolModificationInfo, SolOpInfo};
 pub(in crate::sol) use view::SolView;
 
 mod fit;

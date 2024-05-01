@@ -9,10 +9,10 @@ pub(in crate::adg::custom) fn mk_self_skillreq_modifiers_launcher_rof(a_data: &m
             tracing::info!("self-skillreq missile rof effect {MISSILE_ROF_EFFECT} has modifiers, overwriting them");
             effect.mods.clear();
         }
-        let modifier = ad::AEffectAttrMod::new(
+        let modifier = ad::AEffectModifier::new(
             ec::attrs::ROF_BONUS,
             ad::AModOp::PostPerc,
-            ad::AEffectTgtFilter::LocSrq(ad::AEffectDomain::Ship, ad::AModSrq::SelfRef),
+            ad::AEffectAffecteeFilter::LocSrq(ad::AEffectDomain::Ship, ad::AModSrq::SelfRef),
             ec::attrs::SPEED,
         );
         effect.mods.push(modifier);

@@ -17,13 +17,13 @@ impl HModificationInfo {
         }
     }
 }
-impl From<&rc::SolModInfo> for HModificationInfo {
-    fn from(core_mod_info: &rc::SolModInfo) -> Self {
+impl From<&rc::SolModificationInfo> for HModificationInfo {
+    fn from(core_mod_info: &rc::SolModificationInfo) -> Self {
         Self::new(
             core_mod_info.val,
             (&core_mod_info.op).into(),
             core_mod_info.penalized,
-            core_mod_info.src.iter().map(|v| v.into()).collect(),
+            core_mod_info.affectors.iter().map(|v| v.into()).collect(),
         )
     }
 }

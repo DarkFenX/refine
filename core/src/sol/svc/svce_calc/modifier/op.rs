@@ -1,7 +1,7 @@
 use crate::ad;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::svce_calc) enum SolModOp {
+pub(in crate::sol::svc::svce_calc) enum SolOp {
     PreAssign,
     PreMul,
     PreDiv,
@@ -14,7 +14,7 @@ pub(in crate::sol::svc::svce_calc) enum SolModOp {
     PostAssign,
     ExtraMul,
 }
-impl From<&ad::AModOp> for SolModOp {
+impl From<&ad::AModOp> for SolOp {
     fn from(a_mod_op: &ad::AModOp) -> Self {
         match a_mod_op {
             ad::AModOp::PreAssign => Self::PreAssign,

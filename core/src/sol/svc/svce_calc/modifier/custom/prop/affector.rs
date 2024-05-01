@@ -8,15 +8,15 @@ use super::{
     misc::get_ship_id,
 };
 
-pub(in crate::sol::svc::svce_calc::modifier) fn get_srcs(
+pub(in crate::sol::svc::svce_calc::modifier) fn get_affectors(
     sol_view: &SolView,
     item_id: &SolItemId,
 ) -> Vec<(SolItemId, EAttrId)> {
-    let mut srcs = Vec::new();
+    let mut affectors = Vec::new();
     if let Ok(Some(ship_id)) = get_ship_id(sol_view, item_id) {
-        srcs.push((*item_id, PROP_BOOST));
-        srcs.push((*item_id, PROP_THRUST));
-        srcs.push((ship_id, SHIP_MASS));
+        affectors.push((*item_id, PROP_BOOST));
+        affectors.push((*item_id, PROP_THRUST));
+        affectors.push((ship_id, SHIP_MASS));
     }
-    srcs
+    affectors
 }

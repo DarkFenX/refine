@@ -4,7 +4,7 @@ use crate::{
     sol::{
         item::SolItem,
         svc::{
-            svce_calc::{SolAttrVal, SolAttrValues, SolModKey, SolModification},
+            svce_calc::{SolAttrVal, SolAttrValues, SolModification, SolModificationKey},
             SolSvcs,
         },
         SolView,
@@ -63,7 +63,7 @@ impl SolSvcs {
         sol_view: &SolView,
         item: &SolItem,
         attr_id: &EAttrId,
-    ) -> StMap<SolModKey, SolModification> {
+    ) -> StMap<SolModificationKey, SolModification> {
         let mut mods = StMap::new();
         for modifier in self
             .calc_data
@@ -75,17 +75,17 @@ impl SolSvcs {
                 Ok(v) => v,
                 _ => continue,
             };
-            let src_item = match sol_view.items.get_item(&modifier.affector_item_id) {
+            let affector_item = match sol_view.items.get_item(&modifier.affector_item_id) {
                 Ok(i) => i,
                 _ => continue,
             };
-            let src_item_cat_id = match src_item.get_category_id() {
-                Ok(src_item_cat_id) => src_item_cat_id,
+            let affector_item_cat_id = match affector_item.get_category_id() {
+                Ok(affector_item_cat_id) => affector_item_cat_id,
                 _ => continue,
             };
             // TODO: implement resistance support (add it to key as well? idk)
-            let mod_key = SolModKey::from(modifier);
-            let modification = SolModification::new(modifier.op, val, 1.0, modifier.aggr_mode, src_item_cat_id);
+            let mod_key = SolModificationKey::from(modifier);
+            let modification = SolModification::new(modifier.op, val, 1.0, modifier.aggr_mode, affector_item_cat_id);
             mods.insert(mod_key, modification);
         }
         mods
@@ -122,7 +122,7 @@ impl SolSvcs {
                 modification.val,
                 &modification.op,
                 attr.penalizable,
-                &modification.src_item_cat_id,
+                &modification.affector_item_cat_id,
                 &modification.aggr_mode,
             );
         }

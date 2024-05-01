@@ -1,6 +1,6 @@
 use crate::{
     defs::{EAttrId, SolItemId},
-    sol::svc::svce_calc::{SolAttrMod, SolModOp},
+    sol::svc::svce_calc::{SolModifier, SolOp},
 };
 
 // This is an auxiliary entity to make sure that overlapping modifications are not applied. We can
@@ -8,22 +8,22 @@ use crate::{
 // sense. For EVE scenarios which prompt for existence of key and what's in it, see tests in
 // test_similar_modifiers.py
 #[derive(Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::svce_calc) struct SolModKey {
-    pub(in crate::sol::svc::svce_calc) src_item_id: SolItemId,
-    pub(in crate::sol::svc::svce_calc) src_attr_id: Option<EAttrId>,
-    pub(in crate::sol::svc::svce_calc) op: SolModOp,
+pub(in crate::sol::svc::svce_calc) struct SolModificationKey {
+    pub(in crate::sol::svc::svce_calc) affector_item_id: SolItemId,
+    pub(in crate::sol::svc::svce_calc) affector_attr_id: Option<EAttrId>,
+    pub(in crate::sol::svc::svce_calc) op: SolOp,
 }
-impl SolModKey {
-    fn new(src_item_id: SolItemId, src_attr_id: Option<EAttrId>, op: SolModOp) -> Self {
+impl SolModificationKey {
+    fn new(affector_item_id: SolItemId, affector_attr_id: Option<EAttrId>, op: SolOp) -> Self {
         Self {
-            src_item_id,
-            src_attr_id,
+            affector_item_id,
+            affector_attr_id,
             op,
         }
     }
 }
-impl From<&SolAttrMod> for SolModKey {
-    fn from(modifier: &SolAttrMod) -> Self {
-        SolModKey::new(modifier.affector_item_id, modifier.get_src_attr_id(), modifier.op)
+impl From<&SolModifier> for SolModificationKey {
+    fn from(modifier: &SolModifier) -> Self {
+        SolModificationKey::new(modifier.affector_item_id, modifier.get_affector_attr_id(), modifier.op)
     }
 }

@@ -8,7 +8,7 @@ use crate::{
         fleet::SolFleet,
         item::SolItem,
         svc::{
-            svce_calc::{SolAttrMod, SolFleetUpdates},
+            svce_calc::{SolFleetUpdates, SolModifier},
             SolSvcs,
         },
         SolView,
@@ -200,7 +200,7 @@ impl SolSvcs {
             .calc_data
             .mods
             .iter_affector_item_mods(item_id)
-            .filter(|v| v.get_src_attr_id() == Some(*attr_id))
+            .filter(|v| v.get_affector_attr_id() == Some(*attr_id))
             .map(|v| *v)
             .collect_vec();
         if !mods.is_empty() {
@@ -250,7 +250,7 @@ impl SolSvcs {
         }
     }
     // Private methods
-    fn reg_mods(&mut self, sol_view: &SolView, item: &SolItem, modifiers: &Vec<SolAttrMod>) {
+    fn reg_mods(&mut self, sol_view: &SolView, item: &SolItem, modifiers: &Vec<SolModifier>) {
         if modifiers.is_empty() {
             return;
         }
@@ -276,7 +276,7 @@ impl SolSvcs {
             self.calc_data.revs.reg_mod(*modifier);
         }
     }
-    fn unreg_mods(&mut self, sol_view: &SolView, item: &SolItem, modifiers: &Vec<SolAttrMod>) {
+    fn unreg_mods(&mut self, sol_view: &SolView, item: &SolItem, modifiers: &Vec<SolModifier>) {
         if modifiers.is_empty() {
             return;
         }
@@ -366,12 +366,12 @@ impl SolSvcs {
             }
         }
     }
-    fn revise_modifier(&mut self, sol_view: &SolView, modifier: &SolAttrMod) {
-        let src_item = sol_view.items.get_item(&modifier.affector_item_id).unwrap();
+    fn revise_modifier(&mut self, sol_view: &SolView, modifier: &SolModifier) {
+        let affector_item = sol_view.items.get_item(&modifier.affector_item_id).unwrap();
         let mut affectees = Vec::new();
         self.calc_data
             .afee
-            .fill_affectees(&mut affectees, sol_view, src_item, modifier);
+            .fill_affectees(&mut affectees, sol_view, affector_item, modifier);
         for tgt_item_id in affectees.iter() {
             self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
         }

@@ -10,7 +10,7 @@ use crate::{
     sol::{
         item::SolItem,
         svc::{
-            svce_calc::{SolModKey, SolModOp, SolModOpInfo, SolModSrcInfo, SolModSrcValInfo},
+            svce_calc::{SolAffectorInfo, SolAffectorValueInfo, SolModificationKey, SolOp, SolOpInfo},
             SolSvcs,
         },
         SolView,
@@ -18,14 +18,14 @@ use crate::{
     util::{Result, StMap, StMapVecL1, StSet},
 };
 
-use super::{attr, mod_info::SolModInfo};
+use super::{attr, mod_info::SolModificationInfo};
 
-const PENALIZABLE_OPS: [SolModOp; 5] = [
-    SolModOp::PreMul,
-    SolModOp::PreDiv,
-    SolModOp::PostMul,
-    SolModOp::PostDiv,
-    SolModOp::PostPerc,
+const PENALIZABLE_OPS: [SolOp; 5] = [
+    SolOp::PreMul,
+    SolOp::PreDiv,
+    SolOp::PostMul,
+    SolOp::PostDiv,
+    SolOp::PostPerc,
 ];
 
 impl SolSvcs {
@@ -34,7 +34,7 @@ impl SolSvcs {
         &mut self,
         sol_view: &SolView,
         item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<SolModInfo>)>> {
+    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<SolModificationInfo>)>> {
         let item = sol_view.items.get_item(item_id)?;
         let mut info_map = StMapVecL1::new();
         for attr_id in self.calc_get_item_attr_ids(sol_view, item_id)? {
@@ -65,7 +65,12 @@ impl SolSvcs {
         }
         Ok(attr_ids.into_iter())
     }
-    fn calc_get_item_attr_mods(&mut self, sol_view: &SolView, item: &SolItem, attr: &ad::AAttr) -> Vec<SolModInfo> {
+    fn calc_get_item_attr_mods(
+        &mut self,
+        sol_view: &SolView,
+        item: &SolItem,
+        attr: &ad::AAttr,
+    ) -> Vec<SolModificationInfo> {
         let mut mod_map = StMap::new();
         for modifier in self
             .calc_data
@@ -77,22 +82,22 @@ impl SolSvcs {
                 Ok(v) => v,
                 _ => continue,
             };
-            let src_item = match sol_view.items.get_item(&modifier.affector_item_id) {
+            let affector_item = match sol_view.items.get_item(&modifier.affector_item_id) {
                 Ok(i) => i,
                 _ => continue,
             };
-            let src_item_cat_id = match src_item.get_category_id() {
-                Ok(src_item_cat_id) => src_item_cat_id,
+            let affector_item_cat_id = match affector_item.get_category_id() {
+                Ok(affector_item_cat_id) => affector_item_cat_id,
                 _ => continue,
             };
-            let penalizable = is_penalizable(attr, &src_item_cat_id, &modifier.op);
-            let srcs = modifier
-                .get_srcs(sol_view)
+            let penalizable = is_penalizable(attr, &affector_item_cat_id, &modifier.op);
+            let affectors = modifier
+                .get_affectors(sol_view)
                 .into_iter()
-                .map(|(i, a)| SolModSrcInfo::new(i, SolModSrcValInfo::AttrId(a)))
+                .map(|(i, a)| SolAffectorInfo::new(i, SolAffectorValueInfo::AttrId(a)))
                 .collect();
-            let mod_key = SolModKey::from(modifier);
-            let mod_info = SolModInfo::new(val, (&modifier.op).into(), penalizable, srcs);
+            let mod_key = SolModificationKey::from(modifier);
+            let mod_info = SolModificationInfo::new(val, (&modifier.op).into(), penalizable, affectors);
             mod_map.insert(mod_key, mod_info);
         }
         let mut mod_vec = mod_map.into_values().collect_vec();
@@ -101,11 +106,14 @@ impl SolSvcs {
             if let Ok(cap_val) = self.calc_get_item_attr_val(sol_view, &item.get_id(), &max_attr_id) {
                 if let Ok(capped_val) = self.calc_get_item_attr_val(sol_view, &item.get_id(), &attr.id) {
                     if cap_val.dogma == capped_val.dogma {
-                        let mod_info = SolModInfo::new(
+                        let mod_info = SolModificationInfo::new(
                             cap_val.dogma,
-                            SolModOpInfo::MaxLimit,
+                            SolOpInfo::MaxLimit,
                             false,
-                            vec![SolModSrcInfo::new(item.get_id(), SolModSrcValInfo::AttrId(max_attr_id))],
+                            vec![SolAffectorInfo::new(
+                                item.get_id(),
+                                SolAffectorValueInfo::AttrId(max_attr_id),
+                            )],
                         );
                         mod_vec.push(mod_info);
                     }
@@ -116,42 +124,42 @@ impl SolSvcs {
     }
 }
 
-fn is_penalizable(attr: &ad::AAttr, src_item_cat_id: &EItemCatId, op: &SolModOp) -> bool {
-    attr::is_penal(attr.penalizable, src_item_cat_id) && PENALIZABLE_OPS.contains(op)
+fn is_penalizable(attr: &ad::AAttr, affector_item_cat_id: &EItemCatId, op: &SolOp) -> bool {
+    attr::is_penal(attr.penalizable, affector_item_cat_id) && PENALIZABLE_OPS.contains(op)
 }
 
-fn filter_useless(attr_id: &EAttrId, mods: &mut Vec<SolModInfo>, sol_view: &SolView) {
+fn filter_useless(attr_id: &EAttrId, mods: &mut Vec<SolModificationInfo>, sol_view: &SolView) {
     // Filter out modifications which get overridden by post-assigment
     filter_pre_postassign(mods);
     // Filter out modifications where right hand operand doesn't do anything because of its value
     filter_neutral_invalid_operands(mods);
     // Since only one of assignment operations is effective, include only that one
     if let Some(attr) = sol_view.src.get_a_attr(attr_id) {
-        filter_ineffective_assigns(mods, &attr, SolModOpInfo::PreAssign);
-        filter_ineffective_assigns(mods, &attr, SolModOpInfo::PostAssign);
+        filter_ineffective_assigns(mods, &attr, SolOpInfo::PreAssign);
+        filter_ineffective_assigns(mods, &attr, SolOpInfo::PostAssign);
     }
 }
 
-fn filter_pre_postassign(mods: &mut Vec<SolModInfo>) {
-    if mods.iter().any(|v| matches!(v.op, SolModOpInfo::PostAssign)) {
+fn filter_pre_postassign(mods: &mut Vec<SolModificationInfo>) {
+    if mods.iter().any(|v| matches!(v.op, SolOpInfo::PostAssign)) {
         mods.retain(|m| match m.op {
             // Only those 2 modifications are processed after post-assignment
-            SolModOpInfo::PostAssign | SolModOpInfo::MaxLimit | SolModOpInfo::ExtraMul => true,
+            SolOpInfo::PostAssign | SolOpInfo::MaxLimit | SolOpInfo::ExtraMul => true,
             _ => false,
         });
     };
 }
 
-fn filter_neutral_invalid_operands(mods: &mut Vec<SolModInfo>) {
+fn filter_neutral_invalid_operands(mods: &mut Vec<SolModificationInfo>) {
     mods.retain(|m| match m.op {
-        SolModOpInfo::PreMul | SolModOpInfo::PostMul | SolModOpInfo::ExtraMul => m.val != 1.0,
-        SolModOpInfo::PreDiv | SolModOpInfo::PostDiv => m.val != 1.0 && m.val != 0.0,
-        SolModOpInfo::Add | SolModOpInfo::Sub | SolModOpInfo::PostPerc => m.val != 0.0,
+        SolOpInfo::PreMul | SolOpInfo::PostMul | SolOpInfo::ExtraMul => m.val != 1.0,
+        SolOpInfo::PreDiv | SolOpInfo::PostDiv => m.val != 1.0 && m.val != 0.0,
+        SolOpInfo::Add | SolOpInfo::Sub | SolOpInfo::PostPerc => m.val != 0.0,
         _ => true,
     });
 }
 
-fn filter_ineffective_assigns(mods: &mut Vec<SolModInfo>, attr: &ad::AAttr, op: SolModOpInfo) {
+fn filter_ineffective_assigns(mods: &mut Vec<SolModificationInfo>, attr: &ad::AAttr, op: SolOpInfo) {
     let assign_mods = mods.extract_if(|m| op == m.op).collect_vec();
     if !assign_mods.is_empty() {
         let effective_mod = match attr.hig {

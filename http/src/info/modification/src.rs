@@ -10,8 +10,8 @@ impl HModSrcInfo {
         Self { item_id, val }
     }
 }
-impl From<&rc::SolModSrcInfo> for HModSrcInfo {
-    fn from(core_src: &rc::SolModSrcInfo) -> Self {
+impl From<&rc::SolAffectorInfo> for HModSrcInfo {
+    fn from(core_src: &rc::SolAffectorInfo) -> Self {
         Self::new(core_src.item_id, (&core_src.val).into())
     }
 }
@@ -24,11 +24,11 @@ pub enum HModSrcValInfo {
     #[serde(rename = "hc")]
     Hardcoded(rc::AttrVal),
 }
-impl From<&rc::SolModSrcValInfo> for HModSrcValInfo {
-    fn from(core_src_val: &rc::SolModSrcValInfo) -> Self {
+impl From<&rc::SolAffectorValueInfo> for HModSrcValInfo {
+    fn from(core_src_val: &rc::SolAffectorValueInfo) -> Self {
         match core_src_val {
-            rc::SolModSrcValInfo::AttrId(attr_id) => Self::AttrId(*attr_id),
-            rc::SolModSrcValInfo::Hardcoded(attr_val) => Self::Hardcoded(*attr_val),
+            rc::SolAffectorValueInfo::AttrId(attr_id) => Self::AttrId(*attr_id),
+            rc::SolAffectorValueInfo::Hardcoded(attr_val) => Self::Hardcoded(*attr_val),
         }
     }
 }

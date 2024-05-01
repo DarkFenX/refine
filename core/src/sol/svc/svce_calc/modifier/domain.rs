@@ -1,7 +1,7 @@
 use crate::ad;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(in crate::sol::svc::svce_calc) enum SolModDomain {
+pub(in crate::sol::svc::svce_calc) enum SolDomain {
     Everything,
     Ship,
     Structure,
@@ -10,7 +10,7 @@ pub(in crate::sol::svc::svce_calc) enum SolModDomain {
     Other,
     Target,
 }
-impl From<&ad::AEffectDomain> for SolModDomain {
+impl From<&ad::AEffectDomain> for SolDomain {
     fn from(a_effect_domain: &ad::AEffectDomain) -> Self {
         match a_effect_domain {
             ad::AEffectDomain::Ship => Self::Ship,
@@ -22,7 +22,7 @@ impl From<&ad::AEffectDomain> for SolModDomain {
         }
     }
 }
-impl From<&ad::AEffectBuffScope> for SolModDomain {
+impl From<&ad::AEffectBuffScope> for SolDomain {
     fn from(a_buff_scope: &ad::AEffectBuffScope) -> Self {
         match a_buff_scope {
             ad::AEffectBuffScope::Everything => Self::Everything,

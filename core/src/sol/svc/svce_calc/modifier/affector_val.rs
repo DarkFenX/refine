@@ -9,29 +9,29 @@ use crate::{
 use super::custom::{aar, prop};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-pub(super) enum SolAttrModSrc {
+pub(super) enum SolAffectorValue {
     AttrId(EAttrId),
     Hardcoded(Rational),
     PropulsionModule,
     AncillaryArmorRep,
 }
-impl SolAttrModSrc {
-    // Simple and fast way to get source attribute
-    pub(super) fn get_src_attr_id(&self) -> Option<EAttrId> {
+impl SolAffectorValue {
+    // Simple and fast way to get affector attribute
+    pub(super) fn get_affector_attr_id(&self) -> Option<EAttrId> {
         match self {
             Self::AttrId(attr_id) => Some(*attr_id),
             Self::Hardcoded(_) => None,
             Self::PropulsionModule => None,
-            Self::AncillaryArmorRep => Some(aar::AAR_SRC_ATTR_ID),
+            Self::AncillaryArmorRep => Some(aar::AAR_AFFECTOR_ATTR_ID),
         }
     }
-    // More expensive, but comprehensive info about modification sources
-    pub(super) fn get_srcs(&self, sol_view: &SolView, src_item_id: &SolItemId) -> Vec<(SolItemId, EAttrId)> {
+    // More expensive, but comprehensive info about affecting items/attributes
+    pub(super) fn get_affectors(&self, sol_view: &SolView, item_id: &SolItemId) -> Vec<(SolItemId, EAttrId)> {
         match self {
-            Self::AttrId(attr_id) => vec![(*src_item_id, *attr_id)],
+            Self::AttrId(attr_id) => vec![(*item_id, *attr_id)],
             Self::Hardcoded(_) => Vec::new(),
-            Self::PropulsionModule => prop::get_srcs(sol_view, src_item_id),
-            Self::AncillaryArmorRep => vec![(*src_item_id, aar::AAR_SRC_ATTR_ID)],
+            Self::PropulsionModule => prop::get_affectors(sol_view, item_id),
+            Self::AncillaryArmorRep => vec![(*item_id, aar::AAR_AFFECTOR_ATTR_ID)],
         }
     }
     pub(super) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView, item_id: &SolItemId) -> Result<AttrVal> {
@@ -67,20 +67,20 @@ impl SolAttrModSrc {
             Self::AncillaryArmorRep => true,
         }
     }
-    pub(super) fn revise_on_item_add(&self, src_item: &SolItem, changed_item: &SolItem) -> bool {
+    pub(super) fn revise_on_item_add(&self, affector_item: &SolItem, changed_item: &SolItem) -> bool {
         match self {
             Self::AttrId(_) => false,
             Self::Hardcoded(_) => false,
             Self::PropulsionModule => false,
-            Self::AncillaryArmorRep => aar::revise_on_item_add_removal(src_item, changed_item),
+            Self::AncillaryArmorRep => aar::revise_on_item_add_removal(affector_item, changed_item),
         }
     }
-    pub(super) fn revise_on_item_remove(&self, src_item: &SolItem, changed_item: &SolItem) -> bool {
+    pub(super) fn revise_on_item_remove(&self, affector_item: &SolItem, changed_item: &SolItem) -> bool {
         match self {
             Self::AttrId(_) => false,
             Self::Hardcoded(_) => false,
             Self::PropulsionModule => false,
-            Self::AncillaryArmorRep => aar::revise_on_item_add_removal(src_item, changed_item),
+            Self::AncillaryArmorRep => aar::revise_on_item_add_removal(affector_item, changed_item),
         }
     }
 }

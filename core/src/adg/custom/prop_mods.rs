@@ -36,20 +36,20 @@ pub(in crate::adg::custom) fn add_mwd_modifiers(a_data: &mut ad::AData) {
     }
 }
 
-fn mk_mass_mod() -> ad::AEffectAttrMod {
-    ad::AEffectAttrMod::new(
+fn mk_mass_mod() -> ad::AEffectModifier {
+    ad::AEffectModifier::new(
         ec::attrs::MASS_ADDITION,
         ad::AModOp::Add,
-        ad::AEffectTgtFilter::Direct(ad::AEffectDomain::Ship),
+        ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
         ec::attrs::MASS,
     )
 }
 
-fn mk_sig_mod() -> ad::AEffectAttrMod {
-    ad::AEffectAttrMod::new(
+fn mk_sig_mod() -> ad::AEffectModifier {
+    ad::AEffectModifier::new(
         ec::attrs::SIG_RADIUS_BONUS,
         ad::AModOp::PostPerc,
-        ad::AEffectTgtFilter::Direct(ad::AEffectDomain::Ship),
+        ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
         ec::attrs::SIG_RADIUS,
     )
 }

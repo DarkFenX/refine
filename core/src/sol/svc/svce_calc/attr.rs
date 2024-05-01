@@ -1,7 +1,7 @@
 use crate::{
     defs::{AggrKey, AttrVal, EItemCatId},
     ec,
-    sol::svc::svce_calc::{SolModAggrMode, SolModOp},
+    sol::svc::svce_calc::{SolAggrMode, SolOp},
     util::StMap,
 };
 
@@ -45,33 +45,33 @@ impl SolAttrValues {
     pub(super) fn add_val(
         &mut self,
         val: AttrVal,
-        op: &SolModOp,
+        op: &SolOp,
         attr_pen: bool,
         item_cat: &EItemCatId,
-        aggr_mode: &SolModAggrMode,
+        aggr_mode: &SolAggrMode,
     ) {
         match op {
-            SolModOp::PreAssign => self.pre_assign.add_val(val, norm_noop, aggr_mode),
-            SolModOp::PreMul => self
+            SolOp::PreAssign => self.pre_assign.add_val(val, norm_noop, aggr_mode),
+            SolOp::PreMul => self
                 .pre_mul
                 .add_val(val, norm_noop, is_penal(attr_pen, item_cat), aggr_mode),
-            SolModOp::PreDiv => self
+            SolOp::PreDiv => self
                 .pre_div
                 .add_val(val, norm_div, is_penal(attr_pen, item_cat), aggr_mode),
-            SolModOp::Add => self.add.add_val(val, norm_noop, aggr_mode),
-            SolModOp::Sub => self.sub.add_val(val, norm_sub, aggr_mode),
-            SolModOp::PostMul => self
+            SolOp::Add => self.add.add_val(val, norm_noop, aggr_mode),
+            SolOp::Sub => self.sub.add_val(val, norm_sub, aggr_mode),
+            SolOp::PostMul => self
                 .post_mul
                 .add_val(val, norm_noop, is_penal(attr_pen, item_cat), aggr_mode),
-            SolModOp::PostMulImmune => self.post_mul.add_val(val, norm_noop, false, aggr_mode),
-            SolModOp::PostDiv => self
+            SolOp::PostMulImmune => self.post_mul.add_val(val, norm_noop, false, aggr_mode),
+            SolOp::PostDiv => self
                 .post_div
                 .add_val(val, norm_div, is_penal(attr_pen, item_cat), aggr_mode),
-            SolModOp::PostPerc => self
+            SolOp::PostPerc => self
                 .post_perc
                 .add_val(val, norm_perc, is_penal(attr_pen, item_cat), aggr_mode),
-            SolModOp::PostAssign => self.post_assign.add_val(val, norm_noop, aggr_mode),
-            SolModOp::ExtraMul => self.extra_mul.add_val(val, norm_noop, aggr_mode),
+            SolOp::PostAssign => self.post_assign.add_val(val, norm_noop, aggr_mode),
+            SolOp::ExtraMul => self.extra_mul.add_val(val, norm_noop, aggr_mode),
         };
     }
     pub(super) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {
@@ -103,7 +103,7 @@ impl SolAttrStack {
             penalized: SolAttrAggr::new(),
         }
     }
-    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, penalizable: bool, aggr_mode: &SolModAggrMode)
+    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, penalizable: bool, aggr_mode: &SolAggrMode)
     where
         F: Fn(AttrVal) -> Option<AttrVal>,
     {
@@ -119,7 +119,7 @@ impl SolAttrStack {
         F2: Fn(&Vec<AttrVal>, bool) -> Option<AttrVal>,
     {
         if let Some(val) = self.penalized.get_comb_val(pen_func, hig) {
-            self.stacked.add_val(val, norm_noop, &SolModAggrMode::Stack);
+            self.stacked.add_val(val, norm_noop, &SolAggrMode::Stack);
         }
         self.stacked.get_comb_val(comb_func, hig)
     }
@@ -138,7 +138,7 @@ impl SolAttrAggr {
             aggr_max: StMap::new(),
         }
     }
-    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, aggr_mode: &SolModAggrMode)
+    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, aggr_mode: &SolAggrMode)
     where
         F: Fn(AttrVal) -> Option<AttrVal>,
     {
@@ -147,9 +147,9 @@ impl SolAttrAggr {
             None => return,
         };
         match aggr_mode {
-            SolModAggrMode::Stack => self.stack.push(val),
-            SolModAggrMode::Min(key) => self.aggr_min.entry(*key).or_insert_with(|| Vec::new()).push(val),
-            SolModAggrMode::Max(key) => self.aggr_max.entry(*key).or_insert_with(|| Vec::new()).push(val),
+            SolAggrMode::Stack => self.stack.push(val),
+            SolAggrMode::Min(key) => self.aggr_min.entry(*key).or_insert_with(|| Vec::new()).push(val),
+            SolAggrMode::Max(key) => self.aggr_max.entry(*key).or_insert_with(|| Vec::new()).push(val),
         }
     }
     fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool) -> Option<AttrVal>
@@ -231,8 +231,8 @@ fn combine_muls_pen(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
 }
 
 // Misc functions
-pub(super) fn is_penal(attr_penalizable: bool, src_item_cat_id: &EItemCatId) -> bool {
-    attr_penalizable && !PENALTY_IMMUNE_CATS.contains(src_item_cat_id)
+pub(super) fn is_penal(attr_penalizable: bool, affector_item_cat_id: &EItemCatId) -> bool {
+    attr_penalizable && !PENALTY_IMMUNE_CATS.contains(affector_item_cat_id)
 }
 fn get_min(vals: &Vec<AttrVal>) -> Option<AttrVal> {
     vals.iter().min_by(|a, b| a.total_cmp(b)).copied()

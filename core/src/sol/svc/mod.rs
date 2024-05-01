@@ -2,7 +2,7 @@
 
 pub(in crate::sol::svc) use misc::debug;
 pub(in crate::sol) use svc::SolSvcs;
-pub use svce_calc::{SolAttrVal, SolModInfo, SolModOpInfo, SolModSrcInfo, SolModSrcValInfo};
+pub use svce_calc::{SolAffectorInfo, SolAffectorValueInfo, SolAttrVal, SolModificationInfo, SolOpInfo};
 
 mod misc;
 mod svc;

@@ -181,38 +181,38 @@ fn extract_stopper(e_modifier: &ed::EEffectMod) -> IntResult<Option<EEffectId>> 
     }
 }
 
-fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
-    Ok(ad::AEffectAttrMod::new(
+fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectModifier> {
+    Ok(ad::AEffectModifier::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AEffectTgtFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
+        ad::AEffectAffecteeFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
 
-fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
-    Ok(ad::AEffectAttrMod::new(
+fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectModifier> {
+    Ok(ad::AEffectModifier::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AEffectTgtFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
+        ad::AEffectAffecteeFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
 
-fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
-    Ok(ad::AEffectAttrMod::new(
+fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectModifier> {
+    Ok(ad::AEffectModifier::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AEffectTgtFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
+        ad::AEffectAffecteeFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
 
-fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
-    Ok(ad::AEffectAttrMod::new(
+fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectModifier> {
+    Ok(ad::AEffectModifier::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AEffectTgtFilter::LocSrq(
+        ad::AEffectAffecteeFilter::LocSrq(
             get_mod_domain(e_modifier, a_effect)?,
             ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?),
         ),
@@ -220,7 +220,7 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
     ))
 }
 
-fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectAttrMod> {
+fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResult<ad::AEffectModifier> {
     if !matches!(
         get_mod_domain(e_modifier, a_effect)?,
         ad::AEffectDomain::Char | ad::AEffectDomain::Target
@@ -230,10 +230,10 @@ fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
             get_arg_str(&e_modifier.args, "domain")?
         )));
     }
-    Ok(ad::AEffectAttrMod::new(
+    Ok(ad::AEffectModifier::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AEffectTgtFilter::OwnSrq(ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?)),
+        ad::AEffectAffecteeFilter::OwnSrq(ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?)),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }

@@ -4,7 +4,7 @@ use crate::{
 };
 
 /// Defines which items will be targeted for a modifier.
-pub enum AEffectTgtFilter {
+pub enum AEffectAffecteeFilter {
     /// Single item modified, as specified by the domain.
     Direct(AEffectDomain),
     /// All items belonging to the domain are affected.

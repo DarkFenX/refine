@@ -3,8 +3,8 @@ use std::sync::Arc;
 pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAggrMode, ABuffAttrMod, ABuffTgtFilter};
 pub use effect::{
-    AEffect, AEffectAttrMod, AEffectBuffDataSrc, AEffectBuffInfo, AEffectBuffScope, AEffectDomain, AEffectTgtFilter,
-    AModBuildStatus, ATgtMode,
+    AEffect, AEffectAffecteeFilter, AEffectBuffDataSrc, AEffectBuffInfo, AEffectBuffScope, AEffectDomain,
+    AEffectModifier, AModBuildStatus, ATgtMode,
 };
 pub use item::{AItem, AItemEffData, AItemType};
 pub use muta::{AMuta, AMutaAttrRange};

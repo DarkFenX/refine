@@ -1,29 +1,29 @@
 use crate::{
     defs::{AttrVal, EItemCatId},
-    sol::svc::svce_calc::{SolModAggrMode, SolModOp},
+    sol::svc::svce_calc::{SolAggrMode, SolOp},
 };
 
 pub(in crate::sol::svc::svce_calc) struct SolModification {
-    pub(in crate::sol::svc::svce_calc) op: SolModOp,
+    pub(in crate::sol::svc::svce_calc) op: SolOp,
     pub(in crate::sol::svc::svce_calc) val: AttrVal,
     pub(in crate::sol::svc::svce_calc) res_val: AttrVal,
-    pub(in crate::sol::svc::svce_calc) aggr_mode: SolModAggrMode,
-    pub(in crate::sol::svc::svce_calc) src_item_cat_id: EItemCatId,
+    pub(in crate::sol::svc::svce_calc) aggr_mode: SolAggrMode,
+    pub(in crate::sol::svc::svce_calc) affector_item_cat_id: EItemCatId,
 }
 impl SolModification {
     pub(in crate::sol::svc::svce_calc) fn new(
-        op: SolModOp,
+        op: SolOp,
         val: AttrVal,
         res_val: AttrVal,
-        aggr_mode: SolModAggrMode,
-        src_item_cat_id: EItemCatId,
+        aggr_mode: SolAggrMode,
+        affector_item_cat_id: EItemCatId,
     ) -> Self {
         Self {
             op,
             val,
             res_val,
             aggr_mode,
-            src_item_cat_id,
+            affector_item_cat_id,
         }
     }
 }

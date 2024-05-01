@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AEffectAttrMod, AEffectBuffInfo, AModBuildStatus, AState, ATgtMode},
+    ad::{AEffectBuffInfo, AEffectModifier, AModBuildStatus, AState, ATgtMode},
     defs::{EAttrId, EEffectCatId, EEffectId},
     util::Named,
 };
@@ -44,7 +44,7 @@ pub struct AEffect {
     /// Modifier build status.
     pub mod_build_status: AModBuildStatus,
     /// Attribute modifiers carried by the effect
-    pub mods: Vec<AEffectAttrMod>,
+    pub mods: Vec<AEffectModifier>,
     /// Refers effects this effect stops on target.
     pub stop_ids: Vec<EEffectId>,
     /// Buff carried by the effect.
@@ -69,7 +69,7 @@ impl AEffect {
         chance_attr_id: Option<EAttrId>,
         resist_attr_id: Option<EAttrId>,
         mod_build_status: AModBuildStatus,
-        mods: Vec<AEffectAttrMod>,
+        mods: Vec<AEffectModifier>,
         stop_ids: Vec<EEffectId>,
         buff: Option<AEffectBuffInfo>,
     ) -> Self {

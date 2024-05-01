@@ -43,10 +43,10 @@
 use attr::SolAttrValues;
 pub(in crate::sol::svc) use data::SolSvcCalcData;
 pub use misc::SolAttrVal;
-use misc::{SolLocType, SolModKey, SolModification};
-pub use mod_info::{SolModInfo, SolModOpInfo, SolModSrcInfo, SolModSrcValInfo};
+use misc::{SolLocType, SolModification, SolModificationKey};
+pub use mod_info::{SolAffectorInfo, SolAffectorValueInfo, SolModificationInfo, SolOpInfo};
 use modifier::{
-    debug, extend_with_custom_mods, SolAffecteeFilter, SolAttrMod, SolModAggrMode, SolModDomain, SolModOp, SolModType,
+    debug, extend_with_custom_mods, SolAffecteeFilter, SolAggrMode, SolDomain, SolModifier, SolModifierKind, SolOp,
 };
 use registers::{SolAttrSpec, SolFleetUpdates};
 

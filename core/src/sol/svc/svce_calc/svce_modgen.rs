@@ -5,7 +5,7 @@ use crate::{
     sol::{
         item::SolItem,
         svc::{
-            svce_calc::{extend_with_custom_mods, SolAttrMod, SolModType},
+            svce_calc::{extend_with_custom_mods, SolModifier, SolModifierKind},
             SolSvcs,
         },
         SolView,
@@ -14,8 +14,8 @@ use crate::{
 };
 
 pub(super) struct GeneratedMods {
-    pub(super) all: Vec<SolAttrMod>,
-    pub(super) dependent_buffs: StMapSetL1<EAttrId, SolAttrMod>,
+    pub(super) all: Vec<SolModifier>,
+    pub(super) dependent_buffs: StMapSetL1<EAttrId, SolModifier>,
 }
 impl GeneratedMods {
     fn new() -> Self {
@@ -82,7 +82,7 @@ impl SolSvcs {
                 effect
                     .mods
                     .iter()
-                    .map(|v| SolAttrMod::from_a_effect(item, effect, v, mod_type)),
+                    .map(|v| SolModifier::from_a_effect(item, effect, v, mod_type)),
             );
             // Custom modifiers
             extend_with_custom_mods(item_id, effect.id, &mut mods.all);
@@ -95,7 +95,7 @@ impl SolSvcs {
         item: &SolItem,
         effect_ids: impl Iterator<Item = &'a EEffectId>,
         buff_type_attr_id: &EAttrId,
-    ) -> Vec<SolAttrMod> {
+    ) -> Vec<SolModifier> {
         let mut mods = Vec::new();
         let buff_value_attr_id = match *buff_type_attr_id {
             ec::attrs::WARFARE_BUFF1_ID => ec::attrs::WARFARE_BUFF1_VAL,
@@ -132,21 +132,21 @@ impl SolSvcs {
     }
 }
 
-fn get_mod_type(effect: &ad::AEffect) -> Option<SolModType> {
+fn get_mod_type(effect: &ad::AEffect) -> Option<SolModifierKind> {
     match (effect.category, &effect.buff) {
         // Local modifications
         (ec::effcats::PASSIVE | ec::effcats::ACTIVE | ec::effcats::ONLINE | ec::effcats::OVERLOAD, None) => {
-            Some(SolModType::Local)
+            Some(SolModifierKind::Local)
         }
         // Buffs
         (ec::effcats::ACTIVE, Some(buff_info)) => match buff_info.scope {
-            ad::AEffectBuffScope::FleetShips => Some(SolModType::FleetBuff),
-            _ => Some(SolModType::Buff),
+            ad::AEffectBuffScope::FleetShips => Some(SolModifierKind::FleetBuff),
+            _ => Some(SolModifierKind::Buff),
         },
         // Lib system-wide effects are EVE system effects and buffs
-        (ec::effcats::SYSTEM, None) => Some(SolModType::System),
+        (ec::effcats::SYSTEM, None) => Some(SolModifierKind::System),
         // Targeted effects
-        (ec::effcats::TARGET, None) => Some(SolModType::Targeted),
+        (ec::effcats::TARGET, None) => Some(SolModifierKind::Targeted),
         _ => None,
     }
 }
@@ -158,13 +158,13 @@ fn get_buff_mods(
     buff_id: &EBuffId,
     buff_scope: &ad::AEffectBuffScope,
     buff_val_id: EAttrId,
-    mod_type: SolModType,
-) -> Vec<SolAttrMod> {
+    mod_type: SolModifierKind,
+) -> Vec<SolModifier> {
     let mut mods = Vec::new();
     if let Some(buff) = sol_view.src.get_a_buff(buff_id) {
         for buff_mod in buff.mods.iter() {
             let modifier =
-                SolAttrMod::from_a_buff(item, effect, &buff, buff_mod, buff_val_id, mod_type, buff_scope.into());
+                SolModifier::from_a_buff(item, effect, &buff, buff_mod, buff_val_id, mod_type, buff_scope.into());
             mods.push(modifier);
         }
     }

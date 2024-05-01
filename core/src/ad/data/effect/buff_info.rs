@@ -29,9 +29,9 @@ pub enum AEffectBuffScope {
 /// Defines where to look for buff type and value.
 #[derive(Copy, Clone)]
 pub enum AEffectBuffDataSrc {
-    /// Standard set of attributes on carrying item.
+    /// Standard set of attributes on affecting item.
     DefaultAttrs,
-    /// Hardcoded buff ID, but buff value is stored on source item.
+    /// Hardcoded buff ID, but buff value is stored on affecting item.
     Customized(EBuffId, EAttrId),
     /// Hardcoded buff ID and buff value for the effect.
     Hardcoded(EBuffId, Rational),
