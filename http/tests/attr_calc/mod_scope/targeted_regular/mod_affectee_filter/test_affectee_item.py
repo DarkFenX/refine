@@ -298,7 +298,7 @@ def test_unaffected_root_other_fit(client, consts):
     assert api_ship3.update().attrs[eve_attr2.id].dogma == approx(-2)
 
 
-def test_child_other_fit(client, consts):
+def test_unaffected_child_other_fit(client, consts):
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
