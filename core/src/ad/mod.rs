@@ -5,10 +5,10 @@
 //! the components, anything mutable is built on top of them.
 
 pub use data::{
-    AAttr, ABuff, ABuffAggrMode, ABuffAttrMod, ABuffTgtFilter, AData, AEffect, AEffectAffecteeFilter,
-    AEffectBuffDataSrc, AEffectBuffInfo, AEffectBuffScope, AEffectDomain, AEffectModifier, AItem, AItemEffData,
-    AItemKind, AModBuildStatus, AModOp, AModSrq, AMuta, AMutaAttrRange, AState, ATgtMode, ArcAttr, ArcBuff, ArcEffect,
-    ArcItem, ArcMuta,
+    AAttr, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier, AData, AEffect, AEffectAffecteeFilter,
+    AEffectBuffDataSrc, AEffectBuffInfo, AEffectBuffScope, AEffectDomain, AEffectModifier, AItem, AItemEffectData,
+    AItemKind, AEffectModBuildStatus, AOp, AModifierSrq, AMuta, AMutaAttrRange, AState, ArcAttr, ArcBuff, ArcEffect, ArcItem,
+    ArcMuta,
 };
 pub use handler::AdaptedDataHandler;
 pub use result::AResult;

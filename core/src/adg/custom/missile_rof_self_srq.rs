@@ -11,12 +11,12 @@ pub(in crate::adg::custom) fn mk_self_skillreq_modifiers_launcher_rof(a_data: &m
         }
         let modifier = ad::AEffectModifier::new(
             ec::attrs::ROF_BONUS,
-            ad::AModOp::PostPerc,
-            ad::AEffectAffecteeFilter::LocSrq(ad::AEffectDomain::Ship, ad::AModSrq::SelfRef),
+            ad::AOp::PostPerc,
+            ad::AEffectAffecteeFilter::LocSrq(ad::AEffectDomain::Ship, ad::AModifierSrq::SelfRef),
             ec::attrs::SPEED,
         );
         effect.mods.push(modifier);
-        effect.mod_build_status = ad::AModBuildStatus::Custom;
+        effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }
     if !applied {

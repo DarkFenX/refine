@@ -1,14 +1,14 @@
 use std::sync::Arc;
 
 pub use attr::AAttr;
-pub use buff::{ABuff, ABuffAggrMode, ABuffAttrMod, ABuffTgtFilter};
+pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
 pub use effect::{
     AEffect, AEffectAffecteeFilter, AEffectBuffDataSrc, AEffectBuffInfo, AEffectBuffScope, AEffectDomain,
-    AEffectModifier, AModBuildStatus, ATgtMode,
+    AEffectModifier, AEffectModBuildStatus,
 };
-pub use item::{AItem, AItemEffData, AItemKind};
+pub use item::{AItem, AItemEffectData, AItemKind};
 pub use muta::{AMuta, AMutaAttrRange};
-pub use shared::{AModOp, AModSrq, AState};
+pub use shared::{AOp, AModifierSrq, AState};
 
 mod attr;
 mod buff;

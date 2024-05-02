@@ -1,5 +1,5 @@
 /// Modifier operators, which are used in effect modification info and buff info.
-pub enum AModOp {
+pub enum AOp {
     PreAssign,
     PreMul,
     PreDiv,

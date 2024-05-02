@@ -68,7 +68,7 @@ impl SolModifier {
         affector_item: &SolItem,
         a_effect: &ad::AEffect,
         a_buff: &ad::ABuff,
-        a_mod: &ad::ABuffAttrMod,
+        a_mod: &ad::ABuffModifier,
         affector_attr_id: EAttrId,
         mod_kind: SolModifierKind,
         domain: SolDomain,
@@ -80,8 +80,8 @@ impl SolModifier {
             SolAffectorValue::AttrId(affector_attr_id),
             (&a_buff.op).into(),
             SolAggrMode::from_a_buff(a_buff),
-            SolAffecteeFilter::from_a_buff_tgt_filter(&a_mod.tgt_filter, domain, affector_item),
-            a_mod.tgt_attr_id,
+            SolAffecteeFilter::from_a_buff_tgt_filter(&a_mod.affectee_filter, domain, affector_item),
+            a_mod.affectee_attr_id,
         )
     }
     pub(in crate::sol::svc::svce_calc) fn get_affector_attr_id(&self) -> Option<EAttrId> {

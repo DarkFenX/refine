@@ -1,11 +1,10 @@
-use crate::handler_json::data::{CEffectAttrMod, CEffectBuffInfo, CModBuildStatus, CState, CTgtMode};
+use crate::handler_json::data::{CEffectModifier, CEffectBuffInfo, CModBuildStatus, CState};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
     id: rc::EEffectId,
     category: rc::EEffectCatId,
     state: CState,
-    tgt_mode: Option<CTgtMode>,
     is_assist: bool,
     is_offense: bool,
     hisec: Option<bool>,
@@ -18,7 +17,7 @@ pub(in crate::handler_json) struct CEffect {
     chance_attr_id: Option<rc::EAttrId>,
     resist_attr_id: Option<rc::EAttrId>,
     mod_build_status: CModBuildStatus,
-    mods: Vec<CEffectAttrMod>,
+    mods: Vec<CEffectModifier>,
     stop_ids: Vec<rc::EEffectId>,
     buff: Option<CEffectBuffInfo>,
 }
@@ -28,7 +27,6 @@ impl From<&rc::ad::AEffect> for CEffect {
             id: a_effect.id,
             category: a_effect.category,
             state: (&a_effect.state).into(),
-            tgt_mode: a_effect.tgt_mode.as_ref().map(|v| v.into()),
             is_assist: a_effect.is_assist,
             is_offense: a_effect.is_offense,
             hisec: a_effect.hisec,
@@ -53,7 +51,6 @@ impl Into<rc::ad::AEffect> for &CEffect {
             id: self.id,
             category: self.category,
             state: (&self.state).into(),
-            tgt_mode: self.tgt_mode.as_ref().map(|v| v.into()),
             is_assist: self.is_assist,
             is_offense: self.is_offense,
             hisec: self.hisec,

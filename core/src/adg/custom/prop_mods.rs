@@ -11,7 +11,7 @@ pub(in crate::adg::custom) fn add_ab_modifiers(a_data: &mut ad::AData) {
             effect.mods.clear();
         }
         effect.mods.push(mk_mass_mod());
-        effect.mod_build_status = ad::AModBuildStatus::Custom;
+        effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }
     if !applied {
@@ -28,7 +28,7 @@ pub(in crate::adg::custom) fn add_mwd_modifiers(a_data: &mut ad::AData) {
         }
         effect.mods.push(mk_mass_mod());
         effect.mods.push(mk_sig_mod());
-        effect.mod_build_status = ad::AModBuildStatus::Custom;
+        effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }
     if !applied {
@@ -39,7 +39,7 @@ pub(in crate::adg::custom) fn add_mwd_modifiers(a_data: &mut ad::AData) {
 fn mk_mass_mod() -> ad::AEffectModifier {
     ad::AEffectModifier::new(
         ec::attrs::MASS_ADDITION,
-        ad::AModOp::Add,
+        ad::AOp::Add,
         ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
         ec::attrs::MASS,
     )
@@ -48,7 +48,7 @@ fn mk_mass_mod() -> ad::AEffectModifier {
 fn mk_sig_mod() -> ad::AEffectModifier {
     ad::AEffectModifier::new(
         ec::attrs::SIG_RADIUS_BONUS,
-        ad::AModOp::PostPerc,
+        ad::AOp::PostPerc,
         ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
         ec::attrs::SIG_RADIUS,
     )

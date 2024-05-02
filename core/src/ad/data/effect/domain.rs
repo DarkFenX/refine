@@ -1,4 +1,4 @@
-/// Defines domain which is target for a modification.
+/// Defines domain which is affected by a modification.
 pub enum AEffectDomain {
     /// Ship or items belonging to it.
     Ship,

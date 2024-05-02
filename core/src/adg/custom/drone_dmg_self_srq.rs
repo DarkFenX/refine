@@ -11,12 +11,12 @@ pub(in crate::adg::custom) fn mk_self_skillreq_drone_dmg(a_data: &mut ad::AData)
         }
         let modifier = ad::AEffectModifier::new(
             ec::attrs::DMG_MULT_BONUS,
-            ad::AModOp::PostPerc,
-            ad::AEffectAffecteeFilter::OwnSrq(ad::AModSrq::SelfRef),
+            ad::AOp::PostPerc,
+            ad::AEffectAffecteeFilter::OwnSrq(ad::AModifierSrq::SelfRef),
             ec::attrs::DMG_MULT,
         );
         effect.mods.push(modifier);
-        effect.mod_build_status = ad::AModBuildStatus::Custom;
+        effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }
     if !applied {

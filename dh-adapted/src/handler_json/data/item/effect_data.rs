@@ -4,8 +4,8 @@ pub(in crate::handler_json) struct CItemEffData {
     charge_amount: Option<rc::Amount>,
     charge_reload_time: Option<rc::AttrVal>,
 }
-impl From<&rc::ad::AItemEffData> for CItemEffData {
-    fn from(a_item_eff_data: &rc::ad::AItemEffData) -> Self {
+impl From<&rc::ad::AItemEffectData> for CItemEffData {
+    fn from(a_item_eff_data: &rc::ad::AItemEffectData) -> Self {
         CItemEffData {
             cd: a_item_eff_data.cd,
             charge_amount: a_item_eff_data.charge_amount,
@@ -13,9 +13,9 @@ impl From<&rc::ad::AItemEffData> for CItemEffData {
         }
     }
 }
-impl Into<rc::ad::AItemEffData> for &CItemEffData {
-    fn into(self) -> rc::ad::AItemEffData {
-        rc::ad::AItemEffData {
+impl Into<rc::ad::AItemEffectData> for &CItemEffData {
+    fn into(self) -> rc::ad::AItemEffectData {
+        rc::ad::AItemEffectData {
             cd: self.cd,
             charge_amount: self.charge_amount,
             charge_reload_time: self.charge_reload_time,

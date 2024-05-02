@@ -23,13 +23,13 @@ impl ed::EFighterAbil {
 pub(in crate::adg::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> Vec<ad::AEffect> {
     let mut a_effects = Vec::new();
     for e_effect in g_data.effects.iter() {
-        let (state, tgt_mode) = match e_effect.category_id {
-            ec::effcats::PASSIVE => (ad::AState::Offline, None),
-            ec::effcats::ACTIVE => (ad::AState::Active, None),
-            ec::effcats::TARGET => (ad::AState::Active, Some(ad::ATgtMode::Item)),
-            ec::effcats::ONLINE => (ad::AState::Online, None),
-            ec::effcats::OVERLOAD => (ad::AState::Overload, None),
-            ec::effcats::SYSTEM => (ad::AState::Offline, None),
+        let state = match e_effect.category_id {
+            ec::effcats::PASSIVE => ad::AState::Offline,
+            ec::effcats::ACTIVE => ad::AState::Active,
+            ec::effcats::TARGET => ad::AState::Active,
+            ec::effcats::ONLINE => ad::AState::Online,
+            ec::effcats::OVERLOAD => ad::AState::Overload,
+            ec::effcats::SYSTEM => ad::AState::Offline,
             _ => {
                 let msg = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
                 tracing::warn!("{msg}");
@@ -41,7 +41,6 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> V
             e_effect.id,
             e_effect.category_id,
             state,
-            tgt_mode,
             e_effect.is_assistance,
             e_effect.is_offensive,
             None,
@@ -53,7 +52,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> V
             e_effect.tracking_attr_id,
             e_effect.usage_chance_attr_id,
             e_effect.resist_attr_id,
-            ad::AModBuildStatus::Unbuilt,
+            ad::AEffectModBuildStatus::Unbuilt,
             Vec::new(),
             Vec::new(),
             buff_info,
@@ -96,18 +95,17 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> V
             }
         }
         match mod_errs {
-            0 => a_effect.mod_build_status = ad::AModBuildStatus::Success,
+            0 => a_effect.mod_build_status = ad::AEffectModBuildStatus::Success,
             _ if !a_effect.mods.is_empty() || !a_effect.stop_ids.is_empty() => {
-                a_effect.mod_build_status = ad::AModBuildStatus::SuccessPartial(mod_errs)
+                a_effect.mod_build_status = ad::AEffectModBuildStatus::SuccessPartial(mod_errs)
             }
-            _ => a_effect.mod_build_status = ad::AModBuildStatus::Error(mod_errs),
+            _ => a_effect.mod_build_status = ad::AEffectModBuildStatus::Error(mod_errs),
         }
         a_effects.push(a_effect);
     }
     // Transfer some data from abilities onto effects
     let hisec_ban_map = extract_ability_map(g_data, ed::EFighterAbil::get_disallow_hisec);
     let lowsec_ban_map = extract_ability_map(g_data, ed::EFighterAbil::get_disallow_lowsec);
-    let tgt_mode_map = extract_ability_map(g_data, ed::EFighterAbil::get_target_mode);
     for a_effect in a_effects.iter_mut() {
         // Hisec flag
         match hisec_ban_map.get(&a_effect.id) {
@@ -138,27 +136,6 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> V
                         "{} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
                         a_effect,
                         flags.len()
-                    );
-                    tracing::warn!("{msg}");
-                }
-            },
-        }
-        // Target mode
-        match tgt_mode_map.get(&a_effect.id) {
-            None => (),
-            Some(modes) => match modes.len() {
-                1 => match get_abil_tgt_mode(modes.iter().next().unwrap()) {
-                    Ok(mode) => a_effect.tgt_mode = mode,
-                    Err(e) => {
-                        let msg = format!("failed to update target mode for {}: {}", a_effect, e.msg);
-                        tracing::warn!("{msg}");
-                    }
-                },
-                _ => {
-                    let msg = format!(
-                        "{} has {} distinct \"target mode\" values mapped from fighter abilities",
-                        a_effect,
-                        modes.len()
                     );
                     tracing::warn!("{msg}");
                 }
@@ -214,7 +191,7 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
         get_mod_operation(e_modifier)?,
         ad::AEffectAffecteeFilter::LocSrq(
             get_mod_domain(e_modifier, a_effect)?,
-            ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?),
+            ad::AModifierSrq::ItemId(get_mod_skill_id(e_modifier)?),
         ),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
@@ -233,7 +210,7 @@ fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
     Ok(ad::AEffectModifier::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AEffectAffecteeFilter::OwnSrq(ad::AModSrq::ItemId(get_mod_skill_id(e_modifier)?)),
+        ad::AEffectAffecteeFilter::OwnSrq(ad::AModifierSrq::ItemId(get_mod_skill_id(e_modifier)?)),
         get_mod_tgt_attr_id(e_modifier)?,
     ))
 }
@@ -253,8 +230,8 @@ fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRes
         "charID" => Ok(ad::AEffectDomain::Char),
         "shipID" => Ok(ad::AEffectDomain::Ship),
         "structureID" => Ok(ad::AEffectDomain::Structure),
-        "targetID" => match a_effect.tgt_mode {
-            Some(ad::ATgtMode::Item) => Ok(ad::AEffectDomain::Target),
+        "targetID" => match a_effect.category {
+            ec::effcats::TARGET => Ok(ad::AEffectDomain::Target),
             _ => Err(IntError::new(format!(
                 "modifier uses {} domain on untargeted effect",
                 domain
@@ -265,18 +242,18 @@ fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRes
     }
 }
 
-fn get_mod_operation(e_modifier: &ed::EEffectMod) -> IntResult<ad::AModOp> {
+fn get_mod_operation(e_modifier: &ed::EEffectMod) -> IntResult<ad::AOp> {
     let op = get_arg_int(&e_modifier.args, "operation")?;
     match op {
-        -1 => Ok(ad::AModOp::PreAssign),
-        0 => Ok(ad::AModOp::PreMul),
-        1 => Ok(ad::AModOp::PreDiv),
-        2 => Ok(ad::AModOp::Add),
-        3 => Ok(ad::AModOp::Sub),
-        4 => Ok(ad::AModOp::PostMul),
-        5 => Ok(ad::AModOp::PostDiv),
-        6 => Ok(ad::AModOp::PostPerc),
-        7 => Ok(ad::AModOp::PostAssign),
+        -1 => Ok(ad::AOp::PreAssign),
+        0 => Ok(ad::AOp::PreMul),
+        1 => Ok(ad::AOp::PreDiv),
+        2 => Ok(ad::AOp::Add),
+        3 => Ok(ad::AOp::Sub),
+        4 => Ok(ad::AOp::PostMul),
+        5 => Ok(ad::AOp::PostDiv),
+        6 => Ok(ad::AOp::PostPerc),
+        7 => Ok(ad::AOp::PostAssign),
         _ => Err(IntError::new(format!("unknown operation {op}"))),
     }
 }
@@ -323,11 +300,11 @@ where
     map
 }
 
-fn get_abil_tgt_mode(tgt_mode: &str) -> IntResult<Option<ad::ATgtMode>> {
+fn is_abil_targeted(tgt_mode: &str) -> IntResult<bool> {
     match tgt_mode {
-        "untargeted" => Ok(None),
-        "itemTargeted" => Ok(Some(ad::ATgtMode::Item)),
-        "pointTargeted" => Ok(Some(ad::ATgtMode::Point)),
+        "untargeted" => Ok(false),
+        "itemTargeted" => Ok(true),
+        "pointTargeted" => Ok(true),
         _ => Err(IntError::new(format!("unknown ability target mode \"{tgt_mode}\""))),
     }
 }

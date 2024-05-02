@@ -5,7 +5,6 @@ pub(in crate::adg::custom) fn add_aar_paste_boost_effect(a_data: &mut ad::AData)
         ec::effects::REE_AAR_PASTE_BOOST,
         ec::effcats::PASSIVE,
         ad::AState::Offline,
-        None,
         false,
         false,
         None,
@@ -17,7 +16,7 @@ pub(in crate::adg::custom) fn add_aar_paste_boost_effect(a_data: &mut ad::AData)
         None,
         None,
         None,
-        ad::AModBuildStatus::Custom,
+        ad::AEffectModBuildStatus::Custom,
         // No modifiers, a custom one is added
         Vec::new(),
         Vec::new(),
@@ -30,7 +29,7 @@ pub(in crate::adg::custom) fn add_aar_paste_boost_effect(a_data: &mut ad::AData)
     }) {
         item.effect_datas.insert(
             ec::effects::REE_AAR_PASTE_BOOST,
-            ad::AItemEffData::new(None, None, None),
+            ad::AItemEffectData::new(None, None, None),
         );
     }
 }

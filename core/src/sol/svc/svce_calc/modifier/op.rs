@@ -14,19 +14,19 @@ pub(in crate::sol::svc::svce_calc) enum SolOp {
     PostAssign,
     ExtraMul,
 }
-impl From<&ad::AModOp> for SolOp {
-    fn from(a_mod_op: &ad::AModOp) -> Self {
+impl From<&ad::AOp> for SolOp {
+    fn from(a_mod_op: &ad::AOp) -> Self {
         match a_mod_op {
-            ad::AModOp::PreAssign => Self::PreAssign,
-            ad::AModOp::PreMul => Self::PreMul,
-            ad::AModOp::PreDiv => Self::PreDiv,
-            ad::AModOp::Add => Self::Add,
-            ad::AModOp::Sub => Self::Sub,
-            ad::AModOp::PostMul => Self::PostMul,
-            ad::AModOp::PostMulImmune => Self::PostMulImmune,
-            ad::AModOp::PostDiv => Self::PostDiv,
-            ad::AModOp::PostPerc => Self::PostPerc,
-            ad::AModOp::PostAssign => Self::PostAssign,
+            ad::AOp::PreAssign => Self::PreAssign,
+            ad::AOp::PreMul => Self::PreMul,
+            ad::AOp::PreDiv => Self::PreDiv,
+            ad::AOp::Add => Self::Add,
+            ad::AOp::Sub => Self::Sub,
+            ad::AOp::PostMul => Self::PostMul,
+            ad::AOp::PostMulImmune => Self::PostMulImmune,
+            ad::AOp::PostDiv => Self::PostDiv,
+            ad::AOp::PostPerc => Self::PostPerc,
+            ad::AOp::PostAssign => Self::PostAssign,
         }
     }
 }

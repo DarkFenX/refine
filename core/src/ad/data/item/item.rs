@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AItemEffData, AItemKind},
+    ad::{AItemEffectData, AItemKind},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
     util::{Named, StMap},
 };
@@ -20,7 +20,7 @@ pub struct AItem {
     /// Attribute values of the item.
     pub attr_vals: StMap<EAttrId, AttrVal>,
     /// Refers effects of the item.
-    pub effect_datas: StMap<EEffectId, AItemEffData>,
+    pub effect_datas: StMap<EEffectId, AItemEffectData>,
     /// Refers an effect which is default for the item.
     pub defeff_id: Option<EEffectId>,
     /// Skill requirement map.
@@ -34,7 +34,7 @@ impl AItem {
         grp_id: EItemGrpId,
         cat_id: EItemCatId,
         attr_vals: StMap<EAttrId, AttrVal>,
-        effect_datas: StMap<EEffectId, AItemEffData>,
+        effect_datas: StMap<EEffectId, AItemEffectData>,
         defeff_id: Option<EEffectId>,
         srqs: StMap<EItemId, SkillLevel>,
     ) -> Self {

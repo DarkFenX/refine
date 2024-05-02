@@ -259,7 +259,7 @@ impl SolItem {
     pub(in crate::sol) fn get_orig_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>> {
         Ok(&self.get_a_item()?.attr_vals)
     }
-    pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffData>> {
+    pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffectData>> {
         Ok(&self.get_a_item()?.effect_datas)
     }
     pub(in crate::sol) fn get_defeff_id(&self) -> Result<&Option<EEffectId>> {

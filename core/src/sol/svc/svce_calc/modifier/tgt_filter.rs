@@ -26,22 +26,22 @@ impl SolAffecteeFilter {
         }
     }
     pub(super) fn from_a_buff_tgt_filter(
-        a_buff_tgt_filter: &ad::ABuffTgtFilter,
+        a_buff_tgt_filter: &ad::ABuffAffecteeFilter,
         sol_domain: SolDomain,
         sol_item: &SolItem,
     ) -> Self {
         match a_buff_tgt_filter {
-            ad::ABuffTgtFilter::Direct => Self::Direct(sol_domain),
-            ad::ABuffTgtFilter::Loc => Self::Loc(sol_domain),
-            ad::ABuffTgtFilter::LocGrp(grp_id) => Self::LocGrp(sol_domain, *grp_id),
-            ad::ABuffTgtFilter::LocSrq(mod_srq) => Self::LocSrq(sol_domain, get_srq(mod_srq, sol_item)),
+            ad::ABuffAffecteeFilter::Direct => Self::Direct(sol_domain),
+            ad::ABuffAffecteeFilter::Loc => Self::Loc(sol_domain),
+            ad::ABuffAffecteeFilter::LocGrp(grp_id) => Self::LocGrp(sol_domain, *grp_id),
+            ad::ABuffAffecteeFilter::LocSrq(mod_srq) => Self::LocSrq(sol_domain, get_srq(mod_srq, sol_item)),
         }
     }
 }
 
-fn get_srq(mod_srq: &ad::AModSrq, sol_item: &SolItem) -> EItemId {
+fn get_srq(mod_srq: &ad::AModifierSrq, sol_item: &SolItem) -> EItemId {
     match mod_srq {
-        ad::AModSrq::SelfRef => sol_item.get_a_item_id(),
-        ad::AModSrq::ItemId(item_id) => *item_id,
+        ad::AModifierSrq::SelfRef => sol_item.get_a_item_id(),
+        ad::AModifierSrq::ItemId(item_id) => *item_id,
     }
 }

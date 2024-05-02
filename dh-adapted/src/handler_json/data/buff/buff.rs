@@ -1,11 +1,11 @@
-use crate::handler_json::data::{CBuffAggrMode, CBuffAttrMod, CModOp};
+use crate::handler_json::data::{CBuffAggrMode, CBuffModifier, CModOp};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CBuff {
     id: rc::EBuffId,
     aggr_mode: CBuffAggrMode,
     op: CModOp,
-    mods: Vec<CBuffAttrMod>,
+    mods: Vec<CBuffModifier>,
 }
 impl From<&rc::ad::ABuff> for CBuff {
     fn from(a_buff: &rc::ad::ABuff) -> Self {

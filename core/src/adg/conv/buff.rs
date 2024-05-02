@@ -27,20 +27,23 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
         };
         let mut a_mods = Vec::new();
         for e_item_mod in e_buff.item_mods.iter() {
-            a_mods.push(ad::ABuffAttrMod::new(ad::ABuffTgtFilter::Direct, e_item_mod.attr_id));
+            a_mods.push(ad::ABuffModifier::new(
+                ad::ABuffAffecteeFilter::Direct,
+                e_item_mod.attr_id,
+            ));
         }
         for e_loc_mod in e_buff.loc_mods.iter() {
-            a_mods.push(ad::ABuffAttrMod::new(ad::ABuffTgtFilter::Loc, e_loc_mod.attr_id));
+            a_mods.push(ad::ABuffModifier::new(ad::ABuffAffecteeFilter::Loc, e_loc_mod.attr_id));
         }
         for e_locgroup_mod in e_buff.locgroup_mods.iter() {
-            a_mods.push(ad::ABuffAttrMod::new(
-                ad::ABuffTgtFilter::LocGrp(e_locgroup_mod.group_id),
+            a_mods.push(ad::ABuffModifier::new(
+                ad::ABuffAffecteeFilter::LocGrp(e_locgroup_mod.group_id),
                 e_locgroup_mod.attr_id,
             ));
         }
         for e_locsrq_mod in e_buff.locsrq_mods.iter() {
-            a_mods.push(ad::ABuffAttrMod::new(
-                ad::ABuffTgtFilter::LocSrq(ad::AModSrq::ItemId(e_locsrq_mod.skill_id)),
+            a_mods.push(ad::ABuffModifier::new(
+                ad::ABuffAffecteeFilter::LocSrq(ad::AModifierSrq::ItemId(e_locsrq_mod.skill_id)),
                 e_locsrq_mod.attr_id,
             ));
         }
@@ -58,17 +61,17 @@ fn conv_buff_aggr_mode(aggr_mode: &str) -> IntResult<ad::ABuffAggrMode> {
     }
 }
 
-fn conv_buff_op(operation: &str) -> IntResult<ad::AModOp> {
+fn conv_buff_op(operation: &str) -> IntResult<ad::AOp> {
     match operation {
-        "PreAssignment" => Ok(ad::AModOp::PreAssign),
-        "PreMul" => Ok(ad::AModOp::PreMul),
-        "PreDiv" => Ok(ad::AModOp::PreDiv),
-        "ModAdd" => Ok(ad::AModOp::Add),
-        "ModSub" => Ok(ad::AModOp::Sub),
-        "PostMul" => Ok(ad::AModOp::PostMul),
-        "PostDiv" => Ok(ad::AModOp::PostDiv),
-        "PostPercent" => Ok(ad::AModOp::PostPerc),
-        "PostAssignment" => Ok(ad::AModOp::PostAssign),
+        "PreAssignment" => Ok(ad::AOp::PreAssign),
+        "PreMul" => Ok(ad::AOp::PreMul),
+        "PreDiv" => Ok(ad::AOp::PreDiv),
+        "ModAdd" => Ok(ad::AOp::Add),
+        "ModSub" => Ok(ad::AOp::Sub),
+        "PostMul" => Ok(ad::AOp::PostMul),
+        "PostDiv" => Ok(ad::AOp::PostDiv),
+        "PostPercent" => Ok(ad::AOp::PostPerc),
+        "PostAssignment" => Ok(ad::AOp::PostAssign),
         _ => Err(IntError::new(format!("unexpected operation \"{operation}\""))),
     }
 }

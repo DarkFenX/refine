@@ -4,7 +4,7 @@ use crate::defs::Amount;
 ///
 /// During conversion of EVE data into adapted data, some modifiers might not make it due to various
 /// reasons Variants of this enum are stored on an effect, to keep info about conversion status.
-pub enum AModBuildStatus {
+pub enum AEffectModBuildStatus {
     /// Modifiers haven't been built yet.
     Unbuilt,
     /// All modifiers failed conversion, with a failure count.

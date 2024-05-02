@@ -52,7 +52,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
     for e_item_effect in g_data.item_effects.iter() {
         a_item_map.get_mut(&e_item_effect.item_id).and_then(|v| {
             v.effect_datas
-                .insert(e_item_effect.effect_id, ad::AItemEffData::new(None, None, None))
+                .insert(e_item_effect.effect_id, ad::AItemEffectData::new(None, None, None))
         });
     }
     for e_item_abil in g_data.item_abils.iter() {

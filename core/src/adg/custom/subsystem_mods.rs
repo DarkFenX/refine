@@ -28,7 +28,7 @@ fn add_slot_modifiers(a_data: &mut ad::AData) {
         effect
             .mods
             .push(mk_modifier(ec::attrs::LOW_SLOT_MODIFIER, ec::attrs::LOW_SLOTS));
-        effect.mod_build_status = ad::AModBuildStatus::Custom;
+        effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }
     if !applied {
@@ -51,7 +51,7 @@ fn add_hardpoint_modifiers(a_data: &mut ad::AData) {
             ec::attrs::LAUNCHER_HARDPOINT_MODIFIER,
             ec::attrs::LAUNCHER_SLOTS_LEFT,
         ));
-        effect.mod_build_status = ad::AModBuildStatus::Custom;
+        effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }
     if !applied {
@@ -62,7 +62,7 @@ fn add_hardpoint_modifiers(a_data: &mut ad::AData) {
 fn mk_modifier(src_attr_id: EAttrId, tgt_attr_id: EAttrId) -> ad::AEffectModifier {
     ad::AEffectModifier::new(
         src_attr_id,
-        ad::AModOp::Add,
+        ad::AOp::Add,
         ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
         tgt_attr_id,
     )

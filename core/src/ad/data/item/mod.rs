@@ -1,4 +1,4 @@
-pub use effect_data::AItemEffData;
+pub use effect_data::AItemEffectData;
 pub use item::AItem;
 pub use kind::AItemKind;
 

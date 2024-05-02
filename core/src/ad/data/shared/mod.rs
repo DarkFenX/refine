@@ -1,7 +1,7 @@
-pub use mod_op::AModOp;
-pub use srq::AModSrq;
+pub use op::AOp;
+pub use srq::AModifierSrq;
 pub use state::AState;
 
-mod mod_op;
+mod op;
 mod srq;
 mod state;
