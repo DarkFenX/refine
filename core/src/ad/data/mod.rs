@@ -6,7 +6,7 @@ pub use effect::{
     AEffect, AEffectAffecteeFilter, AEffectBuffDataSrc, AEffectBuffInfo, AEffectBuffScope, AEffectDomain,
     AEffectModifier, AModBuildStatus, ATgtMode,
 };
-pub use item::{AItem, AItemEffData, AItemType};
+pub use item::{AItem, AItemEffData, AItemKind};
 pub use muta::{AMuta, AMutaAttrRange};
 pub use shared::{AModOp, AModSrq, AState};
 

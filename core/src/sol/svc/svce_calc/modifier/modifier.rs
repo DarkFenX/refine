@@ -70,11 +70,11 @@ impl SolModifier {
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffAttrMod,
         affector_attr_id: EAttrId,
-        mod_type: SolModifierKind,
+        mod_kind: SolModifierKind,
         domain: SolDomain,
     ) -> Self {
         Self::new(
-            mod_type,
+            mod_kind,
             affector_item.get_id(),
             a_effect.id,
             SolAffectorValue::AttrId(affector_attr_id),

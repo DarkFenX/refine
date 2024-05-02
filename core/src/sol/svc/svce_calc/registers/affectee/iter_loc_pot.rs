@@ -1,4 +1,4 @@
-use crate::sol::{item::SolItem, svc::svce_calc::SolLocType};
+use crate::sol::{item::SolItem, svc::svce_calc::SolLocationKind};
 
 // Iterator over item's potential location roots
 pub(super) struct PotentialLocations<'a> {
@@ -18,25 +18,25 @@ impl<'a> PotentialLocations<'a> {
     }
 }
 impl<'a> Iterator for PotentialLocations<'a> {
-    type Item = SolLocType;
+    type Item = SolLocationKind;
 
     fn next(&mut self) -> Option<Self::Item> {
         if !self.char_done {
             self.char_done = true;
             if self.item.is_on_char_root() {
-                return Some(SolLocType::Character);
+                return Some(SolLocationKind::Character);
             }
         }
         if !self.ship_done {
             self.ship_done = true;
             if self.item.is_on_ship_root() {
-                return Some(SolLocType::Ship);
+                return Some(SolLocationKind::Ship);
             }
         }
         if !self.struct_done {
             self.struct_done = true;
             if self.item.is_on_struct_root() {
-                return Some(SolLocType::Structure);
+                return Some(SolLocationKind::Structure);
             }
         }
         None

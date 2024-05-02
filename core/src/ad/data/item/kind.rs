@@ -1,5 +1,5 @@
 /// Contains adapted item types.
-pub enum AItemType {
+pub enum AItemKind {
     Booster,
     Character,
     Charge,

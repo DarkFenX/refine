@@ -16,10 +16,10 @@ impl SolarSystem {
     pub fn set_fit_character(&mut self, fit_id: SolFitId, a_item_id: EItemId, state: bool) -> Result<SolCharacterInfo> {
         match self.remove_fit_character(&fit_id) {
             Ok(_) => (),
-            // Suppress ItemTypeNotFound error, since this method is supposed to be used
-            // even when no character is set
+            // Suppress SolItemKindNotFound error, since this method is supposed to be used even
+            // when no character is set
             Err(e) => match e.kind {
-                ErrorKind::SolItemTypeNotFound(_) => (),
+                ErrorKind::SolItemKindNotFound(_) => (),
                 _ => return Err(e),
             },
         };
@@ -59,7 +59,7 @@ impl SolarSystem {
         self.fits
             .get_fit(fit_id)?
             .character
-            .ok_or_else(|| Error::new(ErrorKind::SolItemTypeNotFound(SolCharacter::get_name())))
+            .ok_or_else(|| Error::new(ErrorKind::SolItemKindNotFound(SolCharacter::get_name())))
     }
     fn get_fit_character(&self, fit_id: &SolFitId) -> Result<&SolCharacter> {
         let item_id = self.get_fit_character_id(fit_id)?;

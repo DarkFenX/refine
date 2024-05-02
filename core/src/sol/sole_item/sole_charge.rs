@@ -18,7 +18,7 @@ impl SolarSystem {
         let item = self.items.get_item(item_id)?;
         match item {
             SolItem::Charge(charge) => Ok(charge),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolCharge::get_name(),

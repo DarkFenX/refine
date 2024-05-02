@@ -5,7 +5,7 @@ use buff::{CBuff, CBuffAggrMode, CBuffAttrMod, CBuffTgtFilter};
 use effect::{
     CEffect, CEffectAttrMod, CEffectBuffInfo, CEffectDomain, CEffectTgtFilter, CModBuildStatus, CState, CTgtMode,
 };
-use item::{CItem, CItemEffData, CItemType};
+use item::{CItem, CItemEffData, CItemKind};
 use mod_shared::{CModOp, CModSrq};
 use muta::{CMuta, CMutaAttrRange};
 

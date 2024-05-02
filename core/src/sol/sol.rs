@@ -10,8 +10,8 @@ use crate::{
 };
 
 // Solar system glues everything together and is actual "god object" of the lib. It controls source
-// which will be used for data and general item structure - including their type, IDs, which fit
-// they belong to, which charges they have etc. But all the processing for those items (e.g.
+// which will be used for data and general item structure - including their kind, type IDs, which
+// fit they belong to, which charges they have etc. But all the processing for those items (e.g.
 // attribute calculation) happens in services, which are also stored on solar system, but are
 // somewhat isolated.
 pub struct SolarSystem {

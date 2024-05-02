@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
-use crate::handler_json::data::{CItemEffData, CItemType};
+use crate::handler_json::data::{CItemEffData, CItemKind};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CItem {
     id: rc::EItemId,
-    itype: Option<CItemType>,
+    kind: Option<CItemKind>,
     grp_id: rc::EItemGrpId,
     cat_id: rc::EItemCatId,
     attr_vals: HashMap<rc::EAttrId, rc::AttrVal>,
@@ -17,7 +17,7 @@ impl From<&rc::ad::AItem> for CItem {
     fn from(a_item: &rc::ad::AItem) -> Self {
         CItem {
             id: a_item.id,
-            itype: a_item.itype.as_ref().map(|v| v.into()),
+            kind: a_item.kind.as_ref().map(|v| v.into()),
             grp_id: a_item.grp_id,
             cat_id: a_item.cat_id,
             attr_vals: (&a_item.attr_vals).into(),
@@ -31,7 +31,7 @@ impl Into<rc::ad::AItem> for &CItem {
     fn into(self) -> rc::ad::AItem {
         rc::ad::AItem {
             id: self.id,
-            itype: self.itype.as_ref().map(|v| v.into()),
+            kind: self.kind.as_ref().map(|v| v.into()),
             grp_id: self.grp_id,
             cat_id: self.cat_id,
             attr_vals: (&self.attr_vals).into(),

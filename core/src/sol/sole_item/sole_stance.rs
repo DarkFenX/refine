@@ -16,10 +16,10 @@ impl SolarSystem {
     pub fn set_fit_stance(&mut self, fit_id: SolFitId, a_item_id: EItemId, state: bool) -> Result<SolStanceInfo> {
         match self.remove_fit_stance(&fit_id) {
             Ok(_) => (),
-            // Suppress ItemTypeNotFound error, since this method is supposed to be used
-            // even when no stance is set
+            // Suppress SolItemKindNotFound error, since this method is supposed to be used even
+            // when no stance is set
             Err(e) => match e.kind {
-                ErrorKind::SolItemTypeNotFound(_) => (),
+                ErrorKind::SolItemKindNotFound(_) => (),
                 _ => return Err(e),
             },
         };
@@ -47,7 +47,7 @@ impl SolarSystem {
         self.fits
             .get_fit(fit_id)?
             .stance
-            .ok_or_else(|| Error::new(ErrorKind::SolItemTypeNotFound(SolStance::get_name())))
+            .ok_or_else(|| Error::new(ErrorKind::SolItemKindNotFound(SolStance::get_name())))
     }
     fn get_fit_stance(&self, fit_id: &SolFitId) -> Result<&SolStance> {
         let item_id = self.get_fit_stance_id(fit_id)?;

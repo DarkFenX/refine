@@ -1,13 +1,13 @@
 use crate::{
     defs::SolItemId,
-    sol::{item::SolItem, svc::svce_calc::SolLocType},
+    sol::{item::SolItem, svc::svce_calc::SolLocationKind},
 };
 
 impl SolItem {
-    pub(in crate::sol::svc::svce_calc) fn get_root_loc_type(&self) -> Option<SolLocType> {
+    pub(in crate::sol::svc::svce_calc) fn get_root_loc_kind(&self) -> Option<SolLocationKind> {
         match self {
             Self::Booster(_) => None,
-            Self::Character(_) => Some(SolLocType::Character),
+            Self::Character(_) => Some(SolLocationKind::Character),
             Self::Charge(_) => None,
             Self::Drone(_) => None,
             Self::Fighter(_) => None,
@@ -16,10 +16,10 @@ impl SolItem {
             Self::Module(_) => None,
             Self::ProjEffect(_) => None,
             Self::Rig(_) => None,
-            Self::Ship(_) => Some(SolLocType::Ship),
+            Self::Ship(_) => Some(SolLocationKind::Ship),
             Self::Skill(_) => None,
             Self::Stance(_) => None,
-            Self::Structure(_) => Some(SolLocType::Structure),
+            Self::Structure(_) => Some(SolLocationKind::Structure),
             Self::Subsystem(_) => None,
             Self::SwEffect(_) => None,
         }

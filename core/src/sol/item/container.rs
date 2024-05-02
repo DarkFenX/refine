@@ -65,7 +65,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Booster(booster) => Ok(booster),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolBooster::get_name(),
@@ -76,7 +76,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Booster(booster) => Ok(booster),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolBooster::get_name(),
@@ -88,7 +88,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Character(character) => Ok(character),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolCharacter::get_name(),
@@ -99,7 +99,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Character(character) => Ok(character),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolCharacter::get_name(),
@@ -111,7 +111,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Charge(charge) => Ok(charge),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolCharge::get_name(),
@@ -123,7 +123,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Drone(drone) => Ok(drone),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolDrone::get_name(),
@@ -134,7 +134,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Drone(drone) => Ok(drone),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolDrone::get_name(),
@@ -146,7 +146,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Fighter(fighter) => Ok(fighter),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolFighter::get_name(),
@@ -157,7 +157,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Fighter(fighter) => Ok(fighter),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolFighter::get_name(),
@@ -169,7 +169,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Implant(implant) => Ok(implant),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolImplant::get_name(),
@@ -180,7 +180,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Implant(implant) => Ok(implant),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolImplant::get_name(),
@@ -192,7 +192,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Module(module) => Ok(module),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolModule::get_name(),
@@ -203,7 +203,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Module(module) => Ok(module),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolModule::get_name(),
@@ -215,7 +215,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Rig(rig) => Ok(rig),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolRig::get_name(),
@@ -226,7 +226,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Rig(rig) => Ok(rig),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolRig::get_name(),
@@ -238,7 +238,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Ship(ship) => Ok(ship),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolShip::get_name(),
@@ -249,7 +249,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Ship(ship) => Ok(ship),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolShip::get_name(),
@@ -261,7 +261,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Skill(skill) => Ok(skill),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolSkill::get_name(),
@@ -272,7 +272,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Skill(skill) => Ok(skill),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolSkill::get_name(),
@@ -284,7 +284,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Stance(stance) => Ok(stance),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolStance::get_name(),
@@ -295,7 +295,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Stance(stance) => Ok(stance),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolStance::get_name(),
@@ -307,7 +307,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Structure(structure) => Ok(structure),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolStructure::get_name(),
@@ -318,7 +318,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Structure(structure) => Ok(structure),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolStructure::get_name(),
@@ -330,7 +330,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::Subsystem(subsystem) => Ok(subsystem),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolSubsystem::get_name(),
@@ -341,7 +341,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::Subsystem(subsystem) => Ok(subsystem),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolSubsystem::get_name(),
@@ -353,7 +353,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::SwEffect(sw_effect) => Ok(sw_effect),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolSwEffect::get_name(),
@@ -364,7 +364,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::SwEffect(sw_effect) => Ok(sw_effect),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolSwEffect::get_name(),
@@ -376,7 +376,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::FwEffect(fw_effect) => Ok(fw_effect),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolFwEffect::get_name(),
@@ -387,7 +387,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::FwEffect(fw_effect) => Ok(fw_effect),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolFwEffect::get_name(),
@@ -399,7 +399,7 @@ impl SolItems {
         let item = self.get_item(item_id)?;
         match item {
             SolItem::ProjEffect(proj_effect) => Ok(proj_effect),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolProjEffect::get_name(),
@@ -410,7 +410,7 @@ impl SolItems {
         let item = self.get_item_mut(item_id)?;
         match item {
             SolItem::ProjEffect(proj_effect) => Ok(proj_effect),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemType(
+            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
                 *item_id,
                 item.get_name(),
                 SolProjEffect::get_name(),

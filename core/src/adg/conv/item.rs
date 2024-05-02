@@ -80,17 +80,17 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
     // Item type
     let mut a_items = Vec::new();
     for mut a_item in a_item_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id) {
-        let mut item_types = get_item_types(&a_item);
-        match item_types.len() {
+        let mut item_kinds = get_item_kinds(&a_item);
+        match item_kinds.len() {
             0 => {
                 a_items.push(a_item);
             }
             1 => {
-                a_item.itype = Some(item_types.pop().unwrap());
+                a_item.kind = Some(item_kinds.pop().unwrap());
                 a_items.push(a_item);
             }
             _ => {
-                let msg = format!("{} is eligible for {} item types", a_item, item_types.len());
+                let msg = format!("{} is eligible for {} item types", a_item, item_kinds.len());
                 tracing::warn!("{msg}");
                 continue;
             }
@@ -99,59 +99,59 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
     a_items
 }
 
-fn get_item_types(a_item: &ad::AItem) -> Vec<ad::AItemType> {
-    let mut types = Vec::new();
+fn get_item_kinds(a_item: &ad::AItem) -> Vec<ad::AItemKind> {
+    let mut kinds = Vec::new();
     if a_item.cat_id == ec::itemcats::IMPLANT && a_item.attr_vals.contains_key(&ec::attrs::BOOSTERNESS) {
-        types.push(ad::AItemType::Booster);
+        kinds.push(ad::AItemKind::Booster);
     };
     if a_item.grp_id == ec::itemgrps::CHARACTER {
-        types.push(ad::AItemType::Character);
+        kinds.push(ad::AItemKind::Character);
     };
     if a_item.cat_id == ec::itemcats::CHARGE {
-        types.push(ad::AItemType::Charge);
+        kinds.push(ad::AItemKind::Charge);
     };
     if a_item.cat_id == ec::itemcats::DRONE {
-        types.push(ad::AItemType::Drone);
+        kinds.push(ad::AItemKind::Drone);
     };
     if a_item.grp_id == ec::itemgrps::EFFECT_BEACON {
-        types.push(ad::AItemType::EffectBeacon);
+        kinds.push(ad::AItemKind::EffectBeacon);
     };
     if a_item.cat_id == ec::itemcats::FIGHTER
         && (a_item.attr_vals.contains_key(&ec::attrs::FTR_SQ_IS_HEAVY)
             || a_item.attr_vals.contains_key(&ec::attrs::FTR_SQ_IS_LIGHT)
             || a_item.attr_vals.contains_key(&ec::attrs::FTR_SQ_IS_SUPPORT))
     {
-        types.push(ad::AItemType::FighterSquad);
+        kinds.push(ad::AItemKind::FighterSquad);
     };
     if a_item.cat_id == ec::itemcats::IMPLANT && a_item.attr_vals.contains_key(&ec::attrs::IMPLANTNESS) {
-        types.push(ad::AItemType::Implant);
+        kinds.push(ad::AItemKind::Implant);
     };
     if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::HI_POWER) {
-        types.push(ad::AItemType::ModHigh);
+        kinds.push(ad::AItemKind::ModHigh);
     };
     if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::LO_POWER) {
-        types.push(ad::AItemType::ModLow);
+        kinds.push(ad::AItemKind::ModLow);
     };
     if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::MED_POWER) {
-        types.push(ad::AItemType::ModMid);
+        kinds.push(ad::AItemKind::ModMid);
     };
     if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::RIG_SLOT) {
-        types.push(ad::AItemType::Rig);
+        kinds.push(ad::AItemKind::Rig);
     };
     if a_item.grp_id == ec::itemgrps::MUTAPLASMID {
-        types.push(ad::AItemType::Mutaplasmid);
+        kinds.push(ad::AItemKind::Mutaplasmid);
     };
     if a_item.cat_id == ec::itemcats::SHIP {
-        types.push(ad::AItemType::Ship);
+        kinds.push(ad::AItemKind::Ship);
     };
     if a_item.cat_id == ec::itemcats::SKILL {
-        types.push(ad::AItemType::Skill);
+        kinds.push(ad::AItemKind::Skill);
     };
     if a_item.grp_id == ec::itemgrps::SHIP_MOD {
-        types.push(ad::AItemType::Stance);
+        kinds.push(ad::AItemKind::Stance);
     };
     if a_item.cat_id == ec::itemcats::SUBSYSTEM && a_item.effect_datas.contains_key(&ec::effects::SUBSYSTEM) {
-        types.push(ad::AItemType::Subsystem);
+        kinds.push(ad::AItemKind::Subsystem);
     };
-    types
+    kinds
 }

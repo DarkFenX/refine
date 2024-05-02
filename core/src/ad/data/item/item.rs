@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AItemEffData, AItemType},
+    ad::{AItemEffData, AItemKind},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
     util::{Named, StMap},
 };
@@ -12,7 +12,7 @@ pub struct AItem {
     /// Item ID.
     pub id: EItemId,
     /// Item type.
-    pub itype: Option<AItemType>,
+    pub kind: Option<AItemKind>,
     /// Item group ID.
     pub grp_id: EItemGrpId,
     /// Item category ID.
@@ -30,7 +30,7 @@ impl AItem {
     /// Make a new adapted item type out of passed data.
     pub(crate) fn new(
         id: EItemId,
-        itype: Option<AItemType>,
+        kind: Option<AItemKind>,
         grp_id: EItemGrpId,
         cat_id: EItemCatId,
         attr_vals: StMap<EAttrId, AttrVal>,
@@ -40,7 +40,7 @@ impl AItem {
     ) -> Self {
         Self {
             id,
-            itype,
+            kind,
             grp_id,
             cat_id,
             attr_vals,

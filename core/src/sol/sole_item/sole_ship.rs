@@ -16,10 +16,10 @@ impl SolarSystem {
     pub fn set_fit_ship(&mut self, fit_id: SolFitId, a_item_id: EItemId, state: bool) -> Result<SolShipInfo> {
         match self.remove_fit_ship(&fit_id) {
             Ok(_) => (),
-            // Suppress ItemTypeNotFound error, since this method is supposed to be used
-            // even when no ship is set
+            // Suppress SolItemKindNotFound error, since this method is supposed to be used even
+            // when no ship is set
             Err(e) => match e.kind {
-                ErrorKind::SolItemTypeNotFound(_) => (),
+                ErrorKind::SolItemKindNotFound(_) => (),
                 _ => return Err(e),
             },
         };
@@ -59,7 +59,7 @@ impl SolarSystem {
         self.fits
             .get_fit(fit_id)?
             .ship
-            .ok_or_else(|| Error::new(ErrorKind::SolItemTypeNotFound(SolShip::get_name())))
+            .ok_or_else(|| Error::new(ErrorKind::SolItemKindNotFound(SolShip::get_name())))
     }
     fn get_fit_ship(&self, fit_id: &SolFitId) -> Result<&SolShip> {
         let item_id = self.get_fit_ship_id(fit_id)?;

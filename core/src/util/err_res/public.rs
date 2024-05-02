@@ -15,12 +15,12 @@ pub enum ErrorKind {
     ItemIdNotFound(SolItemId),
     FitNotFound(SolFitId),
     FleetNotFound(SolFleetId),
-    SolItemTypeNotFound(&'static str),
+    SolItemKindNotFound(&'static str),
     ItemIdAllocFailed,
     FitIdAllocFailed,
     FleetIdAllocFailed,
     InvalidSkillLevel(SkillLevel),
-    UnexpectedItemType(SolItemId, &'static str, &'static str),
+    UnexpectedItemKind(SolItemId, &'static str, &'static str),
     ModuleSlotTaken(SolModRack, Idx, SolItemId),
     AAttrNotFound(EAttrId),
     AItemNotLoaded(EItemId),
@@ -48,12 +48,12 @@ impl fmt::Display for Error {
             ErrorKind::ItemIdNotFound(item_id) => write!(f, "item {item_id} not found"),
             ErrorKind::FitNotFound(fit_id) => write!(f, "fit {fit_id} not found"),
             ErrorKind::FleetNotFound(fleet_id) => write!(f, "fleet {fleet_id} not found"),
-            ErrorKind::SolItemTypeNotFound(item_type) => write!(f, "{item_type} not found"),
+            ErrorKind::SolItemKindNotFound(item_kind) => write!(f, "{item_kind} not found"),
             ErrorKind::ItemIdAllocFailed => write!(f, "item ID allocation failed"),
             ErrorKind::FitIdAllocFailed => write!(f, "fit ID allocation failed"),
             ErrorKind::FleetIdAllocFailed => write!(f, "fit ID allocation failed"),
             ErrorKind::InvalidSkillLevel(level) => write!(f, "skill level {level} is out of allowed range [0, 5]"),
-            ErrorKind::UnexpectedItemType(item_id, actual, expected) => {
+            ErrorKind::UnexpectedItemKind(item_id, actual, expected) => {
                 write!(f, "item {item_id} was requested as {expected}. but is {actual}")
             }
             ErrorKind::ModuleSlotTaken(rack, position, item_id) => {

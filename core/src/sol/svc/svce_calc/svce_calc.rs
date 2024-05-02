@@ -307,7 +307,7 @@ impl SolSvcs {
         }
     }
     fn handle_location_owner_change(&mut self, sol_view: &SolView, item: &SolItem) {
-        if item.get_root_loc_type().is_some() {
+        if item.get_root_loc_kind().is_some() {
             let fit_id = match item.get_fit_id() {
                 Some(fit_id) => fit_id,
                 _ => return,

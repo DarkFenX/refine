@@ -36,8 +36,8 @@ impl SolSvcs {
         let item_id = item.get_id();
         let mut mods = GeneratedMods::new();
         for effect in effects.iter() {
-            let mod_type = match get_mod_type(effect) {
-                Some(mod_type) => mod_type,
+            let mod_kind = match get_mod_kind(effect) {
+                Some(mod_kind) => mod_kind,
                 None => continue,
             };
             // Buffs
@@ -53,7 +53,7 @@ impl SolSvcs {
                                     &(buff_id.extra as EBuffId),
                                     &buff_info.scope,
                                     buff_val_attr_id,
-                                    mod_type,
+                                    mod_kind,
                                 );
                                 mods.dependent_buffs
                                     .extend_entries(buff_type_attr_id, buff_mods.iter().map(|v| *v));
@@ -69,7 +69,7 @@ impl SolSvcs {
                             &buff_id,
                             &buff_info.scope,
                             buff_val_attr_id,
-                            mod_type,
+                            mod_kind,
                         );
                         mods.all.extend(buff_mods);
                     }
@@ -82,7 +82,7 @@ impl SolSvcs {
                 effect
                     .mods
                     .iter()
-                    .map(|v| SolModifier::from_a_effect(item, effect, v, mod_type)),
+                    .map(|v| SolModifier::from_a_effect(item, effect, v, mod_kind)),
             );
             // Custom modifiers
             extend_with_custom_mods(item_id, effect.id, &mut mods.all);
@@ -107,8 +107,8 @@ impl SolSvcs {
         let item_id = item.get_id();
         for effect_id in effect_ids {
             let effect = sol_view.src.get_a_effect(effect_id).unwrap();
-            let mod_type = match get_mod_type(effect) {
-                Some(mod_type) => mod_type,
+            let mod_kind = match get_mod_kind(effect) {
+                Some(mod_kind) => mod_kind,
                 None => continue,
             };
             if let Some(buff_info) = effect.buff.as_ref() {
@@ -121,7 +121,7 @@ impl SolSvcs {
                             &(buff_id.extra as EBuffId),
                             &buff_info.scope,
                             buff_value_attr_id,
-                            mod_type,
+                            mod_kind,
                         );
                         mods.extend(buff_mods);
                     }
@@ -132,7 +132,7 @@ impl SolSvcs {
     }
 }
 
-fn get_mod_type(effect: &ad::AEffect) -> Option<SolModifierKind> {
+fn get_mod_kind(effect: &ad::AEffect) -> Option<SolModifierKind> {
     match (effect.category, &effect.buff) {
         // Local modifications
         (ec::effcats::PASSIVE | ec::effcats::ACTIVE | ec::effcats::ONLINE | ec::effcats::OVERLOAD, None) => {
@@ -158,13 +158,13 @@ fn get_buff_mods(
     buff_id: &EBuffId,
     buff_scope: &ad::AEffectBuffScope,
     buff_val_id: EAttrId,
-    mod_type: SolModifierKind,
+    mod_kind: SolModifierKind,
 ) -> Vec<SolModifier> {
     let mut mods = Vec::new();
     if let Some(buff) = sol_view.src.get_a_buff(buff_id) {
         for buff_mod in buff.mods.iter() {
             let modifier =
-                SolModifier::from_a_buff(item, effect, &buff, buff_mod, buff_val_id, mod_type, buff_scope.into());
+                SolModifier::from_a_buff(item, effect, &buff, buff_mod, buff_val_id, mod_kind, buff_scope.into());
             mods.push(modifier);
         }
     }

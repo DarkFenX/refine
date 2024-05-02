@@ -39,7 +39,7 @@ pub(in crate::sol::svc::svce_calc::modifier) fn get_mod_val(
         }
         // Not a module - return error (should never happen with correct data)
         _ => {
-            return Err(Error::new(ErrorKind::UnexpectedItemType(
+            return Err(Error::new(ErrorKind::UnexpectedItemKind(
                 item.get_id(),
                 item.get_name(),
                 SolModule::get_name(),
