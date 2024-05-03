@@ -14,124 +14,124 @@ def setup_test(
     val_post_perc,
     val_post_ass,
 ):
-    eve_src_attr = client.mk_eve_attr()
-    eve_tgt_attr = client.mk_eve_attr(stackable=False)
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr(stackable=False)
     # Pre-assignment
     eve_mod_pre_ass = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.pre_assign,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect_pre_ass = client.mk_eve_effect(mod_info=[eve_mod_pre_ass])
-    eve_item_src_pre_ass = client.mk_eve_item(
-        attrs={eve_src_attr.id: val_pre_ass},
+    eve_item_affector_pre_ass = client.mk_eve_item(
+        attrs={eve_affector_attr.id: val_pre_ass},
         eff_ids=[eve_effect_pre_ass.id])
     # Pre-multiplication
     eve_mod_pre_mul = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.pre_mul,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect_pre_mul = client.mk_eve_effect(mod_info=[eve_mod_pre_mul])
-    eve_item_src_pre_mul = client.mk_eve_item(
-        attrs={eve_src_attr.id: val_pre_mul},
+    eve_item_affector_pre_mul = client.mk_eve_item(
+        attrs={eve_affector_attr.id: val_pre_mul},
         eff_ids=[eve_effect_pre_mul.id])
     # Pre-division
     eve_mod_pre_div = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.pre_div,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect_pre_div = client.mk_eve_effect(mod_info=[eve_mod_pre_div])
-    eve_item_src_pre_div = client.mk_eve_item(
-        attrs={eve_src_attr.id: val_pre_div},
+    eve_item_affector_pre_div = client.mk_eve_item(
+        attrs={eve_affector_attr.id: val_pre_div},
         eff_ids=[eve_effect_pre_div.id])
     # Addition
     eve_mod_mod_add = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.mod_add,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect_mod_add = client.mk_eve_effect(mod_info=[eve_mod_mod_add])
-    eve_item_src_mod_add = client.mk_eve_item(
-        attrs={eve_src_attr.id: val_mod_add},
+    eve_item_affector_mod_add = client.mk_eve_item(
+        attrs={eve_affector_attr.id: val_mod_add},
         eff_ids=[eve_effect_mod_add.id])
     # Subtraction
     eve_mod_mod_sub = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.mod_sub,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect_mod_sub = client.mk_eve_effect(mod_info=[eve_mod_mod_sub])
-    eve_item_src_mod_sub = client.mk_eve_item(
-        attrs={eve_src_attr.id: val_mod_sub},
+    eve_item_affector_mod_sub = client.mk_eve_item(
+        attrs={eve_affector_attr.id: val_mod_sub},
         eff_ids=[eve_effect_mod_sub.id])
     # Post-multiplication
     eve_mod_post_mul = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect_post_mul = client.mk_eve_effect(mod_info=[eve_mod_post_mul])
-    eve_item_src_post_mul = client.mk_eve_item(
-        attrs={eve_src_attr.id: val_post_mul},
+    eve_item_affector_post_mul = client.mk_eve_item(
+        attrs={eve_affector_attr.id: val_post_mul},
         eff_ids=[eve_effect_post_mul.id])
     # Post-division
     eve_mod_post_div = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_div,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect_post_div = client.mk_eve_effect(mod_info=[eve_mod_post_div])
-    eve_item_src_post_div = client.mk_eve_item(
-        attrs={eve_src_attr.id: val_post_div},
+    eve_item_affector_post_div = client.mk_eve_item(
+        attrs={eve_affector_attr.id: val_post_div},
         eff_ids=[eve_effect_post_div.id])
     # Post-percent
     eve_mod_post_perc = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_percent,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect_post_perc = client.mk_eve_effect(mod_info=[eve_mod_post_perc])
-    eve_item_src_post_perc = client.mk_eve_item(
-        attrs={eve_src_attr.id: val_post_perc},
+    eve_item_affector_post_perc = client.mk_eve_item(
+        attrs={eve_affector_attr.id: val_post_perc},
         eff_ids=[eve_effect_post_perc.id])
     # Post-assignment
     eve_mod_post_ass = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_assign,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect_post_ass = client.mk_eve_effect(mod_info=[eve_mod_post_ass])
-    eve_item_src_post_ass = client.mk_eve_item(
-        attrs={eve_src_attr.id: val_post_ass},
+    eve_item_affector_post_ass = client.mk_eve_item(
+        attrs={eve_affector_attr.id: val_post_ass},
         eff_ids=[eve_effect_post_ass.id])
-    eve_item_tgt = client.mk_eve_item(attrs={eve_tgt_attr.id: 100})
+    eve_item_affectee = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_rig(type_id=eve_item_src_pre_ass.id)
-    api_fit.add_rig(type_id=eve_item_src_pre_mul.id)
-    api_fit.add_rig(type_id=eve_item_src_pre_div.id)
-    api_fit.add_rig(type_id=eve_item_src_mod_add.id)
-    api_fit.add_rig(type_id=eve_item_src_mod_sub.id)
-    api_fit.add_rig(type_id=eve_item_src_post_mul.id)
-    api_fit.add_rig(type_id=eve_item_src_post_div.id)
-    api_fit.add_rig(type_id=eve_item_src_post_perc.id)
+    api_fit.add_rig(type_id=eve_item_affector_pre_ass.id)
+    api_fit.add_rig(type_id=eve_item_affector_pre_mul.id)
+    api_fit.add_rig(type_id=eve_item_affector_pre_div.id)
+    api_fit.add_rig(type_id=eve_item_affector_mod_add.id)
+    api_fit.add_rig(type_id=eve_item_affector_mod_sub.id)
+    api_fit.add_rig(type_id=eve_item_affector_post_mul.id)
+    api_fit.add_rig(type_id=eve_item_affector_post_div.id)
+    api_fit.add_rig(type_id=eve_item_affector_post_perc.id)
     if val_post_ass:
-        api_fit.add_rig(type_id=eve_item_src_post_ass.id)
-    api_item_tgt = api_fit.set_ship(type_id=eve_item_tgt.id)
-    api_item_tgt.update()
-    return api_item_tgt.attrs[eve_tgt_attr.id].dogma, api_item_tgt.mods[eve_tgt_attr.id]
+        api_fit.add_rig(type_id=eve_item_affector_post_ass.id)
+    api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee.id)
+    api_item_affectee.update()
+    return api_item_affectee.attrs[eve_affectee_attr.id].dogma, api_item_affectee.mods[eve_affectee_attr.id]
 
 
 def test_almost_all_in(client, consts):

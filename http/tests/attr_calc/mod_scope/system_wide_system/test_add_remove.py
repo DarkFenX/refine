@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_src_addition_removal(client, consts):
+def test_affector_addition_removal(client, consts):
     # Check that effects are applied/removed when system-wide effect is added/removed
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
@@ -9,8 +9,8 @@ def test_src_addition_removal(client, consts):
         func=consts.EveModFunc.loc,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr1.id,
-        tgt_attr_id=eve_attr2.id)
+        affector_attr_id=eve_attr1.id,
+        affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_sw_effect = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
     eve_ship = client.mk_eve_item()
@@ -36,8 +36,8 @@ def test_fit_addition_removal(client, consts):
         func=consts.EveModFunc.loc,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr1.id,
-        tgt_attr_id=eve_attr2.id)
+        affector_attr_id=eve_attr1.id,
+        affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_sw_effect = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
     eve_ship = client.mk_eve_item()
@@ -58,7 +58,7 @@ def test_fit_addition_removal(client, consts):
     assert api_rig1.update().attrs[eve_attr2.id].dogma == approx(37.5)
 
 
-def test_src_state_change(client, consts):
+def test_affector_state_change(client, consts):
     # Check that effects are applied/removed when system-wide effect is enabled/disabled
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
@@ -66,8 +66,8 @@ def test_src_state_change(client, consts):
         func=consts.EveModFunc.loc,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr1.id,
-        tgt_attr_id=eve_attr2.id)
+        affector_attr_id=eve_attr1.id,
+        affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_sw_effect = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
     eve_ship = client.mk_eve_item()

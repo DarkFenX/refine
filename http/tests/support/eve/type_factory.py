@@ -127,8 +127,8 @@ class EveTypeFactory(EveDataManager):
             grp: Union[int, Type[Absent]] = Absent,
             srq: Union[int, Type[Absent]] = Absent,
             op: Union[int, Type[Absent]] = Absent,
-            src_attr_id: Union[int, Absent] = Absent,
-            tgt_attr_id: Union[int, Absent] = Absent,
+            affector_attr_id: Union[int, Absent] = Absent,
+            affectee_attr_id: Union[int, Absent] = Absent,
     ) -> EffectModifier:
         return EffectModifier(
             func=func,
@@ -136,8 +136,8 @@ class EveTypeFactory(EveDataManager):
             group=grp,
             skill_req=srq,
             operation=op,
-            src_attr_id=src_attr_id,
-            tgt_attr_id=tgt_attr_id)
+            affector_attr_id=affector_attr_id,
+            affectee_attr_id=affectee_attr_id)
 
     def mk_eve_buff(
             self,

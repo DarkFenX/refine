@@ -4,25 +4,25 @@ from pytest import approx
 def test_same_item_different_effects_attrs(client, consts):
     # Reflects currently real EVE scenario: 2 different skills affect 2 separate attributes on
     # capital ships, which, in turn, affect ship agility via 2 different on-ship effects
-    eve_src_attr1 = client.mk_eve_attr()
-    eve_src_attr2 = client.mk_eve_attr()
-    eve_tgt_attr = client.mk_eve_attr()
+    eve_affector_attr1 = client.mk_eve_attr()
+    eve_affector_attr2 = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.item,
         op=consts.EveModOp.post_percent,
-        src_attr_id=eve_src_attr1.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr1.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect1 = client.mk_eve_effect(mod_info=[eve_mod1])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.item,
         op=consts.EveModOp.post_percent,
-        src_attr_id=eve_src_attr2.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr2.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect2 = client.mk_eve_effect(mod_info=[eve_mod2])
     eve_item = client.mk_eve_item(
-        attrs={eve_src_attr1.id: 20, eve_src_attr2.id: 20, eve_tgt_attr.id: 100},
+        attrs={eve_affector_attr1.id: 20, eve_affector_attr2.id: 20, eve_affectee_attr.id: 100},
         eff_ids=[eve_effect1.id, eve_effect2.id])
     client.create_sources()
     api_sol = client.create_sol()
@@ -30,10 +30,12 @@ def test_same_item_different_effects_attrs(client, consts):
     api_item = api_fit.set_ship(type_id=eve_item.id)
     # Verification
     api_item.update()
-    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(144)
-    assert len(api_item.mods[eve_tgt_attr.id]) == 2
-    assert api_item.mods[eve_tgt_attr.id].find_by_src_attr(src_attr_id=eve_src_attr1.id).one().val == approx(20)
-    assert api_item.mods[eve_tgt_attr.id].find_by_src_attr(src_attr_id=eve_src_attr2.id).one().val == approx(20)
+    assert api_item.attrs[eve_affectee_attr.id].dogma == approx(144)
+    assert len(api_item.mods[eve_affectee_attr.id]) == 2
+    assert api_item.mods[eve_affectee_attr.id].find_by_affector_attr(
+        affector_attr_id=eve_affector_attr1.id).one().val == approx(20)
+    assert api_item.mods[eve_affectee_attr.id].find_by_affector_attr(
+        affector_attr_id=eve_affector_attr2.id).one().val == approx(20)
 
 
 def test_same_item_different_effects_attrs_switching(client, consts):
@@ -41,25 +43,25 @@ def test_same_item_different_effects_attrs_switching(client, consts):
     # unregisters affectors, ignoring modifier keys which are needed for some tests in this module
     # to work. If it would not register properly and used the same keys as logic above it, after
     # disabling one of effects attr value would revert to its base value
-    eve_src_attr1 = client.mk_eve_attr()
-    eve_src_attr2 = client.mk_eve_attr()
-    eve_tgt_attr = client.mk_eve_attr()
+    eve_affector_attr1 = client.mk_eve_attr()
+    eve_affector_attr2 = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.item,
         op=consts.EveModOp.post_percent,
-        src_attr_id=eve_src_attr1.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr1.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect1 = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_mod1])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.item,
         op=consts.EveModOp.post_percent,
-        src_attr_id=eve_src_attr2.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr2.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect2 = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod2])
     eve_item = client.mk_eve_item(
-        attrs={eve_src_attr1.id: 20, eve_src_attr2.id: 20, eve_tgt_attr.id: 100},
+        attrs={eve_affector_attr1.id: 20, eve_affector_attr2.id: 20, eve_affectee_attr.id: 100},
         eff_ids=[eve_effect1.id, eve_effect2.id],
         defeff_id=eve_effect2.id)
     client.create_sources()
@@ -68,25 +70,27 @@ def test_same_item_different_effects_attrs_switching(client, consts):
     api_item = api_fit.add_mod(type_id=eve_item.id, state=consts.ApiState.offline)
     # Verification
     api_item.update()
-    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(120)
-    api_mods = api_item.mods[eve_tgt_attr.id]
+    assert api_item.attrs[eve_affectee_attr.id].dogma == approx(120)
+    api_mods = api_item.mods[eve_affectee_attr.id]
     assert api_mods.one().val == approx(20)
-    assert api_mods.one().src.one().attr_id == eve_src_attr1.id
+    assert api_mods.one().affectors.one().attr_id == eve_affector_attr1.id
     # Action
     api_item.change_mod(state=consts.ApiState.active)
     # Verification
     api_item.update()
-    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(144)
-    assert len(api_item.mods[eve_tgt_attr.id]) == 2
-    assert api_item.mods[eve_tgt_attr.id].find_by_src_attr(src_attr_id=eve_src_attr1.id).one().val == approx(20)
-    assert api_item.mods[eve_tgt_attr.id].find_by_src_attr(src_attr_id=eve_src_attr2.id).one().val == approx(20)
+    assert api_item.attrs[eve_affectee_attr.id].dogma == approx(144)
+    assert len(api_item.mods[eve_affectee_attr.id]) == 2
+    assert api_item.mods[eve_affectee_attr.id].find_by_affector_attr(
+        affector_attr_id=eve_affector_attr1.id).one().val == approx(20)
+    assert api_item.mods[eve_affectee_attr.id].find_by_affector_attr(
+        affector_attr_id=eve_affector_attr2.id).one().val == approx(20)
     # Action
     api_item.change_mod(state=consts.ApiState.offline)
     # Verification
     api_item.update()
-    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(120)
-    assert api_item.mods[eve_tgt_attr.id].one().val == approx(20)
-    assert api_item.mods[eve_tgt_attr.id].one().src.one().attr_id == eve_src_attr1.id
+    assert api_item.attrs[eve_affectee_attr.id].dogma == approx(120)
+    assert api_item.mods[eve_affectee_attr.id].one().val == approx(20)
+    assert api_item.mods[eve_affectee_attr.id].one().affectors.one().attr_id == eve_affector_attr1.id
 
 
 def test_same_item_attr_different_effects(client, consts):
@@ -96,38 +100,38 @@ def test_same_item_attr_different_effects(client, consts):
     # modification is applied only once in game
     eve_skill1 = client.mk_eve_item()
     eve_skill2 = client.mk_eve_item()
-    eve_src_attr = client.mk_eve_attr()
-    eve_tgt_attr = client.mk_eve_attr(stackable=True)
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr(stackable=True)
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_srq,
         dom=consts.EveModDom.ship,
         srq=eve_skill1.id,
         op=consts.EveModOp.post_percent,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect1 = client.mk_eve_effect(mod_info=[eve_mod1])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_srq,
         dom=consts.EveModDom.ship,
         srq=eve_skill2.id,
         op=consts.EveModOp.post_percent,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect2 = client.mk_eve_effect(mod_info=[eve_mod2])
-    eve_src_item = client.mk_eve_item(attrs={eve_src_attr.id: 20}, eff_ids=[eve_effect1.id, eve_effect2.id])
-    eve_tgt_item = client.mk_eve_item(attrs={eve_tgt_attr.id: 100}, srqs={eve_skill1.id: 1, eve_skill2.id: 1})
+    eve_affector_item = client.mk_eve_item(attrs={eve_affector_attr.id: 20}, eff_ids=[eve_effect1.id, eve_effect2.id])
+    eve_affectee_item = client.mk_eve_item(attrs={eve_affectee_attr.id: 100}, srqs={eve_skill1.id: 1, eve_skill2.id: 1})
     eve_ship_item = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_item.id)
-    api_fit.add_rig(type_id=eve_src_item.id)
-    api_item = api_fit.add_mod(type_id=eve_tgt_item.id, rack=consts.ApiRack.mid)
+    api_fit.add_rig(type_id=eve_affector_item.id)
+    api_item = api_fit.add_mod(type_id=eve_affectee_item.id, rack=consts.ApiRack.mid)
     # Verification
     api_item.update()
-    assert api_item.attrs[eve_tgt_attr.id].dogma == approx(120)
-    assert api_item.mods[eve_tgt_attr.id].one().val == approx(20)
-    assert api_item.mods[eve_tgt_attr.id].one().src.one().attr_id == eve_src_attr.id
+    assert api_item.attrs[eve_affectee_attr.id].dogma == approx(120)
+    assert api_item.mods[eve_affectee_attr.id].one().val == approx(20)
+    assert api_item.mods[eve_affectee_attr.id].one().affectors.one().attr_id == eve_affector_attr.id
 
 
 def test_same_item_attr_different_effects_switch(client, consts):
@@ -137,48 +141,48 @@ def test_same_item_attr_different_effects_switch(client, consts):
     # disabling one of effects attr value would revert to its base value
     eve_skill1 = client.mk_eve_item()
     eve_skill2 = client.mk_eve_item()
-    eve_src_attr = client.mk_eve_attr()
-    eve_tgt_attr = client.mk_eve_attr(stackable=True)
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr(stackable=True)
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_percent,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect1 = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_mod1])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_percent,
-        src_attr_id=eve_src_attr.id,
-        tgt_attr_id=eve_tgt_attr.id)
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
     eve_effect2 = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod2])
-    eve_src_item = client.mk_eve_item(
-        attrs={eve_src_attr.id: 20},
+    eve_affector_item = client.mk_eve_item(
+        attrs={eve_affector_attr.id: 20},
         eff_ids=[eve_effect1.id, eve_effect2.id],
         defeff_id=eve_effect2.id)
-    eve_tgt_item = client.mk_eve_item(attrs={eve_tgt_attr.id: 100}, srqs={eve_skill1.id: 1, eve_skill2.id: 1})
+    eve_affectee_item = client.mk_eve_item(attrs={eve_affectee_attr.id: 100}, srqs={eve_skill1.id: 1, eve_skill2.id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_src_item = api_fit.add_mod(type_id=eve_src_item.id, state=consts.ApiState.offline)
-    api_tgt_item = api_fit.set_ship(type_id=eve_tgt_item.id)
+    api_affector_item = api_fit.add_mod(type_id=eve_affector_item.id, state=consts.ApiState.offline)
+    api_affectee_item = api_fit.set_ship(type_id=eve_affectee_item.id)
     # Verification
-    api_tgt_item.update()
-    assert api_tgt_item.attrs[eve_tgt_attr.id].dogma == approx(120)
-    assert api_tgt_item.mods[eve_tgt_attr.id].one().val == approx(20)
-    assert api_tgt_item.mods[eve_tgt_attr.id].one().src.one().attr_id == eve_src_attr.id
+    api_affectee_item.update()
+    assert api_affectee_item.attrs[eve_affectee_attr.id].dogma == approx(120)
+    assert api_affectee_item.mods[eve_affectee_attr.id].one().val == approx(20)
+    assert api_affectee_item.mods[eve_affectee_attr.id].one().affectors.one().attr_id == eve_affector_attr.id
     # Action
-    api_src_item.change_mod(state=consts.ApiState.active)
+    api_affector_item.change_mod(state=consts.ApiState.active)
     # Verification
-    api_tgt_item.update()
-    assert api_tgt_item.attrs[eve_tgt_attr.id].dogma == approx(120)
-    assert api_tgt_item.mods[eve_tgt_attr.id].one().val == approx(20)
-    assert api_tgt_item.mods[eve_tgt_attr.id].one().src.one().attr_id == eve_src_attr.id
+    api_affectee_item.update()
+    assert api_affectee_item.attrs[eve_affectee_attr.id].dogma == approx(120)
+    assert api_affectee_item.mods[eve_affectee_attr.id].one().val == approx(20)
+    assert api_affectee_item.mods[eve_affectee_attr.id].one().affectors.one().attr_id == eve_affector_attr.id
     # Action
-    api_src_item.change_mod(state=consts.ApiState.offline)
+    api_affector_item.change_mod(state=consts.ApiState.offline)
     # Verification
-    api_tgt_item.update()
-    assert api_tgt_item.attrs[eve_tgt_attr.id].dogma == approx(120)
-    assert api_tgt_item.mods[eve_tgt_attr.id].one().val == approx(20)
-    assert api_tgt_item.mods[eve_tgt_attr.id].one().src.one().attr_id == eve_src_attr.id
+    api_affectee_item.update()
+    assert api_affectee_item.attrs[eve_affectee_attr.id].dogma == approx(120)
+    assert api_affectee_item.mods[eve_affectee_attr.id].one().val == approx(20)
+    assert api_affectee_item.mods[eve_affectee_attr.id].one().affectors.one().attr_id == eve_affector_attr.id

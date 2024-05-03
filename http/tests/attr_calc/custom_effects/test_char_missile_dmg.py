@@ -15,8 +15,8 @@ def test_filter(client, consts):
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.char,
         op=consts.EveModOp.pre_mul,
-        src_attr_id=eve_attr_bcs.id,
-        tgt_attr_id=eve_attr_char.id)
+        affector_attr_id=eve_attr_bcs.id,
+        affectee_attr_id=eve_attr_char.id)
     eve_effect_bcs = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod_bcs])
     eve_item_skill1 = client.mk_eve_item(id_=consts.EveItem.missile_launcher_operation)
     eve_item_skill2 = client.mk_eve_item()
@@ -79,29 +79,29 @@ def test_penalization(client, consts):
         dom=consts.EveModDom.char,
         srq=eve_item_skill.id,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr_magnetar.id,
-        tgt_attr_id=eve_attr_missile_em.id)
+        affector_attr_id=eve_attr_magnetar.id,
+        affectee_attr_id=eve_attr_missile_em.id)
     eve_mod_magnetar_therm = client.mk_eve_effect_mod(
         func=consts.EveModFunc.own_srq,
         dom=consts.EveModDom.char,
         srq=eve_item_skill.id,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr_magnetar.id,
-        tgt_attr_id=eve_attr_missile_therm.id)
+        affector_attr_id=eve_attr_magnetar.id,
+        affectee_attr_id=eve_attr_missile_therm.id)
     eve_mod_magnetar_kin = client.mk_eve_effect_mod(
         func=consts.EveModFunc.own_srq,
         dom=consts.EveModDom.char,
         srq=eve_item_skill.id,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr_magnetar.id,
-        tgt_attr_id=eve_attr_missile_kin.id)
+        affector_attr_id=eve_attr_magnetar.id,
+        affectee_attr_id=eve_attr_missile_kin.id)
     eve_mod_magnetar_expl = client.mk_eve_effect_mod(
         func=consts.EveModFunc.own_srq,
         dom=consts.EveModDom.char,
         srq=eve_item_skill.id,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr_magnetar.id,
-        tgt_attr_id=eve_attr_missile_expl.id)
+        affector_attr_id=eve_attr_magnetar.id,
+        affectee_attr_id=eve_attr_missile_expl.id)
     eve_effect_magnetar = client.mk_eve_effect(
         cat_id=consts.EveEffCat.system,
         mod_info=[eve_mod_magnetar_em, eve_mod_magnetar_therm, eve_mod_magnetar_kin, eve_mod_magnetar_expl])
@@ -137,25 +137,25 @@ def test_penalization(client, consts):
     # reported as expected - that on-character effect modification is not getting penalized
     api_em_mods = api_launcher.charge.mods[eve_attr_missile_em.id]
     assert len(api_em_mods) == 2
-    assert api_em_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
-    assert api_em_mods.find_by_src_item(src_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
-    assert api_em_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
-    assert api_em_mods.find_by_src_item(src_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
+    assert api_em_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().penalized is True
+    assert api_em_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
+    assert api_em_mods.find_by_affector_item(affector_item_id=api_char.id).one().penalized is False
+    assert api_em_mods.find_by_affector_item(affector_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
     api_therm_mods = api_launcher.charge.mods[eve_attr_missile_therm.id]
     assert len(api_therm_mods) == 2
-    assert api_therm_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
-    assert api_therm_mods.find_by_src_item(src_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
-    assert api_therm_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
-    assert api_therm_mods.find_by_src_item(src_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
+    assert api_therm_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().penalized is True
+    assert api_therm_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
+    assert api_therm_mods.find_by_affector_item(affector_item_id=api_char.id).one().penalized is False
+    assert api_therm_mods.find_by_affector_item(affector_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
     api_kin_mods = api_launcher.charge.mods[eve_attr_missile_kin.id]
     assert len(api_kin_mods) == 2
-    assert api_kin_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
-    assert api_kin_mods.find_by_src_item(src_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
-    assert api_kin_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
-    assert api_kin_mods.find_by_src_item(src_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
+    assert api_kin_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().penalized is True
+    assert api_kin_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
+    assert api_kin_mods.find_by_affector_item(affector_item_id=api_char.id).one().penalized is False
+    assert api_kin_mods.find_by_affector_item(affector_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
     api_expl_mods = api_launcher.charge.mods[eve_attr_missile_expl.id]
     assert len(api_expl_mods) == 2
-    assert api_expl_mods.find_by_src_item(src_item_id=api_magnetar.id).one().penalized is True
-    assert api_expl_mods.find_by_src_item(src_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
-    assert api_expl_mods.find_by_src_item(src_item_id=api_char.id).one().penalized is False
-    assert api_expl_mods.find_by_src_item(src_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
+    assert api_expl_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().penalized is True
+    assert api_expl_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
+    assert api_expl_mods.find_by_affector_item(affector_item_id=api_char.id).one().penalized is False
+    assert api_expl_mods.find_by_affector_item(affector_item_id=api_char.id).one().op == consts.ApiModOp.post_mul

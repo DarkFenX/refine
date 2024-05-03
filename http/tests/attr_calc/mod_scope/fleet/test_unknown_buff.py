@@ -5,22 +5,22 @@ def test_static(client, consts):
     # Check that there is no strange side effects when buff isn't defined
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
-    eve_tgt_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
     eve_effect = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_warfare_link_armor,
         cat_id=consts.EveEffCat.active)
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: 7, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_tgt_attr.id: 7.5})
+    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
     api_module = api_fit.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
-    assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+    assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     api_module.remove()
-    assert api_ship.update().attrs[eve_tgt_attr.id].dogma == approx(7.5)
+    assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
 def test_switch(client, consts):
@@ -28,11 +28,11 @@ def test_switch(client, consts):
     eve_buff_val_mult_attr = client.mk_eve_attr()
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
-    eve_tgt_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
     eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
-        item_mods=[client.mk_eve_buff_mod(attr_id=eve_tgt_attr.id)])
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id)])
     eve_module_effect = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_warfare_link_armor,
         cat_id=consts.EveEffCat.active)
@@ -44,14 +44,14 @@ def test_switch(client, consts):
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.other,
         op=consts.EveModOp.post_assign,
-        src_attr_id=eve_buff_type_attr.id,
-        tgt_attr_id=eve_buff_type_attr.id)
+        affector_attr_id=eve_buff_type_attr.id,
+        affectee_attr_id=eve_buff_type_attr.id)
     eve_charge_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.other,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_buff_val_mult_attr.id,
-        tgt_attr_id=eve_buff_val_attr.id)
+        affector_attr_id=eve_buff_val_mult_attr.id,
+        affectee_attr_id=eve_buff_val_attr.id)
     eve_charge_effect = client.mk_eve_effect(mod_info=[eve_charge_mod1, eve_charge_mod2])
     eve_charge1 = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_mult_attr.id: 4},
@@ -60,7 +60,7 @@ def test_switch(client, consts):
         # Buff ID which we didn't create
         attrs={eve_buff_type_attr.id: eve_buff.id + 1, eve_buff_val_mult_attr.id: 8},
         eff_ids=[eve_charge_effect.id])
-    eve_ship = client.mk_eve_item(attrs={eve_tgt_attr.id: 20})
+    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 20})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -68,19 +68,19 @@ def test_switch(client, consts):
     api_module = api_fit.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_tgt_attr.id].dogma == approx(20)
+    assert api_ship.attrs[eve_affectee_attr.id].dogma == approx(20)
     # Action
     api_module.change_mod(charge=eve_charge1.id)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_tgt_attr.id].dogma == approx(100)
+    assert api_ship.attrs[eve_affectee_attr.id].dogma == approx(100)
     # Action
     api_module.change_mod(charge=eve_charge2.id)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_tgt_attr.id].dogma == approx(20)
+    assert api_ship.attrs[eve_affectee_attr.id].dogma == approx(20)
     # Action
     api_module.change_mod(charge=None)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_tgt_attr.id].dogma == approx(20)
+    assert api_ship.attrs[eve_affectee_attr.id].dogma == approx(20)

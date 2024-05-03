@@ -9,8 +9,8 @@ def test_project_unproject(client, consts):
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr1.id,
-        tgt_attr_id=eve_attr2.id)
+        affector_attr_id=eve_attr1.id,
+        affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_proj_effect = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
     eve_ship = client.mk_eve_item(attrs={eve_attr2.id: 7.5})
@@ -26,7 +26,7 @@ def test_project_unproject(client, consts):
     assert api_ship.update().attrs[eve_attr2.id].dogma == approx(7.5)
 
 
-def test_src_state_change(client, consts):
+def test_affector_state_change(client, consts):
     # Check that effects are applied/removed when projected effect is enabled/disabled
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
@@ -34,8 +34,8 @@ def test_src_state_change(client, consts):
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr1.id,
-        tgt_attr_id=eve_attr2.id)
+        affector_attr_id=eve_attr1.id,
+        affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_proj_effect = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
     eve_ship = client.mk_eve_item(attrs={eve_attr2.id: 7.5})
@@ -60,8 +60,8 @@ def test_remove(client, consts):
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        src_attr_id=eve_attr1.id,
-        tgt_attr_id=eve_attr2.id)
+        affector_attr_id=eve_attr1.id,
+        affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_proj_effect = client.mk_eve_item(attrs={eve_attr1.id: 5}, eff_ids=[eve_effect.id])
     eve_ship = client.mk_eve_item(attrs={eve_attr2.id: 7.5})

@@ -9,8 +9,8 @@ def test_target_untarget(client, consts):
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.tgt,
         op=consts.EveModOp.mod_add,
-        src_attr_id=eve_attr1.id,
-        tgt_attr_id=eve_attr2.id)
+        affector_attr_id=eve_attr1.id,
+        affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 3}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_ship = client.mk_eve_item(attrs={eve_attr2.id: -2})
@@ -35,8 +35,8 @@ def test_remove(client, consts):
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.tgt,
         op=consts.EveModOp.mod_add,
-        src_attr_id=eve_attr1.id,
-        tgt_attr_id=eve_attr2.id)
+        affector_attr_id=eve_attr1.id,
+        affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 3}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_ship = client.mk_eve_item(attrs={eve_attr2.id: -2})
@@ -53,7 +53,7 @@ def test_remove(client, consts):
     assert api_ship.update().attrs[eve_attr2.id].dogma == approx(-2)
 
 
-def test_src_state_change(client, consts):
+def test_affector_state_change(client, consts):
     # Check that effects are applied/removed when state switch up/down happens
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
@@ -61,8 +61,8 @@ def test_src_state_change(client, consts):
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.tgt,
         op=consts.EveModOp.mod_add,
-        src_attr_id=eve_attr1.id,
-        tgt_attr_id=eve_attr2.id)
+        affector_attr_id=eve_attr1.id,
+        affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 3}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_ship = client.mk_eve_item(attrs={eve_attr2.id: -2})
