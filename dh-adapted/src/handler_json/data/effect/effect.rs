@@ -1,4 +1,4 @@
-use crate::handler_json::data::{CEffectModifier, CEffectBuffInfo, CModBuildStatus, CState};
+use crate::handler_json::data::{CEffectBuffInfo, CEffectModifier, CModBuildStatus, CState};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
