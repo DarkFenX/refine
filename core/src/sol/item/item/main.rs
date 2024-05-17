@@ -235,7 +235,7 @@ impl SolItem {
             Self::SwEffect(_) => false,
         }
     }
-    pub(in crate::sol) fn iter_targets(&self) -> Option<impl ExactSizeIterator<Item = &SolItemId>> {
+    pub(in crate::sol) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&SolItemId, &Option<AttrVal>)>> {
         match self {
             Self::Booster(_) => None,
             Self::Character(_) => None,
@@ -244,8 +244,28 @@ impl SolItem {
             Self::Fighter(_) => None,
             Self::FwEffect(_) => None,
             Self::Implant(_) => None,
-            Self::Module(module) => Some(module.tgts.iter_tgts()),
-            Self::ProjEffect(proj_effect) => Some(proj_effect.tgts.iter_tgts()),
+            Self::Module(module) => Some(module.projs.iter()),
+            Self::ProjEffect(proj_effect) => Some(proj_effect.projs.iter()),
+            Self::Rig(_) => None,
+            Self::Ship(_) => None,
+            Self::Skill(_) => None,
+            Self::Stance(_) => None,
+            Self::Structure(_) => None,
+            Self::Subsystem(_) => None,
+            Self::SwEffect(_) => None,
+        }
+    }
+    pub(in crate::sol) fn iter_proj_items(&self) -> Option<impl ExactSizeIterator<Item = &SolItemId>> {
+        match self {
+            Self::Booster(_) => None,
+            Self::Character(_) => None,
+            Self::Charge(_) => None,
+            Self::Drone(_) => None,
+            Self::Fighter(_) => None,
+            Self::FwEffect(_) => None,
+            Self::Implant(_) => None,
+            Self::Module(module) => Some(module.projs.iter_items()),
+            Self::ProjEffect(proj_effect) => Some(proj_effect.projs.iter_items()),
             Self::Rig(_) => None,
             Self::Ship(_) => None,
             Self::Skill(_) => None,

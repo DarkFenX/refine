@@ -3,10 +3,10 @@ use crate::{
     util::StMap,
 };
 
-pub(in crate::sol) struct SolTgtItems {
+pub(in crate::sol) struct SolProjs {
     data: StMap<SolItemId, Option<AttrVal>>,
 }
-impl SolTgtItems {
+impl SolProjs {
     pub(in crate::sol::item) fn new() -> Self {
         Self { data: StMap::new() }
     }
@@ -22,7 +22,7 @@ impl SolTgtItems {
     pub(in crate::sol) fn iter(&self) -> impl ExactSizeIterator<Item = (&SolItemId, &Option<AttrVal>)> {
         self.data.iter()
     }
-    pub(in crate::sol) fn iter_tgts(&self) -> impl ExactSizeIterator<Item = &SolItemId> {
+    pub(in crate::sol) fn iter_items(&self) -> impl ExactSizeIterator<Item = &SolItemId> {
         self.data.keys()
     }
     pub(in crate::sol) fn contains(&self, item_id: &SolItemId) -> bool {

@@ -50,7 +50,7 @@ impl SolModuleInfo {
             sol_module.pos,
             charge_info,
             sol_module
-                .tgts
+                .projs
                 .iter()
                 .map(|(item_id, range)| SolTgtInfo::new(*item_id, *range))
                 .collect(),

@@ -105,13 +105,13 @@ impl SolAffecteeRegister {
             // Various targetable effects affect only what they are target, depending on modifier
             // kind
             (SolModifierKind::System, SolItem::ProjEffect(proj_effect)) => {
-                for tgt_item_id in proj_effect.tgts.iter_tgts() {
+                for tgt_item_id in proj_effect.projs.iter_items() {
                     let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                     self.fill_tgt_for_system_mod(affectees, sol_view, modifier, tgt_item);
                 }
             }
             (SolModifierKind::Targeted, _) => {
-                if let Some(tgt_item_ids) = item.iter_targets() {
+                if let Some(tgt_item_ids) = item.iter_proj_items() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                         self.fill_tgt_for_targeted_mod(affectees, modifier, tgt_item);
@@ -119,7 +119,7 @@ impl SolAffecteeRegister {
                 }
             }
             (SolModifierKind::Buff, _) => {
-                if let Some(tgt_item_ids) = item.iter_targets() {
+                if let Some(tgt_item_ids) = item.iter_proj_items() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                         self.fill_tgt_for_buff_mod(affectees, modifier, tgt_item);

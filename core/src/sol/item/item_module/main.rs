@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{EItemId, Idx, SolFitId, SolItemId},
     sol::{
-        item::{SolEffectModes, SolItemState, SolTgtItems},
+        item::{SolEffectModes, SolItemState, SolProjs},
         SolModRack,
     },
     src::Src,
@@ -17,7 +17,7 @@ pub(in crate::sol) struct SolModule {
     pub(in crate::sol) rack: SolModRack,
     pub(in crate::sol) pos: Idx,
     pub(in crate::sol) charge_item_id: Option<SolItemId>,
-    pub(in crate::sol) tgts: SolTgtItems,
+    pub(in crate::sol) projs: SolProjs,
     pub(in crate::sol) effect_modes: SolEffectModes,
     pub(in crate::sol) a_item: Option<ad::ArcItem>,
 }
@@ -40,7 +40,7 @@ impl SolModule {
             rack,
             pos,
             charge_item_id: charge_a_item_id,
-            tgts: SolTgtItems::new(),
+            projs: SolProjs::new(),
             effect_modes: SolEffectModes::new(),
             a_item: src.get_a_item(&a_item_id).cloned(),
         }

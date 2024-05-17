@@ -13,6 +13,7 @@ use crate::{
         },
         SolView,
     },
+    AttrVal,
 };
 
 impl SolSvcs {
@@ -125,7 +126,11 @@ impl SolSvcs {
         item: &SolItem,
         effect: &ad::AEffect,
         tgt_item: &SolItem,
+        range: Option<AttrVal>,
     ) {
+        self.calc_data
+            .projs
+            .add_range(item.get_id(), effect.id, tgt_item.get_id(), range);
         let item_id = item.get_id();
         let modifiers = self
             .calc_data
@@ -177,6 +182,9 @@ impl SolSvcs {
                 self.calc_data.mods.rm_mod_tgt(modifier, tgt_item);
             }
         }
+        self.calc_data
+            .projs
+            .remove_range(item.get_id(), effect.id, tgt_item.get_id());
     }
     pub(in crate::sol::svc) fn calc_attr_value_changed(
         &mut self,

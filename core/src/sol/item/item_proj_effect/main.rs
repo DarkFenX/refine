@@ -1,7 +1,7 @@
 use crate::{
     ad,
     defs::{EItemId, SolItemId},
-    sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemState, SolTgtItems},
+    sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemState, SolProjs},
     src::Src,
     util::Named,
 };
@@ -10,7 +10,7 @@ pub(in crate::sol) struct SolProjEffect {
     pub(in crate::sol) id: SolItemId,
     pub(in crate::sol) a_item_id: EItemId,
     pub(in crate::sol) state: SolItemState,
-    pub(in crate::sol) tgts: SolTgtItems,
+    pub(in crate::sol) projs: SolProjs,
     pub(in crate::sol) effect_modes: SolEffectModes,
     pub(in crate::sol) a_item: Option<ad::ArcItem>,
 }
@@ -20,7 +20,7 @@ impl SolProjEffect {
             id,
             a_item_id,
             state: bool_to_state(state),
-            tgts: SolTgtItems::new(),
+            projs: SolProjs::new(),
             effect_modes: SolEffectModes::new(),
             a_item: src.get_a_item(&a_item_id).cloned(),
         }

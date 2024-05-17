@@ -27,13 +27,13 @@ impl SolarSystem {
         // Remove outgoing projections
         match main {
             SolItem::ProjEffect(proj_effect) => {
-                let proj_outgoing = proj_effect.tgts.iter_tgts().map(|v| *v).collect_vec();
+                let proj_outgoing = proj_effect.projs.iter_items().map(|v| *v).collect_vec();
                 for targeted_item_id in proj_outgoing.iter() {
                     self.remove_proj_effect_tgt(item_id, targeted_item_id).unwrap();
                 }
             }
             SolItem::Module(module) => {
-                let proj_outgoing = module.tgts.iter_tgts().map(|v| *v).collect_vec();
+                let proj_outgoing = module.projs.iter_items().map(|v| *v).collect_vec();
                 for targeted_item_id in proj_outgoing.iter() {
                     self.remove_module_tgt(item_id, targeted_item_id).unwrap();
                 }

@@ -277,7 +277,7 @@ impl SolModifierRegister {
             // kind
             (SolModifierKind::System, SolItem::ProjEffect(proj_effect)) => {
                 let mut changed = false;
-                for tgt_item_id in proj_effect.tgts.iter_tgts() {
+                for tgt_item_id in proj_effect.projs.iter_items() {
                     let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                     changed = changed | self.apply_system_mod_to_item(modifier, tgt_item);
                 }
@@ -285,7 +285,7 @@ impl SolModifierRegister {
             }
             (SolModifierKind::Targeted, _) => {
                 let mut changed = false;
-                if let Some(tgt_item_ids) = item.iter_targets() {
+                if let Some(tgt_item_ids) = item.iter_proj_items() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                         changed = changed | self.apply_targeted_mod_to_item(modifier, tgt_item);
@@ -295,7 +295,7 @@ impl SolModifierRegister {
             }
             (SolModifierKind::Buff, _) => {
                 let mut changed = false;
-                if let Some(tgt_item_ids) = item.iter_targets() {
+                if let Some(tgt_item_ids) = item.iter_proj_items() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                         changed = changed | self.apply_buff_mod_to_item(modifier, tgt_item);
@@ -370,7 +370,7 @@ impl SolModifierRegister {
             // kind
             (SolModifierKind::System, SolItem::ProjEffect(proj_effect)) => {
                 let mut changed = false;
-                for tgt_item_id in proj_effect.tgts.iter_tgts() {
+                for tgt_item_id in proj_effect.projs.iter_items() {
                     let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                     changed = changed | self.unapply_system_mod_from_item(modifier, tgt_item);
                 }
@@ -378,7 +378,7 @@ impl SolModifierRegister {
             }
             (SolModifierKind::Targeted, _) => {
                 let mut changed = false;
-                if let Some(tgt_item_ids) = item.iter_targets() {
+                if let Some(tgt_item_ids) = item.iter_proj_items() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                         changed = changed | self.unapply_targeted_mod_from_item(modifier, tgt_item);
@@ -388,7 +388,7 @@ impl SolModifierRegister {
             }
             (SolModifierKind::Buff, _) => {
                 let mut changed = false;
-                if let Some(tgt_item_ids) = item.iter_targets() {
+                if let Some(tgt_item_ids) = item.iter_proj_items() {
                     for tgt_item_id in tgt_item_ids {
                         let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
                         changed = changed | self.unapply_buff_mod_from_item(modifier, tgt_item);

@@ -1,6 +1,5 @@
 use crate::{
     defs::{AttrVal, EEffectId, SolItemId},
-    sol::svc::svce_calc::SolModifier,
     util::StMap,
 };
 

@@ -133,7 +133,7 @@ impl SolarSystem {
     ) -> Result<()> {
         // Execute change command if target is already defined
         let module = self.items.get_module(item_id)?;
-        if module.tgts.contains(&tgt_item_id) {
+        if module.projs.contains(&tgt_item_id) {
             return self.change_module_tgt(item_id, &tgt_item_id, range);
         }
         // Check if item is targetable
@@ -144,7 +144,7 @@ impl SolarSystem {
         // Add info to the skeleton
         self.tgt_tracker.reg_tgt(*item_id, tgt_item_id);
         let module = self.items.get_module_mut(item_id)?;
-        module.tgts.add(tgt_item_id, range);
+        module.projs.add(tgt_item_id, range);
         // Process request in services
         let item = self.items.get_item(item_id).unwrap();
         let tgt_item = self.items.get_item(&tgt_item_id).unwrap();
@@ -152,6 +152,7 @@ impl SolarSystem {
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
             tgt_item,
+            range,
         );
         Ok(())
     }
@@ -163,7 +164,7 @@ impl SolarSystem {
     ) -> Result<()> {
         // Check if target is defined before changing it
         let module = self.items.get_module(item_id)?;
-        let old_range = match module.tgts.get(tgt_item_id) {
+        let old_range = match module.projs.get(tgt_item_id) {
             Some(old_range) => *old_range,
             None => return Err(Error::new(ErrorKind::TargetNotFound(*item_id, *tgt_item_id))),
         };
@@ -173,13 +174,13 @@ impl SolarSystem {
         }
         // Adjust skeleton
         let module = self.items.get_module_mut(item_id).unwrap();
-        module.tgts.add(*tgt_item_id, range);
+        module.projs.add(*tgt_item_id, range);
         Ok(())
     }
     pub fn remove_module_tgt(&mut self, item_id: &SolItemId, tgt_item_id: &SolItemId) -> Result<()> {
         // Check if target is defined
         let module = self.items.get_module(item_id)?;
-        if !module.tgts.contains(tgt_item_id) {
+        if !module.projs.contains(tgt_item_id) {
             return Err(Error::new(ErrorKind::TargetNotFound(*item_id, *tgt_item_id)));
         };
         // Process request in services
@@ -193,7 +194,7 @@ impl SolarSystem {
         // Update the skeleton
         self.tgt_tracker.unreg_tgt(item_id, tgt_item_id);
         let module = self.items.get_module_mut(item_id).unwrap();
-        module.tgts.remove(tgt_item_id);
+        module.projs.remove(tgt_item_id);
         Ok(())
     }
     // Non-public

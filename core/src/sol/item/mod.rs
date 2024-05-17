@@ -19,7 +19,7 @@ pub(in crate::sol) use item_structure::SolStructure;
 pub(in crate::sol) use item_subsystem::SolSubsystem;
 pub(in crate::sol) use item_sw_effect::SolSwEffect;
 pub use misc::SolItemState;
-pub(in crate::sol::item) use misc::{bool_to_state, debug, state_to_bool, SolEffectModes, SolTgtItems};
+pub(in crate::sol::item) use misc::{bool_to_state, debug, state_to_bool, SolEffectModes, SolProjs};
 
 mod container;
 mod item;

@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    defs::{EAttrId, SolFitId, SolItemId},
+    defs::{AttrVal, EAttrId, SolFitId, SolItemId},
     ec,
     sol::{
         fleet::SolFleet,
@@ -88,12 +88,12 @@ impl SolSvcs {
             };
         }
         if !to_stop.is_empty() {
-            if let Some(tgt_item_ids) = item.iter_targets() {
-                for tgt_item_id in tgt_item_ids {
-                    let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
+            if let Some(proj_items) = item.iter_proj_items() {
+                for proj_item_id in proj_items {
+                    let proj_item = sol_view.items.get_item(proj_item_id).unwrap();
                     for effect in to_stop.iter() {
-                        if is_effect_targetable(effect) {
-                            self.notify_effect_tgt_removed(sol_view, item, effect, tgt_item);
+                        if is_effect_projectable(effect) {
+                            self.notify_effect_tgt_removed(sol_view, item, effect, proj_item);
                         }
                     }
                 }
@@ -102,27 +102,33 @@ impl SolSvcs {
         }
         if !to_start.is_empty() {
             self.notify_effects_started(sol_view, item, &to_start);
-            if let Some(tgt_item_ids) = item.iter_targets() {
-                for tgt_item_id in tgt_item_ids {
-                    let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
-                    for effect in to_stop.iter() {
-                        if is_effect_targetable(effect) {
-                            self.notify_effect_tgt_added(sol_view, item, effect, tgt_item);
+            if let Some(projs) = item.iter_projs() {
+                for (proj_item_id, range) in projs {
+                    let proj_item = sol_view.items.get_item(proj_item_id).unwrap();
+                    for effect in to_start.iter() {
+                        if is_effect_projectable(effect) {
+                            self.notify_effect_tgt_added(sol_view, item, effect, proj_item, *range);
                         }
                     }
                 }
             }
         }
     }
-    pub(in crate::sol) fn add_item_tgt(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {
+    pub(in crate::sol) fn add_item_tgt(
+        &mut self,
+        sol_view: &SolView,
+        item: &SolItem,
+        tgt_item: &SolItem,
+        range: Option<AttrVal>,
+    ) {
         self.notify_item_tgt_added(sol_view, item, tgt_item);
         let running_effects = self.running_effects.iter_running(&item.get_id());
         if !running_effects.is_empty() {
             let effect_ids = running_effects.map(|v| *v).collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = sol_view.src.get_a_effect(effect_id).unwrap();
-                if is_effect_targetable(effect) {
-                    self.notify_effect_tgt_added(sol_view, item, effect, tgt_item);
+                if is_effect_projectable(effect) {
+                    self.notify_effect_tgt_added(sol_view, item, effect, tgt_item, range);
                 }
             }
         }
@@ -133,7 +139,7 @@ impl SolSvcs {
             let effect_ids = running_effects.map(|v| *v).collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = sol_view.src.get_a_effect(effect_id).unwrap();
-                if is_effect_targetable(effect) {
+                if is_effect_projectable(effect) {
                     self.notify_effect_tgt_removed(sol_view, item, effect, tgt_item);
                 }
             }
@@ -189,8 +195,9 @@ impl SolSvcs {
         item: &SolItem,
         effect: &ad::ArcEffect,
         tgt_item: &SolItem,
+        range: Option<AttrVal>,
     ) {
-        self.calc_effect_tgt_added(sol_view, item, effect, tgt_item);
+        self.calc_effect_tgt_added(sol_view, item, effect, tgt_item, range);
     }
     pub(in crate::sol) fn notify_effect_tgt_removed(
         &mut self,
@@ -206,6 +213,6 @@ impl SolSvcs {
     }
 }
 
-fn is_effect_targetable(effect: &ad::AEffect) -> bool {
+fn is_effect_projectable(effect: &ad::AEffect) -> bool {
     effect.category == ec::effcats::TARGET || effect.category == ec::effcats::SYSTEM || effect.buff.is_some()
 }
