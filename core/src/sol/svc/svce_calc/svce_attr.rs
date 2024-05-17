@@ -10,6 +10,7 @@ use crate::{
         SolView,
     },
     util::{Error, ErrorKind, Result, StMap},
+    EEffectId,
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
@@ -71,11 +72,7 @@ impl SolSvcs {
             .get_mods_for_affectee(item, attr_id, sol_view.fits)
             .iter()
         {
-            let range = self
-                .calc_data
-                .projs
-                .get_range(modifier.affector_item_id, modifier.effect_id, item.get_id());
-            let val = match modifier.get_mod_val(self, sol_view, range) {
+            let val = match modifier.get_mod_val(self, sol_view) {
                 Ok(v) => v,
                 _ => continue,
             };
@@ -87,12 +84,75 @@ impl SolSvcs {
                 Ok(affector_item_cat_id) => affector_item_cat_id,
                 _ => continue,
             };
+
             // TODO: implement resistance support (add it to key as well? idk)
             let mod_key = SolModificationKey::from(modifier);
-            let modification = SolModification::new(modifier.op, val, 1.0, modifier.aggr_mode, affector_item_cat_id);
+            let res_mult = self.calc_resist_mult();
+            let proj_mult = self.calc_proj_mult(sol_view, modifier.affector_item_id, modifier.effect_id, item.get_id());
+            let modification = SolModification::new(
+                modifier.op,
+                val,
+                res_mult,
+                proj_mult,
+                modifier.aggr_mode,
+                affector_item_cat_id,
+            );
             mods.insert(mod_key, modification);
         }
         mods
+    }
+    fn calc_resist_mult(&mut self) -> AttrVal {
+        1.0
+    }
+    fn calc_proj_mult(
+        &mut self,
+        sol_view: &SolView,
+        affector_item_id: SolItemId,
+        effect_id: EEffectId,
+        affectee_item_id: SolItemId,
+    ) -> AttrVal {
+        let range = match self
+            .calc_data
+            .projs
+            .get_range(affector_item_id, effect_id, affectee_item_id)
+        {
+            Some(range) => range,
+            None => return 1.0,
+        };
+        let effect = match sol_view.src.get_a_effect(&effect_id) {
+            Some(effect) => effect,
+            None => return 1.0,
+        };
+        let affector_optimal = match effect.range_attr_id {
+            Some(attr_id) => match self.calc_get_item_attr_val(sol_view, &affector_item_id, &attr_id) {
+                Ok(val) => val.dogma,
+                _ => 0.0,
+            },
+            None => 0.0,
+        };
+        let affector_falloff = match effect.falloff_attr_id {
+            Some(attr_id) => match self.calc_get_item_attr_val(sol_view, &affector_item_id, &attr_id) {
+                Ok(val) => val.dogma,
+                _ => 0.0,
+            },
+            None => 0.0,
+        };
+        // TODO: do not hardcode it here, define on a per-effect basis
+        let restricted_range = false;
+        if affector_falloff > 0.0 {
+            if restricted_range && range > affector_optimal + 3.0 * affector_falloff {
+                return 0.0;
+            } else {
+                return AttrVal::powf(
+                    0.5,
+                    (AttrVal::max(0.0, range - affector_optimal) / affector_falloff).powi(2),
+                );
+            }
+        } else if range <= affector_optimal {
+            return 1.0;
+        } else {
+            return 0.0;
+        }
     }
     fn calc_calc_item_attr_val(
         &mut self,

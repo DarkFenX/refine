@@ -90,12 +90,7 @@ impl SolModifier {
     pub(in crate::sol::svc::svce_calc) fn get_affectors(&self, sol_view: &SolView) -> Vec<(SolItemId, EAttrId)> {
         self.affector_value.get_affectors(sol_view, &self.affector_item_id)
     }
-    pub(in crate::sol::svc::svce_calc) fn get_mod_val(
-        &self,
-        svc: &mut SolSvcs,
-        sol_view: &SolView,
-        range: Option<AttrVal>,
-    ) -> Result<AttrVal> {
+    pub(in crate::sol::svc::svce_calc) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView) -> Result<AttrVal> {
         self.affector_value.get_mod_val(svc, sol_view, &self.affector_item_id)
     }
     pub(in crate::sol::svc::svce_calc) fn on_effect_stop(&self, svc: &mut SolSvcs, sol_view: &SolView) {
