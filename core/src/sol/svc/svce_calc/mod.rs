@@ -16,6 +16,7 @@
 //! - Revision register - keeps track of custom modifiers which depend on various events not related
 //! to attribute changes, and whenever significant events happen, forces recalculation of attribute
 //! values it modifies. Custom ancillary armor repairer modifier uses this register.
+//! - Projection register - keeps info about projection range between various projectable items.
 //!
 //! Next, there are a few scenarios on how those registers are used:
 //!
