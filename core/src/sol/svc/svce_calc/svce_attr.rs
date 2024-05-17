@@ -71,7 +71,11 @@ impl SolSvcs {
             .get_mods_for_affectee(item, attr_id, sol_view.fits)
             .iter()
         {
-            let val = match modifier.get_mod_val(self, sol_view) {
+            let range = self
+                .calc_data
+                .projs
+                .get_range(modifier.affector_item_id, modifier.effect_id, item.get_id());
+            let val = match modifier.get_mod_val(self, sol_view, range) {
                 Ok(v) => v,
                 _ => continue,
             };
