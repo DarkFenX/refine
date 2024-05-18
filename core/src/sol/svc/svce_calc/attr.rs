@@ -45,33 +45,81 @@ impl SolAttrValues {
     pub(super) fn add_val(
         &mut self,
         val: AttrVal,
+        res_mult: Option<AttrVal>,
+        proj_mult: Option<AttrVal>,
         op: &SolOp,
         attr_pen: bool,
         item_cat: &EItemCatId,
         aggr_mode: &SolAggrMode,
     ) {
         match op {
-            SolOp::PreAssign => self.pre_assign.add_val(val, norm_noop, aggr_mode),
-            SolOp::PreMul => self
-                .pre_mul
-                .add_val(val, norm_noop, is_penal(attr_pen, item_cat), aggr_mode),
-            SolOp::PreDiv => self
-                .pre_div
-                .add_val(val, norm_div, is_penal(attr_pen, item_cat), aggr_mode),
-            SolOp::Add => self.add.add_val(val, norm_noop, aggr_mode),
-            SolOp::Sub => self.sub.add_val(val, norm_sub, aggr_mode),
-            SolOp::PostMul => self
-                .post_mul
-                .add_val(val, norm_noop, is_penal(attr_pen, item_cat), aggr_mode),
-            SolOp::PostMulImmune => self.post_mul.add_val(val, norm_noop, false, aggr_mode),
-            SolOp::PostDiv => self
-                .post_div
-                .add_val(val, norm_div, is_penal(attr_pen, item_cat), aggr_mode),
-            SolOp::PostPerc => self
-                .post_perc
-                .add_val(val, norm_perc, is_penal(attr_pen, item_cat), aggr_mode),
-            SolOp::PostAssign => self.post_assign.add_val(val, norm_noop, aggr_mode),
-            SolOp::ExtraMul => self.extra_mul.add_val(val, norm_noop, aggr_mode),
+            SolOp::PreAssign => {
+                self.pre_assign
+                    .add_val(val, res_mult, proj_mult, normalize_noop, diminish_noop, aggr_mode)
+            }
+            SolOp::PreMul => self.pre_mul.add_val(
+                val,
+                res_mult,
+                proj_mult,
+                normalize_noop,
+                diminish_mul,
+                is_penal(attr_pen, item_cat),
+                aggr_mode,
+            ),
+            SolOp::PreDiv => self.pre_div.add_val(
+                val,
+                res_mult,
+                proj_mult,
+                normalize_div,
+                diminish_mul,
+                is_penal(attr_pen, item_cat),
+                aggr_mode,
+            ),
+            SolOp::Add => self
+                .add
+                .add_val(val, res_mult, proj_mult, normalize_noop, diminish_basic, aggr_mode),
+            SolOp::Sub => self
+                .sub
+                .add_val(val, res_mult, proj_mult, normalize_sub, diminish_basic, aggr_mode),
+            SolOp::PostMul => self.post_mul.add_val(
+                val,
+                res_mult,
+                proj_mult,
+                normalize_noop,
+                diminish_mul,
+                is_penal(attr_pen, item_cat),
+                aggr_mode,
+            ),
+            SolOp::PostMulImmune => {
+                self.post_mul
+                    .add_val(val, res_mult, proj_mult, normalize_noop, diminish_mul, false, aggr_mode)
+            }
+            SolOp::PostDiv => self.post_div.add_val(
+                val,
+                res_mult,
+                proj_mult,
+                normalize_div,
+                diminish_mul,
+                is_penal(attr_pen, item_cat),
+                aggr_mode,
+            ),
+            SolOp::PostPerc => self.post_perc.add_val(
+                val,
+                res_mult,
+                proj_mult,
+                normalize_perc,
+                diminish_mul,
+                is_penal(attr_pen, item_cat),
+                aggr_mode,
+            ),
+            SolOp::PostAssign => {
+                self.post_assign
+                    .add_val(val, res_mult, proj_mult, normalize_noop, diminish_noop, aggr_mode)
+            }
+            SolOp::ExtraMul => {
+                self.extra_mul
+                    .add_val(val, res_mult, proj_mult, normalize_noop, diminish_mul, aggr_mode)
+            }
         };
     }
     pub(super) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {
@@ -103,14 +151,25 @@ impl SolAttrStack {
             penalized: SolAttrAggr::new(),
         }
     }
-    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, penalizable: bool, aggr_mode: &SolAggrMode)
-    where
-        F: Fn(AttrVal) -> Option<AttrVal>,
+    fn add_val<N, D>(
+        &mut self,
+        val: AttrVal,
+        res_mult: Option<AttrVal>,
+        proj_mult: Option<AttrVal>,
+        normalize_func: N,
+        diminish_func: D,
+        penalizable: bool,
+        aggr_mode: &SolAggrMode,
+    ) where
+        N: Fn(AttrVal) -> Option<AttrVal>,
+        D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
     {
         if penalizable {
-            self.penalized.add_val(val, norm_func, aggr_mode)
+            self.penalized
+                .add_val(val, res_mult, proj_mult, normalize_func, diminish_func, aggr_mode)
         } else {
-            self.stacked.add_val(val, norm_func, aggr_mode)
+            self.stacked
+                .add_val(val, res_mult, proj_mult, normalize_func, diminish_func, aggr_mode)
         }
     }
     fn get_comb_val<F1, F2>(&mut self, comb_func: F1, pen_func: F2, hig: bool) -> Option<AttrVal>
@@ -119,7 +178,8 @@ impl SolAttrStack {
         F2: Fn(&Vec<AttrVal>, bool) -> Option<AttrVal>,
     {
         if let Some(val) = self.penalized.get_comb_val(pen_func, hig) {
-            self.stacked.add_val(val, norm_noop, &SolAggrMode::Stack);
+            self.stacked
+                .add_val(val, None, None, normalize_noop, diminish_noop, &SolAggrMode::Stack);
         }
         self.stacked.get_comb_val(comb_func, hig)
     }
@@ -138,14 +198,23 @@ impl SolAttrAggr {
             aggr_max: StMap::new(),
         }
     }
-    fn add_val<F>(&mut self, val: AttrVal, norm_func: F, aggr_mode: &SolAggrMode)
-    where
-        F: Fn(AttrVal) -> Option<AttrVal>,
+    fn add_val<N, D>(
+        &mut self,
+        val: AttrVal,
+        res_mult: Option<AttrVal>,
+        proj_mult: Option<AttrVal>,
+        normalize_func: N,
+        diminish_func: D,
+        aggr_mode: &SolAggrMode,
+    ) where
+        N: Fn(AttrVal) -> Option<AttrVal>,
+        D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
     {
-        let val = match norm_func(val) {
+        let val = match normalize_func(val) {
             Some(val) => val,
             None => return,
         };
+        let val = diminish_func(val, res_mult, proj_mult);
         match aggr_mode {
             SolAggrMode::Stack => self.stack.push(val),
             SolAggrMode::Min(key) => self.aggr_min.entry(*key).or_insert_with(|| Vec::new()).push(val),
@@ -172,20 +241,40 @@ impl SolAttrAggr {
 }
 
 // Normalization functions
-fn norm_noop(val: AttrVal) -> Option<AttrVal> {
+fn normalize_noop(val: AttrVal) -> Option<AttrVal> {
     Some(val)
 }
-fn norm_sub(val: AttrVal) -> Option<AttrVal> {
+fn normalize_sub(val: AttrVal) -> Option<AttrVal> {
     Some(-val)
 }
-fn norm_div(val: AttrVal) -> Option<AttrVal> {
+fn normalize_div(val: AttrVal) -> Option<AttrVal> {
     if val == 0.0 {
         return None;
     }
     Some(1.0 / val)
 }
-fn norm_perc(val: AttrVal) -> Option<AttrVal> {
+fn normalize_perc(val: AttrVal) -> Option<AttrVal> {
     Some(1.0 + val / 100.0)
+}
+
+// Apply diminishing factors (resistance- and projection-related reductions)
+fn diminish_noop(val: AttrVal, _: Option<AttrVal>, _: Option<AttrVal>) -> AttrVal {
+    val
+}
+fn diminish_basic(mut val: AttrVal, res_mult: Option<AttrVal>, proj_mult: Option<AttrVal>) -> AttrVal {
+    if let Some(res_mult) = res_mult {
+        val *= res_mult;
+    }
+    if let Some(proj_mult) = proj_mult {
+        val *= proj_mult;
+    }
+    val
+}
+fn diminish_mul(val: AttrVal, res_mult: Option<AttrVal>, proj_mult: Option<AttrVal>) -> AttrVal {
+    if res_mult.is_none() && proj_mult.is_none() {
+        return val;
+    }
+    diminish_basic(val - 1.0, res_mult, proj_mult) + 1.0
 }
 
 // Application functions

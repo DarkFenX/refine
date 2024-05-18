@@ -101,8 +101,8 @@ impl SolSvcs {
         }
         mods
     }
-    fn calc_resist_mult(&mut self) -> AttrVal {
-        1.0
+    fn calc_resist_mult(&mut self) -> Option<AttrVal> {
+        None
     }
     fn calc_proj_mult(
         &mut self,
@@ -110,18 +110,18 @@ impl SolSvcs {
         affector_item_id: SolItemId,
         effect_id: EEffectId,
         affectee_item_id: SolItemId,
-    ) -> AttrVal {
+    ) -> Option<AttrVal> {
         let range = match self
             .calc_data
             .projs
             .get_range(affector_item_id, effect_id, affectee_item_id)
         {
             Some(range) => range,
-            None => return 1.0,
+            None => return None,
         };
         let effect = match sol_view.src.get_a_effect(&effect_id) {
             Some(effect) => effect,
-            None => return 1.0,
+            None => return None,
         };
         let affector_optimal = match effect.range_attr_id {
             Some(attr_id) => match self.calc_get_item_attr_val(sol_view, &affector_item_id, &attr_id) {
@@ -141,17 +141,18 @@ impl SolSvcs {
         let restricted_range = false;
         if affector_falloff > 0.0 {
             if restricted_range && range > affector_optimal + 3.0 * affector_falloff {
-                return 0.0;
+                return Some(0.0);
             } else {
-                return AttrVal::powf(
+                let val = AttrVal::powf(
                     0.5,
                     (AttrVal::max(0.0, range - affector_optimal) / affector_falloff).powi(2),
                 );
+                return Some(val);
             }
         } else if range <= affector_optimal {
-            return 1.0;
+            return Some(1.0);
         } else {
-            return 0.0;
+            return Some(0.0);
         }
     }
     fn calc_calc_item_attr_val(
@@ -184,6 +185,8 @@ impl SolSvcs {
         for modification in self.calc_get_modifications(sol_view, item, attr_id).values() {
             vals.add_val(
                 modification.val,
+                modification.res_mult,
+                modification.proj_mult,
                 &modification.op,
                 attr.penalizable,
                 &modification.affector_item_cat_id,
