@@ -70,7 +70,7 @@ impl SolSvcs {
         self.calc_data.afee.unreg_affectee(sol_view, item);
         let item_id = item.get_id();
         self.calc_data.attrs.remove_item(&item_id);
-        self.calc_data.deps.clear_item_data(&item_id);
+        self.calc_data.deps.remove_item(&item_id);
     }
     pub(in crate::sol::svc) fn calc_effects_started(
         &mut self,
@@ -102,11 +102,12 @@ impl SolSvcs {
         // Unregister mods
         let modifiers = self.calc_generate_mods_for_effects(sol_view, item, effects);
         self.unreg_mods(sol_view, item, &modifiers.all);
-        // This bit is just for propulsion mode effect, so that when effect is not running (but item
-        // is not removed), changes to parent attributes like ship mass do not clear the child
-        // attribute - ship speed
-        for modifier in modifiers.all.iter() {
-            modifier.on_effect_stop(self, sol_view);
+        // Remove all ad-hoc attribute dependencies defined by effects being stopped. It is used by
+        // various projection-related features (resistance to modification, projection range), and
+        // custom propulsion module effect
+        let item_id = item.get_id();
+        for effect in effects.iter() {
+            self.calc_data.deps.remove_by_source(&item_id, &effect.id);
         }
         // Buff maintenance - remove info about effects/modifiers which use default buff attributes
         for effect in effects.iter() {
@@ -197,7 +198,7 @@ impl SolSvcs {
         let attr_specs = self
             .calc_data
             .deps
-            .get_tgt_attr_specs(item_id, attr_id)
+            .get_affectee_attr_specs(item_id, attr_id)
             .map(|v| *v)
             .collect_vec();
         for attr_spec in attr_specs.iter() {
@@ -305,13 +306,9 @@ impl SolSvcs {
                 }
             }
         }
-        // Revisions and effect-specific processing
+        // Revisions
         for modifier in modifiers.iter() {
             self.calc_data.revs.unreg_mod(modifier);
-            // This bit is just for propulsion mode effect, so that when effect is not running (but
-            // item is not removed), changes to parent attributes like ship mass do not clear the
-            // child attribute - ship speed
-            modifier.on_effect_stop(self, sol_view);
         }
     }
     fn handle_location_owner_change(&mut self, sol_view: &SolView, item: &SolItem) {

@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, SolItemId},
+    defs::{AttrVal, EEffectId, SolItemId},
     sol::{svc::SolSvcs, SolView},
     util::{Error, ErrorKind, Result},
 };
@@ -14,6 +14,7 @@ pub(in crate::sol::svc::svce_calc::modifier) fn get_mod_val(
     svc: &mut SolSvcs,
     sol_view: &SolView,
     item_id: &SolItemId,
+    effect_id: &EEffectId,
 ) -> Result<AttrVal> {
     let speed_boost = svc
         .calc_get_item_attr_val(sol_view, item_id, &PROP_BOOST)
@@ -34,6 +35,6 @@ pub(in crate::sol::svc::svce_calc::modifier) fn get_mod_val(
     let val = 1.0 + perc / 100.0;
     // Register dependencies, so that target attribute is properly cleared up when any of affector
     // attributes change
-    reg_dependencies(svc, *item_id, ship_id);
+    reg_dependencies(svc, ship_id, *item_id, *effect_id);
     Ok(val)
 }

@@ -1,5 +1,4 @@
 pub(in crate::sol::svc::svce_calc::modifier) use affector::get_affectors;
-pub(in crate::sol::svc::svce_calc::modifier) use deps::on_effect_stop;
 pub(in crate::sol::svc::svce_calc::modifier) use mod_val_getter::get_mod_val;
 pub(in crate::sol::svc::svce_calc) use modifier::make_mod;
 

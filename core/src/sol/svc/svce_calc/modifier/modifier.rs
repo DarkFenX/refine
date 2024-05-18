@@ -91,11 +91,8 @@ impl SolModifier {
         self.affector_value.get_affectors(sol_view, &self.affector_item_id)
     }
     pub(in crate::sol::svc::svce_calc) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView) -> Result<AttrVal> {
-        self.affector_value.get_mod_val(svc, sol_view, &self.affector_item_id)
-    }
-    pub(in crate::sol::svc::svce_calc) fn on_effect_stop(&self, svc: &mut SolSvcs, sol_view: &SolView) {
         self.affector_value
-            .on_effect_stop(svc, sol_view, &self.affector_item_id)
+            .get_mod_val(svc, sol_view, &self.affector_item_id, &self.effect_id)
     }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::sol::svc::svce_calc) fn needs_revision_on_item_add(&self) -> bool {

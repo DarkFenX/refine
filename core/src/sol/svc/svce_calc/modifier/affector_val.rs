@@ -1,7 +1,7 @@
 use num_traits::cast::ToPrimitive;
 
 use crate::{
-    defs::{AttrVal, EAttrId, Rational, SolItemId},
+    defs::{AttrVal, EAttrId, EEffectId, Rational, SolItemId},
     sol::{item::SolItem, svc::SolSvcs, SolView},
     util::Result,
 };
@@ -34,20 +34,18 @@ impl SolAffectorValue {
             Self::AncillaryArmorRep => vec![(*item_id, aar::AAR_AFFECTOR_ATTR_ID)],
         }
     }
-    pub(super) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView, item_id: &SolItemId) -> Result<AttrVal> {
+    pub(super) fn get_mod_val(
+        &self,
+        svc: &mut SolSvcs,
+        sol_view: &SolView,
+        item_id: &SolItemId,
+        effect_id: &EEffectId,
+    ) -> Result<AttrVal> {
         match self {
             Self::AttrId(attr_id) => Ok(svc.calc_get_item_attr_val(sol_view, item_id, attr_id)?.dogma),
             Self::Hardcoded(val_rational) => Ok(val_rational.to_f64().unwrap()),
-            Self::PropulsionModule => prop::get_mod_val(svc, sol_view, item_id),
+            Self::PropulsionModule => prop::get_mod_val(svc, sol_view, item_id, effect_id),
             Self::AncillaryArmorRep => aar::get_mod_val(svc, sol_view, item_id),
-        }
-    }
-    pub(super) fn on_effect_stop(&self, svc: &mut SolSvcs, sol_view: &SolView, item_id: &SolItemId) {
-        match self {
-            Self::AttrId(_) => (),
-            Self::Hardcoded(_) => (),
-            Self::PropulsionModule => prop::on_effect_stop(svc, sol_view, item_id),
-            Self::AncillaryArmorRep => (),
         }
     }
     // Revision methods - define if modification value can change upon some action

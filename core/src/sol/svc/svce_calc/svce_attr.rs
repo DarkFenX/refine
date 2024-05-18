@@ -200,7 +200,7 @@ impl SolSvcs {
                 Ok(capping_vals) => {
                     self.calc_data
                         .deps
-                        .add_dependency(*item_id, capping_attr_id, *item_id, *attr_id);
+                        .add_direct_local(*item_id, capping_attr_id, *attr_id);
                     AttrVal::min(dogma_val, capping_vals.dogma)
                 }
                 Err(_) => dogma_val,
