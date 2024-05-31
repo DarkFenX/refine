@@ -15,6 +15,7 @@ pub(crate) const SIG_RADIUS: EAttrId = 552;
 pub(crate) const SIG_RADIUS_BONUS: EAttrId = 554;
 pub(crate) const SPEED_FACTOR: EAttrId = 20;
 pub(crate) const SPEED_BOOST_FACTOR: EAttrId = 567;
+pub(crate) const REMOTE_RESISTANCE_ID: EAttrId = 2138;
 // Damage attrs
 pub(crate) const EM_DMG: EAttrId = 114;
 pub(crate) const THERM_DMG: EAttrId = 118;

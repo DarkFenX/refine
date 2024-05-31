@@ -8,7 +8,7 @@ use crate::{
         fleet::SolFleet,
         item::SolItem,
         svc::{
-            svce_calc::{SolFleetUpdates, SolModifier},
+            svce_calc::{get_proj_effect_resist_attr_id, SolFleetUpdates, SolModifier},
             SolSvcs,
         },
         SolView,
@@ -171,14 +171,50 @@ impl SolSvcs {
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
-            let mut affectees = Vec::new();
+            let tgt_item_id = tgt_item.get_id();
+            let resist_attr_id = get_proj_effect_resist_attr_id(item, effect);
+            let optimal_attr_id = effect.range_attr_id;
+            let falloff_attr_id = effect.falloff_attr_id;
+            let mut affectee_item_ids = Vec::new();
             for modifier in modifiers.iter() {
-                affectees.clear();
+                affectee_item_ids.clear();
                 self.calc_data
                     .afee
-                    .fill_affectees_for_tgt_item(&mut affectees, sol_view, modifier, &tgt_item);
-                for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
+                    .fill_affectees_for_tgt_item(&mut affectee_item_ids, sol_view, modifier, &tgt_item);
+                for affectee_item_id in affectee_item_ids.iter() {
+                    // Clear up dependent attributes
+                    self.calc_force_attr_recalc(sol_view, &affectee_item_id, &modifier.affectee_attr_id);
+                    // Remove dependencies which could've been added by the effect being unprojected
+                    if let Some(resist_attr_id) = resist_attr_id {
+                        self.calc_data.deps.remove_with_source(
+                            &item_id,
+                            &effect.id,
+                            &tgt_item_id,
+                            &resist_attr_id,
+                            affectee_item_id,
+                            &modifier.affectee_attr_id,
+                        );
+                    }
+                    if let Some(optimal_attr_id) = optimal_attr_id {
+                        self.calc_data.deps.remove_with_source(
+                            &item_id,
+                            &effect.id,
+                            &item_id,
+                            &optimal_attr_id,
+                            affectee_item_id,
+                            &modifier.affectee_attr_id,
+                        );
+                    }
+                    if let Some(falloff_attr_id) = falloff_attr_id {
+                        self.calc_data.deps.remove_with_source(
+                            &item_id,
+                            &effect.id,
+                            &item_id,
+                            &falloff_attr_id,
+                            affectee_item_id,
+                            &modifier.affectee_attr_id,
+                        );
+                    }
                 }
                 self.calc_data.mods.rm_mod_tgt(modifier, tgt_item);
             }
