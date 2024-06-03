@@ -197,7 +197,7 @@ impl SolSvcs {
         tgt_item: &SolItem,
         range: Option<AttrVal>,
     ) {
-        self.calc_effect_tgt_added(sol_view, item, effect, tgt_item, range);
+        self.calc_effect_projected(sol_view, item, effect, tgt_item, range);
     }
     pub(in crate::sol) fn notify_effect_tgt_removed(
         &mut self,

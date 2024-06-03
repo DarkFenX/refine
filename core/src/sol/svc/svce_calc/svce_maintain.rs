@@ -121,35 +121,38 @@ impl SolSvcs {
             }
         }
     }
-    pub(in crate::sol::svc) fn calc_effect_tgt_added(
+    pub(in crate::sol::svc) fn calc_effect_projected(
         &mut self,
         sol_view: &SolView,
-        item: &SolItem,
+        projector_item: &SolItem,
         effect: &ad::AEffect,
-        tgt_item: &SolItem,
+        projectee_item: &SolItem,
         range: Option<AttrVal>,
     ) {
         self.calc_data
             .projs
-            .add_range(item.get_id(), effect.id, tgt_item.get_id(), range);
-        let item_id = item.get_id();
+            .add_range(projector_item.get_id(), effect.id, projectee_item.get_id(), range);
+        let projector_item_id = projector_item.get_id();
         let modifiers = self
             .calc_data
             .mods
-            .iter_affector_item_mods(&item_id)
+            .iter_affector_item_mods(&projector_item_id)
             .filter(|v| v.effect_id == effect.id)
             .map(|v| *v)
             .collect_vec();
         if !modifiers.is_empty() {
-            let mut affectees = Vec::new();
+            let mut affectee_item_ids = Vec::new();
             for modifier in modifiers.iter() {
-                if self.calc_data.mods.add_mod_tgt(*modifier, tgt_item) {
-                    affectees.clear();
-                    self.calc_data
-                        .afee
-                        .fill_affectees_for_tgt_item(&mut affectees, sol_view, modifier, &tgt_item);
-                    for tgt_item_id in affectees.iter() {
-                        self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
+                if self.calc_data.mods.add_mod_tgt(*modifier, projectee_item) {
+                    affectee_item_ids.clear();
+                    self.calc_data.afee.fill_affectees_for_tgt_item(
+                        &mut affectee_item_ids,
+                        sol_view,
+                        modifier,
+                        &projectee_item,
+                    );
+                    for affectee_item_id in affectee_item_ids.iter() {
+                        self.calc_force_attr_recalc(sol_view, affectee_item_id, &modifier.affectee_attr_id);
                     }
                 }
             }
@@ -182,7 +185,6 @@ impl SolSvcs {
                     .afee
                     .fill_affectees_for_tgt_item(&mut affectee_item_ids, sol_view, modifier, &tgt_item);
                 for affectee_item_id in affectee_item_ids.iter() {
-                    // Clear up dependent attributes
                     self.calc_force_attr_recalc(sol_view, &affectee_item_id, &modifier.affectee_attr_id);
                     // Remove dependencies which could've been added by the effect being unprojected
                     if let Some(resist_attr_id) = resist_attr_id {

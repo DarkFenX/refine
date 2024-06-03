@@ -4,7 +4,7 @@ use crate::{
     sol::{
         item::SolItem,
         svc::{
-            svce_calc::{SolAttrVal, SolAttrValues, SolModification, SolModificationKey},
+            svce_calc::{SolAttrVal, SolAttrValues, SolModification, SolModificationKey, SolModifierKind},
             SolSvcs,
         },
         SolView,
@@ -87,8 +87,14 @@ impl SolSvcs {
 
             // TODO: implement resistance support (add it to key as well? idk)
             let mod_key = SolModificationKey::from(modifier);
-            let res_mult = self.calc_resist_mult();
-            let proj_mult = self.calc_proj_mult(sol_view, modifier.affector_item_id, modifier.effect_id, item.get_id());
+            let res_mult = self.calc_resist_mult(modifier.kind);
+            let proj_mult = self.calc_proj_mult(
+                sol_view,
+                modifier.kind,
+                modifier.affector_item_id,
+                modifier.effect_id,
+                item.get_id(),
+            );
             let modification = SolModification::new(
                 modifier.op,
                 val,
@@ -101,16 +107,25 @@ impl SolSvcs {
         }
         mods
     }
-    fn calc_resist_mult(&mut self) -> Option<AttrVal> {
+    fn calc_resist_mult(&mut self, mod_kind: SolModifierKind) -> Option<AttrVal> {
+        // Only buffs and targeted modifiers can be resisted
+        if !matches!(mod_kind, SolModifierKind::Buff | SolModifierKind::Targeted) {
+            return None;
+        }
         None
     }
     fn calc_proj_mult(
         &mut self,
         sol_view: &SolView,
+        mod_kind: SolModifierKind,
         affector_item_id: SolItemId,
         effect_id: EEffectId,
         affectee_item_id: SolItemId,
     ) -> Option<AttrVal> {
+        // Only targeted modifiers can be affected by projection range
+        if !matches!(mod_kind, SolModifierKind::Targeted) {
+            return None;
+        }
         let range = match self
             .calc_data
             .projs
@@ -139,20 +154,21 @@ impl SolSvcs {
         };
         // TODO: do not hardcode it here, define on a per-effect basis
         let restricted_range = false;
+        // Calculate actual range multiplier after collecting all the data
         if affector_falloff > 0.0 {
             if restricted_range && range > affector_optimal + 3.0 * affector_falloff {
-                return Some(0.0);
+                Some(0.0)
             } else {
                 let val = AttrVal::powf(
                     0.5,
                     (AttrVal::max(0.0, range - affector_optimal) / affector_falloff).powi(2),
                 );
-                return Some(val);
+                Some(val)
             }
         } else if range <= affector_optimal {
-            return Some(1.0);
+            Some(1.0)
         } else {
-            return Some(0.0);
+            Some(0.0)
         }
     }
     fn calc_calc_item_attr_val(

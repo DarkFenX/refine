@@ -1,7 +1,8 @@
 from pytest import approx
 
 
-def test_falloff_state_change(client, consts):
+def test_cleanup_unproj(client, consts):
+    # Check that dependency register is properly cleaned up when item is unprojected
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
     eve_optimal_attr = client.mk_eve_attr()
@@ -27,10 +28,11 @@ def test_falloff_state_change(client, consts):
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
     api_ship = api_fit2.set_ship(type_id=eve_ship.id)
-    api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.online)
+    api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
     api_module.change_mod(add_tgts=[(api_ship.id, 15000)])
-    assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(500)
-    api_module.change_mod(state=consts.ApiState.active)
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(350)
-    api_module.change_mod(state=consts.ApiState.online)
-    assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(500)
+    # Action
+    api_module.change_mod(rm_tgts=[api_ship.id])
+    # Verification - handled via consistency checks
+    api_ship.remove()
+    api_module.remove()
