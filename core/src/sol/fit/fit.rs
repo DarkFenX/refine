@@ -1,11 +1,12 @@
 use crate::{
     defs::{SolFitId, SolFleetId, SolItemId},
-    sol::{item::SolItem, SolModRack},
+    sol::{fit::SolFitKind, item::SolItem, SolModRack},
     util::StSet,
 };
 
 pub(in crate::sol) struct SolFit {
     pub(in crate::sol) id: SolFitId,
+    pub(in crate::sol) kind: SolFitKind,
     pub(in crate::sol) fleet: Option<SolFleetId>,
     pub(in crate::sol) character: Option<SolItemId>,
     pub(in crate::sol) skills: StSet<SolItemId>,
@@ -27,6 +28,7 @@ impl SolFit {
     pub(in crate::sol) fn new(id: SolFitId) -> Self {
         Self {
             id,
+            kind: SolFitKind::Unknown,
             fleet: None,
             character: None,
             skills: StSet::new(),
