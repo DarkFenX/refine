@@ -1,6 +1,11 @@
 use crate::{
     defs::{SolFitId, SolFleetId, SolItemId},
-    sol::{fit::SolFitKind, item::SolItem, SolModRack},
+    ec,
+    sol::{
+        fit::SolFitKind,
+        item::{SolItem, SolShip},
+        SolModRack,
+    },
     util::StSet,
 };
 
@@ -62,7 +67,10 @@ impl SolFit {
                 self.boosters.insert(booster.id);
                 ()
             }
-            SolItem::Ship(ship) => self.ship = Some(ship.id),
+            SolItem::Ship(ship) => {
+                self.ship = Some(ship.id);
+                self.kind = detect_fit_kind(ship);
+            }
             SolItem::Structure(structure) => self.structure = Some(structure.id),
             SolItem::Stance(stance) => self.stance = Some(stance.id),
             SolItem::Subsystem(subsystem) => {
@@ -120,7 +128,8 @@ impl SolFit {
             }
             SolItem::Ship(ship) => {
                 if self.ship == Some(ship.id) {
-                    self.ship = None
+                    self.ship = None;
+                    self.kind = SolFitKind::Unknown;
                 }
             }
             SolItem::Structure(structure) => {
@@ -184,6 +193,17 @@ impl SolFit {
         items.extend(self.fighters.iter());
         items.extend(self.fw_effects.iter());
         items
+    }
+}
+
+fn detect_fit_kind(ship: &SolShip) -> SolFitKind {
+    match &ship.a_item {
+        Some(a_item) => match a_item.cat_id {
+            ec::itemcats::SHIP => SolFitKind::Ship,
+            ec::itemcats::STRUCTURE => SolFitKind::Structure,
+            _ => SolFitKind::Unknown,
+        },
+        None => SolFitKind::Unknown,
     }
 }
 
