@@ -1,4 +1,8 @@
-use crate::sol::{fit::SolFit, item::SolItem, svc::svce_calc::SolLocationKind};
+use crate::sol::{
+    fit::SolFit,
+    item::{SolItem, SolShipKind},
+    svc::svce_calc::SolLocationKind,
+};
 
 // Iterator over item's root location kinds which are actually assigned to a fit
 pub(super) struct ActiveLocations<'a> {
@@ -31,13 +35,13 @@ impl<'a> Iterator for ActiveLocations<'a> {
         }
         if !self.ship_done {
             self.ship_done = true;
-            if self.item.is_on_ship_root() && self.fit.ship.is_some() {
+            if self.item.is_on_ship_root() && matches!(self.fit.kind, SolShipKind::Ship) {
                 return Some(SolLocationKind::Ship);
             }
         }
         if !self.struct_done {
             self.struct_done = true;
-            if self.item.is_on_struct_root() && self.fit.structure.is_some() {
+            if self.item.is_on_struct_root() && matches!(self.fit.kind, SolShipKind::Structure) {
                 return Some(SolLocationKind::Structure);
             }
         }

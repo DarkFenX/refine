@@ -15,9 +15,6 @@ pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{
     HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd,
 };
-pub(in crate::cmd) use item_structure::{
-    HChangeStructureCmd, HChangeStructureViaFitIdCmd, HChangeStructureViaItemIdCmd, HSetStructureCmd,
-};
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 
 use crate::cmd::HCmdResp;
@@ -35,7 +32,6 @@ mod item_rig;
 mod item_ship;
 mod item_skill;
 mod item_stance;
-mod item_structure;
 mod item_subsystem;
 
 #[derive(serde::Deserialize)]
@@ -53,8 +49,6 @@ pub(crate) enum HChangeFitCommand {
     ChangeBooster(HChangeBoosterCmd),
     SetShip(HSetShipCmd),
     ChangeShip(HChangeShipCmd),
-    SetStructure(HSetStructureCmd),
-    ChangeStructure(HChangeStructureCmd),
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
     AddSubsystem(HAddSubsystemCmd),
@@ -86,8 +80,6 @@ impl HChangeFitCommand {
             Self::ChangeBooster(cmd) => cmd.execute(core_sol),
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeShip(cmd) => cmd.execute(core_sol, fit_id),
-            Self::SetStructure(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeStructure(cmd) => cmd.execute(core_sol, fit_id),
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeStance(cmd) => cmd.execute(core_sol, fit_id),
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),

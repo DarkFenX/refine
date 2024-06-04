@@ -30,7 +30,7 @@ pub use sol::{
     item_info::{
         SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo, SolFwEffectInfo, SolImplantInfo,
         SolItemInfo, SolModuleInfo, SolProjEffectInfo, SolRigInfo, SolShipInfo, SolSkillInfo, SolStanceInfo,
-        SolStructureInfo, SolSubsystemInfo, SolSwEffectInfo, SolTgtInfo,
+        SolSubsystemInfo, SolSwEffectInfo, SolTgtInfo,
     },
     SolAffectorInfo, SolAffectorValueInfo, SolAttrVal, SolEffectInfo, SolEffectMode, SolItemState, SolModRack,
     SolModificationInfo, SolOpInfo, SolOrdAddMode, SolOrdRmMode, SolarSystem,

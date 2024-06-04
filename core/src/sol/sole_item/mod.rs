@@ -17,6 +17,5 @@ mod sole_rig;
 mod sole_ship;
 mod sole_skill;
 mod sole_stance;
-mod sole_structure;
 mod sole_subsystem;
 mod sole_sw_effect;

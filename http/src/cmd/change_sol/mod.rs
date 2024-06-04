@@ -13,7 +13,6 @@ pub(in crate::cmd) use item_rig::{HAddRigCmd, HChangeRigCmd};
 pub(in crate::cmd) use item_ship::{HChangeShipCmd, HSetShipCmd};
 pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HSetStanceCmd};
-pub(in crate::cmd) use item_structure::{HChangeStructureCmd, HSetStructureCmd};
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
 
@@ -34,7 +33,6 @@ mod item_rig;
 mod item_ship;
 mod item_skill;
 mod item_stance;
-mod item_structure;
 mod item_subsystem;
 mod item_sw_effect;
 
@@ -58,8 +56,6 @@ pub(crate) enum HChangeSolCommand {
     ChangeBooster(HChangeBoosterCmd),
     SetShip(HSetShipCmd),
     ChangeShip(HChangeShipCmd),
-    SetStructure(HSetStructureCmd),
-    ChangeStructure(HChangeStructureCmd),
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
     AddSubsystem(HAddSubsystemCmd),
@@ -100,8 +96,6 @@ impl HChangeSolCommand {
             Self::ChangeBooster(cmd) => cmd.execute(core_sol),
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeShip(cmd) => cmd.execute(core_sol),
-            Self::SetStructure(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeStructure(cmd) => cmd.execute(core_sol),
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeStance(cmd) => cmd.execute(core_sol),
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),

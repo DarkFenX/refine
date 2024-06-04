@@ -13,7 +13,6 @@ pub(crate) enum HAddItemCommand {
     Implant(change_sol::HAddImplantCmd),
     Booster(change_sol::HAddBoosterCmd),
     Ship(change_sol::HSetShipCmd),
-    Structure(change_sol::HSetStructureCmd),
     Stance(change_sol::HSetStanceCmd),
     Subsystem(change_sol::HAddSubsystemCmd),
     Module(change_sol::HAddModuleCmd),
@@ -44,10 +43,6 @@ impl HAddItemCommand {
                 Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
             }
             Self::Ship(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
-                Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
-            }
-            Self::Structure(cmd) => {
                 let core_info = cmd.execute(core_sol)?;
                 Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
             }

@@ -2,8 +2,8 @@ use crate::sol::{item::SolItem, SolarSystem};
 
 use super::{
     SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo, SolFwEffectInfo, SolImplantInfo,
-    SolModuleInfo, SolProjEffectInfo, SolRigInfo, SolShipInfo, SolSkillInfo, SolStanceInfo, SolStructureInfo,
-    SolSubsystemInfo, SolSwEffectInfo,
+    SolModuleInfo, SolProjEffectInfo, SolRigInfo, SolShipInfo, SolSkillInfo, SolStanceInfo, SolSubsystemInfo,
+    SolSwEffectInfo,
 };
 
 pub enum SolItemInfo {
@@ -20,7 +20,6 @@ pub enum SolItemInfo {
     Ship(SolShipInfo),
     Skill(SolSkillInfo),
     Stance(SolStanceInfo),
-    Structure(SolStructureInfo),
     Subsystem(SolSubsystemInfo),
     SwEffect(SolSwEffectInfo),
 }
@@ -40,7 +39,6 @@ impl SolItemInfo {
             SolItem::Ship(sol_ship) => SolItemInfo::Ship(sol_ship.into()),
             SolItem::Skill(sol_skill) => SolItemInfo::Skill(sol_skill.into()),
             SolItem::Stance(sol_stance) => SolItemInfo::Stance(sol_stance.into()),
-            SolItem::Structure(sol_structure) => SolItemInfo::Structure(sol_structure.into()),
             SolItem::Subsystem(sol_subsystem) => SolItemInfo::Subsystem(sol_subsystem.into()),
             SolItem::SwEffect(sol_sw_effect) => SolItemInfo::SwEffect(sol_sw_effect.into()),
         }

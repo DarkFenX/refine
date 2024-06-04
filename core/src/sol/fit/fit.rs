@@ -1,9 +1,7 @@
 use crate::{
     defs::{SolFitId, SolFleetId, SolItemId},
-    ec,
     sol::{
-        fit::SolFitKind,
-        item::{SolItem, SolShip},
+        item::{SolItem, SolShipKind},
         SolModRack,
     },
     util::StSet,
@@ -11,14 +9,13 @@ use crate::{
 
 pub(in crate::sol) struct SolFit {
     pub(in crate::sol) id: SolFitId,
-    pub(in crate::sol) kind: SolFitKind,
+    pub(in crate::sol) kind: SolShipKind,
     pub(in crate::sol) fleet: Option<SolFleetId>,
     pub(in crate::sol) character: Option<SolItemId>,
     pub(in crate::sol) skills: StSet<SolItemId>,
     pub(in crate::sol) implants: StSet<SolItemId>,
     pub(in crate::sol) boosters: StSet<SolItemId>,
     pub(in crate::sol) ship: Option<SolItemId>,
-    pub(in crate::sol) structure: Option<SolItemId>,
     pub(in crate::sol) stance: Option<SolItemId>,
     pub(in crate::sol) subsystems: StSet<SolItemId>,
     pub(in crate::sol) mods_high: StSet<SolItemId>,
@@ -33,14 +30,13 @@ impl SolFit {
     pub(in crate::sol) fn new(id: SolFitId) -> Self {
         Self {
             id,
-            kind: SolFitKind::Unknown,
+            kind: SolShipKind::default(),
             fleet: None,
             character: None,
             skills: StSet::new(),
             implants: StSet::new(),
             boosters: StSet::new(),
             ship: None,
-            structure: None,
             stance: None,
             subsystems: StSet::new(),
             mods_high: StSet::new(),
@@ -69,9 +65,8 @@ impl SolFit {
             }
             SolItem::Ship(ship) => {
                 self.ship = Some(ship.id);
-                self.kind = detect_fit_kind(ship);
+                self.kind = ship.kind;
             }
-            SolItem::Structure(structure) => self.structure = Some(structure.id),
             SolItem::Stance(stance) => self.stance = Some(stance.id),
             SolItem::Subsystem(subsystem) => {
                 self.subsystems.insert(subsystem.id);
@@ -129,12 +124,7 @@ impl SolFit {
             SolItem::Ship(ship) => {
                 if self.ship == Some(ship.id) {
                     self.ship = None;
-                    self.kind = SolFitKind::Unknown;
-                }
-            }
-            SolItem::Structure(structure) => {
-                if self.structure == Some(structure.id) {
-                    self.structure = None
+                    self.kind = SolShipKind::default();
                 }
             }
             SolItem::Stance(stance) => {
@@ -182,7 +172,6 @@ impl SolFit {
         items.extend(self.implants.iter());
         items.extend(self.boosters.iter());
         conditional_push(&mut items, self.ship);
-        conditional_push(&mut items, self.structure);
         conditional_push(&mut items, self.stance);
         items.extend(self.subsystems.iter());
         items.extend(self.mods_high.iter());
@@ -193,17 +182,6 @@ impl SolFit {
         items.extend(self.fighters.iter());
         items.extend(self.fw_effects.iter());
         items
-    }
-}
-
-fn detect_fit_kind(ship: &SolShip) -> SolFitKind {
-    match &ship.a_item {
-        Some(a_item) => match a_item.cat_id {
-            ec::itemcats::SHIP => SolFitKind::Ship,
-            ec::itemcats::STRUCTURE => SolFitKind::Structure,
-            _ => SolFitKind::Unknown,
-        },
-        None => SolFitKind::Unknown,
     }
 }
 

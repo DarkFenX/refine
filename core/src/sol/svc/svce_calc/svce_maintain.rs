@@ -143,9 +143,9 @@ impl SolSvcs {
         if !modifiers.is_empty() {
             let mut affectee_item_ids = Vec::new();
             for modifier in modifiers.iter() {
-                if self.calc_data.mods.add_mod_tgt(*modifier, projectee_item) {
+                if self.calc_data.mods.add_mod_projection(*modifier, projectee_item) {
                     affectee_item_ids.clear();
-                    self.calc_data.afee.fill_affectees_for_tgt_item(
+                    self.calc_data.afee.fill_affectees_for_projectee_item(
                         &mut affectee_item_ids,
                         sol_view,
                         modifier,
@@ -181,9 +181,12 @@ impl SolSvcs {
             let mut affectee_item_ids = Vec::new();
             for modifier in modifiers.iter() {
                 affectee_item_ids.clear();
-                self.calc_data
-                    .afee
-                    .fill_affectees_for_tgt_item(&mut affectee_item_ids, sol_view, modifier, &tgt_item);
+                self.calc_data.afee.fill_affectees_for_projectee_item(
+                    &mut affectee_item_ids,
+                    sol_view,
+                    modifier,
+                    &tgt_item,
+                );
                 for affectee_item_id in affectee_item_ids.iter() {
                     self.calc_force_attr_recalc(sol_view, &affectee_item_id, &modifier.affectee_attr_id);
                     // Remove dependencies which could've been added by the effect being unprojected
@@ -218,7 +221,7 @@ impl SolSvcs {
                         );
                     }
                 }
-                self.calc_data.mods.rm_mod_tgt(modifier, tgt_item);
+                self.calc_data.mods.remove_mod_projection(modifier, tgt_item);
             }
         }
         self.calc_data

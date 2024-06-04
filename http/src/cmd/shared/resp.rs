@@ -41,11 +41,6 @@ impl From<rc::SolShipInfo> for HCmdResp {
         HCmdResp::ItemIds(core_ship.into())
     }
 }
-impl From<rc::SolStructureInfo> for HCmdResp {
-    fn from(core_structure: rc::SolStructureInfo) -> Self {
-        HCmdResp::ItemIds(core_structure.into())
-    }
-}
 impl From<rc::SolStanceInfo> for HCmdResp {
     fn from(core_stance: rc::SolStanceInfo) -> Self {
         HCmdResp::ItemIds(core_stance.into())
@@ -166,11 +161,6 @@ impl From<rc::SolBoosterInfo> for HItemIdsResp {
 impl From<rc::SolShipInfo> for HItemIdsResp {
     fn from(core_ship: rc::SolShipInfo) -> Self {
         HItemIdsResp::new(core_ship.id, None)
-    }
-}
-impl From<rc::SolStructureInfo> for HItemIdsResp {
-    fn from(core_structure: rc::SolStructureInfo) -> Self {
-        HItemIdsResp::new(core_structure.id, None)
     }
 }
 impl From<rc::SolStanceInfo> for HItemIdsResp {

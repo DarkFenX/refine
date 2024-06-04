@@ -99,21 +99,6 @@ impl SolFit {
             }
             item.debug_consistency_check(sol_view)?;
         }
-        // Structure
-        if let Some(item_id) = self.structure {
-            seen_items.push(item_id);
-            let item = match sol_view.items.get_item(&item_id) {
-                Ok(item) => item,
-                _ => return Err(DebugError::new()),
-            };
-            if item.get_fit_id() != Some(self.id) {
-                return Err(DebugError::new());
-            }
-            if !matches!(item, SolItem::Structure(_)) {
-                return Err(DebugError::new());
-            }
-            item.debug_consistency_check(sol_view)?;
-        }
         // Stance
         if let Some(item_id) = self.stance {
             seen_items.push(item_id);

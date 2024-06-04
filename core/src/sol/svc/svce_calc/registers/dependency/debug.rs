@@ -36,7 +36,7 @@ impl SolDependencyRegister {
                 }
             }
         }
-        for ((item_id, effect_id), (specs)) in self.by_source.iter() {
+        for ((item_id, effect_id), specs) in self.by_source.iter() {
             check_item(sol_view, item_id)?;
             check_effect(sol_view, effect_id)?;
             for (affector_spec, affectee_spec) in specs {

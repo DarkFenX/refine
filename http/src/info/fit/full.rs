@@ -24,8 +24,6 @@ pub(crate) struct HFitInfoFull {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) ship: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) structure: Option<HItemInfo>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) stance: Option<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) subsystems: Vec<HItemInfo>,
@@ -81,11 +79,6 @@ impl HFitInfoFull {
                 .collect(),
             ship: core_fit
                 .ship
-                .map(|v| core_sol.get_item_info(&v).ok())
-                .flatten()
-                .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)),
-            structure: core_fit
-                .structure
                 .map(|v| core_sol.get_item_info(&v).ok())
                 .flatten()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)),

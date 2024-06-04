@@ -4,7 +4,7 @@ use crate::{
     defs::{EItemGrpId, EItemId, SolFitId, SolItemId},
     sol::{
         fit::SolFit,
-        item::SolItem,
+        item::{SolItem, SolShipKind},
         svc::svce_calc::{SolAffecteeFilter, SolDomain, SolLocationKind, SolModifier, SolModifierKind},
         SolView,
     },
@@ -102,27 +102,27 @@ impl SolAffecteeRegister {
                     None => self.fill_affectees_for_fit(affectees, modifier, affector_fit),
                 }
             }
-            // Various targetable effects affect only what they are target, depending on modifier
+            // Various projectable effects affect only what they are project, depending on modifier
             // kind
             (SolModifierKind::System, SolItem::ProjEffect(proj_effect)) => {
-                for tgt_item_id in proj_effect.projs.iter_items() {
-                    let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
-                    self.fill_tgt_for_system_mod(affectees, sol_view, modifier, tgt_item);
+                for projectee_item_id in proj_effect.projs.iter_items() {
+                    let projectee_item = sol_view.items.get_item(projectee_item_id).unwrap();
+                    self.fill_affectees_for_proj_system_mod(affectees, sol_view, modifier, projectee_item);
                 }
             }
             (SolModifierKind::Targeted, _) => {
-                if let Some(tgt_item_ids) = item.iter_proj_items() {
-                    for tgt_item_id in tgt_item_ids {
-                        let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
-                        self.fill_tgt_for_targeted_mod(affectees, modifier, tgt_item);
+                if let Some(projectee_item_ids) = item.iter_projectee_items() {
+                    for projectee_item_id in projectee_item_ids {
+                        let projectee_item = sol_view.items.get_item(projectee_item_id).unwrap();
+                        self.fill_affectees_for_proj_targeted_mod(affectees, modifier, projectee_item);
                     }
                 }
             }
             (SolModifierKind::Buff, _) => {
-                if let Some(tgt_item_ids) = item.iter_proj_items() {
-                    for tgt_item_id in tgt_item_ids {
-                        let tgt_item = sol_view.items.get_item(tgt_item_id).unwrap();
-                        self.fill_tgt_for_buff_mod(affectees, modifier, tgt_item);
+                if let Some(projectee_item_ids) = item.iter_projectee_items() {
+                    for projectee_item_id in projectee_item_ids {
+                        let projectee_item = sol_view.items.get_item(projectee_item_id).unwrap();
+                        self.fill_affectees_for_proj_buff_mod(affectees, modifier, projectee_item);
                     }
                 }
             }
@@ -210,17 +210,19 @@ impl SolAffecteeRegister {
             }
         }
     }
-    pub(in crate::sol::svc::svce_calc) fn fill_affectees_for_tgt_item(
+    pub(in crate::sol::svc::svce_calc) fn fill_affectees_for_projectee_item(
         &self,
         affectees: &mut Vec<SolItemId>,
         sol_view: &SolView,
         modifier: &SolModifier,
-        tgt_item: &SolItem,
+        projectee_item: &SolItem,
     ) {
         match modifier.kind {
-            SolModifierKind::System => self.fill_tgt_for_system_mod(affectees, sol_view, modifier, tgt_item),
-            SolModifierKind::Targeted => self.fill_tgt_for_targeted_mod(affectees, modifier, tgt_item),
-            SolModifierKind::Buff => self.fill_tgt_for_buff_mod(affectees, modifier, tgt_item),
+            SolModifierKind::System => {
+                self.fill_affectees_for_proj_system_mod(affectees, sol_view, modifier, projectee_item)
+            }
+            SolModifierKind::Targeted => self.fill_affectees_for_proj_targeted_mod(affectees, modifier, projectee_item),
+            SolModifierKind::Buff => self.fill_affectees_for_proj_buff_mod(affectees, modifier, projectee_item),
             _ => (),
         }
     }
@@ -304,279 +306,336 @@ impl SolAffecteeRegister {
         }
     }
     // Private methods
-    fn fill_tgt_for_system_mod(
+    fn fill_affectees_for_proj_system_mod(
         &self,
         affectees: &mut Vec<SolItemId>,
         sol_view: &SolView,
         modifier: &SolModifier,
-        tgt_item: &SolItem,
+        projectee_item: &SolItem,
     ) {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
-                SolDomain::Ship if matches!(tgt_item, SolItem::Ship(_)) => affectees.push(tgt_item.get_id()),
-                SolDomain::Structure if matches!(tgt_item, SolItem::Structure(_)) => affectees.push(tgt_item.get_id()),
-                SolDomain::Char => match tgt_item {
-                    SolItem::Ship(tgt_ship) => {
-                        if let Some(char_id) = get_fit_character(sol_view, &tgt_ship.fit_id) {
+                SolDomain::Ship => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            affectees.push(projectee_ship.id)
+                        }
+                    }
+                }
+                SolDomain::Structure => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Structure) {
+                            affectees.push(projectee_ship.id)
+                        }
+                    }
+                }
+                SolDomain::Char => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if let Some(char_id) = get_fit_character(sol_view, &projectee_ship.fit_id) {
                             affectees.push(char_id);
                         }
                     }
-                    SolItem::Structure(tgt_struct) => {
-                        if let Some(char_id) = get_fit_character(sol_view, &tgt_struct.fit_id) {
-                            affectees.push(char_id);
-                        }
-                    }
-                    _ => (),
-                },
+                }
                 _ => (),
             },
             SolAffecteeFilter::Loc(dom) => match dom {
-                SolDomain::Ship => match tgt_item {
-                    SolItem::Ship(tgt_ship) => {
-                        extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocationKind::Ship))
+                SolDomain::Ship => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship),
+                            )
+                        }
                     }
-                    _ => (),
-                },
-                SolDomain::Structure => match tgt_item {
-                    SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc,
-                        &(tgt_struct.fit_id, SolLocationKind::Structure),
-                    ),
-                    _ => (),
-                },
-                SolDomain::Char => match tgt_item {
-                    SolItem::Ship(tgt_ship) => {
-                        extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocationKind::Character))
+                }
+                SolDomain::Structure => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Structure) {
+                            extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc,
+                                &(projectee_ship.fit_id, SolLocationKind::Structure),
+                            )
+                        }
                     }
-                    SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc,
-                        &(tgt_struct.fit_id, SolLocationKind::Character),
-                    ),
-                    _ => (),
-                },
+                }
+                SolDomain::Char => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        extend_vec_from_map_set_l1(
+                            affectees,
+                            &self.loc,
+                            &(projectee_ship.fit_id, SolLocationKind::Character),
+                        )
+                    }
+                }
                 _ => (),
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
-                SolDomain::Ship => match tgt_item {
-                    SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_grp,
-                        &(tgt_ship.fit_id, SolLocationKind::Ship, grp_id),
-                    ),
-                    _ => (),
-                },
-                SolDomain::Structure => match tgt_item {
-                    SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_grp,
-                        &(tgt_struct.fit_id, SolLocationKind::Structure, grp_id),
-                    ),
-                    _ => (),
-                },
-                SolDomain::Char => match tgt_item {
-                    SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_grp,
-                        &(tgt_ship.fit_id, SolLocationKind::Character, grp_id),
-                    ),
-                    SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_grp,
-                        &(tgt_struct.fit_id, SolLocationKind::Character, grp_id),
-                    ),
-                    _ => (),
-                },
+                SolDomain::Ship => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_grp,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship, grp_id),
+                            );
+                        }
+                    }
+                }
+                SolDomain::Structure => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Structure) {
+                            extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_grp,
+                                &(projectee_ship.fit_id, SolLocationKind::Structure, grp_id),
+                            );
+                        }
+                    }
+                }
+                SolDomain::Char => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        extend_vec_from_map_set_l1(
+                            affectees,
+                            &self.loc_grp,
+                            &(projectee_ship.fit_id, SolLocationKind::Character, grp_id),
+                        );
+                    }
+                }
                 _ => (),
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
-                SolDomain::Ship => match tgt_item {
-                    SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_srq,
-                        &(tgt_ship.fit_id, SolLocationKind::Ship, srq_id),
-                    ),
-                    _ => (),
-                },
-                SolDomain::Structure => match tgt_item {
-                    SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_srq,
-                        &(tgt_struct.fit_id, SolLocationKind::Structure, srq_id),
-                    ),
-                    _ => (),
-                },
-                SolDomain::Char => match tgt_item {
-                    SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_srq,
-                        &(tgt_ship.fit_id, SolLocationKind::Character, srq_id),
-                    ),
-                    SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_srq,
-                        &(tgt_struct.fit_id, SolLocationKind::Character, srq_id),
-                    ),
-                    _ => (),
-                },
-                _ => (),
-            },
-            SolAffecteeFilter::OwnSrq(srq_id) => match tgt_item {
-                SolItem::Ship(tgt_ship) => {
-                    extend_vec_from_map_set_l1(affectees, &self.own_srq, &(tgt_ship.fit_id, srq_id))
+                SolDomain::Ship => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_srq,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship, srq_id),
+                            )
+                        }
+                    }
                 }
-                SolItem::Structure(tgt_struct) => {
-                    extend_vec_from_map_set_l1(affectees, &self.own_srq, &(tgt_struct.fit_id, srq_id))
+                SolDomain::Structure => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Structure) {
+                            extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_srq,
+                                &(projectee_ship.fit_id, SolLocationKind::Structure, srq_id),
+                            )
+                        }
+                    }
+                }
+                SolDomain::Char => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        extend_vec_from_map_set_l1(
+                            affectees,
+                            &self.loc_srq,
+                            &(projectee_ship.fit_id, SolLocationKind::Character, srq_id),
+                        )
+                    }
                 }
                 _ => (),
             },
+            SolAffecteeFilter::OwnSrq(srq_id) => {
+                if let SolItem::Ship(projectee_ship) = projectee_item {
+                    extend_vec_from_map_set_l1(affectees, &self.own_srq, &(projectee_ship.fit_id, srq_id))
+                }
+            }
         }
     }
-    fn fill_tgt_for_targeted_mod(&self, affectees: &mut Vec<SolItemId>, modifier: &SolModifier, tgt_item: &SolItem) {
+    fn fill_affectees_for_proj_targeted_mod(
+        &self,
+        affectees: &mut Vec<SolItemId>,
+        modifier: &SolModifier,
+        projectee_item: &SolItem,
+    ) {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => {
                 if matches!(dom, SolDomain::Target) {
-                    affectees.push(tgt_item.get_id())
+                    affectees.push(projectee_item.get_id())
                 }
             }
             SolAffecteeFilter::Loc(dom) => {
                 if matches!(dom, SolDomain::Target) {
-                    match tgt_item {
-                        SolItem::Ship(tgt_ship) => {
-                            extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocationKind::Ship))
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        match projectee_ship.kind {
+                            SolShipKind::Ship => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship),
+                            ),
+                            SolShipKind::Structure => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc,
+                                &(projectee_ship.fit_id, SolLocationKind::Structure),
+                            ),
+                            _ => (),
                         }
-                        SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                            affectees,
-                            &self.loc,
-                            &(tgt_struct.fit_id, SolLocationKind::Structure),
-                        ),
-                        _ => (),
                     }
                 }
             }
             SolAffecteeFilter::LocGrp(dom, grp_id) => {
                 if matches!(dom, SolDomain::Target) {
-                    match tgt_item {
-                        SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                            affectees,
-                            &self.loc_grp,
-                            &(tgt_ship.fit_id, SolLocationKind::Ship, grp_id),
-                        ),
-                        SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                            affectees,
-                            &self.loc_grp,
-                            &(tgt_struct.fit_id, SolLocationKind::Structure, grp_id),
-                        ),
-                        _ => (),
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        match projectee_ship.kind {
+                            SolShipKind::Ship => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_grp,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship, grp_id),
+                            ),
+                            SolShipKind::Structure => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_grp,
+                                &(projectee_ship.fit_id, SolLocationKind::Structure, grp_id),
+                            ),
+                            _ => (),
+                        }
                     }
                 }
             }
             SolAffecteeFilter::LocSrq(dom, srq_id) => {
                 if matches!(dom, SolDomain::Target) {
-                    match tgt_item {
-                        SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                            affectees,
-                            &self.loc_srq,
-                            &(tgt_ship.fit_id, SolLocationKind::Ship, srq_id),
-                        ),
-                        SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                            affectees,
-                            &self.loc_srq,
-                            &(tgt_struct.fit_id, SolLocationKind::Structure, srq_id),
-                        ),
-                        _ => (),
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        match projectee_ship.kind {
+                            SolShipKind::Ship => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_srq,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship, srq_id),
+                            ),
+                            SolShipKind::Structure => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_srq,
+                                &(projectee_ship.fit_id, SolLocationKind::Structure, srq_id),
+                            ),
+                            _ => (),
+                        }
                     }
                 }
             }
-            SolAffecteeFilter::OwnSrq(srq_id) => match tgt_item {
-                SolItem::Ship(tgt_ship) => {
-                    extend_vec_from_map_set_l1(affectees, &self.own_srq, &(tgt_ship.fit_id, srq_id))
+            SolAffecteeFilter::OwnSrq(srq_id) => {
+                if let SolItem::Ship(projectee_ship) = projectee_item {
+                    extend_vec_from_map_set_l1(affectees, &self.own_srq, &(projectee_ship.fit_id, srq_id));
                 }
-                SolItem::Structure(tgt_struct) => {
-                    extend_vec_from_map_set_l1(affectees, &self.own_srq, &(tgt_struct.fit_id, srq_id))
-                }
-                _ => (),
-            },
+            }
         }
     }
-    fn fill_tgt_for_buff_mod(&self, affectees: &mut Vec<SolItemId>, modifier: &SolModifier, tgt_item: &SolItem) {
+    fn fill_affectees_for_proj_buff_mod(
+        &self,
+        affectees: &mut Vec<SolItemId>,
+        modifier: &SolModifier,
+        projectee_item: &SolItem,
+    ) {
         match modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Everything => {
-                    if tgt_item.is_buff_modifiable() {
-                        affectees.push(tgt_item.get_id())
+                    if projectee_item.is_buff_modifiable() {
+                        affectees.push(projectee_item.get_id())
                     }
                 }
-                SolDomain::Ship if matches!(tgt_item, SolItem::Ship(_)) => affectees.push(tgt_item.get_id()),
+                SolDomain::Ship => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            affectees.push(projectee_ship.id)
+                        }
+                    }
+                }
                 _ => (),
             },
             SolAffecteeFilter::Loc(dom) => match dom {
-                SolDomain::Everything => match tgt_item {
-                    SolItem::Ship(tgt_ship) => {
-                        extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocationKind::Ship))
+                SolDomain::Everything => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        match projectee_ship.kind {
+                            SolShipKind::Ship => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship),
+                            ),
+                            SolShipKind::Structure => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc,
+                                &(projectee_ship.fit_id, SolLocationKind::Structure),
+                            ),
+                            _ => (),
+                        }
                     }
-                    SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc,
-                        &(tgt_struct.fit_id, SolLocationKind::Structure),
-                    ),
-                    _ => (),
-                },
-                SolDomain::Ship => match tgt_item {
-                    SolItem::Ship(tgt_ship) => {
-                        extend_vec_from_map_set_l1(affectees, &self.loc, &(tgt_ship.fit_id, SolLocationKind::Ship))
+                }
+                SolDomain::Ship => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship),
+                            )
+                        }
                     }
-                    _ => (),
-                },
+                }
                 _ => (),
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
-                SolDomain::Everything => match tgt_item {
-                    SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_grp,
-                        &(tgt_ship.fit_id, SolLocationKind::Ship, grp_id),
-                    ),
-                    SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_grp,
-                        &(tgt_struct.fit_id, SolLocationKind::Structure, grp_id),
-                    ),
-                    _ => (),
-                },
-                SolDomain::Ship => match tgt_item {
-                    SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_grp,
-                        &(tgt_ship.fit_id, SolLocationKind::Ship, grp_id),
-                    ),
-                    _ => (),
-                },
+                SolDomain::Everything => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        match projectee_ship.kind {
+                            SolShipKind::Ship => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_grp,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship, grp_id),
+                            ),
+                            SolShipKind::Structure => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_grp,
+                                &(projectee_ship.fit_id, SolLocationKind::Structure, grp_id),
+                            ),
+                            _ => (),
+                        }
+                    }
+                }
+                SolDomain::Ship => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_grp,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship, grp_id),
+                            )
+                        }
+                    }
+                }
                 _ => (),
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
-                SolDomain::Everything => match tgt_item {
-                    SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_srq,
-                        &(tgt_ship.fit_id, SolLocationKind::Ship, srq_id),
-                    ),
-                    SolItem::Structure(tgt_struct) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_srq,
-                        &(tgt_struct.fit_id, SolLocationKind::Structure, srq_id),
-                    ),
-                    _ => (),
-                },
-                SolDomain::Ship => match tgt_item {
-                    SolItem::Ship(tgt_ship) => extend_vec_from_map_set_l1(
-                        affectees,
-                        &self.loc_srq,
-                        &(tgt_ship.fit_id, SolLocationKind::Ship, srq_id),
-                    ),
-                    _ => (),
-                },
+                SolDomain::Everything => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        match projectee_ship.kind {
+                            SolShipKind::Ship => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_srq,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship, srq_id),
+                            ),
+                            SolShipKind::Structure => extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_srq,
+                                &(projectee_ship.fit_id, SolLocationKind::Structure, srq_id),
+                            ),
+                            _ => (),
+                        }
+                    }
+                }
+                SolDomain::Ship => {
+                    if let SolItem::Ship(projectee_ship) = projectee_item {
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            extend_vec_from_map_set_l1(
+                                affectees,
+                                &self.loc_srq,
+                                &(projectee_ship.fit_id, SolLocationKind::Ship, srq_id),
+                            )
+                        }
+                    }
+                }
                 _ => (),
             },
             _ => (),
@@ -591,8 +650,8 @@ fn get_fit_character(sol_view: &SolView, fit_id: &SolFitId) -> Option<SolItemId>
 fn check_domain_owner(dom: SolDomain, fit: &SolFit) -> bool {
     match dom {
         SolDomain::Char => fit.character.is_some(),
-        SolDomain::Ship => fit.ship.is_some(),
-        SolDomain::Structure => fit.structure.is_some(),
+        SolDomain::Ship => matches!(fit.kind, SolShipKind::Ship),
+        SolDomain::Structure => matches!(fit.kind, SolShipKind::Structure),
         _ => false,
     }
 }

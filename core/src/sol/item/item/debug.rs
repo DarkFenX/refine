@@ -18,7 +18,6 @@ impl SolItem {
             Self::Ship(_) => Ok(()),
             Self::Skill(_) => Ok(()),
             Self::Stance(_) => Ok(()),
-            Self::Structure(_) => Ok(()),
             Self::Subsystem(_) => Ok(()),
             Self::SwEffect(_) => Ok(()),
         }

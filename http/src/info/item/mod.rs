@@ -11,7 +11,6 @@ use rig::HRigInfo;
 use ship::HShipInfo;
 use skill::HSkillInfo;
 use stance::HStanceInfo;
-use structure::HStructureInfo;
 use subsystem::HSubsystemInfo;
 use sw_effect::HSwEffectInfo;
 
@@ -30,7 +29,6 @@ mod rig;
 mod ship;
 mod skill;
 mod stance;
-mod structure;
 mod subsystem;
 mod sw_effect;
 
@@ -46,7 +44,6 @@ pub(crate) enum HItemInfo {
     Implant(HImplantInfo),
     Booster(HBoosterInfo),
     Ship(HShipInfo),
-    Structure(HStructureInfo),
     Stance(HStanceInfo),
     Subsystem(HSubsystemInfo),
     Module(HModuleInfo),
@@ -66,7 +63,6 @@ impl MkItemInfo<&rc::SolItemInfo> for HItemInfo {
             rc::SolItemInfo::Implant(core_implant_info) => Self::mk_info(core_sol, core_implant_info, item_mode),
             rc::SolItemInfo::Booster(core_booster_info) => Self::mk_info(core_sol, core_booster_info, item_mode),
             rc::SolItemInfo::Ship(core_ship_info) => Self::mk_info(core_sol, core_ship_info, item_mode),
-            rc::SolItemInfo::Structure(core_structure_info) => Self::mk_info(core_sol, core_structure_info, item_mode),
             rc::SolItemInfo::Stance(core_stance_info) => Self::mk_info(core_sol, core_stance_info, item_mode),
             rc::SolItemInfo::Subsystem(core_subsystem_info) => Self::mk_info(core_sol, core_subsystem_info, item_mode),
             rc::SolItemInfo::Module(core_module_info) => Self::mk_info(core_sol, core_module_info, item_mode),
@@ -117,15 +113,6 @@ impl MkItemInfo<&rc::SolBoosterInfo> for HItemInfo {
 impl MkItemInfo<&rc::SolShipInfo> for HItemInfo {
     fn mk_info(core_sol: &mut rc::SolarSystem, core_ship_info: &rc::SolShipInfo, item_mode: HItemInfoMode) -> Self {
         Self::Ship(HShipInfo::mk_info(core_sol, core_ship_info, item_mode))
-    }
-}
-impl MkItemInfo<&rc::SolStructureInfo> for HItemInfo {
-    fn mk_info(
-        core_sol: &mut rc::SolarSystem,
-        core_structure_info: &rc::SolStructureInfo,
-        item_mode: HItemInfoMode,
-    ) -> Self {
-        Self::Structure(HStructureInfo::mk_info(core_sol, core_structure_info, item_mode))
     }
 }
 impl MkItemInfo<&rc::SolStanceInfo> for HItemInfo {

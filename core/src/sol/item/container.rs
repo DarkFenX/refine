@@ -4,7 +4,7 @@ use crate::{
     defs::{SolFitId, SolItemId},
     sol::item::{
         SolBooster, SolCharacter, SolCharge, SolDrone, SolFighter, SolFwEffect, SolImplant, SolItem, SolModule,
-        SolProjEffect, SolRig, SolShip, SolSkill, SolStance, SolStructure, SolSubsystem, SolSwEffect,
+        SolProjEffect, SolRig, SolShip, SolSkill, SolStance, SolSubsystem, SolSwEffect,
     },
     util::{Error, ErrorKind, Named, Result, StMap},
 };
@@ -299,29 +299,6 @@ impl SolItems {
                 *item_id,
                 item.get_name(),
                 SolStance::get_name(),
-            ))),
-        }
-    }
-    // Structure methods
-    pub(in crate::sol) fn get_structure(&self, item_id: &SolItemId) -> Result<&SolStructure> {
-        let item = self.get_item(item_id)?;
-        match item {
-            SolItem::Structure(structure) => Ok(structure),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
-                *item_id,
-                item.get_name(),
-                SolStructure::get_name(),
-            ))),
-        }
-    }
-    pub(in crate::sol) fn get_structure_mut(&mut self, item_id: &SolItemId) -> Result<&mut SolStructure> {
-        let item = self.get_item_mut(item_id)?;
-        match item {
-            SolItem::Structure(structure) => Ok(structure),
-            _ => Err(Error::new(ErrorKind::UnexpectedItemKind(
-                *item_id,
-                item.get_name(),
-                SolStructure::get_name(),
             ))),
         }
     }

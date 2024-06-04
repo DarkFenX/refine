@@ -3,7 +3,7 @@ use crate::{
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     sol::item::{
         SolBooster, SolCharacter, SolCharge, SolDrone, SolEffectModes, SolFighter, SolFwEffect, SolImplant,
-        SolItemState, SolModule, SolProjEffect, SolRig, SolShip, SolSkill, SolStance, SolStructure, SolSubsystem,
+        SolItemState, SolModule, SolProjEffect, SolRig, SolShip, SolShipKind, SolSkill, SolStance, SolSubsystem,
         SolSwEffect,
     },
     src::Src,
@@ -22,7 +22,6 @@ pub(in crate::sol) enum SolItem {
     ProjEffect(SolProjEffect),
     Rig(SolRig),
     Ship(SolShip),
-    Structure(SolStructure),
     Skill(SolSkill),
     Stance(SolStance),
     Subsystem(SolSubsystem),
@@ -44,7 +43,6 @@ impl SolItem {
             Self::Ship(_) => SolShip::get_name(),
             Self::Skill(_) => SolSkill::get_name(),
             Self::Stance(_) => SolStance::get_name(),
-            Self::Structure(_) => SolStructure::get_name(),
             Self::Subsystem(_) => SolSubsystem::get_name(),
             Self::SwEffect(_) => SolSwEffect::get_name(),
         }
@@ -64,7 +62,6 @@ impl SolItem {
             Self::Ship(ship) => ship.id,
             Self::Skill(skill) => skill.id,
             Self::Stance(stance) => stance.id,
-            Self::Structure(structure) => structure.id,
             Self::Subsystem(subsystem) => subsystem.id,
             Self::SwEffect(sw_effect) => sw_effect.id,
         }
@@ -84,7 +81,6 @@ impl SolItem {
             Self::Ship(ship) => Some(ship.fit_id),
             Self::Skill(skill) => Some(skill.fit_id),
             Self::Stance(stance) => Some(stance.fit_id),
-            Self::Structure(structure) => Some(structure.fit_id),
             Self::Subsystem(subsystem) => Some(subsystem.fit_id),
             Self::SwEffect(_) => None,
         }
@@ -104,7 +100,6 @@ impl SolItem {
             Self::Ship(ship) => &ship.effect_modes,
             Self::Skill(skill) => &skill.effect_modes,
             Self::Stance(stance) => &stance.effect_modes,
-            Self::Structure(structure) => &structure.effect_modes,
             Self::Subsystem(subsystem) => &subsystem.effect_modes,
             Self::SwEffect(sw_effect) => &sw_effect.effect_modes,
         }
@@ -124,7 +119,6 @@ impl SolItem {
             Self::Ship(ship) => &mut ship.effect_modes,
             Self::Skill(skill) => &mut skill.effect_modes,
             Self::Stance(stance) => &mut stance.effect_modes,
-            Self::Structure(structure) => &mut structure.effect_modes,
             Self::Subsystem(subsystem) => &mut subsystem.effect_modes,
             Self::SwEffect(sw_effect) => &mut sw_effect.effect_modes,
         }
@@ -144,7 +138,6 @@ impl SolItem {
             Self::Ship(ship) => ship.a_item_id,
             Self::Skill(skill) => skill.a_item_id,
             Self::Stance(stance) => stance.a_item_id,
-            Self::Structure(structure) => structure.a_item_id,
             Self::Subsystem(subsystem) => subsystem.a_item_id,
             Self::SwEffect(sw_effect) => sw_effect.a_item_id,
         }
@@ -164,7 +157,6 @@ impl SolItem {
             Self::Ship(ship) => ship.state,
             Self::Skill(skill) => skill.state,
             Self::Stance(stance) => stance.state,
-            Self::Structure(structure) => structure.state,
             Self::Subsystem(subsystem) => subsystem.state,
             Self::SwEffect(sw_effect) => sw_effect.state,
         }
@@ -186,7 +178,6 @@ impl SolItem {
             Self::Ship(ship) => ship.a_item = a_item,
             Self::Skill(skill) => skill.a_item = a_item,
             Self::Stance(stance) => stance.a_item = a_item,
-            Self::Structure(structure) => structure.a_item = a_item,
             Self::Subsystem(subsystem) => subsystem.a_item = a_item,
             Self::SwEffect(sw_effect) => sw_effect.a_item = a_item,
         }
@@ -206,7 +197,6 @@ impl SolItem {
             Self::Ship(ship) => ship.a_item.as_ref(),
             Self::Skill(skill) => skill.a_item.as_ref(),
             Self::Stance(stance) => stance.a_item.as_ref(),
-            Self::Structure(structure) => structure.a_item.as_ref(),
             Self::Subsystem(subsystem) => subsystem.a_item.as_ref(),
             Self::SwEffect(sw_effect) => sw_effect.a_item.as_ref(),
         }
@@ -230,7 +220,6 @@ impl SolItem {
             Self::Ship(_) => true,
             Self::Skill(_) => false,
             Self::Stance(_) => false,
-            Self::Structure(_) => true,
             Self::Subsystem(_) => false,
             Self::SwEffect(_) => false,
         }
@@ -250,12 +239,11 @@ impl SolItem {
             Self::Ship(_) => None,
             Self::Skill(_) => None,
             Self::Stance(_) => None,
-            Self::Structure(_) => None,
             Self::Subsystem(_) => None,
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::sol) fn iter_proj_items(&self) -> Option<impl ExactSizeIterator<Item = &SolItemId>> {
+    pub(in crate::sol) fn iter_projectee_items(&self) -> Option<impl ExactSizeIterator<Item = &SolItemId>> {
         match self {
             Self::Booster(_) => None,
             Self::Character(_) => None,
@@ -270,12 +258,12 @@ impl SolItem {
             Self::Ship(_) => None,
             Self::Skill(_) => None,
             Self::Stance(_) => None,
-            Self::Structure(_) => None,
             Self::Subsystem(_) => None,
             Self::SwEffect(_) => None,
         }
     }
     // Calculator-specific getters
+    // TODO: consider moving to calculator specific item extensions
     pub(in crate::sol) fn get_orig_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>> {
         Ok(&self.get_a_item()?.attr_vals)
     }
@@ -293,5 +281,11 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_skill_reqs(&self) -> Result<&StMap<EItemId, SkillLevel>> {
         Ok(&self.get_a_item()?.srqs)
+    }
+    pub(in crate::sol) fn get_ship_kind(&self) -> SolShipKind {
+        match self {
+            Self::Ship(ship) => ship.kind,
+            _ => SolShipKind::default(),
+        }
     }
 }

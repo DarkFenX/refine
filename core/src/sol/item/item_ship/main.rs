@@ -1,28 +1,33 @@
 use crate::{
     ad,
     defs::{EItemId, SolFitId, SolItemId},
-    sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemState},
+    ec,
+    sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemState, SolShipKind},
     src::Src,
     util::Named,
 };
 
-pub(in crate::sol) struct SolStructure {
+pub(in crate::sol) struct SolShip {
     pub(in crate::sol) id: SolItemId,
     pub(in crate::sol) fit_id: SolFitId,
     pub(in crate::sol) a_item_id: EItemId,
     pub(in crate::sol) state: SolItemState,
     pub(in crate::sol) effect_modes: SolEffectModes,
     pub(in crate::sol) a_item: Option<ad::ArcItem>,
+    pub(in crate::sol) kind: SolShipKind,
 }
-impl SolStructure {
+impl SolShip {
     pub(in crate::sol) fn new(src: &Src, id: SolItemId, fit_id: SolFitId, a_item_id: EItemId, state: bool) -> Self {
+        let a_item = src.get_a_item(&a_item_id).cloned();
+        let kind = detect_fit_kind(&a_item);
         Self {
             id,
             fit_id,
             a_item_id,
             state: bool_to_state(state),
             effect_modes: SolEffectModes::new(),
-            a_item: src.get_a_item(&a_item_id).cloned(),
+            a_item,
+            kind,
         }
     }
     pub(in crate::sol) fn get_bool_state(&self) -> bool {
@@ -32,13 +37,24 @@ impl SolStructure {
         self.state = bool_to_state(state);
     }
 }
-impl Named for SolStructure {
+impl Named for SolShip {
     fn get_name() -> &'static str {
-        "SolStructure"
+        "SolShip"
     }
 }
-impl std::fmt::Display for SolStructure {
+impl std::fmt::Display for SolShip {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}(id={}, a_item_id={})", Self::get_name(), self.id, self.a_item_id)
+    }
+}
+
+fn detect_fit_kind(a_item: &Option<ad::ArcItem>) -> SolShipKind {
+    match a_item {
+        Some(a_item) => match a_item.cat_id {
+            ec::itemcats::SHIP => SolShipKind::Ship,
+            ec::itemcats::STRUCTURE => SolShipKind::Structure,
+            _ => SolShipKind::Unknown,
+        },
+        None => SolShipKind::Unknown,
     }
 }

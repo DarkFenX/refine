@@ -88,7 +88,7 @@ impl SolSvcs {
             };
         }
         if !to_stop.is_empty() {
-            if let Some(proj_items) = item.iter_proj_items() {
+            if let Some(proj_items) = item.iter_projectee_items() {
                 for proj_item_id in proj_items {
                     let proj_item = sol_view.items.get_item(proj_item_id).unwrap();
                     for effect in to_stop.iter() {

@@ -19,7 +19,6 @@ impl SolItem {
             Self::Ship(_) => Some(SolLocationKind::Ship),
             Self::Skill(_) => None,
             Self::Stance(_) => None,
-            Self::Structure(_) => Some(SolLocationKind::Structure),
             Self::Subsystem(_) => None,
             Self::SwEffect(_) => None,
         }
@@ -39,7 +38,6 @@ impl SolItem {
             Self::Ship(_) => false,
             Self::Skill(_) => true,
             Self::Stance(_) => false,
-            Self::Structure(_) => false,
             Self::Subsystem(_) => false,
             Self::SwEffect(_) => false,
         }
@@ -59,7 +57,6 @@ impl SolItem {
             Self::Ship(_) => false,
             Self::Skill(_) => false,
             Self::Stance(_) => true,
-            Self::Structure(_) => false,
             Self::Subsystem(_) => true,
             Self::SwEffect(_) => false,
         }
@@ -79,7 +76,6 @@ impl SolItem {
             Self::Ship(_) => false,
             Self::Skill(_) => false,
             Self::Stance(_) => false,
-            Self::Structure(_) => false,
             Self::Subsystem(_) => false,
             Self::SwEffect(_) => false,
         }
@@ -99,7 +95,6 @@ impl SolItem {
             Self::Ship(_) => false,
             Self::Skill(_) => false,
             Self::Stance(_) => false,
-            Self::Structure(_) => false,
             Self::Subsystem(_) => false,
             Self::SwEffect(_) => false,
         }
@@ -122,7 +117,6 @@ impl SolItem {
             Self::Ship(_) => None,
             Self::Skill(_) => None,
             Self::Stance(_) => None,
-            Self::Structure(_) => None,
             Self::Subsystem(_) => None,
             Self::SwEffect(_) => None,
         }
