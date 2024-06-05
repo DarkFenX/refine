@@ -24,6 +24,7 @@ class EveItemCat(IntEnum):
     module = 7
     ship = 6
     skill = 16
+    structure = 65
     subsystem = 32
 
 

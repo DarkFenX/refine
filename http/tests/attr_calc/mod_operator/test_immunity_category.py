@@ -23,7 +23,7 @@ def setup_immunity_test_ext(client, consts, affector1_cat_id, affector2_cat_id):
         cat_id=affector2_cat_id,
         attrs={eve_affector_attr.id: 100},
         eff_ids=[eve_effect.id])
-    eve_item_affectee = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
+    eve_item_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

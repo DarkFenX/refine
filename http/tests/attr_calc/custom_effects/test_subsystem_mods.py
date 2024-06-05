@@ -12,7 +12,7 @@ def test_slots(client, consts):
     eve_subsystem = client.mk_eve_item(
         attrs={eve_affector_attr_hi.id: 3, eve_affector_attr_mid.id: 4, eve_affector_attr_low.id: 1},
         eff_ids=[eve_effect.id])
-    eve_ship = client.mk_eve_item(
+    eve_ship = client.mk_eve_ship(
         attrs={eve_affectee_attr_hi.id: 0, eve_affectee_attr_mid.id: 2, eve_affectee_attr_low.id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -56,7 +56,7 @@ def test_hardpoints(client, consts):
     eve_subsystem = client.mk_eve_item(
         attrs={eve_affector_attr_turret.id: 4, eve_affector_attr_launcher.id: 6},
         eff_ids=[eve_effect.id])
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr_turret.id: 0, eve_affectee_attr_launcher.id: 2})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr_turret.id: 0, eve_affectee_attr_launcher.id: 2})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

@@ -16,7 +16,7 @@ def setup_penalization_test(client, consts, stackable):
     eve_item_affector3 = client.mk_eve_item(attrs={eve_affector_attr.id: 53.02}, eff_ids=[eve_effect.id])
     # Addition of 0 is considered insignificant, and won't be exposed as modification
     eve_item_affector4 = client.mk_eve_item(attrs={eve_affector_attr.id: 0}, eff_ids=[eve_effect.id])
-    eve_item_affectee = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
+    eve_item_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

@@ -400,19 +400,6 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             cmd_name='ship', sol_id=sol_id, item_id=item_id, state=state,
             item_info_mode=item_info_mode)
 
-    # Structure methods
-    def set_struct_request(
-            self,
-            sol_id: str,
-            fit_id: str,
-            type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
-    ) -> Request:
-        return self.__add_simple_item(
-            cmd_name='structure', sol_id=sol_id, fit_id=fit_id, type_id=type_id, state=state,
-            item_info_mode=item_info_mode)
-
     # Stance methods
     def set_stance_request(
             self,

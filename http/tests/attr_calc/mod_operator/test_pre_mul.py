@@ -18,7 +18,7 @@ def setup_penalization_test(client, consts, stackable):
     eve_item_affector5 = client.mk_eve_item(attrs={eve_affector_attr.id: 5}, eff_ids=[eve_effect.id])
     # Multiplication by 1 is considered insignificant, and won't be exposed as modification
     eve_item_affector6 = client.mk_eve_item(attrs={eve_affector_attr.id: 1}, eff_ids=[eve_effect.id])
-    eve_item_affectee = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
+    eve_item_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

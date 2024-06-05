@@ -104,22 +104,6 @@ def test_ship(client):
         api_fit.ship  # pylint: disable=W0104
 
 
-def test_struct(client):
-    eve_item = client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_item = api_fit.set_struct(type_id=eve_item.id)
-    # Verification
-    assert api_fit.update().structure.id == api_item.id
-    # Action
-    api_item.remove()
-    # Verification
-    api_fit.update()
-    with raises(AttributeError):
-        api_fit.structure  # pylint: disable=W0104
-
-
 def test_stance(client):
     eve_item = client.mk_eve_item()
     client.create_sources()

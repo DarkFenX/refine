@@ -83,7 +83,7 @@ def test_charge_switch(client, consts):
 
 
 def test_mult_change(client, consts):
-    eve_ship_item = client.mk_eve_item()
+    eve_ship_item = client.mk_eve_ship()
     eve_aar_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
     eve_aar_affectee_attr = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount)
     eve_mod_affector_attr = client.mk_eve_attr()
@@ -125,7 +125,7 @@ def test_mult_change(client, consts):
 
 def test_penalties(client, consts):
     # Check that paste multiplier is not stacking penalized against other multiplications
-    eve_ship_item = client.mk_eve_item()
+    eve_ship_item = client.mk_eve_ship()
     eve_aar_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.charged_armor_dmg_mult)
     eve_aar_affectee_attr = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount, stackable=False)
     eve_mod_affector_attr = client.mk_eve_attr()

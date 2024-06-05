@@ -12,7 +12,7 @@ def test_missile_launcher_rof(client, consts):
     eve_skill2 = client.mk_eve_item()
     eve_launcher1 = client.mk_eve_item(attrs={eve_affectee_attr.id: 5}, srqs={eve_skill1.id: 5})
     eve_launcher2 = client.mk_eve_item(attrs={eve_affectee_attr.id: 5}, srqs={eve_skill2.id: 5})
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

@@ -10,7 +10,7 @@ def test_ab(client, consts):
     eve_sig_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.sig_radius_bonus)
     eve_sig_affectee_attr = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
     eve_prop_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_bonus_afterburner, cat_id=consts.EveEffCat.active)
-    eve_ship_item = client.mk_eve_item(
+    eve_ship_item = client.mk_eve_ship(
         attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000, eve_sig_affectee_attr.id: 32})
     eve_prop_item = client.mk_eve_item(
         attrs={
@@ -58,7 +58,7 @@ def test_mwd(client, consts):
     eve_prop_effect = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_microwarpdrive,
         cat_id=consts.EveEffCat.active)
-    eve_ship_item = client.mk_eve_item(
+    eve_ship_item = client.mk_eve_ship(
         attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000, eve_sig_affectee_attr.id: 32})
     eve_prop_item = client.mk_eve_item(
         attrs={
@@ -113,7 +113,7 @@ def test_state(client, consts):
     eve_prop_effect = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_microwarpdrive,
         cat_id=consts.EveEffCat.active)
-    eve_ship_item = client.mk_eve_item(
+    eve_ship_item = client.mk_eve_ship(
         attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000, eve_sig_affectee_attr.id: 32})
     eve_prop_item = client.mk_eve_item(
         attrs={
@@ -150,7 +150,7 @@ def test_speed_mod_stacking(client, consts):
     eve_mass_attr = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_mass_add_attr = client.mk_eve_attr(id_=consts.EveAttr.mass_addition)
     eve_prop_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_bonus_afterburner, cat_id=consts.EveEffCat.active)
-    eve_ship_item = client.mk_eve_item(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000})
+    eve_ship_item = client.mk_eve_ship(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000})
     eve_prop_item = client.mk_eve_item(
         attrs={eve_speed_boost_attr_prop.id: 135, eve_thrust_attr.id: 1500000, eve_mass_add_attr.id: 500000},
         eff_ids=[eve_prop_effect.id],
@@ -193,7 +193,7 @@ def test_sig_mod_stacking(client, consts):
     eve_prop_effect = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_microwarpdrive,
         cat_id=consts.EveEffCat.active)
-    eve_ship_item = client.mk_eve_item(attrs={eve_sig_affectee_attr.id: 32})
+    eve_ship_item = client.mk_eve_ship(attrs={eve_sig_affectee_attr.id: 32})
     eve_prop_item = client.mk_eve_item(
         attrs={eve_sig_affector_attr_prop.id: 450},
         eff_ids=[eve_prop_effect.id],
@@ -236,7 +236,7 @@ def test_speed_mod_mass_zero(client, consts):
     eve_speed_boost_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_mass_attr = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_prop_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_bonus_afterburner, cat_id=consts.EveEffCat.active)
-    eve_ship_item = client.mk_eve_item(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 0})
+    eve_ship_item = client.mk_eve_ship(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 0})
     eve_prop_item = client.mk_eve_item(
         attrs={eve_speed_boost_attr.id: 135, eve_thrust_attr.id: 1500000},
         eff_ids=[eve_prop_effect.id],
@@ -260,8 +260,8 @@ def test_speed_mod_mass_changed(client, consts):
     eve_mass_attr = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_mass_add_attr = client.mk_eve_attr(id_=consts.EveAttr.mass_addition)
     eve_prop_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_bonus_afterburner, cat_id=consts.EveEffCat.active)
-    eve_ship1_item = client.mk_eve_item(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000})
-    eve_ship2_item = client.mk_eve_item(attrs={eve_speed_attr.id: 420, eve_mass_attr.id: 1060000})
+    eve_ship1_item = client.mk_eve_ship(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000})
+    eve_ship2_item = client.mk_eve_ship(attrs={eve_speed_attr.id: 420, eve_mass_attr.id: 1060000})
     eve_prop_item = client.mk_eve_item(
         attrs={eve_speed_boost_attr.id: 135, eve_thrust_attr.id: 1500000, eve_mass_add_attr.id: 500000},
         eff_ids=[eve_prop_effect.id],
@@ -329,8 +329,8 @@ def test_speed_mod_boost_changed(client, consts):
     eve_mass_attr = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_mass_add_attr = client.mk_eve_attr(id_=consts.EveAttr.mass_addition)
     eve_prop_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_bonus_afterburner, cat_id=consts.EveEffCat.active)
-    eve_ship1_item = client.mk_eve_item(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000})
-    eve_ship2_item = client.mk_eve_item(attrs={eve_speed_attr.id: 420, eve_mass_attr.id: 1060000})
+    eve_ship1_item = client.mk_eve_ship(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000})
+    eve_ship2_item = client.mk_eve_ship(attrs={eve_speed_attr.id: 420, eve_mass_attr.id: 1060000})
     eve_prop_item = client.mk_eve_item(
         attrs={eve_speed_boost_attr.id: 135, eve_thrust_attr.id: 1500000, eve_mass_add_attr.id: 500000},
         eff_ids=[eve_prop_effect.id],
@@ -398,8 +398,8 @@ def test_speed_mod_thrust_changed(client, consts):
     eve_mass_attr = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_mass_add_attr = client.mk_eve_attr(id_=consts.EveAttr.mass_addition)
     eve_prop_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_bonus_afterburner, cat_id=consts.EveEffCat.active)
-    eve_ship1_item = client.mk_eve_item(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000})
-    eve_ship2_item = client.mk_eve_item(attrs={eve_speed_attr.id: 420, eve_mass_attr.id: 1060000})
+    eve_ship1_item = client.mk_eve_ship(attrs={eve_speed_attr.id: 455, eve_mass_attr.id: 1050000})
+    eve_ship2_item = client.mk_eve_ship(attrs={eve_speed_attr.id: 420, eve_mass_attr.id: 1060000})
     eve_prop_item = client.mk_eve_item(
         attrs={eve_speed_boost_attr.id: 135, eve_thrust_attr.id: 1500000, eve_mass_add_attr.id: 500000},
         eff_ids=[eve_prop_effect.id],

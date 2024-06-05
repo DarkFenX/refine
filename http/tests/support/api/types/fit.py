@@ -164,17 +164,6 @@ class Fit(AttrDict):
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
-    # Structure methods
-    def set_struct_request(self, type_id: int) -> Request:
-        return self._client.set_struct_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)
-
-    def set_struct(self, type_id: int) -> Item:
-        resp = self.set_struct_request(type_id=type_id).send()
-        assert resp.status_code == 201
-        self._client.check_sol(sol_id=self._sol_id)
-        item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-        return item
-
     # Stance methods
     def set_stance_request(self, type_id: int) -> Request:
         return self._client.set_stance_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)

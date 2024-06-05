@@ -1,6 +1,9 @@
 use crate::{
     defs::SolItemId,
-    sol::{item::SolItem, svc::svce_calc::SolLocationKind},
+    sol::{
+        item::{SolItem, SolShipKind},
+        svc::svce_calc::SolLocationKind,
+    },
 };
 
 impl SolItem {
@@ -16,7 +19,11 @@ impl SolItem {
             Self::Module(_) => None,
             Self::ProjEffect(_) => None,
             Self::Rig(_) => None,
-            Self::Ship(_) => Some(SolLocationKind::Ship),
+            Self::Ship(ship) => match ship.kind {
+                SolShipKind::Ship => Some(SolLocationKind::Ship),
+                SolShipKind::Structure => Some(SolLocationKind::Structure),
+                _ => None,
+            },
             Self::Skill(_) => None,
             Self::Stance(_) => None,
             Self::Subsystem(_) => None,

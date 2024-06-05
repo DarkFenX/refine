@@ -21,7 +21,7 @@ def test_falloff_state_change_direct(client, consts):
         attrs={eve_affector_attr.id: -60, eve_optimal_attr.id: 10000, eve_falloff_attr.id: 5000},
         eff_ids=[eve_effect.id],
         defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 500})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 500})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -56,7 +56,7 @@ def test_falloff_state_change_indirect(client, consts):
         attrs={eve_affector_attr.id: -60, eve_optimal_attr.id: 10000, eve_falloff_attr.id: 5000},
         eff_ids=[eve_effect.id],
         defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 500})
     client.create_sources()
     api_sol = client.create_sol()

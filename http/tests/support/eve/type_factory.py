@@ -45,6 +45,62 @@ class EveTypeFactory(EveDataManager):
             radius=0.0 if radius is Default else radius,
             volume=0.0 if volume is Default else volume)
 
+    def mk_eve_ship(
+            self,
+            data: Union[EveObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
+            grp_id: Union[int, Type[Default]] = Default,
+            attrs: Union[dict[int, float], Type[Default]] = Default,
+            eff_ids: Union[list[int], Type[Default]] = Default,
+            defeff_id: Union[int, None] = None,
+            srqs: Union[dict[int, int], Type[Default]] = Default,
+            capacity: Union[float, Type[Default]] = Default,
+            mass: Union[float, Type[Default]] = Default,
+            radius: Union[float, Type[Default]] = Default,
+            volume: Union[float, Type[Default]] = Default,
+    ) -> Item:
+        return self.mk_eve_item(
+            data=data,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.ship,
+            attrs=attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
+    def mk_eve_struct(
+            self,
+            data: Union[EveObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
+            grp_id: Union[int, Type[Default]] = Default,
+            attrs: Union[dict[int, float], Type[Default]] = Default,
+            eff_ids: Union[list[int], Type[Default]] = Default,
+            defeff_id: Union[int, None] = None,
+            srqs: Union[dict[int, int], Type[Default]] = Default,
+            capacity: Union[float, Type[Default]] = Default,
+            mass: Union[float, Type[Default]] = Default,
+            radius: Union[float, Type[Default]] = Default,
+            volume: Union[float, Type[Default]] = Default,
+    ) -> Item:
+        return self.mk_eve_item(
+            data=data,
+            id_=id_,
+            grp_id=grp_id,
+            cat_id=EveItemCat.structure,
+            attrs=attrs,
+            eff_ids=eff_ids,
+            defeff_id=defeff_id,
+            srqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
+
     def mk_eve_item_group(
             self,
             data: Union[EveObjects, Type[Default]] = Default,
@@ -55,6 +111,20 @@ class EveTypeFactory(EveDataManager):
         return data.mk_item_group(
             id_=id_,
             category_id=cat_id)
+
+    def mk_eve_ship_group(
+            self,
+            data: Union[EveObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
+    ) -> Group:
+        return self.mk_eve_item_group(data=data, id_=id_, cat_id=EveItemCat.ship)
+
+    def mk_eve_struct_group(
+            self,
+            data: Union[EveObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
+    ) -> Group:
+        return self.mk_eve_item_group(data=data, id_=id_, cat_id=EveItemCat.structure)
 
     def mk_eve_attr(
             self,

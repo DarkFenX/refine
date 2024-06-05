@@ -55,7 +55,7 @@ def test_unaffected_child(client, consts):
     eve_affector_item = client.mk_eve_item(attrs={eve_affector_attr.id: 20}, eff_ids=[eve_effect.id])
     eve_affectee_module = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
     eve_affectee_charge = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
-    eve_ship_item = client.mk_eve_item()
+    eve_ship_item = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
