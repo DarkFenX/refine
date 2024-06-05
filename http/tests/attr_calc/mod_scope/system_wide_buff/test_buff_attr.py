@@ -15,7 +15,7 @@ def test_attr1(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect.id)
@@ -38,7 +38,7 @@ def test_attr2(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect.id)
@@ -61,7 +61,7 @@ def test_attr3(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect.id)
@@ -84,7 +84,7 @@ def test_attr4(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect.id)
@@ -116,7 +116,7 @@ def test_multiple(client, consts):
             eve_buff_type_attr1.id: eve_buff1.id, eve_buff_val_attr1.id: 5,
             eve_buff_type_attr2.id: eve_buff2.id, eve_buff_val_attr2.id: 10},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr1.id: 7.5, eve_affectee_attr2.id: 10})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr1.id: 7.5, eve_affectee_attr2.id: 10})
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect.id)

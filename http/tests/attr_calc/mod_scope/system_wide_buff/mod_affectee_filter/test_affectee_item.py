@@ -16,7 +16,7 @@ def test_affected_root_ship_multiple(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -49,11 +49,11 @@ def test_affected_root_struct(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_struct = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_struct = client.mk_eve_struct(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_struct = api_fit.set_struct(type_id=eve_struct.id)
+    api_struct = api_fit.set_ship(type_id=eve_struct.id)
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect.id, state=False)
     assert api_struct.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     api_sw_effect.change_sw_effect(state=True)
@@ -140,7 +140,7 @@ def test_unaffected_non_buff_modifiable_child(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_affectee_item = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_affectee_item = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect.id)
@@ -189,8 +189,8 @@ def test_replace_root(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship1 = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
-    eve_ship2 = client.mk_eve_item(attrs={eve_affectee_attr.id: 15})
+    eve_ship1 = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship2 = client.mk_eve_ship(attrs={eve_affectee_attr.id: 15})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
