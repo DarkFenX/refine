@@ -51,7 +51,7 @@ def test_affected_propagation(client, consts):
     eve_middle_effect = client.mk_eve_effect(mod_info=[eve_middle_mod])
     eve_middle_item = client.mk_eve_item(attrs={eve_middle_attr.id: 20}, eff_ids=[eve_middle_effect.id])
     eve_affectee_item = client.mk_eve_item(attrs={eve_affectee_attr.id: 100}, srqs={eve_skill.id: 1})
-    eve_ship_item = client.mk_eve_item()
+    eve_ship_item = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

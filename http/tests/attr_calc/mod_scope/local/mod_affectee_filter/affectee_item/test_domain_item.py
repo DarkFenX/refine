@@ -70,7 +70,7 @@ def test_affected_propagation(client, consts):
     eve_affectee_item = client.mk_eve_item(
         attrs={eve_middle_attr.id: 20, eve_affectee_attr.id: 100},
         eff_ids=[eve_middle_effect.id])
-    eve_ship_item = client.mk_eve_item()
+    eve_ship_item = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -98,7 +98,7 @@ def test_unaffected_root(client, consts):
     eve_affecting_item = client.mk_eve_item(
         attrs={eve_affector_attr.id: 20, eve_affectee_attr.id: 100},
         eff_ids=[eve_effect.id])
-    eve_unaffected_item = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
+    eve_unaffected_item = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -124,7 +124,7 @@ def test_unaffected_child(client, consts):
     eve_affecting_item = client.mk_eve_item(
         attrs={eve_affector_attr.id: 20, eve_affectee_attr.id: 100},
         eff_ids=[eve_effect.id])
-    eve_unaffected_item = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
+    eve_unaffected_item = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
