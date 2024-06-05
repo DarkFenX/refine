@@ -21,7 +21,7 @@ class EveTypeFactory(EveDataManager):
             data: Union[EveObjects, Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             grp_id: Union[int, Type[Default]] = Default,
-            cat_id: Union[int, Type[Default]] = EveItemCat.module,
+            cat_id: Union[int, Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Default]] = Default,
             eff_ids: Union[list[int], Type[Default]] = Default,
             defeff_id: Union[int, None] = None,

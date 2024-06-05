@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+from collections import defaultdict
 from typing import TYPE_CHECKING
 
+from tests.support.consts import EveItemCat
 from tests.support.util import Default
 from .types import Item, Group, Attribute, Effect, Buff
 
@@ -29,6 +31,9 @@ class EveObjects:
         self.attr_id = ID_START
         self.effect_id = ID_START
         self.buff_id = ID_START
+        # Helper map to ease management of groups/categories
+        # Format: {group ID: [groups]}
+        self.group_map = defaultdict(lambda: [])
 
     def mk_item(
             self,
@@ -47,7 +52,7 @@ class EveObjects:
         if id_ is Default:
             id_ = self.item_id
             self.item_id += 1
-        group = self.mk_item_group(id_=group_id, category_id=category_id)
+        group = self.__fetch_or_mk_item_group(id_=group_id, category_id=category_id)
         item = Item(
             id_=id_,
             group_id=group.id,
@@ -70,9 +75,28 @@ class EveObjects:
         if id_ is Default:
             id_ = self.item_group_id
             self.item_group_id += 1
+        if category_id is Default:
+            category_id = EveItemCat.module
         group = Group(id_=id_, category_id=category_id)
-        self.items.append(group)
+        self.item_groups.append(group)
+        self.group_map[group.id].append(group)
         return group
+
+    def __fetch_or_mk_item_group(
+            self,
+            id_: Union[int, Type[Default]],
+            category_id: Union[int, Type[Absent], Type[Default]],
+    ) -> Group:
+        # Fetch existing group if consistency is not broken:
+        # - when requested category ID and group's category ID match
+        # - when default category ID is requested, and we have just one group
+        if id_ in self.group_map:
+            groups = self.group_map[id_]
+            if len(groups) == 1:
+                group = groups[0]
+                if category_id is Default or category_id == group.category_id:
+                    return group
+        return self.mk_item_group(id_=id_, category_id=category_id)
 
     def mk_attr(
             self,
