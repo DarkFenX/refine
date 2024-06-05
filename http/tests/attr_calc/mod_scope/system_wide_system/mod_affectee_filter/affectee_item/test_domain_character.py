@@ -42,7 +42,7 @@ def test_unaffected_other_domain(client, consts):
         affectee_attr_id=eve_affectee_attr.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_affector_item = client.mk_eve_item(attrs={eve_affector_attr.id: 20}, eff_ids=[eve_effect.id])
-    eve_affectee_item = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
+    eve_affectee_item = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_affector_item.id)
