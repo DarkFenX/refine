@@ -15,7 +15,7 @@ def test_unaffected(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_proj_effect = client.mk_eve_item(attrs={eve_affector_attr.id: 20}, eff_ids=[eve_effect.id])
     eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

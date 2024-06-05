@@ -16,7 +16,7 @@ def test_unaffected(client, consts):
         affectee_attr_id=eve_affectee_attr.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
     eve_proj_effect = client.mk_eve_item(attrs={eve_affector_attr.id: 20}, eff_ids=[eve_effect.id])
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 100}, srqs={eve_skill.id: 1})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100}, srqs={eve_skill.id: 1})
     eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 100}, srqs={eve_skill.id: 1})
     client.create_sources()
     api_sol = client.create_sol()
