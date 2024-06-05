@@ -16,7 +16,7 @@ def test_affected_self_root_ship(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -44,7 +44,7 @@ def test_affected_fleeted_root_ship(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -84,8 +84,8 @@ def test_affected_propagation(client, consts):
         affectee_attr_id=eve_buff_val_attr.id)
     eve_implant_effect = client.mk_eve_effect(mod_info=[eve_implant_mod])
     eve_implant = client.mk_eve_item(attrs={eve_buff_mult_attr.id: 2}, eff_ids=[eve_implant_effect.id])
-    eve_ship1 = client.mk_eve_item()
-    eve_ship2 = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship1 = client.mk_eve_ship()
+    eve_ship2 = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -117,11 +117,11 @@ def test_unaffected_self_root_struct(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_struct = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_struct = client.mk_eve_struct(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_struct = api_fit.set_struct(type_id=eve_struct.id)
+    api_struct = api_fit.set_ship(type_id=eve_struct.id)
     api_fit.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
     assert api_struct.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
@@ -142,7 +142,7 @@ def test_unaffected_self_child(client, consts):
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_drone = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -167,7 +167,7 @@ def test_unaffected_fleeted_root_struct(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_struct = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_struct = client.mk_eve_struct(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -175,7 +175,7 @@ def test_unaffected_fleeted_root_struct(client, consts):
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
-    api_struct = api_fit2.set_struct(type_id=eve_struct.id)
+    api_struct = api_fit2.set_ship(type_id=eve_struct.id)
     assert api_struct.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
@@ -194,7 +194,7 @@ def test_unaffected_other_fit(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -219,7 +219,7 @@ def test_unaffected_other_fleet(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet1 = api_sol.create_fleet()
@@ -248,8 +248,8 @@ def test_self_replace_root(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship1 = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
-    eve_ship2 = client.mk_eve_item(attrs={eve_affectee_attr.id: 15})
+    eve_ship1 = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship2 = client.mk_eve_ship(attrs={eve_affectee_attr.id: 15})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -275,8 +275,8 @@ def test_fleeted_replace_root(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship1 = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
-    eve_ship2 = client.mk_eve_item(attrs={eve_affectee_attr.id: 15})
+    eve_ship1 = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship2 = client.mk_eve_ship(attrs={eve_affectee_attr.id: 15})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()

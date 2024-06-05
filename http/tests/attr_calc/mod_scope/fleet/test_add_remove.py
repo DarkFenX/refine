@@ -16,7 +16,7 @@ def test_self_state_switch(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -70,7 +70,7 @@ def test_self_buff_switch_no_default(client, consts):
     eve_charge2 = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff2.id, eve_buff_val_mult_attr.id: 8},
         eff_ids=[eve_charge_effect.id])
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr1.id: 20, eve_affectee_attr2.id: 50})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr1.id: 20, eve_affectee_attr2.id: 50})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -146,7 +146,7 @@ def test_self_buff_switch_with_default(client, consts):
     eve_charge2 = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff2.id, eve_buff_val_mult_attr.id: 8},
         eff_ids=[eve_charge_effect.id])
-    eve_ship = client.mk_eve_item(
+    eve_ship = client.mk_eve_ship(
         attrs={eve_affectee_attr1.id: 20, eve_affectee_attr2.id: 50, eve_affectee_attr3.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
@@ -196,7 +196,7 @@ def test_self_after_fleet_unassigment(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
@@ -224,7 +224,7 @@ def test_self_after_fleet_removal(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
@@ -252,7 +252,7 @@ def test_fleeted_state_switch(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
@@ -309,7 +309,7 @@ def test_fleeted_buff_switch(client, consts):
     eve_charge2 = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff2.id, eve_buff_val_mult_attr.id: 8},
         eff_ids=[eve_charge_effect.id])
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr1.id: 20, eve_affectee_attr2.id: 50})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr1.id: 20, eve_affectee_attr2.id: 50})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
@@ -357,7 +357,7 @@ def test_fleeted_booster_added_removed(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
@@ -388,7 +388,7 @@ def test_fleeted_boosted_fit_added_removed(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
@@ -419,8 +419,8 @@ def test_fleeted_boosted_item_added_removed(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship1 = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
-    eve_ship2 = client.mk_eve_item(attrs={eve_affectee_attr.id: 15})
+    eve_ship1 = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship2 = client.mk_eve_ship(attrs={eve_affectee_attr.id: 15})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
@@ -449,7 +449,7 @@ def test_fleeted_fleet_removed(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
@@ -478,7 +478,7 @@ def test_unaffected_on_fleet_add(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()

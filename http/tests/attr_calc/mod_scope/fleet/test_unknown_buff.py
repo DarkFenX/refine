@@ -12,7 +12,7 @@ def test_static(client, consts):
     eve_module = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: 7, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -60,7 +60,7 @@ def test_switch(client, consts):
         # Buff ID which we didn't create
         attrs={eve_buff_type_attr.id: eve_buff.id + 1, eve_buff_val_mult_attr.id: 8},
         eff_ids=[eve_charge_effect.id])
-    eve_ship = client.mk_eve_item(attrs={eve_affectee_attr.id: 20})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 20})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
