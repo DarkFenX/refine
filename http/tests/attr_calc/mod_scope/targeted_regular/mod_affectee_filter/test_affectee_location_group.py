@@ -16,7 +16,7 @@ def test_affected_state_change_child_ship(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -47,13 +47,13 @@ def test_affected_state_change_child_struct(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_struct = client.mk_eve_item()
+    eve_struct = client.mk_eve_struct()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
     api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.online)
-    api_struct = api_fit2.set_struct(type_id=eve_struct.id)
+    api_struct = api_fit2.set_ship(type_id=eve_struct.id)
     api_rig = api_fit2.add_rig(type_id=eve_rig.id)
     api_module.change_mod(add_tgts=[api_struct.id])
     assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
@@ -78,7 +78,7 @@ def test_affected_targeting_child_ship(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -108,13 +108,13 @@ def test_affected_targeting_child_struct(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_struct = client.mk_eve_item()
+    eve_struct = client.mk_eve_struct()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
     api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
-    api_struct = api_fit2.set_struct(type_id=eve_struct.id)
+    api_struct = api_fit2.set_ship(type_id=eve_struct.id)
     api_rig = api_fit2.add_rig(type_id=eve_rig.id)
     assert api_rig.update().attrs[eve_attr2.id].dogma == approx(80)
     api_module.change_mod(add_tgts=[api_struct.id])
@@ -150,7 +150,7 @@ def test_affected_propagation(client, consts):
         eff_ids=[eve_middle_effect.id],
         defeff_id=eve_middle_effect.id)
     eve_affectee_item = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_affectee_attr.id: 80})
-    eve_ship_item = client.mk_eve_item()
+    eve_ship_item = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -169,7 +169,7 @@ def test_affected_propagation(client, consts):
 
 def test_unaffected_root(client, consts):
     # Ship shouldn't be affected
-    eve_grp = client.mk_eve_item_group()
+    eve_grp = client.mk_eve_ship_group()
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -181,7 +181,7 @@ def test_unaffected_root(client, consts):
         affectee_attr_id=eve_attr2.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
+    eve_ship = client.mk_eve_ship(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -194,7 +194,7 @@ def test_unaffected_root(client, consts):
 
 def test_unaffected_char_child(client, consts):
     # On-character items shouldn't be affected
-    eve_grp = client.mk_eve_item_group()
+    eve_grp = client.mk_eve_ship_group()
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -207,7 +207,7 @@ def test_unaffected_char_child(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_implant = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_ship = client.mk_eve_item(grp_id=eve_grp.id)
+    eve_ship = client.mk_eve_ship(grp_id=eve_grp.id)
     eve_char = client.mk_eve_item(grp_id=eve_grp.id)
     client.create_sources()
     api_sol = client.create_sol()
@@ -223,7 +223,7 @@ def test_unaffected_char_child(client, consts):
 
 def test_unaffected_targeted_child(client, consts):
     # When it's not ship/structure which is getting targeted, target item shouldn't be affected
-    eve_grp = client.mk_eve_item_group()
+    eve_grp = client.mk_eve_ship_group()
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -236,7 +236,7 @@ def test_unaffected_targeted_child(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_drone = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_ship = client.mk_eve_item(grp_id=eve_grp.id)
+    eve_ship = client.mk_eve_ship(grp_id=eve_grp.id)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -250,7 +250,7 @@ def test_unaffected_targeted_child(client, consts):
 
 def test_unaffected_via_child_target(client, consts):
     # Ship items shouldn't be affected when target is something which isn't ship (e.g. drone)
-    eve_grp = client.mk_eve_item_group()
+    eve_grp = client.mk_eve_ship_group()
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -264,7 +264,7 @@ def test_unaffected_via_child_target(client, consts):
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
     eve_drone = client.mk_eve_item()
-    eve_ship = client.mk_eve_item(grp_id=eve_grp.id)
+    eve_ship = client.mk_eve_ship(grp_id=eve_grp.id)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -279,7 +279,7 @@ def test_unaffected_via_child_target(client, consts):
 
 def test_unaffected_other_group(client, consts):
     # Check that entities belonging to other item groups are not affected
-    eve_grp1 = client.mk_eve_item_group()
+    eve_grp1 = client.mk_eve_ship_group()
     eve_grp2 = client.mk_eve_item_group()
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()
@@ -293,7 +293,7 @@ def test_unaffected_other_group(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp2.id, attrs={eve_attr2.id: 80})
-    eve_ship = client.mk_eve_item(grp_id=eve_grp1.id)
+    eve_ship = client.mk_eve_ship(grp_id=eve_grp1.id)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -319,7 +319,7 @@ def test_unaffected_other_fit(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -348,7 +348,7 @@ def test_unaffected_nontgt_domain_item(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -375,7 +375,7 @@ def test_unaffected_nontgt_domain_ship(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -401,7 +401,7 @@ def test_replace_target(client, consts):
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
     eve_module = client.mk_eve_item(attrs={eve_attr1.id: 20}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(grp_id=eve_grp.id, attrs={eve_attr2.id: 80})
-    eve_ship = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
