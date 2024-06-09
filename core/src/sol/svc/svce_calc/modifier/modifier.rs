@@ -151,7 +151,10 @@ fn get_resist_attr_id(item: &SolItem, effect: &ad::AEffect) -> Option<EAttrId> {
     match effect.resist_attr_id {
         Some(resist_attr_id) => Some(resist_attr_id),
         None => match item.get_orig_attrs() {
-            Ok(attrs) => attrs.get(&ec::attrs::REMOTE_RESISTANCE_ID).map(|v| *v as EAttrId),
+            Ok(attrs) => match attrs.get(&ec::attrs::REMOTE_RESISTANCE_ID).map(|v| *v as EAttrId) {
+                Some(attr_id) if attr_id != 0 => Some(attr_id),
+                _ => None,
+            },
             _ => None,
         },
     }
