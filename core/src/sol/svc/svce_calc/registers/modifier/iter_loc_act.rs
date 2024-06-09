@@ -8,43 +8,39 @@ use crate::sol::{
 pub(super) struct ActiveLocations<'a> {
     item: &'a SolItem,
     fit: &'a SolFit,
-    char_done: bool,
-    ship_done: bool,
-    struct_done: bool,
+    index: usize,
 }
 impl<'a> ActiveLocations<'a> {
     pub(super) fn new(item: &'a SolItem, fit: &'a SolFit) -> Self {
-        Self {
-            item,
-            fit,
-            char_done: false,
-            ship_done: false,
-            struct_done: false,
-        }
+        Self { item, fit, index: 0 }
     }
 }
 impl<'a> Iterator for ActiveLocations<'a> {
     type Item = SolLocationKind;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if !self.char_done {
-            self.char_done = true;
-            if self.item.is_on_char_root() && self.fit.character.is_some() {
-                return Some(SolLocationKind::Character);
+        loop {
+            match self.index {
+                0 => {
+                    self.index += 1;
+                    if self.item.is_on_char_root() && self.fit.character.is_some() {
+                        return Some(SolLocationKind::Character);
+                    }
+                }
+                1 => {
+                    self.index += 1;
+                    if self.item.is_on_ship_root() && matches!(self.fit.kind, SolShipKind::Ship) {
+                        return Some(SolLocationKind::Ship);
+                    }
+                }
+                2 => {
+                    self.index += 1;
+                    if self.item.is_on_struct_root() && matches!(self.fit.kind, SolShipKind::Structure) {
+                        return Some(SolLocationKind::Structure);
+                    }
+                }
+                _ => return None,
             }
         }
-        if !self.ship_done {
-            self.ship_done = true;
-            if self.item.is_on_ship_root() && matches!(self.fit.kind, SolShipKind::Ship) {
-                return Some(SolLocationKind::Ship);
-            }
-        }
-        if !self.struct_done {
-            self.struct_done = true;
-            if self.item.is_on_struct_root() && matches!(self.fit.kind, SolShipKind::Structure) {
-                return Some(SolLocationKind::Structure);
-            }
-        }
-        None
     }
 }
