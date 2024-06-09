@@ -8,7 +8,7 @@ use crate::{
         fleet::SolFleet,
         item::SolItem,
         svc::{
-            svce_calc::{get_proj_effect_resist_attr_id, SolFleetUpdates, SolModifier},
+            svce_calc::{get_proj_effect_resist_attr_id, SolAttrSpec, SolFleetUpdates, SolModifier},
             SolSvcs,
         },
         SolView,
@@ -249,8 +249,7 @@ impl SolSvcs {
         let mods = self
             .calc_data
             .mods
-            .iter_affector_item_mods(item_id)
-            .filter(|v| v.get_affector_attr_id() == Some(*attr_id))
+            .iter_affector_spec_mods(&SolAttrSpec::new(*item_id, *attr_id))
             .map(|v| *v)
             .collect_vec();
         if !mods.is_empty() {

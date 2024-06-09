@@ -9,7 +9,7 @@ use crate::{
         fleet::SolFleet,
         item::{SolItem, SolShipKind},
         svc::svce_calc::{
-            SolAffecteeFilter, SolDomain, SolFleetUpdates, SolLocationKind, SolModifier, SolModifierKind,
+            SolAffecteeFilter, SolAttrSpec, SolDomain, SolFleetUpdates, SolLocationKind, SolModifier, SolModifierKind,
         },
         SolView,
     },
@@ -22,6 +22,9 @@ pub(in crate::sol::svc::svce_calc) struct SolModifierRegister {
     // Modifiers registered for an item
     // Map<affector item ID, modifiers>
     pub(super) by_affector: StMapSetL1<SolItemId, SolModifier>,
+    // Modifiers which rely on an item-attribute pair value
+    // Map<attr spec, modifiers>
+    pub(super) by_attr_spec: StMapSetL1<SolAttrSpec, SolModifier>,
     // Modifiers which modify item directly
     // Map<affectee item ID, modifiers>
     pub(super) direct: StMapSetL1<SolItemId, SolModifier>,
@@ -59,6 +62,7 @@ impl SolModifierRegister {
     pub(in crate::sol::svc::svce_calc) fn new() -> Self {
         Self {
             by_affector: StMapSetL1::new(),
+            by_attr_spec: StMapSetL1::new(),
             direct: StMapSetL1::new(),
             other: StMapSetL1::new(),
             root: StMapSetL1::new(),
@@ -154,6 +158,12 @@ impl SolModifierRegister {
     ) -> impl ExactSizeIterator<Item = &SolModifier> {
         self.by_affector.get(affector_item_id)
     }
+    pub(in crate::sol::svc::svce_calc) fn iter_affector_spec_mods(
+        &self,
+        affector_attr_spec: &SolAttrSpec,
+    ) -> impl ExactSizeIterator<Item = &SolModifier> {
+        self.by_attr_spec.get(affector_attr_spec)
+    }
     // Modification methods
     pub(in crate::sol::svc::svce_calc) fn reg_fit(&mut self, fit_id: &SolFitId) {
         let sw_modifiers = self.sw.iter().map(|v| *v).collect_vec();
@@ -220,8 +230,21 @@ impl SolModifierRegister {
         item: &SolItem,
         modifier: SolModifier,
     ) -> bool {
+        let item_id = item.get_id();
         // Maintain helper data containers
         self.by_affector.add_entry(modifier.affector_item_id, modifier);
+        if let Some(affector_attr_id) = modifier.get_affector_attr_id() {
+            let affector_spec = SolAttrSpec::new(item_id, affector_attr_id);
+            self.by_attr_spec.add_entry(affector_spec, modifier);
+        }
+        if let Some(optimal_attr_id) = modifier.optimal_attr_id {
+            let affector_spec = SolAttrSpec::new(item_id, optimal_attr_id);
+            self.by_attr_spec.add_entry(affector_spec, modifier);
+        }
+        if let Some(falloff_attr_id) = modifier.falloff_attr_id {
+            let affector_spec = SolAttrSpec::new(item_id, falloff_attr_id);
+            self.by_attr_spec.add_entry(affector_spec, modifier);
+        }
         if matches!(item, SolItem::SwEffect(_)) {
             self.sw.insert(modifier);
         }
@@ -313,8 +336,21 @@ impl SolModifierRegister {
         item: &SolItem,
         modifier: &SolModifier,
     ) -> bool {
+        let item_id = item.get_id();
         // Maintain helper data containers
         self.by_affector.remove_entry(&modifier.affector_item_id, modifier);
+        if let Some(affector_attr_id) = modifier.get_affector_attr_id() {
+            let affector_spec = SolAttrSpec::new(item_id, affector_attr_id);
+            self.by_attr_spec.remove_entry(&affector_spec, modifier);
+        }
+        if let Some(optimal_attr_id) = modifier.optimal_attr_id {
+            let affector_spec = SolAttrSpec::new(item_id, optimal_attr_id);
+            self.by_attr_spec.remove_entry(&affector_spec, modifier);
+        }
+        if let Some(falloff_attr_id) = modifier.falloff_attr_id {
+            let affector_spec = SolAttrSpec::new(item_id, falloff_attr_id);
+            self.by_attr_spec.remove_entry(&affector_spec, modifier);
+        }
         if matches!(item, SolItem::SwEffect(_)) {
             self.sw.remove(modifier);
         }

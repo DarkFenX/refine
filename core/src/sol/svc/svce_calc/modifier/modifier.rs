@@ -1,6 +1,7 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, SolItemId},
+    ec,
     sol::{
         item::SolItem,
         svc::{
@@ -20,6 +21,9 @@ pub(in crate::sol::svc::svce_calc) struct SolModifier {
     pub(in crate::sol::svc::svce_calc) affector_item_id: SolItemId,
     pub(in crate::sol::svc::svce_calc) effect_id: EEffectId,
     affector_value: SolAffectorValue,
+    pub(in crate::sol::svc::svce_calc) resist_attr_id: Option<EAttrId>,
+    pub(in crate::sol::svc::svce_calc) optimal_attr_id: Option<EAttrId>,
+    pub(in crate::sol::svc::svce_calc) falloff_attr_id: Option<EAttrId>,
     pub(in crate::sol::svc::svce_calc) op: SolOp,
     pub(in crate::sol::svc::svce_calc) aggr_mode: SolAggrMode,
     pub(in crate::sol::svc::svce_calc) affectee_filter: SolAffecteeFilter,
@@ -31,6 +35,9 @@ impl SolModifier {
         affector_item_id: SolItemId,
         effect_id: EEffectId,
         affector_value: SolAffectorValue,
+        resist_attr_id: Option<EAttrId>,
+        optimal_attr_id: Option<EAttrId>,
+        falloff_attr_id: Option<EAttrId>,
         op: SolOp,
         aggr_mode: SolAggrMode,
         affectee_filter: SolAffecteeFilter,
@@ -41,23 +48,37 @@ impl SolModifier {
             affector_item_id,
             effect_id,
             affector_value,
+            resist_attr_id,
+            optimal_attr_id,
+            falloff_attr_id,
             op,
             aggr_mode,
             affectee_filter,
             affectee_attr_id,
         }
     }
-    pub(in crate::sol::svc::svce_calc) fn from_a_effect(
+    pub(in crate::sol::svc::svce_calc) fn from_a_modifier(
         affector_item: &SolItem,
         a_effect: &ad::AEffect,
         a_modifier: &ad::AEffectModifier,
         kind: SolModifierKind,
     ) -> Self {
+        let (resist_attr_id, optimal_attr_id, falloff_attr_id) = match kind {
+            SolModifierKind::Targeted => (
+                get_resist_attr_id(affector_item, a_effect),
+                a_effect.range_attr_id,
+                a_effect.falloff_attr_id,
+            ),
+            _ => (None, None, None),
+        };
         Self::new(
             kind,
             affector_item.get_id(),
             a_effect.id,
             SolAffectorValue::AttrId(a_modifier.affector_attr_id),
+            resist_attr_id,
+            optimal_attr_id,
+            falloff_attr_id,
             (&a_modifier.op).into(),
             SolAggrMode::Stack,
             SolAffecteeFilter::from_a_effect_tgt_filter(&a_modifier.affectee_filter, affector_item),
@@ -73,11 +94,22 @@ impl SolModifier {
         mod_kind: SolModifierKind,
         domain: SolDomain,
     ) -> Self {
+        let (resist_attr_id, optimal_attr_id, falloff_attr_id) = match mod_kind {
+            SolModifierKind::Buff => (
+                get_resist_attr_id(affector_item, a_effect),
+                a_effect.range_attr_id,
+                a_effect.falloff_attr_id,
+            ),
+            _ => (None, None, None),
+        };
         Self::new(
             mod_kind,
             affector_item.get_id(),
             a_effect.id,
             SolAffectorValue::AttrId(affector_attr_id),
+            resist_attr_id,
+            optimal_attr_id,
+            falloff_attr_id,
             (&a_buff.op).into(),
             SolAggrMode::from_a_buff(a_buff),
             SolAffecteeFilter::from_a_buff_tgt_filter(&a_mod.affectee_filter, domain, affector_item),
@@ -112,5 +144,15 @@ impl SolModifier {
     ) -> bool {
         let affector_item = sol_view.items.get_item(&self.affector_item_id).unwrap();
         self.affector_value.revise_on_item_remove(affector_item, added_item)
+    }
+}
+
+fn get_resist_attr_id(item: &SolItem, effect: &ad::AEffect) -> Option<EAttrId> {
+    match effect.resist_attr_id {
+        Some(resist_attr_id) => Some(resist_attr_id),
+        None => match item.get_orig_attrs() {
+            Ok(attrs) => attrs.get(&ec::attrs::REMOTE_RESISTANCE_ID).map(|v| *v as EAttrId),
+            _ => None,
+        },
     }
 }

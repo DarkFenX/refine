@@ -44,12 +44,12 @@
 use attr::SolAttrValues;
 pub(in crate::sol::svc) use data::SolSvcCalcData;
 pub use misc::SolAttrVal;
-use misc::{get_proj_effect_resist_attr_id, SolLocationKind, SolModification, SolModificationKey};
+use misc::{get_proj_effect_resist_attr_id, SolAttrSpec, SolLocationKind, SolModification, SolModificationKey};
 pub use mod_info::{SolAffectorInfo, SolAffectorValueInfo, SolModificationInfo, SolOpInfo};
 use modifier::{
     debug, extend_with_custom_mods, SolAffecteeFilter, SolAggrMode, SolDomain, SolModifier, SolModifierKind, SolOp,
 };
-use registers::{SolAttrSpec, SolFleetUpdates};
+use registers::SolFleetUpdates;
 
 mod attr;
 mod data;

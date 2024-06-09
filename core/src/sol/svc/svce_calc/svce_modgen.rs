@@ -82,7 +82,7 @@ impl SolSvcs {
                 effect
                     .mods
                     .iter()
-                    .map(|v| SolModifier::from_a_effect(item, effect, v, mod_kind)),
+                    .map(|v| SolModifier::from_a_modifier(item, effect, v, mod_kind)),
             );
             // Custom modifiers
             extend_with_custom_mods(item_id, effect.id, &mut mods.all);
