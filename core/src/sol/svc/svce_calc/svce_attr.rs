@@ -10,7 +10,6 @@ use crate::{
         SolView,
     },
     util::{Error, ErrorKind, Result, StMap},
-    EEffectId,
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
@@ -88,7 +87,7 @@ impl SolSvcs {
             // TODO: implement resistance support (add it to key as well? idk)
             let mod_key = SolModificationKey::from(modifier);
             let res_mult = self.calc_resist_mult(modifier.kind);
-            let proj_mult = self.calc_proj_mult(sol_view, modifier, item.get_id());
+            let proj_mult = self.calc_proj_mult(sol_view, modifier);
             let modification = SolModification::new(
                 modifier.op,
                 val,
@@ -108,22 +107,21 @@ impl SolSvcs {
         }
         None
     }
-    fn calc_proj_mult(
-        &mut self,
-        sol_view: &SolView,
-        modifier: &SolModifier,
-        affectee_item_id: SolItemId,
-    ) -> Option<AttrVal> {
+    fn calc_proj_mult(&mut self, sol_view: &SolView, modifier: &SolModifier) -> Option<AttrVal> {
+        let proj_info = match modifier.proj_info {
+            Some(proj_info) => proj_info,
+            None => return None,
+        };
         let range =
             match self
                 .calc_data
                 .projs
-                .get_range(modifier.affector_item_id, modifier.effect_id, affectee_item_id)
+                .get_range(modifier.affector_item_id, modifier.effect_id, proj_info.item_id)
             {
                 Some(range) => range,
                 None => return None,
             };
-        let affector_optimal = match modifier.optimal_attr_id {
+        let affector_optimal = match proj_info.optimal_attr_id {
             Some(optimal_attr_id) => {
                 match self.calc_get_item_attr_val(sol_view, &modifier.affector_item_id, &optimal_attr_id) {
                     Ok(val) => val.dogma,
@@ -132,7 +130,7 @@ impl SolSvcs {
             }
             None => 0.0,
         };
-        let affector_falloff = match modifier.falloff_attr_id {
+        let affector_falloff = match proj_info.falloff_attr_id {
             Some(falloff_attr_id) => {
                 match self.calc_get_item_attr_val(sol_view, &modifier.affector_item_id, &falloff_attr_id) {
                     Ok(val) => val.dogma,

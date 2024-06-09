@@ -237,13 +237,15 @@ impl SolModifierRegister {
             let affector_spec = SolAttrSpec::new(item_id, affector_attr_id);
             self.by_attr_spec.add_entry(affector_spec, modifier);
         }
-        if let Some(optimal_attr_id) = modifier.optimal_attr_id {
-            let affector_spec = SolAttrSpec::new(item_id, optimal_attr_id);
-            self.by_attr_spec.add_entry(affector_spec, modifier);
-        }
-        if let Some(falloff_attr_id) = modifier.falloff_attr_id {
-            let affector_spec = SolAttrSpec::new(item_id, falloff_attr_id);
-            self.by_attr_spec.add_entry(affector_spec, modifier);
+        if let Some(proj_info) = modifier.proj_info {
+            if let Some(optimal_attr_id) = proj_info.optimal_attr_id {
+                let affector_spec = SolAttrSpec::new(item_id, optimal_attr_id);
+                self.by_attr_spec.add_entry(affector_spec, modifier);
+            }
+            if let Some(falloff_attr_id) = proj_info.falloff_attr_id {
+                let affector_spec = SolAttrSpec::new(item_id, falloff_attr_id);
+                self.by_attr_spec.add_entry(affector_spec, modifier);
+            }
         }
         if matches!(item, SolItem::SwEffect(_)) {
             self.sw.insert(modifier);
@@ -343,13 +345,15 @@ impl SolModifierRegister {
             let affector_spec = SolAttrSpec::new(item_id, affector_attr_id);
             self.by_attr_spec.remove_entry(&affector_spec, modifier);
         }
-        if let Some(optimal_attr_id) = modifier.optimal_attr_id {
-            let affector_spec = SolAttrSpec::new(item_id, optimal_attr_id);
-            self.by_attr_spec.remove_entry(&affector_spec, modifier);
-        }
-        if let Some(falloff_attr_id) = modifier.falloff_attr_id {
-            let affector_spec = SolAttrSpec::new(item_id, falloff_attr_id);
-            self.by_attr_spec.remove_entry(&affector_spec, modifier);
+        if let Some(proj_info) = modifier.proj_info {
+            if let Some(optimal_attr_id) = proj_info.optimal_attr_id {
+                let affector_spec = SolAttrSpec::new(item_id, optimal_attr_id);
+                self.by_attr_spec.remove_entry(&affector_spec, modifier);
+            }
+            if let Some(falloff_attr_id) = proj_info.falloff_attr_id {
+                let affector_spec = SolAttrSpec::new(item_id, falloff_attr_id);
+                self.by_attr_spec.remove_entry(&affector_spec, modifier);
+            }
         }
         if matches!(item, SolItem::SwEffect(_)) {
             self.sw.remove(modifier);

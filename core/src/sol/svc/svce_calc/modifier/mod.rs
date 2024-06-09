@@ -5,6 +5,7 @@ pub(in crate::sol::svc::svce_calc) use domain::SolDomain;
 pub(in crate::sol::svc::svce_calc) use kind::SolModifierKind;
 pub(in crate::sol::svc::svce_calc) use modifier::SolModifier;
 pub(in crate::sol::svc::svce_calc) use op::SolOp;
+pub(in crate::sol::svc::svce_calc) use projection::SolModProjInfo;
 pub(in crate::sol::svc::svce_calc) use tgt_filter::SolAffecteeFilter;
 
 mod affector_val;
@@ -15,4 +16,5 @@ mod domain;
 mod kind;
 mod modifier;
 mod op;
+mod projection;
 mod tgt_filter;

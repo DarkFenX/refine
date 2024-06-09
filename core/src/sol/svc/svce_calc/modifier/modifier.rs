@@ -13,7 +13,7 @@ use crate::{
     util::Result,
 };
 
-use super::SolAffectorValue;
+use super::{SolAffectorValue, SolModProjInfo};
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::sol::svc::svce_calc) struct SolModifier {
@@ -21,9 +21,7 @@ pub(in crate::sol::svc::svce_calc) struct SolModifier {
     pub(in crate::sol::svc::svce_calc) affector_item_id: SolItemId,
     pub(in crate::sol::svc::svce_calc) effect_id: EEffectId,
     affector_value: SolAffectorValue,
-    pub(in crate::sol::svc::svce_calc) resist_attr_id: Option<EAttrId>,
-    pub(in crate::sol::svc::svce_calc) optimal_attr_id: Option<EAttrId>,
-    pub(in crate::sol::svc::svce_calc) falloff_attr_id: Option<EAttrId>,
+    pub(in crate::sol::svc::svce_calc) proj_info: Option<SolModProjInfo>,
     pub(in crate::sol::svc::svce_calc) op: SolOp,
     pub(in crate::sol::svc::svce_calc) aggr_mode: SolAggrMode,
     pub(in crate::sol::svc::svce_calc) affectee_filter: SolAffecteeFilter,
@@ -35,9 +33,7 @@ impl SolModifier {
         affector_item_id: SolItemId,
         effect_id: EEffectId,
         affector_value: SolAffectorValue,
-        resist_attr_id: Option<EAttrId>,
-        optimal_attr_id: Option<EAttrId>,
-        falloff_attr_id: Option<EAttrId>,
+        proj_info: Option<SolModProjInfo>,
         op: SolOp,
         aggr_mode: SolAggrMode,
         affectee_filter: SolAffecteeFilter,
@@ -48,9 +44,7 @@ impl SolModifier {
             affector_item_id,
             effect_id,
             affector_value,
-            resist_attr_id,
-            optimal_attr_id,
-            falloff_attr_id,
+            proj_info,
             op,
             aggr_mode,
             affectee_filter,

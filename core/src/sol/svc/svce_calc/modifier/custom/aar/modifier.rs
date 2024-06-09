@@ -15,8 +15,6 @@ pub(in crate::sol::svc::svce_calc) fn make_mod(affector_item_id: SolItemId, effe
         effect_id,
         SolAffectorValue::AncillaryArmorRep,
         None,
-        None,
-        None,
         SolOp::ExtraMul,
         SolAggrMode::Stack,
         SolAffecteeFilter::Direct(SolDomain::Item),
