@@ -4,7 +4,7 @@ use crate::{
     sol::{
         item::SolItem,
         svc::{
-            svce_calc::{SolAttrVal, SolAttrValues, SolModification, SolModificationKey, SolModifierKind},
+            svce_calc::{SolAttrVal, SolAttrValues, SolModification, SolModificationKey, SolModifier, SolModifierKind},
             SolSvcs,
         },
         SolView,
@@ -88,13 +88,7 @@ impl SolSvcs {
             // TODO: implement resistance support (add it to key as well? idk)
             let mod_key = SolModificationKey::from(modifier);
             let res_mult = self.calc_resist_mult(modifier.kind);
-            let proj_mult = self.calc_proj_mult(
-                sol_view,
-                modifier.kind,
-                modifier.affector_item_id,
-                modifier.effect_id,
-                item.get_id(),
-            );
+            let proj_mult = self.calc_proj_mult(sol_view, modifier, item.get_id());
             let modification = SolModification::new(
                 modifier.op,
                 val,
@@ -117,39 +111,34 @@ impl SolSvcs {
     fn calc_proj_mult(
         &mut self,
         sol_view: &SolView,
-        mod_kind: SolModifierKind,
-        affector_item_id: SolItemId,
-        effect_id: EEffectId,
+        modifier: &SolModifier,
         affectee_item_id: SolItemId,
     ) -> Option<AttrVal> {
-        // Only targeted modifiers can be affected by projection range
-        if !matches!(mod_kind, SolModifierKind::Targeted) {
-            return None;
-        }
-        let range = match self
-            .calc_data
-            .projs
-            .get_range(affector_item_id, effect_id, affectee_item_id)
-        {
-            Some(range) => range,
-            None => return None,
-        };
-        let effect = match sol_view.src.get_a_effect(&effect_id) {
-            Some(effect) => effect,
-            None => return None,
-        };
-        let affector_optimal = match effect.range_attr_id {
-            Some(attr_id) => match self.calc_get_item_attr_val(sol_view, &affector_item_id, &attr_id) {
-                Ok(val) => val.dogma,
-                _ => 0.0,
-            },
+        let range =
+            match self
+                .calc_data
+                .projs
+                .get_range(modifier.affector_item_id, modifier.effect_id, affectee_item_id)
+            {
+                Some(range) => range,
+                None => return None,
+            };
+        let affector_optimal = match modifier.optimal_attr_id {
+            Some(optimal_attr_id) => {
+                match self.calc_get_item_attr_val(sol_view, &modifier.affector_item_id, &optimal_attr_id) {
+                    Ok(val) => val.dogma,
+                    _ => 0.0,
+                }
+            }
             None => 0.0,
         };
-        let affector_falloff = match effect.falloff_attr_id {
-            Some(attr_id) => match self.calc_get_item_attr_val(sol_view, &affector_item_id, &attr_id) {
-                Ok(val) => val.dogma,
-                _ => 0.0,
-            },
+        let affector_falloff = match modifier.falloff_attr_id {
+            Some(falloff_attr_id) => {
+                match self.calc_get_item_attr_val(sol_view, &modifier.affector_item_id, &falloff_attr_id) {
+                    Ok(val) => val.dogma,
+                    _ => 0.0,
+                }
+            }
             None => 0.0,
         };
         // TODO: do not hardcode it here, define on a per-effect basis
