@@ -44,6 +44,9 @@ impl SolFits {
     pub(in crate::sol) fn iter_fits(&self) -> impl ExactSizeIterator<Item = &SolFit> {
         self.data.values()
     }
+    pub(in crate::sol) fn len(&self) -> usize {
+        self.data.len()
+    }
     fn alloc_fit_id(&mut self) -> Result<SolFitId> {
         let start = self.counter;
         while self.data.contains_key(&self.counter.0) {

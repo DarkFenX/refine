@@ -8,7 +8,7 @@ use crate::{
         fleet::SolFleet,
         item::SolItem,
         svc::{
-            svce_calc::{get_proj_effect_resist_attr_id, SolAttrSpec, SolFleetUpdates, SolModifier},
+            svce_calc::{SolAttrSpec, SolCtxModifier, SolModifierKind, SolRawModifier},
             SolSvcs,
         },
         SolView,
@@ -19,10 +19,10 @@ use crate::{
 impl SolSvcs {
     // Modification methods
     pub(in crate::sol::svc) fn calc_fit_added(&mut self, fit_id: &SolFitId) {
-        self.calc_data.mods.reg_fit(fit_id)
+        self.calc_data.std.reg_fit_for_sw(fit_id)
     }
     pub(in crate::sol::svc) fn calc_fit_removed(&mut self, fit_id: &SolFitId) {
-        self.calc_data.mods.unreg_fit(fit_id)
+        self.calc_data.std.unreg_fit_for_sw(fit_id)
     }
     pub(in crate::sol::svc) fn calc_fit_added_to_fleet(
         &mut self,
@@ -30,8 +30,11 @@ impl SolSvcs {
         fleet: &SolFleet,
         fit_id: &SolFitId,
     ) {
-        let updates = self.calc_data.mods.reg_fleet_for_fit(fleet, fit_id);
-        self.process_fleet_updates(sol_view, fleet, fit_id, updates);
+        let ctx_modifiers = self.calc_data.std.reg_fleet_for_fit(fleet, fit_id);
+        let mut affectees = Vec::new();
+        for ctx_modifier in ctx_modifiers.iter() {
+            self.force_mod_affectee_attr_recalc(&mut affectees, sol_view, ctx_modifier);
+        }
     }
     pub(in crate::sol::svc) fn calc_fit_removed_from_fleet(
         &mut self,
@@ -39,38 +42,43 @@ impl SolSvcs {
         fleet: &SolFleet,
         fit_id: &SolFitId,
     ) {
-        let updates = self.calc_data.mods.unreg_fleet_for_fit(fleet, fit_id);
-        self.process_fleet_updates(sol_view, fleet, fit_id, updates);
+        let ctx_modifiers = self.calc_data.std.unreg_fleet_for_fit(fleet, fit_id);
+        let mut affectees = Vec::new();
+        for ctx_modifier in ctx_modifiers.iter() {
+            self.force_mod_affectee_attr_recalc(&mut affectees, sol_view, ctx_modifier);
+        }
     }
     pub(in crate::sol::svc) fn calc_item_added(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.handle_location_owner_change(sol_view, item);
         // Custom modifiers
-        let modifiers = self.calc_data.revs.get_mods_on_item_add();
-        for modifier in modifiers.iter() {
-            if modifier.revise_on_item_add(item, sol_view) {
-                self.revise_modifier(sol_view, modifier);
+        let ctx_modifiers = self.calc_data.revs.get_mods_on_item_add();
+        for ctx_modifier in ctx_modifiers.iter() {
+            if ctx_modifier.raw.revise_on_item_add(item, sol_view) {
+                let mut util_items = Vec::new();
+                self.force_mod_affectee_attr_recalc(&mut util_items, sol_view, ctx_modifier);
             }
         }
     }
     pub(in crate::sol::svc) fn calc_item_removed(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.handle_location_owner_change(sol_view, item);
         // Custom modifiers
-        let modifiers = self.calc_data.revs.get_mods_on_item_remove();
-        for modifier in modifiers.iter() {
-            if modifier.revise_on_item_remove(item, sol_view) {
-                self.revise_modifier(sol_view, modifier);
+        let ctx_modifiers = self.calc_data.revs.get_mods_on_item_remove();
+        for ctx_modifier in ctx_modifiers.iter() {
+            if ctx_modifier.raw.revise_on_item_remove(item, sol_view) {
+                let mut util_items = Vec::new();
+                self.force_mod_affectee_attr_recalc(&mut util_items, sol_view, ctx_modifier);
             }
         }
     }
     pub(in crate::sol::svc) fn calc_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
         self.calc_data.attrs.add_item(item.get_id());
-        self.calc_data.afee.reg_affectee(sol_view, item);
+        self.calc_data.std.reg_affectee(sol_view, item);
+        self.handle_location_owner_change(sol_view, item);
     }
     pub(in crate::sol::svc) fn calc_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.calc_data.afee.unreg_affectee(sol_view, item);
+        self.handle_location_owner_change(sol_view, item);
+        self.calc_data.std.unreg_affectee(sol_view, item);
         let item_id = item.get_id();
-        self.calc_data.attrs.remove_item(&item_id);
         self.calc_data.deps.remove_item(&item_id);
+        self.calc_data.attrs.remove_item(&item_id);
     }
     pub(in crate::sol::svc) fn calc_effects_started(
         &mut self,
@@ -78,19 +86,17 @@ impl SolSvcs {
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        // Register new mods
-        let modifiers = self.calc_generate_mods_for_effects(sol_view, item, effects);
-        self.reg_mods(sol_view, item, &modifiers.all);
-        // Buff maintenance - add info about effects/modifiers which use default buff attributes
+        let item_id = item.get_id();
+        let mut raw_modifiers = Vec::new();
+        let mut util_items = Vec::new();
+        let mut util_cmods = Vec::new();
         for effect in effects.iter() {
-            self.calc_data.buffs.reg_effect(item.get_id(), effect);
-        }
-        for (buff_type_attr_id, dependent_mods) in modifiers.dependent_buffs.iter() {
-            for dependent_mod in dependent_mods {
-                self.calc_data
-                    .buffs
-                    .reg_dependent_mod(item.get_id(), *buff_type_attr_id, *dependent_mod);
+            self.calc_generate_mods_for_effect(&mut raw_modifiers, sol_view, item, effect);
+            for raw_modifier in raw_modifiers.iter() {
+                self.reg_raw_mod(&mut util_items, &mut util_cmods, sol_view, item, raw_modifier);
             }
+            // Buff maintenance - add info about effects which use default buff attributes
+            self.calc_data.buffs.reg_effect(item_id, effect);
         }
     }
     pub(in crate::sol::svc) fn calc_effects_stopped(
@@ -99,26 +105,22 @@ impl SolSvcs {
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        // Unregister mods
-        let modifiers = self.calc_generate_mods_for_effects(sol_view, item, effects);
-        self.unreg_mods(sol_view, item, &modifiers.all);
-        // Remove all ad-hoc attribute dependencies defined by effects being stopped. It is used by
-        // various projection-related features (resistance to modification, projection range), and
-        // custom propulsion module effect
         let item_id = item.get_id();
+        let mut raw_modifiers = Vec::new();
+        let mut util_items = Vec::new();
+        let mut util_cmods = Vec::new();
         for effect in effects.iter() {
-            self.calc_data.deps.remove_by_source(&item_id, &effect.id);
-        }
-        // Buff maintenance - remove info about effects/modifiers which use default buff attributes
-        for effect in effects.iter() {
-            self.calc_data.buffs.unreg_effect(item.get_id(), effect);
-        }
-        for (buff_type_attr_id, dependent_mods) in modifiers.dependent_buffs.iter() {
-            for dependent_mod in dependent_mods {
-                self.calc_data
-                    .buffs
-                    .unreg_dependent_mod(&item.get_id(), buff_type_attr_id, dependent_mod);
+            self.calc_data
+                .std
+                .extract_raw_mods_for_effect(&mut raw_modifiers, item_id, effect.id);
+            for raw_modifier in raw_modifiers.iter() {
+                self.unreg_raw_mod(&mut util_items, &mut util_cmods, sol_view, item, raw_modifier)
             }
+            // Buff maintenance - remove info about effects which use default buff attributes
+            self.calc_data.buffs.unreg_effect(item.get_id(), effect);
+            // Remove all ad-hoc attribute dependencies defined by effects being stopped. It is used
+            // by custom propulsion module effect
+            self.calc_data.deps.remove_by_source(&item_id, &effect.id);
         }
     }
     pub(in crate::sol::svc) fn calc_effect_projected(
@@ -132,101 +134,33 @@ impl SolSvcs {
         self.calc_data
             .projs
             .add_range(projector_item.get_id(), effect.id, projectee_item.get_id(), range);
-        let projector_item_id = projector_item.get_id();
-        let modifiers = self
+        let ctx_modifiers = self
             .calc_data
-            .mods
-            .iter_affector_item_mods(&projector_item_id)
-            .filter(|v| v.effect_id == effect.id)
-            .map(|v| *v)
-            .collect_vec();
-        if !modifiers.is_empty() {
-            let mut affectee_item_ids = Vec::new();
-            for modifier in modifiers.iter() {
-                if self.calc_data.mods.add_mod_projection(*modifier, projectee_item) {
-                    affectee_item_ids.clear();
-                    self.calc_data.afee.fill_affectees_for_projectee_item(
-                        &mut affectee_item_ids,
-                        sol_view,
-                        modifier,
-                        &projectee_item,
-                    );
-                    for affectee_item_id in affectee_item_ids.iter() {
-                        self.calc_force_attr_recalc(sol_view, affectee_item_id, &modifier.affectee_attr_id);
-                    }
-                }
-            }
+            .std
+            .project_effect(&projector_item.get_id(), &effect.id, projectee_item);
+        let mut affectees = Vec::new();
+        for ctx_modifier in ctx_modifiers.iter() {
+            self.force_mod_affectee_attr_recalc(&mut affectees, sol_view, ctx_modifier);
         }
     }
-    pub(in crate::sol::svc) fn calc_effect_tgt_removed(
+    pub(in crate::sol::svc) fn calc_effect_unprojected(
         &mut self,
         sol_view: &SolView,
-        item: &SolItem,
+        projector_item: &SolItem,
         effect: &ad::AEffect,
-        tgt_item: &SolItem,
+        projectee_item: &SolItem,
     ) {
-        let item_id = item.get_id();
-        let modifiers = self
+        let ctx_modifiers = self
             .calc_data
-            .mods
-            .iter_affector_item_mods(&item_id)
-            .filter(|v| v.effect_id == effect.id)
-            .map(|v| *v)
-            .collect_vec();
-        if !modifiers.is_empty() {
-            let tgt_item_id = tgt_item.get_id();
-            let resist_attr_id = get_proj_effect_resist_attr_id(item, effect);
-            let optimal_attr_id = effect.range_attr_id;
-            let falloff_attr_id = effect.falloff_attr_id;
-            let mut affectee_item_ids = Vec::new();
-            for modifier in modifiers.iter() {
-                affectee_item_ids.clear();
-                self.calc_data.afee.fill_affectees_for_projectee_item(
-                    &mut affectee_item_ids,
-                    sol_view,
-                    modifier,
-                    &tgt_item,
-                );
-                for affectee_item_id in affectee_item_ids.iter() {
-                    self.calc_force_attr_recalc(sol_view, &affectee_item_id, &modifier.affectee_attr_id);
-                    // Remove dependencies which could've been added by the effect being unprojected
-                    if let Some(resist_attr_id) = resist_attr_id {
-                        self.calc_data.deps.remove_with_source(
-                            &item_id,
-                            &effect.id,
-                            &tgt_item_id,
-                            &resist_attr_id,
-                            affectee_item_id,
-                            &modifier.affectee_attr_id,
-                        );
-                    }
-                    if let Some(optimal_attr_id) = optimal_attr_id {
-                        self.calc_data.deps.remove_with_source(
-                            &item_id,
-                            &effect.id,
-                            &item_id,
-                            &optimal_attr_id,
-                            affectee_item_id,
-                            &modifier.affectee_attr_id,
-                        );
-                    }
-                    if let Some(falloff_attr_id) = falloff_attr_id {
-                        self.calc_data.deps.remove_with_source(
-                            &item_id,
-                            &effect.id,
-                            &item_id,
-                            &falloff_attr_id,
-                            affectee_item_id,
-                            &modifier.affectee_attr_id,
-                        );
-                    }
-                }
-                self.calc_data.mods.remove_mod_projection(modifier, tgt_item);
-            }
+            .std
+            .unproject_effect(&projector_item.get_id(), &effect.id, projectee_item);
+        let mut affectees = Vec::new();
+        for ctx_modifier in ctx_modifiers.iter() {
+            self.force_mod_affectee_attr_recalc(&mut affectees, sol_view, ctx_modifier);
         }
         self.calc_data
             .projs
-            .remove_range(item.get_id(), effect.id, tgt_item.get_id());
+            .remove_range(projector_item.get_id(), effect.id, projectee_item.get_id());
     }
     pub(in crate::sol::svc) fn calc_attr_value_changed(
         &mut self,
@@ -246,40 +180,49 @@ impl SolSvcs {
             self.calc_force_attr_recalc(sol_view, &attr_spec.item_id, &attr_spec.attr_id);
         }
         // Clear up attribute values which rely on passed attribute as a modification source
-        let mods = self
+        let ctx_modifiers = self
             .calc_data
-            .mods
+            .std
             .iter_affector_spec_mods(&SolAttrSpec::new(*item_id, *attr_id))
             .map(|v| *v)
             .collect_vec();
-        if !mods.is_empty() {
+        if !ctx_modifiers.is_empty() {
             let mut affectees = Vec::new();
-            for modifier in mods.iter() {
-                affectees.clear();
+            for ctx_modifier in ctx_modifiers.iter() {
                 self.calc_data
-                    .afee
-                    .fill_affectees(&mut affectees, sol_view, item, &modifier);
+                    .std
+                    .fill_affectees(&mut affectees, sol_view, &ctx_modifier);
                 for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
+                    self.calc_force_attr_recalc(sol_view, tgt_item_id, &ctx_modifier.raw.affectee_attr_id);
                 }
             }
         }
         // Process buffs which rely on attribute being modified
         if ec::extras::BUFF_STDATTR_IDS.contains(attr_id) {
             // Remove modifiers of buffs which rely on the attribute
-            if let Some(modifiers) = self.calc_data.buffs.extract_dependent_mods(item_id, attr_id) {
-                let modifiers = modifiers.collect();
-                self.unreg_mods(sol_view, item, &modifiers);
+            if let Some(raw_modifiers) = self.calc_data.buffs.extract_dependent_mods(item_id, attr_id) {
+                let mut util_items = Vec::new();
+                let mut util_cmods = Vec::new();
+                let raw_modifiers = raw_modifiers.collect_vec();
+                for raw_modifier in raw_modifiers.iter() {
+                    self.unreg_raw_mod(&mut util_items, &mut util_cmods, sol_view, item, raw_modifier);
+                }
             }
             // Generate new modifiers using new value and apply them
             let effect_ids = self.calc_data.buffs.get_effects(item_id);
             if !effect_ids.is_empty() {
                 let effect_ids = effect_ids.map(|v| *v).collect_vec();
-                let modifiers = self.calc_generate_dependent_buff_mods(sol_view, item, effect_ids.iter(), attr_id);
-                for modifier in modifiers.iter() {
-                    self.calc_data.buffs.reg_dependent_mod(*item_id, *attr_id, *modifier);
+                let raw_modifiers = self.calc_generate_dependent_buff_mods(sol_view, item, effect_ids.iter(), attr_id);
+                for raw_modifier in raw_modifiers.iter() {
+                    self.calc_data
+                        .buffs
+                        .reg_dependent_mod(*item_id, *attr_id, *raw_modifier);
                 }
-                self.reg_mods(sol_view, item, &modifiers);
+                let mut util_items = Vec::new();
+                let mut util_cmods = Vec::new();
+                for raw_modifier in raw_modifiers.iter() {
+                    self.reg_raw_mod(&mut util_items, &mut util_cmods, sol_view, item, raw_modifier);
+                }
             }
         }
     }
@@ -299,126 +242,165 @@ impl SolSvcs {
         }
     }
     // Private methods
-    fn reg_mods(&mut self, sol_view: &SolView, item: &SolItem, modifiers: &Vec<SolModifier>) {
-        if modifiers.is_empty() {
-            return;
-        }
+    fn reg_raw_mod(
+        &mut self,
+        util_items: &mut Vec<SolItemId>,
+        util_cmods: &mut Vec<SolCtxModifier>,
+        sol_view: &SolView,
+        item: &SolItem,
+        raw_modifier: &SolRawModifier,
+    ) {
         // Regular modifiers
-        let mut fit_ids = Vec::new();
-        let mut affectees = Vec::new();
-        for modifier in modifiers.iter() {
-            // Modifications have to be added before target attributes are cleared, because for case
-            // of fleet buff ID attributes new value will be fetched instantly after cleanup, and
-            // that value has to be new
-            if self.calc_data.mods.reg_mod(&mut fit_ids, sol_view, item, *modifier) {
-                affectees.clear();
-                self.calc_data
-                    .afee
-                    .fill_affectees(&mut affectees, sol_view, item, modifier);
-                for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
+        match raw_modifier.kind {
+            SolModifierKind::Local => {
+                if let Some(ctx_modifier) = self.calc_data.std.reg_local_mod(item, *raw_modifier) {
+                    self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    // Revisions - we need those only for local modifiers for now
+                    self.calc_data.revs.reg_mod(&ctx_modifier);
                 }
             }
+            SolModifierKind::FleetBuff => {
+                self.calc_data
+                    .std
+                    .reg_fleet_buff_mod(util_cmods, sol_view, item, *raw_modifier);
+                for ctx_modifier in util_cmods.iter() {
+                    self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                }
+            }
+            SolModifierKind::System => match item {
+                SolItem::SwEffect(_) => {
+                    self.calc_data
+                        .std
+                        .reg_sw_system_mod(util_cmods, sol_view, *raw_modifier);
+                    for ctx_modifier in util_cmods.iter() {
+                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    }
+                }
+                SolItem::FwEffect(fw_effect) => {
+                    if let Some(ctx_modifier) = self.calc_data.std.reg_fw_system_mod(fw_effect, *raw_modifier) {
+                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    }
+                }
+                SolItem::ProjEffect(_) => self.calc_data.std.reg_proj_mod(*raw_modifier),
+                _ => (),
+            },
+            SolModifierKind::Buff => match item {
+                SolItem::SwEffect(_) => {
+                    self.calc_data.std.reg_sw_buff_mod(util_cmods, sol_view, *raw_modifier);
+                    for ctx_modifier in util_cmods.iter() {
+                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    }
+                }
+                SolItem::FwEffect(fw_effect) => {
+                    self.calc_data
+                        .std
+                        .reg_fw_buff_mod(util_cmods, sol_view, fw_effect, *raw_modifier);
+                    for ctx_modifier in util_cmods.iter() {
+                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    }
+                }
+                _ => self.calc_data.std.reg_proj_mod(*raw_modifier),
+            },
+            SolModifierKind::Targeted => self.calc_data.std.reg_proj_mod(*raw_modifier),
         }
-        // Revisions
-        for modifier in modifiers.iter() {
-            self.calc_data.revs.reg_mod(*modifier);
+        // Buff maintenance - add info about modifiers which use default buff attributes
+        if let Some(buff_type_attr_id) = raw_modifier.buff_type_attr_id {
+            self.calc_data
+                .buffs
+                .reg_dependent_mod(item.get_id(), buff_type_attr_id, *raw_modifier);
         }
     }
-    fn unreg_mods(&mut self, sol_view: &SolView, item: &SolItem, modifiers: &Vec<SolModifier>) {
-        if modifiers.is_empty() {
-            return;
-        }
+    fn unreg_raw_mod(
+        &mut self,
+        util_items: &mut Vec<SolItemId>,
+        util_cmods: &mut Vec<SolCtxModifier>,
+        sol_view: &SolView,
+        item: &SolItem,
+        raw_modifier: &SolRawModifier,
+    ) {
         // Regular modifiers
-        let mut fit_ids = Vec::new();
-        let mut affectees = Vec::new();
-        for modifier in modifiers.iter() {
-            // Modifications have to be removed before target attributes are cleared, because for
-            // case of fleet buff ID attributes new value will be fetched instantly after cleanup,
-            // and that value has to be new
-            if self.calc_data.mods.unreg_mod(&mut fit_ids, sol_view, item, modifier) {
-                affectees.clear();
-                self.calc_data
-                    .afee
-                    .fill_affectees(&mut affectees, sol_view, item, modifier);
-                for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
+        match raw_modifier.kind {
+            SolModifierKind::Local => {
+                if let Some(ctx_modifier) = self.calc_data.std.unreg_local_mod(item, *raw_modifier) {
+                    self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    // Revisions - we need those only for local modifiers for now
+                    self.calc_data.revs.unreg_mod(&ctx_modifier);
                 }
             }
+            SolModifierKind::FleetBuff => {
+                self.calc_data
+                    .std
+                    .unreg_fleet_buff_mod(util_cmods, sol_view, item, *raw_modifier);
+                for ctx_modifier in util_cmods.iter() {
+                    self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                }
+            }
+            SolModifierKind::System => match item {
+                SolItem::SwEffect(_) => {
+                    self.calc_data
+                        .std
+                        .unreg_sw_system_mod(util_cmods, sol_view, *raw_modifier);
+                    for ctx_modifier in util_cmods.iter() {
+                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    }
+                }
+                SolItem::FwEffect(fw_effect) => {
+                    if let Some(ctx_modifier) = self.calc_data.std.unreg_fw_system_mod(fw_effect, *raw_modifier) {
+                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    }
+                }
+                // Don't need to do anything in this case, since projected effects were
+                // removed during extraction earlier
+                _ => (),
+            },
+            SolModifierKind::Buff => match item {
+                SolItem::SwEffect(_) => {
+                    self.calc_data.std.unreg_sw_buff_mod(util_cmods, sol_view, raw_modifier);
+                    for ctx_modifier in util_cmods.iter() {
+                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    }
+                }
+                SolItem::FwEffect(fw_effect) => {
+                    self.calc_data
+                        .std
+                        .unreg_fw_buff_mod(util_cmods, sol_view, fw_effect, *raw_modifier);
+                    for ctx_modifier in util_cmods.iter() {
+                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    }
+                }
+                // Don't need to do anything in this case, since projected effects were
+                // removed during extraction earlier
+                SolItem::ProjEffect(_) => (),
+                _ => (),
+            },
+            // Don't need to do anything in this case, since projected effects were
+            // removed during extraction earlier
+            SolModifierKind::Targeted => (),
         }
-        // Revisions
-        for modifier in modifiers.iter() {
-            self.calc_data.revs.unreg_mod(modifier);
+        // Buff maintenance - remove info about modifiers which use default buff attributes
+        if let Some(buff_type_attr_id) = raw_modifier.buff_type_attr_id {
+            self.calc_data
+                .buffs
+                .unreg_dependent_mod(&item.get_id(), &buff_type_attr_id, raw_modifier);
+        }
+    }
+    fn force_mod_affectee_attr_recalc(
+        &mut self,
+        affectees: &mut Vec<SolItemId>,
+        sol_view: &SolView,
+        modifier: &SolCtxModifier,
+    ) {
+        self.calc_data.std.fill_affectees(affectees, sol_view, modifier);
+        for tgt_item_id in affectees.iter() {
+            self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.raw.affectee_attr_id);
         }
     }
     fn handle_location_owner_change(&mut self, sol_view: &SolView, item: &SolItem) {
         if item.get_root_loc_kind().is_some() {
-            let fit_id = match item.get_fit_id() {
-                Some(fit_id) => fit_id,
-                _ => return,
-            };
-            let fit = match sol_view.fits.get_fit(&fit_id) {
-                Ok(fit) => fit,
-                _ => return,
-            };
             let mut affectees = Vec::new();
-            for modifier in self.calc_data.mods.get_mods_for_changed_root(sol_view, item) {
-                affectees.clear();
-                self.calc_data
-                    .afee
-                    .fill_affectees_for_fit(&mut affectees, &modifier, fit);
-                for item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, item_id, &modifier.affectee_attr_id);
-                }
+            for ctx_modifier in self.calc_data.std.get_mods_for_changed_root(item) {
+                self.force_mod_affectee_attr_recalc(&mut affectees, sol_view, &ctx_modifier)
             }
-        }
-    }
-    fn process_fleet_updates(
-        &mut self,
-        sol_view: &SolView,
-        fleet: &SolFleet,
-        fit_id: &SolFitId,
-        updates: SolFleetUpdates,
-    ) {
-        let mut affectees = Vec::new();
-        if !updates.incoming.is_empty() {
-            let tgt_fit = sol_view.fits.get_fit(fit_id).unwrap();
-            for modifier in updates.incoming.iter() {
-                affectees.clear();
-                self.calc_data
-                    .afee
-                    .fill_affectees_for_fit(&mut affectees, modifier, tgt_fit);
-                for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
-                }
-            }
-        }
-        if !updates.outgoing.is_empty() {
-            for tgt_fit in fleet
-                .iter_fits()
-                .filter(|v| *v != fit_id)
-                .map(|v| sol_view.fits.get_fit(v).unwrap())
-            {
-                for modifier in updates.outgoing.iter() {
-                    affectees.clear();
-                    self.calc_data
-                        .afee
-                        .fill_affectees_for_fit(&mut affectees, modifier, tgt_fit);
-                    for tgt_item_id in affectees.iter() {
-                        self.calc_force_attr_recalc(sol_view, &tgt_item_id, &modifier.affectee_attr_id);
-                    }
-                }
-            }
-        }
-    }
-    fn revise_modifier(&mut self, sol_view: &SolView, modifier: &SolModifier) {
-        let affector_item = sol_view.items.get_item(&modifier.affector_item_id).unwrap();
-        let mut affectees = Vec::new();
-        self.calc_data
-            .afee
-            .fill_affectees(&mut affectees, sol_view, affector_item, modifier);
-        for tgt_item_id in affectees.iter() {
-            self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.affectee_attr_id);
         }
     }
 }

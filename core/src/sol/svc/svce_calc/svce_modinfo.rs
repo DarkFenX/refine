@@ -74,15 +74,15 @@ impl SolSvcs {
         let mut mod_map = StMap::new();
         for modifier in self
             .calc_data
-            .mods
+            .std
             .get_mods_for_affectee(item, &attr.id, sol_view.fits)
             .iter()
         {
-            let val = match modifier.get_mod_val(self, sol_view) {
+            let val = match modifier.raw.get_mod_val(self, sol_view) {
                 Ok(v) => v,
                 _ => continue,
             };
-            let affector_item = match sol_view.items.get_item(&modifier.affector_item_id) {
+            let affector_item = match sol_view.items.get_item(&modifier.raw.affector_item_id) {
                 Ok(i) => i,
                 _ => continue,
             };
@@ -90,14 +90,15 @@ impl SolSvcs {
                 Ok(affector_item_cat_id) => affector_item_cat_id,
                 _ => continue,
             };
-            let penalizable = is_penalizable(attr, &affector_item_cat_id, &modifier.op);
+            let penalizable = is_penalizable(attr, &affector_item_cat_id, &modifier.raw.op);
             let affectors = modifier
+                .raw
                 .get_affectors(sol_view)
                 .into_iter()
                 .map(|(i, a)| SolAffectorInfo::new(i, SolAffectorValueInfo::AttrId(a)))
                 .collect();
             let mod_key = SolModificationKey::from(modifier);
-            let mod_info = SolModificationInfo::new(val, (&modifier.op).into(), penalizable, affectors);
+            let mod_info = SolModificationInfo::new(val, (&modifier.raw.op).into(), penalizable, affectors);
             mod_map.insert(mod_key, mod_info);
         }
         let mut mod_vec = mod_map.into_values().collect_vec();

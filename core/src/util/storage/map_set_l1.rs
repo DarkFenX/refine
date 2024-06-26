@@ -22,6 +22,9 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, impl ExactSizeIterator<Item = &V>)> {
         self.data.iter().map(|(k, v)| (k, v.iter()))
     }
+    pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = impl ExactSizeIterator<Item = &V>> {
+        self.data.values().map(|v| v.iter())
+    }
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }

@@ -47,9 +47,9 @@ pub use misc::SolAttrVal;
 use misc::{get_proj_effect_resist_attr_id, SolAttrSpec, SolLocationKind, SolModification, SolModificationKey};
 pub use mod_info::{SolAffectorInfo, SolAffectorValueInfo, SolModificationInfo, SolOpInfo};
 use modifier::{
-    debug, extend_with_custom_mods, SolAffecteeFilter, SolAggrMode, SolDomain, SolModifier, SolModifierKind, SolOp,
+    debug, extend_with_custom_mods, SolAffecteeFilter, SolAggrMode, SolContext, SolCtxModifier, SolDomain,
+    SolModifierKind, SolOp, SolRawModifier,
 };
-use registers::SolFleetUpdates;
 
 mod attr;
 mod data;

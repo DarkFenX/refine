@@ -4,7 +4,10 @@ use crate::{
     sol::{
         item::SolItem,
         svc::{
-            svce_calc::{SolAttrVal, SolAttrValues, SolModification, SolModificationKey, SolModifier, SolModifierKind},
+            svce_calc::{
+                SolAttrVal, SolAttrValues, SolContext, SolCtxModifier, SolModification, SolModificationKey,
+                SolModifierKind,
+            },
             SolSvcs,
         },
         SolView,
@@ -67,15 +70,15 @@ impl SolSvcs {
         let mut mods = StMap::new();
         for modifier in self
             .calc_data
-            .mods
+            .std
             .get_mods_for_affectee(item, attr_id, sol_view.fits)
             .iter()
         {
-            let val = match modifier.get_mod_val(self, sol_view) {
+            let val = match modifier.raw.get_mod_val(self, sol_view) {
                 Ok(v) => v,
                 _ => continue,
             };
-            let affector_item = match sol_view.items.get_item(&modifier.affector_item_id) {
+            let affector_item = match sol_view.items.get_item(&modifier.raw.affector_item_id) {
                 Ok(i) => i,
                 _ => continue,
             };
@@ -86,14 +89,14 @@ impl SolSvcs {
 
             // TODO: implement resistance support (add it to key as well? idk)
             let mod_key = SolModificationKey::from(modifier);
-            let res_mult = self.calc_resist_mult(modifier.kind);
+            let res_mult = self.calc_resist_mult(modifier.raw.kind);
             let proj_mult = self.calc_proj_mult(sol_view, modifier);
             let modification = SolModification::new(
-                modifier.op,
+                modifier.raw.op,
                 val,
                 res_mult,
                 proj_mult,
-                modifier.aggr_mode,
+                modifier.raw.aggr_mode,
                 affector_item_cat_id,
             );
             mods.insert(mod_key, modification);
@@ -107,32 +110,31 @@ impl SolSvcs {
         }
         None
     }
-    fn calc_proj_mult(&mut self, sol_view: &SolView, modifier: &SolModifier) -> Option<AttrVal> {
-        let proj_info = match modifier.proj_info {
-            Some(proj_info) => proj_info,
+    fn calc_proj_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
+        let projectee_item_id = match modifier.ctx {
+            SolContext::Item(projectee_item_id) => projectee_item_id,
+            _ => return None,
+        };
+        let range = match self.calc_data.projs.get_range(
+            modifier.raw.affector_item_id,
+            modifier.raw.effect_id,
+            projectee_item_id,
+        ) {
+            Some(range) => range,
             None => return None,
         };
-        let range =
-            match self
-                .calc_data
-                .projs
-                .get_range(modifier.affector_item_id, modifier.effect_id, proj_info.item_id)
-            {
-                Some(range) => range,
-                None => return None,
-            };
-        let affector_optimal = match proj_info.optimal_attr_id {
+        let affector_optimal = match modifier.raw.optimal_attr_id {
             Some(optimal_attr_id) => {
-                match self.calc_get_item_attr_val(sol_view, &modifier.affector_item_id, &optimal_attr_id) {
+                match self.calc_get_item_attr_val(sol_view, &modifier.raw.affector_item_id, &optimal_attr_id) {
                     Ok(val) => val.dogma,
                     _ => 0.0,
                 }
             }
             None => 0.0,
         };
-        let affector_falloff = match proj_info.falloff_attr_id {
+        let affector_falloff = match modifier.raw.falloff_attr_id {
             Some(falloff_attr_id) => {
-                match self.calc_get_item_attr_val(sol_view, &modifier.affector_item_id, &falloff_attr_id) {
+                match self.calc_get_item_attr_val(sol_view, &modifier.raw.affector_item_id, &falloff_attr_id) {
                     Ok(val) => val.dogma,
                     _ => 0.0,
                 }

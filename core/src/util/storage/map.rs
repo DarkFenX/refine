@@ -39,6 +39,9 @@ impl<K: Eq + Hash, V> StMap<K, V> {
     pub fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
+    pub fn len(&self) -> usize {
+        self.data.len()
+    }
     // Modification methods
     pub fn entry(&mut self, key: K) -> Entry<'_, K, V> {
         self.data.entry(key)

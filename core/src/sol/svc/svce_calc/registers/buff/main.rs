@@ -1,14 +1,14 @@
 use crate::{
     ad,
     defs::{EAttrId, EEffectId, SolItemId},
-    sol::svc::svce_calc::SolModifier,
+    sol::svc::svce_calc::SolRawModifier,
     util::StMapSetL1,
 };
 
 // Intended to hold data about modifiers which originated from buffs defined using on-item attribute
 pub(in crate::sol::svc::svce_calc) struct SolBuffRegister {
     pub(super) effects: StMapSetL1<SolItemId, EEffectId>,
-    pub(super) modifiers: StMapSetL1<(SolItemId, EAttrId), SolModifier>,
+    pub(super) modifiers: StMapSetL1<(SolItemId, EAttrId), SolRawModifier>,
 }
 impl SolBuffRegister {
     pub(in crate::sol::svc::svce_calc) fn new() -> Self {
@@ -39,14 +39,14 @@ impl SolBuffRegister {
         &mut self,
         item_id: &SolItemId,
         buff_type_attr_id: &EAttrId,
-    ) -> Option<impl ExactSizeIterator<Item = SolModifier>> {
+    ) -> Option<impl ExactSizeIterator<Item = SolRawModifier>> {
         self.modifiers.remove_key(&(*item_id, *buff_type_attr_id))
     }
     pub(in crate::sol::svc::svce_calc) fn reg_dependent_mod(
         &mut self,
         item_id: SolItemId,
         buff_type_attr_id: EAttrId,
-        modifier: SolModifier,
+        modifier: SolRawModifier,
     ) {
         self.modifiers.add_entry((item_id, buff_type_attr_id), modifier)
     }
@@ -54,7 +54,7 @@ impl SolBuffRegister {
         &mut self,
         item_id: &SolItemId,
         buff_type_attr_id: &EAttrId,
-        modifier: &SolModifier,
+        modifier: &SolRawModifier,
     ) {
         self.modifiers.remove_entry(&(*item_id, *buff_type_attr_id), &modifier)
     }

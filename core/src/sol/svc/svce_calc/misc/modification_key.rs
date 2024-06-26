@@ -1,6 +1,6 @@
 use crate::{
     defs::{EAttrId, SolItemId},
-    sol::svc::svce_calc::{SolModifier, SolOp},
+    sol::svc::svce_calc::{SolCtxModifier, SolOp},
 };
 
 // This is an auxiliary entity to make sure that overlapping modifications are not applied. We can
@@ -22,8 +22,12 @@ impl SolModificationKey {
         }
     }
 }
-impl From<&SolModifier> for SolModificationKey {
-    fn from(modifier: &SolModifier) -> Self {
-        SolModificationKey::new(modifier.affector_item_id, modifier.get_affector_attr_id(), modifier.op)
+impl From<&SolCtxModifier> for SolModificationKey {
+    fn from(modifier: &SolCtxModifier) -> Self {
+        SolModificationKey::new(
+            modifier.raw.affector_item_id,
+            modifier.raw.get_affector_attr_id(),
+            modifier.raw.op,
+        )
     }
 }

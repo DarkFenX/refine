@@ -93,7 +93,7 @@ impl SolSvcs {
                     let proj_item = sol_view.items.get_item(proj_item_id).unwrap();
                     for effect in to_stop.iter() {
                         if is_effect_projectable(effect) {
-                            self.notify_effect_tgt_removed(sol_view, item, effect, proj_item);
+                            self.notify_effect_unprojected(sol_view, item, effect, proj_item);
                         }
                     }
                 }
@@ -107,7 +107,7 @@ impl SolSvcs {
                     let proj_item = sol_view.items.get_item(proj_item_id).unwrap();
                     for effect in to_start.iter() {
                         if is_effect_projectable(effect) {
-                            self.notify_effect_tgt_added(sol_view, item, effect, proj_item, *range);
+                            self.notify_effect_projected(sol_view, item, effect, proj_item, *range);
                         }
                     }
                 }
@@ -121,14 +121,14 @@ impl SolSvcs {
         tgt_item: &SolItem,
         range: Option<AttrVal>,
     ) {
-        self.notify_item_tgt_added(sol_view, item, tgt_item);
+        self.notify_item_projected(sol_view, item, tgt_item);
         let running_effects = self.running_effects.iter_running(&item.get_id());
         if !running_effects.is_empty() {
             let effect_ids = running_effects.map(|v| *v).collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = sol_view.src.get_a_effect(effect_id).unwrap();
                 if is_effect_projectable(effect) {
-                    self.notify_effect_tgt_added(sol_view, item, effect, tgt_item, range);
+                    self.notify_effect_projected(sol_view, item, effect, tgt_item, range);
                 }
             }
         }
@@ -140,13 +140,13 @@ impl SolSvcs {
             for effect_id in effect_ids.iter() {
                 let effect = sol_view.src.get_a_effect(effect_id).unwrap();
                 if is_effect_projectable(effect) {
-                    self.notify_effect_tgt_removed(sol_view, item, effect, tgt_item);
+                    self.notify_effect_unprojected(sol_view, item, effect, tgt_item);
                 }
             }
         } else {
             drop(running_effects);
         }
-        self.notify_item_tgt_removed(sol_view, item, tgt_item);
+        self.notify_item_unprojected(sol_view, item, tgt_item);
     }
     // Lower level methods
     fn notify_fit_added(&mut self, fit_id: &SolFitId) {
@@ -187,9 +187,9 @@ impl SolSvcs {
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| &v.id));
     }
-    pub(in crate::sol) fn notify_item_tgt_added(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {}
-    pub(in crate::sol) fn notify_item_tgt_removed(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {}
-    pub(in crate::sol) fn notify_effect_tgt_added(
+    pub(in crate::sol) fn notify_item_projected(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {}
+    pub(in crate::sol) fn notify_item_unprojected(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {}
+    pub(in crate::sol) fn notify_effect_projected(
         &mut self,
         sol_view: &SolView,
         item: &SolItem,
@@ -199,14 +199,14 @@ impl SolSvcs {
     ) {
         self.calc_effect_projected(sol_view, item, effect, tgt_item, range);
     }
-    pub(in crate::sol) fn notify_effect_tgt_removed(
+    pub(in crate::sol) fn notify_effect_unprojected(
         &mut self,
         sol_view: &SolView,
         item: &SolItem,
         effect: &ad::ArcEffect,
         tgt_item: &SolItem,
     ) {
-        self.calc_effect_tgt_removed(sol_view, item, effect, tgt_item);
+        self.calc_effect_unprojected(sol_view, item, effect, tgt_item);
     }
     pub(super) fn notify_attr_val_changed(&mut self, sol_view: &SolView, item_id: &SolItemId, attr_id: &EAttrId) {
         self.calc_attr_value_changed(sol_view, item_id, attr_id);

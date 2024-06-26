@@ -1,4 +1,4 @@
-use crate::sol::svc::svce_calc::SolDomain;
+use crate::sol::{item::SolShipKind, svc::svce_calc::SolDomain};
 
 #[derive(Copy, Clone, Eq, Hash, PartialEq)]
 pub(in crate::sol::svc::svce_calc) enum SolLocationKind {
@@ -14,6 +14,17 @@ impl std::convert::TryFrom<SolDomain> for SolLocationKind {
             SolDomain::Ship => Ok(Self::Ship),
             SolDomain::Structure => Ok(Self::Structure),
             SolDomain::Char => Ok(Self::Character),
+            _ => Err("unable to convert modifier domain to location kind"),
+        }
+    }
+}
+impl std::convert::TryFrom<SolShipKind> for SolLocationKind {
+    type Error = &'static str;
+
+    fn try_from(value: SolShipKind) -> Result<Self, Self::Error> {
+        match value {
+            SolShipKind::Ship => Ok(Self::Ship),
+            SolShipKind::Structure => Ok(Self::Structure),
             _ => Err("unable to convert modifier domain to location kind"),
         }
     }
