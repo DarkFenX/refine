@@ -23,6 +23,21 @@ pub(in crate::sol::svc::svce_calc) struct SolStandardRegister {
     // Everything-buff-modifiable items which belong to certain fit
     // Map<affectee fit ID, affectee item IDs>
     pub(super) affectee_buffable: StMapSetL1<SolFitId, SolItemId>,
+    // All non-projected raw modifiers tracked by register
+    // Map<(affector item ID, affector effect ID), modifiers>
+    pub(super) rmods_nonproj: StMapSetL1<(SolItemId, EEffectId), SolRawModifier>,
+    // All projected raw modifiers tracked by register
+    // Map<(affector item ID, affector effect ID), modifiers>
+    pub(super) rmods_proj: StMapSetL1<(SolItemId, EEffectId), SolRawModifier>,
+    // Fleet modifiers on a per-fit basis
+    // Map<affector fit ID, modifiers>
+    pub(super) rmods_fleet: StMapSetL1<SolFitId, SolRawModifier>,
+    // System-wide system effect modifiers
+    pub(super) rmods_sw_system: StSet<SolRawModifier>,
+    // System-wide buff modifiers
+    pub(super) rmods_sw_buff: StSet<SolRawModifier>,
+    // Fit-wide buff modifiers
+    pub(super) rmods_fw_buff: StMapSetL1<SolFitId, SolRawModifier>,
     // Modifiers which rely on an item-attribute pair value
     // Map<attr spec, modifiers>
     pub(super) cmods_by_attr_spec: StMapSetL1<SolAttrSpec, SolCtxModifier>,
@@ -50,21 +65,6 @@ pub(in crate::sol::svc::svce_calc) struct SolStandardRegister {
     // skill requirement
     // Map<(affectee fit ID, affectee skillreq type ID), modifiers>
     pub(super) cmods_own_srq: StMapSetL1<(SolFitId, EItemId), SolCtxModifier>,
-    // Fleet modifiers on a per-fit basis
-    // Map<affector fit ID, modifiers>
-    pub(super) rmods_fleet: StMapSetL1<SolFitId, SolRawModifier>,
-    // System-wide system effect modifiers
-    pub(super) rmods_sw_system: StSet<SolRawModifier>,
-    // System-wide buff modifiers
-    pub(super) rmods_sw_buff: StSet<SolRawModifier>,
-    // Fit-wide buff modifiers
-    pub(super) rmods_fw_buff: StMapSetL1<SolFitId, SolRawModifier>,
-    // All non-projected raw modifiers tracked by register
-    // Map<(affector item ID, affector effect ID), modifiers>
-    pub(super) rmods_nonproj: StMapSetL1<(SolItemId, EEffectId), SolRawModifier>,
-    // All projected raw modifiers tracked by register
-    // Map<(affector item ID, affector effect ID), modifiers>
-    pub(super) rmods_proj: StMapSetL1<(SolItemId, EEffectId), SolRawModifier>,
 }
 impl SolStandardRegister {
     pub(in crate::sol::svc::svce_calc) fn new() -> Self {
