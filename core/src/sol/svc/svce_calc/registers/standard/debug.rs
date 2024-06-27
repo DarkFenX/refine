@@ -81,9 +81,10 @@ impl SolStandardRegister {
                 check_raw_modifier(sol_view, rmod)?;
             }
         }
+        // Attributes of attr specs are not checked, because we do not verify if those do exist when
+        // adding modifiers
         for (attr_spec, cmods) in self.cmods_by_attr_spec.iter() {
             check_item(sol_view, &attr_spec.item_id)?;
-            check_attr(sol_view, &attr_spec.attr_id)?;
             for cmod in cmods {
                 check_ctx_modifier(sol_view, cmod)?;
             }
