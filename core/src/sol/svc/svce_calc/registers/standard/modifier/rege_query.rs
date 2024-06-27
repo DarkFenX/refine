@@ -114,14 +114,3 @@ fn filter_and_extend<K: Eq + Hash>(
             .map(|v| *v),
     )
 }
-
-fn compare_loc_dom(loc: SolLocationKind, dom: SolDomain) -> bool {
-    match (loc, dom) {
-        (SolLocationKind::Ship, SolDomain::Everything) => true,
-        (SolLocationKind::Ship, SolDomain::Ship) => true,
-        (SolLocationKind::Structure, SolDomain::Everything) => true,
-        (SolLocationKind::Structure, SolDomain::Structure) => true,
-        (SolLocationKind::Character, SolDomain::Char) => true,
-        _ => false,
-    }
-}

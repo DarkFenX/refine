@@ -1,7 +1,7 @@
-use attr_spec_reg::{reg_cmod, unreg_cmod};
+use func::{add_ctx_modifier, remove_ctx_modifier};
 use iter_loc_act::ActiveLocations;
 
-mod attr_spec_reg;
+mod func;
 mod iter_loc_act;
 mod rege_fleet_buff;
 mod rege_fw_buff;

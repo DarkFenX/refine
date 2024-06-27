@@ -8,8 +8,6 @@ use crate::{
     },
 };
 
-use super::{reg_cmod, unreg_cmod};
-
 impl SolStandardRegister {
     pub(in crate::sol::svc::svce_calc) fn reg_proj_mod(&mut self, raw_modifier: SolRawModifier) {
         self.rmods_proj
@@ -35,7 +33,6 @@ impl SolStandardRegister {
                 _ => None,
             } {
                 ctx_modifiers.push(ctx_modifier);
-                reg_cmod(&mut self.cmods_by_attr_spec, ctx_modifier);
             }
         }
         ctx_modifiers
@@ -60,7 +57,6 @@ impl SolStandardRegister {
                 _ => None,
             } {
                 ctx_modifiers.push(ctx_modifier);
-                unreg_cmod(&mut self.cmods_by_attr_spec, &ctx_modifier);
             }
         }
         ctx_modifiers

@@ -75,6 +75,12 @@ impl SolStandardRegister {
             affectee_loc_srq: StMapSetL1::new(),
             affectee_own_srq: StMapSetL1::new(),
             affectee_buffable: StMapSetL1::new(),
+            rmods_nonproj: StMapSetL1::new(),
+            rmods_proj: StMapSetL1::new(),
+            rmods_fleet: StMapSetL1::new(),
+            rmods_sw_system: StSet::new(),
+            rmods_sw_buff: StSet::new(),
+            rmods_fw_buff: StMapSetL1::new(),
             cmods_by_attr_spec: StMapSetL1::new(),
             cmods_direct: StMapSetL1::new(),
             cmods_other: StMapSetL1::new(),
@@ -83,12 +89,6 @@ impl SolStandardRegister {
             cmods_loc_grp: StMapSetL1::new(),
             cmods_loc_srq: StMapSetL1::new(),
             cmods_own_srq: StMapSetL1::new(),
-            rmods_fleet: StMapSetL1::new(),
-            rmods_sw_system: StSet::new(),
-            rmods_sw_buff: StSet::new(),
-            rmods_fw_buff: StMapSetL1::new(),
-            rmods_nonproj: StMapSetL1::new(),
-            rmods_proj: StMapSetL1::new(),
         }
     }
 }
