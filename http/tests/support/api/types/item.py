@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import namedtuple
 from typing import TYPE_CHECKING
 
+from tests.support.api.exception import ApiRequestError
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
 
@@ -35,10 +36,11 @@ class Item(AttrDict):
     def update_request(self) -> Request:
         return self._client.get_item_request(sol_id=self._sol_id, item_id=self.id)
 
-    def update(self) -> Item:
+    def update(self, status_code=200) -> Item:
         resp = self.update_request().send()
-        assert resp.status_code == 200
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         self._data = resp.json()
         return self
 

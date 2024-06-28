@@ -10,6 +10,7 @@ from tests.support.consts import (
 from tests.support.request import Request
 from tests.support.response import Response
 from tests.support.util import Absent, Default, conditional_insert
+from .exception import ApiSolCheckError
 from .types import SolarSystem
 
 if TYPE_CHECKING:
@@ -133,7 +134,8 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     def check_sol(self, sol_id: str) -> None:
         resp = self.check_sol_request(sol_id=sol_id).send()
-        assert resp.status_code == 200
+        if resp.status_code != 200:
+            raise ApiSolCheckError
 
     def check_sol_request(self, sol_id: str) -> Request:
         return Request(
