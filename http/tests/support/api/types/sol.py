@@ -41,6 +41,7 @@ class SolarSystem(AttrDict):
         if resp.status_code == 200:
             self._data = resp.json()
             return self
+        return None
 
     def remove_request(self) -> Request:
         return self._client.remove_sol_request(sol_id=self.id)
@@ -79,6 +80,7 @@ class SolarSystem(AttrDict):
         if resp.status_code == 200:
             fleet = Fleet(client=self._client, data=resp.json(), sol_id=self.id)
             return fleet
+        return None
 
     def create_fleet_request(self) -> Request:
         return self._client.create_fleet_request(sol_id=self.id)
@@ -91,6 +93,7 @@ class SolarSystem(AttrDict):
         if resp.status_code == 201:
             fleet = Fleet(client=self._client, data=resp.json(), sol_id=self.id)
             return fleet
+        return None
 
     # Fit methods
     def get_fit_request(
@@ -119,6 +122,7 @@ class SolarSystem(AttrDict):
         if resp.status_code == 200:
             fit = Fit(client=self._client, data=resp.json(), sol_id=self.id)
             return fit
+        return None
 
     def create_fit_request(self) -> Request:
         return self._client.create_fit_request(sol_id=self.id)
@@ -131,6 +135,7 @@ class SolarSystem(AttrDict):
         if resp.status_code == 201:
             fit = Fit(client=self._client, data=resp.json(), sol_id=self.id)
             return fit
+        return None
 
     # Generic item methods
     def get_item_request(
@@ -147,6 +152,7 @@ class SolarSystem(AttrDict):
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         if resp.status_code == 200:
             return Item(client=self._client, data=resp.json(), sol_id=self.id)
+        return None
 
     # System-wide effect methods
     def add_sw_effect_request(
@@ -169,6 +175,7 @@ class SolarSystem(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self.id)
             return item
+        return None
 
     def change_sw_effect_request(
             self,
@@ -198,3 +205,4 @@ class SolarSystem(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self.id)
             return item
+        return None

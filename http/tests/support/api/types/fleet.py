@@ -33,6 +33,7 @@ class Fleet(AttrDict):
         if resp.status_code == 200:
             self._data = resp.json()
             return self
+        return None
 
     def change_request(
             self,
@@ -60,6 +61,7 @@ class Fleet(AttrDict):
         if resp.status_code == 200:
             self._data = resp.json()
             return self
+        return None
 
     def remove_request(self) -> Request:
         return self._client.remove_fleet_request(sol_id=self._sol_id, fleet_id=self.id)

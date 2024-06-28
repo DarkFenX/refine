@@ -32,6 +32,7 @@ class Fit(AttrDict):
         if resp.status_code == 200:
             self._data = resp.json()
             return self
+        return None
 
     def remove_request(self) -> Request:
         return self._client.remove_fit_request(sol_id=self._sol_id, fit_id=self.id)
@@ -93,6 +94,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Skill methods
     def add_skill_request(
@@ -118,6 +120,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Implant methods
     def add_implant_request(
@@ -140,6 +143,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Booster methods
     def add_booster_request(
@@ -162,6 +166,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Ship methods
     def set_ship_request(
@@ -184,6 +189,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Stance methods
     def set_stance_request(self, type_id: int) -> Request:
@@ -197,6 +203,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Subsystem methods
     def add_subsystem_request(
@@ -219,6 +226,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Module methods
     def add_mod_request(
@@ -254,6 +262,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Rig methods
     def add_rig_request(
@@ -276,6 +285,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Drone methods
     def add_drone_request(
@@ -298,6 +308,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Fighter methods
     def add_fighter_request(
@@ -320,6 +331,7 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None
 
     # Fit-wide effect methods
     def add_fw_effect_request(
@@ -342,3 +354,4 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
+        return None

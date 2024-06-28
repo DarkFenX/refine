@@ -44,6 +44,7 @@ class Item(AttrDict):
         if resp.status_code == 200:
             self._data = resp.json()
             return self
+        return None
 
     def remove_request(self) -> Request:
         return self._client.remove_item_request(sol_id=self._sol_id, item_id=self.id)
