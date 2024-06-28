@@ -36,13 +36,14 @@ class Item(AttrDict):
     def update_request(self) -> Request:
         return self._client.get_item_request(sol_id=self._sol_id, item_id=self.id)
 
-    def update(self, status_code: int = 200) -> Item:
+    def update(self, status_code: int = 200) -> Union[Item, None]:
         resp = self.update_request().send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
-        self._data = resp.json()
-        return self
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
 
     def remove_request(self) -> Request:
         return self._client.remove_item_request(sol_id=self._sol_id, item_id=self.id)
