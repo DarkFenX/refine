@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tests.support.api.exception import ApiRequestError
 from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .fit import Fit
@@ -32,19 +33,21 @@ class SolarSystem(AttrDict):
     def update_request(self) -> Request:
         return self._client.get_sol_request(sol_id=self.id)
 
-    def update(self) -> SolarSystem:
+    def update(self, status_code: int = 200) -> SolarSystem:
         resp = self.update_request().send()
-        assert resp.status_code == 200
         self._client.check_sol(sol_id=self.id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         self._data = resp.json()
         return self
 
     def remove_request(self) -> Request:
         return self._client.remove_sol_request(sol_id=self.id)
 
-    def remove(self) -> None:
+    def remove(self, status_code: int = 204) -> None:
         resp = self.remove_request().send()
-        assert resp.status_code == 204
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         self._client.created_sols.remove(self)
 
     def check(self) -> None:
@@ -65,20 +68,23 @@ class SolarSystem(AttrDict):
             self,
             fleet_id: str,
             fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+            status_code: int = 200,
     ) -> Fleet:
         resp = self.get_fleet_request(fleet_id=fleet_id, fleet_info_mode=fleet_info_mode).send()
-        assert resp.status_code == 200
-        self._client.check_sol(sol_id=self.id)
+        self.check()
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         fleet = Fleet(client=self._client, data=resp.json(), sol_id=self.id)
         return fleet
 
     def create_fleet_request(self) -> Request:
         return self._client.create_fleet_request(sol_id=self.id)
 
-    def create_fleet(self) -> Fleet:
+    def create_fleet(self, status_code: int = 201) -> Fleet:
         resp = self.create_fleet_request().send()
-        assert resp.status_code == 201
-        self._client.check_sol(sol_id=self.id)
+        self.check()
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         fleet = Fleet(client=self._client, data=resp.json(), sol_id=self.id)
         return fleet
 
@@ -100,20 +106,23 @@ class SolarSystem(AttrDict):
             fit_id: str,
             fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+            status_code: int = 200,
     ) -> Fit:
         resp = self.get_fit_request(fit_id=fit_id, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode).send()
-        assert resp.status_code == 200
-        self._client.check_sol(sol_id=self.id)
+        self.check()
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         fit = Fit(client=self._client, data=resp.json(), sol_id=self.id)
         return fit
 
     def create_fit_request(self) -> Request:
         return self._client.create_fit_request(sol_id=self.id)
 
-    def create_fit(self) -> Fit:
+    def create_fit(self, status_code: int = 201) -> Fit:
         resp = self.create_fit_request().send()
-        assert resp.status_code == 201
-        self._client.check_sol(sol_id=self.id)
+        self.check()
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         fit = Fit(client=self._client, data=resp.json(), sol_id=self.id)
         return fit
 
@@ -125,10 +134,11 @@ class SolarSystem(AttrDict):
     ) -> Request:
         return self._client.get_item_request(sol_id=self.id, item_id=item_id, item_info_mode=item_info_mode)
 
-    def get_item(self, item_id: str) -> Item:
+    def get_item(self, item_id: str, status_code: int = 200) -> Item:
         resp = self.get_item_request(item_id=item_id).send()
-        assert resp.status_code == 200
-        self._client.check_sol(sol_id=self.id)
+        self.check()
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         return Item(client=self._client, data=resp.json(), sol_id=self.id)
 
     # System-wide effect methods
@@ -143,10 +153,12 @@ class SolarSystem(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_sw_effect_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
-        self._client.check_sol(sol_id=self.id)
+        self.check()
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self.id)
         return item
 
@@ -169,9 +181,11 @@ class SolarSystem(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_proj_effect_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
-        self._client.check_sol(sol_id=self.id)
+        self.check()
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self.id)
         return item

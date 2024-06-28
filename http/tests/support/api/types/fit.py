@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tests.support.api.exception import ApiRequestError
 from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiModAddMode, ApiRack, ApiState
 from tests.support.util import AttrDict, Absent
 from .item import Item
@@ -23,20 +24,22 @@ class Fit(AttrDict):
     def update_request(self) -> Request:
         return self._client.get_fit_request(sol_id=self._sol_id, fit_id=self.id)
 
-    def update(self) -> Fit:
+    def update(self, status_code: int = 200) -> Fit:
         resp = self.update_request().send()
-        assert resp.status_code == 200
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         self._data = resp.json()
         return self
 
     def remove_request(self) -> Request:
         return self._client.remove_fit_request(sol_id=self._sol_id, fit_id=self.id)
 
-    def remove(self) -> None:
+    def remove(self, status_code: int = 204) -> None:
         resp = self.remove_request().send()
-        assert resp.status_code == 204
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
 
     # Fleet methods
     def set_fleet_request(
@@ -52,19 +55,21 @@ class Fit(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode)
 
-    def set_fleet(self, fleet_id: Union[str, None]) -> None:
+    def set_fleet(self, fleet_id: Union[str, None], status_code: int = 200) -> None:
         resp = self.set_fleet_request(fleet_id=fleet_id).send()
-        assert resp.status_code == 200
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
 
     # Generic item methods
     def remove_item_request(self, item_id: str) -> Request:
         return self._client.remove_item_request(sol_id=self._sol_id, item_id=item_id)
 
-    def remove_item(self, item_id: str) -> None:
+    def remove_item(self, item_id: str, status_code: int = 204) -> None:
         resp = self.remove_item_request(item_id=item_id).send()
-        assert resp.status_code == 204
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
 
     # Character methods
     def set_char_request(
@@ -77,11 +82,13 @@ class Fit(AttrDict):
     def set_char(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent
+            state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.set_char_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -100,10 +107,12 @@ class Fit(AttrDict):
             type_id: int,
             level: int,
             state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_skill_request(type_id=type_id, level=level, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -119,10 +128,12 @@ class Fit(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_implant_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -138,10 +149,12 @@ class Fit(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_booster_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -156,11 +169,13 @@ class Fit(AttrDict):
     def set_ship(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent
+            state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.set_ship_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -168,10 +183,11 @@ class Fit(AttrDict):
     def set_stance_request(self, type_id: int) -> Request:
         return self._client.set_stance_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)
 
-    def set_stance(self, type_id: int) -> Item:
+    def set_stance(self, type_id: int, status_code: int = 201) -> Item:
         resp = self.set_stance_request(type_id=type_id).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -187,10 +203,12 @@ class Fit(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_subsystem_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -214,6 +232,7 @@ class Fit(AttrDict):
             state: ApiState = ApiState.offline,
             charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: ApiModAddMode = ApiModAddMode.equip,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_mod_request(
             rack=rack,
@@ -221,8 +240,9 @@ class Fit(AttrDict):
             state=state,
             charge_type_id=charge_type_id,
             mode=mode).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -238,10 +258,12 @@ class Fit(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_rig_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -257,10 +279,12 @@ class Fit(AttrDict):
             self,
             type_id,
             state: ApiState = ApiState.offline,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_drone_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -276,10 +300,12 @@ class Fit(AttrDict):
             self,
             type_id,
             state: ApiState = ApiState.offline,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_fighter_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
 
@@ -295,9 +321,11 @@ class Fit(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            status_code: int = 201,
     ) -> Item:
         resp = self.add_fw_effect_request(type_id=type_id, state=state).send()
-        assert resp.status_code == 201
         self._client.check_sol(sol_id=self._sol_id)
+        if resp.status_code != status_code:
+            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
         item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return item
