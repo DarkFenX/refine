@@ -45,12 +45,12 @@ def test_add_fit_sw_item_remove_item_sw_fit(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_ship = client.mk_eve_ship()
+    eve_struct = client.mk_eve_struct()
     eve_module = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship.id)
+    api_fit.set_ship(type_id=eve_struct.id)
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect.id)
     api_module = api_fit.add_mod(type_id=eve_module.id)
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
