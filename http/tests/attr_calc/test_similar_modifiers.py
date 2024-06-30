@@ -120,11 +120,11 @@ def test_same_item_attr_different_effects(client, consts):
     eve_effect2 = client.mk_eve_effect(mod_info=[eve_mod2])
     eve_affector_item = client.mk_eve_item(attrs={eve_affector_attr.id: 20}, eff_ids=[eve_effect1.id, eve_effect2.id])
     eve_affectee_item = client.mk_eve_item(attrs={eve_affectee_attr.id: 100}, srqs={eve_skill1.id: 1, eve_skill2.id: 1})
-    eve_ship_item = client.mk_eve_ship()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_item.id)
+    api_fit.set_ship(type_id=eve_ship.id)
     api_fit.add_rig(type_id=eve_affector_item.id)
     api_item = api_fit.add_mod(type_id=eve_affectee_item.id, rack=consts.ApiRack.mid)
     # Verification

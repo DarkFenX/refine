@@ -70,11 +70,11 @@ def test_affected_propagation(client, consts):
     eve_affectee_item = client.mk_eve_item(
         attrs={eve_middle_attr.id: 20, eve_affectee_attr.id: 100},
         eff_ids=[eve_middle_effect.id])
-    eve_ship_item = client.mk_eve_ship()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_item.id)
+    api_fit.set_ship(type_id=eve_ship.id)
     api_affectee_item = api_fit.add_rig(type_id=eve_affectee_item.id)
     assert api_affectee_item.update().attrs[eve_affectee_attr.id].dogma == approx(120)
     api_affector_item = api_fit.add_rig(type_id=eve_affector_item.id)

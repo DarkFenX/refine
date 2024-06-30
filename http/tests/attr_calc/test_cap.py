@@ -123,11 +123,11 @@ def test_update(client, consts):
         affectee_attr_id=eve_capping_attr.id)
     eve_capping_effect = client.mk_eve_effect(mod_info=[eve_capping_mod])
     eve_capping_item = client.mk_eve_item(attrs={eve_affector_attr.id: 3.5}, eff_ids=[eve_capping_effect.id])
-    eve_ship_item = client.mk_eve_ship()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_item.id)
+    api_fit.set_ship(type_id=eve_ship.id)
     api_capped_item = api_fit.add_rig(type_id=eve_capped_item.id)
     # Verification - request capped attribute value before adding capping item, to make sure capping
     # attribute value is calculated
