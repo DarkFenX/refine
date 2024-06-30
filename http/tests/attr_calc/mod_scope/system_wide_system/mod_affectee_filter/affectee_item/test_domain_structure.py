@@ -11,7 +11,7 @@ def test_affected_multiple(client, consts):
         affector_attr_id=eve_affector_attr.id,
         affectee_attr_id=eve_affectee_attr.id)
     eve_effect = client.mk_eve_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
-    eve_affector_item = client.mk_eve_struct(attrs={eve_affector_attr.id: 20}, eff_ids=[eve_effect.id])
+    eve_affector_item = client.mk_eve_item(attrs={eve_affector_attr.id: 20}, eff_ids=[eve_effect.id])
     eve_affectee_item = client.mk_eve_struct(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
