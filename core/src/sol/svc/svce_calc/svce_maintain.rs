@@ -250,7 +250,6 @@ impl SolSvcs {
         item: &SolItem,
         raw_modifier: &SolRawModifier,
     ) {
-        // Regular modifiers
         match raw_modifier.kind {
             SolModifierKind::Local => {
                 if let Some(ctx_modifier) = self.calc_data.std.reg_local_mod(item, *raw_modifier) {
@@ -260,11 +259,15 @@ impl SolSvcs {
                 }
             }
             SolModifierKind::FleetBuff => {
-                self.calc_data
+                let registered = self
+                    .calc_data
                     .std
                     .reg_fleet_buff_mod(util_cmods, sol_view, item, *raw_modifier);
                 for ctx_modifier in util_cmods.iter() {
                     self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                }
+                if registered {
+                    self.reg_raw_mod_for_buff(item, raw_modifier);
                 }
             }
             SolModifierKind::System => match item {
@@ -284,30 +287,35 @@ impl SolSvcs {
                 SolItem::ProjEffect(_) => self.calc_data.std.reg_proj_mod(*raw_modifier),
                 _ => (),
             },
-            SolModifierKind::Buff => match item {
-                SolItem::SwEffect(_) => {
-                    self.calc_data.std.reg_sw_buff_mod(util_cmods, sol_view, *raw_modifier);
-                    for ctx_modifier in util_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+            SolModifierKind::Buff => {
+                let registered = match item {
+                    SolItem::SwEffect(_) => {
+                        let registered = self.calc_data.std.reg_sw_buff_mod(util_cmods, sol_view, *raw_modifier);
+                        for ctx_modifier in util_cmods.iter() {
+                            self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                        }
+                        registered
                     }
-                }
-                SolItem::FwEffect(fw_effect) => {
-                    self.calc_data
-                        .std
-                        .reg_fw_buff_mod(util_cmods, sol_view, fw_effect, *raw_modifier);
-                    for ctx_modifier in util_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    SolItem::FwEffect(fw_effect) => {
+                        let registered =
+                            self.calc_data
+                                .std
+                                .reg_fw_buff_mod(util_cmods, sol_view, fw_effect, *raw_modifier);
+                        for ctx_modifier in util_cmods.iter() {
+                            self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                        }
+                        registered
                     }
+                    _ => {
+                        self.calc_data.std.reg_proj_mod(*raw_modifier);
+                        true
+                    }
+                };
+                if registered {
+                    self.reg_raw_mod_for_buff(item, raw_modifier);
                 }
-                _ => self.calc_data.std.reg_proj_mod(*raw_modifier),
-            },
+            }
             SolModifierKind::Targeted => self.calc_data.std.reg_proj_mod(*raw_modifier),
-        }
-        // Buff maintenance - add info about modifiers which use default buff attributes
-        if let Some(buff_type_attr_id) = raw_modifier.buff_type_attr_id {
-            self.calc_data
-                .buffs
-                .reg_dependent_mod(item.get_id(), buff_type_attr_id, *raw_modifier);
         }
     }
     fn unreg_raw_mod(
@@ -334,6 +342,7 @@ impl SolSvcs {
                 for ctx_modifier in util_cmods.iter() {
                     self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
                 }
+                self.unreg_raw_mod_for_buff(item, raw_modifier);
             }
             SolModifierKind::System => match item {
                 SolItem::SwEffect(_) => {
@@ -353,31 +362,42 @@ impl SolSvcs {
                 // removed during extraction earlier
                 _ => (),
             },
-            SolModifierKind::Buff => match item {
-                SolItem::SwEffect(_) => {
-                    self.calc_data.std.unreg_sw_buff_mod(util_cmods, sol_view, raw_modifier);
-                    for ctx_modifier in util_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+            SolModifierKind::Buff => {
+                match item {
+                    SolItem::SwEffect(_) => {
+                        self.calc_data.std.unreg_sw_buff_mod(util_cmods, sol_view, raw_modifier);
+                        for ctx_modifier in util_cmods.iter() {
+                            self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                        }
                     }
-                }
-                SolItem::FwEffect(fw_effect) => {
-                    self.calc_data
-                        .std
-                        .unreg_fw_buff_mod(util_cmods, sol_view, fw_effect, *raw_modifier);
-                    for ctx_modifier in util_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                    SolItem::FwEffect(fw_effect) => {
+                        self.calc_data
+                            .std
+                            .unreg_fw_buff_mod(util_cmods, sol_view, fw_effect, *raw_modifier);
+                        for ctx_modifier in util_cmods.iter() {
+                            self.force_mod_affectee_attr_recalc(util_items, sol_view, &ctx_modifier);
+                        }
                     }
+                    // Don't need to do anything in this case, since projected effects were
+                    // removed during extraction earlier
+                    SolItem::ProjEffect(_) => (),
+                    _ => (),
                 }
-                // Don't need to do anything in this case, since projected effects were
-                // removed during extraction earlier
-                SolItem::ProjEffect(_) => (),
-                _ => (),
-            },
+                self.unreg_raw_mod_for_buff(item, raw_modifier);
+            }
             // Don't need to do anything in this case, since projected effects were
             // removed during extraction earlier
             SolModifierKind::Targeted => (),
         }
-        // Buff maintenance - remove info about modifiers which use default buff attributes
+    }
+    fn reg_raw_mod_for_buff(&mut self, item: &SolItem, raw_modifier: &SolRawModifier) {
+        if let Some(buff_type_attr_id) = raw_modifier.buff_type_attr_id {
+            self.calc_data
+                .buffs
+                .reg_dependent_mod(item.get_id(), buff_type_attr_id, *raw_modifier);
+        }
+    }
+    fn unreg_raw_mod_for_buff(&mut self, item: &SolItem, raw_modifier: &SolRawModifier) {
         if let Some(buff_type_attr_id) = raw_modifier.buff_type_attr_id {
             self.calc_data
                 .buffs

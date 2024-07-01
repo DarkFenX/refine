@@ -18,7 +18,7 @@ impl SolStandardRegister {
         sol_view: &SolView,
         fw_effect: &SolFwEffect,
         raw_modifier: SolRawModifier,
-    ) {
+    ) -> bool {
         ctx_modifiers.clear();
         let valid = match raw_modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
@@ -167,6 +167,7 @@ impl SolStandardRegister {
                 .add_entry((raw_modifier.affector_item_id, raw_modifier.effect_id), raw_modifier);
             self.rmods_fw_buff.add_entry(fw_effect.fit_id, raw_modifier);
         }
+        valid
     }
     pub(in crate::sol::svc::svce_calc) fn unreg_fw_buff_mod(
         &mut self,

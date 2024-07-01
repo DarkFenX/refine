@@ -20,11 +20,11 @@ impl SolStandardRegister {
         sol_view: &SolView,
         item: &SolItem,
         raw_modifier: SolRawModifier,
-    ) {
+    ) -> bool {
         ctx_modifiers.clear();
         let fit_id = match item.get_fit_id() {
             Some(fit_id) => fit_id,
-            None => return,
+            None => return false,
         };
         let affector_fit = sol_view.fits.get_fit(&fit_id).unwrap();
         match affector_fit.fleet {
@@ -43,12 +43,13 @@ impl SolStandardRegister {
             }
         }
         // Here, we can rely on presence of ctx modifiers, because there is always a fit we will go
-        // through when adding them; if raw modifier was valid, there will always be ctx one
+        // through when adding them; if raw modifier is valid, there will always be a ctx one
         if !ctx_modifiers.is_empty() {
             self.rmods_fleet.add_entry(fit_id, raw_modifier);
             self.rmods_nonproj
                 .add_entry((raw_modifier.affector_item_id, raw_modifier.effect_id), raw_modifier);
         }
+        !ctx_modifiers.is_empty()
     }
     pub(in crate::sol::svc::svce_calc) fn unreg_fleet_buff_mod(
         &mut self,

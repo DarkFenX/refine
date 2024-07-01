@@ -11,7 +11,7 @@ use crate::{
 impl SolStandardRegister {
     pub(in crate::sol::svc::svce_calc) fn reg_proj_mod(&mut self, raw_modifier: SolRawModifier) {
         self.rmods_proj
-            .add_entry((raw_modifier.affector_item_id, raw_modifier.effect_id), raw_modifier);
+            .add_entry((raw_modifier.affector_item_id, raw_modifier.effect_id), raw_modifier)
     }
     pub(in crate::sol::svc::svce_calc) fn project_effect(
         &mut self,

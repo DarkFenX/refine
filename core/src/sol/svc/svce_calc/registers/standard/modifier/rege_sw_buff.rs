@@ -16,7 +16,7 @@ impl SolStandardRegister {
         ctx_modifiers: &mut Vec<SolCtxModifier>,
         sol_view: &SolView,
         raw_modifier: SolRawModifier,
-    ) {
+    ) -> bool {
         ctx_modifiers.clear();
         let valid = match raw_modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
@@ -180,6 +180,7 @@ impl SolStandardRegister {
                 .add_entry((raw_modifier.affector_item_id, raw_modifier.effect_id), raw_modifier);
             self.rmods_sw_buff.insert(raw_modifier);
         }
+        valid
     }
     pub(in crate::sol::svc::svce_calc) fn unreg_sw_buff_mod(
         &mut self,
