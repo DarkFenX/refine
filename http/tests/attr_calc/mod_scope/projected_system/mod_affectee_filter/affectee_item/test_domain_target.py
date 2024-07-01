@@ -3,7 +3,7 @@ from pytest import approx
 
 def test_unaffected(client, consts):
     # Targeted modifiers have no effect, unless item is targeted; in this case, it is projected
-    # (which is different), so it doesn't count
+    # (which is different so far), so it doesn't count
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
