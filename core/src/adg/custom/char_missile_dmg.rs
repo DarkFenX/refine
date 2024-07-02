@@ -34,11 +34,11 @@ pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) 
     }
 }
 
-fn mk_modifier(tgt_attr_id: EAttrId) -> ad::AEffectModifier {
+fn mk_modifier(affectee_attr_id: EAttrId) -> ad::AEffectModifier {
     ad::AEffectModifier::new(
         ec::attrs::MISSILE_DMG_MULT,
         ad::AOp::PostMulImmune,
         ad::AEffectAffecteeFilter::OwnSrq(ad::AModifierSrq::ItemId(ec::items::MISSILE_LAUNCHER_OPERATION)),
-        tgt_attr_id,
+        affectee_attr_id,
     )
 }

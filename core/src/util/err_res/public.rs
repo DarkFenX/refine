@@ -70,9 +70,12 @@ impl fmt::Display for Error {
                 type_id
             ),
             ErrorKind::CustomModCalc => write!(f, "failed to calculate custom modifier"),
-            ErrorKind::ItemNotProjectable(item_id) => write!(f, "item {item_id} is not targetable"),
-            ErrorKind::ProjecteeNotFound(src_item_id, tgt_item_id) => {
-                write!(f, "item {src_item_id} doesn't have item {tgt_item_id} as target")
+            ErrorKind::ItemNotProjectable(item_id) => write!(f, "item {item_id} cannot be projected onto"),
+            ErrorKind::ProjecteeNotFound(projector_item_id, projectee_item_id) => {
+                write!(
+                    f,
+                    "item {projector_item_id} doesn't have item {projectee_item_id} as projection"
+                )
             }
         }
     }

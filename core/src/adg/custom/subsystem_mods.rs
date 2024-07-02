@@ -59,11 +59,11 @@ fn add_hardpoint_modifiers(a_data: &mut ad::AData) {
     }
 }
 
-fn mk_modifier(src_attr_id: EAttrId, tgt_attr_id: EAttrId) -> ad::AEffectModifier {
+fn mk_modifier(src_attr_id: EAttrId, affectee_attr_id: EAttrId) -> ad::AEffectModifier {
     ad::AEffectModifier::new(
         src_attr_id,
         ad::AOp::Add,
         ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
-        tgt_attr_id,
+        affectee_attr_id,
     )
 }

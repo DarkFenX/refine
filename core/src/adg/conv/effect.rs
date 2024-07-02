@@ -9,9 +9,6 @@ use crate::{
 };
 
 impl ed::EFighterAbil {
-    fn get_target_mode(&self) -> String {
-        self.target_mode.clone()
-    }
     fn get_disallow_hisec(&self) -> bool {
         self.disallow_hisec
     }
@@ -163,7 +160,7 @@ fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResu
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AEffectAffecteeFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
-        get_mod_tgt_attr_id(e_modifier)?,
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
@@ -172,7 +169,7 @@ fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntResul
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AEffectAffecteeFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
-        get_mod_tgt_attr_id(e_modifier)?,
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
@@ -181,7 +178,7 @@ fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AEffectAffecteeFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
-        get_mod_tgt_attr_id(e_modifier)?,
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
@@ -193,7 +190,7 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
             get_mod_domain(e_modifier, a_effect)?,
             ad::AModifierSrq::ItemId(get_mod_skill_id(e_modifier)?),
         ),
-        get_mod_tgt_attr_id(e_modifier)?,
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
@@ -211,7 +208,7 @@ fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> IntRe
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AEffectAffecteeFilter::OwnSrq(ad::AModifierSrq::ItemId(get_mod_skill_id(e_modifier)?)),
-        get_mod_tgt_attr_id(e_modifier)?,
+        get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
 
@@ -219,7 +216,7 @@ fn get_mod_src_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<EAttrId> {
     get_arg_int(&e_modifier.args, "modifyingAttributeID")
 }
 
-fn get_mod_tgt_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<EAttrId> {
+fn get_mod_affectee_attr_id(e_modifier: &ed::EEffectMod) -> IntResult<EAttrId> {
     get_arg_int(&e_modifier.args, "modifiedAttributeID")
 }
 

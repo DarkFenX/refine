@@ -4,8 +4,6 @@ use crate::{defs::EAbilId, util::Named};
 pub struct EFighterAbil {
     /// Fighter ability ID.
     pub id: EAbilId,
-    /// Fighter ability target mode name.
-    pub target_mode: String,
     /// Defines if the ability can be used in hisec.
     pub disallow_hisec: bool,
     /// Defines if the ability can be used in lowsec.
@@ -13,10 +11,9 @@ pub struct EFighterAbil {
 }
 impl EFighterAbil {
     /// Make a new fighter ability out of passed data.
-    pub fn new(id: EAbilId, target_mode: String, disallow_hisec: bool, disallow_lowsec: bool) -> Self {
+    pub fn new(id: EAbilId, disallow_hisec: bool, disallow_lowsec: bool) -> Self {
         Self {
             id,
-            target_mode,
             disallow_hisec,
             disallow_lowsec,
         }
