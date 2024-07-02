@@ -143,6 +143,26 @@ impl SolSvcs {
             self.force_mod_affectee_attr_recalc(&mut affectees, sol_view, ctx_modifier);
         }
     }
+    pub(in crate::sol::svc) fn calc_effect_proj_range_changed(
+        &mut self,
+        sol_view: &SolView,
+        projector_item: &SolItem,
+        effect: &ad::AEffect,
+        projectee_item: &SolItem,
+        range: Option<AttrVal>,
+    ) {
+        self.calc_data
+            .projs
+            .change_range(projector_item.get_id(), effect.id, projectee_item.get_id(), range);
+        let ctx_modifiers = self
+            .calc_data
+            .std
+            .project_effect(&projector_item.get_id(), &effect.id, projectee_item);
+        let mut affectees = Vec::new();
+        for ctx_modifier in ctx_modifiers.iter() {
+            self.force_mod_affectee_attr_recalc(&mut affectees, sol_view, ctx_modifier);
+        }
+    }
     pub(in crate::sol::svc) fn calc_effect_unprojected(
         &mut self,
         sol_view: &SolView,

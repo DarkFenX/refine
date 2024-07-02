@@ -57,7 +57,7 @@ impl SolarSystem {
         proj_effect.projs.add(tgt_item_id, None);
         let item = self.items.get_item(item_id).unwrap();
         let tgt_item = self.items.get_item(&tgt_item_id).unwrap();
-        self.svcs.add_item_tgt(
+        self.svcs.add_item_projection(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
             tgt_item,
@@ -73,7 +73,7 @@ impl SolarSystem {
         };
         let item = self.items.get_item(item_id)?;
         let tgt_item = self.items.get_item(tgt_item_id)?;
-        self.svcs.remove_item_tgt(
+        self.svcs.remove_item_projection(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             item,
             tgt_item,

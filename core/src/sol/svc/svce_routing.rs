@@ -114,39 +114,63 @@ impl SolSvcs {
             }
         }
     }
-    pub(in crate::sol) fn add_item_tgt(
+    pub(in crate::sol) fn add_item_projection(
         &mut self,
         sol_view: &SolView,
-        item: &SolItem,
-        tgt_item: &SolItem,
+        projector_item: &SolItem,
+        projectee_item: &SolItem,
         range: Option<AttrVal>,
     ) {
-        self.notify_item_projected(sol_view, item, tgt_item);
-        let running_effects = self.running_effects.iter_running(&item.get_id());
+        self.notify_item_projected(sol_view, projector_item, projectee_item);
+        let running_effects = self.running_effects.iter_running(&projector_item.get_id());
         if !running_effects.is_empty() {
             let effect_ids = running_effects.map(|v| *v).collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = sol_view.src.get_a_effect(effect_id).unwrap();
                 if is_effect_projectable(effect) {
-                    self.notify_effect_projected(sol_view, item, effect, tgt_item, range);
+                    self.notify_effect_projected(sol_view, projector_item, effect, projectee_item, range);
                 }
             }
         }
     }
-    pub(in crate::sol) fn remove_item_tgt(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {
-        let running_effects = self.running_effects.iter_running(&item.get_id());
+    pub(in crate::sol) fn remove_item_projection(
+        &mut self,
+        sol_view: &SolView,
+        projector_item: &SolItem,
+        projectee_item: &SolItem,
+    ) {
+        let running_effects = self.running_effects.iter_running(&projector_item.get_id());
         if !running_effects.is_empty() {
             let effect_ids = running_effects.map(|v| *v).collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = sol_view.src.get_a_effect(effect_id).unwrap();
                 if is_effect_projectable(effect) {
-                    self.notify_effect_unprojected(sol_view, item, effect, tgt_item);
+                    self.notify_effect_unprojected(sol_view, projector_item, effect, projectee_item);
                 }
             }
         } else {
             drop(running_effects);
         }
-        self.notify_item_unprojected(sol_view, item, tgt_item);
+        self.notify_item_unprojected(sol_view, projector_item, projectee_item);
+    }
+    pub(in crate::sol) fn change_item_proj_range(
+        &mut self,
+        sol_view: &SolView,
+        projector_item: &SolItem,
+        projectee_item: &SolItem,
+        range: Option<AttrVal>,
+    ) {
+        self.notify_item_projected(sol_view, projector_item, projectee_item);
+        let running_effects = self.running_effects.iter_running(&projector_item.get_id());
+        if !running_effects.is_empty() {
+            let effect_ids = running_effects.map(|v| *v).collect_vec();
+            for effect_id in effect_ids.iter() {
+                let effect = sol_view.src.get_a_effect(effect_id).unwrap();
+                if is_effect_projectable(effect) {
+                    self.notify_proj_range_changed(sol_view, projector_item, effect, projectee_item, range);
+                }
+            }
+        }
     }
     // Lower level methods
     fn notify_fit_added(&mut self, fit_id: &SolFitId) {
@@ -187,26 +211,48 @@ impl SolSvcs {
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| &v.id));
     }
-    pub(in crate::sol) fn notify_item_projected(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {}
-    pub(in crate::sol) fn notify_item_unprojected(&mut self, sol_view: &SolView, item: &SolItem, tgt_item: &SolItem) {}
+    pub(in crate::sol) fn notify_item_projected(
+        &mut self,
+        sol_view: &SolView,
+        projector_item: &SolItem,
+        projectee_item: &SolItem,
+    ) {
+    }
+    pub(in crate::sol) fn notify_item_unprojected(
+        &mut self,
+        sol_view: &SolView,
+        projector_item: &SolItem,
+        projectee_item: &SolItem,
+    ) {
+    }
     pub(in crate::sol) fn notify_effect_projected(
         &mut self,
         sol_view: &SolView,
-        item: &SolItem,
+        projector_item: &SolItem,
         effect: &ad::ArcEffect,
-        tgt_item: &SolItem,
+        projectee_item: &SolItem,
         range: Option<AttrVal>,
     ) {
-        self.calc_effect_projected(sol_view, item, effect, tgt_item, range);
+        self.calc_effect_projected(sol_view, projector_item, effect, projectee_item, range);
     }
     pub(in crate::sol) fn notify_effect_unprojected(
         &mut self,
         sol_view: &SolView,
-        item: &SolItem,
+        projector_item: &SolItem,
         effect: &ad::ArcEffect,
-        tgt_item: &SolItem,
+        projectee_item: &SolItem,
     ) {
-        self.calc_effect_unprojected(sol_view, item, effect, tgt_item);
+        self.calc_effect_unprojected(sol_view, projector_item, effect, projectee_item);
+    }
+    pub(in crate::sol) fn notify_proj_range_changed(
+        &mut self,
+        sol_view: &SolView,
+        projector_item: &SolItem,
+        effect: &ad::ArcEffect,
+        projectee_item: &SolItem,
+        range: Option<AttrVal>,
+    ) {
+        self.calc_effect_proj_range_changed(sol_view, projector_item, effect, projectee_item, range);
     }
     pub(super) fn notify_attr_val_changed(&mut self, sol_view: &SolView, item_id: &SolItemId, attr_id: &EAttrId) {
         self.calc_attr_value_changed(sol_view, item_id, attr_id);

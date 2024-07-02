@@ -143,6 +143,7 @@ class Item(AttrDict):
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, None, Type[Absent]] = Absent,
             add_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            change_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
             rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> Request:
@@ -152,6 +153,7 @@ class Item(AttrDict):
             state=state,
             charge=charge,
             add_tgts=add_tgts,
+            change_tgts=change_tgts,
             rm_tgts=rm_tgts,
             effect_modes=effect_modes)
 
@@ -160,6 +162,7 @@ class Item(AttrDict):
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, Type[Absent]] = Absent,
             add_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            change_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
             rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
             status_code: int = 200,
@@ -168,6 +171,7 @@ class Item(AttrDict):
             state=state,
             charge=charge,
             add_tgts=add_tgts,
+            change_tgts=change_tgts,
             rm_tgts=rm_tgts,
             effect_modes=effect_modes).send()
         self._client.check_sol(sol_id=self._sol_id)

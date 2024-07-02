@@ -148,7 +148,7 @@ impl SolarSystem {
         // Process request in services
         let item = self.items.get_item(item_id).unwrap();
         let tgt_item = self.items.get_item(&tgt_item_id).unwrap();
-        self.svcs.add_item_tgt(
+        self.svcs.add_item_projection(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
             tgt_item,
@@ -175,6 +175,15 @@ impl SolarSystem {
         // Adjust skeleton
         let module = self.items.get_module_mut(item_id).unwrap();
         module.projs.add(*tgt_item_id, range);
+        // Process request in services
+        let item = self.items.get_item(item_id).unwrap();
+        let tgt_item = self.items.get_item(tgt_item_id).unwrap();
+        self.svcs.change_item_proj_range(
+            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &item,
+            tgt_item,
+            range,
+        );
         Ok(())
     }
     pub fn remove_module_tgt(&mut self, item_id: &SolItemId, tgt_item_id: &SolItemId) -> Result<()> {
@@ -186,7 +195,7 @@ impl SolarSystem {
         // Process request in services
         let item = self.items.get_item(item_id).unwrap();
         let tgt_item = self.items.get_item(tgt_item_id).unwrap();
-        self.svcs.remove_item_tgt(
+        self.svcs.remove_item_projection(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
             tgt_item,
