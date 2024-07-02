@@ -18,7 +18,7 @@ impl SolarSystem {
             return false;
         }
         // Check solar system helper data containers
-        if self.tgt_tracker.debug_consistency_check(&sol_view).is_err() {
+        if self.proj_tracker.debug_consistency_check(&sol_view).is_err() {
             return false;
         }
         // Check services

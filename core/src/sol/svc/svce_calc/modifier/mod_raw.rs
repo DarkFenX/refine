@@ -67,7 +67,8 @@ impl SolRawModifier {
         a_effect: &ad::AEffect,
         a_modifier: &ad::AEffectModifier,
     ) -> Option<Self> {
-        let affectee_filter = SolAffecteeFilter::from_a_effect_tgt_filter(&a_modifier.affectee_filter, affector_item);
+        let affectee_filter =
+            SolAffecteeFilter::from_a_effect_affectee_filter(&a_modifier.affectee_filter, affector_item);
         let kind = match get_mod_kind(a_effect, &affectee_filter) {
             Some(kind) => kind,
             None => return None,
@@ -104,7 +105,8 @@ impl SolRawModifier {
         domain: SolDomain,
         buff_type_attr_id: Option<EAttrId>,
     ) -> Option<Self> {
-        let affectee_filter = SolAffecteeFilter::from_a_buff_tgt_filter(&a_mod.affectee_filter, domain, affector_item);
+        let affectee_filter =
+            SolAffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, domain, affector_item);
         let kind = match get_mod_kind(a_effect, &affectee_filter) {
             Some(kind) => kind,
             None => return None,

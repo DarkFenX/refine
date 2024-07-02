@@ -19,7 +19,7 @@ def test_project_unproject_root(client, consts):
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
-    api_proj_effect.change_proj_effect(add_tgts=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     api_proj_effect.remove()
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)

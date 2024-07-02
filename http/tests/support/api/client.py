@@ -461,18 +461,18 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_id: str,
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, None, Type[Absent]] = Absent,
-            add_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
-            change_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
-            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            rm_projs: Union[Iterable[str], Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {'type': 'module'}
         conditional_insert(command, 'state', state)
         conditional_insert(command, 'charge', charge)
-        conditional_insert(command, 'add_tgts', add_tgts)
-        conditional_insert(command, 'change_tgts', change_tgts)
-        conditional_insert(command, 'rm_tgts', rm_tgts)
+        conditional_insert(command, 'add_projs', add_projs)
+        conditional_insert(command, 'change_projs', change_projs)
+        conditional_insert(command, 'rm_projs', rm_projs)
         conditional_insert(command, 'effect_modes', effect_modes)
         return Request(
             self,
@@ -605,14 +605,14 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]] = Absent,
-            add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
-            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            add_projs: Union[Iterable[str], Type[Absent]] = Absent,
+            rm_projs: Union[Iterable[str], Type[Absent]] = Absent,
             item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
     ) -> Request:
         command = {'type': 'proj_effect', 'item_id': item_id}
         conditional_insert(command, 'state', state)
-        conditional_insert(command, 'add_tgts', add_tgts)
-        conditional_insert(command, 'rm_tgts', rm_tgts)
+        conditional_insert(command, 'add_projs', add_projs)
+        conditional_insert(command, 'rm_projs', rm_projs)
         return Request(
             self,
             method='PATCH',

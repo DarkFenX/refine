@@ -142,9 +142,9 @@ class Item(AttrDict):
             self,
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, None, Type[Absent]] = Absent,
-            add_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
-            change_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
-            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            rm_projs: Union[Iterable[str], Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_mod_request(
@@ -152,27 +152,27 @@ class Item(AttrDict):
             item_id=self.id,
             state=state,
             charge=charge,
-            add_tgts=add_tgts,
-            change_tgts=change_tgts,
-            rm_tgts=rm_tgts,
+            add_projs=add_projs,
+            change_projs=change_projs,
+            rm_projs=rm_projs,
             effect_modes=effect_modes)
 
     def change_mod(
             self,
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, Type[Absent]] = Absent,
-            add_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
-            change_tgts: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
-            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            rm_projs: Union[Iterable[str], Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
             status_code: int = 200,
     ) -> None:
         resp = self.change_mod_request(
             state=state,
             charge=charge,
-            add_tgts=add_tgts,
-            change_tgts=change_tgts,
-            rm_tgts=rm_tgts,
+            add_projs=add_projs,
+            change_projs=change_projs,
+            rm_projs=rm_projs,
             effect_modes=effect_modes).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
@@ -242,24 +242,24 @@ class Item(AttrDict):
     def change_proj_effect_request(
             self,
             state: Union[bool, Type[Absent]] = Absent,
-            add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
-            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            add_projs: Union[Iterable[str], Type[Absent]] = Absent,
+            rm_projs: Union[Iterable[str], Type[Absent]] = Absent,
     ) -> Request:
         return self._client.change_proj_effect_request(
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
-            add_tgts=add_tgts,
-            rm_tgts=rm_tgts)
+            add_projs=add_projs,
+            rm_projs=rm_projs)
 
     def change_proj_effect(
             self,
             state: Union[bool, Type[Absent]] = Absent,
-            add_tgts: Union[Iterable[str], Type[Absent]] = Absent,
-            rm_tgts: Union[Iterable[str], Type[Absent]] = Absent,
+            add_projs: Union[Iterable[str], Type[Absent]] = Absent,
+            rm_projs: Union[Iterable[str], Type[Absent]] = Absent,
             status_code: int = 200,
     ) -> None:
-        resp = self.change_proj_effect_request(state=state, add_tgts=add_tgts, rm_tgts=rm_tgts).send()
+        resp = self.change_proj_effect_request(state=state, add_projs=add_projs, rm_projs=rm_projs).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)

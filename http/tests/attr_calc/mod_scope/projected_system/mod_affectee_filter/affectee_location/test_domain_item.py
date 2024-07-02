@@ -22,6 +22,6 @@ def test_unaffected(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
     api_rig = api_fit.add_rig(type_id=eve_rig.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
-    api_proj_effect.change_proj_effect(add_tgts=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(100)
     assert api_rig.update().attrs[eve_affectee_attr.id].dogma == approx(100)

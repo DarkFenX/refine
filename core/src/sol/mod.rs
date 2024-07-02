@@ -1,5 +1,5 @@
 pub use item::SolItemState;
-pub(in crate::sol) use misc::SolTgtTracker;
+pub(in crate::sol) use misc::SolProjTracker;
 pub use misc::{SolEffectInfo, SolEffectMode, SolModRack};
 pub use sol::SolarSystem;
 pub use sole_item::{SolOrdAddMode, SolOrdRmMode};

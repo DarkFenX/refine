@@ -29,8 +29,8 @@ pub use sol::{
     fleet_info::SolFleetInfo,
     item_info::{
         SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo, SolFwEffectInfo, SolImplantInfo,
-        SolItemInfo, SolModuleInfo, SolProjEffectInfo, SolRigInfo, SolShipInfo, SolSkillInfo, SolStanceInfo,
-        SolSubsystemInfo, SolSwEffectInfo, SolTgtInfo,
+        SolItemInfo, SolModuleInfo, SolProjEffectInfo, SolProjInfo, SolRigInfo, SolShipInfo, SolSkillInfo,
+        SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
     },
     SolAffectorInfo, SolAffectorValueInfo, SolAttrVal, SolEffectInfo, SolEffectMode, SolItemState, SolModRack,
     SolModificationInfo, SolOpInfo, SolOrdAddMode, SolOrdRmMode, SolarSystem,

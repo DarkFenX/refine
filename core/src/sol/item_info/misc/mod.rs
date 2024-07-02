@@ -1,3 +1,3 @@
-pub use tgt_info::SolTgtInfo;
+pub use proj_info::SolProjInfo;
 
-mod tgt_info;
+mod proj_info;

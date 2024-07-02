@@ -16,7 +16,7 @@ pub use info_skill::SolSkillInfo;
 pub use info_stance::SolStanceInfo;
 pub use info_subsystem::SolSubsystemInfo;
 pub use info_sw_effect::SolSwEffectInfo;
-pub use misc::SolTgtInfo;
+pub use misc::SolProjInfo;
 
 mod info;
 mod info_booster;

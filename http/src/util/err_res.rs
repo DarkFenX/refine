@@ -52,10 +52,10 @@ impl HError {
                 rc::ErrorKind::AItemNotLoaded(_) => "COR-012",
                 rc::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
                 rc::ErrorKind::CustomModCalc => "COR-014",
-                rc::ErrorKind::ItemNotTargetable(_) => "COR-015",
+                rc::ErrorKind::ItemNotProjectable(_) => "COR-015",
                 rc::ErrorKind::FleetIdAllocFailed => "COR-016",
                 rc::ErrorKind::FleetNotFound(_) => "COR-017",
-                rc::ErrorKind::TargetNotFound(_, _) => "COR-018",
+                rc::ErrorKind::ProjecteeNotFound(_, _) => "COR-018",
             },
         };
         code.to_string()

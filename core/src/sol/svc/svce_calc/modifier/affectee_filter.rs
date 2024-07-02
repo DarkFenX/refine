@@ -13,11 +13,11 @@ pub(in crate::sol::svc::svce_calc) enum SolAffecteeFilter {
     OwnSrq(EItemId),
 }
 impl SolAffecteeFilter {
-    pub(super) fn from_a_effect_tgt_filter(
-        a_effect_tgt_filter: &ad::AEffectAffecteeFilter,
+    pub(super) fn from_a_effect_affectee_filter(
+        a_effect_affectee_filter: &ad::AEffectAffecteeFilter,
         sol_item: &SolItem,
     ) -> Self {
-        match a_effect_tgt_filter {
+        match a_effect_affectee_filter {
             ad::AEffectAffecteeFilter::Direct(dom) => Self::Direct(dom.into()),
             ad::AEffectAffecteeFilter::Loc(dom) => Self::Loc(dom.into()),
             ad::AEffectAffecteeFilter::LocGrp(dom, grp_id) => Self::LocGrp(dom.into(), *grp_id),
@@ -25,12 +25,12 @@ impl SolAffecteeFilter {
             ad::AEffectAffecteeFilter::OwnSrq(mod_srq) => Self::OwnSrq(get_srq(mod_srq, sol_item)),
         }
     }
-    pub(super) fn from_a_buff_tgt_filter(
-        a_buff_tgt_filter: &ad::ABuffAffecteeFilter,
+    pub(super) fn from_a_buff_affectee_filter(
+        a_buff_affectee_filter: &ad::ABuffAffecteeFilter,
         sol_domain: SolDomain,
         sol_item: &SolItem,
     ) -> Self {
-        match a_buff_tgt_filter {
+        match a_buff_affectee_filter {
             ad::ABuffAffecteeFilter::Direct => Self::Direct(sol_domain),
             ad::ABuffAffecteeFilter::Loc => Self::Loc(sol_domain),
             ad::ABuffAffecteeFilter::LocGrp(grp_id) => Self::LocGrp(sol_domain, *grp_id),

@@ -33,7 +33,7 @@ pub(in crate::sol::svc::svce_calc::modifier) fn get_mod_val(
         return Err(Error::new(ErrorKind::CustomModCalc));
     }
     let val = 1.0 + perc / 100.0;
-    // Register dependencies, so that target attribute is properly cleared up when any of affector
+    // Register dependencies, so that affectee attribute is properly cleared up when any of affector
     // attributes change
     reg_dependencies(svc, ship_id, *item_id, *effect_id);
     Ok(val)

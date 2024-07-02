@@ -3,16 +3,16 @@ use crate::{
     util::{DebugError, DebugResult},
 };
 
-use super::SolTgtTracker;
+use super::SolProjTracker;
 
-impl SolTgtTracker {
+impl SolProjTracker {
     pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> DebugResult {
-        for (tgt_item_id, src_item_ids) in self.data.iter() {
-            if sol_view.items.get_item(tgt_item_id).is_err() {
+        for (projectee_item_id, projector_item_ids) in self.data.iter() {
+            if sol_view.items.get_item(projectee_item_id).is_err() {
                 return Err(DebugError::new());
             }
-            for src_item_id in src_item_ids {
-                if sol_view.items.get_item(src_item_id).is_err() {
+            for projector_item_id in projector_item_ids {
+                if sol_view.items.get_item(projector_item_id).is_err() {
                     return Err(DebugError::new());
                 }
             }

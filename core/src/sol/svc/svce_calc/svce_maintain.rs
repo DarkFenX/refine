@@ -212,8 +212,8 @@ impl SolSvcs {
                 self.calc_data
                     .std
                     .fill_affectees(&mut affectees, sol_view, &ctx_modifier);
-                for tgt_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, tgt_item_id, &ctx_modifier.raw.affectee_attr_id);
+                for projectee_item_id in affectees.iter() {
+                    self.calc_force_attr_recalc(sol_view, projectee_item_id, &ctx_modifier.raw.affectee_attr_id);
                 }
             }
         }
@@ -431,8 +431,8 @@ impl SolSvcs {
         modifier: &SolCtxModifier,
     ) {
         self.calc_data.std.fill_affectees(affectees, sol_view, modifier);
-        for tgt_item_id in affectees.iter() {
-            self.calc_force_attr_recalc(sol_view, tgt_item_id, &modifier.raw.affectee_attr_id);
+        for projectee_item_id in affectees.iter() {
+            self.calc_force_attr_recalc(sol_view, projectee_item_id, &modifier.raw.affectee_attr_id);
         }
     }
     fn handle_location_owner_change(&mut self, sol_view: &SolView, item: &SolItem) {

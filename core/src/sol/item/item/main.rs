@@ -205,7 +205,7 @@ impl SolItem {
     pub(in crate::sol) fn is_loaded(&self) -> bool {
         self.get_a_item().is_ok()
     }
-    pub(in crate::sol) fn is_targetable(&self) -> bool {
+    pub(in crate::sol) fn can_receive_projs(&self) -> bool {
         match self {
             Self::Booster(_) => false,
             Self::Character(_) => false,

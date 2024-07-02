@@ -24,7 +24,7 @@ def test_affected_state_change_child_ship(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
     api_module = api_fit.add_mod(type_id=eve_module.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id, state=False)
-    api_proj_effect.change_proj_effect(add_tgts=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     api_proj_effect.change_proj_effect(state=True)
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
@@ -56,7 +56,7 @@ def test_affected_state_change_child_struct(client, consts):
     api_struct = api_fit.set_ship(type_id=eve_struct.id)
     api_module = api_fit.add_mod(type_id=eve_module.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id, state=False)
-    api_proj_effect.change_proj_effect(add_tgts=[api_struct.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_struct.id])
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     api_proj_effect.change_proj_effect(state=True)
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
@@ -88,9 +88,9 @@ def test_affected_targeting_child_ship(client, consts):
     api_module = api_fit.add_mod(type_id=eve_module.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    api_proj_effect.change_proj_effect(add_tgts=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
-    api_proj_effect.change_proj_effect(rm_tgts=[api_ship.id])
+    api_proj_effect.change_proj_effect(rm_projs=[api_ship.id])
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
@@ -119,9 +119,9 @@ def test_affected_targeting_child_struct(client, consts):
     api_module = api_fit.add_mod(type_id=eve_module.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    api_proj_effect.change_proj_effect(add_tgts=[api_struct.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_struct.id])
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
-    api_proj_effect.change_proj_effect(rm_tgts=[api_struct.id])
+    api_proj_effect.change_proj_effect(rm_projs=[api_struct.id])
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
@@ -150,7 +150,7 @@ def test_unaffected_child_of_non_buff_modifiable_root(client, consts):
     api_implant = api_fit.add_implant(type_id=eve_implant.id)
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
-    api_proj_effect.change_proj_effect(add_tgts=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_implant.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
@@ -175,7 +175,7 @@ def test_unaffected_root_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
-    api_proj_effect.change_proj_effect(add_tgts=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
@@ -200,7 +200,7 @@ def test_unaffected_root_struct(client, consts):
     api_fit = api_sol.create_fit()
     api_struct = api_fit.set_ship(type_id=eve_struct.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
-    api_proj_effect.change_proj_effect(add_tgts=[api_struct.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_struct.id])
     assert api_struct.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
@@ -227,7 +227,7 @@ def test_unaffected_root_char(client, consts):
     api_char = api_fit.set_char(type_id=eve_char.id)
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
-    api_proj_effect.change_proj_effect(add_tgts=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_char.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
@@ -256,7 +256,7 @@ def test_unaffected_other_fit(client, consts):
     api_fit2.set_ship(type_id=eve_ship.id)
     api_module = api_fit2.add_mod(type_id=eve_module.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
-    api_proj_effect.change_proj_effect(add_tgts=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
@@ -285,7 +285,7 @@ def test_unaffected_via_child(client, consts):
     api_module = api_fit.add_mod(type_id=eve_module.id)
     api_drone = api_fit.add_drone(type_id=eve_drone.id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
-    api_proj_effect.change_proj_effect(add_tgts=[api_drone.id])
+    api_proj_effect.change_proj_effect(add_projs=[api_drone.id])
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     assert api_drone.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)

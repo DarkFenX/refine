@@ -14,5 +14,5 @@ def test_target_untarget(client, consts):
     api_fit2 = api_sol.create_fit()
     api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
     api_ship = api_fit2.set_ship(type_id=eve_ship.id)
-    api_module.change_mod(add_tgts=[api_ship.id])
+    api_module.change_mod(add_projs=[api_ship.id])
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(200)

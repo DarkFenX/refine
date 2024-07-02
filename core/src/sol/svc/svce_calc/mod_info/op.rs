@@ -1,12 +1,11 @@
 use crate::sol::svc::svce_calc::SolOp;
 
-/// Defines what kind of operation will be applied to a target attribute.
+/// Defines what kind of operation will be applied to an attribute being modified.
 ///
 /// All the operations are applied in the order they are defined in this enum.
 #[derive(PartialEq)]
 pub enum SolOpInfo {
-    /// Assigns modification value to the target item attribute before all other operations are
-    /// applied.
+    /// Assigns modification value to the attribute before all other operations are applied.
     PreAssign,
     /// Early multiplication.
     PreMul,

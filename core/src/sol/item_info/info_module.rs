@@ -6,7 +6,7 @@ use crate::{
     },
 };
 
-use super::{SolChargeInfo, SolTgtInfo};
+use super::{SolChargeInfo, SolProjInfo};
 
 pub struct SolModuleInfo {
     pub id: SolItemId,
@@ -16,7 +16,7 @@ pub struct SolModuleInfo {
     pub rack: SolModRack,
     pub pos: Idx,
     pub charge_info: Option<SolChargeInfo>,
-    pub tgts: Vec<SolTgtInfo>,
+    pub projs: Vec<SolProjInfo>,
 }
 impl SolModuleInfo {
     fn new(
@@ -27,7 +27,7 @@ impl SolModuleInfo {
         rack: SolModRack,
         pos: Idx,
         charge_info: Option<SolChargeInfo>,
-        tgts: Vec<SolTgtInfo>,
+        projs: Vec<SolProjInfo>,
     ) -> Self {
         Self {
             id,
@@ -37,7 +37,7 @@ impl SolModuleInfo {
             rack,
             pos,
             charge_info,
-            tgts,
+            projs,
         }
     }
     pub(in crate::sol) fn from_mod_and_charge(sol_module: &SolModule, charge_info: Option<SolChargeInfo>) -> Self {
@@ -52,7 +52,7 @@ impl SolModuleInfo {
             sol_module
                 .projs
                 .iter()
-                .map(|(item_id, range)| SolTgtInfo::new(*item_id, *range))
+                .map(|(item_id, range)| SolProjInfo::new(*item_id, *range))
                 .collect(),
         )
     }

@@ -125,48 +125,48 @@ impl SolarSystem {
         };
         Ok(removed)
     }
-    pub fn add_module_tgt(
+    pub fn add_module_proj(
         &mut self,
         item_id: &SolItemId,
-        tgt_item_id: SolItemId,
+        projectee_item_id: SolItemId,
         range: Option<AttrVal>,
     ) -> Result<()> {
-        // Execute change command if target is already defined
+        // Execute change command if projection is already defined
         let module = self.items.get_module(item_id)?;
-        if module.projs.contains(&tgt_item_id) {
-            return self.change_module_tgt(item_id, &tgt_item_id, range);
+        if module.projs.contains(&projectee_item_id) {
+            return self.change_module_proj(item_id, &projectee_item_id, range);
         }
-        // Check if item is targetable
-        let tgt_item = self.items.get_item(&tgt_item_id)?;
-        if !tgt_item.is_targetable() {
-            return Err(Error::new(ErrorKind::ItemNotTargetable(tgt_item_id)));
+        // Check if item can receive projections
+        let projectee_item = self.items.get_item(&projectee_item_id)?;
+        if !projectee_item.can_receive_projs() {
+            return Err(Error::new(ErrorKind::ItemNotProjectable(projectee_item_id)));
         }
         // Add info to the skeleton
-        self.tgt_tracker.reg_tgt(*item_id, tgt_item_id);
+        self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         let module = self.items.get_module_mut(item_id)?;
-        module.projs.add(tgt_item_id, range);
+        module.projs.add(projectee_item_id, range);
         // Process request in services
         let item = self.items.get_item(item_id).unwrap();
-        let tgt_item = self.items.get_item(&tgt_item_id).unwrap();
+        let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
         self.svcs.add_item_projection(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
-            tgt_item,
+            projectee_item,
             range,
         );
         Ok(())
     }
-    pub fn change_module_tgt(
+    pub fn change_module_proj(
         &mut self,
         item_id: &SolItemId,
-        tgt_item_id: &SolItemId,
+        projectee_item_id: &SolItemId,
         range: Option<AttrVal>,
     ) -> Result<()> {
-        // Check if target is defined before changing it
+        // Check if projection is defined before changing it
         let module = self.items.get_module(item_id)?;
-        let old_range = match module.projs.get(tgt_item_id) {
+        let old_range = match module.projs.get(projectee_item_id) {
             Some(old_range) => *old_range,
-            None => return Err(Error::new(ErrorKind::TargetNotFound(*item_id, *tgt_item_id))),
+            None => return Err(Error::new(ErrorKind::ProjecteeNotFound(*item_id, *projectee_item_id))),
         };
         // Do nothing if ranges are equal
         if range == old_range {
@@ -174,36 +174,36 @@ impl SolarSystem {
         }
         // Adjust skeleton
         let module = self.items.get_module_mut(item_id).unwrap();
-        module.projs.add(*tgt_item_id, range);
+        module.projs.add(*projectee_item_id, range);
         // Process request in services
         let item = self.items.get_item(item_id).unwrap();
-        let tgt_item = self.items.get_item(tgt_item_id).unwrap();
+        let projectee_item = self.items.get_item(projectee_item_id).unwrap();
         self.svcs.change_item_proj_range(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
-            tgt_item,
+            projectee_item,
             range,
         );
         Ok(())
     }
-    pub fn remove_module_tgt(&mut self, item_id: &SolItemId, tgt_item_id: &SolItemId) -> Result<()> {
-        // Check if target is defined
+    pub fn remove_module_proj(&mut self, item_id: &SolItemId, projectee_item_id: &SolItemId) -> Result<()> {
+        // Check if projection is defined
         let module = self.items.get_module(item_id)?;
-        if !module.projs.contains(tgt_item_id) {
-            return Err(Error::new(ErrorKind::TargetNotFound(*item_id, *tgt_item_id)));
+        if !module.projs.contains(projectee_item_id) {
+            return Err(Error::new(ErrorKind::ProjecteeNotFound(*item_id, *projectee_item_id)));
         };
         // Process request in services
         let item = self.items.get_item(item_id).unwrap();
-        let tgt_item = self.items.get_item(tgt_item_id).unwrap();
+        let projectee_item = self.items.get_item(projectee_item_id).unwrap();
         self.svcs.remove_item_projection(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
-            tgt_item,
+            projectee_item,
         );
         // Update the skeleton
-        self.tgt_tracker.unreg_tgt(item_id, tgt_item_id);
+        self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         let module = self.items.get_module_mut(item_id).unwrap();
-        module.projs.remove(tgt_item_id);
+        module.projs.remove(projectee_item_id);
         Ok(())
     }
     // Non-public

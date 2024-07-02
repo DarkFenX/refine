@@ -28,25 +28,25 @@ impl SolarSystem {
         match main {
             SolItem::ProjEffect(proj_effect) => {
                 let proj_outgoing = proj_effect.projs.iter_items().map(|v| *v).collect_vec();
-                for targeted_item_id in proj_outgoing.iter() {
-                    self.remove_proj_effect_tgt(item_id, targeted_item_id).unwrap();
+                for projectee_item_id in proj_outgoing.iter() {
+                    self.remove_proj_effect_proj(item_id, projectee_item_id).unwrap();
                 }
             }
             SolItem::Module(module) => {
                 let proj_outgoing = module.projs.iter_items().map(|v| *v).collect_vec();
-                for targeted_item_id in proj_outgoing.iter() {
-                    self.remove_module_tgt(item_id, targeted_item_id).unwrap();
+                for projectee_item_id in proj_outgoing.iter() {
+                    self.remove_module_proj(item_id, projectee_item_id).unwrap();
                 }
             }
             _ => (),
         };
         // Remove incoming projections
-        let proj_incoming = self.tgt_tracker.iter_srcs(item_id).map(|v| *v).collect_vec();
+        let proj_incoming = self.proj_tracker.iter_projectors(item_id).map(|v| *v).collect_vec();
         for proj_item_id in proj_incoming.iter() {
             let proj_item = self.items.get_item(proj_item_id).unwrap();
             match proj_item {
-                SolItem::Module(_) => self.remove_module_tgt(proj_item_id, item_id).unwrap(),
-                SolItem::ProjEffect(_) => self.remove_proj_effect_tgt(proj_item_id, item_id).unwrap(),
+                SolItem::Module(_) => self.remove_module_proj(proj_item_id, item_id).unwrap(),
+                SolItem::ProjEffect(_) => self.remove_proj_effect_proj(proj_item_id, item_id).unwrap(),
                 _ => (),
             }
         }

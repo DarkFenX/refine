@@ -1,3 +1,4 @@
+pub(in crate::sol::svc::svce_calc) use affectee_filter::SolAffecteeFilter;
 use affector_val::SolAffectorValue;
 pub(in crate::sol::svc::svce_calc) use aggr_mode::SolAggrMode;
 pub(in crate::sol::svc::svce_calc) use context::SolContext;
@@ -7,8 +8,8 @@ pub(in crate::sol::svc::svce_calc) use kind::SolModifierKind;
 pub(in crate::sol::svc::svce_calc) use mod_ctx::SolCtxModifier;
 pub(in crate::sol::svc::svce_calc) use mod_raw::SolRawModifier;
 pub(in crate::sol::svc::svce_calc) use op::SolOp;
-pub(in crate::sol::svc::svce_calc) use tgt_filter::SolAffecteeFilter;
 
+mod affectee_filter;
 mod affector_val;
 mod aggr_mode;
 mod context;
@@ -19,4 +20,3 @@ mod kind;
 mod mod_ctx;
 mod mod_raw;
 mod op;
-mod tgt_filter;

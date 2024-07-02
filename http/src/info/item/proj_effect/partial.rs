@@ -7,7 +7,7 @@ pub(crate) struct HProjEffectInfoPartial {
     pub(crate) enabled: bool,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) tgts: Vec<rc::SolItemId>,
+    pub(crate) projs: Vec<rc::SolItemId>,
 }
 impl From<&rc::SolProjEffectInfo> for HProjEffectInfoPartial {
     fn from(core_proj_effect_info: &rc::SolProjEffectInfo) -> Self {
@@ -15,7 +15,7 @@ impl From<&rc::SolProjEffectInfo> for HProjEffectInfoPartial {
             id: core_proj_effect_info.id,
             type_id: core_proj_effect_info.a_item_id,
             enabled: core_proj_effect_info.enabled,
-            tgts: core_proj_effect_info.tgts.clone(),
+            projs: core_proj_effect_info.projs.clone(),
         }
     }
 }

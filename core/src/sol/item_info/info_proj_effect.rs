@@ -7,15 +7,15 @@ pub struct SolProjEffectInfo {
     pub id: SolItemId,
     pub a_item_id: EItemId,
     pub enabled: bool,
-    pub tgts: Vec<SolItemId>,
+    pub projs: Vec<SolItemId>,
 }
 impl SolProjEffectInfo {
-    fn new(id: SolItemId, a_item_id: EItemId, enabled: bool, tgts: Vec<SolItemId>) -> Self {
+    fn new(id: SolItemId, a_item_id: EItemId, enabled: bool, projs: Vec<SolItemId>) -> Self {
         Self {
             id,
             a_item_id,
             enabled,
-            tgts,
+            projs,
         }
     }
 }

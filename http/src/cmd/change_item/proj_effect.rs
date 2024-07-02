@@ -8,10 +8,10 @@ use crate::cmd::{
 pub(crate) struct HChangeProjEffectCmd {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
-    add_tgts: Vec<rc::SolItemId>,
+    add_projs: Vec<rc::SolItemId>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
-    rm_tgts: Vec<rc::SolItemId>,
+    rm_projs: Vec<rc::SolItemId>,
     state: Option<bool>,
     // Workaround for https://github.com/serde-rs/serde/issues/1183
     #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
@@ -23,11 +23,11 @@ impl HChangeProjEffectCmd {
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
     ) -> rc::Result<HCmdResp> {
-        for tgt_item_id in self.add_tgts.iter() {
-            core_sol.add_proj_effect_tgt(item_id, *tgt_item_id)?;
+        for projectee_item_id in self.add_projs.iter() {
+            core_sol.add_proj_effect_proj(item_id, *projectee_item_id)?;
         }
-        for tgt_item_id in self.rm_tgts.iter() {
-            core_sol.remove_proj_effect_tgt(item_id, tgt_item_id)?;
+        for projectee_item_id in self.rm_projs.iter() {
+            core_sol.remove_proj_effect_proj(item_id, projectee_item_id)?;
         }
         if let Some(state) = self.state {
             core_sol.set_proj_effect_state(item_id, state)?;

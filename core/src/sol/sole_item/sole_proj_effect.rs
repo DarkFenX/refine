@@ -43,44 +43,44 @@ impl SolarSystem {
         }
         Ok(())
     }
-    pub fn add_proj_effect_tgt(&mut self, item_id: &SolItemId, tgt_item_id: SolItemId) -> Result<()> {
+    pub fn add_proj_effect_proj(&mut self, item_id: &SolItemId, projectee_item_id: SolItemId) -> Result<()> {
         let proj_effect = self.items.get_proj_effect(item_id)?;
-        if proj_effect.projs.contains(&tgt_item_id) {
+        if proj_effect.projs.contains(&projectee_item_id) {
             return Ok(());
         }
-        let tgt_item = self.items.get_item(&tgt_item_id)?;
-        if !tgt_item.is_targetable() {
-            return Err(Error::new(ErrorKind::ItemNotTargetable(tgt_item_id)));
+        let projectee_item = self.items.get_item(&projectee_item_id)?;
+        if !projectee_item.can_receive_projs() {
+            return Err(Error::new(ErrorKind::ItemNotProjectable(projectee_item_id)));
         }
-        self.tgt_tracker.reg_tgt(*item_id, tgt_item_id);
+        self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         let proj_effect = self.items.get_proj_effect_mut(item_id)?;
-        proj_effect.projs.add(tgt_item_id, None);
+        proj_effect.projs.add(projectee_item_id, None);
         let item = self.items.get_item(item_id).unwrap();
-        let tgt_item = self.items.get_item(&tgt_item_id).unwrap();
+        let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
         self.svcs.add_item_projection(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             &item,
-            tgt_item,
+            projectee_item,
             None,
         );
         Ok(())
     }
-    pub fn remove_proj_effect_tgt(&mut self, item_id: &SolItemId, tgt_item_id: &SolItemId) -> Result<()> {
-        // Check if target is defined
+    pub fn remove_proj_effect_proj(&mut self, item_id: &SolItemId, projectee_item_id: &SolItemId) -> Result<()> {
+        // Check if projection is defined
         let proj_effect = self.items.get_proj_effect(item_id)?;
-        if !proj_effect.projs.contains(tgt_item_id) {
-            return Err(Error::new(ErrorKind::TargetNotFound(*item_id, *tgt_item_id)));
+        if !proj_effect.projs.contains(projectee_item_id) {
+            return Err(Error::new(ErrorKind::ProjecteeNotFound(*item_id, *projectee_item_id)));
         };
         let item = self.items.get_item(item_id)?;
-        let tgt_item = self.items.get_item(tgt_item_id)?;
+        let projectee_item = self.items.get_item(projectee_item_id)?;
         self.svcs.remove_item_projection(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             item,
-            tgt_item,
+            projectee_item,
         );
-        self.tgt_tracker.unreg_tgt(item_id, tgt_item_id);
+        self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         let proj_effect = self.items.get_proj_effect_mut(item_id)?;
-        proj_effect.projs.remove(tgt_item_id);
+        proj_effect.projs.remove(projectee_item_id);
         Ok(())
     }
 }

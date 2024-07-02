@@ -2,7 +2,7 @@ use crate::{
     defs::{EAttrId, EEffectId, SolItemId},
     sol::{
         fit::SolFits, fleet::SolFleets, item::SolItems, svc::SolSvcs, SolAttrVal, SolEffectInfo, SolEffectMode,
-        SolTgtTracker, SolView,
+        SolProjTracker, SolView,
     },
     src::Src,
     util::{Result, StSet},
@@ -21,7 +21,7 @@ pub struct SolarSystem {
     pub(in crate::sol) items: SolItems,
     pub(in crate::sol) sw_effects: StSet<SolItemId>,
     pub(in crate::sol) proj_effects: StSet<SolItemId>,
-    pub(in crate::sol) tgt_tracker: SolTgtTracker,
+    pub(in crate::sol) proj_tracker: SolProjTracker,
     pub(in crate::sol) svcs: SolSvcs,
 }
 impl SolarSystem {
@@ -33,7 +33,7 @@ impl SolarSystem {
             items: SolItems::new(),
             sw_effects: StSet::new(),
             proj_effects: StSet::new(),
-            tgt_tracker: SolTgtTracker::new(),
+            proj_tracker: SolProjTracker::new(),
             svcs: SolSvcs::new(),
         }
     }

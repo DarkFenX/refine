@@ -107,7 +107,7 @@ impl SolItem {
         }
     }
     pub(in crate::sol::svc::svce_calc) fn is_buff_modifiable(&self) -> bool {
-        self.is_targetable()
+        self.can_receive_projs()
     }
     pub(in crate::sol::svc::svce_calc) fn get_other(&self) -> Option<SolItemId> {
         match self {
