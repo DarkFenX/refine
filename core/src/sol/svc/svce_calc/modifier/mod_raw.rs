@@ -73,13 +73,14 @@ impl SolRawModifier {
             Some(kind) => kind,
             None => return None,
         };
-        let (resist_attr_id, optimal_attr_id, falloff_attr_id) = match kind.is_projectable() {
-            true => (
+        // Targeted effects are affected by both range and resists
+        let (resist_attr_id, optimal_attr_id, falloff_attr_id) = match kind {
+            SolModifierKind::Targeted => (
                 get_resist_attr_id(affector_item, a_effect),
                 a_effect.range_attr_id,
                 a_effect.falloff_attr_id,
             ),
-            false => (None, None, None),
+            _ => (None, None, None),
         };
         Some(Self::new(
             kind,
@@ -111,13 +112,9 @@ impl SolRawModifier {
             Some(kind) => kind,
             None => return None,
         };
-        let (resist_attr_id, optimal_attr_id, falloff_attr_id) = match kind.is_projectable() {
-            true => (
-                get_resist_attr_id(affector_item, a_effect),
-                a_effect.range_attr_id,
-                a_effect.falloff_attr_id,
-            ),
-            false => (None, None, None),
+        let (resist_attr_id, optimal_attr_id) = match kind {
+            SolModifierKind::Buff => (get_resist_attr_id(affector_item, a_effect), a_effect.range_attr_id),
+            _ => (None, None),
         };
         Some(Self::new(
             kind,
@@ -131,7 +128,9 @@ impl SolRawModifier {
             buff_type_attr_id,
             resist_attr_id,
             optimal_attr_id,
-            falloff_attr_id,
+            // Modifiers created from buffs never define falloff - buffs either apply fully, or they
+            // don't
+            None,
         ))
     }
     pub(in crate::sol::svc::svce_calc) fn get_affector_attr_id(&self) -> Option<EAttrId> {
