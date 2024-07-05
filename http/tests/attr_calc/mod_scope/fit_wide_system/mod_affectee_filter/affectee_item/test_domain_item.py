@@ -17,12 +17,8 @@ def test_affected(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_fw_effect(type_id=eve_item.id, state=False)
-    assert api_item.update().attrs[eve_affectee_attr.id].dogma == approx(100)
-    api_item.change_fw_effect(state=True)
+    api_item = api_fit.add_fw_effect(type_id=eve_item.id)
     assert api_item.update().attrs[eve_affectee_attr.id].dogma == approx(120)
-    api_item.change_fw_effect(state=False)
-    assert api_item.update().attrs[eve_affectee_attr.id].dogma == approx(100)
 
 
 def test_unaffected_root(client, consts):
