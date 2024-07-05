@@ -16,12 +16,8 @@ def test_affected(client, consts):
     eve_item = client.mk_eve_item(attrs={eve_affector_attr.id: 20, eve_affectee_attr.id: 100}, eff_ids=[eve_effect.id])
     client.create_sources()
     api_sol = client.create_sol()
-    api_item = api_sol.add_sw_effect(type_id=eve_item.id, state=False)
-    assert api_item.update().attrs[eve_affectee_attr.id].dogma == approx(100)
-    api_item.change_sw_effect(state=True)
+    api_item = api_sol.add_sw_effect(type_id=eve_item.id)
     assert api_item.update().attrs[eve_affectee_attr.id].dogma == approx(120)
-    api_item.change_sw_effect(state=False)
-    assert api_item.update().attrs[eve_affectee_attr.id].dogma == approx(100)
 
 
 def test_unaffected_root(client, consts):

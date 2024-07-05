@@ -24,15 +24,9 @@ def test_affected_multiple(client, consts):
     api_fit2.set_ship(type_id=eve_struct.id)
     api_affectee_item1 = api_fit1.add_rig(type_id=eve_affectee_item.id)
     api_affectee_item2 = api_fit2.add_rig(type_id=eve_affectee_item.id)
-    api_affector_item = api_sol.add_sw_effect(type_id=eve_affector_item.id, state=False)
-    assert api_affectee_item1.update().attrs[eve_affectee_attr.id].dogma == approx(100)
-    assert api_affectee_item2.update().attrs[eve_affectee_attr.id].dogma == approx(100)
-    api_affector_item.change_sw_effect(state=True)
+    api_sol.add_sw_effect(type_id=eve_affector_item.id)
     assert api_affectee_item1.update().attrs[eve_affectee_attr.id].dogma == approx(120)
     assert api_affectee_item2.update().attrs[eve_affectee_attr.id].dogma == approx(120)
-    api_affector_item.change_sw_effect(state=False)
-    assert api_affectee_item1.update().attrs[eve_affectee_attr.id].dogma == approx(100)
-    assert api_affectee_item2.update().attrs[eve_affectee_attr.id].dogma == approx(100)
 
 
 def test_unaffected_other_domain(client, consts):

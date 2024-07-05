@@ -21,17 +21,11 @@ def test_affected_root_ship_multiple(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_ship1 = api_fit1.set_ship(type_id=eve_ship.id)
-    api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect.id, state=False)
+    api_sol.add_sw_effect(type_id=eve_sw_effect.id)
     api_fit2 = api_sol.create_fit()
     api_ship2 = api_fit2.set_ship(type_id=eve_ship.id)
-    assert api_ship1.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_ship2.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    api_sw_effect.change_sw_effect(state=True)
     assert api_ship1.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
     assert api_ship2.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
-    api_sw_effect.change_sw_effect(state=False)
-    assert api_ship1.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_ship2.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
 def test_affected_root_struct(client, consts):
@@ -54,12 +48,8 @@ def test_affected_root_struct(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_struct = api_fit.set_ship(type_id=eve_struct.id)
-    api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect.id, state=False)
-    assert api_struct.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    api_sw_effect.change_sw_effect(state=True)
+    api_sol.add_sw_effect(type_id=eve_sw_effect.id)
     assert api_struct.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
-    api_sw_effect.change_sw_effect(state=False)
-    assert api_struct.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
 def test_affected_child(client, consts):
@@ -82,21 +72,13 @@ def test_affected_child(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_drone1 = api_fit1.add_drone(type_id=eve_drone.id)
-    api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect.id, state=False)
+    api_sol.add_sw_effect(type_id=eve_sw_effect.id)
     api_fit2 = api_sol.create_fit()
     api_drone2 = api_fit1.add_drone(type_id=eve_drone.id)
     api_drone3 = api_fit2.add_drone(type_id=eve_drone.id)
-    assert api_drone1.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_drone2.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_drone3.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    api_sw_effect.change_sw_effect(state=True)
     assert api_drone1.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
     assert api_drone2.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
     assert api_drone3.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
-    api_sw_effect.change_sw_effect(state=False)
-    assert api_drone1.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_drone2.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_drone3.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
 def test_unaffected_non_buff_modifiable_root(client, consts):

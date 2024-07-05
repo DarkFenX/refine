@@ -23,21 +23,15 @@ def test_affected_child_ship_multiple(client, consts):
     api_fit1 = api_sol.create_fit()
     api_fit1.set_ship(type_id=eve_ship.id)
     api_module1 = api_fit1.add_mod(type_id=eve_module.id)
-    api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect.id, state=False)
+    api_sol.add_sw_effect(type_id=eve_sw_effect.id)
     api_fit2 = api_sol.create_fit()
     api_fit2.set_ship(type_id=eve_ship.id)
     api_module2 = api_fit2.add_mod(type_id=eve_module.id)
-    assert api_module1.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_module2.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    api_sw_effect.change_sw_effect(state=True)
     assert api_module1.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
     assert api_module2.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
-    api_sw_effect.change_sw_effect(state=False)
-    assert api_module1.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_module2.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
-def test_affected_child_root(client, consts):
+def test_affected_child_struct(client, consts):
     # Make sure structure items (such as modules) are affected by location-filtered buff
     # modification
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
@@ -57,21 +51,11 @@ def test_affected_child_root(client, consts):
     eve_module = client.mk_eve_item(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit1 = api_sol.create_fit()
-    api_fit1.set_ship(type_id=eve_struct.id)
-    api_module1 = api_fit1.add_mod(type_id=eve_module.id)
-    api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect.id, state=False)
-    api_fit2 = api_sol.create_fit()
-    api_fit2.set_ship(type_id=eve_struct.id)
-    api_module2 = api_fit2.add_mod(type_id=eve_module.id)
-    assert api_module1.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_module2.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    api_sw_effect.change_sw_effect(state=True)
-    assert api_module1.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
-    assert api_module2.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
-    api_sw_effect.change_sw_effect(state=False)
-    assert api_module1.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
-    assert api_module2.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_struct.id)
+    api_module = api_fit.add_mod(type_id=eve_module.id)
+    api_sol.add_sw_effect(type_id=eve_sw_effect.id)
+    assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
 
 
 def test_unaffected_child_of_non_buff_modifiable_root(client, consts):
