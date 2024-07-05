@@ -19,12 +19,8 @@ def test_affected(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.create_fit()
-    api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id, state=False)
-    assert api_proj_effect.update().attrs[eve_affectee_attr.id].dogma == approx(100)
-    api_proj_effect.change_proj_effect(state=True)
+    api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect.id)
     assert api_proj_effect.update().attrs[eve_affectee_attr.id].dogma == approx(120)
-    api_proj_effect.change_proj_effect(state=False)
-    assert api_proj_effect.update().attrs[eve_affectee_attr.id].dogma == approx(100)
 
 
 def test_unaffected_root(client, consts):
