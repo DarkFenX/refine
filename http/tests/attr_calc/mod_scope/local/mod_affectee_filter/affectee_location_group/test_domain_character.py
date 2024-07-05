@@ -20,7 +20,7 @@ def test_affected(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_char(type_id=eve_char_item.id)
-    api_fit.add_rig(type_id=eve_affector_item.id, state=False)
+    api_fit.add_rig(type_id=eve_affector_item.id)
     api_affectee_item = api_fit.add_implant(type_id=eve_affectee_item.id)
     assert api_affectee_item.update().attrs[eve_affectee_attr.id].dogma == approx(120)
 
