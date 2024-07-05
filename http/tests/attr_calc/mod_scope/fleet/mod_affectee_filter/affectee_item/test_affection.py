@@ -47,7 +47,7 @@ def test_affected_fleeted_root_ship(client, consts):
     api_fit2 = api_sol.create_fit()
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
-    api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
+    api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
     api_ship = api_fit2.set_ship(type_id=eve_ship.id)
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
 
