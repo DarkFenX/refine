@@ -89,7 +89,7 @@ impl SolSvcs {
 
             // TODO: implement resistance support (add it to key as well? idk)
             let mod_key = SolModificationKey::from(modifier);
-            let res_mult = self.calc_resist_mult(modifier.raw.kind);
+            let res_mult = self.calc_resist_mult(sol_view, modifier);
             let proj_mult = self.calc_proj_mult(sol_view, modifier);
             let modification = SolModification::new(
                 modifier.raw.op,
@@ -103,12 +103,24 @@ impl SolSvcs {
         }
         mods
     }
-    fn calc_resist_mult(&mut self, mod_kind: SolModifierKind) -> Option<AttrVal> {
+    fn calc_resist_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
         // Only buffs and targeted modifiers can be resisted
-        if !matches!(mod_kind, SolModifierKind::Buff | SolModifierKind::Targeted) {
+        if !matches!(modifier.raw.kind, SolModifierKind::Buff | SolModifierKind::Targeted) {
             return None;
         }
-        None
+        let resist_attr_id = match modifier.raw.resist_attr_id {
+            Some(resist_attr_id) => resist_attr_id,
+            None => return None,
+        };
+        let projectee_item_id = match modifier.ctx {
+            SolContext::Item(projectee_item_id) => projectee_item_id,
+            _ => return None,
+        };
+        let resist = match self.calc_get_item_attr_val(sol_view, &projectee_item_id, &resist_attr_id) {
+            Ok(val) => val.dogma,
+            _ => 1.0,
+        };
+        Some(resist)
     }
     fn calc_proj_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
         let projectee_item_id = match modifier.ctx {
