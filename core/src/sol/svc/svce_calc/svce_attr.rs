@@ -86,8 +86,6 @@ impl SolSvcs {
                 Ok(affector_item_cat_id) => affector_item_cat_id,
                 _ => continue,
             };
-
-            // TODO: implement resistance support (add it to key as well? idk)
             let mod_key = SolModificationKey::from(modifier);
             let res_mult = self.calc_resist_mult(sol_view, modifier);
             let proj_mult = self.calc_proj_mult(sol_view, modifier);
