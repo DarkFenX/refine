@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_value_change_root_ship(client, consts):
+def test_resisted_value_change_root_ship(client, consts):
     eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr = client.mk_eve_attr()
     eve_resist_attr = client.mk_eve_attr()
@@ -42,7 +42,7 @@ def test_value_change_root_ship(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(156)
 
 
-def test_value_change_root_struct(client, consts):
+def test_resisted_value_change_root_struct(client, consts):
     eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr = client.mk_eve_attr()
     eve_resist_attr = client.mk_eve_attr()
@@ -83,7 +83,7 @@ def test_value_change_root_struct(client, consts):
     assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(156)
 
 
-def test_value_change_child(client, consts):
+def test_resisted_value_change_child(client, consts):
     eve_skill = client.mk_eve_item()
     eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr = client.mk_eve_attr()

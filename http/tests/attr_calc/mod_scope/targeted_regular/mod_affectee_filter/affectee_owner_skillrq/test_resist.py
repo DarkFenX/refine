@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_value_change(client, consts):
+def test_resisted_value_change(client, consts):
     eve_skill = client.mk_eve_item()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
