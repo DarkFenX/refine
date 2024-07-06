@@ -62,7 +62,7 @@ def test_value_change_root_struct(client, consts):
         defeff_id=eve_effect.id)
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        dom=consts.EveModDom.struct,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_boost_attr.id,
         affectee_attr_id=eve_resist_attr.id)
