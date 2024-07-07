@@ -1,7 +1,7 @@
 from pytest import approx
 
 
-def test_invalid_reference_on_effect(client, consts):
+def test_on_effect(client, consts):
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
     eve_resist_attr_id = eve_affectee_attr.id + 1
@@ -30,7 +30,7 @@ def test_invalid_reference_on_effect(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(200)
 
 
-def test_invalid_reference_on_item(client, consts):
+def test_on_affector_item(client, consts):
     # We have to do 2 different items here to avoid on-item reference transfer to on-effect
     # reference during adapted data generation
     eve_affector_attr = client.mk_eve_attr()
