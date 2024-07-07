@@ -87,13 +87,11 @@ impl SolSvcs {
                 _ => continue,
             };
             let mod_key = SolModificationKey::from(modifier);
-            let res_mult = self.calc_resist_mult(sol_view, modifier);
-            let proj_mult = self.calc_proj_mult(sol_view, modifier);
             let modification = SolModification::new(
                 modifier.raw.op,
                 val,
-                res_mult,
-                proj_mult,
+                self.calc_resist_mult(sol_view, modifier),
+                self.calc_proj_mult(sol_view, modifier),
                 modifier.raw.aggr_mode,
                 affector_item_cat_id,
             );
@@ -116,7 +114,7 @@ impl SolSvcs {
         };
         let resist = match self.calc_get_item_attr_val(sol_view, &projectee_item_id, &resist_attr_id) {
             Ok(val) => val.dogma,
-            _ => 1.0,
+            _ => return None,
         };
         Some(resist)
     }
@@ -223,10 +221,7 @@ impl SolSvcs {
         // If both can't be fetched, consider it a failure
         let base_val = match item.get_orig_attrs()?.get(attr_id) {
             Some(orig_val) => *orig_val,
-            None => match attr.def_val {
-                Some(def_val) => def_val,
-                None => return Err(Error::new(ErrorKind::NoAttrBaseValue(*attr_id, item.get_a_item_id()))),
-            },
+            None => attr.def_val,
         };
         match (attr_id, item) {
             (&ec::attrs::SKILL_LEVEL, SolItem::Skill(s)) => {

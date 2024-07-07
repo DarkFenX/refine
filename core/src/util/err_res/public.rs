@@ -24,7 +24,6 @@ pub enum ErrorKind {
     ModuleSlotTaken(SolModRack, Idx, SolItemId),
     AAttrNotFound(EAttrId),
     AItemNotLoaded(EItemId),
-    NoAttrBaseValue(EAttrId, EItemId),
     CustomModCalc,
     ItemNotProjectable(SolItemId),
     ProjecteeNotFound(SolItemId, SolItemId),
@@ -61,14 +60,6 @@ impl fmt::Display for Error {
             }
             ErrorKind::AAttrNotFound(attr_id) => write!(f, "{}(id={}) not found", ad::AAttr::get_name(), attr_id),
             ErrorKind::AItemNotLoaded(type_id) => write!(f, "{}(id={}) not found", ad::AItem::get_name(), type_id),
-            ErrorKind::NoAttrBaseValue(attr_id, type_id) => write!(
-                f,
-                "{} {} has no base value for {} {}",
-                ad::AAttr::get_name(),
-                attr_id,
-                ad::AItem::get_name(),
-                type_id
-            ),
             ErrorKind::CustomModCalc => write!(f, "failed to calculate custom modifier"),
             ErrorKind::ItemNotProjectable(item_id) => write!(f, "item {item_id} cannot be projected onto"),
             ErrorKind::ProjecteeNotFound(projector_item_id, projectee_item_id) => {

@@ -50,7 +50,6 @@ impl HError {
                 rc::ErrorKind::ModuleSlotTaken(_, _, _) => "COR-010",
                 rc::ErrorKind::AAttrNotFound(_) => "COR-011",
                 rc::ErrorKind::AItemNotLoaded(_) => "COR-012",
-                rc::ErrorKind::NoAttrBaseValue(_, _) => "COR-013",
                 rc::ErrorKind::CustomModCalc => "COR-014",
                 rc::ErrorKind::ItemNotProjectable(_) => "COR-015",
                 rc::ErrorKind::FleetIdAllocFailed => "COR-016",

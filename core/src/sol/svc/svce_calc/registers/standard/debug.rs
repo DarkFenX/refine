@@ -1,7 +1,7 @@
 use crate::{
     sol::{
         svc::{
-            debug::{check_attr, check_effect, check_fit, check_item},
+            debug::{check_effect, check_fit, check_item},
             svce_calc::debug::{check_ctx_modifier, check_raw_modifier},
         },
         SolView,

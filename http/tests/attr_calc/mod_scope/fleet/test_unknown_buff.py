@@ -67,20 +67,16 @@ def test_switch(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship.id)
     api_module = api_fit.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
     # Verification
-    api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr.id].dogma == approx(20)
+    assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(20)
     # Action
     api_module.change_mod(charge=eve_charge1.id)
     # Verification
-    api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr.id].dogma == approx(100)
+    assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(100)
     # Action
     api_module.change_mod(charge=eve_charge2.id)
     # Verification
-    api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr.id].dogma == approx(20)
+    assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(20)
     # Action
     api_module.change_mod(charge=None)
     # Verification
-    api_ship.update()
-    assert api_ship.attrs[eve_affectee_attr.id].dogma == approx(20)
+    assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(20)

@@ -16,7 +16,7 @@ pub struct AAttr {
     /// "High is good" defines if higher value of the attribute is considered good or not.
     pub hig: bool,
     /// Default value of the attribute, used if not provided by an item type.
-    pub def_val: Option<AttrVal>,
+    pub def_val: AttrVal,
     /// Refers another attribute, whose value limits value of this attribute.
     pub max_attr_id: Option<EAttrId>,
 }
@@ -26,7 +26,7 @@ impl AAttr {
         id: EAttrId,
         penalizable: bool,
         hig: bool,
-        def_val: Option<AttrVal>,
+        def_val: AttrVal,
         max_attr_id: Option<EAttrId>,
     ) -> Self {
         Self {

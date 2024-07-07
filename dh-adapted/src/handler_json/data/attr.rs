@@ -3,7 +3,7 @@ pub(in crate::handler_json) struct CAttr {
     id: rc::EAttrId,
     penalizable: bool,
     hig: bool,
-    def_val: Option<rc::AttrVal>,
+    def_val: rc::AttrVal,
     max_attr_id: Option<rc::EAttrId>,
 }
 impl From<&rc::ad::AAttr> for CAttr {

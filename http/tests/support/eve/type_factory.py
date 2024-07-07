@@ -132,7 +132,7 @@ class EveTypeFactory(EveDataManager):
             id_: Union[int, Type[Default]] = Default,
             stackable: bool = True,
             high_is_good: bool = True,
-            def_val: float = 0.0,
+            def_val: float = Absent,
             max_attr_id: Union[int, Type[Absent]] = Absent,
     ) -> Attribute:
         data = self._get_eve_data(data=data)

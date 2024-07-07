@@ -161,6 +161,7 @@ class EveAttr(IntEnum):
     max_velocity = 37
     mass = 4
     mass_addition = 796
+    remote_resistance_id = 2138
     sig_radius = 552
     sig_radius_bonus = 554
     speed_factor = 20
