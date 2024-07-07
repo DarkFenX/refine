@@ -46,5 +46,5 @@ def test_stacking(client, consts):
     api_affector_module2 = api_affector_fit.add_mod(type_id=eve_affector_module2.id, state=consts.ApiState.active)
     api_affector_module2.change_mod(add_projs=[api_affectee_ship.id])
     # Second module has stronger effect after resistance, and thus is penalized less. If it was the
-    # other way around, the value would've been 359.612
+    # other way around, the value would've been ~359.7
     assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(353.80371)
