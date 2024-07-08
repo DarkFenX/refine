@@ -1,19 +1,10 @@
 use crate::{
     defs::{AggrKey, AttrVal, EItemCatId},
-    ec,
     sol::svc::svce_calc::{SolAggrMode, SolOp},
     util::StMap,
 };
 
-const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
-    ec::itemcats::SHIP,
-    ec::itemcats::CHARGE,
-    ec::itemcats::SKILL,
-    ec::itemcats::IMPLANT,
-    ec::itemcats::SUBSYSTEM,
-];
-// Source expression: 1 / e^((1 / 2.67)^2)
-const PENALTY_BASE: f64 = 0.86911998080039742919922218788997270166873931884765625;
+use super::{is_penal, PENALTY_BASE};
 
 pub(in crate::sol::svc::svce_calc) struct SolAttrCalcFast {
     pre_assign: SolAttrAggr,
@@ -320,9 +311,6 @@ fn combine_muls_pen(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
 }
 
 // Misc functions
-pub(in crate::sol::svc::svce_calc) fn is_penal(attr_penalizable: bool, affector_item_cat_id: &EItemCatId) -> bool {
-    attr_penalizable && !PENALTY_IMMUNE_CATS.contains(affector_item_cat_id)
-}
 fn get_min(vals: &Vec<AttrVal>) -> Option<AttrVal> {
     vals.iter().min_by(|a, b| a.total_cmp(b)).copied()
 }
