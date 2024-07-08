@@ -29,8 +29,8 @@ pub enum SolOpInfo {
     /// Non-dogma multiplication operator.
     ExtraMul,
 }
-impl From<&SolOp> for SolOpInfo {
-    fn from(mod_op: &SolOp) -> Self {
+impl From<SolOp> for SolOpInfo {
+    fn from(mod_op: SolOp) -> Self {
         match mod_op {
             SolOp::PreAssign => Self::PreAssign,
             SolOp::PreMul => Self::PreMul,

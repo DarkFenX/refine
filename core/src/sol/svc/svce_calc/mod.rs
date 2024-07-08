@@ -30,23 +30,22 @@
 //! ship mass, prop speed boost, and prop thrust during modifier calculation. This relationship is
 //! removed whenever ship or prop is removed, or when effect/modifier is stopped.
 
-use attr_calc::SolAttrCalcFast;
+use accum::{SolAttrValInfo, SolModAccumFast, SolModAccumInfo};
 pub(in crate::sol::svc) use data::SolSvcCalcData;
 pub use misc::SolAttrVal;
-use misc::{get_proj_effect_resist_attr_id, SolAttrSpec, SolLocationKind, SolModification, SolModificationKey};
+use misc::{SolAttrSpec, SolLocationKind, SolModification, SolModificationKey};
 pub use mod_info::{SolAffectorInfo, SolAffectorValueInfo, SolModificationInfo, SolOpInfo};
 use modifier::{
     debug, extend_with_custom_mods, SolAffecteeFilter, SolAggrMode, SolContext, SolCtxModifier, SolDomain,
     SolModifierKind, SolOp, SolRawModifier,
 };
 
-mod attr_calc;
+mod accum;
 mod data;
 mod misc;
 mod mod_info;
 mod modifier;
 mod registers;
-mod svce_attr;
+mod scve_attr_calc;
 mod svce_maintain;
 mod svce_modgen;
-mod svce_modinfo;

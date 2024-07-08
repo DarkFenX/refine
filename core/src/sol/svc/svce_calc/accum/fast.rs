@@ -4,9 +4,12 @@ use crate::{
     util::StMap,
 };
 
-use super::{is_penal, PENALTY_BASE};
+use super::shared::{
+    diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop, normalize_perc,
+    normalize_sub, PENALTY_BASE,
+};
 
-pub(in crate::sol::svc::svce_calc) struct SolAttrCalcFast {
+pub(in crate::sol::svc::svce_calc) struct SolModAccumFast {
     pre_assign: SolAttrAggr,
     pre_mul: SolAttrStack,
     pre_div: SolAttrStack,
@@ -18,7 +21,7 @@ pub(in crate::sol::svc::svce_calc) struct SolAttrCalcFast {
     post_assign: SolAttrAggr,
     extra_mul: SolAttrAggr,
 }
-impl SolAttrCalcFast {
+impl SolModAccumFast {
     pub(in crate::sol::svc::svce_calc) fn new() -> Self {
         Self {
             pre_assign: SolAttrAggr::new(),
@@ -36,8 +39,8 @@ impl SolAttrCalcFast {
     pub(in crate::sol::svc::svce_calc) fn add_val(
         &mut self,
         val: AttrVal,
-        res_mult: Option<AttrVal>,
         proj_mult: Option<AttrVal>,
+        res_mult: Option<AttrVal>,
         op: &SolOp,
         attr_pen: bool,
         item_cat: &EItemCatId,
@@ -46,12 +49,12 @@ impl SolAttrCalcFast {
         match op {
             SolOp::PreAssign => {
                 self.pre_assign
-                    .add_val(val, res_mult, proj_mult, normalize_noop, diminish_noop, aggr_mode)
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_noop, aggr_mode)
             }
             SolOp::PreMul => self.pre_mul.add_val(
                 val,
-                res_mult,
                 proj_mult,
+                res_mult,
                 normalize_noop,
                 diminish_mul,
                 is_penal(attr_pen, item_cat),
@@ -59,8 +62,8 @@ impl SolAttrCalcFast {
             ),
             SolOp::PreDiv => self.pre_div.add_val(
                 val,
-                res_mult,
                 proj_mult,
+                res_mult,
                 normalize_div,
                 diminish_mul,
                 is_penal(attr_pen, item_cat),
@@ -68,14 +71,14 @@ impl SolAttrCalcFast {
             ),
             SolOp::Add => self
                 .add
-                .add_val(val, res_mult, proj_mult, normalize_noop, diminish_basic, aggr_mode),
+                .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode),
             SolOp::Sub => self
                 .sub
-                .add_val(val, res_mult, proj_mult, normalize_sub, diminish_basic, aggr_mode),
+                .add_val(val, proj_mult, res_mult, normalize_sub, diminish_basic, aggr_mode),
             SolOp::PostMul => self.post_mul.add_val(
                 val,
-                res_mult,
                 proj_mult,
+                res_mult,
                 normalize_noop,
                 diminish_mul,
                 is_penal(attr_pen, item_cat),
@@ -83,12 +86,12 @@ impl SolAttrCalcFast {
             ),
             SolOp::PostMulImmune => {
                 self.post_mul
-                    .add_val(val, res_mult, proj_mult, normalize_noop, diminish_mul, false, aggr_mode)
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, false, aggr_mode)
             }
             SolOp::PostDiv => self.post_div.add_val(
                 val,
-                res_mult,
                 proj_mult,
+                res_mult,
                 normalize_div,
                 diminish_mul,
                 is_penal(attr_pen, item_cat),
@@ -96,8 +99,8 @@ impl SolAttrCalcFast {
             ),
             SolOp::PostPerc => self.post_perc.add_val(
                 val,
-                res_mult,
                 proj_mult,
+                res_mult,
                 normalize_perc,
                 diminish_mul,
                 is_penal(attr_pen, item_cat),
@@ -105,11 +108,11 @@ impl SolAttrCalcFast {
             ),
             SolOp::PostAssign => {
                 self.post_assign
-                    .add_val(val, res_mult, proj_mult, normalize_noop, diminish_noop, aggr_mode)
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_noop, aggr_mode)
             }
             SolOp::ExtraMul => {
                 self.extra_mul
-                    .add_val(val, res_mult, proj_mult, normalize_noop, diminish_mul, aggr_mode)
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode)
             }
         };
     }
@@ -125,8 +128,8 @@ impl SolAttrCalcFast {
         let val = apply_assign(val, self.post_assign.get_comb_val(combine_assigns, hig));
         val
     }
-    pub(in crate::sol::svc::svce_calc) fn apply_extra_mods(&mut self, dogma_val: AttrVal, hig: bool) -> AttrVal {
-        let val = apply_mul(dogma_val, self.extra_mul.get_comb_val(combine_muls, hig));
+    pub(in crate::sol::svc::svce_calc) fn apply_extra_mods(&mut self, val: AttrVal, hig: bool) -> AttrVal {
+        let val = apply_mul(val, self.extra_mul.get_comb_val(combine_muls, hig));
         val
     }
 }
@@ -145,8 +148,8 @@ impl SolAttrStack {
     fn add_val<N, D>(
         &mut self,
         val: AttrVal,
-        res_mult: Option<AttrVal>,
         proj_mult: Option<AttrVal>,
+        res_mult: Option<AttrVal>,
         normalize_func: N,
         diminish_func: D,
         penalizable: bool,
@@ -157,10 +160,10 @@ impl SolAttrStack {
     {
         if penalizable {
             self.penalized
-                .add_val(val, res_mult, proj_mult, normalize_func, diminish_func, aggr_mode)
+                .add_val(val, proj_mult, res_mult, normalize_func, diminish_func, aggr_mode)
         } else {
             self.stacked
-                .add_val(val, res_mult, proj_mult, normalize_func, diminish_func, aggr_mode)
+                .add_val(val, proj_mult, res_mult, normalize_func, diminish_func, aggr_mode)
         }
     }
     fn get_comb_val<F1, F2>(&mut self, comb_func: F1, pen_func: F2, hig: bool) -> Option<AttrVal>
@@ -192,8 +195,8 @@ impl SolAttrAggr {
     fn add_val<N, D>(
         &mut self,
         val: AttrVal,
-        res_mult: Option<AttrVal>,
         proj_mult: Option<AttrVal>,
+        res_mult: Option<AttrVal>,
         normalize_func: N,
         diminish_func: D,
         aggr_mode: &SolAggrMode,
@@ -205,7 +208,7 @@ impl SolAttrAggr {
             Some(val) => val,
             None => return,
         };
-        let val = diminish_func(val, res_mult, proj_mult);
+        let val = diminish_func(val, proj_mult, res_mult);
         match aggr_mode {
             SolAggrMode::Stack => self.stack.push(val),
             SolAggrMode::Min(key) => self.aggr_min.entry(*key).or_insert_with(|| Vec::new()).push(val),
@@ -229,43 +232,6 @@ impl SolAttrAggr {
         }
         comb_func(&self.stack, high_is_good)
     }
-}
-
-// Normalization functions
-fn normalize_noop(val: AttrVal) -> Option<AttrVal> {
-    Some(val)
-}
-fn normalize_sub(val: AttrVal) -> Option<AttrVal> {
-    Some(-val)
-}
-fn normalize_div(val: AttrVal) -> Option<AttrVal> {
-    if val == 0.0 {
-        return None;
-    }
-    Some(1.0 / val)
-}
-fn normalize_perc(val: AttrVal) -> Option<AttrVal> {
-    Some(1.0 + val / 100.0)
-}
-
-// Apply diminishing factors (resistance- and projection-related reductions)
-fn diminish_noop(val: AttrVal, _: Option<AttrVal>, _: Option<AttrVal>) -> AttrVal {
-    val
-}
-fn diminish_basic(mut val: AttrVal, res_mult: Option<AttrVal>, proj_mult: Option<AttrVal>) -> AttrVal {
-    if let Some(res_mult) = res_mult {
-        val *= res_mult;
-    }
-    if let Some(proj_mult) = proj_mult {
-        val *= proj_mult;
-    }
-    val
-}
-fn diminish_mul(val: AttrVal, res_mult: Option<AttrVal>, proj_mult: Option<AttrVal>) -> AttrVal {
-    if res_mult.is_none() && proj_mult.is_none() {
-        return val;
-    }
-    diminish_basic(val - 1.0, res_mult, proj_mult) + 1.0
 }
 
 // Application functions
@@ -307,26 +273,15 @@ fn combine_muls(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
 
 // Penalized combination functions
 fn combine_muls_pen(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
-    penalize_vals(vals.iter().map(|v| *v))
-}
-
-// Misc functions
-fn get_min(vals: &Vec<AttrVal>) -> Option<AttrVal> {
-    vals.iter().min_by(|a, b| a.total_cmp(b)).copied()
-}
-fn get_max(vals: &Vec<AttrVal>) -> Option<AttrVal> {
-    vals.iter().max_by(|a, b| a.total_cmp(b)).copied()
-}
-fn penalize_vals(vals: impl Iterator<Item = AttrVal>) -> Option<AttrVal> {
     // Gather positive multipliers into one chain, negative into another, with stronger
     // modifications being first
     let mut positive = Vec::new();
     let mut negative = Vec::new();
-    for val in vals {
-        if val >= 1.0 {
-            positive.push(val);
+    for val in vals.iter() {
+        if *val >= 1.0 {
+            positive.push(*val);
         } else {
-            negative.push(val);
+            negative.push(*val);
         }
     }
     if positive.is_empty() && negative.is_empty() {
@@ -335,6 +290,14 @@ fn penalize_vals(vals: impl Iterator<Item = AttrVal>) -> Option<AttrVal> {
     positive.sort_by(|a, b| b.partial_cmp(a).unwrap());
     negative.sort_by(|a, b| a.partial_cmp(b).unwrap());
     Some(get_chain_val(positive) * get_chain_val(negative))
+}
+
+// Misc functions
+fn get_min(vals: &Vec<AttrVal>) -> Option<AttrVal> {
+    vals.iter().min_by(|a, b| a.total_cmp(b)).copied()
+}
+fn get_max(vals: &Vec<AttrVal>) -> Option<AttrVal> {
+    vals.iter().max_by(|a, b| a.total_cmp(b)).copied()
 }
 fn get_chain_val(vals: Vec<AttrVal>) -> AttrVal {
     let mut val = 1.0;
