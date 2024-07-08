@@ -350,9 +350,8 @@ impl SolAttrAggr {
             initial_val,
             proj_mult,
             res_mult,
+            None,
             revert_func(diminished_val),
-            None,
-            None,
             op.into(),
             Vec::new(),
         );
@@ -527,8 +526,8 @@ where
         // Ignore 12th modification and further as insignificant
         if i > 10 {
             for info in other_attr_info.effective_infos.iter_mut() {
-                info.stacking_mult = Some(-100.0);
-                info.applied_val = Some(revert_func(1.0));
+                info.stacking_mult = Some(0.0);
+                info.applied_val = revert_func(1.0);
             }
             attr_info.merge_ineffective(other_attr_info);
         } else {
@@ -537,7 +536,7 @@ where
             attr_info.value *= value_multiplier;
             for info in other_attr_info.effective_infos.iter_mut() {
                 info.stacking_mult = Some(penalty_multiplier);
-                info.applied_val = Some(revert_func(value_multiplier));
+                info.applied_val = revert_func(value_multiplier);
             }
             attr_info.merge(other_attr_info);
         }

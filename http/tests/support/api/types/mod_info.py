@@ -8,8 +8,8 @@ class AttrModInfoMap(dict):
     def __init__(self, data: dict):
         super().__init__({
             int(k): ModInfoList(ModInfo(
-                m[0], m[1], m[2], m[3], m[4], m[5], m[6],
-                ModAffectorInfoList(ModAffectorInfo.from_mixed(n) for n in m[7])) for m in v)
+                m[0], m[1], m[2], m[3], m[4], m[5],
+                ModAffectorInfoList(ModAffectorInfo.from_mixed(n) for n in m[6])) for m in v)
             for k, v in data.items()})
 
     def find_by_op(self, affectee_attr_id: int, op: str) -> ModInfoList:
@@ -54,9 +54,8 @@ class ModInfo(NamedTuple):
     initial_val: float
     range_mult: Union[float, None]
     resist_mult: Union[float, None]
-    intermediate_val: float
     stacking_mult: Union[float, None]
-    applied_val: Union[float, None]
+    applied_val: float
     op: str
     affectors: list[ModAffectorInfo]
 

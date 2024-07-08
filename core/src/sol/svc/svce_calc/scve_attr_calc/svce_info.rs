@@ -109,9 +109,8 @@ impl SolSvcs {
                             capping_vals.dogma,
                             None,
                             None,
-                            capping_vals.dogma,
                             None,
-                            Some(capping_vals.dogma),
+                            capping_vals.dogma,
                             SolOpInfo::MaxLimit,
                             vec![SolAffectorInfo::new(
                                 *item_id,
@@ -132,46 +131,3 @@ impl SolSvcs {
         Ok(extra_attr_info)
     }
 }
-
-//
-// fn filter_useless(attr_id: &EAttrId, mods: &mut Vec<SolModificationInfo>, sol_view: &SolView) {
-//     // Filter out modifications which get overridden by post-assigment
-//     filter_pre_postassign(mods);
-//     // Filter out modifications where right hand operand doesn't do anything because of its value
-//     filter_neutral_invalid_operands(mods);
-//     // Since only one of assignment operations is effective, include only that one
-//     if let Some(attr) = sol_view.src.get_a_attr(attr_id) {
-//         filter_ineffective_assigns(mods, &attr, SolOpInfo::PreAssign);
-//         filter_ineffective_assigns(mods, &attr, SolOpInfo::PostAssign);
-//     }
-// }
-//
-// fn filter_pre_postassign(mods: &mut Vec<SolModificationInfo>) {
-//     if mods.iter().any(|v| matches!(v.op, SolOpInfo::PostAssign)) {
-//         mods.retain(|m| match m.op {
-//             // Only those 2 modifications are processed after post-assignment
-//             SolOpInfo::PostAssign | SolOpInfo::MaxLimit | SolOpInfo::ExtraMul => true,
-//             _ => false,
-//         });
-//     };
-// }
-//
-// fn filter_neutral_invalid_operands(mods: &mut Vec<SolModificationInfo>) {
-//     mods.retain(|m| match m.op {
-//         SolOpInfo::PreMul | SolOpInfo::PostMul | SolOpInfo::ExtraMul => m.val != 1.0,
-//         SolOpInfo::PreDiv | SolOpInfo::PostDiv => m.val != 1.0 && m.val != 0.0,
-//         SolOpInfo::Add | SolOpInfo::Sub | SolOpInfo::PostPerc => m.val != 0.0,
-//         _ => true,
-//     });
-// }
-//
-// fn filter_ineffective_assigns(mods: &mut Vec<SolModificationInfo>, attr: &ad::AAttr, op:
-// SolOpInfo) {     let assign_mods = mods.extract_if(|m| op == m.op).collect_vec();
-//     if !assign_mods.is_empty() {
-//         let effective_mod = match attr.hig {
-//             true => assign_mods.into_iter().max_by(|a, b| a.val.total_cmp(&b.val)).unwrap(),
-//             false => assign_mods.into_iter().min_by(|a, b| a.val.total_cmp(&b.val)).unwrap(),
-//         };
-//         mods.push(effective_mod);
-//     }
-// }
