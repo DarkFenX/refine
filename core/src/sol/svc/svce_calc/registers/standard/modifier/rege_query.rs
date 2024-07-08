@@ -5,9 +5,7 @@ use crate::{
     sol::{
         fit::SolFits,
         item::SolItem,
-        svc::svce_calc::{
-            registers::SolStandardRegister, SolAttrSpec, SolCtxModifier, SolRawModifier,
-        },
+        svc::svce_calc::{registers::SolStandardRegister, SolAttrSpec, SolCtxModifier, SolRawModifier},
     },
     util::StMapSetL1,
 };

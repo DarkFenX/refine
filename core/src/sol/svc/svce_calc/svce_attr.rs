@@ -5,7 +5,7 @@ use crate::{
         item::SolItem,
         svc::{
             svce_calc::{
-                SolAttrVal, SolAttrValues, SolContext, SolCtxModifier, SolModification, SolModificationKey,
+                SolAttrCalcFast, SolAttrVal, SolContext, SolCtxModifier, SolModification, SolModificationKey,
                 SolModifierKind,
             },
             SolSvcs,
@@ -229,7 +229,7 @@ impl SolSvcs {
             }
             _ => (),
         }
-        let mut vals = SolAttrValues::new();
+        let mut vals = SolAttrCalcFast::new();
         for modification in self.calc_get_modifications(sol_view, item, attr_id).values() {
             vals.add_val(
                 modification.val,

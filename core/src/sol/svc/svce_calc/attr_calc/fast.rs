@@ -15,7 +15,7 @@ const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
 // Source expression: 1 / e^((1 / 2.67)^2)
 const PENALTY_BASE: f64 = 0.86911998080039742919922218788997270166873931884765625;
 
-pub(super) struct SolAttrValues {
+pub(in crate::sol::svc::svce_calc) struct SolAttrCalcFast {
     pre_assign: SolAttrAggr,
     pre_mul: SolAttrStack,
     pre_div: SolAttrStack,
@@ -27,8 +27,8 @@ pub(super) struct SolAttrValues {
     post_assign: SolAttrAggr,
     extra_mul: SolAttrAggr,
 }
-impl SolAttrValues {
-    pub(super) fn new() -> Self {
+impl SolAttrCalcFast {
+    pub(in crate::sol::svc::svce_calc) fn new() -> Self {
         Self {
             pre_assign: SolAttrAggr::new(),
             pre_mul: SolAttrStack::new(),
@@ -42,7 +42,7 @@ impl SolAttrValues {
             extra_mul: SolAttrAggr::new(),
         }
     }
-    pub(super) fn add_val(
+    pub(in crate::sol::svc::svce_calc) fn add_val(
         &mut self,
         val: AttrVal,
         res_mult: Option<AttrVal>,
@@ -122,7 +122,7 @@ impl SolAttrValues {
             }
         };
     }
-    pub(super) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {
+    pub(in crate::sol::svc::svce_calc) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {
         let val = apply_assign(base_val, self.pre_assign.get_comb_val(combine_assigns, hig));
         let val = apply_mul(val, self.pre_mul.get_comb_val(combine_muls, combine_muls_pen, hig));
         let val = apply_mul(val, self.pre_div.get_comb_val(combine_muls, combine_muls_pen, hig));
@@ -134,7 +134,7 @@ impl SolAttrValues {
         let val = apply_assign(val, self.post_assign.get_comb_val(combine_assigns, hig));
         val
     }
-    pub(super) fn apply_extra_mods(&mut self, dogma_val: AttrVal, hig: bool) -> AttrVal {
+    pub(in crate::sol::svc::svce_calc) fn apply_extra_mods(&mut self, dogma_val: AttrVal, hig: bool) -> AttrVal {
         let val = apply_mul(dogma_val, self.extra_mul.get_comb_val(combine_muls, hig));
         val
     }
@@ -320,7 +320,7 @@ fn combine_muls_pen(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
 }
 
 // Misc functions
-pub(super) fn is_penal(attr_penalizable: bool, affector_item_cat_id: &EItemCatId) -> bool {
+pub(in crate::sol::svc::svce_calc) fn is_penal(attr_penalizable: bool, affector_item_cat_id: &EItemCatId) -> bool {
     attr_penalizable && !PENALTY_IMMUNE_CATS.contains(affector_item_cat_id)
 }
 fn get_min(vals: &Vec<AttrVal>) -> Option<AttrVal> {

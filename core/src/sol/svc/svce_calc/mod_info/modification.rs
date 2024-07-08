@@ -4,22 +4,34 @@ use crate::{
 };
 
 pub struct SolModificationInfo {
-    pub val: AttrVal,
+    pub initial_val: AttrVal,
+    pub range_reduction: Option<AttrVal>,
+    pub resist_reduction: Option<AttrVal>,
+    pub intermediate_val: AttrVal,
+    pub stacking_reduction: Option<AttrVal>,
+    pub applied_val: AttrVal,
     pub op: SolOpInfo,
-    pub penalized: bool,
     pub affectors: Vec<SolAffectorInfo>,
 }
 impl SolModificationInfo {
     pub(in crate::sol::svc::svce_calc) fn new(
-        val: AttrVal,
+        initial_val: AttrVal,
+        range_reduction: Option<AttrVal>,
+        resist_reduction: Option<AttrVal>,
+        intermediate_val: AttrVal,
+        stacking_reduction: Option<AttrVal>,
+        applied_val: AttrVal,
         op: SolOpInfo,
-        penalized: bool,
         affectors: Vec<SolAffectorInfo>,
     ) -> Self {
         Self {
-            val,
+            initial_val,
+            range_reduction,
+            resist_reduction,
+            intermediate_val,
+            stacking_reduction,
+            applied_val,
             op,
-            penalized,
             affectors,
         }
     }
