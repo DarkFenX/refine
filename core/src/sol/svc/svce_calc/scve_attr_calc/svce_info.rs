@@ -9,13 +9,14 @@ use crate::{
         item::SolItem,
         svc::{
             svce_calc::{
-                SolAffectorInfo, SolAffectorValueInfo, SolAttrValInfo, SolModAccumInfo, SolModificationInfo, SolOpInfo,
+                SolAffectorInfo, SolAffectorValueInfo, SolAttrValInfo, SolModAccumInfo, SolModification,
+                SolModificationInfo, SolModificationKey, SolOpInfo,
             },
             SolSvcs,
         },
         SolView,
     },
-    util::{Error, ErrorKind, Result, StMapVecL1, StSet},
+    util::{Error, ErrorKind, Result, StMap, StMapVecL1, StSet},
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
@@ -24,6 +25,19 @@ const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
     ec::attrs::CPU_OUTPUT,
     ec::attrs::POWER_OUTPUT,
 ];
+
+struct SolAffection {
+    modification: SolModification,
+    affectors: Vec<(SolItemId, EAttrId)>,
+}
+impl SolAffection {
+    fn new(modification: SolModification, affectors: Vec<(SolItemId, EAttrId)>) -> Self {
+        Self {
+            modification,
+            affectors,
+        }
+    }
+}
 
 impl SolSvcs {
     // Query methods
@@ -62,6 +76,45 @@ impl SolSvcs {
         }
         Ok(attr_ids.into_iter())
     }
+    fn calc_iter_affections(
+        &mut self,
+        sol_view: &SolView,
+        item: &SolItem,
+        attr_id: &EAttrId,
+    ) -> impl Iterator<Item = SolAffection> {
+        let mut mods = StMap::new();
+        for modifier in self
+            .calc_data
+            .std
+            .get_mods_for_affectee(item, attr_id, sol_view.fits)
+            .iter()
+        {
+            let val = match modifier.raw.get_mod_val(self, sol_view) {
+                Ok(v) => v,
+                _ => continue,
+            };
+            let affector_item = match sol_view.items.get_item(&modifier.raw.affector_item_id) {
+                Ok(i) => i,
+                _ => continue,
+            };
+            let affector_item_cat_id = match affector_item.get_category_id() {
+                Ok(affector_item_cat_id) => affector_item_cat_id,
+                _ => continue,
+            };
+            let mod_key = SolModificationKey::from(modifier);
+            let modification = SolModification::new(
+                modifier.raw.op,
+                val,
+                self.calc_resist_mult(sol_view, modifier),
+                self.calc_proj_mult(sol_view, modifier),
+                modifier.raw.aggr_mode,
+                affector_item_cat_id,
+            );
+            let affection = SolAffection::new(modification, modifier.raw.get_affectors(sol_view));
+            mods.insert(mod_key, affection);
+        }
+        mods.into_values()
+    }
     fn calc_calc_item_attr_info(
         &mut self,
         sol_view: &SolView,
@@ -84,15 +137,20 @@ impl SolSvcs {
             _ => (),
         }
         let mut accumulator = SolModAccumInfo::new();
-        for modification in self.calc_iter_modifications(sol_view, item, attr_id) {
+        for affection in self.calc_iter_affections(sol_view, item, attr_id) {
             accumulator.add_val(
-                modification.val,
-                modification.res_mult,
-                modification.proj_mult,
-                &modification.op,
+                affection.modification.val,
+                affection.modification.res_mult,
+                affection.modification.proj_mult,
+                &affection.modification.op,
                 attr.penalizable,
-                &modification.affector_item_cat_id,
-                &modification.aggr_mode,
+                &affection.modification.affector_item_cat_id,
+                &affection.modification.aggr_mode,
+                affection
+                    .affectors
+                    .into_iter()
+                    .map(|(item_id, attr_id)| SolAffectorInfo::new(item_id, SolAffectorValueInfo::AttrId(attr_id)))
+                    .collect(),
             );
         }
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_val, attr.hig);

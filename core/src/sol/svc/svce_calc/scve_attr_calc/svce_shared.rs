@@ -12,46 +12,7 @@ use crate::{
 };
 
 impl SolSvcs {
-    pub(super) fn calc_iter_modifications(
-        &mut self,
-        sol_view: &SolView,
-        item: &SolItem,
-        attr_id: &EAttrId,
-    ) -> impl Iterator<Item = SolModification> {
-        let mut mods = StMap::new();
-        for modifier in self
-            .calc_data
-            .std
-            .get_mods_for_affectee(item, attr_id, sol_view.fits)
-            .iter()
-        {
-            let val = match modifier.raw.get_mod_val(self, sol_view) {
-                Ok(v) => v,
-                _ => continue,
-            };
-            let affector_item = match sol_view.items.get_item(&modifier.raw.affector_item_id) {
-                Ok(i) => i,
-                _ => continue,
-            };
-            let affector_item_cat_id = match affector_item.get_category_id() {
-                Ok(affector_item_cat_id) => affector_item_cat_id,
-                _ => continue,
-            };
-            let mod_key = SolModificationKey::from(modifier);
-            let modification = SolModification::new(
-                modifier.raw.op,
-                val,
-                self.calc_resist_mult(sol_view, modifier),
-                self.calc_proj_mult(sol_view, modifier),
-                modifier.raw.aggr_mode,
-                affector_item_cat_id,
-            );
-            mods.insert(mod_key, modification);
-        }
-        mods.into_values()
-    }
-    // Private methods
-    fn calc_resist_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
+    pub(super) fn calc_resist_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
         // Only buffs and targeted modifiers can be resisted
         if !matches!(modifier.raw.kind, SolModifierKind::Buff | SolModifierKind::Targeted) {
             return None;
@@ -70,7 +31,7 @@ impl SolSvcs {
         };
         Some(resist)
     }
-    fn calc_proj_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
+    pub(super) fn calc_proj_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
         let projectee_item_id = match modifier.ctx {
             SolContext::Item(projectee_item_id) => projectee_item_id,
             _ => return None,
@@ -89,6 +50,7 @@ impl SolSvcs {
             _ => None,
         }
     }
+    // Private methods
     fn calc_proj_mult_targeted(
         &mut self,
         sol_view: &SolView,

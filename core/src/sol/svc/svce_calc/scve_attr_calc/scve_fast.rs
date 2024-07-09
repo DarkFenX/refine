@@ -4,12 +4,12 @@ use crate::{
     sol::{
         item::SolItem,
         svc::{
-            svce_calc::{SolAttrVal, SolModAccumFast},
+            svce_calc::{SolAttrVal, SolModAccumFast, SolModification, SolModificationKey},
             SolSvcs,
         },
         SolView,
     },
-    util::{Error, ErrorKind, Result},
+    util::{Error, ErrorKind, Result, StMap},
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
@@ -58,6 +58,44 @@ impl SolSvcs {
         Ok(vals.into_iter())
     }
     // Private methods
+    fn calc_iter_modifications(
+        &mut self,
+        sol_view: &SolView,
+        item: &SolItem,
+        attr_id: &EAttrId,
+    ) -> impl Iterator<Item = SolModification> {
+        let mut mods = StMap::new();
+        for modifier in self
+            .calc_data
+            .std
+            .get_mods_for_affectee(item, attr_id, sol_view.fits)
+            .iter()
+        {
+            let val = match modifier.raw.get_mod_val(self, sol_view) {
+                Ok(v) => v,
+                _ => continue,
+            };
+            let affector_item = match sol_view.items.get_item(&modifier.raw.affector_item_id) {
+                Ok(i) => i,
+                _ => continue,
+            };
+            let affector_item_cat_id = match affector_item.get_category_id() {
+                Ok(affector_item_cat_id) => affector_item_cat_id,
+                _ => continue,
+            };
+            let mod_key = SolModificationKey::from(modifier);
+            let modification = SolModification::new(
+                modifier.raw.op,
+                val,
+                self.calc_resist_mult(sol_view, modifier),
+                self.calc_proj_mult(sol_view, modifier),
+                modifier.raw.aggr_mode,
+                affector_item_cat_id,
+            );
+            mods.insert(mod_key, modification);
+        }
+        mods.into_values()
+    }
     fn calc_calc_item_attr_val(
         &mut self,
         sol_view: &SolView,

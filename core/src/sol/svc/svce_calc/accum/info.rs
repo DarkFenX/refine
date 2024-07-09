@@ -7,6 +7,7 @@ use crate::{
     defs::{AggrKey, AttrVal, EItemCatId},
     sol::svc::svce_calc::{SolAggrMode, SolModificationInfo, SolOp},
     util::StMap,
+    SolAffectorInfo,
 };
 
 use super::shared::{
@@ -80,6 +81,7 @@ impl SolModAccumInfo {
         attr_pen: bool,
         item_cat: &EItemCatId,
         aggr_mode: &SolAggrMode,
+        affectors: Vec<SolAffectorInfo>,
     ) {
         match op {
             SolOp::PreAssign => self.pre_assign.add_val(
@@ -91,6 +93,7 @@ impl SolModAccumInfo {
                 &diminish_noop,
                 &revert_noop,
                 aggr_mode,
+                affectors,
             ),
             SolOp::PreMul => self.pre_mul.add_val(
                 SolOp::PreMul,
@@ -102,6 +105,7 @@ impl SolModAccumInfo {
                 &revert_noop,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
+                affectors,
             ),
             SolOp::PreDiv => self.pre_div.add_val(
                 SolOp::PreDiv,
@@ -113,6 +117,7 @@ impl SolModAccumInfo {
                 &revert_div,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
+                affectors,
             ),
             SolOp::Add => self.add.add_val(
                 SolOp::Add,
@@ -123,6 +128,7 @@ impl SolModAccumInfo {
                 &diminish_basic,
                 &revert_noop,
                 aggr_mode,
+                affectors,
             ),
             SolOp::Sub => self.sub.add_val(
                 SolOp::Sub,
@@ -133,6 +139,7 @@ impl SolModAccumInfo {
                 &diminish_basic,
                 &revert_sub,
                 aggr_mode,
+                affectors,
             ),
             SolOp::PostMul => self.post_mul.add_val(
                 SolOp::PostMul,
@@ -144,6 +151,7 @@ impl SolModAccumInfo {
                 &revert_noop,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
+                affectors,
             ),
             SolOp::PostMulImmune => self.post_mul.add_val(
                 SolOp::PostMulImmune,
@@ -155,6 +163,7 @@ impl SolModAccumInfo {
                 &revert_noop,
                 false,
                 aggr_mode,
+                affectors,
             ),
             SolOp::PostDiv => self.post_div.add_val(
                 SolOp::PostDiv,
@@ -166,6 +175,7 @@ impl SolModAccumInfo {
                 &revert_div,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
+                affectors,
             ),
             SolOp::PostPerc => self.post_perc.add_val(
                 SolOp::PostPerc,
@@ -177,6 +187,7 @@ impl SolModAccumInfo {
                 &revert_perc,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
+                affectors,
             ),
             SolOp::PostAssign => self.post_assign.add_val(
                 SolOp::PostAssign,
@@ -187,6 +198,7 @@ impl SolModAccumInfo {
                 &diminish_noop,
                 &revert_noop,
                 aggr_mode,
+                affectors,
             ),
             SolOp::ExtraMul => self.extra_mul.add_val(
                 SolOp::ExtraMul,
@@ -197,6 +209,7 @@ impl SolModAccumInfo {
                 &diminish_mul,
                 &revert_noop,
                 aggr_mode,
+                affectors,
             ),
         };
     }
@@ -274,6 +287,7 @@ impl SolAttrStack {
         revert_func: &R,
         penalizable: bool,
         aggr_mode: &SolAggrMode,
+        affectors: Vec<SolAffectorInfo>,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
@@ -292,6 +306,7 @@ impl SolAttrStack {
             diminish_func,
             revert_func,
             aggr_mode,
+            affectors,
         )
     }
     fn get_comb_attr_info<C, P, R>(
@@ -336,6 +351,7 @@ impl SolAttrAggr {
         diminish_func: &D,
         revert_func: &R,
         aggr_mode: &SolAggrMode,
+        affectors: Vec<SolAffectorInfo>,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
@@ -353,7 +369,7 @@ impl SolAttrAggr {
             None,
             revert_func(diminished_val),
             op.into(),
-            Vec::new(),
+            affectors,
         );
         let attr_info = SolAttrValInfo::from_effective_info(diminished_val, info);
         self.add_attr_info(attr_info, aggr_mode);
