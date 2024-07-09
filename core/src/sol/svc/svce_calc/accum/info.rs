@@ -496,7 +496,7 @@ fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
     let mut attr_info = SolAttrValInfo::new(value);
     match value {
         // Value of 0 means that some multipliers were 0. Expose only those, and hide the rest,
-        // the latter have no effect on value anyway
+        // those we hid have no effect on value anyway
         0.0 => {
             for other_attr_info in attr_infos.extract_if(|_| true) {
                 match other_attr_info.value {
@@ -508,9 +508,10 @@ fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
         _ => {
             for other_attr_info in attr_infos.extract_if(|_| true) {
                 // Multiplication by 1 is not changing result. But, as an exception, we add all the
-                // modifications from it, if 1 is a result of multiple effective modifications. This can
-                // happen when stacking penalty chains are calculated and aggregated into value of 1.0,
-                // even if it's 1.0 we want to expose all modifications which led to it
+                // modifications from it, if 1 is a result of multiple effective modifications. This
+                // can happen when stacking penalty chains are calculated and aggregated into value
+                // of 1.0; we want to expose all modifications which led to it even if final result
+                // is 1.0
                 if other_attr_info.value == 1.0 && other_attr_info.is_single_effective() {
                     attr_info.merge_ineffective(other_attr_info)
                 } else {

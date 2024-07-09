@@ -1,3 +1,9 @@
+//! This is attribute calculator designed to be used for attribute calculation.
+//!
+//! It has more bloated brother, which is built to calculate attribute value, and provide info about
+//! what went into it. Since they duplicate each other, when doing any changes, MAKE SURE TO APPLY
+//! THEM TO BOTH.
+
 use crate::{
     defs::{AggrKey, AttrVal, EItemCatId},
     sol::svc::svce_calc::{SolAggrMode, SolOp},
