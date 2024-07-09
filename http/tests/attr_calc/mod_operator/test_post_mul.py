@@ -213,3 +213,40 @@ def test_deep_stacking(client, consts):
     assert api_mod11.initial_val == approx(1.40)
     assert api_mod11.stacking_mult == approx(consts.PenaltyStr.p11)
     assert api_mod11.applied_val == approx(1.0000003236185)
+
+
+def test_insignificant_stacking(client, consts):
+    # Here we check what happens if final result of stacking penalty chain is "neutral", its
+    # modifications are not filtered out
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr(stackable=False)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_affector1 = client.mk_eve_item(attrs={eve_affector_attr.id: 0.5}, eff_ids=[eve_effect.id])
+    eve_affector2 = client.mk_eve_item(attrs={eve_affector_attr.id: 2}, eff_ids=[eve_effect.id])
+    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_affector1 = api_fit.add_rig(type_id=eve_affector1.id)
+    api_affector2 = api_fit.add_rig(type_id=eve_affector2.id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
+    api_affectee.update()
+    assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(100)
+    api_mods = api_affectee.mods[eve_affectee_attr.id]
+    assert len(api_mods) == 2
+    api_mod1 = api_mods.find_by_affector_item(affector_item_id=api_affector1.id).one()
+    assert api_mod1.op == consts.ApiModOp.post_mul
+    assert api_mod1.initial_val == approx(0.5)
+    assert api_mod1.stacking_mult == approx(consts.PenaltyStr.p1)
+    assert api_mod1.applied_val == approx(0.5)
+    api_mod2 = api_mods.find_by_affector_item(affector_item_id=api_affector2.id).one()
+    assert api_mod2.op == consts.ApiModOp.post_mul
+    assert api_mod2.initial_val == approx(2)
+    assert api_mod2.stacking_mult == approx(consts.PenaltyStr.p1)
+    assert api_mod2.applied_val == approx(2)
