@@ -24,12 +24,13 @@ def test_missile_launcher_rof(client, consts):
     # Verification
     api_launcher1 = api_launcher1.update()
     assert api_launcher1.attrs[eve_affectee_attr.id].dogma == approx(4)
-    api_mod1 = api_launcher1.mods.find_by_affector_item(
+    api_mod = api_launcher1.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr.id,
         affector_item_id=api_skill1.id).one()
-    assert api_mod1.val == approx(-20)
-    assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.penalized is False
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(-20)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(-20)
     api_launcher2 = api_launcher2.update()
     assert api_launcher2.attrs[eve_affectee_attr.id].dogma == approx(5)
     assert len(api_launcher2.mods) == 0
@@ -55,12 +56,13 @@ def test_missile_damage_em(client, consts):
     # Verification
     api_launcher1 = api_launcher1.update()
     assert api_launcher1.charge.attrs[eve_affectee_attr.id].dogma == approx(6)
-    api_mod1 = api_launcher1.charge.mods.find_by_affector_item(
+    api_mod = api_launcher1.charge.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr.id,
         affector_item_id=api_skill1.id).one()
-    assert api_mod1.val == approx(20)
-    assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.penalized is False
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(20)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
     assert api_launcher2.charge.attrs[eve_affectee_attr.id].dogma == approx(5)
     assert len(api_launcher2.charge.mods) == 0
@@ -86,12 +88,13 @@ def test_missile_damage_therm(client, consts):
     # Verification
     api_launcher1 = api_launcher1.update()
     assert api_launcher1.charge.attrs[eve_affectee_attr.id].dogma == approx(6)
-    api_mod1 = api_launcher1.charge.mods.find_by_affector_item(
+    api_mod = api_launcher1.charge.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr.id,
         affector_item_id=api_skill1.id).one()
-    assert api_mod1.val == approx(20)
-    assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.penalized is False
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(20)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
     assert api_launcher2.charge.attrs[eve_affectee_attr.id].dogma == approx(5)
     assert len(api_launcher2.charge.mods) == 0
@@ -117,12 +120,13 @@ def test_missile_damage_kin(client, consts):
     # Verification
     api_launcher1 = api_launcher1.update()
     assert api_launcher1.charge.attrs[eve_affectee_attr.id].dogma == approx(6)
-    api_mod1 = api_launcher1.charge.mods.find_by_affector_item(
+    api_mod = api_launcher1.charge.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr.id,
         affector_item_id=api_skill1.id).one()
-    assert api_mod1.val == approx(20)
-    assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.penalized is False
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(20)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
     assert api_launcher2.charge.attrs[eve_affectee_attr.id].dogma == approx(5)
     assert len(api_launcher2.charge.mods) == 0
@@ -148,12 +152,13 @@ def test_missile_damage_expl(client, consts):
     # Verification
     api_launcher1 = api_launcher1.update()
     assert api_launcher1.charge.attrs[eve_affectee_attr.id].dogma == approx(6)
-    api_mod1 = api_launcher1.charge.mods.find_by_affector_item(
+    api_mod = api_launcher1.charge.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr.id,
         affector_item_id=api_skill1.id).one()
-    assert api_mod1.val == approx(20)
-    assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.penalized is False
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(20)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
     assert api_launcher2.charge.attrs[eve_affectee_attr.id].dogma == approx(5)
     assert len(api_launcher2.charge.mods) == 0
@@ -178,12 +183,13 @@ def test_drone_dmg(client, consts):
     # Verification
     api_drone1 = api_drone1.update()
     assert api_drone1.attrs[eve_affectee_attr.id].dogma == approx(6)
-    api_mod1 = api_drone1.mods.find_by_affector_item(
+    api_mod = api_drone1.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr.id,
         affector_item_id=api_skill1.id).one()
-    assert api_mod1.val == approx(20)
-    assert api_mod1.op == consts.ApiModOp.post_percent
-    assert api_mod1.penalized is False
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(20)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(20)
     api_drone2 = api_drone2.update()
     assert api_drone2.attrs[eve_affectee_attr.id].dogma == approx(5)
     assert len(api_drone2.mods) == 0

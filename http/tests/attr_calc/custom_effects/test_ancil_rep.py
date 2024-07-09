@@ -19,8 +19,10 @@ def test_local_aar(client, consts):
     assert api_aar_item.attrs[eve_affectee_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_affectee_attr.id].extra == approx(300)
     api_mod = api_aar_item.mods[eve_affectee_attr.id].one()
-    assert api_mod.val == approx(3)
     assert api_mod.op == consts.ApiModOp.extra_mul
+    assert api_mod.initial_val == approx(3)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(3)
     assert api_mod.affectors.one().item_id == api_aar_item.id
     assert api_mod.affectors.one().attr_id == eve_affector_attr.id
 
@@ -43,8 +45,10 @@ def test_remote_aar(client, consts):
     assert api_aar_item.attrs[eve_affectee_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_affectee_attr.id].extra == approx(300)
     api_mod = api_aar_item.mods[eve_affectee_attr.id].one()
-    assert api_mod.val == approx(3)
     assert api_mod.op == consts.ApiModOp.extra_mul
+    assert api_mod.initial_val == approx(3)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(3)
     assert api_mod.affectors.one().item_id == api_aar_item.id
     assert api_mod.affectors.one().attr_id == eve_affector_attr.id
 

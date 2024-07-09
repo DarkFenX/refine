@@ -137,25 +137,49 @@ def test_penalization(client, consts):
     # reported as expected - that on-character effect modification is not getting penalized
     api_em_mods = api_launcher.charge.mods[eve_attr_missile_em.id]
     assert len(api_em_mods) == 2
-    assert api_em_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().penalized is True
-    assert api_em_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
-    assert api_em_mods.find_by_affector_item(affector_item_id=api_char.id).one().penalized is False
-    assert api_em_mods.find_by_affector_item(affector_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
+    api_em_mod1 = api_em_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one()
+    assert api_em_mod1.op == consts.ApiModOp.post_mul
+    assert api_em_mod1.initial_val == approx(1.44)
+    assert api_em_mod1.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_em_mod1.applied_val == approx(1.44)
+    api_em_mod2 = api_em_mods.find_by_affector_item(affector_item_id=api_char.id).one()
+    assert api_em_mod2.op == consts.ApiModOp.post_mul
+    assert api_em_mod2.initial_val == approx(1.3)
+    assert api_em_mod2.stacking_mult is None
+    assert api_em_mod2.applied_val == approx(1.3)
     api_therm_mods = api_launcher.charge.mods[eve_attr_missile_therm.id]
     assert len(api_therm_mods) == 2
-    assert api_therm_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().penalized is True
-    assert api_therm_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
-    assert api_therm_mods.find_by_affector_item(affector_item_id=api_char.id).one().penalized is False
-    assert api_therm_mods.find_by_affector_item(affector_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
+    api_therm_mod1 = api_therm_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one()
+    assert api_therm_mod1.op == consts.ApiModOp.post_mul
+    assert api_therm_mod1.initial_val == approx(1.44)
+    assert api_therm_mod1.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_therm_mod1.applied_val == approx(1.44)
+    api_therm_mod2 = api_therm_mods.find_by_affector_item(affector_item_id=api_char.id).one()
+    assert api_therm_mod2.op == consts.ApiModOp.post_mul
+    assert api_therm_mod2.initial_val == approx(1.3)
+    assert api_therm_mod2.stacking_mult is None
+    assert api_therm_mod2.applied_val == approx(1.3)
     api_kin_mods = api_launcher.charge.mods[eve_attr_missile_kin.id]
     assert len(api_kin_mods) == 2
-    assert api_kin_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().penalized is True
-    assert api_kin_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
-    assert api_kin_mods.find_by_affector_item(affector_item_id=api_char.id).one().penalized is False
-    assert api_kin_mods.find_by_affector_item(affector_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
+    api_kin_mod1 = api_kin_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one()
+    assert api_kin_mod1.op == consts.ApiModOp.post_mul
+    assert api_kin_mod1.initial_val == approx(1.44)
+    assert api_kin_mod1.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_kin_mod1.applied_val == approx(1.44)
+    api_kin_mod2 = api_kin_mods.find_by_affector_item(affector_item_id=api_char.id).one()
+    assert api_kin_mod2.op == consts.ApiModOp.post_mul
+    assert api_kin_mod2.initial_val == approx(1.3)
+    assert api_kin_mod2.stacking_mult is None
+    assert api_kin_mod2.applied_val == approx(1.3)
     api_expl_mods = api_launcher.charge.mods[eve_attr_missile_expl.id]
     assert len(api_expl_mods) == 2
-    assert api_expl_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().penalized is True
-    assert api_expl_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one().op == consts.ApiModOp.post_mul
-    assert api_expl_mods.find_by_affector_item(affector_item_id=api_char.id).one().penalized is False
-    assert api_expl_mods.find_by_affector_item(affector_item_id=api_char.id).one().op == consts.ApiModOp.post_mul
+    api_expl_mod1 = api_expl_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one()
+    assert api_expl_mod1.op == consts.ApiModOp.post_mul
+    assert api_expl_mod1.initial_val == approx(1.44)
+    assert api_expl_mod1.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_expl_mod1.applied_val == approx(1.44)
+    api_expl_mod2 = api_expl_mods.find_by_affector_item(affector_item_id=api_char.id).one()
+    assert api_expl_mod2.op == consts.ApiModOp.post_mul
+    assert api_expl_mod2.initial_val == approx(1.3)
+    assert api_expl_mod2.stacking_mult is None
+    assert api_expl_mod2.applied_val == approx(1.3)

@@ -27,20 +27,24 @@ def test_ab(client, consts):
     api_ship.update()
     assert api_ship.attrs[eve_mass_attr.id].dogma == approx(1550000)
     assert api_ship.attrs[eve_sig_affectee_attr.id].dogma == approx(32)  # Not affected by sig blow
-    assert api_ship.attrs[eve_speed_attr.id].dogma == approx(1049.43548)
+    assert api_ship.attrs[eve_speed_attr.id].dogma == approx(1049.435484)
     assert len(api_ship.mods) == 2
     # Mass modification
     api_mod_mass = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_mass_attr.id, affector_attr_id=eve_mass_add_attr.id).one()
-    assert api_mod_mass.val == approx(500000)
     assert api_mod_mass.op == consts.ApiModOp.mod_add
+    assert api_mod_mass.initial_val == approx(500000)
+    assert api_mod_mass.stacking_mult is None
+    assert api_mod_mass.applied_val == approx(500000)
     assert api_mod_mass.affectors.one().item_id == api_prop_item.id
     assert api_mod_mass.affectors.one().attr_id == eve_mass_add_attr.id
     # Speed modification
     api_mod_prop = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_speed_attr.id, affector_attr_id=eve_speed_boost_attr.id).one()
-    assert api_mod_prop.val == approx(2.30645)
     assert api_mod_prop.op == consts.ApiModOp.post_mul
+    assert api_mod_prop.initial_val == approx(2.306452)
+    assert api_mod_prop.stacking_mult is None
+    assert api_mod_prop.applied_val == approx(2.306452)
     assert len(api_mod_prop.affectors) == 3
     assert api_mod_prop.affectors.find_by_attr(attr_id=eve_speed_boost_attr.id).one().item_id == api_prop_item.id
     assert api_mod_prop.affectors.find_by_attr(attr_id=eve_thrust_attr.id).one().item_id == api_prop_item.id
@@ -80,22 +84,28 @@ def test_mwd(client, consts):
     # Mass modification
     api_mod_mass = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_mass_attr.id, affector_attr_id=eve_mass_add_attr.id).one()
-    assert api_mod_mass.val == approx(500000)
     assert api_mod_mass.op == consts.ApiModOp.mod_add
+    assert api_mod_mass.initial_val == approx(500000)
+    assert api_mod_mass.stacking_mult is None
+    assert api_mod_mass.applied_val == approx(500000)
     assert api_mod_mass.affectors.one().item_id == api_prop_item.id
     assert api_mod_mass.affectors.one().attr_id == eve_mass_add_attr.id
     # Sig modification
     api_mod_sig = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_sig_affectee_attr.id, affector_attr_id=eve_sig_affector_attr.id).one()
-    assert api_mod_sig.val == approx(450)
     assert api_mod_sig.op == consts.ApiModOp.post_percent
+    assert api_mod_sig.initial_val == approx(450)
+    assert api_mod_sig.stacking_mult is None
+    assert api_mod_sig.applied_val == approx(450)
     assert api_mod_sig.affectors.one().item_id == api_prop_item.id
     assert api_mod_sig.affectors.one().attr_id == eve_sig_affector_attr.id
     # Speed modification
     api_mod_prop = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_speed_attr.id, affector_attr_id=eve_speed_boost_attr.id).one()
-    assert api_mod_prop.val == approx(5.8871)
     assert api_mod_prop.op == consts.ApiModOp.post_mul
+    assert api_mod_prop.initial_val == approx(5.887097)
+    assert api_mod_prop.stacking_mult is None
+    assert api_mod_prop.applied_val == approx(5.887097)
     assert len(api_mod_prop.affectors) == 3
     assert api_mod_prop.affectors.find_by_attr(attr_id=eve_speed_boost_attr.id).one().item_id == api_prop_item.id
     assert api_mod_prop.affectors.find_by_attr(attr_id=eve_thrust_attr.id).one().item_id == api_prop_item.id
@@ -173,17 +183,19 @@ def test_speed_mod_stacking(client, consts):
     # Verification - if prop speed boost wasn't penalized against BH speed boost, speed would be
     # 1951.95
     api_ship.update()
-    assert api_ship.attrs[eve_speed_attr.id].dogma == approx(1833.82888)
+    assert api_ship.attrs[eve_speed_attr.id].dogma == approx(1833.828883)
     api_ship_mod_prop = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_speed_attr.id, affector_attr_id=eve_speed_boost_attr_prop.id).one()
-    assert api_ship_mod_prop.val == approx(2.30645)
     assert api_ship_mod_prop.op == consts.ApiModOp.post_mul
-    assert api_ship_mod_prop.penalized is True
+    assert api_ship_mod_prop.initial_val == approx(2.306452)
+    assert api_ship_mod_prop.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_ship_mod_prop.applied_val == approx(2.306452)
     api_ship_mod_sw = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_speed_attr.id, affector_attr_id=eve_speed_boost_attr_sw.id).one()
-    assert api_ship_mod_sw.val == approx(1.86)
     assert api_ship_mod_sw.op == consts.ApiModOp.post_mul
-    assert api_ship_mod_sw.penalized is True
+    assert api_ship_mod_sw.initial_val == approx(1.86)
+    assert api_ship_mod_sw.stacking_mult == approx(consts.PenaltyStr.second)
+    assert api_ship_mod_sw.applied_val == approx(1.747443)
 
 
 def test_sig_mod_stacking(client, consts):
@@ -216,17 +228,19 @@ def test_sig_mod_stacking(client, consts):
     # Verification - if MWD sig bloom wasn't stacking penalized against rig sig penalty, it'd be
     # 193.6
     api_ship.update()
-    assert api_ship.attrs[eve_sig_affectee_attr.id].dogma == approx(191.29651)
+    assert api_ship.attrs[eve_sig_affectee_attr.id].dogma == approx(191.296512)
     api_ship_mod_prop = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_sig_affectee_attr.id, affector_attr_id=eve_sig_affector_attr_prop.id).one()
-    assert api_ship_mod_prop.val == approx(450)
     assert api_ship_mod_prop.op == consts.ApiModOp.post_percent
-    assert api_ship_mod_prop.penalized is True
+    assert api_ship_mod_prop.initial_val == approx(450)
+    assert api_ship_mod_prop.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_ship_mod_prop.applied_val == approx(450)
     api_ship_mod_rig = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_sig_affectee_attr.id, affector_attr_id=eve_sig_affector_attr_rig.id).one()
-    assert api_ship_mod_rig.val == approx(10)
     assert api_ship_mod_rig.op == consts.ApiModOp.post_percent
-    assert api_ship_mod_rig.penalized is True
+    assert api_ship_mod_rig.initial_val == approx(10)
+    assert api_ship_mod_rig.stacking_mult == approx(consts.PenaltyStr.second)
+    assert api_ship_mod_rig.applied_val == approx(8.6912)
 
 
 def test_speed_mod_mass_zero(client, consts):
