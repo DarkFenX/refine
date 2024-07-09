@@ -1,6 +1,6 @@
-use std::hash::{BuildHasherDefault, Hash};
+use std::hash::Hash;
 
-use rustc_hash::{FxHashMap, FxHashSet};
+use rustc_hash::{FxBuildHasher, FxHashMap, FxHashSet};
 
 pub(crate) struct StMapSetL1<K, V> {
     data: FxHashMap<K, FxHashSet<V>>,
@@ -32,13 +32,13 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     pub(crate) fn add_entry(&mut self, key: K, entry: V) {
         self.data
             .entry(key)
-            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(1, BuildHasherDefault::default()))
+            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(1, FxBuildHasher::default()))
             .insert(entry);
     }
     pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
         self.data
             .entry(key)
-            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(entries.len(), BuildHasherDefault::default()))
+            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(entries.len(), FxBuildHasher::default()))
             .extend(entries);
     }
     pub(crate) fn remove_entry(&mut self, key: &K, entry: &V) {
