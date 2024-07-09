@@ -99,4 +99,4 @@ def test_with_not_immune(client, consts):
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
     assert attr_mods.find_by_affector_item(
-        affector_item_id=api_item_affector2.id).one().stacking_mult == approx(consts.PenaltyStr.first)
+        affector_item_id=api_item_affector2.id).one().stacking_mult == approx(consts.PenaltyStr.p1)

@@ -140,7 +140,7 @@ def test_penalization(client, consts):
     api_em_mod1 = api_em_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one()
     assert api_em_mod1.op == consts.ApiModOp.post_mul
     assert api_em_mod1.initial_val == approx(1.44)
-    assert api_em_mod1.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_em_mod1.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_em_mod1.applied_val == approx(1.44)
     api_em_mod2 = api_em_mods.find_by_affector_item(affector_item_id=api_char.id).one()
     assert api_em_mod2.op == consts.ApiModOp.post_mul
@@ -152,7 +152,7 @@ def test_penalization(client, consts):
     api_therm_mod1 = api_therm_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one()
     assert api_therm_mod1.op == consts.ApiModOp.post_mul
     assert api_therm_mod1.initial_val == approx(1.44)
-    assert api_therm_mod1.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_therm_mod1.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_therm_mod1.applied_val == approx(1.44)
     api_therm_mod2 = api_therm_mods.find_by_affector_item(affector_item_id=api_char.id).one()
     assert api_therm_mod2.op == consts.ApiModOp.post_mul
@@ -164,7 +164,7 @@ def test_penalization(client, consts):
     api_kin_mod1 = api_kin_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one()
     assert api_kin_mod1.op == consts.ApiModOp.post_mul
     assert api_kin_mod1.initial_val == approx(1.44)
-    assert api_kin_mod1.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_kin_mod1.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_kin_mod1.applied_val == approx(1.44)
     api_kin_mod2 = api_kin_mods.find_by_affector_item(affector_item_id=api_char.id).one()
     assert api_kin_mod2.op == consts.ApiModOp.post_mul
@@ -176,7 +176,7 @@ def test_penalization(client, consts):
     api_expl_mod1 = api_expl_mods.find_by_affector_item(affector_item_id=api_magnetar.id).one()
     assert api_expl_mod1.op == consts.ApiModOp.post_mul
     assert api_expl_mod1.initial_val == approx(1.44)
-    assert api_expl_mod1.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_expl_mod1.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_expl_mod1.applied_val == approx(1.44)
     api_expl_mod2 = api_expl_mods.find_by_affector_item(affector_item_id=api_char.id).one()
     assert api_expl_mod2.op == consts.ApiModOp.post_mul

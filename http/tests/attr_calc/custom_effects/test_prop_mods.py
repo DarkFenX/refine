@@ -188,13 +188,13 @@ def test_speed_mod_stacking(client, consts):
         affectee_attr_id=eve_speed_attr.id, affector_attr_id=eve_speed_boost_attr_prop.id).one()
     assert api_ship_mod_prop.op == consts.ApiModOp.post_mul
     assert api_ship_mod_prop.initial_val == approx(2.306452)
-    assert api_ship_mod_prop.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_ship_mod_prop.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_ship_mod_prop.applied_val == approx(2.306452)
     api_ship_mod_sw = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_speed_attr.id, affector_attr_id=eve_speed_boost_attr_sw.id).one()
     assert api_ship_mod_sw.op == consts.ApiModOp.post_mul
     assert api_ship_mod_sw.initial_val == approx(1.86)
-    assert api_ship_mod_sw.stacking_mult == approx(consts.PenaltyStr.second)
+    assert api_ship_mod_sw.stacking_mult == approx(consts.PenaltyStr.p2)
     assert api_ship_mod_sw.applied_val == approx(1.747443)
 
 
@@ -233,13 +233,13 @@ def test_sig_mod_stacking(client, consts):
         affectee_attr_id=eve_sig_affectee_attr.id, affector_attr_id=eve_sig_affector_attr_prop.id).one()
     assert api_ship_mod_prop.op == consts.ApiModOp.post_percent
     assert api_ship_mod_prop.initial_val == approx(450)
-    assert api_ship_mod_prop.stacking_mult == approx(consts.PenaltyStr.first)
+    assert api_ship_mod_prop.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_ship_mod_prop.applied_val == approx(450)
     api_ship_mod_rig = api_ship.mods.find_by_affector_attr(
         affectee_attr_id=eve_sig_affectee_attr.id, affector_attr_id=eve_sig_affector_attr_rig.id).one()
     assert api_ship_mod_rig.op == consts.ApiModOp.post_percent
     assert api_ship_mod_rig.initial_val == approx(10)
-    assert api_ship_mod_rig.stacking_mult == approx(consts.PenaltyStr.second)
+    assert api_ship_mod_rig.stacking_mult == approx(consts.PenaltyStr.p2)
     assert api_ship_mod_rig.applied_val == approx(8.6912)
 
 
