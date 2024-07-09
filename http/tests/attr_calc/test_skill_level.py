@@ -22,9 +22,10 @@ def test_switch(client, consts):
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr.id,
         affector_item_id=api_item.id).one()
-    assert api_mod.val == approx(5)
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.penalized is False
+    assert api_mod.initial_val == approx(5)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(5)
     # Action
     api_item.change_skill(level=3)
     # Verification
@@ -33,6 +34,7 @@ def test_switch(client, consts):
     api_mod = api_item.mods.find_by_affector_item(
         affectee_attr_id=eve_affectee_attr.id,
         affector_item_id=api_item.id).one()
-    assert api_mod.val == approx(3)
     assert api_mod.op == consts.ApiModOp.post_mul
-    assert api_mod.penalized is False
+    assert api_mod.initial_val == approx(3)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(3)

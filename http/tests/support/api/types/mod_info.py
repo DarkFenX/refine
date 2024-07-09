@@ -51,12 +51,12 @@ class ModInfoList(list):
 
 class ModInfo(NamedTuple):
 
+    op: str
     initial_val: float
     range_mult: Union[float, None]
     resist_mult: Union[float, None]
     stacking_mult: Union[float, None]
     applied_val: float
-    op: str
     affectors: list[ModAffectorInfo]
 
 

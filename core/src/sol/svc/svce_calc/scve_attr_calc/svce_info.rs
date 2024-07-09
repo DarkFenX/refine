@@ -164,12 +164,12 @@ impl SolSvcs {
                     if capping_vals.dogma < dogma_attr_info.value {
                         dogma_attr_info.value = capping_vals.dogma;
                         dogma_attr_info.effective_infos.push(SolModificationInfo::new(
-                            capping_vals.dogma,
-                            None,
-                            None,
-                            None,
-                            capping_vals.dogma,
                             SolOpInfo::MaxLimit,
+                            capping_vals.dogma,
+                            None,
+                            None,
+                            None,
+                            capping_vals.dogma,
                             vec![SolAffectorInfo::new(
                                 *item_id,
                                 SolAffectorValueInfo::AttrId(capping_attr_id),

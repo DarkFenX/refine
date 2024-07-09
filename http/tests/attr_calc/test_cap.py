@@ -25,9 +25,10 @@ def test_default(client, consts):
     assert api_item.attrs[eve_capped_attr.id].dogma == approx(5)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one()
-    assert api_mod.val == approx(5)
     assert api_mod.op == consts.ApiModOp.limit
-    assert api_mod.penalized is False
+    assert api_mod.initial_val == approx(5)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(5)
     assert api_mod.affectors.one().item_id == api_item.id
     assert api_mod.affectors.one().attr_id == eve_capping_attr.id
 
@@ -56,9 +57,10 @@ def test_unmodified(client, consts):
     assert api_item.attrs[eve_capped_attr.id].dogma == approx(2)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one()
-    assert api_mod.val == approx(2)
     assert api_mod.op == consts.ApiModOp.limit
-    assert api_mod.penalized is False
+    assert api_mod.initial_val == approx(2)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(2)
     assert api_mod.affectors.one().item_id == api_item.id
     assert api_mod.affectors.one().attr_id == eve_capping_attr.id
 
@@ -93,9 +95,10 @@ def test_modified(client, consts):
     assert api_item.attrs[eve_capped_attr.id].dogma == approx(0.6)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one()
-    assert api_mod.val == approx(0.6)
     assert api_mod.op == consts.ApiModOp.limit
-    assert api_mod.penalized is False
+    assert api_mod.initial_val == approx(0.6)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(0.6)
     assert api_mod.affectors.one().item_id == api_item.id
     assert api_mod.affectors.one().attr_id == eve_capping_attr.id
 
@@ -134,7 +137,7 @@ def test_update(client, consts):
     api_capped_item.update()
     assert api_capped_item.attrs[eve_capped_attr.id].dogma == approx(2)
     assert api_capped_item.mods.find_by_affector_attr(
-        affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one().val == approx(2)
+        affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one().applied_val == approx(2)
     # Action
     api_capping_item = api_fit.add_implant(type_id=eve_capping_item.id)
     # Verification - here, capping attribute should be multiplied by 3.5 (2 * 3.5 = 7), which is
@@ -142,14 +145,14 @@ def test_update(client, consts):
     api_capped_item.update()
     assert api_capped_item.attrs[eve_capped_attr.id].dogma == approx(7)
     assert api_capped_item.mods.find_by_affector_attr(
-        affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one().val == approx(7)
+        affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one().applied_val == approx(7)
     # Action
     api_capping_item.remove()
     # Verification - should revert back to base value after change of capping attribute
     api_capped_item.update()
     assert api_capped_item.attrs[eve_capped_attr.id].dogma == approx(2)
     assert api_capped_item.mods.find_by_affector_attr(
-        affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one().val == approx(2)
+        affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one().applied_val == approx(2)
 
 
 def test_uncapped(client, consts):

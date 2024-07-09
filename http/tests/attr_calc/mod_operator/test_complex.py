@@ -219,7 +219,7 @@ def test_all_in(client, consts):
     assert attr_value == approx(val_post_ass)
     # When there is a post-assignment, all modifications before it are considered insignificant
     post_ass_mod = attr_mods.one()
+    assert post_ass_mod.op == consts.ApiModOp.post_assign
     assert post_ass_mod.initial_val == approx(val_post_ass)
     assert post_ass_mod.stacking_mult is None
     assert post_ass_mod.applied_val == approx(val_post_ass)
-    assert post_ass_mod.op == consts.ApiModOp.post_assign

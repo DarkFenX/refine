@@ -51,30 +51,30 @@ def test_non_penalized(client, consts):
     assert attr_val == approx(67.5)
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
+    assert api_mod1.op == consts.ApiModOp.post_percent
     assert api_mod1.initial_val == approx(20)
     assert api_mod1.stacking_mult is None
     assert api_mod1.applied_val == approx(20)
-    assert api_mod1.op == consts.ApiModOp.post_percent
     api_mod2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one()
+    assert api_mod2.op == consts.ApiModOp.post_percent
     assert api_mod2.initial_val == approx(50)
     assert api_mod2.stacking_mult is None
     assert api_mod2.applied_val == approx(50)
-    assert api_mod2.op == consts.ApiModOp.post_percent
     api_mod3 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector3.id).one()
+    assert api_mod3.op == consts.ApiModOp.post_percent
     assert api_mod3.initial_val == approx(-90)
     assert api_mod3.stacking_mult is None
     assert api_mod3.applied_val == approx(-90)
-    assert api_mod3.op == consts.ApiModOp.post_percent
     api_mod4 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector4.id).one()
+    assert api_mod4.op == consts.ApiModOp.post_percent
     assert api_mod4.initial_val == approx(-25)
     assert api_mod4.stacking_mult is None
     assert api_mod4.applied_val == approx(-25)
-    assert api_mod4.op == consts.ApiModOp.post_percent
     api_mod5 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector5.id).one()
+    assert api_mod5.op == consts.ApiModOp.post_percent
     assert api_mod5.initial_val == approx(400)
     assert api_mod5.stacking_mult is None
     assert api_mod5.applied_val == approx(400)
-    assert api_mod5.op == consts.ApiModOp.post_percent
 
 
 def test_penalized(client, consts):
@@ -88,27 +88,27 @@ def test_penalized(client, consts):
     assert attr_val == approx(62.549783)
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
+    assert api_mod1.op == consts.ApiModOp.post_percent
     assert api_mod1.initial_val == approx(20)
     assert api_mod1.stacking_mult == approx(consts.PenaltyStr.third)
     assert api_mod1.applied_val == approx(11.411663)
-    assert api_mod1.op == consts.ApiModOp.post_percent
     api_mod2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one()
+    assert api_mod2.op == consts.ApiModOp.post_percent
     assert api_mod2.initial_val == approx(50)
     assert api_mod2.stacking_mult == approx(consts.PenaltyStr.second)
     assert api_mod2.applied_val == approx(43.455999)
-    assert api_mod2.op == consts.ApiModOp.post_percent
     api_mod3 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector3.id).one()
+    assert api_mod3.op == consts.ApiModOp.post_percent
     assert api_mod3.initial_val == approx(-90)
     assert api_mod3.stacking_mult == approx(consts.PenaltyStr.first)
     assert api_mod3.applied_val == approx(-90)
-    assert api_mod3.op == consts.ApiModOp.post_percent
     api_mod4 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector4.id).one()
+    assert api_mod4.op == consts.ApiModOp.post_percent
     assert api_mod4.initial_val == approx(-25)
     assert api_mod4.stacking_mult == approx(consts.PenaltyStr.second)
     assert api_mod4.applied_val == approx(-21.728)
-    assert api_mod4.op == consts.ApiModOp.post_percent
     api_mod5 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector5.id).one()
+    assert api_mod5.op == consts.ApiModOp.post_percent
     assert api_mod5.initial_val == approx(400)
     assert api_mod5.stacking_mult == approx(consts.PenaltyStr.first)
     assert api_mod5.applied_val == approx(400)
-    assert api_mod5.op == consts.ApiModOp.post_percent

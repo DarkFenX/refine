@@ -363,12 +363,12 @@ impl SolAttrAggr {
         };
         let diminished_val = diminish_func(normalized_val, proj_mult, res_mult);
         let info = SolModificationInfo::new(
+            op.into(),
             initial_val,
             proj_mult,
             res_mult,
             None,
             revert_func(diminished_val),
-            op.into(),
             affectors,
         );
         let attr_info = SolAttrValInfo::from_effective_info(diminished_val, info);
