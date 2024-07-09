@@ -140,8 +140,8 @@ impl SolSvcs {
         for affection in self.calc_iter_affections(sol_view, item, attr_id) {
             accumulator.add_val(
                 affection.modification.val,
-                affection.modification.res_mult,
                 affection.modification.proj_mult,
+                affection.modification.res_mult,
                 &affection.modification.op,
                 attr.penalizable,
                 &affection.modification.affector_item_cat_id,
