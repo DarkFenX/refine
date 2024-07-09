@@ -311,3 +311,74 @@ def test_insignificant_modified_base(client, consts):
     assert api_mod.initial_val == approx(0)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(0)
+
+
+def setup_insignificant_chain_values_test(client, consts, stackable):
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr(stackable=stackable)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_affector1 = client.mk_eve_item(attrs={eve_affector_attr.id: -100}, eff_ids=[eve_effect.id])
+    eve_affector2 = client.mk_eve_item(attrs={eve_affector_attr.id: 300}, eff_ids=[eve_effect.id])
+    eve_affector3 = client.mk_eve_item(attrs={eve_affector_attr.id: -100}, eff_ids=[eve_effect.id])
+    eve_affector4 = client.mk_eve_item(attrs={eve_affector_attr.id: -60}, eff_ids=[eve_effect.id])
+    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_affector1 = api_fit.add_rig(type_id=eve_affector1.id)
+    api_fit.add_rig(type_id=eve_affector2.id)
+    api_affector3 = api_fit.add_rig(type_id=eve_affector3.id)
+    api_fit.add_rig(type_id=eve_affector4.id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
+    api_affectee.update()
+    return (
+        api_affectee.attrs[eve_affectee_attr.id].dogma,
+        api_affectee.mods[eve_affectee_attr.id],
+        api_affector1,
+        api_affector3)
+
+
+def test_insignificant_chain_values_non_penalized(client, consts):
+    # When some values in chain result in final value of 0, only they should be exposed
+    (attr_val,
+     api_mods,
+     api_affector1,
+     api_affector3) = setup_insignificant_chain_values_test(client, consts, stackable=True)
+    assert attr_val == approx(0)
+    # Without stacking penalty, all modifications which multiply by 0 are returned
+    assert len(api_mods) == 2
+    api_mod1 = api_mods.find_by_affector_item(affector_item_id=api_affector1.id).one()
+    assert api_mod1.op == consts.ApiModOp.post_percent
+    assert api_mod1.initial_val == approx(-100)
+    assert api_mod1.stacking_mult is None
+    assert api_mod1.applied_val == approx(-100)
+    api_mod3 = api_mods.find_by_affector_item(affector_item_id=api_affector3.id).one()
+    assert api_mod3.op == consts.ApiModOp.post_percent
+    assert api_mod3.initial_val == approx(-100)
+    assert api_mod3.stacking_mult is None
+    assert api_mod3.applied_val == approx(-100)
+
+
+def test_insignificant_chain_values_penalized(client, consts):
+    # When some values in chain result in final value of 0, only they should be exposed
+    (attr_val,
+     api_mods,
+     api_affector1,
+     api_affector3) = setup_insignificant_chain_values_test(client, consts, stackable=False)
+    assert attr_val == approx(0)
+    # With stacking penalty, only one of modifications is returned, while other one is getting
+    # stacking penalized, thus making its final multiplier different from 0
+    api_mod = api_mods.one()
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(-100)
+    assert api_mod.stacking_mult == approx(consts.PenaltyStr.p1)
+    assert api_mod.applied_val == approx(-100)
+    # Since both affector1 and affector3 can be exposed as significant modification, check for ID
+    # of either
+    assert api_mod.affectors.one().item_id in (api_affector1.id, api_affector3.id)

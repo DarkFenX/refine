@@ -494,15 +494,29 @@ fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
     }
     let value = attr_infos.iter().map(|v| v.value).product();
     let mut attr_info = SolAttrValInfo::new(value);
-    for other_attr_info in attr_infos.extract_if(|_| true) {
-        // Multiplication by 1 is not changing result. But, as an exception, we add all the
-        // modifications from it, if 1 is a result of multiple effective modifications. This can
-        // happen when stacking penalty chains are calculated and aggregated into value of 1.0,
-        // even if it's 1.0 we want to expose all modifications which led to it
-        if other_attr_info.value == 1.0 && other_attr_info.is_single_effective() {
-            attr_info.merge_ineffective(other_attr_info)
-        } else {
-            attr_info.merge(other_attr_info);
+    match value {
+        // Value of 0 means that some multipliers were 0. Expose only those, and hide the rest,
+        // the latter have no effect on value anyway
+        0.0 => {
+            for other_attr_info in attr_infos.extract_if(|_| true) {
+                match other_attr_info.value {
+                    0.0 => attr_info.merge(other_attr_info),
+                    _ => attr_info.merge_ineffective(other_attr_info),
+                }
+            }
+        }
+        _ => {
+            for other_attr_info in attr_infos.extract_if(|_| true) {
+                // Multiplication by 1 is not changing result. But, as an exception, we add all the
+                // modifications from it, if 1 is a result of multiple effective modifications. This can
+                // happen when stacking penalty chains are calculated and aggregated into value of 1.0,
+                // even if it's 1.0 we want to expose all modifications which led to it
+                if other_attr_info.value == 1.0 && other_attr_info.is_single_effective() {
+                    attr_info.merge_ineffective(other_attr_info)
+                } else {
+                    attr_info.merge(other_attr_info);
+                }
+            }
         }
     }
     Some(attr_info)
@@ -531,12 +545,18 @@ where
     positive.sort_by(|a, b| b.value.partial_cmp(&a.value).unwrap());
     negative.sort_by(|a, b| a.value.partial_cmp(&b.value).unwrap());
     let mut attr_info = SolAttrValInfo::new(1.0);
-    let positive_attr_info = get_chain_attr_info(positive, revert_func);
-    attr_info.value *= positive_attr_info.value;
-    attr_info.merge(positive_attr_info);
+    // Do negative chain first, since it can result in final multiplier of 0
     let negative_attr_info = get_chain_attr_info(negative, revert_func);
     attr_info.value *= negative_attr_info.value;
     attr_info.merge(negative_attr_info);
+    let positive_attr_info = get_chain_attr_info(positive, revert_func);
+    // It doesn't matter what is in positive chain if our multiplier is 0 already
+    if attr_info.value == 0.0 {
+        attr_info.merge_ineffective(positive_attr_info);
+    } else {
+        attr_info.value *= positive_attr_info.value;
+        attr_info.merge(positive_attr_info);
+    }
     // Multiplication by 1 is not changing the result
     for other_attr_info in neutral.into_iter() {
         attr_info.merge_ineffective(other_attr_info);
@@ -572,6 +592,14 @@ where
     R: Fn(AttrVal) -> AttrVal,
 {
     let mut attr_info = SolAttrValInfo::new(1.0);
+    // Special case for when first element of chain is a multiplier by 0, for the same reason as in
+    // multiplication combination function. We know final chain multiplier is going to be 0, we know
+    // other elements are not going to be multipliers by 0 after penalty is applied, so we just
+    // expose multiplier by 0 as the only effective modification, and consider others ineffective
+    let first_zero = match attr_infos.get(0) {
+        Some(other_attr_info) => other_attr_info.value == 0.0,
+        None => false,
+    };
     for (i, mut other_attr_info) in attr_infos.into_iter().enumerate() {
         // Ignore 12th modification and further as insignificant
         if i > 10 {
@@ -583,12 +611,16 @@ where
         } else {
             let penalty_multiplier = PENALTY_BASE.powi((i as i32).pow(2));
             let value_multiplier = 1.0 + (other_attr_info.value - 1.0) * penalty_multiplier;
-            attr_info.value *= value_multiplier;
             for info in other_attr_info.effective_infos.iter_mut() {
                 info.stacking_mult = Some(penalty_multiplier);
                 info.applied_val = revert_func(value_multiplier);
             }
-            attr_info.merge(other_attr_info);
+            if first_zero && i > 0 {
+                attr_info.merge_ineffective(other_attr_info);
+            } else {
+                attr_info.value *= value_multiplier;
+                attr_info.merge(other_attr_info);
+            }
         }
     }
     attr_info

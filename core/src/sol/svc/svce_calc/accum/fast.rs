@@ -278,9 +278,9 @@ fn combine_muls_pen(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
     let mut positive = Vec::new();
     let mut negative = Vec::new();
     for val in vals.iter() {
-        if *val >= 1.0 {
+        if *val > 1.0 {
             positive.push(*val);
-        } else {
+        } else if *val < 1.0 {
             negative.push(*val);
         }
     }
