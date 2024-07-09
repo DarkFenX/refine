@@ -392,6 +392,7 @@ impl SolAttrAggr {
                 for other_attr_info in attr_infos.extract_if(|_| true) {
                     attr_info.merge_ineffective(other_attr_info)
                 }
+                self.stack.push(attr_info);
             }
         }
         for attr_infos in self.aggr_max.values_mut() {
@@ -399,6 +400,7 @@ impl SolAttrAggr {
                 for other_attr_info in attr_infos.extract_if(|_| true) {
                     attr_info.merge_ineffective(other_attr_info)
                 }
+                self.stack.push(attr_info);
             }
         }
         comb_func(&mut self.stack, revert_func, high_is_good)
