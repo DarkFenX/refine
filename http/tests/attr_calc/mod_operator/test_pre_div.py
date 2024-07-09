@@ -252,6 +252,67 @@ def test_insignificant_stacking(client, consts):
     assert api_mod2.applied_val == approx(2)
 
 
+def test_insignificant_base(client, consts):
+    # When value on top of which modifications should be applied is 0, all multiplications are
+    # insignificant and are not exposed as modifications
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_div,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_affector = client.mk_eve_item(attrs={eve_affector_attr.id: 4}, eff_ids=[eve_effect.id])
+    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_rig(type_id=eve_affector.id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
+    api_affectee.update()
+    assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(0)
+    assert len(api_affectee.mods) == 0
+
+
+def test_insignificant_modified_base(client, consts):
+    # When value on top of which modifications should be applied is 0, all multiplications are
+    # insignificant and are not exposed as modifications
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_mul,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_effect1 = client.mk_eve_effect(mod_info=[eve_mod1])
+    eve_affector1 = client.mk_eve_item(attrs={eve_affector_attr.id: 0}, eff_ids=[eve_effect1.id])
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_div,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_effect2 = client.mk_eve_effect(mod_info=[eve_mod2])
+    eve_affector2 = client.mk_eve_item(attrs={eve_affector_attr.id: 4}, eff_ids=[eve_effect2.id])
+    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_rig(type_id=eve_affector1.id)
+    api_fit.add_rig(type_id=eve_affector2.id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
+    api_affectee.update()
+    assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(0)
+    api_mod = api_affectee.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.pre_mul
+    assert api_mod.initial_val == approx(0)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(0)
+
+
 def test_zero(client, consts):
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
