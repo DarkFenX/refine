@@ -403,9 +403,10 @@ fn revert_perc(val: AttrVal) -> AttrVal {
     (val - 1.0) * 100.0
 }
 
-// Application functions
+// Application functions - they treat left side and right side differently
 fn apply_assign(base_attr_info: SolAttrValInfo, other_attr_info: Option<SolAttrValInfo>) -> SolAttrValInfo {
     match other_attr_info {
+        // If there are any assignments, they dismiss left side as ineffective
         Some(mut other_attr_info) => {
             other_attr_info.merge_ineffective(base_attr_info);
             other_attr_info
@@ -428,13 +429,14 @@ fn apply_mul(mut base_attr_info: SolAttrValInfo, other_attr_info: Option<SolAttr
     base_attr_info
 }
 
-// Regular combination functions
+// Combination functions - they treat all values equally
 fn combine_assigns<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, high_is_good: bool) -> Option<SolAttrValInfo> {
     let effective = match high_is_good {
         true => extract_max(attr_infos),
         false => extract_min(attr_infos),
     };
     match effective {
+        // Only one assign is considered effective, the rest are not
         Some(mut attr_info) => {
             for other_attr_info in attr_infos.extract_if(|_| true) {
                 attr_info.merge_ineffective(other_attr_info)
@@ -451,7 +453,11 @@ fn combine_adds<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
     let value = attr_infos.iter().map(|v| v.value).sum();
     let mut attr_info = SolAttrValInfo::new(value);
     for other_attr_info in attr_infos.extract_if(|_| true) {
-        attr_info.merge(other_attr_info)
+        match other_attr_info.value {
+            // Adding 0 is not changing the result
+            0.0 => attr_info.merge_ineffective(other_attr_info),
+            _ => attr_info.merge(other_attr_info),
+        }
     }
     Some(attr_info)
 }
@@ -462,12 +468,14 @@ fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
     let value = attr_infos.iter().map(|v| v.value).product();
     let mut attr_info = SolAttrValInfo::new(value);
     for other_attr_info in attr_infos.extract_if(|_| true) {
-        attr_info.merge(other_attr_info)
+        match other_attr_info.value {
+            // Multiplication by 1 is not changing the result
+            1.0 => attr_info.merge_ineffective(other_attr_info),
+            _ => attr_info.merge(other_attr_info),
+        }
     }
     Some(attr_info)
 }
-
-// Penalized combination functions
 fn combine_muls_pen<R>(attr_infos: &mut Vec<SolAttrValInfo>, revert_func: &R, _: bool) -> Option<SolAttrValInfo>
 where
     R: Fn(AttrVal) -> AttrVal,
@@ -476,11 +484,14 @@ where
     // modifications being first
     let mut positive = Vec::new();
     let mut negative = Vec::new();
+    let mut neutral = Vec::new();
     for attr_info in attr_infos.extract_if(|_| true) {
-        if attr_info.value >= 1.0 {
+        if attr_info.value > 1.0 {
             positive.push(attr_info);
-        } else {
+        } else if attr_info.value < 1.0 {
             negative.push(attr_info);
+        } else {
+            neutral.push(attr_info)
         }
     }
     if positive.is_empty() && negative.is_empty() {
@@ -491,6 +502,10 @@ where
     let mut attr_info = SolAttrValInfo::new(1.0);
     attr_info.merge(get_chain_attr_info(positive, revert_func));
     attr_info.merge(get_chain_attr_info(negative, revert_func));
+    // Multiplication by 1 is not changing the result
+    for other_attr_info in neutral.into_iter() {
+        attr_info.merge_ineffective(other_attr_info);
+    }
     Some(attr_info)
 }
 
