@@ -43,8 +43,8 @@ def test_ship(client, consts):
         client, consts, cat_id=consts.EveItemCat.ship)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().penalized is False
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().penalized is False
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().stacking_mult is None
 
 
 def test_charge(client, consts):
@@ -52,8 +52,8 @@ def test_charge(client, consts):
         client, consts, cat_id=consts.EveItemCat.charge)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().penalized is False
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().penalized is False
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().stacking_mult is None
 
 
 def test_skill(client, consts):
@@ -61,8 +61,8 @@ def test_skill(client, consts):
         client, consts, cat_id=consts.EveItemCat.skill)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().penalized is False
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().penalized is False
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().stacking_mult is None
 
 
 def test_implant(client, consts):
@@ -70,8 +70,8 @@ def test_implant(client, consts):
         client, consts, cat_id=consts.EveItemCat.implant)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().penalized is False
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().penalized is False
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().stacking_mult is None
 
 
 def test_subsystem(client, consts):
@@ -79,8 +79,8 @@ def test_subsystem(client, consts):
         client, consts, cat_id=consts.EveItemCat.subsystem)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().penalized is False
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().penalized is False
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().stacking_mult is None
 
 
 def test_mixed(client, consts):
@@ -88,8 +88,8 @@ def test_mixed(client, consts):
         client, consts, affector1_cat_id=consts.EveItemCat.charge, affector2_cat_id=consts.EveItemCat.implant)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().penalized is False
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().penalized is False
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().stacking_mult is None
 
 
 def test_with_not_immune(client, consts):
@@ -97,5 +97,6 @@ def test_with_not_immune(client, consts):
         client, consts, affector1_cat_id=consts.EveItemCat.charge, affector2_cat_id=consts.EveItemCat.module)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().penalized is False
-    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one().penalized is True
+    assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
+    assert attr_mods.find_by_affector_item(
+        affector_item_id=api_item_affector2.id).one().stacking_mult == approx(consts.PenaltyStr.first)

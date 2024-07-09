@@ -522,8 +522,12 @@ where
     positive.sort_by(|a, b| b.value.partial_cmp(&a.value).unwrap());
     negative.sort_by(|a, b| a.value.partial_cmp(&b.value).unwrap());
     let mut attr_info = SolAttrValInfo::new(1.0);
-    attr_info.merge(get_chain_attr_info(positive, revert_func));
-    attr_info.merge(get_chain_attr_info(negative, revert_func));
+    let positive_attr_info = get_chain_attr_info(positive, revert_func);
+    attr_info.value *= positive_attr_info.value;
+    attr_info.merge(positive_attr_info);
+    let negative_attr_info = get_chain_attr_info(negative, revert_func);
+    attr_info.value *= negative_attr_info.value;
+    attr_info.merge(negative_attr_info);
     // Multiplication by 1 is not changing the result
     for other_attr_info in neutral.into_iter() {
         attr_info.merge_ineffective(other_attr_info);

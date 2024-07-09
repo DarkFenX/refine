@@ -1,5 +1,5 @@
 # pylint: disable=C0103
-from enum import StrEnum, IntEnum, unique
+from enum import Enum, IntEnum, StrEnum, unique
 
 
 @unique
@@ -240,3 +240,18 @@ class ApiItemInfoMode(StrEnum):
     id = 'id'
     partial = 'partial'
     full = 'full'
+
+
+@unique
+class PenaltyStr(float, Enum):
+    first = 1
+    second = 0.869119981
+    third = 0.570583144
+    fourth = 0.282955154
+    fifth = 0.10599265
+    sixth = 0.029991167
+    seventh = 0.006410183
+    eighth = 0.00103492
+    ninth = 0.000126213
+    tenth = 0.000011627
+    eleventh = 0.000000809

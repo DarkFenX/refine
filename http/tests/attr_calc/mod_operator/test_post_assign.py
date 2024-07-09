@@ -3,7 +3,7 @@ from pytest import approx
 
 def setup_hig_test(client, consts, high_is_good):
     eve_affector_attr = client.mk_eve_attr()
-    eve_affectee_attr = client.mk_eve_attr(high_is_good=high_is_good)
+    eve_affectee_attr = client.mk_eve_attr(stackable=False, high_is_good=high_is_good)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
@@ -34,12 +34,20 @@ def setup_hig_test(client, consts, high_is_good):
 def test_high_is_good(client, consts):
     attr_val, attr_mods, _, _, api_item_affector3 = setup_hig_test(client, consts, high_is_good=True)
     assert attr_val == approx(53.02)
-    assert attr_mods.one().op == consts.ApiModOp.post_assign
-    assert attr_mods.one().affectors.one().item_id == api_item_affector3.id
+    attr_mod = attr_mods.one()
+    assert attr_mod.initial_val == approx(53.02)
+    assert attr_mod.stacking_mult is None
+    assert attr_mod.applied_val == approx(53.02)
+    assert attr_mod.op == consts.ApiModOp.post_assign
+    assert attr_mod.affectors.one().item_id == api_item_affector3.id
 
 
 def test_high_is_bad(client, consts):
     attr_val, attr_mods, _, api_item_affector2, _ = setup_hig_test(client, consts, high_is_good=False)
     assert attr_val == approx(-20)
-    assert attr_mods.one().op == consts.ApiModOp.post_assign
-    assert attr_mods.one().affectors.one().item_id == api_item_affector2.id
+    attr_mod = attr_mods.one()
+    assert attr_mod.initial_val == approx(-20)
+    assert attr_mod.stacking_mult is None
+    assert attr_mod.applied_val == approx(-20)
+    assert attr_mod.op == consts.ApiModOp.post_assign
+    assert attr_mod.affectors.one().item_id == api_item_affector2.id

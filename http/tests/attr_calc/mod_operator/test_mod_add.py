@@ -40,17 +40,20 @@ def test_non_penalized(client, consts):
     assert attr_val == approx(143.02)
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
-    assert api_mod1.val == approx(10)
+    assert api_mod1.initial_val == approx(10)
+    assert api_mod1.stacking_mult is None
+    assert api_mod1.applied_val == approx(10)
     assert api_mod1.op == consts.ApiModOp.mod_add
-    assert api_mod1.penalized is False
     api_mod2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one()
-    assert api_mod2.val == approx(-20)
+    assert api_mod2.initial_val == approx(-20)
+    assert api_mod2.stacking_mult is None
+    assert api_mod2.initial_val == approx(-20)
     assert api_mod2.op == consts.ApiModOp.mod_add
-    assert api_mod2.penalized is False
     api_mod3 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector3.id).one()
-    assert api_mod3.val == approx(53.02)
+    assert api_mod3.initial_val == approx(53.02)
+    assert api_mod3.stacking_mult is None
+    assert api_mod3.initial_val == approx(53.02)
     assert api_mod3.op == consts.ApiModOp.mod_add
-    assert api_mod3.penalized is False
 
 
 def test_penalized(client, consts):
@@ -59,14 +62,17 @@ def test_penalized(client, consts):
     assert attr_val == approx(143.02)
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
-    assert api_mod1.val == approx(10)
+    assert api_mod1.initial_val == approx(10)
+    assert api_mod1.stacking_mult is None
+    assert api_mod1.applied_val == approx(10)
     assert api_mod1.op == consts.ApiModOp.mod_add
-    assert api_mod1.penalized is False
     api_mod2 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector2.id).one()
-    assert api_mod2.val == approx(-20)
+    assert api_mod2.initial_val == approx(-20)
+    assert api_mod2.stacking_mult is None
+    assert api_mod2.initial_val == approx(-20)
     assert api_mod2.op == consts.ApiModOp.mod_add
-    assert api_mod2.penalized is False
     api_mod3 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector3.id).one()
-    assert api_mod3.val == approx(53.02)
+    assert api_mod3.initial_val == approx(53.02)
+    assert api_mod3.stacking_mult is None
+    assert api_mod3.initial_val == approx(53.02)
     assert api_mod3.op == consts.ApiModOp.mod_add
-    assert api_mod3.penalized is False

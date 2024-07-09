@@ -105,16 +105,17 @@ def setup_test(
         attrs={eve_affector_attr.id: val_post_perc},
         eff_ids=[eve_effect_post_perc.id])
     # Post-assignment
-    eve_mod_post_ass = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
-        op=consts.EveModOp.post_assign,
-        affector_attr_id=eve_affector_attr.id,
-        affectee_attr_id=eve_affectee_attr.id)
-    eve_effect_post_ass = client.mk_eve_effect(mod_info=[eve_mod_post_ass])
-    eve_item_affector_post_ass = client.mk_eve_item(
-        attrs={eve_affector_attr.id: val_post_ass},
-        eff_ids=[eve_effect_post_ass.id])
+    if val_post_ass is not None:
+        eve_mod_post_ass = client.mk_eve_effect_mod(
+            func=consts.EveModFunc.item,
+            dom=consts.EveModDom.ship,
+            op=consts.EveModOp.post_assign,
+            affector_attr_id=eve_affector_attr.id,
+            affectee_attr_id=eve_affectee_attr.id)
+        eve_effect_post_ass = client.mk_eve_effect(mod_info=[eve_mod_post_ass])
+        eve_item_affector_post_ass = client.mk_eve_item(
+            attrs={eve_affector_attr.id: val_post_ass},
+            eff_ids=[eve_effect_post_ass.id])
     eve_item_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
@@ -127,7 +128,7 @@ def setup_test(
     api_fit.add_rig(type_id=eve_item_affector_post_mul.id)
     api_fit.add_rig(type_id=eve_item_affector_post_div.id)
     api_fit.add_rig(type_id=eve_item_affector_post_perc.id)
-    if val_post_ass:
+    if val_post_ass is not None:
         api_fit.add_rig(type_id=eve_item_affector_post_ass.id)
     api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee.id)
     api_item_affectee.update()
@@ -159,14 +160,38 @@ def test_almost_all_in(client, consts):
             (val_pre_ass * val_pre_mul / val_pre_div + val_mod_add - val_mod_sub)
             * val_post_mul / val_post_div * (1 + val_post_perc / 100))
     assert attr_value == approx(expected_value)
-    assert attr_mods.find_by_op(op=consts.ApiModOp.pre_assign).one().val == approx(val_pre_ass)
-    assert attr_mods.find_by_op(op=consts.ApiModOp.pre_mul).one().val == approx(val_pre_mul)
-    assert attr_mods.find_by_op(op=consts.ApiModOp.pre_div).one().val == approx(val_pre_div)
-    assert attr_mods.find_by_op(op=consts.ApiModOp.mod_add).one().val == approx(val_mod_add)
-    assert attr_mods.find_by_op(op=consts.ApiModOp.mod_sub).one().val == approx(val_mod_sub)
-    assert attr_mods.find_by_op(op=consts.ApiModOp.post_mul).one().val == approx(val_post_mul)
-    assert attr_mods.find_by_op(op=consts.ApiModOp.post_div).one().val == approx(val_post_div)
-    assert attr_mods.find_by_op(op=consts.ApiModOp.post_percent).one().val == approx(val_post_perc)
+    pre_assign_mod = attr_mods.find_by_op(op=consts.ApiModOp.pre_assign).one()
+    assert pre_assign_mod.initial_val == approx(val_pre_ass)
+    assert pre_assign_mod.stacking_mult is None
+    assert pre_assign_mod.applied_val == approx(val_pre_ass)
+    pre_mul_mod = attr_mods.find_by_op(op=consts.ApiModOp.pre_mul).one()
+    assert pre_mul_mod.initial_val == approx(val_pre_mul)
+    assert pre_mul_mod.stacking_mult == approx(consts.PenaltyStr.first)
+    assert pre_mul_mod.applied_val == approx(val_pre_mul)
+    pre_div_mod = attr_mods.find_by_op(op=consts.ApiModOp.pre_div).one()
+    assert pre_div_mod.initial_val == approx(val_pre_div)
+    assert pre_div_mod.stacking_mult == approx(consts.PenaltyStr.first)
+    assert pre_div_mod.applied_val == approx(val_pre_div)
+    add_mod = attr_mods.find_by_op(op=consts.ApiModOp.mod_add).one()
+    assert add_mod.initial_val == approx(val_mod_add)
+    assert add_mod.stacking_mult is None
+    assert add_mod.applied_val == approx(val_mod_add)
+    sub_mod = attr_mods.find_by_op(op=consts.ApiModOp.mod_sub).one()
+    assert sub_mod.initial_val == approx(val_mod_sub)
+    assert sub_mod.stacking_mult is None
+    assert sub_mod.applied_val == approx(val_mod_sub)
+    post_mul_mod = attr_mods.find_by_op(op=consts.ApiModOp.post_mul).one()
+    assert post_mul_mod.initial_val == approx(val_post_mul)
+    assert post_mul_mod.stacking_mult == approx(consts.PenaltyStr.first)
+    assert post_mul_mod.applied_val == approx(val_post_mul)
+    post_div_mod = attr_mods.find_by_op(op=consts.ApiModOp.post_div).one()
+    assert post_div_mod.initial_val == approx(val_post_div)
+    assert post_div_mod.stacking_mult == approx(consts.PenaltyStr.first)
+    assert post_div_mod.applied_val == approx(val_post_div)
+    post_perc_mod = attr_mods.find_by_op(op=consts.ApiModOp.post_percent).one()
+    assert post_perc_mod.initial_val == approx(val_post_perc)
+    assert post_perc_mod.stacking_mult == approx(consts.PenaltyStr.first)
+    assert post_perc_mod.applied_val == approx(val_post_perc)
 
 
 def test_all_in(client, consts):
@@ -193,5 +218,8 @@ def test_all_in(client, consts):
         val_post_ass=val_post_ass)
     assert attr_value == approx(val_post_ass)
     # When there is a post-assignment, all modifications before it are considered insignificant
-    assert attr_mods.one().val == approx(val_post_ass)
-    assert attr_mods.one().op == consts.ApiModOp.post_assign
+    post_ass_mod = attr_mods.one()
+    assert post_ass_mod.initial_val == approx(val_post_ass)
+    assert post_ass_mod.stacking_mult is None
+    assert post_ass_mod.applied_val == approx(val_post_ass)
+    assert post_ass_mod.op == consts.ApiModOp.post_assign
