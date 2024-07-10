@@ -90,8 +90,8 @@ impl SolModAccumInfo {
             SolOp::PreAssign => self.pre_assign.add_val(
                 SolOp::PreAssign,
                 val,
-                proj_mult,
-                res_mult,
+                None,
+                None,
                 &normalize_noop,
                 &diminish_noop,
                 &revert_noop,
@@ -195,8 +195,8 @@ impl SolModAccumInfo {
             SolOp::PostAssign => self.post_assign.add_val(
                 SolOp::PostAssign,
                 val,
-                proj_mult,
-                res_mult,
+                None,
+                None,
                 &normalize_noop,
                 &diminish_noop,
                 &revert_noop,

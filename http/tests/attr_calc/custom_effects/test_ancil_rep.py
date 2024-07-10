@@ -134,25 +134,37 @@ def test_penalties(client, consts):
     eve_aar_affectee_attr = client.mk_eve_attr(id_=consts.EveAttr.armor_dmg_amount, stackable=False)
     eve_mod_affector_attr = client.mk_eve_attr()
     eve_aar_effect = client.mk_eve_effect(id_=consts.EveEffect.fueled_armor_repair)
-    eve_aar_item = client.mk_eve_item(
+    eve_aar = client.mk_eve_item(
         attrs={eve_aar_affector_attr.id: 3, eve_aar_affectee_attr.id: 100},
         eff_ids=[eve_aar_effect.id])
-    eve_paste_item = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
-    eve_mod = client.mk_eve_effect_mod(
+    eve_paste = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
+    eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_mod_affector_attr.id,
         affectee_attr_id=eve_aar_affectee_attr.id)
-    eve_mod_effect = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_mod_item = client.mk_eve_item(attrs={eve_mod_affector_attr.id: 1.5}, eff_ids=[eve_mod_effect.id])
+    eve_rig_effect = client.mk_eve_effect(mod_info=[eve_rig_mod])
+    eve_rig = client.mk_eve_item(attrs={eve_mod_affector_attr.id: 1.5}, eff_ids=[eve_rig_effect.id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(eve_ship.id)
-    api_aar_item = api_fit.add_mod(type_id=eve_aar_item.id, rack=consts.ApiRack.low, charge_type_id=eve_paste_item.id)
-    api_fit.add_rig(type_id=eve_mod_item.id)
+    api_aar = api_fit.add_mod(type_id=eve_aar.id, rack=consts.ApiRack.low, charge_type_id=eve_paste.id)
+    api_rig = api_fit.add_rig(type_id=eve_rig.id)
     # Verification
-    api_aar_item.update()
-    assert api_aar_item.attrs[eve_aar_affectee_attr.id].dogma == approx(150)
-    assert api_aar_item.attrs[eve_aar_affectee_attr.id].extra == approx(450)
+    api_aar.update()
+    assert api_aar.attrs[eve_aar_affectee_attr.id].dogma == approx(150)
+    assert api_aar.attrs[eve_aar_affectee_attr.id].extra == approx(450)
+    api_mods = api_aar.mods[eve_aar_affectee_attr.id]
+    assert len(api_mods) == 2
+    api_mod_paste = api_mods.find_by_affector_item(affector_item_id=api_aar.id).one()
+    assert api_mod_paste.op == consts.ApiModOp.extra_mul
+    assert api_mod_paste.initial_val == approx(3)
+    assert api_mod_paste.stacking_mult is None
+    assert api_mod_paste.applied_val == approx(3)
+    api_mod_rig = api_mods.find_by_affector_item(affector_item_id=api_rig.id).one()
+    assert api_mod_rig.op == consts.ApiModOp.post_mul
+    assert api_mod_rig.initial_val == approx(1.5)
+    assert api_mod_rig.stacking_mult == approx(consts.PenaltyStr.p1)
+    assert api_mod_rig.applied_val == approx(1.5)

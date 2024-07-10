@@ -31,7 +31,7 @@ def test_resist_aggr_max(client, consts):
     eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 150, eve_resist_attr1.id: 0.1, eve_resist_attr2.id: 0.5})
     client.create_sources()
     api_sol = client.create_sol()
-    api_sw_effect1 = api_sol.add_sw_effect(type_id=eve_sw_effect1.id)
+    api_sol.add_sw_effect(type_id=eve_sw_effect1.id)
     api_sw_effect2 = api_sol.add_sw_effect(type_id=eve_sw_effect2.id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship.id)

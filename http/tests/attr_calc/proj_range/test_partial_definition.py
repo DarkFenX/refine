@@ -26,13 +26,28 @@ def test_optimal_undefined(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_affectee_struct.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
-    assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(500)
+    # Verification
+    api_affectee_struct.update()
+    assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(500)
+    assert len(api_affectee_struct.mods) == 0
+    # Action
     api_affector_module.change_mod(add_projs=[(api_affectee_struct.id, None)])
-    assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(200)
+    # Verification
+    api_affectee_struct.update()
+    assert api_affectee_struct.mods[eve_affectee_attr.id].one().range_mult is None
+    assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(200)
+    # Action
     api_affector_module.change_mod(change_projs=[(api_affectee_struct.id, 5000)])
-    assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(350)
+    # Verification
+    api_affectee_struct.update()
+    assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(350)
+    assert api_affectee_struct.mods[eve_affectee_attr.id].one().range_mult == approx(0.5)
+    # Action
     api_affector_module.change_mod(rm_projs=[api_affectee_struct.id])
-    assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(500)
+    # Verification
+    api_affectee_struct.update()
+    assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(500)
+    assert len(api_affectee_struct.mods) == 0
 
 
 def test_falloff_undefined(client, consts):
@@ -60,12 +75,32 @@ def test_falloff_undefined(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_affectee_struct.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
-    assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(500)
+    # Verification
+    api_affectee_struct.update()
+    assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(500)
+    assert len(api_affectee_struct.mods) == 0
+    # Action
     api_affector_module.change_mod(add_projs=[(api_affectee_struct.id, None)])
-    assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(200)
+    # Verification
+    api_affectee_struct.update()
+    assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(200)
+    assert api_affectee_struct.mods[eve_affectee_attr.id].one().range_mult is None
+    # Action
     api_affector_module.change_mod(change_projs=[(api_affectee_struct.id, 10000)])
-    assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(200)
+    # Verification
+    api_affectee_struct.update()
+    assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(200)
+    assert api_affectee_struct.mods[eve_affectee_attr.id].one().range_mult == approx(1.0)
+    # Action
     api_affector_module.change_mod(change_projs=[(api_affectee_struct.id, 10000.01)])
-    assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(500)
+    # Verification
+    api_affectee_struct.update()
+    assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(500)
+    # Here, modification was filtered out as ineffective
+    assert len(api_affectee_struct.mods) == 0
+    # Action
     api_affector_module.change_mod(rm_projs=[api_affectee_struct.id])
-    assert api_affectee_struct.update().attrs[eve_affectee_attr.id].dogma == approx(500)
+    # Verification
+    api_affectee_struct.update()
+    assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(500)
+    assert len(api_affectee_struct.mods) == 0

@@ -53,10 +53,9 @@ impl SolModAccumFast {
         aggr_mode: &SolAggrMode,
     ) {
         match op {
-            SolOp::PreAssign => {
-                self.pre_assign
-                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_noop, aggr_mode)
-            }
+            SolOp::PreAssign => self
+                .pre_assign
+                .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
             SolOp::PreMul => self.pre_mul.add_val(
                 val,
                 proj_mult,
@@ -112,10 +111,9 @@ impl SolModAccumFast {
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            SolOp::PostAssign => {
-                self.post_assign
-                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_noop, aggr_mode)
-            }
+            SolOp::PostAssign => self
+                .post_assign
+                .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
             SolOp::ExtraMul => {
                 self.extra_mul
                     .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode)
