@@ -296,12 +296,3 @@ where
     }
     map
 }
-
-fn is_abil_targeted(tgt_mode: &str) -> IntResult<bool> {
-    match tgt_mode {
-        "untargeted" => Ok(false),
-        "itemTargeted" => Ok(true),
-        "pointTargeted" => Ok(true),
-        _ => Err(IntError::new(format!("unknown ability target mode \"{tgt_mode}\""))),
-    }
-}
