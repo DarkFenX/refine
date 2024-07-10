@@ -22,6 +22,7 @@ pub(crate) const WEATHER_DARKNESS: EEffectId = 7060;
 pub(crate) const AOE_BEACON_BIOLUMINESCENCE_CLOUD: EEffectId = 7050;
 pub(crate) const AOE_BEACON_CAUSTIC_CLOUD: EEffectId = 7050;
 pub(crate) const AOE_BEACON_FILAMENT_CLOUD: EEffectId = 7058;
+pub(crate) const MOD_TITAN_EFFECT_GENERATOR: EEffectId = 6753;
 // Fighter-related
 pub(crate) const FTR_ABIL_MISSILES: EEffectId = 6431;
 pub(crate) const FTR_ABIL_NEUT: EEffectId = 6434;

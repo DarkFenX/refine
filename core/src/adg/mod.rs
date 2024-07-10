@@ -111,7 +111,7 @@ impl GSupport {
                 ad::AEffectBuffInfo::new(ad::AEffectBuffDataSrc::DefaultAttrs, ad::AEffectBuffScope::FleetShips),
             );
         }
-        // Buffs which affect everything and rely on standard on-item attributes to define buffs
+        // Buffs which affect everything, and which rely on standard on-item attributes
         for effect_id in [
             ec::effects::WEATHER_ELECTRIC_STORM,
             ec::effects::WEATHER_INFERNAL,
@@ -127,6 +127,11 @@ impl GSupport {
                 ad::AEffectBuffInfo::new(ad::AEffectBuffDataSrc::DefaultAttrs, ad::AEffectBuffScope::Everything),
             );
         }
+        // Buffs which affect only ships, and which rely on standard on-item attributes
+        self.eff_buff_map.insert(
+            ec::effects::MOD_TITAN_EFFECT_GENERATOR,
+            ad::AEffectBuffInfo::new(ad::AEffectBuffDataSrc::DefaultAttrs, ad::AEffectBuffScope::Ships),
+        );
         // Bursts with hardcoded IDs
         self.eff_buff_map.insert(
             ec::effects::DOOMSDAY_AOE_WEB,
