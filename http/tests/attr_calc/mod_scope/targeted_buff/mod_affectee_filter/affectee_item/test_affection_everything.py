@@ -2,7 +2,6 @@ from pytest import approx
 
 
 def test_affected_root_ship(client, consts):
-    # Make sure ship is affected by targeted buffs
     eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr = client.mk_eve_attr()
     client.mk_eve_buff(
@@ -24,7 +23,6 @@ def test_affected_root_ship(client, consts):
 
 
 def test_affected_root_struct(client, consts):
-    # Make sure structure is affected by targeted buffs
     eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr = client.mk_eve_attr()
     client.mk_eve_buff(
@@ -46,7 +44,6 @@ def test_affected_root_struct(client, consts):
 
 
 def test_affected_child(client, consts):
-    # Make sure child owner-modifiable items are affected by targeted buffs
     eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr = client.mk_eve_attr()
     client.mk_eve_buff(
