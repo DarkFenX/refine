@@ -28,7 +28,13 @@ def test_pre_assign(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(400)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(400)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.pre_assign
+    assert api_mod.initial_val == approx(400)
+    assert api_mod.resist_mult is None
+    assert api_mod.applied_val == approx(400)
 
 
 def test_pre_mul(client, consts):
@@ -58,7 +64,13 @@ def test_pre_mul(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.pre_mul
+    assert api_mod.initial_val == approx(0.4)
+    assert api_mod.resist_mult == approx(0.4)
+    assert api_mod.applied_val == approx(0.76)
 
 
 def test_pre_div(client, consts):
@@ -88,7 +100,13 @@ def test_pre_div(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.pre_div
+    assert api_mod.initial_val == approx(2.5)
+    assert api_mod.resist_mult == approx(0.4)
+    assert api_mod.applied_val == approx(1.3157895)
 
 
 def test_add(client, consts):
@@ -118,7 +136,13 @@ def test_add(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(540)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(540)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.mod_add
+    assert api_mod.initial_val == approx(100)
+    assert api_mod.resist_mult == approx(0.4)
+    assert api_mod.applied_val == approx(40)
 
 
 def test_sub(client, consts):
@@ -149,7 +173,13 @@ def test_sub(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(460)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(460)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.mod_sub
+    assert api_mod.initial_val == approx(100)
+    assert api_mod.resist_mult == approx(0.4)
+    assert api_mod.applied_val == approx(40)
 
 
 def test_post_mul(client, consts):
@@ -179,7 +209,13 @@ def test_post_mul(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.post_mul
+    assert api_mod.initial_val == approx(0.4)
+    assert api_mod.resist_mult == approx(0.4)
+    assert api_mod.applied_val == approx(0.76)
 
 
 def test_post_div(client, consts):
@@ -209,7 +245,13 @@ def test_post_div(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.post_div
+    assert api_mod.initial_val == approx(2.5)
+    assert api_mod.resist_mult == approx(0.4)
+    assert api_mod.applied_val == approx(1.3157895)
 
 
 def test_post_percent(client, consts):
@@ -238,7 +280,13 @@ def test_post_percent(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(-60)
+    assert api_mod.resist_mult == approx(0.4)
+    assert api_mod.applied_val == approx(-24)
 
 
 def test_post_assign(client, consts):
@@ -268,4 +316,10 @@ def test_post_assign(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(400)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(400)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.post_assign
+    assert api_mod.initial_val == approx(400)
+    assert api_mod.resist_mult is None
+    assert api_mod.applied_val == approx(400)

@@ -32,11 +32,11 @@ def test_pre_assign(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 11000)])
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(100)
-    api_affectee_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
-    assert api_affectee_mod.op == consts.ApiModOp.pre_assign
-    assert api_affectee_mod.initial_val == approx(100)
-    assert api_affectee_mod.range_mult is None
-    assert api_affectee_mod.applied_val == approx(100)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.pre_assign
+    assert api_mod.initial_val == approx(100)
+    assert api_mod.range_mult is None
+    assert api_mod.applied_val == approx(100)
 
 
 def test_pre_mul(client, consts):
@@ -70,11 +70,11 @@ def test_pre_mul(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 11000)])
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(287.5)
-    api_affectee_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
-    assert api_affectee_mod.op == consts.ApiModOp.pre_mul
-    assert api_affectee_mod.initial_val == approx(0.15)
-    assert api_affectee_mod.range_mult == approx(0.5)
-    assert api_affectee_mod.applied_val == approx(0.575)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.pre_mul
+    assert api_mod.initial_val == approx(0.15)
+    assert api_mod.range_mult == approx(0.5)
+    assert api_mod.applied_val == approx(0.575)
 
 
 def test_pre_div(client, consts):
@@ -108,11 +108,11 @@ def test_pre_div(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 11000)])
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(287.5)
-    api_affectee_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
-    assert api_affectee_mod.op == consts.ApiModOp.pre_div
-    assert api_affectee_mod.initial_val == approx(6.66666666666667)
-    assert api_affectee_mod.range_mult == approx(0.5)
-    assert api_affectee_mod.applied_val == approx(1.7391304)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.pre_div
+    assert api_mod.initial_val == approx(6.66666666666667)
+    assert api_mod.range_mult == approx(0.5)
+    assert api_mod.applied_val == approx(1.7391304)
 
 
 def test_add(client, consts):
@@ -147,11 +147,11 @@ def test_add(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 11000)])
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(450)
-    api_affectee_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
-    assert api_affectee_mod.op == consts.ApiModOp.mod_add
-    assert api_affectee_mod.initial_val == approx(-100)
-    assert api_affectee_mod.range_mult == approx(0.5)
-    assert api_affectee_mod.applied_val == approx(-50)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.mod_add
+    assert api_mod.initial_val == approx(-100)
+    assert api_mod.range_mult == approx(0.5)
+    assert api_mod.applied_val == approx(-50)
 
 
 def test_sub(client, consts):
@@ -186,11 +186,11 @@ def test_sub(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 11000)])
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(550)
-    api_affectee_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
-    assert api_affectee_mod.op == consts.ApiModOp.mod_sub
-    assert api_affectee_mod.initial_val == approx(-100)
-    assert api_affectee_mod.range_mult == approx(0.5)
-    assert api_affectee_mod.applied_val == approx(-50)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.mod_sub
+    assert api_mod.initial_val == approx(-100)
+    assert api_mod.range_mult == approx(0.5)
+    assert api_mod.applied_val == approx(-50)
 
 
 def test_post_mul(client, consts):
@@ -224,11 +224,11 @@ def test_post_mul(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 11000)])
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(287.5)
-    api_affectee_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
-    assert api_affectee_mod.op == consts.ApiModOp.post_mul
-    assert api_affectee_mod.initial_val == approx(0.15)
-    assert api_affectee_mod.range_mult == approx(0.5)
-    assert api_affectee_mod.applied_val == approx(0.575)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.post_mul
+    assert api_mod.initial_val == approx(0.15)
+    assert api_mod.range_mult == approx(0.5)
+    assert api_mod.applied_val == approx(0.575)
 
 
 def test_post_div(client, consts):
@@ -262,11 +262,11 @@ def test_post_div(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 11000)])
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(287.5)
-    api_affectee_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
-    assert api_affectee_mod.op == consts.ApiModOp.post_div
-    assert api_affectee_mod.initial_val == approx(6.66666666666667)
-    assert api_affectee_mod.range_mult == approx(0.5)
-    assert api_affectee_mod.applied_val == approx(1.7391304)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.post_div
+    assert api_mod.initial_val == approx(6.66666666666667)
+    assert api_mod.range_mult == approx(0.5)
+    assert api_mod.applied_val == approx(1.7391304)
 
 
 def test_post_percent(client, consts):
@@ -299,11 +299,11 @@ def test_post_percent(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 11000)])
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(287.5)
-    api_affectee_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
-    assert api_affectee_mod.op == consts.ApiModOp.post_percent
-    assert api_affectee_mod.initial_val == approx(-85)
-    assert api_affectee_mod.range_mult == approx(0.5)
-    assert api_affectee_mod.applied_val == approx(-42.5)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(-85)
+    assert api_mod.range_mult == approx(0.5)
+    assert api_mod.applied_val == approx(-42.5)
 
 
 def test_post_assign(client, consts):
@@ -337,8 +337,8 @@ def test_post_assign(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 11000)])
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(100)
-    api_affectee_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
-    assert api_affectee_mod.op == consts.ApiModOp.post_assign
-    assert api_affectee_mod.initial_val == approx(100)
-    assert api_affectee_mod.range_mult is None
-    assert api_affectee_mod.applied_val == approx(100)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.post_assign
+    assert api_mod.initial_val == approx(100)
+    assert api_mod.range_mult is None
+    assert api_mod.applied_val == approx(100)

@@ -28,7 +28,15 @@ def test_on_effect(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
     api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(380)
+    api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
+    assert api_mod.op == consts.ApiModOp.post_percent
+    assert api_mod.initial_val == approx(-60)
+    assert api_mod.resist_mult == approx(0.4)
+    assert api_mod.applied_val == approx(-24)
+    assert api_mod.affectors.one().item_id == api_affector_module.id
+    assert api_mod.affectors.one().attr_id == eve_affector_attr.id
 
 
 def test_on_affector_item(client, consts):
@@ -69,3 +77,17 @@ def test_on_affector_item(client, consts):
     api_affector_module2 = api_affector_fit.add_mod(type_id=eve_affector_module2.id, state=consts.ApiState.active)
     api_affector_module2.change_mod(add_projs=[api_affectee_ship.id])
     assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(317.3)
+    api_mods = api_affectee_ship.mods[eve_affectee_attr.id]
+    assert len(api_mods) == 2
+    api_module1_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module1.id).one()
+    assert api_module1_mod.op == consts.ApiModOp.post_percent
+    assert api_module1_mod.initial_val == approx(-60)
+    assert api_module1_mod.resist_mult == approx(0.4)
+    assert api_module1_mod.applied_val == approx(-24)
+    assert api_module1_mod.affectors.one().attr_id == eve_affector_attr.id
+    api_module2_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module2.id).one()
+    assert api_module2_mod.op == consts.ApiModOp.post_percent
+    assert api_module2_mod.initial_val == approx(-55)
+    assert api_module2_mod.resist_mult == approx(0.3)
+    assert api_module2_mod.applied_val == approx(-16.5)
+    assert api_module2_mod.affectors.one().attr_id == eve_affector_attr.id

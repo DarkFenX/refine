@@ -39,15 +39,15 @@ def test_stacking(client, consts):
     # was the other way around, the value would've been ~348.2
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(338.79774)
-    api_affectee_mods = api_affectee_ship.mods[eve_affectee_attr.id]
-    assert len(api_affectee_mods) == 2
-    api_module1_mod = api_affectee_mods.find_by_affector_item(affector_item_id=api_affector_module1.id).one()
+    api_mods = api_affectee_ship.mods[eve_affectee_attr.id]
+    assert len(api_mods) == 2
+    api_module1_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module1.id).one()
     assert api_module1_mod.op == consts.ApiModOp.post_percent
     assert api_module1_mod.initial_val == approx(-80)
     assert api_module1_mod.range_mult == approx(0.1349035)
     assert api_module1_mod.stacking_mult == approx(consts.PenaltyStr.p2)
     assert api_module1_mod.applied_val == approx(-9.3797882)
-    api_module2_mod = api_affectee_mods.find_by_affector_item(affector_item_id=api_affector_module2.id).one()
+    api_module2_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module2.id).one()
     assert api_module2_mod.op == consts.ApiModOp.post_percent
     assert api_module2_mod.initial_val == approx(-30)
     assert api_module2_mod.range_mult == approx(0.8408964)

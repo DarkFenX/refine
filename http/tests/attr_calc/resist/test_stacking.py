@@ -47,4 +47,19 @@ def test_stacking(client, consts):
     api_affector_module2.change_mod(add_projs=[api_affectee_ship.id])
     # Second module has stronger effect after resistance, and thus is penalized less. If it was the
     # other way around, the value would've been ~359.7
-    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(353.80371)
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(353.80371)
+    api_mods = api_affectee_ship.mods[eve_affectee_attr.id]
+    assert len(api_mods) == 2
+    api_module1_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module1.id).one()
+    assert api_module1_mod.op == consts.ApiModOp.post_percent
+    assert api_module1_mod.initial_val == approx(-80)
+    assert api_module1_mod.resist_mult == approx(0.15)
+    assert api_module1_mod.stacking_mult == approx(consts.PenaltyStr.p2)
+    assert api_module1_mod.applied_val == approx(-10.4294398)
+    api_module2_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module2.id).one()
+    assert api_module2_mod.op == consts.ApiModOp.post_percent
+    assert api_module2_mod.initial_val == approx(-30)
+    assert api_module2_mod.resist_mult == approx(0.7)
+    assert api_module2_mod.stacking_mult == approx(consts.PenaltyStr.p1)
+    assert api_module2_mod.applied_val == approx(-21)

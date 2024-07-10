@@ -90,7 +90,7 @@ def test_falloff_undefined(client, consts):
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr.id].dogma == approx(200)
-    assert api_affectee_struct.mods[eve_affectee_attr.id].one().range_mult == approx(1.0)
+    assert api_affectee_struct.mods[eve_affectee_attr.id].one().range_mult == approx(1)
     # Action
     api_affector_module.change_mod(change_projs=[(api_affectee_struct.id, 10000.01)])
     # Verification
