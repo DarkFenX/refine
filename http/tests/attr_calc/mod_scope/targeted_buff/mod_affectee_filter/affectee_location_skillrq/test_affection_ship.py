@@ -3,15 +3,18 @@ from pytest import approx
 
 def test_affected_child_ship(client, consts):
     eve_skill = client.mk_eve_item()
-    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
-    client.mk_eve_buff(
-        id_=consts.EveBuff.stasis_webification_burst,
+    eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id, skill_id=eve_skill.id)])
-    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 30},
+        eff_ids=[eve_effect.id],
+        defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 200}, srqs={eve_skill.id: 1})
     eve_ship = client.mk_eve_ship()
     client.create_sources()
@@ -22,20 +25,23 @@ def test_affected_child_ship(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship.id)
     api_rig = api_fit2.add_rig(type_id=eve_rig.id)
     api_module.change_mod(add_projs=[api_ship.id])
-    assert api_rig.update().attrs[eve_affectee_attr.id].dogma == approx(90)
+    assert api_rig.update().attrs[eve_affectee_attr.id].dogma == approx(260)
 
 
-def test_affected_child_struct(client, consts):
+def test_unaffected_child_struct(client, consts):
     eve_skill = client.mk_eve_item()
-    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
-    client.mk_eve_buff(
-        id_=consts.EveBuff.stasis_webification_burst,
+    eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id, skill_id=eve_skill.id)])
-    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 30},
+        eff_ids=[eve_effect.id],
+        defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 200}, srqs={eve_skill.id: 1})
     eve_struct = client.mk_eve_struct()
     client.create_sources()
@@ -46,20 +52,23 @@ def test_affected_child_struct(client, consts):
     api_struct = api_fit2.set_ship(type_id=eve_struct.id)
     api_rig = api_fit2.add_rig(type_id=eve_rig.id)
     api_module.change_mod(add_projs=[api_struct.id])
-    assert api_rig.update().attrs[eve_affectee_attr.id].dogma == approx(90)
+    assert api_rig.update().attrs[eve_affectee_attr.id].dogma == approx(200)
 
 
-def test_unaffected_root(client, consts):
+def test_unaffected_root_ship(client, consts):
     eve_skill = client.mk_eve_item()
-    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
-    client.mk_eve_buff(
-        id_=consts.EveBuff.stasis_webification_burst,
+    eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id, skill_id=eve_skill.id)])
-    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 30},
+        eff_ids=[eve_effect.id],
+        defeff_id=eve_effect.id)
     eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 200}, srqs={eve_skill.id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -73,18 +82,21 @@ def test_unaffected_root(client, consts):
 
 def test_unaffected_non_buff_modifiable_child(client, consts):
     eve_skill = client.mk_eve_item()
-    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
-    client.mk_eve_buff(
-        id_=consts.EveBuff.stasis_webification_burst,
+    eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id, skill_id=eve_skill.id)])
-    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 30},
+        eff_ids=[eve_effect.id],
+        defeff_id=eve_effect.id)
     eve_implant = client.mk_eve_item(attrs={eve_affectee_attr.id: 200}, srqs={eve_skill.id: 1})
-    eve_ship = client.mk_eve_ship()
     eve_char = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -98,19 +110,22 @@ def test_unaffected_non_buff_modifiable_child(client, consts):
 
 
 def test_unaffected_targeted_child(client, consts):
-    # When it's not ship/structure which is getting targeted, target item shouldn't be affected
+    # When it's not ship which is getting targeted, target item shouldn't be affected
     eve_skill = client.mk_eve_item()
-    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
-    client.mk_eve_buff(
-        id_=consts.EveBuff.stasis_webification_burst,
+    eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id, skill_id=eve_skill.id)])
-    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 30},
+        eff_ids=[eve_effect.id],
+        defeff_id=eve_effect.id)
     eve_drone = client.mk_eve_item(attrs={eve_affectee_attr.id: 200}, srqs={eve_skill.id: 1})
-    eve_ship = client.mk_eve_ship(srqs={eve_skill.id: 1})
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -125,18 +140,21 @@ def test_unaffected_targeted_child(client, consts):
 def test_unaffected_via_child_target(client, consts):
     # Ship items shouldn't be affected when target is something which isn't ship (e.g. drone)
     eve_skill = client.mk_eve_item()
-    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
-    client.mk_eve_buff(
-        id_=consts.EveBuff.stasis_webification_burst,
+    eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id, skill_id=eve_skill.id)])
-    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 30},
+        eff_ids=[eve_effect.id],
+        defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 200}, srqs={eve_skill.id: 1})
-    eve_drone = client.mk_eve_item(srqs={eve_skill.id: 1})
-    eve_ship = client.mk_eve_ship(srqs={eve_skill.id: 1})
+    eve_drone = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -150,18 +168,20 @@ def test_unaffected_via_child_target(client, consts):
 
 
 def test_unaffected_other_skillreq(client, consts):
-    # Check that entities which don't have needed skill requirement are not affected
     eve_skill1 = client.mk_eve_item()
     eve_skill2 = client.mk_eve_item()
-    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
-    client.mk_eve_buff(
-        id_=consts.EveBuff.stasis_webification_burst,
+    eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id, skill_id=eve_skill1.id)])
-    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 30},
+        eff_ids=[eve_effect.id],
+        defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 200}, srqs={eve_skill2.id: 1})
     eve_ship = client.mk_eve_ship()
     client.create_sources()
@@ -177,15 +197,18 @@ def test_unaffected_other_skillreq(client, consts):
 
 def test_unaffected_other_fit(client, consts):
     eve_skill = client.mk_eve_item()
-    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
-    client.mk_eve_buff(
-        id_=consts.EveBuff.stasis_webification_burst,
+    eve_buff = client.mk_eve_buff(
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id, skill_id=eve_skill.id)])
-    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(
+        attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 30},
+        eff_ids=[eve_effect.id],
+        defeff_id=eve_effect.id)
     eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 200}, srqs={eve_skill.id: 1})
     eve_ship = client.mk_eve_ship()
     client.create_sources()
