@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def test_stacking(client, consts):
@@ -48,7 +48,7 @@ def test_stacking(client, consts):
     # Second module has stronger effect after resistance, and thus is penalized less. If it was the
     # other way around, the value would've been ~359.7
     api_affectee_ship.update()
-    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(353.80371)
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(353.803713)
     api_mods = api_affectee_ship.mods[eve_affectee_attr.id]
     assert len(api_mods) == 2
     api_module1_mod = api_mods.find_by_affector_item(affector_item_id=api_affector_module1.id).one()

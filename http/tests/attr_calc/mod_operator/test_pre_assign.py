@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def setup_hig_test(client, consts, high_is_good):

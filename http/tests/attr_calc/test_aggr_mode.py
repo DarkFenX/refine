@@ -1,6 +1,6 @@
 # We test just 4 operation types, since CCP doesn't use any other in buffs at the present time
 
-from pytest import approx
+from tests import approx
 
 
 def test_add_max(client, consts):

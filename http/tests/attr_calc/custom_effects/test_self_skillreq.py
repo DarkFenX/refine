@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def test_missile_launcher_rof(client, consts):

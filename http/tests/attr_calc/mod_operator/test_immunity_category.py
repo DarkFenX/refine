@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def setup_immunity_test(client, consts, cat_id):

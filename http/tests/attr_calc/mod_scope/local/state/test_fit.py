@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def get_value_for_state(client, consts, state):

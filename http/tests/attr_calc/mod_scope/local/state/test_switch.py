@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def get_value_after_switch(client, consts, state_from, state_to):

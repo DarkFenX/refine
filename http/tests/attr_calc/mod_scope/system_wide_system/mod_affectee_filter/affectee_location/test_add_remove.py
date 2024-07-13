@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def test_add_sw_fit_item_remove_sw_item_fit(client, consts):

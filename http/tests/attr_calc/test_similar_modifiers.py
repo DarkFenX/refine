@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def test_same_item_different_effects_attrs(client, consts):

@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def test_local_aar(client, consts):

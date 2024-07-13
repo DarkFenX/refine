@@ -10,3 +10,8 @@ pytest.register_assert_rewrite(
     'tests.support.response',)
 
 TEST_FOLDER_SPLIT = os.path.dirname(os.path.normpath(os.path.realpath(__file__))).split(os.sep)
+
+
+# Wrapper around pytest approx function, to override default parameters
+def approx(expected):
+    return pytest.approx(expected=expected, abs=1e-6)

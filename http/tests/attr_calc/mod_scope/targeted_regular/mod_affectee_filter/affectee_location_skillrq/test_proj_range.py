@@ -1,4 +1,4 @@
-from pytest import approx
+from tests import approx
 
 
 def test_add_with_change_without_remove(client, consts):
@@ -166,7 +166,7 @@ def test_value_change_optimal(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_struct.id, 15000)])
     assert api_affectee_module.update().attrs[eve_affectee_attr.id].dogma == approx(350)
     api_affector_rig = api_affector_fit.add_rig(type_id=eve_affector_rig.id)
-    assert api_affectee_module.update().attrs[eve_affectee_attr.id].dogma == approx(247.73108)
+    assert api_affectee_module.update().attrs[eve_affectee_attr.id].dogma == approx(247.731075)
     api_affector_rig.remove()
     assert api_affectee_module.update().attrs[eve_affectee_attr.id].dogma == approx(350)
 
@@ -215,6 +215,6 @@ def test_value_change_falloff(client, consts):
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 15000)])
     assert api_affectee_module.update().attrs[eve_affectee_attr.id].dogma == approx(350)
     api_affector_rig = api_affector_fit.add_rig(type_id=eve_affector_rig.id)
-    assert api_affectee_module.update().attrs[eve_affectee_attr.id].dogma == approx(279.53983)
+    assert api_affectee_module.update().attrs[eve_affectee_attr.id].dogma == approx(279.539826)
     api_affector_rig.remove()
     assert api_affectee_module.update().attrs[eve_affectee_attr.id].dogma == approx(350)
