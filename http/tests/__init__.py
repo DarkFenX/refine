@@ -16,5 +16,4 @@ TEST_FOLDER_SPLIT = os.path.dirname(os.path.normpath(os.path.realpath(__file__))
 def approx(expected):
     if abs(expected) >= 1:
         return pytest.approx(expected=expected, abs=1e-6)
-    else:
-        return pytest.approx(expected=expected, rel=1e-6)
+    return pytest.approx(expected=expected, rel=1e-6)
