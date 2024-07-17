@@ -45,7 +45,7 @@ def test_propagation(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr.id].dogma == approx(96)
 
 
-def test_replace_target(client, consts):
+def test_replace_proj(client, consts):
     eve_skill = client.mk_eve_item()
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()

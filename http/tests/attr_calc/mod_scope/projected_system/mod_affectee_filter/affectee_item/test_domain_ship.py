@@ -93,7 +93,7 @@ def test_unaffected_other_fit(client, consts):
     assert api_ship2.update().attrs[eve_affectee_attr.id].dogma == approx(100)
 
 
-def test_replace_target(client, consts):
+def test_replace_proj(client, consts):
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(

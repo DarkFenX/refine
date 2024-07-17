@@ -82,7 +82,7 @@ def test_replace_root(client, consts):
     assert api_drone.update().attrs[eve_attr2.id].dogma == approx(96)
 
 
-def test_replace_target(client, consts):
+def test_replace_proj(client, consts):
     eve_skill = client.mk_eve_item()
     eve_attr1 = client.mk_eve_attr()
     eve_attr2 = client.mk_eve_attr()

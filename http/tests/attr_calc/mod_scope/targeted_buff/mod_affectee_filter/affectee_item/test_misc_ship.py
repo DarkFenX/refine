@@ -42,7 +42,7 @@ def test_propagation(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr.id].dogma == approx(260)
 
 
-def test_replace_target(client, consts):
+def test_replace_proj(client, consts):
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()

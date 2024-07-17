@@ -43,7 +43,7 @@ def test_propagation(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr.id].dogma == approx(90)
 
 
-def test_replace_target_ship_to_struct(client, consts):
+def test_replace_proj_ship_to_struct(client, consts):
     eve_grp = client.mk_eve_item_group()
     eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr = client.mk_eve_attr()
