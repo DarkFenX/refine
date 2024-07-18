@@ -69,7 +69,7 @@ impl SolStandardRegister {
                 }
             }
         }
-        if item.is_buff_modifiable() {
+        if item.is_buffable() {
             if let Some(fit) = fit_opt {
                 self.affectee_buffable.add_entry(fit.id, item_id);
             }
@@ -110,7 +110,7 @@ impl SolStandardRegister {
                 }
             }
         }
-        if item.is_buff_modifiable() {
+        if item.is_buffable() {
             if let Some(fit) = fit_opt {
                 self.affectee_buffable.remove_entry(&fit.id, &item_id);
             }
@@ -156,17 +156,8 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Everything => {
-                    let fit = sol_view.fits.get_fit(&fit_id).unwrap();
-                    match fit.kind {
-                        SolShipKind::Ship => {
-                            extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &(fit_id, SolLocationKind::Ship))
-                        }
-                        SolShipKind::Structure => extend_vec_from_map_set_l1(
-                            affectees,
-                            &self.affectee_loc,
-                            &(fit_id, SolLocationKind::Structure),
-                        ),
-                        _ => (),
+                    if is_fit_of_ship_kind(sol_view, &fit_id) {
+                        extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &(fit_id, SolLocationKind::Ship))
                     }
                 }
                 _ => {
@@ -180,19 +171,12 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Everything => {
-                    let fit = sol_view.fits.get_fit(&fit_id).unwrap();
-                    match fit.kind {
-                        SolShipKind::Ship => extend_vec_from_map_set_l1(
+                    if is_fit_of_ship_kind(sol_view, &fit_id) {
+                        extend_vec_from_map_set_l1(
                             affectees,
                             &self.affectee_loc_grp,
                             &(fit_id, SolLocationKind::Ship, grp_id),
-                        ),
-                        SolShipKind::Structure => extend_vec_from_map_set_l1(
-                            affectees,
-                            &self.affectee_loc_grp,
-                            &(fit_id, SolLocationKind::Structure, grp_id),
-                        ),
-                        _ => (),
+                        );
                     }
                 }
                 _ => {
@@ -206,19 +190,12 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Everything => {
-                    let fit = sol_view.fits.get_fit(&fit_id).unwrap();
-                    match fit.kind {
-                        SolShipKind::Ship => extend_vec_from_map_set_l1(
+                    if is_fit_of_ship_kind(sol_view, &fit_id) {
+                        extend_vec_from_map_set_l1(
                             affectees,
                             &self.affectee_loc_srq,
                             &(fit_id, SolLocationKind::Ship, srq_id),
-                        ),
-                        SolShipKind::Structure => extend_vec_from_map_set_l1(
-                            affectees,
-                            &self.affectee_loc_srq,
-                            &(fit_id, SolLocationKind::Structure, srq_id),
-                        ),
-                        _ => (),
+                        );
                     }
                 }
                 _ => {
@@ -481,7 +458,7 @@ impl SolStandardRegister {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Everything => {
                     let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
-                    if projectee_item.is_buff_modifiable() {
+                    if projectee_item.is_buffable() {
                         affectees.push(projectee_item_id)
                     }
                 }
@@ -499,18 +476,12 @@ impl SolStandardRegister {
                 SolDomain::Everything => {
                     let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
-                        match projectee_ship.kind {
-                            SolShipKind::Ship => extend_vec_from_map_set_l1(
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            extend_vec_from_map_set_l1(
                                 affectees,
                                 &self.affectee_loc,
                                 &(projectee_ship.fit_id, SolLocationKind::Ship),
-                            ),
-                            SolShipKind::Structure => extend_vec_from_map_set_l1(
-                                affectees,
-                                &self.affectee_loc,
-                                &(projectee_ship.fit_id, SolLocationKind::Structure),
-                            ),
-                            _ => (),
+                            );
                         }
                     }
                 }
@@ -522,7 +493,7 @@ impl SolStandardRegister {
                                 affectees,
                                 &self.affectee_loc,
                                 &(projectee_ship.fit_id, SolLocationKind::Ship),
-                            )
+                            );
                         }
                     }
                 }
@@ -532,18 +503,12 @@ impl SolStandardRegister {
                 SolDomain::Everything => {
                     let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
-                        match projectee_ship.kind {
-                            SolShipKind::Ship => extend_vec_from_map_set_l1(
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            extend_vec_from_map_set_l1(
                                 affectees,
                                 &self.affectee_loc_grp,
                                 &(projectee_ship.fit_id, SolLocationKind::Ship, grp_id),
-                            ),
-                            SolShipKind::Structure => extend_vec_from_map_set_l1(
-                                affectees,
-                                &self.affectee_loc_grp,
-                                &(projectee_ship.fit_id, SolLocationKind::Structure, grp_id),
-                            ),
-                            _ => (),
+                            );
                         }
                     }
                 }
@@ -555,7 +520,7 @@ impl SolStandardRegister {
                                 affectees,
                                 &self.affectee_loc_grp,
                                 &(projectee_ship.fit_id, SolLocationKind::Ship, grp_id),
-                            )
+                            );
                         }
                     }
                 }
@@ -565,18 +530,12 @@ impl SolStandardRegister {
                 SolDomain::Everything => {
                     let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
-                        match projectee_ship.kind {
-                            SolShipKind::Ship => extend_vec_from_map_set_l1(
+                        if matches!(projectee_ship.kind, SolShipKind::Ship) {
+                            extend_vec_from_map_set_l1(
                                 affectees,
                                 &self.affectee_loc_srq,
                                 &(projectee_ship.fit_id, SolLocationKind::Ship, srq_id),
-                            ),
-                            SolShipKind::Structure => extend_vec_from_map_set_l1(
-                                affectees,
-                                &self.affectee_loc_srq,
-                                &(projectee_ship.fit_id, SolLocationKind::Structure, srq_id),
-                            ),
-                            _ => (),
+                            );
                         }
                     }
                 }
@@ -588,7 +547,7 @@ impl SolStandardRegister {
                                 affectees,
                                 &self.affectee_loc_srq,
                                 &(projectee_ship.fit_id, SolLocationKind::Ship, srq_id),
-                            )
+                            );
                         }
                     }
                 }
@@ -610,4 +569,9 @@ fn check_domain_owner(dom: SolDomain, fit: &SolFit) -> bool {
         SolDomain::Structure => matches!(fit.kind, SolShipKind::Structure),
         _ => false,
     }
+}
+
+fn is_fit_of_ship_kind(sol_view: &SolView, fit_id: &SolFitId) -> bool {
+    let fit = sol_view.fits.get_fit(&fit_id).unwrap();
+    matches!(fit.kind, SolShipKind::Ship)
 }

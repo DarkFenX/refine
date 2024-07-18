@@ -18,7 +18,7 @@ impl AEffectBuffInfo {
 /// Defines what items the buff is applied to.
 #[derive(Copy, Clone)]
 pub enum AEffectBuffScope {
-    /// Directly affects all items the effect is applied to.
+    /// Directly affects all items the effect is applied to, except for structures.
     Everything,
     /// Affects only ships.
     Ships,

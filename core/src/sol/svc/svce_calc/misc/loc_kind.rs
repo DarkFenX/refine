@@ -18,14 +18,3 @@ impl std::convert::TryFrom<SolDomain> for SolLocationKind {
         }
     }
 }
-impl std::convert::TryFrom<SolShipKind> for SolLocationKind {
-    type Error = &'static str;
-
-    fn try_from(value: SolShipKind) -> Result<Self, Self::Error> {
-        match value {
-            SolShipKind::Ship => Ok(Self::Ship),
-            SolShipKind::Structure => Ok(Self::Structure),
-            _ => Err("unable to convert modifier domain to location kind"),
-        }
-    }
-}
