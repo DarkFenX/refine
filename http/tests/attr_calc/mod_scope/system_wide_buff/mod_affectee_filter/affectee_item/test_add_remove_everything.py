@@ -43,15 +43,15 @@ def test_root_add_fit_sw_item_remove_item_sw_fit(client, consts):
     eve_sw_effect = client.mk_eve_item(
         attrs={eve_buff_type_attr.id: eve_buff.id, eve_buff_val_attr.id: 5},
         eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_struct = client.mk_eve_struct(attrs={eve_affectee_attr.id: 7.5})
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect.id)
-    api_struct = api_fit.set_ship(type_id=eve_struct.id)
-    assert api_struct.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
-    api_struct.remove()
-    api_struct.update(status_code=404)
+    api_ship = api_fit.set_ship(type_id=eve_ship.id)
+    assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
+    api_ship.remove()
+    api_ship.update(status_code=404)
     api_sw_effect.remove()
     api_fit.remove()
 

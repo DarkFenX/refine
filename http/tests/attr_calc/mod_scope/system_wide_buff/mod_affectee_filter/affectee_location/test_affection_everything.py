@@ -31,9 +31,7 @@ def test_affected_child_ship_multiple(client, consts):
     assert api_module2.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
 
 
-def test_affected_child_struct(client, consts):
-    # Make sure structure items (such as modules) are affected by location-filtered buff
-    # modification
+def test_uunaffected_child_struct(client, consts):
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
@@ -55,11 +53,10 @@ def test_affected_child_struct(client, consts):
     api_fit.set_ship(type_id=eve_struct.id)
     api_module = api_fit.add_mod(type_id=eve_module.id)
     api_sol.add_sw_effect(type_id=eve_sw_effect.id)
-    assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
 
 
-def test_unaffected_child_of_non_buff_modifiable_root(client, consts):
-    # Character isn't buff-modifiable, so items which are located on it are not affected
+def test_unaffected_child_char(client, consts):
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()

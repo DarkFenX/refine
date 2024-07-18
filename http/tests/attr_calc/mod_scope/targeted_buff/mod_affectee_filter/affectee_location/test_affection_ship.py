@@ -77,7 +77,7 @@ def test_unaffected_root_ship(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(200)
 
 
-def test_unaffected_non_buff_modifiable_child(client, consts):
+def test_unaffected_child_char(client, consts):
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()

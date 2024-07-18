@@ -49,8 +49,7 @@ def test_unaffected_child_struct(client, consts):
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(200)
 
 
-def test_unaffected_child_of_non_buff_modifiable_root(client, consts):
-    # Character isn't buff-modifiable, so items which are located on it are not affected
+def test_unaffected_child_char(client, consts):
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()

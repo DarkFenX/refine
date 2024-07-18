@@ -65,4 +65,4 @@ def test_replace_proj_ship_to_struct(client, consts):
     api_struct = api_fit.set_ship(type_id=eve_struct.id)
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     api_proj_effect.change_proj_effect(add_projs=[api_struct.id])
-    assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)

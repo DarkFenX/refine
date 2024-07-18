@@ -53,7 +53,7 @@ def test_replace_root_struct_to_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_struct = api_fit.set_ship(type_id=eve_struct.id)
     api_module = api_fit.add_mod(type_id=eve_module.id)
-    assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(37.5)
+    assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     api_struct.remove()
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(7.5)
     api_fit.set_ship(type_id=eve_ship.id)

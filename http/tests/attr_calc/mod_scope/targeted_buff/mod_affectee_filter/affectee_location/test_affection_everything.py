@@ -24,29 +24,6 @@ def test_affected_child_ship(client, consts):
     assert api_rig.update().attrs[eve_affectee_attr.id].dogma == approx(90)
 
 
-def test_affected_child_struct(client, consts):
-    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
-    eve_affectee_attr = client.mk_eve_attr()
-    client.mk_eve_buff(
-        id_=consts.EveBuff.stasis_webification_burst,
-        aggr_mode=consts.EveBuffAggrMode.max,
-        op=consts.EveBuffOp.post_percent,
-        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id)])
-    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
-    eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 200})
-    eve_struct = client.mk_eve_struct()
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit1 = api_sol.create_fit()
-    api_fit2 = api_sol.create_fit()
-    api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
-    api_struct = api_fit2.set_ship(type_id=eve_struct.id)
-    api_rig = api_fit2.add_rig(type_id=eve_rig.id)
-    api_module.change_mod(add_projs=[api_struct.id])
-    assert api_rig.update().attrs[eve_affectee_attr.id].dogma == approx(90)
-
-
 def test_unaffected_root(client, consts):
     eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr = client.mk_eve_attr()
@@ -68,7 +45,30 @@ def test_unaffected_root(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr.id].dogma == approx(200)
 
 
-def test_unaffected_non_buff_modifiable_child(client, consts):
+def test_unaffected_child_struct(client, consts):
+    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_affectee_attr = client.mk_eve_attr()
+    client.mk_eve_buff(
+        id_=consts.EveBuff.stasis_webification_burst,
+        aggr_mode=consts.EveBuffAggrMode.max,
+        op=consts.EveBuffOp.post_percent,
+        loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr.id)])
+    eve_effect = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
+    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -55}, eff_ids=[eve_effect.id], defeff_id=eve_effect.id)
+    eve_rig = client.mk_eve_item(attrs={eve_affectee_attr.id: 200})
+    eve_struct = client.mk_eve_struct()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_module = api_fit1.add_mod(type_id=eve_module.id, state=consts.ApiState.active)
+    api_struct = api_fit2.set_ship(type_id=eve_struct.id)
+    api_rig = api_fit2.add_rig(type_id=eve_rig.id)
+    api_module.change_mod(add_projs=[api_struct.id])
+    assert api_rig.update().attrs[eve_affectee_attr.id].dogma == approx(200)
+
+
+def test_unaffected_child_char(client, consts):
     eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_affectee_attr = client.mk_eve_attr()
     client.mk_eve_buff(

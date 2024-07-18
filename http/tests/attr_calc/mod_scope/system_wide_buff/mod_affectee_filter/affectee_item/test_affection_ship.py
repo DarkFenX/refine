@@ -70,9 +70,7 @@ def test_unaffected_child(client, consts):
     assert api_drone.update().attrs[eve_affectee_attr.id].dogma == approx(200)
 
 
-def test_unaffected_non_buff_modifiable_root(client, consts):
-    # Check that top-level entities which are not supposed to receive modification (e.g. characters)
-    # do not receive it
+def test_unaffected_root_char(client, consts):
     eve_buff_type_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr = client.mk_eve_attr()
