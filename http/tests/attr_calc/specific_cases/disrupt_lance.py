@@ -27,10 +27,10 @@ def test_debuff_rr_ship(client, consts):
     assert api_mod.initial_val == approx(-50)
     assert api_mod.affectors.one().item_id == api_affector_module1.id
     assert api_mod.affectors.one().attr_id is None
-    assert api_mod.affectors.one().hardcoded == approx(-50)
     api_affector_fit2 = api_sol.create_fit()
     api_affector_module2 = api_affector_fit2.add_mod(type_id=eve_affector_module.id, state=consts.ApiState.active)
     api_affector_module2.change_mod(add_projs=[api_affectee_ship.id])
+    # No stacking, lances are applied via debuff
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(0.5)
     api_mod = api_affectee_ship.mods[eve_affectee_attr.id].one()
@@ -40,4 +40,3 @@ def test_debuff_rr_ship(client, consts):
     assert api_mod.initial_val == approx(-50)
     assert api_mod.affectors.one().item_id in (api_affector_module1.id, api_affector_module2.id)
     assert api_mod.affectors.one().attr_id is None
-    assert api_mod.affectors.one().hardcoded == approx(-50)

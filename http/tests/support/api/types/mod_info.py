@@ -9,7 +9,7 @@ class AttrModInfoMap(dict):
         super().__init__({
             int(k): ModInfoList(ModInfo(
                 m[0], m[1], m[2], m[3], m[4], m[5],
-                ModAffectorInfoList(ModAffectorInfo.from_mixed(n) for n in m[6])) for m in v)
+                ModAffectorInfoList(ModAffectorInfo(*n) for n in m[6])) for m in v)
             for k, v in data.items()})
 
     def find_by_op(self, affectee_attr_id: int, op: str) -> ModInfoList:
@@ -83,11 +83,4 @@ class ModAffectorInfo(NamedTuple):
 
     item_id: str
     attr_id: Union[int, None]
-    hardcoded: Union[float, None]
 
-    @classmethod
-    def from_mixed(cls, data: list) -> ModAffectorInfo:
-        item_id, value_info = data
-        attr_id = value_info.get('attr')
-        hardcoded = value_info.get('hc')
-        return cls(item_id, attr_id, hardcoded)
