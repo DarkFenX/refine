@@ -1,17 +1,17 @@
 use crate::defs::{EAttrId, EBuffId, Rational};
 
 /// Effect-specific buff information.
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub struct AEffectBuffInfo {
     /// Defines where to look for buff type and value.
-    pub data_source: AEffectBuffDataSrc,
+    pub source: AEffectBuffSrc,
     /// Defines what items the buff is applied to.
     pub scope: AEffectBuffScope,
 }
 impl AEffectBuffInfo {
     /// Make a new adapted dogma effect out of passed data.
-    pub(crate) fn new(data_source: AEffectBuffDataSrc, scope: AEffectBuffScope) -> Self {
-        Self { data_source, scope }
+    pub(crate) fn new(source: AEffectBuffSrc, scope: AEffectBuffScope) -> Self {
+        Self { source, scope }
     }
 }
 
@@ -27,12 +27,18 @@ pub enum AEffectBuffScope {
 }
 
 /// Defines where to look for buff type and value.
-#[derive(Copy, Clone)]
-pub enum AEffectBuffDataSrc {
+#[derive(Clone)]
+pub enum AEffectBuffSrc {
     /// Standard set of attributes on affecting item.
     DefaultAttrs,
+    /// Buff ID and values come from elsewhere.
+    Customized(Vec<AEffectBuffSrcCustom>),
+}
+
+#[derive(Copy, Clone)]
+pub enum AEffectBuffSrcCustom {
     /// Hardcoded buff ID, but buff value is stored on affecting item.
-    Customized(EBuffId, EAttrId),
+    AffectorVal(EBuffId, EAttrId),
     /// Hardcoded buff ID and buff value for the effect.
-    Hardcoded(EBuffId, Rational),
+    HardcodedVal(EBuffId, Rational),
 }

@@ -108,7 +108,7 @@ impl GSupport {
         ] {
             self.eff_buff_map.insert(
                 effect_id,
-                ad::AEffectBuffInfo::new(ad::AEffectBuffDataSrc::DefaultAttrs, ad::AEffectBuffScope::FleetShips),
+                ad::AEffectBuffInfo::new(ad::AEffectBuffSrc::DefaultAttrs, ad::AEffectBuffScope::FleetShips),
             );
         }
         // Buffs which affect everything, and which rely on standard on-item attributes
@@ -124,19 +124,22 @@ impl GSupport {
         ] {
             self.eff_buff_map.insert(
                 effect_id,
-                ad::AEffectBuffInfo::new(ad::AEffectBuffDataSrc::DefaultAttrs, ad::AEffectBuffScope::Everything),
+                ad::AEffectBuffInfo::new(ad::AEffectBuffSrc::DefaultAttrs, ad::AEffectBuffScope::Everything),
             );
         }
         // Buffs which affect only ships, and which rely on standard on-item attributes
         self.eff_buff_map.insert(
             ec::effects::MOD_TITAN_EFFECT_GENERATOR,
-            ad::AEffectBuffInfo::new(ad::AEffectBuffDataSrc::DefaultAttrs, ad::AEffectBuffScope::Ships),
+            ad::AEffectBuffInfo::new(ad::AEffectBuffSrc::DefaultAttrs, ad::AEffectBuffScope::Ships),
         );
         // Bursts with hardcoded IDs
         self.eff_buff_map.insert(
             ec::effects::DOOMSDAY_AOE_WEB,
             ad::AEffectBuffInfo::new(
-                ad::AEffectBuffDataSrc::Customized(ec::buffs::STASIS_WEBIFICATION_BURST, ec::attrs::SPEED_FACTOR),
+                ad::AEffectBuffSrc::Customized(vec![ad::AEffectBuffSrcCustom::AffectorVal(
+                    ec::buffs::STASIS_WEBIFICATION_BURST,
+                    ec::attrs::SPEED_FACTOR,
+                )]),
                 ad::AEffectBuffScope::Everything,
             ),
         );

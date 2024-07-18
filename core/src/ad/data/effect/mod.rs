@@ -1,5 +1,5 @@
 pub use affectee_filter::AEffectAffecteeFilter;
-pub use buff_info::{AEffectBuffDataSrc, AEffectBuffInfo, AEffectBuffScope};
+pub use buff_info::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom};
 pub use build_status::AEffectModBuildStatus;
 pub use domain::AEffectDomain;
 pub use effect::AEffect;

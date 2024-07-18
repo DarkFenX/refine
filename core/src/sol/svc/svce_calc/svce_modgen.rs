@@ -31,8 +31,8 @@ impl SolSvcs {
         }
         // Buffs
         if let Some(buff_info) = effect.buff.as_ref() {
-            match buff_info.data_source {
-                ad::AEffectBuffDataSrc::DefaultAttrs => {
+            match &buff_info.source {
+                ad::AEffectBuffSrc::DefaultAttrs => {
                     for (buff_type_attr_id, buff_val_attr_id) in ec::extras::BUFF_STDATTRS {
                         if let Ok(buff_id) = self.calc_get_item_attr_val(sol_view, &item_id, &buff_type_attr_id) {
                             add_buff_mods(
@@ -48,20 +48,24 @@ impl SolSvcs {
                         }
                     }
                 }
-                ad::AEffectBuffDataSrc::Customized(buff_id, buff_val_attr_id) => {
-                    add_buff_mods(
-                        modifiers,
-                        sol_view,
-                        item,
-                        effect,
-                        &buff_id,
-                        &buff_info.scope,
-                        None,
-                        buff_val_attr_id,
-                    );
+                ad::AEffectBuffSrc::Customized(buff_custom_srcs) => {
+                    for buff_custom_src in buff_custom_srcs {
+                        match buff_custom_src {
+                            ad::AEffectBuffSrcCustom::AffectorVal(buff_id, buff_val_attr_id) => add_buff_mods(
+                                modifiers,
+                                sol_view,
+                                item,
+                                effect,
+                                &buff_id,
+                                &buff_info.scope,
+                                None,
+                                *buff_val_attr_id,
+                            ),
+                            // TODO: implement buffs with hardcoded values (e.g. disruption lance)
+                            ad::AEffectBuffSrcCustom::HardcodedVal(_, _) => (),
+                        }
+                    }
                 }
-                // TODO: implement buffs with hardcoded values (e.g. disruption lance)
-                ad::AEffectBuffDataSrc::Hardcoded(_, _) => (),
             }
         }
         // Custom modifiers
@@ -86,7 +90,7 @@ impl SolSvcs {
         for effect_id in effect_ids {
             let effect = sol_view.src.get_a_effect(effect_id).unwrap();
             if let Some(buff_info) = effect.buff.as_ref() {
-                if matches!(buff_info.data_source, ad::AEffectBuffDataSrc::DefaultAttrs) {
+                if matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs) {
                     if let Ok(buff_id) = self.calc_get_item_attr_val(sol_view, &item_id, &buff_type_attr_id) {
                         add_buff_mods(
                             &mut modifiers,

@@ -34,8 +34,12 @@ impl Fk for ed::EEffect {
         vec.extend(self.get_fks_from_mod_args("modifiedAttributeID"));
         // Buffs can reference attributes too
         if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
-            if let ad::AEffectBuffDataSrc::Customized(_, attr_id) = buff_info.data_source {
-                vec.push(attr_id);
+            if let ad::AEffectBuffSrc::Customized(buff_custom_srcs) = &buff_info.source {
+                for buff_custom_src in buff_custom_srcs.iter() {
+                    if let ad::AEffectBuffSrcCustom::AffectorVal(_, attr_id) = buff_custom_src {
+                        vec.push(*attr_id);
+                    }
+                }
             }
         }
         vec
@@ -47,10 +51,13 @@ impl Fk for ed::EEffect {
     fn get_buff_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         if let Some(buff_info) = g_supp.eff_buff_map.get(&self.id) {
-            match buff_info.data_source {
-                ad::AEffectBuffDataSrc::Customized(buff_id, _) => vec.push(buff_id),
-                ad::AEffectBuffDataSrc::Hardcoded(buff_id, _) => vec.push(buff_id),
-                _ => (),
+            if let ad::AEffectBuffSrc::Customized(buff_custom_srcs) = &buff_info.source {
+                for buff_custom_src in buff_custom_srcs.iter() {
+                    match buff_custom_src {
+                        ad::AEffectBuffSrcCustom::AffectorVal(buff_id, _) => vec.push(*buff_id),
+                        ad::AEffectBuffSrcCustom::HardcodedVal(buff_id, _) => vec.push(*buff_id),
+                    }
+                }
             }
         }
         vec

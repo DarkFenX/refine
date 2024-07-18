@@ -62,8 +62,8 @@ impl SolBuffRegister {
 
 fn uses_default_attrs(effect: &ad::AEffect) -> bool {
     match &effect.buff {
-        Some(buff_info) => match buff_info.data_source {
-            ad::AEffectBuffDataSrc::DefaultAttrs => true,
+        Some(buff_info) => match buff_info.source {
+            ad::AEffectBuffSrc::DefaultAttrs => true,
             _ => false,
         },
         _ => false,

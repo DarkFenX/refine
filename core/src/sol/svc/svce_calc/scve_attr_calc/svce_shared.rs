@@ -1,14 +1,12 @@
 use crate::{
-    defs::{AttrVal, EAttrId},
+    defs::AttrVal,
     sol::{
-        item::SolItem,
         svc::{
-            svce_calc::{SolContext, SolCtxModifier, SolModification, SolModificationKey, SolModifierKind},
+            svce_calc::{SolContext, SolCtxModifier, SolModifierKind},
             SolSvcs,
         },
         SolView,
     },
-    util::StMap,
 };
 
 impl SolSvcs {
