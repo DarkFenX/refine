@@ -1,7 +1,7 @@
 //! Adapted data generator
 use crate::{
     ad,
-    defs::{EAttrId, EAttrUnitId, EBuffId, EItemCatId, EItemGrpId},
+    defs::{EAttrId, EAttrUnitId, EBuffId, EItemCatId, EItemGrpId, Rational},
     ec, ed,
     util::{IntResult, StMap},
 };
@@ -140,6 +140,22 @@ impl GSupport {
                     ec::buffs::STASIS_WEBIFICATION_BURST,
                     ec::attrs::SPEED_FACTOR,
                 )]),
+                ad::AEffectBuffScope::Everything,
+            ),
+        );
+        // Full hardcode
+        self.eff_buff_map.insert(
+            ec::effects::DEBUFF_LANCE,
+            ad::AEffectBuffInfo::new(
+                ad::AEffectBuffSrc::Customized(vec![
+                    ad::AEffectBuffSrcCustom::HardcodedVal(
+                        ec::buffs::REMOTE_REPAIR_IMPEDANCE,
+                        Rational::from_integer(-50),
+                    ),
+                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::DISALLOW_DOCK_JUMP, Rational::from_integer(1)),
+                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::DISALLOW_TETHER, Rational::from_integer(1)),
+                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::WARP_PENALTY, Rational::from_integer(100)),
+                ]),
                 ad::AEffectBuffScope::Everything,
             ),
         );
