@@ -1,11 +1,11 @@
 use crate::{
     ad,
-    defs::{AttrVal, EAttrId, EEffectId, SolItemId},
+    defs::{AttrVal, EAttrId, EEffectId, Rational, SolItemId},
     ec,
     sol::{
         item::SolItem,
         svc::{
-            svce_calc::{SolAffecteeFilter, SolAggrMode, SolDomain, SolModifierKind, SolOp},
+            svce_calc::{SolAffecteeFilter, SolAffectorValueInfo, SolAggrMode, SolDomain, SolModifierKind, SolOp},
             SolSvcs,
         },
         SolView,
@@ -97,12 +97,49 @@ impl SolRawModifier {
             falloff_attr_id,
         ))
     }
-    pub(in crate::sol::svc::svce_calc) fn from_a_buff(
+    pub(in crate::sol::svc::svce_calc) fn from_a_buff_regular(
         affector_item: &SolItem,
         a_effect: &ad::AEffect,
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
         affector_attr_id: EAttrId,
+        domain: SolDomain,
+        buff_type_attr_id: Option<EAttrId>,
+    ) -> Option<Self> {
+        SolRawModifier::from_a_buff(
+            affector_item,
+            a_effect,
+            a_buff,
+            a_mod,
+            SolAffectorValue::AttrId(affector_attr_id),
+            domain,
+            buff_type_attr_id,
+        )
+    }
+    pub(in crate::sol::svc::svce_calc) fn from_a_buff_hardcoded(
+        affector_item: &SolItem,
+        a_effect: &ad::AEffect,
+        a_buff: &ad::ABuff,
+        a_mod: &ad::ABuffModifier,
+        affector_val: Rational,
+        domain: SolDomain,
+    ) -> Option<Self> {
+        SolRawModifier::from_a_buff(
+            affector_item,
+            a_effect,
+            a_buff,
+            a_mod,
+            SolAffectorValue::Hardcoded(affector_val),
+            domain,
+            None,
+        )
+    }
+    fn from_a_buff(
+        affector_item: &SolItem,
+        a_effect: &ad::AEffect,
+        a_buff: &ad::ABuff,
+        a_mod: &ad::ABuffModifier,
+        affector_val: SolAffectorValue,
         domain: SolDomain,
         buff_type_attr_id: Option<EAttrId>,
     ) -> Option<Self> {
@@ -120,7 +157,7 @@ impl SolRawModifier {
             kind,
             affector_item.get_id(),
             a_effect.id,
-            SolAffectorValue::AttrId(affector_attr_id),
+            affector_val,
             (&a_buff.op).into(),
             SolAggrMode::from_a_buff(a_buff),
             affectee_filter,
@@ -136,8 +173,11 @@ impl SolRawModifier {
     pub(in crate::sol::svc::svce_calc) fn get_affector_attr_id(&self) -> Option<EAttrId> {
         self.affector_value.get_affector_attr_id()
     }
-    pub(in crate::sol::svc::svce_calc) fn get_affectors(&self, sol_view: &SolView) -> Vec<(SolItemId, EAttrId)> {
-        self.affector_value.get_affectors(sol_view, &self.affector_item_id)
+    pub(in crate::sol::svc::svce_calc) fn get_affector_info(
+        &self,
+        sol_view: &SolView,
+    ) -> Vec<(SolItemId, SolAffectorValueInfo)> {
+        self.affector_value.get_affector_info(sol_view, &self.affector_item_id)
     }
     pub(in crate::sol::svc::svce_calc) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView) -> Result<AttrVal> {
         self.affector_value

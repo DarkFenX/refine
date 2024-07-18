@@ -28,10 +28,10 @@ const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
 
 struct SolAffection {
     modification: SolModification,
-    affectors: Vec<(SolItemId, EAttrId)>,
+    affectors: Vec<(SolItemId, SolAffectorValueInfo)>,
 }
 impl SolAffection {
-    fn new(modification: SolModification, affectors: Vec<(SolItemId, EAttrId)>) -> Self {
+    fn new(modification: SolModification, affectors: Vec<(SolItemId, SolAffectorValueInfo)>) -> Self {
         Self {
             modification,
             affectors,
@@ -110,7 +110,7 @@ impl SolSvcs {
                 modifier.raw.aggr_mode,
                 affector_item_cat_id,
             );
-            let affection = SolAffection::new(modification, modifier.raw.get_affectors(sol_view));
+            let affection = SolAffection::new(modification, modifier.raw.get_affector_info(sol_view));
             mods.insert(mod_key, affection);
         }
         mods.into_values()
@@ -149,7 +149,7 @@ impl SolSvcs {
                 affection
                     .affectors
                     .into_iter()
-                    .map(|(item_id, attr_id)| SolAffectorInfo::new(item_id, SolAffectorValueInfo::AttrId(attr_id)))
+                    .map(|(item_id, value_info)| SolAffectorInfo::new(item_id, value_info))
                     .collect(),
             );
         }

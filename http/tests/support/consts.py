@@ -17,36 +17,37 @@ class EveItemGrp(IntEnum):
 @unique
 class EveItemCat(IntEnum):
     celestial = 2
-    charge = 8
-    drone = 18
-    fighter = 87
-    implant = 20
-    module = 7
     ship = 6
+    module = 7
+    charge = 8
     skill = 16
-    structure = 65
+    drone = 18
+    implant = 20
     subsystem = 32
+    structure = 65
+    fighter = 87
 
 
 @unique
 class EveEffect(IntEnum):
-    doomsday_aoe_web = 6476
-    drone_dmg_bonus = 1730
-    fueled_armor_repair = 5275
-    hardpoint_modifier_effect = 3773
+    online = 16
     missile_em_dmg_bonus = 660
     missile_expl_dmg_bonus = 661
-    missile_kin_dmg_bonus = 668
     missile_therm_dmg_bonus = 662
-    mod_bonus_afterburner = 6731
+    missile_kin_dmg_bonus = 668
+    drone_dmg_bonus = 1730
+    self_rof = 1851
+    hardpoint_modifier_effect = 3773
+    slot_modifier = 3774
+    fueled_armor_repair = 5275
+    doomsday_aoe_web = 6476
     mod_bonus_microwarpdrive = 6730
+    mod_bonus_afterburner = 6731
     mod_bonus_warfare_link_armor = 6732
     mod_titan_effect_generator = 6753
-    online = 16
-    self_rof = 1851
     ship_module_arar = 6651
-    slot_modifier = 3774
     weather_darkness = 7060
+    debuff_lance = 11691
 
 
 @unique
@@ -95,7 +96,11 @@ class EveModOp(IntEnum):
 
 @unique
 class EveBuff(IntEnum):
+    warp_penalty = 4
+    disallow_dock_jump = 6
     stasis_webification_burst = 27
+    disallow_tether = 57
+    remote_repair_impedance = 2201
 
 
 @unique

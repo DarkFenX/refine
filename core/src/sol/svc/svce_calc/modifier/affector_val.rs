@@ -2,7 +2,11 @@ use num_traits::cast::ToPrimitive;
 
 use crate::{
     defs::{AttrVal, EAttrId, EEffectId, Rational, SolItemId},
-    sol::{item::SolItem, svc::SolSvcs, SolView},
+    sol::{
+        item::SolItem,
+        svc::{svce_calc::SolAffectorValueInfo, SolSvcs},
+        SolView,
+    },
     util::Result,
 };
 
@@ -26,12 +30,16 @@ impl SolAffectorValue {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affectors(&self, sol_view: &SolView, item_id: &SolItemId) -> Vec<(SolItemId, EAttrId)> {
+    pub(super) fn get_affector_info(
+        &self,
+        sol_view: &SolView,
+        item_id: &SolItemId,
+    ) -> Vec<(SolItemId, SolAffectorValueInfo)> {
         match self {
-            Self::AttrId(attr_id) => vec![(*item_id, *attr_id)],
-            Self::Hardcoded(_) => Vec::new(),
-            Self::PropulsionModule => prop::get_affectors(sol_view, item_id),
-            Self::AncillaryArmorRep => vec![(*item_id, aar::AAR_AFFECTOR_ATTR_ID)],
+            Self::AttrId(attr_id) => vec![(*item_id, SolAffectorValueInfo::AttrId(*attr_id))],
+            Self::Hardcoded(val) => vec![(*item_id, SolAffectorValueInfo::Hardcoded(val.to_f64().unwrap()))],
+            Self::PropulsionModule => prop::get_affector_info(sol_view, item_id),
+            Self::AncillaryArmorRep => vec![(*item_id, SolAffectorValueInfo::AttrId(aar::AAR_AFFECTOR_ATTR_ID))],
         }
     }
     pub(super) fn get_mod_val(

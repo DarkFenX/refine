@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{EAttrId, EBuffId, EEffectId},
+    defs::{EAttrId, EBuffId, EEffectId, Rational},
     ec,
     sol::{
         item::SolItem,
@@ -61,8 +61,15 @@ impl SolSvcs {
                                 None,
                                 *buff_val_attr_id,
                             ),
-                            // TODO: implement buffs with hardcoded values (e.g. disruption lance)
-                            ad::AEffectBuffSrcCustom::HardcodedVal(_, _) => (),
+                            ad::AEffectBuffSrcCustom::HardcodedVal(buff_id, buff_val) => add_buff_mods_hardcoded(
+                                modifiers,
+                                sol_view,
+                                item,
+                                effect,
+                                &buff_id,
+                                &buff_info.scope,
+                                *buff_val,
+                            ),
                         }
                     }
                 }
@@ -122,7 +129,7 @@ fn add_buff_mods(
 ) {
     if let Some(buff) = sol_view.src.get_a_buff(buff_id) {
         for buff_mod in buff.mods.iter() {
-            let modifier = match SolRawModifier::from_a_buff(
+            let modifier = match SolRawModifier::from_a_buff_regular(
                 item,
                 effect,
                 &buff,
@@ -134,6 +141,28 @@ fn add_buff_mods(
                 Some(modifier) => modifier,
                 None => continue,
             };
+            modifiers.push(modifier);
+        }
+    }
+}
+
+fn add_buff_mods_hardcoded(
+    modifiers: &mut Vec<SolRawModifier>,
+    sol_view: &SolView,
+    item: &SolItem,
+    effect: &ad::AEffect,
+    buff_id: &EBuffId,
+    buff_scope: &ad::AEffectBuffScope,
+    buff_val: Rational,
+) {
+    if let Some(buff) = sol_view.src.get_a_buff(buff_id) {
+        for buff_mod in buff.mods.iter() {
+            let modifier =
+                match SolRawModifier::from_a_buff_hardcoded(item, effect, &buff, buff_mod, buff_val, buff_scope.into())
+                {
+                    Some(modifier) => modifier,
+                    None => continue,
+                };
             modifiers.push(modifier);
         }
     }
