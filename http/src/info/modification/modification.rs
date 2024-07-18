@@ -1,4 +1,4 @@
-use super::{op::HModOp, src::HModSrcInfo};
+use super::{affector::HAffectorInfo, op::HModOp};
 
 #[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HModificationInfo {
@@ -8,7 +8,7 @@ pub(crate) struct HModificationInfo {
     pub(crate) resist_mult: Option<rc::AttrVal>,
     pub(crate) stacking_mult: Option<rc::AttrVal>,
     pub(crate) applied_val: rc::AttrVal,
-    pub(crate) src: Vec<HModSrcInfo>,
+    pub(crate) src: Vec<HAffectorInfo>,
 }
 impl HModificationInfo {
     fn new(
@@ -18,7 +18,7 @@ impl HModificationInfo {
         resist_mult: Option<rc::AttrVal>,
         stacking_mult: Option<rc::AttrVal>,
         applied_val: rc::AttrVal,
-        src: Vec<HModSrcInfo>,
+        src: Vec<HAffectorInfo>,
     ) -> Self {
         Self {
             op,

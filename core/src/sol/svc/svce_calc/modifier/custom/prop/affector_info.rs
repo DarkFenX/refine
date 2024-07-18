@@ -1,6 +1,6 @@
 use crate::{
-    defs::{EAttrId, SolItemId},
-    sol::{svc::svce_calc::SolAffectorValueInfo, SolView},
+    defs::SolItemId,
+    sol::{svc::svce_calc::SolAffectorInfo, SolView},
 };
 
 use super::{
@@ -11,12 +11,12 @@ use super::{
 pub(in crate::sol::svc::svce_calc::modifier) fn get_affector_info(
     sol_view: &SolView,
     item_id: &SolItemId,
-) -> Vec<(SolItemId, SolAffectorValueInfo)> {
+) -> Vec<SolAffectorInfo> {
     let mut affectors = Vec::new();
     if let Ok(Some(ship_id)) = get_ship_id(sol_view, item_id) {
-        affectors.push((*item_id, SolAffectorValueInfo::AttrId(PROP_BOOST)));
-        affectors.push((*item_id, SolAffectorValueInfo::AttrId(PROP_THRUST)));
-        affectors.push((ship_id, SolAffectorValueInfo::AttrId(SHIP_MASS)));
+        affectors.push(SolAffectorInfo::new(*item_id, Some(PROP_BOOST)));
+        affectors.push(SolAffectorInfo::new(*item_id, Some(PROP_THRUST)));
+        affectors.push(SolAffectorInfo::new(ship_id, Some(SHIP_MASS)));
     }
     affectors
 }

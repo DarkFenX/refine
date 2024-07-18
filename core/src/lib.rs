@@ -32,8 +32,8 @@ pub use sol::{
         SolItemInfo, SolModuleInfo, SolProjEffectInfo, SolProjInfo, SolRigInfo, SolShipInfo, SolSkillInfo,
         SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
     },
-    SolAffectorInfo, SolAffectorValueInfo, SolAttrVal, SolEffectInfo, SolEffectMode, SolItemState, SolModRack,
-    SolModificationInfo, SolOpInfo, SolOrdAddMode, SolOrdRmMode, SolarSystem,
+    SolAffectorInfo, SolAttrVal, SolEffectInfo, SolEffectMode, SolItemState, SolModRack, SolModificationInfo,
+    SolOpInfo, SolOrdAddMode, SolOrdRmMode, SolarSystem,
 };
 pub use src::Src;
 pub use util::{Error, ErrorKind, Result};

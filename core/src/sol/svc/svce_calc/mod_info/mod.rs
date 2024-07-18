@@ -1,4 +1,4 @@
-pub use affector::{SolAffectorInfo, SolAffectorValueInfo};
+pub use affector::SolAffectorInfo;
 pub use modification::SolModificationInfo;
 pub use op::SolOpInfo;
 

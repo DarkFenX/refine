@@ -4,7 +4,7 @@ use crate::{
     defs::{AttrVal, EAttrId, EEffectId, Rational, SolItemId},
     sol::{
         item::SolItem,
-        svc::{svce_calc::SolAffectorValueInfo, SolSvcs},
+        svc::{svce_calc::SolAffectorInfo, SolSvcs},
         SolView,
     },
     util::Result,
@@ -30,16 +30,12 @@ impl SolAffectorValue {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(
-        &self,
-        sol_view: &SolView,
-        item_id: &SolItemId,
-    ) -> Vec<(SolItemId, SolAffectorValueInfo)> {
+    pub(super) fn get_affector_info(&self, sol_view: &SolView, item_id: &SolItemId) -> Vec<SolAffectorInfo> {
         match self {
-            Self::AttrId(attr_id) => vec![(*item_id, SolAffectorValueInfo::AttrId(*attr_id))],
-            Self::Hardcoded(val) => vec![(*item_id, SolAffectorValueInfo::Hardcoded(val.to_f64().unwrap()))],
+            Self::AttrId(attr_id) => vec![SolAffectorInfo::new(*item_id, Some(*attr_id))],
+            Self::Hardcoded(_) => vec![SolAffectorInfo::new(*item_id, None)],
             Self::PropulsionModule => prop::get_affector_info(sol_view, item_id),
-            Self::AncillaryArmorRep => vec![(*item_id, SolAffectorValueInfo::AttrId(aar::AAR_AFFECTOR_ATTR_ID))],
+            Self::AncillaryArmorRep => vec![SolAffectorInfo::new(*item_id, Some(aar::AAR_AFFECTOR_ATTR_ID))],
         }
     }
     pub(super) fn get_mod_val(

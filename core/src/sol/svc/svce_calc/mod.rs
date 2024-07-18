@@ -34,7 +34,7 @@ use accum::{SolAttrValInfo, SolModAccumFast, SolModAccumInfo};
 pub(in crate::sol::svc) use data::SolSvcCalcData;
 pub use misc::SolAttrVal;
 use misc::{SolAttrSpec, SolLocationKind, SolModification, SolModificationKey};
-pub use mod_info::{SolAffectorInfo, SolAffectorValueInfo, SolModificationInfo, SolOpInfo};
+pub use mod_info::{SolAffectorInfo, SolModificationInfo, SolOpInfo};
 use modifier::{
     debug, extend_with_custom_mods, SolAffecteeFilter, SolAggrMode, SolContext, SolCtxModifier, SolDomain,
     SolModifierKind, SolOp, SolRawModifier,

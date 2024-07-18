@@ -1,16 +1,11 @@
-use crate::defs::{AttrVal, EAttrId, SolItemId};
+use crate::defs::{EAttrId, SolItemId};
 
 pub struct SolAffectorInfo {
     pub item_id: SolItemId,
-    pub val: SolAffectorValueInfo,
+    pub attr_id: Option<EAttrId>,
 }
 impl SolAffectorInfo {
-    pub(in crate::sol::svc::svce_calc) fn new(item_id: SolItemId, val: SolAffectorValueInfo) -> Self {
-        Self { item_id, val }
+    pub(in crate::sol::svc::svce_calc) fn new(item_id: SolItemId, attr_id: Option<EAttrId>) -> Self {
+        Self { item_id, attr_id }
     }
-}
-
-pub enum SolAffectorValueInfo {
-    AttrId(EAttrId),
-    Hardcoded(AttrVal),
 }

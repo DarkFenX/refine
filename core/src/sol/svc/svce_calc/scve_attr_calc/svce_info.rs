@@ -9,8 +9,8 @@ use crate::{
         item::SolItem,
         svc::{
             svce_calc::{
-                SolAffectorInfo, SolAffectorValueInfo, SolAttrValInfo, SolModAccumInfo, SolModification,
-                SolModificationInfo, SolModificationKey, SolOpInfo,
+                SolAffectorInfo, SolAttrValInfo, SolModAccumInfo, SolModification, SolModificationInfo,
+                SolModificationKey, SolOpInfo,
             },
             SolSvcs,
         },
@@ -28,10 +28,10 @@ const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
 
 struct SolAffection {
     modification: SolModification,
-    affectors: Vec<(SolItemId, SolAffectorValueInfo)>,
+    affectors: Vec<SolAffectorInfo>,
 }
 impl SolAffection {
-    fn new(modification: SolModification, affectors: Vec<(SolItemId, SolAffectorValueInfo)>) -> Self {
+    fn new(modification: SolModification, affectors: Vec<SolAffectorInfo>) -> Self {
         Self {
             modification,
             affectors,
@@ -146,11 +146,7 @@ impl SolSvcs {
                 attr.penalizable,
                 &affection.modification.affector_item_cat_id,
                 &affection.modification.aggr_mode,
-                affection
-                    .affectors
-                    .into_iter()
-                    .map(|(item_id, value_info)| SolAffectorInfo::new(item_id, value_info))
-                    .collect(),
+                affection.affectors,
             );
         }
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_val, attr.hig);
@@ -170,10 +166,7 @@ impl SolSvcs {
                             None,
                             None,
                             capping_vals.dogma,
-                            vec![SolAffectorInfo::new(
-                                *item_id,
-                                SolAffectorValueInfo::AttrId(capping_attr_id),
-                            )],
+                            vec![SolAffectorInfo::new(*item_id, Some(capping_attr_id))],
                         ))
                     }
                 }
