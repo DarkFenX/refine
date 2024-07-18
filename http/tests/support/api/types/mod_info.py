@@ -83,4 +83,3 @@ class ModAffectorInfo(NamedTuple):
 
     item_id: str
     attr_id: Union[int, None]
-
