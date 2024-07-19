@@ -18,7 +18,7 @@ def test_default_val(client, consts):
     api_fit = api_sol.create_fit()
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_item.id)
     api_affector_item = api_fit.add_rig(type_id=eve_affector_item.id)
-    # Fetch affectee item attributes just to trigger base value fetch
+    # Fetch affectee item attributes just to trigger base value fetch of the affector attribute
     api_affectee_item.update()
     assert api_affectee_item.attrs[eve_affectee_attr.id].dogma == approx(120)
     api_mod = api_affectee_item.mods[eve_affectee_attr.id].one()

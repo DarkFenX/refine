@@ -1,4 +1,4 @@
-use crate::sol::{item::SolShipKind, svc::svce_calc::SolDomain};
+use crate::sol::svc::svce_calc::SolDomain;
 
 #[derive(Copy, Clone, Eq, Hash, PartialEq)]
 pub(in crate::sol::svc::svce_calc) enum SolLocationKind {
