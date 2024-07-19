@@ -2,7 +2,6 @@ from tests import approx
 
 
 def test_default_val(client, consts):
-    # Check that item which is "owner" of a location can affect itself
     eve_affector_attr = client.mk_eve_attr(def_val=20)
     eve_affectee_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
