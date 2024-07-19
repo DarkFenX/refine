@@ -72,28 +72,6 @@ impl SolDependencyRegister {
         self.source_by_item
             .add_entry(affectee_item_id, (source_item_id, source_effect_id));
     }
-    pub(in crate::sol::svc::svce_calc) fn remove_with_source(
-        &mut self,
-        source_item_id: &SolItemId,
-        source_effect_id: &EEffectId,
-        affector_item_id: &SolItemId,
-        affector_attr_id: &EAttrId,
-        affectee_item_id: &SolItemId,
-        affectee_attr_id: &EAttrId,
-    ) {
-        let affector_spec = SolAttrSpec::new(*affector_item_id, *affector_attr_id);
-        let affectee_spec = SolAttrSpec::new(*affectee_item_id, *affectee_attr_id);
-        self.data.remove_entry(&affector_spec, &affectee_spec);
-        self.affector_by_item.remove_entry(affector_item_id, &affector_spec);
-        self.affectee_by_item
-            .remove_entry(affectee_item_id, &affector_spec, &affectee_spec);
-        self.by_source
-            .remove_entry(&(*source_item_id, *source_effect_id), &(affector_spec, affectee_spec));
-        self.source_by_item
-            .remove_entry(affector_item_id, &(*source_item_id, *source_effect_id));
-        self.source_by_item
-            .remove_entry(affectee_item_id, &(*source_item_id, *source_effect_id));
-    }
     pub(in crate::sol::svc::svce_calc) fn remove_by_source(
         &mut self,
         source_item_id: &SolItemId,
