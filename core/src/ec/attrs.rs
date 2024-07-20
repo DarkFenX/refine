@@ -47,6 +47,7 @@ pub(crate) const SUBSYSTEM_SLOT: EAttrId = 1366;
 pub(crate) const FTR_SQ_IS_HEAVY: EAttrId = 2214;
 pub(crate) const FTR_SQ_IS_LIGHT: EAttrId = 2212;
 pub(crate) const FTR_SQ_IS_SUPPORT: EAttrId = 2213;
+pub(crate) const FTR_ABIL_BOMB_TYPE: EAttrId = 2324;
 // Buff-related
 pub(crate) const WARFARE_BUFF1_ID: EAttrId = 2468;
 pub(crate) const WARFARE_BUFF1_VAL: EAttrId = 2469;
