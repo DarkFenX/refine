@@ -1,6 +1,10 @@
 use crate::{
-    defs::{Amount, EItemId, SolFitId, SolItemId},
-    sol::item::{SolFighter, SolItemState},
+    defs::{Amount, EEffectId, EItemId, SolFitId, SolItemId},
+    sol::{
+        item::{SolFighter, SolItemState},
+        item_info::SolChargeInfo,
+    },
+    util::StMap,
 };
 
 pub struct SolFighterInfo {
@@ -9,6 +13,7 @@ pub struct SolFighterInfo {
     pub a_item_id: EItemId,
     pub state: SolItemState,
     pub amt_override: Option<Amount>,
+    pub autocharges: StMap<EEffectId, SolChargeInfo>,
 }
 impl SolFighterInfo {
     fn new(
@@ -17,6 +22,7 @@ impl SolFighterInfo {
         a_item_id: EItemId,
         state: SolItemState,
         amt_override: Option<Amount>,
+        autocharges: StMap<EEffectId, SolChargeInfo>,
     ) -> Self {
         Self {
             id,
@@ -24,17 +30,20 @@ impl SolFighterInfo {
             a_item_id,
             state,
             amt_override,
+            autocharges,
         }
     }
-}
-impl From<&SolFighter> for SolFighterInfo {
-    fn from(sol_fighter: &SolFighter) -> Self {
+    pub(in crate::sol) fn from_fighter_and_autocharges(
+        sol_fighter: &SolFighter,
+        autocharges: StMap<EEffectId, SolChargeInfo>,
+    ) -> Self {
         SolFighterInfo::new(
             sol_fighter.base.id,
             sol_fighter.fit_id,
             sol_fighter.base.a_item_id,
             sol_fighter.state,
             sol_fighter.amt_override,
+            autocharges,
         )
     }
 }

@@ -23,8 +23,10 @@ impl HFighterInfo {
     ) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_fighter_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_fighter_info.into()),
-            HItemInfoMode::Full => Self::Full(HFighterInfoFull::mk_info(core_sol, core_fighter_info)),
+            HItemInfoMode::Partial => {
+                Self::Partial(HFighterInfoPartial::mk_info(core_sol, core_fighter_info, item_mode))
+            }
+            HItemInfoMode::Full => Self::Full(HFighterInfoFull::mk_info(core_sol, core_fighter_info, item_mode)),
         }
     }
 }

@@ -14,6 +14,9 @@ impl SolAutocharges {
     pub(in crate::sol) fn get(&self, effect_id: &EEffectId) -> Option<&SolItemId> {
         self.data.get(effect_id)
     }
+    pub(in crate::sol) fn iter(&self) -> impl ExactSizeIterator<Item = (&EEffectId, &SolItemId)> {
+        self.data.iter()
+    }
     pub(in crate::sol) fn values(&self) -> impl ExactSizeIterator<Item = &SolItemId> {
         self.data.values()
     }

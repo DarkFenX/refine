@@ -30,7 +30,7 @@ impl SolItemInfo {
             SolItem::Character(sol_charater) => SolItemInfo::Character(sol_charater.into()),
             SolItem::Charge(sol_charge) => SolItemInfo::Charge(sol_charge.into()),
             SolItem::Drone(sol_drone) => SolItemInfo::Drone(sol_drone.into()),
-            SolItem::Fighter(sol_fighter) => SolItemInfo::Fighter(sol_fighter.into()),
+            SolItem::Fighter(sol_fighter) => SolItemInfo::Fighter(sol.make_fighter_info(sol_fighter)),
             SolItem::FwEffect(sol_fw_effect) => SolItemInfo::FwEffect(sol_fw_effect.into()),
             SolItem::Implant(sol_implant) => SolItemInfo::Implant(sol_implant.into()),
             SolItem::Module(sol_module) => SolItemInfo::Module(sol.make_mod_info(sol_module)),

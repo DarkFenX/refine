@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::info::{HAttrVal, HEffect, HModificationInfo};
+use crate::info::{HAttrVal, HEffect, HItemInfoMode, HModificationInfo};
 
 use super::HFighterInfoPartial;
 
@@ -16,8 +16,12 @@ pub(crate) struct HFighterInfoFull {
     pub(crate) mods: HashMap<rc::EAttrId, Vec<HModificationInfo>>,
 }
 impl HFighterInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_fighter_info: &rc::SolFighterInfo) -> Self {
-        let partial_info = HFighterInfoPartial::from(core_fighter_info);
+    pub(super) fn mk_info(
+        core_sol: &mut rc::SolarSystem,
+        core_fighter_info: &rc::SolFighterInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        let partial_info = HFighterInfoPartial::mk_info(core_sol, core_fighter_info, item_mode);
         let attrs = match core_sol.get_item_attrs(&partial_info.id) {
             Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),
