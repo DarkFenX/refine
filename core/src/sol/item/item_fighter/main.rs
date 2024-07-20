@@ -1,6 +1,6 @@
 use crate::{
     defs::{Amount, EItemId, SolFitId, SolItemId},
-    sol::item::{SolItemBase, SolItemState},
+    sol::item::{SolAutocharges, SolItemBase, SolItemState},
     src::Src,
     util::Named,
 };
@@ -10,6 +10,7 @@ pub(in crate::sol) struct SolFighter {
     pub(in crate::sol) fit_id: SolFitId,
     pub(in crate::sol) state: SolItemState,
     pub(in crate::sol) amt_override: Option<Amount>,
+    pub(in crate::sol) autocharges: SolAutocharges,
 }
 impl SolFighter {
     pub(in crate::sol) fn new(
@@ -24,6 +25,7 @@ impl SolFighter {
             fit_id,
             state,
             amt_override: None,
+            autocharges: SolAutocharges::new(),
         }
     }
 }

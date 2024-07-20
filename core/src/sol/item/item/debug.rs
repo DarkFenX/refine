@@ -9,7 +9,7 @@ impl SolItem {
             Self::Character(_) => Ok(()),
             Self::Charge(_) => Ok(()),
             Self::Drone(_) => Ok(()),
-            Self::Fighter(_) => Ok(()),
+            Self::Fighter(fighter) => fighter.debug_consistency_check(sol_view),
             Self::FwEffect(_) => Ok(()),
             Self::Implant(_) => Ok(()),
             Self::Module(module) => module.debug_consistency_check(sol_view),

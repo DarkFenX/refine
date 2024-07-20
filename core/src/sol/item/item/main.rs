@@ -2,9 +2,9 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     sol::item::{
-        SolBooster, SolCharacter, SolCharge, SolDrone, SolEffectModes, SolFighter, SolFwEffect, SolImplant,
-        SolItemState, SolModule, SolProjEffect, SolRig, SolShip, SolShipKind, SolSkill, SolStance, SolSubsystem,
-        SolSwEffect,
+        SolAutocharges, SolBooster, SolCharacter, SolCharge, SolDrone, SolEffectModes, SolFighter, SolFwEffect,
+        SolImplant, SolItemState, SolModule, SolProjEffect, SolRig, SolShip, SolShipKind, SolSkill, SolStance,
+        SolSubsystem, SolSwEffect,
     },
     src::Src,
     util::{Error, ErrorKind, Named, Result, StMap},
@@ -121,6 +121,44 @@ impl SolItem {
             Self::Stance(stance) => &mut stance.base.effect_modes,
             Self::Subsystem(subsystem) => &mut subsystem.base.effect_modes,
             Self::SwEffect(sw_effect) => &mut sw_effect.base.effect_modes,
+        }
+    }
+    pub(in crate::sol) fn get_autocharges(&self) -> Option<&SolAutocharges> {
+        match self {
+            Self::Booster(_) => None,
+            Self::Character(_) => None,
+            Self::Charge(_) => None,
+            Self::Drone(_) => None,
+            Self::Fighter(fighter) => Some(&fighter.autocharges),
+            Self::FwEffect(_) => None,
+            Self::Implant(_) => None,
+            Self::Module(_) => None,
+            Self::ProjEffect(_) => None,
+            Self::Rig(_) => None,
+            Self::Ship(_) => None,
+            Self::Skill(_) => None,
+            Self::Stance(_) => None,
+            Self::Subsystem(_) => None,
+            Self::SwEffect(_) => None,
+        }
+    }
+    pub(in crate::sol) fn get_autocharges_mut(&mut self) -> Option<&mut SolAutocharges> {
+        match self {
+            Self::Booster(_) => None,
+            Self::Character(_) => None,
+            Self::Charge(_) => None,
+            Self::Drone(_) => None,
+            Self::Fighter(fighter) => Some(&mut fighter.autocharges),
+            Self::FwEffect(_) => None,
+            Self::Implant(_) => None,
+            Self::Module(_) => None,
+            Self::ProjEffect(_) => None,
+            Self::Rig(_) => None,
+            Self::Ship(_) => None,
+            Self::Skill(_) => None,
+            Self::Stance(_) => None,
+            Self::Subsystem(_) => None,
+            Self::SwEffect(_) => None,
         }
     }
     pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {

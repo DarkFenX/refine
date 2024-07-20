@@ -6,6 +6,7 @@ members = [
     "http",
     "examples/playground",
 ]
+resolver = "2"
 
 [profile.dev]
 opt-level = 0
