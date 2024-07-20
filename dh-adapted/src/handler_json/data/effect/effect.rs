@@ -1,4 +1,4 @@
-use crate::handler_json::data::{CEffectBuffInfo, CEffectModifier, CModBuildStatus, CState};
+use crate::handler_json::data::{CEffectBuffInfo, CEffectChargeInfo, CEffectModifier, CModBuildStatus, CState};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CEffect {
@@ -20,6 +20,7 @@ pub(in crate::handler_json) struct CEffect {
     mods: Vec<CEffectModifier>,
     stop_ids: Vec<rc::EEffectId>,
     buff: Option<CEffectBuffInfo>,
+    charge: Option<CEffectChargeInfo>,
 }
 impl From<&rc::ad::AEffect> for CEffect {
     fn from(a_effect: &rc::ad::AEffect) -> Self {
@@ -42,6 +43,7 @@ impl From<&rc::ad::AEffect> for CEffect {
             mods: a_effect.mods.iter().map(|v| v.into()).collect(),
             stop_ids: a_effect.stop_ids.clone(),
             buff: a_effect.buff.as_ref().map(|v| v.into()),
+            charge: a_effect.charge.as_ref().map(|v| v.into()),
         }
     }
 }
@@ -66,6 +68,7 @@ impl Into<rc::ad::AEffect> for &CEffect {
             mods: self.mods.iter().map(|v| v.into()).collect(),
             stop_ids: self.stop_ids.clone(),
             buff: self.buff.as_ref().map(|v| v.into()),
+            charge: self.charge.as_ref().map(|v| v.into()),
         }
     }
 }

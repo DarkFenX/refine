@@ -53,6 +53,7 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> V
             Vec::new(),
             Vec::new(),
             buff_info,
+            None,
         );
         let mut mod_errs = 0;
         for e_modifier in e_effect.mods.iter() {

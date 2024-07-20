@@ -21,6 +21,7 @@ pub(in crate::adg::custom) fn add_aar_paste_boost_effect(a_data: &mut ad::AData)
         Vec::new(),
         Vec::new(),
         None,
+        None,
     );
     a_data.effects.push(effect);
     for item in a_data.items.iter_mut().filter(|v| {

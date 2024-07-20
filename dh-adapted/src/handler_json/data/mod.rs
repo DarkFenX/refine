@@ -3,7 +3,8 @@
 use attr::CAttr;
 use buff::{CBuff, CBuffAffecteeFilter, CBuffAggrMode, CBuffModifier};
 use effect::{
-    CEffect, CEffectAffecteeFilter, CEffectBuffInfo, CEffectDomain, CEffectModifier, CModBuildStatus, CState,
+    CEffect, CEffectAffecteeFilter, CEffectBuffInfo, CEffectChargeInfo, CEffectDomain, CEffectModifier,
+    CModBuildStatus, CState,
 };
 use item::{CItem, CItemEffData, CItemKind};
 use mod_shared::{CModOp, CModSrq};

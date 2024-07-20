@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AEffectBuffInfo, AEffectModBuildStatus, AEffectModifier, AState},
+    ad::{AEffectBuffInfo, AEffectChargeInfo, AEffectModBuildStatus, AEffectModifier, AState},
     defs::{EAttrId, EEffectCatId, EEffectId},
     util::Named,
 };
@@ -47,6 +47,8 @@ pub struct AEffect {
     pub stop_ids: Vec<EEffectId>,
     /// Buff carried by the effect.
     pub buff: Option<AEffectBuffInfo>,
+    /// Charge used by the effect.
+    pub charge: Option<AEffectChargeInfo>,
 }
 impl AEffect {
     /// Make a new adapted dogma effect out of passed data.
@@ -69,6 +71,7 @@ impl AEffect {
         mods: Vec<AEffectModifier>,
         stop_ids: Vec<EEffectId>,
         buff: Option<AEffectBuffInfo>,
+        charge: Option<AEffectChargeInfo>,
     ) -> Self {
         Self {
             id,
@@ -89,6 +92,7 @@ impl AEffect {
             mods,
             stop_ids,
             buff,
+            charge,
         }
     }
 }

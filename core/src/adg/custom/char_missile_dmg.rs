@@ -20,6 +20,7 @@ pub(in crate::adg::custom) fn add_char_missile_dmg_mods(a_data: &mut ad::AData) 
         Vec::new(),
         Vec::new(),
         None,
+        None,
     );
     effect.mods.push(mk_modifier(ec::attrs::EM_DMG));
     effect.mods.push(mk_modifier(ec::attrs::THERM_DMG));
