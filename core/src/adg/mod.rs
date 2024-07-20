@@ -86,6 +86,7 @@ impl GSupport {
         self.fill_attr_unit_map(&g_data);
         self.fill_grp_cat_map(&g_data);
         self.fill_eff_buff_map();
+        self.fill_eff_charge_map();
     }
     fn fill_attr_unit_map(&mut self, g_data: &GData) {
         for attr in g_data.attrs.iter() {

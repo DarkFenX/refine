@@ -22,9 +22,9 @@ impl SolFwEffectInfo {
 impl From<&SolFwEffect> for SolFwEffectInfo {
     fn from(sol_fw_effect: &SolFwEffect) -> Self {
         SolFwEffectInfo::new(
-            sol_fw_effect.id,
+            sol_fw_effect.base.id,
             sol_fw_effect.fit_id,
-            sol_fw_effect.a_item_id,
+            sol_fw_effect.base.a_item_id,
             sol_fw_effect.get_bool_state(),
         )
     }

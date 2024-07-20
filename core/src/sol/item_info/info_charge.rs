@@ -22,9 +22,9 @@ impl SolChargeInfo {
 impl From<&SolCharge> for SolChargeInfo {
     fn from(sol_charge: &SolCharge) -> Self {
         SolChargeInfo::new(
-            sol_charge.id,
+            sol_charge.base.id,
             sol_charge.fit_id,
-            sol_charge.a_item_id,
+            sol_charge.base.a_item_id,
             sol_charge.cont_id,
         )
     }

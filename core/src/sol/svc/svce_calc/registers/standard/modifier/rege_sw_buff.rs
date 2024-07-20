@@ -259,7 +259,7 @@ impl SolStandardRegister {
                     SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
                                 add_ctx_modifier(
                                     &mut self.cmods_root,
                                     (ship.fit_id, SolLocationKind::Ship),
@@ -275,7 +275,7 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
                                 add_ctx_modifier(
                                     &mut self.cmods_loc,
                                     (ship.fit_id, SolLocationKind::Ship),
@@ -291,7 +291,7 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
                                 add_ctx_modifier(
                                     &mut self.cmods_loc_grp,
                                     (ship.fit_id, SolLocationKind::Ship, grp_id),
@@ -307,7 +307,7 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
                                 add_ctx_modifier(
                                     &mut self.cmods_loc_srq,
                                     (ship.fit_id, SolLocationKind::Ship, srq_id),
@@ -341,7 +341,7 @@ impl SolStandardRegister {
                     SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
                                 remove_ctx_modifier(
                                     &mut self.cmods_root,
                                     &(ship.fit_id, SolLocationKind::Ship),
@@ -357,7 +357,7 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
                                 remove_ctx_modifier(
                                     &mut self.cmods_loc,
                                     &(ship.fit_id, SolLocationKind::Ship),
@@ -373,7 +373,7 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
                                 remove_ctx_modifier(
                                     &mut self.cmods_loc_grp,
                                     &(ship.fit_id, SolLocationKind::Ship, grp_id),
@@ -389,7 +389,7 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
                                 remove_ctx_modifier(
                                     &mut self.cmods_loc_srq,
                                     &(ship.fit_id, SolLocationKind::Ship, srq_id),

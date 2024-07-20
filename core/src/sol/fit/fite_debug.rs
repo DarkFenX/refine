@@ -272,7 +272,7 @@ fn check_module_charge(
             SolItem::Charge(charge) => charge,
             _ => return Err(DebugError::new()),
         };
-        if charge.cont_id != module.id {
+        if charge.cont_id != module.base.id {
             return Err(DebugError::new());
         }
         item.debug_consistency_check(sol_view)?;

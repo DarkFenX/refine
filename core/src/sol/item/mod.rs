@@ -1,5 +1,6 @@
 //! Solar system item definitions.
 
+use base::SolItemBase;
 pub(in crate::sol) use container::SolItems;
 pub(in crate::sol) use item::SolItem;
 pub(in crate::sol) use item_booster::SolBooster;
@@ -18,8 +19,9 @@ pub(in crate::sol) use item_stance::SolStance;
 pub(in crate::sol) use item_subsystem::SolSubsystem;
 pub(in crate::sol) use item_sw_effect::SolSwEffect;
 pub use misc::SolItemState;
-pub(in crate::sol::item) use misc::{bool_to_state, debug, state_to_bool, SolAutocharges, SolEffectModes, SolProjs};
+use misc::{bool_to_state, debug, state_to_bool, SolAutocharges, SolEffectModes, SolProjs};
 
+mod base;
 mod container;
 mod item;
 mod item_booster;

@@ -21,6 +21,11 @@ impl SolRigInfo {
 }
 impl From<&SolRig> for SolRigInfo {
     fn from(sol_rig: &SolRig) -> Self {
-        SolRigInfo::new(sol_rig.id, sol_rig.fit_id, sol_rig.a_item_id, sol_rig.get_bool_state())
+        SolRigInfo::new(
+            sol_rig.base.id,
+            sol_rig.fit_id,
+            sol_rig.base.a_item_id,
+            sol_rig.get_bool_state(),
+        )
     }
 }

@@ -16,8 +16,8 @@ impl SolSwEffectInfo {
 impl From<&SolSwEffect> for SolSwEffectInfo {
     fn from(sol_sw_effect: &SolSwEffect) -> Self {
         SolSwEffectInfo::new(
-            sol_sw_effect.id,
-            sol_sw_effect.a_item_id,
+            sol_sw_effect.base.id,
+            sol_sw_effect.base.a_item_id,
             sol_sw_effect.get_bool_state(),
         )
     }

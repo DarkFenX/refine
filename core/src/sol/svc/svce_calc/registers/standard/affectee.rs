@@ -225,7 +225,7 @@ impl SolStandardRegister {
                     let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.kind, SolShipKind::Ship) {
-                            affectees.push(projectee_ship.id)
+                            affectees.push(projectee_ship.base.id)
                         }
                     }
                 }
@@ -233,7 +233,7 @@ impl SolStandardRegister {
                     let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.kind, SolShipKind::Structure) {
-                            affectees.push(projectee_ship.id)
+                            affectees.push(projectee_ship.base.id)
                         }
                     }
                 }
@@ -466,7 +466,7 @@ impl SolStandardRegister {
                     let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.kind, SolShipKind::Ship) {
-                            affectees.push(projectee_ship.id)
+                            affectees.push(projectee_ship.base.id)
                         }
                     }
                 }

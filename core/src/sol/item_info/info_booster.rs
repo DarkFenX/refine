@@ -22,9 +22,9 @@ impl SolBoosterInfo {
 impl From<&SolBooster> for SolBoosterInfo {
     fn from(sol_booster: &SolBooster) -> Self {
         SolBoosterInfo::new(
-            sol_booster.id,
+            sol_booster.base.id,
             sol_booster.fit_id,
-            sol_booster.a_item_id,
+            sol_booster.base.a_item_id,
             sol_booster.get_bool_state(),
         )
     }

@@ -22,9 +22,9 @@ impl SolShipInfo {
 impl From<&SolShip> for SolShipInfo {
     fn from(sol_ship: &SolShip) -> Self {
         SolShipInfo::new(
-            sol_ship.id,
+            sol_ship.base.id,
             sol_ship.fit_id,
-            sol_ship.a_item_id,
+            sol_ship.base.a_item_id,
             sol_ship.get_bool_state(),
         )
     }

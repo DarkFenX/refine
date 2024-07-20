@@ -30,9 +30,9 @@ impl SolFighterInfo {
 impl From<&SolFighter> for SolFighterInfo {
     fn from(sol_fighter: &SolFighter) -> Self {
         SolFighterInfo::new(
-            sol_fighter.id,
+            sol_fighter.base.id,
             sol_fighter.fit_id,
-            sol_fighter.a_item_id,
+            sol_fighter.base.a_item_id,
             sol_fighter.state,
             sol_fighter.amt_override,
         )
