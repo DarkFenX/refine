@@ -71,6 +71,7 @@ pub(in crate::adg) struct GSupport {
     pub(in crate::adg) attr_unit_map: StMap<EAttrId, EAttrUnitId>,
     pub(in crate::adg) grp_cat_map: StMap<EItemGrpId, EItemCatId>,
     pub(in crate::adg) eff_buff_map: StMap<EBuffId, ad::AEffectBuffInfo>,
+    pub(in crate::adg) eff_charge_map: StMap<EBuffId, ad::AEffectChargeInfo>,
 }
 impl GSupport {
     pub(in crate::adg) fn new() -> Self {
@@ -78,6 +79,7 @@ impl GSupport {
             attr_unit_map: StMap::new(),
             grp_cat_map: StMap::new(),
             eff_buff_map: StMap::new(),
+            eff_charge_map: StMap::new(),
         }
     }
     pub(in crate::adg) fn fill(&mut self, g_data: &GData) {

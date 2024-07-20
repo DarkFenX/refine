@@ -33,7 +33,6 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> V
                 continue;
             }
         };
-        let buff_info = g_supp.eff_buff_map.get(&e_effect.id).cloned();
         let mut a_effect = ad::AEffect::new(
             e_effect.id,
             e_effect.category_id,
@@ -52,8 +51,8 @@ pub(in crate::adg::conv) fn conv_effects(g_data: &GData, g_supp: &GSupport) -> V
             ad::AEffectModBuildStatus::Unbuilt,
             Vec::new(),
             Vec::new(),
-            buff_info,
-            None,
+            g_supp.eff_buff_map.get(&e_effect.id).cloned(),
+            g_supp.eff_charge_map.get(&e_effect.id).map(|v| *v),
         );
         let mut mod_errs = 0;
         for e_modifier in e_effect.mods.iter() {
