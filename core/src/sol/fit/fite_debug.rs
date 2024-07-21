@@ -2,7 +2,7 @@ use crate::{
     defs::{SolFitId, SolItemId},
     sol::{
         fit::SolFit,
-        item::{SolItem, SolModule},
+        item::{SolFighter, SolItem, SolModule},
         SolModRack, SolView,
     },
     util::{DebugError, DebugResult},
@@ -229,10 +229,12 @@ impl SolFit {
             if item.get_fit_id() != Some(self.id) {
                 return Err(DebugError::new());
             }
-            if !matches!(item, SolItem::Fighter(_)) {
-                return Err(DebugError::new());
-            }
+            let fighter = match item {
+                SolItem::Fighter(fighter) => fighter,
+                _ => return Err(DebugError::new()),
+            };
             item.debug_consistency_check(sol_view)?;
+            check_fighter_autocharges(sol_view, &self.id, fighter, seen_items)?;
         }
         // Fit-wide effects
         for item_id in self.fw_effects.iter() {
@@ -273,6 +275,33 @@ fn check_module_charge(
             _ => return Err(DebugError::new()),
         };
         if charge.cont_id != module.base.id {
+            return Err(DebugError::new());
+        }
+        item.debug_consistency_check(sol_view)?;
+    }
+    Ok(())
+}
+
+fn check_fighter_autocharges(
+    sol_view: &SolView,
+    fit_id: &SolFitId,
+    fighter: &SolFighter,
+    seen_items: &mut Vec<SolItemId>,
+) -> DebugResult {
+    for item_id in fighter.autocharges.values() {
+        seen_items.push(*item_id);
+        let item = match sol_view.items.get_item(item_id) {
+            Ok(item) => item,
+            _ => return Err(DebugError::new()),
+        };
+        if item.get_fit_id() != Some(*fit_id) {
+            return Err(DebugError::new());
+        }
+        let charge = match item {
+            SolItem::Charge(charge) => charge,
+            _ => return Err(DebugError::new()),
+        };
+        if charge.cont_id != fighter.base.id {
             return Err(DebugError::new());
         }
         item.debug_consistency_check(sol_view)?;
