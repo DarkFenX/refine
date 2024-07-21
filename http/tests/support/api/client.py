@@ -256,7 +256,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self,
             sol_id: str,
             item_id: str,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
         return Request(
             self,

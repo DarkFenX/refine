@@ -4,6 +4,7 @@ from collections import namedtuple
 from typing import TYPE_CHECKING
 
 from tests.support.api.exception import ApiRequestError
+from tests.support.consts import ApiItemInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
 
@@ -33,11 +34,15 @@ class Item(AttrDict):
         self._client = client
         self._sol_id = sol_id
 
-    def update_request(self) -> Request:
-        return self._client.get_item_request(sol_id=self._sol_id, item_id=self.id)
+    def update_request(self, item_info_mode: ApiItemInfoMode) -> Request:
+        return self._client.get_item_request(sol_id=self._sol_id, item_id=self.id, item_info_mode=item_info_mode)
 
-    def update(self, status_code: int = 200) -> Union[Item, None]:
-        resp = self.update_request().send()
+    def update(
+            self,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+            status_code: int = 200
+    ) -> Union[Item, None]:
+        resp = self.update_request(item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
