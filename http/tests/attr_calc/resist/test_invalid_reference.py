@@ -4,7 +4,7 @@ from tests import approx
 def test_on_effect(client, consts):
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
-    eve_resist_attr_id = eve_affectee_attr.id + 1
+    eve_resist_attr_id = client.alloc_attr_id()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.tgt,
@@ -44,7 +44,7 @@ def test_on_affector_item(client, consts):
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr(stackable=True)
     eve_resist_attr1 = client.mk_eve_attr()
-    eve_resist_attr2_id = eve_resist_attr1.id + 1
+    eve_resist_attr2_id = client.alloc_attr_id()
     eve_resist_def_attr = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,

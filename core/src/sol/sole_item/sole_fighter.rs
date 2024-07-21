@@ -36,7 +36,6 @@ impl SolarSystem {
                     if let Some(ad::AEffectChargeInfo::Attr(charge_attr_id)) = effect.charge {
                         if let Some(autocharge_a_item_id) = a_item.attr_vals.get(&charge_attr_id) {
                             let autocharge_item_id = self.items.alloc_item_id()?;
-                            fighter.autocharges.set(*effect_id, autocharge_item_id);
                             let charge = SolCharge::new(
                                 &self.src,
                                 autocharge_item_id,
@@ -44,6 +43,11 @@ impl SolarSystem {
                                 *autocharge_a_item_id as EItemId,
                                 item_id,
                             );
+                            // Don't add an autocharge if it can't be loaded
+                            if charge.base.a_item.is_none() {
+                                continue
+                            }
+                            fighter.autocharges.set(*effect_id, autocharge_item_id);
                             let info = SolChargeInfo::from(&charge);
                             ac_infos.insert(*effect_id, info);
                             let item = SolItem::Charge(charge);

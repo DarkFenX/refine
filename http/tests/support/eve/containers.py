@@ -35,6 +35,31 @@ class EveObjects:
         # Format: {group ID: [groups]}
         self.group_map = defaultdict(lambda: [])
 
+    def alloc_item_id(self) -> int:
+        id_ = self.item_id
+        self.item_id += 1
+        return id_
+
+    def alloc_group_id(self) -> int:
+        id_ = self.item_group_id
+        self.item_group_id += 1
+        return id_
+
+    def alloc_attr_id(self) -> int:
+        id_ = self.attr_id
+        self.attr_id += 1
+        return id_
+
+    def alloc_effect_id(self) -> int:
+        id_ = self.effect_id
+        self.effect_id += 1
+        return id_
+
+    def alloc_buff_id(self) -> int:
+        id_ = self.buff_id
+        self.buff_id += 1
+        return id_
+
     def mk_item(
             self,
             id_: Union[int, Type[Default]],
@@ -50,8 +75,7 @@ class EveObjects:
             volume: Union[float, Type[Absent]],
     ) -> Item:
         if id_ is Default:
-            id_ = self.item_id
-            self.item_id += 1
+            id_ = self.alloc_item_id()
         group = self.__fetch_or_mk_item_group(id_=group_id, category_id=category_id)
         item = Item(
             id_=id_,
@@ -73,8 +97,7 @@ class EveObjects:
             category_id: Union[int, Type[Absent], Type[Default]],
     ) -> Group:
         if id_ is Default:
-            id_ = self.item_group_id
-            self.item_group_id += 1
+            id_ = self.alloc_group_id()
         if category_id is Default:
             category_id = EveItemCat.module
         group = Group(id_=id_, category_id=category_id)
@@ -107,8 +130,7 @@ class EveObjects:
             max_attribute_id: Union[int, Type[Absent]],
     ) -> Attribute:
         if id_ is Default:
-            id_ = self.attr_id
-            self.attr_id += 1
+            id_ = self.alloc_attr_id()
         attr = Attribute(
             id_=id_,
             stackable=stackable,
@@ -134,8 +156,7 @@ class EveObjects:
             modifier_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent]],
     ) -> Effect:
         if id_ is Default:
-            id_ = self.effect_id
-            self.effect_id += 1
+            id_ = self.alloc_effect_id()
         effect = Effect(
             id_=id_,
             category_id=category_id,
@@ -163,8 +184,7 @@ class EveObjects:
             location_skillreq_modifiers: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
     ) -> Buff:
         if id_ is Default:
-            id_ = self.buff_id
-            self.buff_id += 1
+            id_ = self.alloc_buff_id()
         buff = Buff(
             id_=id_,
             aggregate_mode=aggregate_mode,

@@ -16,6 +16,26 @@ if TYPE_CHECKING:
 
 class EveTypeFactory(EveDataManager):
 
+    def alloc_item_id(self, data: Union[EveObjects, Type[Default]] = Default) -> int:
+        data = self._get_eve_data(data=data)
+        return data.alloc_item_id()
+
+    def alloc_group_id(self, data: Union[EveObjects, Type[Default]] = Default) -> int:
+        data = self._get_eve_data(data=data)
+        return data.alloc_group_id()
+
+    def alloc_attr_id(self, data: Union[EveObjects, Type[Default]] = Default) -> int:
+        data = self._get_eve_data(data=data)
+        return data.alloc_attr_id()
+
+    def alloc_effect_id(self, data: Union[EveObjects, Type[Default]] = Default) -> int:
+        data = self._get_eve_data(data=data)
+        return data.alloc_effect_id()
+
+    def alloc_buff_id(self, data: Union[EveObjects, Type[Default]] = Default) -> int:
+        data = self._get_eve_data(data=data)
+        return data.alloc_buff_id()
+
     def mk_eve_item(
             self,
             data: Union[EveObjects, Type[Default]] = Default,
