@@ -12,16 +12,16 @@ def test_autocharge(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter.id)
     assert len(api_fighter.autocharges) == 1
     assert isinstance(api_fighter.autocharges[eve_effect.id].id, str)
-    autocharge_id = api_fighter.autocharges[eve_effect.id].id
+    api_autocharge_id = api_fighter.autocharges[eve_effect.id].id
     # ID only
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert len(api_fighter.autocharges) == 1
-    assert api_fighter.autocharges[eve_effect.id].id == autocharge_id
+    assert api_fighter.autocharges[eve_effect.id].id == api_autocharge_id
     # Partial
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert len(api_fighter.autocharges) == 1
-    assert api_fighter.autocharges[eve_effect.id].id == autocharge_id
+    assert api_fighter.autocharges[eve_effect.id].id == api_autocharge_id
     # Full
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.full)
     assert len(api_fighter.autocharges) == 1
-    assert api_fighter.autocharges[eve_effect.id].id == autocharge_id
+    assert api_fighter.autocharges[eve_effect.id].id == api_autocharge_id
