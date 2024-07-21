@@ -51,8 +51,10 @@ def test_separate(client, consts):
     assert isinstance(api_module.id, str)
     with raises(AttributeError):
         api_module.charge  # pylint: disable=W0104
-    # Set charge, for now it doesn't return any response, so doesn't need to test anything here
+    # Set charge and test response
     api_module.change_mod(charge=eve_charge.id)
+    assert isinstance(api_module.id, str)
+    assert isinstance(api_module.charge.id, str)
     # ID only
     api_module.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert isinstance(api_module.id, str)

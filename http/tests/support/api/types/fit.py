@@ -21,11 +21,24 @@ class Fit(AttrDict):
         self._client = client
         self._sol_id = sol_id
 
-    def update_request(self) -> Request:
-        return self._client.get_fit_request(sol_id=self._sol_id, fit_id=self.id)
+    def update_request(
+            self,
+            fit_info_mode: ApiFitInfoMode,
+            item_info_mode: ApiItemInfoMode,
+    ) -> Request:
+        return self._client.get_fit_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
 
-    def update(self, status_code: int = 200) -> Union[Fit, None]:
-        resp = self.update_request().send()
+    def update(
+            self,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Union[Fit, None]:
+        resp = self.update_request(fit_info_mode=fit_info_mode, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -47,8 +60,8 @@ class Fit(AttrDict):
     def set_fleet_request(
             self,
             fleet_id: Union[str, None],
-            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            fit_info_mode: ApiFitInfoMode,
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
         return self._client.set_fit_fleet_request(
             sol_id=self._sol_id,
@@ -57,8 +70,17 @@ class Fit(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode)
 
-    def set_fleet(self, fleet_id: Union[str, None], status_code: int = 200) -> None:
-        resp = self.set_fleet_request(fleet_id=fleet_id).send()
+    def set_fleet(
+            self,
+            fleet_id: Union[str, None],
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> None:
+        resp = self.set_fleet_request(
+            fleet_id=fleet_id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -77,17 +99,24 @@ class Fit(AttrDict):
     def set_char_request(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.set_char_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.set_char_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def set_char(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.set_char_request(type_id=type_id, state=state).send()
+        resp = self.set_char_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -101,19 +130,26 @@ class Fit(AttrDict):
             self,
             type_id: int,
             level: int,
-            state: Union[bool, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
         return self._client.add_skill_request(
-            sol_id=self._sol_id, fit_id=self.id, type_id=type_id, level=level, state=state)
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            level=level,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_skill(
             self,
             type_id: int,
             level: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_skill_request(type_id=type_id, level=level, state=state).send()
+        resp = self.add_skill_request(type_id=type_id, level=level, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -126,17 +162,24 @@ class Fit(AttrDict):
     def add_implant_request(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.add_implant_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_implant_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_implant(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_implant_request(type_id=type_id, state=state).send()
+        resp = self.add_implant_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -149,17 +192,24 @@ class Fit(AttrDict):
     def add_booster_request(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.add_booster_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_booster_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_booster(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_booster_request(type_id=type_id, state=state).send()
+        resp = self.add_booster_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -172,17 +222,24 @@ class Fit(AttrDict):
     def set_ship_request(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.set_ship_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.set_ship_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def set_ship(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.set_ship_request(type_id=type_id, state=state).send()
+        resp = self.set_ship_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -192,11 +249,27 @@ class Fit(AttrDict):
         return None
 
     # Stance methods
-    def set_stance_request(self, type_id: int) -> Request:
-        return self._client.set_stance_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id)
+    def set_stance_request(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
+    ) -> Request:
+        return self._client.set_stance_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
-    def set_stance(self, type_id: int, status_code: int = 201) -> Union[Item, None]:
-        resp = self.set_stance_request(type_id=type_id).send()
+    def set_stance(
+            self,
+            type_id: int,
+            state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            status_code: int = 201,
+    ) -> Union[Item, None]:
+        resp = self.set_stance_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -209,17 +282,24 @@ class Fit(AttrDict):
     def add_subsystem_request(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.add_subsystem_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_subsystem_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_subsystem(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_subsystem_request(type_id=type_id, state=state).send()
+        resp = self.add_subsystem_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -232,14 +312,21 @@ class Fit(AttrDict):
     def add_mod_request(
             self,
             type_id: int,
-            rack: ApiRack = ApiRack.high,
-            state: ApiState = ApiState.offline,
-            charge_type_id: Union[int, Type[Absent]] = Absent,
-            mode: ApiModAddMode = ApiModAddMode.equip,
+            rack: ApiRack,
+            state: ApiState,
+            charge_type_id: Union[int, Type[Absent]],
+            mode: ApiModAddMode,
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
         return self._client.add_mod_request(
-            sol_id=self._sol_id, fit_id=self.id, rack=rack, type_id=type_id,
-            state=state, charge_type_id=charge_type_id, mode=mode)
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            rack=rack,
+            type_id=type_id,
+            state=state,
+            charge_type_id=charge_type_id,
+            mode=mode,
+            item_info_mode=item_info_mode)
 
     def add_mod(
             self,
@@ -248,6 +335,7 @@ class Fit(AttrDict):
             state: ApiState = ApiState.offline,
             charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: ApiModAddMode = ApiModAddMode.equip,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self.add_mod_request(
@@ -255,7 +343,8 @@ class Fit(AttrDict):
             type_id=type_id,
             state=state,
             charge_type_id=charge_type_id,
-            mode=mode).send()
+            mode=mode,
+            item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -268,17 +357,24 @@ class Fit(AttrDict):
     def add_rig_request(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.add_rig_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_rig_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_rig(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_rig_request(type_id=type_id, state=state).send()
+        resp = self.add_rig_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -291,17 +387,24 @@ class Fit(AttrDict):
     def add_drone_request(
             self,
             type_id: int,
-            state: ApiState = ApiState.offline,
+            state: ApiState,
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.add_drone_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_drone_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_drone(
             self,
             type_id,
             state: ApiState = ApiState.offline,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_drone_request(type_id=type_id, state=state).send()
+        resp = self.add_drone_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -314,17 +417,24 @@ class Fit(AttrDict):
     def add_fighter_request(
             self,
             type_id: int,
-            state: ApiState = ApiState.offline,
+            state: ApiState,
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.add_fighter_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_fighter_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_fighter(
             self,
             type_id,
             state: ApiState = ApiState.offline,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_fighter_request(type_id=type_id, state=state).send()
+        resp = self.add_fighter_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -337,17 +447,24 @@ class Fit(AttrDict):
     def add_fw_effect_request(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.add_fw_effect_request(sol_id=self._sol_id, fit_id=self.id, type_id=type_id, state=state)
+        return self._client.add_fw_effect_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_fw_effect(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_fw_effect_request(type_id=type_id, state=state).send()
+        resp = self.add_fw_effect_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)

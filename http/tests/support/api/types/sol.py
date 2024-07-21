@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tests.support.api.exception import ApiRequestError
-from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
+from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .fit import Fit
 from .fleet import Fleet
@@ -30,11 +30,33 @@ class SolarSystem(AttrDict):
                     default={})})
         self._client = client
 
-    def update_request(self) -> Request:
-        return self._client.get_sol_request(sol_id=self.id)
+    def update_request(
+            self,
+            sol_info_mode: ApiSolInfoMode,
+            fleet_info_mode: ApiFleetInfoMode,
+            fit_info_mode: ApiFitInfoMode,
+            item_info_mode: ApiItemInfoMode,
+    ) -> Request:
+        return self._client.get_sol_request(
+            sol_id=self.id,
+            sol_info_mode=sol_info_mode,
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
 
-    def update(self, status_code: int = 200) -> Union[SolarSystem, None]:
-        resp = self.update_request().send()
+    def update(
+            self,
+            sol_info_mode: ApiSolInfoMode = ApiSolInfoMode.full,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.id,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Union[SolarSystem, None]:
+        resp = self.update_request(
+            sol_info_mode=sol_info_mode,
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self.id)
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -60,7 +82,7 @@ class SolarSystem(AttrDict):
     def get_fleet_request(
             self,
             fleet_id: str,
-            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+            fleet_info_mode: ApiFleetInfoMode,
     ) -> Request:
         return self._client.get_fleet_request(
             sol_id=self.id,
@@ -82,11 +104,15 @@ class SolarSystem(AttrDict):
             return fleet
         return None
 
-    def create_fleet_request(self) -> Request:
-        return self._client.create_fleet_request(sol_id=self.id)
+    def create_fleet_request(self, fleet_info_mode: ApiFleetInfoMode) -> Request:
+        return self._client.create_fleet_request(sol_id=self.id, fleet_info_mode=fleet_info_mode)
 
-    def create_fleet(self, status_code: int = 201) -> Union[Fleet, None]:
-        resp = self.create_fleet_request().send()
+    def create_fleet(
+            self,
+            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.id,
+            status_code: int = 201,
+    ) -> Union[Fleet, None]:
+        resp = self.create_fleet_request(fleet_info_mode=fleet_info_mode).send()
         self.check()
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -99,8 +125,8 @@ class SolarSystem(AttrDict):
     def get_fit_request(
             self,
             fit_id: str,
-            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+            fit_info_mode: ApiFitInfoMode,
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
         return self._client.get_fit_request(
             sol_id=self.id,
@@ -124,11 +150,23 @@ class SolarSystem(AttrDict):
             return fit
         return None
 
-    def create_fit_request(self) -> Request:
-        return self._client.create_fit_request(sol_id=self.id)
+    def create_fit_request(
+            self,
+            fit_info_mode: ApiFitInfoMode,
+            item_info_mode: ApiItemInfoMode,
+    ) -> Request:
+        return self._client.create_fit_request(
+            sol_id=self.id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
 
-    def create_fit(self, status_code: int = 201) -> Union[Fit, None]:
-        resp = self.create_fit_request().send()
+    def create_fit(
+            self,
+            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.id,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            status_code: int = 201,
+    ) -> Union[Fit, None]:
+        resp = self.create_fit_request(fit_info_mode=fit_info_mode, item_info_mode=item_info_mode).send()
         self.check()
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -141,12 +179,17 @@ class SolarSystem(AttrDict):
     def get_item_request(
             self,
             item_id: str,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
         return self._client.get_item_request(sol_id=self.id, item_id=item_id, item_info_mode=item_info_mode)
 
-    def get_item(self, item_id: str, status_code: int = 200) -> Union[Item, None]:
-        resp = self.get_item_request(item_id=item_id).send()
+    def get_item(
+            self,
+            item_id: str,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+            status_code: int = 200,
+    ) -> Union[Item, None]:
+        resp = self.get_item_request(item_id=item_id, item_info_mode=item_info_mode).send()
         self.check()
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -158,17 +201,23 @@ class SolarSystem(AttrDict):
     def add_sw_effect_request(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.add_sw_effect_request(sol_id=self.id, type_id=type_id, state=state)
+        return self._client.add_sw_effect_request(
+            sol_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_sw_effect(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_sw_effect_request(type_id=type_id, state=state).send()
+        resp = self.add_sw_effect_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self.check()
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
@@ -177,28 +226,27 @@ class SolarSystem(AttrDict):
             return item
         return None
 
-    def change_sw_effect_request(
-            self,
-            item_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-    ) -> Request:
-        return self._client.change_sw_effect_request(sol_id=self.id, item_id=item_id, state=state)
-
     # Projected effect methods
     def add_proj_effect_request(
             self,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: ApiItemInfoMode,
     ) -> Request:
-        return self._client.add_proj_effect_request(sol_id=self.id, type_id=type_id, state=state)
+        return self._client.add_proj_effect_request(
+            sol_id=self.id,
+            type_id=type_id,
+            state=state,
+            item_info_mode=item_info_mode)
 
     def add_proj_effect(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_proj_effect_request(type_id=type_id, state=state).send()
+        resp = self.add_proj_effect_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self.check()
         if resp.status_code != status_code:
             raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
