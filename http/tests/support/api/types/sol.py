@@ -32,10 +32,10 @@ class SolarSystem(AttrDict):
 
     def update_request(
             self,
-            sol_info_mode: ApiSolInfoMode,
-            fleet_info_mode: ApiFleetInfoMode,
-            fit_info_mode: ApiFitInfoMode,
-            item_info_mode: ApiItemInfoMode,
+            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.get_sol_request(
             sol_id=self.id,
@@ -46,10 +46,10 @@ class SolarSystem(AttrDict):
 
     def update(
             self,
-            sol_info_mode: ApiSolInfoMode = ApiSolInfoMode.full,
-            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.id,
-            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]] = ApiSolInfoMode.full,
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.id,
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[SolarSystem, None]:
         resp = self.update_request(
@@ -82,7 +82,7 @@ class SolarSystem(AttrDict):
     def get_fleet_request(
             self,
             fleet_id: str,
-            fleet_info_mode: ApiFleetInfoMode,
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.get_fleet_request(
             sol_id=self.id,
@@ -92,7 +92,7 @@ class SolarSystem(AttrDict):
     def get_fleet(
             self,
             fleet_id: str,
-            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.full,
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.full,
             status_code: int = 200,
     ) -> Union[Fleet, None]:
         resp = self.get_fleet_request(fleet_id=fleet_id, fleet_info_mode=fleet_info_mode).send()
@@ -104,12 +104,15 @@ class SolarSystem(AttrDict):
             return fleet
         return None
 
-    def create_fleet_request(self, fleet_info_mode: ApiFleetInfoMode) -> Request:
+    def create_fleet_request(
+            self,
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
+    ) -> Request:
         return self._client.create_fleet_request(sol_id=self.id, fleet_info_mode=fleet_info_mode)
 
     def create_fleet(
             self,
-            fleet_info_mode: ApiFleetInfoMode = ApiFleetInfoMode.id,
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.id,
             status_code: int = 201,
     ) -> Union[Fleet, None]:
         resp = self.create_fleet_request(fleet_info_mode=fleet_info_mode).send()
@@ -125,8 +128,8 @@ class SolarSystem(AttrDict):
     def get_fit_request(
             self,
             fit_id: str,
-            fit_info_mode: ApiFitInfoMode,
-            item_info_mode: ApiItemInfoMode,
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.get_fit_request(
             sol_id=self.id,
@@ -137,8 +140,8 @@ class SolarSystem(AttrDict):
     def get_fit(
             self,
             fit_id: str,
-            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.full,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[Fit, None]:
         resp = self.get_fit_request(fit_id=fit_id, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode).send()
@@ -152,8 +155,8 @@ class SolarSystem(AttrDict):
 
     def create_fit_request(
             self,
-            fit_info_mode: ApiFitInfoMode,
-            item_info_mode: ApiItemInfoMode,
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.create_fit_request(
             sol_id=self.id,
@@ -162,8 +165,8 @@ class SolarSystem(AttrDict):
 
     def create_fit(
             self,
-            fit_info_mode: ApiFitInfoMode = ApiFitInfoMode.id,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.id,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = Absent,
             status_code: int = 201,
     ) -> Union[Fit, None]:
         resp = self.create_fit_request(fit_info_mode=fit_info_mode, item_info_mode=item_info_mode).send()
@@ -179,14 +182,14 @@ class SolarSystem(AttrDict):
     def get_item_request(
             self,
             item_id: str,
-            item_info_mode: ApiItemInfoMode,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.get_item_request(sol_id=self.id, item_id=item_id, item_info_mode=item_info_mode)
 
     def get_item(
             self,
             item_id: str,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.full,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.full,
             status_code: int = 200,
     ) -> Union[Item, None]:
         resp = self.get_item_request(item_id=item_id, item_info_mode=item_info_mode).send()
@@ -202,7 +205,7 @@ class SolarSystem(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]],
-            item_info_mode: ApiItemInfoMode,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.add_sw_effect_request(
             sol_id=self.id,
@@ -214,7 +217,7 @@ class SolarSystem(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self.add_sw_effect_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
@@ -231,7 +234,7 @@ class SolarSystem(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]],
-            item_info_mode: ApiItemInfoMode,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.add_proj_effect_request(
             sol_id=self.id,
@@ -243,7 +246,7 @@ class SolarSystem(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: ApiItemInfoMode = ApiItemInfoMode.id,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self.add_proj_effect_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()

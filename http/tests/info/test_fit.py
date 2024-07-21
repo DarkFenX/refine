@@ -2,6 +2,8 @@
 
 from pytest import raises
 
+from tests.support.util import Absent
+
 
 def test_fleet(client):
     client.create_sources()
@@ -271,7 +273,10 @@ def test_error_no_fit_full(client, consts):
     # Send ID in correct format, but there is no fit with such ID
     client.create_sources()
     api_sol = client.create_sol()
-    resp = api_sol.get_fit_request(fit_id='1', fit_info_mode=consts.ApiFitInfoMode.full).send()
+    resp = api_sol.get_fit_request(
+        fit_id='1',
+        fit_info_mode=consts.ApiFitInfoMode.full,
+        item_info_mode=Absent).send()
     resp.check(status_code=404, json_predicate={'code': 'COR-003', 'message': 'core library error: fit 1 not found'})
     api_sol.check()
 
@@ -280,7 +285,7 @@ def test_error_no_fit_id(client, consts):
     # Send ID in correct format, but there is no fit with such ID
     client.create_sources()
     api_sol = client.create_sol()
-    resp = api_sol.get_fit_request(fit_id='1', fit_info_mode=consts.ApiFitInfoMode.id).send()
+    resp = api_sol.get_fit_request(fit_id='1', fit_info_mode=consts.ApiFitInfoMode.id, item_info_mode=Absent).send()
     resp.check(status_code=404, json_predicate={'code': 'COR-003', 'message': 'core library error: fit 1 not found'})
     api_sol.check()
 
@@ -289,6 +294,6 @@ def test_error_no_fit_malformed(client):
     # Send ID in incorrect format
     client.create_sources()
     api_sol = client.create_sol()
-    resp = api_sol.get_fit_request(fit_id='abc').send()
+    resp = api_sol.get_fit_request(fit_id='abc', fit_info_mode=Absent, item_info_mode=Absent).send()
     resp.check(status_code=404, json_predicate={'code': 'IDC-001', 'message': 'unable to cast string "abc" to id'})
     api_sol.check()
