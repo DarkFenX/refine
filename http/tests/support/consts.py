@@ -41,11 +41,12 @@ class EveEffect(IntEnum):
     slot_modifier = 3774
     fueled_armor_repair = 5275
     doomsday_aoe_web = 6476
+    fighter_ability_launch_bomb = 6485
+    ship_module_arar = 6651
     mod_bonus_microwarpdrive = 6730
     mod_bonus_afterburner = 6731
     mod_bonus_warfare_link_armor = 6732
     mod_titan_effect_generator = 6753
-    ship_module_arar = 6651
     weather_darkness = 7060
     debuff_lance = 11691
 
@@ -172,6 +173,7 @@ class EveAttr(IntEnum):
     sig_radius_bonus = 554
     speed_factor = 20
     speed_boost_factor = 567
+    fighter_ability_launch_bomb_type = 2324
 
 
 @unique

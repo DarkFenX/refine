@@ -25,7 +25,7 @@ impl SolarSystem {
     }
     pub fn add_fighter(&mut self, fit_id: SolFitId, a_item_id: EItemId, state: SolItemState) -> Result<SolFighterInfo> {
         let item_id = self.items.alloc_item_id()?;
-        let fighter = SolFighter::new(&self.src, item_id, fit_id, a_item_id, state);
+        let mut fighter = SolFighter::new(&self.src, item_id, fit_id, a_item_id, state);
         // Process autocharges
         // Gather all the info first, to ensure any failures happen before we add anything
         let mut ac_items = Vec::new();
@@ -36,6 +36,7 @@ impl SolarSystem {
                     if let Some(ad::AEffectChargeInfo::Attr(charge_attr_id)) = effect.charge {
                         if let Some(autocharge_a_item_id) = a_item.attr_vals.get(&charge_attr_id) {
                             let autocharge_item_id = self.items.alloc_item_id()?;
+                            fighter.autocharges.set(*effect_id, autocharge_item_id);
                             let charge = SolCharge::new(
                                 &self.src,
                                 autocharge_item_id,
@@ -51,6 +52,9 @@ impl SolarSystem {
                     }
                 }
             }
+        }
+        for ac_item in ac_items.into_iter() {
+            self.add_item(ac_item);
         }
         let info = SolFighterInfo::from_fighter_and_autocharges(&fighter, ac_infos);
         let item = SolItem::Fighter(fighter);
