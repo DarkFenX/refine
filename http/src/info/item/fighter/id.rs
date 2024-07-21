@@ -13,11 +13,7 @@ impl From<&rc::SolFighterInfo> for HFighterInfoId {
     fn from(core_fighter_info: &rc::SolFighterInfo) -> Self {
         Self {
             id: core_fighter_info.id,
-            autocharges: core_fighter_info
-                .autocharges
-                .iter()
-                .map(|(k, v)| (*k, v.id))
-                .collect(),
+            autocharges: core_fighter_info.autocharges.iter().map(|(k, v)| (*k, v.id)).collect(),
         }
     }
 }

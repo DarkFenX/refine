@@ -1,17 +1,25 @@
+use crate::info::{item::charge::HChargeInfo, HItemInfoMode};
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HModuleInfoId {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SolItemId,
-    #[serde_as(as = "Option<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) charge_id: Option<rc::SolItemId>,
+    pub(crate) charge: Option<HChargeInfo>,
 }
-impl From<&rc::SolModuleInfo> for HModuleInfoId {
-    fn from(core_module_info: &rc::SolModuleInfo) -> Self {
+impl HModuleInfoId {
+    pub(super) fn mk_info(
+        core_sol: &mut rc::SolarSystem,
+        core_module_info: &rc::SolModuleInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
         Self {
             id: core_module_info.id,
-            charge_id: core_module_info.charge_info.as_ref().map(|v| v.id),
+            charge: core_module_info
+                .charge_info
+                .as_ref()
+                .map(|v| HChargeInfo::mk_info(core_sol, v, item_mode)),
         }
     }
 }

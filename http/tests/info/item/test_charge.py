@@ -10,11 +10,11 @@ def test_bundled(client, consts):
     # Check default upon addition
     api_module = api_fit.add_mod(type_id=eve_module.id, charge_type_id=eve_charge.id)
     assert isinstance(api_module.id, str)
-    assert isinstance(api_module.charge_id, str)
+    assert isinstance(api_module.charge.id, str)
     # ID only
     api_module.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert isinstance(api_module.id, str)
-    assert isinstance(api_module.charge_id, str)
+    assert isinstance(api_module.charge.id, str)
     # Partial
     api_module.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert isinstance(api_module.id, str)
@@ -35,12 +35,12 @@ def test_separate(client, consts):
     api_module = api_fit.add_mod(type_id=eve_module.id)
     assert isinstance(api_module.id, str)
     with raises(AttributeError):
-        api_module.charge_id  # pylint: disable=W0104
+        api_module.charge  # pylint: disable=W0104
     # ID only
     api_module.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert isinstance(api_module.id, str)
     with raises(AttributeError):
-        api_module.charge_id  # pylint: disable=W0104
+        api_module.charge  # pylint: disable=W0104
     # Partial
     api_module.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert isinstance(api_module.id, str)
@@ -56,7 +56,7 @@ def test_separate(client, consts):
     # ID only
     api_module.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert isinstance(api_module.id, str)
-    assert isinstance(api_module.charge_id, str)
+    assert isinstance(api_module.charge.id, str)
     # Partial
     api_module.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert isinstance(api_module.id, str)
