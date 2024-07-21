@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{EItemId, SolFitId, SolItemId},
+    defs::{EEffectId, EItemId, SolFitId, SolItemId},
     sol::{
         item::{SolCharge, SolFighter, SolItem, SolItemState},
         item_info::{SolChargeInfo, SolFighterInfo},
@@ -27,6 +27,28 @@ impl SolarSystem {
         let item_id = self.items.alloc_item_id()?;
         let mut fighter = SolFighter::new(&self.src, item_id, fit_id, a_item_id, state);
         // Process autocharges
+        let ac_infos = self.add_autocharges(&mut fighter)?;
+        // Do the rest
+        let info = SolFighterInfo::from_fighter_and_autocharges(&fighter, ac_infos);
+        let item = SolItem::Fighter(fighter);
+        self.add_item(item);
+        Ok(info)
+    }
+    pub fn set_fighter_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<()> {
+        self.items.get_fighter_mut(item_id)?.state = state;
+        Ok(())
+    }
+    // Non-public
+    pub(in crate::sol) fn make_fighter_info(&self, fighter: &SolFighter) -> SolFighterInfo {
+        let mut autocharges = StMap::new();
+        for (effect_id, autocharge_item_id) in fighter.autocharges.iter() {
+            if let Ok(charge_info) = self.get_charge_info(&autocharge_item_id) {
+                autocharges.insert(*effect_id, charge_info);
+            }
+        }
+        SolFighterInfo::from_fighter_and_autocharges(fighter, autocharges)
+    }
+    fn add_autocharges(&mut self, fighter: &mut SolFighter) -> Result<StMap<EEffectId, SolChargeInfo>> {
         // Gather all the info first, to ensure any failures happen before we add anything
         let mut ac_items = StMap::new();
         let mut ac_infos = StMap::new();
@@ -39,9 +61,9 @@ impl SolarSystem {
                             let charge = SolCharge::new(
                                 &self.src,
                                 autocharge_item_id,
-                                fit_id,
+                                fighter.fit_id,
                                 *autocharge_a_item_id as EItemId,
-                                item_id,
+                                fighter.base.id,
                             );
                             // Don't add an autocharge if it can't be loaded
                             if charge.base.a_item.is_none() {
@@ -63,23 +85,6 @@ impl SolarSystem {
         for ac_item in ac_items.into_values() {
             self.add_item(ac_item);
         }
-        let info = SolFighterInfo::from_fighter_and_autocharges(&fighter, ac_infos);
-        let item = SolItem::Fighter(fighter);
-        self.add_item(item);
-        Ok(info)
-    }
-    pub fn set_fighter_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<()> {
-        self.items.get_fighter_mut(item_id)?.state = state;
-        Ok(())
-    }
-    // Non-public
-    pub(in crate::sol) fn make_fighter_info(&self, fighter: &SolFighter) -> SolFighterInfo {
-        let mut autocharges = StMap::new();
-        for (effect_id, autocharge_item_id) in fighter.autocharges.iter() {
-            if let Ok(charge_info) = self.get_charge_info(&autocharge_item_id) {
-                autocharges.insert(*effect_id, charge_info);
-            }
-        }
-        SolFighterInfo::from_fighter_and_autocharges(fighter, autocharges)
+        Ok(ac_infos)
     }
 }
