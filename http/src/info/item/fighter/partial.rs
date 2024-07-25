@@ -10,9 +10,10 @@ use crate::{
 pub(crate) struct HFighterInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SolItemId,
+    pub(crate) kind: &'static str,
+    pub(crate) type_id: rc::EItemId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SolFitId,
-    pub(crate) type_id: rc::EItemId,
     pub(crate) state: HState,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) amt_override: Option<rc::Amount>,
@@ -27,8 +28,9 @@ impl HFighterInfoPartial {
     ) -> Self {
         Self {
             id: core_fighter_info.id,
-            fit_id: core_fighter_info.fit_id,
+            kind: "fighter",
             type_id: core_fighter_info.a_item_id,
+            fit_id: core_fighter_info.fit_id,
             state: (&core_fighter_info.state).into(),
             amt_override: core_fighter_info.amt_override,
             autocharges: core_fighter_info

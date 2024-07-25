@@ -8,9 +8,10 @@ use crate::{
 pub(crate) struct HModuleInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SolItemId,
+    pub(crate) kind: &'static str,
+    pub(crate) type_id: rc::EItemId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SolFitId,
-    pub(crate) type_id: rc::EItemId,
     pub(crate) state: HState,
     pub(crate) rack: HModRack,
     pub(crate) pos: rc::Idx,
@@ -28,8 +29,9 @@ impl HModuleInfoPartial {
     ) -> Self {
         Self {
             id: core_module_info.id,
-            fit_id: core_module_info.fit_id,
+            kind: "module",
             type_id: core_module_info.a_item_id,
+            fit_id: core_module_info.fit_id,
             state: (&core_module_info.state).into(),
             rack: (&core_module_info.rack).into(),
             pos: core_module_info.pos,
