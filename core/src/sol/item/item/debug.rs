@@ -5,6 +5,7 @@ use super::SolItem;
 impl SolItem {
     pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> DebugResult {
         match self {
+            Self::AutoCharge(_) => Ok(()),
             Self::Booster(_) => Ok(()),
             Self::Character(_) => Ok(()),
             Self::Charge(_) => Ok(()),

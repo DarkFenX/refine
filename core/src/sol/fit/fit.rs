@@ -98,6 +98,7 @@ impl SolFit {
             }
             // Ignore charges and system-wide effects
             SolItem::Charge(_) => (),
+            SolItem::AutoCharge(_) => (),
             SolItem::SwEffect(_) => (),
             SolItem::ProjEffect(_) => (),
         };
@@ -161,6 +162,7 @@ impl SolFit {
             }
             // Ignore charges and system-wide effects
             SolItem::Charge(_) => (),
+            SolItem::AutoCharge(_) => (),
             SolItem::SwEffect(_) => (),
             SolItem::ProjEffect(_) => (),
         }

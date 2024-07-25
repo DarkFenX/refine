@@ -3,6 +3,7 @@
 use base::SolItemBase;
 pub(in crate::sol) use container::SolItems;
 pub(in crate::sol) use item::SolItem;
+pub(in crate::sol) use item_auto_charge::SolAutoCharge;
 pub(in crate::sol) use item_booster::SolBooster;
 pub(in crate::sol) use item_character::SolCharacter;
 pub(in crate::sol) use item_charge::SolCharge;
@@ -24,6 +25,7 @@ use misc::{bool_to_state, debug, state_to_bool, SolAutocharges, SolEffectModes, 
 mod base;
 mod container;
 mod item;
+mod item_auto_charge;
 mod item_booster;
 mod item_character;
 mod item_charge;

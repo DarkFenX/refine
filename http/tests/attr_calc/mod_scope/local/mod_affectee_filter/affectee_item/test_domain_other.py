@@ -88,6 +88,64 @@ def test_affected_module_separate(client, consts):
     assert api_module.update().attrs[eve_affectee_attr.id].dogma == approx(100)
 
 
+def test_unaffected_fighter_to_autocharge(client, consts):
+    # There is no such scenario in EVE, but the lib assumes autocharge is isolated - can't receive
+    # any modifications via other reference
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
+    eve_autocharge_attr = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_autocharge_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        cat_id=consts.EveEffCat.active)
+    eve_other_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.other,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_other_effect = client.mk_eve_effect(mod_info=[eve_other_mod])
+    eve_autocharge = client.mk_eve_item(attrs={eve_affectee_attr.id: 100})
+    eve_fighter = client.mk_eve_item(
+        attrs={eve_autocharge_attr.id: eve_autocharge.id, eve_affector_attr.id: 20},
+        eff_ids=[eve_other_effect.id, eve_autocharge_effect.id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter.id)
+    api_fighter.update()
+    assert len(api_fighter.autocharges) == 1
+    api_autocharge = api_fighter.autocharges[eve_autocharge_effect.id]
+    assert api_autocharge.attrs[eve_affectee_attr.id].dogma == approx(100)
+
+
+def test_unaffected_autocharge_to_fighter(client, consts):
+    # There is no such scenario in EVE, but the lib assumes autocharge is isolated - can't emit
+    # any modifications via other reference
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
+    eve_autocharge_attr = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_autocharge_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        cat_id=consts.EveEffCat.active)
+    eve_other_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.other,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_other_effect = client.mk_eve_effect(mod_info=[eve_other_mod])
+    eve_autocharge = client.mk_eve_item(attrs={eve_affector_attr.id: 20}, eff_ids=[eve_other_effect.id])
+    eve_fighter = client.mk_eve_item(
+        attrs={eve_autocharge_attr.id: eve_autocharge.id, eve_affectee_attr.id: 100},
+        eff_ids=[eve_autocharge_effect.id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter.id)
+    api_fighter.update()
+    assert api_fighter.attrs[eve_affectee_attr.id].dogma == approx(100)
+
+
 def test_propagation_charge(client, consts):
     # Check that changes to attribute value which is source of modification are propagated to target
     eve_affector_attr = client.mk_eve_attr()

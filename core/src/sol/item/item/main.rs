@@ -2,15 +2,16 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     sol::item::{
-        SolAutocharges, SolBooster, SolCharacter, SolCharge, SolDrone, SolEffectModes, SolFighter, SolFwEffect,
-        SolImplant, SolItemState, SolModule, SolProjEffect, SolRig, SolShip, SolShipKind, SolSkill, SolStance,
-        SolSubsystem, SolSwEffect,
+        SolAutoCharge, SolAutocharges, SolBooster, SolCharacter, SolCharge, SolDrone, SolEffectModes, SolFighter,
+        SolFwEffect, SolImplant, SolItemState, SolModule, SolProjEffect, SolRig, SolShip, SolShipKind, SolSkill,
+        SolStance, SolSubsystem, SolSwEffect,
     },
     src::Src,
     util::{Error, ErrorKind, Named, Result, StMap},
 };
 
 pub(in crate::sol) enum SolItem {
+    AutoCharge(SolAutoCharge),
     Booster(SolBooster),
     Character(SolCharacter),
     Charge(SolCharge),
@@ -30,6 +31,7 @@ pub(in crate::sol) enum SolItem {
 impl SolItem {
     pub(in crate::sol) fn get_name(&self) -> &'static str {
         match self {
+            Self::AutoCharge(_) => SolAutoCharge::get_name(),
             Self::Booster(_) => SolBooster::get_name(),
             Self::Character(_) => SolCharacter::get_name(),
             Self::Charge(_) => SolCharge::get_name(),
@@ -49,6 +51,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_id(&self) -> SolItemId {
         match self {
+            Self::AutoCharge(auto_charge) => auto_charge.base.id,
             Self::Booster(booster) => booster.base.id,
             Self::Character(character) => character.base.id,
             Self::Charge(charge) => charge.base.id,
@@ -68,6 +71,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_fit_id(&self) -> Option<SolFitId> {
         match self {
+            Self::AutoCharge(auto_charge) => Some(auto_charge.fit_id),
             Self::Booster(booster) => Some(booster.fit_id),
             Self::Character(character) => Some(character.fit_id),
             Self::Charge(charge) => Some(charge.fit_id),
@@ -87,6 +91,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
         match self {
+            Self::AutoCharge(auto_charge) => &auto_charge.base.effect_modes,
             Self::Booster(booster) => &booster.base.effect_modes,
             Self::Character(character) => &character.base.effect_modes,
             Self::Charge(charge) => &charge.base.effect_modes,
@@ -106,6 +111,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
         match self {
+            Self::AutoCharge(auto_charge) => &mut auto_charge.base.effect_modes,
             Self::Booster(booster) => &mut booster.base.effect_modes,
             Self::Character(character) => &mut character.base.effect_modes,
             Self::Charge(charge) => &mut charge.base.effect_modes,
@@ -125,6 +131,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_autocharges(&self) -> Option<&SolAutocharges> {
         match self {
+            Self::AutoCharge(_) => None,
             Self::Booster(_) => None,
             Self::Character(_) => None,
             Self::Charge(_) => None,
@@ -144,6 +151,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_autocharges_mut(&mut self) -> Option<&mut SolAutocharges> {
         match self {
+            Self::AutoCharge(_) => None,
             Self::Booster(_) => None,
             Self::Character(_) => None,
             Self::Charge(_) => None,
@@ -163,6 +171,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
         match self {
+            Self::AutoCharge(auto_charge) => auto_charge.base.a_item_id,
             Self::Booster(booster) => booster.base.a_item_id,
             Self::Character(character) => character.base.a_item_id,
             Self::Charge(charge) => charge.base.a_item_id,
@@ -182,6 +191,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_state(&self) -> SolItemState {
         match self {
+            Self::AutoCharge(_) => SolItemState::Offline,
             Self::Booster(booster) => booster.state,
             Self::Character(character) => character.state,
             Self::Charge(_) => SolItemState::Offline,
@@ -203,6 +213,8 @@ impl SolItem {
         let a_item_id = self.get_a_item_id();
         let a_item = src.get_a_item(&a_item_id).cloned();
         match self {
+            // Autocharges should be removed/re-added when parent item is being reloaded
+            Self::AutoCharge(_) => (),
             Self::Booster(booster) => booster.base.a_item = a_item,
             Self::Character(character) => character.base.a_item = a_item,
             Self::Charge(charge) => charge.base.a_item = a_item,
@@ -222,6 +234,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
         match self {
+            Self::AutoCharge(auto_charge) => auto_charge.base.a_item.as_ref(),
             Self::Booster(booster) => booster.base.a_item.as_ref(),
             Self::Character(character) => character.base.a_item.as_ref(),
             Self::Charge(charge) => charge.base.a_item.as_ref(),
@@ -245,6 +258,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn can_receive_projs(&self) -> bool {
         match self {
+            Self::AutoCharge(_) => false,
             Self::Booster(_) => false,
             Self::Character(_) => false,
             Self::Charge(_) => false,
@@ -264,6 +278,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&SolItemId, &Option<AttrVal>)>> {
         match self {
+            Self::AutoCharge(_) => None,
             Self::Booster(_) => None,
             Self::Character(_) => None,
             Self::Charge(_) => None,
@@ -283,6 +298,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn iter_projectee_items(&self) -> Option<impl ExactSizeIterator<Item = &SolItemId>> {
         match self {
+            Self::AutoCharge(_) => None,
             Self::Booster(_) => None,
             Self::Character(_) => None,
             Self::Charge(_) => None,

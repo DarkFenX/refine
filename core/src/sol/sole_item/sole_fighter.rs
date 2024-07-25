@@ -2,8 +2,8 @@ use crate::{
     ad,
     defs::{EEffectId, EItemId, SolFitId, SolItemId},
     sol::{
-        item::{SolCharge, SolFighter, SolItem, SolItemState},
-        item_info::{SolChargeInfo, SolFighterInfo},
+        item::{SolAutoCharge, SolFighter, SolItem, SolItemState},
+        item_info::{SolAutoChargeInfo, SolFighterInfo},
         SolarSystem,
     },
     util::{Result, StMap},
@@ -42,13 +42,13 @@ impl SolarSystem {
     pub(in crate::sol) fn make_fighter_info(&self, fighter: &SolFighter) -> SolFighterInfo {
         let mut autocharges = StMap::new();
         for (effect_id, autocharge_item_id) in fighter.autocharges.iter() {
-            if let Ok(charge_info) = self.get_charge_info(&autocharge_item_id) {
-                autocharges.insert(*effect_id, charge_info);
+            if let Ok(auto_charge_info) = self.get_auto_charge_info(&autocharge_item_id) {
+                autocharges.insert(*effect_id, auto_charge_info);
             }
         }
         SolFighterInfo::from_fighter_and_autocharges(fighter, autocharges)
     }
-    fn add_autocharges(&mut self, fighter: &mut SolFighter) -> Result<StMap<EEffectId, SolChargeInfo>> {
+    fn add_autocharges(&mut self, fighter: &mut SolFighter) -> Result<StMap<EEffectId, SolAutoChargeInfo>> {
         // Gather all the info first, to ensure any failures happen before we add anything
         let mut ac_items = StMap::new();
         let mut ac_infos = StMap::new();
@@ -58,7 +58,7 @@ impl SolarSystem {
                     if let Some(ad::AEffectChargeInfo::Attr(charge_attr_id)) = effect.charge {
                         if let Some(autocharge_a_item_id) = a_item.attr_vals.get(&charge_attr_id) {
                             let autocharge_item_id = self.items.alloc_item_id()?;
-                            let charge = SolCharge::new(
+                            let auto_charge = SolAutoCharge::new(
                                 &self.src,
                                 autocharge_item_id,
                                 fighter.fit_id,
@@ -66,12 +66,12 @@ impl SolarSystem {
                                 fighter.base.id,
                             );
                             // Don't add an autocharge if it can't be loaded
-                            if charge.base.a_item.is_none() {
+                            if auto_charge.base.a_item.is_none() {
                                 continue;
                             }
-                            let info = SolChargeInfo::from(&charge);
+                            let info = SolAutoChargeInfo::from(&auto_charge);
                             ac_infos.insert(*effect_id, info);
-                            let item = SolItem::Charge(charge);
+                            let item = SolItem::AutoCharge(auto_charge);
                             ac_items.insert(*effect_id, item);
                         }
                     }

@@ -1,3 +1,4 @@
+use auto_charge::HAutoChargeInfo;
 use booster::HBoosterInfo;
 use character::HCharacterInfo;
 use charge::HChargeInfo;
@@ -16,6 +17,7 @@ use sw_effect::HSwEffectInfo;
 
 use crate::info::HItemInfoMode;
 
+mod auto_charge;
 mod booster;
 mod character;
 mod charge;
@@ -51,6 +53,7 @@ pub(crate) enum HItemInfo {
     Drone(HDroneInfo),
     Fighter(HFighterInfo),
     Charge(HChargeInfo),
+    AutoCharge(HAutoChargeInfo),
     SwEffect(HSwEffectInfo),
     FwEffect(HFwEffectInfo),
     ProjEffect(HProjEffectInfo),
@@ -70,6 +73,9 @@ impl MkItemInfo<&rc::SolItemInfo> for HItemInfo {
             rc::SolItemInfo::Drone(core_drone_info) => Self::mk_info(core_sol, core_drone_info, item_mode),
             rc::SolItemInfo::Fighter(core_fighter_info) => Self::mk_info(core_sol, core_fighter_info, item_mode),
             rc::SolItemInfo::Charge(core_charge_info) => Self::mk_info(core_sol, core_charge_info, item_mode),
+            rc::SolItemInfo::AutoCharge(core_auto_charge_info) => {
+                Self::mk_info(core_sol, core_auto_charge_info, item_mode)
+            }
             rc::SolItemInfo::SwEffect(core_sw_effect_info) => Self::mk_info(core_sol, core_sw_effect_info, item_mode),
             rc::SolItemInfo::FwEffect(core_fw_effect_info) => Self::mk_info(core_sol, core_fw_effect_info, item_mode),
             rc::SolItemInfo::ProjEffect(core_proj_effect_info) => {
@@ -156,6 +162,15 @@ impl MkItemInfo<&rc::SolFighterInfo> for HItemInfo {
 impl MkItemInfo<&rc::SolChargeInfo> for HItemInfo {
     fn mk_info(core_sol: &mut rc::SolarSystem, core_charge_info: &rc::SolChargeInfo, item_mode: HItemInfoMode) -> Self {
         Self::Charge(HChargeInfo::mk_info(core_sol, core_charge_info, item_mode))
+    }
+}
+impl MkItemInfo<&rc::SolAutoChargeInfo> for HItemInfo {
+    fn mk_info(
+        core_sol: &mut rc::SolarSystem,
+        core_auto_charge_info: &rc::SolAutoChargeInfo,
+        item_mode: HItemInfoMode,
+    ) -> Self {
+        Self::AutoCharge(HAutoChargeInfo::mk_info(core_sol, core_auto_charge_info, item_mode))
     }
 }
 impl MkItemInfo<&rc::SolSwEffectInfo> for HItemInfo {

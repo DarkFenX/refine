@@ -1,6 +1,7 @@
 //! Exposed information about solar system items.
 
 pub use info::SolItemInfo;
+pub use info_auto_charge::SolAutoChargeInfo;
 pub use info_booster::SolBoosterInfo;
 pub use info_character::SolCharacterInfo;
 pub use info_charge::SolChargeInfo;
@@ -19,6 +20,7 @@ pub use info_sw_effect::SolSwEffectInfo;
 pub use misc::SolProjInfo;
 
 mod info;
+mod info_auto_charge;
 mod info_booster;
 mod info_character;
 mod info_charge;
