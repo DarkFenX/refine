@@ -177,6 +177,26 @@ class EveAttr(IntEnum):
 
 
 @unique
+class ApiItemKind(StrEnum):
+    autocharge = 'autocharge'
+    booster = 'booster'
+    character = 'character'
+    charge = 'charge'
+    drone = 'drone'
+    fighter = 'fighter'
+    fw_effect = 'fw_effect'
+    implant = 'implant'
+    module = 'module'
+    proj_effect = 'proj_effect'
+    rig = 'rig'
+    ship = 'ship'
+    skill = 'skill'
+    stance = 'stance'
+    subsystem = 'subsystem'
+    sw_effect = 'sw_effect'
+
+
+@unique
 class ApiState(StrEnum):
     ghost = 'ghost'
     offline = 'offline'

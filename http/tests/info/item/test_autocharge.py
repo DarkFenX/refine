@@ -12,20 +12,40 @@ def test_autocharge(client, consts):
     # Check default upon addition
     api_fighter = api_fit.add_fighter(type_id=eve_fighter.id)
     assert len(api_fighter.autocharges) == 1
-    assert isinstance(api_fighter.autocharges[eve_effect.id].id, str)
-    api_autocharge_id = api_fighter.autocharges[eve_effect.id].id
+    api_autocharge = api_fighter.autocharges[eve_effect.id]
+    assert isinstance(api_autocharge.id, str)
+    with raises(AttributeError):
+        api_autocharge.kind  # pylint: disable=W0104
+    api_autocharge_id = api_autocharge.id
     # ID only
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert len(api_fighter.autocharges) == 1
-    assert api_fighter.autocharges[eve_effect.id].id == api_autocharge_id
+    api_autocharge = api_fighter.autocharges[eve_effect.id]
+    assert api_autocharge.id == api_autocharge_id
+    with raises(AttributeError):
+        api_autocharge.kind  # pylint: disable=W0104
+    api_autocharge.update(item_info_mode=consts.ApiItemInfoMode.id)
+    assert api_autocharge.id == api_autocharge_id
+    with raises(AttributeError):
+        api_autocharge.kind  # pylint: disable=W0104
     # Partial
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert len(api_fighter.autocharges) == 1
-    assert api_fighter.autocharges[eve_effect.id].id == api_autocharge_id
+    api_autocharge = api_fighter.autocharges[eve_effect.id]
+    assert api_autocharge.id == api_autocharge_id
+    assert api_autocharge.kind == consts.ApiItemKind.autocharge
+    api_autocharge.update(item_info_mode=consts.ApiItemInfoMode.partial)
+    assert api_autocharge.id == api_autocharge_id
+    assert api_autocharge.kind == consts.ApiItemKind.autocharge
     # Full
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.full)
     assert len(api_fighter.autocharges) == 1
-    assert api_fighter.autocharges[eve_effect.id].id == api_autocharge_id
+    api_autocharge = api_fighter.autocharges[eve_effect.id]
+    assert api_autocharge.id == api_autocharge_id
+    assert api_autocharge.kind == consts.ApiItemKind.autocharge
+    api_autocharge.update(item_info_mode=consts.ApiItemInfoMode.full)
+    assert api_autocharge.id == api_autocharge_id
+    assert api_autocharge.kind == consts.ApiItemKind.autocharge
 
 
 def test_invalid_reference(client, consts):
