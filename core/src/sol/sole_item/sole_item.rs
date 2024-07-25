@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     defs::SolItemId,
     sol::{item::SolItem, item_info::SolItemInfo, SolView, SolarSystem},
-    util::Result,
+    util::{Error, ErrorKind, Result},
 };
 
 impl SolarSystem {
@@ -16,6 +16,9 @@ impl SolarSystem {
     pub fn remove_item(&mut self, item_id: &SolItemId) -> Result<()> {
         // Gather info for further process
         let main = self.items.get_item(item_id)?;
+        if matches!(main, SolItem::AutoCharge(_)) {
+            return Err(Error::new(ErrorKind::UnremovableItemKind(main.get_name())));
+        }
         let charge_id_opt = match main {
             SolItem::Module(m) => m.charge_item_id,
             _ => None,

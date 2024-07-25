@@ -55,6 +55,7 @@ impl HError {
                 rc::ErrorKind::FleetIdAllocFailed => "COR-016",
                 rc::ErrorKind::FleetNotFound(_) => "COR-017",
                 rc::ErrorKind::ProjecteeNotFound(_, _) => "COR-018",
+                rc::ErrorKind::UnremovableItemKind(_) => "COR-019",
             },
         };
         code.to_string()

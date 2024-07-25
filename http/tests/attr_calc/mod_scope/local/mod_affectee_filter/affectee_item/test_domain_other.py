@@ -89,8 +89,8 @@ def test_affected_module_separate(client, consts):
 
 
 def test_unaffected_fighter_to_autocharge(client, consts):
-    # There is no such scenario in EVE, but the lib assumes autocharge is isolated - can't receive
-    # any modifications via other reference
+    # There is no such scenario in EVE, but the lib assumes autocharge cannot receive any
+    # modifications from its carrier
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
     eve_autocharge_attr = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
@@ -119,8 +119,8 @@ def test_unaffected_fighter_to_autocharge(client, consts):
 
 
 def test_unaffected_autocharge_to_fighter(client, consts):
-    # There is no such scenario in EVE, but the lib assumes autocharge is isolated - can't emit
-    # any modifications via other reference
+    # There is no such scenario in EVE, but the lib assumes autocharge carrier cannot receive any
+    # modifications from autocharge
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
     eve_autocharge_attr = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)

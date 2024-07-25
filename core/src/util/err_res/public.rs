@@ -27,6 +27,7 @@ pub enum ErrorKind {
     CustomModCalc,
     ItemNotProjectable(SolItemId),
     ProjecteeNotFound(SolItemId, SolItemId),
+    UnremovableItemKind(&'static str),
 }
 
 #[derive(Debug)]
@@ -68,6 +69,7 @@ impl fmt::Display for Error {
                     "item {projector_item_id} doesn't have item {projectee_item_id} as projection"
                 )
             }
+            ErrorKind::UnremovableItemKind(kind) => write!(f, "{kind} cannot be manually removed"),
         }
     }
 }

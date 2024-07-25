@@ -25,6 +25,7 @@ pub(crate) async fn delete_item(
             let code = match e.kind {
                 HErrorKind::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
                 HErrorKind::CoreError(rc::ErrorKind::ItemIdNotFound(_), _) => StatusCode::NOT_FOUND,
+                HErrorKind::CoreError(rc::ErrorKind::UnremovableItemKind(_), _) => StatusCode::FORBIDDEN,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(HSingleErr::from(e))).into_response()
