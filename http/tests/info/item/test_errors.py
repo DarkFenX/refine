@@ -20,7 +20,7 @@ def test_error_no_item_id(client, consts):
     api_sol.check()
 
 
-def test_error_no_item_malformed(client, consts):
+def test_error_no_item_malformed(client):
     # Send ID in incorrect format
     client.create_sources()
     api_sol = client.create_sol()
