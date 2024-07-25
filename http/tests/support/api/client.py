@@ -120,6 +120,27 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     def created_sols(self):
         return self.__created_sols
 
+    def get_sol(
+            self,
+            sol_id: str,
+            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+            status_code: int = 200,
+            json_predicate: Union[dict, None] = None,
+    ) -> Union[SolarSystem, None]:
+        resp = self.get_sol_request(
+            sol_id=sol_id,
+            sol_info_mode=sol_info_mode,
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if resp.status_code == 200:
+            return SolarSystem(client=self, data=resp.json())
+        return None
+
     def get_sol_request(
             self,
             sol_id: str,

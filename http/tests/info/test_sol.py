@@ -73,22 +73,24 @@ def test_proj_effect(client):
 def test_error_no_sol_full(client, consts):
     # Check case when there is no solar system with such ID
     client.create_sources()
-    resp = client.get_sol_request(
+    client.get_sol(
         sol_id='1',
         sol_info_mode=consts.ApiSolInfoMode.full,
         fleet_info_mode=Absent,
         fit_info_mode=Absent,
-        item_info_mode=Absent).send()
-    resp.check(status_code=404, json_predicate={'code': 'SOL-001', 'message': 'no solar system with ID "1"'})
+        item_info_mode=Absent,
+        status_code=404,
+        json_predicate={'code': 'SOL-001', 'message': 'no solar system with ID "1"'})
 
 
 def test_error_no_sol_id(client, consts):
     # Check case when there is no solar system with such ID
     client.create_sources()
-    resp = client.get_sol_request(
+    client.get_sol(
         sol_id='1',
         sol_info_mode=consts.ApiSolInfoMode.id,
         fleet_info_mode=Absent,
         fit_info_mode=Absent,
-        item_info_mode=Absent).send()
-    resp.check(status_code=404, json_predicate={'code': 'SOL-001', 'message': 'no solar system with ID "1"'})
+        item_info_mode=Absent,
+        status_code=404,
+        json_predicate={'code': 'SOL-001', 'message': 'no solar system with ID "1"'})

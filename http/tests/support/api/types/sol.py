@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.api.exception import ApiRequestError
 from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .fit import Fit
@@ -58,8 +57,7 @@ class SolarSystem(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self.id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -70,8 +68,7 @@ class SolarSystem(AttrDict):
 
     def remove(self, status_code: int = 204) -> None:
         resp = self.remove_request().send()
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 204:
             self._client.created_sols.remove(self)
 
@@ -94,11 +91,11 @@ class SolarSystem(AttrDict):
             fleet_id: str,
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.full,
             status_code: int = 200,
+            json_predicate: Union[dict, None] = None,
     ) -> Union[Fleet, None]:
         resp = self.get_fleet_request(fleet_id=fleet_id, fleet_info_mode=fleet_info_mode).send()
         self.check()
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             fleet = Fleet(client=self._client, data=resp.json(), sol_id=self.id)
             return fleet
@@ -117,8 +114,7 @@ class SolarSystem(AttrDict):
     ) -> Union[Fleet, None]:
         resp = self.create_fleet_request(fleet_info_mode=fleet_info_mode).send()
         self.check()
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 201:
             fleet = Fleet(client=self._client, data=resp.json(), sol_id=self.id)
             return fleet
@@ -143,11 +139,11 @@ class SolarSystem(AttrDict):
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: Union[dict, None] = None,
     ) -> Union[Fit, None]:
         resp = self.get_fit_request(fit_id=fit_id, fit_info_mode=fit_info_mode, item_info_mode=item_info_mode).send()
         self.check()
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             fit = Fit(client=self._client, data=resp.json(), sol_id=self.id)
             return fit
@@ -171,8 +167,7 @@ class SolarSystem(AttrDict):
     ) -> Union[Fit, None]:
         resp = self.create_fit_request(fit_info_mode=fit_info_mode, item_info_mode=item_info_mode).send()
         self.check()
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 201:
             fit = Fit(client=self._client, data=resp.json(), sol_id=self.id)
             return fit
@@ -191,11 +186,11 @@ class SolarSystem(AttrDict):
             item_id: str,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.full,
             status_code: int = 200,
+            json_predicate: Union[dict, None] = None,
     ) -> Union[Item, None]:
         resp = self.get_item_request(item_id=item_id, item_info_mode=item_info_mode).send()
         self.check()
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             return Item(client=self._client, data=resp.json(), sol_id=self.id)
         return None
@@ -222,8 +217,7 @@ class SolarSystem(AttrDict):
     ) -> Union[Item, None]:
         resp = self.add_sw_effect_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self.check()
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self.id)
             return item
@@ -251,8 +245,7 @@ class SolarSystem(AttrDict):
     ) -> Union[Item, None]:
         resp = self.add_proj_effect_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
         self.check()
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self.id)
             return item

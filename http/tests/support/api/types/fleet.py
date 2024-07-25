@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.api.exception import ApiRequestError
 from tests.support.consts import ApiFleetInfoMode
 from tests.support.util import AttrDict, AttrHookDef
 
@@ -36,8 +35,7 @@ class Fleet(AttrDict):
     ) -> Union[Fleet, None]:
         resp = self.update_request(fleet_info_mode=fleet_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -65,8 +63,7 @@ class Fleet(AttrDict):
     ) -> Union[Fleet, None]:
         resp = self.change_request(add_fits=add_fits, remove_fits=remove_fits, fleet_info_mode=fleet_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -78,5 +75,4 @@ class Fleet(AttrDict):
     def remove(self, status_code: int = 204) -> None:
         resp = self.remove_request().send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)

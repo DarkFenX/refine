@@ -12,10 +12,13 @@ def test_remove(client, consts):
     api_autocharge = api_fighter.autocharges[eve_effect.id]
     api_autocharge_id = api_autocharge.id
     # Cannot remove autocharges, they are handled automatically
-    resp = api_autocharge.remove_request().send()
-    resp.check(
+    api_autocharge.remove(
         status_code=403,
         json_predicate={'code': 'COR-019', 'message': 'core library error: SolAutoCharge cannot be manually removed'})
     # And after attempt of removal, all the info is still there
     api_fighter.update()
     assert api_fighter.autocharges[eve_effect.id].id == api_autocharge_id
+    # Remove it with fighter for the sake of consistency check
+    api_fighter.remove()
+    # Try removing autocharge again
+    api_autocharge.remove(status_code=404)

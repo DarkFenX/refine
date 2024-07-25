@@ -19,11 +19,12 @@ impl SolarSystem {
         if matches!(main, SolItem::AutoCharge(_)) {
             return Err(Error::new(ErrorKind::UnremovableItemKind(main.get_name())));
         }
-        let charge_id_opt = match main {
+        let charge_id = match main {
             SolItem::Module(m) => m.charge_item_id,
             _ => None,
         };
-        let parent_id_opt = match main {
+        let autocharge_ids = main.get_autocharges().map(|v| v.values().map(|w| *w).collect_vec());
+        let parent_id = match main {
             SolItem::Charge(charge) => Some(charge.cont_id),
             _ => None,
         };
@@ -54,12 +55,22 @@ impl SolarSystem {
             }
         }
         // Remove child items
-        if let Some(charge_id) = charge_id_opt {
-            let charge = self.items.get_item(&charge_id)?;
+        if let Some(charge_id) = charge_id {
+            let charge = self.items.get_item(&charge_id).unwrap();
             self.svcs
                 .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), charge);
             self.items.remove_item(&charge_id);
         };
+        if let Some(autocharge_ids) = autocharge_ids {
+            for autocharge_id in autocharge_ids {
+                let autocharge = self.items.get_item(&autocharge_id).unwrap();
+                self.svcs.remove_item(
+                    &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                    autocharge,
+                );
+                self.items.remove_item(&autocharge_id);
+            }
+        }
         // Handle item itself
         let main = self.items.get_item(item_id)?;
         self.svcs
@@ -81,7 +92,7 @@ impl SolarSystem {
         }
         self.items.remove_item(item_id);
         // Update parent item
-        if let Some(parent_id) = parent_id_opt {
+        if let Some(parent_id) = parent_id {
             let parent = self.items.get_item_mut(&parent_id)?;
             if let SolItem::Module(m) = parent {
                 m.charge_item_id = None

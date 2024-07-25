@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections import namedtuple
 from typing import TYPE_CHECKING
 
-from tests.support.api.exception import ApiRequestError
 from tests.support.consts import ApiItemInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
@@ -45,12 +44,11 @@ class Item(AttrDict):
     def update(
             self,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.full,
-            status_code: int = 200
+            status_code: int = 200,
     ) -> Union[Item, None]:
         resp = self.update_request(item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -59,11 +57,10 @@ class Item(AttrDict):
     def remove_request(self) -> Request:
         return self._client.remove_item_request(sol_id=self._sol_id, item_id=self.id)
 
-    def remove(self, status_code: int = 204) -> None:
+    def remove(self, status_code: int = 204, json_predicate: Union[dict, None] = None) -> None:
         resp = self.remove_request().send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
 
     # Character methods
     def change_char_request(
@@ -85,8 +82,7 @@ class Item(AttrDict):
     ) -> Union[Item, None]:
         resp = self.change_char_request(state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -122,8 +118,7 @@ class Item(AttrDict):
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -149,8 +144,7 @@ class Item(AttrDict):
     ) -> Union[Item, None]:
         resp = self.change_implant_request(state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -176,8 +170,7 @@ class Item(AttrDict):
     ) -> Union[Item, None]:
         resp = self.change_ship_request(state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -225,8 +218,7 @@ class Item(AttrDict):
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -252,8 +244,7 @@ class Item(AttrDict):
     ) -> Union[Item, None]:
         resp = self.change_rig_request(state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -279,8 +270,7 @@ class Item(AttrDict):
     ) -> Union[Item, None]:
         resp = self.change_sw_effect_request(state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -306,8 +296,7 @@ class Item(AttrDict):
     ) -> Union[Item, None]:
         resp = self.change_fw_effect_request(state=state, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -343,8 +332,7 @@ class Item(AttrDict):
             rm_projs=rm_projs,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        if resp.status_code != status_code:
-            raise ApiRequestError(expected_code=status_code, received_code=resp.status_code)
+        resp.check(status_code=status_code)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
