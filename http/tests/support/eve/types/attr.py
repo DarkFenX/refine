@@ -17,8 +17,8 @@ class Attribute:
     def __init__(
             self,
             id_: int,
-            stackable: Union[int, Type[Absent]],
-            high_is_good: Union[int, Type[Absent]],
+            stackable: Union[int, bool, Type[Absent]],
+            high_is_good: Union[int, bool, Type[Absent]],
             default_value: Union[float, Type[Absent]],
             max_attribute_id: Union[int, Type[Absent]],
     ):

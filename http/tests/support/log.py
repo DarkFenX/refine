@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 from tests.support.util import Timer, make_repr_str
 
 if TYPE_CHECKING:
+    from pathlib import Path
     from typing import Union
 
 
@@ -78,8 +79,8 @@ class LogReader:
         fr'((?P<span>\S+): )?'
         fr'(?P<msg>.*)\n$')
 
-    def __init__(self, path: str):
-        self.__path: str = path
+    def __init__(self, path: Path):
+        self.__path: Path = path
         self.__collectors: list[LogCollector] = []
         self.__execute_flag: bool = False
 

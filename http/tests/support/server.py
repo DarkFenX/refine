@@ -1,6 +1,7 @@
 import os
 import subprocess
 from collections import namedtuple
+from pathlib import Path
 from signal import SIGKILL
 
 
@@ -18,7 +19,7 @@ def build_server(proj_root: str):
         check=True)
 
 
-def build_config(config_path: str, port: int, log_folder: str) -> ConfigInfo:
+def build_config(config_path: Path, port: int, log_folder: Path) -> ConfigInfo:
     contents = [
         '[server]',
         f'port = {port}',
@@ -37,7 +38,7 @@ def run_server(proj_root: str, config_path: str) -> ServerInfo:
     binary_path = os.path.join(proj_root, 'target', 'release', 'reefast-http')
     return ServerInfo(pid=subprocess.Popen(
         [binary_path, config_path],
-        #stdout=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL).pid)
 
 
