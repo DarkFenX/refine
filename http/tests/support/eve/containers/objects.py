@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from tests.support.eve.types import BuffModifier, EffectModifier
     from .strings import EveStrings
 
+
 ID_START = 1000000
 
 

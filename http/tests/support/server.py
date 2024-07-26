@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 import os
 import subprocess
 from collections import namedtuple
-from pathlib import Path
 from signal import SIGKILL
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 ConfigInfo = namedtuple('ConfigInfo', (['config_path', 'port']))
