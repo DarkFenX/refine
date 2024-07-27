@@ -37,7 +37,7 @@ def setup_test(client, consts):
         eff_ids=[consts.EveEffect.mod_bonus_warfare_link_armor],
         defeff_id=consts.EveEffect.mod_bonus_warfare_link_armor)
     eve_rig_id = eve_d1.mk_item(grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 7.5}).id
-    eve_d2.mk_item(id_=eve_rig_id, attrs={eve_affectee_attr_id: 7.5})
+    eve_d2.mk_item(id_=eve_rig_id, grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 7.5})
     eve_root_id = eve_d1.mk_ship().id
     eve_d2.mk_struct(id_=eve_root_id)
     client.create_sources()
