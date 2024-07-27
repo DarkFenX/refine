@@ -160,6 +160,29 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             url=f'{self.__base_url}/sol/{sol_id}',
             params=params)
 
+    def change_sol_src_request(
+            self,
+            sol_id: str,
+            src_alias: Union[str, Type[Absent]],
+            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        body = {}
+        conditional_insert(body, 'src_alias', src_alias)
+        params = {}
+        conditional_insert(params, 'sol', sol_info_mode)
+        conditional_insert(params, 'fleet', fleet_info_mode)
+        conditional_insert(params, 'fit', fit_info_mode)
+        conditional_insert(params, 'item', item_info_mode)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/sol/{sol_id}/src',
+            params=params,
+            json=body)
+
     def remove_sol_request(self, sol_id: str) -> Request:
         return Request(
             self,

@@ -63,6 +63,44 @@ class SolarSystem(AttrDict):
             return self
         return None
 
+    def change_src_request(
+            self,
+            src_alias: Union[str, Type[Absent]],
+            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        return self._client.change_sol_src_request(
+            sol_id=self.id,
+            src_alias=src_alias,
+            sol_info_mode=sol_info_mode,
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
+
+    def change_src(
+            self,
+            src_alias: Union[str, Type[Absent]] = Absent,
+            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]] = ApiSolInfoMode.full,
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.id,
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> SolarSystem:
+        resp = self.change_src_request(
+            src_alias=src_alias,
+            sol_info_mode=sol_info_mode,
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode,
+        ).send()
+        self._client.check_sol(sol_id=self.id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+        return self
+
     def remove_request(self) -> Request:
         return self._client.remove_sol_request(sol_id=self.id)
 
