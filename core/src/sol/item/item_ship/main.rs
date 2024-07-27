@@ -4,7 +4,7 @@ use crate::{
     ec,
     sol::item::{bool_to_state, state_to_bool, SolItemBase, SolItemState, SolShipKind},
     src::Src,
-    util::Named,
+    util::{Named, Result},
 };
 
 pub(in crate::sol) struct SolShip {
@@ -15,20 +15,46 @@ pub(in crate::sol) struct SolShip {
 }
 impl SolShip {
     pub(in crate::sol) fn new(src: &Src, id: SolItemId, fit_id: SolFitId, a_item_id: EItemId, state: bool) -> Self {
-        let a_item = src.get_a_item(&a_item_id).cloned();
-        let kind = detect_fit_kind(&a_item);
-        Self {
+        let mut ship = Self {
             base: SolItemBase::new(src, id, a_item_id),
             fit_id,
             state: bool_to_state(state),
-            kind,
-        }
+            kind: SolShipKind::Unknown,
+        };
+        ship.update_fit_kind();
+        ship
+    }
+    pub(in crate::sol::item) fn get_id(&self) -> SolItemId {
+        self.base.get_id()
+    }
+    pub(in crate::sol::item) fn get_fit_id(&self) -> SolFitId {
+        self.fit_id
+    }
+    pub(in crate::sol::item) fn is_loaded(&self) -> bool {
+        self.base.is_loaded()
+    }
+    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
+        self.base.get_a_item()
+    }
+    pub(in crate::sol::item) fn reload_a_item(&mut self, src: &Src) {
+        self.base.reload_a_item(src);
+        self.update_fit_kind();
     }
     pub(in crate::sol) fn get_bool_state(&self) -> bool {
         state_to_bool(self.state)
     }
     pub(in crate::sol) fn set_bool_state(&mut self, state: bool) {
         self.state = bool_to_state(state);
+    }
+    fn update_fit_kind(&mut self) {
+        self.kind = match self.get_a_item() {
+            Ok(a_item) => match a_item.cat_id {
+                ec::itemcats::SHIP => SolShipKind::Ship,
+                ec::itemcats::STRUCTURE => SolShipKind::Structure,
+                _ => SolShipKind::Unknown,
+            },
+            _ => SolShipKind::Unknown,
+        };
     }
 }
 impl Named for SolShip {
@@ -45,16 +71,5 @@ impl std::fmt::Display for SolShip {
             self.base.id,
             self.base.a_item_id
         )
-    }
-}
-
-fn detect_fit_kind(a_item: &Option<ad::ArcItem>) -> SolShipKind {
-    match a_item {
-        Some(a_item) => match a_item.cat_id {
-            ec::itemcats::SHIP => SolShipKind::Ship,
-            ec::itemcats::STRUCTURE => SolShipKind::Structure,
-            _ => SolShipKind::Unknown,
-        },
-        None => SolShipKind::Unknown,
     }
 }

@@ -1,8 +1,9 @@
 use crate::{
+    ad,
     defs::{EItemId, SolFitId, SolItemId},
     sol::item::SolItemBase,
     src::Src,
-    util::Named,
+    util::{Named, Result},
 };
 
 pub(in crate::sol) struct SolAutoCharge {
@@ -23,6 +24,23 @@ impl SolAutoCharge {
             fit_id,
             cont_id,
         }
+    }
+    pub(in crate::sol) fn get_id(&self) -> SolItemId {
+        self.base.get_id()
+    }
+    pub(in crate::sol::item) fn get_fit_id(&self) -> SolFitId {
+        self.fit_id
+    }
+    pub(in crate::sol) fn is_loaded(&self) -> bool {
+        self.base.is_loaded()
+    }
+    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
+        self.base.get_a_item()
+    }
+    pub(in crate::sol::item) fn reload_a_item(&mut self, _: &Src) {
+        // Just panic to expose attempts to reload it, since autocharges should never be reloaded.
+        // Instead, they are removed and re-added when source changes.
+        panic!();
     }
 }
 impl Named for SolAutoCharge {

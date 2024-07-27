@@ -20,3 +20,4 @@ mod sole_fleet;
 mod sole_item;
 mod svc;
 mod view;
+mod sole_src;

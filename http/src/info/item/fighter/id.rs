@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::info::{item::auto_charge::HAutoChargeInfo, HItemInfoMode};
+use crate::info::{item::autocharge::HAutoChargeInfo, HItemInfoMode};
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]

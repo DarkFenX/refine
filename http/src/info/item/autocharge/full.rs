@@ -16,8 +16,8 @@ pub(crate) struct HAutoChargeInfoFull {
     pub(crate) mods: HashMap<rc::EAttrId, Vec<HModificationInfo>>,
 }
 impl HAutoChargeInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_auto_charge_info: &rc::SolAutoChargeInfo) -> Self {
-        let partial_info = HAutoChargeInfoPartial::from(core_auto_charge_info);
+    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_autocharge_info: &rc::SolAutoChargeInfo) -> Self {
+        let partial_info = HAutoChargeInfoPartial::from(core_autocharge_info);
         let attrs = match core_sol.get_item_attrs(&partial_info.id) {
             Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),

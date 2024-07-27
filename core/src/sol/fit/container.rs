@@ -44,6 +44,9 @@ impl SolFits {
     pub(in crate::sol) fn iter_fits(&self) -> impl ExactSizeIterator<Item = &SolFit> {
         self.data.values()
     }
+    pub(in crate::sol) fn iter_fits_mut(&mut self) -> impl ExactSizeIterator<Item = &mut SolFit> {
+        self.data.values_mut()
+    }
     pub(in crate::sol) fn len(&self) -> usize {
         self.data.len()
     }

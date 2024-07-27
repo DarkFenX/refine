@@ -119,6 +119,9 @@ impl SolarSystem {
             fit.add_item(&item)
         }
         self.items.add_item(item);
+        self.add_item_to_svc(&item_id);
+    }
+    pub(in crate::sol::sole_item) fn add_item_to_svc(&mut self, item_id: &SolItemId) {
         let item = self.items.get_item(&item_id).unwrap();
         self.svcs
             .add_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);

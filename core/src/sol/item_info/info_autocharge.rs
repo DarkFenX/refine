@@ -20,12 +20,12 @@ impl SolAutoChargeInfo {
     }
 }
 impl From<&SolAutoCharge> for SolAutoChargeInfo {
-    fn from(sol_auto_charge: &SolAutoCharge) -> Self {
+    fn from(sol_autocharge: &SolAutoCharge) -> Self {
         SolAutoChargeInfo::new(
-            sol_auto_charge.base.id,
-            sol_auto_charge.fit_id,
-            sol_auto_charge.base.a_item_id,
-            sol_auto_charge.cont_id,
+            sol_autocharge.base.id,
+            sol_autocharge.fit_id,
+            sol_autocharge.base.a_item_id,
+            sol_autocharge.cont_id,
         )
     }
 }

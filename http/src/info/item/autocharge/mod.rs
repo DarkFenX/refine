@@ -18,13 +18,13 @@ pub(crate) enum HAutoChargeInfo {
 impl HAutoChargeInfo {
     pub(crate) fn mk_info(
         core_sol: &mut rc::SolarSystem,
-        core_auto_charge_info: &rc::SolAutoChargeInfo,
+        core_autocharge_info: &rc::SolAutoChargeInfo,
         item_mode: HItemInfoMode,
     ) -> Self {
         match item_mode {
-            HItemInfoMode::Id => Self::Id(core_auto_charge_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_auto_charge_info.into()),
-            HItemInfoMode::Full => Self::Full(HAutoChargeInfoFull::mk_info(core_sol, core_auto_charge_info)),
+            HItemInfoMode::Id => Self::Id(core_autocharge_info.into()),
+            HItemInfoMode::Partial => Self::Partial(core_autocharge_info.into()),
+            HItemInfoMode::Full => Self::Full(HAutoChargeInfoFull::mk_info(core_sol, core_autocharge_info)),
         }
     }
 }

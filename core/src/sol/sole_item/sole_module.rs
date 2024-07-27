@@ -38,6 +38,7 @@ impl SolarSystem {
         charge_a_item_id: Option<EItemId>,
     ) -> Result<SolModuleInfo> {
         // Allocate resources early, to make sure if we fail we don't need to roll anything back
+        // TODO: redo so that it does not allocate the same ID when there is only 1 ID left
         let m_item_id = self.items.alloc_item_id()?;
         let c_item_id = match charge_a_item_id {
             Some(_) => Some(self.items.alloc_item_id()?),

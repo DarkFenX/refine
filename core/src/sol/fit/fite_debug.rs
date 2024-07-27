@@ -297,11 +297,11 @@ fn check_fighter_autocharges(
         if item.get_fit_id() != Some(*fit_id) {
             return Err(DebugError::new());
         }
-        let auto_charge = match item {
-            SolItem::AutoCharge(auto_charge) => auto_charge,
+        let autocharge = match item {
+            SolItem::AutoCharge(autocharge) => autocharge,
             _ => return Err(DebugError::new()),
         };
-        if auto_charge.cont_id != fighter.base.id {
+        if autocharge.cont_id != fighter.base.id {
             return Err(DebugError::new());
         }
         item.debug_consistency_check(sol_view)?;

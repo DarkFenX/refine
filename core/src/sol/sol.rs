@@ -37,14 +37,6 @@ impl SolarSystem {
             svcs: SolSvcs::new(),
         }
     }
-    pub fn set_src(&mut self, src: Src) {
-        for item in self.items.iter_mut() {
-            item.reload_a_item(&src)
-        }
-        self.src = src;
-        // TODO: make sure attributes and attribute caps are cleared when source
-        // is switched or item is reloaded (as well as stuff in other services)
-    }
     // Item attributes
     pub fn get_item_attr(&mut self, item_id: &SolItemId, attr_id: &EAttrId) -> Result<SolAttrVal> {
         self.svcs.calc_get_item_attr_val(

@@ -5,9 +5,9 @@ pub(crate) struct HAutoChargeInfoId {
     pub(crate) id: rc::SolItemId,
 }
 impl From<&rc::SolAutoChargeInfo> for HAutoChargeInfoId {
-    fn from(core_auto_charge_info: &rc::SolAutoChargeInfo) -> Self {
+    fn from(core_autocharge_info: &rc::SolAutoChargeInfo) -> Self {
         Self {
-            id: core_auto_charge_info.id,
+            id: core_autocharge_info.id,
         }
     }
 }

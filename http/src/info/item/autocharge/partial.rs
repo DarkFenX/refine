@@ -11,13 +11,13 @@ pub(crate) struct HAutoChargeInfoPartial {
     pub(crate) cont_id: rc::SolItemId,
 }
 impl From<&rc::SolAutoChargeInfo> for HAutoChargeInfoPartial {
-    fn from(core_auto_charge_info: &rc::SolAutoChargeInfo) -> Self {
+    fn from(core_autocharge_info: &rc::SolAutoChargeInfo) -> Self {
         Self {
-            id: core_auto_charge_info.id,
+            id: core_autocharge_info.id,
             kind: "autocharge",
-            type_id: core_auto_charge_info.a_item_id,
-            fit_id: core_auto_charge_info.fit_id,
-            cont_id: core_auto_charge_info.cont_id,
+            type_id: core_autocharge_info.a_item_id,
+            fit_id: core_autocharge_info.fit_id,
+            cont_id: core_autocharge_info.cont_id,
         }
     }
 }

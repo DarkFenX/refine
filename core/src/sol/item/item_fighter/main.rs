@@ -1,8 +1,9 @@
 use crate::{
+    ad,
     defs::{Amount, EItemId, SolFitId, SolItemId},
     sol::item::{SolAutocharges, SolItemBase, SolItemState},
     src::Src,
-    util::Named,
+    util::{Named, Result},
 };
 
 pub(in crate::sol) struct SolFighter {
@@ -27,6 +28,22 @@ impl SolFighter {
             amt_override: None,
             autocharges: SolAutocharges::new(),
         }
+    }
+    pub(in crate::sol::item) fn get_id(&self) -> SolItemId {
+        self.base.get_id()
+    }
+    pub(in crate::sol::item) fn get_fit_id(&self) -> SolFitId {
+        self.fit_id
+    }
+    pub(in crate::sol::item) fn is_loaded(&self) -> bool {
+        self.base.is_loaded()
+    }
+    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
+        self.base.get_a_item()
+    }
+    pub(in crate::sol::item) fn reload_a_item(&mut self, src: &Src) {
+        self.base.reload_a_item(src);
+        self.autocharges.clear();
     }
 }
 impl Named for SolFighter {

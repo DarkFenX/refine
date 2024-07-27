@@ -3,7 +3,7 @@
 pub use misc::{SolOrdAddMode, SolOrdRmMode};
 
 mod misc;
-mod sole_auto_charge;
+mod sole_autocharge;
 mod sole_booster;
 mod sole_character;
 mod sole_charge;

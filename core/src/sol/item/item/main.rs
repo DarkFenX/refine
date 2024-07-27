@@ -7,7 +7,7 @@ use crate::{
         SolStance, SolSubsystem, SolSwEffect,
     },
     src::Src,
-    util::{Error, ErrorKind, Named, Result, StMap},
+    util::{Named, Result, StMap},
 };
 
 pub(in crate::sol) enum SolItem {
@@ -51,47 +51,47 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_id(&self) -> SolItemId {
         match self {
-            Self::AutoCharge(auto_charge) => auto_charge.base.id,
-            Self::Booster(booster) => booster.base.id,
-            Self::Character(character) => character.base.id,
-            Self::Charge(charge) => charge.base.id,
-            Self::Drone(drone) => drone.base.id,
-            Self::Fighter(fighter) => fighter.base.id,
-            Self::FwEffect(fw_effect) => fw_effect.base.id,
-            Self::Implant(implant) => implant.base.id,
-            Self::Module(module) => module.base.id,
-            Self::ProjEffect(proj_effect) => proj_effect.base.id,
-            Self::Rig(rig) => rig.base.id,
-            Self::Ship(ship) => ship.base.id,
-            Self::Skill(skill) => skill.base.id,
-            Self::Stance(stance) => stance.base.id,
-            Self::Subsystem(subsystem) => subsystem.base.id,
-            Self::SwEffect(sw_effect) => sw_effect.base.id,
+            Self::AutoCharge(autocharge) => autocharge.get_id(),
+            Self::Booster(booster) => booster.get_id(),
+            Self::Character(character) => character.get_id(),
+            Self::Charge(charge) => charge.get_id(),
+            Self::Drone(drone) => drone.get_id(),
+            Self::Fighter(fighter) => fighter.get_id(),
+            Self::FwEffect(fw_effect) => fw_effect.get_id(),
+            Self::Implant(implant) => implant.get_id(),
+            Self::Module(module) => module.get_id(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_id(),
+            Self::Rig(rig) => rig.get_id(),
+            Self::Ship(ship) => ship.get_id(),
+            Self::Skill(skill) => skill.get_id(),
+            Self::Stance(stance) => stance.get_id(),
+            Self::Subsystem(subsystem) => subsystem.get_id(),
+            Self::SwEffect(sw_effect) => sw_effect.get_id(),
         }
     }
     pub(in crate::sol) fn get_fit_id(&self) -> Option<SolFitId> {
         match self {
-            Self::AutoCharge(auto_charge) => Some(auto_charge.fit_id),
-            Self::Booster(booster) => Some(booster.fit_id),
-            Self::Character(character) => Some(character.fit_id),
-            Self::Charge(charge) => Some(charge.fit_id),
-            Self::Drone(drone) => Some(drone.fit_id),
-            Self::Fighter(fighter) => Some(fighter.fit_id),
-            Self::FwEffect(fw_effect) => Some(fw_effect.fit_id),
-            Self::Implant(implant) => Some(implant.fit_id),
-            Self::Module(module) => Some(module.fit_id),
+            Self::AutoCharge(autocharge) => Some(autocharge.get_fit_id()),
+            Self::Booster(booster) => Some(booster.get_fit_id()),
+            Self::Character(character) => Some(character.get_fit_id()),
+            Self::Charge(charge) => Some(charge.get_fit_id()),
+            Self::Drone(drone) => Some(drone.get_fit_id()),
+            Self::Fighter(fighter) => Some(fighter.get_fit_id()),
+            Self::FwEffect(fw_effect) => Some(fw_effect.get_fit_id()),
+            Self::Implant(implant) => Some(implant.get_fit_id()),
+            Self::Module(module) => Some(module.get_fit_id()),
             Self::ProjEffect(_) => None,
-            Self::Rig(rig) => Some(rig.fit_id),
-            Self::Ship(ship) => Some(ship.fit_id),
-            Self::Skill(skill) => Some(skill.fit_id),
-            Self::Stance(stance) => Some(stance.fit_id),
-            Self::Subsystem(subsystem) => Some(subsystem.fit_id),
+            Self::Rig(rig) => Some(rig.get_fit_id()),
+            Self::Ship(ship) => Some(ship.get_fit_id()),
+            Self::Skill(skill) => Some(skill.get_fit_id()),
+            Self::Stance(stance) => Some(stance.get_fit_id()),
+            Self::Subsystem(subsystem) => Some(subsystem.get_fit_id()),
             Self::SwEffect(_) => None,
         }
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
         match self {
-            Self::AutoCharge(auto_charge) => &auto_charge.base.effect_modes,
+            Self::AutoCharge(autocharge) => &autocharge.base.effect_modes,
             Self::Booster(booster) => &booster.base.effect_modes,
             Self::Character(character) => &character.base.effect_modes,
             Self::Charge(charge) => &charge.base.effect_modes,
@@ -111,7 +111,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
         match self {
-            Self::AutoCharge(auto_charge) => &mut auto_charge.base.effect_modes,
+            Self::AutoCharge(autocharge) => &mut autocharge.base.effect_modes,
             Self::Booster(booster) => &mut booster.base.effect_modes,
             Self::Character(character) => &mut character.base.effect_modes,
             Self::Charge(charge) => &mut charge.base.effect_modes,
@@ -171,7 +171,7 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
         match self {
-            Self::AutoCharge(auto_charge) => auto_charge.base.a_item_id,
+            Self::AutoCharge(autocharge) => autocharge.base.a_item_id,
             Self::Booster(booster) => booster.base.a_item_id,
             Self::Character(character) => character.base.a_item_id,
             Self::Charge(charge) => charge.base.a_item_id,
@@ -210,51 +210,64 @@ impl SolItem {
         }
     }
     pub(in crate::sol) fn reload_a_item(&mut self, src: &Src) {
-        let a_item_id = self.get_a_item_id();
-        let a_item = src.get_a_item(&a_item_id).cloned();
         match self {
-            // Autocharges should be removed/re-added when parent item is being reloaded
-            Self::AutoCharge(_) => (),
-            Self::Booster(booster) => booster.base.a_item = a_item,
-            Self::Character(character) => character.base.a_item = a_item,
-            Self::Charge(charge) => charge.base.a_item = a_item,
-            Self::Drone(drone) => drone.base.a_item = a_item,
-            Self::Fighter(fighter) => fighter.base.a_item = a_item,
-            Self::FwEffect(fw_effect) => fw_effect.base.a_item = a_item,
-            Self::Implant(implant) => implant.base.a_item = a_item,
-            Self::Module(module) => module.base.a_item = a_item,
-            Self::ProjEffect(proj_effect) => proj_effect.base.a_item = a_item,
-            Self::Rig(rig) => rig.base.a_item = a_item,
-            Self::Ship(ship) => ship.base.a_item = a_item,
-            Self::Skill(skill) => skill.base.a_item = a_item,
-            Self::Stance(stance) => stance.base.a_item = a_item,
-            Self::Subsystem(subsystem) => subsystem.base.a_item = a_item,
-            Self::SwEffect(sw_effect) => sw_effect.base.a_item = a_item,
+            Self::AutoCharge(autocharge) => autocharge.reload_a_item(src),
+            Self::Booster(booster) => booster.reload_a_item(src),
+            Self::Character(character) => character.reload_a_item(src),
+            Self::Charge(charge) => charge.reload_a_item(src),
+            Self::Drone(drone) => drone.reload_a_item(src),
+            Self::Fighter(fighter) => fighter.reload_a_item(src),
+            Self::FwEffect(fw_effect) => fw_effect.reload_a_item(src),
+            Self::Implant(implant) => implant.reload_a_item(src),
+            Self::Module(module) => module.reload_a_item(src),
+            Self::ProjEffect(proj_effect) => proj_effect.reload_a_item(src),
+            Self::Rig(rig) => rig.reload_a_item(src),
+            Self::Ship(ship) => ship.reload_a_item(src),
+            Self::Skill(skill) => skill.reload_a_item(src),
+            Self::Stance(stance) => stance.reload_a_item(src),
+            Self::Subsystem(subsystem) => subsystem.reload_a_item(src),
+            Self::SwEffect(sw_effect) => sw_effect.reload_a_item(src),
         }
     }
     pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
         match self {
-            Self::AutoCharge(auto_charge) => auto_charge.base.a_item.as_ref(),
-            Self::Booster(booster) => booster.base.a_item.as_ref(),
-            Self::Character(character) => character.base.a_item.as_ref(),
-            Self::Charge(charge) => charge.base.a_item.as_ref(),
-            Self::Drone(drone) => drone.base.a_item.as_ref(),
-            Self::Fighter(fighter) => fighter.base.a_item.as_ref(),
-            Self::FwEffect(fw_effect) => fw_effect.base.a_item.as_ref(),
-            Self::Implant(implant) => implant.base.a_item.as_ref(),
-            Self::Module(module) => module.base.a_item.as_ref(),
-            Self::ProjEffect(proj_effect) => proj_effect.base.a_item.as_ref(),
-            Self::Rig(rig) => rig.base.a_item.as_ref(),
-            Self::Ship(ship) => ship.base.a_item.as_ref(),
-            Self::Skill(skill) => skill.base.a_item.as_ref(),
-            Self::Stance(stance) => stance.base.a_item.as_ref(),
-            Self::Subsystem(subsystem) => subsystem.base.a_item.as_ref(),
-            Self::SwEffect(sw_effect) => sw_effect.base.a_item.as_ref(),
+            Self::AutoCharge(autocharge) => autocharge.get_a_item(),
+            Self::Booster(booster) => booster.get_a_item(),
+            Self::Character(character) => character.get_a_item(),
+            Self::Charge(charge) => charge.get_a_item(),
+            Self::Drone(drone) => drone.get_a_item(),
+            Self::Fighter(fighter) => fighter.get_a_item(),
+            Self::FwEffect(fw_effect) => fw_effect.get_a_item(),
+            Self::Implant(implant) => implant.get_a_item(),
+            Self::Module(module) => module.get_a_item(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_a_item(),
+            Self::Rig(rig) => rig.get_a_item(),
+            Self::Ship(ship) => ship.get_a_item(),
+            Self::Skill(skill) => skill.get_a_item(),
+            Self::Stance(stance) => stance.get_a_item(),
+            Self::Subsystem(subsystem) => subsystem.get_a_item(),
+            Self::SwEffect(sw_effect) => sw_effect.get_a_item(),
         }
-        .ok_or_else(|| Error::new(ErrorKind::AItemNotLoaded(self.get_a_item_id())))
     }
     pub(in crate::sol) fn is_loaded(&self) -> bool {
-        self.get_a_item().is_ok()
+        match self {
+            Self::AutoCharge(autocharge) => autocharge.is_loaded(),
+            Self::Booster(booster) => booster.is_loaded(),
+            Self::Character(character) => character.is_loaded(),
+            Self::Charge(charge) => charge.is_loaded(),
+            Self::Drone(drone) => drone.is_loaded(),
+            Self::Fighter(fighter) => fighter.is_loaded(),
+            Self::FwEffect(fw_effect) => fw_effect.is_loaded(),
+            Self::Implant(implant) => implant.is_loaded(),
+            Self::Module(module) => module.is_loaded(),
+            Self::ProjEffect(proj_effect) => proj_effect.is_loaded(),
+            Self::Rig(rig) => rig.is_loaded(),
+            Self::Ship(ship) => ship.is_loaded(),
+            Self::Skill(skill) => skill.is_loaded(),
+            Self::Stance(stance) => stance.is_loaded(),
+            Self::Subsystem(subsystem) => subsystem.is_loaded(),
+            Self::SwEffect(sw_effect) => sw_effect.is_loaded(),
+        }
     }
     pub(in crate::sol) fn can_receive_projs(&self) -> bool {
         match self {
