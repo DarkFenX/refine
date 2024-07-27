@@ -170,3 +170,45 @@ def test_replace_root(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr.id].dogma == approx(100)
     api_fit.set_ship(type_id=eve_ship.id)
     assert api_affectee_item.update().attrs[eve_affectee_attr.id].dogma == approx(120)
+
+
+def test_src_switch_to_struct(client, consts):
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_skill_id = eve_d1.mk_item().id
+    eve_d2.mk_item(id_=eve_skill_id)
+    eve_affector_attr_id = eve_d1.mk_attr().id
+    eve_d2.mk_attr(id_=eve_affector_attr_id)
+    eve_affectee_attr_id = eve_d1.mk_attr().id
+    eve_d2.mk_attr(id_=eve_affectee_attr_id)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_srq,
+        dom=consts.EveModDom.ship,
+        srq=eve_skill_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = eve_d1.mk_effect(mod_info=[eve_mod]).id
+    eve_d2.mk_effect(id_=eve_effect_id, mod_info=[eve_mod])
+    eve_affector_id = eve_d1.mk_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id]).id
+    eve_d2.mk_item(id_=eve_affector_id, attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
+    eve_affectee_id = eve_d1.mk_item(attrs={eve_affectee_attr_id: 100}, srqs={eve_skill_id: 1}).id
+    eve_d2.mk_item(id_=eve_affectee_id, attrs={eve_affectee_attr_id: 100}, srqs={eve_skill_id: 1})
+    eve_root_id = eve_d1.mk_ship().id
+    eve_d2.mk_struct(id_=eve_root_id)
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_fit.add_implant(type_id=eve_affector_id)
+    api_fit.set_ship(type_id=eve_root_id)
+    api_affectee = api_fit.add_rig(type_id=eve_affectee_id)
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_sol.change_src(data=eve_d1)
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)

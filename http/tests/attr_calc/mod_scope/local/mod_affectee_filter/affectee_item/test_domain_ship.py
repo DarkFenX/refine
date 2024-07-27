@@ -165,15 +165,15 @@ def test_src_switch_to_struct(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_affectee_item = api_fit.set_ship(type_id=eve_affectee_id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     api_fit.add_rig(type_id=eve_affector_id)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
     api_sol.change_src(data=eve_d2)
-    # Verification - it's now struct, so shouldn't receive modifications
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Verification
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    assert api_affectee.update().attrs[eve_affectee_attr_id].dogma == approx(120)
