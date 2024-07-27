@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from itertools import chain
 from typing import TYPE_CHECKING
 
 from tests.support.consts import EveEffCat, EveEffect, EveItemCat
@@ -36,30 +37,55 @@ class EveObjects:
         # Format: {group ID: [groups]}
         self.group_map = defaultdict(lambda: [])
 
-    def alloc_item_id(self) -> int:
+    def alloc_item_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_item_id_used(self.item_id, avoid_ids=avoid_ids):
+            self.item_id += 1
         id_ = self.item_id
         self.item_id += 1
         return id_
 
-    def alloc_group_id(self) -> int:
+    def __is_item_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+        return id_ in chain((i.id for i in self.items), avoid_ids)
+
+    def alloc_group_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_group_id_used(self.item_group_id, avoid_ids=avoid_ids):
+            self.item_group_id += 1
         id_ = self.item_group_id
         self.item_group_id += 1
         return id_
 
-    def alloc_attr_id(self) -> int:
+    def __is_group_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+        return id_ in chain((ig.id for ig in self.item_groups), avoid_ids)
+
+    def alloc_attr_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_attr_id_used(self.attr_id, avoid_ids=avoid_ids):
+            self.attr_id += 1
         id_ = self.attr_id
         self.attr_id += 1
         return id_
 
-    def alloc_effect_id(self) -> int:
+    def __is_attr_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+        return id_ in chain((a.id for a in self.attributes), avoid_ids)
+
+    def alloc_effect_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_effect_id_used(self.effect_id, avoid_ids=avoid_ids):
+            self.effect_id += 1
         id_ = self.effect_id
         self.effect_id += 1
         return id_
 
-    def alloc_buff_id(self) -> int:
+    def __is_effect_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+        return id_ in chain((e.id for e in self.effects), avoid_ids)
+
+    def alloc_buff_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_buff_id_used(self.buff_id, avoid_ids=avoid_ids):
+            self.buff_id += 1
         id_ = self.buff_id
         self.buff_id += 1
         return id_
+
+    def __is_buff_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+        return id_ in chain((b.id for b in self.buffs), avoid_ids)
 
     def mk_item(
             self,

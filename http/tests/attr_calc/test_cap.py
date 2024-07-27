@@ -181,7 +181,7 @@ def test_uncapped(client, consts):
         affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id)) == 0
 
 
-def test_src_switch(client, consts):
+def test_src_switch(client):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_capping_attr_id = eve_d1.mk_attr(def_val=5).id
@@ -198,12 +198,12 @@ def test_src_switch(client, consts):
     api_item.update()
     assert api_item.attrs[eve_capped_attr_id].dogma == approx(2)
     # Action
-    api_sol.change_src(src_alias=eve_d2.alias)
+    api_sol.change_src(data=eve_d2)
     # Verification - not capped on second source, since it doesn't specify max attr ID
     api_item.update()
     assert api_item.attrs[eve_capped_attr_id].dogma == approx(3)
     # Action
-    api_sol.change_src(src_alias=eve_d1.alias)
+    api_sol.change_src(data=eve_d1)
     # Verification - switch back and check that it's capped again
     api_item.update()
     assert api_item.attrs[eve_capped_attr_id].dogma == approx(2)

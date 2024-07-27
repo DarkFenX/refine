@@ -79,7 +79,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     # Solar system methods
     def create_sol_request(
             self,
-            data: Union[eve.EveObjects, Type[Default]],
+            data: Union[eve.EveObjects, Type[Absent], Type[Default]],
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
@@ -90,15 +90,15 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         conditional_insert(params, 'fleet', fleet_info_mode)
         conditional_insert(params, 'fit', fit_info_mode)
         conditional_insert(params, 'item', item_info_mode)
-        data = self._get_eve_data(data=data)
         body = {}
         if data is not Absent:
+            data = self._get_eve_data(data=data)
             body['src_alias'] = data.alias
         return Request(self, method='POST', url=f'{self.__base_url}/sol', params=params, json=body)
 
     def create_sol(
             self,
-            data: Union[eve.EveObjects, Type[Default]] = Default,
+            data: Union[eve.EveObjects, Type[Absent], Type[Default]] = Default,
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]] = ApiSolInfoMode.id,
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = Absent,
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = Absent,
@@ -163,14 +163,16 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     def change_sol_src_request(
             self,
             sol_id: str,
-            src_alias: Union[str, Type[Absent]],
+            data: Union[eve.EveObjects, Type[Absent], Type[Default]],
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {}
-        conditional_insert(body, 'src_alias', src_alias)
+        if data is not Absent:
+            data = self._get_eve_data(data=data)
+            body['src_alias'] = data.alias
         params = {}
         conditional_insert(params, 'sol', sol_info_mode)
         conditional_insert(params, 'fleet', fleet_info_mode)

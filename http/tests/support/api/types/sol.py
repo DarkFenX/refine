@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
-from tests.support.util import Absent, AttrDict, AttrHookDef
+from tests.support.util import Absent, AttrDict, AttrHookDef, Default
 from .fit import Fit
 from .fleet import Fleet
 from .item import Item
@@ -11,6 +11,7 @@ from .item import Item
 if TYPE_CHECKING:
     from typing import Type, Union
 
+    from tests.support import eve
     from tests.support.api import ApiClient
     from tests.support.request import Request
 
@@ -65,7 +66,7 @@ class SolarSystem(AttrDict):
 
     def change_src_request(
             self,
-            src_alias: Union[str, Type[Absent]],
+            data: Union[eve.EveObjects, Type[Absent], Type[Default]],
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
@@ -73,7 +74,7 @@ class SolarSystem(AttrDict):
     ) -> Request:
         return self._client.change_sol_src_request(
             sol_id=self.id,
-            src_alias=src_alias,
+            data=data,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
@@ -81,7 +82,7 @@ class SolarSystem(AttrDict):
 
     def change_src(
             self,
-            src_alias: Union[str, Type[Absent]] = Absent,
+            data: Union[eve.EveObjects, Type[Absent], Type[Default]] = Default,
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]] = ApiSolInfoMode.full,
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.id,
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
@@ -89,7 +90,7 @@ class SolarSystem(AttrDict):
             status_code: int = 200,
     ) -> SolarSystem:
         resp = self.change_src_request(
-            src_alias=src_alias,
+            data=data,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
