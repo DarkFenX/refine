@@ -14,14 +14,14 @@ def convert(data):
 
 class AttrHookDef:
 
-    def __init__(self, func, default=NoValue):
+    def __init__(self, func, default=lambda: NoValue):
         self.func = func
         self.default = default
 
     @property
     def provides_default(self):
         # This is confusing, but Default means lack of default value here
-        return self.default is not NoValue
+        return self.default() is not NoValue
 
 
 class AttrDict:
@@ -38,7 +38,7 @@ class AttrDict:
         val = self._data.get(key, NoValue)
         # No value on data or default on hook raises an error
         if val is NoValue and hook is not None and hook.provides_default:
-            val = hook.default
+            val = hook.default()
         if val is NoValue:
             hook_keys = set(k for k, v in self.__hooks.items() if v.provides_default)
             data_keys = set(self._data.keys())

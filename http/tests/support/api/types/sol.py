@@ -23,10 +23,10 @@ class SolarSystem(AttrDict):
             hooks={
                 'fits': AttrHookDef(
                     func=lambda fs: {f.id: f for f in [Fit(client=client, data=f, sol_id=self.id) for f in fs]},
-                    default={}),
+                    default=lambda: {}),
                 'fleets': AttrHookDef(
                     func=lambda fs: {f.id: f for f in [Fleet(client=client, data=f, sol_id=self.id) for f in fs]},
-                    default={})})
+                    default=lambda: {})})
         self._client = client
 
     def update_request(

@@ -1,6 +1,6 @@
 
 
-def test_charge(client, consts):
+def test_charge(client):
     eve_module = client.mk_eve_item()
     eve_charge = client.mk_eve_item()
     client.create_sources()

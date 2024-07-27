@@ -18,7 +18,7 @@ class Fleet(AttrDict):
     def __init__(self, client: ApiClient, data: dict, sol_id: str):
         super().__init__(
             data=data,
-            hooks={'fits': AttrHookDef(func=lambda fits: fits, default=())})
+            hooks={'fits': AttrHookDef(func=lambda fits: fits, default=lambda: ())})
         self._client = client
         self._sol_id = sol_id
 
