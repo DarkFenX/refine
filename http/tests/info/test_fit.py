@@ -1,5 +1,5 @@
 """
-Here we check availability of info of various items via fit info endpoint
+Here we check availability of info of various items via fit info endpoint.
 """
 
 from tests import check_no_field

@@ -1,3 +1,7 @@
+"""
+Here we check availability of info of various items via fleet info endpoint.
+"""
+
 from tests import check_no_field
 from tests.support.util import Absent
 
