@@ -136,7 +136,7 @@ def test_replace_root(client, consts):
     assert api_affectee_item.update().attrs[eve_affectee_attr.id].dogma == approx(120)
 
 
-def test_src_switch_to_struct(client, consts):
+def test_src_switch_to_ship(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_affector_attr_id = eve_d1.mk_attr().id
