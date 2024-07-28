@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 
 
 def test_loaded_to_loaded(client):
@@ -34,7 +34,9 @@ def test_loaded_to_unloaded_to_loaded(client):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert len(api_ship.update().attrs) == 0
+    api_ship.update()
+    with check_no_field():
+        api_ship.attrs  # pylint: disable=W0104
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification

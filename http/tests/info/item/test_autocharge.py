@@ -1,4 +1,4 @@
-from pytest import raises
+from tests import check_no_field
 
 
 def test_autocharge(client, consts):
@@ -14,7 +14,7 @@ def test_autocharge(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[eve_effect.id]
     assert isinstance(api_autocharge.id, str)
-    with raises(AttributeError):
+    with check_no_field():
         api_autocharge.kind  # pylint: disable=W0104
     api_autocharge_id = api_autocharge.id
     # ID only
@@ -22,11 +22,11 @@ def test_autocharge(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_autocharge = api_fighter.autocharges[eve_effect.id]
     assert api_autocharge.id == api_autocharge_id
-    with raises(AttributeError):
+    with check_no_field():
         api_autocharge.kind  # pylint: disable=W0104
     api_autocharge.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert api_autocharge.id == api_autocharge_id
-    with raises(AttributeError):
+    with check_no_field():
         api_autocharge.kind  # pylint: disable=W0104
     # Partial
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.partial)
@@ -58,19 +58,19 @@ def test_invalid_reference(client, consts):
     api_fit = api_sol.create_fit()
     # Check default upon addition
     api_fighter = api_fit.add_fighter(type_id=eve_fighter.id)
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104
     # ID only
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.id)
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104
     # Partial
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.partial)
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104
     # Full
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.full)
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104
 
 
@@ -82,17 +82,17 @@ def test_no_reference(client, consts):
     api_fit = api_sol.create_fit()
     # Check default upon addition
     api_fighter = api_fit.add_fighter(type_id=eve_fighter.id)
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104
     # ID only
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.id)
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104
     # Partial
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.partial)
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104
     # Full
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.full)
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104

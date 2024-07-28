@@ -1,6 +1,8 @@
+import contextlib
 import os
 
 import pytest
+
 
 pytest.register_assert_rewrite(
     'tests.support.api.client',
@@ -17,3 +19,9 @@ def approx(expected):
     if abs(expected) >= 1:
         return pytest.approx(expected=expected, abs=1e-6)
     return pytest.approx(expected=expected, rel=1e-6)
+
+
+@contextlib.contextmanager
+def check_no_field():
+    with pytest.raises(AttributeError):
+        yield

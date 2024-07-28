@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 
 
 def setup_penalization_test(client, consts, stackable):
@@ -273,7 +273,8 @@ def test_insignificant_base(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(0)
-    assert len(api_affectee.mods) == 0
+    with check_no_field():
+        api_affectee.mods  # pylint: disable=W0104
 
 
 def test_insignificant_modified_base(client, consts):
@@ -323,14 +324,15 @@ def test_zero(client, consts):
         affector_attr_id=eve_affector_attr.id,
         affectee_attr_id=eve_affectee_attr.id)
     eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_item_affector = client.mk_eve_item(attrs={eve_affector_attr.id: 0}, eff_ids=[eve_effect.id])
-    eve_item_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
+    eve_affector = client.mk_eve_item(attrs={eve_affector_attr.id: 0}, eff_ids=[eve_effect.id])
+    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_rig(type_id=eve_item_affector.id)
-    api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee.id)
+    api_fit.add_rig(type_id=eve_affector.id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
     # Verification
-    api_item_affectee.update()
-    assert api_item_affectee.attrs[eve_affectee_attr.id].dogma == approx(100)
-    assert len(api_item_affectee.mods) == 0
+    api_affectee.update()
+    assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(100)
+    with check_no_field():
+        api_affectee.mods  # pylint: disable=W0104

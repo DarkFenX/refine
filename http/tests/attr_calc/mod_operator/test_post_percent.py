@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 
 
 def setup_penalization_test(client, consts, stackable):
@@ -273,7 +273,8 @@ def test_insignificant_base(client, consts):
     api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(0)
-    assert len(api_affectee.mods) == 0
+    with check_no_field():
+        api_affectee.mods  # pylint: disable=W0104
 
 
 def test_insignificant_modified_base(client, consts):

@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 
 
 def test_missile_launcher_rof(client, consts):
@@ -33,7 +33,8 @@ def test_missile_launcher_rof(client, consts):
     assert api_mod.applied_val == approx(-20)
     api_launcher2 = api_launcher2.update()
     assert api_launcher2.attrs[eve_affectee_attr.id].dogma == approx(5)
-    assert len(api_launcher2.mods) == 0
+    with check_no_field():
+        api_launcher2.mods  # pylint: disable=W0104
 
 
 def test_missile_damage_em(client, consts):
@@ -64,8 +65,10 @@ def test_missile_damage_em(client, consts):
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
-    assert api_launcher2.charge.attrs[eve_affectee_attr.id].dogma == approx(5)
-    assert len(api_launcher2.charge.mods) == 0
+    api_charge2 = api_launcher2.charge
+    assert api_charge2.attrs[eve_affectee_attr.id].dogma == approx(5)
+    with check_no_field():
+        api_charge2.mods  # pylint: disable=W0104
 
 
 def test_missile_damage_therm(client, consts):
@@ -96,8 +99,10 @@ def test_missile_damage_therm(client, consts):
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
-    assert api_launcher2.charge.attrs[eve_affectee_attr.id].dogma == approx(5)
-    assert len(api_launcher2.charge.mods) == 0
+    api_charge2 = api_launcher2.charge
+    assert api_charge2.attrs[eve_affectee_attr.id].dogma == approx(5)
+    with check_no_field():
+        api_charge2.mods  # pylint: disable=W0104
 
 
 def test_missile_damage_kin(client, consts):
@@ -128,8 +133,10 @@ def test_missile_damage_kin(client, consts):
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
-    assert api_launcher2.charge.attrs[eve_affectee_attr.id].dogma == approx(5)
-    assert len(api_launcher2.charge.mods) == 0
+    api_charge2 = api_launcher2.charge
+    assert api_charge2.attrs[eve_affectee_attr.id].dogma == approx(5)
+    with check_no_field():
+        api_charge2.mods  # pylint: disable=W0104
 
 
 def test_missile_damage_expl(client, consts):
@@ -160,8 +167,10 @@ def test_missile_damage_expl(client, consts):
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(20)
     api_launcher2 = api_launcher2.update()
-    assert api_launcher2.charge.attrs[eve_affectee_attr.id].dogma == approx(5)
-    assert len(api_launcher2.charge.mods) == 0
+    api_charge2 = api_launcher2.charge
+    assert api_charge2.attrs[eve_affectee_attr.id].dogma == approx(5)
+    with check_no_field():
+        api_charge2.mods  # pylint: disable=W0104
 
 
 def test_drone_dmg(client, consts):
@@ -192,4 +201,5 @@ def test_drone_dmg(client, consts):
     assert api_mod.applied_val == approx(20)
     api_drone2 = api_drone2.update()
     assert api_drone2.attrs[eve_affectee_attr.id].dogma == approx(5)
-    assert len(api_drone2.mods) == 0
+    with check_no_field():
+        api_drone2.mods  # pylint: disable=W0104

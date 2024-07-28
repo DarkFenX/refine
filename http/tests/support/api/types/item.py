@@ -28,11 +28,9 @@ class Item(AttrDict):
                 'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
                 'autocharges': AttrHookDef(
                     func=lambda acs: {int(k): Item(client=client, data=v, sol_id=sol_id) for k, v in acs.items()}),
-                'attrs': AttrHookDef(
-                    func=lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()}, default=lambda: {}),
-                'effects': AttrHookDef(
-                    func=lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()}, default=lambda: {}),
-                'mods': AttrHookDef(func=AttrModInfoMap, default=lambda: {})})
+                'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()}),
+                'effects': AttrHookDef(func=lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()}),
+                'mods': AttrHookDef(func=AttrModInfoMap)})
         self._client = client
         self._sol_id = sol_id
 

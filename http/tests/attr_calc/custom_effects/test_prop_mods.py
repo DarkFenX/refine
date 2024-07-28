@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 
 
 def test_ab(client, consts):
@@ -149,7 +149,8 @@ def test_state(client, consts):
     assert api_ship.attrs[eve_mass_attr.id].dogma == approx(1050000)
     assert api_ship.attrs[eve_sig_affectee_attr.id].dogma == approx(32)
     assert api_ship.attrs[eve_speed_attr.id].dogma == approx(455)
-    assert len(api_ship.mods) == 0
+    with check_no_field():
+        api_ship.mods  # pylint: disable=W0104
 
 
 def test_speed_mod_stacking(client, consts):
@@ -264,7 +265,8 @@ def test_speed_mod_mass_zero(client, consts):
     api_ship.update()
     assert api_ship.attrs[eve_mass_attr.id].dogma == approx(0)
     assert api_ship.attrs[eve_speed_attr.id].dogma == approx(455)
-    assert len(api_ship.mods) == 0
+    with check_no_field():
+        api_ship.mods  # pylint: disable=W0104
 
 
 def test_speed_mod_mass_changed(client, consts):

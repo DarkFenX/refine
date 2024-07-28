@@ -1,4 +1,4 @@
-from tests import approx
+from tests import approx, check_no_field
 
 
 def test_local_aar(client, consts):
@@ -69,7 +69,8 @@ def test_charge_switch(client, consts):
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_affectee_attr.id].extra == approx(100)
-    assert len(api_aar_item.mods) == 0
+    with check_no_field():
+        api_aar_item.mods  # pylint: disable=W0104
     # Action
     api_aar_item.change_mod(charge=eve_paste_item.id)
     # Verification
@@ -83,7 +84,8 @@ def test_charge_switch(client, consts):
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr.id].dogma == approx(100)
     assert api_aar_item.attrs[eve_affectee_attr.id].extra == approx(100)
-    assert len(api_aar_item.mods) == 0
+    with check_no_field():
+        api_aar_item.mods  # pylint: disable=W0104
 
 
 def test_mult_change(client, consts):

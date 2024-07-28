@@ -1,6 +1,4 @@
-from pytest import raises
-
-from tests import approx
+from tests import approx, check_no_field
 
 
 def test_specified_same(client, consts):
@@ -119,7 +117,7 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
     api_sol.change_src(data=eve_d2)
     # Verification
     api_fighter.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104
     # Action
     api_sol.change_src(data=eve_d1)
@@ -160,7 +158,7 @@ def test_valid_to_no_reference_to_valid(client, consts):
     api_sol.change_src(data=eve_d2)
     # Verification
     api_fighter.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fighter.autocharges  # pylint: disable=W0104
     # Action
     api_sol.change_src(data=eve_d1)

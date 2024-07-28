@@ -1,4 +1,3 @@
-
 from tests.support.util import Absent
 
 

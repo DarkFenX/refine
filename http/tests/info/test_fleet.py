@@ -1,4 +1,4 @@
-
+from tests import check_no_field
 from tests.support.util import Absent
 
 
@@ -16,7 +16,8 @@ def test_fit(client):
     api_fleet.change(remove_fits=[api_fit.id])
     # Verification
     api_fleet.update()
-    assert len(api_fleet.fits) == 0
+    with check_no_field():
+        api_fleet.fits  # pylint: disable=W0104
 
 
 def test_error_no_fleet_full(client, consts):

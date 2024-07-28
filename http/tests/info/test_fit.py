@@ -1,7 +1,8 @@
-# Here we check availability of info of various items via fit info endpoint
+"""
+Here we check availability of info of various items via fit info endpoint
+"""
 
-from pytest import raises
-
+from tests import check_no_field
 from tests.support.util import Absent
 
 
@@ -17,7 +18,7 @@ def test_fleet(client):
     api_fit.set_fleet(fleet_id=None)
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.fleet  # pylint: disable=W0104
 
 
@@ -33,7 +34,7 @@ def test_char(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.character  # pylint: disable=W0104
 
 
@@ -51,7 +52,7 @@ def test_skill(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.skills  # pylint: disable=W0104
 
 
@@ -69,7 +70,7 @@ def test_implant(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.implants  # pylint: disable=W0104
 
 
@@ -86,7 +87,7 @@ def test_booster(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.boosters  # pylint: disable=W0104
 
 
@@ -102,7 +103,7 @@ def test_ship(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.ship  # pylint: disable=W0104
 
 
@@ -118,7 +119,7 @@ def test_stance(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.stance  # pylint: disable=W0104
 
 
@@ -136,7 +137,7 @@ def test_subsystem(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.subsystems  # pylint: disable=W0104
 
 
@@ -155,7 +156,7 @@ def test_mod_high(client, consts):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.modules  # pylint: disable=W0104
 
 
@@ -174,7 +175,7 @@ def test_mod_mid(client, consts):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.modules  # pylint: disable=W0104
 
 
@@ -193,7 +194,7 @@ def test_mod_low(client, consts):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.modules  # pylint: disable=W0104
 
 
@@ -211,7 +212,7 @@ def test_rig(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.rigs  # pylint: disable=W0104
 
 
@@ -229,7 +230,7 @@ def test_drone(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.drones  # pylint: disable=W0104
 
 
@@ -247,7 +248,7 @@ def test_fighter(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.fighters  # pylint: disable=W0104
 
 
@@ -265,7 +266,7 @@ def test_fw_effect(client):
     api_item.remove()
     # Verification
     api_fit.update()
-    with raises(AttributeError):
+    with check_no_field():
         api_fit.fw_effects  # pylint: disable=W0104
 
 

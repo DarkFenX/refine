@@ -1,7 +1,8 @@
-# Here we check availability of info of various items via solar system info endpoint
+"""
+Here we check availability of info of various items via solar system info endpoint.
+"""
 
-from pytest import raises
-
+from tests import check_no_field
 from tests.support.util import Absent
 
 
@@ -14,7 +15,9 @@ def test_fleet(client):
     assert api_fleet.id in api_sol.fleets
     assert api_sol.fleets[api_fleet.id].id == api_fleet.id
     api_fleet.remove()
-    assert len(api_sol.update().fits) == 0
+    api_sol.update()
+    with check_no_field():
+        api_sol.fleets  # pylint: disable=W0104
 
 
 def test_fit(client):
@@ -26,7 +29,9 @@ def test_fit(client):
     assert api_fit.id in api_sol.fits
     assert api_sol.fits[api_fit.id].id == api_fit.id
     api_fit.remove()
-    assert len(api_sol.update().fits) == 0
+    api_sol.update()
+    with check_no_field():
+        api_sol.fits  # pylint: disable=W0104
 
 
 def test_fit_item(client):
@@ -40,8 +45,9 @@ def test_fit_item(client):
     assert api_fit.id in api_sol.fits
     assert api_sol.fits[api_fit.id].character.id == api_item.id
     api_item.remove()
-    with raises(AttributeError):
-        api_sol.update().fits[api_fit.id].character  # pylint: disable=W0106
+    api_fit = api_sol.update().fits[api_fit.id]
+    with check_no_field():
+        api_fit.character  # pylint: disable=W0104
 
 
 def test_sw_effect(client):
@@ -53,8 +59,9 @@ def test_sw_effect(client):
     assert len(api_sol.sw_effects) == 1
     assert api_sol.sw_effects[0].id == api_item.id
     api_item.remove()
-    with raises(AttributeError):
-        api_sol.update().sw_effects  # pylint: disable=W0106
+    api_sol.update()
+    with check_no_field():
+        api_sol.sw_effects  # pylint: disable=W0104
 
 
 def test_proj_effect(client):
@@ -66,8 +73,9 @@ def test_proj_effect(client):
     assert len(api_sol.proj_effects) == 1
     assert api_sol.proj_effects[0].id == api_item.id
     api_item.remove()
-    with raises(AttributeError):
-        api_sol.update().proj_effects  # pylint: disable=W0106
+    api_sol.update()
+    with check_no_field():
+        api_sol.proj_effects  # pylint: disable=W0104
 
 
 def test_error_no_sol_full(client, consts):
