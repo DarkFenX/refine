@@ -117,3 +117,40 @@ def test_replace_proj(client, consts):
     assert api_ship2.update().attrs[eve_affectee_attr.id].dogma == approx(50)
     api_proj_effect.change_proj_effect(add_projs=[api_ship2.id])
     assert api_ship2.update().attrs[eve_affectee_attr.id].dogma == approx(60)
+
+
+def test_src_switch_to_struct(client, consts):
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_affector_attr_id = eve_d1.mk_attr().id
+    eve_d2.mk_attr(id_=eve_affector_attr_id)
+    eve_affectee_attr_id = eve_d1.mk_attr().id
+    eve_d2.mk_attr(id_=eve_affectee_attr_id)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = eve_d1.mk_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod]).id
+    eve_d2.mk_effect(id_=eve_effect_id, cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
+    eve_proj_effect_id = eve_d1.mk_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id]).id
+    eve_d2.mk_item(id_=eve_proj_effect_id, attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
+    eve_root_id = eve_d1.mk_ship(attrs={eve_affectee_attr_id: 100}).id
+    eve_d2.mk_struct(id_=eve_root_id, attrs={eve_affectee_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_root = api_fit.set_ship(type_id=eve_root_id)
+    api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
+    api_proj_effect.change_proj_effect(add_projs=[api_root.id])
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(120)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(100)
+    # Action
+    api_sol.change_src(data=eve_d1)
+    # Verification
+    assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(120)
