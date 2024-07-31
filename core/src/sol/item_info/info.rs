@@ -28,7 +28,7 @@ impl SolItemInfo {
     pub(in crate::sol) fn from_sol_item(sol_item: &SolItem, sol: &SolarSystem) -> Self {
         match sol_item {
             SolItem::AutoCharge(sol_autocharge) => SolItemInfo::AutoCharge(sol_autocharge.into()),
-            SolItem::Booster(sol_booster) => SolItemInfo::Booster(sol_booster.into()),
+            SolItem::Booster(sol_booster) => SolItemInfo::Booster(sol.make_booster_info(sol_booster)),
             SolItem::Character(sol_charater) => SolItemInfo::Character(sol_charater.into()),
             SolItem::Charge(sol_charge) => SolItemInfo::Charge(sol_charge.into()),
             SolItem::Drone(sol_drone) => SolItemInfo::Drone(sol_drone.into()),

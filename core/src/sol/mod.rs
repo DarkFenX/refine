@@ -18,6 +18,6 @@ mod sole_debug;
 mod sole_fit;
 mod sole_fleet;
 mod sole_item;
+mod sole_src;
 mod svc;
 mod view;
-mod sole_src;

@@ -1,6 +1,7 @@
 use crate::{
-    defs::{EItemId, SolFitId, SolItemId},
+    defs::{EEffectId, EItemId, SolFitId, SolItemId},
     sol::item::SolBooster,
+    util::StMap,
 };
 
 pub struct SolBoosterInfo {
@@ -8,24 +9,34 @@ pub struct SolBoosterInfo {
     pub fit_id: SolFitId,
     pub a_item_id: EItemId,
     pub enabled: bool,
+    pub side_effects: StMap<EEffectId, bool>,
 }
 impl SolBoosterInfo {
-    fn new(id: SolItemId, fit_id: SolFitId, a_item_id: EItemId, enabled: bool) -> Self {
+    fn new(
+        id: SolItemId,
+        fit_id: SolFitId,
+        a_item_id: EItemId,
+        enabled: bool,
+        side_effects: StMap<EEffectId, bool>,
+    ) -> Self {
         Self {
             id,
             fit_id,
             a_item_id,
             enabled,
+            side_effects,
         }
     }
-}
-impl From<&SolBooster> for SolBoosterInfo {
-    fn from(sol_booster: &SolBooster) -> Self {
+    pub(in crate::sol) fn from_booster_and_side_effects(
+        sol_booster: &SolBooster,
+        side_effects: StMap<EEffectId, bool>,
+    ) -> Self {
         SolBoosterInfo::new(
             sol_booster.base.id,
             sol_booster.fit_id,
             sol_booster.base.a_item_id,
             sol_booster.get_bool_state(),
+            side_effects,
         )
     }
 }
