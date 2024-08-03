@@ -112,7 +112,7 @@ impl SolarSystem {
         let module = self.items.get_module_mut(item_id)?;
         module.charge_item_id = Some(c_item_id);
         let module = self.items.get_module(item_id)?;
-        let c_info = self.add_charge_with_id(c_item_id, module.fit_id, charge_a_item_id, module.base.id);
+        let c_info = self.add_charge_with_id(c_item_id, module.get_fit_id(), charge_a_item_id, module.get_id());
         Ok(c_info)
     }
     pub fn remove_module_charge(&mut self, item_id: &SolItemId) -> Result<bool> {

@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{EItemId, Idx, SolFitId, SolItemId},
     sol::{
-        item::{SolItemBase, SolItemState, SolProjs},
+        item::{SolEffectModes, SolItemBase, SolItemState, SolProjs},
         SolModRack,
     },
     src::Src,
@@ -10,8 +10,8 @@ use crate::{
 };
 
 pub(in crate::sol) struct SolModule {
-    pub(in crate::sol) base: SolItemBase,
-    pub(in crate::sol) fit_id: SolFitId,
+    base: SolItemBase,
+    fit_id: SolFitId,
     pub(in crate::sol) state: SolItemState,
     pub(in crate::sol) rack: SolModRack,
     pub(in crate::sol) pos: Idx,
@@ -39,20 +39,31 @@ impl SolModule {
             projs: SolProjs::new(),
         }
     }
-    pub(in crate::sol::item) fn get_id(&self) -> SolItemId {
+    // Item base methods
+    pub(in crate::sol) fn get_id(&self) -> SolItemId {
         self.base.get_id()
     }
-    pub(in crate::sol::item) fn get_fit_id(&self) -> SolFitId {
-        self.fit_id
-    }
-    pub(in crate::sol::item) fn is_loaded(&self) -> bool {
-        self.base.is_loaded()
+    pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
+        self.base.get_a_item_id()
     }
     pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
         self.base.get_a_item()
     }
+    pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
+        self.base.get_effect_modes()
+    }
+    pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
+        self.base.get_effect_modes_mut()
+    }
+    pub(in crate::sol) fn is_loaded(&self) -> bool {
+        self.base.is_loaded()
+    }
     pub(in crate::sol::item) fn reload_a_item(&mut self, src: &Src) {
         self.base.reload_a_item(src);
+    }
+    // Item-specific methods
+    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
+        self.fit_id
     }
 }
 impl Named for SolModule {
@@ -66,8 +77,8 @@ impl std::fmt::Display for SolModule {
             f,
             "{}(id={}, a_item_id={})",
             Self::get_name(),
-            self.base.id,
-            self.base.a_item_id
+            self.get_id(),
+            self.get_a_item_id(),
         )
     }
 }

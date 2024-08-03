@@ -2,14 +2,14 @@ use crate::{
     ad,
     defs::{EItemId, SlotNumber, SolFitId, SolItemId},
     ec,
-    sol::item::{bool_to_state, state_to_bool, SolItemBase, SolItemState},
+    sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
     src::Src,
     util::{Named, Result},
 };
 
 pub(in crate::sol) struct SolSubsystem {
-    pub(in crate::sol) base: SolItemBase,
-    pub(in crate::sol) fit_id: SolFitId,
+    base: SolItemBase,
+    fit_id: SolFitId,
     pub(in crate::sol) state: SolItemState,
 }
 impl SolSubsystem {
@@ -20,20 +20,31 @@ impl SolSubsystem {
             state: bool_to_state(state),
         }
     }
-    pub(in crate::sol::item) fn get_id(&self) -> SolItemId {
+    // Item base methods
+    pub(in crate::sol) fn get_id(&self) -> SolItemId {
         self.base.get_id()
     }
-    pub(in crate::sol::item) fn get_fit_id(&self) -> SolFitId {
-        self.fit_id
-    }
-    pub(in crate::sol::item) fn is_loaded(&self) -> bool {
-        self.base.is_loaded()
+    pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
+        self.base.get_a_item_id()
     }
     pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
         self.base.get_a_item()
     }
+    pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
+        self.base.get_effect_modes()
+    }
+    pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
+        self.base.get_effect_modes_mut()
+    }
+    pub(in crate::sol) fn is_loaded(&self) -> bool {
+        self.base.is_loaded()
+    }
     pub(in crate::sol::item) fn reload_a_item(&mut self, src: &Src) {
         self.base.reload_a_item(src);
+    }
+    // Item-specific methods
+    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
+        self.fit_id
     }
     pub(in crate::sol) fn get_bool_state(&self) -> bool {
         state_to_bool(self.state)
@@ -42,12 +53,12 @@ impl SolSubsystem {
         self.state = bool_to_state(state);
     }
     pub(in crate::sol) fn get_slot(&self) -> Option<SlotNumber> {
-        match &self.base.a_item {
-            None => None,
-            Some(a_item) => match a_item.attr_vals.get(&ec::attrs::SUBSYSTEM_SLOT) {
+        match self.get_a_item() {
+            Ok(a_item) => match a_item.attr_vals.get(&ec::attrs::SUBSYSTEM_SLOT) {
                 None => None,
                 Some(value) => Some(value.round() as SlotNumber),
             },
+            _ => None,
         }
     }
 }
@@ -62,8 +73,8 @@ impl std::fmt::Display for SolSubsystem {
             f,
             "{}(id={}, a_item_id={})",
             Self::get_name(),
-            self.base.id,
-            self.base.a_item_id
+            self.get_id(),
+            self.get_a_item_id(),
         )
     }
 }

@@ -22,9 +22,9 @@ impl SolAutoChargeInfo {
 impl From<&SolAutoCharge> for SolAutoChargeInfo {
     fn from(sol_autocharge: &SolAutoCharge) -> Self {
         SolAutoChargeInfo::new(
-            sol_autocharge.base.id,
-            sol_autocharge.fit_id,
-            sol_autocharge.base.a_item_id,
+            sol_autocharge.get_id(),
+            sol_autocharge.get_fit_id(),
+            sol_autocharge.get_a_item_id(),
             sol_autocharge.cont_id,
         )
     }

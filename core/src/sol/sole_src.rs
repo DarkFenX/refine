@@ -15,7 +15,7 @@ impl SolarSystem {
         for item in self.items.iter() {
             match item {
                 SolItem::AutoCharge(autocharge) => {
-                    autocharge_ids.push(autocharge.base.id);
+                    autocharge_ids.push(autocharge.get_id());
                     self.svcs.remove_item(sol_view, item);
                 }
                 _ => {

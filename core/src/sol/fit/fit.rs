@@ -50,50 +50,50 @@ impl SolFit {
     }
     pub(in crate::sol) fn add_item(&mut self, item: &SolItem) {
         match item {
-            SolItem::Character(character) => self.character = Some(character.base.id),
+            SolItem::Character(character) => self.character = Some(character.get_id()),
             SolItem::Skill(skill) => {
-                self.skills.insert(skill.base.id);
+                self.skills.insert(skill.get_id());
                 ()
             }
             SolItem::Implant(implant) => {
-                self.implants.insert(implant.base.id);
+                self.implants.insert(implant.get_id());
                 ()
             }
             SolItem::Booster(booster) => {
-                self.boosters.insert(booster.base.id);
+                self.boosters.insert(booster.get_id());
                 ()
             }
             SolItem::Ship(ship) => {
-                self.ship = Some(ship.base.id);
+                self.ship = Some(ship.get_id());
                 self.kind = ship.kind;
             }
-            SolItem::Stance(stance) => self.stance = Some(stance.base.id),
+            SolItem::Stance(stance) => self.stance = Some(stance.get_id()),
             SolItem::Subsystem(subsystem) => {
-                self.subsystems.insert(subsystem.base.id);
+                self.subsystems.insert(subsystem.get_id());
                 ()
             }
             SolItem::Module(module) => {
                 match module.rack {
-                    SolModRack::High => self.mods_high.insert(module.base.id),
-                    SolModRack::Mid => self.mods_mid.insert(module.base.id),
-                    SolModRack::Low => self.mods_low.insert(module.base.id),
+                    SolModRack::High => self.mods_high.insert(module.get_id()),
+                    SolModRack::Mid => self.mods_mid.insert(module.get_id()),
+                    SolModRack::Low => self.mods_low.insert(module.get_id()),
                 };
                 ()
             }
             SolItem::Rig(rig) => {
-                self.rigs.insert(rig.base.id);
+                self.rigs.insert(rig.get_id());
                 ()
             }
             SolItem::Drone(drone) => {
-                self.drones.insert(drone.base.id);
+                self.drones.insert(drone.get_id());
                 ()
             }
             SolItem::Fighter(fighter) => {
-                self.fighters.insert(fighter.base.id);
+                self.fighters.insert(fighter.get_id());
                 ()
             }
             SolItem::FwEffect(fw_effect) => {
-                self.fw_effects.insert(fw_effect.base.id);
+                self.fw_effects.insert(fw_effect.get_id());
                 ()
             }
             // Ignore charges and system-wide effects
@@ -106,58 +106,58 @@ impl SolFit {
     pub(in crate::sol) fn remove_item(&mut self, item: &SolItem) {
         match item {
             SolItem::Character(character) => {
-                if self.character == Some(character.base.id) {
+                if self.character == Some(character.get_id()) {
                     self.character = None
                 }
             }
             SolItem::Skill(skill) => {
-                self.skills.remove(&skill.base.id);
+                self.skills.remove(&skill.get_id());
                 ()
             }
             SolItem::Implant(implant) => {
-                self.implants.remove(&implant.base.id);
+                self.implants.remove(&implant.get_id());
                 ()
             }
             SolItem::Booster(booster) => {
-                self.boosters.remove(&booster.base.id);
+                self.boosters.remove(&booster.get_id());
                 ()
             }
             SolItem::Ship(ship) => {
-                if self.ship == Some(ship.base.id) {
+                if self.ship == Some(ship.get_id()) {
                     self.ship = None;
                     self.kind = SolShipKind::default();
                 }
             }
             SolItem::Stance(stance) => {
-                if self.stance == Some(stance.base.id) {
+                if self.stance == Some(stance.get_id()) {
                     self.stance = None
                 }
             }
             SolItem::Subsystem(subsystem) => {
-                self.subsystems.remove(&subsystem.base.id);
+                self.subsystems.remove(&subsystem.get_id());
                 ()
             }
             SolItem::Module(module) => {
                 match module.rack {
-                    SolModRack::High => self.mods_high.remove(&module.base.id),
-                    SolModRack::Mid => self.mods_mid.remove(&module.base.id),
-                    SolModRack::Low => self.mods_low.remove(&module.base.id),
+                    SolModRack::High => self.mods_high.remove(&module.get_id()),
+                    SolModRack::Mid => self.mods_mid.remove(&module.get_id()),
+                    SolModRack::Low => self.mods_low.remove(&module.get_id()),
                 };
                 ()
             }
             SolItem::Rig(rig) => {
-                self.rigs.remove(&rig.base.id);
+                self.rigs.remove(&rig.get_id());
                 ()
             }
             SolItem::Drone(drone) => {
-                self.drones.remove(&drone.base.id);
+                self.drones.remove(&drone.get_id());
             }
             SolItem::Fighter(fighter) => {
-                self.fighters.remove(&fighter.base.id);
+                self.fighters.remove(&fighter.get_id());
                 ()
             }
             SolItem::FwEffect(fw_effect) => {
-                self.fw_effects.remove(&fw_effect.base.id);
+                self.fw_effects.remove(&fw_effect.get_id());
                 ()
             }
             // Ignore charges and system-wide effects

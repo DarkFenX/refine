@@ -22,9 +22,9 @@ impl SolStanceInfo {
 impl From<&SolStance> for SolStanceInfo {
     fn from(sol_stance: &SolStance) -> Self {
         SolStanceInfo::new(
-            sol_stance.base.id,
-            sol_stance.fit_id,
-            sol_stance.base.a_item_id,
+            sol_stance.get_id(),
+            sol_stance.get_fit_id(),
+            sol_stance.get_a_item_id(),
             sol_stance.get_bool_state(),
         )
     }

@@ -1,14 +1,14 @@
 use crate::{
     ad,
     defs::{Amount, EItemId, SolFitId, SolItemId},
-    sol::item::{SolAutocharges, SolItemBase, SolItemState},
+    sol::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState},
     src::Src,
     util::{Named, Result},
 };
 
 pub(in crate::sol) struct SolFighter {
-    pub(in crate::sol) base: SolItemBase,
-    pub(in crate::sol) fit_id: SolFitId,
+    base: SolItemBase,
+    fit_id: SolFitId,
     pub(in crate::sol) state: SolItemState,
     pub(in crate::sol) amt_override: Option<Amount>,
     pub(in crate::sol) autocharges: SolAutocharges,
@@ -29,21 +29,32 @@ impl SolFighter {
             autocharges: SolAutocharges::new(),
         }
     }
-    pub(in crate::sol::item) fn get_id(&self) -> SolItemId {
+    // Item base methods
+    pub(in crate::sol) fn get_id(&self) -> SolItemId {
         self.base.get_id()
     }
-    pub(in crate::sol::item) fn get_fit_id(&self) -> SolFitId {
-        self.fit_id
-    }
-    pub(in crate::sol::item) fn is_loaded(&self) -> bool {
-        self.base.is_loaded()
+    pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
+        self.base.get_a_item_id()
     }
     pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
         self.base.get_a_item()
     }
+    pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
+        self.base.get_effect_modes()
+    }
+    pub(in crate::sol) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
+        self.base.get_effect_modes_mut()
+    }
+    pub(in crate::sol) fn is_loaded(&self) -> bool {
+        self.base.is_loaded()
+    }
     pub(in crate::sol::item) fn reload_a_item(&mut self, src: &Src) {
         self.base.reload_a_item(src);
         self.autocharges.clear();
+    }
+    // Item-specific methods
+    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
+        self.fit_id
     }
 }
 impl Named for SolFighter {
@@ -57,8 +68,8 @@ impl std::fmt::Display for SolFighter {
             f,
             "{}(id={}, a_item_id={})",
             Self::get_name(),
-            self.base.id,
-            self.base.a_item_id
+            self.get_id(),
+            self.get_a_item_id(),
         )
     }
 }

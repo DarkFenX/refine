@@ -24,9 +24,9 @@ impl SolSkillInfo {
 impl From<&SolSkill> for SolSkillInfo {
     fn from(sol_skill: &SolSkill) -> Self {
         SolSkillInfo::new(
-            sol_skill.base.id,
-            sol_skill.fit_id,
-            sol_skill.base.a_item_id,
+            sol_skill.get_id(),
+            sol_skill.get_fit_id(),
+            sol_skill.get_a_item_id(),
             sol_skill.level,
             sol_skill.get_bool_state(),
         )

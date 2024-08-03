@@ -274,7 +274,7 @@ fn check_module_charge(
             SolItem::Charge(charge) => charge,
             _ => return Err(DebugError::new()),
         };
-        if charge.cont_id != module.base.id {
+        if charge.cont_id != module.get_id() {
             return Err(DebugError::new());
         }
         item.debug_consistency_check(sol_view)?;
@@ -301,7 +301,7 @@ fn check_fighter_autocharges(
             SolItem::AutoCharge(autocharge) => autocharge,
             _ => return Err(DebugError::new()),
         };
-        if autocharge.cont_id != fighter.base.id {
+        if autocharge.cont_id != fighter.get_id() {
             return Err(DebugError::new());
         }
         item.debug_consistency_check(sol_view)?;

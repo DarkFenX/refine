@@ -22,9 +22,9 @@ impl SolDroneInfo {
 impl From<&SolDrone> for SolDroneInfo {
     fn from(sol_drone: &SolDrone) -> Self {
         SolDroneInfo::new(
-            sol_drone.base.id,
-            sol_drone.fit_id,
-            sol_drone.base.a_item_id,
+            sol_drone.get_id(),
+            sol_drone.get_fit_id(),
+            sol_drone.get_a_item_id(),
             sol_drone.state,
         )
     }

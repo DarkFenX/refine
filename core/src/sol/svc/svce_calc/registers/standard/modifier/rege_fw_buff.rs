@@ -21,7 +21,7 @@ impl SolStandardRegister {
         let valid = match raw_modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Everything => {
-                    let projectee_item_ids = self.affectee_buffable.get(&fw_effect.fit_id);
+                    let projectee_item_ids = self.affectee_buffable.get(&fw_effect.get_fit_id());
                     ctx_modifiers.reserve_exact(projectee_item_ids.len());
                     for projectee_item_id in projectee_item_ids {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, *projectee_item_id);
@@ -36,7 +36,7 @@ impl SolStandardRegister {
                     true
                 }
                 SolDomain::Ship => {
-                    let fit = sol_view.fits.get_fit(&fw_effect.fit_id).unwrap();
+                    let fit = sol_view.fits.get_fit(&fw_effect.get_fit_id()).unwrap();
                     if matches!(fit.kind, SolShipKind::Ship) {
                         if let Some(ship_id) = fit.ship {
                             let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
@@ -55,13 +55,13 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
-                    let fit = sol_view.fits.get_fit(&fw_effect.fit_id).unwrap();
+                    let fit = sol_view.fits.get_fit(&fw_effect.get_fit_id()).unwrap();
                     if let Some(ship_id) = fit.ship {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
                             add_ctx_modifier(
                                 &mut self.cmods_loc,
-                                (fw_effect.fit_id, SolLocationKind::Ship),
+                                (fw_effect.get_fit_id(), SolLocationKind::Ship),
                                 ctx_modifier,
                                 &mut self.cmods_by_attr_spec,
                             );
@@ -74,13 +74,13 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
-                    let fit = sol_view.fits.get_fit(&fw_effect.fit_id).unwrap();
+                    let fit = sol_view.fits.get_fit(&fw_effect.get_fit_id()).unwrap();
                     if let Some(ship_id) = fit.ship {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
                             add_ctx_modifier(
                                 &mut self.cmods_loc_grp,
-                                (fw_effect.fit_id, SolLocationKind::Ship, grp_id),
+                                (fw_effect.get_fit_id(), SolLocationKind::Ship, grp_id),
                                 ctx_modifier,
                                 &mut self.cmods_by_attr_spec,
                             );
@@ -93,13 +93,13 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
-                    let fit = sol_view.fits.get_fit(&fw_effect.fit_id).unwrap();
+                    let fit = sol_view.fits.get_fit(&fw_effect.get_fit_id()).unwrap();
                     if let Some(ship_id) = fit.ship {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
                             add_ctx_modifier(
                                 &mut self.cmods_loc_srq,
-                                (fw_effect.fit_id, SolLocationKind::Ship, srq_id),
+                                (fw_effect.get_fit_id(), SolLocationKind::Ship, srq_id),
                                 ctx_modifier,
                                 &mut self.cmods_by_attr_spec,
                             );
@@ -115,7 +115,7 @@ impl SolStandardRegister {
         if valid {
             self.rmods_nonproj
                 .add_entry((raw_modifier.affector_item_id, raw_modifier.effect_id), raw_modifier);
-            self.rmods_fw_buff.add_entry(fw_effect.fit_id, raw_modifier);
+            self.rmods_fw_buff.add_entry(fw_effect.get_fit_id(), raw_modifier);
         }
         valid
     }
@@ -130,7 +130,7 @@ impl SolStandardRegister {
         match raw_modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Everything => {
-                    let projectee_item_ids = self.affectee_buffable.get(&fw_effect.fit_id);
+                    let projectee_item_ids = self.affectee_buffable.get(&fw_effect.get_fit_id());
                     ctx_modifiers.reserve_exact(projectee_item_ids.len());
                     for projectee_item_id in projectee_item_ids {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, *projectee_item_id);
@@ -144,7 +144,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Ship => {
-                    let fit = sol_view.fits.get_fit(&fw_effect.fit_id).unwrap();
+                    let fit = sol_view.fits.get_fit(&fw_effect.get_fit_id()).unwrap();
                     if matches!(fit.kind, SolShipKind::Ship) {
                         if let Some(ship_id) = fit.ship {
                             let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
@@ -162,13 +162,13 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
-                    let fit = sol_view.fits.get_fit(&fw_effect.fit_id).unwrap();
+                    let fit = sol_view.fits.get_fit(&fw_effect.get_fit_id()).unwrap();
                     if let Some(ship_id) = fit.ship {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
                             remove_ctx_modifier(
                                 &mut self.cmods_loc,
-                                &(fw_effect.fit_id, SolLocationKind::Ship),
+                                &(fw_effect.get_fit_id(), SolLocationKind::Ship),
                                 &ctx_modifier,
                                 &mut self.cmods_by_attr_spec,
                             );
@@ -180,13 +180,13 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
-                    let fit = sol_view.fits.get_fit(&fw_effect.fit_id).unwrap();
+                    let fit = sol_view.fits.get_fit(&fw_effect.get_fit_id()).unwrap();
                     if let Some(ship_id) = fit.ship {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
                             remove_ctx_modifier(
                                 &mut self.cmods_loc_grp,
-                                &(fw_effect.fit_id, SolLocationKind::Ship, grp_id),
+                                &(fw_effect.get_fit_id(), SolLocationKind::Ship, grp_id),
                                 &ctx_modifier,
                                 &mut self.cmods_by_attr_spec,
                             );
@@ -198,13 +198,13 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
-                    let fit = sol_view.fits.get_fit(&fw_effect.fit_id).unwrap();
+                    let fit = sol_view.fits.get_fit(&fw_effect.get_fit_id()).unwrap();
                     if let Some(ship_id) = fit.ship {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
                             remove_ctx_modifier(
                                 &mut self.cmods_loc_srq,
-                                &(fw_effect.fit_id, SolLocationKind::Ship, srq_id),
+                                &(fw_effect.get_fit_id(), SolLocationKind::Ship, srq_id),
                                 &ctx_modifier,
                                 &mut self.cmods_by_attr_spec,
                             );
@@ -216,7 +216,7 @@ impl SolStandardRegister {
             },
             _ => (),
         }
-        self.rmods_fw_buff.remove_entry(&fw_effect.fit_id, &raw_modifier);
+        self.rmods_fw_buff.remove_entry(&fw_effect.get_fit_id(), &raw_modifier);
     }
     // Is supposed to be called only for buffable items
     pub(in crate::sol::svc::svce_calc::registers::standard) fn reg_buffable_for_fw(&mut self, item: &SolItem) {
@@ -240,10 +240,10 @@ impl SolStandardRegister {
                     SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
                                 add_ctx_modifier(
                                     &mut self.cmods_root,
-                                    (ship.fit_id, SolLocationKind::Ship),
+                                    (ship.get_fit_id(), SolLocationKind::Ship),
                                     ctx_modifier,
                                     &mut self.cmods_by_attr_spec,
                                 );
@@ -256,10 +256,10 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
                                 add_ctx_modifier(
                                     &mut self.cmods_loc,
-                                    (ship.fit_id, SolLocationKind::Ship),
+                                    (ship.get_fit_id(), SolLocationKind::Ship),
                                     ctx_modifier,
                                     &mut self.cmods_by_attr_spec,
                                 );
@@ -272,10 +272,10 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
                                 add_ctx_modifier(
                                     &mut self.cmods_loc_grp,
-                                    (ship.fit_id, SolLocationKind::Ship, grp_id),
+                                    (ship.get_fit_id(), SolLocationKind::Ship, grp_id),
                                     ctx_modifier,
                                     &mut self.cmods_by_attr_spec,
                                 );
@@ -288,10 +288,10 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
                                 add_ctx_modifier(
                                     &mut self.cmods_loc_srq,
-                                    (ship.fit_id, SolLocationKind::Ship, srq_id),
+                                    (ship.get_fit_id(), SolLocationKind::Ship, srq_id),
                                     ctx_modifier,
                                     &mut self.cmods_by_attr_spec,
                                 );
@@ -326,10 +326,10 @@ impl SolStandardRegister {
                     SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
                                 remove_ctx_modifier(
                                     &mut self.cmods_root,
-                                    &(ship.fit_id, SolLocationKind::Ship),
+                                    &(ship.get_fit_id(), SolLocationKind::Ship),
                                     &ctx_modifier,
                                     &mut self.cmods_by_attr_spec,
                                 );
@@ -342,10 +342,10 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
                                 remove_ctx_modifier(
                                     &mut self.cmods_loc,
-                                    &(ship.fit_id, SolLocationKind::Ship),
+                                    &(ship.get_fit_id(), SolLocationKind::Ship),
                                     &ctx_modifier,
                                     &mut self.cmods_by_attr_spec,
                                 );
@@ -358,10 +358,10 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
                                 remove_ctx_modifier(
                                     &mut self.cmods_loc_grp,
-                                    &(ship.fit_id, SolLocationKind::Ship, grp_id),
+                                    &(ship.get_fit_id(), SolLocationKind::Ship, grp_id),
                                     &ctx_modifier,
                                     &mut self.cmods_by_attr_spec,
                                 );
@@ -374,10 +374,10 @@ impl SolStandardRegister {
                     SolDomain::Everything | SolDomain::Ship => {
                         if let SolItem::Ship(ship) = item {
                             if matches!(ship.kind, SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.base.id);
+                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
                                 remove_ctx_modifier(
                                     &mut self.cmods_loc_srq,
-                                    &(ship.fit_id, SolLocationKind::Ship, srq_id),
+                                    &(ship.get_fit_id(), SolLocationKind::Ship, srq_id),
                                     &ctx_modifier,
                                     &mut self.cmods_by_attr_spec,
                                 );

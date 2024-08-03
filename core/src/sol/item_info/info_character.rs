@@ -22,9 +22,9 @@ impl SolCharacterInfo {
 impl From<&SolCharacter> for SolCharacterInfo {
     fn from(sol_character: &SolCharacter) -> Self {
         SolCharacterInfo::new(
-            sol_character.base.id,
-            sol_character.fit_id,
-            sol_character.base.a_item_id,
+            sol_character.get_id(),
+            sol_character.get_fit_id(),
+            sol_character.get_a_item_id(),
             sol_character.get_bool_state(),
         )
     }

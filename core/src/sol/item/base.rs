@@ -8,10 +8,10 @@ use crate::{
 
 // Item base stores all the data every item should have
 pub(in crate::sol) struct SolItemBase {
-    pub(in crate::sol) id: SolItemId,
-    pub(in crate::sol) a_item_id: EItemId,
-    pub(in crate::sol) effect_modes: SolEffectModes,
-    pub(in crate::sol) a_item: Option<ad::ArcItem>,
+    id: SolItemId,
+    a_item_id: EItemId,
+    effect_modes: SolEffectModes,
+    a_item: Option<ad::ArcItem>,
 }
 impl SolItemBase {
     pub(in crate::sol::item) fn new(src: &Src, id: SolItemId, a_item_id: EItemId) -> Self {
@@ -25,10 +25,19 @@ impl SolItemBase {
     pub(in crate::sol::item) fn get_id(&self) -> SolItemId {
         self.id
     }
+    pub(in crate::sol::item) fn get_a_item_id(&self) -> EItemId {
+        self.a_item_id
+    }
+    pub(in crate::sol::item) fn get_effect_modes(&self) -> &SolEffectModes {
+        &self.effect_modes
+    }
+    pub(in crate::sol::item) fn get_effect_modes_mut(&mut self) -> &mut SolEffectModes {
+        &mut self.effect_modes
+    }
     pub(in crate::sol::item) fn is_loaded(&self) -> bool {
         self.a_item.is_some()
     }
-    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
+    pub(in crate::sol::item) fn get_a_item(&self) -> Result<&ad::ArcItem> {
         self.a_item
             .as_ref()
             .ok_or_else(|| Error::new(ErrorKind::AItemNotLoaded(self.a_item_id)))

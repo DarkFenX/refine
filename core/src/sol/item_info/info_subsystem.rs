@@ -22,9 +22,9 @@ impl SolSubsystemInfo {
 impl From<&SolSubsystem> for SolSubsystemInfo {
     fn from(sol_subsystem: &SolSubsystem) -> Self {
         SolSubsystemInfo::new(
-            sol_subsystem.base.id,
-            sol_subsystem.fit_id,
-            sol_subsystem.base.a_item_id,
+            sol_subsystem.get_id(),
+            sol_subsystem.get_fit_id(),
+            sol_subsystem.get_a_item_id(),
             sol_subsystem.get_bool_state(),
         )
     }

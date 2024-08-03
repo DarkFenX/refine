@@ -32,9 +32,9 @@ impl SolBoosterInfo {
         side_effects: StMap<EEffectId, SolSideEffectInfo>,
     ) -> Self {
         SolBoosterInfo::new(
-            sol_booster.base.id,
-            sol_booster.fit_id,
-            sol_booster.base.a_item_id,
+            sol_booster.get_id(),
+            sol_booster.get_fit_id(),
+            sol_booster.get_a_item_id(),
             sol_booster.get_bool_state(),
             side_effects,
         )

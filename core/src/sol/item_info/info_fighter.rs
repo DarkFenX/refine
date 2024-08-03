@@ -38,9 +38,9 @@ impl SolFighterInfo {
         autocharges: StMap<EEffectId, SolAutoChargeInfo>,
     ) -> Self {
         SolFighterInfo::new(
-            sol_fighter.base.id,
-            sol_fighter.fit_id,
-            sol_fighter.base.a_item_id,
+            sol_fighter.get_id(),
+            sol_fighter.get_fit_id(),
+            sol_fighter.get_a_item_id(),
             sol_fighter.state,
             sol_fighter.amt_override,
             autocharges,

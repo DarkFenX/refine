@@ -42,9 +42,9 @@ impl SolModuleInfo {
     }
     pub(in crate::sol) fn from_mod_and_charge(sol_module: &SolModule, charge_info: Option<SolChargeInfo>) -> Self {
         SolModuleInfo::new(
-            sol_module.base.id,
-            sol_module.fit_id,
-            sol_module.base.a_item_id,
+            sol_module.get_id(),
+            sol_module.get_fit_id(),
+            sol_module.get_a_item_id(),
             sol_module.state,
             sol_module.rack,
             sol_module.pos,

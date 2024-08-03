@@ -22,8 +22,8 @@ impl SolProjEffectInfo {
 impl From<&SolProjEffect> for SolProjEffectInfo {
     fn from(sol_proj_effect: &SolProjEffect) -> Self {
         SolProjEffectInfo::new(
-            sol_proj_effect.base.id,
-            sol_proj_effect.base.a_item_id,
+            sol_proj_effect.get_id(),
+            sol_proj_effect.get_a_item_id(),
             sol_proj_effect.get_bool_state(),
             sol_proj_effect.projs.iter_items().map(|v| *v).collect(),
         )

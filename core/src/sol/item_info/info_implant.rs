@@ -22,9 +22,9 @@ impl SolImplantInfo {
 impl From<&SolImplant> for SolImplantInfo {
     fn from(sol_implant: &SolImplant) -> Self {
         SolImplantInfo::new(
-            sol_implant.base.id,
-            sol_implant.fit_id,
-            sol_implant.base.a_item_id,
+            sol_implant.get_id(),
+            sol_implant.get_fit_id(),
+            sol_implant.get_a_item_id(),
             sol_implant.get_bool_state(),
         )
     }
