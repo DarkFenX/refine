@@ -56,6 +56,7 @@ impl HError {
                 rc::ErrorKind::FleetNotFound(_) => "COR-017",
                 rc::ErrorKind::ProjecteeNotFound(_, _) => "COR-018",
                 rc::ErrorKind::UnremovableItemKind(_) => "COR-019",
+                rc::ErrorKind::NotSideEffect(_) => "COR-020",
             },
         };
         code.to_string()

@@ -1,13 +1,14 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::{EItemId, SolFitId, SolItemId},
+    defs::{EEffectId, EItemId, SolFitId, SolItemId},
     sol::{
         item::{SolBooster, SolItem},
         item_info::{SolBoosterInfo, SolSideEffectInfo, SolSideEffectStr},
-        SolarSystem,
+        view::SolView,
+        SolEffectMode, SolarSystem,
     },
-    util::{Result, StMap},
+    util::{Error, ErrorKind, Result, StMap},
 };
 
 impl SolarSystem {
@@ -36,6 +37,38 @@ impl SolarSystem {
         self.items.get_booster_mut(item_id)?.set_bool_state(state);
         Ok(())
     }
+    pub fn set_booster_side_effect_state(
+        &mut self,
+        item_id: &SolItemId,
+        effect_id: &EEffectId,
+        state: bool,
+    ) -> Result<()> {
+        let booster = self.items.get_booster_mut(item_id)?;
+        let a_item = booster.get_a_item()?;
+        if !a_item.effect_datas.contains_key(effect_id) {
+            return Err(Error::new(ErrorKind::NotSideEffect(*effect_id)));
+        }
+        let effect = match self.src.get_a_effect(effect_id) {
+            Some(effect) => effect,
+            None => return Err(Error::new(ErrorKind::NotSideEffect(*effect_id))),
+        };
+        if effect.chance_attr_id.is_none() {
+            return Err(Error::new(ErrorKind::NotSideEffect(*effect_id)));
+        }
+        let effect_state = match state {
+            true => SolEffectMode::StateCompliance,
+            false => SolEffectMode::FullCompliance,
+        };
+        booster.get_effect_modes_mut().set(*effect_id, effect_state);
+        let item = self.items.get_item(item_id).unwrap();
+        self.svcs.process_effects(
+            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            item,
+            item.get_state(),
+        );
+        Ok(())
+    }
+
     // Non-public
     pub(in crate::sol) fn make_booster_info(&self, booster: &SolBooster) -> SolBoosterInfo {
         let mut side_effects = StMap::new();

@@ -2,7 +2,7 @@ use std::{error, fmt, result};
 
 use crate::{
     ad,
-    defs::{EAttrId, EItemId, Idx, SkillLevel, SolFitId, SolFleetId, SolItemId},
+    defs::{EAttrId, EEffectId, EItemId, Idx, SkillLevel, SolFitId, SolFleetId, SolItemId},
     sol::SolModRack,
     util::Named,
 };
@@ -28,6 +28,7 @@ pub enum ErrorKind {
     ItemNotProjectable(SolItemId),
     ProjecteeNotFound(SolItemId, SolItemId),
     UnremovableItemKind(&'static str),
+    NotSideEffect(EEffectId),
 }
 
 #[derive(Debug)]
@@ -70,6 +71,7 @@ impl fmt::Display for Error {
                 )
             }
             ErrorKind::UnremovableItemKind(kind) => write!(f, "{kind} cannot be manually removed"),
+            ErrorKind::NotSideEffect(effect_id) => write!(f, "{effect_id} is not a side effect"),
         }
     }
 }
