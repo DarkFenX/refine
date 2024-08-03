@@ -1,5 +1,3 @@
-use std::convert::TryInto;
-
 use crate::{
     defs::{SolFitId, SolItemId},
     sol::{

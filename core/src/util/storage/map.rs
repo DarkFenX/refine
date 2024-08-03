@@ -2,7 +2,6 @@ use std::{
     borrow::Borrow,
     collections::{hash_map::Entry, HashMap},
     hash::Hash,
-    iter::FromIterator,
 };
 
 use rustc_hash::FxHashMap;

@@ -2,7 +2,7 @@
 name = "reefast-dh-adapted"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
-edition = "2018"
+edition = "2021"
 description = "Adapted data handlers for reefast-core crate"
 license = "LGPL-3.0-or-later"
 

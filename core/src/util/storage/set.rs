@@ -1,4 +1,4 @@
-use std::{hash::Hash, iter::FromIterator};
+use std::hash::Hash;
 
 use rustc_hash::FxHashSet;
 

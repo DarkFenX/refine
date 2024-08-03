@@ -7,6 +7,7 @@ use crate::info::HItemInfoMode;
 mod full;
 mod id;
 mod partial;
+mod side_effect;
 
 #[derive(serde::Serialize)]
 #[serde(untagged)]
@@ -23,7 +24,7 @@ impl HBoosterInfo {
     ) -> Self {
         match item_mode {
             HItemInfoMode::Id => Self::Id(core_booster_info.into()),
-            HItemInfoMode::Partial => Self::Partial(core_booster_info.into()),
+            HItemInfoMode::Partial => Self::Partial(HBoosterInfoPartial::mk_info(core_sol, core_booster_info)),
             HItemInfoMode::Full => Self::Full(HBoosterInfoFull::mk_info(core_sol, core_booster_info)),
         }
     }

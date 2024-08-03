@@ -1,5 +1,3 @@
-use std::convert::TryInto;
-
 use crate::{
     sol::{
         svc::svce_calc::{registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolRawModifier},

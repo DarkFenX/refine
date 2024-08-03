@@ -6,7 +6,7 @@ pub(in crate::sol::svc::svce_calc) enum SolLocationKind {
     Structure,
     Character,
 }
-impl std::convert::TryFrom<SolDomain> for SolLocationKind {
+impl TryFrom<SolDomain> for SolLocationKind {
     type Error = &'static str;
 
     fn try_from(value: SolDomain) -> Result<Self, Self::Error> {

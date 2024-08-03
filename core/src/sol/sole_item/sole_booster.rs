@@ -1,8 +1,10 @@
+use itertools::Itertools;
+
 use crate::{
     defs::{EItemId, SolFitId, SolItemId},
     sol::{
         item::{SolBooster, SolItem},
-        item_info::SolBoosterInfo,
+        item_info::{SolBoosterInfo, SolSideEffectInfo, SolSideEffectStr},
         SolarSystem,
     },
     util::{Result, StMap},
@@ -40,9 +42,28 @@ impl SolarSystem {
         if let Ok(a_item) = booster.get_a_item() {
             for effect_id in a_item.effect_datas.keys() {
                 if let Some(effect) = self.src.get_a_effect(effect_id) {
-                    if effect.chance_attr_id.is_some() {
+                    if let Some(chance_attr_id) = effect.chance_attr_id {
+                        let se_strs = effect
+                            .mods
+                            .iter()
+                            .map(|v| SolSideEffectStr::new(v.op, v.affector_attr_id))
+                            .collect_vec();
+                        // Expose strength info only if all modifiers use the same source attribute
+                        // and operator
+                        let se_str = match se_strs.len() {
+                            0 => None,
+                            1 => se_strs.into_iter().next(),
+                            _ => {
+                                let first = *se_strs.first().unwrap();
+                                match se_strs.iter().all(|se_str| *se_str == first) {
+                                    true => Some(first),
+                                    false => None,
+                                }
+                            }
+                        };
                         let status = self.svcs.is_effect_running(&booster.base.id, effect_id);
-                        side_effects.insert(*effect_id, status);
+                        let side_effect = SolSideEffectInfo::new(status, chance_attr_id, se_str);
+                        side_effects.insert(*effect_id, side_effect);
                     }
                 }
             }
