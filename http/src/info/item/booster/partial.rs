@@ -12,6 +12,7 @@ pub(crate) struct HBoosterInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SolFitId,
     pub(crate) enabled: bool,
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) side_effects: HashMap<rc::EEffectId, HSideEffectInfo>,
 }
 impl HBoosterInfoPartial {

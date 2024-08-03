@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from typing import NamedTuple, Union
+from typing import NamedTuple, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Union
 
 
 class AttrModInfoMap(dict):

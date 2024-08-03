@@ -246,6 +246,12 @@ class ApiModAddMode(StrEnum):
 
 
 @unique
+class ApiSideEffectOp(StrEnum):
+    add = 'add'
+    perc = 'perc'
+
+
+@unique
 class ApiSolInfoMode(StrEnum):
     id = 'id'
     full = 'full'

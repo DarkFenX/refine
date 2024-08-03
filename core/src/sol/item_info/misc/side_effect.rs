@@ -1,15 +1,15 @@
 use crate::{ad, defs::EAttrId};
 
 pub struct SolSideEffectInfo {
-    pub status: bool,
     pub chance_attr_id: EAttrId,
+    pub status: bool,
     pub strength: Option<SolSideEffectStr>,
 }
 impl SolSideEffectInfo {
-    pub(in crate::sol) fn new(status: bool, chance_attr_id: EAttrId, strength: Option<SolSideEffectStr>) -> Self {
+    pub(in crate::sol) fn new(chance_attr_id: EAttrId, status: bool, strength: Option<SolSideEffectStr>) -> Self {
         Self {
-            status,
             chance_attr_id,
+            status,
             strength,
         }
     }

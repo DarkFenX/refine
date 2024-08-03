@@ -62,7 +62,7 @@ impl SolarSystem {
                             }
                         };
                         let status = self.svcs.is_effect_running(&booster.base.id, effect_id);
-                        let side_effect = SolSideEffectInfo::new(status, chance_attr_id, se_str);
+                        let side_effect = SolSideEffectInfo::new(chance_attr_id, status, se_str);
                         side_effects.insert(*effect_id, side_effect);
                     }
                 }

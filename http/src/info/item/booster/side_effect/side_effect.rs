@@ -1,16 +1,16 @@
 use super::HSideEffectStr;
 
-#[derive(serde::Serialize)]
+#[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HSideEffectInfo {
-    pub(crate) status: bool,
     pub(crate) chance: rc::AttrVal,
+    pub(crate) status: bool,
     pub(crate) strength: Option<HSideEffectStr>,
 }
 impl HSideEffectInfo {
-    fn new(status: bool, chance: rc::AttrVal, strength: Option<HSideEffectStr>) -> Self {
+    fn new(chance: rc::AttrVal, status: bool, strength: Option<HSideEffectStr>) -> Self {
         Self {
-            status,
             chance,
+            status,
             strength,
         }
     }
@@ -27,6 +27,6 @@ impl HSideEffectInfo {
             Some(core_se_str) => HSideEffectStr::from_core_str(core_sol, item_id, &core_se_str),
             None => None,
         };
-        Some(Self::new(core_se_info.status, chance, strength))
+        Some(Self::new(chance, core_se_info.status, strength))
     }
 }

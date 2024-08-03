@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING
 from tests.support.consts import ApiItemInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
+from .side_effect_info import SideEffectInfo, SideEffectStrInfo
+
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -28,6 +30,9 @@ class Item(AttrDict):
                 'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
                 'autocharges': AttrHookDef(
                     func=lambda acs: {int(k): Item(client=client, data=v, sol_id=sol_id) for k, v in acs.items()}),
+                'side_effects': AttrHookDef(func=lambda ses: {
+                    int(k): SideEffectInfo(v[0], v[1], SideEffectStrInfo(*v[2]))
+                    for k, v in ses.items()}),
                 'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()}),
                 'effects': AttrHookDef(func=lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()}),
                 'mods': AttrHookDef(func=AttrModInfoMap)})
