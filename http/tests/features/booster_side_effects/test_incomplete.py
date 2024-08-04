@@ -1,7 +1,7 @@
 from tests import approx, check_no_field
 
 
-def test_unloaded_item(client, consts):
+def test_unloaded_item(client):
     eve_booster_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -10,7 +10,7 @@ def test_unloaded_item(client, consts):
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # pylint: disable=W0104
-    # TODO: add attempt to change side-effect status - should fail
+    # TODO: add attempt to change side-effect status - should fail, atm fails just crash server
 
 
 def test_no_chance_val(client, consts):
