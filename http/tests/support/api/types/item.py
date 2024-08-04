@@ -31,7 +31,7 @@ class Item(AttrDict):
                 'autocharges': AttrHookDef(
                     func=lambda acs: {int(k): Item(client=client, data=v, sol_id=sol_id) for k, v in acs.items()}),
                 'side_effects': AttrHookDef(func=lambda ses: {
-                    int(k): SideEffectInfo(v[0], v[1], SideEffectStrInfo(*v[2]))
+                    int(k): SideEffectInfo(v[0], v[1], None if v[2] is None else SideEffectStrInfo(*v[2]))
                     for k, v in ses.items()}),
                 'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()}),
                 'effects': AttrHookDef(func=lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()}),
