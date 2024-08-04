@@ -308,3 +308,89 @@ def test_strength_mismatch_attr(client, consts):
     assert api_side.chance == approx(0.4)
     assert api_side.status is True
     assert api_side.str is None
+
+
+def test_modded_chance(client, consts):
+    eve_chance_attr = client.mk_eve_attr()
+    eve_chance_mod_attr = client.mk_eve_attr()
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
+    eve_side_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_side_effect = client.mk_eve_effect(chance_attr_id=eve_chance_attr.id, mod_info=[eve_side_mod])
+    eve_booster = client.mk_eve_item(
+        attrs={eve_chance_attr.id: 0.4, eve_affector_attr.id: 25},
+        eff_ids=[eve_side_effect.id])
+    eve_chance_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        dom=consts.EveModDom.char,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_chance_mod_attr.id,
+        affectee_attr_id=eve_chance_attr.id)
+    eve_chance_effect = client.mk_eve_effect(mod_info=[eve_chance_mod])
+    eve_implant = client.mk_eve_item(attrs={eve_chance_mod_attr.id: 0.9}, eff_ids=[eve_chance_effect.id])
+    eve_char = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_char(type_id=eve_char.id)
+    api_fit.set_ship(type_id=eve_ship.id)
+    api_booster = api_fit.add_booster(type_id=eve_booster.id)
+    # Verification
+    assert api_booster.update().side_effects[eve_side_effect.id].chance == approx(0.4)
+    # Action
+    api_implant = api_fit.add_implant(type_id=eve_implant.id)
+    # Verification
+    assert api_booster.update().side_effects[eve_side_effect.id].chance == approx(0.36)
+    # Action
+    api_implant.remove()
+    # Verification
+    assert api_booster.update().side_effects[eve_side_effect.id].chance == approx(0.4)
+
+
+def test_modded_strength(client, consts):
+    eve_chance_attr = client.mk_eve_attr()
+    eve_str_mod_attr = client.mk_eve_attr()
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
+    eve_side_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_side_effect = client.mk_eve_effect(chance_attr_id=eve_chance_attr.id, mod_info=[eve_side_mod])
+    eve_booster = client.mk_eve_item(
+        attrs={eve_chance_attr.id: 0.4, eve_affector_attr.id: 25},
+        eff_ids=[eve_side_effect.id])
+    eve_str_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        dom=consts.EveModDom.char,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_str_mod_attr.id,
+        affectee_attr_id=eve_affector_attr.id)
+    eve_str_effect = client.mk_eve_effect(mod_info=[eve_str_mod])
+    eve_implant = client.mk_eve_item(attrs={eve_str_mod_attr.id: 1.2}, eff_ids=[eve_str_effect.id])
+    eve_char = client.mk_eve_item()
+    eve_ship = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_char(type_id=eve_char.id)
+    api_fit.set_ship(type_id=eve_ship.id)
+    api_booster = api_fit.add_booster(type_id=eve_booster.id)
+    # Verification
+    assert api_booster.update().side_effects[eve_side_effect.id].str.val == approx(25)
+    # Action
+    api_implant = api_fit.add_implant(type_id=eve_implant.id)
+    # Verification
+    assert api_booster.update().side_effects[eve_side_effect.id].str.val == approx(30)
+    # Action
+    api_implant.remove()
+    # Verification
+    assert api_booster.update().side_effects[eve_side_effect.id].str.val == approx(25)
