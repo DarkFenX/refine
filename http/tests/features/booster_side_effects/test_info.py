@@ -149,3 +149,162 @@ def test_with_side_effects(client, consts):
     assert api_booster.attrs[eve_side1_affector_attr.id].extra == approx(25)
     assert api_booster.attrs[eve_side2_chance_attr.id].extra == approx(0.2)
     assert api_booster.attrs[eve_side2_affector_attr.id].extra == approx(10)
+
+
+def test_strength_matching(client, consts):
+    eve_grp1 = client.mk_eve_item_group()
+    eve_grp2 = client.mk_eve_item_group()
+    eve_chance_attr = client.mk_eve_attr()
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp1.id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp2.id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_effect = client.mk_eve_effect(chance_attr_id=eve_chance_attr.id, mod_info=[eve_mod1, eve_mod2])
+    eve_ship = client.mk_eve_ship()
+    eve_booster = client.mk_eve_item(
+        attrs={eve_chance_attr.id: 0.4, eve_affector_attr.id: 25},
+        eff_ids=[eve_effect.id])
+    eve_module1 = client.mk_eve_item(grp_id=eve_grp1.id, attrs={eve_affectee_attr.id: 100})
+    eve_module2 = client.mk_eve_item(grp_id=eve_grp2.id, attrs={eve_affectee_attr.id: 200})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship.id)
+    api_module1 = api_fit.add_mod(type_id=eve_module1.id)
+    api_module2 = api_fit.add_mod(type_id=eve_module2.id)
+    api_booster = api_fit.add_booster(type_id=eve_booster.id)
+    # Verification
+    assert api_module1.update().attrs[eve_affectee_attr.id].extra == approx(100)
+    assert api_module2.update().attrs[eve_affectee_attr.id].extra == approx(200)
+    api_side = api_booster.update().side_effects[eve_effect.id]
+    assert api_side.chance == approx(0.4)
+    assert api_side.status is False
+    assert api_side.str.op == consts.ApiSideEffectOp.perc
+    assert api_side.str.val == approx(25)
+    # Action
+    api_booster.change_booster(side_effects={eve_effect.id: True})
+    # Verification
+    assert api_module1.update().attrs[eve_affectee_attr.id].extra == approx(125)
+    assert api_module2.update().attrs[eve_affectee_attr.id].extra == approx(250)
+    api_side = api_booster.update().side_effects[eve_effect.id]
+    assert api_side.chance == approx(0.4)
+    assert api_side.status is True
+    assert api_side.str.op == consts.ApiSideEffectOp.perc
+    assert api_side.str.val == approx(25)
+
+
+def test_strength_mismatch_op(client, consts):
+    eve_grp1 = client.mk_eve_item_group()
+    eve_grp2 = client.mk_eve_item_group()
+    eve_chance_attr = client.mk_eve_attr()
+    eve_affector_attr = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp1.id,
+        op=consts.EveModOp.pre_mul,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp2.id,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_effect = client.mk_eve_effect(chance_attr_id=eve_chance_attr.id, mod_info=[eve_mod1, eve_mod2])
+    eve_ship = client.mk_eve_ship()
+    eve_booster = client.mk_eve_item(
+        attrs={eve_chance_attr.id: 0.4, eve_affector_attr.id: 1.25},
+        eff_ids=[eve_effect.id])
+    eve_module1 = client.mk_eve_item(grp_id=eve_grp1.id, attrs={eve_affectee_attr.id: 100})
+    eve_module2 = client.mk_eve_item(grp_id=eve_grp2.id, attrs={eve_affectee_attr.id: 200})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship.id)
+    api_module1 = api_fit.add_mod(type_id=eve_module1.id)
+    api_module2 = api_fit.add_mod(type_id=eve_module2.id)
+    api_booster = api_fit.add_booster(type_id=eve_booster.id)
+    # Verification
+    assert api_module1.update().attrs[eve_affectee_attr.id].extra == approx(100)
+    assert api_module2.update().attrs[eve_affectee_attr.id].extra == approx(200)
+    api_side = api_booster.update().side_effects[eve_effect.id]
+    assert api_side.chance == approx(0.4)
+    assert api_side.status is False
+    assert api_side.str is None
+    # Action
+    api_booster.change_booster(side_effects={eve_effect.id: True})
+    # Verification
+    assert api_module1.update().attrs[eve_affectee_attr.id].extra == approx(125)
+    assert api_module2.update().attrs[eve_affectee_attr.id].extra == approx(250)
+    api_side = api_booster.update().side_effects[eve_effect.id]
+    assert api_side.chance == approx(0.4)
+    assert api_side.status is True
+    assert api_side.str is None
+
+
+def test_strength_mismatch_attr(client, consts):
+    eve_grp1 = client.mk_eve_item_group()
+    eve_grp2 = client.mk_eve_item_group()
+    eve_chance_attr = client.mk_eve_attr()
+    eve_affector_attr1 = client.mk_eve_attr()
+    eve_affector_attr2 = client.mk_eve_attr()
+    eve_affectee_attr = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp1.id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr1.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp2.id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr2.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_effect = client.mk_eve_effect(chance_attr_id=eve_chance_attr.id, mod_info=[eve_mod1, eve_mod2])
+    eve_ship = client.mk_eve_ship()
+    eve_booster = client.mk_eve_item(
+        attrs={eve_chance_attr.id: 0.4, eve_affector_attr1.id: 25, eve_affector_attr2.id: 25},
+        eff_ids=[eve_effect.id])
+    eve_module1 = client.mk_eve_item(grp_id=eve_grp1.id, attrs={eve_affectee_attr.id: 100})
+    eve_module2 = client.mk_eve_item(grp_id=eve_grp2.id, attrs={eve_affectee_attr.id: 200})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship.id)
+    api_module1 = api_fit.add_mod(type_id=eve_module1.id)
+    api_module2 = api_fit.add_mod(type_id=eve_module2.id)
+    api_booster = api_fit.add_booster(type_id=eve_booster.id)
+    # Verification
+    assert api_module1.update().attrs[eve_affectee_attr.id].extra == approx(100)
+    assert api_module2.update().attrs[eve_affectee_attr.id].extra == approx(200)
+    api_side = api_booster.update().side_effects[eve_effect.id]
+    assert api_side.chance == approx(0.4)
+    assert api_side.status is False
+    assert api_side.str is None
+    # Action
+    api_booster.change_booster(side_effects={eve_effect.id: True})
+    # Verification
+    assert api_module1.update().attrs[eve_affectee_attr.id].extra == approx(125)
+    assert api_module2.update().attrs[eve_affectee_attr.id].extra == approx(250)
+    api_side = api_booster.update().side_effects[eve_effect.id]
+    assert api_side.chance == approx(0.4)
+    assert api_side.status is True
+    assert api_side.str is None

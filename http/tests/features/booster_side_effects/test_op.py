@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def test_op_preassign(client, consts):
+def test_preassign(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -37,7 +37,7 @@ def test_op_preassign(client, consts):
     assert api_side.str is None
 
 
-def test_op_premul(client, consts):
+def test_premul(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -75,7 +75,7 @@ def test_op_premul(client, consts):
     assert api_side.str.val == approx(25)
 
 
-def test_op_prediv(client, consts):
+def test_prediv(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -113,7 +113,7 @@ def test_op_prediv(client, consts):
     assert api_side.str.val == approx(25)
 
 
-def test_op_prediv_zero(client, consts):
+def test_prediv_zero(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -149,7 +149,7 @@ def test_op_prediv_zero(client, consts):
     assert api_side.str is None
 
 
-def test_op_add(client, consts):
+def test_add(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -187,7 +187,7 @@ def test_op_add(client, consts):
     assert api_side.str.val == approx(25)
 
 
-def test_op_sub(client, consts):
+def test_sub(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -225,7 +225,7 @@ def test_op_sub(client, consts):
     assert api_side.str.val == approx(-25)
 
 
-def test_op_postmul(client, consts):
+def test_postmul(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -263,7 +263,7 @@ def test_op_postmul(client, consts):
     assert api_side.str.val == approx(25)
 
 
-def test_op_postdiv(client, consts):
+def test_postdiv(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -301,7 +301,7 @@ def test_op_postdiv(client, consts):
     assert api_side.str.val == approx(25)
 
 
-def test_op_postdiv_zero(client, consts):
+def test_postdiv_zero(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -337,7 +337,7 @@ def test_op_postdiv_zero(client, consts):
     assert api_side.str is None
 
 
-def test_op_postperc(client, consts):
+def test_postperc(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
@@ -375,7 +375,7 @@ def test_op_postperc(client, consts):
     assert api_side.str.val == approx(25)
 
 
-def test_op_postassign(client, consts):
+def test_postassign(client, consts):
     eve_chance_attr = client.mk_eve_attr()
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
