@@ -185,6 +185,7 @@ class Fit(AttrDict):
             self,
             type_id: int,
             state: Union[bool, Type[Absent]],
+            side_effects: Union[dict[int, bool], Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.add_booster_request(
@@ -192,16 +193,22 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
+            side_effects=side_effects,
             item_info_mode=item_info_mode)
 
     def add_booster(
             self,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
+            side_effects: Union[dict[int, bool], Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_booster_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
+        resp = self.add_booster_request(
+            type_id=type_id,
+            state=state,
+            side_effects=side_effects,
+            item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:

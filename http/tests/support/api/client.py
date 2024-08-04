@@ -466,15 +466,43 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]],
+            side_effects: Union[dict[int, bool], Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='booster',
-            sol_id=sol_id,
-            fit_id=fit_id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode)
+        body = {
+            'type': 'booster',
+            'fit_id': fit_id,
+            'type_id': type_id}
+        conditional_insert(body, 'state', state)
+        conditional_insert(body, 'side_effects', side_effects)
+        params = {}
+        conditional_insert(params, 'item', item_info_mode)
+        return Request(
+            self,
+            method='POST',
+            url=f'{self.__base_url}/sol/{sol_id}/item',
+            params=params,
+            json=body)
+
+    def change_booster_request(
+            self,
+            sol_id: str,
+            item_id: int,
+            state: Union[bool, Type[Absent]],
+            side_effects: Union[dict[int, bool], Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        body = {'type': 'booster'}
+        conditional_insert(body, 'state', state)
+        conditional_insert(body, 'side_effects', side_effects)
+        params = {}
+        conditional_insert(params, 'item', item_info_mode)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/sol/{sol_id}/item/{item_id}',
+            params=params,
+            json=body)
 
     # Ship methods
     def set_ship_request(

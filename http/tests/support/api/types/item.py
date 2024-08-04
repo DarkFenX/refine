@@ -154,6 +154,35 @@ class Item(AttrDict):
             return self
         return None
 
+    # Booster methods
+    def change_booster_request(
+            self,
+            state: Union[bool, Type[Absent]],
+            side_effects: Union[dict[int, bool], Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        return self._client.change_booster_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            side_effects=side_effects,
+            item_info_mode=item_info_mode)
+
+    def change_booster(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+            side_effects: Union[dict[int, bool], Type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Union[Item, None]:
+        resp = self.change_booster_request(state=state, side_effects=side_effects, item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
     # Ship methods
     def change_ship_request(
             self,
