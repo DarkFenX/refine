@@ -93,7 +93,7 @@ def test_with_side_effects(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Check default upon addition
-    api_booster = api_fit.add_booster(type_id=eve_booster.id)
+    api_booster = api_fit.add_booster(type_id=eve_booster.id, side_effects={eve_side2_effect.id: True})
     assert isinstance(api_booster.id, str)
     with check_no_field():
         api_booster.kind  # pylint: disable=W0104
@@ -123,7 +123,7 @@ def test_with_side_effects(client, consts):
     assert api_side1.str.val == approx(25)
     api_side2 = api_booster.side_effects[eve_side2_effect.id]
     assert api_side2.chance == approx(0.2)
-    assert api_side2.status is False
+    assert api_side2.status is True
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
     with check_no_field():
@@ -140,7 +140,7 @@ def test_with_side_effects(client, consts):
     assert api_side1.str.val == approx(25)
     api_side2 = api_booster.side_effects[eve_side2_effect.id]
     assert api_side2.chance == approx(0.2)
-    assert api_side2.status is False
+    assert api_side2.status is True
     assert api_side2.str.op == consts.ApiSideEffectOp.perc
     assert api_side2.str.val == approx(10)
     assert len(api_booster.attrs) == 5
