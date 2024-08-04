@@ -34,7 +34,19 @@ impl SolarSystem {
         Ok(info)
     }
     pub fn set_booster_state(&mut self, item_id: &SolItemId, state: bool) -> Result<()> {
-        self.items.get_booster_mut(item_id)?.set_bool_state(state);
+        let booster = self.items.get_booster_mut(item_id)?;
+        let old_state = booster.state;
+        booster.set_bool_state(state);
+        let new_state = booster.state;
+        if new_state != old_state {
+            let item = self.items.get_item(item_id).unwrap();
+            self.svcs.switch_item_state(
+                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                item,
+                old_state,
+                new_state,
+            );
+        }
         Ok(())
     }
     pub fn set_booster_side_effect_state(
@@ -94,7 +106,12 @@ impl SolarSystem {
                                 }
                             }
                         };
-                        let status = self.svcs.is_effect_running(&booster.get_id(), effect_id);
+                        let status = match booster.get_effect_modes().get(effect_id) {
+                            SolEffectMode::FullCompliance => false,
+                            SolEffectMode::StateCompliance => true,
+                            SolEffectMode::ForceRun => true,
+                            SolEffectMode::ForceStop => false,
+                        };
                         let side_effect = SolSideEffectInfo::new(chance_attr_id, status, se_str);
                         side_effects.insert(*effect_id, side_effect);
                     }
