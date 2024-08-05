@@ -36,6 +36,8 @@ pub(crate) async fn change_item(
                 HBrErrorKind::ExecFailed(exec_error) => match &exec_error.kind {
                     HExecErrorKind::CoreError(core_error) => match core_error.get_kind() {
                         rc::ErrorKind::ItemIdNotFound(_) => StatusCode::NOT_FOUND,
+                        rc::ErrorKind::AItemNotLoaded(_) => StatusCode::CONFLICT,
+                        rc::ErrorKind::NotSideEffect(_) => StatusCode::CONFLICT,
                         _ => StatusCode::INTERNAL_SERVER_ERROR,
                     },
                 },

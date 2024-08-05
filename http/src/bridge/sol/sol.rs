@@ -146,17 +146,30 @@ impl HSolarSystem {
     ) -> HBrResult<HFleetInfo> {
         let fleet_id = self.str_to_fleet_id(fleet_id)?;
         let mut core_sol = self.take_sol()?;
+        let core_sol_backup = core_sol.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, fleet_info) = tokio_rayon::spawn_fifo(move || {
+        match tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            command.execute(&mut core_sol, &fleet_id).unwrap();
-            let core_info = core_sol.get_fleet(&fleet_id).unwrap();
-            let info = HFleetInfo::mk_info(&mut core_sol, &core_info.id, fleet_mode).unwrap();
-            (core_sol, info)
+            command
+                .execute(&mut core_sol, &fleet_id)
+                .map_err(|e| HBrError::from(e))?;
+            let core_info = core_sol
+                .get_fleet(&fleet_id)
+                .map_err(|e| HBrError::from(HExecError::from(e)))?;
+            let info = HFleetInfo::mk_info(&mut core_sol, &core_info.id, fleet_mode).map_err(|e| HBrError::from(e))?;
+            Ok((core_sol, info))
         })
-        .await;
-        self.put_sol_back(core_sol);
-        Ok(fleet_info)
+        .await
+        {
+            Ok((core_sol, fleet_info)) => {
+                self.put_sol_back(core_sol);
+                Ok(fleet_info)
+            }
+            Err(error) => {
+                self.put_sol_back(core_sol_backup);
+                Err(error)
+            }
+        }
     }
     #[tracing::instrument(name = "sol-fleet-del", level = "trace", skip_all)]
     pub(crate) async fn remove_fleet(&mut self, fleet_id: &str) -> HBrResult<()> {
@@ -274,15 +287,26 @@ impl HSolarSystem {
         item_mode: HItemInfoMode,
     ) -> HBrResult<HItemInfo> {
         let mut core_sol = self.take_sol()?;
+        let core_sol_backup = core_sol.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, item_info) = tokio_rayon::spawn_fifo(move || {
+        match tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let item_info = command.execute(&mut core_sol, item_mode).unwrap();
-            (core_sol, item_info)
+            let item_info = command
+                .execute(&mut core_sol, item_mode)
+                .map_err(|e| HBrError::from(e))?;
+            Ok((core_sol, item_info))
         })
-        .await;
-        self.put_sol_back(core_sol);
-        Ok(item_info)
+        .await
+        {
+            Ok((core_sol, item_info)) => {
+                self.put_sol_back(core_sol);
+                Ok(item_info)
+            }
+            Err(error) => {
+                self.put_sol_back(core_sol_backup);
+                Err(error)
+            }
+        }
     }
     #[tracing::instrument(name = "sol-item-chg", level = "trace", skip_all)]
     pub(crate) async fn change_item(
@@ -293,17 +317,30 @@ impl HSolarSystem {
     ) -> HBrResult<HItemInfo> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_sol = self.take_sol()?;
+        let core_sol_backup = core_sol.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, item_info) = tokio_rayon::spawn_fifo(move || {
+        match tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            command.execute(&mut core_sol, &item_id).unwrap();
-            let core_info = core_sol.get_item_info(&item_id).unwrap();
-            let info = HItemInfo::mk_info(&mut core_sol, &core_info, item_mode);
-            (core_sol, info)
+            command
+                .execute(&mut core_sol, &item_id)
+                .map_err(|e| HBrError::from(e))?;
+            let core_info = core_sol
+                .get_item_info(&item_id)
+                .map_err(|e| HBrError::from(HExecError::from(e)))?;
+            let item_info = HItemInfo::mk_info(&mut core_sol, &core_info, item_mode);
+            Ok((core_sol, item_info))
         })
-        .await;
-        self.put_sol_back(core_sol);
-        Ok(item_info)
+        .await
+        {
+            Ok((core_sol, item_info)) => {
+                self.put_sol_back(core_sol);
+                Ok(item_info)
+            }
+            Err(error) => {
+                self.put_sol_back(core_sol_backup);
+                Err(error)
+            }
+        }
     }
     #[tracing::instrument(name = "sol-item-del", level = "trace", skip_all)]
     pub(crate) async fn remove_item(&mut self, item_id: &str) -> HBrResult<()> {

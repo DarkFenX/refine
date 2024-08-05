@@ -171,10 +171,11 @@ def test_absent_retains_state(client, consts):
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_d1_effect = eve_d1.mk_effect(chance_attr_id=eve_chance_attr_id, mod_info=[eve_d1_mod])
+    eve_effect_id = eve_d1.mk_effect(chance_attr_id=eve_chance_attr_id, mod_info=[eve_d1_mod]).id
+    eve_d2.mk_effect(id_=eve_effect_id)
     eve_booster_id = eve_d1.mk_item(
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 25},
-        eff_ids=[eve_d1_effect.id]).id
+        eff_ids=[eve_effect_id]).id
     eve_d2.mk_item(id_=eve_booster_id, attrs={eve_chance_attr_id: 0.5, eve_affector_attr_id: 30})
     eve_ship_id = eve_d1.mk_ship(attrs={eve_affectee_attr_id: 100}).id
     eve_d2.mk_ship(id_=eve_ship_id, attrs={eve_affectee_attr_id: 200})
@@ -185,7 +186,7 @@ def test_absent_retains_state(client, consts):
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(100)
-    api_side = api_booster.update().side_effects[eve_d1_effect.id]
+    api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.status is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
@@ -198,19 +199,26 @@ def test_absent_retains_state(client, consts):
     with check_no_field():
         api_booster.side_effects  # pylint: disable=W0104
     # Action
+    api_booster.change_booster(side_effects={eve_effect_id: True}, status_code=409)
+    # Verification
+    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    api_booster.update()
+    with check_no_field():
+        api_booster.side_effects  # pylint: disable=W0104
+    # Action
     api_sol.change_src(data=eve_d1)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(100)
-    api_side = api_booster.update().side_effects[eve_d1_effect.id]
+    api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.status is False
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
     # Action
-    api_booster.change_booster(side_effects={eve_d1_effect.id: True})
+    api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(125)
-    api_side = api_booster.update().side_effects[eve_d1_effect.id]
+    api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.status is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
@@ -223,10 +231,17 @@ def test_absent_retains_state(client, consts):
     with check_no_field():
         api_booster.side_effects  # pylint: disable=W0104
     # Action
+    api_booster.change_booster(side_effects={eve_effect_id: False}, status_code=409)
+    # Verification
+    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    api_booster.update()
+    with check_no_field():
+        api_booster.side_effects  # pylint: disable=W0104
+    # Action
     api_sol.change_src(data=eve_d1)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(125)
-    api_side = api_booster.update().side_effects[eve_d1_effect.id]
+    api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.status is True
     assert api_side.str.op == consts.ApiSideEffectOp.perc
