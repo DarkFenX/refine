@@ -68,21 +68,32 @@ impl HSolarSystem {
         item_mode: HItemInfoMode,
     ) -> HBrResult<(HSolInfo, Vec<HCmdResp>)> {
         let mut core_sol = self.take_sol()?;
+        let core_sol_backup = core_sol.clone();
         let sol_id_mv = self.id.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, sol_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
+        match tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
             let mut cmd_resps = Vec::with_capacity(commands.len());
-            for command in commands.iter() {
-                let resp = command.execute(&mut core_sol).unwrap();
+            for (i, command) in commands.iter().enumerate() {
+                let resp = command
+                    .execute(&mut core_sol)
+                    .map_err(|e| HBrError::from_exec_batch(i, e))?;
                 cmd_resps.push(resp);
             }
             let sol_info = HSolInfo::mk_info(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
-            (core_sol, sol_info, cmd_resps)
+            Ok((core_sol, sol_info, cmd_resps))
         })
-        .await;
-        self.put_sol_back(core_sol);
-        Ok((sol_info, cmd_resps))
+        .await
+        {
+            Ok((core_sol, sol_info, cmd_resps)) => {
+                self.put_sol_back(core_sol);
+                Ok((sol_info, cmd_resps))
+            }
+            Err(error) => {
+                self.put_sol_back(core_sol_backup);
+                Err(error)
+            }
+        }
     }
     #[tracing::instrument(name = "sol-sol-chg-src", level = "trace", skip_all)]
     pub(crate) async fn change_sol_src(
@@ -231,20 +242,32 @@ impl HSolarSystem {
     ) -> HBrResult<(HFitInfo, Vec<HCmdResp>)> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_sol = self.take_sol()?;
+        let core_sol_backup = core_sol.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, fit_info, cmd_resps) = tokio_rayon::spawn_fifo(move || {
+        match tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
             let mut cmd_resps = Vec::with_capacity(commands.len());
-            for command in commands.iter() {
-                let resp = command.execute(&mut core_sol, &fit_id).unwrap();
+            for (i, command) in commands.iter().enumerate() {
+                let resp = command
+                    .execute(&mut core_sol, &fit_id)
+                    .map_err(|e| HBrError::from_exec_batch(i, e))?;
                 cmd_resps.push(resp);
             }
-            let info = HFitInfo::mk_info(&mut core_sol, &fit_id, fit_mode, item_mode);
-            (core_sol, info, cmd_resps)
+            let fit_info =
+                HFitInfo::mk_info(&mut core_sol, &fit_id, fit_mode, item_mode).map_err(|e| HBrError::from(e))?;
+            Ok((core_sol, fit_info, cmd_resps))
         })
-        .await;
-        self.put_sol_back(core_sol);
-        Ok((fit_info.map_err(|e| HBrError::from(e))?, cmd_resps))
+        .await
+        {
+            Ok((core_sol, fit_info, cmd_resps)) => {
+                self.put_sol_back(core_sol);
+                Ok((fit_info, cmd_resps))
+            }
+            Err(error) => {
+                self.put_sol_back(core_sol_backup);
+                Err(error)
+            }
+        }
     }
     #[tracing::instrument(name = "sol-fit-del", level = "trace", skip_all)]
     pub(crate) async fn remove_fit(&mut self, fit_id: &str) -> HBrResult<()> {
