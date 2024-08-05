@@ -12,7 +12,7 @@ use crate::{
 pub enum ErrorKind {
     DhHttpInvalidBaseUrl(String, String),
     SrcADataGenFailed(String),
-    ItemIdNotFound(SolItemId),
+    ItemNotFound(SolItemId),
     FitNotFound(SolFitId),
     FleetNotFound(SolFleetId),
     SolItemKindNotFound(&'static str),
@@ -46,7 +46,7 @@ impl fmt::Display for Error {
         match &self.kind {
             ErrorKind::DhHttpInvalidBaseUrl(url, msg) => write!(f, "invalid \"{url}\": {msg}"),
             ErrorKind::SrcADataGenFailed(reason) => write!(f, "adapted data generation failed: {reason}"),
-            ErrorKind::ItemIdNotFound(item_id) => write!(f, "item {item_id} not found"),
+            ErrorKind::ItemNotFound(item_id) => write!(f, "item {item_id} not found"),
             ErrorKind::FitNotFound(fit_id) => write!(f, "fit {fit_id} not found"),
             ErrorKind::FleetNotFound(fleet_id) => write!(f, "fleet {fleet_id} not found"),
             ErrorKind::SolItemKindNotFound(item_kind) => write!(f, "{item_kind} not found"),

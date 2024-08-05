@@ -20,7 +20,7 @@ impl SolAttrValData {
         // All items known to calculator should be added to the map, so consider absence an error
         self.data
             .get(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound(*item_id)))
     }
     pub(in crate::sol::svc::svce_calc) fn get_item_attrs_mut(
         &mut self,
@@ -29,7 +29,7 @@ impl SolAttrValData {
         // All items known to calculator should be added to the map, so consider absence an error
         self.data
             .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound(*item_id)))
     }
     // Modification methods
     pub(in crate::sol::svc::svce_calc) fn add_item(&mut self, item_id: SolItemId) {

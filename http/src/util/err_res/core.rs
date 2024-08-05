@@ -11,7 +11,7 @@ impl HCoreError {
             rc::ErrorKind::DhHttpInvalidBaseUrl(_, _) => "COR-001",
             rc::ErrorKind::SrcADataGenFailed(_) => "COR-002",
             rc::ErrorKind::FitNotFound(_) => "COR-003",
-            rc::ErrorKind::ItemIdNotFound(_) => "COR-004",
+            rc::ErrorKind::ItemNotFound(_) => "COR-004",
             rc::ErrorKind::SolItemKindNotFound(_) => "COR-005",
             rc::ErrorKind::FitIdAllocFailed => "COR-006",
             rc::ErrorKind::ItemIdAllocFailed => "COR-007",

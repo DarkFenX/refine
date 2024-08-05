@@ -41,12 +41,12 @@ impl SolItems {
     pub(in crate::sol) fn get_item(&self, item_id: &SolItemId) -> Result<&SolItem> {
         self.data
             .get(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound(*item_id)))
     }
     pub(in crate::sol) fn get_item_mut(&mut self, item_id: &SolItemId) -> Result<&mut SolItem> {
         self.data
             .get_mut(item_id)
-            .ok_or_else(|| Error::new(ErrorKind::ItemIdNotFound(*item_id)))
+            .ok_or_else(|| Error::new(ErrorKind::ItemNotFound(*item_id)))
     }
     pub(in crate::sol) fn remove_item(&mut self, item_id: &SolItemId) -> Option<SolItem> {
         self.data.remove(item_id)

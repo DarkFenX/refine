@@ -27,7 +27,7 @@ pub(crate) async fn delete_item(
                 HBrErrorKind::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
                 HBrErrorKind::ExecFailed(exec_error) => match &exec_error.kind {
                     HExecErrorKind::CoreError(core_error) => match core_error.get_kind() {
-                        rc::ErrorKind::ItemIdNotFound(_) => StatusCode::NOT_FOUND,
+                        rc::ErrorKind::ItemNotFound(_) => StatusCode::NOT_FOUND,
                         rc::ErrorKind::UnremovableItemKind(_) => StatusCode::FORBIDDEN,
                         _ => StatusCode::INTERNAL_SERVER_ERROR,
                     },
