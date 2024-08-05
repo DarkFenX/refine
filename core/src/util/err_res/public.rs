@@ -71,7 +71,7 @@ impl fmt::Display for Error {
                 )
             }
             ErrorKind::UnremovableItemKind(kind) => write!(f, "{kind} cannot be manually removed"),
-            ErrorKind::NotSideEffect(effect_id) => write!(f, "{effect_id} is not a side effect"),
+            ErrorKind::NotSideEffect(effect_id) => write!(f, "effect {effect_id} is not a side effect"),
         }
     }
 }

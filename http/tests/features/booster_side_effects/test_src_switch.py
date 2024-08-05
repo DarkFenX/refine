@@ -198,8 +198,13 @@ def test_absent_retains_state(client, consts):
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # pylint: disable=W0104
-    # Action
-    api_booster.change_booster(side_effects={eve_effect_id: True}, status_code=409)
+    # Action - attempt to switch state of an effect which is not a side effect
+    api_booster.change_booster(
+        side_effects={eve_effect_id: False},
+        status_code=409,
+        json_predicate={
+            'code': 'COR-020',
+            'message': f'core library error: effect {eve_effect_id} is not a side effect'})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_booster.update()
@@ -230,8 +235,13 @@ def test_absent_retains_state(client, consts):
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # pylint: disable=W0104
-    # Action
-    api_booster.change_booster(side_effects={eve_effect_id: False}, status_code=409)
+    # Action - attempt to switch state of an effect which is not a side effect
+    api_booster.change_booster(
+        side_effects={eve_effect_id: False},
+        status_code=409,
+        json_predicate={
+            'code': 'COR-020',
+            'message': f'core library error: effect {eve_effect_id} is not a side effect'})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_booster.update()
