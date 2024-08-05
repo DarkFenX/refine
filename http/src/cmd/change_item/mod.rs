@@ -14,7 +14,7 @@ pub(in crate::cmd) use stance::HChangeStanceCmd;
 pub(in crate::cmd) use subsystem::HChangeSubsystemCmd;
 pub(in crate::cmd) use sw_effect::HChangeSwEffectCmd;
 
-use crate::cmd::HCmdResp;
+use crate::{cmd::HCmdResp, util::HExecResult};
 
 mod booster;
 mod character;
@@ -52,7 +52,7 @@ pub(crate) enum HChangeItemCommand {
     ProjEffect(HChangeProjEffectCmd),
 }
 impl HChangeItemCommand {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, item_id: &rc::SolItemId) -> rc::Result<HCmdResp> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, item_id: &rc::SolItemId) -> HExecResult<HCmdResp> {
         match self {
             Self::Character(cmd) => cmd.execute(core_sol, item_id),
             Self::Skill(cmd) => cmd.execute(core_sol, item_id),

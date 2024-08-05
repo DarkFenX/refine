@@ -17,7 +17,7 @@ pub(in crate::cmd) use item_stance::{
 };
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 
-use crate::cmd::HCmdResp;
+use crate::{cmd::HCmdResp, util::HExecResult};
 
 mod fleet;
 mod item_booster;
@@ -66,7 +66,7 @@ pub(crate) enum HChangeFitCommand {
     ChangeFwEffect(HChangeFwEffectCmd),
 }
 impl HChangeFitCommand {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::SolFitId) -> rc::Result<HCmdResp> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::SolFitId) -> HExecResult<HCmdResp> {
         match self {
             Self::SetFleet(cmd) => cmd.execute(core_sol, fit_id),
             // Item commands

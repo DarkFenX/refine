@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use tokio::sync::RwLock;
 
-use crate::util::{HError, HErrorKind, HResult};
+use crate::bridge::{HBrError, HBrErrorKind, HBrResult};
 
 pub(crate) struct HSrcMgr {
     cache_folder: Option<String>,
@@ -27,11 +27,11 @@ impl HSrcMgr {
         data_version: String,
         data_base_url: String,
         make_default: bool,
-    ) -> HResult<()> {
+    ) -> HBrResult<()> {
         tracing::debug!("adding source with alias \"{alias}\", default={make_default}");
 
         if !self.check_alias_availability(&alias).await {
-            return Err(HError::new(HErrorKind::SrcAliasNotAvailable(alias)));
+            return Err(HBrError::new(HBrErrorKind::SrcAliasNotAvailable(alias)));
         }
         self.lock_alias(&alias).await;
         let alias_cloned = alias.clone();
@@ -58,20 +58,20 @@ impl HSrcMgr {
             }
         }
     }
-    pub(crate) async fn get(&self, alias: Option<&str>) -> HResult<rc::Src> {
+    pub(crate) async fn get(&self, alias: Option<&str>) -> HBrResult<rc::Src> {
         match alias {
             Some(a) => self.get_src_by_alias(a).await,
             None => self.get_default_src().await,
         }
     }
     #[tracing::instrument(name = "srcmgr-del", level = "trace", skip_all)]
-    pub(crate) async fn del(&self, alias: &str) -> HResult<()> {
+    pub(crate) async fn del(&self, alias: &str) -> HBrResult<()> {
         tracing::debug!("removing source with alias \"{alias}\"");
         self.alias_src_map
             .write()
             .await
             .remove(alias)
-            .ok_or_else(|| HError::new(HErrorKind::SrcNotFound(alias.to_string())))?;
+            .ok_or_else(|| HBrError::new(HBrErrorKind::SrcNotFound(alias.to_string())))?;
         let default_alias = self.default_alias.read().await.clone();
         match default_alias {
             Some(a) if a == alias => *self.default_alias.write().await = None,
@@ -93,18 +93,18 @@ impl HSrcMgr {
             tracing::warn!("attempt to unlock alias which is not locked")
         }
     }
-    async fn get_src_by_alias(&self, alias: &str) -> HResult<rc::Src> {
+    async fn get_src_by_alias(&self, alias: &str) -> HBrResult<rc::Src> {
         self.alias_src_map
             .read()
             .await
             .get(alias)
             .cloned()
-            .ok_or_else(|| HError::new(HErrorKind::SrcNotFound(alias.to_string())))
+            .ok_or_else(|| HBrError::new(HBrErrorKind::SrcNotFound(alias.to_string())))
     }
-    async fn get_default_src(&self) -> HResult<rc::Src> {
+    async fn get_default_src(&self) -> HBrResult<rc::Src> {
         match self.default_alias.read().await.as_ref() {
             Some(a) => self.get_src_by_alias(a).await,
-            None => Err(HError::new(HErrorKind::NoDefaultSrc)),
+            None => Err(HBrError::new(HBrErrorKind::NoDefaultSrc)),
         }
     }
 }
@@ -114,11 +114,11 @@ fn create_src(
     data_base_url: String,
     data_version: String,
     cache_folder: Option<String>,
-) -> HResult<rc::Src> {
+) -> HBrResult<rc::Src> {
     let dh = Box::new(
         rdhe::PhbHttpEdh::new(data_base_url.as_str(), data_version).map_err(|e| {
             let reason = format!("{e}");
-            HError::new(HErrorKind::EdhInitFailed(reason))
+            HBrError::new(HBrErrorKind::EdhInitFailed(reason))
         })?,
     );
     let ch: Box<dyn rc::ad::AdaptedDataHandler> = match cache_folder {
@@ -129,6 +129,6 @@ fn create_src(
     };
     rc::Src::new(dh, ch).map_err(|e| {
         let reason = format!("{e}");
-        HError::new(HErrorKind::SrcInitFailed(reason))
+        HBrError::new(HBrErrorKind::SrcInitFailed(reason))
     })
 }

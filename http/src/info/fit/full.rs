@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     info::{HItemInfo, HItemInfoMode, MkItemInfo},
-    util::HResult,
+    util::HExecResult,
 };
 
 #[serde_with::serde_as]
@@ -43,7 +43,7 @@ impl HFitInfoFull {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
         item_mode: HItemInfoMode,
-    ) -> HResult<Self> {
+    ) -> HExecResult<Self> {
         let core_fit = core_sol.get_fit(fit_id)?;
         let fit = Self {
             id: *fit_id,

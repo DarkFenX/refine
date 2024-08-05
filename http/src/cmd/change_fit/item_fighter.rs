@@ -1,6 +1,7 @@
 use crate::{
     cmd::{change_item, HCmdResp},
     shared::HState,
+    util::HExecResult,
 };
 
 #[derive(serde::Deserialize)]
@@ -13,8 +14,9 @@ impl HAddFighterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> rc::Result<rc::SolFighterInfo> {
-        core_sol.add_fighter(*fit_id, self.type_id, (&self.state).into())
+    ) -> HExecResult<rc::SolFighterInfo> {
+        let info = core_sol.add_fighter(*fit_id, self.type_id, (&self.state).into())?;
+        Ok(info)
     }
 }
 
@@ -27,7 +29,7 @@ pub(crate) struct HChangeFighterCmd {
     item_cmd: change_item::HChangeFighterCmd,
 }
 impl HChangeFighterCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

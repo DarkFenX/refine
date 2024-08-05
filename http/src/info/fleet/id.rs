@@ -1,4 +1,4 @@
-use crate::util::HResult;
+use crate::util::HExecResult;
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
@@ -7,7 +7,7 @@ pub(crate) struct HFleetInfoId {
     pub(crate) id: rc::SolFleetId,
 }
 impl HFleetInfoId {
-    pub(in crate::info::fleet) fn mk_info(core_sol: &rc::SolarSystem, fleet_id: &rc::SolFleetId) -> HResult<Self> {
+    pub(in crate::info::fleet) fn mk_info(core_sol: &rc::SolarSystem, fleet_id: &rc::SolFleetId) -> HExecResult<Self> {
         let core_fleet = core_sol.get_fleet(fleet_id)?;
         let info = Self { id: core_fleet.id };
         Ok(info)

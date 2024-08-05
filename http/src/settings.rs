@@ -1,5 +1,3 @@
-use crate::util::{HError, HErrorKind, HResult};
-
 #[derive(Debug, serde::Deserialize)]
 pub(crate) struct HSetServer {
     pub(crate) port: u16,
@@ -26,8 +24,8 @@ pub(crate) struct HSettings {
     pub(crate) log: HSetLog,
 }
 impl HSettings {
-    pub(crate) fn new(conf_path: Option<String>) -> HResult<Self> {
-        Self::new_internal(conf_path).map_err(|e| HError::new(HErrorKind::SettingsInitFailed(e.to_string())))
+    pub(crate) fn new(conf_path: Option<String>) -> Self {
+        Self::new_internal(conf_path).unwrap()
     }
     fn new_internal(conf_path_opt: Option<String>) -> Result<Self, config::ConfigError> {
         // Set defaults - in quite a cumbersome way, mostly because config crate does not expose

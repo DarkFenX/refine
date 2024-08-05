@@ -1,6 +1,9 @@
-use crate::cmd::{
-    shared::{apply_effect_modes, HEffectModeMap},
-    HCmdResp,
+use crate::{
+    cmd::{
+        shared::{apply_effect_modes, HEffectModeMap},
+        HCmdResp,
+    },
+    util::HExecResult,
 };
 
 #[serde_with::serde_as]
@@ -22,7 +25,7 @@ impl HChangeProjEffectCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> rc::Result<HCmdResp> {
+    ) -> HExecResult<HCmdResp> {
         for projectee_item_id in self.add_projs.iter() {
             core_sol.add_proj_effect_proj(item_id, *projectee_item_id)?;
         }

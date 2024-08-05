@@ -1,6 +1,7 @@
 use crate::{
     cmd::{change_item, shared::HAddMode, HCmdResp},
     shared::{HModRack, HState},
+    util::HExecResult,
 };
 
 #[derive(serde::Deserialize)]
@@ -16,15 +17,16 @@ impl HAddModuleCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> rc::Result<rc::SolModuleInfo> {
-        core_sol.add_module(
+    ) -> HExecResult<rc::SolModuleInfo> {
+        let info = core_sol.add_module(
             *fit_id,
             (&self.rack).into(),
             (&self.add_mode).into(),
             self.type_id,
             (&self.state).into(),
             self.charge_type_id,
-        )
+        )?;
+        Ok(info)
     }
 }
 
@@ -37,7 +39,7 @@ pub(crate) struct HChangeModuleCmd {
     item_cmd: change_item::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

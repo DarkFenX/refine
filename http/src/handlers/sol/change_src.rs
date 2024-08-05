@@ -1,13 +1,14 @@
-use crate::{
-    handlers::{get_guarded_sol, sol::HSolInfoParams, HGSolResult, HSingleErr},
-    state::HAppState,
-    util::HErrorKind,
-};
 use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
     Json,
+};
+
+use crate::{
+    bridge::HBrErrorKind,
+    handlers::{get_guarded_sol, sol::HSolInfoParams, HGSolResult, HSingleErr},
+    state::HAppState,
 };
 
 #[derive(serde::Deserialize)]
@@ -29,8 +30,8 @@ pub(crate) async fn change_sol_src(
         Ok(src) => src,
         Err(e) => {
             let code = match e.kind {
-                HErrorKind::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
-                HErrorKind::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
+                HBrErrorKind::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                HBrErrorKind::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             return (code, Json(HSingleErr::from(e))).into_response();

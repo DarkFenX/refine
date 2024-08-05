@@ -1,6 +1,9 @@
-use crate::cmd::{
-    shared::{apply_effect_modes, apply_side_effects, HEffectModeMap, HSideEffectMap},
-    HCmdResp,
+use crate::{
+    cmd::{
+        shared::{apply_effect_modes, apply_side_effects, HEffectModeMap, HSideEffectMap},
+        HCmdResp,
+    },
+    util::HExecResult,
 };
 
 #[serde_with::serde_as]
@@ -19,7 +22,7 @@ impl HChangeBoosterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> rc::Result<HCmdResp> {
+    ) -> HExecResult<HCmdResp> {
         if let Some(state) = self.state {
             core_sol.set_booster_state(item_id, state)?;
         }

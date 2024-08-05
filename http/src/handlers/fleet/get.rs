@@ -6,9 +6,10 @@ use axum::{
 };
 
 use crate::{
+    bridge::HBrErrorKind,
     handlers::{fleet::HFleetInfoParams, get_guarded_sol, HGSolResult, HSingleErr},
     state::HAppState,
-    util::HErrorKind,
+    util::HExecErrorKind,
 };
 
 pub(crate) async fn get_fleet(
@@ -22,13 +23,18 @@ pub(crate) async fn get_fleet(
     };
     let resp = match guarded_sol.lock().await.get_fleet(&fleet_id, params.fleet.into()).await {
         Ok(fleet_info) => (StatusCode::OK, Json(fleet_info)).into_response(),
-        Err(e) => {
-            let code = match e.kind {
-                HErrorKind::FleetIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HErrorKind::CoreError(rc::ErrorKind::FleetNotFound(_), _) => StatusCode::NOT_FOUND,
+        Err(bridge_error) => {
+            let code = match &bridge_error.kind {
+                HBrErrorKind::FleetIdCastFailed(_) => StatusCode::NOT_FOUND,
+                HBrErrorKind::ExecFailed(exec_error) => match &exec_error.kind {
+                    HExecErrorKind::CoreError(core_error) => match core_error.get_kind() {
+                        rc::ErrorKind::FleetNotFound(_) => StatusCode::NOT_FOUND,
+                        _ => StatusCode::INTERNAL_SERVER_ERROR,
+                    },
+                },
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(e))).into_response()
+            (code, Json(HSingleErr::from(bridge_error))).into_response()
         }
     };
     resp

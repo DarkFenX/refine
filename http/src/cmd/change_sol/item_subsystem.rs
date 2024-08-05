@@ -1,4 +1,7 @@
-use crate::cmd::{change_fit, HCmdResp};
+use crate::{
+    cmd::{change_fit, HCmdResp},
+    util::HExecResult,
+};
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
@@ -9,7 +12,7 @@ pub(crate) struct HAddSubsystemCmd {
     fit_cmd: change_fit::HAddSubsystemCmd,
 }
 impl HAddSubsystemCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<rc::SolSubsystemInfo> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<rc::SolSubsystemInfo> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }
@@ -20,7 +23,7 @@ pub(crate) struct HChangeSubsystemCmd {
     fit_cmd: change_fit::HChangeSubsystemCmd,
 }
 impl HChangeSubsystemCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
         self.fit_cmd.execute(core_sol)
     }
 }

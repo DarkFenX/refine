@@ -27,7 +27,7 @@ mod util;
 async fn main() {
     // Settings
     let config_path = env::args().nth(1);
-    let settings = HSettings::new(config_path).unwrap();
+    let settings = HSettings::new(config_path);
     // Logging
     let _log_guard = logging::setup(settings.log.folder, &settings.log.level, settings.log.rotate);
     // Shared state

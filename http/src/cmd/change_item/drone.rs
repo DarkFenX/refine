@@ -4,6 +4,7 @@ use crate::{
         HCmdResp,
     },
     shared::HState,
+    util::HExecResult,
 };
 
 #[serde_with::serde_as]
@@ -19,7 +20,7 @@ impl HChangeDroneCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> rc::Result<HCmdResp> {
+    ) -> HExecResult<HCmdResp> {
         if let Some(state) = &self.state {
             core_sol.set_drone_state(item_id, state.into())?;
         }

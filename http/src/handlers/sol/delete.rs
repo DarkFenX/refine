@@ -5,14 +5,14 @@ use axum::{
     Json,
 };
 
-use crate::{handlers::HSingleErr, state::HAppState, util::HErrorKind};
+use crate::{bridge::HBrErrorKind, handlers::HSingleErr, state::HAppState};
 
 pub(crate) async fn delete_sol(State(state): State<HAppState>, Path(id): Path<String>) -> impl IntoResponse {
     let resp = match state.sol_mgr.delete_sol(&id).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(e) => {
             let code = match e.kind {
-                HErrorKind::SolNotFound(_) => StatusCode::NOT_FOUND,
+                HBrErrorKind::SolNotFound(_) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(HSingleErr::from(e))).into_response()

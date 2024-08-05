@@ -1,4 +1,7 @@
-use crate::cmd::{change_item, HCmdResp};
+use crate::{
+    cmd::{change_item, HCmdResp},
+    util::HExecResult,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddImplantCmd {
@@ -10,8 +13,9 @@ impl HAddImplantCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> rc::Result<rc::SolImplantInfo> {
-        core_sol.add_implant(*fit_id, self.type_id, self.state.unwrap_or(true))
+    ) -> HExecResult<rc::SolImplantInfo> {
+        let info = core_sol.add_implant(*fit_id, self.type_id, self.state.unwrap_or(true))?;
+        Ok(info)
     }
 }
 
@@ -24,7 +28,7 @@ pub(crate) struct HChangeImplantCmd {
     item_cmd: change_item::HChangeImplantCmd,
 }
 impl HChangeImplantCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

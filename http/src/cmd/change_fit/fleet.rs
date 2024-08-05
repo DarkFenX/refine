@@ -1,4 +1,4 @@
-use crate::cmd::HCmdResp;
+use crate::{cmd::HCmdResp, util::HExecResult};
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
@@ -11,7 +11,7 @@ impl HSetFleetCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> rc::Result<HCmdResp> {
+    ) -> HExecResult<HCmdResp> {
         core_sol.set_fit_fleet(fit_id, self.fleet_id)?;
         Ok(HCmdResp::NoData)
     }

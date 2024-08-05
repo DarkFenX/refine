@@ -1,4 +1,7 @@
-use crate::cmd::{change_item, HCmdResp};
+use crate::{
+    cmd::{change_item, HCmdResp},
+    util::HExecResult,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddSkillCmd {
@@ -11,8 +14,9 @@ impl HAddSkillCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> rc::Result<rc::SolSkillInfo> {
-        core_sol.add_skill(*fit_id, self.type_id, self.level, self.state.unwrap_or(true))
+    ) -> HExecResult<rc::SolSkillInfo> {
+        let info = core_sol.add_skill(*fit_id, self.type_id, self.level, self.state.unwrap_or(true))?;
+        Ok(info)
     }
 }
 
@@ -25,7 +29,7 @@ pub(crate) struct HChangeSkillCmd {
     item_cmd: change_item::HChangeSkillCmd,
 }
 impl HChangeSkillCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

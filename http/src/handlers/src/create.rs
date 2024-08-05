@@ -5,7 +5,7 @@ use axum::{
     Json,
 };
 
-use crate::{handlers::HSingleErr, state::HAppState, util::HErrorKind};
+use crate::{bridge::HBrErrorKind, handlers::HSingleErr, state::HAppState};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HCreateSrcReq {
@@ -30,9 +30,9 @@ pub(crate) async fn create_source(
         Ok(_) => StatusCode::CREATED.into_response(),
         Err(e) => {
             let code = match e.kind {
-                HErrorKind::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
-                HErrorKind::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
-                HErrorKind::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                HBrErrorKind::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
+                HBrErrorKind::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
+                HBrErrorKind::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(HSingleErr::from(e))).into_response()

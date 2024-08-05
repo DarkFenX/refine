@@ -1,9 +1,9 @@
-use crate::cmd::HCmdResp;
+use crate::{cmd::HCmdResp, util::HExecResult};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HCreateFleetCmd {}
 impl HCreateFleetCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
         Ok(core_sol.add_fleet()?.into())
     }
 }
@@ -15,7 +15,7 @@ pub(crate) struct HDeleteFleetCmd {
     fleet_id: rc::SolFleetId,
 }
 impl HDeleteFleetCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
         core_sol.remove_fleet(&self.fleet_id)?;
         Ok(HCmdResp::NoData)
     }

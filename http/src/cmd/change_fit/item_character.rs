@@ -1,4 +1,7 @@
-use crate::cmd::{change_item, HCmdResp};
+use crate::{
+    cmd::{change_item, HCmdResp},
+    util::HExecResult,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HSetCharacterCmd {
@@ -10,8 +13,9 @@ impl HSetCharacterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> rc::Result<rc::SolCharacterInfo> {
-        core_sol.set_fit_character(*fit_id, self.type_id, self.state.unwrap_or(true))
+    ) -> HExecResult<rc::SolCharacterInfo> {
+        let info = core_sol.set_fit_character(*fit_id, self.type_id, self.state.unwrap_or(true))?;
+        Ok(info)
     }
 }
 
@@ -26,7 +30,7 @@ impl HChangeCharacterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> rc::Result<HCmdResp> {
+    ) -> HExecResult<HCmdResp> {
         match self {
             Self::ViaItemId(cmd) => cmd.execute(core_sol),
             Self::ViaFitId(cmd) => cmd.execute(core_sol, fit_id),
@@ -43,7 +47,7 @@ pub(crate) struct HChangeCharacterViaItemIdCmd {
     item_cmd: change_item::HChangeCharacterCmd,
 }
 impl HChangeCharacterViaItemIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -58,7 +62,7 @@ impl HChangeCharacterViaFitIdCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> rc::Result<HCmdResp> {
+    ) -> HExecResult<HCmdResp> {
         let item_id = core_sol.get_fit_character_info(fit_id)?.id;
         self.item_cmd.execute(core_sol, &item_id)
     }

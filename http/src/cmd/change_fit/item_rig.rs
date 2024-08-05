@@ -1,4 +1,7 @@
-use crate::cmd::{change_item, HCmdResp};
+use crate::{
+    cmd::{change_item, HCmdResp},
+    util::HExecResult,
+};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddRigCmd {
@@ -10,8 +13,9 @@ impl HAddRigCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> rc::Result<rc::SolRigInfo> {
-        core_sol.add_rig(*fit_id, self.type_id, self.state.unwrap_or(true))
+    ) -> HExecResult<rc::SolRigInfo> {
+        let info = core_sol.add_rig(*fit_id, self.type_id, self.state.unwrap_or(true))?;
+        Ok(info)
     }
 }
 
@@ -24,7 +28,7 @@ pub(crate) struct HChangeRigCmd {
     item_cmd: change_item::HChangeRigCmd,
 }
 impl HChangeRigCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::Result<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

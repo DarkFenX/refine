@@ -4,6 +4,7 @@ use crate::{
         HCmdResp,
     },
     shared::HState,
+    util::HExecResult,
 };
 
 #[serde_with::serde_as]
@@ -28,7 +29,7 @@ impl HChangeModuleCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> rc::Result<HCmdResp> {
+    ) -> HExecResult<HCmdResp> {
         for proj_def in self.add_projs.iter() {
             core_sol.add_module_proj(item_id, proj_def.get_item_id(), proj_def.get_range())?;
         }

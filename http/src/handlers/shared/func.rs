@@ -5,9 +5,8 @@ use axum::{
 };
 
 use crate::{
-    bridge::{HGuardedSol, HSolMgr},
+    bridge::{HBrErrorKind, HGuardedSol, HSolMgr},
     handlers::HSingleErr,
-    util::HErrorKind,
 };
 
 pub(in crate::handlers) enum HGSolResult {
@@ -20,7 +19,7 @@ pub(in crate::handlers) async fn get_guarded_sol(sol_mgr: &HSolMgr, sol_id: &str
         Ok(sol) => HGSolResult::Sol(sol),
         Err(e) => {
             let code = match e.kind {
-                HErrorKind::SolNotFound(_) => StatusCode::NOT_FOUND,
+                HBrErrorKind::SolNotFound(_) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             let resp = (code, Json(HSingleErr::from(e))).into_response();

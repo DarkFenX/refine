@@ -1,6 +1,9 @@
-use crate::cmd::{
-    shared::{apply_effect_modes, HEffectModeMap},
-    HCmdResp,
+use crate::{
+    cmd::{
+        shared::{apply_effect_modes, HEffectModeMap},
+        HCmdResp,
+    },
+    util::HExecResult,
 };
 
 #[serde_with::serde_as]
@@ -17,7 +20,7 @@ impl HChangeSkillCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> rc::Result<HCmdResp> {
+    ) -> HExecResult<HCmdResp> {
         if let Some(level) = self.level {
             core_sol.set_skill_level(item_id, level)?;
         }
