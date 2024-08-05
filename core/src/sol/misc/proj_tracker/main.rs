@@ -1,5 +1,6 @@
 use crate::{defs::SolItemId, util::StMapSetL1};
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolProjTracker {
     pub(super) data: StMapSetL1<SolItemId, SolItemId>,
 }

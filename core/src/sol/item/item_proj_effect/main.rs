@@ -6,6 +6,7 @@ use crate::{
     util::{Named, Result},
 };
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolProjEffect {
     base: SolItemBase,
     pub(in crate::sol) state: SolItemState,

@@ -4,6 +4,7 @@ use rustc_hash::FxHashMap;
 
 use super::StMapSetL1;
 
+#[derive(Clone)]
 pub(crate) struct StMapSetL2<A, B, V> {
     data: FxHashMap<A, StMapSetL1<B, V>>,
     empty: StMapSetL1<B, V>,

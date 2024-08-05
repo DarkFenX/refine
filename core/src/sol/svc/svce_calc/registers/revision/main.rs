@@ -1,6 +1,7 @@
 use crate::{sol::svc::svce_calc::SolCtxModifier, util::StSet};
 
 // Intended to hold modifiers which need special handling, e.g. custom prop module modifiers
+#[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolRevisionRegister {
     pub(super) item_add: StSet<SolCtxModifier>,
     pub(super) item_remove: StSet<SolCtxModifier>,

@@ -6,6 +6,7 @@ use crate::{
 };
 
 // Intended to hold data about modifiers which originated from buffs defined using on-item attribute
+#[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolBuffRegister {
     pub(super) effects: StMapSetL1<SolItemId, EEffectId>,
     pub(super) modifiers: StMapSetL1<(SolItemId, EAttrId), SolRawModifier>,

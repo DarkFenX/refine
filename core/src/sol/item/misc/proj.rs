@@ -3,6 +3,7 @@ use crate::{
     util::StMap,
 };
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolProjs {
     data: StMap<SolItemId, Option<AttrVal>>,
 }

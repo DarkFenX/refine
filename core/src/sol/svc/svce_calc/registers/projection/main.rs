@@ -4,6 +4,7 @@ use crate::{
 };
 
 // Holds info about effect projections
+#[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolProjectionRegister {
     pub(super) ranges: StMap<(SolItemId, EEffectId, SolItemId), AttrVal>,
 }

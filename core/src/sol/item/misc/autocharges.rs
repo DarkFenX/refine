@@ -3,6 +3,7 @@ use crate::{
     util::StMap,
 };
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolAutocharges {
     data: StMap<EEffectId, SolItemId>,
 }

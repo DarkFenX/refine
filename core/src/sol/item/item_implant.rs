@@ -7,6 +7,7 @@ use crate::{
     util::{Named, Result},
 };
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolImplant {
     base: SolItemBase,
     fit_id: SolFitId,

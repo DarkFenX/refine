@@ -14,6 +14,7 @@ use crate::{
 // fit they belong to, which charges they have etc. But all the processing for those items (e.g.
 // attribute calculation) happens in services, which are also stored on solar system, but are
 // somewhat isolated.
+#[derive(Clone)]
 pub struct SolarSystem {
     pub(in crate::sol) src: Src,
     pub(in crate::sol) fleets: SolFleets,

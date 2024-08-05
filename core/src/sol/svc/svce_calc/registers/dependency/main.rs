@@ -6,6 +6,7 @@ use crate::{
 
 // Intended to hold ad-hoc dependencies between attributes, which are not covered by registers
 // which hold data about regular modifiers.
+#[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolDependencyRegister {
     // Map<affector spec, affectee specs>
     pub(super) data: StMapSetL1<SolAttrSpec, SolAttrSpec>,

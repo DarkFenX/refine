@@ -2,6 +2,7 @@ use crate::defs::{EEffectId, SolItemId};
 
 use super::{misc::SolRunningEffects, svce_calc::SolSvcCalcData};
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolSvcs {
     pub(in crate::sol::svc) running_effects: SolRunningEffects,
     pub(in crate::sol::svc) calc_data: SolSvcCalcData,

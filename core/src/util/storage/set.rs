@@ -2,6 +2,7 @@ use std::hash::Hash;
 
 use rustc_hash::FxHashSet;
 
+#[derive(Clone)]
 pub(crate) struct StSet<V> {
     data: FxHashSet<V>,
 }

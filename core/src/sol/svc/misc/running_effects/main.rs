@@ -3,6 +3,7 @@ use crate::{
     util::StMapSetL1,
 };
 
+#[derive(Clone)]
 pub(in crate::sol::svc) struct SolRunningEffects {
     pub(super) data: StMapSetL1<SolItemId, EEffectId>,
 }

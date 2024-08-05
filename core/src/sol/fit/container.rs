@@ -6,6 +6,7 @@ use crate::{
     util::{Error, ErrorKind, Result, StMap},
 };
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolFits {
     counter: Wrapping<SolFitId>,
     data: StMap<SolFitId, SolFit>,

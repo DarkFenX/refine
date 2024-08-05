@@ -5,6 +5,7 @@ use crate::sol::svc::svce_calc::{
     },
 };
 
+#[derive(Clone)]
 pub(in crate::sol::svc) struct SolSvcCalcData {
     pub(in crate::sol::svc::svce_calc) attrs: SolAttrValData,
     pub(in crate::sol::svc::svce_calc) std: SolStandardRegister,

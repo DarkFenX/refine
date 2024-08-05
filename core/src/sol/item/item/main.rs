@@ -10,6 +10,7 @@ use crate::{
     util::{Named, Result, StMap},
 };
 
+#[derive(Clone)]
 pub(in crate::sol) enum SolItem {
     AutoCharge(SolAutoCharge),
     Booster(SolBooster),

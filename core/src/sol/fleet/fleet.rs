@@ -3,6 +3,7 @@ use crate::{
     util::StSet,
 };
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolFleet {
     pub(in crate::sol) id: SolFleetId,
     fits: StSet<SolFitId>,

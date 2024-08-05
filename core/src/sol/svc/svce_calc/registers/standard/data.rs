@@ -4,6 +4,7 @@ use crate::{
     util::{StMapSetL1, StSet},
 };
 
+#[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolStandardRegister {
     // Items which are holders of a location kind (like char, ship)
     // Map<(affectee fit ID, affectee location kind), affectee item IDs>

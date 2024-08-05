@@ -6,6 +6,7 @@ use crate::{
     util::{Named, Result},
 };
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolSwEffect {
     base: SolItemBase,
     pub(in crate::sol) state: SolItemState,

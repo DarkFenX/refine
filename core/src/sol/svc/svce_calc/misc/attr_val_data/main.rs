@@ -4,6 +4,7 @@ use crate::{
     util::{Error, ErrorKind, Result, StMap},
 };
 
+#[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolAttrValData {
     pub(super) data: StMap<SolItemId, StMap<EAttrId, SolAttrVal>>,
 }

@@ -7,6 +7,7 @@ use crate::{
 };
 
 // Item base stores all the data every item should have
+#[derive(Clone)]
 pub(in crate::sol) struct SolItemBase {
     id: SolItemId,
     a_item_id: EItemId,

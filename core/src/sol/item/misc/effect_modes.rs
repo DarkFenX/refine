@@ -1,5 +1,6 @@
 use crate::{config::DEFAULT_EFFECT_MODE, defs::EEffectId, sol::SolEffectMode, util::StMap};
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolEffectModes {
     data: StMap<EEffectId, SolEffectMode>,
 }

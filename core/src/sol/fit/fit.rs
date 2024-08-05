@@ -7,6 +7,7 @@ use crate::{
     util::StSet,
 };
 
+#[derive(Clone)]
 pub(in crate::sol) struct SolFit {
     pub(in crate::sol) id: SolFitId,
     pub(in crate::sol) kind: SolShipKind,
