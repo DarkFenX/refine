@@ -48,7 +48,7 @@ impl SolAutoCharge {
     pub(in crate::sol::item) fn reload_a_item(&mut self, _: &Src) {
         // Just panic to expose attempts to reload it, since autocharges should never be reloaded.
         // Instead, they are removed and re-added when source changes.
-        panic!();
+        panic!("autocharges shouldn't be reloaded");
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
