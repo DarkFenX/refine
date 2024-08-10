@@ -15,7 +15,7 @@ mod item;
 pub(crate) mod item_info;
 mod misc;
 mod sol;
-mod sole_attr;
+mod sole_calc;
 mod sole_debug;
 mod sole_effects;
 mod sole_fit;

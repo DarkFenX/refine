@@ -1,12 +1,6 @@
 use crate::{
-    defs::{EAttrId, EEffectId, SolItemId},
-    sol::{
-        fit::SolFits,
-        fleet::SolFleets,
-        item::SolItems,
-        svc::{SolModificationInfo, SolSvcs},
-        SolAttrVal, SolEffectInfo, SolEffectMode, SolProjTracker, SolView,
-    },
+    defs::SolItemId,
+    sol::{fit::SolFits, fleet::SolFleets, item::SolItems, svc::SolSvcs, SolProjTracker},
     src::Src,
     util::StSet,
 };
@@ -39,62 +33,5 @@ impl SolarSystem {
             proj_tracker: SolProjTracker::new(),
             svcs: SolSvcs::new(),
         }
-    }
-    // Item modifications
-    pub fn iter_item_modifiers(
-        &mut self,
-        item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<SolModificationInfo>)>> {
-        self.svcs
-            .calc_iter_item_mods(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item_id)
-    }
-    // Item effects
-    pub fn iter_item_effects<'a>(
-        &'a self,
-        item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EEffectId, SolEffectInfo)> + 'a> {
-        let item = self.items.get_item(item_id)?;
-        let a_effect_ids = item.get_effect_datas()?.keys();
-        let effect_infos = a_effect_ids.map(move |v| {
-            let running = self.svcs.is_effect_running(item_id, v);
-            let mode = item.get_effect_modes().get(v);
-            (*v, SolEffectInfo::new(running, *mode))
-        });
-        Ok(effect_infos)
-    }
-    pub fn set_item_effect_mode(
-        &mut self,
-        item_id: &SolItemId,
-        effect_id: &EEffectId,
-        mode: SolEffectMode,
-    ) -> Result<()> {
-        self.items
-            .get_item_mut(item_id)?
-            .get_effect_modes_mut()
-            .set(*effect_id, mode);
-        let item = self.items.get_item(item_id).unwrap();
-        self.svcs.process_effects(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-            item,
-            item.get_state(),
-        );
-        Ok(())
-    }
-    pub fn set_item_effect_modes(
-        &mut self,
-        item_id: &SolItemId,
-        modes: impl Iterator<Item = (EEffectId, SolEffectMode)>,
-    ) -> Result<()> {
-        let effect_modes = self.items.get_item_mut(item_id)?.get_effect_modes_mut();
-        for (effect_id, effect_mode) in modes {
-            effect_modes.set(effect_id, effect_mode)
-        }
-        let item = self.items.get_item(item_id).unwrap();
-        self.svcs.process_effects(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-            item,
-            item.get_state(),
-        );
-        Ok(())
     }
 }
