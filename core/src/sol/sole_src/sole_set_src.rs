@@ -1,11 +1,12 @@
 use itertools::Itertools;
 
 use crate::{
-    sol::{item::SolItem, SolView},
+    sol::{
+        item::{SolItem, SolShipKind},
+        SolView, SolarSystem,
+    },
     src::Src,
 };
-
-use super::SolarSystem;
 
 impl SolarSystem {
     pub fn set_src(&mut self, src: Src) {
@@ -36,7 +37,10 @@ impl SolarSystem {
         self.src = src;
         // Update fit kind
         for fit in self.fits.iter_fits_mut() {
-            fit.update_fit_kind(&mut self.items);
+            fit.kind = match fit.ship {
+                Some(ship_id) => self.items.get_item(&ship_id).unwrap().get_ship().unwrap().kind,
+                None => SolShipKind::default(),
+            }
         }
         // Update autocharges
         for item_id in self.items.iter().map(|v| v.get_id()).collect_vec() {

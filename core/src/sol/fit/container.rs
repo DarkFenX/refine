@@ -2,8 +2,10 @@ use std::num::Wrapping;
 
 use crate::{
     defs::SolFitId,
-    err::{FitAllocError, FitFoundError},
-    sol::fit::SolFit,
+    sol::{
+        err::basic::{FitAllocError, FitFoundError},
+        fit::SolFit,
+    },
     util::StMap,
 };
 
