@@ -1,0 +1,22 @@
+pub use sole_add_module::AddModuleError;
+pub use sole_add_module_proj::AddModuleProjError;
+pub use sole_change_module_proj::ChangeModuleProjError;
+pub use sole_get_fit_module_infos::GetFitModuleInfosError;
+pub use sole_get_module_info::GetModuleInfoError;
+pub use sole_remove_module::RemoveModuleError;
+pub use sole_remove_module_charge::RemoveModuleChargeError;
+pub use sole_remove_module_proj::RemoveModuleProjError;
+pub use sole_set_module_charge::AddSetModuleChargeError;
+pub use sole_set_module_state::SetModuleStateError;
+
+mod misc;
+mod sole_add_module;
+mod sole_add_module_proj;
+mod sole_change_module_proj;
+mod sole_get_fit_module_infos;
+mod sole_get_module_info;
+mod sole_remove_module;
+mod sole_remove_module_charge;
+mod sole_remove_module_proj;
+mod sole_set_module_charge;
+mod sole_set_module_state;

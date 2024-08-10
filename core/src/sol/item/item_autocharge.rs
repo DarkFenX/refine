@@ -3,16 +3,16 @@ use crate::{
     defs::{EItemId, SolFitId, SolItemId},
     sol::item::{SolEffectModes, SolItemBase},
     src::Src,
-    util::{Named, Result},
+    util::Named,
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct SolAutoCharge {
+pub(in crate::sol) struct SolAutocharge {
     base: SolItemBase,
     fit_id: SolFitId,
     pub(in crate::sol) cont_id: SolItemId,
 }
-impl SolAutoCharge {
+impl SolAutocharge {
     pub(in crate::sol) fn new(
         src: &Src,
         id: SolItemId,
@@ -33,7 +33,7 @@ impl SolAutoCharge {
     pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
         self.base.get_a_item_id()
     }
-    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
+    pub(in crate::sol) fn get_a_item(&self) -> Option<&ad::ArcItem> {
         self.base.get_a_item()
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
@@ -55,12 +55,12 @@ impl SolAutoCharge {
         self.fit_id
     }
 }
-impl Named for SolAutoCharge {
+impl Named for SolAutocharge {
     fn get_name() -> &'static str {
         "SolAutoCharge"
     }
 }
-impl std::fmt::Display for SolAutoCharge {
+impl std::fmt::Display for SolAutocharge {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

@@ -1,12 +1,14 @@
 use crate::{
     defs::{EAttrId, EEffectId, SolItemId},
     sol::{
-        fit::SolFits, fleet::SolFleets, item::SolItems, svc::SolSvcs, SolAttrVal, SolEffectInfo, SolEffectMode,
-        SolProjTracker, SolView,
+        fit::SolFits,
+        fleet::SolFleets,
+        item::SolItems,
+        svc::{SolModificationInfo, SolSvcs},
+        SolAttrVal, SolEffectInfo, SolEffectMode, SolProjTracker, SolView,
     },
     src::Src,
-    util::{Result, StSet},
-    SolModificationInfo,
+    util::StSet,
 };
 
 // Solar system glues everything together and is actual "god object" of the lib. It controls source
@@ -38,21 +40,6 @@ impl SolarSystem {
             svcs: SolSvcs::new(),
         }
     }
-    // Item attributes
-    pub fn get_item_attr(&mut self, item_id: &SolItemId, attr_id: &EAttrId) -> Result<SolAttrVal> {
-        self.svcs.calc_get_item_attr_val(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-            item_id,
-            attr_id,
-        )
-    }
-    pub fn get_item_attrs(
-        &mut self,
-        item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SolAttrVal)>> {
-        self.svcs
-            .calc_iter_item_attr_vals(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item_id)
-    }
     // Item modifications
     pub fn iter_item_modifiers(
         &mut self,
@@ -64,7 +51,7 @@ impl SolarSystem {
     // Item effects
     pub fn iter_item_effects<'a>(
         &'a self,
-        item_id: &'a SolItemId,
+        item_id: &SolItemId,
     ) -> Result<impl ExactSizeIterator<Item = (EEffectId, SolEffectInfo)> + 'a> {
         let item = self.items.get_item(item_id)?;
         let a_effect_ids = item.get_effect_datas()?.keys();

@@ -1,6 +1,6 @@
 use crate::{
     defs::{EItemId, SolFitId, SolItemId},
-    sol::item::SolAutoCharge,
+    sol::item::SolAutocharge,
 };
 
 pub struct SolAutoChargeInfo {
@@ -19,8 +19,8 @@ impl SolAutoChargeInfo {
         }
     }
 }
-impl From<&SolAutoCharge> for SolAutoChargeInfo {
-    fn from(sol_autocharge: &SolAutoCharge) -> Self {
+impl From<&SolAutocharge> for SolAutoChargeInfo {
+    fn from(sol_autocharge: &SolAutocharge) -> Self {
         SolAutoChargeInfo::new(
             sol_autocharge.get_id(),
             sol_autocharge.get_fit_id(),

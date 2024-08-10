@@ -1,7 +1,7 @@
 use crate::{
     defs::{SolFitId, SolFleetId, SolItemId},
     sol::{
-        item::{SolItem, SolItems, SolShipKind},
+        item::{SolItem, SolShipKind},
         SolModRack,
     },
     util::StSet,
@@ -99,7 +99,7 @@ impl SolFit {
             }
             // Ignore charges and system-wide effects
             SolItem::Charge(_) => (),
-            SolItem::AutoCharge(_) => (),
+            SolItem::Autocharge(_) => (),
             SolItem::SwEffect(_) => (),
             SolItem::ProjEffect(_) => (),
         };
@@ -163,19 +163,10 @@ impl SolFit {
             }
             // Ignore charges and system-wide effects
             SolItem::Charge(_) => (),
-            SolItem::AutoCharge(_) => (),
+            SolItem::Autocharge(_) => (),
             SolItem::SwEffect(_) => (),
             SolItem::ProjEffect(_) => (),
         }
-    }
-    pub(in crate::sol) fn update_fit_kind(&mut self, items: &SolItems) {
-        self.kind = match self.ship {
-            Some(ship_id) => match items.get_item(&ship_id) {
-                Ok(ship) => ship.get_ship_kind(),
-                _ => SolShipKind::default(),
-            },
-            None => SolShipKind::default(),
-        };
     }
     pub(in crate::sol) fn all_items(&self) -> Vec<SolItemId> {
         let mut items = Vec::new();

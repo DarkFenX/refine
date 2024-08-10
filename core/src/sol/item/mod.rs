@@ -3,7 +3,7 @@
 use base::SolItemBase;
 pub(in crate::sol) use container::SolItems;
 pub(in crate::sol) use item::SolItem;
-pub(in crate::sol) use item_autocharge::SolAutoCharge;
+pub(in crate::sol) use item_autocharge::SolAutocharge;
 pub(in crate::sol) use item_booster::SolBooster;
 pub(in crate::sol) use item_character::SolCharacter;
 pub(in crate::sol) use item_charge::SolCharge;

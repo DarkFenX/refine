@@ -40,17 +40,17 @@ impl SolSvcs {
     pub(in crate::sol) fn calc_iter_item_attr_vals(
         &mut self,
         sol_view: &SolView,
-        item_id: &SolItemId,
+        item: &SolItem,
     ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SolAttrVal)>> {
         // SolItem can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
-        let mut vals = self.calc_data.attrs.get_item_attrs_mut(item_id)?.clone();
+        let mut vals = self.calc_data.attrs.get_item_attrs_mut(&item.get_id())?.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
-        for attr_id in sol_view.items.get_item(item_id)?.get_orig_attrs()?.keys() {
-            match self.calc_get_item_attr_val(sol_view, item_id, attr_id) {
+        for attr_id in item.get_orig_attrs()?.keys() {
+            match self.calc_get_item_attr_val(sol_view, &item.get_id(), attr_id) {
                 Ok(v) => vals.entry(*attr_id).or_insert(v),
                 _ => continue,
             };

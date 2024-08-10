@@ -4,7 +4,7 @@ use crate::{
     ec,
     sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
     src::Src,
-    util::{Named, Result},
+    util::Named,
 };
 
 #[derive(Clone)]
@@ -28,7 +28,7 @@ impl SolBooster {
     pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
         self.base.get_a_item_id()
     }
-    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
+    pub(in crate::sol) fn get_a_item(&self) -> Option<&ad::ArcItem> {
         self.base.get_a_item()
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
@@ -55,7 +55,7 @@ impl SolBooster {
     }
     pub(in crate::sol) fn get_slot(&self) -> Option<SlotNumber> {
         match self.get_a_item() {
-            Ok(a_item) => match a_item.attr_vals.get(&ec::attrs::BOOSTERNESS) {
+            Some(a_item) => match a_item.attr_vals.get(&ec::attrs::BOOSTERNESS) {
                 None => None,
                 Some(value) => Some(value.round() as SlotNumber),
             },

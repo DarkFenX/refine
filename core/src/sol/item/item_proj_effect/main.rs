@@ -3,7 +3,7 @@ use crate::{
     defs::{EItemId, SolItemId},
     sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState, SolProjs},
     src::Src,
-    util::{Named, Result},
+    util::Named,
 };
 
 #[derive(Clone)]
@@ -27,7 +27,7 @@ impl SolProjEffect {
     pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
         self.base.get_a_item_id()
     }
-    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
+    pub(in crate::sol) fn get_a_item(&self) -> Option<&ad::ArcItem> {
         self.base.get_a_item()
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {

@@ -14,7 +14,7 @@ impl SolarSystem {
         let mut autocharge_ids = Vec::new();
         for item in self.items.iter() {
             match item {
-                SolItem::AutoCharge(autocharge) => {
+                SolItem::Autocharge(autocharge) => {
                     autocharge_ids.push(autocharge.get_id());
                     self.svcs.remove_item(sol_view, item);
                 }
@@ -46,7 +46,7 @@ impl SolarSystem {
         let sol_view = &SolView::new(&self.src, &self.fleets, &self.fits, &self.items);
         for item in self.items.iter() {
             match item {
-                SolItem::AutoCharge(_) => {
+                SolItem::Autocharge(_) => {
                     self.svcs.add_item(sol_view, item);
                 }
                 _ => {

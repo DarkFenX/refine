@@ -4,7 +4,7 @@ use crate::{
     ec,
     sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState, SolShipKind},
     src::Src,
-    util::{Named, Result},
+    util::Named,
 };
 
 #[derive(Clone)]
@@ -32,7 +32,7 @@ impl SolShip {
     pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
         self.base.get_a_item_id()
     }
-    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem> {
+    pub(in crate::sol) fn get_a_item(&self) -> Option<&ad::ArcItem> {
         self.base.get_a_item()
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
@@ -60,12 +60,12 @@ impl SolShip {
     }
     fn update_fit_kind(&mut self) {
         self.kind = match self.get_a_item() {
-            Ok(a_item) => match a_item.cat_id {
+            Some(a_item) => match a_item.cat_id {
                 ec::itemcats::SHIP => SolShipKind::Ship,
                 ec::itemcats::STRUCTURE => SolShipKind::Structure,
                 _ => SolShipKind::Unknown,
             },
-            _ => SolShipKind::Unknown,
+            None => SolShipKind::Unknown,
         };
     }
 }

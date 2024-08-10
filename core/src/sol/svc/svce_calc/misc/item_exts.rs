@@ -9,7 +9,7 @@ use crate::{
 impl SolItem {
     pub(in crate::sol::svc::svce_calc) fn get_root_loc_kind(&self) -> Option<SolLocationKind> {
         match self {
-            Self::AutoCharge(_) => None,
+            Self::Autocharge(_) => None,
             Self::Booster(_) => None,
             Self::Character(_) => Some(SolLocationKind::Character),
             Self::Charge(_) => None,
@@ -33,7 +33,7 @@ impl SolItem {
     }
     pub(in crate::sol::svc::svce_calc) fn is_on_char_root(&self) -> bool {
         match self {
-            Self::AutoCharge(_) => false,
+            Self::Autocharge(_) => false,
             Self::Booster(_) => true,
             Self::Character(_) => false,
             Self::Charge(_) => false,
@@ -53,7 +53,7 @@ impl SolItem {
     }
     pub(in crate::sol::svc::svce_calc) fn is_on_ship_root(&self) -> bool {
         match self {
-            Self::AutoCharge(_) => false,
+            Self::Autocharge(_) => false,
             Self::Booster(_) => false,
             Self::Character(_) => false,
             Self::Charge(_) => true, // TODO: check if it needs to be true?
@@ -73,7 +73,7 @@ impl SolItem {
     }
     pub(in crate::sol::svc::svce_calc) fn is_on_struct_root(&self) -> bool {
         match self {
-            Self::AutoCharge(_) => false,
+            Self::Autocharge(_) => false,
             Self::Booster(_) => false,
             Self::Character(_) => false,
             Self::Charge(_) => true, // TODO: check if it needs to be true?
@@ -93,7 +93,7 @@ impl SolItem {
     }
     pub(in crate::sol::svc::svce_calc) fn is_owner_modifiable(&self) -> bool {
         match self {
-            Self::AutoCharge(_) => false,
+            Self::Autocharge(_) => false,
             Self::Booster(_) => false,
             Self::Character(_) => false,
             Self::Charge(_) => true,
@@ -113,7 +113,7 @@ impl SolItem {
     }
     pub(in crate::sol::svc::svce_calc) fn is_buffable(&self) -> bool {
         match self {
-            Self::AutoCharge(_) => false,
+            Self::Autocharge(_) => false,
             Self::Booster(_) => false,
             Self::Character(_) => false,
             Self::Charge(_) => false,
@@ -137,7 +137,7 @@ impl SolItem {
     }
     pub(in crate::sol::svc::svce_calc) fn get_other(&self) -> Option<SolItemId> {
         match self {
-            Self::AutoCharge(_) => None,
+            Self::Autocharge(_) => None,
             Self::Booster(_) => None,
             Self::Character(_) => None,
             Self::Charge(charge) => Some(charge.cont_id),

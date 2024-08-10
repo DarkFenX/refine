@@ -27,7 +27,7 @@ pub enum SolItemInfo {
 impl SolItemInfo {
     pub(in crate::sol) fn from_sol_item(sol_item: &SolItem, sol: &SolarSystem) -> Self {
         match sol_item {
-            SolItem::AutoCharge(sol_autocharge) => SolItemInfo::AutoCharge(sol_autocharge.into()),
+            SolItem::Autocharge(sol_autocharge) => SolItemInfo::AutoCharge(sol_autocharge.into()),
             SolItem::Booster(sol_booster) => SolItemInfo::Booster(sol.make_booster_info(sol_booster)),
             SolItem::Character(sol_charater) => SolItemInfo::Character(sol_charater.into()),
             SolItem::Charge(sol_charge) => SolItemInfo::Charge(sol_charge.into()),
@@ -35,7 +35,7 @@ impl SolItemInfo {
             SolItem::Fighter(sol_fighter) => SolItemInfo::Fighter(sol.make_fighter_info(sol_fighter)),
             SolItem::FwEffect(sol_fw_effect) => SolItemInfo::FwEffect(sol_fw_effect.into()),
             SolItem::Implant(sol_implant) => SolItemInfo::Implant(sol_implant.into()),
-            SolItem::Module(sol_module) => SolItemInfo::Module(sol.make_mod_info(sol_module)),
+            SolItem::Module(sol_module) => SolItemInfo::Module(sol.make_module_info(sol_module)),
             SolItem::ProjEffect(sol_proj_effect) => SolItemInfo::ProjEffect(sol_proj_effect.into()),
             SolItem::Rig(sol_rig) => SolItemInfo::Rig(sol_rig.into()),
             SolItem::Ship(sol_ship) => SolItemInfo::Ship(sol_ship.into()),

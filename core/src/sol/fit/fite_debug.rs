@@ -298,7 +298,7 @@ fn check_fighter_autocharges(
             return Err(DebugError::new());
         }
         let autocharge = match item {
-            SolItem::AutoCharge(autocharge) => autocharge,
+            SolItem::Autocharge(autocharge) => autocharge,
             _ => return Err(DebugError::new()),
         };
         if autocharge.cont_id != fighter.get_id() {
