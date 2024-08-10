@@ -1,11 +1,13 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
-    err::ItemKindMatchError,
-    sol::item::{
-        SolAutocharge, SolAutocharges, SolBooster, SolCharacter, SolCharge, SolDrone, SolEffectModes, SolFighter,
-        SolFwEffect, SolImplant, SolItemState, SolModule, SolProjEffect, SolRig, SolShip, SolSkill, SolStance,
-        SolSubsystem, SolSwEffect,
+    sol::{
+        err::basic::ItemKindMatchError,
+        item::{
+            SolAutocharge, SolAutocharges, SolBooster, SolCharacter, SolCharge, SolDrone, SolEffectModes, SolFighter,
+            SolFwEffect, SolImplant, SolItemState, SolModule, SolProjEffect, SolRig, SolShip, SolSkill, SolStance,
+            SolSubsystem, SolSwEffect,
+        },
     },
     src::Src,
     util::{Named, StMap},

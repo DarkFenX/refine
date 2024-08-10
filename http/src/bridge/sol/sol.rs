@@ -291,7 +291,7 @@ impl HSolarSystem {
         let sync_span = tracing::trace_span!("sync");
         let (result, core_sol) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            match core_sol.get_item_info(&item_id) {
+            match core_sol.get_item(&item_id) {
                 Ok(core_item_info) => {
                     let item_info = HItemInfo::mk_info(&mut core_sol, &core_item_info, item_mode);
                     (Ok(item_info), core_sol)
@@ -348,7 +348,7 @@ impl HSolarSystem {
                 .execute(&mut core_sol, &item_id)
                 .map_err(|e| HBrError::from(e))?;
             let core_info = core_sol
-                .get_item_info(&item_id)
+                .get_item(&item_id)
                 .map_err(|e| HBrError::from(HExecError::from(e)))?;
             let item_info = HItemInfo::mk_info(&mut core_sol, &core_info, item_mode);
             Ok((core_sol, item_info))

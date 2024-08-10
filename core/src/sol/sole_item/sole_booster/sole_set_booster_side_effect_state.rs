@@ -1,7 +1,10 @@
 use crate::{
     defs::{EEffectId, SolItemId},
-    err::{ItemFoundError, ItemKindMatchError, SideEffectError},
-    sol::{view::SolView, SolEffectMode, SolarSystem},
+    sol::{
+        err::basic::{ItemFoundError, ItemKindMatchError, SideEffectError},
+        view::SolView,
+        SolEffectMode, SolarSystem,
+    },
 };
 
 impl SolarSystem {

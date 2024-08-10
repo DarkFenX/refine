@@ -45,7 +45,6 @@ pub(crate) mod config;
 mod defs;
 pub mod ec;
 pub mod ed;
-pub mod err;
 mod sol;
 mod src;
 pub mod util;

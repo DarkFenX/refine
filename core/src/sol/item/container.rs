@@ -2,8 +2,10 @@ use std::num::Wrapping;
 
 use crate::{
     defs::{SolFitId, SolItemId},
-    err::{ItemAllocError, ItemFoundError},
-    sol::item::SolItem,
+    sol::{
+        err::basic::{ItemAllocError, ItemFoundError},
+        item::SolItem,
+    },
     util::StMap,
 };
 

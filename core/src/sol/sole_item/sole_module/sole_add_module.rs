@@ -1,7 +1,7 @@
 use crate::{
     defs::{EItemId, SolFitId},
-    err::{FitFoundError, ItemAllocError, OrderedSlotError},
     sol::{
+        err::basic::{FitFoundError, ItemAllocError, OrderedSlotError},
         item::{SolItem, SolItemState, SolModule},
         item_info::SolModuleInfo,
         sole_item::misc::find_equip_pos,

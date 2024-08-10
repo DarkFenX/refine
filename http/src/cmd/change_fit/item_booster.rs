@@ -27,7 +27,7 @@ impl HAddBoosterCmd {
             return Ok(info);
         };
         apply_side_effects(core_sol, &info.id, &self.side_effects)?;
-        let info = core_sol.get_booster_info(&info.id)?;
+        let info = core_sol.get_booster(&info.id)?;
         Ok(info)
     }
 }

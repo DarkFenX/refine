@@ -63,7 +63,7 @@ impl HChangeShipViaFitIdCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
     ) -> HExecResult<HCmdResp> {
-        let item_id = core_sol.get_fit_ship_info(fit_id)?.id;
+        let item_id = core_sol.get_fit_ship(fit_id)?.id;
         self.item_cmd.execute(core_sol, &item_id)
     }
 }

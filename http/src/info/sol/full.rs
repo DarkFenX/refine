@@ -33,12 +33,12 @@ impl HSolInfoFull {
                 .filter_map(|core_fit| HFitInfo::mk_info(core_sol, &core_fit.id, fit_mode, item_mode).ok())
                 .collect(),
             sw_effects: core_sol
-                .get_sw_effect_infos()
+                .get_sw_effects()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_sol, v, item_mode))
                 .collect(),
             proj_effects: core_sol
-                .get_proj_effect_infos()
+                .get_proj_effects()
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_sol, v, item_mode))
                 .collect(),

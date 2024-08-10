@@ -1,7 +1,9 @@
 use crate::{
     defs::SolItemId,
-    err::{ItemFoundError, ItemKindMatchError},
-    sol::{SolView, SolarSystem},
+    sol::{
+        err::basic::{ItemFoundError, ItemKindMatchError},
+        SolView, SolarSystem,
+    },
 };
 use itertools::Itertools;
 

@@ -1,8 +1,10 @@
 use crate::{
     defs::{SkillLevel, SolItemId},
     ec,
-    err::{ItemFoundError, ItemKindMatchError, SkillLevelError},
-    sol::{SolView, SolarSystem},
+    sol::{
+        err::basic::{ItemFoundError, ItemKindMatchError, SkillLevelError},
+        SolView, SolarSystem,
+    },
 };
 
 use super::check_skill_level;

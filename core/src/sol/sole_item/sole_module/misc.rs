@@ -3,7 +3,7 @@ use crate::sol::{fit::SolFit, item::SolModule, item_info::SolModuleInfo, SolModR
 impl SolarSystem {
     pub(in crate::sol) fn make_module_info(&self, module: &SolModule) -> SolModuleInfo {
         let charge_info = match module.charge_item_id {
-            Some(cid) => match self.get_charge_info(&cid) {
+            Some(cid) => match self.get_charge(&cid) {
                 Ok(ci) => Some(ci),
                 _ => None,
             },

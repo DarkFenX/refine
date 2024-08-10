@@ -2,8 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     defs::{EItemId, SolFitId},
-    err::{FitFoundError, ItemAllocError},
     sol::{
+        err::basic::{FitFoundError, ItemAllocError},
         item::{SolFighter, SolItem, SolItemState},
         item_info::SolFighterInfo,
         SolarSystem,
@@ -32,7 +32,7 @@ impl SolarSystem {
             self.add_item_id_to_svcs(&autocharge_item_id);
         }
         // Make info
-        let info = self.get_fighter_info(&item_id).unwrap();
+        let info = self.get_fighter(&item_id).unwrap();
         Ok(info)
     }
 }
