@@ -9,7 +9,7 @@ def test_error_no_item_full(client, consts):
         item_id='1',
         item_info_mode=consts.ApiItemInfoMode.full,
         status_code=404,
-        json_predicate={'code': 'COR-004', 'message': 'core library error: item 1 not found'})
+        json_predicate={'code': 'EXC-013', 'message': 'item 1 not found'})
 
 
 def test_error_no_item_id(client, consts):
@@ -20,7 +20,7 @@ def test_error_no_item_id(client, consts):
         item_id='1',
         item_info_mode=consts.ApiItemInfoMode.id,
         status_code=404,
-        json_predicate={'code': 'COR-004', 'message': 'core library error: item 1 not found'})
+        json_predicate={'code': 'EXC-013', 'message': 'item 1 not found'})
 
 
 def test_error_no_item_malformed(client):

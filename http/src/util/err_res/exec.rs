@@ -89,6 +89,7 @@ impl HExecError {
             HExecError::ProjecteeCantTakeProjs(_) => "EXC-021",
             HExecError::ProjectionNotFound(_) => "EXC-022",
             HExecError::ProjectionAlreadyExists(_) => "EXC-023",
-        }.to_string()
+        }
+        .to_string()
     }
 }

@@ -32,7 +32,7 @@ def test_error_no_fleet_full(client, consts):
         fleet_id='1',
         fleet_info_mode=consts.ApiFleetInfoMode.full,
         status_code=404,
-        json_predicate={'code': 'COR-017', 'message': 'core library error: fleet 1 not found'})
+        json_predicate={'code': 'EXC-010', 'message': 'fleet 1 not found'})
 
 
 def test_error_no_fleet_id(client, consts):
@@ -43,7 +43,7 @@ def test_error_no_fleet_id(client, consts):
         fleet_id='1',
         fleet_info_mode=consts.ApiFleetInfoMode.id,
         status_code=404,
-        json_predicate={'code': 'COR-017', 'message': 'core library error: fleet 1 not found'})
+        json_predicate={'code': 'EXC-010', 'message': 'fleet 1 not found'})
 
 
 def test_error_no_fleet_malformed(client):

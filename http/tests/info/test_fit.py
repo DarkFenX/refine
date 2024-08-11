@@ -279,7 +279,7 @@ def test_error_no_fit_full(client, consts):
         fit_info_mode=consts.ApiFitInfoMode.full,
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'COR-003', 'message': 'core library error: fit 1 not found'})
+        json_predicate={'code': 'EXC-002', 'message': 'fit 1 not found'})
 
 
 def test_error_no_fit_id(client, consts):
@@ -291,7 +291,7 @@ def test_error_no_fit_id(client, consts):
         fit_info_mode=consts.ApiFitInfoMode.id,
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'COR-003', 'message': 'core library error: fit 1 not found'})
+        json_predicate={'code': 'EXC-002', 'message': 'fit 1 not found'})
 
 
 def test_error_no_fit_malformed(client):

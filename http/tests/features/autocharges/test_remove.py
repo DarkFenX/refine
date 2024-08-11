@@ -14,7 +14,7 @@ def test_remove_item(client, consts):
     # Cannot remove autocharges, they are handled automatically
     api_autocharge.remove(
         status_code=403,
-        json_predicate={'code': 'COR-019', 'message': 'core library error: SolAutoCharge cannot be manually removed'})
+        json_predicate={'code': 'EXC-017', 'message': 'SolAutoCharge cannot be manually removed'})
     # And after attempt of removal, all the info is still there
     api_fighter.update()
     assert api_fighter.autocharges[eve_effect.id].id == api_autocharge_id

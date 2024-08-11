@@ -27,6 +27,7 @@ pub(crate) async fn delete_item(
                 HBrError::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
                 HBrError::ExecFailed(exec_error) => match exec_error {
                     HExecError::ItemNotFoundPrimary(_) => StatusCode::NOT_FOUND,
+                    HExecError::UnremovableAutocharge(_) => StatusCode::FORBIDDEN,
                     _ => StatusCode::INTERNAL_SERVER_ERROR,
                 },
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
