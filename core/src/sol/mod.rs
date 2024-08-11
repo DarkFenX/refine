@@ -2,6 +2,7 @@ pub use item::SolItemState;
 pub(in crate::sol) use misc::SolProjTracker;
 pub use misc::{SolEffectInfo, SolEffectMode, SolModRack};
 pub use sol::SolarSystem;
+pub(in crate::sol) use sole_debug::{SolDebugError, SolDebugResult};
 pub use sole_item::{SolOrdAddMode, SolOrdRmMode};
 pub use svc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo};
 pub(in crate::sol) use view::SolView;

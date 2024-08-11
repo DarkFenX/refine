@@ -1,15 +1,12 @@
-use crate::{
-    sol::{
-        svc::debug::{check_effect, check_item},
-        SolView,
-    },
-    util::DebugResult,
+use crate::sol::{
+    svc::debug::{check_effect, check_item},
+    SolDebugResult, SolView,
 };
 
 use super::SolRunningEffects;
 
 impl SolRunningEffects {
-    pub(in crate::sol::svc) fn debug_consistency_check(&self, sol_view: &SolView) -> DebugResult {
+    pub(in crate::sol::svc) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
         for (item_id, effect_ids) in self.data.iter() {
             check_item(sol_view, item_id)?;
             for effect_id in effect_ids {

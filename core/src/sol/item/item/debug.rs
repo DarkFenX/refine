@@ -1,9 +1,9 @@
-use crate::{sol::SolView, util::DebugResult};
+use crate::sol::{SolDebugResult, SolView};
 
 use super::SolItem;
 
 impl SolItem {
-    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> DebugResult {
+    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
         match self {
             Self::Autocharge(_) => Ok(()),
             Self::Booster(_) => Ok(()),

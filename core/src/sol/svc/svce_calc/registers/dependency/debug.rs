@@ -1,15 +1,12 @@
-use crate::{
-    sol::{
-        svc::debug::{check_attr, check_effect, check_item},
-        SolView,
-    },
-    util::DebugResult,
+use crate::sol::{
+    svc::debug::{check_attr, check_effect, check_item},
+    SolDebugResult, SolView,
 };
 
 use super::SolDependencyRegister;
 
 impl SolDependencyRegister {
-    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> DebugResult {
+    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
         for (affector_spec, affectee_specs) in self.data.iter() {
             check_item(sol_view, &affector_spec.item_id)?;
             check_attr(sol_view, &affector_spec.attr_id)?;

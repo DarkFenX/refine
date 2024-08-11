@@ -1,15 +1,12 @@
-use crate::{
-    sol::{
-        svc::debug::{check_effect, check_item},
-        SolView,
-    },
-    util::DebugResult,
+use crate::sol::{
+    svc::debug::{check_effect, check_item},
+    SolDebugResult, SolView,
 };
 
 use super::SolProjectionRegister;
 
 impl SolProjectionRegister {
-    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> DebugResult {
+    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
         for (affector_item_id, effect_id, affectee_item_id) in self.ranges.keys() {
             check_item(sol_view, affector_item_id)?;
             check_effect(sol_view, effect_id)?;

@@ -1,5 +1,3 @@
-use crate::defs::SolItemId;
-
 #[derive(Debug)]
 pub struct ItemKindRemoveError {
     pub item_kind: &'static str,

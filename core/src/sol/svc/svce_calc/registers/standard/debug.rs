@@ -1,18 +1,15 @@
-use crate::{
-    sol::{
-        svc::{
-            debug::{check_effect, check_fit, check_item},
-            svce_calc::debug::{check_ctx_modifier, check_raw_modifier},
-        },
-        SolView,
+use crate::sol::{
+    svc::{
+        debug::{check_effect, check_fit, check_item},
+        svce_calc::debug::{check_ctx_modifier, check_raw_modifier},
     },
-    util::DebugResult,
+    SolDebugResult, SolView,
 };
 
 use super::SolStandardRegister;
 
 impl SolStandardRegister {
-    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> DebugResult {
+    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
         for ((fit_id, _), item_ids) in self.affectee_root.iter() {
             check_fit(sol_view, fit_id)?;
             for item_id in item_ids {

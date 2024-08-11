@@ -1,10 +1,8 @@
 use crate::{
     defs::SolItemId,
-    sol::{item::SolItem, SolView},
-    util::{DebugError, DebugResult, StSet},
+    sol::{item::SolItem, SolDebugError, SolDebugResult, SolView, SolarSystem},
+    util::StSet,
 };
-
-use super::SolarSystem;
 
 impl SolarSystem {
     // This function is intended to be used in tests, to make sure inner state is consistent, i.e.
@@ -28,7 +26,7 @@ impl SolarSystem {
         true
     }
     // Check that entities which define solar system object structure are consistent
-    fn check_sol_structure(&self, sol_view: &SolView) -> DebugResult {
+    fn check_sol_structure(&self, sol_view: &SolView) -> SolDebugResult {
         let mut seen_items = Vec::new();
         // Fleets
         for fleet in self.fleets.iter_fleets() {
@@ -43,10 +41,10 @@ impl SolarSystem {
             seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(DebugError::new()),
+                _ => return Err(SolDebugError::new()),
             };
             if !matches!(item, SolItem::SwEffect(_)) {
-                return Err(DebugError::new());
+                return Err(SolDebugError::new());
             }
             item.debug_consistency_check(sol_view)?;
         }
@@ -55,20 +53,20 @@ impl SolarSystem {
             seen_items.push(*item_id);
             let item = match self.items.get_item(item_id) {
                 Ok(item) => item,
-                _ => return Err(DebugError::new()),
+                _ => return Err(SolDebugError::new()),
             };
             if !matches!(item, SolItem::ProjEffect(_)) {
-                return Err(DebugError::new());
+                return Err(SolDebugError::new());
             }
             item.debug_consistency_check(sol_view)?;
         }
         // Check if we have any duplicate references to items
         if check_item_duplicates(&seen_items) {
-            return Err(DebugError::new());
+            return Err(SolDebugError::new());
         }
         // Check if we have any unreferenced items
         if !self.items.iter().all(|item| seen_items.contains(&item.get_id())) {
-            return Err(DebugError::new());
+            return Err(SolDebugError::new());
         }
         Ok(())
     }

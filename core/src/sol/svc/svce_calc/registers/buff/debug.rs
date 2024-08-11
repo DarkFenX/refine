@@ -1,18 +1,15 @@
-use crate::{
-    sol::{
-        svc::{
-            debug::{check_attr, check_effect, check_item},
-            svce_calc::debug::check_raw_modifier,
-        },
-        SolView,
+use crate::sol::{
+    svc::{
+        debug::{check_attr, check_effect, check_item},
+        svce_calc::debug::check_raw_modifier,
     },
-    util::DebugResult,
+    SolDebugResult, SolView,
 };
 
 use super::SolBuffRegister;
 
 impl SolBuffRegister {
-    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> DebugResult {
+    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
         for (item_id, effect_ids) in self.effects.iter() {
             check_item(sol_view, item_id)?;
             for effect_id in effect_ids {
