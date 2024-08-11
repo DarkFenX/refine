@@ -37,7 +37,6 @@ pub use sol::{
     SolOpInfo, SolOrdAddMode, SolOrdRmMode, SolarSystem,
 };
 pub use src::Src;
-pub use util::{Error, ErrorKind, Result};
 
 pub mod ad;
 mod adg;

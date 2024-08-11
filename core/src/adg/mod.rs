@@ -3,7 +3,8 @@ use crate::{
     ad,
     defs::{EAttrId, EAttrUnitId, EBuffId, EItemCatId, EItemGrpId, Rational},
     ec, ed,
-    util::{IntResult, StMap},
+    src::SrcInitError,
+    util::StMap,
 };
 
 mod clean;
@@ -17,15 +18,15 @@ mod valid;
 
 /// Fetch EVE data and generate adapted data out of it
 #[tracing::instrument(name = "adg", level = "trace", skip_all)]
-pub(crate) fn generate_adapted_data(e_handler: &dyn ed::EveDataHandler) -> IntResult<ad::AData> {
+pub(crate) fn generate_adapted_data(e_handler: &dyn ed::EveDataHandler) -> Result<ad::AData, SrcInitError> {
     let mut g_data = GData::new();
     let mut g_supp = GSupport::new();
     let mut a_data = ad::AData::new();
-    fetch::fetch_data(e_handler, &mut g_data)?;
+    fetch::fetch_data(e_handler, &mut g_data).map_err(|e| SrcInitError::EveDataFetchFailed(e.to_string()))?;
     pk::dedup_pks(&mut g_data);
     norm::normalize(&mut g_data);
     g_supp.fill(&g_data);
-    clean::clean_unused(&mut g_data, &g_supp)?;
+    clean::clean_unused(&mut g_data, &g_supp).map_err(|e| SrcInitError::EveDataCleanupFailed(e.to_string()))?;
     valid::validate(&mut g_data, &g_supp);
     conv::convert(&g_data, &g_supp, &mut a_data);
     custom::customize(&mut a_data);

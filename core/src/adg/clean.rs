@@ -7,12 +7,12 @@ use crate::{
     },
     defs::Amount,
     ec,
-    util::{IntError, IntResult, Named, StSet},
+    util::{Named, StSet, StrMsgError},
 };
 
 const MAX_CYCLES: Amount = 100;
 
-pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> IntResult<()> {
+pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> Result<(), StrMsgError> {
     let mut trash = GData::new();
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, &g_supp);
@@ -24,7 +24,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> IntR
         if counter > MAX_CYCLES {
             let msg = format!("reached limit of {MAX_CYCLES} cycles during cleanup");
             tracing::error!("{msg}");
-            return Err(IntError::new(msg));
+            return Err(StrMsgError::new(msg));
         }
         changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, &g_supp);
     }

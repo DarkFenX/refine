@@ -128,7 +128,7 @@ fn create_src(
         None => Box::new(rdha::RamOnlyAdh::new()),
     };
     rc::Src::new(dh, ch).map_err(|e| {
-        let reason = format!("{e}");
+        let reason = format!("failed to initialize source: {e}");
         HBrError::SrcInitFailed(reason)
     })
 }

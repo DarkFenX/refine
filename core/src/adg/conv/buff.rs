@@ -1,10 +1,6 @@
 use itertools::Itertools;
 
-use crate::{
-    ad,
-    adg::GData,
-    util::{IntError, IntResult},
-};
+use crate::{ad, adg::GData, util::StrMsgError};
 
 pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
     let mut a_buffs = Vec::new();
@@ -12,7 +8,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
         let op = match conv_buff_op(&e_buff.operation) {
             Ok(op) => op,
             Err(e) => {
-                let msg = format!("{}: {}", e_buff, e.msg);
+                let msg = format!("{}: {}", e_buff, e);
                 tracing::warn!("{msg}");
                 continue;
             }
@@ -20,7 +16,7 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
         let aggr_mode = match conv_buff_aggr_mode(&e_buff.aggregate_mode) {
             Ok(am) => am,
             Err(e) => {
-                let msg = format!("{}: {}", e_buff, e.msg);
+                let msg = format!("{}: {}", e_buff, e);
                 tracing::warn!("{msg}");
                 continue;
             }
@@ -53,15 +49,15 @@ pub(in crate::adg::conv) fn conv_buffs(g_data: &GData) -> Vec<ad::ABuff> {
     a_buffs
 }
 
-fn conv_buff_aggr_mode(aggr_mode: &str) -> IntResult<ad::ABuffAggrMode> {
+fn conv_buff_aggr_mode(aggr_mode: &str) -> Result<ad::ABuffAggrMode, StrMsgError> {
     match aggr_mode {
         "Minimum" => Ok(ad::ABuffAggrMode::Min),
         "Maximum" => Ok(ad::ABuffAggrMode::Max),
-        _ => Err(IntError::new(format!("unexpected aggregate mode \"{aggr_mode}\""))),
+        _ => Err(StrMsgError::new(format!("unexpected aggregate mode \"{aggr_mode}\""))),
     }
 }
 
-fn conv_buff_op(operation: &str) -> IntResult<ad::AOp> {
+fn conv_buff_op(operation: &str) -> Result<ad::AOp, StrMsgError> {
     match operation {
         "PreAssignment" => Ok(ad::AOp::PreAssign),
         "PreMul" => Ok(ad::AOp::PreMul),
@@ -72,6 +68,6 @@ fn conv_buff_op(operation: &str) -> IntResult<ad::AOp> {
         "PostDiv" => Ok(ad::AOp::PostDiv),
         "PostPercent" => Ok(ad::AOp::PostPerc),
         "PostAssignment" => Ok(ad::AOp::PostAssign),
-        _ => Err(IntError::new(format!("unexpected operation \"{operation}\""))),
+        _ => Err(StrMsgError::new(format!("unexpected operation \"{operation}\""))),
     }
 }

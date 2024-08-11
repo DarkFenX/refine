@@ -1,9 +1,4 @@
-use crate::{
-    ad, adg,
-    defs::VERSION,
-    ed,
-    util::{Error, ErrorKind, IntError, IntResult, Result},
-};
+use crate::{ad, adg, defs::VERSION, ed, src::SrcInitError};
 
 pub(crate) struct InnerSrc {
     pub(crate) a_handler: Box<dyn ad::AdaptedDataHandler>,
@@ -12,11 +7,11 @@ impl InnerSrc {
     pub(crate) fn new(
         e_handler: Box<dyn ed::EveDataHandler>,
         mut a_handler: Box<dyn ad::AdaptedDataHandler>,
-    ) -> Result<Self> {
+    ) -> Result<Self, SrcInitError> {
         tracing::info!("initializing new source with {e_handler:?} and {a_handler:?}",);
         let e_version = get_e_version(&e_handler);
         if need_to_adapt(e_version.clone(), &mut a_handler) {
-            let a_data = adapt_data(&e_handler).map_err(|e| Error::new(ErrorKind::SrcADataGenFailed(e.msg)))?;
+            let a_data = adapt_data(&e_handler)?;
             update_a_data(e_version, &mut a_handler, a_data);
         }
         Ok(Self { a_handler })
@@ -69,11 +64,9 @@ fn need_to_adapt(e_version: Option<String>, a_handler: &mut Box<dyn ad::AdaptedD
     false
 }
 
-fn adapt_data(e_handler: &Box<dyn ed::EveDataHandler>) -> IntResult<ad::AData> {
+fn adapt_data(e_handler: &Box<dyn ed::EveDataHandler>) -> Result<ad::AData, SrcInitError> {
     tracing::info!("generating adapted data...");
-    // If we have to generate adapted data, failure to generate one is fatal
     adg::generate_adapted_data(e_handler.as_ref())
-        .map_err(|e| IntError::new(format!("failed to generate adapted data: {e}")))
 }
 
 fn update_a_data(e_version: Option<String>, a_handler: &mut Box<dyn ad::AdaptedDataHandler>, a_data: ad::AData) {
