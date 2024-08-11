@@ -10,7 +10,7 @@ use crate::{
         },
         fsd,
     },
-    util::{Error, ErrorKind, Result},
+    util::Error,
 };
 
 use super::error::FromSuffix;
@@ -27,25 +27,22 @@ impl PhbHttpEdh {
     /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_binary/`.
     ///
     /// This data handler assumes that data version is known before its construction.
-    pub fn new<U: IntoUrl + Copy + Into<String>>(base_url: U, data_version: String) -> Result<Self> {
-        let base_url_conv = base_url.into_url().map_err(|e| {
-            Error::new(ErrorKind::PhbHttpInvalidBaseUrl(
-                base_url.into(),
-                format!("failed to interpret: {e}"),
-            ))
-        })?;
+    pub fn new<U: IntoUrl + Copy + Into<String>>(base_url: U, data_version: String) -> Result<Self, Error> {
+        let base_url_conv = base_url
+            .into_url()
+            .map_err(|e| Error::PhbHttpInvalidBaseUrl(base_url.into(), format!("failed to interpret: {e}")))?;
         match base_url_conv.cannot_be_a_base() {
-            true => Err(Error::new(ErrorKind::PhbHttpInvalidBaseUrl(
+            true => Err(Error::PhbHttpInvalidBaseUrl(
                 base_url.into(),
                 "cannot be used as base".to_string(),
-            ))),
+            )),
             false => Ok(Self {
                 base_url: base_url_conv,
                 data_version,
             }),
         }
     }
-    fn fetch_data(&self, suffix: &str) -> Result<serde_json::Value> {
+    fn fetch_data(&self, suffix: &str) -> Result<serde_json::Value, Error> {
         let full_url = self.base_url.join(suffix).map_err(|e| Error::from_suffix(e, suffix))?;
         let data = get(full_url)
             .map_err(|e| Error::from_suffix(e, suffix))?

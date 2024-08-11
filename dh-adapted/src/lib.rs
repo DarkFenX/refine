@@ -14,7 +14,7 @@
 pub use handler_json::RamJsonAdh;
 #[cfg(feature = "ram")]
 pub use handler_ram::RamOnlyAdh;
-pub use util::{Error, ErrorKind};
+pub use util::Error;
 
 #[cfg(feature = "json")]
 mod handler_json;

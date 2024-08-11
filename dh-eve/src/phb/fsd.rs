@@ -1,4 +1,4 @@
-use crate::util::{Error, ErrorKind, Result};
+use crate::util::Error;
 
 pub(in crate::phb) type FsdId = i32;
 
@@ -27,10 +27,10 @@ where
     Ok(convert::<T, U>(decomposed))
 }
 
-fn decompose(json: serde_json::Value, suffix: &str) -> Result<Vec<FsdItem>> {
+fn decompose(json: serde_json::Value, suffix: &str) -> Result<Vec<FsdItem>, Error> {
     match json {
         serde_json::Value::Object(map) => Ok(map.into_iter().map(|(k, v)| FsdItem::new(k, v)).collect()),
-        _ => Err(Error::new(ErrorKind::PhbUnexpectedFsdTopEntity(suffix.to_string()))),
+        _ => Err(Error::PhbUnexpectedFsdTopEntity(suffix.to_string())),
     }
 }
 

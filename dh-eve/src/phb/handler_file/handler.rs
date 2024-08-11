@@ -8,7 +8,7 @@ use crate::{
         },
         fsd,
     },
-    util::{Error, ErrorKind, Result},
+    util::Error,
 };
 
 use super::{address::Address, error::FromPath};
@@ -25,7 +25,7 @@ impl PhbFileEdh {
     pub fn new(path: PathBuf) -> Self {
         Self { base_path: path }
     }
-    fn read_json(&self, addr: &Address) -> Result<serde_json::Value> {
+    fn read_json(&self, addr: &Address) -> Result<serde_json::Value, Error> {
         let full_path = addr.get_full_path(&self.base_path);
         let file = File::open(full_path).map_err(|e| Error::from_path(e, &addr.get_part_str()))?;
         let reader = BufReader::new(file);
@@ -108,6 +108,6 @@ impl rc::ed::EveDataHandler for PhbFileEdh {
                 return Ok(metadata.field_value.to_string());
             }
         }
-        Err(Error::new(ErrorKind::PhbFileNoClientBuild).into())
+        Err(Error::PhbFileNoClientBuild.into())
     }
 }

@@ -5,7 +5,7 @@ use std::{
     path::PathBuf,
 };
 
-use crate::util::{move_vec_to_map, Error, ErrorKind};
+use crate::util::{move_vec_to_map, Error};
 
 use super::data;
 
@@ -125,12 +125,11 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
         let file = OpenOptions::new()
             .read(true)
             .open(full_path)
-            .map_err(|e| Error::new(ErrorKind::RamJsonReadFailed(e.to_string())))?;
+            .map_err(|e| Error::RamJsonReadFailed(e.to_string()))?;
         let mut raw = Vec::new();
-        zstd::stream::copy_decode(file, &mut raw)
-            .map_err(|e| Error::new(ErrorKind::RamJsonDecompFailed(e.to_string())))?;
-        let c_data = serde_json::from_slice::<data::CData>(&raw)
-            .map_err(|e| Error::new(ErrorKind::RamJsonParseFailed(e.to_string())))?;
+        zstd::stream::copy_decode(file, &mut raw).map_err(|e| Error::RamJsonDecompFailed(e.to_string()))?;
+        let c_data =
+            serde_json::from_slice::<data::CData>(&raw).map_err(|e| Error::RamJsonParseFailed(e.to_string()))?;
         let (a_data, fingerprint) = c_data.to_adapted();
         self.update_memory_cache(a_data, fingerprint);
         Ok(())

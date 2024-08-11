@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::util::{move_vec_to_map, Error, ErrorKind};
+use crate::util::{move_vec_to_map, Error};
 
 /// Adapted data handler implementation without persistence.
 ///
@@ -60,7 +60,7 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     ///
     /// Will always fail, since this handler does not implement persistent storage.
     fn load_cache(&mut self) -> rc::ad::AResult<()> {
-        Err(Error::new(ErrorKind::NoCacheSupport).into())
+        Err(Error::NoCacheSupport.into())
     }
     /// Update handler with passed adapted data.
     fn update_data(&mut self, a_data: rc::ad::AData, _: String) {
