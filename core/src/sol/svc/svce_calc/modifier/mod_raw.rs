@@ -10,7 +10,6 @@ use crate::{
         },
         SolView,
     },
-    util::Result,
 };
 
 use super::SolAffectorValue;
@@ -176,7 +175,7 @@ impl SolRawModifier {
     pub(in crate::sol::svc::svce_calc) fn get_affector_info(&self, sol_view: &SolView) -> Vec<SolAffectorInfo> {
         self.affector_value.get_affector_info(sol_view, &self.affector_item_id)
     }
-    pub(in crate::sol::svc::svce_calc) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView) -> Result<AttrVal> {
+    pub(in crate::sol::svc::svce_calc) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView) -> Option<AttrVal> {
         self.affector_value
             .get_mod_val(svc, sol_view, &self.affector_item_id, &self.effect_id)
     }

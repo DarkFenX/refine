@@ -7,7 +7,6 @@ use crate::{
         svc::{svce_calc::SolAffectorInfo, SolSvcs},
         SolView,
     },
-    util::Result,
 };
 
 use super::custom::{aar, prop};
@@ -44,10 +43,10 @@ impl SolAffectorValue {
         sol_view: &SolView,
         item_id: &SolItemId,
         effect_id: &EEffectId,
-    ) -> Result<AttrVal> {
+    ) -> Option<AttrVal> {
         match self {
-            Self::AttrId(attr_id) => Ok(svc.calc_get_item_attr_val(sol_view, item_id, attr_id)?.dogma),
-            Self::Hardcoded(val_rational) => Ok(val_rational.to_f64().unwrap()),
+            Self::AttrId(attr_id) => Some(svc.calc_get_item_attr_val(sol_view, item_id, attr_id).ok()?.dogma),
+            Self::Hardcoded(val_rational) => Some(val_rational.to_f64().unwrap()),
             Self::PropulsionModule => prop::get_mod_val(svc, sol_view, item_id, effect_id),
             Self::AncillaryArmorRep => aar::get_mod_val(svc, sol_view, item_id),
         }

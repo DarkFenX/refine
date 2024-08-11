@@ -344,16 +344,6 @@ impl SolItem {
             )),
         }
     }
-    pub(in crate::sol) fn get_autocharge_mut(&mut self) -> Result<&mut SolAutocharge, ItemKindMatchError> {
-        match self {
-            Self::Autocharge(autocharge) => Ok(autocharge),
-            _ => Err(ItemKindMatchError::new(
-                self.get_id(),
-                SolAutocharge::get_name(),
-                self.get_name(),
-            )),
-        }
-    }
     pub(in crate::sol) fn get_booster(&self) -> Result<&SolBooster, ItemKindMatchError> {
         match self {
             Self::Booster(booster) => Ok(booster),
@@ -395,16 +385,6 @@ impl SolItem {
         }
     }
     pub(in crate::sol) fn get_charge(&self) -> Result<&SolCharge, ItemKindMatchError> {
-        match self {
-            Self::Charge(charge) => Ok(charge),
-            _ => Err(ItemKindMatchError::new(
-                self.get_id(),
-                SolCharge::get_name(),
-                self.get_name(),
-            )),
-        }
-    }
-    pub(in crate::sol) fn get_charge_mut(&mut self) -> Result<&mut SolCharge, ItemKindMatchError> {
         match self {
             Self::Charge(charge) => Ok(charge),
             _ => Err(ItemKindMatchError::new(

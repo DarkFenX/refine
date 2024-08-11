@@ -57,7 +57,7 @@ impl SolarSystem {
                 }
                 match (old_item_id, repl) {
                     (Some(oid), true) => {
-                        self.remove_item(&oid);
+                        self.remove_module(&oid).unwrap();
                         ()
                     }
                     (Some(oid), false) => return Err(OrderedSlotError::new(rack, pos, oid).into()),

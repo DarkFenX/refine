@@ -47,10 +47,6 @@ impl SolItems {
     pub(in crate::sol) fn remove_item(&mut self, item_id: &SolItemId) -> Option<SolItem> {
         self.data.remove(item_id)
     }
-    pub(in crate::sol) fn remove_fit_items(&mut self, fit_id: &SolFitId) {
-        self.data.retain(|_, v| v.get_fit_id() != Some(*fit_id));
-    }
-
     pub(in crate::sol) fn iter(&self) -> impl ExactSizeIterator<Item = &SolItem> {
         self.data.values()
     }

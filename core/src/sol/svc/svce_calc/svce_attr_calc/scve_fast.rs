@@ -79,8 +79,8 @@ impl SolSvcs {
             .iter()
         {
             let val = match modifier.raw.get_mod_val(self, sol_view) {
-                Ok(v) => v,
-                _ => continue,
+                Some(v) => v,
+                None => continue,
             };
             let affector_item = match sol_view.items.get_item(&modifier.raw.affector_item_id) {
                 Ok(i) => i,

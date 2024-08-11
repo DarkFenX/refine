@@ -51,7 +51,7 @@ fn resolve_effect_status_full(
             };
             match item.get_defeff_id() {
                 Ok(defeff_id_opt) => match defeff_id_opt {
-                    Some(defeff_id) => *defeff_id == effect.id,
+                    Some(defeff_id) => defeff_id == effect.id,
                     _ => false,
                 },
                 _ => false,

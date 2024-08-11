@@ -17,7 +17,6 @@ mod misc;
 mod sol;
 mod sole_calc;
 mod sole_debug;
-mod sole_effects;
 mod sole_fit;
 mod sole_fleet;
 mod sole_item;
