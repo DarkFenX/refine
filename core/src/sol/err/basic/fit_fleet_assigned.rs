@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::SolFitId;
 
 #[derive(Debug)]
@@ -11,9 +9,9 @@ impl FitFleetAssignedError {
         Self { fit_id }
     }
 }
-impl error::Error for FitFleetAssignedError {}
-impl fmt::Display for FitFleetAssignedError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for FitFleetAssignedError {}
+impl std::fmt::Display for FitFleetAssignedError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "fit {} does not belong to any fleet", self.fit_id)
     }
 }

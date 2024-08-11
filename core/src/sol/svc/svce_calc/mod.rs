@@ -46,6 +46,6 @@ mod misc;
 mod mod_info;
 mod modifier;
 mod registers;
-mod scve_attr_calc;
+mod svce_attr_calc;
 mod svce_maintain;
 mod svce_modgen;

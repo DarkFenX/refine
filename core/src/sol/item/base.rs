@@ -1,7 +1,7 @@
 use crate::{
     ad,
     defs::{EItemId, SolItemId},
-    sol::item::SolEffectModes,
+    sol::{err::basic::ItemLoadedError, item::SolEffectModes},
     src::Src,
 };
 
@@ -37,8 +37,8 @@ impl SolItemBase {
     pub(in crate::sol::item) fn is_loaded(&self) -> bool {
         self.a_item.is_some()
     }
-    pub(in crate::sol::item) fn get_a_item(&self) -> Option<&ad::ArcItem> {
-        self.a_item.as_ref()
+    pub(in crate::sol::item) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
+        self.a_item.as_ref().ok_or_else(|| ItemLoadedError::new(self.id))
     }
     pub(in crate::sol::item) fn reload_a_item(&mut self, src: &Src) {
         self.a_item = src.get_a_item(&self.a_item_id).cloned();

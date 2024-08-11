@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::EEffectId;
 
 #[derive(Debug)]
@@ -11,9 +9,9 @@ impl SideEffectError {
         Self { effect_id }
     }
 }
-impl error::Error for SideEffectError {}
-impl fmt::Display for SideEffectError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for SideEffectError {}
+impl std::fmt::Display for SideEffectError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "effect {} is not a side effect", self.effect_id)
     }
 }

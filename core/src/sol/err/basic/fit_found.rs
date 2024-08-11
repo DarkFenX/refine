@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::SolFitId;
 
 #[derive(Debug)]
@@ -11,9 +9,9 @@ impl FitFoundError {
         Self { fit_id }
     }
 }
-impl error::Error for FitFoundError {}
-impl fmt::Display for FitFoundError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for FitFoundError {}
+impl std::fmt::Display for FitFoundError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "fit {} not found", self.fit_id)
     }
 }

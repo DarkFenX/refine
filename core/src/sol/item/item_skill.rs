@@ -1,7 +1,10 @@
 use crate::{
     ad,
     defs::{EItemId, SkillLevel, SolFitId, SolItemId},
-    sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
+    sol::{
+        err::basic::ItemLoadedError,
+        item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
+    },
     src::Src,
     util::Named,
 };
@@ -36,7 +39,7 @@ impl SolSkill {
     pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
         self.base.get_a_item_id()
     }
-    pub(in crate::sol) fn get_a_item(&self) -> Option<&ad::ArcItem> {
+    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
         self.base.get_a_item()
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {

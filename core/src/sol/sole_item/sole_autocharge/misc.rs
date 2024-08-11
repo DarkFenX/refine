@@ -12,7 +12,7 @@ impl SolarSystem {
     pub(in crate::sol) fn update_item_autocharges(&mut self, item_id: &SolItemId) {
         let item = self.items.get_item(&item_id).unwrap();
         let mut new_ac_map = StMap::new();
-        if let (Some(fit_id), Some(a_item), Some(_)) = (item.get_fit_id(), item.get_a_item(), item.get_autocharges()) {
+        if let (Some(fit_id), Ok(a_item), Some(_)) = (item.get_fit_id(), item.get_a_item(), item.get_autocharges()) {
             let a_item = a_item.clone();
             for effect_id in a_item.effect_datas.keys() {
                 if let Some(effect) = self.src.get_a_effect(effect_id) {

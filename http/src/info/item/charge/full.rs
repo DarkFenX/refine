@@ -18,7 +18,7 @@ pub(crate) struct HChargeInfoFull {
 impl HChargeInfoFull {
     pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_charge_info: &rc::SolChargeInfo) -> Self {
         let partial_info = HChargeInfoPartial::from(core_charge_info);
-        let attrs = match core_sol.get_item_attrs(&partial_info.id) {
+        let attrs = match core_sol.iter_item_attrs(&partial_info.id) {
             Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),
         };

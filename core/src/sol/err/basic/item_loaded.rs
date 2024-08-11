@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::SolItemId;
 
 #[derive(Debug)]
@@ -11,9 +9,9 @@ impl ItemLoadedError {
         Self { item_id }
     }
 }
-impl error::Error for ItemLoadedError {}
-impl fmt::Display for ItemLoadedError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for ItemLoadedError {}
+impl std::fmt::Display for ItemLoadedError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "item {} is not loaded", self.item_id)
     }
 }

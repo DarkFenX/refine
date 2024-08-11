@@ -6,8 +6,10 @@ use crate::{
     defs::{AttrVal, EAttrId, SolItemId},
     ec,
     sol::{
+        err::basic::AttrMetaFoundError,
         item::SolItem,
         svc::{
+            err::{AttrCalcError, LoadedItemFoundError},
             svce_calc::{
                 SolAffectorInfo, SolAttrValInfo, SolModAccumInfo, SolModification, SolModificationInfo,
                 SolModificationKey, SolOpInfo,
@@ -16,7 +18,7 @@ use crate::{
         },
         SolView,
     },
-    util::{Error, ErrorKind, Result, StMap, StMapVecL1, StSet},
+    util::{StMap, StMapVecL1, StSet},
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
@@ -45,7 +47,7 @@ impl SolSvcs {
         &mut self,
         sol_view: &SolView,
         item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<SolModificationInfo>)>> {
+    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<SolModificationInfo>)>, LoadedItemFoundError> {
         let mut info_map = StMapVecL1::new();
         for attr_id in self.calc_iter_item_attr_ids(sol_view, item_id)? {
             let mut attr_info = match self.calc_calc_item_attr_info(sol_view, item_id, &attr_id) {
@@ -66,12 +68,12 @@ impl SolSvcs {
         &self,
         sol_view: &SolView,
         item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = EAttrId>> {
+    ) -> Result<impl ExactSizeIterator<Item = EAttrId>, LoadedItemFoundError> {
         let mut attr_ids = StSet::new();
         for attr_id in sol_view.items.get_item(item_id)?.get_orig_attrs()?.keys() {
             attr_ids.insert(*attr_id);
         }
-        for attr_id in self.calc_data.attrs.get_item_attrs(item_id)?.keys() {
+        for attr_id in self.calc_data.attrs.get_item_attrs(item_id).unwrap().keys() {
             attr_ids.insert(*attr_id);
         }
         Ok(attr_ids.into_iter())
@@ -120,11 +122,11 @@ impl SolSvcs {
         sol_view: &SolView,
         item_id: &SolItemId,
         attr_id: &EAttrId,
-    ) -> Result<SolAttrValInfo> {
+    ) -> Result<SolAttrValInfo, AttrCalcError> {
         let item = sol_view.items.get_item(item_id)?;
         let attr = match sol_view.src.get_a_attr(attr_id) {
             Some(attr) => attr,
-            None => return Err(Error::new(ErrorKind::AAttrNotFound(*attr_id))),
+            None => return Err(AttrMetaFoundError::new(*attr_id).into()),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure

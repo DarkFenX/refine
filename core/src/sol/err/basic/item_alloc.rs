@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 #[derive(Debug)]
 pub struct ItemAllocError {}
 impl ItemAllocError {
@@ -7,9 +5,9 @@ impl ItemAllocError {
         Self {}
     }
 }
-impl error::Error for ItemAllocError {}
-impl fmt::Display for ItemAllocError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for ItemAllocError {}
+impl std::fmt::Display for ItemAllocError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "item ID allocation failed")
     }
 }

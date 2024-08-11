@@ -1,5 +1,6 @@
 pub(in crate::sol) mod basic;
 pub use crate::sol::{
+    sole_calc::GetItemAttrError,
     sole_fit::{AddFitError, GetFitError, RemoveFitError, SetFitFleetError, UnsetFitFleetError},
     sole_fleet::{AddFleetError, GetFleetError, RemoveFleetError},
     sole_item::{

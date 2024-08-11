@@ -69,7 +69,7 @@ impl SolSvcs {
         }
     }
     pub(in crate::sol::svc) fn calc_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.calc_data.attrs.add_item(item.get_id());
+        self.calc_data.attrs.item_loaded(item.get_id());
         self.calc_data.std.reg_affectee(sol_view, item);
         self.handle_location_owner_change(sol_view, item);
     }
@@ -78,7 +78,7 @@ impl SolSvcs {
         self.calc_data.std.unreg_affectee(sol_view, item);
         let item_id = item.get_id();
         self.calc_data.deps.remove_item(&item_id);
-        self.calc_data.attrs.remove_item(&item_id);
+        self.calc_data.attrs.item_unloaded(&item_id);
     }
     pub(in crate::sol::svc) fn calc_effects_started(
         &mut self,

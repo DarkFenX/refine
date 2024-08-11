@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::SolItemId;
 
 #[derive(Debug)]
@@ -11,9 +9,9 @@ impl ItemFoundError {
         Self { item_id }
     }
 }
-impl error::Error for ItemFoundError {}
-impl fmt::Display for ItemFoundError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for ItemFoundError {}
+impl std::fmt::Display for ItemFoundError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "item {} not found", self.item_id)
     }
 }

@@ -1,3 +1,4 @@
+pub(in crate::sol) use attr_meta_found::AttrMetaFoundError;
 pub(in crate::sol) use charge_found::ChargeFoundError;
 pub(in crate::sol) use fit_alloc::FitAllocError;
 pub(in crate::sol) use fit_fleet_assigned::FitFleetAssignedError;
@@ -17,6 +18,7 @@ pub(in crate::sol) use proj_not_found::ProjNotFoundError;
 pub(in crate::sol) use side_effect::SideEffectError;
 pub(in crate::sol) use skill_level::SkillLevelError;
 
+mod attr_meta_found;
 mod charge_found;
 mod fit_alloc;
 mod fit_fleet_assigned;

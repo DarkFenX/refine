@@ -22,7 +22,7 @@ impl HFighterInfoFull {
         item_mode: HItemInfoMode,
     ) -> Self {
         let partial_info = HFighterInfoPartial::mk_info(core_sol, core_fighter_info, item_mode);
-        let attrs = match core_sol.get_item_attrs(&partial_info.id) {
+        let attrs = match core_sol.iter_item_attrs(&partial_info.id) {
             Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),
         };

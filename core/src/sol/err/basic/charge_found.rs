@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::SolItemId;
 
 #[derive(Debug)]
@@ -11,9 +9,9 @@ impl ChargeFoundError {
         Self { cont_item_id }
     }
 }
-impl error::Error for ChargeFoundError {}
-impl fmt::Display for ChargeFoundError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for ChargeFoundError {}
+impl std::fmt::Display for ChargeFoundError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "item {} does not have charge set", self.cont_item_id)
     }
 }

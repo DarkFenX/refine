@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 #[derive(Debug)]
 pub struct FleetAllocError {}
 impl FleetAllocError {
@@ -7,9 +5,9 @@ impl FleetAllocError {
         Self {}
     }
 }
-impl error::Error for FleetAllocError {}
-impl fmt::Display for FleetAllocError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for FleetAllocError {}
+impl std::fmt::Display for FleetAllocError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "fleet ID allocation failed")
     }
 }

@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     sol::{
-        err::basic::ItemKindMatchError,
+        err::basic::{ItemKindMatchError, ItemLoadedError},
         item::{
             SolAutocharge, SolAutocharges, SolBooster, SolCharacter, SolCharge, SolDrone, SolEffectModes, SolFighter,
             SolFwEffect, SolImplant, SolItemState, SolModule, SolProjEffect, SolRig, SolShip, SolSkill, SolStance,
@@ -233,7 +233,7 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.reload_a_item(src),
         }
     }
-    pub(in crate::sol) fn get_a_item(&self) -> Option<&ad::ArcItem> {
+    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_a_item(),
             Self::Booster(booster) => booster.get_a_item(),
@@ -656,22 +656,22 @@ impl SolItem {
     }
     // Calculator-specific getters
     // TODO: consider moving to calculator specific item extensions
-    pub(in crate::sol) fn get_orig_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
+    pub(in crate::sol) fn get_orig_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
         self.get_a_item().map(|v| &v.attr_vals)
     }
-    pub(in crate::sol) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
+    pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
         self.get_a_item().map(|v| &v.effect_datas)
     }
-    pub(in crate::sol) fn get_defeff_id(&self) -> Option<Option<EEffectId>> {
+    pub(in crate::sol) fn get_defeff_id(&self) -> Result<Option<EEffectId>, ItemLoadedError> {
         self.get_a_item().map(|v| v.defeff_id)
     }
-    pub(in crate::sol) fn get_group_id(&self) -> Option<EItemGrpId> {
+    pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.get_a_item().map(|v| v.grp_id)
     }
-    pub(in crate::sol) fn get_category_id(&self) -> Option<EItemCatId> {
+    pub(in crate::sol) fn get_category_id(&self) -> Result<EItemCatId, ItemLoadedError> {
         self.get_a_item().map(|v| v.cat_id)
     }
-    pub(in crate::sol) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
+    pub(in crate::sol) fn get_skill_reqs(&self) -> Result<&StMap<EItemId, SkillLevel>, ItemLoadedError> {
         self.get_a_item().map(|v| &v.srqs)
     }
 }

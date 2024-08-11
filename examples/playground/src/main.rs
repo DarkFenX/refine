@@ -79,9 +79,9 @@ fn main() {
                 None,
             )
             .unwrap();
-        black_box(sol_sys.get_item_attrs(&ship.id).iter().for_each(drop));
+        black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
         sol_sys.remove_item(&anp.id);
-        black_box(sol_sys.get_item_attrs(&ship.id).iter().for_each(drop));
+        black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
     }
     let after = Utc::now();
     tracing::error!("done");

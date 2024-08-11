@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::SolItemId;
 
 #[derive(Debug)]
@@ -15,9 +13,9 @@ impl ProjFoundError {
         }
     }
 }
-impl error::Error for ProjFoundError {}
-impl fmt::Display for ProjFoundError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for ProjFoundError {}
+impl std::fmt::Display for ProjFoundError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
             "projection {}->{} not found",

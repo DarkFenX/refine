@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::SolFleetId;
 
 #[derive(Debug)]
@@ -11,9 +9,9 @@ impl FleetFoundError {
         Self { fleet_id }
     }
 }
-impl error::Error for FleetFoundError {}
-impl fmt::Display for FleetFoundError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for FleetFoundError {}
+impl std::fmt::Display for FleetFoundError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "fleet {} not found", self.fleet_id)
     }
 }

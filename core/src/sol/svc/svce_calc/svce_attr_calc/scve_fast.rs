@@ -2,14 +2,16 @@ use crate::{
     defs::{AttrVal, EAttrId, SolItemId},
     ec,
     sol::{
+        err::basic::AttrMetaFoundError,
         item::SolItem,
         svc::{
+            err::{AttrCalcError, LoadedItemFoundError},
             svce_calc::{SolAttrVal, SolModAccumFast, SolModification, SolModificationKey},
             SolSvcs,
         },
         SolView,
     },
-    util::{Error, ErrorKind, Result, StMap},
+    util::StMap,
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
@@ -26,7 +28,7 @@ impl SolSvcs {
         sol_view: &SolView,
         item_id: &SolItemId,
         attr_id: &EAttrId,
-    ) -> Result<SolAttrVal> {
+    ) -> Result<SolAttrVal, AttrCalcError> {
         // Try accessing cached value
         match self.calc_data.attrs.get_item_attrs(item_id)?.get(attr_id) {
             Some(v) => return Ok(*v),
@@ -34,14 +36,19 @@ impl SolSvcs {
         };
         // If it is not cached, calculate and cache it
         let val = self.calc_calc_item_attr_val(sol_view, item_id, attr_id)?;
-        self.calc_data.attrs.get_item_attrs_mut(item_id)?.insert(*attr_id, val);
+        self.calc_data
+            .attrs
+            .get_item_attrs_mut(item_id)
+            .unwrap()
+            .insert(*attr_id, val);
         Ok(val)
     }
     pub(in crate::sol) fn calc_iter_item_attr_vals(
         &mut self,
         sol_view: &SolView,
-        item: &SolItem,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SolAttrVal)>> {
+        item_id: &SolItemId,
+    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SolAttrVal)>, LoadedItemFoundError> {
+        let item = sol_view.items.get_item(item_id)?;
         // SolItem can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
@@ -49,7 +56,7 @@ impl SolSvcs {
         let mut vals = self.calc_data.attrs.get_item_attrs_mut(&item.get_id())?.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
-        for attr_id in item.get_orig_attrs()?.keys() {
+        for attr_id in item.get_orig_attrs().unwrap().keys() {
             match self.calc_get_item_attr_val(sol_view, &item.get_id(), attr_id) {
                 Ok(v) => vals.entry(*attr_id).or_insert(v),
                 _ => continue,
@@ -101,11 +108,11 @@ impl SolSvcs {
         sol_view: &SolView,
         item_id: &SolItemId,
         attr_id: &EAttrId,
-    ) -> Result<SolAttrVal> {
+    ) -> Result<SolAttrVal, AttrCalcError> {
         let item = sol_view.items.get_item(item_id)?;
         let attr = match sol_view.src.get_a_attr(attr_id) {
             Some(attr) => attr,
-            None => return Err(Error::new(ErrorKind::AAttrNotFound(*attr_id))),
+            None => return Err(AttrMetaFoundError::new(*attr_id).into()),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure

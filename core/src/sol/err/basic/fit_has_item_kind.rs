@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::SolFitId;
 
 #[derive(Debug)]
@@ -12,9 +10,9 @@ impl FitHasItemKindError {
         Self { fit_id, item_kind }
     }
 }
-impl error::Error for FitHasItemKindError {}
-impl fmt::Display for FitHasItemKindError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for FitHasItemKindError {}
+impl std::fmt::Display for FitHasItemKindError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "fit {} does not have {} set", self.fit_id, self.item_kind)
     }
 }

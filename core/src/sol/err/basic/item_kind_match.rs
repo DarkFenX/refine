@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::defs::SolItemId;
 
 #[derive(Debug)]
@@ -17,9 +15,9 @@ impl ItemKindMatchError {
         }
     }
 }
-impl error::Error for ItemKindMatchError {}
-impl fmt::Display for ItemKindMatchError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for ItemKindMatchError {}
+impl std::fmt::Display for ItemKindMatchError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
             "item {} was requested as {}. but is {}",

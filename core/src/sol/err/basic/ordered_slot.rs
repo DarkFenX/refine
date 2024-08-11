@@ -1,5 +1,3 @@
-use std::{error, fmt};
-
 use crate::{
     defs::{Idx, SolItemId},
     sol::SolModRack,
@@ -20,9 +18,9 @@ impl OrderedSlotError {
         }
     }
 }
-impl error::Error for OrderedSlotError {}
-impl fmt::Display for OrderedSlotError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl std::error::Error for OrderedSlotError {}
+impl std::fmt::Display for OrderedSlotError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
             "{} slot {} is occupied by item {}",

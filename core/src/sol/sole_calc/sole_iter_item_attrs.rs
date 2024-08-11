@@ -2,29 +2,29 @@ use crate::{
     defs::{EAttrId, SolItemId},
     sol::{
         err::basic::{ItemFoundError, ItemLoadedError},
-        svc::{err::LoadedItemFoundError, SolModificationInfo},
-        SolView, SolarSystem,
+        svc::err::LoadedItemFoundError,
+        SolAttrVal, SolView, SolarSystem,
     },
 };
 
 impl SolarSystem {
-    pub fn iter_item_modifiers(
+    pub fn iter_item_attrs(
         &mut self,
         item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<SolModificationInfo>)>, IterItemModifiersError> {
-        let modifiers = self
+    ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SolAttrVal)>, IterItemAttrsError> {
+        let attrs = self
             .svcs
-            .calc_iter_item_mods(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item_id)?;
-        Ok(modifiers)
+            .calc_iter_item_attr_vals(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item_id)?;
+        Ok(attrs)
     }
 }
 
 #[derive(Debug)]
-pub enum IterItemModifiersError {
+pub enum IterItemAttrsError {
     ItemNotFound(ItemFoundError),
     ItemNotLoaded(ItemLoadedError),
 }
-impl From<LoadedItemFoundError> for IterItemModifiersError {
+impl From<LoadedItemFoundError> for IterItemAttrsError {
     fn from(error: LoadedItemFoundError) -> Self {
         match error {
             LoadedItemFoundError::ItemNotFound(e) => Self::ItemNotFound(e),
@@ -32,7 +32,7 @@ impl From<LoadedItemFoundError> for IterItemModifiersError {
         }
     }
 }
-impl std::error::Error for IterItemModifiersError {
+impl std::error::Error for IterItemAttrsError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::ItemNotFound(e) => Some(e),
@@ -40,7 +40,7 @@ impl std::error::Error for IterItemModifiersError {
         }
     }
 }
-impl std::fmt::Display for IterItemModifiersError {
+impl std::fmt::Display for IterItemAttrsError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::ItemNotFound(e) => e.fmt(f),

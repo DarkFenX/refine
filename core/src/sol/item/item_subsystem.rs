@@ -2,7 +2,10 @@ use crate::{
     ad,
     defs::{EItemId, SlotNumber, SolFitId, SolItemId},
     ec,
-    sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
+    sol::{
+        err::basic::ItemLoadedError,
+        item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
+    },
     src::Src,
     util::Named,
 };
@@ -28,7 +31,7 @@ impl SolSubsystem {
     pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
         self.base.get_a_item_id()
     }
-    pub(in crate::sol) fn get_a_item(&self) -> Option<&ad::ArcItem> {
+    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
         self.base.get_a_item()
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
@@ -55,11 +58,11 @@ impl SolSubsystem {
     }
     pub(in crate::sol) fn get_slot(&self) -> Option<SlotNumber> {
         match self.get_a_item() {
-            Some(a_item) => match a_item.attr_vals.get(&ec::attrs::SUBSYSTEM_SLOT) {
+            Ok(a_item) => match a_item.attr_vals.get(&ec::attrs::SUBSYSTEM_SLOT) {
                 None => None,
                 Some(value) => Some(value.round() as SlotNumber),
             },
-            None => None,
+            _ => None,
         }
     }
 }

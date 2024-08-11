@@ -18,7 +18,7 @@ pub(crate) struct HDroneInfoFull {
 impl HDroneInfoFull {
     pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_drone_info: &rc::SolDroneInfo) -> Self {
         let partial_info = HDroneInfoPartial::from(core_drone_info);
-        let attrs = match core_sol.get_item_attrs(&partial_info.id) {
+        let attrs = match core_sol.iter_item_attrs(&partial_info.id) {
             Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),
         };
