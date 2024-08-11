@@ -1,4 +1,7 @@
-use crate::sol::{err::basic::FitAllocError, fit_info::SolFitInfo, SolarSystem};
+use crate::{
+    err::basic::FitAllocError,
+    sol::{fit_info::SolFitInfo, SolarSystem},
+};
 
 impl SolarSystem {
     pub fn add_fit(&mut self) -> Result<SolFitInfo, AddFitError> {

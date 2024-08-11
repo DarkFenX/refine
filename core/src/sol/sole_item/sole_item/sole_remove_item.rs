@@ -1,7 +1,7 @@
 use crate::{
     defs::SolItemId,
+    err::basic::{ItemFoundError, ItemRemoveError},
     sol::{
-        err::basic::{ItemFoundError, ItemRemoveError},
         item::{SolAutocharge, SolItem},
         SolarSystem,
     },

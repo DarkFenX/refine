@@ -2,10 +2,8 @@ use std::num::Wrapping;
 
 use crate::{
     defs::SolFleetId,
-    sol::{
-        err::basic::{FleetAllocError, FleetFoundError},
-        fleet::SolFleet,
-    },
+    err::basic::{FleetAllocError, FleetFoundError},
+    sol::fleet::SolFleet,
     util::StMap,
 };
 

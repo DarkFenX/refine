@@ -77,7 +77,7 @@ fn adapt_data(e_handler: &Box<dyn ed::EveDataHandler>) -> IntResult<ad::AData> {
 }
 
 fn update_a_data(e_version: Option<String>, a_handler: &mut Box<dyn ad::AdaptedDataHandler>, a_data: ad::AData) {
-    let e_version = e_version.unwrap_or("none".into());
+    let e_version = e_version.unwrap_or_else(|| "none".into());
     let e_fingerprint = get_e_fingerprint(&e_version);
     a_handler.update_data(a_data, e_fingerprint)
 }

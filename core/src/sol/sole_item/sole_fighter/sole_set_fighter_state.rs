@@ -1,10 +1,7 @@
 use crate::{
     defs::SolItemId,
-    sol::{
-        err::basic::{ItemFoundError, ItemKindMatchError},
-        item::SolItemState,
-        SolarSystem,
-    },
+    err::basic::{ItemFoundError, ItemKindMatchError},
+    sol::{item::SolItemState, SolarSystem},
 };
 
 impl SolarSystem {

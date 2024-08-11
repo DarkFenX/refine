@@ -1,4 +1,4 @@
-pub(in crate::sol) mod basic;
+pub mod basic;
 pub use crate::sol::{
     sole_calc::{
         GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, SetItemEffectModeError,

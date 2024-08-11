@@ -1,6 +1,7 @@
 use crate::{
     defs::SolFitId,
-    sol::{err::basic::FitFoundError, item_info::SolModuleInfo, SolarSystem},
+    err::basic::FitFoundError,
+    sol::{item_info::SolModuleInfo, SolarSystem},
     SolModRack,
 };
 

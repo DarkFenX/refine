@@ -1,7 +1,4 @@
-use crate::{
-    defs::SolFitId,
-    sol::{err::basic::FitFoundError, SolarSystem},
-};
+use crate::{defs::SolFitId, err::basic::FitFoundError, sol::SolarSystem};
 
 impl SolarSystem {
     pub fn remove_fit(&mut self, fit_id: &SolFitId) -> Result<(), RemoveFitError> {

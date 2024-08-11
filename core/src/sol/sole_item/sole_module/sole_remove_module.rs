@@ -2,10 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     defs::SolItemId,
-    sol::{
-        err::basic::{ItemFoundError, ItemKindMatchError},
-        SolModRack, SolView, SolarSystem,
-    },
+    err::basic::{ItemFoundError, ItemKindMatchError},
+    sol::{SolModRack, SolView, SolarSystem},
 };
 
 impl SolarSystem {

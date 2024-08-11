@@ -1,7 +1,7 @@
 use crate::{
     defs::EItemId,
+    err::basic::ItemAllocError,
     sol::{
-        err::basic::ItemAllocError,
         item::{SolItem, SolProjEffect},
         item_info::SolProjEffectInfo,
         SolarSystem,

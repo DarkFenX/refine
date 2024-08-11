@@ -1,7 +1,7 @@
 use crate::{
     defs::{EItemId, SolFitId},
+    err::basic::{FitFoundError, ItemAllocError},
     sol::{
-        err::basic::{FitFoundError, ItemAllocError},
         item::{SolItem, SolSubsystem},
         item_info::SolSubsystemInfo,
         SolarSystem,

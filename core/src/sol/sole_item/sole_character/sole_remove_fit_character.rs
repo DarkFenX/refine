@@ -1,10 +1,7 @@
 use crate::{
     defs::SolFitId,
-    sol::{
-        err::basic::{FitFoundError, FitHasItemKindError},
-        item::SolCharacter,
-        SolarSystem,
-    },
+    err::basic::{FitFoundError, FitHasItemKindError},
+    sol::{item::SolCharacter, SolarSystem},
     util::Named,
 };
 

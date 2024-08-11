@@ -1,7 +1,7 @@
 use crate::{
     defs::{EAttrId, SolItemId},
+    err::basic::{ItemFoundError, ItemLoadedError},
     sol::{
-        err::basic::{ItemFoundError, ItemLoadedError},
         svc::{err::LoadedItemFoundError, SolModificationInfo},
         SolView, SolarSystem,
     },

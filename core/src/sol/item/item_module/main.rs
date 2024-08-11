@@ -1,8 +1,8 @@
 use crate::{
     ad,
     defs::{EItemId, Idx, SolFitId, SolItemId},
+    err::basic::ItemLoadedError,
     sol::{
-        err::basic::ItemLoadedError,
         item::{SolEffectModes, SolItemBase, SolItemState, SolProjs},
         SolModRack,
     },

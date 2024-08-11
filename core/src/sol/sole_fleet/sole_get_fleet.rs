@@ -1,6 +1,7 @@
 use crate::{
     defs::SolFleetId,
-    sol::{err::basic::FleetFoundError, fleet_info::SolFleetInfo, SolarSystem},
+    err::basic::FleetFoundError,
+    sol::{fleet_info::SolFleetInfo, SolarSystem},
 };
 
 impl SolarSystem {

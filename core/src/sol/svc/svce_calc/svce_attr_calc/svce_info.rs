@@ -5,8 +5,8 @@
 use crate::{
     defs::{AttrVal, EAttrId, SolItemId},
     ec,
+    err::basic::AttrMetaFoundError,
     sol::{
-        err::basic::AttrMetaFoundError,
         item::SolItem,
         svc::{
             err::{AttrCalcError, LoadedItemFoundError},

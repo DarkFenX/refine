@@ -1,10 +1,8 @@
 use crate::{
     ad,
     defs::{Amount, EItemId, SolFitId, SolItemId},
-    sol::{
-        err::basic::ItemLoadedError,
-        item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState},
-    },
+    err::basic::ItemLoadedError,
+    sol::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState},
     src::Src,
     util::Named,
 };

@@ -1,9 +1,6 @@
 use crate::{
     defs::{SolFitId, SolFleetId, SolItemId},
-    sol::{
-        item::{SolItem, SolShipKind},
-        SolModRack,
-    },
+    sol::item::SolShipKind,
     util::StSet,
 };
 

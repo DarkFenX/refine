@@ -41,10 +41,11 @@ pub use util::{Error, ErrorKind, Result};
 
 pub mod ad;
 mod adg;
-pub(crate) mod config;
+mod config;
 mod defs;
 pub mod ec;
 pub mod ed;
+pub mod err;
 mod sol;
 mod src;
 pub mod util;

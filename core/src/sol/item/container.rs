@@ -1,11 +1,9 @@
 use std::num::Wrapping;
 
 use crate::{
-    defs::{SolFitId, SolItemId},
-    sol::{
-        err::basic::{ItemAllocError, ItemFoundError},
-        item::SolItem,
-    },
+    defs::SolItemId,
+    err::basic::{ItemAllocError, ItemFoundError},
+    sol::item::SolItem,
     util::StMap,
 };
 

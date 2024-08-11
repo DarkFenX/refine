@@ -19,11 +19,6 @@ impl HExecError {
         }
     }
 }
-impl From<rc::Error> for HExecError {
-    fn from(core_error: rc::Error) -> Self {
-        Self::new(HExecErrorKind::CoreError(core_error.into()))
-    }
-}
 impl std::error::Error for HExecError {}
 impl std::fmt::Display for HExecError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {

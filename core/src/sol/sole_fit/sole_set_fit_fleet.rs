@@ -1,9 +1,7 @@
 use crate::{
     defs::{SolFitId, SolFleetId},
-    sol::{
-        err::basic::{FitFoundError, FleetFoundError},
-        SolView, SolarSystem,
-    },
+    err::basic::{FitFoundError, FleetFoundError},
+    sol::{SolView, SolarSystem},
 };
 
 impl SolarSystem {

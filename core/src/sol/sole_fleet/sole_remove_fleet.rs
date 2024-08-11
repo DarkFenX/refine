@@ -2,7 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     defs::SolFleetId,
-    sol::{err::basic::FleetFoundError, SolView, SolarSystem},
+    err::basic::FleetFoundError,
+    sol::{SolView, SolarSystem},
 };
 
 impl SolarSystem {

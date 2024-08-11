@@ -1,4 +1,4 @@
-use crate::sol::err::basic::{ItemFoundError, ItemLoadedError};
+use crate::err::basic::{ItemFoundError, ItemLoadedError};
 
 #[derive(Debug)]
 pub(in crate::sol) enum LoadedItemFoundError {

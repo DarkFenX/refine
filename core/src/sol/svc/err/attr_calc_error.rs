@@ -1,4 +1,4 @@
-use crate::sol::err::basic::{AttrMetaFoundError, ItemFoundError, ItemLoadedError};
+use crate::err::basic::{AttrMetaFoundError, ItemFoundError, ItemLoadedError};
 
 #[derive(Debug)]
 pub(in crate::sol) enum AttrCalcError {

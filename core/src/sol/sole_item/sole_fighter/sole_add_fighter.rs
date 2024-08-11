@@ -2,8 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     defs::{EItemId, SolFitId},
+    err::basic::{FitFoundError, ItemAllocError},
     sol::{
-        err::basic::{FitFoundError, ItemAllocError},
         item::{SolFighter, SolItem, SolItemState},
         item_info::SolFighterInfo,
         SolarSystem,

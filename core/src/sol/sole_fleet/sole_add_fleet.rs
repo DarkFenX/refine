@@ -1,4 +1,7 @@
-use crate::sol::{err::basic::FleetAllocError, fleet_info::SolFleetInfo, SolarSystem};
+use crate::{
+    err::basic::FleetAllocError,
+    sol::{fleet_info::SolFleetInfo, SolarSystem},
+};
 
 impl SolarSystem {
     pub fn add_fleet(&mut self) -> Result<SolFleetInfo, AddFleetError> {

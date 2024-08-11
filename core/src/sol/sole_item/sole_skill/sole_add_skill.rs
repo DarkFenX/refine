@@ -1,7 +1,7 @@
 use crate::{
     defs::{EItemId, SkillLevel, SolFitId},
+    err::basic::{FitFoundError, ItemAllocError, SkillLevelError},
     sol::{
-        err::basic::{FitFoundError, ItemAllocError, SkillLevelError},
         item::{SolItem, SolSkill},
         item_info::SolSkillInfo,
         SolarSystem,
