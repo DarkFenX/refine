@@ -1,4 +1,4 @@
-use crate::util::HExecResult;
+use crate::util::HExecError;
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
@@ -13,8 +13,13 @@ impl HFleetInfoFull {
     pub(in crate::info::fleet) fn mk_info(
         core_sol: &mut rc::SolarSystem,
         fleet_id: &rc::SolFleetId,
-    ) -> HExecResult<Self> {
-        let core_fleet = core_sol.get_fleet(fleet_id)?;
+    ) -> Result<Self, HExecError> {
+        let core_fleet = match core_sol.get_fleet(fleet_id) {
+            Ok(core_fleet) => core_fleet,
+            Err(error) => match error {
+                rc::err::GetFleetError::FleetNotFound(e) => return Err(HExecError::FleetNotFoundPrimary(e)),
+            },
+        };
         let fleet = Self {
             id: *fleet_id,
             fits: core_fleet.fits.clone(),

@@ -24,14 +24,6 @@ pub enum IterItemModifiersError {
     ItemNotFound(ItemFoundError),
     ItemNotLoaded(ItemLoadedError),
 }
-impl From<LoadedItemFoundError> for IterItemModifiersError {
-    fn from(error: LoadedItemFoundError) -> Self {
-        match error {
-            LoadedItemFoundError::ItemNotFound(e) => Self::ItemNotFound(e),
-            LoadedItemFoundError::ItemNotLoaded(e) => Self::ItemNotLoaded(e),
-        }
-    }
-}
 impl std::error::Error for IterItemModifiersError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -45,6 +37,14 @@ impl std::fmt::Display for IterItemModifiersError {
         match self {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemNotLoaded(e) => e.fmt(f),
+        }
+    }
+}
+impl From<LoadedItemFoundError> for IterItemModifiersError {
+    fn from(error: LoadedItemFoundError) -> Self {
+        match error {
+            LoadedItemFoundError::ItemNotFound(e) => Self::ItemNotFound(e),
+            LoadedItemFoundError::ItemNotLoaded(e) => Self::ItemNotLoaded(e),
         }
     }
 }

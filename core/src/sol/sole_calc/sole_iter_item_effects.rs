@@ -25,16 +25,6 @@ pub enum IterItemEffectsError {
     ItemNotFound(ItemFoundError),
     ItemNotLoaded(ItemLoadedError),
 }
-impl From<ItemFoundError> for IterItemEffectsError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemLoadedError> for IterItemEffectsError {
-    fn from(error: ItemLoadedError) -> Self {
-        Self::ItemNotLoaded(error)
-    }
-}
 impl std::error::Error for IterItemEffectsError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -49,5 +39,15 @@ impl std::fmt::Display for IterItemEffectsError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemNotLoaded(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for IterItemEffectsError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemLoadedError> for IterItemEffectsError {
+    fn from(error: ItemLoadedError) -> Self {
+        Self::ItemNotLoaded(error)
     }
 }

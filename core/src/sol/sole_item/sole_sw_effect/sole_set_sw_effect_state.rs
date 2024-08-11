@@ -20,16 +20,6 @@ pub enum SetSwEffectStateError {
     ItemNotFound(ItemFoundError),
     ItemIsNotSwEffect(ItemKindMatchError),
 }
-impl From<ItemFoundError> for SetSwEffectStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetSwEffectStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotSwEffect(error)
-    }
-}
 impl std::error::Error for SetSwEffectStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -44,5 +34,15 @@ impl std::fmt::Display for SetSwEffectStateError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotSwEffect(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for SetSwEffectStateError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for SetSwEffectStateError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotSwEffect(error)
     }
 }

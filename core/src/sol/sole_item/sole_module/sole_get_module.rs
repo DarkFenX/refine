@@ -16,16 +16,6 @@ pub enum GetModuleError {
     ItemNotFound(ItemFoundError),
     ItemIsNotModule(ItemKindMatchError),
 }
-impl From<ItemFoundError> for GetModuleError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for GetModuleError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotModule(error)
-    }
-}
 impl std::error::Error for GetModuleError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -40,5 +30,15 @@ impl std::fmt::Display for GetModuleError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotModule(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for GetModuleError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for GetModuleError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotModule(error)
     }
 }

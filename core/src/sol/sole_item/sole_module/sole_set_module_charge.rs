@@ -9,7 +9,7 @@ impl SolarSystem {
         &mut self,
         item_id: &SolItemId,
         charge_a_item_id: EItemId,
-    ) -> Result<SolChargeInfo, AddSetModuleChargeError> {
+    ) -> Result<SolChargeInfo, SetModuleChargeError> {
         let module = self.items.get_item(item_id)?.get_module()?;
         // Remove old charge, if it was set
         if let Some(charge_item_id) = module.charge_item_id {
@@ -31,27 +31,12 @@ impl SolarSystem {
 }
 
 #[derive(Debug)]
-pub enum AddSetModuleChargeError {
+pub enum SetModuleChargeError {
     ItemNotFound(ItemFoundError),
     ItemIsNotModule(ItemKindMatchError),
     ItemIdAllocFailed(ItemAllocError),
 }
-impl From<ItemFoundError> for AddSetModuleChargeError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for AddSetModuleChargeError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotModule(error)
-    }
-}
-impl From<ItemAllocError> for AddSetModuleChargeError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
-    }
-}
-impl std::error::Error for AddSetModuleChargeError {
+impl std::error::Error for SetModuleChargeError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::ItemNotFound(e) => Some(e),
@@ -60,12 +45,27 @@ impl std::error::Error for AddSetModuleChargeError {
         }
     }
 }
-impl std::fmt::Display for AddSetModuleChargeError {
+impl std::fmt::Display for SetModuleChargeError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotModule(e) => e.fmt(f),
             Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for SetModuleChargeError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for SetModuleChargeError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotModule(error)
+    }
+}
+impl From<ItemAllocError> for SetModuleChargeError {
+    fn from(error: ItemAllocError) -> Self {
+        Self::ItemIdAllocFailed(error)
     }
 }

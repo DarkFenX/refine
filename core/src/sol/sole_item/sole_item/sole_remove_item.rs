@@ -1,6 +1,6 @@
 use crate::{
     defs::SolItemId,
-    err::basic::{ItemFoundError, ItemRemoveError},
+    err::basic::{ItemFoundError, ItemKindRemoveError},
     sol::{
         item::{SolAutocharge, SolItem},
         SolarSystem,
@@ -13,7 +13,7 @@ impl SolarSystem {
         let item = self.items.get_item(item_id)?;
         match item {
             // Auto charge can't be removed no matter what
-            SolItem::Autocharge(_) => Err(RemoveItemError::UnremovableAutocharge(ItemRemoveError::new(
+            SolItem::Autocharge(_) => Err(RemoveItemError::UnremovableAutocharge(ItemKindRemoveError::new(
                 *item_id,
                 SolAutocharge::get_name(),
             ))),
@@ -41,12 +41,7 @@ impl SolarSystem {
 #[derive(Debug)]
 pub enum RemoveItemError {
     ItemNotFound(ItemFoundError),
-    UnremovableAutocharge(ItemRemoveError),
-}
-impl From<ItemFoundError> for RemoveItemError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
+    UnremovableAutocharge(ItemKindRemoveError),
 }
 impl std::error::Error for RemoveItemError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
@@ -62,5 +57,10 @@ impl std::fmt::Display for RemoveItemError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::UnremovableAutocharge(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for RemoveItemError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
     }
 }

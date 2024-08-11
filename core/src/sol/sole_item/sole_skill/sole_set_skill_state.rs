@@ -20,16 +20,6 @@ pub enum SetSkillStateError {
     ItemNotFound(ItemFoundError),
     ItemIsNotSkill(ItemKindMatchError),
 }
-impl From<ItemFoundError> for SetSkillStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetSkillStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotSkill(error)
-    }
-}
 impl std::error::Error for SetSkillStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -44,5 +34,15 @@ impl std::fmt::Display for SetSkillStateError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotSkill(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for SetSkillStateError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for SetSkillStateError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotSkill(error)
     }
 }

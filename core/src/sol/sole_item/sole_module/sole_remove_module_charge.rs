@@ -22,21 +22,6 @@ pub enum RemoveModuleChargeError {
     ItemIsNotModule(ItemKindMatchError),
     ChargeNotSet(ChargeFoundError),
 }
-impl From<ItemFoundError> for RemoveModuleChargeError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveModuleChargeError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotModule(error)
-    }
-}
-impl From<ChargeFoundError> for RemoveModuleChargeError {
-    fn from(error: ChargeFoundError) -> Self {
-        Self::ChargeNotSet(error)
-    }
-}
 impl std::error::Error for RemoveModuleChargeError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -53,5 +38,20 @@ impl std::fmt::Display for RemoveModuleChargeError {
             Self::ItemIsNotModule(e) => e.fmt(f),
             Self::ChargeNotSet(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for RemoveModuleChargeError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for RemoveModuleChargeError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotModule(error)
+    }
+}
+impl From<ChargeFoundError> for RemoveModuleChargeError {
+    fn from(error: ChargeFoundError) -> Self {
+        Self::ChargeNotSet(error)
     }
 }

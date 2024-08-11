@@ -37,21 +37,6 @@ pub enum AddSkillError {
     FitNotFound(FitFoundError),
     ItemIdAllocFailed(ItemAllocError),
 }
-impl From<SkillLevelError> for AddSkillError {
-    fn from(error: SkillLevelError) -> Self {
-        Self::InvalidSkillLevel(error)
-    }
-}
-impl From<FitFoundError> for AddSkillError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<ItemAllocError> for AddSkillError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
-    }
-}
 impl std::error::Error for AddSkillError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -68,5 +53,20 @@ impl std::fmt::Display for AddSkillError {
             Self::FitNotFound(e) => e.fmt(f),
             Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
+    }
+}
+impl From<SkillLevelError> for AddSkillError {
+    fn from(error: SkillLevelError) -> Self {
+        Self::InvalidSkillLevel(error)
+    }
+}
+impl From<FitFoundError> for AddSkillError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<ItemAllocError> for AddSkillError {
+    fn from(error: ItemAllocError) -> Self {
+        Self::ItemIdAllocFailed(error)
     }
 }

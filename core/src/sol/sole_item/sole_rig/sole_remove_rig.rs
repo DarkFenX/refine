@@ -22,16 +22,6 @@ pub enum RemoveRigError {
     ItemNotFound(ItemFoundError),
     ItemIsNotRig(ItemKindMatchError),
 }
-impl From<ItemFoundError> for RemoveRigError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveRigError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotRig(error)
-    }
-}
 impl std::error::Error for RemoveRigError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -46,5 +36,15 @@ impl std::fmt::Display for RemoveRigError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotRig(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for RemoveRigError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for RemoveRigError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotRig(error)
     }
 }

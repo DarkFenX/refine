@@ -20,16 +20,6 @@ pub enum SetSubsystemStateError {
     ItemNotFound(ItemFoundError),
     ItemIsNotSubsystem(ItemKindMatchError),
 }
-impl From<ItemFoundError> for SetSubsystemStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetSubsystemStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotSubsystem(error)
-    }
-}
 impl std::error::Error for SetSubsystemStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -44,5 +34,15 @@ impl std::fmt::Display for SetSubsystemStateError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotSubsystem(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for SetSubsystemStateError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for SetSubsystemStateError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotSubsystem(error)
     }
 }

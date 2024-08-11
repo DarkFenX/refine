@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_fit, shared::HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -12,7 +12,7 @@ pub(crate) struct HAddModuleCmd {
     fit_cmd: change_fit::HAddModuleCmd,
 }
 impl HAddModuleCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<rc::SolModuleInfo> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolModuleInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }
@@ -23,7 +23,7 @@ pub(crate) struct HChangeModuleCmd {
     fit_cmd: change_fit::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.fit_cmd.execute(core_sol)
     }
 }

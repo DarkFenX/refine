@@ -1,7 +1,7 @@
 use crate::{
     cmd::{change_item, HCmdResp},
     shared::HState,
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -14,9 +14,17 @@ impl HAddDroneCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<rc::SolDroneInfo> {
-        let info = core_sol.add_drone(*fit_id, self.type_id, (&self.state).into())?;
-        Ok(info)
+    ) -> Result<rc::SolDroneInfo, HExecError> {
+        let core_drone = match core_sol.add_drone(*fit_id, self.type_id, (&self.state).into()) {
+            Ok(core_drone) => core_drone,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::AddDroneError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::AddDroneError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                })
+            }
+        };
+        Ok(core_drone)
     }
 }
 
@@ -29,7 +37,7 @@ pub(crate) struct HChangeDroneCmd {
     item_cmd: change_item::HChangeDroneCmd,
 }
 impl HChangeDroneCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

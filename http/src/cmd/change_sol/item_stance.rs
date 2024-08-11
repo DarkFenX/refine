@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_fit, HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -12,7 +12,7 @@ pub(crate) struct HSetStanceCmd {
     fit_cmd: change_fit::HSetStanceCmd,
 }
 impl HSetStanceCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<rc::SolStanceInfo> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolStanceInfo, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }
@@ -24,7 +24,7 @@ pub(crate) enum HChangeStanceCmd {
     ViaFitId(HChangeStanceViaFitIdCmd),
 }
 impl HChangeStanceCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match self {
             Self::ViaItemId(cmd) => cmd.execute(core_sol),
             Self::ViaFitId(cmd) => cmd.execute(core_sol),
@@ -38,7 +38,7 @@ pub(crate) struct HChangeStanceViaItemIdCmd {
     fit_cmd: change_fit::HChangeStanceViaItemIdCmd,
 }
 impl HChangeStanceViaItemIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.fit_cmd.execute(core_sol)
     }
 }
@@ -52,7 +52,7 @@ pub(crate) struct HChangeStanceViaFitIdCmd {
     fit_cmd: change_fit::HChangeStanceViaFitIdCmd,
 }
 impl HChangeStanceViaFitIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }
 }

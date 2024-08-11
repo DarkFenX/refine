@@ -6,21 +6,6 @@ pub(in crate::sol) enum AttrCalcError {
     ItemNotLoaded(ItemLoadedError),
     AttrMetaNotFound(AttrMetaFoundError),
 }
-impl From<ItemFoundError> for AttrCalcError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemLoadedError> for AttrCalcError {
-    fn from(error: ItemLoadedError) -> Self {
-        Self::ItemNotLoaded(error)
-    }
-}
-impl From<AttrMetaFoundError> for AttrCalcError {
-    fn from(error: AttrMetaFoundError) -> Self {
-        Self::AttrMetaNotFound(error)
-    }
-}
 impl std::error::Error for AttrCalcError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -37,5 +22,20 @@ impl std::fmt::Display for AttrCalcError {
             Self::ItemNotLoaded(e) => e.fmt(f),
             Self::AttrMetaNotFound(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for AttrCalcError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemLoadedError> for AttrCalcError {
+    fn from(error: ItemLoadedError) -> Self {
+        Self::ItemNotLoaded(error)
+    }
+}
+impl From<AttrMetaFoundError> for AttrCalcError {
+    fn from(error: AttrMetaFoundError) -> Self {
+        Self::AttrMetaNotFound(error)
     }
 }

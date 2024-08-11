@@ -37,21 +37,6 @@ pub enum RemoveModuleProjError {
     ProjectorIsNotModule(ItemKindMatchError),
     ProjectionNotFound(ProjFoundError),
 }
-impl From<ItemFoundError> for RemoveModuleProjError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ProjectorNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveModuleProjError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ProjectorIsNotModule(error)
-    }
-}
-impl From<ProjFoundError> for RemoveModuleProjError {
-    fn from(error: ProjFoundError) -> Self {
-        Self::ProjectionNotFound(error)
-    }
-}
 impl std::error::Error for RemoveModuleProjError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -68,5 +53,20 @@ impl std::fmt::Display for RemoveModuleProjError {
             Self::ProjectorIsNotModule(e) => e.fmt(f),
             Self::ProjectionNotFound(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for RemoveModuleProjError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ProjectorNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for RemoveModuleProjError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ProjectorIsNotModule(error)
+    }
+}
+impl From<ProjFoundError> for RemoveModuleProjError {
+    fn from(error: ProjFoundError) -> Self {
+        Self::ProjectionNotFound(error)
     }
 }

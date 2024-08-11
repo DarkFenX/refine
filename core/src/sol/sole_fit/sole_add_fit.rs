@@ -16,11 +16,6 @@ impl SolarSystem {
 pub enum AddFitError {
     FitIdAllocFailed(FitAllocError),
 }
-impl From<FitAllocError> for AddFitError {
-    fn from(error: FitAllocError) -> Self {
-        Self::FitIdAllocFailed(error)
-    }
-}
 impl std::error::Error for AddFitError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -33,5 +28,10 @@ impl std::fmt::Display for AddFitError {
         match self {
             Self::FitIdAllocFailed(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitAllocError> for AddFitError {
+    fn from(error: FitAllocError) -> Self {
+        Self::FitIdAllocFailed(error)
     }
 }

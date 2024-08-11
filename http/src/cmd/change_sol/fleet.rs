@@ -1,10 +1,18 @@
-use crate::{cmd::HCmdResp, util::HExecResult};
+use crate::{cmd::HCmdResp, util::HExecError};
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HCreateFleetCmd {}
 impl HCreateFleetCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
-        Ok(core_sol.add_fleet()?.into())
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+        let core_fleet = match core_sol.add_fleet() {
+            Ok(core_fleet) => core_fleet,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::AddFleetError::FleetIdAllocFailed(e) => HExecError::FleetCapacityReached(e),
+                })
+            }
+        };
+        Ok(core_fleet.into())
     }
 }
 
@@ -15,8 +23,12 @@ pub(crate) struct HDeleteFleetCmd {
     fleet_id: rc::SolFleetId,
 }
 impl HDeleteFleetCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
-        core_sol.remove_fleet(&self.fleet_id)?;
-        Ok(HCmdResp::NoData)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
+        match core_sol.remove_fleet(&self.fleet_id) {
+            Ok(_) => Ok(HCmdResp::NoData),
+            Err(error) => Err(match error {
+                rc::err::RemoveFleetError::FleetNotFound(e) => HExecError::FleetNotFoundPrimary(e),
+            }),
+        }
     }
 }

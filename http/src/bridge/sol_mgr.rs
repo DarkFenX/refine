@@ -4,7 +4,7 @@ use tokio::{sync::RwLock, time};
 use uuid::Uuid;
 
 use crate::{
-    bridge::{HBrError, HBrErrorKind, HBrResult, HGuardedSol},
+    bridge::{HBrError, HGuardedSol},
     info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfo, HSolInfoMode},
 };
 
@@ -43,19 +43,19 @@ impl HSolMgr {
             .insert(id.clone(), HGuardedSol::new(id, core_sol));
         sol_info
     }
-    pub(crate) async fn get_sol(&self, id: &str) -> HBrResult<HGuardedSol> {
+    pub(crate) async fn get_sol(&self, id: &str) -> Result<HGuardedSol, HBrError> {
         self.id_sol_map
             .read()
             .await
             .get(id)
-            .ok_or_else(|| HBrError::new(HBrErrorKind::SolNotFound(id.to_string())))
+            .ok_or_else(|| HBrError::SolNotFound(id.to_string()))
             .cloned()
     }
     #[tracing::instrument(name = "solmgr-del", level = "trace", skip_all)]
-    pub(crate) async fn delete_sol(&self, id: &str) -> HBrResult<()> {
+    pub(crate) async fn delete_sol(&self, id: &str) -> Result<(), HBrError> {
         match self.id_sol_map.write().await.remove(id) {
             Some(_) => Ok(()),
-            None => Err(HBrError::new(HBrErrorKind::SolNotFound(id.to_string()))),
+            None => Err(HBrError::SolNotFound(id.to_string())),
         }
     }
     // Cleanup methods

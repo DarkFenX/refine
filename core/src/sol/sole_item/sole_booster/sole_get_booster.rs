@@ -16,16 +16,6 @@ pub enum GetBoosterError {
     ItemNotFound(ItemFoundError),
     ItemIsNotBooster(ItemKindMatchError),
 }
-impl From<ItemFoundError> for GetBoosterError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for GetBoosterError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotBooster(error)
-    }
-}
 impl std::error::Error for GetBoosterError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -40,5 +30,15 @@ impl std::fmt::Display for GetBoosterError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotBooster(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for GetBoosterError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for GetBoosterError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotBooster(error)
     }
 }

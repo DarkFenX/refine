@@ -26,16 +26,6 @@ pub enum SetFitCharacterStateError {
     FitNotFound(FitFoundError),
     FitHasNoCharacter(FitHasItemKindError),
 }
-impl From<FitFoundError> for SetFitCharacterStateError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FitHasItemKindError> for SetFitCharacterStateError {
-    fn from(error: FitHasItemKindError) -> Self {
-        Self::FitHasNoCharacter(error)
-    }
-}
 impl std::error::Error for SetFitCharacterStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -50,5 +40,15 @@ impl std::fmt::Display for SetFitCharacterStateError {
             Self::FitNotFound(e) => e.fmt(f),
             Self::FitHasNoCharacter(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for SetFitCharacterStateError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<FitHasItemKindError> for SetFitCharacterStateError {
+    fn from(error: FitHasItemKindError) -> Self {
+        Self::FitHasNoCharacter(error)
     }
 }

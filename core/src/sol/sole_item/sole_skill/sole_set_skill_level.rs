@@ -28,21 +28,6 @@ pub enum SetSkillLevelError {
     ItemIsNotSkill(ItemKindMatchError),
     SkillLevelError(SkillLevelError),
 }
-impl From<SkillLevelError> for SetSkillLevelError {
-    fn from(error: SkillLevelError) -> Self {
-        Self::SkillLevelError(error)
-    }
-}
-impl From<ItemFoundError> for SetSkillLevelError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetSkillLevelError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotSkill(error)
-    }
-}
 impl std::error::Error for SetSkillLevelError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -59,5 +44,20 @@ impl std::fmt::Display for SetSkillLevelError {
             Self::ItemIsNotSkill(e) => e.fmt(f),
             Self::SkillLevelError(e) => e.fmt(f),
         }
+    }
+}
+impl From<SkillLevelError> for SetSkillLevelError {
+    fn from(error: SkillLevelError) -> Self {
+        Self::SkillLevelError(error)
+    }
+}
+impl From<ItemFoundError> for SetSkillLevelError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for SetSkillLevelError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotSkill(error)
     }
 }

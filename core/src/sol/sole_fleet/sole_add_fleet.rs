@@ -15,11 +15,6 @@ impl SolarSystem {
 pub enum AddFleetError {
     FleetIdAllocFailed(FleetAllocError),
 }
-impl From<FleetAllocError> for AddFleetError {
-    fn from(error: FleetAllocError) -> Self {
-        Self::FleetIdAllocFailed(error)
-    }
-}
 impl std::error::Error for AddFleetError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -32,5 +27,10 @@ impl std::fmt::Display for AddFleetError {
         match self {
             Self::FleetIdAllocFailed(e) => e.fmt(f),
         }
+    }
+}
+impl From<FleetAllocError> for AddFleetError {
+    fn from(error: FleetAllocError) -> Self {
+        Self::FleetIdAllocFailed(error)
     }
 }

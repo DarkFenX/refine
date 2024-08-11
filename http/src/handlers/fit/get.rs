@@ -6,10 +6,10 @@ use axum::{
 };
 
 use crate::{
-    bridge::HBrErrorKind,
+    bridge::HBrError,
     handlers::{fit::HFitInfoParams, get_guarded_sol, HGSolResult, HSingleErr},
     state::HAppState,
-    util::HExecErrorKind,
+    util::HExecError,
 };
 
 pub(crate) async fn get_fit(
@@ -29,13 +29,11 @@ pub(crate) async fn get_fit(
     {
         Ok(fit_info) => (StatusCode::OK, Json(fit_info)).into_response(),
         Err(bridge_error) => {
-            let code = match &bridge_error.kind {
-                HBrErrorKind::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrErrorKind::ExecFailed(exec_error) => match &exec_error.kind {
-                    HExecErrorKind::CoreError(core_error) => match core_error.get_kind() {
-                        rc::ErrorKind::FitNotFound(_) => StatusCode::NOT_FOUND,
-                        _ => StatusCode::INTERNAL_SERVER_ERROR,
-                    },
+            let code = match &bridge_error {
+                HBrError::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
+                HBrError::ExecFailed(exec_error) => match exec_error {
+                    HExecError::FitNotFoundPrimary(_) => StatusCode::NOT_FOUND,
+                    _ => StatusCode::INTERNAL_SERVER_ERROR,
                 },
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };

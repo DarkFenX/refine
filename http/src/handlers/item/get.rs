@@ -6,10 +6,10 @@ use axum::{
 };
 
 use crate::{
-    bridge::HBrErrorKind,
+    bridge::HBrError,
     handlers::{get_guarded_sol, item::HItemInfoParams, HGSolResult, HSingleErr},
     state::HAppState,
-    util::HExecErrorKind,
+    util::HExecError,
 };
 
 pub(crate) async fn get_item(
@@ -24,13 +24,11 @@ pub(crate) async fn get_item(
     let resp = match guarded_sol.lock().await.get_item(&item_id, params.item.into()).await {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),
         Err(bridge_error) => {
-            let code = match &bridge_error.kind {
-                HBrErrorKind::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrErrorKind::ExecFailed(exec_error) => match &exec_error.kind {
-                    HExecErrorKind::CoreError(core_error) => match core_error.get_kind() {
-                        rc::ErrorKind::ItemNotFound(_) => StatusCode::NOT_FOUND,
-                        _ => StatusCode::INTERNAL_SERVER_ERROR,
-                    },
+            let code = match &bridge_error {
+                HBrError::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
+                HBrError::ExecFailed(exec_error) => match exec_error {
+                    HExecError::ItemNotFoundPrimary(_) => StatusCode::NOT_FOUND,
+                    _ => StatusCode::INTERNAL_SERVER_ERROR,
                 },
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };

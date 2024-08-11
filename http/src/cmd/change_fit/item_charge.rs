@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_item, HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -12,7 +12,7 @@ pub(crate) struct HChangeChargeCmd {
     item_cmd: change_item::HChangeChargeCmd,
 }
 impl HChangeChargeCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

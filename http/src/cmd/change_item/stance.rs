@@ -3,7 +3,7 @@ use crate::{
         shared::{apply_effect_modes, HEffectModeMap},
         HCmdResp,
     },
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -19,9 +19,14 @@ impl HChangeStanceCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> HExecResult<HCmdResp> {
+    ) -> Result<HCmdResp, HExecError> {
         if let Some(state) = self.state {
-            core_sol.set_stance_state(item_id, state)?;
+            if let Err(error) = core_sol.set_stance_state(item_id, state) {
+                return Err(match error {
+                    rc::err::SetStanceStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::SetStanceStateError::ItemIsNotStance(e) => HExecError::ItemKindMismatch(e),
+                });
+            }
         }
         apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)

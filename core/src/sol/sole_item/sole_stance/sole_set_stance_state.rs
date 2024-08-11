@@ -20,16 +20,6 @@ pub enum SetStanceStateError {
     ItemNotFound(ItemFoundError),
     ItemIsNotStance(ItemKindMatchError),
 }
-impl From<ItemFoundError> for SetStanceStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetStanceStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotStance(error)
-    }
-}
 impl std::error::Error for SetStanceStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -44,5 +34,15 @@ impl std::fmt::Display for SetStanceStateError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotStance(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for SetStanceStateError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for SetStanceStateError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotStance(error)
     }
 }

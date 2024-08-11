@@ -6,7 +6,7 @@ use axum::{
 };
 
 use crate::{
-    bridge::HBrErrorKind,
+    bridge::HBrError,
     handlers::{sol::HSolInfoParams, HSingleErr},
     state::HAppState,
 };
@@ -36,9 +36,9 @@ pub(crate) async fn create_sol(
             (StatusCode::CREATED, Json(sol_info)).into_response()
         }
         Err(e) => {
-            let code = match e.kind {
-                HBrErrorKind::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
-                HBrErrorKind::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
+            let code = match e {
+                HBrError::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                HBrError::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(HSingleErr::from(e))).into_response()

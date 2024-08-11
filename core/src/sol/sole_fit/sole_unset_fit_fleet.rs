@@ -1,6 +1,6 @@
 use crate::{
     defs::SolFitId,
-    err::basic::{FitFleetAssignedError, FitFoundError, FleetFoundError},
+    err::basic::{FitFleetAssignedError, FitFoundError},
     sol::{SolView, SolarSystem},
 };
 
@@ -28,29 +28,12 @@ impl SolarSystem {
 #[derive(Debug)]
 pub enum UnsetFitFleetError {
     FitNotFound(FitFoundError),
-    FleetNotFound(FleetFoundError),
     FitHasNoFleet(FitFleetAssignedError),
-}
-impl From<FitFoundError> for UnsetFitFleetError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FleetFoundError> for UnsetFitFleetError {
-    fn from(error: FleetFoundError) -> Self {
-        Self::FleetNotFound(error)
-    }
-}
-impl From<FitFleetAssignedError> for UnsetFitFleetError {
-    fn from(error: FitFleetAssignedError) -> Self {
-        Self::FitHasNoFleet(error)
-    }
 }
 impl std::error::Error for UnsetFitFleetError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::FitNotFound(e) => Some(e),
-            Self::FleetNotFound(e) => Some(e),
             Self::FitHasNoFleet(e) => Some(e),
         }
     }
@@ -59,8 +42,17 @@ impl std::fmt::Display for UnsetFitFleetError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::FitNotFound(e) => e.fmt(f),
-            Self::FleetNotFound(e) => e.fmt(f),
             Self::FitHasNoFleet(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for UnsetFitFleetError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<FitFleetAssignedError> for UnsetFitFleetError {
+    fn from(error: FitFleetAssignedError) -> Self {
+        Self::FitHasNoFleet(error)
     }
 }

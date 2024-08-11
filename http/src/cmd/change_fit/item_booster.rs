@@ -4,7 +4,7 @@ use crate::{
         shared::{apply_side_effects, HSideEffectMap},
         HCmdResp,
     },
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -21,13 +21,21 @@ impl HAddBoosterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<rc::SolBoosterInfo> {
-        let info = core_sol.add_booster(*fit_id, self.type_id, self.state.unwrap_or(true))?;
-        if self.side_effects.is_none() {
-            return Ok(info);
+    ) -> Result<rc::SolBoosterInfo, HExecError> {
+        let core_booster = match core_sol.add_booster(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+            Ok(core_booster) => core_booster,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::AddBoosterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::AddBoosterError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                })
+            }
         };
-        apply_side_effects(core_sol, &info.id, &self.side_effects)?;
-        let info = core_sol.get_booster(&info.id)?;
+        if self.side_effects.is_none() {
+            return Ok(core_booster);
+        };
+        apply_side_effects(core_sol, &core_booster.id, &self.side_effects)?;
+        let info = core_sol.get_booster(&core_booster.id).unwrap();
         Ok(info)
     }
 }
@@ -41,7 +49,7 @@ pub(crate) struct HChangeBoosterCmd {
     item_cmd: change_item::HChangeBoosterCmd,
 }
 impl HChangeBoosterCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

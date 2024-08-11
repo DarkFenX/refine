@@ -16,16 +16,6 @@ pub enum GetAutochargeError {
     ItemNotFound(ItemFoundError),
     ItemIsNotAutocharge(ItemKindMatchError),
 }
-impl From<ItemFoundError> for GetAutochargeError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for GetAutochargeError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotAutocharge(error)
-    }
-}
 impl std::error::Error for GetAutochargeError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -40,5 +30,15 @@ impl std::fmt::Display for GetAutochargeError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotAutocharge(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for GetAutochargeError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for GetAutochargeError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotAutocharge(error)
     }
 }

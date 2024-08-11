@@ -3,7 +3,7 @@ use crate::{
         shared::{apply_effect_modes, HEffectModeMap},
         HCmdResp,
     },
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -20,12 +20,23 @@ impl HChangeSkillCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> HExecResult<HCmdResp> {
+    ) -> Result<HCmdResp, HExecError> {
         if let Some(level) = self.level {
-            core_sol.set_skill_level(item_id, level)?;
+            if let Err(error) = core_sol.set_skill_level(item_id, level) {
+                return Err(match error {
+                    rc::err::SetSkillLevelError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::SetSkillLevelError::ItemIsNotSkill(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::SetSkillLevelError::SkillLevelError(e) => HExecError::InvalidSkillLevel(e),
+                });
+            }
         }
         if let Some(state) = self.state {
-            core_sol.set_skill_state(item_id, state)?;
+            if let Err(error) = core_sol.set_skill_state(item_id, state) {
+                return Err(match error {
+                    rc::err::SetSkillStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::SetSkillStateError::ItemIsNotSkill(e) => HExecError::ItemKindMismatch(e),
+                });
+            }
         }
         apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)

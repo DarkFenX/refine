@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_item, HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -13,9 +13,17 @@ impl HSetShipCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<rc::SolShipInfo> {
-        let info = core_sol.set_fit_ship(*fit_id, self.type_id, self.state.unwrap_or(true))?;
-        Ok(info)
+    ) -> Result<rc::SolShipInfo, HExecError> {
+        let core_ship = match core_sol.set_fit_ship(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+            Ok(core_ship) => core_ship,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::SetFitShipError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::SetFitShipError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                })
+            }
+        };
+        Ok(core_ship)
     }
 }
 
@@ -30,7 +38,7 @@ impl HChangeShipCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<HCmdResp> {
+    ) -> Result<HCmdResp, HExecError> {
         match self {
             Self::ViaItemId(cmd) => cmd.execute(core_sol),
             Self::ViaFitId(cmd) => cmd.execute(core_sol, fit_id),
@@ -47,7 +55,7 @@ pub(crate) struct HChangeShipViaItemIdCmd {
     item_cmd: change_item::HChangeShipCmd,
 }
 impl HChangeShipViaItemIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -62,8 +70,18 @@ impl HChangeShipViaFitIdCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<HCmdResp> {
-        let item_id = core_sol.get_fit_ship(fit_id)?.id;
+    ) -> Result<HCmdResp, HExecError> {
+        let item_id = match core_sol.get_fit_ship(fit_id) {
+            Ok(core_ship) => match core_ship {
+                Some(core_ship) => core_ship.id,
+                None => return Err(HExecError::FitShipNotFound(*fit_id)),
+            },
+            Err(error) => {
+                return Err(match error {
+                    rc::err::GetFitShipError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                })
+            }
+        };
         self.item_cmd.execute(core_sol, &item_id)
     }
 }

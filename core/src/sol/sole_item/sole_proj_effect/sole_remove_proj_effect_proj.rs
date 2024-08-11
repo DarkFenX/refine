@@ -37,21 +37,6 @@ pub enum RemoveProjEffectProjError {
     ProjectorIsNotProjEffect(ItemKindMatchError),
     ProjectionNotFound(ProjFoundError),
 }
-impl From<ItemFoundError> for RemoveProjEffectProjError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ProjectorNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveProjEffectProjError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ProjectorIsNotProjEffect(error)
-    }
-}
-impl From<ProjFoundError> for RemoveProjEffectProjError {
-    fn from(error: ProjFoundError) -> Self {
-        Self::ProjectionNotFound(error)
-    }
-}
 impl std::error::Error for RemoveProjEffectProjError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -68,5 +53,20 @@ impl std::fmt::Display for RemoveProjEffectProjError {
             Self::ProjectorIsNotProjEffect(e) => e.fmt(f),
             Self::ProjectionNotFound(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for RemoveProjEffectProjError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ProjectorNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for RemoveProjEffectProjError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ProjectorIsNotProjEffect(error)
+    }
+}
+impl From<ProjFoundError> for RemoveProjEffectProjError {
+    fn from(error: ProjFoundError) -> Self {
+        Self::ProjectionNotFound(error)
     }
 }

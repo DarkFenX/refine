@@ -3,7 +3,7 @@ use crate::{
         shared::{apply_effect_modes, HEffectModeMap},
         HCmdResp,
     },
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -19,9 +19,14 @@ impl HChangeSubsystemCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> HExecResult<HCmdResp> {
+    ) -> Result<HCmdResp, HExecError> {
         if let Some(state) = self.state {
-            core_sol.set_subsystem_state(item_id, state)?;
+            if let Err(error) = core_sol.set_subsystem_state(item_id, state) {
+                return Err(match error {
+                    rc::err::SetSubsystemStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::SetSubsystemStateError::ItemIsNotSubsystem(e) => HExecError::ItemKindMismatch(e),
+                });
+            }
         }
         apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)

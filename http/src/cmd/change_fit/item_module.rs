@@ -1,7 +1,7 @@
 use crate::{
     cmd::{change_item, shared::HAddMode, HCmdResp},
     shared::{HModRack, HState},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -17,16 +17,25 @@ impl HAddModuleCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<rc::SolModuleInfo> {
-        let info = core_sol.add_module(
+    ) -> Result<rc::SolModuleInfo, HExecError> {
+        let core_module = match core_sol.add_module(
             *fit_id,
             (&self.rack).into(),
             (&self.add_mode).into(),
             self.type_id,
             (&self.state).into(),
             self.charge_type_id,
-        )?;
-        Ok(info)
+        ) {
+            Ok(core_module) => core_module,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::AddModuleError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::AddModuleError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                    rc::err::AddModuleError::SlotTaken(e) => HExecError::ModuleSlotTaken(e),
+                })
+            }
+        };
+        Ok(core_module)
     }
 }
 
@@ -39,7 +48,7 @@ pub(crate) struct HChangeModuleCmd {
     item_cmd: change_item::HChangeModuleCmd,
 }
 impl HChangeModuleCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

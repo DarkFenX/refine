@@ -15,11 +15,6 @@ impl SolarSystem {
 pub enum GetFleetError {
     FleetNotFound(FleetFoundError),
 }
-impl From<FleetFoundError> for GetFleetError {
-    fn from(error: FleetFoundError) -> Self {
-        Self::FleetNotFound(error)
-    }
-}
 impl std::error::Error for GetFleetError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -32,5 +27,10 @@ impl std::fmt::Display for GetFleetError {
         match self {
             Self::FleetNotFound(e) => e.fmt(f),
         }
+    }
+}
+impl From<FleetFoundError> for GetFleetError {
+    fn from(error: FleetFoundError) -> Self {
+        Self::FleetNotFound(error)
     }
 }

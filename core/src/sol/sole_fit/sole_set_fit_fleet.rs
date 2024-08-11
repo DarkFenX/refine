@@ -41,16 +41,6 @@ pub enum SetFitFleetError {
     FitNotFound(FitFoundError),
     FleetNotFound(FleetFoundError),
 }
-impl From<FitFoundError> for SetFitFleetError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FleetFoundError> for SetFitFleetError {
-    fn from(error: FleetFoundError) -> Self {
-        Self::FleetNotFound(error)
-    }
-}
 impl std::error::Error for SetFitFleetError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -65,5 +55,15 @@ impl std::fmt::Display for SetFitFleetError {
             Self::FitNotFound(e) => e.fmt(f),
             Self::FleetNotFound(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for SetFitFleetError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<FleetFoundError> for SetFitFleetError {
+    fn from(error: FleetFoundError) -> Self {
+        Self::FleetNotFound(error)
     }
 }

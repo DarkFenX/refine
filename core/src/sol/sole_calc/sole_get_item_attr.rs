@@ -21,15 +21,6 @@ pub enum GetItemAttrError {
     ItemNotLoaded(ItemLoadedError),
     AttrMetaNotFound(AttrMetaFoundError),
 }
-impl From<AttrCalcError> for GetItemAttrError {
-    fn from(error: AttrCalcError) -> Self {
-        match error {
-            AttrCalcError::ItemNotFound(e) => Self::ItemNotFound(e),
-            AttrCalcError::ItemNotLoaded(e) => Self::ItemNotLoaded(e),
-            AttrCalcError::AttrMetaNotFound(e) => Self::AttrMetaNotFound(e),
-        }
-    }
-}
 impl std::error::Error for GetItemAttrError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -45,6 +36,15 @@ impl std::fmt::Display for GetItemAttrError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemNotLoaded(e) => e.fmt(f),
             Self::AttrMetaNotFound(e) => e.fmt(f),
+        }
+    }
+}
+impl From<AttrCalcError> for GetItemAttrError {
+    fn from(error: AttrCalcError) -> Self {
+        match error {
+            AttrCalcError::ItemNotFound(e) => Self::ItemNotFound(e),
+            AttrCalcError::ItemNotLoaded(e) => Self::ItemNotLoaded(e),
+            AttrCalcError::AttrMetaNotFound(e) => Self::AttrMetaNotFound(e),
         }
     }
 }

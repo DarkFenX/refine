@@ -61,11 +61,6 @@ pub enum AddModuleProjError {
     ProjecteeCantTakeProjs(ItemReceiveProjError),
     ProjectionAlreadyExists(ProjNotFoundError),
 }
-impl From<ProjNotFoundError> for AddModuleProjError {
-    fn from(error: ProjNotFoundError) -> Self {
-        Self::ProjectionAlreadyExists(error)
-    }
-}
 impl std::error::Error for AddModuleProjError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -86,5 +81,10 @@ impl std::fmt::Display for AddModuleProjError {
             Self::ProjecteeCantTakeProjs(e) => e.fmt(f),
             Self::ProjectionAlreadyExists(e) => e.fmt(f),
         }
+    }
+}
+impl From<ProjNotFoundError> for AddModuleProjError {
+    fn from(error: ProjNotFoundError) -> Self {
+        Self::ProjectionAlreadyExists(error)
     }
 }

@@ -3,7 +3,7 @@ use crate::{
         shared::{apply_effect_modes, HEffectModeMap},
         HCmdResp,
     },
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -18,7 +18,7 @@ impl HChangeChargeCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> HExecResult<HCmdResp> {
+    ) -> Result<HCmdResp, HExecError> {
         apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)
     }

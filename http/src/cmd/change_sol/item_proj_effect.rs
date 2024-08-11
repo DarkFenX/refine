@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_item, HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -9,9 +9,16 @@ pub(crate) struct HAddProjEffectCmd {
     state: Option<bool>,
 }
 impl HAddProjEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<rc::SolProjEffectInfo> {
-        let info = core_sol.add_proj_effect(self.type_id, self.state.unwrap_or(true))?;
-        Ok(info)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolProjEffectInfo, HExecError> {
+        let proj_effect = match core_sol.add_proj_effect(self.type_id, self.state.unwrap_or(true)) {
+            Ok(proj_effect) => proj_effect,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::AddProjEffectError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                })
+            }
+        };
+        Ok(proj_effect)
     }
 }
 
@@ -24,7 +31,7 @@ pub(crate) struct HChangeProjEffectCmd {
     item_cmd: change_item::HChangeProjEffectCmd,
 }
 impl HChangeProjEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

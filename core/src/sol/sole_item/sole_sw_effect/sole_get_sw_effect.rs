@@ -16,16 +16,6 @@ pub enum GetSwEffectError {
     ItemNotFound(ItemFoundError),
     ItemIsNotSwEffect(ItemKindMatchError),
 }
-impl From<ItemFoundError> for GetSwEffectError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for GetSwEffectError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotSwEffect(error)
-    }
-}
 impl std::error::Error for GetSwEffectError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -40,5 +30,15 @@ impl std::fmt::Display for GetSwEffectError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotSwEffect(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for GetSwEffectError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for GetSwEffectError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotSwEffect(error)
     }
 }

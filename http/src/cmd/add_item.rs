@@ -1,7 +1,7 @@
 use crate::{
     cmd::change_sol,
     info::{HItemInfo, HItemInfoMode, MkItemInfo},
-    util::HExecResult,
+    util::HExecError,
 };
 
 // Endpoint to add items provides no context just like solar system endpoint, so largely reuse
@@ -25,7 +25,11 @@ pub(crate) enum HAddItemCommand {
     ProjEffect(change_sol::HAddProjEffectCmd),
 }
 impl HAddItemCommand {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, item_mode: HItemInfoMode) -> HExecResult<HItemInfo> {
+    pub(crate) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+        item_mode: HItemInfoMode,
+    ) -> Result<HItemInfo, HExecError> {
         match self {
             Self::Character(cmd) => {
                 let core_info = cmd.execute(core_sol)?;

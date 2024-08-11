@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_item, HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -13,9 +13,17 @@ impl HSetCharacterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<rc::SolCharacterInfo> {
-        let info = core_sol.set_fit_character(*fit_id, self.type_id, self.state.unwrap_or(true))?;
-        Ok(info)
+    ) -> Result<rc::SolCharacterInfo, HExecError> {
+        let core_character = match core_sol.set_fit_character(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+            Ok(core_character) => core_character,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::SetFitCharacterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::SetFitCharacterError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                })
+            }
+        };
+        Ok(core_character)
     }
 }
 
@@ -30,7 +38,7 @@ impl HChangeCharacterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<HCmdResp> {
+    ) -> Result<HCmdResp, HExecError> {
         match self {
             Self::ViaItemId(cmd) => cmd.execute(core_sol),
             Self::ViaFitId(cmd) => cmd.execute(core_sol, fit_id),
@@ -47,7 +55,7 @@ pub(crate) struct HChangeCharacterViaItemIdCmd {
     item_cmd: change_item::HChangeCharacterCmd,
 }
 impl HChangeCharacterViaItemIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -62,8 +70,18 @@ impl HChangeCharacterViaFitIdCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<HCmdResp> {
-        let item_id = core_sol.get_fit_character(fit_id)?.id;
+    ) -> Result<HCmdResp, HExecError> {
+        let item_id = match core_sol.get_fit_character(fit_id) {
+            Ok(core_character) => match core_character {
+                Some(core_character) => core_character.id,
+                None => return Err(HExecError::FitCharacterNotFound(*fit_id)),
+            },
+            Err(error) => {
+                return Err(match error {
+                    rc::err::GetFitCharacterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                })
+            }
+        };
         self.item_cmd.execute(core_sol, &item_id)
     }
 }

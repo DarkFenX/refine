@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_item, HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -13,9 +13,17 @@ impl HSetStanceCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<rc::SolStanceInfo> {
-        let info = core_sol.set_fit_stance(*fit_id, self.type_id, self.state.unwrap_or(true))?;
-        Ok(info)
+    ) -> Result<rc::SolStanceInfo, HExecError> {
+        let core_stance = match core_sol.set_fit_stance(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+            Ok(core_stance) => core_stance,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::SetFitStanceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::SetFitStanceError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                })
+            }
+        };
+        Ok(core_stance)
     }
 }
 
@@ -30,7 +38,7 @@ impl HChangeStanceCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<HCmdResp> {
+    ) -> Result<HCmdResp, HExecError> {
         match self {
             Self::ViaItemId(cmd) => cmd.execute(core_sol),
             Self::ViaFitId(cmd) => cmd.execute(core_sol, fit_id),
@@ -47,7 +55,7 @@ pub(crate) struct HChangeStanceViaItemIdCmd {
     item_cmd: change_item::HChangeStanceCmd,
 }
 impl HChangeStanceViaItemIdCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -62,8 +70,18 @@ impl HChangeStanceViaFitIdCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<HCmdResp> {
-        let item_id = core_sol.get_fit_stance(fit_id)?.id;
+    ) -> Result<HCmdResp, HExecError> {
+        let item_id = match core_sol.get_fit_stance(fit_id) {
+            Ok(core_stance) => match core_stance {
+                Some(core_stance) => core_stance.id,
+                None => return Err(HExecError::FitStanceNotFound(*fit_id)),
+            },
+            Err(error) => {
+                return Err(match error {
+                    rc::err::GetFitStanceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                })
+            }
+        };
         self.item_cmd.execute(core_sol, &item_id)
     }
 }

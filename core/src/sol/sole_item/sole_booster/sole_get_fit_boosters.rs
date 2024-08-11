@@ -20,11 +20,6 @@ impl SolarSystem {
 pub enum GetFitBoostersError {
     FitNotFound(FitFoundError),
 }
-impl From<FitFoundError> for GetFitBoostersError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
 impl std::error::Error for GetFitBoostersError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -37,5 +32,10 @@ impl std::fmt::Display for GetFitBoostersError {
         match self {
             Self::FitNotFound(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for GetFitBoostersError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
     }
 }

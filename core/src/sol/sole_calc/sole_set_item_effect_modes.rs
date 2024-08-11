@@ -28,11 +28,6 @@ impl SolarSystem {
 pub enum SetItemEffectModesError {
     ItemNotFound(ItemFoundError),
 }
-impl From<ItemFoundError> for SetItemEffectModesError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
 impl std::error::Error for SetItemEffectModesError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -45,5 +40,10 @@ impl std::fmt::Display for SetItemEffectModesError {
         match self {
             Self::ItemNotFound(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for SetItemEffectModesError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
     }
 }

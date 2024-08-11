@@ -22,16 +22,6 @@ pub enum RemoveCharacterError {
     ItemNotFound(ItemFoundError),
     ItemIsNotCharacter(ItemKindMatchError),
 }
-impl From<ItemFoundError> for RemoveCharacterError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveCharacterError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotCharacter(error)
-    }
-}
 impl std::error::Error for RemoveCharacterError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -46,5 +36,15 @@ impl std::fmt::Display for RemoveCharacterError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotCharacter(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for RemoveCharacterError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for RemoveCharacterError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotCharacter(error)
     }
 }

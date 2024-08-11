@@ -16,16 +16,6 @@ pub enum GetImplantError {
     ItemNotFound(ItemFoundError),
     ItemIsNotImplant(ItemKindMatchError),
 }
-impl From<ItemFoundError> for GetImplantError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for GetImplantError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotImplant(error)
-    }
-}
 impl std::error::Error for GetImplantError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -40,5 +30,15 @@ impl std::fmt::Display for GetImplantError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotImplant(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for GetImplantError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for GetImplantError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotImplant(error)
     }
 }

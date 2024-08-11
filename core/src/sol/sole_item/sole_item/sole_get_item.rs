@@ -15,11 +15,6 @@ impl SolarSystem {
 pub enum GetItemError {
     ItemNotFound(ItemFoundError),
 }
-impl From<ItemFoundError> for GetItemError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
 impl std::error::Error for GetItemError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -32,5 +27,10 @@ impl std::fmt::Display for GetItemError {
         match self {
             Self::ItemNotFound(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for GetItemError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
     }
 }

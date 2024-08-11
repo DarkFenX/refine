@@ -1,7 +1,7 @@
 use crate::util::HExecError;
 
 #[derive(Debug)]
-pub(crate) enum HBrErrorKind {
+pub(crate) enum HBrError {
     SrcAliasNotAvailable(String),
     SrcNotFound(String),
     NoDefaultSrc,
@@ -15,58 +15,48 @@ pub(crate) enum HBrErrorKind {
     ExecFailed(HExecError),
     ExecBatchFailed(usize, HExecError),
 }
-
-#[derive(Debug)]
-pub(crate) struct HBrError {
-    pub(crate) kind: HBrErrorKind,
-}
 impl HBrError {
-    pub(crate) fn new(kind: HBrErrorKind) -> Self {
-        Self { kind }
-    }
     pub(crate) fn from_exec_batch(idx: usize, error: HExecError) -> Self {
-        Self::new(HBrErrorKind::ExecBatchFailed(idx, error))
+        Self::ExecBatchFailed(idx, error)
     }
     pub(crate) fn get_code(&self) -> String {
-        match &self.kind {
-            HBrErrorKind::SrcAliasNotAvailable(_) => "SRC-001".to_string(),
-            HBrErrorKind::SrcNotFound(_) => "SRC-002".to_string(),
-            HBrErrorKind::NoDefaultSrc => "SRC-003".to_string(),
-            HBrErrorKind::SolNotFound(_) => "SOL-001".to_string(),
-            HBrErrorKind::NoCoreSol => "SOL-002".to_string(),
-            HBrErrorKind::FitIdCastFailed(_) => "IDC-001".to_string(),
-            HBrErrorKind::FleetIdCastFailed(_) => "IDC-002".to_string(),
-            HBrErrorKind::ItemIdCastFailed(_) => "IDC-003".to_string(),
-            HBrErrorKind::EdhInitFailed(_) => "EDH-001".to_string(),
-            HBrErrorKind::SrcInitFailed(_) => "SIN-001".to_string(),
-            HBrErrorKind::ExecFailed(e) => e.get_code(),
-            HBrErrorKind::ExecBatchFailed(_, e) => e.get_code(),
+        match self {
+            Self::SrcAliasNotAvailable(_) => "SRC-001".to_string(),
+            Self::SrcNotFound(_) => "SRC-002".to_string(),
+            Self::NoDefaultSrc => "SRC-003".to_string(),
+            Self::SolNotFound(_) => "SOL-001".to_string(),
+            Self::NoCoreSol => "SOL-002".to_string(),
+            Self::FitIdCastFailed(_) => "IDC-001".to_string(),
+            Self::FleetIdCastFailed(_) => "IDC-002".to_string(),
+            Self::ItemIdCastFailed(_) => "IDC-003".to_string(),
+            Self::EdhInitFailed(_) => "EDH-001".to_string(),
+            Self::SrcInitFailed(_) => "SIN-001".to_string(),
+            Self::ExecFailed(e) => e.get_code(),
+            Self::ExecBatchFailed(_, e) => e.get_code(),
         }
     }
 }
 impl From<HExecError> for HBrError {
     fn from(exec_error: HExecError) -> Self {
-        Self::new(HBrErrorKind::ExecFailed(exec_error))
+        Self::ExecFailed(exec_error)
     }
 }
 impl std::error::Error for HBrError {}
 impl std::fmt::Display for HBrError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match &self.kind {
-            HBrErrorKind::SrcAliasNotAvailable(alias) => write!(f, "source alias \"{alias}\" is not available"),
-            HBrErrorKind::SrcNotFound(alias) => write!(f, "source with alias \"{alias}\" not found"),
-            HBrErrorKind::NoDefaultSrc => write!(f, "default source is not defined"),
-            HBrErrorKind::SolNotFound(id) => write!(f, "no solar system with ID \"{id}\""),
-            HBrErrorKind::NoCoreSol => write!(f, "unable to take core solar system"),
-            HBrErrorKind::FitIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
-            HBrErrorKind::FleetIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
-            HBrErrorKind::ItemIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
-            HBrErrorKind::EdhInitFailed(reason) => write!(f, "EVE data handler initialization failed: {reason}"),
-            HBrErrorKind::SrcInitFailed(reason) => write!(f, "source initialization failed: {reason}"),
-            HBrErrorKind::ExecFailed(e) => write!(f, "{e}"),
-            HBrErrorKind::ExecBatchFailed(i, e) => write!(f, "command #{} failed: {}", i + 1, e),
+        match self {
+            Self::SrcAliasNotAvailable(alias) => write!(f, "source alias \"{alias}\" is not available"),
+            Self::SrcNotFound(alias) => write!(f, "source with alias \"{alias}\" not found"),
+            Self::NoDefaultSrc => write!(f, "default source is not defined"),
+            Self::SolNotFound(id) => write!(f, "no solar system with ID \"{id}\""),
+            Self::NoCoreSol => write!(f, "unable to take core solar system"),
+            Self::FitIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
+            Self::FleetIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
+            Self::ItemIdCastFailed(s) => write!(f, "unable to cast string \"{s}\" to id"),
+            Self::EdhInitFailed(reason) => write!(f, "EVE data handler initialization failed: {reason}"),
+            Self::SrcInitFailed(reason) => write!(f, "source initialization failed: {reason}"),
+            Self::ExecFailed(e) => write!(f, "{e}"),
+            Self::ExecBatchFailed(i, e) => write!(f, "command #{} failed: {}", i + 1, e),
         }
     }
 }
-
-pub(crate) type HBrResult<T> = Result<T, HBrError>;

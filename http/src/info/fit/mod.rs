@@ -3,7 +3,7 @@ use id::HFitInfoId;
 
 use crate::{
     info::{HFitInfoMode, HItemInfoMode},
-    util::HExecResult,
+    util::HExecError,
 };
 
 mod full;
@@ -21,7 +21,7 @@ impl HFitInfo {
         fit_id: &rc::SolFitId,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> HExecResult<Self> {
+    ) -> Result<Self, HExecError> {
         let info = match fit_mode {
             HFitInfoMode::Id => Self::Id(HFitInfoId::mk_info(core_sol, fit_id)?),
             HFitInfoMode::Full => Self::Full(HFitInfoFull::mk_info(core_sol, fit_id, item_mode)?),

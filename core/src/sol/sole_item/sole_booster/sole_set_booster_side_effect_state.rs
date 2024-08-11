@@ -54,11 +54,6 @@ impl From<ItemKindMatchError> for SetBoosterSideEffectStateError {
         Self::ItemIsNotBooster(error)
     }
 }
-impl From<SideEffectError> for SetBoosterSideEffectStateError {
-    fn from(error: SideEffectError) -> Self {
-        Self::NotSideEffect(error)
-    }
-}
 impl std::error::Error for SetBoosterSideEffectStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -75,5 +70,10 @@ impl std::fmt::Display for SetBoosterSideEffectStateError {
             Self::ItemIsNotBooster(e) => e.fmt(f),
             Self::NotSideEffect(e) => e.fmt(f),
         }
+    }
+}
+impl From<SideEffectError> for SetBoosterSideEffectStateError {
+    fn from(error: SideEffectError) -> Self {
+        Self::NotSideEffect(error)
     }
 }

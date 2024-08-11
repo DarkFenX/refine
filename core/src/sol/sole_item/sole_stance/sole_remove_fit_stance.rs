@@ -22,16 +22,6 @@ pub enum RemoveFitStanceError {
     FitNotFound(FitFoundError),
     FitHasNoStance(FitHasItemKindError),
 }
-impl From<FitFoundError> for RemoveFitStanceError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FitHasItemKindError> for RemoveFitStanceError {
-    fn from(error: FitHasItemKindError) -> Self {
-        Self::FitHasNoStance(error)
-    }
-}
 impl std::error::Error for RemoveFitStanceError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -46,5 +36,15 @@ impl std::fmt::Display for RemoveFitStanceError {
             Self::FitNotFound(e) => e.fmt(f),
             Self::FitHasNoStance(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for RemoveFitStanceError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<FitHasItemKindError> for RemoveFitStanceError {
+    fn from(error: FitHasItemKindError) -> Self {
+        Self::FitHasNoStance(error)
     }
 }

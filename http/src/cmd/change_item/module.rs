@@ -4,7 +4,7 @@ use crate::{
         HCmdResp,
     },
     shared::HState,
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -29,26 +29,63 @@ impl HChangeModuleCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> HExecResult<HCmdResp> {
+    ) -> Result<HCmdResp, HExecError> {
         for proj_def in self.add_projs.iter() {
-            core_sol.add_module_proj(item_id, proj_def.get_item_id(), proj_def.get_range())?;
+            if let Err(error) = core_sol.add_module_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {
+                return Err(match error {
+                    rc::err::AddModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::AddModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::AddModuleProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                    rc::err::AddModuleProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                    rc::err::AddModuleProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
+                });
+            }
         }
         for proj_def in self.change_projs.iter() {
-            core_sol.change_module_proj(item_id, &proj_def.get_item_id(), proj_def.get_range())?;
+            if let Err(error) = core_sol.change_module_proj(item_id, &proj_def.get_item_id(), proj_def.get_range()) {
+                return Err(match error {
+                    rc::err::ChangeModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::ChangeModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::ChangeModuleProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+                });
+            }
         }
         for projectee_item_id in self.rm_projs.iter() {
-            core_sol.remove_module_proj(item_id, projectee_item_id)?;
+            if let Err(error) = core_sol.remove_module_proj(item_id, projectee_item_id) {
+                return Err(match error {
+                    rc::err::RemoveModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::RemoveModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::RemoveModuleProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+                });
+            }
         }
         if let Some(state) = &self.state {
-            core_sol.set_module_state(item_id, state.into())?;
+            if let Err(error) = core_sol.set_module_state(item_id, state.into()) {
+                return Err(match error {
+                    rc::err::SetModuleStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::SetModuleStateError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                });
+            };
         }
         if let Some(charge_opt) = &self.charge {
             match charge_opt {
                 Some(charge) => {
-                    core_sol.set_module_charge(item_id, *charge)?;
+                    if let Err(error) = core_sol.set_module_charge(item_id, *charge) {
+                        return Err(match error {
+                            rc::err::SetModuleChargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                            rc::err::SetModuleChargeError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                            rc::err::SetModuleChargeError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                        });
+                    }
                 }
                 None => {
-                    core_sol.remove_module_charge(item_id)?;
+                    if let Err(error) = core_sol.remove_module_charge(item_id) {
+                        return Err(match error {
+                            rc::err::RemoveModuleChargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                            rc::err::RemoveModuleChargeError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                            rc::err::RemoveModuleChargeError::ChargeNotSet(e) => HExecError::ChargeNotSet(e),
+                        });
+                    };
                 }
             }
         }

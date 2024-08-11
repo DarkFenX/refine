@@ -20,16 +20,6 @@ pub enum SetShipStateError {
     ItemNotFound(ItemFoundError),
     ItemIsNotShip(ItemKindMatchError),
 }
-impl From<ItemFoundError> for SetShipStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetShipStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotShip(error)
-    }
-}
 impl std::error::Error for SetShipStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -44,5 +34,15 @@ impl std::fmt::Display for SetShipStateError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotShip(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for SetShipStateError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for SetShipStateError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotShip(error)
     }
 }

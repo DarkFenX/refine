@@ -28,16 +28,6 @@ pub enum RemoveChargeError {
     ItemNotFound(ItemFoundError),
     ItemIsNotCharge(ItemKindMatchError),
 }
-impl From<ItemFoundError> for RemoveChargeError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveChargeError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotCharge(error)
-    }
-}
 impl std::error::Error for RemoveChargeError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -52,5 +42,15 @@ impl std::fmt::Display for RemoveChargeError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotCharge(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for RemoveChargeError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for RemoveChargeError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotCharge(error)
     }
 }

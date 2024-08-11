@@ -98,21 +98,6 @@ pub enum AddModuleError {
     ItemIdAllocFailed(ItemAllocError),
     SlotTaken(OrderedSlotError),
 }
-impl From<FitFoundError> for AddModuleError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<ItemAllocError> for AddModuleError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
-    }
-}
-impl From<OrderedSlotError> for AddModuleError {
-    fn from(error: OrderedSlotError) -> Self {
-        Self::SlotTaken(error)
-    }
-}
 impl std::error::Error for AddModuleError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -129,5 +114,20 @@ impl std::fmt::Display for AddModuleError {
             Self::ItemIdAllocFailed(e) => e.fmt(f),
             Self::SlotTaken(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for AddModuleError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<ItemAllocError> for AddModuleError {
+    fn from(error: ItemAllocError) -> Self {
+        Self::ItemIdAllocFailed(error)
+    }
+}
+impl From<OrderedSlotError> for AddModuleError {
+    fn from(error: OrderedSlotError) -> Self {
+        Self::SlotTaken(error)
     }
 }

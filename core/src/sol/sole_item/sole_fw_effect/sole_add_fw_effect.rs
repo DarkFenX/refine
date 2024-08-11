@@ -32,16 +32,6 @@ pub enum AddFwEffectError {
     FitNotFound(FitFoundError),
     ItemIdAllocFailed(ItemAllocError),
 }
-impl From<FitFoundError> for AddFwEffectError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<ItemAllocError> for AddFwEffectError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
-    }
-}
 impl std::error::Error for AddFwEffectError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -56,5 +46,15 @@ impl std::fmt::Display for AddFwEffectError {
             Self::FitNotFound(e) => e.fmt(f),
             Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for AddFwEffectError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<ItemAllocError> for AddFwEffectError {
+    fn from(error: ItemAllocError) -> Self {
+        Self::ItemIdAllocFailed(error)
     }
 }

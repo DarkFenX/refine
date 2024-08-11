@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_item, HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -13,9 +13,17 @@ impl HAddFwEffectCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<rc::SolFwEffectInfo> {
-        let info = core_sol.add_fw_effect(*fit_id, self.type_id, self.state.unwrap_or(true))?;
-        Ok(info)
+    ) -> Result<rc::SolFwEffectInfo, HExecError> {
+        let core_fw_effect = match core_sol.add_fw_effect(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+            Ok(core_fw_effect) => core_fw_effect,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::AddFwEffectError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::AddFwEffectError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                })
+            }
+        };
+        Ok(core_fw_effect)
     }
 }
 
@@ -28,7 +36,7 @@ pub(crate) struct HChangeFwEffectCmd {
     item_cmd: change_item::HChangeFwEffectCmd,
 }
 impl HChangeFwEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

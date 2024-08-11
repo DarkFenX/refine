@@ -6,11 +6,11 @@ use axum::{
 };
 
 use crate::{
-    bridge::HBrErrorKind,
+    bridge::HBrError,
     cmd::HAddItemCommand,
     handlers::{get_guarded_sol, item::HItemInfoParams, HGSolResult, HSingleErr},
     state::HAppState,
-    util::HExecErrorKind,
+    util::HExecError,
 };
 
 pub(crate) async fn create_item(
@@ -26,12 +26,10 @@ pub(crate) async fn create_item(
     let resp = match guarded_sol.lock().await.add_item(payload, params.item.into()).await {
         Ok(item_info) => (StatusCode::CREATED, Json(item_info)).into_response(),
         Err(bridge_error) => {
-            let code = match &bridge_error.kind {
-                HBrErrorKind::ExecFailed(exec_error) => match &exec_error.kind {
-                    HExecErrorKind::CoreError(core_error) => match core_error.get_kind() {
-                        rc::ErrorKind::ItemIdAllocFailed => StatusCode::SERVICE_UNAVAILABLE,
-                        _ => StatusCode::INTERNAL_SERVER_ERROR,
-                    },
+            let code = match &bridge_error {
+                HBrError::ExecFailed(exec_error) => match exec_error {
+                    HExecError::ItemCapacityReached(_) => StatusCode::SERVICE_UNAVAILABLE,
+                    _ => StatusCode::INTERNAL_SERVER_ERROR,
                 },
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };

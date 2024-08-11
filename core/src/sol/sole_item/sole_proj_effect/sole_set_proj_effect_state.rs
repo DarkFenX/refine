@@ -20,16 +20,6 @@ pub enum SetProjEffectStateError {
     ItemNotFound(ItemFoundError),
     ItemIsNotProjEffect(ItemKindMatchError),
 }
-impl From<ItemFoundError> for SetProjEffectStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetProjEffectStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotProjEffect(error)
-    }
-}
 impl std::error::Error for SetProjEffectStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -44,5 +34,15 @@ impl std::fmt::Display for SetProjEffectStateError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotProjEffect(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for SetProjEffectStateError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for SetProjEffectStateError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotProjEffect(error)
     }
 }

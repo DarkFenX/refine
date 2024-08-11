@@ -6,7 +6,7 @@ pub use sole_get_module::GetModuleError;
 pub use sole_remove_module::RemoveModuleError;
 pub use sole_remove_module_charge::RemoveModuleChargeError;
 pub use sole_remove_module_proj::RemoveModuleProjError;
-pub use sole_set_module_charge::AddSetModuleChargeError;
+pub use sole_set_module_charge::SetModuleChargeError;
 pub use sole_set_module_state::SetModuleStateError;
 
 mod misc;

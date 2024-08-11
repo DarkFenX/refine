@@ -5,16 +5,6 @@ pub(in crate::sol) enum LoadedItemFoundError {
     ItemNotFound(ItemFoundError),
     ItemNotLoaded(ItemLoadedError),
 }
-impl From<ItemFoundError> for LoadedItemFoundError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemLoadedError> for LoadedItemFoundError {
-    fn from(error: ItemLoadedError) -> Self {
-        Self::ItemNotLoaded(error)
-    }
-}
 impl std::error::Error for LoadedItemFoundError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -29,5 +19,15 @@ impl std::fmt::Display for LoadedItemFoundError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemNotLoaded(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for LoadedItemFoundError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemLoadedError> for LoadedItemFoundError {
+    fn from(error: ItemLoadedError) -> Self {
+        Self::ItemNotLoaded(error)
     }
 }

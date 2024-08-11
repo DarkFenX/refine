@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_item, HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -13,9 +13,17 @@ impl HAddSubsystemCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<rc::SolSubsystemInfo> {
-        let info = core_sol.add_subsystem(*fit_id, self.type_id, self.state.unwrap_or(true))?;
-        Ok(info)
+    ) -> Result<rc::SolSubsystemInfo, HExecError> {
+        let core_subsystem = match core_sol.add_subsystem(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+            Ok(core_subsystem) => core_subsystem,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::AddSubsystemError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::AddSubsystemError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                })
+            }
+        };
+        Ok(core_subsystem)
     }
 }
 
@@ -28,7 +36,7 @@ pub(crate) struct HChangeSubsystemCmd {
     item_cmd: change_item::HChangeSubsystemCmd,
 }
 impl HChangeSubsystemCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

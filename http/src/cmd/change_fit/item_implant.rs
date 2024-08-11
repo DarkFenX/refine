@@ -1,6 +1,6 @@
 use crate::{
     cmd::{change_item, HCmdResp},
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -13,9 +13,17 @@ impl HAddImplantCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
-    ) -> HExecResult<rc::SolImplantInfo> {
-        let info = core_sol.add_implant(*fit_id, self.type_id, self.state.unwrap_or(true))?;
-        Ok(info)
+    ) -> Result<rc::SolImplantInfo, HExecError> {
+        let core_implant = match core_sol.add_implant(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+            Ok(core_implant) => core_implant,
+            Err(error) => {
+                return Err(match error {
+                    rc::err::AddImplantError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::AddImplantError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
+                })
+            }
+        };
+        Ok(core_implant)
     }
 }
 
@@ -28,7 +36,7 @@ pub(crate) struct HChangeImplantCmd {
     item_cmd: change_item::HChangeImplantCmd,
 }
 impl HChangeImplantCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HExecResult<HCmdResp> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         self.item_cmd.execute(core_sol, &self.item_id)
     }
 }

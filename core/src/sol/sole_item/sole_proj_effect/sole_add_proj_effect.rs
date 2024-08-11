@@ -29,11 +29,6 @@ impl SolarSystem {
 pub enum AddProjEffectError {
     ItemIdAllocFailed(ItemAllocError),
 }
-impl From<ItemAllocError> for AddProjEffectError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
-    }
-}
 impl std::error::Error for AddProjEffectError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -46,5 +41,10 @@ impl std::fmt::Display for AddProjEffectError {
         match self {
             Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemAllocError> for AddProjEffectError {
+    fn from(error: ItemAllocError) -> Self {
+        Self::ItemIdAllocFailed(error)
     }
 }

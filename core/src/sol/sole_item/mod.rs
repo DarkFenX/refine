@@ -23,8 +23,8 @@ pub use sole_implant::{
 };
 pub use sole_item::{GetItemError, RemoveItemError};
 pub use sole_module::{
-    AddModuleError, AddModuleProjError, AddSetModuleChargeError, ChangeModuleProjError, GetFitModulesError,
-    GetModuleError, RemoveModuleChargeError, RemoveModuleError, RemoveModuleProjError, SetModuleStateError,
+    AddModuleError, AddModuleProjError, ChangeModuleProjError, GetFitModulesError, GetModuleError,
+    RemoveModuleChargeError, RemoveModuleError, RemoveModuleProjError, SetModuleChargeError, SetModuleStateError,
 };
 pub use sole_proj_effect::{
     AddProjEffectError, AddProjEffectProjError, GetProjEffectError, RemoveProjEffectError, RemoveProjEffectProjError,

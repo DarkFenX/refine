@@ -44,16 +44,6 @@ pub enum SetFitStanceError {
     FitNotFound(FitFoundError),
     ItemIdAllocFailed(ItemAllocError),
 }
-impl From<FitFoundError> for SetFitStanceError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<ItemAllocError> for SetFitStanceError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
-    }
-}
 impl std::error::Error for SetFitStanceError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -68,5 +58,15 @@ impl std::fmt::Display for SetFitStanceError {
             Self::FitNotFound(e) => e.fmt(f),
             Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for SetFitStanceError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<ItemAllocError> for SetFitStanceError {
+    fn from(error: ItemAllocError) -> Self {
+        Self::ItemIdAllocFailed(error)
     }
 }

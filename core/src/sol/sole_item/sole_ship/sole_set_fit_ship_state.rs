@@ -26,16 +26,6 @@ pub enum SetFitShipStateError {
     FitNotFound(FitFoundError),
     FitHasNoShip(FitHasItemKindError),
 }
-impl From<FitFoundError> for SetFitShipStateError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FitHasItemKindError> for SetFitShipStateError {
-    fn from(error: FitHasItemKindError) -> Self {
-        Self::FitHasNoShip(error)
-    }
-}
 impl std::error::Error for SetFitShipStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -50,5 +40,15 @@ impl std::fmt::Display for SetFitShipStateError {
             Self::FitNotFound(e) => e.fmt(f),
             Self::FitHasNoShip(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for SetFitShipStateError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<FitHasItemKindError> for SetFitShipStateError {
+    fn from(error: FitHasItemKindError) -> Self {
+        Self::FitHasNoShip(error)
     }
 }

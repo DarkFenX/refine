@@ -29,16 +29,6 @@ pub enum RemoveDroneError {
     ItemNotFound(ItemFoundError),
     ItemIsNotDrone(ItemKindMatchError),
 }
-impl From<ItemFoundError> for RemoveDroneError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveDroneError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotDrone(error)
-    }
-}
 impl std::error::Error for RemoveDroneError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -53,5 +43,15 @@ impl std::fmt::Display for RemoveDroneError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotDrone(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for RemoveDroneError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for RemoveDroneError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotDrone(error)
     }
 }

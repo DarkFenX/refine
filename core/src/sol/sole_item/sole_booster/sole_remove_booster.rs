@@ -22,16 +22,6 @@ pub enum RemoveBoosterError {
     ItemNotFound(ItemFoundError),
     ItemIsNotBooster(ItemKindMatchError),
 }
-impl From<ItemFoundError> for RemoveBoosterError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for RemoveBoosterError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotBooster(error)
-    }
-}
 impl std::error::Error for RemoveBoosterError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -46,5 +36,15 @@ impl std::fmt::Display for RemoveBoosterError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotBooster(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for RemoveBoosterError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for RemoveBoosterError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotBooster(error)
     }
 }

@@ -4,7 +4,7 @@ use crate::{
         HCmdResp,
     },
     shared::HState,
-    util::HExecResult,
+    util::HExecError,
 };
 
 #[serde_with::serde_as]
@@ -20,9 +20,14 @@ impl HChangeFighterCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
-    ) -> HExecResult<HCmdResp> {
+    ) -> Result<HCmdResp, HExecError> {
         if let Some(state) = &self.state {
-            core_sol.set_fighter_state(item_id, state.into())?;
+            if let Err(error) = core_sol.set_fighter_state(item_id, state.into()) {
+                return Err(match error {
+                    rc::err::SetFighterStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::SetFighterStateError::ItemIsNotFighter(e) => HExecError::ItemKindMismatch(e),
+                });
+            }
         }
         apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
         Ok(HCmdResp::NoData)

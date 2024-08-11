@@ -22,16 +22,6 @@ pub enum RemoveFitCharacterError {
     FitNotFound(FitFoundError),
     FitHasNoCharacter(FitHasItemKindError),
 }
-impl From<FitFoundError> for RemoveFitCharacterError {
-    fn from(error: FitFoundError) -> Self {
-        Self::FitNotFound(error)
-    }
-}
-impl From<FitHasItemKindError> for RemoveFitCharacterError {
-    fn from(error: FitHasItemKindError) -> Self {
-        Self::FitHasNoCharacter(error)
-    }
-}
 impl std::error::Error for RemoveFitCharacterError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -46,5 +36,15 @@ impl std::fmt::Display for RemoveFitCharacterError {
             Self::FitNotFound(e) => e.fmt(f),
             Self::FitHasNoCharacter(e) => e.fmt(f),
         }
+    }
+}
+impl From<FitFoundError> for RemoveFitCharacterError {
+    fn from(error: FitFoundError) -> Self {
+        Self::FitNotFound(error)
+    }
+}
+impl From<FitHasItemKindError> for RemoveFitCharacterError {
+    fn from(error: FitHasItemKindError) -> Self {
+        Self::FitHasNoCharacter(error)
     }
 }

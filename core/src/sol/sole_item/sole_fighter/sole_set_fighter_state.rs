@@ -19,16 +19,6 @@ pub enum SetFighterStateError {
     ItemNotFound(ItemFoundError),
     ItemIsNotFighter(ItemKindMatchError),
 }
-impl From<ItemFoundError> for SetFighterStateError {
-    fn from(error: ItemFoundError) -> Self {
-        Self::ItemNotFound(error)
-    }
-}
-impl From<ItemKindMatchError> for SetFighterStateError {
-    fn from(error: ItemKindMatchError) -> Self {
-        Self::ItemIsNotFighter(error)
-    }
-}
 impl std::error::Error for SetFighterStateError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
@@ -43,5 +33,15 @@ impl std::fmt::Display for SetFighterStateError {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotFighter(e) => e.fmt(f),
         }
+    }
+}
+impl From<ItemFoundError> for SetFighterStateError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ItemNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for SetFighterStateError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ItemIsNotFighter(error)
     }
 }

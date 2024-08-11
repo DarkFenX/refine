@@ -1,5 +1,3 @@
-pub(crate) use core::HCoreError;
-pub(crate) use exec::{HExecError, HExecErrorKind, HExecResult};
+pub(crate) use exec::HExecError;
 
-mod core;
 mod exec;

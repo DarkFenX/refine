@@ -6,7 +6,7 @@ use axum::{
 };
 
 use crate::{
-    bridge::HBrErrorKind,
+    bridge::HBrError,
     handlers::{get_guarded_sol, sol::HSolInfoParams, HGSolResult, HSingleErr},
     state::HAppState,
 };
@@ -29,9 +29,9 @@ pub(crate) async fn change_sol_src(
     let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
         Ok(src) => src,
         Err(e) => {
-            let code = match e.kind {
-                HBrErrorKind::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
-                HBrErrorKind::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
+            let code = match e {
+                HBrError::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                HBrError::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             return (code, Json(HSingleErr::from(e))).into_response();
