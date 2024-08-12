@@ -14,7 +14,7 @@ impl HChangeFleetCmd {
     pub(crate) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
-        fleet_id: &rc::SolItemId,
+        fleet_id: &rc::SolFleetId,
     ) -> Result<rc::SolFleetInfo, HExecError> {
         let core_fleet = match core_sol.get_fleet(fleet_id) {
             Ok(core_fleet) => core_fleet,
