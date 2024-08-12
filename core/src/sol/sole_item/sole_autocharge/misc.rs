@@ -1,6 +1,7 @@
 use crate::{
     ad,
     defs::{EItemId, SolItemId},
+    err::basic::ItemAllocError,
     sol::{
         item::{SolAutocharge, SolItem},
         SolarSystem,
@@ -9,7 +10,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn update_item_autocharges(&mut self, item_id: &SolItemId) {
+    pub(in crate::sol) fn update_item_autocharges(&mut self, item_id: &SolItemId) -> Result<(), ItemAllocError> {
         let item = self.items.get_item(&item_id).unwrap();
         let mut new_ac_map = StMap::new();
         if let (Some(fit_id), Ok(a_item), Some(_)) = (item.get_fit_id(), item.get_a_item(), item.get_autocharges()) {
@@ -18,10 +19,16 @@ impl SolarSystem {
                 if let Some(effect) = self.src.get_a_effect(effect_id) {
                     if let Some(ad::AEffectChargeInfo::Attr(charge_attr_id)) = effect.charge {
                         if let Some(autocharge_a_item_id) = a_item.attr_vals.get(&charge_attr_id) {
-                            // Just stop adding autocharges on allocation failures
                             let autocharge_item_id = match self.items.alloc_item_id() {
                                 Ok(item_id) => item_id,
-                                _ => break,
+                                Err(e) => {
+                                    // If we got an allocation error, remove autocharges we already
+                                    // added
+                                    for ac_item_id in new_ac_map.values() {
+                                        self.items.remove_item(ac_item_id).unwrap();
+                                    }
+                                    return Err(e);
+                                }
                             };
                             let autocharge = SolAutocharge::new(
                                 &self.src,
@@ -53,6 +60,7 @@ impl SolarSystem {
             for (effect_id, autocharge_id) in new_ac_map.into_iter() {
                 item_acs.set(effect_id, autocharge_id);
             }
-        }
+        };
+        Ok(())
     }
 }
