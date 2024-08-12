@@ -21,9 +21,15 @@ impl SolAutocharges {
     pub(in crate::sol) fn values(&self) -> impl ExactSizeIterator<Item = &SolItemId> {
         self.data.values()
     }
+    pub(in crate::sol) fn is_empty(&self) -> bool {
+        self.data.is_empty()
+    }
     // Modification methods
     pub(in crate::sol) fn set(&mut self, effect_id: EEffectId, autocharge_item_id: SolItemId) {
         self.data.insert(effect_id, autocharge_item_id);
+    }
+    pub(in crate::sol) fn remove(&mut self, effect_id: &EEffectId) {
+        self.data.remove(effect_id);
     }
     pub(in crate::sol) fn clear(&mut self) {
         self.data.clear();
