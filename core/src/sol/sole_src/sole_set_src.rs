@@ -32,6 +32,18 @@ impl SolarSystem {
         for item_id in self.items.iter().map(|v| v.get_id()).collect_vec() {
             // Undo all the changes we did so far in case it failed
             if let Err(e) = self.update_item_autocharges(&item_id) {
+                // Remove autocharges we managed to add to skeleton so far (for items on which
+                // update_item_autocharges() method did not fail)
+                let mut autocharge_ids = Vec::new();
+                for item in self.items.iter_mut() {
+                    if let Some(item_autocharges) = item.get_autocharges_mut() {
+                        autocharge_ids.extend(item_autocharges.values().map(|v| *v));
+                        item_autocharges.clear();
+                    }
+                }
+                for autocharge_id in autocharge_ids {
+                    self.items.remove_item(&autocharge_id).unwrap();
+                }
                 // Set new source & reload regular items
                 std::mem::swap(&mut self.src, &mut src);
                 for item in self.items.iter_mut() {
