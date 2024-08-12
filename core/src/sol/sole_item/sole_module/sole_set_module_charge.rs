@@ -21,6 +21,8 @@ impl SolarSystem {
             self.items.remove_item(&charge_item_id);
         }
         // Set new charge
+        // Allocation can fail only if we didn't remove charge first, so if it fails - we don't need
+        // to restore anything
         let charge_item_id = self.items.alloc_item_id()?;
         let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
         module.charge_item_id = Some(charge_item_id);

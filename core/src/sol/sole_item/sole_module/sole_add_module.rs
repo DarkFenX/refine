@@ -37,9 +37,9 @@ impl SolarSystem {
             }
             SolOrdAddMode::Insert(pos) => {
                 for info in infos.iter() {
-                    match self.items.get_item_mut(&info.id) {
-                        Ok(SolItem::Module(m)) if m.rack == rack && m.pos >= pos => m.pos += 1,
-                        _ => (),
+                    let module = self.items.get_item_mut(&info.id).unwrap().get_module_mut().unwrap();
+                    if module.rack == rack && module.pos >= pos {
+                        module.pos += 1;
                     }
                 }
                 pos
@@ -47,12 +47,10 @@ impl SolarSystem {
             SolOrdAddMode::Place(pos, repl) => {
                 let mut old_item_id = None;
                 for info in infos.iter() {
-                    match self.items.get_item(&info.id) {
-                        Ok(SolItem::Module(m)) if m.rack == rack && m.pos == pos => {
-                            old_item_id = Some(info.id);
-                            break;
-                        }
-                        _ => (),
+                    let module = self.items.get_item(&info.id).unwrap().get_module().unwrap();
+                    if module.rack == rack && module.pos == pos {
+                        old_item_id = Some(info.id);
+                        break;
                     }
                 }
                 match (old_item_id, repl) {
