@@ -28,7 +28,7 @@ impl SolFit {
     pub(in crate::sol) fn new(id: SolFitId) -> Self {
         Self {
             id,
-            kind: SolShipKind::default(),
+            kind: SolShipKind::Unknown,
             fleet: None,
             character: None,
             skills: StSet::new(),

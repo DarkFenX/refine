@@ -84,7 +84,7 @@ impl SolarSystem {
         for fit in self.fits.iter_fits_mut() {
             fit.kind = match fit.ship {
                 Some(ship_id) => self.items.get_item(&ship_id).unwrap().get_ship().unwrap().kind,
-                None => SolShipKind::default(),
+                None => SolShipKind::Unknown,
             }
         }
         // Register things in services again

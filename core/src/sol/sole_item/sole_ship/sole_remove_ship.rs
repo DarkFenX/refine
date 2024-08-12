@@ -19,7 +19,7 @@ impl SolarSystem {
         // Remove ship from skeleton
         let fit = self.fits.get_fit_mut(&ship.get_fit_id()).unwrap();
         fit.ship = None;
-        fit.kind = SolShipKind::default();
+        fit.kind = SolShipKind::Unknown;
         self.items.remove_item(item_id);
         Ok(())
     }

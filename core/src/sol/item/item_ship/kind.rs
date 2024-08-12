@@ -4,8 +4,3 @@ pub(in crate::sol) enum SolShipKind {
     Structure,
     Unknown,
 }
-impl Default for SolShipKind {
-    fn default() -> Self {
-        Self::Unknown
-    }
-}

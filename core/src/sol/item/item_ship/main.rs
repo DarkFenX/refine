@@ -23,7 +23,7 @@ impl SolShip {
             state: bool_to_state(state),
             kind: SolShipKind::Unknown,
         };
-        ship.update_fit_kind();
+        ship.update_ship_kind();
         ship
     }
     // Item base methods
@@ -47,7 +47,7 @@ impl SolShip {
     }
     pub(in crate::sol::item) fn reload_a_item(&mut self, src: &Src) {
         self.base.reload_a_item(src);
-        self.update_fit_kind();
+        self.update_ship_kind();
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
@@ -59,7 +59,7 @@ impl SolShip {
     pub(in crate::sol) fn set_bool_state(&mut self, state: bool) {
         self.state = bool_to_state(state);
     }
-    fn update_fit_kind(&mut self) {
+    fn update_ship_kind(&mut self) {
         self.kind = match self.get_a_item() {
             Ok(a_item) => match a_item.cat_id {
                 ec::itemcats::SHIP => SolShipKind::Ship,
