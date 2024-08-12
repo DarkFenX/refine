@@ -35,13 +35,13 @@ pub(crate) async fn create_sol(
                 .await;
             (StatusCode::CREATED, Json(sol_info)).into_response()
         }
-        Err(e) => {
-            let code = match e {
+        Err(br_err) => {
+            let code = match br_err {
                 HBrError::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 HBrError::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(e))).into_response()
+            (code, Json(HSingleErr::from(br_err))).into_response()
         }
     };
     resp

@@ -20,6 +20,6 @@ mod sole_debug;
 pub(crate) mod sole_fit;
 pub(crate) mod sole_fleet;
 pub(crate) mod sole_item;
-mod sole_src;
+pub(crate) mod sole_src;
 mod svc;
 mod view;

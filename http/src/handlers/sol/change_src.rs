@@ -9,6 +9,7 @@ use crate::{
     bridge::HBrError,
     handlers::{get_guarded_sol, sol::HSolInfoParams, HGSolResult, HSingleErr},
     state::HAppState,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -28,13 +29,13 @@ pub(crate) async fn change_sol_src(
     };
     let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
         Ok(src) => src,
-        Err(e) => {
-            let code = match e {
+        Err(br_err) => {
+            let code = match &br_err {
                 HBrError::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 HBrError::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            return (code, Json(HSingleErr::from(e))).into_response();
+            return (code, Json(HSingleErr::from(br_err))).into_response();
         }
     };
     let sol_info = match guarded_sol
@@ -50,7 +51,16 @@ pub(crate) async fn change_sol_src(
         .await
     {
         Ok(sol_info) => sol_info,
-        Err(e) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(e))).into_response(),
+        Err(br_err) => {
+            let code = match &br_err {
+                HBrError::ExecFailed(exec_err) => match exec_err {
+                    HExecError::ItemCapacityReached(_) => StatusCode::SERVICE_UNAVAILABLE,
+                    _ => StatusCode::INTERNAL_SERVER_ERROR,
+                },
+                _ => StatusCode::INTERNAL_SERVER_ERROR,
+            };
+            return (code, Json(HSingleErr::from(br_err))).into_response();
+        }
     };
     (StatusCode::OK, Json(sol_info)).into_response()
 }

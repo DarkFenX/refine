@@ -28,16 +28,16 @@ pub(crate) async fn get_fit(
         .await
     {
         Ok(fit_info) => (StatusCode::OK, Json(fit_info)).into_response(),
-        Err(bridge_error) => {
-            let code = match &bridge_error {
+        Err(br_err) => {
+            let code = match &br_err {
                 HBrError::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrError::ExecFailed(exec_error) => match exec_error {
+                HBrError::ExecFailed(exec_err) => match exec_err {
                     HExecError::FitNotFoundPrimary(_) => StatusCode::NOT_FOUND,
                     _ => StatusCode::INTERNAL_SERVER_ERROR,
                 },
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(bridge_error))).into_response()
+            (code, Json(HSingleErr::from(br_err))).into_response()
         }
     };
     resp

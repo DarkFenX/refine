@@ -31,7 +31,7 @@ pub(crate) async fn get_sol(
         .await
     {
         Ok(sol_info) => (StatusCode::OK, Json(sol_info)).into_response(),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(e))).into_response(),
+        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(br_err))).into_response(),
     };
     resp
 }

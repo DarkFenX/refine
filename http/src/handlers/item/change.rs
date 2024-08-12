@@ -30,17 +30,17 @@ pub(crate) async fn change_item(
         .await
     {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),
-        Err(bridge_error) => {
-            let code = match &bridge_error {
+        Err(br_err) => {
+            let code = match &br_err {
                 HBrError::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrError::ExecFailed(exec_error) => match exec_error {
+                HBrError::ExecFailed(exec_err) => match exec_err {
                     HExecError::ItemNotFoundPrimary(_) => StatusCode::NOT_FOUND,
                     HExecError::NotBoosterSideEffect(_) => StatusCode::CONFLICT,
                     _ => StatusCode::INTERNAL_SERVER_ERROR,
                 },
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(bridge_error))).into_response()
+            (code, Json(HSingleErr::from(br_err))).into_response()
         }
     };
     resp

@@ -57,7 +57,7 @@ pub(crate) async fn change_sol(
             let resp = HSolChangeResp::new(sol_info, cmd_results);
             (StatusCode::OK, Json(resp)).into_response()
         }
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(e))).into_response(),
+        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(br_err))).into_response(),
     };
     resp
 }

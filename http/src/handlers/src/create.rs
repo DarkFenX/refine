@@ -28,14 +28,14 @@ pub(crate) async fn create_source(
         .await
     {
         Ok(_) => StatusCode::CREATED.into_response(),
-        Err(e) => {
-            let code = match e {
+        Err(br_err) => {
+            let code = match br_err {
                 HBrError::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
                 HBrError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
                 HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(e))).into_response()
+            (code, Json(HSingleErr::from(br_err))).into_response()
         }
     };
     resp

@@ -22,16 +22,16 @@ pub(crate) async fn delete_fleet(
     };
     let resp = match guarded_sol.lock().await.remove_fleet(&fleet_id).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
-        Err(bridge_error) => {
-            let code = match &bridge_error {
+        Err(br_err) => {
+            let code = match &br_err {
                 HBrError::FleetIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrError::ExecFailed(exec_error) => match exec_error {
+                HBrError::ExecFailed(exec_err) => match exec_err {
                     HExecError::FleetNotFoundPrimary(_) => StatusCode::NOT_FOUND,
                     _ => StatusCode::INTERNAL_SERVER_ERROR,
                 },
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(bridge_error))).into_response()
+            (code, Json(HSingleErr::from(br_err))).into_response()
         }
     };
     resp
