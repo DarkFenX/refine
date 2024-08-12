@@ -77,7 +77,7 @@ impl HSolarSystem {
             for (i, command) in commands.iter().enumerate() {
                 let resp = command
                     .execute(&mut core_sol)
-                    .map_err(|e| HBrError::from_exec_batch(i, e))?;
+                    .map_err(|exec_err| HBrError::from_exec_batch(i, exec_err))?;
                 cmd_resps.push(resp);
             }
             let sol_info = HSolInfo::mk_info(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
@@ -89,9 +89,9 @@ impl HSolarSystem {
                 self.put_sol_back(core_sol);
                 Ok((sol_info, cmd_resps))
             }
-            Err(error) => {
+            Err(br_err) => {
                 self.put_sol_back(core_sol_backup);
-                Err(error)
+                Err(br_err)
             }
         }
     }
@@ -118,7 +118,7 @@ impl HSolarSystem {
                     fit_mode,
                     item_mode,
                 )),
-                Err(error) => Err(match error {
+                Err(core_err) => Err(match core_err {
                     rc::err::SetSrcError::ItemIdAllocFailed(e) => HBrError::from(HExecError::ItemCapacityReached(e)),
                 }),
             };
@@ -140,7 +140,8 @@ impl HSolarSystem {
         let sync_span = tracing::trace_span!("sync");
         let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = HFleetInfo::mk_info(&mut core_sol, &fleet_id, fleet_mode).map_err(|e| HBrError::from(e));
+            let result =
+                HFleetInfo::mk_info(&mut core_sol, &fleet_id, fleet_mode).map_err(|exec_err| HBrError::from(exec_err));
             (core_sol, result)
         })
         .await;
@@ -155,7 +156,7 @@ impl HSolarSystem {
             let _sg = sync_span.enter();
             let result = match core_sol.add_fleet() {
                 Ok(core_fleet) => HFleetInfo::mk_info(&mut core_sol, &core_fleet.id, fleet_mode),
-                Err(error) => Err(match error {
+                Err(core_err) => Err(match core_err {
                     rc::err::AddFleetError::FleetIdAllocFailed(e) => HExecError::FleetCapacityReached(e),
                 }),
             };
@@ -180,8 +181,8 @@ impl HSolarSystem {
             let _sg = sync_span.enter();
             command
                 .execute(&mut core_sol, &fleet_id)
-                .map_err(|e| HBrError::from(e))?;
-            let core_info = core_sol.get_fleet(&fleet_id).map_err(|error| match error {
+                .map_err(|exec_err| HBrError::from(exec_err))?;
+            let core_info = core_sol.get_fleet(&fleet_id).map_err(|core_err| match core_err {
                 rc::err::GetFleetError::FleetNotFound(e) => HBrError::from(HExecError::FleetNotFoundPrimary(e)),
             })?;
             let info = HFleetInfo::mk_info(&mut core_sol, &core_info.id, fleet_mode).map_err(|e| HBrError::from(e))?;
@@ -193,9 +194,9 @@ impl HSolarSystem {
                 self.put_sol_back(core_sol);
                 Ok(fleet_info)
             }
-            Err(error) => {
+            Err(br_err) => {
                 self.put_sol_back(core_sol_backup);
-                Err(error)
+                Err(br_err)
             }
         }
     }
@@ -206,7 +207,7 @@ impl HSolarSystem {
         let sync_span = tracing::trace_span!("sync");
         let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = core_sol.remove_fleet(&fleet_id).map_err(|error| match error {
+            let result = core_sol.remove_fleet(&fleet_id).map_err(|core_err| match core_err {
                 rc::err::RemoveFleetError::FleetNotFound(e) => HBrError::from(HExecError::FleetNotFoundPrimary(e)),
             });
             (core_sol, result)
@@ -229,7 +230,7 @@ impl HSolarSystem {
         let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
             let result = HFitInfo::mk_info(&mut core_sol, &fit_id, fit_mode, item_mode);
-            (core_sol, result.map_err(|e| HBrError::from(e)))
+            (core_sol, result.map_err(|exec_err| HBrError::from(exec_err)))
         })
         .await;
         self.put_sol_back(core_sol);
@@ -247,11 +248,11 @@ impl HSolarSystem {
             let _sg = sync_span.enter();
             let result = match core_sol.add_fit() {
                 Ok(core_fit) => HFitInfo::mk_info(&mut core_sol, &core_fit.id, fit_mode, item_mode),
-                Err(error) => Err(match error {
+                Err(core_err) => Err(match core_err {
                     rc::err::AddFitError::FitIdAllocFailed(e) => HExecError::FitCapacityReached(e),
                 }),
             };
-            (core_sol, result.map_err(|e| HBrError::from(e)))
+            (core_sol, result.map_err(|exec_err| HBrError::from(exec_err)))
         })
         .await;
         self.put_sol_back(core_sol);
@@ -275,11 +276,11 @@ impl HSolarSystem {
             for (i, command) in commands.iter().enumerate() {
                 let resp = command
                     .execute(&mut core_sol, &fit_id)
-                    .map_err(|e| HBrError::from_exec_batch(i, e))?;
+                    .map_err(|exec_err| HBrError::from_exec_batch(i, exec_err))?;
                 cmd_resps.push(resp);
             }
-            let fit_info =
-                HFitInfo::mk_info(&mut core_sol, &fit_id, fit_mode, item_mode).map_err(|e| HBrError::from(e))?;
+            let fit_info = HFitInfo::mk_info(&mut core_sol, &fit_id, fit_mode, item_mode)
+                .map_err(|exec_err| HBrError::from(exec_err))?;
             Ok((core_sol, fit_info, cmd_resps))
         })
         .await
@@ -288,9 +289,9 @@ impl HSolarSystem {
                 self.put_sol_back(core_sol);
                 Ok((fit_info, cmd_resps))
             }
-            Err(error) => {
+            Err(br_err) => {
                 self.put_sol_back(core_sol_backup);
-                Err(error)
+                Err(br_err)
             }
         }
     }
@@ -301,7 +302,7 @@ impl HSolarSystem {
         let sync_span = tracing::trace_span!("sync");
         let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = core_sol.remove_fit(&fit_id).map_err(|error| match error {
+            let result = core_sol.remove_fit(&fit_id).map_err(|core_err| match core_err {
                 rc::err::RemoveFitError::FitNotFound(e) => HBrError::from(HExecError::FitNotFoundPrimary(e)),
             });
             (core_sol, result)
@@ -323,8 +324,8 @@ impl HSolarSystem {
                     let item_info = HItemInfo::mk_info(&mut core_sol, &core_item_info, item_mode);
                     (core_sol, Ok(item_info))
                 }
-                Err(error) => {
-                    let exec_err = match error {
+                Err(core_err) => {
+                    let exec_err = match core_err {
                         rc::err::GetItemError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     };
                     (core_sol, Err(HBrError::from(exec_err)))
@@ -348,7 +349,7 @@ impl HSolarSystem {
             let _sg = sync_span.enter();
             let item_info = command
                 .execute(&mut core_sol, item_mode)
-                .map_err(|e| HBrError::from(e))?;
+                .map_err(|exec_err| HBrError::from(exec_err))?;
             Ok((core_sol, item_info))
         })
         .await
@@ -357,9 +358,9 @@ impl HSolarSystem {
                 self.put_sol_back(core_sol);
                 Ok(item_info)
             }
-            Err(error) => {
+            Err(br_err) => {
                 self.put_sol_back(core_sol_backup);
-                Err(error)
+                Err(br_err)
             }
         }
     }
@@ -379,7 +380,7 @@ impl HSolarSystem {
             command
                 .execute(&mut core_sol, &item_id)
                 .map_err(|e| HBrError::from(e))?;
-            let core_info = core_sol.get_item(&item_id).map_err(|error| match error {
+            let core_info = core_sol.get_item(&item_id).map_err(|core_err| match core_err {
                 rc::err::GetItemError::ItemNotFound(e) => HBrError::from(HExecError::ItemNotFoundPrimary(e)),
             })?;
             let item_info = HItemInfo::mk_info(&mut core_sol, &core_info, item_mode);
@@ -391,9 +392,9 @@ impl HSolarSystem {
                 self.put_sol_back(core_sol);
                 Ok(item_info)
             }
-            Err(error) => {
+            Err(br_err) => {
                 self.put_sol_back(core_sol_backup);
-                Err(error)
+                Err(br_err)
             }
         }
     }
@@ -406,8 +407,8 @@ impl HSolarSystem {
             let _sg = sync_span.enter();
             let result = match core_sol.remove_item(&item_id) {
                 Ok(_) => Ok(()),
-                Err(error) => {
-                    let exec_err = match error {
+                Err(core_err) => {
+                    let exec_err = match core_err {
                         rc::err::RemoveItemError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                         rc::err::RemoveItemError::UnremovableAutocharge(e) => HExecError::UnremovableAutocharge(e),
                     };
