@@ -172,3 +172,28 @@ def test_limit_update(client, consts):
     assert api_affector_module.attrs[eve_limit_attr.id].dogma == approx(-70)
     assert api_affector_module.attrs[eve_limit_attr.id].dogma == approx(-70)
     assert eve_affector_attr.id not in api_affector_module.mods
+
+
+def test_siege_mod(client, consts):
+    # Check that siege module's -100% is not affected by the limit
+    client.mk_eve_attr(id_=consts.EveAttr.speed_factor_floor, def_val=-99)
+    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_affectee_attr = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_affectee_attr.id)
+    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_module = client.mk_eve_item(attrs={eve_affector_attr.id: -100}, eff_ids=[eve_effect.id])
+    eve_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 1000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship.id)
+    api_fit.add_mod(type_id=eve_module.id)
+    # Verification
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr.id].dogma == approx(0)
+    assert api_ship.attrs[eve_affectee_attr.id].extra == approx(0)
