@@ -26,6 +26,6 @@ fn add_modifiers(a_data: &mut ad::AData, effect_id: EEffectId) {
         applied = true;
     }
     if !applied {
-        tracing::info!("slot modifier effect {SLOT_EFFECT} is not found for customization");
+        tracing::info!("web effect {effect_id} is not found for customization");
     }
 }
