@@ -40,6 +40,7 @@ class EveEffect(IntEnum):
     hardpoint_modifier_effect = 3773
     slot_modifier = 3774
     fueled_armor_repair = 5275
+    remote_webifier_falloff = 6426
     doomsday_aoe_web = 6476
     fighter_ability_launch_bomb = 6485
     ship_module_arar = 6651
@@ -125,31 +126,44 @@ class EveBuffOp(StrEnum):
 
 @unique
 class EveAttr(IntEnum):
-    # Resources
-    cpu = 50
-    cpu_output = 48
-    power = 30
+    mass = 4
     power_output = 11
-    # Damage
-    em_dmg = 114
-    therm_dmg = 118
-    kin_dmg = 117
-    expl_dmg = 116
-    # Repairing
-    armor_dmg_amount = 84
-    charged_armor_dmg_mult = 1886
-    # Slots
-    hi_slots = 14
-    hi_slot_modifier = 1374
-    med_slots = 13
-    med_slot_modifier = 1375
     low_slots = 12
-    low_slot_modifier = 1376
-    turret_slots_left = 102
-    turret_hardpoint_modifier = 1368
+    med_slots = 13
+    hi_slots = 14
+    speed_factor = 20
+    power = 30
+    max_velocity = 37
+    cpu_output = 48
+    cpu = 50
+    speed = 51
+    max_range = 54
+    dmg_mult = 64
+    armor_dmg_amount = 84
     launcher_slots_left = 101
+    turret_slots_left = 102
+    em_dmg = 114
+    expl_dmg = 116
+    kin_dmg = 117
+    therm_dmg = 118
+    falloff = 158
+    missile_dmg_mult = 212
+    skill_level = 280
+    dmg_mult_bonus = 292
+    rof_bonus = 293
+    sig_radius = 552
+    sig_radius_bonus = 554
+    speed_boost_factor = 567
+    mass_addition = 796
+    turret_hardpoint_modifier = 1368
     launcher_hardpoint_modifier = 1369
-    # Buffs
+    hi_slot_modifier = 1374
+    med_slot_modifier = 1375
+    low_slot_modifier = 1376
+    charged_armor_dmg_mult = 1886
+    remote_resistance_id = 2138
+    fighter_ability_launch_bomb_type = 2324
+    speed_factor_floor = 2266
     warfare_buff_1_id = 2468
     warfare_buff_1_value = 2469
     warfare_buff_2_id = 2470
@@ -158,22 +172,6 @@ class EveAttr(IntEnum):
     warfare_buff_3_value = 2473
     warfare_buff_4_id = 2536
     warfare_buff_4_value = 2537
-    # Misc
-    skill_level = 280
-    speed = 51
-    rof_bonus = 293
-    dmg_mult = 64
-    dmg_mult_bonus = 292
-    missile_dmg_mult = 212
-    max_velocity = 37
-    mass = 4
-    mass_addition = 796
-    remote_resistance_id = 2138
-    sig_radius = 552
-    sig_radius_bonus = 554
-    speed_factor = 20
-    speed_boost_factor = 567
-    fighter_ability_launch_bomb_type = 2324
 
 
 @unique
@@ -231,8 +229,9 @@ class ApiModOp(StrEnum):
     post_div = 'post_div'
     post_percent = 'post_perc'
     post_assign = 'post_assign'
+    max_limit = 'max_limit'
     extra_mul = 'extra_mul'
-    limit = 'limit'
+    extra_min_limit = 'extra_min_limit'
 
 
 @unique

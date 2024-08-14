@@ -16,6 +16,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> Resu
     let mut trash = GData::new();
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, &g_supp);
+    restore_hardcoded_attrs(alive, &mut trash);
 
     let mut counter = 0;
     let mut changes = true;
@@ -79,6 +80,12 @@ fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
         }
     }
     move_data(&mut trash.items, &mut alive.items, |v| grps.contains(&v.group_id));
+}
+
+fn restore_hardcoded_attrs(alive: &mut GData, trash: &mut GData) {
+    move_data(&mut trash.attrs, &mut alive.attrs, |v| {
+        v.id == ec::attrs::SPEED_FACTOR_FLOOR
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

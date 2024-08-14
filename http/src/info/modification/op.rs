@@ -10,8 +10,9 @@ pub(crate) enum HModOp {
     PostDiv,
     PostPerc,
     PostAssign,
+    MaxLimit,
     ExtraMul,
-    Limit,
+    ExtraMinLimit,
 }
 impl From<&rc::SolOpInfo> for HModOp {
     fn from(core_op: &rc::SolOpInfo) -> Self {
@@ -25,8 +26,9 @@ impl From<&rc::SolOpInfo> for HModOp {
             rc::SolOpInfo::PostDiv => Self::PostDiv,
             rc::SolOpInfo::PostPerc => Self::PostPerc,
             rc::SolOpInfo::PostAssign => Self::PostAssign,
+            rc::SolOpInfo::MaxLimit => Self::MaxLimit,
             rc::SolOpInfo::ExtraMul => Self::ExtraMul,
-            rc::SolOpInfo::MaxLimit => Self::Limit,
+            rc::SolOpInfo::ExtraMinLimit => Self::ExtraMinLimit,
         }
     }
 }

@@ -138,25 +138,30 @@ impl SolSvcs {
                 &modification.aggr_mode,
             );
         }
-        let dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
+        let mut dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
         // Upper cap for the attribute value being calculated
-        let mut dogma_val = match attr.max_attr_id {
-            Some(capping_attr_id) => match self.calc_get_item_attr_val(sol_view, item_id, &capping_attr_id) {
-                Ok(capping_vals) => {
-                    self.calc_data
-                        .deps
-                        .add_direct_local(*item_id, capping_attr_id, *attr_id);
-                    AttrVal::min(dogma_val, capping_vals.dogma)
-                }
-                Err(_) => dogma_val,
-            },
-            None => dogma_val,
-        };
+        if let Some(capping_attr_id) = attr.max_attr_id {
+            if let Ok(capping_vals) = self.calc_get_item_attr_val(sol_view, item_id, &capping_attr_id) {
+                self.calc_data
+                    .deps
+                    .add_direct_local(*item_id, capping_attr_id, *attr_id);
+                dogma_val = AttrVal::min(dogma_val, capping_vals.dogma);
+            }
+        }
         if LIMITED_PRECISION_ATTR_IDS.contains(attr_id) {
             dogma_val = (dogma_val * 100.0).round() / 100.0
         }
-        // Post-dogma calculations
-        let extra_val = accumulator.apply_extra_mods(dogma_val, attr.hig);
+        // Post-dogma calculations - various operators
+        let mut extra_val = accumulator.apply_extra_mods(dogma_val, attr.hig);
+        // Apply lower cap to speed factor attribute
+        if *attr_id == ec::attrs::SPEED_FACTOR {
+            if let Ok(capping_vals) = self.calc_get_item_attr_val(sol_view, item_id, &ec::attrs::SPEED_FACTOR_FLOOR) {
+                self.calc_data
+                    .deps
+                    .add_direct_local(*item_id, ec::attrs::SPEED_FACTOR_FLOOR, ec::attrs::SPEED_FACTOR);
+                extra_val = AttrVal::max(extra_val, capping_vals.extra);
+            }
+        }
         Ok(SolAttrVal::new(base_val, dogma_val, extra_val))
     }
 }

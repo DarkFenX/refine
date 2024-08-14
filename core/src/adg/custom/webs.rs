@@ -1,8 +1,4 @@
-use crate::{
-    ad,
-    defs::{EAttrId, EEffectId},
-    ec,
-};
+use crate::{ad, defs::EEffectId, ec};
 
 pub(in crate::adg::custom) fn add_web_effect_modifiers(a_data: &mut ad::AData) {
     add_modifiers(a_data, ec::effects::REMOTE_WEBIFIER_FALLOFF);

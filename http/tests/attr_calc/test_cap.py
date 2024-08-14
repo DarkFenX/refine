@@ -25,7 +25,7 @@ def test_default(client, consts):
     assert api_item.attrs[eve_capped_attr.id].dogma == approx(5)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one()
-    assert api_mod.op == consts.ApiModOp.limit
+    assert api_mod.op == consts.ApiModOp.max_limit
     assert api_mod.initial_val == approx(5)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(5)
@@ -57,7 +57,7 @@ def test_unmodified(client, consts):
     assert api_item.attrs[eve_capped_attr.id].dogma == approx(2)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one()
-    assert api_mod.op == consts.ApiModOp.limit
+    assert api_mod.op == consts.ApiModOp.max_limit
     assert api_mod.initial_val == approx(2)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(2)
@@ -95,7 +95,7 @@ def test_modified(client, consts):
     assert api_item.attrs[eve_capped_attr.id].dogma == approx(0.6)
     api_mod = api_item.mods.find_by_affector_attr(
         affectee_attr_id=eve_capped_attr.id, affector_attr_id=eve_capping_attr.id).one()
-    assert api_mod.op == consts.ApiModOp.limit
+    assert api_mod.op == consts.ApiModOp.max_limit
     assert api_mod.initial_val == approx(0.6)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(0.6)
