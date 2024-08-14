@@ -28,6 +28,10 @@ pub(super) fn add_ctx_modifier<K: Eq + Hash>(
         let affector_spec = SolAttrSpec::new(ctx_modifier.raw.affector_item_id, falloff_attr_id);
         attr_spec_storage.add_entry(affector_spec, ctx_modifier);
     }
+    if let Some(min_attr_id) = ctx_modifier.raw.min_attr_id {
+        let affector_spec = SolAttrSpec::new(ctx_modifier.raw.affector_item_id, min_attr_id);
+        attr_spec_storage.add_entry(affector_spec, ctx_modifier);
+    }
 }
 
 pub(super) fn remove_ctx_modifier<K: Eq + Hash>(
@@ -51,6 +55,10 @@ pub(super) fn remove_ctx_modifier<K: Eq + Hash>(
     }
     if let Some(falloff_attr_id) = ctx_modifier.raw.falloff_attr_id {
         let affector_spec = SolAttrSpec::new(ctx_modifier.raw.affector_item_id, falloff_attr_id);
+        attr_spec_storage.remove_entry(&affector_spec, ctx_modifier);
+    }
+    if let Some(min_attr_id) = ctx_modifier.raw.min_attr_id {
+        let affector_spec = SolAttrSpec::new(ctx_modifier.raw.affector_item_id, min_attr_id);
         attr_spec_storage.remove_entry(&affector_spec, ctx_modifier);
     }
 }
