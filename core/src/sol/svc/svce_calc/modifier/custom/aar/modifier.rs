@@ -22,5 +22,6 @@ pub(in crate::sol::svc::svce_calc) fn make_mod(affector_item_id: SolItemId, effe
         None,
         None,
         None,
+        None,
     )
 }

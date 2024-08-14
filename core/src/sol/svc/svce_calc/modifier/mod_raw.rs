@@ -30,6 +30,8 @@ pub(in crate::sol::svc::svce_calc) struct SolRawModifier {
     pub(in crate::sol::svc::svce_calc) resist_attr_id: Option<EAttrId>,
     pub(in crate::sol::svc::svce_calc) optimal_attr_id: Option<EAttrId>,
     pub(in crate::sol::svc::svce_calc) falloff_attr_id: Option<EAttrId>,
+    // Special post-reduction min limit
+    pub(in crate::sol::svc::svce_calc) min_attr_id: Option<EAttrId>,
 }
 impl SolRawModifier {
     pub(super) fn new(
@@ -45,6 +47,7 @@ impl SolRawModifier {
         resist_attr_id: Option<EAttrId>,
         optimal_attr_id: Option<EAttrId>,
         falloff_attr_id: Option<EAttrId>,
+        min_attr_id: Option<EAttrId>,
     ) -> Self {
         Self {
             kind,
@@ -59,6 +62,7 @@ impl SolRawModifier {
             resist_attr_id,
             optimal_attr_id,
             falloff_attr_id,
+            min_attr_id,
         }
     }
     pub(in crate::sol::svc::svce_calc) fn from_a_modifier(
@@ -94,6 +98,8 @@ impl SolRawModifier {
             resist_attr_id,
             optimal_attr_id,
             falloff_attr_id,
+            // Min limit is used only in custom modifiers
+            None,
         ))
     }
     pub(in crate::sol::svc::svce_calc) fn from_a_buff_regular(
@@ -166,6 +172,8 @@ impl SolRawModifier {
             optimal_attr_id,
             // Modifiers created from buffs never define falloff - buffs either apply fully, or they
             // don't
+            None,
+            // Min limit is used only in custom modifiers
             None,
         ))
     }

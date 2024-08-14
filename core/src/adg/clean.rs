@@ -83,6 +83,7 @@ fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
 }
 
 fn restore_hardcoded_attrs(alive: &mut GData, trash: &mut GData) {
+    // Its default value is used in custom web modifiers, not referenced from anywhere else
     move_data(&mut trash.attrs, &mut alive.attrs, |v| {
         v.id == ec::attrs::SPEED_FACTOR_FLOOR
     });

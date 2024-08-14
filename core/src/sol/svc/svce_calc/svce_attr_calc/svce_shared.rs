@@ -10,6 +10,17 @@ use crate::{
 };
 
 impl SolSvcs {
+    pub(super) fn calc_min_limit(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
+        match modifier.raw.min_attr_id {
+            Some(min_attr_id) => {
+                match self.calc_get_item_attr_val(sol_view, &modifier.raw.affector_item_id, &min_attr_id) {
+                    Ok(val) => Some(val.dogma),
+                    Err(_) => None,
+                }
+            }
+            None => None,
+        }
+    }
     pub(super) fn calc_resist_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
         // Only buffs and targeted modifiers can be resisted
         if !matches!(modifier.raw.kind, SolModifierKind::Buff | SolModifierKind::Targeted) {

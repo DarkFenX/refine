@@ -34,6 +34,7 @@ pub(crate) const FTR_ABIL_BOMB: EEffectId = 6485;
 pub(crate) const FTR_ABIL_KAMIKAZE: EEffectId = 6554;
 pub(crate) const SHIP_MODULE_ARAR: EEffectId = 6651;
 pub(crate) const STRUCTURE_MODULE_EFFECT_STASIS_WEBIFIER: EEffectId = 6682;
+pub(crate) const REMOTE_WEBIFIER_ENTITY: EEffectId = 6690;
 pub(crate) const MOD_BONUS_MICROWARPDRIVE: EEffectId = 6730;
 pub(crate) const MOD_BONUS_AFTERBURNER: EEffectId = 6731;
 pub(crate) const MOD_BONUS_WARFARE_LINK_ARMOR: EEffectId = 6732;

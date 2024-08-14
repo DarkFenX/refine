@@ -76,7 +76,7 @@ impl SolSvcs {
             }
         }
         // Custom modifiers
-        extend_with_custom_mods(item_id, effect.id, modifiers);
+        extend_with_custom_mods(item_id, effect, modifiers);
     }
     pub(super) fn calc_generate_dependent_buff_mods<'a>(
         &mut self,

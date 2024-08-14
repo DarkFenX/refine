@@ -95,20 +95,15 @@ impl SolSvcs {
                 Some(v) => v,
                 None => continue,
             };
-            let affector_item = match sol_view.items.get_item(&modifier.raw.affector_item_id) {
-                Ok(i) => i,
-                _ => continue,
-            };
-            let affector_item_cat_id = match affector_item.get_category_id() {
-                Ok(affector_item_cat_id) => affector_item_cat_id,
-                _ => continue,
-            };
+            let affector_item = sol_view.items.get_item(&modifier.raw.affector_item_id).unwrap();
+            let affector_item_cat_id = affector_item.get_category_id().unwrap();
             let mod_key = SolModificationKey::from(modifier);
             let modification = SolModification::new(
                 modifier.raw.op,
                 val,
                 self.calc_resist_mult(sol_view, modifier),
                 self.calc_proj_mult(sol_view, modifier),
+                self.calc_min_limit(sol_view, modifier),
                 modifier.raw.aggr_mode,
                 affector_item_cat_id,
             );
@@ -144,6 +139,7 @@ impl SolSvcs {
                 affection.modification.val,
                 affection.modification.proj_mult,
                 affection.modification.res_mult,
+                affection.modification.min_limit,
                 &affection.modification.op,
                 attr.penalizable,
                 &affection.modification.affector_item_cat_id,
