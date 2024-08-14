@@ -232,7 +232,7 @@ fn get_mod_kind(effect: &ad::AEffect, affectee_filter: &SolAffecteeFilter) -> Op
     }
 }
 
-fn get_resist_attr_id(item: &SolItem, effect: &ad::AEffect) -> Option<EAttrId> {
+pub(in crate::sol::svc::svce_calc) fn get_resist_attr_id(item: &SolItem, effect: &ad::AEffect) -> Option<EAttrId> {
     match effect.resist_attr_id {
         Some(resist_attr_id) => Some(resist_attr_id),
         None => match item.get_orig_attrs() {

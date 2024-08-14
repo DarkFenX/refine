@@ -6,7 +6,7 @@ pub(in crate::sol::svc::svce_calc) use custom::extend_with_custom_mods;
 pub(in crate::sol::svc::svce_calc) use domain::SolDomain;
 pub(in crate::sol::svc::svce_calc) use kind::SolModifierKind;
 pub(in crate::sol::svc::svce_calc) use mod_ctx::SolCtxModifier;
-pub(in crate::sol::svc::svce_calc) use mod_raw::SolRawModifier;
+pub(in crate::sol::svc::svce_calc) use mod_raw::{get_resist_attr_id, SolRawModifier};
 pub(in crate::sol::svc::svce_calc) use op::SolOp;
 
 mod affectee_filter;

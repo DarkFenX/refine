@@ -1,17 +1,21 @@
 use crate::{
-    ad,
-    defs::SolItemId,
-    ec,
-    sol::svc::svce_calc::{
-        modifier::{affector_val::SolAffectorValue, SolAffecteeFilter, SolDomain, SolModifierKind, SolRawModifier},
-        SolAggrMode, SolOp,
+    ad, ec,
+    sol::{
+        item::SolItem,
+        svc::svce_calc::{
+            modifier::{
+                affector_val::SolAffectorValue, get_resist_attr_id, SolAffecteeFilter, SolDomain, SolModifierKind,
+                SolRawModifier,
+            },
+            SolAggrMode, SolOp,
+        },
     },
 };
 
-pub(in crate::sol::svc::svce_calc) fn make_mod(affector_item_id: SolItemId, effect: &ad::AEffect) -> SolRawModifier {
+pub(in crate::sol::svc::svce_calc) fn make_mod(item: &SolItem, effect: &ad::AEffect) -> SolRawModifier {
     SolRawModifier::new(
         SolModifierKind::Targeted,
-        affector_item_id,
+        item.get_id(),
         effect.id,
         SolAffectorValue::AttrId(ec::attrs::SPEED_FACTOR),
         SolOp::PostPerc,
@@ -19,7 +23,7 @@ pub(in crate::sol::svc::svce_calc) fn make_mod(affector_item_id: SolItemId, effe
         SolAffecteeFilter::Direct(SolDomain::Target),
         ec::attrs::MAX_VELOCITY,
         None,
-        effect.resist_attr_id,
+        get_resist_attr_id(item, effect),
         effect.range_attr_id,
         effect.falloff_attr_id,
         Some(ec::attrs::SPEED_FACTOR_FLOOR),
