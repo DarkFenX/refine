@@ -231,7 +231,6 @@ class ApiModOp(StrEnum):
     post_assign = 'post_assign'
     max_limit = 'max_limit'
     extra_mul = 'extra_mul'
-    extra_min_limit = 'extra_min_limit'
 
 
 @unique

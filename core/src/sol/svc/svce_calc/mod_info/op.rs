@@ -28,8 +28,6 @@ pub enum SolOpInfo {
     MaxLimit,
     /// Non-dogma multiplication operator.
     ExtraMul,
-    /// Non-dogma operator which limits minimum attribute value.
-    ExtraMinLimit,
 }
 impl From<SolOp> for SolOpInfo {
     fn from(mod_op: SolOp) -> Self {

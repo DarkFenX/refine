@@ -151,17 +151,8 @@ impl SolSvcs {
         if LIMITED_PRECISION_ATTR_IDS.contains(attr_id) {
             dogma_val = (dogma_val * 100.0).round() / 100.0
         }
-        // Post-dogma calculations - various operators
-        let mut extra_val = accumulator.apply_extra_mods(dogma_val, attr.hig);
-        // Apply lower cap to speed factor attribute
-        if *attr_id == ec::attrs::SPEED_FACTOR {
-            if let Ok(capping_vals) = self.calc_get_item_attr_val(sol_view, item_id, &ec::attrs::SPEED_FACTOR_FLOOR) {
-                self.calc_data
-                    .deps
-                    .add_direct_local(*item_id, ec::attrs::SPEED_FACTOR_FLOOR, ec::attrs::SPEED_FACTOR);
-                extra_val = AttrVal::max(extra_val, capping_vals.extra);
-            }
-        }
+        // Post-dogma calculations
+        let extra_val = accumulator.apply_extra_mods(dogma_val, attr.hig);
         Ok(SolAttrVal::new(base_val, dogma_val, extra_val))
     }
 }
