@@ -9,7 +9,6 @@ use crate::{
 };
 
 impl SolarSystem {
-    // TODO: rewrite so that when allocation fails, nothing changes
     pub fn set_fit_stance(
         &mut self,
         fit_id: SolFitId,
@@ -27,6 +26,7 @@ impl SolarSystem {
             self.items.remove_item(&old_item_id);
         }
         // Add new stance
+        // Should be fallible only if we didn't remove old stance, so don't handle failure
         let item_id = self.items.alloc_item_id()?;
         let stance = SolStance::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SolStanceInfo::from(&stance);

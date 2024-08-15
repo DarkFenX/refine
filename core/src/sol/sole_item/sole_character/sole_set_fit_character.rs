@@ -9,7 +9,6 @@ use crate::{
 };
 
 impl SolarSystem {
-    // TODO: rewrite so that when allocation fails, nothing changes
     pub fn set_fit_character(
         &mut self,
         fit_id: SolFitId,
@@ -27,6 +26,7 @@ impl SolarSystem {
             self.items.remove_item(&old_item_id);
         }
         // Add new character
+        // Should be fallible only if we didn't remove old character, so don't handle failure
         let item_id = self.items.alloc_item_id()?;
         let character = SolCharacter::new(&self.src, item_id, fit_id, a_item_id, state);
         let info = SolCharacterInfo::from(&character);

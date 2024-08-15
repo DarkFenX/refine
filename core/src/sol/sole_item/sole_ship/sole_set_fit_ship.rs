@@ -9,7 +9,6 @@ use crate::{
 };
 
 impl SolarSystem {
-    // TODO: rewrite so that when allocation fails, nothing changes
     pub fn set_fit_ship(
         &mut self,
         fit_id: SolFitId,
@@ -22,6 +21,7 @@ impl SolarSystem {
             self.remove_ship(&old_item_id).unwrap();
         }
         // Add new ship
+        // Should be fallible only if we didn't remove old ship, so don't handle failure
         let item_id = self.items.alloc_item_id()?;
         let ship = SolShip::new(&self.src, item_id, fit_id, a_item_id, state);
         let ship_kind = ship.kind;
