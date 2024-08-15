@@ -17,33 +17,35 @@ impl SolarSystem {
             let a_item = a_item.clone();
             for effect_id in a_item.effect_datas.keys() {
                 if let Some(effect) = self.src.get_a_effect(effect_id) {
-                    if let Some(ad::AEffectChargeInfo::Attr(charge_attr_id)) = effect.charge {
-                        if let Some(autocharge_a_item_id) = a_item.attr_vals.get(&charge_attr_id) {
-                            let autocharge_item_id = match self.items.alloc_item_id() {
-                                Ok(item_id) => item_id,
-                                Err(e) => {
-                                    // If we got an allocation error, remove autocharges we already
-                                    // added
-                                    for ac_item_id in new_ac_map.values() {
-                                        self.items.remove_item(ac_item_id).unwrap();
+                    if let Some(charge_info) = effect.charge {
+                        if let ad::AEffectChargeLocation::Attr(charge_attr_id) = charge_info.location {
+                            if let Some(autocharge_a_item_id) = a_item.attr_vals.get(&charge_attr_id) {
+                                let autocharge_item_id = match self.items.alloc_item_id() {
+                                    Ok(item_id) => item_id,
+                                    Err(e) => {
+                                        // If we got an allocation error, remove autocharges we
+                                        // already added
+                                        for ac_item_id in new_ac_map.values() {
+                                            self.items.remove_item(ac_item_id).unwrap();
+                                        }
+                                        return Err(e);
                                     }
-                                    return Err(e);
+                                };
+                                let autocharge = SolAutocharge::new(
+                                    &self.src,
+                                    autocharge_item_id,
+                                    fit_id,
+                                    *autocharge_a_item_id as EItemId,
+                                    *item_id,
+                                );
+                                // Don't add an autocharge if it can't be loaded
+                                if !autocharge.is_loaded() {
+                                    continue;
                                 }
-                            };
-                            let autocharge = SolAutocharge::new(
-                                &self.src,
-                                autocharge_item_id,
-                                fit_id,
-                                *autocharge_a_item_id as EItemId,
-                                *item_id,
-                            );
-                            // Don't add an autocharge if it can't be loaded
-                            if !autocharge.is_loaded() {
-                                continue;
+                                new_ac_map.insert(*effect_id, autocharge.get_id());
+                                let ac_item = SolItem::Autocharge(autocharge);
+                                self.items.add_item(ac_item);
                             }
-                            new_ac_map.insert(*effect_id, autocharge.get_id());
-                            let ac_item = SolItem::Autocharge(autocharge);
-                            self.items.add_item(ac_item);
                         }
                     }
                 }

@@ -6,9 +6,9 @@
 
 pub use data::{
     AAttr, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier, AData, AEffect, AEffectAffecteeFilter,
-    AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectChargeInfo, AEffectDomain,
-    AEffectModBuildStatus, AEffectModifier, AItem, AItemEffectData, AItemKind, AModifierSrq, AMuta, AMutaAttrRange,
-    AOp, AState, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta,
+    AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectChargeInfo, AEffectChargeLocation,
+    AEffectDomain, AEffectModBuildStatus, AEffectModifier, AItem, AItemEffectData, AItemKind, AModifierSrq, AMuta,
+    AMutaAttrRange, AOp, AState, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta,
 };
 pub use handler::AdaptedDataHandler;
 pub use result::AResult;

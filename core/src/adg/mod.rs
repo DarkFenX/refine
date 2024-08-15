@@ -168,7 +168,7 @@ impl GSupport {
         // LR fighter bombs
         self.eff_charge_map.insert(
             ec::effects::FTR_ABIL_BOMB,
-            ad::AEffectChargeInfo::Attr(ec::attrs::FTR_ABIL_BOMB_TYPE),
+            ad::AEffectChargeInfo::new(ad::AEffectChargeLocation::Attr(ec::attrs::FTR_ABIL_BOMB_TYPE), false),
         );
     }
 }

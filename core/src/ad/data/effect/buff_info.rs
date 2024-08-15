@@ -9,7 +9,6 @@ pub struct AEffectBuffInfo {
     pub scope: AEffectBuffScope,
 }
 impl AEffectBuffInfo {
-    /// Make a new adapted dogma effect out of passed data.
     pub(crate) fn new(source: AEffectBuffSrc, scope: AEffectBuffScope) -> Self {
         Self { source, scope }
     }
