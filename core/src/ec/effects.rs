@@ -6,6 +6,7 @@ pub(crate) const LO_POWER: EEffectId = 11;
 pub(crate) const HI_POWER: EEffectId = 12;
 pub(crate) const MED_POWER: EEffectId = 13;
 pub(crate) const ONLINE: EEffectId = 16;
+pub(crate) const USE_MISSILES: EEffectId = 101;
 pub(crate) const MISSILE_EM_DMG_BONUS: EEffectId = 660;
 pub(crate) const MISSILE_EXPL_DMG_BONUS: EEffectId = 661;
 pub(crate) const MISSILE_THERM_DMG_BONUS: EEffectId = 662;
