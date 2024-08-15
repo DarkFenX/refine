@@ -21,10 +21,11 @@ impl SolRunningEffects {
         self.data.get(item_id)
     }
     // Modification methods
-    pub(in crate::sol::svc) fn effects_started<I>(&mut self, item_id: SolItemId, effects: I)
-    where
-        I: Iterator<Item = EEffectId> + ExactSizeIterator,
-    {
+    pub(in crate::sol::svc) fn effects_started(
+        &mut self,
+        item_id: SolItemId,
+        effects: impl ExactSizeIterator<Item = EEffectId>,
+    ) {
         self.data.extend_entries(item_id, effects);
     }
     pub(in crate::sol::svc) fn effects_stopped<'a>(
