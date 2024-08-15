@@ -174,6 +174,41 @@ def test_limit_update(client, consts):
     assert eve_affector_attr.id not in api_affector_module.mods
 
 
+def test_multiple_stacking_penalty(client, consts):
+    # Check that limit is applied on a per-modification basis, and how it interacts with stacking
+    # penalties.
+    # Tested on 2024-08-15 in Offikatlin (minmatar observatory system) using Daredevil with webs
+    # which had base strengths of -65.664001% and -65.292001.
+    client.mk_eve_attr(id_=consts.EveAttr.speed_factor_floor, def_val=-99)
+    eve_affector_attr = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
+    eve_affectee_attr = client.mk_eve_attr(id_=consts.EveAttr.max_velocity, stackable=False)
+    eve_web_effect = client.mk_eve_effect(id_=consts.EveEffect.remote_webifier_falloff, cat_id=consts.EveEffCat.target)
+    eve_affector_module1 = client.mk_eve_item(
+        attrs={eve_affector_attr.id: -108.34560222816468},
+        eff_ids=[eve_web_effect.id],
+        defeff_id=eve_web_effect.id)
+    eve_affector_module2 = client.mk_eve_item(
+        attrs={eve_affector_attr.id: -107.73180208182336},
+        eff_ids=[eve_web_effect.id],
+        defeff_id=eve_web_effect.id)
+    eve_affectee_ship = client.mk_eve_ship(attrs={eve_affectee_attr.id: 7516.53})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affectee_fit = api_sol.create_fit()
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship.id)
+    api_affector_fit = api_sol.create_fit()
+    api_affector_module1 = api_affector_fit.add_mod(type_id=eve_affector_module1.id, state=consts.ApiState.active)
+    api_affector_module1.change_mod(add_projs=[api_affectee_ship.id])
+    api_affector_module2 = api_affector_fit.add_mod(type_id=eve_affector_module2.id, state=consts.ApiState.active)
+    api_affector_module2.change_mod(add_projs=[api_affectee_ship.id])
+    # Verification
+    # The value received equals to 7516.53×(1−0.99)×(1−0.99×0.869...). If stacking penalties were
+    # applied before limit, final speed would've been 7516.53×(1−0.99)×(1−1.077...×0.869...) = 4.78
+    api_affectee_ship.update()
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].dogma == approx(10.490912)
+    assert api_affectee_ship.attrs[eve_affectee_attr.id].extra == approx(10.490912)
+
+
 def test_siege_mod(client, consts):
     # Check that siege module's -100% is not affected by the limit
     client.mk_eve_attr(id_=consts.EveAttr.speed_factor_floor, def_val=-99)
