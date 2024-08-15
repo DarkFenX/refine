@@ -6,6 +6,7 @@ from enum import Enum, IntEnum, StrEnum, unique
 class EveItem(IntEnum):
     missile_launcher_operation = 3319
     nanite_repair_paste = 28668
+    stasis_webification_probe = 56748
 
 
 @unique
@@ -31,6 +32,7 @@ class EveItemCat(IntEnum):
 @unique
 class EveEffect(IntEnum):
     online = 16
+    use_missiles = 101
     missile_em_dmg_bonus = 660
     missile_expl_dmg_bonus = 661
     missile_therm_dmg_bonus = 662

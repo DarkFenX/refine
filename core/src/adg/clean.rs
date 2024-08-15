@@ -17,6 +17,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> Resu
     trash_all(alive, &mut trash);
     restore_core_items(alive, &mut trash, &g_supp);
     restore_hardcoded_attrs(alive, &mut trash);
+    restore_hardcoded_buffs(alive, &mut trash);
 
     let mut counter = 0;
     let mut changes = true;
@@ -86,6 +87,13 @@ fn restore_hardcoded_attrs(alive: &mut GData, trash: &mut GData) {
     // Its default value is used in custom web modifiers, not referenced from anywhere else
     move_data(&mut trash.attrs, &mut alive.attrs, |v| {
         v.id == ec::attrs::SPEED_FACTOR_FLOOR
+    });
+}
+
+fn restore_hardcoded_buffs(alive: &mut GData, trash: &mut GData) {
+    // Used in custom wubble effect
+    move_data(&mut trash.buffs, &mut alive.buffs, |v| {
+        v.id == ec::buffs::STASIS_WEBIFICATION_BURST
     });
 }
 

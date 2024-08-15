@@ -174,7 +174,7 @@ def test_limit_update(client, consts):
     assert eve_affector_attr.id not in api_affector_module.mods
 
 
-def test_multiple_stacking_penalty(client, consts):
+def test_stacking_penalty(client, consts):
     # Check that limit is applied on a per-modification basis, and how it interacts with stacking
     # penalties.
     # Tested on 2024-08-15 in Offikatlin (minmatar observatory system) using Daredevil with webs
