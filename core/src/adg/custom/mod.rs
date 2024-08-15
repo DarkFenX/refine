@@ -10,6 +10,7 @@ mod missile_rof_self_srq;
 mod online_eff_cat;
 mod prop_mods;
 mod subsystem_mods;
+mod wubble;
 
 pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
     online_eff_cat::fix_online_effect_cat(a_data);

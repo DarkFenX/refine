@@ -43,6 +43,7 @@ pub(crate) const FTR_SQ_IS_LIGHT: EAttrId = 2212;
 pub(crate) const FTR_SQ_IS_SUPPORT: EAttrId = 2213;
 pub(crate) const FTR_SQ_IS_HEAVY: EAttrId = 2214;
 pub(crate) const SPEED_FACTOR_FLOOR: EAttrId = 2266;
+pub(crate) const DOOMSDAY_AOE_RANGE: EAttrId = 2279;
 pub(crate) const FTR_ABIL_BOMB_TYPE: EAttrId = 2324;
 pub(crate) const WARFARE_BUFF1_ID: EAttrId = 2468;
 pub(crate) const WARFARE_BUFF1_VAL: EAttrId = 2469;

@@ -56,3 +56,4 @@ pub(crate) const DEBUFF_LANCE: EEffectId = 11691;
 // Library-specific effects
 pub(crate) const REE_CHAR_MISSILE_DMG: EEffectId = -1;
 pub(crate) const REE_AAR_PASTE_BOOST: EEffectId = -2;
+pub(crate) const REE_STASIS_WEB_PROBE: EEffectId = -3;
