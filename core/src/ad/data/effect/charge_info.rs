@@ -5,12 +5,13 @@ use crate::defs::EAttrId;
 pub struct AEffectChargeInfo {
     /// Specifies where effect should look for a charge.
     pub location: AEffectChargeLocation,
-    /// Defines if module should run charge effects when activated.
-    pub run_effects: bool,
+    /// Defines if charge is powered by the effect, i.e. if running the effect and targeting it
+    /// somewhere forces charge effects to follow.
+    pub powered: bool,
 }
 impl AEffectChargeInfo {
     pub(crate) fn new(location: AEffectChargeLocation, run_effects: bool) -> Self {
-        Self { location, run_effects }
+        Self { location, powered: run_effects }
     }
 }
 

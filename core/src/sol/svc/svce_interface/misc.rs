@@ -9,7 +9,7 @@ pub(super) fn get_effect_powered_charge_id(item: &SolItem, effect: &ad::AEffect)
         Some(charge_info) => charge_info,
         None => return None,
     };
-    if !charge_info.run_effects {
+    if !charge_info.powered {
         return None;
     }
     match charge_info.location {

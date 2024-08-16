@@ -26,8 +26,7 @@ impl SolSvcs {
             return;
         }
         let mut item_for_projs = item;
-        // Special handling for effects of (auto)charges loaded into items which want to run charge
-        // effects
+        // Special handling for effects of powered (auto)charges
         if let Some(cont_item_id) = item.get_cont_item_id() {
             for cont_effect_id in self.running_effects.iter_running(&cont_item_id) {
                 let cont_effect = match sol_view.src.get_a_effect(cont_effect_id) {
@@ -40,7 +39,7 @@ impl SolSvcs {
                 };
                 // Not interested in container item effects which don't want to run charge
                 // effects
-                if !charge_info.run_effects {
+                if !charge_info.powered {
                     continue;
                 }
                 let cont_item = sol_view.items.get_item(&cont_item_id).unwrap();

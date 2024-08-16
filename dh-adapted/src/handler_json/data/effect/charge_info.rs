@@ -1,13 +1,13 @@
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub struct CEffectChargeInfo {
     pub location: CEffectChargeLocation,
-    pub run_effects: bool,
+    pub powered: bool,
 }
 impl From<&rc::ad::AEffectChargeInfo> for CEffectChargeInfo {
     fn from(a_charge_info: &rc::ad::AEffectChargeInfo) -> Self {
         Self {
             location: (&a_charge_info.location).into(),
-            run_effects: a_charge_info.run_effects,
+            powered: a_charge_info.powered,
         }
     }
 }
@@ -15,7 +15,7 @@ impl Into<rc::ad::AEffectChargeInfo> for &CEffectChargeInfo {
     fn into(self) -> rc::ad::AEffectChargeInfo {
         rc::ad::AEffectChargeInfo {
             location: (&self.location).into(),
-            run_effects: self.run_effects,
+            powered: self.powered,
         }
     }
 }
