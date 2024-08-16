@@ -191,7 +191,7 @@ impl SolItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::sol) fn get_container_id(&self) -> Option<SolItemId> {
+    pub(in crate::sol) fn get_cont_item_id(&self) -> Option<SolItemId> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.cont_id),
             Self::Booster(_) => None,
