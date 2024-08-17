@@ -1,7 +1,7 @@
 pub use affectee_filter::AEffectAffecteeFilter;
 pub use buff_info::{AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom};
 pub use build_status::AEffectModBuildStatus;
-pub use charge_info::{AEffectChargeInfo, AEffectChargeLocation};
+pub use charge_info::AEffectChargeInfo;
 pub use domain::AEffectDomain;
 pub use effect::AEffect;
 pub use modifier::AEffectModifier;

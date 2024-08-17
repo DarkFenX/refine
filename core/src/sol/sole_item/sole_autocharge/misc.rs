@@ -19,7 +19,7 @@ impl SolarSystem {
             for effect_id in a_item.effect_datas.keys() {
                 if let Some(effect) = self.src.get_a_effect(effect_id) {
                     if let Some(charge_info) = effect.charge {
-                        if let ad::AEffectChargeLocation::Attr(charge_attr_id) = charge_info.location {
+                        if let ad::AEffectChargeInfo::Attr(charge_attr_id) = charge_info {
                             if let Some(autocharge_type_id) = a_item.attr_vals.get(&charge_attr_id) {
                                 let autocharge_id = match self.items.alloc_item_id() {
                                     Ok(item_id) => item_id,

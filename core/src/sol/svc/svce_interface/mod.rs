@@ -1,5 +1,5 @@
 use effect_resolver::{resolve_effect_status, resolve_online_effect_status};
-use misc::{get_effect_powered_charge_id, is_effect_projectable};
+use misc::is_effect_projectable;
 
 mod effect_resolver;
 mod misc;
