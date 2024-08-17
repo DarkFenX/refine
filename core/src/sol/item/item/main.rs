@@ -171,46 +171,6 @@ impl SolItem {
             Self::SwEffect(_) => None,
         }
     }
-    pub(in crate::sol) fn get_charge_id(&self) -> Option<SolItemId> {
-        match self {
-            Self::Autocharge(_) => None,
-            Self::Booster(_) => None,
-            Self::Character(_) => None,
-            Self::Charge(_) => None,
-            Self::Drone(_) => None,
-            Self::Fighter(_) => None,
-            Self::FwEffect(_) => None,
-            Self::Implant(_) => None,
-            Self::Module(module) => module.get_charge_id(),
-            Self::ProjEffect(_) => None,
-            Self::Rig(_) => None,
-            Self::Ship(_) => None,
-            Self::Skill(_) => None,
-            Self::Stance(_) => None,
-            Self::Subsystem(_) => None,
-            Self::SwEffect(_) => None,
-        }
-    }
-    pub(in crate::sol) fn get_cont_item_id(&self) -> Option<SolItemId> {
-        match self {
-            Self::Autocharge(autocharge) => Some(autocharge.get_cont_id()),
-            Self::Booster(_) => None,
-            Self::Character(_) => None,
-            Self::Charge(charge) => Some(charge.get_cont_id()),
-            Self::Drone(_) => None,
-            Self::Fighter(_) => None,
-            Self::FwEffect(_) => None,
-            Self::Implant(_) => None,
-            Self::Module(_) => None,
-            Self::ProjEffect(_) => None,
-            Self::Rig(_) => None,
-            Self::Ship(_) => None,
-            Self::Skill(_) => None,
-            Self::Stance(_) => None,
-            Self::Subsystem(_) => None,
-            Self::SwEffect(_) => None,
-        }
-    }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_type_id(),
