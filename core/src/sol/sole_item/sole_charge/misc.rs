@@ -16,7 +16,7 @@ impl SolarSystem {
         cont_id: SolItemId,
         cont_state: SolItemState,
     ) -> SolChargeInfo {
-        let charge = SolCharge::new(&self.src, item_id, fit_id, type_id, cont_id, cont_state, true);
+        let charge = SolCharge::new(&self.src, item_id, fit_id, type_id, cont_id, cont_state, false);
         let info = SolChargeInfo::from(&charge);
         let item = SolItem::Charge(charge);
         self.items.add_item(item);

@@ -39,7 +39,7 @@ impl SolarSystem {
                                     *autocharge_type_id as EItemId,
                                     *item_id,
                                     item_state,
-                                    true,
+                                    false,
                                 );
                                 // Don't add an autocharge if it can't be loaded
                                 if !autocharge.is_loaded() {

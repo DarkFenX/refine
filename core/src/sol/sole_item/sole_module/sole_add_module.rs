@@ -78,7 +78,7 @@ impl SolarSystem {
                 charge_type_id,
                 module_item_id,
                 module_state,
-                true,
+                false,
             );
             charge_info = Some(SolChargeInfo::from(&charge));
             let item = SolItem::Charge(charge);

@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{EItemId, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{state_to_bool, SolEffectModes, SolItemBase, SolItemState, SolProjs},
+    sol::item::{SolEffectModes, SolItemBase, SolItemState, SolProjs},
     src::Src,
     util::Named,
 };
@@ -12,8 +12,8 @@ pub(in crate::sol) struct SolAutocharge {
     base: SolItemBase,
     fit_id: SolFitId,
     cont_id: SolItemId,
-    state_override: Option<SolItemState>,
     projs: SolProjs,
+    force_disable: bool,
 }
 impl SolAutocharge {
     pub(in crate::sol) fn new(
@@ -23,17 +23,15 @@ impl SolAutocharge {
         type_id: EItemId,
         cont_id: SolItemId,
         cont_state: SolItemState,
-        state: bool,
+        force_disable: bool,
     ) -> Self {
-        let mut autocharge = Self {
+        Self {
             base: SolItemBase::new(src, id, type_id, cont_state),
             fit_id,
             cont_id,
-            state_override: None,
             projs: SolProjs::new(),
-        };
-        autocharge.set_bool_state(state);
-        autocharge
+            force_disable,
+        }
     }
     // Item base methods
     pub(in crate::sol) fn get_id(&self) -> SolItemId {
@@ -46,9 +44,9 @@ impl SolAutocharge {
         self.base.get_a_item()
     }
     pub(in crate::sol) fn get_state(&self) -> SolItemState {
-        match self.state_override {
-            Some(state_override) => state_override,
-            None => self.base.get_state(),
+        match self.force_disable {
+            true => SolItemState::Ghost,
+            false => self.base.get_state(),
         }
     }
     pub(in crate::sol) fn set_state(&mut self, state: SolItemState) {
@@ -75,14 +73,11 @@ impl SolAutocharge {
     pub(in crate::sol) fn get_cont_id(&self) -> SolItemId {
         self.cont_id
     }
-    pub(in crate::sol) fn get_bool_state(&self) -> bool {
-        state_to_bool(self.get_state())
+    pub(in crate::sol) fn get_force_disable(&self) -> bool {
+        self.force_disable
     }
-    pub(in crate::sol) fn set_bool_state(&mut self, state: bool) {
-        match state {
-            true => self.state_override = None,
-            false => self.state_override = Some(SolItemState::Ghost),
-        }
+    pub(in crate::sol) fn set_force_disable(&mut self, force_disable: bool) {
+        self.force_disable = force_disable
     }
     pub(in crate::sol) fn get_projs(&self) -> &SolProjs {
         &self.projs

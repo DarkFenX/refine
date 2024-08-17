@@ -21,6 +21,7 @@ impl SolAutoChargeInfo {
 }
 impl From<&SolAutocharge> for SolAutoChargeInfo {
     fn from(sol_autocharge: &SolAutocharge) -> Self {
+        // No projections because they fully match to projections of parent item
         SolAutoChargeInfo::new(
             sol_autocharge.get_id(),
             sol_autocharge.get_fit_id(),
