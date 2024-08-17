@@ -2,19 +2,20 @@ use crate::{
     ad,
     defs::{EItemId, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{state_to_bool, SolEffectModes, SolItemBase, SolItemState},
+    sol::item::{state_to_bool, SolEffectModes, SolItemBase, SolItemState, SolProjs},
     src::Src,
     util::Named,
 };
 
 #[derive(Clone)]
-pub(in crate::sol) struct SolCharge {
+pub(in crate::sol) struct SolAutocharge {
     base: SolItemBase,
     fit_id: SolFitId,
     cont_id: SolItemId,
     state_override: Option<SolItemState>,
+    projs: SolProjs,
 }
-impl SolCharge {
+impl SolAutocharge {
     pub(in crate::sol) fn new(
         src: &Src,
         id: SolItemId,
@@ -24,14 +25,15 @@ impl SolCharge {
         cont_state: SolItemState,
         state: bool,
     ) -> Self {
-        let mut charge = Self {
+        let mut autocharge = Self {
             base: SolItemBase::new(src, id, type_id, cont_state),
             fit_id,
             cont_id,
             state_override: None,
+            projs: SolProjs::new(),
         };
-        charge.set_bool_state(state);
-        charge
+        autocharge.set_bool_state(state);
+        autocharge
     }
     // Item base methods
     pub(in crate::sol) fn get_id(&self) -> SolItemId {
@@ -61,8 +63,10 @@ impl SolCharge {
     pub(in crate::sol) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::sol::item) fn reload_a_item(&mut self, src: &Src) {
-        self.base.reload_a_item(src);
+    pub(in crate::sol::item) fn reload_a_item(&mut self, _: &Src) {
+        // Just panic to expose attempts to reload it, since autocharges should never be reloaded.
+        // Instead, they are removed and re-added when source changes.
+        panic!("autocharges shouldn't be reloaded");
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
@@ -80,13 +84,19 @@ impl SolCharge {
             false => self.state_override = Some(SolItemState::Ghost),
         }
     }
-}
-impl Named for SolCharge {
-    fn get_name() -> &'static str {
-        "SolCharge"
+    pub(in crate::sol) fn get_projs(&self) -> &SolProjs {
+        &self.projs
+    }
+    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut SolProjs {
+        &mut self.projs
     }
 }
-impl std::fmt::Display for SolCharge {
+impl Named for SolAutocharge {
+    fn get_name() -> &'static str {
+        "SolAutoCharge"
+    }
+}
+impl std::fmt::Display for SolAutocharge {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,

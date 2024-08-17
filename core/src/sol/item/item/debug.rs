@@ -5,10 +5,10 @@ use super::SolItem;
 impl SolItem {
     pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
         match self {
-            Self::Autocharge(_) => Ok(()),
+            Self::Autocharge(autocharge) => autocharge.debug_consistency_check(sol_view),
             Self::Booster(_) => Ok(()),
             Self::Character(_) => Ok(()),
-            Self::Charge(_) => Ok(()),
+            Self::Charge(charge) => charge.debug_consistency_check(sol_view),
             Self::Drone(_) => Ok(()),
             Self::Fighter(fighter) => fighter.debug_consistency_check(sol_view),
             Self::FwEffect(_) => Ok(()),
