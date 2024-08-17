@@ -1,12 +1,10 @@
-use crate::sol::{item::debug, SolDebugResult, SolView};
+use crate::sol::{SolDebugResult, SolView};
 
 use super::SolModule;
 
 impl SolModule {
     pub(in crate::sol::item) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
-        for projectee_item_id in self.get_projs().iter_items() {
-            debug::check_item(sol_view, projectee_item_id)?;
-        }
+        self.get_projs().debug_consistency_check(sol_view)?;
         Ok(())
     }
 }
