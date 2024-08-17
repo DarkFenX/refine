@@ -12,16 +12,6 @@ impl SolSvcs {
         old_item_state: SolItemState,
         new_item_state: SolItemState,
     ) {
-        self.switch_item_state_internal(sol_view, item, old_item_state, new_item_state, true);
-    }
-    pub(in crate::sol::svc::svce_interface) fn switch_item_state_internal(
-        &mut self,
-        sol_view: &SolView,
-        item: &SolItem,
-        old_item_state: SolItemState,
-        new_item_state: SolItemState,
-        spec_charge_cont_state: bool,
-    ) {
         if new_item_state > old_item_state {
             for state in SolItemState::iter().filter(|v| **v > old_item_state && **v <= new_item_state) {
                 self.notify_state_activated(sol_view, item, state);
@@ -37,6 +27,6 @@ impl SolSvcs {
                 self.notify_state_deactivated(sol_view, item, state);
             }
         }
-        self.process_effects_internal(sol_view, item, new_item_state, spec_charge_cont_state);
+        self.process_effects(sol_view, item, new_item_state);
     }
 }
