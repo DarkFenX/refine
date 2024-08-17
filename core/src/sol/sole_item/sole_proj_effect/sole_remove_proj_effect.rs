@@ -12,7 +12,7 @@ impl SolarSystem {
         let item = self.items.get_item(item_id)?;
         let proj_effect = item.get_proj_effect()?;
         // Remove outgoing projections
-        let proj_outgoing = proj_effect.projs.iter_items().map(|v| *v).collect_vec();
+        let proj_outgoing = proj_effect.get_projs().iter_items().map(|v| *v).collect_vec();
         for projectee_item_id in proj_outgoing {
             self.remove_proj_effect_proj(item_id, &projectee_item_id).unwrap();
         }

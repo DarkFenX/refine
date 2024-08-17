@@ -7,8 +7,8 @@ use crate::{
 impl SolarSystem {
     pub fn set_drone_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetDroneStateError> {
         let drone = self.items.get_item_mut(item_id)?.get_drone_mut()?;
-        let old_state = drone.state;
-        drone.state = state;
+        let old_state = drone.get_state();
+        drone.set_state(state);
         self.change_item_id_state_in_svcs(item_id, old_state, state);
         Ok(())
     }

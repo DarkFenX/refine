@@ -10,8 +10,7 @@ use super::check_skill_level;
 impl SolarSystem {
     pub fn set_skill_level(&mut self, item_id: &SolItemId, level: SkillLevel) -> Result<(), SetSkillLevelError> {
         check_skill_level(level)?;
-        let skill = self.items.get_item_mut(item_id)?.get_skill_mut()?;
-        skill.level = level;
+        self.items.get_item_mut(item_id)?.get_skill_mut()?.set_level(level);
         // TODO: change it to use attribute overrides, and make calc_force_attr_recalc private
         self.svcs.calc_force_attr_recalc(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),

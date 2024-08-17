@@ -4,8 +4,8 @@ use super::SolFighter;
 
 impl SolFighter {
     pub(in crate::sol::item) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
-        for autocharge_item_id in self.autocharges.values() {
-            debug::check_item(sol_view, autocharge_item_id)?;
+        for autocharge_id in self.get_autocharges().values() {
+            debug::check_item(sol_view, autocharge_id)?;
         }
         Ok(())
     }

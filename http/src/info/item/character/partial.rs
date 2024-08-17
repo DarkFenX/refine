@@ -14,7 +14,7 @@ impl From<&rc::SolCharacterInfo> for HCharacterInfoPartial {
         Self {
             id: core_character_info.id,
             kind: "character",
-            type_id: core_character_info.a_item_id,
+            type_id: core_character_info.type_id,
             fit_id: core_character_info.fit_id,
             enabled: core_character_info.enabled,
         }

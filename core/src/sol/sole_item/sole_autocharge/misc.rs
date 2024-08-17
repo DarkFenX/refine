@@ -12,6 +12,7 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol) fn update_item_autocharges(&mut self, item_id: &SolItemId) -> Result<(), ItemAllocError> {
         let item = self.items.get_item(&item_id).unwrap();
+        let item_state = item.get_state();
         let mut new_ac_map = StMap::new();
         if let (Some(fit_id), Ok(a_item), Some(_)) = (item.get_fit_id(), item.get_a_item(), item.get_autocharges()) {
             let a_item = a_item.clone();
@@ -19,8 +20,8 @@ impl SolarSystem {
                 if let Some(effect) = self.src.get_a_effect(effect_id) {
                     if let Some(charge_info) = effect.charge {
                         if let ad::AEffectChargeLocation::Attr(charge_attr_id) = charge_info.location {
-                            if let Some(autocharge_a_item_id) = a_item.attr_vals.get(&charge_attr_id) {
-                                let autocharge_item_id = match self.items.alloc_item_id() {
+                            if let Some(autocharge_type_id) = a_item.attr_vals.get(&charge_attr_id) {
+                                let autocharge_id = match self.items.alloc_item_id() {
                                     Ok(item_id) => item_id,
                                     Err(e) => {
                                         // If we got an allocation error, remove autocharges we
@@ -33,10 +34,12 @@ impl SolarSystem {
                                 };
                                 let autocharge = SolAutocharge::new(
                                     &self.src,
-                                    autocharge_item_id,
+                                    autocharge_id,
                                     fit_id,
-                                    *autocharge_a_item_id as EItemId,
+                                    *autocharge_type_id as EItemId,
                                     *item_id,
+                                    item_state,
+                                    true,
                                 );
                                 // Don't add an autocharge if it can't be loaded
                                 if !autocharge.is_loaded() {

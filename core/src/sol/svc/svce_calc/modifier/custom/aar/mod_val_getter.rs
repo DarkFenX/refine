@@ -14,14 +14,14 @@ pub(in crate::sol::svc::svce_calc::modifier) fn get_mod_val(
     let item = sol_view.items.get_item(item_id).unwrap();
     match item {
         SolItem::Module(module) => {
-            let charge_id = match module.charge_item_id {
+            let charge_id = match module.get_charge_id() {
                 Some(charge_id) => charge_id,
                 // No charge - no extra reps
                 None => return Some(1.0),
             };
             // If charge is referenced, we're supposed to always be able to fetch it
             let charge = sol_view.items.get_item(&charge_id).unwrap();
-            if charge.get_a_item_id() == ec::items::NANITE_REPAIR_PASTE {
+            if charge.get_type_id() == ec::items::NANITE_REPAIR_PASTE {
                 match svc.calc_get_item_attr_val(sol_view, item_id, &AAR_AFFECTOR_ATTR_ID) {
                     Ok(sol_attr) => Some(sol_attr.dogma),
                     // Can't fetch multiplier attr - no extra reps

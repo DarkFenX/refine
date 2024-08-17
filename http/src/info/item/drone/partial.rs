@@ -16,7 +16,7 @@ impl From<&rc::SolDroneInfo> for HDroneInfoPartial {
         Self {
             id: core_drone_info.id,
             kind: "drone",
-            type_id: core_drone_info.a_item_id,
+            type_id: core_drone_info.type_id,
             fit_id: core_drone_info.fit_id,
             state: (&core_drone_info.state).into(),
         }

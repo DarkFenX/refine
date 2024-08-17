@@ -11,7 +11,7 @@ use super::{SolChargeInfo, SolProjInfo};
 pub struct SolModuleInfo {
     pub id: SolItemId,
     pub fit_id: SolFitId,
-    pub a_item_id: EItemId,
+    pub type_id: EItemId,
     pub state: SolItemState,
     pub rack: SolModRack,
     pub pos: Idx,
@@ -22,7 +22,7 @@ impl SolModuleInfo {
     fn new(
         id: SolItemId,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         state: SolItemState,
         rack: SolModRack,
         pos: Idx,
@@ -32,7 +32,7 @@ impl SolModuleInfo {
         Self {
             id,
             fit_id,
-            a_item_id,
+            type_id,
             state,
             rack,
             pos,
@@ -44,13 +44,13 @@ impl SolModuleInfo {
         SolModuleInfo::new(
             sol_module.get_id(),
             sol_module.get_fit_id(),
-            sol_module.get_a_item_id(),
-            sol_module.state,
-            sol_module.rack,
-            sol_module.pos,
+            sol_module.get_type_id(),
+            sol_module.get_state(),
+            sol_module.get_rack(),
+            sol_module.get_pos(),
             charge_info,
             sol_module
-                .projs
+                .get_projs()
                 .iter()
                 .map(|(item_id, range)| SolProjInfo::new(*item_id, *range))
                 .collect(),

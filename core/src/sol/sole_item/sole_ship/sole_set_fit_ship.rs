@@ -12,7 +12,7 @@ impl SolarSystem {
     pub fn set_fit_ship(
         &mut self,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         state: bool,
     ) -> Result<SolShipInfo, SetFitShipError> {
         let fit = self.fits.get_fit(&fit_id)?;
@@ -23,8 +23,8 @@ impl SolarSystem {
         // Add new ship
         // Should be fallible only if we didn't remove old ship, so don't handle failure
         let item_id = self.items.alloc_item_id()?;
-        let ship = SolShip::new(&self.src, item_id, fit_id, a_item_id, state);
-        let ship_kind = ship.kind;
+        let ship = SolShip::new(&self.src, item_id, fit_id, type_id, state);
+        let ship_kind = ship.get_kind();
         let info = SolShipInfo::from(&ship);
         let item = SolItem::Ship(ship);
         let fit = self.fits.get_fit_mut(&fit_id).unwrap();

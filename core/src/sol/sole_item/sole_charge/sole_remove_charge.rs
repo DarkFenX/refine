@@ -10,14 +10,14 @@ impl SolarSystem {
         let charge = item.get_charge()?;
         self.svcs
             .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
-        let module_item_id = charge.cont_id;
+        let module_item_id = charge.get_cont_id();
         let module = self
             .items
             .get_item_mut(&module_item_id)
             .unwrap()
             .get_module_mut()
             .unwrap();
-        module.charge_item_id = None;
+        module.set_charge_id(None);
         self.items.remove_item(item_id);
         Ok(())
     }

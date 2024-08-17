@@ -14,7 +14,7 @@ impl From<&rc::SolStanceInfo> for HStanceInfoPartial {
         Self {
             id: core_stance_info.id,
             kind: "stance",
-            type_id: core_stance_info.a_item_id,
+            type_id: core_stance_info.type_id,
             fit_id: core_stance_info.fit_id,
             enabled: core_stance_info.enabled,
         }

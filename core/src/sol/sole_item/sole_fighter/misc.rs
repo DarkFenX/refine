@@ -6,8 +6,8 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol) fn make_fighter_info(&self, fighter: &SolFighter) -> SolFighterInfo {
         let mut autocharges = StMap::new();
-        for (effect_id, autocharge_item_id) in fighter.autocharges.iter() {
-            if let Ok(autocharge_info) = self.get_autocharge(&autocharge_item_id) {
+        for (effect_id, autocharge_id) in fighter.get_autocharges().iter() {
+            if let Ok(autocharge_info) = self.get_autocharge(&autocharge_id) {
                 autocharges.insert(*effect_id, autocharge_info);
             }
         }

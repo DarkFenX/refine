@@ -26,7 +26,7 @@ impl HBoosterInfoPartial {
         Self {
             id: core_booster_info.id,
             kind: "booster",
-            type_id: core_booster_info.a_item_id,
+            type_id: core_booster_info.type_id,
             fit_id: core_booster_info.fit_id,
             enabled: core_booster_info.enabled,
             side_effects,

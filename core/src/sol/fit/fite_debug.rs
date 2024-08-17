@@ -142,7 +142,7 @@ impl SolFit {
                 SolItem::Module(module) => module,
                 _ => return Err(SolDebugError::new()),
             };
-            if !matches!(module.rack, SolModRack::High) {
+            if !matches!(module.get_rack(), SolModRack::High) {
                 return Err(SolDebugError::new());
             }
             item.debug_consistency_check(sol_view)?;
@@ -162,7 +162,7 @@ impl SolFit {
                 SolItem::Module(module) => module,
                 _ => return Err(SolDebugError::new()),
             };
-            if !matches!(module.rack, SolModRack::Mid) {
+            if !matches!(module.get_rack(), SolModRack::Mid) {
                 return Err(SolDebugError::new());
             }
             item.debug_consistency_check(sol_view)?;
@@ -182,7 +182,7 @@ impl SolFit {
                 SolItem::Module(module) => module,
                 _ => return Err(SolDebugError::new()),
             };
-            if !matches!(module.rack, SolModRack::Low) {
+            if !matches!(module.get_rack(), SolModRack::Low) {
                 return Err(SolDebugError::new());
             }
             item.debug_consistency_check(sol_view)?;
@@ -260,7 +260,7 @@ fn check_module_charge(
     module: &SolModule,
     seen_items: &mut Vec<SolItemId>,
 ) -> SolDebugResult {
-    if let Some(item_id) = module.charge_item_id {
+    if let Some(item_id) = module.get_charge_id() {
         seen_items.push(item_id);
         let item = match sol_view.items.get_item(&item_id) {
             Ok(item) => item,
@@ -273,7 +273,7 @@ fn check_module_charge(
             SolItem::Charge(charge) => charge,
             _ => return Err(SolDebugError::new()),
         };
-        if charge.cont_id != module.get_id() {
+        if charge.get_cont_id() != module.get_id() {
             return Err(SolDebugError::new());
         }
         item.debug_consistency_check(sol_view)?;
@@ -287,7 +287,7 @@ fn check_fighter_autocharges(
     fighter: &SolFighter,
     seen_items: &mut Vec<SolItemId>,
 ) -> SolDebugResult {
-    for item_id in fighter.autocharges.values() {
+    for item_id in fighter.get_autocharges().values() {
         seen_items.push(*item_id);
         let item = match sol_view.items.get_item(item_id) {
             Ok(item) => item,
@@ -300,7 +300,7 @@ fn check_fighter_autocharges(
             SolItem::Autocharge(autocharge) => autocharge,
             _ => return Err(SolDebugError::new()),
         };
-        if autocharge.cont_id != fighter.get_id() {
+        if autocharge.get_cont_id() != fighter.get_id() {
             return Err(SolDebugError::new());
         }
         item.debug_consistency_check(sol_view)?;

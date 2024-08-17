@@ -12,7 +12,7 @@ impl From<&rc::SolSwEffectInfo> for HSwEffectInfoPartial {
         Self {
             id: core_sw_effect_info.id,
             kind: "sw_effect",
-            type_id: core_sw_effect_info.a_item_id,
+            type_id: core_sw_effect_info.type_id,
             enabled: core_sw_effect_info.enabled,
         }
     }

@@ -14,30 +14,28 @@ use crate::{
 pub(in crate::sol) struct SolModule {
     base: SolItemBase,
     fit_id: SolFitId,
-    pub(in crate::sol) state: SolItemState,
-    pub(in crate::sol) rack: SolModRack,
-    pub(in crate::sol) pos: Idx,
-    pub(in crate::sol) charge_item_id: Option<SolItemId>,
-    pub(in crate::sol) projs: SolProjs,
+    rack: SolModRack,
+    pos: Idx,
+    charge_id: Option<SolItemId>,
+    projs: SolProjs,
 }
 impl SolModule {
     pub(in crate::sol) fn new(
         src: &Src,
         id: SolItemId,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         state: SolItemState,
         rack: SolModRack,
         pos: Idx,
-        charge_a_item_id: Option<SolItemId>,
+        charge_id: Option<SolItemId>,
     ) -> Self {
         Self {
-            base: SolItemBase::new(src, id, a_item_id),
+            base: SolItemBase::new(src, id, type_id, state),
             fit_id,
-            state,
             rack,
             pos,
-            charge_item_id: charge_a_item_id,
+            charge_id,
             projs: SolProjs::new(),
         }
     }
@@ -45,11 +43,17 @@ impl SolModule {
     pub(in crate::sol) fn get_id(&self) -> SolItemId {
         self.base.get_id()
     }
-    pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
-        self.base.get_a_item_id()
+    pub(in crate::sol) fn get_type_id(&self) -> EItemId {
+        self.base.get_type_id()
     }
     pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
         self.base.get_a_item()
+    }
+    pub(in crate::sol) fn get_state(&self) -> SolItemState {
+        self.base.get_state()
+    }
+    pub(in crate::sol) fn set_state(&mut self, state: SolItemState) {
+        self.base.set_state(state)
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
         self.base.get_effect_modes()
@@ -67,6 +71,27 @@ impl SolModule {
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id
     }
+    pub(in crate::sol) fn get_rack(&self) -> SolModRack {
+        self.rack
+    }
+    pub(in crate::sol) fn get_pos(&self) -> Idx {
+        self.pos
+    }
+    pub(in crate::sol) fn set_pos(&mut self, pos: Idx) {
+        self.pos = pos
+    }
+    pub(in crate::sol) fn get_charge_id(&self) -> Option<SolItemId> {
+        self.charge_id
+    }
+    pub(in crate::sol) fn set_charge_id(&mut self, charge_item_id: Option<SolItemId>) {
+        self.charge_id = charge_item_id
+    }
+    pub(in crate::sol) fn get_projs(&self) -> &SolProjs {
+        &self.projs
+    }
+    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut SolProjs {
+        &mut self.projs
+    }
 }
 impl Named for SolModule {
     fn get_name() -> &'static str {
@@ -77,10 +102,10 @@ impl std::fmt::Display for SolModule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
-            "{}(id={}, a_item_id={})",
+            "{}(id={}, type_id={})",
             Self::get_name(),
             self.get_id(),
-            self.get_a_item_id(),
+            self.get_type_id(),
         )
     }
 }

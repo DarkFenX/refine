@@ -7,8 +7,8 @@ use crate::{
 impl SolarSystem {
     pub fn set_module_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetModuleStateError> {
         let module = self.items.get_item_mut(item_id)?.get_module_mut()?;
-        let old_state = module.state;
-        module.state = state;
+        let old_state = module.get_state();
+        module.set_state(state);
         self.change_item_id_state_in_svcs(item_id, old_state, state);
         Ok(())
     }

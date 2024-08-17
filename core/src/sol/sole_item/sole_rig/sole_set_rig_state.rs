@@ -7,9 +7,9 @@ use crate::{
 impl SolarSystem {
     pub fn set_rig_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetRigStateError> {
         let rig = self.items.get_item_mut(item_id)?.get_rig_mut()?;
-        let old_state = rig.state;
+        let old_state = rig.get_state();
         rig.set_bool_state(state);
-        let new_state = rig.state;
+        let new_state = rig.get_state();
         self.change_item_id_state_in_svcs(item_id, old_state, new_state);
         Ok(())
     }

@@ -12,11 +12,11 @@ impl SolarSystem {
     pub fn add_drone(
         &mut self,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         state: SolItemState,
     ) -> Result<SolDroneInfo, AddDroneError> {
         let item_id = self.items.alloc_item_id()?;
-        let drone = SolDrone::new(&self.src, item_id, fit_id, a_item_id, state);
+        let drone = SolDrone::new(&self.src, item_id, fit_id, type_id, state);
         let info = SolDroneInfo::from(&drone);
         let item = SolItem::Drone(drone);
         let fit = self.fits.get_fit_mut(&fit_id)?;

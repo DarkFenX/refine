@@ -10,7 +10,7 @@ use crate::{
 pub struct SolFighterInfo {
     pub id: SolItemId,
     pub fit_id: SolFitId,
-    pub a_item_id: EItemId,
+    pub type_id: EItemId,
     pub state: SolItemState,
     pub amt_override: Option<Amount>,
     pub autocharges: StMap<EEffectId, SolAutoChargeInfo>,
@@ -19,7 +19,7 @@ impl SolFighterInfo {
     fn new(
         id: SolItemId,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         state: SolItemState,
         amt_override: Option<Amount>,
         autocharges: StMap<EEffectId, SolAutoChargeInfo>,
@@ -27,7 +27,7 @@ impl SolFighterInfo {
         Self {
             id,
             fit_id,
-            a_item_id,
+            type_id,
             state,
             amt_override,
             autocharges,
@@ -40,9 +40,9 @@ impl SolFighterInfo {
         SolFighterInfo::new(
             sol_fighter.get_id(),
             sol_fighter.get_fit_id(),
-            sol_fighter.get_a_item_id(),
-            sol_fighter.state,
-            sol_fighter.amt_override,
+            sol_fighter.get_type_id(),
+            sol_fighter.get_state(),
+            sol_fighter.get_amt_override(),
             autocharges,
         )
     }

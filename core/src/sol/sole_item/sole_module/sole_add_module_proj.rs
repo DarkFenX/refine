@@ -19,7 +19,7 @@ impl SolarSystem {
             .get_module()
             .map_err(|e| AddModuleProjError::ProjectorIsNotModule(e))?;
         // Check if projection has already been defined
-        if module.projs.contains(&projectee_item_id) {
+        if module.get_projs().contains(&projectee_item_id) {
             return Err(AddModuleProjError::ProjectionAlreadyExists(ProjNotFoundError::new(
                 *item_id,
                 projectee_item_id,
@@ -38,7 +38,7 @@ impl SolarSystem {
         }
         // Update skeleton
         let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
-        module.projs.add(projectee_item_id, range);
+        module.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         // Update services
         let item = self.items.get_item(item_id).unwrap();

@@ -15,7 +15,7 @@ impl From<&rc::SolSkillInfo> for HSkillInfoPartial {
         Self {
             id: core_skill_info.id,
             kind: "skill",
-            type_id: core_skill_info.a_item_id,
+            type_id: core_skill_info.type_id,
             fit_id: core_skill_info.fit_id,
             level: core_skill_info.level,
             enabled: core_skill_info.enabled,

@@ -10,17 +10,17 @@ impl SolarSystem {
         // Check if everything is correct and collect autocharge IDs to be used later
         let item = self.items.get_item(item_id)?;
         let fighter = item.get_fighter()?;
-        let autocharge_ids = fighter.autocharges.values().map(|v| *v).collect_vec();
+        let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         // Remove incoming projections
         self.remove_incoming_projections(item_id);
         // Remove autocharges from services and skeleton
-        for autocharge_item_id in autocharge_ids {
-            let autocharge_item = self.items.get_item(&autocharge_item_id).unwrap();
+        for autocharge_id in autocharge_ids {
+            let autocharge = self.items.get_item(&autocharge_id).unwrap();
             self.svcs.remove_item(
                 &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-                autocharge_item,
+                autocharge,
             );
-            self.items.remove_item(&autocharge_item_id);
+            self.items.remove_item(&autocharge_id);
         }
         // Remove fighter from services
         let item = self.items.get_item(item_id).unwrap();

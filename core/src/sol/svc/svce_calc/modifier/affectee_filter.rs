@@ -41,7 +41,7 @@ impl SolAffecteeFilter {
 
 fn get_srq(mod_srq: &ad::AModifierSrq, sol_item: &SolItem) -> EItemId {
     match mod_srq {
-        ad::AModifierSrq::SelfRef => sol_item.get_a_item_id(),
+        ad::AModifierSrq::SelfRef => sol_item.get_type_id(),
         ad::AModifierSrq::ItemId(item_id) => *item_id,
     }
 }

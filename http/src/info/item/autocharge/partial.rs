@@ -15,7 +15,7 @@ impl From<&rc::SolAutoChargeInfo> for HAutoChargeInfoPartial {
         Self {
             id: core_autocharge_info.id,
             kind: "autocharge",
-            type_id: core_autocharge_info.a_item_id,
+            type_id: core_autocharge_info.type_id,
             fit_id: core_autocharge_info.fit_id,
             cont_id: core_autocharge_info.cont_id,
         }

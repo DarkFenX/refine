@@ -13,7 +13,7 @@ impl SolarSystem {
     ) -> Result<(), ChangeModuleProjError> {
         // Check if projection is defined before changing it
         let module = self.items.get_item(item_id)?.get_module()?;
-        let old_range = match module.projs.get(projectee_item_id) {
+        let old_range = match module.get_projs().get(projectee_item_id) {
             Some(old_range) => *old_range,
             None => return Err(ProjFoundError::new(*item_id, *projectee_item_id).into()),
         };
@@ -23,7 +23,7 @@ impl SolarSystem {
         }
         // Adjust skeleton
         let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
-        module.projs.add(*projectee_item_id, range);
+        module.get_projs_mut().add(*projectee_item_id, range);
         // Process request in services
         let item = self.items.get_item(item_id).unwrap();
         let projectee_item = self.items.get_item(projectee_item_id).unwrap();

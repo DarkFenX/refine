@@ -14,7 +14,7 @@ impl From<&rc::SolShipInfo> for HShipInfoPartial {
         Self {
             id: core_ship_info.id,
             kind: "ship",
-            type_id: core_ship_info.a_item_id,
+            type_id: core_ship_info.type_id,
             fit_id: core_ship_info.fit_id,
             enabled: core_ship_info.enabled,
         }

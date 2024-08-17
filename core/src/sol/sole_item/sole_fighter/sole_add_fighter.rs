@@ -14,12 +14,12 @@ impl SolarSystem {
     pub fn add_fighter(
         &mut self,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         state: SolItemState,
     ) -> Result<SolFighterInfo, AddFighterError> {
         // Do everything needed to reserve ID for fighter itself
         let item_id = self.items.alloc_item_id()?;
-        let fighter = SolFighter::new(&self.src, item_id, fit_id, a_item_id, state);
+        let fighter = SolFighter::new(&self.src, item_id, fit_id, type_id, state);
         let item = SolItem::Fighter(fighter);
         self.items.add_item(item);
         // Reserve IDs for autocharges
@@ -34,8 +34,8 @@ impl SolarSystem {
         // Add fighter and autocharges to services
         self.add_item_id_to_svcs(&item_id);
         let fighter = self.items.get_item(&item_id).unwrap().get_fighter().unwrap();
-        for autocharge_item_id in fighter.autocharges.values().map(|v| *v).collect_vec() {
-            self.add_item_id_to_svcs(&autocharge_item_id);
+        for autocharge_id in fighter.get_autocharges().values().map(|v| *v).collect_vec() {
+            self.add_item_id_to_svcs(&autocharge_id);
         }
         // Make info
         let info = self.get_fighter(&item_id).unwrap();

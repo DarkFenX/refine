@@ -11,31 +11,35 @@ use crate::{
 pub(in crate::sol) struct SolDrone {
     base: SolItemBase,
     fit_id: SolFitId,
-    pub(in crate::sol) state: SolItemState,
 }
 impl SolDrone {
     pub(in crate::sol) fn new(
         src: &Src,
         id: SolItemId,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         state: SolItemState,
     ) -> Self {
         Self {
-            base: SolItemBase::new(src, id, a_item_id),
+            base: SolItemBase::new(src, id, type_id, state),
             fit_id,
-            state,
         }
     }
     // Item base methods
     pub(in crate::sol) fn get_id(&self) -> SolItemId {
         self.base.get_id()
     }
-    pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
-        self.base.get_a_item_id()
+    pub(in crate::sol) fn get_type_id(&self) -> EItemId {
+        self.base.get_type_id()
     }
     pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
         self.base.get_a_item()
+    }
+    pub(in crate::sol) fn get_state(&self) -> SolItemState {
+        self.base.get_state()
+    }
+    pub(in crate::sol) fn set_state(&mut self, state: SolItemState) {
+        self.base.set_state(state)
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
         self.base.get_effect_modes()
@@ -63,10 +67,10 @@ impl std::fmt::Display for SolDrone {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
-            "{}(id={}, a_item_id={})",
+            "{}(id={}, type_id={})",
             Self::get_name(),
             self.get_id(),
-            self.get_a_item_id(),
+            self.get_type_id(),
         )
     }
 }

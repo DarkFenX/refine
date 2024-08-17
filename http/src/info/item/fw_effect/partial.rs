@@ -14,7 +14,7 @@ impl From<&rc::SolFwEffectInfo> for HFwEffectInfoPartial {
         Self {
             id: core_fw_effect_info.id,
             kind: "fw_effect",
-            type_id: core_fw_effect_info.a_item_id,
+            type_id: core_fw_effect_info.type_id,
             fit_id: core_fw_effect_info.fit_id,
             enabled: core_fw_effect_info.enabled,
         }

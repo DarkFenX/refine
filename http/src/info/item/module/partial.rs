@@ -30,7 +30,7 @@ impl HModuleInfoPartial {
         Self {
             id: core_module_info.id,
             kind: "module",
-            type_id: core_module_info.a_item_id,
+            type_id: core_module_info.type_id,
             fit_id: core_module_info.fit_id,
             state: (&core_module_info.state).into(),
             rack: (&core_module_info.rack).into(),

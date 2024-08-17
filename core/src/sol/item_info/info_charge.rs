@@ -6,15 +6,15 @@ use crate::{
 pub struct SolChargeInfo {
     pub id: SolItemId,
     pub fit_id: SolFitId,
-    pub a_item_id: EItemId,
+    pub type_id: EItemId,
     pub cont_id: SolItemId,
 }
 impl SolChargeInfo {
-    fn new(id: SolItemId, fit_id: SolFitId, a_item_id: EItemId, cont_id: SolItemId) -> Self {
+    fn new(id: SolItemId, fit_id: SolFitId, type_id: EItemId, cont_id: SolItemId) -> Self {
         Self {
             id,
             fit_id,
-            a_item_id,
+            type_id,
             cont_id,
         }
     }
@@ -24,8 +24,8 @@ impl From<&SolCharge> for SolChargeInfo {
         SolChargeInfo::new(
             sol_charge.get_id(),
             sol_charge.get_fit_id(),
-            sol_charge.get_a_item_id(),
-            sol_charge.cont_id,
+            sol_charge.get_type_id(),
+            sol_charge.get_cont_id(),
         )
     }
 }

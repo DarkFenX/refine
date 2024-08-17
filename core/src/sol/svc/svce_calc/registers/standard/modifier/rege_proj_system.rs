@@ -16,7 +16,7 @@ impl SolStandardRegister {
         match raw_modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Ship => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Ship) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Ship) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         add_ctx_modifier(
                             &mut self.cmods_root,
@@ -29,7 +29,7 @@ impl SolStandardRegister {
                     _ => None,
                 },
                 SolDomain::Structure => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Structure) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Structure) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         add_ctx_modifier(
                             &mut self.cmods_root,
@@ -58,7 +58,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Ship => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Ship) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Ship) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         add_ctx_modifier(
                             &mut self.cmods_loc,
@@ -71,7 +71,7 @@ impl SolStandardRegister {
                     _ => None,
                 },
                 SolDomain::Structure => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Structure) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Structure) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         add_ctx_modifier(
                             &mut self.cmods_loc,
@@ -100,7 +100,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Ship => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Ship) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Ship) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         add_ctx_modifier(
                             &mut self.cmods_loc_grp,
@@ -113,7 +113,7 @@ impl SolStandardRegister {
                     _ => None,
                 },
                 SolDomain::Structure => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Structure) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Structure) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         add_ctx_modifier(
                             &mut self.cmods_loc_grp,
@@ -142,7 +142,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Ship => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Ship) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Ship) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         add_ctx_modifier(
                             &mut self.cmods_loc_srq,
@@ -155,7 +155,7 @@ impl SolStandardRegister {
                     _ => None,
                 },
                 SolDomain::Structure => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Structure) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Structure) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         add_ctx_modifier(
                             &mut self.cmods_loc_srq,
@@ -205,7 +205,7 @@ impl SolStandardRegister {
         match raw_modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Ship => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Ship) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Ship) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         remove_ctx_modifier(
                             &mut self.cmods_root,
@@ -218,7 +218,7 @@ impl SolStandardRegister {
                     _ => None,
                 },
                 SolDomain::Structure => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Structure) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Structure) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         remove_ctx_modifier(
                             &mut self.cmods_root,
@@ -247,7 +247,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Ship => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Ship) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Ship) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         remove_ctx_modifier(
                             &mut self.cmods_loc,
@@ -260,7 +260,7 @@ impl SolStandardRegister {
                     _ => None,
                 },
                 SolDomain::Structure => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Structure) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Structure) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         remove_ctx_modifier(
                             &mut self.cmods_loc,
@@ -289,7 +289,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Ship => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Ship) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Ship) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         remove_ctx_modifier(
                             &mut self.cmods_loc_grp,
@@ -302,7 +302,7 @@ impl SolStandardRegister {
                     _ => None,
                 },
                 SolDomain::Structure => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Structure) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Structure) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         remove_ctx_modifier(
                             &mut self.cmods_loc_grp,
@@ -331,7 +331,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Ship => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Ship) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Ship) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         remove_ctx_modifier(
                             &mut self.cmods_loc_srq,
@@ -344,7 +344,7 @@ impl SolStandardRegister {
                     _ => None,
                 },
                 SolDomain::Structure => match projectee_item {
-                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.kind, SolShipKind::Structure) => {
+                    SolItem::Ship(projectee_ship) if matches!(projectee_ship.get_kind(), SolShipKind::Structure) => {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, projectee_ship.get_id());
                         remove_ctx_modifier(
                             &mut self.cmods_loc_srq,

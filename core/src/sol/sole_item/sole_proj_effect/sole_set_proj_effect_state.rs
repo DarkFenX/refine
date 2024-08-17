@@ -7,9 +7,9 @@ use crate::{
 impl SolarSystem {
     pub fn set_proj_effect_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetProjEffectStateError> {
         let proj_effect = self.items.get_item_mut(item_id)?.get_proj_effect_mut()?;
-        let old_state = proj_effect.state;
+        let old_state = proj_effect.get_state();
         proj_effect.set_bool_state(state);
-        let new_state = proj_effect.state;
+        let new_state = proj_effect.get_state();
         self.change_item_id_state_in_svcs(item_id, old_state, new_state);
         Ok(())
     }

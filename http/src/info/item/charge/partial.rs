@@ -15,7 +15,7 @@ impl From<&rc::SolChargeInfo> for HChargeInfoPartial {
         Self {
             id: core_charge_info.id,
             kind: "charge",
-            type_id: core_charge_info.a_item_id,
+            type_id: core_charge_info.type_id,
             fit_id: core_charge_info.fit_id,
             cont_id: core_charge_info.cont_id,
         }

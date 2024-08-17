@@ -8,26 +8,27 @@ impl SolarSystem {
     pub fn set_module_charge(
         &mut self,
         item_id: &SolItemId,
-        charge_a_item_id: EItemId,
+        charge_type_id: EItemId,
     ) -> Result<SolChargeInfo, SetModuleChargeError> {
         let module = self.items.get_item(item_id)?.get_module()?;
         // Remove old charge, if it was set
-        if let Some(charge_item_id) = module.charge_item_id {
-            let charge_item = self.items.get_item(&charge_item_id).unwrap();
+        if let Some(charge_id) = module.get_charge_id() {
+            let charge_item = self.items.get_item(&charge_id).unwrap();
             self.svcs.remove_item(
                 &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
                 charge_item,
             );
-            self.items.remove_item(&charge_item_id);
+            self.items.remove_item(&charge_id);
         }
         // Set new charge
         // Allocation can fail only if we didn't remove charge first, so if it fails - we don't need
         // to restore anything
-        let charge_item_id = self.items.alloc_item_id()?;
+        let charge_id = self.items.alloc_item_id()?;
         let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
-        module.charge_item_id = Some(charge_item_id);
+        module.set_charge_id(Some(charge_id));
         let fit_id = module.get_fit_id();
-        let charge_info = self.add_charge_with_id(charge_item_id, fit_id, charge_a_item_id, *item_id);
+        let module_state = module.get_state();
+        let charge_info = self.add_charge_with_id(charge_id, fit_id, charge_type_id, *item_id, module_state);
         Ok(charge_info)
     }
 }

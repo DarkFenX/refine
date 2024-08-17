@@ -7,7 +7,7 @@ use crate::{
 pub struct SolBoosterInfo {
     pub id: SolItemId,
     pub fit_id: SolFitId,
-    pub a_item_id: EItemId,
+    pub type_id: EItemId,
     pub enabled: bool,
     pub side_effects: StMap<EEffectId, SolSideEffectInfo>,
 }
@@ -15,14 +15,14 @@ impl SolBoosterInfo {
     fn new(
         id: SolItemId,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         enabled: bool,
         side_effects: StMap<EEffectId, SolSideEffectInfo>,
     ) -> Self {
         Self {
             id,
             fit_id,
-            a_item_id,
+            type_id,
             enabled,
             side_effects,
         }
@@ -34,7 +34,7 @@ impl SolBoosterInfo {
         SolBoosterInfo::new(
             sol_booster.get_id(),
             sol_booster.get_fit_id(),
-            sol_booster.get_a_item_id(),
+            sol_booster.get_type_id(),
             sol_booster.get_bool_state(),
             side_effects,
         )

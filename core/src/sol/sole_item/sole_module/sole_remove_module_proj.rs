@@ -12,7 +12,7 @@ impl SolarSystem {
     ) -> Result<(), RemoveModuleProjError> {
         // Check if projection is defined
         let module = self.items.get_item(item_id)?.get_module()?;
-        if !module.projs.contains(projectee_item_id) {
+        if !module.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
         };
         // Process request in services
@@ -26,7 +26,7 @@ impl SolarSystem {
         // Update the skeleton
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
-        module.projs.remove(projectee_item_id);
+        module.get_projs_mut().remove(projectee_item_id);
         Ok(())
     }
 }

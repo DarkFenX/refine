@@ -29,7 +29,7 @@ impl HFighterInfoPartial {
         Self {
             id: core_fighter_info.id,
             kind: "fighter",
-            type_id: core_fighter_info.a_item_id,
+            type_id: core_fighter_info.type_id,
             fit_id: core_fighter_info.fit_id,
             state: (&core_fighter_info.state).into(),
             amt_override: core_fighter_info.amt_override,

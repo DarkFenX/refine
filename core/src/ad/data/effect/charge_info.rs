@@ -11,7 +11,10 @@ pub struct AEffectChargeInfo {
 }
 impl AEffectChargeInfo {
     pub(crate) fn new(location: AEffectChargeLocation, run_effects: bool) -> Self {
-        Self { location, powered: run_effects }
+        Self {
+            location,
+            powered: run_effects,
+        }
     }
 }
 

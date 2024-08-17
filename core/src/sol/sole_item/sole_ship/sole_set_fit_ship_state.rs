@@ -13,9 +13,9 @@ impl SolarSystem {
             None => return Err(FitHasItemKindError::new(*fit_id, SolShip::get_name()).into()),
         };
         let ship = self.items.get_item_mut(&item_id).unwrap().get_ship_mut().unwrap();
-        let old_state = ship.state;
+        let old_state = ship.get_state();
         ship.set_bool_state(state);
-        let new_state = ship.state;
+        let new_state = ship.get_state();
         self.change_item_id_state_in_svcs(&item_id, old_state, new_state);
         Ok(())
     }

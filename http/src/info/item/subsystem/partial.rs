@@ -14,7 +14,7 @@ impl From<&rc::SolSubsystemInfo> for HSubsystemInfoPartial {
         Self {
             id: core_subsystem_info.id,
             kind: "subsystem",
-            type_id: core_subsystem_info.a_item_id,
+            type_id: core_subsystem_info.type_id,
             fit_id: core_subsystem_info.fit_id,
             enabled: core_subsystem_info.enabled,
         }

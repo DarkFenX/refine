@@ -14,13 +14,13 @@ impl SolarSystem {
     pub fn add_skill(
         &mut self,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         level: SkillLevel,
         state: bool,
     ) -> Result<SolSkillInfo, AddSkillError> {
         check_skill_level(level)?;
         let item_id = self.items.alloc_item_id()?;
-        let skill = SolSkill::new(&self.src, item_id, fit_id, a_item_id, level, state);
+        let skill = SolSkill::new(&self.src, item_id, fit_id, type_id, level, state);
         let info = SolSkillInfo::from(&skill);
         let item = SolItem::Skill(skill);
         let fit = self.fits.get_fit_mut(&fit_id)?;

@@ -12,7 +12,7 @@ impl SolarSystem {
     pub fn set_fit_character(
         &mut self,
         fit_id: SolFitId,
-        a_item_id: EItemId,
+        type_id: EItemId,
         state: bool,
     ) -> Result<SolCharacterInfo, SetFitCharacterError> {
         let fit = self.fits.get_fit(&fit_id)?;
@@ -28,7 +28,7 @@ impl SolarSystem {
         // Add new character
         // Should be fallible only if we didn't remove old character, so don't handle failure
         let item_id = self.items.alloc_item_id()?;
-        let character = SolCharacter::new(&self.src, item_id, fit_id, a_item_id, state);
+        let character = SolCharacter::new(&self.src, item_id, fit_id, type_id, state);
         let info = SolCharacterInfo::from(&character);
         let item = SolItem::Character(character);
         let fit = self.fits.get_fit_mut(&fit_id).unwrap();

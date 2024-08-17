@@ -130,7 +130,7 @@ impl SolSvcs {
             None => attr.def_val,
         };
         match (attr_id, item) {
-            (&ec::attrs::SKILL_LEVEL, SolItem::Skill(s)) => return Ok(SolAttrValInfo::new(s.level as AttrVal)),
+            (&ec::attrs::SKILL_LEVEL, SolItem::Skill(s)) => return Ok(SolAttrValInfo::new(s.get_level() as AttrVal)),
             _ => (),
         }
         let mut accumulator = SolModAccumInfo::new();

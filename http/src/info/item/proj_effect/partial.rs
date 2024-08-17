@@ -15,7 +15,7 @@ impl From<&rc::SolProjEffectInfo> for HProjEffectInfoPartial {
         Self {
             id: core_proj_effect_info.id,
             kind: "proj_effect",
-            type_id: core_proj_effect_info.a_item_id,
+            type_id: core_proj_effect_info.type_id,
             enabled: core_proj_effect_info.enabled,
             projs: core_proj_effect_info.projs.clone(),
         }

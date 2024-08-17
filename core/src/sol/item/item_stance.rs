@@ -11,25 +11,26 @@ use crate::{
 pub(in crate::sol) struct SolStance {
     base: SolItemBase,
     fit_id: SolFitId,
-    pub(in crate::sol) state: SolItemState,
 }
 impl SolStance {
-    pub(in crate::sol) fn new(src: &Src, id: SolItemId, fit_id: SolFitId, a_item_id: EItemId, state: bool) -> Self {
+    pub(in crate::sol) fn new(src: &Src, id: SolItemId, fit_id: SolFitId, type_id: EItemId, state: bool) -> Self {
         Self {
-            base: SolItemBase::new(src, id, a_item_id),
+            base: SolItemBase::new(src, id, type_id, bool_to_state(state)),
             fit_id,
-            state: bool_to_state(state),
         }
     }
     // Item base methods
     pub(in crate::sol) fn get_id(&self) -> SolItemId {
         self.base.get_id()
     }
-    pub(in crate::sol) fn get_a_item_id(&self) -> EItemId {
-        self.base.get_a_item_id()
+    pub(in crate::sol) fn get_type_id(&self) -> EItemId {
+        self.base.get_type_id()
     }
     pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
         self.base.get_a_item()
+    }
+    pub(in crate::sol) fn get_state(&self) -> SolItemState {
+        self.base.get_state()
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
         self.base.get_effect_modes()
@@ -48,10 +49,10 @@ impl SolStance {
         self.fit_id
     }
     pub(in crate::sol) fn get_bool_state(&self) -> bool {
-        state_to_bool(self.state)
+        state_to_bool(self.base.get_state())
     }
     pub(in crate::sol) fn set_bool_state(&mut self, state: bool) {
-        self.state = bool_to_state(state);
+        self.base.set_state(bool_to_state(state))
     }
 }
 impl Named for SolStance {
@@ -63,10 +64,10 @@ impl std::fmt::Display for SolStance {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
             f,
-            "{}(id={}, a_item_id={})",
+            "{}(id={}, type_id={})",
             Self::get_name(),
             self.get_id(),
-            self.get_a_item_id(),
+            self.get_type_id(),
         )
     }
 }

@@ -117,7 +117,11 @@ impl SolSvcs {
         };
         match (attr_id, item) {
             (&ec::attrs::SKILL_LEVEL, SolItem::Skill(s)) => {
-                return Ok(SolAttrVal::new(base_val, s.level as AttrVal, s.level as AttrVal))
+                return Ok(SolAttrVal::new(
+                    base_val,
+                    s.get_level() as AttrVal,
+                    s.get_level() as AttrVal,
+                ))
             }
             _ => (),
         }

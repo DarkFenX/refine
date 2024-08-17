@@ -14,7 +14,7 @@ impl From<&rc::SolImplantInfo> for HImplantInfoPartial {
         Self {
             id: core_implant_info.id,
             kind: "implant",
-            type_id: core_implant_info.a_item_id,
+            type_id: core_implant_info.type_id,
             fit_id: core_implant_info.fit_id,
             enabled: core_implant_info.enabled,
         }

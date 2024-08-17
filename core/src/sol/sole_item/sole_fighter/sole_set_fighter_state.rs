@@ -7,8 +7,8 @@ use crate::{
 impl SolarSystem {
     pub fn set_fighter_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetFighterStateError> {
         let fighter = self.items.get_item_mut(item_id)?.get_fighter_mut()?;
-        let old_state = fighter.state;
-        fighter.state = state;
+        let old_state = fighter.get_state();
+        fighter.set_state(state);
         self.change_item_id_state_in_svcs(item_id, old_state, state);
         Ok(())
     }

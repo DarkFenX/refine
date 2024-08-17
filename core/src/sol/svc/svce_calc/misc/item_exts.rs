@@ -20,7 +20,7 @@ impl SolItem {
             Self::Module(_) => None,
             Self::ProjEffect(_) => None,
             Self::Rig(_) => None,
-            Self::Ship(ship) => match ship.kind {
+            Self::Ship(ship) => match ship.get_kind() {
                 SolShipKind::Ship => Some(SolLocationKind::Ship),
                 SolShipKind::Structure => Some(SolLocationKind::Structure),
                 _ => None,
@@ -124,7 +124,7 @@ impl SolItem {
             Self::Module(_) => false,
             Self::ProjEffect(_) => false,
             Self::Rig(_) => false,
-            Self::Ship(ship) => match ship.kind {
+            Self::Ship(ship) => match ship.get_kind() {
                 SolShipKind::Ship => true,
                 SolShipKind::Structure => false,
                 SolShipKind::Unknown => false,
@@ -140,12 +140,12 @@ impl SolItem {
             Self::Autocharge(_) => None,
             Self::Booster(_) => None,
             Self::Character(_) => None,
-            Self::Charge(charge) => Some(charge.cont_id),
+            Self::Charge(charge) => Some(charge.get_cont_id()),
             Self::Drone(_) => None,
             Self::Fighter(_) => None,
             Self::FwEffect(_) => None,
             Self::Implant(_) => None,
-            Self::Module(module) => module.charge_item_id,
+            Self::Module(module) => module.get_charge_id(),
             Self::ProjEffect(_) => None,
             Self::Rig(_) => None,
             Self::Ship(_) => None,

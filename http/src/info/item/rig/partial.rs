@@ -14,7 +14,7 @@ impl From<&rc::SolRigInfo> for HRigInfoPartial {
         Self {
             id: core_rig_info.id,
             kind: "rig",
-            type_id: core_rig_info.a_item_id,
+            type_id: core_rig_info.type_id,
             fit_id: core_rig_info.fit_id,
             enabled: core_rig_info.enabled,
         }
