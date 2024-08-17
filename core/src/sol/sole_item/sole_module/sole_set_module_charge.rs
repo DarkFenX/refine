@@ -1,7 +1,11 @@
 use crate::{
     defs::{EItemId, SolItemId},
     err::basic::{ItemAllocError, ItemFoundError, ItemKindMatchError},
-    sol::{item_info::SolChargeInfo, SolView, SolarSystem},
+    sol::{
+        item::{SolCharge, SolItem},
+        item_info::SolChargeInfo,
+        SolView, SolarSystem,
+    },
 };
 
 impl SolarSystem {
@@ -27,8 +31,19 @@ impl SolarSystem {
         let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
         module.set_charge_id(Some(charge_id));
         let fit_id = module.get_fit_id();
-        let module_state = module.get_state();
-        let charge_info = self.add_charge_with_id(charge_id, fit_id, charge_type_id, *item_id, module_state);
+        let charge = SolCharge::new(
+            &self.src,
+            *item_id,
+            fit_id,
+            charge_type_id,
+            *item_id,
+            module.get_state(),
+            false,
+        );
+        let charge_info = SolChargeInfo::from(&charge);
+        let charge_item = SolItem::Charge(charge);
+        self.items.add_item(charge_item);
+        self.add_item_id_to_svcs(&charge_id);
         Ok(charge_info)
     }
 }
