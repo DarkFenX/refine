@@ -392,6 +392,16 @@ impl SolItem {
             )),
         }
     }
+    pub(in crate::sol) fn get_charge_mut(&mut self) -> Result<&mut SolCharge, ItemKindMatchError> {
+        match self {
+            Self::Charge(charge) => Ok(charge),
+            _ => Err(ItemKindMatchError::new(
+                self.get_id(),
+                SolCharge::get_name(),
+                self.get_name(),
+            )),
+        }
+    }
     pub(in crate::sol) fn get_drone(&self) -> Result<&SolDrone, ItemKindMatchError> {
         match self {
             Self::Drone(drone) => Ok(drone),
