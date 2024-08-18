@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
@@ -6,10 +8,27 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_fighter_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetFighterStateError> {
+        // Update skeleton for fighter
         let fighter = self.items.get_item_mut(item_id)?.get_fighter_mut()?;
+        let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         let old_state = fighter.get_state();
         fighter.set_state(state);
+        // Update services for fighter
         self.change_item_id_state_in_svcs(item_id, old_state, state);
+        for autocharge_id in autocharge_ids {
+            // Update skeleton for autocharge
+            let autocharge = self
+                .items
+                .get_item_mut(&autocharge_id)
+                .unwrap()
+                .get_autocharge_mut()
+                .unwrap();
+            let old_state = autocharge.get_state();
+            autocharge.set_state(state);
+            // Update services for autocharge
+            let new_state = autocharge.get_state();
+            self.change_item_id_state_in_svcs(&autocharge_id, old_state, new_state);
+        }
         Ok(())
     }
 }

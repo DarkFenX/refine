@@ -1,9 +1,10 @@
+use itertools::Itertools;
+
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
     sol::{SolView, SolarSystem},
 };
-use itertools::Itertools;
 
 impl SolarSystem {
     pub fn remove_fighter(&mut self, item_id: &SolItemId) -> Result<(), RemoveFighterError> {
@@ -11,23 +12,52 @@ impl SolarSystem {
         let item = self.items.get_item(item_id)?;
         let fighter = item.get_fighter()?;
         let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
+        // Remove outgoing projections for fighter and its autocharges
+        for projectee_item_id in fighter.get_projs().iter_items() {
+            let projectee_item = self.items.get_item(projectee_item_id).unwrap();
+            for autocharge_id in autocharge_ids.iter() {
+                // Update services for autocharge
+                let autocharge_item = self.items.get_item(autocharge_id).unwrap();
+                self.svcs.remove_item_projection(
+                    &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                    autocharge_item,
+                    projectee_item,
+                );
+                // Update skeleton for autocharge - don't touch data on charge itself, since charge
+                // will be removed later anyway
+                self.proj_tracker.unreg_projectee(autocharge_id, projectee_item_id);
+            }
+            // Update services for fighter
+            self.svcs.remove_item_projection(
+                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                item,
+                projectee_item,
+            );
+            // Update skeleton for fighter - don't touch data on fighter itself, since fighter will
+            // be removed later anyway
+            self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
+        }
         // Remove incoming projections
         self.remove_incoming_projections(item_id);
-        // Remove autocharges from services and skeleton
+        // Remove autocharges
         for autocharge_id in autocharge_ids {
+            // Update services for autocharge
             let autocharge = self.items.get_item(&autocharge_id).unwrap();
             self.svcs.remove_item(
                 &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
                 autocharge,
             );
+            // Update skeleton for autocharge - not updating fighter<->autocharge references because
+            // both will be removed
             self.items.remove_item(&autocharge_id);
         }
-        // Remove fighter from services
+        // Remove fighter
+        // Update services for fighter
         let item = self.items.get_item(item_id).unwrap();
         let fighter = item.get_fighter().unwrap();
         self.svcs
             .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
-        // Remove fighter from skeleton
+        // Update skeleton for fighter
         let fit = self.fits.get_fit_mut(&fighter.get_fit_id()).unwrap();
         fit.fighters.remove(item_id);
         self.items.remove_item(item_id);
