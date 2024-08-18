@@ -9,6 +9,7 @@ pub struct SolAutochargeInfo {
     pub type_id: EItemId,
     pub cont_id: SolItemId,
     pub enabled: bool,
+    // No projections because they fully match to projections of parent item
 }
 impl SolAutochargeInfo {
     fn new(id: SolItemId, fit_id: SolFitId, type_id: EItemId, cont_id: SolItemId, enabled: bool) -> Self {
@@ -23,7 +24,6 @@ impl SolAutochargeInfo {
 }
 impl From<&SolAutocharge> for SolAutochargeInfo {
     fn from(sol_autocharge: &SolAutocharge) -> Self {
-        // No projections because they fully match to projections of parent item
         SolAutochargeInfo::new(
             sol_autocharge.get_id(),
             sol_autocharge.get_fit_id(),

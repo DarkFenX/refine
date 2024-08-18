@@ -1,12 +1,10 @@
-use crate::sol::{item::debug, SolDebugResult, SolView};
+use crate::sol::{SolDebugResult, SolView};
 
 use super::SolFighter;
 
 impl SolFighter {
     pub(in crate::sol::item) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
-        for autocharge_id in self.get_autocharges().values() {
-            debug::check_item(sol_view, autocharge_id)?;
-        }
+        self.get_autocharges().debug_consistency_check(sol_view)?;
         Ok(())
     }
 }
