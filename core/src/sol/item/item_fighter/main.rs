@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{Amount, EItemId, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState},
+    sol::item::{misc::SolProjs, SolAutocharges, SolEffectModes, SolItemBase, SolItemState},
     src::Src,
     util::Named,
 };
@@ -13,6 +13,7 @@ pub(in crate::sol) struct SolFighter {
     fit_id: SolFitId,
     amt_override: Option<Amount>,
     autocharges: SolAutocharges,
+    projs: SolProjs,
 }
 impl SolFighter {
     pub(in crate::sol) fn new(
@@ -27,6 +28,7 @@ impl SolFighter {
             fit_id,
             amt_override: None,
             autocharges: SolAutocharges::new(),
+            projs: SolProjs::new(),
         }
     }
     // Item base methods
@@ -70,6 +72,12 @@ impl SolFighter {
     }
     pub(in crate::sol) fn get_autocharges_mut(&mut self) -> &mut SolAutocharges {
         &mut self.autocharges
+    }
+    pub(in crate::sol) fn get_projs(&self) -> &SolProjs {
+        &self.projs
+    }
+    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut SolProjs {
+        &mut self.projs
     }
 }
 impl Named for SolFighter {
