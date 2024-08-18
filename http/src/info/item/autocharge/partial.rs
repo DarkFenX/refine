@@ -9,6 +9,7 @@ pub(crate) struct HAutoChargeInfoPartial {
     pub(crate) fit_id: rc::SolFitId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) cont_id: rc::SolItemId,
+    pub(crate) enabled: bool,
 }
 impl From<&rc::SolAutoChargeInfo> for HAutoChargeInfoPartial {
     fn from(core_autocharge_info: &rc::SolAutoChargeInfo) -> Self {
@@ -18,6 +19,7 @@ impl From<&rc::SolAutoChargeInfo> for HAutoChargeInfoPartial {
             type_id: core_autocharge_info.type_id,
             fit_id: core_autocharge_info.fit_id,
             cont_id: core_autocharge_info.cont_id,
+            enabled: core_autocharge_info.enabled,
         }
     }
 }

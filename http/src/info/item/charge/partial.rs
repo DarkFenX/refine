@@ -9,6 +9,7 @@ pub(crate) struct HChargeInfoPartial {
     pub(crate) fit_id: rc::SolFitId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) cont_id: rc::SolItemId,
+    pub(crate) enabled: bool,
 }
 impl From<&rc::SolChargeInfo> for HChargeInfoPartial {
     fn from(core_charge_info: &rc::SolChargeInfo) -> Self {
@@ -18,6 +19,7 @@ impl From<&rc::SolChargeInfo> for HChargeInfoPartial {
             type_id: core_charge_info.type_id,
             fit_id: core_charge_info.fit_id,
             cont_id: core_charge_info.cont_id,
+            enabled: core_charge_info.enabled,
         }
     }
 }
