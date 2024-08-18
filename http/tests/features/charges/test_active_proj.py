@@ -98,7 +98,7 @@ def test_charge_uncharge(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(1000)
 
 
-def test_state_up_state_down(client, consts):
+def test_states(client, consts):
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
@@ -120,6 +120,7 @@ def test_state_up_state_down(client, consts):
         type_id=eve_module.id,
         state=consts.ApiState.online,
         charge_type_id=eve_charge.id)
+    api_affector_charge = api_affector_module.charge
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(1000)
@@ -130,6 +131,28 @@ def test_state_up_state_down(client, consts):
     # Action
     api_affector_module.change_mod(state=consts.ApiState.online)
     # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(1000)
+    # Action
+    api_affector_charge.change_charge(state=True)
+    # Verification - active charge state does not override too low module state
+    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(1000)
+    # Action
+    api_affector_module.change_mod(state=consts.ApiState.active)
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(1200)
+    # Action
+    api_affector_charge.change_charge(state=False)
+    # Verification - disabled charge state stops effects, even if parent module is in high enough
+    # state
+    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(1000)
+    # Action
+    api_affector_module.change_mod(state=consts.ApiState.online)
+    # Verification
+    assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(1000)
+    # Action
+    api_affector_module.change_mod(state=consts.ApiState.active)
+    # Verification - re-enabling module does not enable charge, since it was not enabled after
+    # getting disabled
     assert api_affectee_ship.update().attrs[eve_affectee_attr.id].dogma == approx(1000)
 
 
