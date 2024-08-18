@@ -23,7 +23,7 @@ impl SolarSystem {
         let item = SolItem::Fighter(fighter);
         self.items.add_item(item);
         // Reserve IDs for autocharges
-        if let Err(e) = self.update_item_autocharges(&item_id) {
+        if let Err(e) = self.add_item_autocharges(&item_id) {
             // If it failed, remove fighter
             self.items.remove_item(&item_id);
             return Err(e.into());

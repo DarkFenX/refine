@@ -10,9 +10,13 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn update_item_autocharges(&mut self, item_id: &SolItemId) -> Result<(), ItemAllocError> {
+    pub(in crate::sol) fn add_item_autocharges(&mut self, item_id: &SolItemId) -> Result<(), ItemAllocError> {
         let item = self.items.get_item(&item_id).unwrap();
         let item_state = item.get_state();
+        let projections = match item.iter_projs() {
+            Some(projections) => projections.map(|(i, r)| (*i, *r)).collect(),
+            None => Vec::new(),
+        };
         let mut new_ac_map = StMap::new();
         if let (Some(fit_id), Ok(a_item), Some(_)) = (item.get_fit_id(), item.get_a_item(), item.get_autocharges()) {
             let a_item = a_item.clone();
@@ -32,7 +36,7 @@ impl SolarSystem {
                                         return Err(e);
                                     }
                                 };
-                                let autocharge = SolAutocharge::new(
+                                let mut autocharge = SolAutocharge::new(
                                     &self.src,
                                     autocharge_id,
                                     fit_id,
@@ -45,6 +49,11 @@ impl SolarSystem {
                                 if !autocharge.is_loaded() {
                                     continue;
                                 }
+                                // Transfer parent item projections to autocharge
+                                for (projectee_item_id, range) in projections.iter() {
+                                    autocharge.get_projs_mut().add(*projectee_item_id, *range);
+                                }
+                                // Add autocharge item to skeleton and fill info map
                                 new_ac_map.insert(*effect_id, autocharge.get_id());
                                 let ac_item = SolItem::Autocharge(autocharge);
                                 self.items.add_item(ac_item);
@@ -61,7 +70,6 @@ impl SolarSystem {
                 .unwrap()
                 .get_autocharges_mut()
                 .unwrap();
-            item_acs.clear();
             for (effect_id, autocharge_id) in new_ac_map.into_iter() {
                 item_acs.set(effect_id, autocharge_id);
             }

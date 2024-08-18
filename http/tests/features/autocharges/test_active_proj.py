@@ -1,6 +1,7 @@
 """
 Unlike regular charges, no known autocharges have active effects which apply modifiers to targets.
-But autocharges inherit that ability from charges, so test it here nevertheless.
+But autocharges inherit that ability from charges, so test it here nevertheless (just hope it
+doesn't crash or doesn't make solar system inconsistent).
 """
 
 from tests import approx

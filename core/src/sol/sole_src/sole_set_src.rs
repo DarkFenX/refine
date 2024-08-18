@@ -31,7 +31,7 @@ impl SolarSystem {
         // Update autocharges - as first step because it can fail
         for item_id in self.items.iter().map(|v| v.get_id()).collect_vec() {
             // Undo all the changes we did so far in case it failed
-            if let Err(e) = self.update_item_autocharges(&item_id) {
+            if let Err(e) = self.add_item_autocharges(&item_id) {
                 // Remove autocharges we managed to add to skeleton so far (for items on which
                 // update_item_autocharges() method did not fail)
                 let mut autocharge_ids = Vec::new();
@@ -70,11 +70,23 @@ impl SolarSystem {
                         item_autocharges.set(effect_id, autocharge_id);
                         self.items.add_item(autocharge);
                         // Services
-                        let autocharge = self.items.get_item(&autocharge_id).unwrap();
+                        let autocharge_item = self.items.get_item(&autocharge_id).unwrap();
                         self.svcs.add_item(
                             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-                            autocharge,
+                            autocharge_item,
                         );
+                        // Re-enable outgoing projections
+                        let autocharge = autocharge_item.get_autocharge().unwrap();
+                        for (projectee_item_id, range) in autocharge.get_projs().iter() {
+                            self.proj_tracker.reg_projectee(autocharge.get_id(), *projectee_item_id);
+                            let projectee_item = self.items.get_item(projectee_item_id).unwrap();
+                            self.svcs.add_item_projection(
+                                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                                autocharge_item,
+                                projectee_item,
+                                *range,
+                            );
+                        }
                     }
                 }
                 return Err(e.into());
@@ -91,8 +103,20 @@ impl SolarSystem {
         let sol_view = &SolView::new(&self.src, &self.fleets, &self.fits, &self.items);
         for item in self.items.iter() {
             match item {
-                SolItem::Autocharge(_) => {
+                SolItem::Autocharge(autocharge) => {
+                    // Autocharges are new, so we're adding them, not loading
                     self.svcs.add_item(sol_view, item);
+                    // For autocharges also enable outgoing projections
+                    for (projectee_item_id, range) in autocharge.get_projs().iter() {
+                        self.proj_tracker.reg_projectee(autocharge.get_id(), *projectee_item_id);
+                        let projectee_item = self.items.get_item(projectee_item_id).unwrap();
+                        self.svcs.add_item_projection(
+                            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                            item,
+                            projectee_item,
+                            *range,
+                        );
+                    }
                 }
                 _ => {
                     if item.is_loaded() {
@@ -108,6 +132,21 @@ impl SolarSystem {
         for (item_id, item_autocharge_ids) in self.get_autocharge_id_map().into_iter() {
             let mut backup_item_ac_map = StMap::new();
             for (effect_id, autocharge_id) in item_autocharge_ids.into_iter() {
+                // Remove outgoing projections
+                let autocharge_item = self.items.get_item(&autocharge_id).unwrap();
+                let autocharge = autocharge_item.get_autocharge().unwrap();
+                for projectee_item_id in autocharge.get_projs().iter_items() {
+                    let projectee_item = self.items.get_item(projectee_item_id).unwrap();
+                    // Update services
+                    self.svcs.remove_item_projection(
+                        &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                        autocharge_item,
+                        projectee_item,
+                    );
+                    // Update skeleton for autocharge - don't touch data on charge itself, since charge
+                    // will be removed later anyway
+                    self.proj_tracker.unreg_projectee(&autocharge_id, projectee_item_id);
+                }
                 // Remove from services
                 let autocharge = self.items.get_item(&autocharge_id).unwrap();
                 self.svcs.remove_item(
