@@ -1,0 +1,93 @@
+use crate::{
+    defs::SolItemId,
+    err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
+    sol::{SolView, SolarSystem},
+};
+use itertools::Itertools;
+
+impl SolarSystem {
+    pub fn remove_fighter_proj(
+        &mut self,
+        item_id: &SolItemId,
+        projectee_item_id: &SolItemId,
+    ) -> Result<(), RemoveFighterProjError> {
+        // Check if projection is defined
+        let fighter = self.items.get_item(item_id)?.get_fighter()?;
+        if !fighter.get_projs().contains(projectee_item_id) {
+            return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
+        };
+        let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
+        for autocharge_id in autocharge_ids {
+            // Update services for autocharge
+            let autocharge_item = self.items.get_item(&autocharge_id).unwrap();
+            let projectee_item = self.items.get_item(projectee_item_id).unwrap();
+            self.svcs.remove_item_projection(
+                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                autocharge_item,
+                projectee_item,
+            );
+            // Update skeleton for autocharge
+            self.proj_tracker.unreg_projectee(&autocharge_id, projectee_item_id);
+            let autocharge = self
+                .items
+                .get_item_mut(&autocharge_id)
+                .unwrap()
+                .get_autocharge_mut()
+                .unwrap();
+            autocharge.get_projs_mut().remove(projectee_item_id);
+        }
+        // Update services for fighter
+        let fighter_item = self.items.get_item(item_id).unwrap();
+        let projectee_item = self.items.get_item(projectee_item_id).unwrap();
+        self.svcs.remove_item_projection(
+            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            fighter_item,
+            projectee_item,
+        );
+        // Update skeleton for fighter
+        self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
+        let fighter = self.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
+        fighter.get_projs_mut().remove(projectee_item_id);
+        Ok(())
+    }
+}
+
+#[derive(Debug)]
+pub enum RemoveFighterProjError {
+    ProjectorNotFound(ItemFoundError),
+    ProjectorIsNotFighter(ItemKindMatchError),
+    ProjectionNotFound(ProjFoundError),
+}
+impl std::error::Error for RemoveFighterProjError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        match self {
+            Self::ProjectorNotFound(e) => Some(e),
+            Self::ProjectorIsNotFighter(e) => Some(e),
+            Self::ProjectionNotFound(e) => Some(e),
+        }
+    }
+}
+impl std::fmt::Display for RemoveFighterProjError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::ProjectorNotFound(e) => e.fmt(f),
+            Self::ProjectorIsNotFighter(e) => e.fmt(f),
+            Self::ProjectionNotFound(e) => e.fmt(f),
+        }
+    }
+}
+impl From<ItemFoundError> for RemoveFighterProjError {
+    fn from(error: ItemFoundError) -> Self {
+        Self::ProjectorNotFound(error)
+    }
+}
+impl From<ItemKindMatchError> for RemoveFighterProjError {
+    fn from(error: ItemKindMatchError) -> Self {
+        Self::ProjectorIsNotFighter(error)
+    }
+}
+impl From<ProjFoundError> for RemoveFighterProjError {
+    fn from(error: ProjFoundError) -> Self {
+        Self::ProjectionNotFound(error)
+    }
+}

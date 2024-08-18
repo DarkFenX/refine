@@ -13,7 +13,8 @@ pub use sole_character::{
 pub use sole_charge::{GetChargeError, RemoveChargeError, SetChargeStateError};
 pub use sole_drone::{AddDroneError, GetDroneError, GetFitDronesError, RemoveDroneError, SetDroneStateError};
 pub use sole_fighter::{
-    AddFighterError, GetFighterError, GetFitFightersError, RemoveFighterError, SetFighterStateError,
+    AddFighterError, AddFighterProjError, ChangeFighterProjError, GetFighterError, GetFitFightersError,
+    RemoveFighterError, RemoveFighterProjError, SetFighterStateError,
 };
 pub use sole_fw_effect::{
     AddFwEffectError, GetFitFwEffectsError, GetFwEffectError, RemoveFwEffectError, SetFwEffectStateError,

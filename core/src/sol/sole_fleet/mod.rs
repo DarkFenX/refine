@@ -1,3 +1,5 @@
+//! Solar system extension methods which handle fleet manipulation.
+
 pub use sole_add_fleet::AddFleetError;
 pub use sole_get_fleet::GetFleetError;
 pub use sole_remove_fleet::RemoveFleetError;

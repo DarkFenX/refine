@@ -1,3 +1,5 @@
+//! Solar system extension methods which handle calculation-related methods.
+
 pub use sole_get_item_attr::GetItemAttrError;
 pub use sole_iter_item_attrs::IterItemAttrsError;
 pub use sole_iter_item_effects::IterItemEffectsError;

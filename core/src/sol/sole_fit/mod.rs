@@ -1,3 +1,5 @@
+//! Solar system extension methods which handle fit manipulation.
+
 pub use sole_add_fit::AddFitError;
 pub use sole_get_fit::GetFitError;
 pub use sole_remove_fit::RemoveFitError;
