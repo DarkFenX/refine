@@ -293,10 +293,10 @@ impl SolItem {
     }
     pub(in crate::sol) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (&SolItemId, &Option<AttrVal>)>> {
         match self {
-            Self::Autocharge(_) => None,
+            Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter()),
             Self::Booster(_) => None,
             Self::Character(_) => None,
-            Self::Charge(_) => None,
+            Self::Charge(charge) => Some(charge.get_projs().iter()),
             Self::Drone(_) => None,
             Self::Fighter(_) => None,
             Self::FwEffect(_) => None,

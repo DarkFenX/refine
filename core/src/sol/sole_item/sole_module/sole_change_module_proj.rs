@@ -21,18 +21,33 @@ impl SolarSystem {
         if range == old_range {
             return Ok(());
         }
-        // Adjust skeleton
+        // Update skeleton for module
         let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
+        let charge_id = module.get_charge_id();
         module.get_projs_mut().add(*projectee_item_id, range);
-        // Process request in services
-        let item = self.items.get_item(item_id).unwrap();
+        // Update services for module
+        let module_item = self.items.get_item(item_id).unwrap();
         let projectee_item = self.items.get_item(projectee_item_id).unwrap();
         self.svcs.change_item_proj_range(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-            &item,
+            module_item,
             projectee_item,
             range,
         );
+        if let Some(charge_id) = charge_id {
+            // Update skeleton for charge
+            let charge = self.items.get_item_mut(&charge_id).unwrap().get_charge_mut().unwrap();
+            charge.get_projs_mut().add(*projectee_item_id, range);
+            // Update services for charge
+            let charge_item = self.items.get_item(&charge_id).unwrap();
+            let projectee_item = self.items.get_item(projectee_item_id).unwrap();
+            self.svcs.change_item_proj_range(
+                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                charge_item,
+                projectee_item,
+                range,
+            );
+        }
         Ok(())
     }
 }
