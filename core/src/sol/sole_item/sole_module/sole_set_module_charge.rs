@@ -33,7 +33,7 @@ impl SolarSystem {
                 );
                 // Update skeleton for charge - do not touch projections container on charge itself,
                 // because we're removing it anyway
-                self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
+                self.proj_tracker.unreg_projectee(&charge_id, projectee_item_id);
             }
             // Update services for charge being removed
             self.svcs.remove_item(
