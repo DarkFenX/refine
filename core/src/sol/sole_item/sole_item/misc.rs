@@ -9,10 +9,15 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol::sole_item) fn add_item_id_to_svcs(&mut self, item_id: &SolItemId) {
+    pub(in crate::sol) fn add_item_id_to_svcs(&mut self, item_id: &SolItemId) {
         let item = self.items.get_item(&item_id).unwrap();
         self.svcs
             .add_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+    }
+    pub(in crate::sol) fn remove_item_id_from_svcs(&mut self, item_id: &SolItemId) {
+        let item = self.items.get_item(&item_id).unwrap();
+        self.svcs
+            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
     }
     pub(in crate::sol::sole_item) fn change_item_id_state_in_svcs(
         &mut self,

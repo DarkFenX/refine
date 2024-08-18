@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
@@ -17,9 +17,7 @@ impl SolarSystem {
             self.remove_proj_effect_proj(item_id, &projectee_item_id).unwrap();
         }
         // Remove effect from services
-        let item = self.items.get_item(item_id).unwrap();
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.remove_item_id_from_svcs(item_id);
         // Remove effect from skeleton
         self.proj_effects.remove(item_id);
         self.items.remove_item(item_id);

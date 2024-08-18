@@ -11,6 +11,7 @@ impl SolarSystem {
         // Check if everything is correct and collect autocharge IDs to be used later
         let item = self.items.get_item(item_id)?;
         let fighter = item.get_fighter()?;
+        let fit_id = fighter.get_fit_id();
         let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         // Remove outgoing projections for fighter and its autocharges
         for projectee_item_id in fighter.get_projs().iter_items() {
@@ -42,23 +43,16 @@ impl SolarSystem {
         // Remove autocharges
         for autocharge_id in autocharge_ids {
             // Update services for autocharge
-            let autocharge = self.items.get_item(&autocharge_id).unwrap();
-            self.svcs.remove_item(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-                autocharge,
-            );
+            self.remove_item_id_from_svcs(&autocharge_id);
             // Update skeleton for autocharge - not updating fighter<->autocharge references because
             // both will be removed
             self.items.remove_item(&autocharge_id);
         }
         // Remove fighter
         // Update services for fighter
-        let item = self.items.get_item(item_id).unwrap();
-        let fighter = item.get_fighter().unwrap();
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.remove_item_id_from_svcs(item_id);
         // Update skeleton for fighter
-        let fit = self.fits.get_fit_mut(&fighter.get_fit_id()).unwrap();
+        let fit = self.fits.get_fit_mut(&fit_id).unwrap();
         fit.fighters.remove(item_id);
         self.items.remove_item(item_id);
         Ok(())

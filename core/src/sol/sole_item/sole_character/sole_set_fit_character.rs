@@ -4,7 +4,7 @@ use crate::{
     sol::{
         item::{SolCharacter, SolItem},
         item_info::SolCharacterInfo,
-        SolView, SolarSystem,
+        SolarSystem,
     },
 };
 
@@ -18,11 +18,7 @@ impl SolarSystem {
         let fit = self.fits.get_fit(&fit_id)?;
         // Remove old character, if it was set
         if let Some(old_item_id) = fit.character {
-            let old_item = self.items.get_item(&old_item_id).unwrap();
-            self.svcs.remove_item(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-                old_item,
-            );
+            self.remove_item_id_from_svcs(&old_item_id);
             self.items.remove_item(&old_item_id);
         }
         // Add new character

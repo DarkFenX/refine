@@ -4,7 +4,7 @@ use crate::{
     sol::{
         item::{SolItem, SolStance},
         item_info::SolStanceInfo,
-        SolView, SolarSystem,
+        SolarSystem,
     },
 };
 
@@ -18,11 +18,9 @@ impl SolarSystem {
         let fit = self.fits.get_fit(&fit_id)?;
         // Remove old stance, if it was set
         if let Some(old_item_id) = fit.stance {
-            let old_item = self.items.get_item(&old_item_id).unwrap();
-            self.svcs.remove_item(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-                old_item,
-            );
+            // Update services
+            self.remove_item_id_from_svcs(&old_item_id);
+            // Update skeleton - do not touch fit, since it will be changed later
             self.items.remove_item(&old_item_id);
         }
         // Add new stance

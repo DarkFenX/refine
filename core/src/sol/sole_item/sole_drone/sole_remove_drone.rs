@@ -1,23 +1,21 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
     pub fn remove_drone(&mut self, item_id: &SolItemId) -> Result<(), RemoveDroneError> {
         // Just check if everything is correct
         let item = self.items.get_item(item_id)?;
-        item.get_drone()?;
+        let drone = item.get_drone()?;
+        let fit_id = drone.get_fit_id();
         // Remove incoming projections
         self.remove_incoming_projections(item_id);
         // Remove drone from services
-        let item = self.items.get_item(item_id).unwrap();
-        let drone = item.get_drone().unwrap();
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.remove_item_id_from_svcs(item_id);
         // Remove drone from skeleton
-        let fit = self.fits.get_fit_mut(&drone.get_fit_id()).unwrap();
+        let fit = self.fits.get_fit_mut(&fit_id).unwrap();
         fit.drones.remove(item_id);
         self.items.remove_item(item_id);
         Ok(())

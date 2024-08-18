@@ -148,11 +148,7 @@ impl SolarSystem {
                     self.proj_tracker.unreg_projectee(&autocharge_id, projectee_item_id);
                 }
                 // Remove from services
-                let autocharge = self.items.get_item(&autocharge_id).unwrap();
-                self.svcs.remove_item(
-                    &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-                    autocharge,
-                );
+                self.remove_item_id_from_svcs(&autocharge_id);
                 // Update skeleton and move the charge item into backup container
                 let item_autocharges = self
                     .items

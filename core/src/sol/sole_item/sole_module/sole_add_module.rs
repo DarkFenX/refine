@@ -5,7 +5,7 @@ use crate::{
         item::{SolCharge, SolItem, SolItemState, SolModule},
         item_info::SolModuleInfo,
         sole_item::misc::find_equip_pos,
-        SolModRack, SolOrdAddMode, SolarSystem,
+        SolModRack, SolOrdAddMode, SolView, SolarSystem,
     },
     SolChargeInfo,
 };
@@ -109,7 +109,10 @@ impl SolarSystem {
         let module_item = self.items.get_item(&module_item_id).unwrap();
         let module = module_item.get_module().unwrap();
         let module_info = SolModuleInfo::from_mod_and_charge(module, charge_info);
-        self.add_item_id_to_svcs(&module_item_id);
+        self.svcs.add_item(
+            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            module_item,
+        );
         if let Some(charge_info) = &module_info.charge_info {
             self.add_item_id_to_svcs(&charge_info.id);
         }

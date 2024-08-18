@@ -10,6 +10,8 @@ impl SolarSystem {
     pub fn remove_module(&mut self, item_id: &SolItemId) -> Result<(), RemoveModuleError> {
         let item = self.items.get_item(item_id)?;
         let module = item.get_module()?;
+        let fit_id = module.get_fit_id();
+        let rack = module.get_rack();
         let charge_id = module.get_charge_id();
         // Remove outgoing projections for both module and charge
         let module_projs = module.get_projs().iter_items().map(|v| *v).collect_vec();
@@ -57,13 +59,10 @@ impl SolarSystem {
         }
         // Remove module
         // Update services for module
-        let item = self.items.get_item(item_id).unwrap();
-        let module = item.get_module().unwrap();
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.remove_item_id_from_svcs(item_id);
         // Update skeleton for module
-        let fit = self.fits.get_fit_mut(&module.get_fit_id()).unwrap();
-        match module.get_rack() {
+        let fit = self.fits.get_fit_mut(&fit_id).unwrap();
+        match rack {
             SolModRack::High => fit.mods_high.remove(item_id),
             SolModRack::Mid => fit.mods_mid.remove(item_id),
             SolModRack::Low => fit.mods_low.remove(item_id),
