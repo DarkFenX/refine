@@ -284,6 +284,94 @@ class Item(AttrDict):
             return self
         return None
 
+    # Drone methods
+    def change_drone_request(
+            self,
+            state: Union[ApiState, Type[Absent]],
+            add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
+            change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
+            rm_projs: Union[Iterable[str], Type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        return self._client.change_drone_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            add_projs=add_projs,
+            change_projs=change_projs,
+            rm_projs=rm_projs,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
+    def change_drone(
+            self,
+            state: Union[ApiState, Type[Absent]] = Absent,
+            add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            rm_projs: Union[Iterable[str], Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Union[Item, None]:
+        resp = self.change_drone_request(
+            state=state,
+            add_projs=add_projs,
+            change_projs=change_projs,
+            rm_projs=rm_projs,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    # Fighter methods
+    def change_fighter_request(
+            self,
+            state: Union[ApiState, Type[Absent]],
+            add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
+            change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
+            rm_projs: Union[Iterable[str], Type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        return self._client.change_fighter_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            add_projs=add_projs,
+            change_projs=change_projs,
+            rm_projs=rm_projs,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
+    def change_fighter(
+            self,
+            state: Union[ApiState, Type[Absent]] = Absent,
+            add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
+            rm_projs: Union[Iterable[str], Type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Union[Item, None]:
+        resp = self.change_fighter_request(
+            state=state,
+            add_projs=add_projs,
+            change_projs=change_projs,
+            rm_projs=rm_projs,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
     # Charge methods
     def change_charge_request(
             self,

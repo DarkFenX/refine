@@ -674,6 +674,32 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             state=state,
             item_info_mode=item_info_mode)
 
+    def change_drone_request(
+            self,
+            sol_id: str,
+            item_id: int,
+            state: Union[ApiState, Type[Absent]],
+            add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
+            change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
+            rm_projs: Union[Iterable[str], Type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        body = {'type': 'drone', 'item_id': item_id}
+        conditional_insert(body, 'state', state)
+        conditional_insert(body, 'add_projs', add_projs)
+        conditional_insert(body, 'change_projs', change_projs)
+        conditional_insert(body, 'rm_projs', rm_projs)
+        conditional_insert(body, 'effect_modes', effect_modes)
+        params = {}
+        conditional_insert(params, 'item', item_info_mode)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/sol/{sol_id}/item/{item_id}',
+            params=params,
+            json=body)
+
     # Fighter methods
     def add_fighter_request(
             self,
@@ -690,6 +716,32 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             type_id=type_id,
             state=state,
             item_info_mode=item_info_mode)
+
+    def change_fighter_request(
+            self,
+            sol_id: str,
+            item_id: int,
+            state: Union[ApiState, Type[Absent]],
+            add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
+            change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
+            rm_projs: Union[Iterable[str], Type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        body = {'type': 'fighter', 'item_id': item_id}
+        conditional_insert(body, 'state', state)
+        conditional_insert(body, 'add_projs', add_projs)
+        conditional_insert(body, 'change_projs', change_projs)
+        conditional_insert(body, 'rm_projs', rm_projs)
+        conditional_insert(body, 'effect_modes', effect_modes)
+        params = {}
+        conditional_insert(params, 'item', item_info_mode)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/sol/{sol_id}/item/{item_id}',
+            params=params,
+            json=body)
 
     # Charge methods
     def change_charge_request(
