@@ -1,3 +1,8 @@
+"""
+Some charges have active projectable effects (e.g. wubbles, HIC rays), here we check how their
+effects are applied/removed in different circumstances.
+"""
+
 from tests import approx
 
 
