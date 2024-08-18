@@ -90,6 +90,7 @@ class EveObjects:
     def mk_item(
             self,
             id_: Union[int, Type[Default]] = Default,
+            avoid_ids: Union[tuple[int], list[int]] = (),
             grp_id: Union[int, Type[Default]] = Default,
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
@@ -102,8 +103,8 @@ class EveObjects:
             volume: Union[float, Type[Absent], Type[Default]] = Default,
     ) -> Item:
         if id_ is Default:
-            id_ = self.alloc_item_id()
-        group = self.__fetch_or_mk_item_group(id_=grp_id, cat_id=cat_id)
+            id_ = self.alloc_item_id(avoid_ids=avoid_ids)
+        group = self.__fetch_or_mk_item_group(id_=grp_id, avoid_ids=avoid_ids, cat_id=cat_id)
         item = Item(
             id_=id_,
             group_id=group.id,
@@ -121,6 +122,7 @@ class EveObjects:
     def mk_ship(
             self,
             id_: Union[int, Type[Default]] = Default,
+            avoid_ids: Union[tuple[int], list[int]] = (),
             grp_id: Union[int, Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
             eff_ids: Union[list[int], tuple[int], Type[Absent], Type[Default]] = Default,
@@ -133,6 +135,7 @@ class EveObjects:
     ) -> Item:
         return self.mk_item(
             id_=id_,
+            avoid_ids=avoid_ids,
             grp_id=grp_id,
             cat_id=EveItemCat.ship,
             attrs=attrs,
@@ -147,6 +150,7 @@ class EveObjects:
     def mk_struct(
             self,
             id_: Union[int, Type[Default]] = Default,
+            avoid_ids: Union[tuple[int], list[int]] = (),
             grp_id: Union[int, Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
             eff_ids: Union[list[int], tuple[int], Type[Absent], Type[Default]] = Default,
@@ -159,6 +163,7 @@ class EveObjects:
     ) -> Item:
         return self.mk_item(
             id_=id_,
+            avoid_ids=avoid_ids,
             grp_id=grp_id,
             cat_id=EveItemCat.structure,
             attrs=attrs,
@@ -173,10 +178,11 @@ class EveObjects:
     def mk_item_group(
             self,
             id_: Union[int, Type[Default]] = Default,
+            avoid_ids: Union[tuple[int], list[int]] = (),
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
     ) -> Group:
         if id_ is Default:
-            id_ = self.alloc_group_id()
+            id_ = self.alloc_group_id(avoid_ids=avoid_ids)
         if cat_id is Default:
             cat_id = EveItemCat.module
         group = Group(id_=id_, category_id=cat_id)
@@ -187,18 +193,21 @@ class EveObjects:
     def mk_ship_group(
             self,
             id_: Union[int, Type[Default]] = Default,
+            avoid_ids: Union[tuple[int], list[int]] = (),
     ) -> Group:
-        return self.mk_item_group(id_=id_, cat_id=EveItemCat.ship)
+        return self.mk_item_group(id_=id_, avoid_ids=avoid_ids, cat_id=EveItemCat.ship)
 
     def mk_struct_group(
             self,
             id_: Union[int, Type[Default]] = Default,
+            avoid_ids: Union[tuple[int], list[int]] = (),
     ) -> Group:
-        return self.mk_item_group(id_=id_, cat_id=EveItemCat.structure)
+        return self.mk_item_group(id_=id_, avoid_ids=avoid_ids, cat_id=EveItemCat.structure)
 
     def __fetch_or_mk_item_group(
             self,
             id_: Union[int, Type[Default]],
+            avoid_ids: Union[tuple[int], list[int]],
             cat_id: Union[int, Type[Absent], Type[Default]],
     ) -> Group:
         # Fetch existing group if consistency is not broken:
@@ -210,18 +219,19 @@ class EveObjects:
                 group = groups[0]
                 if cat_id is Default or cat_id == group.category_id:
                     return group
-        return self.mk_item_group(id_=id_, cat_id=cat_id)
+        return self.mk_item_group(id_=id_, avoid_ids=avoid_ids, cat_id=cat_id)
 
     def mk_attr(
             self,
             id_: Union[int, Type[Default]] = Default,
+            avoid_ids: Union[tuple[int], list[int]] = (),
             stackable: Union[int, bool, Type[Absent], Type[Default]] = Default,
             high_is_good: Union[int, bool, Type[Absent], Type[Default]] = Default,
             def_val: Union[float, Type[Absent], Type[Default]] = Default,
             max_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
     ) -> Attribute:
         if id_ is Default:
-            id_ = self.alloc_attr_id()
+            id_ = self.alloc_attr_id(avoid_ids=avoid_ids)
         attr = Attribute(
             id_=id_,
             stackable=1 if stackable is Default else stackable,
@@ -234,6 +244,7 @@ class EveObjects:
     def mk_effect(
             self,
             id_: Union[int, Type[Default]] = Default,
+            avoid_ids: Union[tuple[int], list[int]] = (),
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
             is_assistance: Union[int, bool, Type[Absent], Type[Default]] = Default,
             is_offensive: Union[int, bool, Type[Absent], Type[Default]] = Default,
@@ -247,7 +258,7 @@ class EveObjects:
             mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent], Type[Default]] = Default,
     ) -> Effect:
         if id_ is Default:
-            id_ = self.alloc_effect_id()
+            id_ = self.alloc_effect_id(avoid_ids=avoid_ids)
         effect = Effect(
             id_=id_,
             category_id=EveEffCat.passive if cat_id is Default else cat_id,
@@ -282,6 +293,7 @@ class EveObjects:
     def mk_buff(
             self,
             id_: Union[int, Type[Default]] = Default,
+            avoid_ids: Union[tuple[int], list[int]] = (),
             aggr_mode: Union[str, Type[Absent], Type[Default]] = Default,
             op: Union[str, Type[Absent], Type[Default]] = Default,
             item_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
@@ -290,7 +302,7 @@ class EveObjects:
             loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
     ) -> Buff:
         if id_ is Default:
-            id_ = self.alloc_buff_id()
+            id_ = self.alloc_buff_id(avoid_ids=avoid_ids)
         buff = Buff(
             id_=id_,
             aggregate_mode=Absent if aggr_mode is Default else aggr_mode,

@@ -58,7 +58,7 @@ impl SolarSystem {
                 .items
                 .get_item_mut(&autocharge_id)
                 .unwrap()
-                .get_charge_mut()
+                .get_autocharge_mut()
                 .unwrap();
             autocharge.get_projs_mut().add(projectee_item_id, range);
             self.proj_tracker.reg_projectee(autocharge_id, projectee_item_id);

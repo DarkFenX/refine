@@ -129,35 +129,38 @@ def test_states(client, consts):
 def test_src_switch(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
+    # The same affectee attr ID
     eve_affectee_attr_id = eve_d1.mk_attr().id
     eve_d2.mk_attr(id_=eve_affectee_attr_id)
-    eve_d1_affector_attr_id = eve_d1.mk_attr().id
-    eve_d2_affector_attr_id = eve_d2.alloc_attr_id(avoid_ids=[eve_d1_affector_attr_id])
-    eve_d2.mk_attr(id_=eve_d2_affector_attr_id)
+    # Different affector attr IDs
+    eve_d1_affector_attr = eve_d1.mk_attr()
+    eve_d2_affector_attr = eve_d2.mk_attr(avoid_ids=[eve_d1_affector_attr.id])
+    # Different effect IDs
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.other,
         op=consts.EveModOp.post_percent,
-        affector_attr_id=eve_d1_affector_attr_id,
+        affector_attr_id=eve_d1_affector_attr.id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_d1_effect_id = eve_d1.mk_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod1]).id
-    eve_charge_id = eve_d1.mk_item(
-        attrs={eve_d1_affector_attr_id: 20},
-        eff_ids=[eve_d1_effect_id],
-        defeff_id=eve_d1_effect_id).id
+    eve_d1_effect = eve_d1.mk_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod1])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.other,
         op=consts.EveModOp.post_mul,
-        affector_attr_id=eve_d2_affector_attr_id,
+        affector_attr_id=eve_d2_affector_attr.id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_d2_effect_id = eve_d2.alloc_effect_id(avoid_ids=[eve_d1_effect_id])
-    eve_d2_effect = eve_d2.mk_effect(id_=eve_d2_effect_id, cat_id=consts.EveEffCat.target, mod_info=[eve_mod2])
+    eve_d2_effect = eve_d2.mk_effect(avoid_ids=[eve_d1_effect.id], cat_id=consts.EveEffCat.target, mod_info=[eve_mod2])
+    # The same charge ID
+    eve_charge_id = eve_d1.mk_item(
+        attrs={eve_d1_affector_attr.id: 20},
+        eff_ids=[eve_d1_effect.id],
+        defeff_id=eve_d1_effect.id).id
     eve_d2.mk_item(
         id_=eve_charge_id,
-        attrs={eve_d2_affector_attr_id: 1.5},
+        attrs={eve_d2_affector_attr.id: 1.5},
         eff_ids=[eve_d2_effect.id],
         defeff_id=eve_d2_effect.id)
+    # The same module IID
     eve_module_id = eve_d1.mk_item(attrs={eve_affectee_attr_id: 100}).id
     eve_d2.mk_item(id_=eve_module_id, attrs={eve_affectee_attr_id: 100})
     client.create_sources()

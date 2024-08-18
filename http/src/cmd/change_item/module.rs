@@ -10,6 +10,9 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
+    state: Option<HState>,
+    #[serde(default, with = "::serde_with::rust::double_option")]
+    charge: Option<Option<rc::EItemId>>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -17,9 +20,6 @@ pub(crate) struct HChangeModuleCmd {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::SolItemId>,
-    state: Option<HState>,
-    #[serde(default, with = "::serde_with::rust::double_option")]
-    charge: Option<Option<rc::EItemId>>,
     // Workaround for https://github.com/serde-rs/serde/issues/1183
     #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
     effect_modes: Option<HEffectModeMap>,
@@ -30,35 +30,6 @@ impl HChangeModuleCmd {
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
     ) -> Result<HCmdResp, HExecError> {
-        for proj_def in self.add_projs.iter() {
-            if let Err(error) = core_sol.add_module_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {
-                return Err(match error {
-                    rc::err::AddModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::AddModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
-                    rc::err::AddModuleProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                    rc::err::AddModuleProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
-                    rc::err::AddModuleProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
-                });
-            }
-        }
-        for proj_def in self.change_projs.iter() {
-            if let Err(error) = core_sol.change_module_proj(item_id, &proj_def.get_item_id(), proj_def.get_range()) {
-                return Err(match error {
-                    rc::err::ChangeModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::ChangeModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
-                    rc::err::ChangeModuleProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                });
-            }
-        }
-        for projectee_item_id in self.rm_projs.iter() {
-            if let Err(error) = core_sol.remove_module_proj(item_id, projectee_item_id) {
-                return Err(match error {
-                    rc::err::RemoveModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::RemoveModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
-                    rc::err::RemoveModuleProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
-                });
-            }
-        }
         if let Some(state) = &self.state {
             if let Err(error) = core_sol.set_module_state(item_id, state.into()) {
                 return Err(match error {
@@ -87,6 +58,35 @@ impl HChangeModuleCmd {
                         });
                     };
                 }
+            }
+        }
+        for proj_def in self.add_projs.iter() {
+            if let Err(error) = core_sol.add_module_proj(item_id, proj_def.get_item_id(), proj_def.get_range()) {
+                return Err(match error {
+                    rc::err::AddModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::AddModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::AddModuleProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                    rc::err::AddModuleProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                    rc::err::AddModuleProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
+                });
+            }
+        }
+        for proj_def in self.change_projs.iter() {
+            if let Err(error) = core_sol.change_module_proj(item_id, &proj_def.get_item_id(), proj_def.get_range()) {
+                return Err(match error {
+                    rc::err::ChangeModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::ChangeModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::ChangeModuleProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+                });
+            }
+        }
+        for projectee_item_id in self.rm_projs.iter() {
+            if let Err(error) = core_sol.remove_module_proj(item_id, projectee_item_id) {
+                return Err(match error {
+                    rc::err::RemoveModuleProjError::ProjectorNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::RemoveModuleProjError::ProjectorIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::RemoveModuleProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
+                });
             }
         }
         apply_effect_modes(core_sol, item_id, &self.effect_modes)?;
