@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    info::{item::autocharge::HAutoChargeInfo, HItemInfoMode},
+    info::{item::autocharge::HAutochargeInfo, HItemInfoMode},
     shared::HState,
 };
 
@@ -18,7 +18,7 @@ pub(crate) struct HFighterInfoPartial {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) amt_override: Option<rc::Amount>,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
-    pub(crate) autocharges: HashMap<rc::EEffectId, HAutoChargeInfo>,
+    pub(crate) autocharges: HashMap<rc::EEffectId, HAutochargeInfo>,
 }
 impl HFighterInfoPartial {
     pub(super) fn mk_info(
@@ -36,7 +36,7 @@ impl HFighterInfoPartial {
             autocharges: core_fighter_info
                 .autocharges
                 .iter()
-                .map(|(k, v)| (*k, HAutoChargeInfo::mk_info(core_sol, v, item_mode)))
+                .map(|(k, v)| (*k, HAutochargeInfo::mk_info(core_sol, v, item_mode)))
                 .collect(),
         }
     }

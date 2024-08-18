@@ -3,14 +3,14 @@ use crate::{
     sol::item::SolAutocharge,
 };
 
-pub struct SolAutoChargeInfo {
+pub struct SolAutochargeInfo {
     pub id: SolItemId,
     pub fit_id: SolFitId,
     pub type_id: EItemId,
     pub cont_id: SolItemId,
     pub enabled: bool,
 }
-impl SolAutoChargeInfo {
+impl SolAutochargeInfo {
     fn new(id: SolItemId, fit_id: SolFitId, type_id: EItemId, cont_id: SolItemId, enabled: bool) -> Self {
         Self {
             id,
@@ -21,10 +21,10 @@ impl SolAutoChargeInfo {
         }
     }
 }
-impl From<&SolAutocharge> for SolAutoChargeInfo {
+impl From<&SolAutocharge> for SolAutochargeInfo {
     fn from(sol_autocharge: &SolAutocharge) -> Self {
         // No projections because they fully match to projections of parent item
-        SolAutoChargeInfo::new(
+        SolAutochargeInfo::new(
             sol_autocharge.get_id(),
             sol_autocharge.get_fit_id(),
             sol_autocharge.get_type_id(),

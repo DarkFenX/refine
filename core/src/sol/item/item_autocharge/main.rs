@@ -88,7 +88,7 @@ impl SolAutocharge {
 }
 impl Named for SolAutocharge {
     fn get_name() -> &'static str {
-        "SolAutoCharge"
+        "SolAutocharge"
     }
 }
 impl std::fmt::Display for SolAutocharge {

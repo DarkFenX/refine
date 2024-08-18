@@ -1,5 +1,6 @@
 pub(in crate::cmd) use fit::{HCreateFitCmd, HDeleteFitCmd};
 pub(in crate::cmd) use fleet::{HCreateFleetCmd, HDeleteFleetCmd};
+pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(in crate::cmd) use item_character::{HChangeCharacterCmd, HSetCharacterCmd};
 pub(in crate::cmd) use item_charge::HChangeChargeCmd;
@@ -20,6 +21,7 @@ use crate::{cmd::HCmdResp, util::HExecError};
 
 mod fit;
 mod fleet;
+mod item_autocharge;
 mod item_booster;
 mod item_character;
 mod item_charge;
@@ -69,6 +71,7 @@ pub(crate) enum HChangeSolCommand {
     AddFighter(HAddFighterCmd),
     ChangeFighter(HChangeFighterCmd),
     ChangeCharge(HChangeChargeCmd),
+    ChangeAutocharge(HChangeAutochargeCmd),
     AddSwEffect(HAddSwEffectCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
     AddFwEffect(HAddFwEffectCmd),
@@ -109,6 +112,7 @@ impl HChangeSolCommand {
             Self::AddFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFighter(cmd) => cmd.execute(core_sol),
             Self::ChangeCharge(cmd) => cmd.execute(core_sol),
+            Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
             Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeSwEffect(cmd) => cmd.execute(core_sol),
             Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),

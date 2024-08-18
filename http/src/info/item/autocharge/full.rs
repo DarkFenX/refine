@@ -2,12 +2,12 @@ use std::collections::HashMap;
 
 use crate::info::{HAttrVal, HEffect, HModificationInfo};
 
-use super::HAutoChargeInfoPartial;
+use super::HAutochargeInfoPartial;
 
 #[derive(serde::Serialize)]
-pub(crate) struct HAutoChargeInfoFull {
+pub(crate) struct HAutochargeInfoFull {
     #[serde(flatten)]
-    pub(crate) partial_info: HAutoChargeInfoPartial,
+    pub(crate) partial_info: HAutochargeInfoPartial,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) attrs: HashMap<rc::EAttrId, HAttrVal>,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
@@ -15,9 +15,9 @@ pub(crate) struct HAutoChargeInfoFull {
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) mods: HashMap<rc::EAttrId, Vec<HModificationInfo>>,
 }
-impl HAutoChargeInfoFull {
-    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_autocharge_info: &rc::SolAutoChargeInfo) -> Self {
-        let partial_info = HAutoChargeInfoPartial::from(core_autocharge_info);
+impl HAutochargeInfoFull {
+    pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_autocharge_info: &rc::SolAutochargeInfo) -> Self {
+        let partial_info = HAutochargeInfoPartial::from(core_autocharge_info);
         let attrs = match core_sol.iter_item_attrs(&partial_info.id) {
             Ok(core_attrs) => core_attrs.into_iter().map(|(k, v)| (k, HAttrVal::from(&v))).collect(),
             _ => HashMap::new(),

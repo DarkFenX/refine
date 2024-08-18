@@ -1,13 +1,13 @@
 use crate::sol::{item::SolItem, SolarSystem};
 
 use super::{
-    SolAutoChargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo, SolFwEffectInfo,
+    SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo, SolFwEffectInfo,
     SolImplantInfo, SolModuleInfo, SolProjEffectInfo, SolRigInfo, SolShipInfo, SolSkillInfo, SolStanceInfo,
     SolSubsystemInfo, SolSwEffectInfo,
 };
 
 pub enum SolItemInfo {
-    AutoCharge(SolAutoChargeInfo),
+    Autocharge(SolAutochargeInfo),
     Booster(SolBoosterInfo),
     Character(SolCharacterInfo),
     Charge(SolChargeInfo),
@@ -27,7 +27,7 @@ pub enum SolItemInfo {
 impl SolItemInfo {
     pub(in crate::sol) fn from_sol_item(sol_item: &SolItem, sol: &SolarSystem) -> Self {
         match sol_item {
-            SolItem::Autocharge(sol_autocharge) => SolItemInfo::AutoCharge(sol_autocharge.into()),
+            SolItem::Autocharge(sol_autocharge) => SolItemInfo::Autocharge(sol_autocharge.into()),
             SolItem::Booster(sol_booster) => SolItemInfo::Booster(sol.make_booster_info(sol_booster)),
             SolItem::Character(sol_charater) => SolItemInfo::Character(sol_charater.into()),
             SolItem::Charge(sol_charge) => SolItemInfo::Charge(sol_charge.into()),

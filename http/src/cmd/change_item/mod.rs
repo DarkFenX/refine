@@ -1,3 +1,4 @@
+pub(in crate::cmd) use autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use booster::HChangeBoosterCmd;
 pub(in crate::cmd) use character::HChangeCharacterCmd;
 pub(in crate::cmd) use charge::HChangeChargeCmd;
@@ -16,6 +17,7 @@ pub(in crate::cmd) use sw_effect::HChangeSwEffectCmd;
 
 use crate::{cmd::HCmdResp, util::HExecError};
 
+mod autocharge;
 mod booster;
 mod character;
 mod charge;
@@ -47,6 +49,7 @@ pub(crate) enum HChangeItemCommand {
     Drone(HChangeDroneCmd),
     Fighter(HChangeFighterCmd),
     Charge(HChangeChargeCmd),
+    Autocharge(HChangeAutochargeCmd),
     SwEffect(HChangeSwEffectCmd),
     FwEffect(HChangeFwEffectCmd),
     ProjEffect(HChangeProjEffectCmd),
@@ -70,6 +73,7 @@ impl HChangeItemCommand {
             Self::Drone(cmd) => cmd.execute(core_sol, item_id),
             Self::Fighter(cmd) => cmd.execute(core_sol, item_id),
             Self::Charge(cmd) => cmd.execute(core_sol, item_id),
+            Self::Autocharge(cmd) => cmd.execute(core_sol, item_id),
             Self::SwEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::FwEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::ProjEffect(cmd) => cmd.execute(core_sol, item_id),

@@ -28,7 +28,7 @@ pub use sol::{
     fit_info::SolFitInfo,
     fleet_info::SolFleetInfo,
     item_info::{
-        SolAutoChargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo,
+        SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo,
         SolFwEffectInfo, SolImplantInfo, SolItemInfo, SolModuleInfo, SolProjEffectInfo, SolProjInfo, SolRigInfo,
         SolShipInfo, SolSideEffectInfo, SolSideEffectStr, SolSkillInfo, SolStanceInfo, SolSubsystemInfo,
         SolSwEffectInfo,

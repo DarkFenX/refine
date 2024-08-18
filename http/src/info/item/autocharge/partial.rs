@@ -1,6 +1,6 @@
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
-pub(crate) struct HAutoChargeInfoPartial {
+pub(crate) struct HAutochargeInfoPartial {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) id: rc::SolItemId,
     pub(crate) kind: &'static str,
@@ -11,8 +11,8 @@ pub(crate) struct HAutoChargeInfoPartial {
     pub(crate) cont_id: rc::SolItemId,
     pub(crate) enabled: bool,
 }
-impl From<&rc::SolAutoChargeInfo> for HAutoChargeInfoPartial {
-    fn from(core_autocharge_info: &rc::SolAutoChargeInfo) -> Self {
+impl From<&rc::SolAutochargeInfo> for HAutochargeInfoPartial {
+    fn from(core_autocharge_info: &rc::SolAutochargeInfo) -> Self {
         Self {
             id: core_autocharge_info.id,
             kind: "autocharge",
