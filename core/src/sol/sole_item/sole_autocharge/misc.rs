@@ -39,8 +39,8 @@ impl SolarSystem {
                                 let mut autocharge = SolAutocharge::new(
                                     &self.src,
                                     autocharge_id,
-                                    fit_id,
                                     *autocharge_type_id as EItemId,
+                                    fit_id,
                                     *item_id,
                                     item_state,
                                     false,

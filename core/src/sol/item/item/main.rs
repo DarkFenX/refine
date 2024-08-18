@@ -71,6 +71,26 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.get_id(),
         }
     }
+    pub(in crate::sol) fn get_type_id(&self) -> EItemId {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.get_type_id(),
+            Self::Booster(booster) => booster.get_type_id(),
+            Self::Character(character) => character.get_type_id(),
+            Self::Charge(charge) => charge.get_type_id(),
+            Self::Drone(drone) => drone.get_type_id(),
+            Self::Fighter(fighter) => fighter.get_type_id(),
+            Self::FwEffect(fw_effect) => fw_effect.get_type_id(),
+            Self::Implant(implant) => implant.get_type_id(),
+            Self::Module(module) => module.get_type_id(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_type_id(),
+            Self::Rig(rig) => rig.get_type_id(),
+            Self::Ship(ship) => ship.get_type_id(),
+            Self::Skill(skill) => skill.get_type_id(),
+            Self::Stance(stance) => stance.get_type_id(),
+            Self::Subsystem(subsystem) => subsystem.get_type_id(),
+            Self::SwEffect(sw_effect) => sw_effect.get_type_id(),
+        }
+    }
     pub(in crate::sol) fn get_fit_id(&self) -> Option<SolFitId> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_fit_id()),
@@ -169,26 +189,6 @@ impl SolItem {
             Self::Stance(_) => None,
             Self::Subsystem(_) => None,
             Self::SwEffect(_) => None,
-        }
-    }
-    pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_type_id(),
-            Self::Booster(booster) => booster.get_type_id(),
-            Self::Character(character) => character.get_type_id(),
-            Self::Charge(charge) => charge.get_type_id(),
-            Self::Drone(drone) => drone.get_type_id(),
-            Self::Fighter(fighter) => fighter.get_type_id(),
-            Self::FwEffect(fw_effect) => fw_effect.get_type_id(),
-            Self::Implant(implant) => implant.get_type_id(),
-            Self::Module(module) => module.get_type_id(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_type_id(),
-            Self::Rig(rig) => rig.get_type_id(),
-            Self::Ship(ship) => ship.get_type_id(),
-            Self::Skill(skill) => skill.get_type_id(),
-            Self::Stance(stance) => stance.get_type_id(),
-            Self::Subsystem(subsystem) => subsystem.get_type_id(),
-            Self::SwEffect(sw_effect) => sw_effect.get_type_id(),
         }
     }
     pub(in crate::sol) fn get_state(&self) -> SolItemState {

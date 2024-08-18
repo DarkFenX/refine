@@ -11,7 +11,7 @@ use crate::{
 impl SolarSystem {
     pub fn add_rig(&mut self, fit_id: SolFitId, type_id: EItemId, state: bool) -> Result<SolRigInfo, AddRigError> {
         let item_id = self.items.alloc_item_id()?;
-        let rig = SolRig::new(&self.src, item_id, fit_id, type_id, state);
+        let rig = SolRig::new(&self.src, item_id, type_id, fit_id, state);
         let info = SolRigInfo::from(&rig);
         let item = SolItem::Rig(rig);
         let fit = self.fits.get_fit_mut(&fit_id)?;

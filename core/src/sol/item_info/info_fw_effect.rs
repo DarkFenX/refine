@@ -5,16 +5,16 @@ use crate::{
 
 pub struct SolFwEffectInfo {
     pub id: SolItemId,
-    pub fit_id: SolFitId,
     pub type_id: EItemId,
+    pub fit_id: SolFitId,
     pub enabled: bool,
 }
 impl SolFwEffectInfo {
-    fn new(id: SolItemId, fit_id: SolFitId, type_id: EItemId, enabled: bool) -> Self {
+    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, enabled: bool) -> Self {
         Self {
             id,
-            fit_id,
             type_id,
+            fit_id,
             enabled,
         }
     }
@@ -23,8 +23,8 @@ impl From<&SolFwEffect> for SolFwEffectInfo {
     fn from(sol_fw_effect: &SolFwEffect) -> Self {
         SolFwEffectInfo::new(
             sol_fw_effect.get_id(),
-            sol_fw_effect.get_fit_id(),
             sol_fw_effect.get_type_id(),
+            sol_fw_effect.get_fit_id(),
             sol_fw_effect.get_bool_state(),
         )
     }

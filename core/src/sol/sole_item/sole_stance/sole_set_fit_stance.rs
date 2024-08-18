@@ -26,7 +26,7 @@ impl SolarSystem {
         // Add new stance
         // Should be fallible only if we didn't remove old stance, so don't handle failure
         let item_id = self.items.alloc_item_id()?;
-        let stance = SolStance::new(&self.src, item_id, fit_id, type_id, state);
+        let stance = SolStance::new(&self.src, item_id, type_id, fit_id, state);
         let info = SolStanceInfo::from(&stance);
         let item = SolItem::Stance(stance);
         let fit = self.fits.get_fit_mut(&fit_id).unwrap();

@@ -50,7 +50,7 @@ impl SolarSystem {
             }
         };
         // Create module and add it to items, to ensure its ID is taken
-        let module = SolModule::new(&self.src, module_item_id, fit_id, type_id, state, rack, pos, None);
+        let module = SolModule::new(&self.src, module_item_id, type_id, fit_id, state, rack, pos, None);
         let module_item = SolItem::Module(module);
         self.items.add_item(module_item);
         let mut charge_info = None;
@@ -73,8 +73,8 @@ impl SolarSystem {
             let charge = SolCharge::new(
                 &self.src,
                 charge_id,
-                fit_id,
                 charge_type_id,
+                fit_id,
                 module_item_id,
                 state,
                 false,

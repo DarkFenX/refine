@@ -16,7 +16,7 @@ impl SolarSystem {
         state: bool,
     ) -> Result<SolSubsystemInfo, AddSubsystemError> {
         let item_id = self.items.alloc_item_id()?;
-        let subsystem = SolSubsystem::new(&self.src, item_id, fit_id, type_id, state);
+        let subsystem = SolSubsystem::new(&self.src, item_id, type_id, fit_id, state);
         let info = SolSubsystemInfo::from(&subsystem);
         let item = SolItem::Subsystem(subsystem);
         let fit = self.fits.get_fit_mut(&fit_id)?;

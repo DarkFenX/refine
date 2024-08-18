@@ -23,8 +23,8 @@ impl SolModule {
     pub(in crate::sol) fn new(
         src: &Src,
         id: SolItemId,
-        fit_id: SolFitId,
         type_id: EItemId,
+        fit_id: SolFitId,
         state: SolItemState,
         rack: SolModRack,
         pos: Idx,

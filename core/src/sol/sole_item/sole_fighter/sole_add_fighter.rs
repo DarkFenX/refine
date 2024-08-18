@@ -19,7 +19,7 @@ impl SolarSystem {
     ) -> Result<SolFighterInfo, AddFighterError> {
         // Do everything needed to reserve ID for fighter itself
         let item_id = self.items.alloc_item_id()?;
-        let fighter = SolFighter::new(&self.src, item_id, fit_id, type_id, state);
+        let fighter = SolFighter::new(&self.src, item_id, type_id, fit_id, state);
         let item = SolItem::Fighter(fighter);
         self.items.add_item(item);
         // Reserve IDs for autocharges

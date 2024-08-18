@@ -24,7 +24,7 @@ impl SolarSystem {
         // Add new character
         // Should be fallible only if we didn't remove old character, so don't handle failure
         let item_id = self.items.alloc_item_id()?;
-        let character = SolCharacter::new(&self.src, item_id, fit_id, type_id, state);
+        let character = SolCharacter::new(&self.src, item_id, type_id, fit_id, state);
         let info = SolCharacterInfo::from(&character);
         let item = SolItem::Character(character);
         let fit = self.fits.get_fit_mut(&fit_id).unwrap();

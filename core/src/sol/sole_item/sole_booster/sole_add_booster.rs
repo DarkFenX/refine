@@ -16,7 +16,7 @@ impl SolarSystem {
         state: bool,
     ) -> Result<SolBoosterInfo, AddBoosterError> {
         let item_id = self.items.alloc_item_id()?;
-        let booster = SolBooster::new(&self.src, item_id, fit_id, type_id, state);
+        let booster = SolBooster::new(&self.src, item_id, type_id, fit_id, state);
         let info = self.make_booster_info(&booster);
         let item = SolItem::Booster(booster);
         let fit = self.fits.get_fit_mut(&fit_id)?;

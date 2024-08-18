@@ -16,7 +16,7 @@ impl SolarSystem {
         state: bool,
     ) -> Result<SolImplantInfo, AddImplantError> {
         let item_id = self.items.alloc_item_id()?;
-        let implant = SolImplant::new(&self.src, item_id, fit_id, type_id, state);
+        let implant = SolImplant::new(&self.src, item_id, type_id, fit_id, state);
         let info = SolImplantInfo::from(&implant);
         let item = SolItem::Implant(implant);
         let fit = self.fits.get_fit_mut(&fit_id)?;

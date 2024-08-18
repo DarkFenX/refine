@@ -15,7 +15,7 @@ pub(in crate::sol) struct SolShip {
     kind: SolShipKind,
 }
 impl SolShip {
-    pub(in crate::sol) fn new(src: &Src, id: SolItemId, fit_id: SolFitId, type_id: EItemId, state: bool) -> Self {
+    pub(in crate::sol) fn new(src: &Src, id: SolItemId, type_id: EItemId, fit_id: SolFitId, state: bool) -> Self {
         let mut ship = Self {
             base: SolItemBase::new(src, id, type_id, bool_to_state(state)),
             fit_id,

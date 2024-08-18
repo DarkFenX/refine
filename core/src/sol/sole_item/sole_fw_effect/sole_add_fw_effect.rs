@@ -16,7 +16,7 @@ impl SolarSystem {
         state: bool,
     ) -> Result<SolFwEffectInfo, AddFwEffectError> {
         let item_id = self.items.alloc_item_id()?;
-        let fw_effect = SolFwEffect::new(&self.src, item_id, fit_id, type_id, state);
+        let fw_effect = SolFwEffect::new(&self.src, item_id, type_id, fit_id, state);
         let info = SolFwEffectInfo::from(&fw_effect);
         let item = SolItem::FwEffect(fw_effect);
         let fit = self.fits.get_fit_mut(&fit_id)?;

@@ -55,8 +55,8 @@ impl SolarSystem {
         let charge = SolCharge::new(
             &self.src,
             charge_id,
-            fit_id,
             charge_type_id,
+            fit_id,
             *item_id,
             module.get_state(),
             false,
