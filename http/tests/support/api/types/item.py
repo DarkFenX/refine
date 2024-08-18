@@ -284,6 +284,58 @@ class Item(AttrDict):
             return self
         return None
 
+    # Charge methods
+    def change_charge_request(
+            self,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        return self._client.change_charge_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            item_info_mode=item_info_mode)
+
+    def change_charge(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Union[Item, None]:
+        resp = self.change_charge_request(state=state, item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
+    # Autocharge methods
+    def change_autocharge_request(
+            self,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        return self._client.change_autocharge_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            state=state,
+            item_info_mode=item_info_mode)
+
+    def change_autocharge(
+            self,
+            state: Union[bool, Type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> Union[Item, None]:
+        resp = self.change_autocharge_request(state=state, item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()
+            return self
+        return None
+
     # System-wide effect methods
     def change_sw_effect_request(
             self,

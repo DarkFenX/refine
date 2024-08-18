@@ -691,6 +691,36 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             state=state,
             item_info_mode=item_info_mode)
 
+    # Charge methods
+    def change_charge_request(
+            self,
+            sol_id: str,
+            item_id: int,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='charge',
+            sol_id=sol_id,
+            item_id=item_id,
+            state=state,
+            item_info_mode=item_info_mode)
+
+    # Autocharge methods
+    def change_autocharge_request(
+            self,
+            sol_id: str,
+            item_id: int,
+            state: Union[bool, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='autocharge',
+            sol_id=sol_id,
+            item_id=item_id,
+            state=state,
+            item_info_mode=item_info_mode)
+
     # System-wide effect methods
     def add_sw_effect_request(
             self,
