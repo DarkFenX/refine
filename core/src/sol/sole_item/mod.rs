@@ -1,7 +1,7 @@
 //! Solar system extension methods which handle item manipulation.
 
 pub use misc::{SolOrdAddMode, SolOrdRmMode};
-pub use sole_autocharge::GetAutochargeError;
+pub use sole_autocharge::{GetAutochargeError, SetAutochargeStateError};
 pub use sole_booster::{
     AddBoosterError, GetBoosterError, GetFitBoostersError, RemoveBoosterError, SetBoosterSideEffectStateError,
     SetBoosterStateError,
@@ -10,7 +10,7 @@ pub use sole_character::{
     GetFitCharacterError, RemoveCharacterError, RemoveFitCharacterError, SetCharacterStateError, SetFitCharacterError,
     SetFitCharacterStateError,
 };
-pub use sole_charge::{GetChargeError, RemoveChargeError};
+pub use sole_charge::{GetChargeError, RemoveChargeError, SetChargeStateError};
 pub use sole_drone::{AddDroneError, GetDroneError, GetFitDronesError, RemoveDroneError, SetDroneStateError};
 pub use sole_fighter::{
     AddFighterError, GetFighterError, GetFitFightersError, RemoveFighterError, SetFighterStateError,
