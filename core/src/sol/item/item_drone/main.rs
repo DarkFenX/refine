@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{EItemId, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{SolEffectModes, SolItemBase, SolItemState},
+    sol::item::{SolEffectModes, SolItemBase, SolItemState, SolProjs},
     src::Src,
     util::Named,
 };
@@ -11,6 +11,7 @@ use crate::{
 pub(in crate::sol) struct SolDrone {
     base: SolItemBase,
     fit_id: SolFitId,
+    projs: SolProjs,
 }
 impl SolDrone {
     pub(in crate::sol) fn new(
@@ -23,6 +24,7 @@ impl SolDrone {
         Self {
             base: SolItemBase::new(src, id, type_id, state),
             fit_id,
+            projs: SolProjs::new(),
         }
     }
     // Item base methods
@@ -56,6 +58,12 @@ impl SolDrone {
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id
+    }
+    pub(in crate::sol) fn get_projs(&self) -> &SolProjs {
+        &self.projs
+    }
+    pub(in crate::sol) fn get_projs_mut(&mut self) -> &mut SolProjs {
+        &mut self.projs
     }
 }
 impl Named for SolDrone {
