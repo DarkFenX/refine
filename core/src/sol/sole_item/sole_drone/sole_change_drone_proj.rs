@@ -1,7 +1,7 @@
 use crate::{
     defs::{AttrVal, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
@@ -24,14 +24,7 @@ impl SolarSystem {
         // Update skeleton
         drone.get_projs_mut().add(*projectee_item_id, range);
         // Update services
-        let drone_item = self.items.get_item(item_id).unwrap();
-        let projectee_item = self.items.get_item(projectee_item_id).unwrap();
-        self.svcs.change_item_proj_range(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-            drone_item,
-            projectee_item,
-            range,
-        );
+        self.change_item_id_projection_range_in_svcs(item_id, projectee_item_id, range);
         Ok(())
     }
 }

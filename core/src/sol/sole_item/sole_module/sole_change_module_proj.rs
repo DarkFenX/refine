@@ -1,7 +1,7 @@
 use crate::{
     defs::{AttrVal, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
@@ -25,27 +25,13 @@ impl SolarSystem {
         let charge_id = module.get_charge_id();
         module.get_projs_mut().add(*projectee_item_id, range);
         // Update services for module
-        let module_item = self.items.get_item(item_id).unwrap();
-        let projectee_item = self.items.get_item(projectee_item_id).unwrap();
-        self.svcs.change_item_proj_range(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-            module_item,
-            projectee_item,
-            range,
-        );
+        self.change_item_id_projection_range_in_svcs(item_id, projectee_item_id, range);
         if let Some(charge_id) = charge_id {
             // Update skeleton for charge
             let charge = self.items.get_item_mut(&charge_id).unwrap().get_charge_mut().unwrap();
             charge.get_projs_mut().add(*projectee_item_id, range);
             // Update services for charge
-            let charge_item = self.items.get_item(&charge_id).unwrap();
-            let projectee_item = self.items.get_item(projectee_item_id).unwrap();
-            self.svcs.change_item_proj_range(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-                charge_item,
-                projectee_item,
-                range,
-            );
+            self.change_item_id_projection_range_in_svcs(&charge_id, projectee_item_id, range);
         }
         Ok(())
     }

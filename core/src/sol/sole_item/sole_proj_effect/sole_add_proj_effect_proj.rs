@@ -1,7 +1,7 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ItemReceiveProjError, ProjNotFoundError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
@@ -39,14 +39,7 @@ impl SolarSystem {
         proj_effect.get_projs_mut().add(projectee_item_id, None);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         // Update services
-        let item = self.items.get_item(item_id).unwrap();
-        let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
-        self.svcs.add_item_projection(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
-            &item,
-            projectee_item,
-            None,
-        );
+        self.add_item_id_projection_to_svcs(item_id, &projectee_item_id, None);
         Ok(())
     }
 }

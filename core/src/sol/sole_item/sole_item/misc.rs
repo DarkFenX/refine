@@ -6,6 +6,7 @@ use crate::{
         item::{SolItem, SolItemState},
         SolView, SolarSystem,
     },
+    AttrVal,
 };
 
 impl SolarSystem {
@@ -34,6 +35,49 @@ impl SolarSystem {
                 new_state,
             );
         }
+    }
+    pub(in crate::sol) fn add_item_id_projection_to_svcs(
+        &mut self,
+        projector_item_id: &SolItemId,
+        projectee_item_id: &SolItemId,
+        range: Option<AttrVal>,
+    ) {
+        let projector_item = self.items.get_item(&projector_item_id).unwrap();
+        let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
+        self.svcs.add_item_projection(
+            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            projector_item,
+            projectee_item,
+            range,
+        );
+    }
+    pub(in crate::sol) fn change_item_id_projection_range_in_svcs(
+        &mut self,
+        projector_item_id: &SolItemId,
+        projectee_item_id: &SolItemId,
+        range: Option<AttrVal>,
+    ) {
+        let projector_item = self.items.get_item(&projector_item_id).unwrap();
+        let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
+        self.svcs.change_item_proj_range(
+            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            projector_item,
+            projectee_item,
+            range,
+        );
+    }
+    pub(in crate::sol) fn remove_item_id_projection_from_svcs(
+        &mut self,
+        projector_item_id: &SolItemId,
+        projectee_item_id: &SolItemId,
+    ) {
+        let projector_item = self.items.get_item(&projector_item_id).unwrap();
+        let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
+        self.svcs.remove_item_projection(
+            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            projector_item,
+            projectee_item,
+        );
     }
     pub(in crate::sol::sole_item) fn remove_incoming_projections(&mut self, item_id: &SolItemId) {
         let proj_incoming = self.proj_tracker.iter_projectors(item_id).map(|v| *v).collect_vec();
