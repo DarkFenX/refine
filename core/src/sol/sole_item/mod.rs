@@ -11,7 +11,10 @@ pub use sole_character::{
     SetFitCharacterStateError,
 };
 pub use sole_charge::{GetChargeError, RemoveChargeError, SetChargeStateError};
-pub use sole_drone::{AddDroneError, GetDroneError, GetFitDronesError, RemoveDroneError, SetDroneStateError};
+pub use sole_drone::{
+    AddDroneError, AddDroneProjError, ChangeDroneProjError, GetDroneError, GetFitDronesError, RemoveDroneError,
+    RemoveDroneProjError, SetDroneStateError,
+};
 pub use sole_fighter::{
     AddFighterError, AddFighterProjError, ChangeFighterProjError, GetFighterError, GetFitFightersError,
     RemoveFighterError, RemoveFighterProjError, SetFighterStateError,

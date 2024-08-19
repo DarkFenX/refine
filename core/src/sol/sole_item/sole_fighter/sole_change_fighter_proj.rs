@@ -1,9 +1,10 @@
+use itertools::Itertools;
+
 use crate::{
     defs::{AttrVal, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
     sol::{SolView, SolarSystem},
 };
-use itertools::Itertools;
 
 impl SolarSystem {
     pub fn change_fighter_proj(

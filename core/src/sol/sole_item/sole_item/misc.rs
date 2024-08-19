@@ -40,8 +40,8 @@ impl SolarSystem {
         for proj_item_id in proj_incoming.iter() {
             let proj_item = self.items.get_item(proj_item_id).unwrap();
             match proj_item {
-                // TODO: add drone proj
                 SolItem::Module(_) => self.remove_module_proj(proj_item_id, item_id).unwrap(),
+                SolItem::Drone(_) => self.remove_drone_proj(proj_item_id, item_id).unwrap(),
                 SolItem::Fighter(_) => self.remove_fighter_proj(proj_item_id, item_id).unwrap(),
                 SolItem::ProjEffect(_) => self.remove_proj_effect_proj(proj_item_id, item_id).unwrap(),
                 _ => panic!(),

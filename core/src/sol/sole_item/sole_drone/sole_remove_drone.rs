@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
@@ -10,6 +12,11 @@ impl SolarSystem {
         let item = self.items.get_item(item_id)?;
         let drone = item.get_drone()?;
         let fit_id = drone.get_fit_id();
+        // Remove outgoing projections
+        let proj_outgoing = drone.get_projs().iter_items().map(|v| *v).collect_vec();
+        for projectee_item_id in proj_outgoing {
+            self.remove_drone_proj(item_id, &projectee_item_id).unwrap();
+        }
         // Remove incoming projections
         self.remove_incoming_projections(item_id);
         // Remove drone from services

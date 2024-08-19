@@ -1,9 +1,10 @@
+use itertools::Itertools;
+
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
     sol::{SolView, SolarSystem},
 };
-use itertools::Itertools;
 
 impl SolarSystem {
     pub fn remove_fighter_proj(
