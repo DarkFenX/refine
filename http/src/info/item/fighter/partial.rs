@@ -19,6 +19,9 @@ pub(crate) struct HFighterInfoPartial {
     pub(crate) amt_override: Option<rc::Amount>,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) autocharges: HashMap<rc::EEffectId, HAutochargeInfo>,
+    #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub(crate) projs: Vec<(rc::SolItemId, Option<rc::AttrVal>)>,
 }
 impl HFighterInfoPartial {
     pub(super) fn mk_info(
@@ -38,6 +41,7 @@ impl HFighterInfoPartial {
                 .iter()
                 .map(|(k, v)| (*k, HAutochargeInfo::mk_info(core_sol, v, item_mode)))
                 .collect(),
+            projs: core_fighter_info.projs.iter().map(|v| (v.item_id, v.range)).collect(),
         }
     }
 }

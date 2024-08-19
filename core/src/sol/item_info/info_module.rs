@@ -2,11 +2,10 @@ use crate::{
     defs::{EItemId, Idx, SolFitId, SolItemId},
     sol::{
         item::{SolItemState, SolModule},
+        item_info::{SolChargeInfo, SolProjInfo},
         SolModRack,
     },
 };
-
-use super::{SolChargeInfo, SolProjInfo};
 
 pub struct SolModuleInfo {
     pub id: SolItemId,
