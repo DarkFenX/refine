@@ -1,9 +1,7 @@
-use itertools::Itertools;
-
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{SolView, SolarSystem},
 };
 
 impl SolarSystem {
@@ -12,9 +10,17 @@ impl SolarSystem {
         let item = self.items.get_item(item_id)?;
         let proj_effect = item.get_proj_effect()?;
         // Remove outgoing projections
-        let proj_outgoing = proj_effect.get_projs().iter_items().map(|v| *v).collect_vec();
-        for projectee_item_id in proj_outgoing {
-            self.remove_proj_effect_proj(item_id, &projectee_item_id).unwrap();
+        for projectee_item_id in proj_effect.get_projs().iter_items() {
+            // Update services
+            let projectee_item = self.items.get_item(projectee_item_id).unwrap();
+            self.svcs.remove_item_projection(
+                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                item,
+                projectee_item,
+            );
+            // Update skeleton - do not update info on projected effect, because projected effect
+            // will be discarded anyway
+            self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         }
         // Remove effect from services
         self.remove_item_id_from_svcs(item_id);

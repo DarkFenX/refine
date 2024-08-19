@@ -1,9 +1,7 @@
-use itertools::Itertools;
-
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{SolView, SolarSystem},
 };
 
 impl SolarSystem {
@@ -13,9 +11,16 @@ impl SolarSystem {
         let drone = item.get_drone()?;
         let fit_id = drone.get_fit_id();
         // Remove outgoing projections
-        let proj_outgoing = drone.get_projs().iter_items().map(|v| *v).collect_vec();
-        for projectee_item_id in proj_outgoing {
-            self.remove_drone_proj(item_id, &projectee_item_id).unwrap();
+        for projectee_item_id in drone.get_projs().iter_items() {
+            // Update services
+            let projectee_item = self.items.get_item(projectee_item_id).unwrap();
+            self.svcs.remove_item_projection(
+                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                item,
+                projectee_item,
+            );
+            // Update skeleton - do not update info on drone, because drone will be discarded anyway
+            self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         }
         // Remove incoming projections
         self.remove_incoming_projections(item_id);

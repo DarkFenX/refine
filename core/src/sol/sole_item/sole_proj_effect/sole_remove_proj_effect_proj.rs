@@ -16,14 +16,14 @@ impl SolarSystem {
         if !proj_effect.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
         };
-        // Process request in services
+        // Update services
         let projectee_item = self.items.get_item(projectee_item_id).unwrap();
         self.svcs.remove_item_projection(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             proj_effect_item,
             projectee_item,
         );
-        // Update the skeleton
+        // Update skeleton
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         let proj_effect = self.items.get_item_mut(item_id).unwrap().get_proj_effect_mut().unwrap();
         proj_effect.get_projs_mut().remove(projectee_item_id);
