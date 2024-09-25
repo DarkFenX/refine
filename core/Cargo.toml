@@ -7,8 +7,8 @@ description = "Rust Engine for Eve Fit Analysis, Statistics and Theorycrafting."
 license = "LGPL-3.0-or-later"
 
 [dependencies]
-itertools = ">=0.12.1"
-num-rational = ">=0.4.1"
-num-traits = ">=0.2.18"
+itertools = ">=0.13.0"
+num-rational = ">=0.4.2"
+num-traits = ">=0.2.19"
 rustc-hash = ">=2.0.0"
-tracing = ">=0.1"
+tracing = ">=0.1.40"
