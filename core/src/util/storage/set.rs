@@ -21,7 +21,7 @@ impl<V: Eq + Hash> StSet<V> {
     pub(crate) fn len(&self) -> usize {
         self.data.len()
     }
-    pub(crate) fn difference<'a>(&'a self, other: &'a StSet<V>) -> impl Iterator<Item = &V> {
+    pub(crate) fn difference<'a>(&'a self, other: &'a StSet<V>) -> impl Iterator<Item = &'a V> {
         self.data.difference(&other.data)
     }
     // Modification methods

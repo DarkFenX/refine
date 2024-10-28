@@ -8,17 +8,17 @@ edition = "2021"
 rc = { package = "reefast-core", path = "../core" }
 rdhe = { package = "reefast-dh-eve", path = "../dh-eve", features = ["phb-http"] }
 rdha = { package = "reefast-dh-adapted", path = "../dh-adapted", features = ["json", "ram"] }
-axum = { version = ">=0.7.6", features = ["query"] }
+axum = { version = ">=0.7.7", features = ["query"] }
 chrono = ">=0.4.38"
-config = { version = ">=0.14.0", features = ["toml"] }
-hyper = ">=1.4.1"
+config = { version = ">=0.14.1", features = ["toml"] }
+hyper = ">=1.5.0"
 itertools = ">=0.13.0"
 rayon = ">=1.10.0"
-serde = { version = ">=1.0.210", features = ["derive"] }
-serde_json = ">=1.0.128"
+serde = { version = ">=1.0.213", features = ["derive"] }
+serde_json = ">=1.0.132"
 serde_tuple = ">=1.0.0"
-serde_with = ">=3.9.0"
-tokio = { version = ">=1.40.0", features = ["full"] }
+serde_with = ">=3.11.0"
+tokio = { version = ">=1.41.0", features = ["full"] }
 tokio-rayon = ">=2.1.0"
 tower = ">=0.5.1"
 tower-http = { version = ">=0.6.1", features = ["normalize-path", "trace"] }
@@ -27,4 +27,4 @@ time = { version = ">=0.3.36", features = ["macros"] }
 tracing = ">=0.1.40"
 tracing-subscriber = { version = ">=0.3.18", features = ["time"] }
 tracing-appender = ">=0.2.3"
-uuid = { version = ">=1.10.0", features = ["v4", "fast-rng"] }
+uuid = { version = ">=1.11.0", features = ["v4", "fast-rng"] }
