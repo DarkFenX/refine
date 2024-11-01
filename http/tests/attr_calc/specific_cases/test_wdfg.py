@@ -10,8 +10,8 @@ def test_wdfg(client, consts):
     eve_cap_bonus_attr = client.mk_eve_attr(id_=consts.EveAttr.cap_need_bonus, def_val=0)
     eve_cycle_attr = client.mk_eve_attr(id_=consts.EveAttr.duration, def_val=0)
     eve_cycle_bonus_attr = client.mk_eve_attr(id_=consts.EveAttr.duration_bonus, def_val=0)
-    eve_str_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
-    eve_status_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
+    eve_scram_str_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
+    eve_scram_status_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
     # WDFG itself
     eve_wdfg_main_effect = client.mk_eve_effect(
         id_=consts.EveEffect.warp_disrupt_sphere,
@@ -40,7 +40,9 @@ def test_wdfg(client, consts):
         cat_id=consts.EveEffCat.passive,
         mod_info=[eve_wdfg_cap_mod])
     eve_wdfg = client.mk_eve_item(
-        attrs={eve_range_attr.id: 20000, eve_cap_attr.id: 150, eve_cycle_attr.id: 30000, eve_str_attr.id: 100},
+        attrs={
+            eve_range_attr.id: 20000, eve_cap_attr.id: 150, eve_cycle_attr.id: 30000,
+            eve_scram_str_attr.id: 100},
         eff_ids=[eve_wdfg_main_effect.id, eve_wdfg_range_effect.id, eve_wdfg_cap_effect.id],
         defeff_id=eve_wdfg_main_effect.id)
     # Disruption script
@@ -48,8 +50,8 @@ def test_wdfg(client, consts):
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.tgt,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_str_attr.id,
-        affectee_attr_id=eve_status_attr.id)
+        affector_attr_id=eve_scram_str_attr.id,
+        affectee_attr_id=eve_scram_status_attr.id)
     eve_dscript_main_effect = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
         cat_id=consts.EveEffCat.target,
@@ -95,12 +97,52 @@ def test_wdfg(client, consts):
             eve_dscript_cap_effect.id, eve_dscript_cycle_effect.id],
         defeff_id=eve_dscript_main_effect.id)
     # Misc
-    eve_ship = client.mk_eve_ship(attrs={eve_status_attr.id: 0})
+    eve_ship = client.mk_eve_ship(attrs={eve_scram_status_attr.id: 0})
     # Run the test
     client.create_sources()
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
+    api_affector_ship = api_affector_fit.set_ship(type_id=eve_ship.id)
+    api_affector_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.online)
     api_affectee_fit = api_sol.create_fit()
-    api_ship = api_affectee_fit.set_ship(type_id=eve_ship.id)
+    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship.id)
+    # Verification - inactive unscripted
+    assert api_affectee_ship.update().attrs[eve_scram_status_attr.id].dogma == approx(0)
+
+
+def test_bubble_sig_local(client, consts):
+    eve_sig_attr = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_sig_bonus_attr = client.mk_eve_attr(id_=consts.EveAttr.sig_radius_bonus)
+    eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_sig_bonus_attr.id: 50},
+        eff_ids=[eve_wdfg_effect.id],
+        defeff_id=eve_wdfg_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_sig_attr.id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship.id)
+    api_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active)
     # Verification
-    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(0)
+    assert api_ship.update().attrs[eve_sig_attr.id].dogma == approx(150)
+
+
+def test_bubble_sig_projected(client, consts):
+    eve_sig_attr = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_sig_bonus_attr = client.mk_eve_attr(id_=consts.EveAttr.sig_radius_bonus)
+    eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_sig_bonus_attr.id: 50},
+        eff_ids=[eve_wdfg_effect.id],
+        defeff_id=eve_wdfg_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_sig_attr.id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affectee_fit = api_sol.create_fit()
+    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active)
+    api_ship = api_affectee_fit.set_ship(type_id=eve_ship.id)
+    api_wdfg.change_mod(add_projs=[api_ship.id])
+    # Verification
+    assert api_ship.update().attrs[eve_sig_attr.id].dogma == approx(100)
