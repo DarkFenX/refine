@@ -37,10 +37,16 @@ class EveEffect(IntEnum):
     missile_expl_dmg_bonus = 661
     missile_therm_dmg_bonus = 662
     missile_kin_dmg_bonus = 668
+    ammo_influence_cap_need = 804
     drone_dmg_bonus = 1730
     self_rof = 1851
+    warp_disrupt_sphere = 3380
+    script_duration_bonus = 3602
+    script_wdfg_set_script_capneed_hidden = 3615
+    script_warp_scramble_range_bonus = 3648
     hardpoint_modifier_effect = 3773
     slot_modifier = 3774
+    max_range_hidden_preass_warp_scramble_range = 4894
     fueled_armor_repair = 5275
     remote_webifier_falloff = 6426
     doomsday_aoe_web = 6476
@@ -50,6 +56,7 @@ class EveEffect(IntEnum):
     mod_bonus_afterburner = 6731
     mod_bonus_warfare_link_armor = 6732
     mod_titan_effect_generator = 6753
+    ship_mod_focused_warp_disruption_script = 6849
     weather_darkness = 7060
     debuff_lance = 11691
 
@@ -129,6 +136,7 @@ class EveBuffOp(StrEnum):
 @unique
 class EveAttr(IntEnum):
     mass = 4
+    capacitor_need = 6
     power_output = 11
     low_slots = 12
     med_slots = 13
@@ -141,9 +149,14 @@ class EveAttr(IntEnum):
     speed = 51
     max_range = 54
     dmg_mult = 64
+    duration_bonus = 66
+    duration = 73
     armor_dmg_amount = 84
     launcher_slots_left = 101
     turret_slots_left = 102
+    warp_scramble_range = 103
+    warp_scramble_status = 104
+    warp_scramble_strength = 105
     em_dmg = 114
     expl_dmg = 116
     kin_dmg = 117
@@ -153,10 +166,14 @@ class EveAttr(IntEnum):
     skill_level = 280
     dmg_mult_bonus = 292
     rof_bonus = 293
+    cap_need_bonus = 317
     sig_radius = 552
     sig_radius_bonus = 554
     speed_boost_factor = 567
     mass_addition = 796
+    max_range_hidden = 1317
+    capacitor_need_hidden = 1319
+    warp_scramble_range_bonus = 1327
     turret_hardpoint_modifier = 1368
     launcher_hardpoint_modifier = 1369
     hi_slot_modifier = 1374
