@@ -171,6 +171,7 @@ class EveAttr(IntEnum):
     sig_radius_bonus = 554
     speed_boost_factor = 567
     mass_addition = 796
+    disallow_assistance = 854
     sig_radius_bonus_bonus = 1227
     max_range_hidden = 1317
     capacitor_need_hidden = 1319

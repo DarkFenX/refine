@@ -17,13 +17,20 @@ fn add_bubble_modifiers(a_data: &mut ad::AData) {
             tracing::info!("WDFG bubble effect {BUBBLE_EFFECT} has modifiers, overwriting them");
             effect.mods.clear();
         }
-        let sig_mod = ad::AEffectModifier::new(
+        // Signature radius
+        effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::SIG_RADIUS_BONUS,
             ad::AOp::PostPerc,
             ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
             ec::attrs::SIG_RADIUS,
-        );
-        effect.mods.push(sig_mod);
+        ));
+        // Disallow assistance
+        effect.mods.push(ad::AEffectModifier::new(
+            ec::attrs::DISALLOW_ASSISTANCE,
+            ad::AOp::PostAssign,
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
+            ec::attrs::DISALLOW_ASSISTANCE,
+        ));
         effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }

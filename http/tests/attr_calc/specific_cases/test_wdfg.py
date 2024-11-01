@@ -146,3 +146,39 @@ def test_bubble_sig_projected(client, consts):
     api_wdfg.change_mod(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_sig_attr.id].dogma == approx(100)
+
+
+def test_bubble_assist_local(client, consts):
+    eve_assist_attr = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
+    eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_assist_attr.id: 1},
+        eff_ids=[eve_wdfg_effect.id],
+        defeff_id=eve_wdfg_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_assist_attr.id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship.id)
+    api_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active)
+    # Verification
+    assert api_ship.update().attrs[eve_assist_attr.id].dogma == approx(1)
+
+
+def test_bubble_assist_projected(client, consts):
+    eve_assist_attr = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
+    eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_assist_attr.id: 1},
+        eff_ids=[eve_wdfg_effect.id],
+        defeff_id=eve_wdfg_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_assist_attr.id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affectee_fit = api_sol.create_fit()
+    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active)
+    api_ship = api_affectee_fit.set_ship(type_id=eve_ship.id)
+    api_wdfg.change_mod(add_projs=[api_ship.id])
+    # Verification
+    assert api_ship.update().attrs[eve_assist_attr.id].dogma == approx(0)

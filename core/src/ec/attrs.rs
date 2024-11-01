@@ -30,6 +30,7 @@ pub(crate) const SIG_RADIUS: EAttrId = 552;
 pub(crate) const SIG_RADIUS_BONUS: EAttrId = 554;
 pub(crate) const SPEED_BOOST_FACTOR: EAttrId = 567;
 pub(crate) const MASS_ADDITION: EAttrId = 796;
+pub(crate) const DISALLOW_ASSISTANCE: EAttrId = 854;
 pub(crate) const BOOSTERNESS: EAttrId = 1087;
 pub(crate) const SUBSYSTEM_SLOT: EAttrId = 1366;
 pub(crate) const TURRET_HARDPOINT_MODIFIER: EAttrId = 1368;
