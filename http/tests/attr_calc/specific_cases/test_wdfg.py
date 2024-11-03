@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def test_wdfg(client, consts):
+def random(client, consts):
     eve_range_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range, def_val=0)
     eve_range_hidden_attr = client.mk_eve_attr(id_=consts.EveAttr.max_range_hidden, def_val=0)
     eve_range_bonus_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range_bonus, def_val=0)
@@ -182,3 +182,85 @@ def test_bubble_assist_projected(client, consts):
     api_wdfg.change_mod(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_assist_attr.id].dogma == approx(0)
+
+
+def test_script_disruption_scram_status(client, consts):
+    eve_str_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
+    eve_status_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
+    eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_str_attr.id: 100},
+        eff_ids=[eve_wdfg_effect.id],
+        defeff_id=eve_wdfg_effect.id)
+    eve_script_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.tgt,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_str_attr.id,
+        affectee_attr_id=eve_status_attr.id)
+    eve_script_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
+        cat_id=consts.EveEffCat.target,
+        mod_info=[eve_script_mod])
+    eve_script = client.mk_eve_item(
+        eff_ids=[eve_script_effect.id],
+        defeff_id=eve_script_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_status_attr.id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affectee_fit = api_sol.create_fit()
+    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active)
+    api_ship = api_affectee_fit.set_ship(type_id=eve_ship.id)
+    api_wdfg.change_mod(add_projs=[api_ship.id])
+    # Verification
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(0)
+    # Action
+    api_wdfg.change_mod(charge=eve_script.id)
+    # Verification
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(100)
+    # Action
+    api_wdfg.change_mod(charge=None)
+    # Verification
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(0)
+
+
+def test_script_scrambling_scram_status(client, consts):
+    eve_str_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
+    eve_status_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
+    eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_str_attr.id: 100},
+        eff_ids=[eve_wdfg_effect.id],
+        defeff_id=eve_wdfg_effect.id)
+    eve_script_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.tgt,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_str_attr.id,
+        affectee_attr_id=eve_status_attr.id)
+    eve_script_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
+        cat_id=consts.EveEffCat.target,
+        mod_info=[eve_script_mod])
+    eve_script = client.mk_eve_item(
+        eff_ids=[eve_script_effect.id],
+        defeff_id=eve_script_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_status_attr.id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affectee_fit = api_sol.create_fit()
+    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active)
+    api_ship = api_affectee_fit.set_ship(type_id=eve_ship.id)
+    api_wdfg.change_mod(add_projs=[api_ship.id])
+    # Verification
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(0)
+    # Action
+    api_wdfg.change_mod(charge=eve_script.id)
+    # Verification
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(100)
+    # Action
+    api_wdfg.change_mod(charge=None)
+    # Verification
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(0)

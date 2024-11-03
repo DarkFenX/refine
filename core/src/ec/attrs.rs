@@ -17,6 +17,7 @@ pub(crate) const DMG_MULT: EAttrId = 64;
 pub(crate) const ARMOR_DMG_AMOUNT: EAttrId = 84;
 pub(crate) const LAUNCHER_SLOTS_LEFT: EAttrId = 101;
 pub(crate) const TURRET_SLOTS_LEFT: EAttrId = 102;
+pub(crate) const WARP_SCRAMBLE_STRENGTH: EAttrId = 105;
 pub(crate) const EM_DMG: EAttrId = 114;
 pub(crate) const EXPL_DMG: EAttrId = 116;
 pub(crate) const KIN_DMG: EAttrId = 117;

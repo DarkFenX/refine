@@ -31,6 +31,13 @@ fn add_bubble_modifiers(a_data: &mut ad::AData) {
             ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
             ec::attrs::DISALLOW_ASSISTANCE,
         ));
+        // Transfer scram strength to script
+        effect.mods.push(ad::AEffectModifier::new(
+            ec::attrs::WARP_SCRAMBLE_STRENGTH,
+            ad::AOp::PreAssign,
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Other),
+            ec::attrs::WARP_SCRAMBLE_STRENGTH,
+        ));
         effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }

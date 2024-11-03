@@ -56,6 +56,7 @@ class EveEffect(IntEnum):
     mod_bonus_afterburner = 6731
     mod_bonus_warfare_link_armor = 6732
     mod_titan_effect_generator = 6753
+    ship_mod_focused_warp_scrambling_script = 6848
     ship_mod_focused_warp_disruption_script = 6849
     weather_darkness = 7060
     debuff_lance = 11691
