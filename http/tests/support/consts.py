@@ -183,6 +183,8 @@ class EveAttr(IntEnum):
     med_slot_modifier = 1375
     low_slot_modifier = 1376
     charged_armor_dmg_mult = 1886
+    gate_scramble_status = 1973
+    gate_scramble_strength = 1974
     remote_resistance_id = 2138
     fighter_ability_launch_bomb_type = 2324
     speed_factor_floor = 2266
