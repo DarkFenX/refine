@@ -5,8 +5,11 @@ from enum import Enum, IntEnum, StrEnum, unique
 @unique
 class EveItem(IntEnum):
     missile_launcher_operation = 3319
+    high_speed_maneuvering = 3454
+    micro_jump_drive_operation = 4385
     nanite_repair_paste = 28668
     stasis_webification_probe = 56748
+    capital_micro_jump_drive_operation = 83464
 
 
 @unique
@@ -177,6 +180,8 @@ class EveAttr(IntEnum):
     max_range_hidden = 1317
     capacitor_need_hidden = 1319
     warp_scramble_range_bonus = 1327
+    activation_blocked = 1349
+    activation_blocked_strength = 1350
     turret_hardpoint_modifier = 1368
     launcher_hardpoint_modifier = 1369
     hi_slot_modifier = 1374
