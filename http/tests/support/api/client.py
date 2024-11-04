@@ -21,20 +21,20 @@ if TYPE_CHECKING:
 
 class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
-    def __init__(self, port: int, **kwargs):
+    def __init__(self, *, port: int, **kwargs):
         super().__init__(**kwargs)
         self.__session: requests.Session = requests.Session()
         self.__base_url: str = f'http://localhost:{port}'
         self.__created_data_aliases: set[str] = set()
         self.__created_sols: set[SolarSystem] = set()
 
-    def send_prepared(self, req: Request) -> Response:
+    def send_prepared(self, *, req: Request) -> Response:
         response = self.__session.send(req)
-        return Response(response)
+        return Response(response=response)
 
     # Data source methods
     def create_source_request(
-            self,
+            self, *,
             data: Union[eve.EveObjects, Type[Default]],
     ) -> Request:
         data = self._get_eve_data(data=data)
@@ -45,7 +45,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             json={'data_version': '1', 'data_base_url': f'{self._eve_data_server_base_url}/{data.alias}/'})
 
     def create_source(
-            self,
+            self, *,
             data: Union[eve.EveObjects, Type[Default]] = Default,
     ) -> None:
         data = self._get_eve_data(data=data)
@@ -54,13 +54,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         assert resp.status_code == 201
         self.__created_data_aliases.add(data.alias)
 
-    def remove_source_request(self, src_alias: str) -> Request:
+    def remove_source_request(self, *, src_alias: str) -> Request:
         return Request(
             self,
             method='DELETE',
             url=f'{self.__base_url}/src/{src_alias}')
 
-    def remove_source(self, src_alias: str) -> None:
+    def remove_source(self, *, src_alias: str) -> None:
         resp = self.remove_source_request(src_alias=src_alias).send()
         assert resp.status_code == 204
         self.__created_data_aliases.remove(src_alias)
@@ -70,7 +70,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         if not self._eve_datas:
             self._get_eve_data()
         for data in self._eve_datas.values():
-            self.create_source(data)
+            self.create_source(data=data)
 
     def cleanup_sources(self) -> None:
         for alias in self.__created_data_aliases.copy():
@@ -78,7 +78,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Solar system methods
     def create_sol_request(
-            self,
+            self, *,
             data: Union[eve.EveObjects, Type[Absent], Type[Default]],
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
@@ -86,10 +86,10 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         params = {}
-        conditional_insert(params, 'sol', sol_info_mode)
-        conditional_insert(params, 'fleet', fleet_info_mode)
-        conditional_insert(params, 'fit', fit_info_mode)
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='sol', value=sol_info_mode)
+        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
+        conditional_insert(container=params, key='fit', value=fit_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         body = {}
         if data is not Absent:
             data = self._get_eve_data(data=data)
@@ -97,7 +97,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         return Request(self, method='POST', url=f'{self.__base_url}/sol', params=params, json=body)
 
     def create_sol(
-            self,
+            self, *,
             data: Union[eve.EveObjects, Type[Absent], Type[Default]] = Default,
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]] = ApiSolInfoMode.id,
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = Absent,
@@ -121,7 +121,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         return self.__created_sols
 
     def get_sol(
-            self,
+            self, *,
             sol_id: str,
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
@@ -142,7 +142,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         return None
 
     def get_sol_request(
-            self,
+            self, *,
             sol_id: str,
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
@@ -150,10 +150,10 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         params = {}
-        conditional_insert(params, 'sol', sol_info_mode)
-        conditional_insert(params, 'fleet', fleet_info_mode)
-        conditional_insert(params, 'fit', fit_info_mode)
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='sol', value=sol_info_mode)
+        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
+        conditional_insert(container=params, key='fit', value=fit_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='GET',
@@ -161,7 +161,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             params=params)
 
     def change_sol_src_request(
-            self,
+            self, *,
             sol_id: str,
             data: Union[eve.EveObjects, Type[Absent], Type[Default]],
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
@@ -174,10 +174,10 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             data = self._get_eve_data(data=data)
             body['src_alias'] = data.alias
         params = {}
-        conditional_insert(params, 'sol', sol_info_mode)
-        conditional_insert(params, 'fleet', fleet_info_mode)
-        conditional_insert(params, 'fit', fit_info_mode)
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='sol', value=sol_info_mode)
+        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
+        conditional_insert(container=params, key='fit', value=fit_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='PATCH',
@@ -185,18 +185,18 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             params=params,
             json=body)
 
-    def remove_sol_request(self, sol_id: str) -> Request:
+    def remove_sol_request(self, *, sol_id: str) -> Request:
         return Request(
             self,
             method='DELETE',
             url=f'{self.__base_url}/sol/{sol_id}')
 
-    def check_sol(self, sol_id: str) -> None:
+    def check_sol(self, *, sol_id: str) -> None:
         resp = self.check_sol_request(sol_id=sol_id).send()
         if resp.status_code != 200:
             raise ApiSolCheckError
 
-    def check_sol_request(self, sol_id: str) -> Request:
+    def check_sol_request(self, *, sol_id: str) -> Request:
         return Request(
             self,
             method='GET',
@@ -208,13 +208,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Fleet methods
     def get_fleet_request(
-            self,
+            self, *,
             sol_id: str,
             fleet_id: str,
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
     ) -> Request:
         params = {}
-        conditional_insert(params, 'fleet', fleet_info_mode)
+        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
         return Request(
             self,
             method='GET',
@@ -222,12 +222,12 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             params=params)
 
     def create_fleet_request(
-            self,
+            self, *,
             sol_id: str,
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
     ) -> Request:
         params = {}
-        conditional_insert(params, 'fleet', fleet_info_mode)
+        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
         return Request(
             self,
             method='POST',
@@ -235,7 +235,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             params=params)
 
     def change_fleet_request(
-            self,
+            self, *,
             sol_id: str,
             fleet_id: str,
             add_fits: list[str],
@@ -243,10 +243,10 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
     ) -> Request:
         body = {}
-        conditional_insert(body, 'add_fits', add_fits)
-        conditional_insert(body, 'remove_fits', remove_fits)
+        conditional_insert(container=body, key='add_fits', value=add_fits)
+        conditional_insert(container=body, key='remove_fits', value=remove_fits)
         params = {}
-        conditional_insert(params, 'fleet', fleet_info_mode)
+        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
         return Request(
             self,
             method='PATCH',
@@ -255,7 +255,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             json=body)
 
     def remove_fleet_request(
-            self,
+            self, *,
             sol_id: str,
             fleet_id: str,
     ) -> Request:
@@ -266,15 +266,15 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Fit methods
     def get_fit_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         params = {}
-        conditional_insert(params, 'fit', fit_info_mode)
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='fit', value=fit_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='GET',
@@ -282,14 +282,14 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             params=params)
 
     def create_fit_request(
-            self,
+            self, *,
             sol_id: str,
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         params = {}
-        conditional_insert(params, 'fit', fit_info_mode)
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='fit', value=fit_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='POST',
@@ -297,7 +297,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             params=params)
 
     def set_fit_fleet_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             fleet_id: Union[str, None],
@@ -306,8 +306,8 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     ) -> Request:
         command = {'type': 'set_fleet', 'fleet_id': fleet_id}
         params = {}
-        conditional_insert(params, 'fit', fit_info_mode)
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='fit', value=fit_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='PATCH',
@@ -316,7 +316,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             json={'commands': [command]})
 
     def remove_fit_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
     ) -> Request:
@@ -327,13 +327,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Generic item methods
     def get_item_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: str,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='GET',
@@ -341,7 +341,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             params=params)
 
     def remove_item_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: str,
     ) -> Request:
@@ -352,7 +352,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Character methods
     def set_char_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -368,7 +368,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode=item_info_mode)
 
     def change_char_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -383,7 +383,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Skill methods
     def add_skill_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -396,9 +396,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             'fit_id': fit_id,
             'type_id': type_id,
             'level': level}
-        conditional_insert(body, 'state', state)
+        conditional_insert(container=body, key='state', value=state)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='POST',
@@ -407,7 +407,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             json=body)
 
     def change_skill_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: str,
             level: Union[int, Type[Absent]],
@@ -416,11 +416,11 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {'type': 'skill'}
-        conditional_insert(body, 'level', level)
-        conditional_insert(body, 'state', state)
-        conditional_insert(body, 'effect_modes', effect_modes)
+        conditional_insert(container=body, key='level', value=level)
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='effect_modes', value=effect_modes)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='PATCH',
@@ -430,7 +430,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Implant methods
     def add_implant_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -446,7 +446,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode=item_info_mode)
 
     def change_implant_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -461,7 +461,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Booster methods
     def add_booster_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -473,10 +473,10 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             'type': 'booster',
             'fit_id': fit_id,
             'type_id': type_id}
-        conditional_insert(body, 'state', state)
-        conditional_insert(body, 'side_effects', side_effects)
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='side_effects', value=side_effects)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='POST',
@@ -485,7 +485,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             json=body)
 
     def change_booster_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -493,10 +493,10 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {'type': 'booster'}
-        conditional_insert(body, 'state', state)
-        conditional_insert(body, 'side_effects', side_effects)
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='side_effects', value=side_effects)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='PATCH',
@@ -506,7 +506,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Ship methods
     def set_ship_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -522,7 +522,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode=item_info_mode)
 
     def change_ship_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -537,7 +537,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Stance methods
     def set_stance_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -554,7 +554,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Subsystem methods
     def add_subsystem_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -571,7 +571,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Module methods
     def add_mod_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -588,9 +588,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             'add_mode': mode,
             'type_id': type_id,
             'state': state}
-        conditional_insert(body, 'charge_type_id', charge_type_id)
+        conditional_insert(container=body, key='charge_type_id', value=charge_type_id)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='POST',
@@ -599,7 +599,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             json=body)
 
     def change_mod_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: str,
             state: Union[ApiState, Type[Absent]],
@@ -611,14 +611,14 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {'type': 'module'}
-        conditional_insert(body, 'state', state)
-        conditional_insert(body, 'charge', charge)
-        conditional_insert(body, 'add_projs', add_projs)
-        conditional_insert(body, 'change_projs', change_projs)
-        conditional_insert(body, 'rm_projs', rm_projs)
-        conditional_insert(body, 'effect_modes', effect_modes)
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='charge', value=charge)
+        conditional_insert(container=body, key='add_projs', value=add_projs)
+        conditional_insert(container=body, key='change_projs', value=change_projs)
+        conditional_insert(container=body, key='rm_projs', value=rm_projs)
+        conditional_insert(container=body, key='effect_modes', value=effect_modes)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='PATCH',
@@ -628,7 +628,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Rig methods
     def add_rig_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -644,7 +644,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode=item_info_mode)
 
     def change_rig_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -659,7 +659,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Drone methods
     def add_drone_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -675,7 +675,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode=item_info_mode)
 
     def change_drone_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[ApiState, Type[Absent]],
@@ -686,13 +686,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {'type': 'drone', 'item_id': item_id}
-        conditional_insert(body, 'state', state)
-        conditional_insert(body, 'add_projs', add_projs)
-        conditional_insert(body, 'change_projs', change_projs)
-        conditional_insert(body, 'rm_projs', rm_projs)
-        conditional_insert(body, 'effect_modes', effect_modes)
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='add_projs', value=add_projs)
+        conditional_insert(container=body, key='change_projs', value=change_projs)
+        conditional_insert(container=body, key='rm_projs', value=rm_projs)
+        conditional_insert(container=body, key='effect_modes', value=effect_modes)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='PATCH',
@@ -702,7 +702,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Fighter methods
     def add_fighter_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -718,7 +718,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode=item_info_mode)
 
     def change_fighter_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[ApiState, Type[Absent]],
@@ -729,13 +729,13 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {'type': 'fighter', 'item_id': item_id}
-        conditional_insert(body, 'state', state)
-        conditional_insert(body, 'add_projs', add_projs)
-        conditional_insert(body, 'change_projs', change_projs)
-        conditional_insert(body, 'rm_projs', rm_projs)
-        conditional_insert(body, 'effect_modes', effect_modes)
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='add_projs', value=add_projs)
+        conditional_insert(container=body, key='change_projs', value=change_projs)
+        conditional_insert(container=body, key='rm_projs', value=rm_projs)
+        conditional_insert(container=body, key='effect_modes', value=effect_modes)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='PATCH',
@@ -745,7 +745,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Charge methods
     def change_charge_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -760,7 +760,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Autocharge methods
     def change_autocharge_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -775,16 +775,16 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # System-wide effect methods
     def add_sw_effect_request(
-            self,
+            self, *,
             sol_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {'type': 'sw_effect', 'type_id': type_id}
-        conditional_insert(body, 'state', state)
+        conditional_insert(container=body, key='state', value=state)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='POST',
@@ -793,7 +793,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             json=body)
 
     def change_sw_effect_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -808,7 +808,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Fit-wide effect methods
     def add_fw_effect_request(
-            self,
+            self, *,
             sol_id: str,
             fit_id: str,
             type_id: int,
@@ -824,7 +824,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode=item_info_mode)
 
     def change_fw_effect_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -839,16 +839,16 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Projected effect methods
     def add_proj_effect_request(
-            self,
+            self, *,
             sol_id: str,
             type_id: int,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {'type': 'proj_effect', 'type_id': type_id}
-        conditional_insert(body, 'state', state)
+        conditional_insert(container=body, key='state', value=state)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='POST',
@@ -857,7 +857,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             json=body)
 
     def change_proj_effect_request(
-            self,
+            self, *,
             sol_id: str,
             item_id: int,
             state: Union[bool, Type[Absent]],
@@ -866,11 +866,11 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {'type': 'proj_effect', 'item_id': item_id}
-        conditional_insert(body, 'state', state)
-        conditional_insert(body, 'add_projs', add_projs)
-        conditional_insert(body, 'rm_projs', rm_projs)
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='add_projs', value=add_projs)
+        conditional_insert(container=body, key='rm_projs', value=rm_projs)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='PATCH',
@@ -880,7 +880,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
     # Auxiliary methods
     def __add_simple_item_request(
-            self,
+            self, *,
             cmd_name: str,
             sol_id: str,
             fit_id: str,
@@ -892,9 +892,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             'type': cmd_name,
             'fit_id': fit_id,
             'type_id': type_id}
-        conditional_insert(body, 'state', state)
+        conditional_insert(container=body, key='state', value=state)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='POST',
@@ -903,7 +903,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             json=body)
 
     def __change_simple_item_request(
-            self,
+            self, *,
             cmd_name: str,
             sol_id: str,
             item_id: int,
@@ -911,9 +911,9 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         body = {'type': cmd_name}
-        conditional_insert(body, 'state', state)
+        conditional_insert(container=body, key='state', value=state)
         params = {}
-        conditional_insert(params, 'item', item_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
             self,
             method='PATCH',

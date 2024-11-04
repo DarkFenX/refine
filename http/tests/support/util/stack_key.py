@@ -8,7 +8,7 @@ class StackKey(tuple):
     pass
 
 
-def frame_to_primitive(frame, ignore_local_context=False):
+def frame_to_primitive(*, frame, ignore_local_context=False):
     if ignore_local_context:
         return (
             frame.filename,
@@ -24,7 +24,7 @@ def frame_to_primitive(frame, ignore_local_context=False):
         pos.end_col_offset)
 
 
-def is_test_path(path: str) -> bool:
+def is_test_path(*, path: str) -> bool:
     # Not test path if it's a path outside of tests folder altogether
     split_path = os.path.normpath(os.path.realpath(path)).split(os.sep)
     if split_path[:len(TEST_FOLDER_SPLIT)] != TEST_FOLDER_SPLIT:
@@ -50,9 +50,9 @@ def get_stack_key() -> StackKey:
     """
     stack = inspect.stack(context=0)
     # Include only frames from test folder
-    stack = [f for f in stack if is_test_path(f.filename)]
+    stack = [f for f in stack if is_test_path(path=f.filename)]
     # For method which tried to retrieve data, ignore all its local context, to refer to the same
     # data on different calls
-    key = [frame_to_primitive(stack[0], ignore_local_context=True)]
-    key += [frame_to_primitive(f) for f in stack[1:]]
+    key = [frame_to_primitive(frame=stack[0], ignore_local_context=True)]
+    key += [frame_to_primitive(frame=f) for f in stack[1:]]
     return StackKey(key)

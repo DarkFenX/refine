@@ -6,5 +6,5 @@ from tests.support.eve import EveDataManager, EveTypeFactory
 
 class TestClient(ApiClient, EveTypeFactory, EveDataManager):
 
-    def __init__(self, eve_data_server, api_port: int):
+    def __init__(self, *, eve_data_server, api_port: int):
         super().__init__(data_server=eve_data_server, port=api_port)

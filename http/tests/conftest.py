@@ -19,13 +19,13 @@ def reefast_tmp_folder(tmp_path_factory):
 @pytest.fixture(scope='session')
 def reefast_config(reefast_tmp_folder):  # pylint: disable=W0621
     config_path = reefast_tmp_folder / 'config.toml'
-    port = next_free_port(8000)
+    port = next_free_port(start_port=8000)
     yield build_config(config_path=config_path, port=port, log_folder=reefast_tmp_folder)
 
 
 @pytest.fixture(scope='session', autouse=True)
 def reefast_server(reefast_config, log_reader):  # pylint: disable=W0621
-    build_server(PROJECT_ROOT)
+    build_server(proj_root=PROJECT_ROOT)
     with log_reader.get_collector() as log_collector:
         server_info = run_server(proj_root=PROJECT_ROOT, config_path=reefast_config.config_path)
         # Wait for server to confirm it's up before yielding
@@ -33,9 +33,9 @@ def reefast_server(reefast_config, log_reader):  # pylint: disable=W0621
     try:
         yield server_info
     except Exception:
-        kill_server(server_info.pid)
+        kill_server(pid=server_info.pid)
         raise
-    kill_server(server_info.pid)
+    kill_server(pid=server_info.pid)
 
 
 @pytest.fixture()

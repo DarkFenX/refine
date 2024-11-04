@@ -21,7 +21,7 @@ ID_START = 1000000
 
 class EveObjects:
 
-    def __init__(self, alias: str):
+    def __init__(self, *, alias: str):
         self.alias = alias
         self.items = []
         self.item_groups = []
@@ -37,58 +37,58 @@ class EveObjects:
         # Format: {group ID: [groups]}
         self.group_map = defaultdict(lambda: [])
 
-    def alloc_item_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        while self.__is_item_id_used(self.item_id, avoid_ids=avoid_ids):
+    def alloc_item_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_item_id_used(id_=self.item_id, avoid_ids=avoid_ids):
             self.item_id += 1
         id_ = self.item_id
         self.item_id += 1
         return id_
 
-    def __is_item_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+    def __is_item_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
         return id_ in chain((i.id for i in self.items), avoid_ids)
 
-    def alloc_group_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        while self.__is_group_id_used(self.item_group_id, avoid_ids=avoid_ids):
+    def alloc_group_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_group_id_used(id_=self.item_group_id, avoid_ids=avoid_ids):
             self.item_group_id += 1
         id_ = self.item_group_id
         self.item_group_id += 1
         return id_
 
-    def __is_group_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+    def __is_group_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
         return id_ in chain((ig.id for ig in self.item_groups), avoid_ids)
 
-    def alloc_attr_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        while self.__is_attr_id_used(self.attr_id, avoid_ids=avoid_ids):
+    def alloc_attr_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_attr_id_used(id_=self.attr_id, avoid_ids=avoid_ids):
             self.attr_id += 1
         id_ = self.attr_id
         self.attr_id += 1
         return id_
 
-    def __is_attr_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+    def __is_attr_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
         return id_ in chain((a.id for a in self.attributes), avoid_ids)
 
-    def alloc_effect_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        while self.__is_effect_id_used(self.effect_id, avoid_ids=avoid_ids):
+    def alloc_effect_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_effect_id_used(id_=self.effect_id, avoid_ids=avoid_ids):
             self.effect_id += 1
         id_ = self.effect_id
         self.effect_id += 1
         return id_
 
-    def __is_effect_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+    def __is_effect_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
         return id_ in chain((e.id for e in self.effects), avoid_ids)
 
-    def alloc_buff_id(self, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        while self.__is_buff_id_used(self.buff_id, avoid_ids=avoid_ids):
+    def alloc_buff_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+        while self.__is_buff_id_used(id_=self.buff_id, avoid_ids=avoid_ids):
             self.buff_id += 1
         id_ = self.buff_id
         self.buff_id += 1
         return id_
 
-    def __is_buff_id_used(self, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
+    def __is_buff_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
         return id_ in chain((b.id for b in self.buffs), avoid_ids)
 
     def mk_item(
-            self,
+            self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
             grp_id: Union[int, Type[Default]] = Default,
@@ -120,7 +120,7 @@ class EveObjects:
         return item
 
     def mk_ship(
-            self,
+            self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
             grp_id: Union[int, Type[Default]] = Default,
@@ -148,7 +148,7 @@ class EveObjects:
             volume=volume)
 
     def mk_struct(
-            self,
+            self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
             grp_id: Union[int, Type[Default]] = Default,
@@ -176,7 +176,7 @@ class EveObjects:
             volume=volume)
 
     def mk_item_group(
-            self,
+            self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
@@ -191,21 +191,21 @@ class EveObjects:
         return group
 
     def mk_ship_group(
-            self,
+            self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
     ) -> Group:
         return self.mk_item_group(id_=id_, avoid_ids=avoid_ids, cat_id=EveItemCat.ship)
 
     def mk_struct_group(
-            self,
+            self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
     ) -> Group:
         return self.mk_item_group(id_=id_, avoid_ids=avoid_ids, cat_id=EveItemCat.structure)
 
     def __fetch_or_mk_item_group(
-            self,
+            self, *,
             id_: Union[int, Type[Default]],
             avoid_ids: Union[tuple[int], list[int]],
             cat_id: Union[int, Type[Absent], Type[Default]],
@@ -222,7 +222,7 @@ class EveObjects:
         return self.mk_item_group(id_=id_, avoid_ids=avoid_ids, cat_id=cat_id)
 
     def mk_attr(
-            self,
+            self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
             stackable: Union[int, bool, Type[Absent], Type[Default]] = Default,
@@ -242,7 +242,7 @@ class EveObjects:
         return attr
 
     def mk_effect(
-            self,
+            self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
@@ -291,7 +291,7 @@ class EveObjects:
             mod_info=Absent)
 
     def mk_buff(
-            self,
+            self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
             aggr_mode: Union[str, Type[Absent], Type[Default]] = Default,
@@ -320,15 +320,15 @@ class EveObjects:
         return strings
 
     def to_primitives(self) -> EvePrimitives:
-        primitive_data = EvePrimitives(self.alias)
+        primitive_data = EvePrimitives(alias=self.alias)
         for item in self.items:
-            item.to_primitives(primitive_data)
+            item.to_primitives(primitive_data=primitive_data)
         for item_group in self.item_groups:
-            item_group.to_primitives(primitive_data)
+            item_group.to_primitives(primitive_data=primitive_data)
         for attr in self.attributes:
-            attr.to_primitives(primitive_data)
+            attr.to_primitives(primitive_data=primitive_data)
         for effect in self.effects:
-            effect.to_primitives(primitive_data)
+            effect.to_primitives(primitive_data=primitive_data)
         for buff in self.buffs:
-            buff.to_primitives(primitive_data)
+            buff.to_primitives(primitive_data=primitive_data)
         return primitive_data

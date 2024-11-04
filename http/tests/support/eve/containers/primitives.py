@@ -5,7 +5,7 @@ from .strings import EveStrings
 
 class EvePrimitives:
 
-    def __init__(self, alias: str):
+    def __init__(self, *, alias: str):
         self.alias = alias
         self.types = {}
         self.groups = {}
@@ -19,7 +19,7 @@ class EvePrimitives:
         self.dynamicitemattributes = {}
 
     def to_strings(self) -> EveStrings:
-        string_data = EveStrings(self.alias)
+        string_data = EveStrings(alias=self.alias)
         string_data.types = json.dumps(self.types)
         string_data.groups = json.dumps(self.groups)
         string_data.typedogma = json.dumps(self.typedogma)

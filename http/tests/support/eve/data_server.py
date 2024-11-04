@@ -3,11 +3,11 @@ from .containers import EveObjects
 
 class EveDataServer:
 
-    def __init__(self, data_server, **kwargs):
+    def __init__(self, *, data_server, **kwargs):
         super().__init__(**kwargs)
         self.__data_server = data_server
 
-    def _setup_eve_data_server(self, data: EveObjects) -> None:
+    def _setup_eve_data_server(self, *, data: EveObjects) -> None:
         str_data = data.render()
         suffix_cont_map = {
             'fsd_binary/types.json': str_data.types,
@@ -21,9 +21,9 @@ class EveDataServer:
             'fsd_binary/requiredskillsfortypes.json': str_data.requiredskillsfortypes,
             'fsd_binary/dynamicitemattributes.json': str_data.dynamicitemattributes}
         for suffix, container in suffix_cont_map.items():
-            self.__setup_handler(f'/{data.alias}/{suffix}', container)
+            self.__setup_handler(url=f'/{data.alias}/{suffix}', data=container)
 
-    def __setup_handler(self, url: str, data: str) -> None:
+    def __setup_handler(self, *, url: str, data: str) -> None:
         self.__data_server.expect_request(url).respond_with_data(data)
 
     @property

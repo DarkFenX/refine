@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections import namedtuple
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from tests.support.consts import ApiItemInfoMode
@@ -17,36 +17,56 @@ if TYPE_CHECKING:
     from tests.support.consts import ApiEffMode, ApiState
     from tests.support.request import Request
 
-AttrVals = namedtuple('AttrVals', ('base', 'dogma', 'extra'))
-EffectInfo = namedtuple('EffectInfo', ('running', 'mode'))
+
+@dataclass(kw_only=True)
+class AttrVals:
+
+    base: float
+    dogma: float
+    extra: float
+
+
+@dataclass(kw_only=True)
+class EffectInfo:
+
+    running: bool
+    mode: ApiEffMode
 
 
 class Item(AttrDict):
 
-    def __init__(self, client: ApiClient, data: dict, sol_id: str):
+    def __init__(self, *, client: ApiClient, data: dict, sol_id: str):
         super().__init__(
             data=data,
             hooks={
                 'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
-                'autocharges': AttrHookDef(
-                    func=lambda acs: {int(k): Item(client=client, data=v, sol_id=sol_id) for k, v in acs.items()}),
+                'autocharges': AttrHookDef(func=lambda acs: {
+                    int(k): Item(client=client, data=v, sol_id=sol_id)
+                    for k, v in acs.items()}),
                 'side_effects': AttrHookDef(func=lambda ses: {
-                    int(k): SideEffectInfo(v[0], v[1], None if v[2] is None else SideEffectStrInfo(*v[2]))
+                    int(k): SideEffectInfo(
+                        chance=v[0],
+                        status=v[1],
+                        str=None if v[2] is None else SideEffectStrInfo(op=v[2][0], val=v[2][1]))
                     for k, v in ses.items()}),
-                'attrs': AttrHookDef(func=lambda attrs: {int(k): AttrVals(*v) for k, v in attrs.items()}),
-                'effects': AttrHookDef(func=lambda effects: {int(k): EffectInfo(*v) for k, v in effects.items()}),
-                'mods': AttrHookDef(func=AttrModInfoMap)})
+                'attrs': AttrHookDef(func=lambda attrs: {
+                    int(k): AttrVals(base=v[0], dogma=v[1], extra=v[2])
+                    for k, v in attrs.items()}),
+                'effects': AttrHookDef(func=lambda effects: {
+                    int(k): EffectInfo(running=v[0], mode=v[1])
+                    for k, v in effects.items()}),
+                'mods': AttrHookDef(func=lambda m: AttrModInfoMap(data=m))})
         self._client = client
         self._sol_id = sol_id
 
     def update_request(
-            self,
+            self, *,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.get_item_request(sol_id=self._sol_id, item_id=self.id, item_info_mode=item_info_mode)
 
     def update(
-            self,
+            self, *,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.full,
             status_code: int = 200,
     ) -> Union[Item, None]:
@@ -61,14 +81,14 @@ class Item(AttrDict):
     def remove_request(self) -> Request:
         return self._client.remove_item_request(sol_id=self._sol_id, item_id=self.id)
 
-    def remove(self, status_code: int = 204, json_predicate: Union[dict, None] = None) -> None:
+    def remove(self, *, status_code: int = 204, json_predicate: Union[dict, None] = None) -> None:
         resp = self.remove_request().send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
 
     # Character methods
     def change_char_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
@@ -79,7 +99,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_char(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -94,7 +114,7 @@ class Item(AttrDict):
 
     # Skill methods
     def change_skill_request(
-            self,
+            self, *,
             level: Union[int, Type[Absent]],
             state: Union[bool, Type[Absent]],
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]],
@@ -109,7 +129,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_skill(
-            self,
+            self, *,
             level: Union[int, Type[Absent]] = Absent,
             state: Union[bool, Type[Absent]] = Absent,
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
@@ -130,7 +150,7 @@ class Item(AttrDict):
 
     # Implant methods
     def change_implant_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
@@ -141,7 +161,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_implant(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -156,7 +176,7 @@ class Item(AttrDict):
 
     # Booster methods
     def change_booster_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             side_effects: Union[dict[int, bool], Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -169,7 +189,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_booster(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             side_effects: Union[dict[int, bool], Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -186,7 +206,7 @@ class Item(AttrDict):
 
     # Ship methods
     def change_ship_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
@@ -197,7 +217,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_ship(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -212,7 +232,7 @@ class Item(AttrDict):
 
     # Module methods
     def change_mod_request(
-            self,
+            self, *,
             state: Union[ApiState, Type[Absent]],
             charge: Union[int, None, Type[Absent]],
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
@@ -233,7 +253,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_mod(
-            self,
+            self, *,
             state: Union[ApiState, Type[Absent]] = Absent,
             charge: Union[int, Type[Absent]] = Absent,
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
@@ -260,7 +280,7 @@ class Item(AttrDict):
 
     # Rig methods
     def change_rig_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
@@ -271,7 +291,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_rig(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -286,7 +306,7 @@ class Item(AttrDict):
 
     # Drone methods
     def change_drone_request(
-            self,
+            self, *,
             state: Union[ApiState, Type[Absent]],
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
@@ -305,7 +325,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_drone(
-            self,
+            self, *,
             state: Union[ApiState, Type[Absent]] = Absent,
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
@@ -330,7 +350,7 @@ class Item(AttrDict):
 
     # Fighter methods
     def change_fighter_request(
-            self,
+            self, *,
             state: Union[ApiState, Type[Absent]],
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
@@ -349,7 +369,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_fighter(
-            self,
+            self, *,
             state: Union[ApiState, Type[Absent]] = Absent,
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
@@ -374,7 +394,7 @@ class Item(AttrDict):
 
     # Charge methods
     def change_charge_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
@@ -385,7 +405,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_charge(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -400,7 +420,7 @@ class Item(AttrDict):
 
     # Autocharge methods
     def change_autocharge_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
@@ -411,7 +431,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_autocharge(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -426,7 +446,7 @@ class Item(AttrDict):
 
     # System-wide effect methods
     def change_sw_effect_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
@@ -437,7 +457,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_sw_effect(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -452,7 +472,7 @@ class Item(AttrDict):
 
     # Fit-wide effect methods
     def change_fw_effect_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
@@ -463,7 +483,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_fw_effect(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -478,7 +498,7 @@ class Item(AttrDict):
 
     # Projected effect methods
     def change_proj_effect_request(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]],
             add_projs: Union[Iterable[str], Type[Absent]],
             rm_projs: Union[Iterable[str], Type[Absent]],
@@ -493,7 +513,7 @@ class Item(AttrDict):
             item_info_mode=item_info_mode)
 
     def change_proj_effect(
-            self,
+            self, *,
             state: Union[bool, Type[Absent]] = Absent,
             add_projs: Union[Iterable[str], Type[Absent]] = Absent,
             rm_projs: Union[Iterable[str], Type[Absent]] = Absent,

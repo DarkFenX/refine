@@ -8,20 +8,20 @@ from .exception import TestDataConsistencyError
 if TYPE_CHECKING:
     from typing import Type, Union
 
-    from tests.support.eve.containers import EvePrimitives
+    from tests.support.eve.containers.primitives import EvePrimitives
 
 
 class Group:
 
     def __init__(
-            self,
+            self, *,
             id_: int,
             category_id: Union[int, Type[Absent]],
     ):
         self.id = id_
         self.category_id = category_id
 
-    def to_primitives(self, primitive_data: EvePrimitives) -> None:
+    def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         # Groups are duplicated in test object data container. Here, we "deduplicate" them
         if self.id in primitive_data.groups:
             existing_entry = primitive_data.groups[self.id]
@@ -29,8 +29,8 @@ class Group:
                     (self.category_id is not Absent and existing_entry.get('categoryID', Absent) != self.category_id)):
                 raise TestDataConsistencyError('attempt to add group which already exists and has different category')
         group_entry = {'groupID': self.id}
-        conditional_insert(group_entry, 'categoryID', self.category_id, cast_to=int)
+        conditional_insert(container=group_entry, key='categoryID', value=self.category_id, cast_to=int)
         primitive_data.groups[self.id] = group_entry
 
     def __repr__(self) -> str:
-        return make_repr_str(self)
+        return make_repr_str(instance=self)

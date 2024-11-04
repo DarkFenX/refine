@@ -14,7 +14,7 @@ ConfigInfo = namedtuple('ConfigInfo', (['config_path', 'port']))
 ServerInfo = namedtuple('ServerInfo', ['pid'])
 
 
-def build_server(proj_root: str):
+def build_server(*, proj_root: str):
     http_path = os.path.join(proj_root, 'http')
     os.chdir(http_path)
     subprocess.run(
@@ -24,7 +24,7 @@ def build_server(proj_root: str):
         check=True)
 
 
-def build_config(config_path: Path, port: int, log_folder: Path) -> ConfigInfo:
+def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInfo:
     contents = [
         '[server]',
         f'port = {port}',
@@ -39,7 +39,7 @@ def build_config(config_path: Path, port: int, log_folder: Path) -> ConfigInfo:
     return ConfigInfo(config_path=config_path, port=port)
 
 
-def run_server(proj_root: str, config_path: str) -> ServerInfo:
+def run_server(*, proj_root: str, config_path: str) -> ServerInfo:
     binary_path = os.path.join(proj_root, 'target', 'release', 'reefast-http')
     return ServerInfo(pid=subprocess.Popen(
         [binary_path, config_path],
@@ -47,5 +47,5 @@ def run_server(proj_root: str, config_path: str) -> ServerInfo:
         stderr=subprocess.DEVNULL).pid)
 
 
-def kill_server(pid: int) -> None:
+def kill_server(*, pid: int) -> None:
     os.kill(pid, SIGKILL)

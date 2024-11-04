@@ -8,13 +8,13 @@ from .exception import TestDataConsistencyError
 if TYPE_CHECKING:
     from typing import Type, Union
 
-    from tests.support.eve.containers import EvePrimitives
+    from tests.support.eve.containers.primitives import EvePrimitives
 
 
 class Item:
 
     def __init__(
-            self,
+            self, *,
             id_: int,
             group_id: Union[int, Type[Absent]],
             attributes: Union[dict[int, float], Type[Absent]],
@@ -37,21 +37,21 @@ class Item:
         self.radius = radius
         self.volume = volume
 
-    def to_primitives(self, primitive_data: EvePrimitives) -> None:
+    def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         item_entry = {'typeID': self.id}
-        conditional_insert(item_entry, 'groupID', self.group_id)
-        self.__add_primitive_item_attributes(primitive_data)
-        self.__add_primitive_item_effects(primitive_data)
-        conditional_insert(primitive_data.requiredskillsfortypes, self.id, self.skill_reqs)
-        conditional_insert(item_entry, 'capacity', self.capacity)
-        conditional_insert(item_entry, 'mass', self.mass)
-        conditional_insert(item_entry, 'radius', self.radius)
-        conditional_insert(item_entry, 'volume', self.volume)
+        conditional_insert(container=item_entry, key='groupID', value=self.group_id)
+        self.__add_primitive_item_attributes(primitive_data=primitive_data)
+        self.__add_primitive_item_effects(primitive_data=primitive_data)
+        conditional_insert(container=primitive_data.requiredskillsfortypes, key=self.id, value=self.skill_reqs)
+        conditional_insert(container=item_entry, key='capacity', value=self.capacity)
+        conditional_insert(container=item_entry, key='mass', value=self.mass)
+        conditional_insert(container=item_entry, key='radius', value=self.radius)
+        conditional_insert(container=item_entry, key='volume', value=self.volume)
         if self.id in primitive_data.types:
             raise TestDataConsistencyError(f'attempt to add item with duplicate ID {self.id}')
         primitive_data.types[self.id] = item_entry
 
-    def __add_primitive_item_attributes(self, primitive_data: EvePrimitives) -> None:
+    def __add_primitive_item_attributes(self, *, primitive_data: EvePrimitives) -> None:
         if self.attributes is Absent:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
@@ -62,7 +62,7 @@ class Item:
         else:
             item_entry['dogmaAttributes'] = self.attributes
 
-    def __add_primitive_item_effects(self, primitive_data: EvePrimitives) -> None:
+    def __add_primitive_item_effects(self, *, primitive_data: EvePrimitives) -> None:
         if self.effect_ids is Absent:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
@@ -74,4 +74,4 @@ class Item:
             item_entry['dogmaEffects'] = self.effect_ids
 
     def __repr__(self) -> str:
-        return make_repr_str(self)
+        return make_repr_str(instance=self)

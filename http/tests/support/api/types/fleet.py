@@ -15,21 +15,21 @@ if TYPE_CHECKING:
 
 class Fleet(AttrDict):
 
-    def __init__(self, client: ApiClient, data: dict, sol_id: str):
+    def __init__(self, *, client: ApiClient, data: dict, sol_id: str):
         super().__init__(
             data=data,
             hooks={'fits': AttrHookDef(func=lambda fits: fits)})
         self._client = client
         self._sol_id = sol_id
 
-    def update_request(self, fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]]) -> Request:
+    def update_request(self, *, fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]]) -> Request:
         return self._client.get_fleet_request(
             sol_id=self._sol_id,
             fleet_id=self.id,
             fleet_info_mode=fleet_info_mode)
 
     def update(
-            self,
+            self, *,
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.full,
             status_code: int = 200
     ) -> Union[Fleet, None]:
@@ -42,7 +42,7 @@ class Fleet(AttrDict):
         return None
 
     def change_request(
-            self,
+            self, *,
             add_fits: list[str],
             remove_fits: list[str],
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
@@ -55,7 +55,7 @@ class Fleet(AttrDict):
             fleet_info_mode=fleet_info_mode)
 
     def change(
-            self,
+            self, *,
             add_fits: list[str] = (),
             remove_fits: list[str] = (),
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.full,
@@ -72,7 +72,7 @@ class Fleet(AttrDict):
     def remove_request(self) -> Request:
         return self._client.remove_fleet_request(sol_id=self._sol_id, fleet_id=self.id)
 
-    def remove(self, status_code: int = 204) -> None:
+    def remove(self, *, status_code: int = 204) -> None:
         resp = self.remove_request().send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)

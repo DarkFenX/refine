@@ -41,7 +41,7 @@ def test_to_struct(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_root = api_fit.set_ship(eve_root_id)
+    api_root = api_fit.set_ship(type_id=eve_root_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_root.id])

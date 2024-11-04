@@ -109,7 +109,7 @@ def test_mult_change(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(eve_ship.id)
+    api_fit.set_ship(type_id=eve_ship.id)
     api_aar_item = api_fit.add_mod(type_id=eve_aar_item.id, rack=consts.ApiRack.low, charge_type_id=eve_paste_item.id)
     # Verification
     api_aar_item.update()
@@ -151,7 +151,7 @@ def test_penalties(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(eve_ship.id)
+    api_fit.set_ship(type_id=eve_ship.id)
     api_aar = api_fit.add_mod(type_id=eve_aar.id, rack=consts.ApiRack.low, charge_type_id=eve_paste.id)
     api_rig = api_fit.add_rig(type_id=eve_rig.id)
     # Verification

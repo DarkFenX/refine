@@ -2,7 +2,7 @@
 from .singletons import Default as NoValue
 
 
-def convert(data):
+def convert(*, data):
     if isinstance(data, dict):
         return AttrDict(data=data)
     if isinstance(data, tuple):
@@ -14,7 +14,7 @@ def convert(data):
 
 class AttrHookDef:
 
-    def __init__(self, func, default=lambda: NoValue):
+    def __init__(self, *, func, default=lambda: NoValue):
         self.func = func
         self.default = default
 
@@ -26,7 +26,7 @@ class AttrHookDef:
 
 class AttrDict:
 
-    def __init__(self, data, hooks=None):
+    def __init__(self, *, data, hooks=None):
         self._data = data
         self.__hooks = hooks or {}
 

@@ -1,19 +1,22 @@
 from __future__ import annotations
 
-from typing import NamedTuple, TYPE_CHECKING
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Union
 
 
-class SideEffectInfo(NamedTuple):
+@dataclass(kw_only=True)
+class SideEffectInfo:
 
     chance: float
     status: bool
     str: Union[tuple[SideEffectStrInfo], list[SideEffectStrInfo], None]
 
 
-class SideEffectStrInfo(NamedTuple):
+@dataclass(kw_only=True)
+class SideEffectStrInfo:
 
     op: str
     val: float

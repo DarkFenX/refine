@@ -37,14 +37,14 @@ class Level(StrEnum):
 
 class LogEntry:
 
-    def __init__(self, timestamp: str, level: Level, span: str, msg: str):
+    def __init__(self, *, timestamp: str, level: Level, span: str, msg: str):
         self.timestamp = timestamp
         self.level = level
         self.span = span
         self.msg = msg
 
     def check(
-            self,
+            self, *,
             msg: str,
             level: Union[Level, str, None] = None,
             span: Union[str, None] = None,
@@ -66,7 +66,7 @@ class LogEntry:
         return True
 
     def __repr__(self):
-        return make_repr_str(self, spec=['timestamp', 'level', 'span', 'msg'])
+        return make_repr_str(instance=self, spec=['timestamp', 'level', 'span', 'msg'])
 
 
 class LogReader:
@@ -74,20 +74,20 @@ class LogReader:
     TIMESTAMP_PATTERN = r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}'
     LEVEL_PATTERN = '|'.join(Level)
     LOG_MATCHER = re.compile(
-        fr'^\[(?P<timestamp>{TIMESTAMP_PATTERN})\]\s+'
+        fr'^\[(?P<timestamp>{TIMESTAMP_PATTERN})]\s+'
         fr'(?P<level>{LEVEL_PATTERN})\s'
         fr'((?P<span>\S+): )?'
         fr'(?P<msg>.*)\n$')
 
-    def __init__(self, path: Path):
+    def __init__(self, *, path: Path):
         self.__path: Path = path
         self.__collectors: list[LogCollector] = []
         self.__execute_flag: bool = False
 
-    def __add_collector(self, collector: LogCollector) -> None:
+    def __add_collector(self, *, collector: LogCollector) -> None:
         self.__collectors.append(collector)
 
-    def __remove_collector(self, collector: LogCollector) -> None:
+    def __remove_collector(self, *, collector: LogCollector) -> None:
         self.__collectors.remove(collector)
 
     def run(self) -> None:
@@ -101,11 +101,11 @@ class LogReader:
     @contextlib.contextmanager
     def get_collector(self) -> LogCollector:
         collector = LogCollector()
-        self.__add_collector(collector)
+        self.__add_collector(collector=collector)
         try:
             yield collector
         finally:
-            self.__remove_collector(collector)
+            self.__remove_collector(collector=collector)
 
     def __follow(self) -> str:
         pathlib.Path(self.__path).touch(mode=0o644, exist_ok=True)
@@ -118,7 +118,7 @@ class LogReader:
                     continue
                 yield line
 
-    def __parse(self, line: str) -> LogEntry:
+    def __parse(self, *, line: str) -> LogEntry:
         m = re.match(self.LOG_MATCHER, line)
         if not m:
             raise ParseError(line)
@@ -137,13 +137,13 @@ class LogReader:
             if not self.__collectors:
                 continue
             try:
-                entry = self.__parse(line)
+                entry = self.__parse(line=line)
             except ParseError as e:
                 for target in self.__collectors:
-                    target.append_error(e)
+                    target.append_error(error=e)
                 continue
             for target in self.__collectors:
-                target.append_entry(entry)
+                target.append_entry(entry=entry)
 
 
 class LogCollector:
@@ -152,14 +152,14 @@ class LogCollector:
         self.__buffer: queue.SimpleQueue[LogEntry] = queue.SimpleQueue()
         self.__errors: list[ParseError] = []
 
-    def append_error(self, error: ParseError) -> None:
+    def append_error(self, *, error: ParseError) -> None:
         self.__errors.append(error)
 
-    def append_entry(self, entry: LogEntry) -> None:
+    def append_entry(self, *, entry: LogEntry) -> None:
         self.__buffer.put(entry)
 
     def wait_log_entry(
-            self,
+            self, *,
             msg: str,
             level: Union[Level, str, None] = None,
             span: Union[str, None] = None,

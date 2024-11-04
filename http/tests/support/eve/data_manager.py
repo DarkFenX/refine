@@ -23,11 +23,11 @@ class EveDataManager:
     def mk_eve_data(self) -> EveObjects:
         global data_id  # pylint: disable=C0103,W0603
         alias = str(data_id)
-        data = self.__datas[alias] = EveObjects(alias)
+        data = self.__datas[alias] = EveObjects(alias=alias)
         data_id += 1
         return data
 
-    def _get_eve_data(self, data: Union[EveObjects, Type[Default]] = Default) -> EveObjects:
+    def _get_eve_data(self, *, data: Union[EveObjects, Type[Default]] = Default) -> EveObjects:
         if data is Default:
             data = self.__default_eve_data
         return data

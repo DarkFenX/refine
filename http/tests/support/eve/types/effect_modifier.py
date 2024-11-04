@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class EffectModifier:
 
     def __init__(
-            self,
+            self, *,
             func: Union[str, Type[Absent]],
             domain: Union[str, Type[Absent]],
             group: Union[int, Type[Absent]],
@@ -32,14 +32,14 @@ class EffectModifier:
 
     def to_primitives(self) -> dict:
         mod_entry = {}
-        conditional_insert(mod_entry, 'func', self.func)
-        conditional_insert(mod_entry, 'domain', self.domain)
-        conditional_insert(mod_entry, 'groupID', self.group)
-        conditional_insert(mod_entry, 'skillTypeID', self.skill_req)
-        conditional_insert(mod_entry, 'modifyingAttributeID', self.affector_attr_id)
-        conditional_insert(mod_entry, 'modifiedAttributeID', self.affectee_attr_id)
-        conditional_insert(mod_entry, 'operation', self.operation)
+        conditional_insert(container=mod_entry, key='func', value=self.func)
+        conditional_insert(container=mod_entry, key='domain', value=self.domain)
+        conditional_insert(container=mod_entry, key='groupID', value=self.group)
+        conditional_insert(container=mod_entry, key='skillTypeID', value=self.skill_req)
+        conditional_insert(container=mod_entry, key='modifyingAttributeID', value=self.affector_attr_id)
+        conditional_insert(container=mod_entry, key='modifiedAttributeID', value=self.affectee_attr_id)
+        conditional_insert(container=mod_entry, key='operation', value=self.operation)
         return mod_entry
 
     def __repr__(self) -> str:
-        return make_repr_str(self)
+        return make_repr_str(instance=self)

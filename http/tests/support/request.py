@@ -47,4 +47,4 @@ class Request(requests.PreparedRequest):
         self.body = json.dumps(data)
 
     def send(self) -> Response:
-        return self.__client.send_prepared(self)
+        return self.__client.send_prepared(req=self)

@@ -8,7 +8,7 @@ from .exception import TestDataConsistencyError
 if TYPE_CHECKING:
     from typing import Type, Union
 
-    from tests.support.eve.containers import EvePrimitives
+    from tests.support.eve.containers.primitives import EvePrimitives
     from tests.support.util import Absent
     from .buff_modifier import BuffModifier
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class Buff:
 
     def __init__(
-            self,
+            self, *,
             id_: int,
             aggregate_mode: Union[str, Type[Absent]],
             operation_name: Union[str, Type[Absent]],
@@ -33,23 +33,23 @@ class Buff:
         self.location_group_modifiers = location_group_modifiers
         self.location_skillreq_modifiers = location_skillreq_modifiers
 
-    def to_primitives(self, primitive_data: EvePrimitives) -> None:
+    def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         effect_entry = {}
-        conditional_insert(effect_entry, 'aggregateMode', self.aggregate_mode, cast_to=str)
-        conditional_insert(effect_entry, 'operationName', self.operation_name, cast_to=str)
-        conditional_insert(effect_entry, 'itemModifiers', (
+        conditional_insert(container=effect_entry, key='aggregateMode', value=self.aggregate_mode, cast_to=str)
+        conditional_insert(container=effect_entry, key='operationName', value=self.operation_name, cast_to=str)
+        conditional_insert(container=effect_entry, key='itemModifiers', value=(
             [m.to_primitives() for m in self.item_modifiers]
             if isinstance(self.item_modifiers, (list, tuple))
             else self.item_modifiers))
-        conditional_insert(effect_entry, 'locationModifiers', (
+        conditional_insert(container=effect_entry, key='locationModifiers', value=(
             [m.to_primitives() for m in self.location_modifiers]
             if isinstance(self.location_modifiers, (list, tuple))
             else self.location_modifiers))
-        conditional_insert(effect_entry, 'locationGroupModifiers', (
+        conditional_insert(container=effect_entry, key='locationGroupModifiers', value=(
             [m.to_primitives() for m in self.location_group_modifiers]
             if isinstance(self.location_group_modifiers, (list, tuple))
             else self.location_group_modifiers))
-        conditional_insert(effect_entry, 'locationRequiredSkillModifiers', (
+        conditional_insert(container=effect_entry, key='locationRequiredSkillModifiers', value=(
             [m.to_primitives() for m in self.location_skillreq_modifiers]
             if isinstance(self.location_skillreq_modifiers, (list, tuple))
             else self.location_skillreq_modifiers))
@@ -58,4 +58,4 @@ class Buff:
         primitive_data.dbuffcollections[self.id] = effect_entry
 
     def __repr__(self) -> str:
-        return make_repr_str(self)
+        return make_repr_str(instance=self)

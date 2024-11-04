@@ -15,13 +15,13 @@ if TYPE_CHECKING:
 
 class Fit(AttrDict):
 
-    def __init__(self, client: ApiClient, data: dict, sol_id: str):
+    def __init__(self, *, client: ApiClient, data: dict, sol_id: str):
         super().__init__(data=data)
         self._client = client
         self._sol_id = sol_id
 
     def update_request(
-            self,
+            self, *,
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
@@ -32,7 +32,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def update(
-            self,
+            self, *,
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -48,14 +48,14 @@ class Fit(AttrDict):
     def remove_request(self) -> Request:
         return self._client.remove_fit_request(sol_id=self._sol_id, fit_id=self.id)
 
-    def remove(self, status_code: int = 204) -> None:
+    def remove(self, *, status_code: int = 204) -> None:
         resp = self.remove_request().send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
     # Fleet methods
     def set_fleet_request(
-            self,
+            self, *,
             fleet_id: Union[str, None],
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -68,7 +68,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def set_fleet(
-            self,
+            self, *,
             fleet_id: Union[str, None],
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -82,17 +82,17 @@ class Fit(AttrDict):
         resp.check(status_code=status_code)
 
     # Generic item methods
-    def remove_item_request(self, item_id: str) -> Request:
+    def remove_item_request(self, *, item_id: str) -> Request:
         return self._client.remove_item_request(sol_id=self._sol_id, item_id=item_id)
 
-    def remove_item(self, item_id: str, status_code: int = 204) -> None:
+    def remove_item(self, *, item_id: str, status_code: int = 204) -> None:
         resp = self.remove_item_request(item_id=item_id).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
     # Character methods
     def set_char_request(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -105,7 +105,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def set_char(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -121,7 +121,7 @@ class Fit(AttrDict):
 
     # Skill methods
     def add_skill_request(
-            self,
+            self, *,
             type_id: int,
             level: int,
             state: Union[bool, Type[Absent]],
@@ -136,7 +136,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def add_skill(
-            self,
+            self, *,
             type_id: int,
             level: int,
             state: Union[bool, Type[Absent]] = Absent,
@@ -153,7 +153,7 @@ class Fit(AttrDict):
 
     # Implant methods
     def add_implant_request(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -166,7 +166,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def add_implant(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -182,7 +182,7 @@ class Fit(AttrDict):
 
     # Booster methods
     def add_booster_request(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]],
             side_effects: Union[dict[int, bool], Type[Absent]],
@@ -197,7 +197,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def add_booster(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
             side_effects: Union[dict[int, bool], Type[Absent]] = Absent,
@@ -218,7 +218,7 @@ class Fit(AttrDict):
 
     # Ship methods
     def set_ship_request(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -231,7 +231,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def set_ship(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -247,7 +247,7 @@ class Fit(AttrDict):
 
     # Stance methods
     def set_stance_request(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -260,7 +260,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def set_stance(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -276,7 +276,7 @@ class Fit(AttrDict):
 
     # Subsystem methods
     def add_subsystem_request(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -289,7 +289,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def add_subsystem(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -305,7 +305,7 @@ class Fit(AttrDict):
 
     # Module methods
     def add_mod_request(
-            self,
+            self, *,
             type_id: int,
             rack: ApiRack,
             state: ApiState,
@@ -324,7 +324,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def add_mod(
-            self,
+            self, *,
             type_id: int,
             rack: ApiRack = ApiRack.high,
             state: ApiState = ApiState.offline,
@@ -349,7 +349,7 @@ class Fit(AttrDict):
 
     # Rig methods
     def add_rig_request(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -362,7 +362,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def add_rig(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -378,7 +378,7 @@ class Fit(AttrDict):
 
     # Drone methods
     def add_drone_request(
-            self,
+            self, *,
             type_id: int,
             state: ApiState,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -391,7 +391,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def add_drone(
-            self,
+            self, *,
             type_id,
             state: ApiState = ApiState.offline,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -407,7 +407,7 @@ class Fit(AttrDict):
 
     # Fighter methods
     def add_fighter_request(
-            self,
+            self, *,
             type_id: int,
             state: ApiState,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -420,7 +420,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def add_fighter(
-            self,
+            self, *,
             type_id,
             state: ApiState = ApiState.offline,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -436,7 +436,7 @@ class Fit(AttrDict):
 
     # Fit-wide effect methods
     def add_fw_effect_request(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -449,7 +449,7 @@ class Fit(AttrDict):
             item_info_mode=item_info_mode)
 
     def add_fw_effect(
-            self,
+            self, *,
             type_id: int,
             state: Union[bool, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,

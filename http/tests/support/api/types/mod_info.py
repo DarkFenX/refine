@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import NamedTuple, TYPE_CHECKING
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from typing import Union
@@ -8,20 +9,27 @@ if TYPE_CHECKING:
 
 class AttrModInfoMap(dict):
 
-    def __init__(self, data: dict):
+    def __init__(self, *, data: dict):
         super().__init__({
-            int(k): ModInfoList(ModInfo(
-                m[0], m[1], m[2], m[3], m[4], m[5],
-                ModAffectorInfoList(ModAffectorInfo(*n) for n in m[6])) for m in v)
+            int(k): ModInfoList(
+                ModInfo(
+                    op=m[0],
+                    initial_val=m[1],
+                    range_mult=m[2],
+                    resist_mult=m[3],
+                    stacking_mult=m[4],
+                    applied_val=m[5],
+                    affectors=ModAffectorInfoList(ModAffectorInfo(item_id=n[0], attr_id=n[1]) for n in m[6]))
+                for m in v)
             for k, v in data.items()})
 
-    def find_by_op(self, affectee_attr_id: int, op: str) -> ModInfoList:
+    def find_by_op(self, *, affectee_attr_id: int, op: str) -> ModInfoList:
         return self.get(affectee_attr_id, ModInfoList()).find_by_op(op=op)
 
-    def find_by_affector_item(self, affectee_attr_id: int, affector_item_id: str) -> ModInfoList:
+    def find_by_affector_item(self, *, affectee_attr_id: int, affector_item_id: str) -> ModInfoList:
         return self.get(affectee_attr_id, ModInfoList()).find_by_affector_item(affector_item_id=affector_item_id)
 
-    def find_by_affector_attr(self, affectee_attr_id: int, affector_attr_id: int) -> ModInfoList:
+    def find_by_affector_attr(self, *, affectee_attr_id: int, affector_attr_id: int) -> ModInfoList:
         return self.get(affectee_attr_id, ModInfoList()).find_by_affector_attr(affector_attr_id=affector_attr_id)
 
     def __repr__(self) -> str:
@@ -32,13 +40,13 @@ class AttrModInfoMap(dict):
 
 class ModInfoList(list):
 
-    def find_by_op(self, op: str) -> ModInfoList:
+    def find_by_op(self, *, op: str) -> ModInfoList:
         return ModInfoList(i for i in self if i.op == op)
 
-    def find_by_affector_item(self, affector_item_id: str) -> ModInfoList:
+    def find_by_affector_item(self, *, affector_item_id: str) -> ModInfoList:
         return ModInfoList(i for i in self if i.affectors.find_by_item(item_id=affector_item_id))
 
-    def find_by_affector_attr(self, affector_attr_id: int) -> ModInfoList:
+    def find_by_affector_attr(self, *, affector_attr_id: int) -> ModInfoList:
         return ModInfoList(i for i in self if i.affectors.find_by_attr(attr_id=affector_attr_id))
 
     def one(self) -> ModInfo:
@@ -52,7 +60,8 @@ class ModInfoList(list):
         return f'{class_name}({super_repr})'
 
 
-class ModInfo(NamedTuple):
+@dataclass(kw_only=True)
+class ModInfo:
 
     op: str
     initial_val: float
@@ -65,10 +74,10 @@ class ModInfo(NamedTuple):
 
 class ModAffectorInfoList(list):
 
-    def find_by_item(self, item_id: str) -> ModAffectorInfoList:
+    def find_by_item(self, *, item_id: str) -> ModAffectorInfoList:
         return ModAffectorInfoList(i for i in self if i.item_id == item_id)
 
-    def find_by_attr(self, attr_id: int) -> ModAffectorInfoList:
+    def find_by_attr(self, *, attr_id: int) -> ModAffectorInfoList:
         return ModAffectorInfoList(i for i in self if i.attr_id == attr_id)
 
     def one(self) -> ModInfo:
@@ -82,7 +91,8 @@ class ModAffectorInfoList(list):
         return f'{class_name}({super_repr})'
 
 
-class ModAffectorInfo(NamedTuple):
+@dataclass(kw_only=True)
+class ModAffectorInfo:
 
     item_id: str
     attr_id: Union[int, None]

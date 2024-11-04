@@ -2,6 +2,7 @@ from tests import approx
 
 
 def setup_test(
+    *,
     client,
     consts,
     val_pre_ass,

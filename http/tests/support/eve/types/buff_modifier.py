@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class BuffModifier:
 
     def __init__(
-            self,
+            self, *,
             attr_id: Union[int, Type[Absent]],
             group_id: Union[int, Type[Absent]],
             skill_id: Union[int, Type[Absent]],
@@ -24,10 +24,10 @@ class BuffModifier:
 
     def to_primitives(self) -> dict:
         mod_entry = {}
-        conditional_insert(mod_entry, 'dogmaAttributeID', self.attr_id)
-        conditional_insert(mod_entry, 'groupID', self.group_id)
-        conditional_insert(mod_entry, 'skillID', self.skill_id)
+        conditional_insert(container=mod_entry, key='dogmaAttributeID', value=self.attr_id)
+        conditional_insert(container=mod_entry, key='groupID', value=self.group_id)
+        conditional_insert(container=mod_entry, key='skillID', value=self.skill_id)
         return mod_entry
 
     def __repr__(self) -> str:
-        return make_repr_str(self)
+        return make_repr_str(instance=self)

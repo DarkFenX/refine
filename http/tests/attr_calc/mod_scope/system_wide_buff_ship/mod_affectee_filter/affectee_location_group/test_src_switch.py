@@ -44,7 +44,7 @@ def test_to_struct(client, consts):
     api_sol = client.create_sol(data=eve_d1)
     api_sol.add_sw_effect(type_id=eve_sw_effect_id)
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(eve_root_id)
+    api_fit.set_ship(type_id=eve_root_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(260)
