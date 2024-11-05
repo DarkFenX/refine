@@ -413,3 +413,133 @@ def test_mjd_block_sscript(client, consts):
     # Verification
     assert api_mjd_sub.update().attrs[eve_block_attr.id].dogma == approx(0)
     assert api_mjd_cap.update().attrs[eve_block_attr.id].dogma == approx(0)
+
+
+def test_range_dscript(client, consts):
+    eve_range_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range, def_val=0)
+    eve_range_hidden_attr = client.mk_eve_attr(id_=consts.EveAttr.max_range_hidden, def_val=0)
+    eve_range_bonus_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range_bonus, def_val=0)
+    eve_str_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
+    eve_status_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
+    eve_wdfg_range_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.other,
+        op=consts.EveModOp.pre_assign,
+        affector_attr_id=eve_range_attr.id,
+        affectee_attr_id=eve_range_hidden_attr.id)
+    eve_wdfg_range_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.max_range_hidden_preass_warp_scramble_range,
+        cat_id=consts.EveEffCat.passive,
+        mod_info=[eve_wdfg_range_mod])
+    eve_wdfg_main_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        range_attr_id=eve_range_attr.id)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_range_attr.id: 20000, eve_str_attr.id: 100},
+        eff_ids=[eve_wdfg_main_effect.id, eve_wdfg_range_effect.id],
+        defeff_id=eve_wdfg_main_effect.id)
+    eve_script_range_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.other,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_range_bonus_attr.id,
+        affectee_attr_id=eve_range_attr.id)
+    eve_script_range_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.script_warp_scramble_range_bonus,
+        cat_id=consts.EveEffCat.passive,
+        mod_info=[eve_script_range_mod])
+    eve_script_main_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.tgt,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_str_attr.id,
+        affectee_attr_id=eve_status_attr.id)
+    eve_script_main_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_range_attr.id,
+        mod_info=[eve_script_main_mod])
+    eve_script = client.mk_eve_item(
+        attrs={eve_range_bonus_attr.id: 50},
+        eff_ids=[eve_script_main_effect.id, eve_script_range_effect.id],
+        defeff_id=eve_script_main_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_status_attr.id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affectee_fit = api_sol.create_fit()
+    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active, charge_type_id=eve_script.id)
+    api_ship = api_affectee_fit.set_ship(type_id=eve_ship.id)
+    api_wdfg.change_mod(add_projs=[(api_ship.id, 30000)])
+    # Verification - range should be 30k (20k base from module +50% from script)
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(100)
+    # Action
+    api_wdfg.change_mod(change_projs=[(api_ship.id, 30001)])
+    # Verification
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(0)
+
+
+def test_range_sscript(client, consts):
+    eve_range_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range, def_val=0)
+    eve_range_hidden_attr = client.mk_eve_attr(id_=consts.EveAttr.max_range_hidden, def_val=0)
+    eve_range_bonus_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_range_bonus, def_val=0)
+    eve_str_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_strength, def_val=0)
+    eve_status_attr = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
+    eve_wdfg_range_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.other,
+        op=consts.EveModOp.pre_assign,
+        affector_attr_id=eve_range_attr.id,
+        affectee_attr_id=eve_range_hidden_attr.id)
+    eve_wdfg_range_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.max_range_hidden_preass_warp_scramble_range,
+        cat_id=consts.EveEffCat.passive,
+        mod_info=[eve_wdfg_range_mod])
+    eve_wdfg_main_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.warp_disrupt_sphere,
+        cat_id=consts.EveEffCat.active,
+        range_attr_id=eve_range_attr.id)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_range_attr.id: 20000, eve_str_attr.id: 100},
+        eff_ids=[eve_wdfg_main_effect.id, eve_wdfg_range_effect.id],
+        defeff_id=eve_wdfg_main_effect.id)
+    eve_script_range_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.other,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_range_bonus_attr.id,
+        affectee_attr_id=eve_range_attr.id)
+    eve_script_range_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.script_warp_scramble_range_bonus,
+        cat_id=consts.EveEffCat.passive,
+        mod_info=[eve_script_range_mod])
+    eve_script_main_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.tgt,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_str_attr.id,
+        affectee_attr_id=eve_status_attr.id)
+    eve_script_main_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
+        cat_id=consts.EveEffCat.target,
+        range_attr_id=eve_range_attr.id,
+        mod_info=[eve_script_main_mod])
+    eve_script = client.mk_eve_item(
+        attrs={eve_range_bonus_attr.id: -20},
+        eff_ids=[eve_script_main_effect.id, eve_script_range_effect.id],
+        defeff_id=eve_script_main_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_status_attr.id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_affector_fit = api_sol.create_fit()
+    api_affectee_fit = api_sol.create_fit()
+    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active, charge_type_id=eve_script.id)
+    api_ship = api_affectee_fit.set_ship(type_id=eve_ship.id)
+    api_wdfg.change_mod(add_projs=[(api_ship.id, 16000)])
+    # Verification - range should be 16k (20k base from module -20% from script)
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(100)
+    # Action
+    api_wdfg.change_mod(change_projs=[(api_ship.id, 16001)])
+    # Verification
+    assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(0)

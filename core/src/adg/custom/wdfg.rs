@@ -5,7 +5,11 @@
 // requirement;
 // - attributes used by focused scripts are defined on parent item, not on script itself, while
 // dogma (at least in the lib's implementation) assumes that source attributes are always defined
-// on item which carries the effect.
+// on item which carries the effect;
+// - range used by focused scripts uses maxRange attribute which is defined on parent item; unlike
+// other attributes, it's transferred over by an existing WDFG effect, into maxRangeHidden
+// attribute. Here, we switch scripts to use this attribute, instead of transferring maxRange as
+// well (although transferring would also work).
 
 use crate::{
     ad,
@@ -19,8 +23,8 @@ const SCRAM_EFFECT: EEffectId = ec::effects::SHIP_MOD_FOCUSED_WARP_SCRAMBLING_SC
 
 pub(in crate::adg::custom) fn add_wdfg_modifiers(a_data: &mut ad::AData) {
     add_bubble_modifiers(a_data);
-    add_scram_script_modifiers(a_data);
-    add_point_script_modifiers(a_data);
+    adjust_scram_script_effect(a_data);
+    adjust_point_script_effect(a_data);
 }
 
 fn add_bubble_modifiers(a_data: &mut ad::AData) {
@@ -66,10 +70,10 @@ fn add_bubble_modifiers(a_data: &mut ad::AData) {
     }
 }
 
-fn add_scram_script_modifiers(a_data: &mut ad::AData) {
+fn adjust_scram_script_effect(a_data: &mut ad::AData) {
     let mut applied = false;
     for effect in a_data.effects.iter_mut().filter(|v| v.id == SCRAM_EFFECT) {
-        // Capital MJDs
+        // Capital MJD modifier
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
@@ -79,6 +83,8 @@ fn add_scram_script_modifiers(a_data: &mut ad::AData) {
             ),
             ec::attrs::ACTIVATION_BLOCKED,
         ));
+        // Effect range attribute
+        effect.range_attr_id = Some(ec::attrs::MAX_RANGE_HIDDEN);
         effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }
@@ -87,10 +93,10 @@ fn add_scram_script_modifiers(a_data: &mut ad::AData) {
     }
 }
 
-fn add_point_script_modifiers(a_data: &mut ad::AData) {
+fn adjust_point_script_effect(a_data: &mut ad::AData) {
     let mut applied = false;
     for effect in a_data.effects.iter_mut().filter(|v| v.id == POINT_EFFECT) {
-        // Regular MJDs
+        // Regular MJD modifier
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
@@ -100,7 +106,7 @@ fn add_point_script_modifiers(a_data: &mut ad::AData) {
             ),
             ec::attrs::ACTIVATION_BLOCKED,
         ));
-        // Capital MJDs
+        // Capital MJD modifier
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
@@ -110,8 +116,10 @@ fn add_point_script_modifiers(a_data: &mut ad::AData) {
             ),
             ec::attrs::ACTIVATION_BLOCKED,
         ));
-        // Fighter MJDs
+        // Fighter MJD stopper
         effect.stop_ids.push(ec::effects::FTR_ABIL_MJD);
+        // Effect range attribute
+        effect.range_attr_id = Some(ec::attrs::MAX_RANGE_HIDDEN);
         effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
         applied = true;
     }

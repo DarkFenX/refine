@@ -33,6 +33,7 @@ pub(crate) const SPEED_BOOST_FACTOR: EAttrId = 567;
 pub(crate) const MASS_ADDITION: EAttrId = 796;
 pub(crate) const DISALLOW_ASSISTANCE: EAttrId = 854;
 pub(crate) const BOOSTERNESS: EAttrId = 1087;
+pub(crate) const MAX_RANGE_HIDDEN: EAttrId = 1317;
 pub(crate) const ACTIVATION_BLOCKED: EAttrId = 1349;
 pub(crate) const ACTIVATION_BLOCKED_STRENGTH: EAttrId = 1350;
 pub(crate) const SUBSYSTEM_SLOT: EAttrId = 1366;
