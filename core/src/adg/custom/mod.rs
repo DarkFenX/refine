@@ -9,6 +9,7 @@ mod missile_dmg_self_srq;
 mod missile_rof_self_srq;
 mod online_eff_cat;
 mod prop_mods;
+mod structure_point;
 mod subsystem_mods;
 mod wdfg;
 mod wubble;
@@ -21,6 +22,7 @@ pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
     prop_mods::add_ab_modifiers(a_data);
     prop_mods::add_mwd_modifiers(a_data);
     wdfg::add_wdfg_modifiers(a_data);
+    structure_point::add_structure_point_modifiers(a_data);
     wubble::add_wubble_effect(a_data);
     // Self skill requirement modifiers
     missile_rof_self_srq::mk_self_skillreq_modifiers_launcher_rof(a_data);

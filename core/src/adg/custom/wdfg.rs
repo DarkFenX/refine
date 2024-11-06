@@ -11,11 +11,7 @@
 // attribute. Here, we switch scripts to use this attribute, instead of transferring maxRange as
 // well (although transferring would also work).
 
-use crate::{
-    ad,
-    defs::{EAttrId, EEffectId},
-    ec,
-};
+use crate::{ad, defs::EEffectId, ec};
 
 const BUBBLE_EFFECT: EEffectId = ec::effects::WARP_DISRUPT_SPHERE;
 const POINT_EFFECT: EEffectId = ec::effects::SHIP_MOD_FOCUSED_WARP_DISRUPTION_SCRIPT;
@@ -128,7 +124,7 @@ fn adjust_scram_script_effect(a_data: &mut ad::AData) {
         applied = true;
     }
     if !applied {
-        tracing::info!("focused scrambling script {SCRAM_EFFECT} is not found for customization");
+        tracing::info!("focused scrambling script effect {SCRAM_EFFECT} is not found for customization");
     }
 }
 
@@ -180,6 +176,6 @@ fn adjust_point_script_effect(a_data: &mut ad::AData) {
         applied = true;
     }
     if !applied {
-        tracing::info!("focused disruption script {POINT_EFFECT} is not found for customization");
+        tracing::info!("focused disruption script effect {POINT_EFFECT} is not found for customization");
     }
 }

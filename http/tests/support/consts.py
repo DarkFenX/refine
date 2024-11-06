@@ -51,6 +51,7 @@ class EveEffect(IntEnum):
     slot_modifier = 3774
     max_range_hidden_preass_warp_scramble_range = 4894
     fueled_armor_repair = 5275
+    structure_warp_scramble_block_mwd_with_npc = 6222
     remote_webifier_falloff = 6426
     doomsday_aoe_web = 6476
     fighter_ability_launch_bomb = 6485
@@ -61,6 +62,7 @@ class EveEffect(IntEnum):
     mod_titan_effect_generator = 6753
     ship_mod_focused_warp_scrambling_script = 6848
     ship_mod_focused_warp_disruption_script = 6849
+    script_standup_warp_scram = 7026
     weather_darkness = 7060
     debuff_lance = 11691
 
