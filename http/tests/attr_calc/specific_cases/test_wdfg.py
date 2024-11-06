@@ -88,16 +88,9 @@ def test_warp_scram_status_dscript(client, consts):
         attrs={eve_str_attr.id: 100},
         eff_ids=[eve_wdfg_effect.id],
         defeff_id=eve_wdfg_effect.id)
-    eve_script_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
-        op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_str_attr.id,
-        affectee_attr_id=eve_status_attr.id)
     eve_script_effect = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
-        cat_id=consts.EveEffCat.target,
-        mod_info=[eve_script_mod])
+        cat_id=consts.EveEffCat.target)
     eve_script = client.mk_eve_item(
         eff_ids=[eve_script_effect.id],
         defeff_id=eve_script_effect.id)
@@ -130,16 +123,9 @@ def test_warp_scram_status_sscript(client, consts):
         attrs={eve_str_attr.id: 100},
         eff_ids=[eve_wdfg_effect.id],
         defeff_id=eve_wdfg_effect.id)
-    eve_script_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
-        op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_str_attr.id,
-        affectee_attr_id=eve_status_attr.id)
     eve_script_effect = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
-        cat_id=consts.EveEffCat.target,
-        mod_info=[eve_script_mod])
+        cat_id=consts.EveEffCat.target)
     eve_script = client.mk_eve_item(
         eff_ids=[eve_script_effect.id],
         defeff_id=eve_script_effect.id)
@@ -165,20 +151,13 @@ def test_warp_scram_status_sscript(client, consts):
 
 def test_gate_scram_status_dscript(client, consts):
     # Disruption script disables gate jumps for target capitals it's projected onto
-    eve_str_attr = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
+    client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
     eve_status_attr = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=0)
     eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
     eve_wdfg = client.mk_eve_item(eff_ids=[eve_wdfg_effect.id], defeff_id=eve_wdfg_effect.id)
-    eve_script_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
-        op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_str_attr.id,
-        affectee_attr_id=eve_status_attr.id)
     eve_script_effect = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
-        cat_id=consts.EveEffCat.target,
-        mod_info=[eve_script_mod])
+        cat_id=consts.EveEffCat.target)
     eve_script = client.mk_eve_item(
         eff_ids=[eve_script_effect.id],
         defeff_id=eve_script_effect.id)
@@ -204,20 +183,13 @@ def test_gate_scram_status_dscript(client, consts):
 
 def test_gate_scram_status_sscript(client, consts):
     # Scrambling script disables gate jumps for target capitals it's projected onto
-    eve_str_attr = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
+    client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
     eve_status_attr = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=0)
     eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
     eve_wdfg = client.mk_eve_item(eff_ids=[eve_wdfg_effect.id], defeff_id=eve_wdfg_effect.id)
-    eve_script_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
-        op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_str_attr.id,
-        affectee_attr_id=eve_status_attr.id)
     eve_script_effect = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
-        cat_id=consts.EveEffCat.target,
-        mod_info=[eve_script_mod])
+        cat_id=consts.EveEffCat.target)
     eve_script = client.mk_eve_item(
         eff_ids=[eve_script_effect.id],
         defeff_id=eve_script_effect.id)
@@ -287,17 +259,9 @@ def test_mwd_block_sscript(client, consts):
         attrs={eve_str_attr.id: 1},
         eff_ids=[eve_wdfg_effect.id],
         defeff_id=eve_wdfg_effect.id)
-    eve_script_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.loc_srq,
-        dom=consts.EveModDom.tgt,
-        srq=eve_skill.id,
-        op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_str_attr.id,
-        affectee_attr_id=eve_block_attr.id)
     eve_script_effect = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
-        cat_id=consts.EveEffCat.target,
-        mod_info=[eve_script_mod])
+        cat_id=consts.EveEffCat.target)
     eve_script = client.mk_eve_item(eff_ids=[eve_script_effect.id], defeff_id=eve_script_effect.id)
     eve_ship = client.mk_eve_ship()
     eve_mwd = client.mk_eve_item(attrs={eve_block_attr.id: 0}, srqs={eve_skill.id: 1})
@@ -376,17 +340,9 @@ def test_mjd_block_sscript(client, consts):
         attrs={eve_str_attr.id: 1},
         eff_ids=[eve_wdfg_effect.id],
         defeff_id=eve_wdfg_effect.id)
-    eve_script_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.loc_srq,
-        dom=consts.EveModDom.tgt,
-        srq=eve_skill_sub.id,
-        op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_str_attr.id,
-        affectee_attr_id=eve_block_attr.id)
     eve_script_effect = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
-        cat_id=consts.EveEffCat.target,
-        mod_info=[eve_script_mod])
+        cat_id=consts.EveEffCat.target)
     eve_script = client.mk_eve_item(eff_ids=[eve_script_effect.id], defeff_id=eve_script_effect.id)
     eve_ship = client.mk_eve_ship()
     eve_mjd_sub = client.mk_eve_item(attrs={eve_block_attr.id: 0}, srqs={eve_skill_sub.id: 1})
@@ -449,17 +405,10 @@ def test_range_dscript(client, consts):
         id_=consts.EveEffect.script_warp_scramble_range_bonus,
         cat_id=consts.EveEffCat.passive,
         mod_info=[eve_script_range_mod])
-    eve_script_main_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
-        op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_str_attr.id,
-        affectee_attr_id=eve_status_attr.id)
     eve_script_main_effect = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
         cat_id=consts.EveEffCat.target,
-        range_attr_id=eve_range_attr.id,
-        mod_info=[eve_script_main_mod])
+        range_attr_id=eve_range_attr.id)
     eve_script = client.mk_eve_item(
         attrs={eve_range_bonus_attr.id: 50},
         eff_ids=[eve_script_main_effect.id, eve_script_range_effect.id],
@@ -514,17 +463,10 @@ def test_range_sscript(client, consts):
         id_=consts.EveEffect.script_warp_scramble_range_bonus,
         cat_id=consts.EveEffCat.passive,
         mod_info=[eve_script_range_mod])
-    eve_script_main_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
-        op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_str_attr.id,
-        affectee_attr_id=eve_status_attr.id)
     eve_script_main_effect = client.mk_eve_effect(
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
         cat_id=consts.EveEffCat.target,
-        range_attr_id=eve_range_attr.id,
-        mod_info=[eve_script_main_mod])
+        range_attr_id=eve_range_attr.id)
     eve_script = client.mk_eve_item(
         attrs={eve_range_bonus_attr.id: -20},
         eff_ids=[eve_script_main_effect.id, eve_script_range_effect.id],

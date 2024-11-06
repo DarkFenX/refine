@@ -84,9 +84,12 @@ fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
 }
 
 fn restore_hardcoded_attrs(alive: &mut GData, trash: &mut GData) {
-    // Its default value is used in custom web modifiers, not referenced from anywhere else
     move_data(&mut trash.attrs, &mut alive.attrs, |v| {
-        v.id == ec::attrs::SPEED_FACTOR_FLOOR
+        // Speed factor floor: default value is used in custom web modifiers, not referenced from
+        // anywhere else;
+        // Gate scramble strength: isn't defined anywhere as well, default value is used by HIC WDFG
+        // script effects
+        v.id == ec::attrs::SPEED_FACTOR_FLOOR || v.id == ec::attrs::GATE_SCRAMBLE_STRENGTH
     });
 }
 

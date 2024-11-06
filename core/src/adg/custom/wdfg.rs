@@ -2,7 +2,7 @@
 // within regular dogma framework. It includes:
 // - blocking MJD with both focused scripts. According to CCP Kestrel, scripts decide that they
 // block MJD based on its graphical effect, not based on regular dogma group ID or skill
-// requirement;
+// requirement. In the library, it's changed to use conventional attributes;
 // - attributes used by focused scripts are defined on parent item, not on script itself, while
 // dogma (at least in the lib's implementation) assumes that source attributes are always defined
 // on item which carries the effect;
@@ -73,7 +73,43 @@ fn add_bubble_modifiers(a_data: &mut ad::AData) {
 fn adjust_scram_script_effect(a_data: &mut ad::AData) {
     let mut applied = false;
     for effect in a_data.effects.iter_mut().filter(|v| v.id == SCRAM_EFFECT) {
-        // Capital MJD modifier
+        // Effect is expected to have some modifiers, so we're silently clearing them up
+        effect.mods.clear();
+        // Warp scrambling
+        effect.mods.push(ad::AEffectModifier::new(
+            ec::attrs::WARP_SCRAMBLE_STRENGTH,
+            ad::AOp::Add,
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ec::attrs::WARP_SCRAMBLE_STATUS,
+        ));
+        // Gate jump scrambling
+        effect.mods.push(ad::AEffectModifier::new(
+            ec::attrs::GATE_SCRAMBLE_STRENGTH,
+            ad::AOp::Add,
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ec::attrs::GATE_SCRAMBLE_STATUS,
+        ));
+        // MWD blocker
+        effect.mods.push(ad::AEffectModifier::new(
+            ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
+            ad::AOp::Add,
+            ad::AEffectAffecteeFilter::LocSrq(
+                ad::AEffectDomain::Target,
+                ad::AModifierSrq::ItemId(ec::items::HIGH_SPEED_MANEUVERING),
+            ),
+            ec::attrs::ACTIVATION_BLOCKED,
+        ));
+        // MJD/subcap MJFG blocker
+        effect.mods.push(ad::AEffectModifier::new(
+            ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
+            ad::AOp::Add,
+            ad::AEffectAffecteeFilter::LocSrq(
+                ad::AEffectDomain::Target,
+                ad::AModifierSrq::ItemId(ec::items::MICRO_JUMP_DRIVE_OPERATION),
+            ),
+            ec::attrs::ACTIVATION_BLOCKED,
+        ));
+        // Capital MJFG blocker
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
@@ -83,6 +119,9 @@ fn adjust_scram_script_effect(a_data: &mut ad::AData) {
             ),
             ec::attrs::ACTIVATION_BLOCKED,
         ));
+        // Fighter MWD and MJD stoppers
+        effect.stop_ids.push(ec::effects::FTR_ABIL_MWD);
+        effect.stop_ids.push(ec::effects::FTR_ABIL_MJD);
         // Effect range attribute
         effect.range_attr_id = Some(ec::attrs::MAX_RANGE_HIDDEN);
         effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
@@ -96,7 +135,23 @@ fn adjust_scram_script_effect(a_data: &mut ad::AData) {
 fn adjust_point_script_effect(a_data: &mut ad::AData) {
     let mut applied = false;
     for effect in a_data.effects.iter_mut().filter(|v| v.id == POINT_EFFECT) {
-        // Regular MJD modifier
+        // Effect is expected to have some modifiers, so we're silently clearing them up
+        effect.mods.clear();
+        // Warp scrambling
+        effect.mods.push(ad::AEffectModifier::new(
+            ec::attrs::WARP_SCRAMBLE_STRENGTH,
+            ad::AOp::Add,
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ec::attrs::WARP_SCRAMBLE_STATUS,
+        ));
+        // Gate jump scrambling
+        effect.mods.push(ad::AEffectModifier::new(
+            ec::attrs::GATE_SCRAMBLE_STRENGTH,
+            ad::AOp::Add,
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ec::attrs::GATE_SCRAMBLE_STATUS,
+        ));
+        // MJD/subcap MJFG blocker
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
@@ -106,7 +161,7 @@ fn adjust_point_script_effect(a_data: &mut ad::AData) {
             ),
             ec::attrs::ACTIVATION_BLOCKED,
         ));
-        // Capital MJD modifier
+        // Capital MJFG blocker
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
@@ -116,7 +171,8 @@ fn adjust_point_script_effect(a_data: &mut ad::AData) {
             ),
             ec::attrs::ACTIVATION_BLOCKED,
         ));
-        // Fighter MJD stopper
+        // Fighter MWD and MJD stoppers
+        effect.stop_ids.push(ec::effects::FTR_ABIL_MWD);
         effect.stop_ids.push(ec::effects::FTR_ABIL_MJD);
         // Effect range attribute
         effect.range_attr_id = Some(ec::attrs::MAX_RANGE_HIDDEN);
