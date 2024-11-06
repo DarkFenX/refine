@@ -1,6 +1,6 @@
 from tests import approx
 
-
+# pylint: disable=W0511
 # TODO: add fighter MWD/MJD block tests, redo module MWD/MJD block tests to use restrictions
 # As of 2024-11-05, point blocks fighter MWD and MJD even without scram script
 
