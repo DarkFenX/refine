@@ -81,8 +81,8 @@ class ModAffectorInfoList(list):
         return ModAffectorInfoList(i for i in self if i.attr_id == attr_id)
 
     def one(self) -> ModInfo:
-        if infos := len(self) != 1:
-            raise ValueError(f'expected 1 item, {infos} found')
+        if len(self) != 1:
+            raise ValueError(f'expected 1 item, {len(self)} found')
         return self[0]
 
     def __repr__(self) -> str:
