@@ -21,6 +21,7 @@ pub(in crate::sol) use item_subsystem::SolSubsystem;
 pub(in crate::sol) use item_sw_effect::SolSwEffect;
 pub use misc::SolItemState;
 use misc::{bool_to_state, debug, state_to_bool, SolAutocharges, SolEffectModes, SolProjs};
+use mutation::SolItemMutation;
 
 mod base;
 mod container;
@@ -42,3 +43,4 @@ mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
 mod misc;
+mod mutation;

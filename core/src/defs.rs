@@ -7,6 +7,7 @@ pub type Rational = Rational64;
 // EVE-specific aliases, but not specific to any entity category
 pub(crate) type AggrKey = i32;
 pub type AttrVal = f64;
+pub type MutaRange = f64;
 pub type SkillLevel = u8;
 pub type SlotNumber = i32;
 // Aliases for EVE-related entities
