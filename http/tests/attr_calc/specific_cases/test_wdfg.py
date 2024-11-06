@@ -1,6 +1,10 @@
 from tests import approx
 
 
+# TODO: add fighter MWD/MJD block tests, redo module MWD/MJD block tests to use restrictions
+# As of 2024-11-05, HIC ray blocks fighter MWD and MJD even with disruption script
+
+
 def test_bubble_sig_local(client, consts):
     # Bubble blows sig of the ship it's on
     eve_sig_attr = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
@@ -485,3 +489,47 @@ def test_range_sscript(client, consts):
     api_wdfg.change_mod(change_projs=[(api_ship.id, 16001)])
     # Verification
     assert api_ship.update().attrs[eve_status_attr.id].dogma == approx(0)
+
+
+def test_assist_dscript(client, consts):
+    # WDFG disables assistance even when it's running with any script
+    eve_assist_attr = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
+    eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_assist_attr.id: 1},
+        eff_ids=[eve_wdfg_effect.id],
+        defeff_id=eve_wdfg_effect.id)
+    eve_script_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
+        cat_id=consts.EveEffCat.target)
+    eve_script = client.mk_eve_item(eff_ids=[eve_script_effect.id], defeff_id=eve_script_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_assist_attr.id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship.id)
+    api_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active, charge_type_id=eve_script.id)
+    # Verification
+    assert api_ship.update().attrs[eve_assist_attr.id].dogma == approx(1)
+
+
+def test_assist_sscript(client, consts):
+    # WDFG disables assistance even when it's running with any script
+    eve_assist_attr = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
+    eve_wdfg_effect = client.mk_eve_effect(id_=consts.EveEffect.warp_disrupt_sphere, cat_id=consts.EveEffCat.active)
+    eve_wdfg = client.mk_eve_item(
+        attrs={eve_assist_attr.id: 1},
+        eff_ids=[eve_wdfg_effect.id],
+        defeff_id=eve_wdfg_effect.id)
+    eve_script_effect = client.mk_eve_effect(
+        id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
+        cat_id=consts.EveEffCat.target)
+    eve_script = client.mk_eve_item(eff_ids=[eve_script_effect.id], defeff_id=eve_script_effect.id)
+    eve_ship = client.mk_eve_ship(attrs={eve_assist_attr.id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship.id)
+    api_fit.add_mod(type_id=eve_wdfg.id, state=consts.ApiState.active, charge_type_id=eve_script.id)
+    # Verification
+    assert api_ship.update().attrs[eve_assist_attr.id].dogma == approx(1)
