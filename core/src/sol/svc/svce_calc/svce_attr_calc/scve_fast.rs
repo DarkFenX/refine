@@ -139,13 +139,22 @@ impl SolSvcs {
             );
         }
         let mut dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
-        // Upper cap for the attribute value being calculated
-        if let Some(capping_attr_id) = attr.max_attr_id {
-            if let Ok(capping_vals) = self.calc_get_item_attr_val(sol_view, item_id, &capping_attr_id) {
+        // Lower value limit
+        if let Some(limiter_attr_id) = attr.min_attr_id {
+            if let Ok(limiter_val) = self.calc_get_item_attr_val(sol_view, item_id, &limiter_attr_id) {
                 self.calc_data
                     .deps
-                    .add_direct_local(*item_id, capping_attr_id, *attr_id);
-                dogma_val = AttrVal::min(dogma_val, capping_vals.dogma);
+                    .add_direct_local(*item_id, limiter_attr_id, *attr_id);
+                dogma_val = AttrVal::max(dogma_val, limiter_val.dogma);
+            }
+        }
+        // Upper value limit
+        if let Some(limiter_attr_id) = attr.max_attr_id {
+            if let Ok(limiter_val) = self.calc_get_item_attr_val(sol_view, item_id, &limiter_attr_id) {
+                self.calc_data
+                    .deps
+                    .add_direct_local(*item_id, limiter_attr_id, *attr_id);
+                dogma_val = AttrVal::min(dogma_val, limiter_val.dogma);
             }
         }
         if LIMITED_PRECISION_ATTR_IDS.contains(attr_id) {

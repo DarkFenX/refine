@@ -148,22 +148,42 @@ impl SolSvcs {
             );
         }
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_val, attr.hig);
-        // Upper cap for the attribute value being calculated
-        if let Some(capping_attr_id) = attr.max_attr_id {
-            if let Ok(capping_vals) = self.calc_get_item_attr_val(sol_view, item_id, &capping_attr_id) {
+        // Lower value limit
+        if let Some(limiter_attr_id) = attr.min_attr_id {
+            if let Ok(limiter_val) = self.calc_get_item_attr_val(sol_view, item_id, &limiter_attr_id) {
                 self.calc_data
                     .deps
-                    .add_direct_local(*item_id, capping_attr_id, *attr_id);
-                if capping_vals.dogma < dogma_attr_info.value {
-                    dogma_attr_info.value = capping_vals.dogma;
+                    .add_direct_local(*item_id, limiter_attr_id, *attr_id);
+                if limiter_val.dogma > dogma_attr_info.value {
+                    dogma_attr_info.value = limiter_val.dogma;
+                    dogma_attr_info.effective_infos.push(SolModificationInfo::new(
+                        SolOpInfo::MinLimit,
+                        limiter_val.dogma,
+                        None,
+                        None,
+                        None,
+                        limiter_val.dogma,
+                        vec![SolAffectorInfo::new(*item_id, Some(limiter_attr_id))],
+                    ))
+                }
+            }
+        }
+        // Upper value limit
+        if let Some(limiter_attr_id) = attr.max_attr_id {
+            if let Ok(limiter_val) = self.calc_get_item_attr_val(sol_view, item_id, &limiter_attr_id) {
+                self.calc_data
+                    .deps
+                    .add_direct_local(*item_id, limiter_attr_id, *attr_id);
+                if limiter_val.dogma < dogma_attr_info.value {
+                    dogma_attr_info.value = limiter_val.dogma;
                     dogma_attr_info.effective_infos.push(SolModificationInfo::new(
                         SolOpInfo::MaxLimit,
-                        capping_vals.dogma,
+                        limiter_val.dogma,
                         None,
                         None,
                         None,
-                        capping_vals.dogma,
-                        vec![SolAffectorInfo::new(*item_id, Some(capping_attr_id))],
+                        limiter_val.dogma,
+                        vec![SolAffectorInfo::new(*item_id, Some(limiter_attr_id))],
                     ))
                 }
             }

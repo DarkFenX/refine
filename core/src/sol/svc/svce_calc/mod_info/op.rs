@@ -24,6 +24,8 @@ pub enum SolOpInfo {
     /// The same as forcing attribute to modification value. When there is at least one such
     /// modification, all other modification operations are ignored.
     PostAssign,
+    /// Limits minimum attribute value.
+    MinLimit,
     /// Limits maximum attribute value.
     MaxLimit,
     /// Non-dogma multiplication operator.
