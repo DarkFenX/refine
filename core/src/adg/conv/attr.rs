@@ -10,6 +10,7 @@ pub(in crate::adg::conv) fn conv_attrs(g_data: &GData) -> Vec<ad::AAttr> {
                 !v.stackable,
                 v.high_is_good,
                 v.default_value.unwrap_or(0.0),
+                v.min_attr_id,
                 v.max_attr_id,
             )
         })

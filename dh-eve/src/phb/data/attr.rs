@@ -11,6 +11,8 @@ pub(in crate::phb) struct PAttr {
     pub(in crate::phb) high_is_good: bool,
     #[serde(rename = "defaultValue")]
     pub(in crate::phb) default_value: Option<rc::AttrVal>,
+    #[serde(rename = "minAttributeID")]
+    pub(in crate::phb) min_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "maxAttributeID")]
     pub(in crate::phb) max_attr_id: Option<rc::EAttrId>,
     #[serde(rename = "unitID")]
@@ -23,6 +25,7 @@ impl FsdMerge<rc::ed::EAttr> for PAttr {
             self.stackable,
             self.high_is_good,
             self.default_value,
+            self.min_attr_id,
             self.max_attr_id,
             self.unit_id,
         )]

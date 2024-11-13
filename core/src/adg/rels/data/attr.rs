@@ -31,6 +31,7 @@ impl Fk for ed::EAttr {
     }
     fn get_attr_fks(&self, _: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
+        vec_push_opt(&mut vec, self.min_attr_id);
         vec_push_opt(&mut vec, self.max_attr_id);
         if let Some(v) = self.get_fk_from_defval(ec::units::ATTR_ID) {
             vec.push(v);

@@ -17,7 +17,9 @@ pub struct AAttr {
     pub hig: bool,
     /// Default value of the attribute, used if not provided by an item type.
     pub def_val: AttrVal,
-    /// Refers another attribute, whose value limits value of this attribute.
+    /// Refers another attribute, whose value limits minimum value of this attribute.
+    pub min_attr_id: Option<EAttrId>,
+    /// Refers another attribute, whose value limits maximum value of this attribute.
     pub max_attr_id: Option<EAttrId>,
 }
 impl AAttr {
@@ -27,6 +29,7 @@ impl AAttr {
         penalizable: bool,
         hig: bool,
         def_val: AttrVal,
+        min_attr_id: Option<EAttrId>,
         max_attr_id: Option<EAttrId>,
     ) -> Self {
         Self {
@@ -34,6 +37,7 @@ impl AAttr {
             penalizable,
             hig,
             def_val,
+            min_attr_id,
             max_attr_id,
         }
     }

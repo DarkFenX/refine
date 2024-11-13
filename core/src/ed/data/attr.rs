@@ -14,7 +14,9 @@ pub struct EAttr {
     pub high_is_good: bool,
     /// Default value of the attribute, used if not provided by an item type.
     pub default_value: Option<AttrVal>,
-    /// Refers another attribute, whose value limits value of this attribute.
+    /// Refers another attribute, whose value limits minimum value of this attribute.
+    pub min_attr_id: Option<EAttrId>,
+    /// Refers another attribute, whose value limits maximum value of this attribute.
     pub max_attr_id: Option<EAttrId>,
     /// Defines what kind of unit is used for the attribute's value. Used during cache generation
     /// process during cleanup, since this field defines if value of the attribute refers another
@@ -28,6 +30,7 @@ impl EAttr {
         stackable: bool,
         high_is_good: bool,
         default_value: Option<AttrVal>,
+        min_attr_id: Option<EAttrId>,
         max_attr_id: Option<EAttrId>,
         unit_id: Option<EAttrUnitId>,
     ) -> Self {
@@ -36,6 +39,7 @@ impl EAttr {
             stackable,
             high_is_good,
             default_value,
+            min_attr_id,
             max_attr_id,
             unit_id,
         }

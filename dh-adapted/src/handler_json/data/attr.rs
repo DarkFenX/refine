@@ -4,6 +4,7 @@ pub(in crate::handler_json) struct CAttr {
     penalizable: bool,
     hig: bool,
     def_val: rc::AttrVal,
+    min_attr_id: Option<rc::EAttrId>,
     max_attr_id: Option<rc::EAttrId>,
 }
 impl From<&rc::ad::AAttr> for CAttr {
@@ -13,6 +14,7 @@ impl From<&rc::ad::AAttr> for CAttr {
             penalizable: a_attr.penalizable,
             hig: a_attr.hig,
             def_val: a_attr.def_val,
+            min_attr_id: a_attr.min_attr_id,
             max_attr_id: a_attr.max_attr_id,
         }
     }
@@ -24,6 +26,7 @@ impl Into<rc::ad::AAttr> for &CAttr {
             penalizable: self.penalizable,
             hig: self.hig,
             def_val: self.def_val,
+            min_attr_id: self.min_attr_id,
             max_attr_id: self.max_attr_id,
         }
     }
