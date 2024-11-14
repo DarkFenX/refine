@@ -12,17 +12,21 @@ mod prop_mods;
 mod structure_point;
 mod subsystem_mods;
 mod wdfg;
+mod web;
 mod wubble;
 
 pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
-    online_eff_cat::fix_online_effect_cat(a_data);
-    char_missile_dmg::add_char_missile_dmg_mods(a_data);
-    subsystem_mods::add_subsystem_modifiers(a_data);
     aar_paste_boost::add_aar_paste_boost_effect(a_data);
+    char_missile_dmg::add_char_missile_dmg_mods(a_data);
+    online_eff_cat::fix_online_effect_cat(a_data);
     prop_mods::add_ab_modifiers(a_data);
     prop_mods::add_mwd_modifiers(a_data);
-    wdfg::add_wdfg_modifiers(a_data);
     structure_point::add_structure_point_modifiers(a_data);
+    subsystem_mods::add_subsystem_modifiers(a_data);
+    wdfg::add_wdfg_modifiers(a_data);
+    web::add_drone_web_modifiers(a_data);
+    web::add_ship_web_modifiers(a_data);
+    web::add_structure_web_modifiers(a_data);
     wubble::add_wubble_effect(a_data);
     // Self skill requirement modifiers
     missile_rof_self_srq::mk_self_skillreq_modifiers_launcher_rof(a_data);
