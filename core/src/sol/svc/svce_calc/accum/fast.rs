@@ -47,31 +47,21 @@ impl SolModAccumFast {
         val: AttrVal,
         proj_mult: Option<AttrVal>,
         res_mult: Option<AttrVal>,
-        min_limit: Option<AttrVal>,
         op: &SolOp,
         attr_pen: bool,
         item_cat: &EItemCatId,
         aggr_mode: &SolAggrMode,
     ) {
         match op {
-            SolOp::PreAssign => self.pre_assign.add_val(
-                val,
-                None,
-                None,
-                min_limit,
-                normalize_noop,
-                diminish_noop,
-                AttrVal::max,
-                aggr_mode,
-            ),
+            SolOp::PreAssign => self
+                .pre_assign
+                .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
             SolOp::PreMul => self.pre_mul.add_val(
                 val,
                 proj_mult,
                 res_mult,
-                min_limit,
                 normalize_noop,
                 diminish_mul,
-                AttrVal::max,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
@@ -79,63 +69,36 @@ impl SolModAccumFast {
                 val,
                 proj_mult,
                 res_mult,
-                min_limit,
                 normalize_div,
                 diminish_mul,
-                AttrVal::min,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            SolOp::Add => self.add.add_val(
-                val,
-                proj_mult,
-                res_mult,
-                min_limit,
-                normalize_noop,
-                diminish_basic,
-                AttrVal::max,
-                aggr_mode,
-            ),
-            SolOp::Sub => self.sub.add_val(
-                val,
-                proj_mult,
-                res_mult,
-                min_limit,
-                normalize_sub,
-                diminish_basic,
-                AttrVal::min,
-                aggr_mode,
-            ),
+            SolOp::Add => self
+                .add
+                .add_val(val, proj_mult, res_mult, normalize_noop, diminish_basic, aggr_mode),
+            SolOp::Sub => self
+                .sub
+                .add_val(val, proj_mult, res_mult, normalize_sub, diminish_basic, aggr_mode),
             SolOp::PostMul => self.post_mul.add_val(
                 val,
                 proj_mult,
                 res_mult,
-                min_limit,
                 normalize_noop,
                 diminish_mul,
-                AttrVal::max,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            SolOp::PostMulImmune => self.post_mul.add_val(
-                val,
-                proj_mult,
-                res_mult,
-                min_limit,
-                normalize_noop,
-                diminish_mul,
-                AttrVal::max,
-                false,
-                aggr_mode,
-            ),
+            SolOp::PostMulImmune => {
+                self.post_mul
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, false, aggr_mode)
+            }
             SolOp::PostDiv => self.post_div.add_val(
                 val,
                 proj_mult,
                 res_mult,
-                min_limit,
                 normalize_div,
                 diminish_mul,
-                AttrVal::min,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
@@ -143,33 +106,18 @@ impl SolModAccumFast {
                 val,
                 proj_mult,
                 res_mult,
-                min_limit,
                 normalize_perc,
                 diminish_mul,
-                AttrVal::max,
                 is_penal(attr_pen, item_cat),
                 aggr_mode,
             ),
-            SolOp::PostAssign => self.post_assign.add_val(
-                val,
-                None,
-                None,
-                min_limit,
-                normalize_noop,
-                diminish_noop,
-                AttrVal::max,
-                aggr_mode,
-            ),
-            SolOp::ExtraMul => self.extra_mul.add_val(
-                val,
-                proj_mult,
-                res_mult,
-                min_limit,
-                normalize_noop,
-                diminish_mul,
-                AttrVal::max,
-                aggr_mode,
-            ),
+            SolOp::PostAssign => self
+                .post_assign
+                .add_val(val, None, None, normalize_noop, diminish_noop, aggr_mode),
+            SolOp::ExtraMul => {
+                self.extra_mul
+                    .add_val(val, proj_mult, res_mult, normalize_noop, diminish_mul, aggr_mode)
+            }
         };
     }
     pub(in crate::sol::svc::svce_calc) fn apply_dogma_mods(&mut self, base_val: AttrVal, hig: bool) -> AttrVal {
@@ -201,36 +149,24 @@ impl SolAttrStack {
             penalized: SolAttrAggr::new(),
         }
     }
-    fn add_val<N, D, L>(
+    fn add_val<N, D>(
         &mut self,
         val: AttrVal,
         proj_mult: Option<AttrVal>,
         res_mult: Option<AttrVal>,
-        min_limit: Option<AttrVal>,
         normalize_func: N,
         diminish_func: D,
-        min_limit_func: L,
         penalizable: bool,
         aggr_mode: &SolAggrMode,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
-        L: Fn(AttrVal, AttrVal) -> AttrVal,
     {
         let attr_aggr = match penalizable {
             true => &mut self.penalized,
             false => &mut self.stacked,
         };
-        attr_aggr.add_val(
-            val,
-            proj_mult,
-            res_mult,
-            min_limit,
-            normalize_func,
-            diminish_func,
-            min_limit_func,
-            aggr_mode,
-        )
+        attr_aggr.add_val(val, proj_mult, res_mult, normalize_func, diminish_func, aggr_mode)
     }
     fn get_comb_val<F1, F2>(&mut self, comb_func: F1, pen_func: F2, hig: bool) -> Option<AttrVal>
     where
@@ -257,31 +193,23 @@ impl SolAttrAggr {
             aggr_max: StMap::new(),
         }
     }
-    fn add_val<N, D, L>(
+    fn add_val<N, D>(
         &mut self,
         val: AttrVal,
         proj_mult: Option<AttrVal>,
         res_mult: Option<AttrVal>,
-        min_limit: Option<AttrVal>,
         normalize_func: N,
         diminish_func: D,
-        min_limit_func: L,
         aggr_mode: &SolAggrMode,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
-        L: Fn(AttrVal, AttrVal) -> AttrVal,
     {
         let mut val = match normalize_func(val) {
             Some(val) => val,
             None => return,
         };
         val = diminish_func(val, proj_mult, res_mult);
-        if let Some(min_limit) = min_limit {
-            if let Some(min_limit) = normalize_func(min_limit) {
-                val = min_limit_func(val, min_limit);
-            }
-        }
         self.add_processed_val(val, aggr_mode);
     }
     fn add_processed_val(&mut self, val: AttrVal, aggr_mode: &SolAggrMode) {

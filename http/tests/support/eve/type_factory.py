@@ -150,6 +150,7 @@ class EveTypeFactory(EveDataManager):
             stackable: Union[int, bool, Type[Absent], Type[Default]] = Default,
             high_is_good: Union[int, bool, Type[Absent], Type[Default]] = Default,
             def_val: Union[float, Type[Absent], Type[Default]] = Default,
+            min_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
             max_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
     ) -> Attribute:
         data = self._get_eve_data(data=data)
@@ -158,6 +159,7 @@ class EveTypeFactory(EveDataManager):
             stackable=stackable,
             high_is_good=high_is_good,
             def_val=def_val,
+            min_attr_id=min_attr_id,
             max_attr_id=max_attr_id)
 
     def mk_eve_effect(

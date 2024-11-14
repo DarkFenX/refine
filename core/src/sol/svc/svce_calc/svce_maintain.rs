@@ -189,7 +189,7 @@ impl SolSvcs {
         attr_id: &EAttrId,
     ) {
         let item = sol_view.items.get_item(item_id).unwrap();
-        // Clear up attribute values which rely on passed attribute as an upper cap
+        // Clear up attribute values which rely on passed attribute as an upper/lower limit
         let attr_specs = self
             .calc_data
             .deps

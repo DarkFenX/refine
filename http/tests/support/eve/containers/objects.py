@@ -228,6 +228,7 @@ class EveObjects:
             stackable: Union[int, bool, Type[Absent], Type[Default]] = Default,
             high_is_good: Union[int, bool, Type[Absent], Type[Default]] = Default,
             def_val: Union[float, Type[Absent], Type[Default]] = Default,
+            min_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
             max_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
     ) -> Attribute:
         if id_ is Default:
@@ -237,6 +238,7 @@ class EveObjects:
             stackable=1 if stackable is Default else stackable,
             high_is_good=1 if high_is_good is Default else high_is_good,
             default_value=0.0 if def_val is Default else def_val,
+            min_attribute_id=Absent if min_attr_id is Default else min_attr_id,
             max_attribute_id=Absent if max_attr_id is Default else max_attr_id)
         self.attributes.append(attr)
         return attr

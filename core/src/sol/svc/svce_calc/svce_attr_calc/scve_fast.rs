@@ -90,7 +90,6 @@ impl SolSvcs {
                 val,
                 self.calc_resist_mult(sol_view, modifier),
                 self.calc_proj_mult(sol_view, modifier),
-                self.calc_min_limit(sol_view, modifier),
                 modifier.raw.aggr_mode,
                 affector_item_cat_id,
             );
@@ -131,7 +130,6 @@ impl SolSvcs {
                 modification.val,
                 modification.res_mult,
                 modification.proj_mult,
-                modification.min_limit,
                 &modification.op,
                 attr.penalizable,
                 &modification.affector_item_cat_id,

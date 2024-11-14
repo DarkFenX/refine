@@ -26,6 +26,5 @@ pub(in crate::sol::svc::svce_calc) fn make_mod(item: &SolItem, effect: &ad::AEff
         get_resist_attr_id(item, effect),
         effect.range_attr_id,
         effect.falloff_attr_id,
-        Some(ec::attrs::SPEED_FACTOR_FLOOR),
     )
 }
