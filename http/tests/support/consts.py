@@ -49,7 +49,6 @@ class EveEffect(IntEnum):
     max_range_hidden_preass_warp_scramble_range = 4894
     fueled_armor_repair = 5275
     structure_warp_scramble_block_mwd_with_npc = 6222
-    remote_webifier_falloff = 6426
     doomsday_aoe_web = 6476
     fighter_ability_launch_bomb = 6485
     ship_module_arar = 6651
@@ -185,7 +184,6 @@ class EveAttr(IntEnum):
     gate_scramble_strength = 1974
     remote_resistance_id = 2138
     fighter_ability_launch_bomb_type = 2324
-    speed_factor_floor = 2266
     doomsday_aoe_range = 2279
     warfare_buff_1_id = 2468
     warfare_buff_1_value = 2469
@@ -252,6 +250,7 @@ class ApiModOp(StrEnum):
     post_div = 'post_div'
     post_percent = 'post_perc'
     post_assign = 'post_assign'
+    min_limit = 'min_limit'
     max_limit = 'max_limit'
     extra_mul = 'extra_mul'
 

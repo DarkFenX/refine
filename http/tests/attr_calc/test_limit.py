@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def test_max_default(client, consts):
+def test_default_max(client, consts):
     # Check that max limit is applied properly when item doesn't have base value of limiter
     # attribute
     eve_limiter_attr = client.mk_eve_attr(def_val=5)
@@ -34,7 +34,40 @@ def test_max_default(client, consts):
     assert api_mod.affectors.one().attr_id == eve_limiter_attr.id
 
 
-def test_max_unmodified(client, consts):
+def test_default_min(client, consts):
+    # Check that min limit is applied properly when item doesn't have base value of limiter
+    # attribute
+    eve_limiter_attr = client.mk_eve_attr(def_val=20)
+    eve_limitee_attr = client.mk_eve_attr(min_attr_id=eve_limiter_attr.id)
+    eve_affector_attr = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_limitee_attr.id)
+    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_item = client.mk_eve_item(
+        attrs={eve_limitee_attr.id: 3, eve_affector_attr.id: 6},
+        eff_ids=[eve_effect.id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_implant(type_id=eve_item.id)
+    # Verification - should be 3 * 6 = 18 without limit, but 20 with
+    api_item.update()
+    assert api_item.attrs[eve_limitee_attr.id].dogma == approx(20)
+    api_mod = api_item.mods.find_by_affector_attr(
+        affectee_attr_id=eve_limitee_attr.id, affector_attr_id=eve_limiter_attr.id).one()
+    assert api_mod.op == consts.ApiModOp.min_limit
+    assert api_mod.initial_val == approx(20)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(20)
+    assert api_mod.affectors.one().item_id == api_item.id
+    assert api_mod.affectors.one().attr_id == eve_limiter_attr.id
+
+
+def test_unmodified_max(client, consts):
     # Check that max limit is applied properly when item defines its value
     eve_limiter_attr = client.mk_eve_attr(def_val=5)
     eve_limitee_attr = client.mk_eve_attr(max_attr_id=eve_limiter_attr.id)
@@ -66,9 +99,40 @@ def test_max_unmodified(client, consts):
     assert api_mod.affectors.one().attr_id == eve_limiter_attr.id
 
 
-def test_max_modified(client, consts):
-    # Check that max limit is applied properly when item defines its value, and it's modified
-    # further
+def test_unmodified_min(client, consts):
+    # Check that min limit is applied properly when item defines its value
+    eve_limiter_attr = client.mk_eve_attr(def_val=20)
+    eve_limitee_attr = client.mk_eve_attr(min_attr_id=eve_limiter_attr.id)
+    eve_affector_attr = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_affector_attr.id,
+        affectee_attr_id=eve_limitee_attr.id)
+    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_item = client.mk_eve_item(
+        attrs={eve_limiter_attr.id: 25, eve_limitee_attr.id: 3, eve_affector_attr.id: 6},
+        eff_ids=[eve_effect.id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_implant(type_id=eve_item.id)
+    # Verification - should be 3 * 6 = 18 without limit, but 25 with
+    api_item.update()
+    assert api_item.attrs[eve_limitee_attr.id].dogma == approx(25)
+    api_mod = api_item.mods.find_by_affector_attr(
+        affectee_attr_id=eve_limitee_attr.id, affector_attr_id=eve_limiter_attr.id).one()
+    assert api_mod.op == consts.ApiModOp.min_limit
+    assert api_mod.initial_val == approx(25)
+    assert api_mod.stacking_mult is None
+    assert api_mod.applied_val == approx(25)
+    assert api_mod.affectors.one().item_id == api_item.id
+    assert api_mod.affectors.one().attr_id == eve_limiter_attr.id
+
+
+def test_modified(client, consts):
+    # Check that limit is applied properly when item defines its value, and it's modified further
     eve_limiter_attr = client.mk_eve_attr()
     eve_limitee_attr = client.mk_eve_attr(max_attr_id=eve_limiter_attr.id)
     eve_affector_attr = client.mk_eve_attr()
@@ -105,7 +169,7 @@ def test_max_modified(client, consts):
     assert api_mod.affectors.one().attr_id == eve_limiter_attr.id
 
 
-def test_max_update(client, consts):
+def test_update(client, consts):
     # Make sure that when value of limiter attribute changes, values which depend on it are updated
     eve_limiter_attr = client.mk_eve_attr()
     eve_limitee_attr = client.mk_eve_attr(max_attr_id=eve_limiter_attr.id)
@@ -157,8 +221,8 @@ def test_max_update(client, consts):
         affectee_attr_id=eve_limitee_attr.id, affector_attr_id=eve_limiter_attr.id).one().applied_val == approx(2)
 
 
-def test_max_unlimited(client, consts):
-    # Check which modification data is exposed when calculated value is below limit
+def test_unlimited(client, consts):
+    # Check which modification data is exposed when calculated value is within limit
     eve_limiter_attr = client.mk_eve_attr(def_val=5)
     eve_limitee_attr = client.mk_eve_attr(max_attr_id=eve_limiter_attr.id)
     eve_affector_attr = client.mk_eve_attr()
