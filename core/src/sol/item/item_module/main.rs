@@ -46,6 +46,11 @@ impl SolModule {
         self.base.get_id()
     }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
+        if let Some(mutation) = self.mutation.as_ref() {
+            if let Some(type_id) = mutation.get_item_type_id() {
+                return type_id;
+            }
+        }
         self.base.get_type_id()
     }
     pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {

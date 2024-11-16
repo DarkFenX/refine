@@ -9,10 +9,12 @@ use crate::{
 // Item base stores all the data every item should have
 #[derive(Clone)]
 pub(in crate::sol) struct SolItemBase {
+    // Following fields are part of item skeleton
     id: SolItemId,
     type_id: EItemId,
     state: SolItemState,
     effect_modes: SolEffectModes,
+    // Following fields are stored for fast access / optimization
     a_item: Option<ad::ArcItem>,
 }
 impl SolItemBase {
