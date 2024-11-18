@@ -12,8 +12,10 @@ impl SolarSystem {
         state: bool,
     ) -> Result<(), SetBoosterSideEffectStateError> {
         let booster = self.items.get_item_mut(item_id)?.get_booster_mut()?;
-        let a_item = booster.get_a_item().map_err(|_| SideEffectError::new(*effect_id))?;
-        if !a_item.effect_datas.contains_key(effect_id) {
+        let effect_datas = booster
+            .get_effect_datas()
+            .map_err(|_| SideEffectError::new(*effect_id))?;
+        if !effect_datas.contains_key(effect_id) {
             return Err(SideEffectError::new(*effect_id).into());
         }
         let effect = match self.src.get_a_effect(effect_id) {

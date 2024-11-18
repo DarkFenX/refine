@@ -211,44 +211,24 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.get_state(),
         }
     }
-    pub(in crate::sol) fn reload_a_item(&mut self, src: &Src) {
+    pub(in crate::sol) fn reload_a_data(&mut self, src: &Src) {
         match self {
-            Self::Autocharge(autocharge) => autocharge.reload_a_item(src),
-            Self::Booster(booster) => booster.reload_a_item(src),
-            Self::Character(character) => character.reload_a_item(src),
-            Self::Charge(charge) => charge.reload_a_item(src),
-            Self::Drone(drone) => drone.reload_a_item(src),
-            Self::Fighter(fighter) => fighter.reload_a_item(src),
-            Self::FwEffect(fw_effect) => fw_effect.reload_a_item(src),
-            Self::Implant(implant) => implant.reload_a_item(src),
-            Self::Module(module) => module.reload_a_item(src),
-            Self::ProjEffect(proj_effect) => proj_effect.reload_a_item(src),
-            Self::Rig(rig) => rig.reload_a_item(src),
-            Self::Ship(ship) => ship.reload_a_item(src),
-            Self::Skill(skill) => skill.reload_a_item(src),
-            Self::Stance(stance) => stance.reload_a_item(src),
-            Self::Subsystem(subsystem) => subsystem.reload_a_item(src),
-            Self::SwEffect(sw_effect) => sw_effect.reload_a_item(src),
-        }
-    }
-    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_a_item(),
-            Self::Booster(booster) => booster.get_a_item(),
-            Self::Character(character) => character.get_a_item(),
-            Self::Charge(charge) => charge.get_a_item(),
-            Self::Drone(drone) => drone.get_a_item(),
-            Self::Fighter(fighter) => fighter.get_a_item(),
-            Self::FwEffect(fw_effect) => fw_effect.get_a_item(),
-            Self::Implant(implant) => implant.get_a_item(),
-            Self::Module(module) => module.get_a_item(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_a_item(),
-            Self::Rig(rig) => rig.get_a_item(),
-            Self::Ship(ship) => ship.get_a_item(),
-            Self::Skill(skill) => skill.get_a_item(),
-            Self::Stance(stance) => stance.get_a_item(),
-            Self::Subsystem(subsystem) => subsystem.get_a_item(),
-            Self::SwEffect(sw_effect) => sw_effect.get_a_item(),
+            Self::Autocharge(autocharge) => autocharge.reload_a_data(src),
+            Self::Booster(booster) => booster.reload_a_data(src),
+            Self::Character(character) => character.reload_a_data(src),
+            Self::Charge(charge) => charge.reload_a_data(src),
+            Self::Drone(drone) => drone.reload_a_data(src),
+            Self::Fighter(fighter) => fighter.reload_a_data(src),
+            Self::FwEffect(fw_effect) => fw_effect.reload_a_data(src),
+            Self::Implant(implant) => implant.reload_a_data(src),
+            Self::Module(module) => module.reload_a_data(src),
+            Self::ProjEffect(proj_effect) => proj_effect.reload_a_data(src),
+            Self::Rig(rig) => rig.reload_a_data(src),
+            Self::Ship(ship) => ship.reload_a_data(src),
+            Self::Skill(skill) => skill.reload_a_data(src),
+            Self::Stance(stance) => stance.reload_a_data(src),
+            Self::Subsystem(subsystem) => subsystem.reload_a_data(src),
+            Self::SwEffect(sw_effect) => sw_effect.reload_a_data(src),
         }
     }
     pub(in crate::sol) fn is_loaded(&self) -> bool {
@@ -654,22 +634,124 @@ impl SolItem {
     }
     // Calculator-specific getters
     // TODO: consider moving to calculator specific item extensions
-    pub(in crate::sol) fn get_orig_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
-        self.get_a_item().map(|v| &v.attr_vals)
-    }
-    pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
-        self.get_a_item().map(|v| &v.effect_datas)
-    }
-    pub(in crate::sol) fn get_defeff_id(&self) -> Result<Option<EEffectId>, ItemLoadedError> {
-        self.get_a_item().map(|v| v.defeff_id)
-    }
     pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
-        self.get_a_item().map(|v| v.grp_id)
+        match self {
+            Self::Autocharge(autocharge) => autocharge.get_group_id(),
+            Self::Booster(booster) => booster.get_group_id(),
+            Self::Character(character) => character.get_group_id(),
+            Self::Charge(charge) => charge.get_group_id(),
+            Self::Drone(drone) => drone.get_group_id(),
+            Self::Fighter(fighter) => fighter.get_group_id(),
+            Self::FwEffect(fw_effect) => fw_effect.get_group_id(),
+            Self::Implant(implant) => implant.get_group_id(),
+            Self::Module(module) => module.get_group_id(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_group_id(),
+            Self::Rig(rig) => rig.get_group_id(),
+            Self::Ship(ship) => ship.get_group_id(),
+            Self::Skill(skill) => skill.get_group_id(),
+            Self::Stance(stance) => stance.get_group_id(),
+            Self::Subsystem(subsystem) => subsystem.get_group_id(),
+            Self::SwEffect(sw_effect) => sw_effect.get_group_id(),
+        }
     }
     pub(in crate::sol) fn get_category_id(&self) -> Result<EItemCatId, ItemLoadedError> {
-        self.get_a_item().map(|v| v.cat_id)
+        match self {
+            Self::Autocharge(autocharge) => autocharge.get_category_id(),
+            Self::Booster(booster) => booster.get_category_id(),
+            Self::Character(character) => character.get_category_id(),
+            Self::Charge(charge) => charge.get_category_id(),
+            Self::Drone(drone) => drone.get_category_id(),
+            Self::Fighter(fighter) => fighter.get_category_id(),
+            Self::FwEffect(fw_effect) => fw_effect.get_category_id(),
+            Self::Implant(implant) => implant.get_category_id(),
+            Self::Module(module) => module.get_category_id(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_category_id(),
+            Self::Rig(rig) => rig.get_category_id(),
+            Self::Ship(ship) => ship.get_category_id(),
+            Self::Skill(skill) => skill.get_category_id(),
+            Self::Stance(stance) => stance.get_category_id(),
+            Self::Subsystem(subsystem) => subsystem.get_category_id(),
+            Self::SwEffect(sw_effect) => sw_effect.get_category_id(),
+        }
+    }
+    pub(in crate::sol) fn get_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.get_attrs(),
+            Self::Booster(booster) => booster.get_attrs(),
+            Self::Character(character) => character.get_attrs(),
+            Self::Charge(charge) => charge.get_attrs(),
+            Self::Drone(drone) => drone.get_attrs(),
+            Self::Fighter(fighter) => fighter.get_attrs(),
+            Self::FwEffect(fw_effect) => fw_effect.get_attrs(),
+            Self::Implant(implant) => implant.get_attrs(),
+            Self::Module(module) => module.get_attrs(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_attrs(),
+            Self::Rig(rig) => rig.get_attrs(),
+            Self::Ship(ship) => ship.get_attrs(),
+            Self::Skill(skill) => skill.get_attrs(),
+            Self::Stance(stance) => stance.get_attrs(),
+            Self::Subsystem(subsystem) => subsystem.get_attrs(),
+            Self::SwEffect(sw_effect) => sw_effect.get_attrs(),
+        }
+    }
+    pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.get_effect_datas(),
+            Self::Booster(booster) => booster.get_effect_datas(),
+            Self::Character(character) => character.get_effect_datas(),
+            Self::Charge(charge) => charge.get_effect_datas(),
+            Self::Drone(drone) => drone.get_effect_datas(),
+            Self::Fighter(fighter) => fighter.get_effect_datas(),
+            Self::FwEffect(fw_effect) => fw_effect.get_effect_datas(),
+            Self::Implant(implant) => implant.get_effect_datas(),
+            Self::Module(module) => module.get_effect_datas(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_effect_datas(),
+            Self::Rig(rig) => rig.get_effect_datas(),
+            Self::Ship(ship) => ship.get_effect_datas(),
+            Self::Skill(skill) => skill.get_effect_datas(),
+            Self::Stance(stance) => stance.get_effect_datas(),
+            Self::Subsystem(subsystem) => subsystem.get_effect_datas(),
+            Self::SwEffect(sw_effect) => sw_effect.get_effect_datas(),
+        }
+    }
+    pub(in crate::sol) fn get_defeff_id(&self) -> Result<Option<EEffectId>, ItemLoadedError> {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.get_defeff_id(),
+            Self::Booster(booster) => booster.get_defeff_id(),
+            Self::Character(character) => character.get_defeff_id(),
+            Self::Charge(charge) => charge.get_defeff_id(),
+            Self::Drone(drone) => drone.get_defeff_id(),
+            Self::Fighter(fighter) => fighter.get_defeff_id(),
+            Self::FwEffect(fw_effect) => fw_effect.get_defeff_id(),
+            Self::Implant(implant) => implant.get_defeff_id(),
+            Self::Module(module) => module.get_defeff_id(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_defeff_id(),
+            Self::Rig(rig) => rig.get_defeff_id(),
+            Self::Ship(ship) => ship.get_defeff_id(),
+            Self::Skill(skill) => skill.get_defeff_id(),
+            Self::Stance(stance) => stance.get_defeff_id(),
+            Self::Subsystem(subsystem) => subsystem.get_defeff_id(),
+            Self::SwEffect(sw_effect) => sw_effect.get_defeff_id(),
+        }
     }
     pub(in crate::sol) fn get_skill_reqs(&self) -> Result<&StMap<EItemId, SkillLevel>, ItemLoadedError> {
-        self.get_a_item().map(|v| &v.srqs)
+        match self {
+            Self::Autocharge(autocharge) => autocharge.get_skill_reqs(),
+            Self::Booster(booster) => booster.get_skill_reqs(),
+            Self::Character(character) => character.get_skill_reqs(),
+            Self::Charge(charge) => charge.get_skill_reqs(),
+            Self::Drone(drone) => drone.get_skill_reqs(),
+            Self::Fighter(fighter) => fighter.get_skill_reqs(),
+            Self::FwEffect(fw_effect) => fw_effect.get_skill_reqs(),
+            Self::Implant(implant) => implant.get_skill_reqs(),
+            Self::Module(module) => module.get_skill_reqs(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_skill_reqs(),
+            Self::Rig(rig) => rig.get_skill_reqs(),
+            Self::Ship(ship) => ship.get_skill_reqs(),
+            Self::Skill(skill) => skill.get_skill_reqs(),
+            Self::Stance(stance) => stance.get_skill_reqs(),
+            Self::Subsystem(subsystem) => subsystem.get_skill_reqs(),
+            Self::SwEffect(sw_effect) => sw_effect.get_skill_reqs(),
+        }
     }
 }

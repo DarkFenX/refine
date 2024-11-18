@@ -1,10 +1,10 @@
 use crate::{
     ad,
-    defs::{EItemId, SolFitId, SolItemId},
+    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
     sol::item::{SolEffectModes, SolItemBase, SolItemState, SolProjs},
     src::Src,
-    util::Named,
+    util::{Named, StMap},
 };
 
 #[derive(Clone)]
@@ -40,8 +40,23 @@ impl SolAutocharge {
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
         self.base.get_type_id()
     }
-    pub(in crate::sol) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
-        self.base.get_a_item()
+    pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
+        self.base.get_group_id()
+    }
+    pub(in crate::sol) fn get_category_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
+        self.base.get_category_id()
+    }
+    pub(in crate::sol) fn get_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
+        self.base.get_attrs()
+    }
+    pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
+        self.base.get_effect_datas()
+    }
+    pub(in crate::sol) fn get_defeff_id(&self) -> Result<Option<EEffectId>, ItemLoadedError> {
+        self.base.get_defeff_id()
+    }
+    pub(in crate::sol) fn get_skill_reqs(&self) -> Result<&StMap<EItemId, SkillLevel>, ItemLoadedError> {
+        self.base.get_skill_reqs()
     }
     pub(in crate::sol) fn get_state(&self) -> SolItemState {
         match self.force_disable {
@@ -61,7 +76,7 @@ impl SolAutocharge {
     pub(in crate::sol) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::sol::item) fn reload_a_item(&mut self, _: &Src) {
+    pub(in crate::sol::item) fn reload_a_data(&mut self, _: &Src) {
         // Just panic to expose attempts to reload it, since autocharges should never be reloaded.
         // Instead, they are removed and re-added when source changes.
         panic!("autocharges shouldn't be reloaded");

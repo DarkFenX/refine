@@ -18,13 +18,13 @@ impl SolarSystem {
             None => Vec::new(),
         };
         let mut new_ac_map = StMap::new();
-        if let (Some(fit_id), Ok(a_item), Some(_)) = (item.get_fit_id(), item.get_a_item(), item.get_autocharges()) {
-            let a_item = a_item.clone();
-            for effect_id in a_item.effect_datas.keys() {
+        if let (Some(fit_id), true, Some(_)) = (item.get_fit_id(), item.is_loaded(), item.get_autocharges()) {
+            let cloned_item = item.clone();
+            for effect_id in cloned_item.get_effect_datas().unwrap().keys() {
                 if let Some(effect) = self.src.get_a_effect(effect_id) {
                     if let Some(charge_info) = effect.charge {
                         if let ad::AEffectChargeInfo::Attr(charge_attr_id) = charge_info {
-                            if let Some(autocharge_type_id) = a_item.attr_vals.get(&charge_attr_id) {
+                            if let Some(autocharge_type_id) = cloned_item.get_attrs().unwrap().get(&charge_attr_id) {
                                 let autocharge_id = match self.items.alloc_item_id() {
                                     Ok(item_id) => item_id,
                                     Err(e) => {

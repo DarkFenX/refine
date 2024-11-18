@@ -15,7 +15,7 @@ pub(in crate::sol::svc) fn check_item(sol_view: &SolView, item_id: &SolItemId) -
         Ok(item) => item,
         _ => return Err(SolDebugError::new()),
     };
-    if item.get_a_item().is_err() {
+    if !item.is_loaded() {
         return Err(SolDebugError::new());
     }
     Ok(())

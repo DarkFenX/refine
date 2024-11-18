@@ -56,7 +56,7 @@ impl SolSvcs {
         let mut vals = self.calc_data.attrs.get_item_attrs_mut(&item.get_id())?.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
-        for attr_id in item.get_orig_attrs().unwrap().keys() {
+        for attr_id in item.get_attrs().unwrap().keys() {
             match self.calc_get_item_attr_val(sol_view, &item.get_id(), attr_id) {
                 Ok(v) => vals.entry(*attr_id).or_insert(v),
                 _ => continue,
@@ -110,7 +110,7 @@ impl SolSvcs {
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure
-        let base_val = match item.get_orig_attrs()?.get(attr_id) {
+        let base_val = match item.get_attrs()?.get(attr_id) {
             Some(orig_val) => *orig_val,
             None => attr.def_val,
         };

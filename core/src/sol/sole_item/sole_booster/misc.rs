@@ -12,8 +12,8 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol) fn make_booster_info(&self, booster: &SolBooster) -> SolBoosterInfo {
         let mut side_effects = StMap::new();
-        if let Ok(a_item) = booster.get_a_item() {
-            for effect_id in a_item.effect_datas.keys() {
+        if let Ok(effect_datas) = booster.get_effect_datas() {
+            for effect_id in effect_datas.keys() {
                 if let Some(effect) = self.src.get_a_effect(effect_id) {
                     if let Some(chance_attr_id) = effect.chance_attr_id {
                         let se_strs = effect
