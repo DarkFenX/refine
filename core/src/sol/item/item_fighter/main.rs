@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{Amount, AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState, SolProjs},
+    sol::item::{update_a_data_base, SolAutocharges, SolEffectModes, SolItemBase, SolItemState, SolProjs},
     src::Src,
     util::{Named, StMap},
 };
@@ -36,7 +36,7 @@ impl SolFighter {
         self.base.get_id()
     }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.get_type_id()
+        self.base.type_id
     }
     pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.base.get_group_id()
@@ -72,7 +72,7 @@ impl SolFighter {
         self.base.is_loaded()
     }
     pub(in crate::sol::item) fn reload_a_data(&mut self, src: &Src) {
-        self.base.reload_a_data(src);
+        update_a_data_base(src, &mut self.base);
         self.autocharges.clear();
     }
     // Item-specific methods

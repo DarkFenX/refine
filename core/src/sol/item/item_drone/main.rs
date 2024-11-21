@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{SolEffectModes, SolItemBase, SolItemMutation, SolItemState, SolProjs},
+    sol::item::{update_a_data_mutated, SolEffectModes, SolItemBase, SolItemMutation, SolItemState, SolProjs},
     src::Src,
     util::{Named, StMap},
 };
@@ -34,7 +34,7 @@ impl SolDrone {
         self.base.get_id()
     }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.get_type_id()
+        self.base.type_id
     }
     pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.base.get_group_id()
@@ -70,7 +70,7 @@ impl SolDrone {
         self.base.is_loaded()
     }
     pub(in crate::sol::item) fn reload_a_data(&mut self, src: &Src) {
-        self.base.reload_a_data(src);
+        update_a_data_mutated(src, &mut self.base, &mut self.mutation);
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {

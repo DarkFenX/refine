@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
+    sol::item::{bool_to_state, state_to_bool, update_a_data_base, SolEffectModes, SolItemBase, SolItemState},
     src::Src,
     util::{Named, StMap},
 };
@@ -24,7 +24,7 @@ impl SolFwEffect {
         self.base.get_id()
     }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.get_type_id()
+        self.base.type_id
     }
     pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.base.get_group_id()
@@ -57,7 +57,7 @@ impl SolFwEffect {
         self.base.is_loaded()
     }
     pub(in crate::sol::item) fn reload_a_data(&mut self, src: &Src) {
-        self.base.reload_a_data(src);
+        update_a_data_base(src, &mut self.base);
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {

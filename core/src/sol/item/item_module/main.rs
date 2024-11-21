@@ -3,7 +3,10 @@ use crate::{
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, Idx, SkillLevel, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
     sol::{
-        item::{SolEffectModes, SolItemBase, SolItemMutation, SolItemState, SolProjs},
+        item::{
+            get_attrs_mutated, update_a_data_mutated, SolEffectModes, SolItemBase, SolItemMutation, SolItemState,
+            SolProjs,
+        },
         SolModRack,
     },
     src::Src,
@@ -46,12 +49,7 @@ impl SolModule {
         self.base.get_id()
     }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        if let Some(mutation) = self.mutation.as_ref() {
-            if let Some(type_id) = mutation.get_item_type_id() {
-                return type_id;
-            }
-        }
-        self.base.get_type_id()
+        self.base.type_id
     }
     pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.base.get_group_id()
@@ -60,7 +58,7 @@ impl SolModule {
         self.base.get_category_id()
     }
     pub(in crate::sol) fn get_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
-        self.base.get_attrs()
+        get_attrs_mutated(&self.base, &self.mutation)
     }
     pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
         self.base.get_effect_datas()
@@ -87,7 +85,7 @@ impl SolModule {
         self.base.is_loaded()
     }
     pub(in crate::sol::item) fn reload_a_data(&mut self, src: &Src) {
-        self.base.reload_a_data(src);
+        update_a_data_mutated(src, &mut self.base, &mut self.mutation)
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {

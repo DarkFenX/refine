@@ -38,7 +38,7 @@ impl SolAutocharge {
         self.base.get_id()
     }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.get_type_id()
+        self.base.type_id
     }
     pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.base.get_group_id()

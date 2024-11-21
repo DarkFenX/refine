@@ -1,6 +1,6 @@
 //! Solar system item definitions.
 
-use base::SolItemBase;
+use base::{update_a_data_base, SolItemBase};
 pub(in crate::sol) use container::SolItems;
 pub(in crate::sol) use item::SolItem;
 pub(in crate::sol) use item_autocharge::SolAutocharge;
@@ -21,7 +21,7 @@ pub(in crate::sol) use item_subsystem::SolSubsystem;
 pub(in crate::sol) use item_sw_effect::SolSwEffect;
 pub use misc::SolItemState;
 use misc::{bool_to_state, debug, state_to_bool, SolAutocharges, SolEffectModes, SolProjs};
-use mutation::SolItemMutation;
+use mutation::{get_attrs_mutated, update_a_data_mutated, SolItemMutation};
 
 mod base;
 mod container;
