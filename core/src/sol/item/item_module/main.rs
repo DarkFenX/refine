@@ -4,8 +4,8 @@ use crate::{
     err::basic::ItemLoadedError,
     sol::{
         item::{
-            get_attrs_mutated, update_a_data_mutated, SolEffectModes, SolItemBase, SolItemMutation, SolItemState,
-            SolProjs,
+            get_attrs_mutated, update_a_data_mutated, SolEffectModes, SolItemBase, SolItemMutationInternal,
+            SolItemState, SolProjs,
         },
         SolModRack,
     },
@@ -16,7 +16,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct SolModule {
     base: SolItemBase,
-    mutation: Option<SolItemMutation>,
+    mutation: Option<SolItemMutationInternal>,
     fit_id: SolFitId,
     rack: SolModRack,
     pos: Idx,
@@ -33,10 +33,11 @@ impl SolModule {
         rack: SolModRack,
         pos: Idx,
         charge_id: Option<SolItemId>,
+        mutation: Option<SolItemMutationInternal>,
     ) -> Self {
         Self {
             base: SolItemBase::new(src, id, type_id, state),
-            mutation: None,
+            mutation,
             fit_id,
             rack,
             pos,

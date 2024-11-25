@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{update_a_data_mutated, SolEffectModes, SolItemBase, SolItemMutation, SolItemState, SolProjs},
+    sol::item::{update_a_data_mutated, SolEffectModes, SolItemBase, SolItemMutationInternal, SolItemState, SolProjs},
     src::Src,
     util::{Named, StMap},
 };
@@ -10,7 +10,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol) struct SolDrone {
     base: SolItemBase,
-    mutation: Option<SolItemMutation>,
+    mutation: Option<SolItemMutationInternal>,
     fit_id: SolFitId,
     projs: SolProjs,
 }

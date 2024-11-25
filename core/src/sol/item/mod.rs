@@ -21,7 +21,7 @@ pub(in crate::sol) use item_subsystem::SolSubsystem;
 pub(in crate::sol) use item_sw_effect::SolSwEffect;
 pub use misc::SolItemState;
 use misc::{bool_to_state, debug, state_to_bool, SolAutocharges, SolEffectModes, SolProjs};
-use mutation::{get_attrs_mutated, update_a_data_mutated, SolItemMutation};
+use mutation_internal::{get_attrs_mutated, update_a_data_mutated, SolItemMutationInternal};
 
 mod base;
 mod container;
@@ -44,3 +44,4 @@ mod item_subsystem;
 mod item_sw_effect;
 mod misc;
 mod mutation;
+mod mutation_internal;
