@@ -12,11 +12,11 @@ use crate::{
 pub(in crate::sol) struct SolItemBase {
     // Following fields are part of item skeleton
     id: SolItemId,
-    pub(in crate::sol::item) type_id: EItemId,
+    type_id: EItemId,
     state: SolItemState,
     effect_modes: SolEffectModes,
     // Following fields are stored for fast access / optimization
-    pub(in crate::sol::item) a_item: Option<ad::ArcItem>,
+    pub(in crate::sol::item::base) a_item: Option<ad::ArcItem>,
 }
 impl SolItemBase {
     pub(in crate::sol::item) fn new(src: &Src, id: SolItemId, type_id: EItemId, state: SolItemState) -> Self {
@@ -30,6 +30,12 @@ impl SolItemBase {
     }
     pub(in crate::sol::item) fn get_id(&self) -> SolItemId {
         self.id
+    }
+    pub(in crate::sol::item) fn get_type_id(&self) -> EItemId {
+        self.type_id
+    }
+    pub(in crate::sol::item) fn get_base_type_id(&self) -> EItemId {
+        self.type_id
     }
     pub(in crate::sol::item) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.get_a_item().map(|v| v.grp_id)
@@ -66,11 +72,10 @@ impl SolItemBase {
     pub(in crate::sol::item) fn is_loaded(&self) -> bool {
         self.a_item.is_some()
     }
+    pub(in crate::sol::item) fn update_a_data(&mut self, src: &Src) {
+        self.a_item = src.get_a_item(&self.type_id).cloned();
+    }
     fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
         self.a_item.as_ref().ok_or_else(|| ItemLoadedError::new(self.id))
     }
-}
-
-pub(in crate::sol::item) fn update_a_data_base(src: &Src, base: &mut SolItemBase) {
-    base.a_item = src.get_a_item(&base.type_id).cloned();
 }

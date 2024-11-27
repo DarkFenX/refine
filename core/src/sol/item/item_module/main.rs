@@ -3,10 +3,7 @@ use crate::{
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, Idx, SkillLevel, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
     sol::{
-        item::{
-            get_attrs_mutated, update_a_data_mutated, SolEffectModes, SolItemBase, SolItemMutationInternal,
-            SolItemState, SolProjs,
-        },
+        item::{SolEffectModes, SolItemBaseMutable, SolItemMutation, SolItemState, SolProjs},
         SolModRack,
     },
     src::Src,
@@ -15,8 +12,7 @@ use crate::{
 
 #[derive(Clone)]
 pub(in crate::sol) struct SolModule {
-    base: SolItemBase,
-    mutation: Option<SolItemMutationInternal>,
+    base: SolItemBaseMutable,
     fit_id: SolFitId,
     rack: SolModRack,
     pos: Idx,
@@ -33,11 +29,10 @@ impl SolModule {
         rack: SolModRack,
         pos: Idx,
         charge_id: Option<SolItemId>,
-        mutation: Option<SolItemMutationInternal>,
+        mutation: Option<SolItemMutation>,
     ) -> Self {
         Self {
-            base: SolItemBase::new(src, id, type_id, state),
-            mutation,
+            base: SolItemBaseMutable::new(src, id, type_id, state, mutation),
             fit_id,
             rack,
             pos,
@@ -50,7 +45,7 @@ impl SolModule {
         self.base.get_id()
     }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.type_id
+        self.base.get_type_id()
     }
     pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.base.get_group_id()
@@ -59,7 +54,7 @@ impl SolModule {
         self.base.get_category_id()
     }
     pub(in crate::sol) fn get_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
-        get_attrs_mutated(&self.base, &self.mutation)
+        self.base.get_attrs()
     }
     pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
         self.base.get_effect_datas()
@@ -85,8 +80,8 @@ impl SolModule {
     pub(in crate::sol) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::sol::item) fn reload_a_data(&mut self, src: &Src) {
-        update_a_data_mutated(src, &mut self.base, &mut self.mutation)
+    pub(in crate::sol::item) fn update_a_data(&mut self, src: &Src) {
+        self.base.update_a_data(src);
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {

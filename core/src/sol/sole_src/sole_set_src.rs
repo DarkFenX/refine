@@ -26,7 +26,7 @@ impl SolarSystem {
         // Reload items & set new source
         std::mem::swap(&mut self.src, &mut src);
         for item in self.items.iter_mut() {
-            item.reload_a_data(&self.src)
+            item.update_a_data(&self.src)
         }
         // Update autocharges - as first step because it can fail
         for item_id in self.items.iter().map(|v| v.get_id()).collect_vec() {
@@ -47,7 +47,7 @@ impl SolarSystem {
                 // Set new source & reload regular items
                 std::mem::swap(&mut self.src, &mut src);
                 for item in self.items.iter_mut() {
-                    item.reload_a_data(&self.src)
+                    item.update_a_data(&self.src)
                 }
                 // Re-register regular items in services
                 let sol_view = &SolView::new(&self.src, &self.fleets, &self.fits, &self.items);

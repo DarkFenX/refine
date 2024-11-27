@@ -3,9 +3,7 @@ use crate::{
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     ec,
     err::basic::ItemLoadedError,
-    sol::item::{
-        bool_to_state, state_to_bool, update_a_data_base, SolEffectModes, SolItemBase, SolItemState, SolShipKind,
-    },
+    sol::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState, SolShipKind},
     src::Src,
     util::{Named, StMap},
 };
@@ -31,7 +29,7 @@ impl SolShip {
         self.base.get_id()
     }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.type_id
+        self.base.get_type_id()
     }
     pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.base.get_group_id()
@@ -63,8 +61,8 @@ impl SolShip {
     pub(in crate::sol) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::sol::item) fn reload_a_data(&mut self, src: &Src) {
-        update_a_data_base(src, &mut self.base);
+    pub(in crate::sol::item) fn update_a_data(&mut self, src: &Src) {
+        self.base.update_a_data(src);
         self.update_ship_kind();
     }
     // Item-specific methods

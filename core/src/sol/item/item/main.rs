@@ -211,24 +211,24 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.get_state(),
         }
     }
-    pub(in crate::sol) fn reload_a_data(&mut self, src: &Src) {
+    pub(in crate::sol) fn update_a_data(&mut self, src: &Src) {
         match self {
-            Self::Autocharge(autocharge) => autocharge.reload_a_data(src),
-            Self::Booster(booster) => booster.reload_a_data(src),
-            Self::Character(character) => character.reload_a_data(src),
-            Self::Charge(charge) => charge.reload_a_data(src),
-            Self::Drone(drone) => drone.reload_a_data(src),
-            Self::Fighter(fighter) => fighter.reload_a_data(src),
-            Self::FwEffect(fw_effect) => fw_effect.reload_a_data(src),
-            Self::Implant(implant) => implant.reload_a_data(src),
-            Self::Module(module) => module.reload_a_data(src),
-            Self::ProjEffect(proj_effect) => proj_effect.reload_a_data(src),
-            Self::Rig(rig) => rig.reload_a_data(src),
-            Self::Ship(ship) => ship.reload_a_data(src),
-            Self::Skill(skill) => skill.reload_a_data(src),
-            Self::Stance(stance) => stance.reload_a_data(src),
-            Self::Subsystem(subsystem) => subsystem.reload_a_data(src),
-            Self::SwEffect(sw_effect) => sw_effect.reload_a_data(src),
+            Self::Autocharge(autocharge) => autocharge.update_a_data(src),
+            Self::Booster(booster) => booster.update_a_data(src),
+            Self::Character(character) => character.update_a_data(src),
+            Self::Charge(charge) => charge.update_a_data(src),
+            Self::Drone(drone) => drone.update_a_data(src),
+            Self::Fighter(fighter) => fighter.update_a_data(src),
+            Self::FwEffect(fw_effect) => fw_effect.update_a_data(src),
+            Self::Implant(implant) => implant.update_a_data(src),
+            Self::Module(module) => module.update_a_data(src),
+            Self::ProjEffect(proj_effect) => proj_effect.update_a_data(src),
+            Self::Rig(rig) => rig.update_a_data(src),
+            Self::Ship(ship) => ship.update_a_data(src),
+            Self::Skill(skill) => skill.update_a_data(src),
+            Self::Stance(stance) => stance.update_a_data(src),
+            Self::Subsystem(subsystem) => subsystem.update_a_data(src),
+            Self::SwEffect(sw_effect) => sw_effect.update_a_data(src),
         }
     }
     pub(in crate::sol) fn is_loaded(&self) -> bool {

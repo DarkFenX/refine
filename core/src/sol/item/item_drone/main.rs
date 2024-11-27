@@ -2,15 +2,14 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{update_a_data_mutated, SolEffectModes, SolItemBase, SolItemMutationInternal, SolItemState, SolProjs},
+    sol::item::{SolEffectModes, SolItemBaseMutable, SolItemMutation, SolItemState, SolProjs},
     src::Src,
     util::{Named, StMap},
 };
 
 #[derive(Clone)]
 pub(in crate::sol) struct SolDrone {
-    base: SolItemBase,
-    mutation: Option<SolItemMutationInternal>,
+    base: SolItemBaseMutable,
     fit_id: SolFitId,
     projs: SolProjs,
 }
@@ -21,10 +20,10 @@ impl SolDrone {
         type_id: EItemId,
         fit_id: SolFitId,
         state: SolItemState,
+        mutation: Option<SolItemMutation>,
     ) -> Self {
         Self {
-            base: SolItemBase::new(src, id, type_id, state),
-            mutation: None,
+            base: SolItemBaseMutable::new(src, id, type_id, state, mutation),
             fit_id,
             projs: SolProjs::new(),
         }
@@ -34,7 +33,7 @@ impl SolDrone {
         self.base.get_id()
     }
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
-        self.base.type_id
+        self.base.get_type_id()
     }
     pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.base.get_group_id()
@@ -69,8 +68,8 @@ impl SolDrone {
     pub(in crate::sol) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::sol::item) fn reload_a_data(&mut self, src: &Src) {
-        update_a_data_mutated(src, &mut self.base, &mut self.mutation);
+    pub(in crate::sol::item) fn update_a_data(&mut self, src: &Src) {
+        self.base.update_a_data(src);
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
