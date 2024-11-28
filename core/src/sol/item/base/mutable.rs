@@ -7,9 +7,14 @@ use crate::{
     util::StMap,
 };
 
-// Item mutable base stores all the data every mutable item should have
+// Item mutable base stores all the data every mutable item should have.
+//
+// Mutation of an item can have 2 states:
+// - Loaded - source had all the needed data which was stored on cache. In this case, item base
+// stores mutated item type, and base item type ID is stored on mutation cache;
+// - Not loaded - item base stores base item type.
 #[derive(Clone)]
-pub(in crate::sol) struct SolItemBaseMutable {
+pub(in crate::sol::item) struct SolItemBaseMutable {
     base: SolItemBase,
     mutation: Option<SolItemMutationData>,
 }
@@ -32,16 +37,6 @@ impl SolItemBaseMutable {
     pub(in crate::sol::item) fn get_type_id(&self) -> EItemId {
         self.base.get_type_id()
     }
-    pub(in crate::sol::item) fn get_base_type_id(&self) -> EItemId {
-        let mutation = match &self.mutation {
-            Some(mutation) => mutation,
-            None => return self.base.get_base_type_id(),
-        };
-        match mutation.is_valid() {
-            true => mutation.base_type_id,
-            false => self.base.get_base_type_id(),
-        }
-    }
     pub(in crate::sol::item) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
         self.base.get_group_id()
     }
@@ -53,8 +48,8 @@ impl SolItemBaseMutable {
             Some(mutation) => mutation,
             None => return self.base.get_attrs(),
         };
-        match &mutation.merged_attrs {
-            Some(merged_attrs) => Ok(merged_attrs),
+        match &mutation.cache {
+            Some(cache) => Ok(&cache.merged_attrs),
             None => self.base.get_attrs(),
         }
     }
@@ -85,79 +80,112 @@ impl SolItemBaseMutable {
         self.base.is_loaded()
     }
     pub(in crate::sol::item) fn update_a_data(&mut self, src: &Src) {
-        match &mut self.mutation {
-            Some(mutation) => {
-                // If mutation didn't find any data it needed, fall back to base item
-                if !update_a_data_internal(src, &mut self.base, mutation) {
-                    self.base.a_item = src.get_a_item(&mutation.base_type_id).cloned();
-                    mutation.merged_attrs = None
-                }
+        let mutation = match &mut self.mutation {
+            Some(mutation) => mutation,
+            // No mutation - just update base item
+            None => {
+                self.base.update_a_data(src);
+                return;
             }
-            None => self.base.update_a_data(src),
+        };
+        let base_type_id = match &mutation.cache {
+            Some(cache) => cache.base_type_id,
+            None => self.base.get_type_id(),
+        };
+        let base_a_item = match src.get_a_item(&base_type_id) {
+            Some(base_a_item) => base_a_item,
+            // No base item - invalidate mutated cache and use base item data we have, i.e. just ID
+            None => {
+                self.base.set_type_id(base_type_id);
+                self.base.remove_a_item();
+                mutation.cache = None;
+                return;
+            }
+        };
+        let a_mutator = match src.get_a_muta(&mutation.mutator_id) {
+            Some(a_mutator) => a_mutator,
+            // No mutator - invalidate mutated cache and use non-mutated item
+            None => {
+                self.base.set_type_id(base_type_id);
+                self.base.set_a_item(base_a_item.clone());
+                mutation.cache = None;
+                return;
+            }
+        };
+        let mutated_type_id = match a_mutator.item_map.get(&base_type_id) {
+            Some(mutated_type_id) => *mutated_type_id,
+            // No mutated item type ID - invalidate mutated cache and use non-mutated item
+            None => {
+                self.base.set_type_id(base_type_id);
+                self.base.set_a_item(base_a_item.clone());
+                mutation.cache = None;
+                return;
+            }
+        };
+        let mutated_a_item = match src.get_a_item(&mutated_type_id) {
+            Some(mutated_a_item) => mutated_a_item,
+            // No mutated item - invalidate mutated cache and use non-mutated item
+            None => {
+                self.base.set_type_id(base_type_id);
+                self.base.set_a_item(base_a_item.clone());
+                mutation.cache = None;
+                return;
+            }
+        };
+        // Compose attribute cache - mutated item attributes have priority
+        let mut attrs = base_a_item.attr_vals.clone();
+        for (attr_id, attr_val) in mutated_a_item.attr_vals.iter() {
+            attrs.insert(*attr_id, *attr_val);
         }
+        // Compose attribute cache - apply mutations
+        for (attr_id, attr_roll) in mutation.attr_ranges.iter() {
+            let val = match attrs.get(attr_id) {
+                Some(val) => *val,
+                None => continue,
+            };
+            if let Some(roll_range) = a_mutator.attr_mods.get(attr_id) {
+                let rolled_val = val * (roll_range.min_mult + attr_roll * (roll_range.max_mult - roll_range.min_mult));
+                attrs.insert(*attr_id, rolled_val);
+            }
+        }
+        // Everything needed is at hand, update item
+        self.base.set_type_id(mutated_type_id);
+        self.base.set_a_item(mutated_a_item.clone());
+        mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, attrs))
     }
     // Mutation-specific methods
 }
 
-fn update_a_data_internal(src: &Src, base: &mut SolItemBase, mutation: &mut SolItemMutationData) -> bool {
-    let base_a_item = match src.get_a_item(&mutation.base_type_id) {
-        Some(base_a_item) => base_a_item,
-        None => return false,
-    };
-    let a_mutator = match src.get_a_muta(&mutation.mutator_id) {
-        Some(a_mutator) => a_mutator,
-        None => return false,
-    };
-    let mutated_type_id = match a_mutator.item_map.get(&mutation.base_type_id) {
-        Some(mutated_type_id) => *mutated_type_id,
-        None => return false,
-    };
-    let mutated_a_item = match src.get_a_item(&mutated_type_id) {
-        Some(mutated_a_item) => mutated_a_item,
-        None => return false,
-    };
-    base.a_item = Some(mutated_a_item.clone());
-    // Mutated item attributes have priority
-    let mut attrs = base_a_item.attr_vals.clone();
-    for (attr_id, attr_val) in mutated_a_item.attr_vals.iter() {
-        attrs.insert(*attr_id, *attr_val);
-    }
-    // Apply mutations
-    for (attr_id, attr_roll) in mutation.attr_ranges.iter() {
-        let val = match attrs.get(attr_id) {
-            Some(val) => *val,
-            None => continue,
-        };
-        if let Some(roll_range) = a_mutator.attr_mods.get(attr_id) {
-            let rolled_val = val * (roll_range.min_mult + attr_roll * (roll_range.max_mult - roll_range.min_mult));
-            attrs.insert(*attr_id, rolled_val);
-        }
-    }
-    mutation.merged_attrs = Some(attrs);
-    true
-}
-
 #[derive(Clone)]
-pub(in crate::sol) struct SolItemMutationData {
-    // Following fields are part of item skeleton
-    pub(in crate::sol::item) base_type_id: EItemId,
-    pub(in crate::sol::item) mutator_id: EMutaId,
-    pub(in crate::sol::item) attr_ranges: StMap<EAttrId, MutaRange>,
-    // Following fields are stored for fast access / optimization
-    // None means mutated item is invalid (some data was not available)
-    merged_attrs: Option<StMap<EAttrId, AttrVal>>,
+struct SolItemMutationData {
+    // User-defined data
+    mutator_id: EMutaId,
+    attr_ranges: StMap<EAttrId, MutaRange>,
+    // Source-dependent data
+    cache: Option<SolItemMutationDataCache>,
 }
 impl SolItemMutationData {
-    pub(in crate::sol::item) fn new(base_type_id: EItemId, mutator_id: EMutaId) -> Self {
+    fn new(mutator_id: EMutaId) -> Self {
         Self {
-            base_type_id,
             mutator_id,
             attr_ranges: StMap::new(),
-            merged_attrs: None,
+            cache: None,
         }
     }
-    fn is_valid(&self) -> bool {
-        self.merged_attrs.is_some()
+}
+
+// Container for data which is source-dependent
+#[derive(Clone)]
+struct SolItemMutationDataCache {
+    base_type_id: EItemId,
+    merged_attrs: StMap<EAttrId, AttrVal>,
+}
+impl SolItemMutationDataCache {
+    fn new(base_type_id: EItemId, merged_attrs: StMap<EAttrId, AttrVal>) -> Self {
+        Self {
+            base_type_id,
+            merged_attrs,
+        }
     }
 }
 

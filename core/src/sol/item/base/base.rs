@@ -9,14 +9,14 @@ use crate::{
 
 // Item base stores all the data every item should have
 #[derive(Clone)]
-pub(in crate::sol) struct SolItemBase {
-    // Following fields are part of item skeleton
+pub(in crate::sol::item) struct SolItemBase {
+    // User-defined data
     id: SolItemId,
     type_id: EItemId,
     state: SolItemState,
     effect_modes: SolEffectModes,
-    // Following fields are stored for fast access / optimization
-    pub(in crate::sol::item::base) a_item: Option<ad::ArcItem>,
+    // Source-dependent data
+    cache: Option<SolItemBaseCache>,
 }
 impl SolItemBase {
     pub(in crate::sol::item) fn new(src: &Src, id: SolItemId, type_id: EItemId, state: SolItemState) -> Self {
@@ -25,16 +25,13 @@ impl SolItemBase {
             type_id,
             state,
             effect_modes: SolEffectModes::new(),
-            a_item: src.get_a_item(&type_id).cloned(),
+            cache: src.get_a_item(&type_id).map(|v| SolItemBaseCache::new(v.clone())),
         }
     }
     pub(in crate::sol::item) fn get_id(&self) -> SolItemId {
         self.id
     }
     pub(in crate::sol::item) fn get_type_id(&self) -> EItemId {
-        self.type_id
-    }
-    pub(in crate::sol::item) fn get_base_type_id(&self) -> EItemId {
         self.type_id
     }
     pub(in crate::sol::item) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
@@ -70,12 +67,38 @@ impl SolItemBase {
         &mut self.effect_modes
     }
     pub(in crate::sol::item) fn is_loaded(&self) -> bool {
-        self.a_item.is_some()
+        self.cache.is_some()
     }
     pub(in crate::sol::item) fn update_a_data(&mut self, src: &Src) {
-        self.a_item = src.get_a_item(&self.type_id).cloned();
+        self.cache = src.get_a_item(&self.type_id).map(|v| SolItemBaseCache::new(v.clone()));
+    }
+    // Non-public methods
+    pub(in crate::sol::item::base) fn set_type_id(&mut self, type_id: EItemId) {
+        self.type_id = type_id;
+    }
+    pub(in crate::sol::item::base) fn set_a_item(&mut self, a_item: ad::ArcItem) {
+        match &mut self.cache {
+            Some(cache) => cache.a_item = a_item,
+            None => self.cache = Some(SolItemBaseCache::new(a_item)),
+        }
+    }
+    pub(in crate::sol::item::base) fn remove_a_item(&mut self) {
+        self.cache = None;
     }
     fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
-        self.a_item.as_ref().ok_or_else(|| ItemLoadedError::new(self.id))
+        match &self.cache {
+            Some(cache) => Ok(&cache.a_item),
+            None => Err(ItemLoadedError::new(self.id)),
+        }
+    }
+}
+
+#[derive(Clone)]
+struct SolItemBaseCache {
+    a_item: ad::ArcItem,
+}
+impl SolItemBaseCache {
+    fn new(a_item: ad::ArcItem) -> Self {
+        Self { a_item }
     }
 }
