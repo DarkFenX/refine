@@ -98,6 +98,10 @@ impl SolItemBase {
     pub(in crate::sol::item::base) fn set_type_id(&mut self, type_id: EItemId) {
         self.type_id = type_id;
     }
+    pub(in crate::sol::item::base) fn set_type_id_and_reload(&mut self, type_id: EItemId, src: &Src) {
+        self.set_type_id(type_id);
+        self.update_a_data(src);
+    }
     pub(in crate::sol::item::base) fn set_a_item(&mut self, a_item: ad::ArcItem) {
         match &mut self.cache {
             Some(cache) => cache.a_item = a_item,

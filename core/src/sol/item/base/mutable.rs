@@ -81,7 +81,7 @@ impl SolItemBaseMutable {
         // Make proper mutated item once we have all the data
         let mut attrs = merge_attrs(base_a_item, mutated_a_item);
         let mut mutation = convert_full(mutation_request, &attrs, a_mutator);
-        apply_mutations(&mut attrs, a_mutator, &mutation.attr_ranges);
+        apply_attr_mutations(&mut attrs, a_mutator, &mutation.attr_ranges);
         mutation.cache = Some(SolItemMutationDataCache::new(type_id, attrs));
         Self {
             base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
@@ -191,13 +191,32 @@ impl SolItemBaseMutable {
         };
         // Compose attribute cache
         let mut attrs = merge_attrs(base_a_item, mutated_a_item);
-        apply_mutations(&mut attrs, a_mutator, &mutation.attr_ranges);
+        apply_attr_mutations(&mut attrs, a_mutator, &mutation.attr_ranges);
         // Everything needed is at hand, update item
         self.base.set_type_id(mutated_type_id);
         self.base.set_a_item(mutated_a_item.clone());
         mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, attrs))
     }
     // Mutation-specific methods
+    pub(in crate::sol::item) fn mutate(&mut self) {}
+    pub(in crate::sol::item) fn change_mutation(&mut self) {}
+    pub(in crate::sol::item) fn unmutate(&mut self, src: &Src) {
+        let mutation = match &mut self.mutation {
+            Some(mutation) => mutation,
+            None => return,
+        };
+        match &mutation.cache {
+            // If cache is valid, base type ID is stored there
+            Some(cache) => {
+                let type_id = cache.base_type_id;
+                self.base.set_type_id_and_reload(type_id, src);
+                self.mutation = None;
+            }
+            // No cache - mutation was not valid and base item was used already, just unassign
+            // mutation in this case
+            None => self.mutation = None,
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -249,7 +268,7 @@ fn merge_attrs(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem) -> StMap<EAt
     attrs
 }
 
-fn apply_mutations(
+fn apply_attr_mutations(
     attrs: &mut StMap<EAttrId, AttrVal>,
     a_mutator: &ad::AMuta,
     attr_ranges: &StMap<EAttrId, MutaRange>,
