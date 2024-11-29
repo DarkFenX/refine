@@ -73,6 +73,28 @@ impl SolItemBase {
         self.cache = src.get_a_item(&self.type_id).map(|v| SolItemBaseCache::new(v.clone()));
     }
     // Non-public methods
+    pub(in crate::sol::item::base) fn new_with_id_unloaded(
+        id: SolItemId,
+        type_id: EItemId,
+        state: SolItemState,
+    ) -> Self {
+        Self {
+            id,
+            type_id,
+            state,
+            effect_modes: SolEffectModes::new(),
+            cache: None,
+        }
+    }
+    pub(in crate::sol::item::base) fn new_with_item(id: SolItemId, a_item: ad::ArcItem, state: SolItemState) -> Self {
+        Self {
+            id,
+            type_id: a_item.id,
+            state,
+            effect_modes: SolEffectModes::new(),
+            cache: Some(SolItemBaseCache::new(a_item)),
+        }
+    }
     pub(in crate::sol::item::base) fn set_type_id(&mut self, type_id: EItemId) {
         self.type_id = type_id;
     }

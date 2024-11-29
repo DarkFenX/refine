@@ -24,11 +24,68 @@ impl SolItemBaseMutable {
         id: SolItemId,
         type_id: EItemId,
         state: SolItemState,
-        mutation: Option<SolItemMutation>,
+        mutation_request: Option<SolItemMutation>,
     ) -> Self {
+        let mutation_request = match mutation_request {
+            Some(mutation_request) => mutation_request,
+            // No mutation - regular non-mutated item setup
+            None => {
+                return Self {
+                    base: SolItemBase::new(src, id, type_id, state),
+                    mutation: None,
+                }
+            }
+        };
+        let base_a_item = match src.get_a_item(&type_id) {
+            Some(base_a_item) => base_a_item,
+            // No base item - base unloaded item with basic mutation data
+            None => {
+                return Self {
+                    base: SolItemBase::new_with_id_unloaded(id, type_id, state),
+                    mutation: Some(convert_basic(mutation_request)),
+                }
+            }
+        };
+        let a_mutator = match src.get_a_muta(&mutation_request.mutator_id) {
+            Some(a_mutator) => a_mutator,
+            // No mutator - base loaded item with basic mutation data
+            None => {
+                return Self {
+                    base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
+                    mutation: Some(convert_basic(mutation_request)),
+                }
+            }
+        };
+        let mutated_type_id = match a_mutator.item_map.get(&type_id) {
+            Some(mutated_type_id) => *mutated_type_id,
+            // No mutated item type ID - base item, but with more mutation data. Unlike on previous
+            // steps, here it's possible to convert absolute mutated attribute values into ranges
+            // using base item attributes as base values
+            None => {
+                return Self {
+                    base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
+                    mutation: Some(convert_full(mutation_request, &base_a_item.attr_vals, a_mutator)),
+                }
+            }
+        };
+        let mutated_a_item = match src.get_a_item(&mutated_type_id) {
+            Some(mutated_a_item) => mutated_a_item,
+            // No mutated item - same as previous step, i.e. base item, but with more mutation data
+            None => {
+                return Self {
+                    base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
+                    mutation: Some(convert_full(mutation_request, &base_a_item.attr_vals, a_mutator)),
+                }
+            }
+        };
+        // Make proper mutated item once we have all the data
+        let mut attrs = merge_attrs(base_a_item, mutated_a_item);
+        let mut mutation = convert_full(mutation_request, &attrs, a_mutator);
+        apply_mutations(&mut attrs, a_mutator, &mutation.attr_ranges);
+        mutation.cache = Some(SolItemMutationDataCache::new(type_id, attrs));
         Self {
-            base: SolItemBase::new(src, id, type_id, state),
-            mutation: None,
+            base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
+            mutation: Some(mutation),
         }
     }
     pub(in crate::sol::item) fn get_id(&self) -> SolItemId {
@@ -132,22 +189,9 @@ impl SolItemBaseMutable {
                 return;
             }
         };
-        // Compose attribute cache - mutated item attributes have priority
-        let mut attrs = base_a_item.attr_vals.clone();
-        for (attr_id, attr_val) in mutated_a_item.attr_vals.iter() {
-            attrs.insert(*attr_id, *attr_val);
-        }
-        // Compose attribute cache - apply mutations
-        for (attr_id, attr_roll) in mutation.attr_ranges.iter() {
-            let val = match attrs.get(attr_id) {
-                Some(val) => *val,
-                None => continue,
-            };
-            if let Some(roll_range) = a_mutator.attr_mods.get(attr_id) {
-                let rolled_val = val * (roll_range.min_mult + attr_roll * (roll_range.max_mult - roll_range.min_mult));
-                attrs.insert(*attr_id, rolled_val);
-            }
-        }
+        // Compose attribute cache
+        let mut attrs = merge_attrs(base_a_item, mutated_a_item);
+        apply_mutations(&mut attrs, a_mutator, &mutation.attr_ranges);
         // Everything needed is at hand, update item
         self.base.set_type_id(mutated_type_id);
         self.base.set_a_item(mutated_a_item.clone());
@@ -172,6 +216,13 @@ impl SolItemMutationData {
             cache: None,
         }
     }
+    fn new_with_attrs(mutator_id: EMutaId, attr_ranges: StMap<EAttrId, MutaRange>) -> Self {
+        Self {
+            mutator_id,
+            attr_ranges,
+            cache: None,
+        }
+    }
 }
 
 // Container for data which is source-dependent
@@ -189,20 +240,76 @@ impl SolItemMutationDataCache {
     }
 }
 
-fn normalize_mutated_attr_val(
+fn merge_attrs(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem) -> StMap<EAttrId, AttrVal> {
+    let mut attrs = base_a_item.attr_vals.clone();
+    // Mutated item attributes have priority in case of collisions
+    for (attr_id, attr_val) in mutated_a_item.attr_vals.iter() {
+        attrs.insert(*attr_id, *attr_val);
+    }
+    attrs
+}
+
+fn apply_mutations(
+    attrs: &mut StMap<EAttrId, AttrVal>,
+    a_mutator: &ad::AMuta,
+    attr_ranges: &StMap<EAttrId, MutaRange>,
+) {
+    for (attr_id, attr_roll) in attr_ranges.iter() {
+        let val = match attrs.get(attr_id) {
+            Some(val) => *val,
+            None => continue,
+        };
+        if let Some(roll_range) = a_mutator.attr_mods.get(attr_id) {
+            let rolled_val = val * (roll_range.min_mult + attr_roll * (roll_range.max_mult - roll_range.min_mult));
+            attrs.insert(*attr_id, rolled_val);
+        }
+    }
+}
+
+fn convert_basic(mutation_request: SolItemMutation) -> SolItemMutationData {
+    SolItemMutationData::new_with_attrs(
+        mutation_request.mutator_id,
+        mutation_request
+            .attrs
+            .into_iter()
+            .filter_map(|(k, v)| match v {
+                SolItemAttrMutation::Range(range) => Some((k, range)),
+                // Cannot interpret mutated absolute value without extra context
+                SolItemAttrMutation::Value(_) => None,
+            })
+            .collect(),
+    )
+}
+
+fn convert_full(
+    mutation_request: SolItemMutation,
+    base_attrs: &StMap<EAttrId, AttrVal>,
+    a_mutator: &ad::AMuta,
+) -> SolItemMutationData {
+    SolItemMutationData::new_with_attrs(
+        mutation_request.mutator_id,
+        mutation_request
+            .attrs
+            .into_iter()
+            .filter_map(|(k, v)| normalize_mutated_attr_val_full(base_attrs, a_mutator, &k, v).map(|v| (k, v)))
+            .collect(),
+    )
+}
+
+fn normalize_mutated_attr_val_full(
+    base_attrs: &StMap<EAttrId, AttrVal>,
+    a_mutator: &ad::AMuta,
     attr_id: &EAttrId,
     value: SolItemAttrMutation,
-    base_item: &ad::AItem,
-    mutator: &ad::AMuta,
 ) -> Option<MutaRange> {
     match value {
         SolItemAttrMutation::Range(range) => Some(range),
         SolItemAttrMutation::Value(abs_value) => {
-            let base_value = match base_item.attr_vals.get(attr_id) {
+            let base_value = match base_attrs.get(attr_id) {
                 Some(v) => *v,
                 None => return None,
             };
-            let (min_mult, max_mult) = match mutator.attr_mods.get(attr_id) {
+            let (min_mult, max_mult) = match a_mutator.attr_mods.get(attr_id) {
                 Some(r) => (r.min_mult, r.max_mult),
                 None => return None,
             };
