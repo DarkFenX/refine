@@ -1,7 +1,7 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, EMutaId, MutaRange, SkillLevel, SolItemId},
-    err::basic::ItemLoadedError,
+    err::basic::{ItemLoadedError, ItemMutatedError, ItemNotMutatedError},
     sol::item::{SolEffectModes, SolItemAttrMutation, SolItemBase, SolItemMutation, SolItemState},
     src::Src,
     util::StMap,
@@ -198,24 +198,78 @@ impl SolItemBaseMutable {
         mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, attrs))
     }
     // Mutation-specific methods
-    pub(in crate::sol::item) fn mutate(&mut self) {}
+    pub(in crate::sol::item) fn mutate(
+        &mut self,
+        src: &Src,
+        mutation_request: SolItemMutation,
+    ) -> Result<(), ItemNotMutatedError> {
+        if self.mutation.is_some() {
+            return Err(ItemNotMutatedError::new(self.get_id()));
+        };
+        // Since item is not mutated, base type ID is always on non-mutated item base
+        let base_type_id = self.base.get_type_id();
+        let base_a_item = match self.base.get_a_item() {
+            Ok(base_a_item) => base_a_item,
+            // No base item - apply only basic mutation data
+            Err(_) => {
+                self.mutation = Some(convert_basic(mutation_request));
+                return Ok(());
+            }
+        };
+        let a_mutator = match src.get_a_muta(&mutation_request.mutator_id) {
+            Some(a_mutator) => a_mutator,
+            // No mutator - apply only basic mutation data
+            None => {
+                self.mutation = Some(convert_basic(mutation_request));
+                return Ok(());
+            }
+        };
+        let mutated_type_id = match a_mutator.item_map.get(&base_type_id) {
+            Some(mutated_type_id) => *mutated_type_id,
+            // No mutated item type ID - extended mutation data. Unlike on previous steps, here it's
+            // possible to convert absolute mutated attribute values into ranges using base item
+            // attributes as base values
+            None => {
+                self.mutation = Some(convert_full(mutation_request, &base_a_item.attr_vals, a_mutator));
+                return Ok(());
+            }
+        };
+        let mutated_a_item = match src.get_a_item(&mutated_type_id) {
+            Some(mutated_a_item) => mutated_a_item,
+            // No mutated item - same as previous step, i.e. extended mutation data
+            None => {
+                self.mutation = Some(convert_full(mutation_request, &base_a_item.attr_vals, a_mutator));
+                return Ok(());
+            }
+        };
+        // Since we have all the data now, apply mutation properly
+        let mut attrs = merge_attrs(base_a_item, mutated_a_item);
+        let mut mutation = convert_full(mutation_request, &attrs, a_mutator);
+        apply_attr_mutations(&mut attrs, a_mutator, &mutation.attr_ranges);
+        mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, attrs));
+        self.base.set_type_id(mutated_type_id);
+        self.base.set_a_item(mutated_a_item.clone());
+        self.mutation = Some(mutation);
+        Ok(())
+    }
     pub(in crate::sol::item) fn change_mutation(&mut self) {}
-    pub(in crate::sol::item) fn unmutate(&mut self, src: &Src) {
+    pub(in crate::sol::item) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
         let mutation = match &mut self.mutation {
             Some(mutation) => mutation,
-            None => return,
+            None => return Err(ItemMutatedError::new(self.get_id())),
         };
         match &mutation.cache {
             // If cache is valid, base type ID is stored there
             Some(cache) => {
                 let type_id = cache.base_type_id;
-                self.base.set_type_id_and_reload(type_id, src);
+                self.base.set_type_id_and_reload(src, type_id);
                 self.mutation = None;
             }
-            // No cache - mutation was not valid and base item was used already, just unassign
+            // No cache - mutation was not effective, and base item was used already. Just unassign
             // mutation in this case
             None => self.mutation = None,
-        }
+        };
+        Ok(())
     }
 }
 
