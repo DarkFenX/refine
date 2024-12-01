@@ -11,7 +11,7 @@ pub(in crate::adg::conv) fn conv_mutas(g_data: &GData) -> Vec<ad::AMuta> {
         a_muta.item_map.insert(e_muta.in_item_id, e_muta.out_item_id);
     }
     for e_attr_data in g_data.muta_attrs.iter() {
-        // We are interested in attribute modifiers only for mutaplasmids which have in-out item
+        // We are interested in attribute modifiers only for mutators which have in-out item
         // definitions
         if let Some(a_muta) = a_muta_map.get_mut(&e_attr_data.muta_id) {
             a_muta.attr_mods.insert(

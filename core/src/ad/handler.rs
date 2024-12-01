@@ -17,7 +17,7 @@ pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     fn get_attr(&self, id: &EAttrId) -> Option<&ArcAttr>;
     /// Get adapted effect.
     fn get_effect(&self, id: &EEffectId) -> Option<&ArcEffect>;
-    /// Get adapted mutaplasmid.
+    /// Get adapted mutator.
     fn get_muta(&self, id: &EMutaId) -> Option<&ArcMuta>;
     /// Get adapted warfare buff.
     fn get_buff(&self, id: &EBuffId) -> Option<&ArcBuff>;

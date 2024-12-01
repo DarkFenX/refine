@@ -1,6 +1,6 @@
 use crate::defs::AttrVal;
 
-/// Stores mutation range of specific attribute of specific mutaplasmid.
+/// Stores mutation range of specific attribute of specific mutator.
 pub struct AMutaAttrRange {
     /// Lower boundary of the modification range.
     pub min_mult: AttrVal,

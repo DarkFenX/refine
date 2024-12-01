@@ -139,7 +139,7 @@ fn get_item_kinds(a_item: &ad::AItem) -> Vec<ad::AItemKind> {
         kinds.push(ad::AItemKind::Rig);
     };
     if a_item.grp_id == ec::itemgrps::MUTAPLASMID {
-        kinds.push(ad::AItemKind::Mutaplasmid);
+        kinds.push(ad::AItemKind::Mutator);
     };
     if a_item.cat_id == ec::itemcats::SHIP {
         kinds.push(ad::AItemKind::Ship);

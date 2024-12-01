@@ -113,8 +113,8 @@ fn restore_item_data(alive: &mut GData, trash: &mut GData) -> bool {
     // item which is already "alive" is undesired.
     //
     // Extra notes on specific entities:
-    // - Mutaplasmid item conversions are restored for input items which are alive
-    // - Mutaplasmid attribute modifications are restored for alive mutaplasmids
+    // - Mutator item conversions are restored for input items which are alive
+    // - Mutator attribute modifications are restored for alive mutators
     move_data(&mut trash.item_attrs, &mut alive.item_attrs, |v| {
         item_ids.contains(&v.item_id)
     }) || move_data(&mut trash.item_effects, &mut alive.item_effects, |v| {

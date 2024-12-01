@@ -42,7 +42,7 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     fn get_effect(&self, id: &rc::EEffectId) -> Option<&rc::ad::ArcEffect> {
         self.storage_effects.get(&id)
     }
-    /// Get adapted mutaplasmid.
+    /// Get adapted mutator.
     fn get_muta(&self, id: &rc::EMutaId) -> Option<&rc::ad::ArcMuta> {
         self.storage_mutas.get(&id)
     }

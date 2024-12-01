@@ -107,7 +107,7 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
     fn get_effect(&self, id: &rc::EEffectId) -> Option<&rc::ad::ArcEffect> {
         self.storage_effects.get(&id)
     }
-    /// Get cached mutaplasmid.
+    /// Get cached mutator.
     fn get_muta(&self, id: &rc::EMutaId) -> Option<&rc::ad::ArcMuta> {
         self.storage_mutas.get(&id)
     }

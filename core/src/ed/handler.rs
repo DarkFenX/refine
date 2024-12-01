@@ -34,9 +34,9 @@ pub trait EveDataHandler: fmt::Debug {
     fn get_buffs(&self) -> EResult<EDataCont<EBuff>>;
     /// Get item skill requirements.
     fn get_item_skill_reqs(&self) -> EResult<EDataCont<EItemSkillReq>>;
-    /// Get mutaplasmid item conversions.
+    /// Get mutator item conversions.
     fn get_muta_item_convs(&self) -> EResult<EDataCont<EMutaItemConv>>;
-    /// Get mutaplasmid item modifications.
+    /// Get mutator item modifications.
     fn get_muta_attr_mods(&self) -> EResult<EDataCont<EMutaAttrMod>>;
     /// Get version of the data.
     fn get_data_version(&self) -> EResult<String>;

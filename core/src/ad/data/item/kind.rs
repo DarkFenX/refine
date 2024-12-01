@@ -10,7 +10,7 @@ pub enum AItemKind {
     ModHigh,
     ModLow,
     ModMid,
-    Mutaplasmid,
+    Mutator,
     Rig,
     Ship,
     Skill,
