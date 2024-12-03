@@ -24,6 +24,7 @@ impl HAddModuleCmd {
             (&self.add_mode).into(),
             self.type_id,
             (&self.state).into(),
+            None,
             self.charge_type_id,
         ) {
             Ok(core_module) => core_module,

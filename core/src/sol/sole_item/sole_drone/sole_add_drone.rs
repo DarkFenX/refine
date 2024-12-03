@@ -2,7 +2,7 @@ use crate::{
     defs::{EItemId, SolFitId},
     err::basic::{FitFoundError, ItemAllocError},
     sol::{
-        item::{SolDrone, SolItem, SolItemState},
+        item::{SolDrone, SolItem, SolItemMutation, SolItemState},
         item_info::SolDroneInfo,
         SolarSystem,
     },
@@ -14,9 +14,10 @@ impl SolarSystem {
         fit_id: SolFitId,
         type_id: EItemId,
         state: SolItemState,
+        mutation: Option<SolItemMutation>,
     ) -> Result<SolDroneInfo, AddDroneError> {
         let item_id = self.items.alloc_item_id()?;
-        let drone = SolDrone::new(&self.src, item_id, type_id, fit_id, state, None);
+        let drone = SolDrone::new(&self.src, item_id, type_id, fit_id, state, mutation);
         let info = self.make_drone_info(&drone);
         let item = SolItem::Drone(drone);
         let fit = self.fits.get_fit_mut(&fit_id)?;

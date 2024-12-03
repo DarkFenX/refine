@@ -2,7 +2,7 @@ use crate::{
     defs::{EItemId, SolFitId},
     err::basic::{FitFoundError, ItemAllocError, OrderedSlotError},
     sol::{
-        item::{SolCharge, SolItem, SolItemState, SolModule},
+        item::{SolCharge, SolItem, SolItemMutation, SolItemState, SolModule},
         item_info::SolModuleInfo,
         sole_item::misc::find_equip_pos,
         SolModRack, SolOrdAddMode, SolView, SolarSystem,
@@ -18,6 +18,7 @@ impl SolarSystem {
         pos_mode: SolOrdAddMode,
         type_id: EItemId,
         state: SolItemState,
+        mutation: Option<SolItemMutation>,
         charge_type_id: Option<EItemId>,
     ) -> Result<SolModuleInfo, AddModuleError> {
         let module_item_id = self.items.alloc_item_id()?;
@@ -50,7 +51,17 @@ impl SolarSystem {
             }
         };
         // Create module and add it to items, to ensure its ID is taken
-        let module = SolModule::new(&self.src, module_item_id, type_id, fit_id, state, rack, pos, None, None);
+        let module = SolModule::new(
+            &self.src,
+            module_item_id,
+            type_id,
+            fit_id,
+            state,
+            rack,
+            pos,
+            mutation,
+            None,
+        );
         let module_item = SolItem::Module(module);
         self.items.add_item(module_item);
         let mut charge_info = None;

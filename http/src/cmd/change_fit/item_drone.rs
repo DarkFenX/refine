@@ -15,7 +15,7 @@ impl HAddDroneCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
     ) -> Result<rc::SolDroneInfo, HExecError> {
-        let core_drone = match core_sol.add_drone(*fit_id, self.type_id, (&self.state).into()) {
+        let core_drone = match core_sol.add_drone(*fit_id, self.type_id, (&self.state).into(), None) {
             Ok(core_drone) => core_drone,
             Err(error) => {
                 return Err(match error {

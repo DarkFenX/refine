@@ -29,8 +29,8 @@ impl SolModule {
         state: SolItemState,
         rack: SolModRack,
         pos: Idx,
-        charge_id: Option<SolItemId>,
         mutation: Option<SolItemMutation>,
+        charge_id: Option<SolItemId>,
     ) -> Self {
         Self {
             base: SolItemBaseMutable::new(src, id, type_id, state, mutation),

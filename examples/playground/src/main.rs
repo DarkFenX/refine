@@ -77,6 +77,7 @@ fn main() {
                 1306,
                 SolItemState::Online,
                 None,
+                None,
             )
             .unwrap();
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
