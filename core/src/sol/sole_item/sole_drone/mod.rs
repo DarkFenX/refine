@@ -7,6 +7,7 @@ pub use sole_remove_drone::RemoveDroneError;
 pub use sole_remove_drone_proj::RemoveDroneProjError;
 pub use sole_set_drone_state::SetDroneStateError;
 
+mod misc;
 mod sole_add_drone;
 mod sole_add_drone_proj;
 mod sole_change_drone_proj;

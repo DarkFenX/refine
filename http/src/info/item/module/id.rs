@@ -17,7 +17,7 @@ impl HModuleInfoId {
         Self {
             id: core_module_info.id,
             charge: core_module_info
-                .charge_info
+                .charge
                 .as_ref()
                 .map(|v| HChargeInfo::mk_info(core_sol, v, item_mode)),
         }

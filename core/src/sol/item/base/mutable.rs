@@ -2,7 +2,10 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, EMutaId, MutaRoll, SkillLevel, SolItemId},
     err::basic::{ItemLoadedError, ItemMutatedError, ItemNotMutatedError},
-    sol::item::{SolEffectModes, SolItemAttrMutation, SolItemBase, SolItemMutation, SolItemState},
+    sol::{
+        item::{SolEffectModes, SolItemAttrMutation, SolItemBase, SolItemMutation, SolItemState},
+        item_info::{SolAttrMutationInfo, SolItemMutationInfo},
+    },
     src::Src,
     util::StMap,
 };
@@ -45,7 +48,7 @@ impl SolItemBaseMutable {
             None => {
                 return Self {
                     base: SolItemBase::new_with_id_unloaded(id, type_id, state),
-                    mutation: Some(convert_mutation_basic(mutation_request)),
+                    mutation: Some(convert_item_mutation_basic(mutation_request)),
                 }
             }
         };
@@ -55,7 +58,7 @@ impl SolItemBaseMutable {
             None => {
                 return Self {
                     base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
-                    mutation: Some(convert_mutation_basic(mutation_request)),
+                    mutation: Some(convert_item_mutation_basic(mutation_request)),
                 }
             }
         };
@@ -67,7 +70,7 @@ impl SolItemBaseMutable {
             None => {
                 return Self {
                     base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
-                    mutation: Some(convert_mutation_full(
+                    mutation: Some(convert_item_mutation_full(
                         mutation_request,
                         &base_a_item.attr_vals,
                         a_mutator,
@@ -82,7 +85,7 @@ impl SolItemBaseMutable {
             None => {
                 return Self {
                     base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
-                    mutation: Some(convert_mutation_full(
+                    mutation: Some(convert_item_mutation_full(
                         mutation_request,
                         &base_a_item.attr_vals,
                         a_mutator,
@@ -91,10 +94,10 @@ impl SolItemBaseMutable {
             }
         };
         // Make proper mutated item once we have all the data
-        let mut attrs = merge_attrs(base_a_item, mutated_a_item);
-        let mut item_mutation = convert_mutation_full(mutation_request, &attrs, a_mutator);
+        let mut attrs = get_unmutated_attr_values(base_a_item, mutated_a_item);
+        let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
-        item_mutation.cache = Some(SolItemMutationDataCache::new(type_id, attrs));
+        item_mutation.cache = Some(SolItemMutationDataCache::new(type_id, a_mutator.clone(), attrs));
         Self {
             base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
             mutation: Some(item_mutation),
@@ -202,14 +205,60 @@ impl SolItemBaseMutable {
             }
         };
         // Compose attribute cache
-        let mut attrs = merge_attrs(base_a_item, mutated_a_item);
+        let mut attrs = get_unmutated_attr_values(base_a_item, mutated_a_item);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
         self.base.set_type_id(mutated_type_id);
         self.base.set_a_item(mutated_a_item.clone());
-        item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, attrs))
+        item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, a_mutator.clone(), attrs))
     }
     // Mutation-specific methods
+    pub(in crate::sol::item) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {
+        let mutation = match &self.mutation {
+            Some(mutation) => mutation,
+            None => return None,
+        };
+        let mutation_cache = match &mutation.cache {
+            Some(mutation_cache) => mutation_cache,
+            None => return None,
+        };
+        let mut attr_infos = Vec::with_capacity(mutation_cache.mutator.attr_mods.len());
+        for (attr_id, mutation_range) in mutation_cache.mutator.attr_mods.iter() {
+            let value = match mutation_cache.merged_attrs.get(attr_id) {
+                Some(value) => value,
+                // No attribute value - can't proceed, since value is part of attribute info
+                None => continue,
+            };
+            match mutation.attr_rolls.get(attr_id) {
+                Some(roll) => {
+                    let attr_info = SolAttrMutationInfo::new(*attr_id, *roll, *value);
+                    attr_infos.push(attr_info);
+                }
+                // Nothing guarantees that rolls are set for all attributes mutable by currently set
+                // mutator. If that's the case, calculate roll value before exposing it
+                None => {
+                    // Since cache was set, base item and mutated item should be available
+                    let base_a_item = src.get_a_item(&mutation_cache.base_type_id).unwrap();
+                    let mutated_a_item = self.base.get_a_item().unwrap();
+                    // If there is a value in cached attributes, unmutated value has to be available
+                    let unmutated_value = get_unmutated_attr_value(base_a_item, mutated_a_item, &attr_id).unwrap();
+                    // In some fringe cases it's impossible to calculate roll value, but it's needed
+                    // for info; skip attribute mutation when it happens
+                    let roll = match normalize_attr_value(*value, unmutated_value, mutation_range) {
+                        Some(roll) => roll,
+                        None => continue,
+                    };
+                    let attr_info = SolAttrMutationInfo::new(*attr_id, roll, *value);
+                    attr_infos.push(attr_info);
+                }
+            }
+        }
+        Some(SolItemMutationInfo::new(
+            mutation_cache.base_type_id,
+            mutation.mutator_id,
+            attr_infos,
+        ))
+    }
     pub(in crate::sol::item) fn mutate(
         &mut self,
         src: &Src,
@@ -224,7 +273,7 @@ impl SolItemBaseMutable {
             Ok(base_a_item) => base_a_item,
             // No base item - discard absolute mutation values, and store the rest w/o applying
             Err(_) => {
-                self.mutation = Some(convert_mutation_basic(mutation_request));
+                self.mutation = Some(convert_item_mutation_basic(mutation_request));
                 return Ok(());
             }
         };
@@ -232,7 +281,7 @@ impl SolItemBaseMutable {
             Some(a_mutator) => a_mutator,
             // No mutator - discard absolute mutation values, and store the rest w/o applying
             None => {
-                self.mutation = Some(convert_mutation_basic(mutation_request));
+                self.mutation = Some(convert_item_mutation_basic(mutation_request));
                 return Ok(());
             }
         };
@@ -242,7 +291,7 @@ impl SolItemBaseMutable {
             // it's possible to convert absolute mutated attribute values into rolls using base item
             // attributes as unmutated values
             None => {
-                self.mutation = Some(convert_mutation_full(
+                self.mutation = Some(convert_item_mutation_full(
                     mutation_request,
                     &base_a_item.attr_vals,
                     a_mutator,
@@ -255,7 +304,7 @@ impl SolItemBaseMutable {
             // No mutated item - same as previous step, i.e. all the mutations applied on top of
             // base item attributes as unmutated values
             None => {
-                self.mutation = Some(convert_mutation_full(
+                self.mutation = Some(convert_item_mutation_full(
                     mutation_request,
                     &base_a_item.attr_vals,
                     a_mutator,
@@ -264,10 +313,10 @@ impl SolItemBaseMutable {
             }
         };
         // Since we have all the data now, apply mutation properly
-        let mut attrs = merge_attrs(base_a_item, mutated_a_item);
-        let mut item_mutation = convert_mutation_full(mutation_request, &attrs, a_mutator);
+        let mut attrs = get_unmutated_attr_values(base_a_item, mutated_a_item);
+        let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
-        item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, attrs));
+        item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, a_mutator.clone(), attrs));
         self.base.set_type_id(mutated_type_id);
         self.base.set_a_item(mutated_a_item.clone());
         self.mutation = Some(item_mutation);
@@ -301,28 +350,30 @@ impl SolItemBaseMutable {
         // for the source the cache was generated with, and this method is supposed to be called
         // with the same source
         let base_a_item = src.get_a_item(&mutation_cache.base_type_id).unwrap();
-        let a_mutator = src.get_a_muta(&item_mutation.mutator_id).unwrap();
-        let mutated_type_id = a_mutator.item_map.get(&mutation_cache.base_type_id).unwrap();
+        let mutated_type_id = mutation_cache
+            .mutator
+            .item_map
+            .get(&mutation_cache.base_type_id)
+            .unwrap();
         let mutated_a_item = src.get_a_item(&mutated_type_id).unwrap();
         // Process mutation requests, recording attributes whose values were changed for the item
         let mut changed_attrs = Vec::new();
         for (attr_id, attr_mutation_request) in attr_mutation_requests.into_iter() {
-            // Get unmutated value of the attribute using the same logic as during attribute merge
-            // (mutated item attribute value gets priority)
-            let unmutated_value = match mutated_a_item.attr_vals.get(&attr_id) {
-                Some(unmutated_value) => Some(*unmutated_value),
-                None => base_a_item.attr_vals.get(&attr_id).copied(),
-            };
+            let unmutated_value = get_unmutated_attr_value(base_a_item, mutated_a_item, &attr_id);
             let new_value = match attr_mutation_request {
                 // Mutation change request
                 Some(attr_mutation) => {
                     // Normalize request to roll
-                    let attr_roll =
-                        match normalize_roll_full_with_value(&attr_id, unmutated_value, a_mutator, attr_mutation) {
-                            Some(attr_roll) => attr_roll,
-                            // Silently skip mutations we can't do anything with
-                            None => continue,
-                        };
+                    let attr_roll = match normalize_attr_mutation_full_with_unmutated_value(
+                        &attr_id,
+                        unmutated_value,
+                        &mutation_cache.mutator,
+                        attr_mutation,
+                    ) {
+                        Some(attr_roll) => attr_roll,
+                        // Silently skip mutations we can't do anything with
+                        None => continue,
+                    };
                     // Update user-defined data
                     item_mutation.attr_rolls.insert(attr_id, attr_roll);
                     // Process source-dependent data and return new value
@@ -333,7 +384,7 @@ impl SolItemBaseMutable {
                         // updated user data, so just go to next attribute
                         None => continue,
                     };
-                    let roll_range = match a_mutator.attr_mods.get(&attr_id) {
+                    let roll_range = match mutation_cache.mutator.attr_mods.get(&attr_id) {
                         Some(roll_range) => roll_range,
                         // No roll range now means there couldn't be any mutated value earlier as
                         // well, regardless of user-defined roll data, thus attribute value cannot
@@ -415,38 +466,40 @@ impl SolItemMutationData {
 #[derive(Clone)]
 struct SolItemMutationDataCache {
     base_type_id: EItemId,
+    mutator: ad::ArcMuta,
     merged_attrs: StMap<EAttrId, AttrVal>,
 }
 impl SolItemMutationDataCache {
-    fn new(base_type_id: EItemId, merged_attrs: StMap<EAttrId, AttrVal>) -> Self {
+    fn new(base_type_id: EItemId, mutator: ad::ArcMuta, merged_attrs: StMap<EAttrId, AttrVal>) -> Self {
         Self {
             base_type_id,
+            mutator,
             merged_attrs,
         }
     }
 }
 
 // Basic conversion
-fn convert_mutation_basic(mutation_request: SolItemMutation) -> SolItemMutationData {
+fn convert_item_mutation_basic(mutation_request: SolItemMutation) -> SolItemMutationData {
     SolItemMutationData::new_with_attrs(
         mutation_request.mutator_id,
         mutation_request
             .attrs
             .into_iter()
-            .filter_map(|(k, v)| normalize_roll_simple(v).map(|v| (k, v)))
+            .filter_map(|(k, v)| normalize_attr_mutation_simple(v).map(|v| (k, v)))
             .collect(),
     )
 }
 
-fn normalize_roll_simple(value: SolItemAttrMutation) -> Option<MutaRoll> {
+fn normalize_attr_mutation_simple(value: SolItemAttrMutation) -> Option<MutaRoll> {
     match value {
-        SolItemAttrMutation::Roll(roll_value) => Some(roll_value),
+        SolItemAttrMutation::Roll(roll_value) => Some(AttrVal::max(0.0, AttrVal::min(1.0, roll_value))),
         SolItemAttrMutation::Absolute(_) => None,
     }
 }
 
 // Full conversion
-fn convert_mutation_full(
+fn convert_item_mutation_full(
     mutation_request: SolItemMutation,
     unmutated_attrs: &StMap<EAttrId, AttrVal>,
     a_mutator: &ad::AMuta,
@@ -456,12 +509,14 @@ fn convert_mutation_full(
         mutation_request
             .attrs
             .into_iter()
-            .filter_map(|(k, v)| normalize_roll_full_with_values(&k, unmutated_attrs, a_mutator, v).map(|v| (k, v)))
+            .filter_map(|(k, v)| {
+                normalize_attr_mutation_full_with_unmutated_values(&k, unmutated_attrs, a_mutator, v).map(|v| (k, v))
+            })
             .collect(),
     )
 }
 
-fn normalize_roll_full_with_values(
+fn normalize_attr_mutation_full_with_unmutated_values(
     attr_id: &EAttrId,
     unmutated_attrs: &StMap<EAttrId, AttrVal>,
     a_mutator: &ad::AMuta,
@@ -474,18 +529,16 @@ fn normalize_roll_full_with_values(
                 Some(unmutated_value) => *unmutated_value,
                 None => return None,
             };
-            let (min_mult, max_mult) = match a_mutator.attr_mods.get(attr_id) {
-                Some(r) => (r.min_mult, r.max_mult),
+            let mutation_range = match a_mutator.attr_mods.get(attr_id) {
+                Some(mutation_range) => mutation_range,
                 None => return None,
             };
-            let min_value = unmutated_value * min_mult;
-            let max_value = unmutated_value * max_mult;
-            Some((absolute - min_value) / (max_value - min_value))
+            normalize_attr_value(absolute, unmutated_value, mutation_range)
         }
     }
 }
 
-fn normalize_roll_full_with_value(
+fn normalize_attr_mutation_full_with_unmutated_value(
     attr_id: &EAttrId,
     unmutated_value: Option<AttrVal>,
     a_mutator: &ad::AMuta,
@@ -498,15 +551,27 @@ fn normalize_roll_full_with_value(
                 Some(unmutated_value) => unmutated_value,
                 None => return None,
             };
-            let (min_mult, max_mult) = match a_mutator.attr_mods.get(attr_id) {
-                Some(r) => (r.min_mult, r.max_mult),
+            let mutation_range = match a_mutator.attr_mods.get(attr_id) {
+                Some(mutation_range) => mutation_range,
                 None => return None,
             };
-            let min_value = unmutated_value * min_mult;
-            let max_value = unmutated_value * max_mult;
-            Some((absolute - min_value) / (max_value - min_value))
+            normalize_attr_value(absolute, unmutated_value, mutation_range)
         }
     }
+}
+
+fn normalize_attr_value(
+    absolute_value: AttrVal,
+    unmutated_value: AttrVal,
+    mutation_range: &ad::AMutaAttrRange,
+) -> Option<MutaRoll> {
+    if mutation_range.min_mult == mutation_range.max_mult {
+        return None;
+    }
+    let min_value = unmutated_value * mutation_range.min_mult;
+    let max_value = unmutated_value * mutation_range.max_mult;
+    let value = (absolute_value - min_value) / (max_value - min_value);
+    Some(AttrVal::max(0.0, AttrVal::min(1.0, value)))
 }
 
 // Attribute mutations
@@ -532,7 +597,14 @@ fn mutate_attr_value(unmutated_value: AttrVal, roll_range: &ad::AMutaAttrRange, 
 }
 
 // Misc functions
-fn merge_attrs(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem) -> StMap<EAttrId, AttrVal> {
+fn get_unmutated_attr_value(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem, attr_id: &EAttrId) -> Option<AttrVal> {
+    match mutated_a_item.attr_vals.get(&attr_id) {
+        Some(unmutated_value) => Some(*unmutated_value),
+        None => base_a_item.attr_vals.get(&attr_id).copied(),
+    }
+}
+
+fn get_unmutated_attr_values(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem) -> StMap<EAttrId, AttrVal> {
     let mut attrs = base_a_item.attr_vals.clone();
     // Mutated item attributes have priority in case of collisions
     for (attr_id, attr_val) in mutated_a_item.attr_vals.iter() {
@@ -556,7 +628,12 @@ fn change_mutation_attrs_ineffective(
             for (attr_id, attr_mutation_request) in attr_mutation_requests.into_iter() {
                 match attr_mutation_request {
                     Some(val) => {
-                        if let Some(val) = normalize_roll_full_with_values(&attr_id, base_item_attrs, a_mutator, val) {
+                        if let Some(val) = normalize_attr_mutation_full_with_unmutated_values(
+                            &attr_id,
+                            base_item_attrs,
+                            a_mutator,
+                            val,
+                        ) {
                             item_mutation.attr_rolls.insert(attr_id, val);
                         }
                     }
@@ -572,7 +649,7 @@ fn change_mutation_attrs_ineffective(
             for (attr_id, attr_mutation_request) in attr_mutation_requests.into_iter() {
                 match attr_mutation_request {
                     Some(val) => {
-                        if let Some(val) = normalize_roll_simple(val) {
+                        if let Some(val) = normalize_attr_mutation_simple(val) {
                             item_mutation.attr_rolls.insert(attr_id, val);
                         }
                     }

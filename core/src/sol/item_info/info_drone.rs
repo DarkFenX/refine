@@ -2,8 +2,9 @@ use crate::{
     defs::{EItemId, SolFitId, SolItemId},
     sol::{
         item::{SolDrone, SolItemState},
-        item_info::SolProjInfo,
+        item_info::{SolItemMutationInfo, SolProjInfo},
     },
+    src::Src,
 };
 
 pub struct SolDroneInfo {
@@ -11,26 +12,34 @@ pub struct SolDroneInfo {
     pub type_id: EItemId,
     pub fit_id: SolFitId,
     pub state: SolItemState,
+    pub mutation: Option<SolItemMutationInfo>,
     pub projs: Vec<SolProjInfo>,
 }
 impl SolDroneInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, state: SolItemState, projs: Vec<SolProjInfo>) -> Self {
+    fn new(
+        id: SolItemId,
+        type_id: EItemId,
+        fit_id: SolFitId,
+        state: SolItemState,
+        mutation: Option<SolItemMutationInfo>,
+        projs: Vec<SolProjInfo>,
+    ) -> Self {
         Self {
             id,
             type_id,
             fit_id,
             state,
+            mutation,
             projs,
         }
     }
-}
-impl From<&SolDrone> for SolDroneInfo {
-    fn from(sol_drone: &SolDrone) -> Self {
+    pub(in crate::sol) fn from_drone_with_source(src: &Src, sol_drone: &SolDrone) -> Self {
         SolDroneInfo::new(
             sol_drone.get_id(),
             sol_drone.get_type_id(),
             sol_drone.get_fit_id(),
             sol_drone.get_state(),
+            sol_drone.get_mutation_info(src),
             sol_drone
                 .get_projs()
                 .iter()

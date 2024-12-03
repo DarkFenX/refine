@@ -108,12 +108,12 @@ impl SolarSystem {
         // Add module and charge to services
         let module_item = self.items.get_item(&module_item_id).unwrap();
         let module = module_item.get_module().unwrap();
-        let module_info = SolModuleInfo::from_mod_and_charge(module, charge_info);
+        let module_info = SolModuleInfo::from_mod_and_charge_with_source(&self.src, module, charge_info);
         self.svcs.add_item(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             module_item,
         );
-        if let Some(charge_info) = &module_info.charge_info {
+        if let Some(charge_info) = &module_info.charge {
             self.add_item_id_to_svcs(&charge_info.id);
         }
         Ok(module_info)

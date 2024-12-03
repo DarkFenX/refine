@@ -17,7 +17,7 @@ impl SolarSystem {
     ) -> Result<SolDroneInfo, AddDroneError> {
         let item_id = self.items.alloc_item_id()?;
         let drone = SolDrone::new(&self.src, item_id, type_id, fit_id, state, None);
-        let info = SolDroneInfo::from(&drone);
+        let info = self.make_drone_info(&drone);
         let item = SolItem::Drone(drone);
         let fit = self.fits.get_fit_mut(&fit_id)?;
         fit.drones.insert(item_id);

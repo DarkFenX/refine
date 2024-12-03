@@ -2,9 +2,10 @@ use crate::{
     defs::{EItemId, Idx, SolFitId, SolItemId},
     sol::{
         item::{SolItemState, SolModule},
-        item_info::{SolChargeInfo, SolProjInfo},
+        item_info::{SolChargeInfo, SolItemMutationInfo, SolProjInfo},
         SolModRack,
     },
+    src::Src,
 };
 
 pub struct SolModuleInfo {
@@ -14,7 +15,8 @@ pub struct SolModuleInfo {
     pub state: SolItemState,
     pub rack: SolModRack,
     pub pos: Idx,
-    pub charge_info: Option<SolChargeInfo>,
+    pub mutation: Option<SolItemMutationInfo>,
+    pub charge: Option<SolChargeInfo>,
     pub projs: Vec<SolProjInfo>,
 }
 impl SolModuleInfo {
@@ -25,7 +27,8 @@ impl SolModuleInfo {
         state: SolItemState,
         rack: SolModRack,
         pos: Idx,
-        charge_info: Option<SolChargeInfo>,
+        mutation: Option<SolItemMutationInfo>,
+        charge: Option<SolChargeInfo>,
         projs: Vec<SolProjInfo>,
     ) -> Self {
         Self {
@@ -35,11 +38,16 @@ impl SolModuleInfo {
             state,
             rack,
             pos,
-            charge_info,
+            mutation,
+            charge,
             projs,
         }
     }
-    pub(in crate::sol) fn from_mod_and_charge(sol_module: &SolModule, charge_info: Option<SolChargeInfo>) -> Self {
+    pub(in crate::sol) fn from_mod_and_charge_with_source(
+        src: &Src,
+        sol_module: &SolModule,
+        charge_info: Option<SolChargeInfo>,
+    ) -> Self {
         SolModuleInfo::new(
             sol_module.get_id(),
             sol_module.get_type_id(),
@@ -47,6 +55,7 @@ impl SolModuleInfo {
             sol_module.get_state(),
             sol_module.get_rack(),
             sol_module.get_pos(),
+            sol_module.get_mutation_info(src),
             charge_info,
             sol_module
                 .get_projs()

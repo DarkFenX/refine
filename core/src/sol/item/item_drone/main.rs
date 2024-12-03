@@ -2,7 +2,10 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     err::basic::ItemLoadedError,
-    sol::item::{SolEffectModes, SolItemBaseMutable, SolItemMutation, SolItemState, SolProjs},
+    sol::{
+        item::{SolEffectModes, SolItemBaseMutable, SolItemMutation, SolItemState, SolProjs},
+        item_info::SolItemMutationInfo,
+    },
     src::Src,
     util::{Named, StMap},
 };
@@ -70,6 +73,10 @@ impl SolDrone {
     }
     pub(in crate::sol::item) fn update_a_data(&mut self, src: &Src) {
         self.base.update_a_data(src);
+    }
+    // Mutation-specific methods
+    pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {
+        self.base.get_mutation_info(src)
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {

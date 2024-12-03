@@ -175,7 +175,7 @@ impl From<rc::SolSubsystemInfo> for HItemIdsResp {
 }
 impl From<rc::SolModuleInfo> for HItemIdsResp {
     fn from(core_module: rc::SolModuleInfo) -> Self {
-        HItemIdsResp::new(core_module.id, core_module.charge_info)
+        HItemIdsResp::new(core_module.id, core_module.charge)
     }
 }
 impl From<rc::SolRigInfo> for HItemIdsResp {

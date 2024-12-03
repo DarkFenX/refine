@@ -4,6 +4,7 @@ use crate::{
     err::basic::ItemLoadedError,
     sol::{
         item::{SolEffectModes, SolItemBaseMutable, SolItemMutation, SolItemState, SolProjs},
+        item_info::SolItemMutationInfo,
         SolModRack,
     },
     src::Src,
@@ -82,6 +83,10 @@ impl SolModule {
     }
     pub(in crate::sol::item) fn update_a_data(&mut self, src: &Src) {
         self.base.update_a_data(src);
+    }
+    // Mutation-specific methods
+    pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {
+        self.base.get_mutation_info(src)
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
