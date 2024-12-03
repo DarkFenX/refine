@@ -446,13 +446,6 @@ struct SolItemMutationData {
     cache: Option<SolItemMutationDataCache>,
 }
 impl SolItemMutationData {
-    fn new(mutator_id: EMutaId) -> Self {
-        Self {
-            mutator_id,
-            attr_rolls: StMap::new(),
-            cache: None,
-        }
-    }
     fn new_with_attrs(mutator_id: EMutaId, attr_rolls: StMap<EAttrId, MutaRoll>) -> Self {
         Self {
             mutator_id,
