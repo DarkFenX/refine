@@ -10,37 +10,16 @@ pub(crate) struct HModificationInfo {
     pub(crate) applied_val: rc::AttrVal,
     pub(crate) src: Vec<HAffectorInfo>,
 }
-impl HModificationInfo {
-    fn new(
-        op: HModOp,
-        initial_val: rc::AttrVal,
-        range_mult: Option<rc::AttrVal>,
-        resist_mult: Option<rc::AttrVal>,
-        stacking_mult: Option<rc::AttrVal>,
-        applied_val: rc::AttrVal,
-        src: Vec<HAffectorInfo>,
-    ) -> Self {
-        Self {
-            op,
-            initial_val,
-            range_mult,
-            resist_mult,
-            stacking_mult,
-            applied_val,
-            src,
-        }
-    }
-}
 impl From<&rc::SolModificationInfo> for HModificationInfo {
     fn from(core_mod_info: &rc::SolModificationInfo) -> Self {
-        Self::new(
-            (&core_mod_info.op).into(),
-            core_mod_info.initial_val,
-            core_mod_info.range_mult,
-            core_mod_info.resist_mult,
-            core_mod_info.stacking_mult,
-            core_mod_info.applied_val,
-            core_mod_info.affectors.iter().map(|v| v.into()).collect(),
-        )
+        Self {
+            op: (&core_mod_info.op).into(),
+            initial_val: core_mod_info.initial_val,
+            range_mult: core_mod_info.range_mult,
+            resist_mult: core_mod_info.resist_mult,
+            stacking_mult: core_mod_info.stacking_mult,
+            applied_val: core_mod_info.applied_val,
+            src: core_mod_info.affectors.iter().map(|v| v.into()).collect(),
+        }
     }
 }

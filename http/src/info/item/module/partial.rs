@@ -1,5 +1,8 @@
 use crate::{
-    info::{item::charge::HChargeInfo, HItemInfoMode},
+    info::{
+        item::{charge::HChargeInfo, mutation::HItemMutationInfo},
+        HItemInfoMode,
+    },
     shared::{HModRack, HState},
 };
 
@@ -15,6 +18,8 @@ pub(crate) struct HModuleInfoPartial {
     pub(crate) state: HState,
     pub(crate) rack: HModRack,
     pub(crate) pos: rc::Idx,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) mutation: Option<HItemMutationInfo>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) charge: Option<HChargeInfo>,
     #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
@@ -35,6 +40,7 @@ impl HModuleInfoPartial {
             state: (&core_module_info.state).into(),
             rack: (&core_module_info.rack).into(),
             pos: core_module_info.pos,
+            mutation: core_module_info.mutation.as_ref().map(|v| v.into()),
             charge: core_module_info
                 .charge
                 .as_ref()

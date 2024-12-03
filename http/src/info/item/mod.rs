@@ -26,6 +26,7 @@ mod fighter;
 mod fw_effect;
 mod implant;
 mod module;
+mod mutation;
 mod proj_effect;
 mod rig;
 mod ship;
