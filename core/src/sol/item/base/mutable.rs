@@ -223,7 +223,7 @@ impl SolItemBaseMutable {
             None => return None,
         };
         let mut attr_infos = Vec::with_capacity(mutation_cache.mutator.attr_mods.len());
-        for (attr_id, mutation_range) in mutation_cache.mutator.attr_mods.iter() {
+        for (attr_id, attr_mutation_range) in mutation_cache.mutator.attr_mods.iter() {
             let value = match mutation_cache.merged_attrs.get(attr_id) {
                 Some(value) => value,
                 // No attribute value - can't proceed, since value is part of attribute info
@@ -244,7 +244,7 @@ impl SolItemBaseMutable {
                     let unmutated_value = get_unmutated_attr_value(base_a_item, mutated_a_item, &attr_id).unwrap();
                     // In some fringe cases it's impossible to calculate roll value, but it's needed
                     // for info; skip attribute mutation when it happens
-                    let roll = match normalize_attr_value(*value, unmutated_value, mutation_range) {
+                    let roll = match normalize_attr_value(*value, unmutated_value, attr_mutation_range) {
                         Some(roll) => roll,
                         None => continue,
                     };
@@ -384,14 +384,14 @@ impl SolItemBaseMutable {
                         // updated user data, so just go to next attribute
                         None => continue,
                     };
-                    let roll_range = match mutation_cache.mutator.attr_mods.get(&attr_id) {
-                        Some(roll_range) => roll_range,
-                        // No roll range now means there couldn't be any mutated value earlier as
-                        // well, regardless of user-defined roll data, thus attribute value cannot
-                        // change. We already updated user data, so just go to next attribute
+                    let attr_mutation_range = match mutation_cache.mutator.attr_mods.get(&attr_id) {
+                        Some(attr_mutation_range) => attr_mutation_range,
+                        // No mutation range now means there couldn't be any mutated value earlier
+                        // as well, regardless of user-defined roll data, thus attribute value
+                        // cannot change. We already updated user data, so just go to next attribute
                         None => continue,
                     };
-                    mutate_attr_value(unmutated_value, roll_range, attr_roll)
+                    mutate_attr_value(unmutated_value, attr_mutation_range, attr_roll)
                 }
                 // Mutation removal request
                 None => {
@@ -580,20 +580,37 @@ fn apply_attr_mutations(
     a_mutator: &ad::AMuta,
     attr_rolls: &StMap<EAttrId, MutaRoll>,
 ) {
-    for (attr_id, attr_roll) in attr_rolls.iter() {
+    for (attr_id, attr_mutation_range) in a_mutator.attr_mods.iter() {
         let unmutated_value = match attrs.get(&attr_id) {
             Some(unmutated_value) => *unmutated_value,
             None => continue,
         };
-        if let Some(roll_range) = a_mutator.attr_mods.get(&attr_id) {
-            let mutated_val = mutate_attr_value(unmutated_value, roll_range, *attr_roll);
-            attrs.insert(*attr_id, mutated_val);
+        match attr_rolls.get(attr_id) {
+            Some(attr_roll) => {
+                let mutated_val = mutate_attr_value(unmutated_value, attr_mutation_range, *attr_roll);
+                attrs.insert(*attr_id, mutated_val);
+            }
+            // When no roll is defined by user, still limit possible values by what roll range is
+            None => {
+                let mutated_val = limit_attr_value(unmutated_value, attr_mutation_range);
+                attrs.insert(*attr_id, mutated_val);
+            }
         }
     }
 }
 
 fn mutate_attr_value(unmutated_value: AttrVal, roll_range: &ad::AMutaAttrRange, roll: MutaRoll) -> AttrVal {
     unmutated_value * (roll_range.min_mult + roll * (roll_range.max_mult - roll_range.min_mult))
+}
+
+fn limit_attr_value(unmutated_value: AttrVal, roll_range: &ad::AMutaAttrRange) -> AttrVal {
+    if roll_range.min_mult >= 1.0 {
+        return unmutated_value * roll_range.min_mult;
+    }
+    if roll_range.max_mult <= 1.0 {
+        return unmutated_value * roll_range.max_mult;
+    }
+    unmutated_value
 }
 
 // Misc functions
