@@ -1,5 +1,9 @@
 use crate::{
-    cmd::{change_item, shared::HAddMode, HCmdResp},
+    cmd::{
+        change_item,
+        shared::{HAddMode, HItemMutation},
+        HCmdResp,
+    },
     shared::{HModRack, HState},
     util::HExecError,
 };
@@ -10,6 +14,7 @@ pub(crate) struct HAddModuleCmd {
     add_mode: HAddMode,
     type_id: rc::EItemId,
     state: HState,
+    mutation: Option<HItemMutation>,
     charge_type_id: Option<rc::EItemId>,
 }
 impl HAddModuleCmd {
@@ -24,7 +29,7 @@ impl HAddModuleCmd {
             (&self.add_mode).into(),
             self.type_id,
             (&self.state).into(),
-            None,
+            self.mutation.as_ref().map(|v| v.into()),
             self.charge_type_id,
         ) {
             Ok(core_module) => core_module,

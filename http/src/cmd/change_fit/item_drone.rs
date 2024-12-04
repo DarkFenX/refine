@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_item, HCmdResp},
+    cmd::{change_item, shared::HItemMutation, HCmdResp},
     shared::HState,
     util::HExecError,
 };
@@ -8,6 +8,7 @@ use crate::{
 pub(crate) struct HAddDroneCmd {
     type_id: rc::EItemId,
     state: HState,
+    mutation: Option<HItemMutation>,
 }
 impl HAddDroneCmd {
     pub(in crate::cmd) fn execute(
@@ -15,7 +16,12 @@ impl HAddDroneCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
     ) -> Result<rc::SolDroneInfo, HExecError> {
-        let core_drone = match core_sol.add_drone(*fit_id, self.type_id, (&self.state).into(), None) {
+        let core_drone = match core_sol.add_drone(
+            *fit_id,
+            self.type_id,
+            (&self.state).into(),
+            self.mutation.as_ref().map(|v| v.into()),
+        ) {
             Ok(core_drone) => core_drone,
             Err(error) => {
                 return Err(match error {
