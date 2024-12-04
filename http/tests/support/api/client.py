@@ -14,7 +14,7 @@ from .types import SolarSystem
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-    from typing import Type, Union
+    from typing import Tuple, Type, Union
 
     from tests.support.consts import ApiEffMode, ApiModAddMode, ApiRack, ApiState
 
@@ -577,6 +577,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             type_id: int,
             rack: ApiRack,
             state: ApiState,
+            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], Type[Absent]],
             charge_type_id: Union[int, Type[Absent]],
             mode: ApiModAddMode,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -588,6 +589,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             'add_mode': mode,
             'type_id': type_id,
             'state': state}
+        conditional_insert(container=body, key='mutation', value=mutation)
         conditional_insert(container=body, key='charge_type_id', value=charge_type_id)
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
@@ -664,15 +666,23 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_id: str,
             type_id: int,
             state: ApiState,
+            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='drone',
-            sol_id=sol_id,
-            fit_id=fit_id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode)
+        body = {
+            'type': 'drone',
+            'fit_id': fit_id,
+            'type_id': type_id}
+        conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='mutation', value=mutation)
+        params = {}
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            self,
+            method='POST',
+            url=f'{self.__base_url}/sol/{sol_id}/item',
+            params=params,
+            json=body)
 
     def change_drone_request(
             self, *,

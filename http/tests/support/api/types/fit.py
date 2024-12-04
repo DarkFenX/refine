@@ -7,7 +7,7 @@ from tests.support.util import AttrDict, Absent
 from .item import Item
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Tuple, Type, Union
 
     from tests.support.api import ApiClient
     from tests.support.request import Request
@@ -309,6 +309,7 @@ class Fit(AttrDict):
             type_id: int,
             rack: ApiRack,
             state: ApiState,
+            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], Type[Absent]],
             charge_type_id: Union[int, Type[Absent]],
             mode: ApiModAddMode,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
@@ -319,6 +320,7 @@ class Fit(AttrDict):
             rack=rack,
             type_id=type_id,
             state=state,
+            mutation=mutation,
             charge_type_id=charge_type_id,
             mode=mode,
             item_info_mode=item_info_mode)
@@ -328,6 +330,7 @@ class Fit(AttrDict):
             type_id: int,
             rack: ApiRack = ApiRack.high,
             state: ApiState = ApiState.offline,
+            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], Type[Absent]] = Absent,
             charge_type_id: Union[int, Type[Absent]] = Absent,
             mode: ApiModAddMode = ApiModAddMode.equip,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
@@ -337,6 +340,7 @@ class Fit(AttrDict):
             rack=rack,
             type_id=type_id,
             state=state,
+            mutation=mutation,
             charge_type_id=charge_type_id,
             mode=mode,
             item_info_mode=item_info_mode).send()
@@ -381,6 +385,7 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             state: ApiState,
+            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], Type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
     ) -> Request:
         return self._client.add_drone_request(
@@ -388,16 +393,22 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
+            mutation=mutation,
             item_info_mode=item_info_mode)
 
     def add_drone(
             self, *,
             type_id,
             state: ApiState = ApiState.offline,
+            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
-        resp = self.add_drone_request(type_id=type_id, state=state, item_info_mode=item_info_mode).send()
+        resp = self.add_drone_request(
+            type_id=type_id,
+            state=state,
+            mutation=mutation,
+            item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
