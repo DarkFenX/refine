@@ -19,7 +19,7 @@ impl Into<rc::SolItemMutation> for &HItemMutation {
 
 #[derive(serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(in crate::cmd)enum HItemAttrMutation {
+pub(in crate::cmd) enum HItemAttrMutation {
     Roll(rc::MutaRoll),
     Absolute(rc::AttrVal),
 }

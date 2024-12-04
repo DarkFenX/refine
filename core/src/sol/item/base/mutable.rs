@@ -486,7 +486,7 @@ fn convert_item_mutation_basic(mutation_request: SolItemMutation) -> SolItemMuta
 
 fn normalize_attr_mutation_simple(value: SolItemAttrMutation) -> Option<MutaRoll> {
     match value {
-        SolItemAttrMutation::Roll(roll_value) => Some(AttrVal::max(0.0, AttrVal::min(1.0, roll_value))),
+        SolItemAttrMutation::Roll(roll) => Some(limit_roll(roll)),
         SolItemAttrMutation::Absolute(_) => None,
     }
 }
@@ -516,7 +516,7 @@ fn normalize_attr_mutation_full_with_unmutated_values(
     attr_mutation: SolItemAttrMutation,
 ) -> Option<MutaRoll> {
     match attr_mutation {
-        SolItemAttrMutation::Roll(roll) => Some(roll),
+        SolItemAttrMutation::Roll(roll) => Some(limit_roll(roll)),
         SolItemAttrMutation::Absolute(absolute) => {
             let unmutated_value = match unmutated_attrs.get(attr_id) {
                 Some(unmutated_value) => *unmutated_value,
@@ -538,7 +538,7 @@ fn normalize_attr_mutation_full_with_unmutated_value(
     attr_mutation: SolItemAttrMutation,
 ) -> Option<MutaRoll> {
     match attr_mutation {
-        SolItemAttrMutation::Roll(roll) => Some(roll),
+        SolItemAttrMutation::Roll(roll) => Some(limit_roll(roll)),
         SolItemAttrMutation::Absolute(absolute) => {
             let unmutated_value = match unmutated_value {
                 Some(unmutated_value) => unmutated_value,
@@ -564,7 +564,11 @@ fn normalize_attr_value(
     let min_value = unmutated_value * mutation_range.min_mult;
     let max_value = unmutated_value * mutation_range.max_mult;
     let value = (absolute_value - min_value) / (max_value - min_value);
-    Some(AttrVal::max(0.0, AttrVal::min(1.0, value)))
+    Some(limit_roll(value))
+}
+
+fn limit_roll(roll: MutaRoll) -> MutaRoll {
+    AttrVal::max(0.0, AttrVal::min(1.0, roll))
 }
 
 // Attribute mutations
