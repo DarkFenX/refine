@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     ad,
-    defs::{EAttrId, EBuffId, EEffectId, EItemId, EMutaId},
+    defs::{EAttrId, EBuffId, EEffectId, EItemId},
     ed,
     src::SrcInitError,
 };
@@ -38,7 +38,7 @@ impl Src {
     pub(crate) fn get_a_effect(&self, id: &EEffectId) -> Option<&ad::ArcEffect> {
         self.inner.a_handler.get_effect(id)
     }
-    pub(crate) fn get_a_muta(&self, id: &EMutaId) -> Option<&ad::ArcMuta> {
+    pub(crate) fn get_a_muta(&self, id: &EItemId) -> Option<&ad::ArcMuta> {
         self.inner.a_handler.get_muta(id)
     }
     pub(crate) fn get_a_buff(&self, id: &EBuffId) -> Option<&ad::ArcBuff> {

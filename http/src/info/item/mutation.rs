@@ -3,7 +3,7 @@ use std::collections::HashMap;
 #[derive(serde::Serialize)]
 pub(crate) struct HItemMutationInfo {
     pub(crate) base_type_id: rc::EItemId,
-    pub(crate) mutator_id: rc::EMutaId,
+    pub(crate) mutator_id: rc::EItemId,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) attrs: HashMap<rc::EAttrId, HAttrMutationInfo>,
 }

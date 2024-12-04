@@ -4,7 +4,7 @@ use crate::handler_json::data::CMutaAttrRange;
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CMuta {
-    id: rc::EMutaId,
+    id: rc::EItemId,
     item_map: HashMap<rc::EItemId, rc::EItemId>,
     attr_mods: HashMap<rc::EAttrId, CMutaAttrRange>,
 }

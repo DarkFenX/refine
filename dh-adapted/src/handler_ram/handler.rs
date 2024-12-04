@@ -10,7 +10,7 @@ pub struct RamOnlyAdh {
     storage_items: rc::util::StMap<rc::EItemId, rc::ad::ArcItem>,
     storage_attrs: rc::util::StMap<rc::EAttrId, rc::ad::ArcAttr>,
     storage_effects: rc::util::StMap<rc::EEffectId, rc::ad::ArcEffect>,
-    storage_mutas: rc::util::StMap<rc::EMutaId, rc::ad::ArcMuta>,
+    storage_mutas: rc::util::StMap<rc::EItemId, rc::ad::ArcMuta>,
     storage_buffs: rc::util::StMap<rc::EBuffId, rc::ad::ArcBuff>,
 }
 impl RamOnlyAdh {
@@ -43,7 +43,7 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
         self.storage_effects.get(&id)
     }
     /// Get adapted mutator.
-    fn get_muta(&self, id: &rc::EMutaId) -> Option<&rc::ad::ArcMuta> {
+    fn get_muta(&self, id: &rc::EItemId) -> Option<&rc::ad::ArcMuta> {
         self.storage_mutas.get(&id)
     }
     /// Get adapted warfare buff.

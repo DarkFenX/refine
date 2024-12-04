@@ -1,12 +1,12 @@
 use crate::{
-    defs::{AttrVal, EAttrId, EMutaId},
+    defs::{AttrVal, EAttrId, EItemId},
     util::Named,
 };
 
 /// EVE mutator (aka mutaplasmid) attribute modification data.
 pub struct EMutaAttrMod {
     /// Mutator item type ID.
-    pub muta_id: EMutaId,
+    pub muta_id: EItemId,
     /// Refers an attribute being modified by the mutator.
     pub attr_id: EAttrId,
     /// Lower boundary of the modification range.
@@ -16,7 +16,7 @@ pub struct EMutaAttrMod {
 }
 impl EMutaAttrMod {
     /// Make a new EVE mutator attribute conversion.
-    pub fn new(muta_id: EMutaId, attr_id: EAttrId, min_attr_mult: AttrVal, max_attr_mult: AttrVal) -> Self {
+    pub fn new(muta_id: EItemId, attr_id: EAttrId, min_attr_mult: AttrVal, max_attr_mult: AttrVal) -> Self {
         Self {
             muta_id,
             attr_id,

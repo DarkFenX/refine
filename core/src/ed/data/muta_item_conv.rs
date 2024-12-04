@@ -1,12 +1,9 @@
-use crate::{
-    defs::{EItemId, EMutaId},
-    util::Named,
-};
+use crate::{defs::EItemId, util::Named};
 
 /// EVE mutator item type conversion data.
 pub struct EMutaItemConv {
     /// Mutator item type ID.
-    pub muta_id: EMutaId,
+    pub muta_id: EItemId,
     /// Refers an item type the mutator can be applied to.
     pub in_item_id: EItemId,
     /// Refers an item type, which is the outcome of the conversion.
@@ -14,7 +11,7 @@ pub struct EMutaItemConv {
 }
 impl EMutaItemConv {
     /// Make a new EVE mutator item type conversion.
-    pub fn new(muta_id: EMutaId, in_item_id: EItemId, out_item_id: EItemId) -> Self {
+    pub fn new(muta_id: EItemId, in_item_id: EItemId, out_item_id: EItemId) -> Self {
         Self {
             muta_id,
             in_item_id,

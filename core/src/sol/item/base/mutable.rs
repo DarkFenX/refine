@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, EMutaId, MutaRoll, SkillLevel, SolItemId},
+    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, MutaRoll, SkillLevel, SolItemId},
     err::basic::{ItemLoadedError, ItemMutatedError, ItemNotMutatedError},
     sol::{
         item::{SolEffectModes, SolItemAttrMutation, SolItemBase, SolItemMutation, SolItemState},
@@ -440,13 +440,13 @@ impl SolItemBaseMutable {
 #[derive(Clone)]
 struct SolItemMutationData {
     // User-defined data
-    mutator_id: EMutaId,
+    mutator_id: EItemId,
     attr_rolls: StMap<EAttrId, MutaRoll>,
     // Source-dependent data
     cache: Option<SolItemMutationDataCache>,
 }
 impl SolItemMutationData {
-    fn new_with_attrs(mutator_id: EMutaId, attr_rolls: StMap<EAttrId, MutaRoll>) -> Self {
+    fn new_with_attrs(mutator_id: EItemId, attr_rolls: StMap<EAttrId, MutaRoll>) -> Self {
         Self {
             mutator_id,
             attr_rolls,

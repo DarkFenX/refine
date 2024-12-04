@@ -20,7 +20,6 @@ pub type EEffectCatId = i32;
 pub type EItemId = i32;
 pub type EItemGrpId = i32;
 pub type EItemCatId = i32;
-pub type EMutaId = i32;
 // Aliases for solar system-specific entities
 pub type SolItemId = u32;
 pub type SolFitId = u32;

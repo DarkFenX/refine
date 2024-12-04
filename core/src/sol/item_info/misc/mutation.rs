@@ -1,12 +1,12 @@
-use crate::defs::{AttrVal, EAttrId, EItemId, EMutaId, MutaRoll};
+use crate::defs::{AttrVal, EAttrId, EItemId, MutaRoll};
 
 pub struct SolItemMutationInfo {
     pub base_type_id: EItemId,
-    pub mutator_id: EMutaId,
+    pub mutator_id: EItemId,
     pub attrs: Vec<SolAttrMutationInfo>,
 }
 impl SolItemMutationInfo {
-    pub(in crate::sol) fn new(base_type_id: EAttrId, mutator_id: EMutaId, attrs: Vec<SolAttrMutationInfo>) -> Self {
+    pub(in crate::sol) fn new(base_type_id: EAttrId, mutator_id: EItemId, attrs: Vec<SolAttrMutationInfo>) -> Self {
         Self {
             base_type_id,
             mutator_id,

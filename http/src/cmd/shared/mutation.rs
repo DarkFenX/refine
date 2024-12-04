@@ -3,7 +3,7 @@ use std::collections::HashMap;
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(in crate::cmd) struct HItemMutation {
-    pub(in crate::cmd) mutator_id: rc::EMutaId,
+    pub(in crate::cmd) mutator_id: rc::EItemId,
     // Workaround for https://github.com/serde-rs/serde/issues/1183
     #[serde_as(as = "std::collections::HashMap<serde_with::DisplayFromStr, _>")]
     pub(in crate::cmd) attrs: HashMap<rc::EAttrId, HItemAttrMutation>,

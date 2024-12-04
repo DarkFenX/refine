@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{
     ad::{AData, AResult, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta},
-    defs::{EAttrId, EBuffId, EEffectId, EItemId, EMutaId},
+    defs::{EAttrId, EBuffId, EEffectId, EItemId},
 };
 
 /// Adapted data handler interface definition.
@@ -18,7 +18,7 @@ pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Get adapted effect.
     fn get_effect(&self, id: &EEffectId) -> Option<&ArcEffect>;
     /// Get adapted mutator.
-    fn get_muta(&self, id: &EMutaId) -> Option<&ArcMuta>;
+    fn get_muta(&self, id: &EItemId) -> Option<&ArcMuta>;
     /// Get adapted warfare buff.
     fn get_buff(&self, id: &EBuffId) -> Option<&ArcBuff>;
     /// Get adapted data fingerprint.

@@ -1,23 +1,23 @@
 use crate::{
-    defs::{AttrVal, EAttrId, EMutaId, MutaRoll},
+    defs::{AttrVal, EAttrId, EItemId, MutaRoll},
     util::StMap,
 };
 
 /// Specifies how item should be mutated.
 pub struct SolItemMutation {
     /// Mutator type ID.
-    pub mutator_id: EMutaId,
+    pub mutator_id: EItemId,
     /// Attribute mutation map.
     pub attrs: StMap<EAttrId, SolItemAttrMutation>,
 }
 impl SolItemMutation {
-    pub fn new(mutator_id: EMutaId) -> Self {
+    pub fn new(mutator_id: EItemId) -> Self {
         Self {
             mutator_id,
             attrs: StMap::new(),
         }
     }
-    pub fn new_with_attrs(mutator_id: EMutaId, attrs: StMap<EAttrId, SolItemAttrMutation>) -> Self {
+    pub fn new_with_attrs(mutator_id: EItemId, attrs: StMap<EAttrId, SolItemAttrMutation>) -> Self {
         Self { mutator_id, attrs }
     }
 }
