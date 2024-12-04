@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from typing import Type, Union
 
     from .containers import EveObjects
-    from .types import Attribute, Buff, Effect, Group, Item
+    from .types import Attribute, Buff, Effect, Group, Item, Mutator
 
 
 class EveTypeFactory(EveDataManager):
@@ -249,3 +249,16 @@ class EveTypeFactory(EveDataManager):
             attr_id=attr_id,
             group_id=group_id,
             skill_id=skill_id)
+
+    def mk_eve_mutator(
+            self, *,
+            data: Union[EveObjects, Type[Default]] = Default,
+            id_: Union[int, Type[Default]] = Default,
+            items: Union[list[tuple[Union[list[int], Type[Absent]], Union[int, Type[Absent]]]], Type[Absent], Type[Default]] = Default,
+            attributes: Union[dict[int, tuple[Union[float, Type[Absent]], Union[float, Type[Absent]]]], Type[Absent], Type[Default]] = Default,
+    ) -> Mutator:
+        data = self._get_eve_data(data=data)
+        return data.mk_mutator(
+            id_=id_,
+            items=items,
+            attributes=attributes)
