@@ -4,7 +4,7 @@ from collections import defaultdict
 from itertools import chain
 from typing import TYPE_CHECKING
 
-from tests.support.consts import EveEffCat, EveEffect, EveItemCat
+from tests.support.consts import EveEffCat, EveEffect, EveItemCat, EveItemGrp
 from tests.support.eve.types import Attribute, Buff, Effect, Group, Item, Mutator
 from tests.support.util import Absent, Default
 from .primitives import EvePrimitives
@@ -324,11 +324,14 @@ class EveObjects:
             items: Union[list[tuple[Union[list[int], Type[Absent]], Union[int, Type[Absent]]]], Type[Absent], Type[Default]] = Default,
             attributes: Union[dict[int, tuple[Union[float, Type[Absent]], Union[float, Type[Absent]]]], Type[Absent], Type[Default]] = Default,
     ) -> Mutator:
-        # Mutators are a special case of an item
-        if id_ is Default:
-            id_ = self.alloc_item_id(avoid_ids=avoid_ids)
-        mutator = Mutator(
+        # Mutators are a special case of an item, create an item for it
+        item = self.mk_item(
             id_=id_,
+            avoid_ids=avoid_ids,
+            grp_id=EveItemGrp.mutaplasmids,
+            cat_id=EveItemCat.commodity)
+        mutator = Mutator(
+            id_=item.id,
             items=[] if items is Default else items,
             attributes={} if attributes is Default else attributes)
         self.mutators.append(mutator)

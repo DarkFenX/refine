@@ -16,6 +16,7 @@ class EveItem(IntEnum):
 class EveItemGrp(IntEnum):
     character = 1
     effect_beacon = 920
+    mutaplasmids = 1964
 
 
 @unique
@@ -25,6 +26,7 @@ class EveItemCat(IntEnum):
     module = 7
     charge = 8
     skill = 16
+    commodity = 17
     drone = 18
     implant = 20
     subsystem = 32
