@@ -59,7 +59,7 @@ class Mutator:
             key='attributeIDs',
             value=self.attributes,
             cast_to=convert_attributes)
-        primitive_data.types[self.id] = mutator_entry
+        primitive_data.dynamicitemattributes[self.id] = mutator_entry
 
     def __repr__(self) -> str:
         return make_repr_str(instance=self)

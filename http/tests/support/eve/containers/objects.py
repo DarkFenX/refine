@@ -22,18 +22,18 @@ ID_START = 1000000
 class EveObjects:
 
     def __init__(self, *, alias: str):
-        self.alias = alias
-        self.items = []
-        self.item_groups = []
-        self.attributes = []
-        self.effects = []
-        self.buffs = []
-        self.mutators = []
-        self.item_id = ID_START
-        self.item_group_id = ID_START
-        self.attr_id = ID_START
-        self.effect_id = ID_START
-        self.buff_id = ID_START
+        self.alias: str = alias
+        self.items: list[Item] = []
+        self.item_groups: list[Group] = []
+        self.attributes: list[Attribute] = []
+        self.effects: list[Effect] = []
+        self.buffs: list[Buff] = []
+        self.mutators: list[Mutator] = []
+        self.item_id: int = ID_START
+        self.item_group_id: int = ID_START
+        self.attr_id: int = ID_START
+        self.effect_id: int = ID_START
+        self.buff_id: int = ID_START
         # Helper map to ease management of groups/categories
         # Format: {group ID: [groups]}
         self.group_map = defaultdict(lambda: [])
