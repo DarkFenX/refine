@@ -299,6 +299,12 @@ class ApiItemInfoMode(StrEnum):
 
 
 @unique
+class ApiAttrMutation(StrEnum):
+    roll = 'roll'
+    absolute = 'absolute'
+
+
+@unique
 class PenaltyStr(float, Enum):
     p1 = 1
     p2 = 0.8691199808003977
