@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
-#[derive(serde::Serialize)]
+#[derive(serde_tuple::Serialize_tuple)]
 pub(crate) struct HItemMutationInfo {
     pub(crate) base_type_id: rc::EItemId,
     pub(crate) mutator_id: rc::EItemId,
-    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) attrs: HashMap<rc::EAttrId, HAttrMutationInfo>,
 }
 impl From<&rc::SolItemMutationInfo> for HItemMutationInfo {

@@ -19,6 +19,21 @@ if TYPE_CHECKING:
 
 
 @dataclass(kw_only=True)
+class ItemMutation:
+
+    base_type_id: int
+    mutator_id: int
+    attrs: dict[int, AttrMutation]
+
+
+@dataclass(kw_only=True)
+class AttrMutation:
+
+    roll: float
+    absolute: float
+
+
+@dataclass(kw_only=True)
 class AttrVals:
 
     base: float
@@ -39,6 +54,10 @@ class Item(AttrDict):
         super().__init__(
             data=data,
             hooks={
+                'mutation': AttrHookDef(func=lambda m: ItemMutation(
+                    base_type_id=m[0],
+                    mutator_id=m[1],
+                    attrs={int(k): AttrMutation(roll=v[0], absolute=v[1]) for k, v in m[2].items()})),
                 'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
                 'autocharges': AttrHookDef(func=lambda acs: {
                     int(k): Item(client=client, data=v, sol_id=sol_id)
