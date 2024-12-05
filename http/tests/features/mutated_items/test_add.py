@@ -40,6 +40,39 @@ def test_stage5_rolls(client, consts):
     assert api_item.attrs[eve_higher_attr.id].base == approx(120)
 
 
+def test_stage5_absolute_base_attr_value(client, consts):
+    # Check what is used as base attribute value for converting absolute value into roll
+    eve_base_attr = client.mk_eve_attr()
+    eve_overlap_attr = client.mk_eve_attr()
+    eve_mutated_attr = client.mk_eve_attr()
+    eve_base_item = client.mk_eve_item(attrs={eve_base_attr.id: 50, eve_overlap_attr.id: 70})
+    eve_mutated_item = client.mk_eve_item(attrs={eve_overlap_attr.id: 80, eve_mutated_attr.id: 100})
+    eve_mutator = client.mk_eve_mutator(
+        items=[([eve_base_item.id], eve_mutated_item.id)],
+        attributes={eve_base_attr.id: (0.8, 1.2), eve_overlap_attr.id: (0.8, 1.2), eve_mutated_attr.id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item.id, mutation=(eve_mutator.id, {
+        eve_base_attr.id: {consts.ApiAttrMutation.absolute: 55},
+        eve_overlap_attr.id: {consts.ApiAttrMutation.absolute: 75},
+        eve_mutated_attr.id: {consts.ApiAttrMutation.absolute: 115}}))
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 3
+    assert api_item.mutation.attrs[eve_base_attr.id].roll == approx(0.75)
+    assert api_item.mutation.attrs[eve_base_attr.id].absolute == approx(55)
+    # For overlapping values, mutated item values should be taken; we check it here via roll value,
+    # which is below 0.5 if base value is 80 instead of 70
+    assert api_item.mutation.attrs[eve_overlap_attr.id].roll == approx(0.34375)
+    assert api_item.mutation.attrs[eve_overlap_attr.id].absolute == approx(75)
+    assert api_item.mutation.attrs[eve_mutated_attr.id].roll == approx(0.875)
+    assert api_item.mutation.attrs[eve_mutated_attr.id].absolute == approx(115)
+    assert api_item.attrs[eve_base_attr.id].base == approx(55)
+    assert api_item.attrs[eve_overlap_attr.id].base == approx(75)
+    assert api_item.attrs[eve_mutated_attr.id].base == approx(115)
+
+
 def test_stage5_modification(client, consts):
     # Check that mutated value is used as base for source and target of modifications
     eve_affector_attr = client.mk_eve_attr()
