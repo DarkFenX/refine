@@ -321,8 +321,8 @@ class EveObjects:
             self, *,
             id_: Union[int, Type[Default]] = Default,
             avoid_ids: Union[tuple[int], list[int]] = (),
-            items: Union[list[tuple[Union[list[int], Type[Absent]], Union[int, Type[Absent]]]], Type[Absent], Type[Default]] = Default,
-            attributes: Union[dict[int, tuple[Union[float, Type[Absent]], Union[float, Type[Absent]]]], Type[Absent], Type[Default]] = Default,
+            items: Union[list[tuple[list[int], int]], Type[Absent], Type[Default]] = Default,
+            attributes: Union[dict[int, tuple[float, float]], Type[Absent], Type[Default]] = Default,
     ) -> Mutator:
         # Mutators are a special case of an item, create an item for it
         item = self.mk_item(

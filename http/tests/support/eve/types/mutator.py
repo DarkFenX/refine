@@ -40,8 +40,8 @@ class Mutator:
     def __init__(
             self, *,
             id_: int,
-            items: Union[list[tuple[Union[list[int], Type[Absent]], Union[int, Type[Absent]]]], Type[Absent]],
-            attributes: Union[dict[int, tuple[Union[float, Type[Absent]], Union[float, Type[Absent]]]], Type[Absent]],
+            items: Union[list[tuple[list[int], int]], Type[Absent]],
+            attributes: Union[dict[int, tuple[float, float]], Type[Absent]],
     ):
         self.id = id_
         self.items = items

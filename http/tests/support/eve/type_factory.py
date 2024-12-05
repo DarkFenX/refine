@@ -254,8 +254,8 @@ class EveTypeFactory(EveDataManager):
             self, *,
             data: Union[EveObjects, Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
-            items: Union[list[tuple[Union[list[int], Type[Absent]], Union[int, Type[Absent]]]], Type[Absent], Type[Default]] = Default,
-            attributes: Union[dict[int, tuple[Union[float, Type[Absent]], Union[float, Type[Absent]]]], Type[Absent], Type[Default]] = Default,
+            items: Union[list[tuple[list[int], int]], Type[Absent], Type[Default]] = Default,
+            attributes: Union[dict[int, tuple[float, float]], Type[Absent], Type[Default]] = Default,
     ) -> Mutator:
         data = self._get_eve_data(data=data)
         return data.mk_mutator(
