@@ -99,7 +99,7 @@ impl SolItemBaseMutable {
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         item_mutation.cache = Some(SolItemMutationDataCache::new(type_id, a_mutator.clone(), attrs));
         Self {
-            base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
+            base: SolItemBase::new_with_item(id, mutated_a_item.clone(), state),
             mutation: Some(item_mutation),
         }
     }
