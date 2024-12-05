@@ -1,15 +1,14 @@
 """
-- stage 1: no base item;
-- stage 2: base item is available, mutator isn't;
-- stage 3: base item and mutator are available, mutated item ID isn't;
-- stage 4: base item, mutator and mutated item ID are available, mutated item isn't;
-- stage 5: all the prerequisites are met.
+Stage 5 means that all the prerequisites for mutated item have been met:
+- base item is available;
+- mutator is available;
+- mutated item ID and item itself are available.
 """
 
 from tests import approx
 
 
-def test_stage5_rolls(client, consts):
+def test_rolls(client, consts):
     # Check processing of roll values - within range and out of range
     eve_lower_attr = client.mk_eve_attr()
     eve_within_attr = client.mk_eve_attr()
@@ -40,7 +39,7 @@ def test_stage5_rolls(client, consts):
     assert api_item.attrs[eve_higher_attr.id].base == approx(120)
 
 
-def test_stage5_absolute_base_attr_value(client, consts):
+def test_absolute_base_attr_value(client, consts):
     # Check what is used as base attribute value for converting absolute value into roll
     eve_base_attr = client.mk_eve_attr()
     eve_overlap_attr = client.mk_eve_attr()
@@ -73,7 +72,7 @@ def test_stage5_absolute_base_attr_value(client, consts):
     assert api_item.attrs[eve_mutated_attr.id].base == approx(115)
 
 
-def test_stage5_modification(client, consts):
+def test_modification(client, consts):
     # Check that mutated value is used as base for source and target of modifications
     eve_affector_attr = client.mk_eve_attr()
     eve_affectee_attr = client.mk_eve_attr()
