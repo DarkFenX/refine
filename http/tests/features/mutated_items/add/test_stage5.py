@@ -5,10 +5,10 @@ Stage 5 means that all the prerequisites for mutated item have been met:
 - mutated item ID and item itself are available.
 """
 
-from tests import approx
+from tests import approx, check_no_field
 
 
-def test_rolls(client, consts):
+def test_rolls_range(client, consts):
     # Check processing of roll values - within range and out of range
     eve_lower_attr = client.mk_eve_attr()
     eve_within_attr = client.mk_eve_attr()
@@ -70,6 +70,81 @@ def test_absolute_base_attr_value(client, consts):
     assert api_item.attrs[eve_base_attr.id].base == approx(55)
     assert api_item.attrs[eve_overlap_attr.id].base == approx(75)
     assert api_item.attrs[eve_mutated_attr.id].base == approx(115)
+
+
+def test_absolute_range(client, consts):
+    # Check processing of absolute values - within range and out of range
+    eve_lower_attr = client.mk_eve_attr()
+    eve_within_attr = client.mk_eve_attr()
+    eve_higher_attr = client.mk_eve_attr()
+    eve_base_item = client.mk_eve_item(attrs={eve_lower_attr.id: 100, eve_within_attr.id: 100, eve_higher_attr.id: 100})
+    eve_mutated_item = client.mk_eve_item()
+    eve_mutator = client.mk_eve_mutator(
+        items=[([eve_base_item.id], eve_mutated_item.id)],
+        attributes={eve_lower_attr.id: (0.8, 1.2), eve_within_attr.id: (0.8, 1.2), eve_higher_attr.id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item.id, mutation=(eve_mutator.id, {
+        eve_lower_attr.id: {consts.ApiAttrMutation.absolute: -53},
+        eve_within_attr.id: {consts.ApiAttrMutation.absolute: 92},
+        eve_higher_attr.id: {consts.ApiAttrMutation.absolute: 1009}}))
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 3
+    assert api_item.mutation.attrs[eve_lower_attr.id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_lower_attr.id].absolute == approx(80)
+    assert api_item.mutation.attrs[eve_within_attr.id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_within_attr.id].absolute == approx(92)
+    assert api_item.mutation.attrs[eve_higher_attr.id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_higher_attr.id].absolute == approx(120)
+    assert api_item.attrs[eve_lower_attr.id].base == approx(80)
+    assert api_item.attrs[eve_within_attr.id].base == approx(92)
+    assert api_item.attrs[eve_higher_attr.id].base == approx(120)
+
+
+def test_no_base_value(client, consts):
+    # Rolls accepted, absolutes discarded
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_roll_attr_id = eve_d1.mk_attr().id
+    eve_d2.mk_attr(id_=eve_roll_attr_id)
+    eve_absolute_attr_id = eve_d1.mk_attr().id
+    eve_d2.mk_attr(id_=eve_absolute_attr_id)
+    eve_base_item_id = eve_d1.mk_item().id
+    eve_d2.mk_item(id_=eve_base_item_id, attrs={eve_roll_attr_id: 50, eve_absolute_attr_id: 50})
+    eve_mutated_item_id = eve_d1.mk_item().id
+    eve_d2.mk_item(id_=eve_mutated_item_id)
+    eve_mutator_id = eve_d1.mk_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)}).id
+    eve_d2.mk_mutator(
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 0
+    with check_no_field():
+        api_item.attrs  # pylint: disable=W0104
+    # Since there were no base attribute values on first source, attribute mutations defined via
+    # absolute value are discarded. However, on second source roll and absolute value are still
+    # exposed, but not for absolute value we passed earlier, but for base attribute value
+    api_sol.change_src(data=eve_d2)
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.7)
+    assert api_item.mutation.attrs[eve_roll_attr_id].absolute == approx(54)
+    assert api_item.mutation.attrs[eve_absolute_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_absolute_attr_id].absolute == approx(50)
+    assert api_item.attrs[eve_roll_attr_id].base == approx(54)
+    assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
 
 
 def test_modification(client, consts):
