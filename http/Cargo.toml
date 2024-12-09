@@ -9,19 +9,19 @@ rc = { package = "reefast-core", path = "../core" }
 rdhe = { package = "reefast-dh-eve", path = "../dh-eve", features = ["phb-http"] }
 rdha = { package = "reefast-dh-adapted", path = "../dh-adapted", features = ["json", "ram"] }
 axum = { version = ">=0.8.0-alpha.1", features = ["query"] }
-chrono = ">=0.4.38"
+chrono = ">=0.4.39"
 config = { version = ">=0.14.1", features = ["toml"] }
 itertools = ">=0.13.0"
 serde = { version = ">=1.0.215", features = ["derive"] }
 serde_tuple = ">=1.1.0"
 serde_with = ">=3.11.0"
-tokio = { version = ">=1.41.1", features = ["full"] }
+tokio = { version = ">=1.42.0", features = ["full"] }
 tokio-rayon = ">=2.1.0"
 tower = ">=0.5.1"
 tower-http = { version = ">=0.6.2", features = ["normalize-path", "trace"] }
 tower-request-id = ">=0.3.0"
-time = { version = ">=0.3.36", features = ["macros"] }
-tracing = ">=0.1.40"
-tracing-subscriber = { version = ">=0.3.18", features = ["time"] }
+time = { version = ">=0.3.37", features = ["macros"] }
+tracing = ">=0.1.41"
+tracing-subscriber = { version = ">=0.3.19", features = ["time"] }
 tracing-appender = ">=0.2.3"
 uuid = { version = ">=1.11.0", features = ["v4", "fast-rng"] }
