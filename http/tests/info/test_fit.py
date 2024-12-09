@@ -23,11 +23,11 @@ def test_fleet(client):
 
 
 def test_char(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.set_char(type_id=eve_item.id)
+    api_item = api_fit.set_char(type_id=eve_item_id)
     # Verification
     assert api_fit.update().character.id == api_item.id
     # Action
@@ -39,11 +39,11 @@ def test_char(client):
 
 
 def test_skill(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_skill(type_id=eve_item.id, level=1)
+    api_item = api_fit.add_skill(type_id=eve_item_id, level=1)
     # Verification
     api_fit.update()
     assert len(api_fit.skills) == 1
@@ -57,11 +57,11 @@ def test_skill(client):
 
 
 def test_implant(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_implant(type_id=eve_item.id)
+    api_item = api_fit.add_implant(type_id=eve_item_id)
     # Verification
     api_fit.update()
     assert len(api_fit.implants) == 1
@@ -75,11 +75,11 @@ def test_implant(client):
 
 
 def test_booster(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_booster(type_id=eve_item.id)
+    api_item = api_fit.add_booster(type_id=eve_item_id)
     # Verification
     api_fit.update()
     assert len(api_fit.boosters) == 1
@@ -92,11 +92,11 @@ def test_booster(client):
 
 
 def test_ship(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.set_ship(type_id=eve_item.id)
+    api_item = api_fit.set_ship(type_id=eve_item_id)
     # Verification
     assert api_fit.update().ship.id == api_item.id
     # Action
@@ -108,11 +108,11 @@ def test_ship(client):
 
 
 def test_stance(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.set_stance(type_id=eve_item.id)
+    api_item = api_fit.set_stance(type_id=eve_item_id)
     # Verification
     assert api_fit.update().stance.id == api_item.id
     # Action
@@ -124,11 +124,11 @@ def test_stance(client):
 
 
 def test_subsystem(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_subsystem(type_id=eve_item.id)
+    api_item = api_fit.add_subsystem(type_id=eve_item_id)
     # Verification
     api_fit.update()
     assert len(api_fit.subsystems) == 1
@@ -142,11 +142,11 @@ def test_subsystem(client):
 
 
 def test_mod_high(client, consts):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item.id, rack=consts.ApiRack.high)
+    api_item = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.high)
     # Verification
     api_fit.update()
     assert len(api_fit.modules) == 1
@@ -161,11 +161,11 @@ def test_mod_high(client, consts):
 
 
 def test_mod_mid(client, consts):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item.id, rack=consts.ApiRack.mid)
+    api_item = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.mid)
     # Verification
     api_fit.update()
     assert len(api_fit.modules) == 1
@@ -180,11 +180,11 @@ def test_mod_mid(client, consts):
 
 
 def test_mod_low(client, consts):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item.id, rack=consts.ApiRack.low)
+    api_item = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.low)
     # Verification
     api_fit.update()
     assert len(api_fit.modules) == 1
@@ -199,11 +199,11 @@ def test_mod_low(client, consts):
 
 
 def test_rig(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_rig(type_id=eve_item.id)
+    api_item = api_fit.add_rig(type_id=eve_item_id)
     # Verification
     api_fit.update()
     assert len(api_fit.rigs) == 1
@@ -217,11 +217,11 @@ def test_rig(client):
 
 
 def test_drone(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_drone(type_id=eve_item.id)
+    api_item = api_fit.add_drone(type_id=eve_item_id)
     # Verification
     api_fit.update()
     assert len(api_fit.drones) == 1
@@ -235,11 +235,11 @@ def test_drone(client):
 
 
 def test_fighter(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_fighter(type_id=eve_item.id)
+    api_item = api_fit.add_fighter(type_id=eve_item_id)
     # Verification
     api_fit.update()
     assert len(api_fit.fighters) == 1
@@ -253,11 +253,11 @@ def test_fighter(client):
 
 
 def test_fw_effect(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_fw_effect(type_id=eve_item.id)
+    api_item = api_fit.add_fw_effect(type_id=eve_item_id)
     # Verification
     api_fit.update()
     assert len(api_fit.fw_effects) == 1

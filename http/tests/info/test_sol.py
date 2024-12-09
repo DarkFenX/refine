@@ -35,11 +35,11 @@ def test_fit(client):
 
 
 def test_fit_item(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.set_char(type_id=eve_item.id)
+    api_item = api_fit.set_char(type_id=eve_item_id)
     api_sol.update()
     assert len(api_sol.fits) == 1
     assert api_fit.id in api_sol.fits
@@ -51,10 +51,10 @@ def test_fit_item(client):
 
 
 def test_sw_effect(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
-    api_item = api_sol.add_sw_effect(type_id=eve_item.id)
+    api_item = api_sol.add_sw_effect(type_id=eve_item_id)
     api_sol.update()
     assert len(api_sol.sw_effects) == 1
     assert api_sol.sw_effects[0].id == api_item.id
@@ -65,10 +65,10 @@ def test_sw_effect(client):
 
 
 def test_proj_effect(client):
-    eve_item = client.mk_eve_item()
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
-    api_item = api_sol.add_proj_effect(type_id=eve_item.id)
+    api_item = api_sol.add_proj_effect(type_id=eve_item_id)
     api_sol.update()
     assert len(api_sol.proj_effects) == 1
     assert api_sol.proj_effects[0].id == api_item.id
