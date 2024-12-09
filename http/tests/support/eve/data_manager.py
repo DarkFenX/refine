@@ -2,12 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.util import Default, get_stack_key
+from tests.support.util import get_stack_key
 from .containers import EveObjects
 
 if TYPE_CHECKING:
-    from typing import Type, Union
-
     from tests.support.util import StackKey
 
 data_id: int = 10000000  # pylint: disable=C0103
@@ -27,13 +25,7 @@ class EveDataManager:
         data_id += 1
         return data
 
-    def _get_eve_data(self, *, data: Union[EveObjects, Type[Default]] = Default) -> EveObjects:
-        if data is Default:
-            data = self.__default_eve_data
-        return data
-
-    @property
-    def __default_eve_data(self) -> EveObjects:
+    def _get_default_eve_data(self) -> EveObjects:
         key = get_stack_key()
         if key in self.__defsrc_stack_alias_map:
             alias = self.__defsrc_stack_alias_map[key]

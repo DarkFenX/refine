@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from tests.support.consts import EveEffCat, EveEffect, EveItemCat
 from tests.support.util import Absent, Default
 from .data_manager import EveDataManager
 from .types import BuffModifier, EffectModifier
@@ -10,34 +11,53 @@ if TYPE_CHECKING:
     from typing import Type, Union
 
     from .containers import EveObjects
-    from .types import Attribute, Buff, Effect, Group, Item, Mutator
 
 
 class EveTypeFactory(EveDataManager):
 
-    def alloc_item_id(self, *, data: Union[EveObjects, Type[Default]] = Default) -> int:
-        data = self._get_eve_data(data=data)
-        return data.alloc_item_id()
+    def alloc_item_id(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        id_ = max(d.prealloc_item_id() for d in datas)
+        for data in datas:
+            data.items[id_] = []
+        return id_
 
-    def alloc_group_id(self, *, data: Union[EveObjects, Type[Default]] = Default) -> int:
-        data = self._get_eve_data(data=data)
-        return data.alloc_group_id()
+    def alloc_group_id(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        id_ = max(d.prealloc_group_id() for d in datas)
+        for data in datas:
+            data.item_groups[id_] = []
+        return id_
 
-    def alloc_attr_id(self, *, data: Union[EveObjects, Type[Default]] = Default) -> int:
-        data = self._get_eve_data(data=data)
-        return data.alloc_attr_id()
+    def alloc_attr_id(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        id_ = max(d.prealloc_attr_id() for d in datas)
+        for data in datas:
+            data.attributes[id_] = []
+        return id_
 
-    def alloc_effect_id(self, *, data: Union[EveObjects, Type[Default]] = Default) -> int:
-        data = self._get_eve_data(data=data)
-        return data.alloc_effect_id()
+    def alloc_effect_id(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        id_ = max(d.prealloc_effect_id() for d in datas)
+        for data in datas:
+            data.effects[id_] = []
+        return id_
 
-    def alloc_buff_id(self, *, data: Union[EveObjects, Type[Default]] = Default) -> int:
-        data = self._get_eve_data(data=data)
-        return data.alloc_buff_id()
+    def alloc_buff_id(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        id_ = max(d.prealloc_buff_id() for d in datas)
+        for data in datas:
+            data.buffs[id_] = []
+        return id_
 
     def mk_eve_item(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             grp_id: Union[int, Type[Default]] = Default,
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
@@ -49,24 +69,29 @@ class EveTypeFactory(EveDataManager):
             mass: Union[float, Type[Absent], Type[Default]] = Default,
             radius: Union[float, Type[Absent], Type[Default]] = Default,
             volume: Union[float, Type[Absent], Type[Default]] = Default,
-    ) -> Item:
-        data = self._get_eve_data(data=data)
-        return data.mk_item(
-            id_=id_,
-            grp_id=grp_id,
-            cat_id=cat_id,
-            attrs=attrs,
-            eff_ids=eff_ids,
-            defeff_id=defeff_id,
-            srqs=srqs,
-            capacity=capacity,
-            mass=mass,
-            radius=radius,
-            volume=volume)
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        if id_ is Default:
+            id_ = self.alloc_item_id(datas=datas)
+        for data in datas:
+            data.mk_item(
+                id_=id_,
+                grp_id=grp_id,
+                cat_id=cat_id,
+                attrs=attrs,
+                eff_ids=eff_ids,
+                defeff_id=defeff_id,
+                srqs=srqs,
+                capacity=capacity,
+                mass=mass,
+                radius=radius,
+                volume=volume)
+        return id_
 
     def mk_eve_ship(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             grp_id: Union[int, Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
@@ -77,11 +102,12 @@ class EveTypeFactory(EveDataManager):
             mass: Union[float, Type[Absent], Type[Default]] = Default,
             radius: Union[float, Type[Absent], Type[Default]] = Default,
             volume: Union[float, Type[Absent], Type[Default]] = Default,
-    ) -> Item:
-        data = self._get_eve_data(data=data)
-        return data.mk_ship(
+    ) -> int:
+        return self.mk_eve_item(
+            datas=datas,
             id_=id_,
             grp_id=grp_id,
+            cat_id=EveItemCat.ship,
             attrs=attrs,
             eff_ids=eff_ids,
             defeff_id=defeff_id,
@@ -93,7 +119,7 @@ class EveTypeFactory(EveDataManager):
 
     def mk_eve_struct(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             grp_id: Union[int, Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
@@ -104,11 +130,12 @@ class EveTypeFactory(EveDataManager):
             mass: Union[float, Type[Absent], Type[Default]] = Default,
             radius: Union[float, Type[Absent], Type[Default]] = Default,
             volume: Union[float, Type[Absent], Type[Default]] = Default,
-    ) -> Item:
-        data = self._get_eve_data(data=data)
-        return data.mk_struct(
+    ) -> int:
+        return self.mk_eve_item(
+            datas=datas,
             id_=id_,
             grp_id=grp_id,
+            cat_id=EveItemCat.structure,
             attrs=attrs,
             eff_ids=eff_ids,
             defeff_id=defeff_id,
@@ -120,51 +147,59 @@ class EveTypeFactory(EveDataManager):
 
     def mk_eve_item_group(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
-    ) -> Group:
-        data = self._get_eve_data(data=data)
-        return data.mk_item_group(id_=id_, cat_id=cat_id)
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        if id_ is Default:
+            id_ = self.alloc_group_id(datas=datas)
+        for data in datas:
+            data.mk_item_group(id_=id_, cat_id=cat_id)
+        return id_
 
     def mk_eve_ship_group(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
-    ) -> Group:
-        data = self._get_eve_data(data=data)
-        return data.mk_ship_group(id_=id_)
+    ) -> int:
+        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.ship)
 
     def mk_eve_struct_group(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
-    ) -> Group:
-        data = self._get_eve_data(data=data)
-        return data.mk_struct_group(id_=id_)
+    ) -> int:
+        return self.mk_eve_item_group(datas=datas, id_=id_, cat_id=EveItemCat.structure)
 
     def mk_eve_attr(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             stackable: Union[int, bool, Type[Absent], Type[Default]] = Default,
             high_is_good: Union[int, bool, Type[Absent], Type[Default]] = Default,
             def_val: Union[float, Type[Absent], Type[Default]] = Default,
             min_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
             max_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-    ) -> Attribute:
-        data = self._get_eve_data(data=data)
-        return data.mk_attr(
-            id_=id_,
-            stackable=stackable,
-            high_is_good=high_is_good,
-            def_val=def_val,
-            min_attr_id=min_attr_id,
-            max_attr_id=max_attr_id)
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        if id_ is Default:
+            id_ = self.alloc_attr_id(datas=datas)
+        for data in datas:
+            data.mk_attr(
+                id_=id_,
+                stackable=stackable,
+                high_is_good=high_is_good,
+                def_val=def_val,
+                min_attr_id=min_attr_id,
+                max_attr_id=max_attr_id)
+        return id_
 
     def mk_eve_effect(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
             is_assistance: Union[int, bool, Type[Absent], Type[Default]] = Default,
@@ -177,25 +212,42 @@ class EveTypeFactory(EveDataManager):
             chance_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
             resist_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
             mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent], Type[Default]] = Default,
-    ) -> Effect:
-        data = self._get_eve_data(data=data)
-        return data.mk_effect(
-            id_=id_,
-            cat_id=cat_id,
-            is_assistance=is_assistance,
-            is_offensive=is_offensive,
-            discharge_attr_id=discharge_attr_id,
-            duration_attr_id=duration_attr_id,
-            range_attr_id=range_attr_id,
-            falloff_attr_id=falloff_attr_id,
-            tracking_attr_id=tracking_attr_id,
-            chance_attr_id=chance_attr_id,
-            resist_attr_id=resist_attr_id,
-            mod_info=mod_info)
+    ) -> id:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        if id_ is Default:
+            id_ = self.alloc_effect_id(datas=datas)
+        for data in datas:
+            data.mk_effect(
+                id_=id_,
+                cat_id=cat_id,
+                is_assistance=is_assistance,
+                is_offensive=is_offensive,
+                discharge_attr_id=discharge_attr_id,
+                duration_attr_id=duration_attr_id,
+                range_attr_id=range_attr_id,
+                falloff_attr_id=falloff_attr_id,
+                tracking_attr_id=tracking_attr_id,
+                chance_attr_id=chance_attr_id,
+                resist_attr_id=resist_attr_id,
+                mod_info=mod_info)
+        return id_
 
-    def mk_eve_online_effect(self, *, data: Union[EveObjects, Type[Default]] = Default) -> Effect:
-        data = self._get_eve_data(data=data)
-        return data.mk_online_effect()
+    def mk_eve_online_effect(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
+        return self.mk_eve_effect(
+            datas=datas,
+            id_=EveEffect.online,
+            cat_id=EveEffCat.active,
+            is_assistance=0,
+            is_offensive=0,
+            discharge_attr_id=Absent,
+            duration_attr_id=Absent,
+            range_attr_id=Absent,
+            falloff_attr_id=Absent,
+            tracking_attr_id=Absent,
+            chance_attr_id=Absent,
+            resist_attr_id=Absent,
+            mod_info=Absent)
 
     @staticmethod
     def mk_eve_effect_mod(
@@ -219,7 +271,7 @@ class EveTypeFactory(EveDataManager):
 
     def mk_eve_buff(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             aggr_mode: Union[str, Type[Absent], Type[Default]] = Default,
             op: Union[str, Type[Absent], Type[Default]] = Default,
@@ -227,16 +279,21 @@ class EveTypeFactory(EveDataManager):
             loc_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
             loc_grp_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
             loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
-    ) -> Buff:
-        data = self._get_eve_data(data=data)
-        return data.mk_buff(
-            id_=id_,
-            aggr_mode=aggr_mode,
-            op=op,
-            item_mods=item_mods,
-            loc_mods=loc_mods,
-            loc_grp_mods=loc_grp_mods,
-            loc_srq_mods=loc_srq_mods)
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        if id_ is Default:
+            id_ = self.alloc_buff_id(datas=datas)
+        for data in datas:
+            data.mk_buff(
+                id_=id_,
+                aggr_mode=aggr_mode,
+                op=op,
+                item_mods=item_mods,
+                loc_mods=loc_mods,
+                loc_grp_mods=loc_grp_mods,
+                loc_srq_mods=loc_srq_mods)
+        return id_
 
     @staticmethod
     def mk_eve_buff_mod(
@@ -252,13 +309,19 @@ class EveTypeFactory(EveDataManager):
 
     def mk_eve_mutator(
             self, *,
-            data: Union[EveObjects, Type[Default]] = Default,
+            datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             items: Union[list[tuple[list[int], int]], Type[Absent], Type[Default]] = Default,
             attributes: Union[dict[int, tuple[float, float]], Type[Absent], Type[Default]] = Default,
-    ) -> Mutator:
-        data = self._get_eve_data(data=data)
-        return data.mk_mutator(
-            id_=id_,
-            items=items,
-            attributes=attributes)
+    ) -> int:
+        if datas is Default:
+            datas = [self._get_default_eve_data()]
+        # Mutators are a special case of an item, create an item for it
+        if id_ is Default:
+            id_ = self.alloc_item_id(datas=datas)
+        for data in datas:
+            data.mk_mutator(
+                id_=id_,
+                items=items,
+                attributes=attributes)
+        return id_

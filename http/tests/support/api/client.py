@@ -37,7 +37,8 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self, *,
             data: Union[eve.EveObjects, Type[Default]],
     ) -> Request:
-        data = self._get_eve_data(data=data)
+        if data is Default:
+            data = self._get_default_eve_data()
         return Request(
             self,
             method='POST',
@@ -48,7 +49,8 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             self, *,
             data: Union[eve.EveObjects, Type[Default]] = Default,
     ) -> None:
-        data = self._get_eve_data(data=data)
+        if data is Default:
+            data = self._get_default_eve_data()
         self._setup_eve_data_server(data=data)
         resp = self.create_source_request(data=data).send()
         assert resp.status_code == 201
@@ -68,7 +70,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     def create_sources(self) -> None:
         # If no data was created, create default one
         if not self._eve_datas:
-            self._get_eve_data()
+            self._get_default_eve_data()
         for data in self._eve_datas.values():
             self.create_source(data=data)
 
@@ -92,7 +94,8 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         conditional_insert(container=params, key='item', value=item_info_mode)
         body = {}
         if data is not Absent:
-            data = self._get_eve_data(data=data)
+            if data is Default:
+                data = self._get_default_eve_data()
             body['src_alias'] = data.alias
         return Request(self, method='POST', url=f'{self.__base_url}/sol', params=params, json=body)
 
@@ -104,7 +107,8 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = Absent,
     ) -> SolarSystem:
-        data = self._get_eve_data(data=data)
+        if data is Default:
+            data = self._get_default_eve_data()
         resp = self.create_sol_request(
             data=data,
             sol_info_mode=sol_info_mode,
@@ -171,7 +175,8 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     ) -> Request:
         body = {}
         if data is not Absent:
-            data = self._get_eve_data(data=data)
+            if data is Default:
+                data = self._get_default_eve_data()
             body['src_alias'] = data.alias
         params = {}
         conditional_insert(container=params, key='sol', value=sol_info_mode)
