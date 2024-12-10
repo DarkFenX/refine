@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.consts import EveItemCat
 from tests.support.eve.types import Attribute, Buff, Effect, Group, Item, Mutator
-from tests.support.util import Absent, Default
+from tests.support.util import Absent
 from .primitives import EvePrimitives
 
 if TYPE_CHECKING:
@@ -99,8 +98,7 @@ class EveObjects:
     def mk_item(
             self, *,
             id_: int,
-            grp_id: Union[int, Type[Default]],
-            cat_id: Union[int, Type[Absent], Type[Default]],
+            grp_id: int,
             attrs: Union[dict[int, float], Type[Absent]],
             eff_ids: Union[list[int], Type[Absent]],
             defeff_id: Union[int, None, Type[Absent]],
@@ -110,10 +108,9 @@ class EveObjects:
             radius: Union[float, Type[Absent]],
             volume: Union[float, Type[Absent]],
     ) -> Item:
-        group = self.__fetch_or_mk_item_group(id_=grp_id, cat_id=cat_id)
         item = Item(
             id_=id_,
-            group_id=group.id,
+            group_id=grp_id,
             attributes=attrs,
             effect_ids=eff_ids,
             default_effect_id=defeff_id,
@@ -133,26 +130,6 @@ class EveObjects:
         group = Group(id_=id_, category_id=cat_id)
         self.item_groups.setdefault(id_, []).append(group)
         return group
-
-    def __fetch_or_mk_item_group(
-            self, *,
-            id_: Union[int, Type[Default]],
-            cat_id: Union[int, Type[Absent], Type[Default]],
-    ) -> Group:
-        # Fetch existing group if consistency is not broken:
-        # - when requested category ID and group's category ID match
-        # - when default category ID is requested, and we have just one group
-        if id_ in self.item_groups:
-            groups = self.item_groups[id_]
-            if len(groups) == 1:
-                group = groups[0]
-                if cat_id is Default or cat_id == group.category_id:
-                    return group
-        if id_ is Default:
-            id_ = self.prealloc_group_id()
-        if cat_id is Default:
-            cat_id = EveItemCat.module
-        return self.mk_item_group(id_=id_, cat_id=cat_id)
 
     def mk_attr(
             self, *,

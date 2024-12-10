@@ -84,11 +84,27 @@ class EveTypeFactory(EveDataManager):
             datas = [self._get_default_eve_data()]
         if id_ is Default:
             id_ = self.alloc_item_id(datas=datas)
+
+        def fetch_or_make_group_id() -> int:
+            # Fetch existing group if consistency is not broken:
+            # - when requested category ID and group's category ID match
+            # - when default category ID is requested, and we have just one group
+            if grp_id in data.item_groups:
+                group_list = data.item_groups[grp_id]
+                if len(group_list) == 1:
+                    group = group_list[0]
+                    if cat_id is Default or cat_id == group.category_id:
+                        return group.id
+            # Couldn't find a fitting group - create new one
+            group = data.mk_item_group(
+                id_=data.prealloc_group_id() if grp_id is Default else grp_id,
+                cat_id=EveItemCat.module if cat_id is Default else cat_id)
+            return group.id
+
         for data in datas:
             data.mk_item(
                 id_=id_,
-                grp_id=grp_id,
-                cat_id=cat_id,
+                grp_id=fetch_or_make_group_id(),
                 attrs={} if attrs is Default else attrs,
                 eff_ids=[] if eff_ids is Default else eff_ids,
                 defeff_id=None if defeff_id is Default else defeff_id,
