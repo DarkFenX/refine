@@ -4,13 +4,13 @@ from tests.support.util import Default
 
 
 def get_value_simple(client, attr_id, base_value):
-    eve_attr = client.mk_eve_attr(id_=attr_id)
-    eve_item = client.mk_eve_item(attrs={eve_attr.id: base_value})
+    eve_attr_id = client.mk_eve_attr(id_=attr_id)
+    eve_item_id = client.mk_eve_item(attrs={eve_attr_id: base_value})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_implant(type_id=eve_item.id)
-    return api_item.update().attrs[eve_attr.id].dogma
+    api_item = api_fit.add_implant(type_id=eve_item_id)
+    return api_item.update().attrs[eve_attr_id].dogma
 
 
 def test_cpu_down(client, consts):
@@ -22,26 +22,26 @@ def test_cpu_up(client, consts):
 
 
 def test_cpu_modified(client, consts):
-    eve_affector_attr = client.mk_eve_attr()
-    eve_affectee_attr = client.mk_eve_attr(id_=consts.EveAttr.cpu)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.item,
         op=consts.EveModOp.post_percent,
-        affector_attr_id=eve_affector_attr.id,
-        affectee_attr_id=eve_affectee_attr.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_item = client.mk_eve_item(
-        attrs={eve_affector_attr.id: 20.005, eve_affectee_attr.id: 1.9444},
-        eff_ids=[eve_effect.id])
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_item_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20.005, eve_affectee_attr_id: 1.9444},
+        eff_ids=[eve_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_implant(type_id=eve_item.id)
+    api_item = api_fit.add_implant(type_id=eve_item_id)
     # Verification
     api_item.update()
-    assert api_item.attrs[eve_affectee_attr.id].dogma == approx(2.33)
-    api_mod = api_item.mods[eve_affectee_attr.id].find_by_affector_item(affector_item_id=api_item.id).one()
+    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(2.33)
+    api_mod = api_item.mods[eve_affectee_attr_id].find_by_affector_item(affector_item_id=api_item.id).one()
     assert api_mod.applied_val == approx(20.005)
 
 

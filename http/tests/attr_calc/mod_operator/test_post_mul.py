@@ -2,37 +2,37 @@ from tests import approx, check_no_field
 
 
 def setup_penalization_test(client, consts, stackable):
-    eve_affector_attr = client.mk_eve_attr()
-    eve_affectee_attr = client.mk_eve_attr(stackable=stackable)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr(stackable=stackable)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        affector_attr_id=eve_affector_attr.id,
-        affectee_attr_id=eve_affectee_attr.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_item_affector1 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.2}, eff_ids=[eve_effect.id])
-    eve_item_affector2 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.5}, eff_ids=[eve_effect.id])
-    eve_item_affector3 = client.mk_eve_item(attrs={eve_affector_attr.id: 0.1}, eff_ids=[eve_effect.id])
-    eve_item_affector4 = client.mk_eve_item(attrs={eve_affector_attr.id: 0.75}, eff_ids=[eve_effect.id])
-    eve_item_affector5 = client.mk_eve_item(attrs={eve_affector_attr.id: 5}, eff_ids=[eve_effect.id])
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_item_affector1_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.2}, eff_ids=[eve_effect_id])
+    eve_item_affector2_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.5}, eff_ids=[eve_effect_id])
+    eve_item_affector3_id = client.mk_eve_item(attrs={eve_affector_attr_id: 0.1}, eff_ids=[eve_effect_id])
+    eve_item_affector4_id = client.mk_eve_item(attrs={eve_affector_attr_id: 0.75}, eff_ids=[eve_effect_id])
+    eve_item_affector5_id = client.mk_eve_item(attrs={eve_affector_attr_id: 5}, eff_ids=[eve_effect_id])
     # Multiplication by 1 is considered insignificant, and won't be exposed as modification
-    eve_item_affector6 = client.mk_eve_item(attrs={eve_affector_attr.id: 1}, eff_ids=[eve_effect.id])
-    eve_item_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
+    eve_item_affector6_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1}, eff_ids=[eve_effect_id])
+    eve_item_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item_affector1 = api_fit.add_rig(type_id=eve_item_affector1.id)
-    api_item_affector2 = api_fit.add_rig(type_id=eve_item_affector2.id)
-    api_item_affector3 = api_fit.add_rig(type_id=eve_item_affector3.id)
-    api_item_affector4 = api_fit.add_rig(type_id=eve_item_affector4.id)
-    api_item_affector5 = api_fit.add_rig(type_id=eve_item_affector5.id)
-    api_fit.add_rig(type_id=eve_item_affector6.id)
-    api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee.id)
+    api_item_affector1 = api_fit.add_rig(type_id=eve_item_affector1_id)
+    api_item_affector2 = api_fit.add_rig(type_id=eve_item_affector2_id)
+    api_item_affector3 = api_fit.add_rig(type_id=eve_item_affector3_id)
+    api_item_affector4 = api_fit.add_rig(type_id=eve_item_affector4_id)
+    api_item_affector5 = api_fit.add_rig(type_id=eve_item_affector5_id)
+    api_fit.add_rig(type_id=eve_item_affector6_id)
+    api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee_id)
     api_item_affectee.update()
     return (
-        api_item_affectee.attrs[eve_affectee_attr.id].dogma,
-        api_item_affectee.mods[eve_affectee_attr.id],
+        api_item_affectee.attrs[eve_affectee_attr_id].dogma,
+        api_item_affectee.mods[eve_affectee_attr_id],
         api_item_affector1,
         api_item_affector2,
         api_item_affector3,
@@ -115,47 +115,47 @@ def test_penalized(client, consts):
 
 
 def test_deep_stacking(client, consts):
-    eve_affector_attr = client.mk_eve_attr()
-    eve_affectee_attr = client.mk_eve_attr(stackable=False)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr(stackable=False)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        affector_attr_id=eve_affector_attr.id,
-        affectee_attr_id=eve_affectee_attr.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_affector1 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.5}, eff_ids=[eve_effect.id])
-    eve_affector2 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.49}, eff_ids=[eve_effect.id])
-    eve_affector3 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.48}, eff_ids=[eve_effect.id])
-    eve_affector4 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.47}, eff_ids=[eve_effect.id])
-    eve_affector5 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.46}, eff_ids=[eve_effect.id])
-    eve_affector6 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.45}, eff_ids=[eve_effect.id])
-    eve_affector7 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.44}, eff_ids=[eve_effect.id])
-    eve_affector8 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.43}, eff_ids=[eve_effect.id])
-    eve_affector9 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.42}, eff_ids=[eve_effect.id])
-    eve_affector10 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.41}, eff_ids=[eve_effect.id])
-    eve_affector11 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.40}, eff_ids=[eve_effect.id])
-    eve_affector12 = client.mk_eve_item(attrs={eve_affector_attr.id: 1.39}, eff_ids=[eve_effect.id])
-    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_affector1_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.5}, eff_ids=[eve_effect_id])
+    eve_affector2_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.49}, eff_ids=[eve_effect_id])
+    eve_affector3_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.48}, eff_ids=[eve_effect_id])
+    eve_affector4_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.47}, eff_ids=[eve_effect_id])
+    eve_affector5_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.46}, eff_ids=[eve_effect_id])
+    eve_affector6_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.45}, eff_ids=[eve_effect_id])
+    eve_affector7_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.44}, eff_ids=[eve_effect_id])
+    eve_affector8_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.43}, eff_ids=[eve_effect_id])
+    eve_affector9_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.42}, eff_ids=[eve_effect_id])
+    eve_affector10_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.41}, eff_ids=[eve_effect_id])
+    eve_affector11_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.40}, eff_ids=[eve_effect_id])
+    eve_affector12_id = client.mk_eve_item(attrs={eve_affector_attr_id: 1.39}, eff_ids=[eve_effect_id])
+    eve_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_affector1 = api_fit.add_rig(type_id=eve_affector1.id)
-    api_affector2 = api_fit.add_rig(type_id=eve_affector2.id)
-    api_affector3 = api_fit.add_rig(type_id=eve_affector3.id)
-    api_affector4 = api_fit.add_rig(type_id=eve_affector4.id)
-    api_affector5 = api_fit.add_rig(type_id=eve_affector5.id)
-    api_affector6 = api_fit.add_rig(type_id=eve_affector6.id)
-    api_affector7 = api_fit.add_rig(type_id=eve_affector7.id)
-    api_affector8 = api_fit.add_rig(type_id=eve_affector8.id)
-    api_affector9 = api_fit.add_rig(type_id=eve_affector9.id)
-    api_affector10 = api_fit.add_rig(type_id=eve_affector10.id)
-    api_affector11 = api_fit.add_rig(type_id=eve_affector11.id)
-    api_fit.add_rig(type_id=eve_affector12.id)
-    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
+    api_affector1 = api_fit.add_rig(type_id=eve_affector1_id)
+    api_affector2 = api_fit.add_rig(type_id=eve_affector2_id)
+    api_affector3 = api_fit.add_rig(type_id=eve_affector3_id)
+    api_affector4 = api_fit.add_rig(type_id=eve_affector4_id)
+    api_affector5 = api_fit.add_rig(type_id=eve_affector5_id)
+    api_affector6 = api_fit.add_rig(type_id=eve_affector6_id)
+    api_affector7 = api_fit.add_rig(type_id=eve_affector7_id)
+    api_affector8 = api_fit.add_rig(type_id=eve_affector8_id)
+    api_affector9 = api_fit.add_rig(type_id=eve_affector9_id)
+    api_affector10 = api_fit.add_rig(type_id=eve_affector10_id)
+    api_affector11 = api_fit.add_rig(type_id=eve_affector11_id)
+    api_fit.add_rig(type_id=eve_affector12_id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(329.202701)
-    api_mods = api_affectee.mods[eve_affectee_attr.id]
+    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(329.202701)
+    api_mods = api_affectee.mods[eve_affectee_attr_id]
     # 12th affector is completely ignored both in calculation process and for modification listing
     assert len(api_mods) == 11
     api_mod1 = api_mods.find_by_affector_item(affector_item_id=api_affector1.id).one()
@@ -218,27 +218,27 @@ def test_deep_stacking(client, consts):
 def test_insignificant_stacking(client, consts):
     # Here we check what happens if final result of stacking penalty chain is "neutral", its
     # modifications are not filtered out
-    eve_affector_attr = client.mk_eve_attr()
-    eve_affectee_attr = client.mk_eve_attr(stackable=False)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr(stackable=False)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        affector_attr_id=eve_affector_attr.id,
-        affectee_attr_id=eve_affectee_attr.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_affector1 = client.mk_eve_item(attrs={eve_affector_attr.id: 0.5}, eff_ids=[eve_effect.id])
-    eve_affector2 = client.mk_eve_item(attrs={eve_affector_attr.id: 2}, eff_ids=[eve_effect.id])
-    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_affector1_id = client.mk_eve_item(attrs={eve_affector_attr_id: 0.5}, eff_ids=[eve_effect_id])
+    eve_affector2_id = client.mk_eve_item(attrs={eve_affector_attr_id: 2}, eff_ids=[eve_effect_id])
+    eve_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_affector1 = api_fit.add_rig(type_id=eve_affector1.id)
-    api_affector2 = api_fit.add_rig(type_id=eve_affector2.id)
-    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
+    api_affector1 = api_fit.add_rig(type_id=eve_affector1_id)
+    api_affector2 = api_fit.add_rig(type_id=eve_affector2_id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(100)
-    api_mods = api_affectee.mods[eve_affectee_attr.id]
+    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(100)
+    api_mods = api_affectee.mods[eve_affectee_attr_id]
     assert len(api_mods) == 2
     api_mod1 = api_mods.find_by_affector_item(affector_item_id=api_affector1.id).one()
     assert api_mod1.op == consts.ApiModOp.post_mul
@@ -255,24 +255,24 @@ def test_insignificant_stacking(client, consts):
 def test_insignificant_base(client, consts):
     # When value on top of which modifications should be applied is 0, all multiplications are
     # insignificant and are not exposed as modifications
-    eve_affector_attr = client.mk_eve_attr()
-    eve_affectee_attr = client.mk_eve_attr()
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        affector_attr_id=eve_affector_attr.id,
-        affectee_attr_id=eve_affectee_attr.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_affector = client.mk_eve_item(attrs={eve_affector_attr.id: 4}, eff_ids=[eve_effect.id])
-    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 0})
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_affector_id = client.mk_eve_item(attrs={eve_affector_attr_id: 4}, eff_ids=[eve_effect_id])
+    eve_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_rig(type_id=eve_affector.id)
-    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
+    api_fit.add_rig(type_id=eve_affector_id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(0)
+    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
     with check_no_field():
         api_affectee.mods  # pylint: disable=W0104
 
@@ -280,34 +280,34 @@ def test_insignificant_base(client, consts):
 def test_insignificant_modified_base(client, consts):
     # When value on top of which modifications should be applied is 0, all multiplications are
     # insignificant and are not exposed as modifications
-    eve_affector_attr = client.mk_eve_attr()
-    eve_affectee_attr = client.mk_eve_attr()
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.mod_sub,
-        affector_attr_id=eve_affector_attr.id,
-        affectee_attr_id=eve_affectee_attr.id)
-    eve_effect1 = client.mk_eve_effect(mod_info=[eve_mod1])
-    eve_affector1 = client.mk_eve_item(attrs={eve_affector_attr.id: 100}, eff_ids=[eve_effect1.id])
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect1_id = client.mk_eve_effect(mod_info=[eve_mod1])
+    eve_affector1_id = client.mk_eve_item(attrs={eve_affector_attr_id: 100}, eff_ids=[eve_effect1_id])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        affector_attr_id=eve_affector_attr.id,
-        affectee_attr_id=eve_affectee_attr.id)
-    eve_effect2 = client.mk_eve_effect(mod_info=[eve_mod2])
-    eve_affector2 = client.mk_eve_item(attrs={eve_affector_attr.id: 4}, eff_ids=[eve_effect2.id])
-    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect2_id = client.mk_eve_effect(mod_info=[eve_mod2])
+    eve_affector2_id = client.mk_eve_item(attrs={eve_affector_attr_id: 4}, eff_ids=[eve_effect2_id])
+    eve_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_rig(type_id=eve_affector1.id)
-    api_fit.add_rig(type_id=eve_affector2.id)
-    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
+    api_fit.add_rig(type_id=eve_affector1_id)
+    api_fit.add_rig(type_id=eve_affector2_id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     api_affectee.update()
-    assert api_affectee.attrs[eve_affectee_attr.id].dogma == approx(0)
-    api_mod = api_affectee.mods[eve_affectee_attr.id].one()
+    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
+    api_mod = api_affectee.mods[eve_affectee_attr_id].one()
     assert api_mod.op == consts.ApiModOp.mod_sub
     assert api_mod.initial_val == approx(100)
     assert api_mod.stacking_mult is None
@@ -315,32 +315,32 @@ def test_insignificant_modified_base(client, consts):
 
 
 def setup_insignificant_chain_values_test(client, consts, stackable):
-    eve_affector_attr = client.mk_eve_attr()
-    eve_affectee_attr = client.mk_eve_attr(stackable=stackable)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr(stackable=stackable)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_mul,
-        affector_attr_id=eve_affector_attr.id,
-        affectee_attr_id=eve_affectee_attr.id)
-    eve_effect = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_affector1 = client.mk_eve_item(attrs={eve_affector_attr.id: 0}, eff_ids=[eve_effect.id])
-    eve_affector2 = client.mk_eve_item(attrs={eve_affector_attr.id: 4}, eff_ids=[eve_effect.id])
-    eve_affector3 = client.mk_eve_item(attrs={eve_affector_attr.id: 0}, eff_ids=[eve_effect.id])
-    eve_affector4 = client.mk_eve_item(attrs={eve_affector_attr.id: 0.4}, eff_ids=[eve_effect.id])
-    eve_affectee = client.mk_eve_ship(attrs={eve_affectee_attr.id: 100})
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_affector1_id = client.mk_eve_item(attrs={eve_affector_attr_id: 0}, eff_ids=[eve_effect_id])
+    eve_affector2_id = client.mk_eve_item(attrs={eve_affector_attr_id: 4}, eff_ids=[eve_effect_id])
+    eve_affector3_id = client.mk_eve_item(attrs={eve_affector_attr_id: 0}, eff_ids=[eve_effect_id])
+    eve_affector4_id = client.mk_eve_item(attrs={eve_affector_attr_id: 0.4}, eff_ids=[eve_effect_id])
+    eve_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_affector1 = api_fit.add_rig(type_id=eve_affector1.id)
-    api_fit.add_rig(type_id=eve_affector2.id)
-    api_affector3 = api_fit.add_rig(type_id=eve_affector3.id)
-    api_fit.add_rig(type_id=eve_affector4.id)
-    api_affectee = api_fit.set_ship(type_id=eve_affectee.id)
+    api_affector1 = api_fit.add_rig(type_id=eve_affector1_id)
+    api_fit.add_rig(type_id=eve_affector2_id)
+    api_affector3 = api_fit.add_rig(type_id=eve_affector3_id)
+    api_fit.add_rig(type_id=eve_affector4_id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
     api_affectee.update()
     return (
-        api_affectee.attrs[eve_affectee_attr.id].dogma,
-        api_affectee.mods[eve_affectee_attr.id],
+        api_affectee.attrs[eve_affectee_attr_id].dogma,
+        api_affectee.mods[eve_affectee_attr_id],
         api_affector1,
         api_affector3)
 
