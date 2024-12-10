@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.consts import EveEffCat, EveEffect, EveItemCat
+from tests.support.consts import EveEffCat, EveEffect, EveItemCat, EveItemGrp
 from tests.support.util import Absent, Default
 from .data_manager import EveDataManager
 from .types import BuffModifier, EffectModifier
@@ -22,7 +22,7 @@ class EveTypeFactory(EveDataManager):
         while any(id_ in d.items for d in datas):
             id_ += 1
         for data in datas:
-            data.items[id_] = []
+            data.alloc_item_id(id_=id_)
         return id_
 
     def alloc_group_id(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
@@ -32,7 +32,7 @@ class EveTypeFactory(EveDataManager):
         while any(id_ in d.item_groups for d in datas):
             id_ += 1
         for data in datas:
-            data.item_groups[id_] = []
+            data.alloc_group_id(id_=id_)
         return id_
 
     def alloc_attr_id(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
@@ -42,7 +42,7 @@ class EveTypeFactory(EveDataManager):
         while any(id_ in d.attributes for d in datas):
             id_ += 1
         for data in datas:
-            data.attributes[id_] = []
+            data.alloc_attr_id(id_=id_)
         return id_
 
     def alloc_effect_id(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
@@ -52,7 +52,7 @@ class EveTypeFactory(EveDataManager):
         while any(id_ in d.effects for d in datas):
             id_ += 1
         for data in datas:
-            data.effects[id_] = []
+            data.alloc_effect_id(id_=id_)
         return id_
 
     def alloc_buff_id(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
@@ -62,7 +62,7 @@ class EveTypeFactory(EveDataManager):
         while any(id_ in d.buffs for d in datas):
             id_ += 1
         for data in datas:
-            data.buffs[id_] = []
+            data.alloc_buff_id(id_=id_)
         return id_
 
     def mk_eve_item(
@@ -89,14 +89,14 @@ class EveTypeFactory(EveDataManager):
                 id_=id_,
                 grp_id=grp_id,
                 cat_id=cat_id,
-                attrs=attrs,
-                eff_ids=eff_ids,
-                defeff_id=defeff_id,
-                srqs=srqs,
-                capacity=capacity,
-                mass=mass,
-                radius=radius,
-                volume=volume)
+                attrs={} if attrs is Default else attrs,
+                eff_ids=[] if eff_ids is Default else eff_ids,
+                defeff_id=None if defeff_id is Default else defeff_id,
+                srqs={} if srqs is Default else srqs,
+                capacity=0.0 if capacity is Default else capacity,
+                mass=0.0 if mass is Default else mass,
+                radius=0.0 if radius is Default else radius,
+                volume=0.0 if volume is Default else volume)
         return id_
 
     def mk_eve_ship(
@@ -166,7 +166,9 @@ class EveTypeFactory(EveDataManager):
         if id_ is Default:
             id_ = self.alloc_group_id(datas=datas)
         for data in datas:
-            data.mk_item_group(id_=id_, cat_id=cat_id)
+            data.mk_item_group(
+                id_=id_,
+                cat_id=EveItemCat.module if cat_id is Default else cat_id)
         return id_
 
     def mk_eve_ship_group(
@@ -200,11 +202,11 @@ class EveTypeFactory(EveDataManager):
         for data in datas:
             data.mk_attr(
                 id_=id_,
-                stackable=stackable,
-                high_is_good=high_is_good,
-                def_val=def_val,
-                min_attr_id=min_attr_id,
-                max_attr_id=max_attr_id)
+                stackable=1 if stackable is Default else stackable,
+                high_is_good=1 if high_is_good is Default else high_is_good,
+                def_val=0.0 if def_val is Default else def_val,
+                min_attr_id=Absent if min_attr_id is Default else min_attr_id,
+                max_attr_id=Absent if max_attr_id is Default else max_attr_id)
         return id_
 
     def mk_eve_effect(
@@ -230,17 +232,17 @@ class EveTypeFactory(EveDataManager):
         for data in datas:
             data.mk_effect(
                 id_=id_,
-                cat_id=cat_id,
-                is_assistance=is_assistance,
-                is_offensive=is_offensive,
-                discharge_attr_id=discharge_attr_id,
-                duration_attr_id=duration_attr_id,
-                range_attr_id=range_attr_id,
-                falloff_attr_id=falloff_attr_id,
-                tracking_attr_id=tracking_attr_id,
-                chance_attr_id=chance_attr_id,
-                resist_attr_id=resist_attr_id,
-                mod_info=mod_info)
+                cat_id=EveEffCat.passive if cat_id is Default else cat_id,
+                is_assistance=0 if is_assistance is Default else is_assistance,
+                is_offensive=0 if is_offensive is Default else is_offensive,
+                discharge_attr_id=Absent if discharge_attr_id is Default else discharge_attr_id,
+                duration_attr_id=Absent if duration_attr_id is Default else duration_attr_id,
+                range_attr_id=Absent if range_attr_id is Default else range_attr_id,
+                falloff_attr_id=Absent if falloff_attr_id is Default else falloff_attr_id,
+                tracking_attr_id=Absent if tracking_attr_id is Default else tracking_attr_id,
+                chance_attr_id=Absent if chance_attr_id is Default else chance_attr_id,
+                resist_attr_id=Absent if resist_attr_id is Default else resist_attr_id,
+                mod_info=Absent if mod_info is Default else mod_info)
         return id_
 
     def mk_eve_online_effect(self, *, datas: Union[list[EveObjects], Type[Default]] = Default) -> int:
@@ -297,12 +299,12 @@ class EveTypeFactory(EveDataManager):
         for data in datas:
             data.mk_buff(
                 id_=id_,
-                aggr_mode=aggr_mode,
-                op=op,
-                item_mods=item_mods,
-                loc_mods=loc_mods,
-                loc_grp_mods=loc_grp_mods,
-                loc_srq_mods=loc_srq_mods)
+                aggr_mode=Absent if aggr_mode is Default else aggr_mode,
+                op=Absent if op is Default else op,
+                item_mods=Absent if item_mods is Default else item_mods,
+                loc_mods=Absent if loc_mods is Default else loc_mods,
+                loc_grp_mods=Absent if loc_grp_mods is Default else loc_grp_mods,
+                loc_srq_mods=Absent if loc_srq_mods is Default else loc_srq_mods)
         return id_
 
     @staticmethod
@@ -326,12 +328,15 @@ class EveTypeFactory(EveDataManager):
     ) -> int:
         if datas is Default:
             datas = [self._get_default_eve_data()]
-        # Mutators are a special case of an item, create an item for it
-        if id_ is Default:
-            id_ = self.alloc_item_id(datas=datas)
+        # Mutators are a special case of an item, allocate an item ID and create item for it
+        id_ = self.mk_eve_item(
+            datas=datas,
+            id_=id_,
+            grp_id=EveItemGrp.mutaplasmids,
+            cat_id=EveItemCat.commodity)
         for data in datas:
             data.mk_mutator(
                 id_=id_,
-                items=items,
-                attributes=attributes)
+                items=[] if items is Default else items,
+                attributes={} if attributes is Default else attributes)
         return id_

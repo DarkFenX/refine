@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.consts import EveEffCat, EveEffect, EveItemCat, EveItemGrp
+from tests.support.consts import EveItemCat
 from tests.support.eve.types import Attribute, Buff, Effect, Group, Item, Mutator
 from tests.support.util import Absent, Default
 from .primitives import EvePrimitives
@@ -42,11 +42,11 @@ class EveObjects:
             id_ += 1
         return id_
 
-    def alloc_item_id(self) -> int:
-        id_ = self.prealloc_item_id()
-        self.item_id = id_ + 1
-        self.items[id_] = []
-        return id_
+    def alloc_item_id(self, *, id_: int) -> None:
+        if id_ not in self.items:
+            self.items[id_] = []
+        if id_ >= self.item_id:
+            self.item_id = id_ + 1
 
     def prealloc_group_id(self) -> int:
         id_ = self.item_group_id
@@ -54,11 +54,11 @@ class EveObjects:
             id_ += 1
         return id_
 
-    def alloc_group_id(self) -> int:
-        id_ = self.prealloc_group_id()
-        self.item_group_id = id_ + 1
-        self.item_groups[id_] = []
-        return id_
+    def alloc_group_id(self, *, id_: int) -> None:
+        if id_ not in self.item_groups:
+            self.item_groups[id_] = []
+        if id_ >= self.item_group_id:
+            self.item_group_id = id_ + 1
 
     def prealloc_attr_id(self) -> int:
         id_ = self.attr_id
@@ -66,11 +66,11 @@ class EveObjects:
             id_ += 1
         return id_
 
-    def alloc_attr_id(self) -> int:
-        id_ = self.prealloc_attr_id()
-        self.attr_id = id_ + 1
-        self.attributes[id_] = []
-        return id_
+    def alloc_attr_id(self, *, id_: int) -> None:
+        if id_ not in self.attributes:
+            self.attributes[id_] = []
+        if id_ >= self.attr_id:
+            self.attr_id = id_ + 1
 
     def prealloc_effect_id(self) -> int:
         id_ = self.effect_id
@@ -78,11 +78,11 @@ class EveObjects:
             id_ += 1
         return id_
 
-    def alloc_effect_id(self) -> int:
-        id_ = self.prealloc_effect_id()
-        self.effect_id = id_ + 1
-        self.effects[id_] = []
-        return id_
+    def alloc_effect_id(self, *, id_: int) -> None:
+        if id_ not in self.effects:
+            self.effects[id_] = []
+        if id_ >= self.effect_id:
+            self.effect_id = id_ + 1
 
     def prealloc_buff_id(self) -> int:
         id_ = self.buff_id
@@ -90,61 +90,49 @@ class EveObjects:
             id_ += 1
         return id_
 
-    def alloc_buff_id(self) -> int:
-        id_ = self.prealloc_buff_id()
-        self.buff_id = id_ + 1
-        self.buffs[id_] = []
-        return id_
+    def alloc_buff_id(self, *, id_: int) -> None:
+        if id_ not in self.buffs:
+            self.buffs[id_] = []
+        if id_ >= self.buff_id:
+            self.buff_id = id_ + 1
 
     def mk_item(
             self, *,
-            id_: Union[int, Type[Default]] = Default,
-            grp_id: Union[int, Type[Default]] = Default,
-            cat_id: Union[int, Type[Absent], Type[Default]] = Default,
-            attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
-            eff_ids: Union[list[int], tuple[int], Type[Absent], Type[Default]] = Default,
-            defeff_id: Union[int, None, Type[Absent], Type[Default]] = Default,
-            srqs: Union[dict[int, int], Type[Absent], Type[Default]] = Default,
-            capacity: Union[float, Type[Absent], Type[Default]] = Default,
-            mass: Union[float, Type[Absent], Type[Default]] = Default,
-            radius: Union[float, Type[Absent], Type[Default]] = Default,
-            volume: Union[float, Type[Absent], Type[Default]] = Default,
+            id_: int,
+            grp_id: Union[int, Type[Default]],
+            cat_id: Union[int, Type[Absent], Type[Default]],
+            attrs: Union[dict[int, float], Type[Absent]],
+            eff_ids: Union[list[int], tuple[int], Type[Absent]],
+            defeff_id: Union[int, None, Type[Absent]],
+            srqs: Union[dict[int, int], Type[Absent]],
+            capacity: Union[float, Type[Absent]],
+            mass: Union[float, Type[Absent]],
+            radius: Union[float, Type[Absent]],
+            volume: Union[float, Type[Absent]],
     ) -> Item:
-        if id_ is Default:
-            id_ = self.alloc_item_id()
         group = self.__fetch_or_mk_item_group(id_=grp_id, cat_id=cat_id)
         item = Item(
             id_=id_,
             group_id=group.id,
-            attributes={} if attrs is Default else attrs,
-            effect_ids=[] if eff_ids is Default else eff_ids,
-            default_effect_id=None if defeff_id is Default else defeff_id,
-            skill_reqs={} if srqs is Default else srqs,
-            capacity=0.0 if capacity is Default else capacity,
-            mass=0.0 if mass is Default else mass,
-            radius=0.0 if radius is Default else radius,
-            volume=0.0 if volume is Default else volume)
+            attributes=attrs,
+            effect_ids=eff_ids,
+            default_effect_id=defeff_id,
+            skill_reqs=srqs,
+            capacity=capacity,
+            mass=mass,
+            radius=radius,
+            volume=volume)
         self.items.setdefault(id_, []).append(item)
         return item
 
     def mk_item_group(
             self, *,
-            id_: Union[int, Type[Default]] = Default,
-            cat_id: Union[int, Type[Absent], Type[Default]] = Default,
+            id_: int,
+            cat_id: Union[int, Type[Absent]],
     ) -> Group:
-        if id_ is Default:
-            id_ = self.alloc_group_id()
-        if cat_id is Default:
-            cat_id = EveItemCat.module
         group = Group(id_=id_, category_id=cat_id)
         self.item_groups.setdefault(id_, []).append(group)
         return group
-
-    def mk_ship_group(self, *, id_: Union[int, Type[Default]] = Default) -> Group:
-        return self.mk_item_group(id_=id_, cat_id=EveItemCat.ship)
-
-    def mk_struct_group(self, *, id_: Union[int, Type[Default]] = Default) -> Group:
-        return self.mk_item_group(id_=id_, cat_id=EveItemCat.structure)
 
     def __fetch_or_mk_item_group(
             self, *,
@@ -160,115 +148,93 @@ class EveObjects:
                 group = groups[0]
                 if cat_id is Default or cat_id == group.category_id:
                     return group
+        if id_ is Default:
+            id_ = self.prealloc_group_id()
+        if cat_id is Default:
+            cat_id = EveItemCat.module
         return self.mk_item_group(id_=id_, cat_id=cat_id)
 
     def mk_attr(
             self, *,
-            id_: Union[int, Type[Default]] = Default,
-            stackable: Union[int, bool, Type[Absent], Type[Default]] = Default,
-            high_is_good: Union[int, bool, Type[Absent], Type[Default]] = Default,
-            def_val: Union[float, Type[Absent], Type[Default]] = Default,
-            min_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-            max_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
+            id_: int,
+            stackable: Union[int, bool, Type[Absent]],
+            high_is_good: Union[int, bool, Type[Absent]],
+            def_val: Union[float, Type[Absent]],
+            min_attr_id: Union[int, Type[Absent]],
+            max_attr_id: Union[int, Type[Absent]],
     ) -> Attribute:
-        if id_ is Default:
-            id_ = self.alloc_attr_id()
         attr = Attribute(
             id_=id_,
-            stackable=1 if stackable is Default else stackable,
-            high_is_good=1 if high_is_good is Default else high_is_good,
-            default_value=0.0 if def_val is Default else def_val,
-            min_attribute_id=Absent if min_attr_id is Default else min_attr_id,
-            max_attribute_id=Absent if max_attr_id is Default else max_attr_id)
+            stackable=stackable,
+            high_is_good=high_is_good,
+            default_value=def_val,
+            min_attribute_id=min_attr_id,
+            max_attribute_id=max_attr_id)
         self.attributes.setdefault(id_, []).append(attr)
         return attr
 
     def mk_effect(
             self, *,
-            id_: Union[int, Type[Default]] = Default,
-            cat_id: Union[int, Type[Absent], Type[Default]] = Default,
-            is_assistance: Union[int, bool, Type[Absent], Type[Default]] = Default,
-            is_offensive: Union[int, bool, Type[Absent], Type[Default]] = Default,
-            discharge_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-            duration_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-            range_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-            falloff_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-            tracking_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-            chance_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-            resist_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-            mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent], Type[Default]] = Default,
+            id_: int,
+            cat_id: Union[int, Type[Absent]],
+            is_assistance: Union[int, bool, Type[Absent]],
+            is_offensive: Union[int, bool, Type[Absent]],
+            discharge_attr_id: Union[int, Type[Absent]],
+            duration_attr_id: Union[int, Type[Absent]],
+            range_attr_id: Union[int, Type[Absent]],
+            falloff_attr_id: Union[int, Type[Absent]],
+            tracking_attr_id: Union[int, Type[Absent]],
+            chance_attr_id: Union[int, Type[Absent]],
+            resist_attr_id: Union[int, Type[Absent]],
+            mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent]],
     ) -> Effect:
-        if id_ is Default:
-            id_ = self.alloc_effect_id()
         effect = Effect(
             id_=id_,
-            category_id=EveEffCat.passive if cat_id is Default else cat_id,
-            is_assistance=0 if is_assistance is Default else is_assistance,
-            is_offensive=0 if is_offensive is Default else is_offensive,
-            discharge_attribute_id=Absent if discharge_attr_id is Default else discharge_attr_id,
-            duration_attribute_id=Absent if duration_attr_id is Default else duration_attr_id,
-            range_attribute_id=Absent if range_attr_id is Default else range_attr_id,
-            falloff_attribute_id=Absent if falloff_attr_id is Default else falloff_attr_id,
-            tracking_attribute_id=Absent if tracking_attr_id is Default else tracking_attr_id,
-            usage_chance_attribute_id=Absent if chance_attr_id is Default else chance_attr_id,
-            resist_attribute_id=Absent if resist_attr_id is Default else resist_attr_id,
-            modifier_info=Absent if mod_info is Default else mod_info)
+            category_id=cat_id,
+            is_assistance=is_assistance,
+            is_offensive=is_offensive,
+            discharge_attribute_id=discharge_attr_id,
+            duration_attribute_id=duration_attr_id,
+            range_attribute_id=range_attr_id,
+            falloff_attribute_id=falloff_attr_id,
+            tracking_attribute_id=tracking_attr_id,
+            usage_chance_attribute_id=chance_attr_id,
+            resist_attribute_id=resist_attr_id,
+            modifier_info=mod_info)
         self.effects.setdefault(id_, []).append(effect)
         return effect
 
-    def mk_online_effect(self) -> Effect:
-        return self.mk_effect(
-            id_=EveEffect.online,
-            cat_id=EveEffCat.active,
-            is_assistance=0,
-            is_offensive=0,
-            discharge_attr_id=Absent,
-            duration_attr_id=Absent,
-            range_attr_id=Absent,
-            falloff_attr_id=Absent,
-            tracking_attr_id=Absent,
-            chance_attr_id=Absent,
-            resist_attr_id=Absent,
-            mod_info=Absent)
-
     def mk_buff(
             self, *,
-            id_: Union[int, Type[Default]] = Default,
-            aggr_mode: Union[str, Type[Absent], Type[Default]] = Default,
-            op: Union[str, Type[Absent], Type[Default]] = Default,
-            item_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
-            loc_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
-            loc_grp_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
-            loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
+            id_: int,
+            aggr_mode: Union[str, Type[Absent]],
+            op: Union[str, Type[Absent]],
+            item_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
+            loc_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
+            loc_grp_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
+            loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
     ) -> Buff:
-        if id_ is Default:
-            id_ = self.alloc_buff_id()
         buff = Buff(
             id_=id_,
-            aggregate_mode=Absent if aggr_mode is Default else aggr_mode,
-            operation_name=Absent if op is Default else op,
-            item_modifiers=Absent if item_mods is Default else item_mods,
-            location_modifiers=Absent if loc_mods is Default else loc_mods,
-            location_group_modifiers=Absent if loc_grp_mods is Default else loc_grp_mods,
-            location_skillreq_modifiers=Absent if loc_srq_mods is Default else loc_srq_mods)
+            aggregate_mode=aggr_mode,
+            operation_name=op,
+            item_modifiers=item_mods,
+            location_modifiers=loc_mods,
+            location_group_modifiers=loc_grp_mods,
+            location_skillreq_modifiers=loc_srq_mods)
         self.buffs.setdefault(id_, []).append(buff)
         return buff
 
     def mk_mutator(
             self, *,
-            id_: Union[int, Type[Default]] = Default,
-            items: Union[list[tuple[list[int], int]], Type[Absent], Type[Default]] = Default,
-            attributes: Union[dict[int, tuple[float, float]], Type[Absent], Type[Default]] = Default,
+            id_: int,
+            items: Union[list[tuple[list[int], int]], Type[Absent]],
+            attributes: Union[dict[int, tuple[float, float]], Type[Absent]],
     ) -> Mutator:
-        # Mutators are a special case of an item, create an item for it
-        item = self.mk_item(
-            id_=id_,
-            grp_id=EveItemGrp.mutaplasmids,
-            cat_id=EveItemCat.commodity)
         mutator = Mutator(
-            id_=item.id,
-            items=[] if items is Default else items,
-            attributes={} if attributes is Default else attributes)
+            id_=id_,
+            items=items,
+            attributes=attributes)
         self.mutators.setdefault(id_, []).append(mutator)
         return mutator
 
