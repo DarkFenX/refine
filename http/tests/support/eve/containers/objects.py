@@ -102,7 +102,7 @@ class EveObjects:
             grp_id: Union[int, Type[Default]],
             cat_id: Union[int, Type[Absent], Type[Default]],
             attrs: Union[dict[int, float], Type[Absent]],
-            eff_ids: Union[list[int], tuple[int], Type[Absent]],
+            eff_ids: Union[list[int], Type[Absent]],
             defeff_id: Union[int, None, Type[Absent]],
             srqs: Union[dict[int, int], Type[Absent]],
             capacity: Union[float, Type[Absent]],
@@ -186,7 +186,7 @@ class EveObjects:
             tracking_attr_id: Union[int, Type[Absent]],
             chance_attr_id: Union[int, Type[Absent]],
             resist_attr_id: Union[int, Type[Absent]],
-            mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent]],
+            mod_info: Union[list[EffectModifier], Type[Absent]],
     ) -> Effect:
         effect = Effect(
             id_=id_,
@@ -209,10 +209,10 @@ class EveObjects:
             id_: int,
             aggr_mode: Union[str, Type[Absent]],
             op: Union[str, Type[Absent]],
-            item_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
-            loc_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
-            loc_grp_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
-            loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
+            item_mods: Union[list[BuffModifier], Type[Absent]],
+            loc_mods: Union[list[BuffModifier], Type[Absent]],
+            loc_grp_mods: Union[list[BuffModifier], Type[Absent]],
+            loc_srq_mods: Union[list[BuffModifier], Type[Absent]],
     ) -> Buff:
         buff = Buff(
             id_=id_,

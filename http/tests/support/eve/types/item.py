@@ -18,7 +18,7 @@ class Item:
             id_: int,
             group_id: Union[int, Type[Absent]],
             attributes: Union[dict[int, float], Type[Absent]],
-            effect_ids: Union[list[int], tuple[int], Type[Absent]],
+            effect_ids: Union[list[int], Type[Absent]],
             default_effect_id: Union[int, None],
             skill_reqs: Union[dict[int, int], Type[Absent]],
             capacity: Union[float, Type[Absent]],
@@ -66,7 +66,7 @@ class Item:
         if self.effect_ids is Absent:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
-        if isinstance(self.effect_ids, (tuple, list, set)):
+        if isinstance(self.effect_ids, list):
             effects_entry = item_entry['dogmaEffects'] = []
             for effect_id in self.effect_ids:
                 effects_entry.append({'effectID': effect_id, 'isDefault': int(effect_id == self.default_effect_id)})

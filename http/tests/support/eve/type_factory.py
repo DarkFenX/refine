@@ -72,7 +72,7 @@ class EveTypeFactory(EveDataManager):
             grp_id: Union[int, Type[Default]] = Default,
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
-            eff_ids: Union[list[int], tuple[int], Type[Absent], Type[Default]] = Default,
+            eff_ids: Union[list[int], Type[Absent], Type[Default]] = Default,
             defeff_id: Union[int, None, Type[Absent], Type[Default]] = Default,
             srqs: Union[dict[int, int], Type[Absent], Type[Default]] = Default,
             capacity: Union[float, Type[Absent], Type[Default]] = Default,
@@ -105,7 +105,7 @@ class EveTypeFactory(EveDataManager):
             id_: Union[int, Type[Default]] = Default,
             grp_id: Union[int, Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
-            eff_ids: Union[list[int], tuple[int], Type[Absent], Type[Default]] = Default,
+            eff_ids: Union[list[int], Type[Absent], Type[Default]] = Default,
             defeff_id: Union[int, None, Type[Absent], Type[Default]] = Default,
             srqs: Union[dict[int, int], Type[Absent], Type[Default]] = Default,
             capacity: Union[float, Type[Absent], Type[Default]] = Default,
@@ -133,7 +133,7 @@ class EveTypeFactory(EveDataManager):
             id_: Union[int, Type[Default]] = Default,
             grp_id: Union[int, Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
-            eff_ids: Union[list[int], tuple[int], Type[Absent], Type[Default]] = Default,
+            eff_ids: Union[list[int], Type[Absent], Type[Default]] = Default,
             defeff_id: Union[int, None, Type[Absent], Type[Default]] = Default,
             srqs: Union[dict[int, int], Type[Absent], Type[Default]] = Default,
             capacity: Union[float, Type[Absent], Type[Default]] = Default,
@@ -223,7 +223,7 @@ class EveTypeFactory(EveDataManager):
             tracking_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
             chance_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
             resist_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
-            mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent], Type[Default]] = Default,
+            mod_info: Union[list[EffectModifier], Type[Absent], Type[Default]] = Default,
     ) -> id:
         if datas is Default:
             datas = [self._get_default_eve_data()]
@@ -287,10 +287,10 @@ class EveTypeFactory(EveDataManager):
             id_: Union[int, Type[Default]] = Default,
             aggr_mode: Union[str, Type[Absent], Type[Default]] = Default,
             op: Union[str, Type[Absent], Type[Default]] = Default,
-            item_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
-            loc_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
-            loc_grp_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
-            loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
+            item_mods: Union[list[BuffModifier], Type[Absent], Type[Default]] = Default,
+            loc_mods: Union[list[BuffModifier], Type[Absent], Type[Default]] = Default,
+            loc_grp_mods: Union[list[BuffModifier], Type[Absent], Type[Default]] = Default,
+            loc_srq_mods: Union[list[BuffModifier], Type[Absent], Type[Default]] = Default,
     ) -> int:
         if datas is Default:
             datas = [self._get_default_eve_data()]

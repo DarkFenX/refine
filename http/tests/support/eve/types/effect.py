@@ -28,7 +28,7 @@ class Effect:
             tracking_attribute_id: Union[int, Type[Absent]],
             usage_chance_attribute_id: Union[int, Type[Absent]],
             resist_attribute_id: Union[int, Type[Absent]],
-            modifier_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent]],
+            modifier_info: Union[list[EffectModifier], Type[Absent]],
     ):
         self.id = id_
         self.category_id = category_id
@@ -100,7 +100,7 @@ class Effect:
             key='modifierInfo',
             value=(
                 [m.to_primitives() for m in self.modifier_info]
-                if isinstance(self.modifier_info, (list, tuple))
+                if isinstance(self.modifier_info, list)
                 else self.modifier_info))
         if self.id in primitive_data.dogmaeffects:
             raise TestDataConsistencyError(f'attempt to add effect with duplicate ID {self.id}')

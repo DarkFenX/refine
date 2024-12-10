@@ -20,10 +20,10 @@ class Buff:
             id_: int,
             aggregate_mode: Union[str, Type[Absent]],
             operation_name: Union[str, Type[Absent]],
-            item_modifiers: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
-            location_modifiers: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
-            location_group_modifiers: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
-            location_skillreq_modifiers: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent]],
+            item_modifiers: Union[list[BuffModifier], Type[Absent]],
+            location_modifiers: Union[list[BuffModifier], Type[Absent]],
+            location_group_modifiers: Union[list[BuffModifier], Type[Absent]],
+            location_skillreq_modifiers: Union[list[BuffModifier], Type[Absent]],
     ):
         self.id = id_
         self.aggregate_mode = aggregate_mode
@@ -39,19 +39,19 @@ class Buff:
         conditional_insert(container=effect_entry, key='operationName', value=self.operation_name, cast_to=str)
         conditional_insert(container=effect_entry, key='itemModifiers', value=(
             [m.to_primitives() for m in self.item_modifiers]
-            if isinstance(self.item_modifiers, (list, tuple))
+            if isinstance(self.item_modifiers, list)
             else self.item_modifiers))
         conditional_insert(container=effect_entry, key='locationModifiers', value=(
             [m.to_primitives() for m in self.location_modifiers]
-            if isinstance(self.location_modifiers, (list, tuple))
+            if isinstance(self.location_modifiers, list)
             else self.location_modifiers))
         conditional_insert(container=effect_entry, key='locationGroupModifiers', value=(
             [m.to_primitives() for m in self.location_group_modifiers]
-            if isinstance(self.location_group_modifiers, (list, tuple))
+            if isinstance(self.location_group_modifiers, list)
             else self.location_group_modifiers))
         conditional_insert(container=effect_entry, key='locationRequiredSkillModifiers', value=(
             [m.to_primitives() for m in self.location_skillreq_modifiers]
-            if isinstance(self.location_skillreq_modifiers, (list, tuple))
+            if isinstance(self.location_skillreq_modifiers, list)
             else self.location_skillreq_modifiers))
         if self.id in primitive_data.dbuffcollections:
             raise TestDataConsistencyError(f'attempt to add buff with duplicate ID {self.id}')
