@@ -4,38 +4,26 @@ from tests import approx
 def test_to_struct(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
-    eve_d1.mk_attr(id_=consts.EveAttr.warfare_buff_1_id)
-    eve_d2.mk_attr(id_=consts.EveAttr.warfare_buff_1_id)
-    eve_d1.mk_attr(id_=consts.EveAttr.warfare_buff_1_value)
-    eve_d2.mk_attr(id_=consts.EveAttr.warfare_buff_1_value)
-    eve_affectee_attr_id = eve_d1.mk_attr().id
-    eve_d2.mk_attr(id_=eve_affectee_attr_id)
-    eve_buff_id = eve_d1.mk_buff(
-        aggr_mode=consts.EveBuffAggrMode.max,
-        op=consts.EveBuffOp.post_mul,
-        item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)]).id
-    eve_d2.mk_buff(
-        id_=eve_buff_id,
+    eve_buff_type_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.warfare_buff_1_id)
+    eve_buff_val_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.warfare_buff_1_value)
+    eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_buff_id = client.mk_eve_buff(
+        datas=[eve_d1, eve_d2],
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_d1.mk_effect(
+    eve_effect_id = client.mk_eve_effect(
+        datas=[eve_d1, eve_d2],
         id_=consts.EveEffect.weather_darkness,
         cat_id=consts.EveEffCat.active)
-    eve_d2.mk_effect(
-        id_=consts.EveEffect.weather_darkness,
-        cat_id=consts.EveEffCat.active)
-    eve_proj_effect_id = eve_d1.mk_item(
-        attrs={consts.EveAttr.warfare_buff_1_id: eve_buff_id, consts.EveAttr.warfare_buff_1_value: 5},
-        eff_ids=[consts.EveEffect.weather_darkness],
-        defeff_id=consts.EveEffect.weather_darkness).id
-    eve_d2.mk_item(
-        id_=eve_proj_effect_id,
-        attrs={consts.EveAttr.warfare_buff_1_id: eve_buff_id, consts.EveAttr.warfare_buff_1_value: 5},
-        eff_ids=[consts.EveEffect.weather_darkness],
-        defeff_id=consts.EveEffect.weather_darkness)
-    eve_root_id = eve_d1.mk_ship(attrs={eve_affectee_attr_id: 7.5}).id
-    eve_d2.mk_struct(id_=eve_root_id, attrs={eve_affectee_attr_id: 7.5})
+    eve_proj_effect_id = client.mk_eve_item(
+        datas=[eve_d1, eve_d2],
+        attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 5},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
+    eve_root_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_ship(datas=[eve_d1], id_=eve_root_id, attrs={eve_affectee_attr_id: 7.5})
+    client.mk_eve_struct(datas=[eve_d2], id_=eve_root_id, attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()

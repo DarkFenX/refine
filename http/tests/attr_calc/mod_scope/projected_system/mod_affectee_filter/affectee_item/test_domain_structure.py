@@ -122,22 +122,22 @@ def test_replace_proj(client, consts):
 def test_src_switch_to_ship(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
-    eve_affector_attr_id = eve_d1.mk_attr().id
-    eve_d2.mk_attr(id_=eve_affector_attr_id)
-    eve_affectee_attr_id = eve_d1.mk_attr().id
-    eve_d2.mk_attr(id_=eve_affectee_attr_id)
+    eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.struct,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = eve_d1.mk_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod]).id
-    eve_d2.mk_effect(id_=eve_effect_id, cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
-    eve_proj_effect_id = eve_d1.mk_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id]).id
-    eve_d2.mk_item(id_=eve_proj_effect_id, attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
-    eve_root_id = eve_d1.mk_struct(attrs={eve_affectee_attr_id: 100}).id
-    eve_d2.mk_ship(id_=eve_root_id, attrs={eve_affectee_attr_id: 100})
+    eve_effect_id = client.mk_eve_effect(datas=[eve_d1, eve_d2], cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
+    eve_proj_effect_id = client.mk_eve_item(
+        datas=[eve_d1, eve_d2],
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_effect_id])
+    eve_root_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_struct(datas=[eve_d1], id_=eve_root_id, attrs={eve_affectee_attr_id: 100})
+    client.mk_eve_ship(datas=[eve_d2], id_=eve_root_id, attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
