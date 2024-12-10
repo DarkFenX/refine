@@ -251,12 +251,11 @@ def test_unlimited(client, consts):
 def test_src_switch(client):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
-    eve_limiter_attr_id = eve_d1.mk_attr(def_val=5).id
-    eve_limitee_attr_id = eve_d1.mk_attr(max_attr_id=eve_limiter_attr_id).id
-    eve_d2.mk_attr(id_=eve_limiter_attr_id, def_val=5)
-    eve_d2.mk_attr(id_=eve_limitee_attr_id)
-    eve_item_id = eve_d1.mk_item(attrs={eve_limiter_attr_id: 2, eve_limitee_attr_id: 3}).id
-    eve_d2.mk_item(attrs={eve_limiter_attr_id: 2, eve_limitee_attr_id: 3})
+    eve_limiter_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], def_val=5)
+    eve_limitee_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_attr(datas=[eve_d1], id_=eve_limitee_attr_id, max_attr_id=eve_limiter_attr_id)
+    client.mk_eve_attr(datas=[eve_d2], id_=eve_limitee_attr_id)
+    eve_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_limiter_attr_id: 2, eve_limitee_attr_id: 3})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
