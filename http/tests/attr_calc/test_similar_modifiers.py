@@ -137,8 +137,12 @@ def test_same_item_attr_different_effects(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect2_id = client.mk_eve_effect(mod_info=[eve_mod2])
-    eve_affector_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect1_id, eve_effect2_id])
-    eve_affectee_item_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 100}, srqs={eve_skill1_id: 1, eve_skill2_id: 1})
+    eve_affector_item_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_effect1_id, eve_effect2_id])
+    eve_affectee_item_id = client.mk_eve_item(
+        attrs={eve_affectee_attr_id: 100},
+        srqs={eve_skill1_id: 1, eve_skill2_id: 1})
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
@@ -184,7 +188,9 @@ def test_same_item_attr_different_effects_switch(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect1_id, eve_effect2_id],
         defeff_id=eve_effect2_id)
-    eve_affectee_item_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100}, srqs={eve_skill1_id: 1, eve_skill2_id: 1})
+    eve_affectee_item_id = client.mk_eve_ship(
+        attrs={eve_affectee_attr_id: 100},
+        srqs={eve_skill1_id: 1, eve_skill2_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

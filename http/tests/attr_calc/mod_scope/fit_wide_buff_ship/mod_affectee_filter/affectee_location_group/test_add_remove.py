@@ -42,7 +42,7 @@ def test_add_item_fw_remove_state_item_fw(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_grp_id)])
     eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_titan_effect_generator, 
+        id_=consts.EveEffect.mod_titan_effect_generator,
         cat_id=consts.EveEffCat.active)
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
@@ -75,7 +75,7 @@ def test_add_fw_item_state_remove_fit(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_grp_id)])
     eve_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_titan_effect_generator, 
+        id_=consts.EveEffect.mod_titan_effect_generator,
         cat_id=consts.EveEffCat.active)
     eve_fw_effect_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},

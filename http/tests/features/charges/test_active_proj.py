@@ -138,7 +138,10 @@ def test_states(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, mod_info=[eve_mod])
-    eve_charge_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_charge_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1000})
     client.create_sources()

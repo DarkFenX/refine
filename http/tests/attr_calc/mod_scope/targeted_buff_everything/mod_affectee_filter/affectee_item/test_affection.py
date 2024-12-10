@@ -10,7 +10,10 @@ def test_affected_root_ship(client, consts):
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
@@ -31,7 +34,10 @@ def test_affected_child(client, consts):
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
@@ -52,7 +58,10 @@ def test_unaffected_root_struct(client, consts):
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_struct_id = client.mk_eve_struct(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
@@ -74,7 +83,10 @@ def test_unaffected_root_char(client, consts):
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_char_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200})
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
@@ -97,7 +109,10 @@ def test_unaffected_child_via_root(client, consts):
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200})
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
@@ -120,7 +135,10 @@ def test_unaffected_root_via_child(client, consts):
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
     eve_drone_id = client.mk_eve_item()
     client.create_sources()
@@ -143,7 +161,10 @@ def test_unaffected_root_other_fit(client, consts):
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
@@ -166,7 +187,10 @@ def test_unaffected_child_other_fit(client, consts):
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()

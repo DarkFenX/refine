@@ -10,7 +10,9 @@ def test_affected_child_ship(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_titan_effect_generator,
+        cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -37,7 +39,9 @@ def test_unaffected_child_struct(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_titan_effect_generator,
+        cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -64,7 +68,9 @@ def test_unaffected_root_ship(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_titan_effect_generator,
+        cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -89,7 +95,9 @@ def test_unaffected_child_char(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_titan_effect_generator,
+        cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -119,7 +127,9 @@ def test_unaffected_targeted_child(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_titan_effect_generator,
+        cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -147,7 +157,9 @@ def test_unaffected_via_child_target(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_titan_effect_generator,
+        cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -177,7 +189,9 @@ def test_unaffected_other_skillreq(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill1_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_titan_effect_generator,
+        cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],
@@ -204,7 +218,9 @@ def test_unaffected_other_fit(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.mod_titan_effect_generator, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_titan_effect_generator,
+        cat_id=consts.EveEffCat.active)
     eve_module_id = client.mk_eve_item(
         attrs={eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: 30},
         eff_ids=[eve_effect_id],

@@ -11,7 +11,10 @@ def test_affected_child_ship(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_rig_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
@@ -35,7 +38,10 @@ def test_unaffected_root(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -57,7 +63,10 @@ def test_unaffected_child_struct(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_rig_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     eve_struct_id = client.mk_eve_struct()
     client.create_sources()
@@ -81,7 +90,10 @@ def test_unaffected_child_char(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_implant_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     eve_ship_id = client.mk_eve_ship()
     eve_char_id = client.mk_eve_item()
@@ -108,7 +120,10 @@ def test_unaffected_targeted_child(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_drone_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     eve_ship_id = client.mk_eve_ship(srqs={eve_skill_id: 1})
     client.create_sources()
@@ -133,7 +148,10 @@ def test_unaffected_via_child_target(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_rig_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     eve_drone_id = client.mk_eve_item(srqs={eve_skill_id: 1})
     eve_ship_id = client.mk_eve_ship(srqs={eve_skill_id: 1})
@@ -161,7 +179,10 @@ def test_unaffected_other_skillreq(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill1_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_rig_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill2_id: 1})
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
@@ -185,7 +206,10 @@ def test_unaffected_other_fit(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.doomsday_aoe_web, cat_id=consts.EveEffCat.active)
-    eve_module_id = client.mk_eve_item(attrs={eve_affector_attr_id: -55}, eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_module_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: -55},
+        eff_ids=[eve_effect_id],
+        defeff_id=eve_effect_id)
     eve_rig_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
