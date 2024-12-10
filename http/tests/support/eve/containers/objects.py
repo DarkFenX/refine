@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from itertools import chain
 from typing import TYPE_CHECKING
 
 from tests.support.consts import EveEffCat, EveEffect, EveItemCat, EveItemGrp
@@ -22,6 +21,8 @@ class EveObjects:
 
     def __init__(self, *, alias: str):
         self.alias: str = alias
+        # Dictionaries with various entities. Empty list means ID was allocated (but is not
+        # presently used).
         self.items: dict[int, list[Item]] = {}
         self.item_groups: dict[int, list[Group]] = {}
         self.attributes: dict[int, list[Attribute]] = {}
@@ -35,85 +36,69 @@ class EveObjects:
         self.effect_id: int = ID_START
         self.buff_id: int = ID_START
 
-    def prealloc_item_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+    def prealloc_item_id(self) -> int:
         id_ = self.item_id
-        while self.__is_item_id_used(id_=id_, avoid_ids=avoid_ids):
+        while id_ in self.items:
             id_ += 1
         return id_
 
-    def alloc_item_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        id_ = self.prealloc_item_id(avoid_ids=avoid_ids)
+    def alloc_item_id(self) -> int:
+        id_ = self.prealloc_item_id()
         self.item_id = id_ + 1
         self.items[id_] = []
         return id_
 
-    def __is_item_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
-        return id_ in chain(self.items, avoid_ids)
-
-    def prealloc_group_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+    def prealloc_group_id(self) -> int:
         id_ = self.item_group_id
-        while self.__is_group_id_used(id_=id_, avoid_ids=avoid_ids):
+        while id_ in self.item_groups:
             id_ += 1
         return id_
 
-    def alloc_group_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        id_ = self.prealloc_group_id(avoid_ids=avoid_ids)
+    def alloc_group_id(self) -> int:
+        id_ = self.prealloc_group_id()
         self.item_group_id = id_ + 1
         self.item_groups[id_] = []
         return id_
 
-    def __is_group_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
-        return id_ in chain(self.item_groups, avoid_ids)
-
-    def prealloc_attr_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+    def prealloc_attr_id(self) -> int:
         id_ = self.attr_id
-        while self.__is_attr_id_used(id_=id_, avoid_ids=avoid_ids):
+        while id_ in self.attributes:
             id_ += 1
         return id_
 
-    def alloc_attr_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        id_ = self.prealloc_attr_id(avoid_ids=avoid_ids)
+    def alloc_attr_id(self) -> int:
+        id_ = self.prealloc_attr_id()
         self.attr_id = id_ + 1
         self.attributes[id_] = []
         return id_
 
-    def __is_attr_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
-        return id_ in chain(self.attributes, avoid_ids)
-
-    def prealloc_effect_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+    def prealloc_effect_id(self) -> int:
         id_ = self.effect_id
-        while self.__is_effect_id_used(id_=id_, avoid_ids=avoid_ids):
+        while id_ in self.effects:
             id_ += 1
         return id_
 
-    def alloc_effect_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        id_ = self.prealloc_effect_id(avoid_ids=avoid_ids)
+    def alloc_effect_id(self) -> int:
+        id_ = self.prealloc_effect_id()
         self.effect_id = id_ + 1
         self.effects[id_] = []
         return id_
 
-    def __is_effect_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
-        return id_ in chain(self.effects, avoid_ids)
-
-    def prealloc_buff_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
+    def prealloc_buff_id(self) -> int:
         id_ = self.buff_id
-        while self.__is_buff_id_used(id_=id_, avoid_ids=avoid_ids):
+        while id_ in self.buffs:
             id_ += 1
         return id_
 
-    def alloc_buff_id(self, *, avoid_ids: Union[tuple[int], list[int]] = ()) -> int:
-        id_ = self.prealloc_buff_id(avoid_ids=avoid_ids)
+    def alloc_buff_id(self) -> int:
+        id_ = self.prealloc_buff_id()
         self.buff_id = id_ + 1
         self.buffs[id_] = []
         return id_
 
-    def __is_buff_id_used(self, *, id_: int, avoid_ids: Union[tuple[int], list[int]]) -> bool:
-        return id_ in chain(self.buffs, avoid_ids)
-
     def mk_item(
             self, *,
             id_: Union[int, Type[Default]] = Default,
-            avoid_ids: Union[tuple[int], list[int]] = (),
             grp_id: Union[int, Type[Default]] = Default,
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
             attrs: Union[dict[int, float], Type[Absent], Type[Default]] = Default,
@@ -126,8 +111,8 @@ class EveObjects:
             volume: Union[float, Type[Absent], Type[Default]] = Default,
     ) -> Item:
         if id_ is Default:
-            id_ = self.alloc_item_id(avoid_ids=avoid_ids)
-        group = self.__fetch_or_mk_item_group(id_=grp_id, avoid_ids=avoid_ids, cat_id=cat_id)
+            id_ = self.alloc_item_id()
+        group = self.__fetch_or_mk_item_group(id_=grp_id, cat_id=cat_id)
         item = Item(
             id_=id_,
             group_id=group.id,
@@ -145,35 +130,25 @@ class EveObjects:
     def mk_item_group(
             self, *,
             id_: Union[int, Type[Default]] = Default,
-            avoid_ids: Union[tuple[int], list[int]] = (),
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
     ) -> Group:
         if id_ is Default:
-            id_ = self.alloc_group_id(avoid_ids=avoid_ids)
+            id_ = self.alloc_group_id()
         if cat_id is Default:
             cat_id = EveItemCat.module
         group = Group(id_=id_, category_id=cat_id)
         self.item_groups.setdefault(id_, []).append(group)
         return group
 
-    def mk_ship_group(
-            self, *,
-            id_: Union[int, Type[Default]] = Default,
-            avoid_ids: Union[tuple[int], list[int]] = (),
-    ) -> Group:
-        return self.mk_item_group(id_=id_, avoid_ids=avoid_ids, cat_id=EveItemCat.ship)
+    def mk_ship_group(self, *, id_: Union[int, Type[Default]] = Default) -> Group:
+        return self.mk_item_group(id_=id_, cat_id=EveItemCat.ship)
 
-    def mk_struct_group(
-            self, *,
-            id_: Union[int, Type[Default]] = Default,
-            avoid_ids: Union[tuple[int], list[int]] = (),
-    ) -> Group:
-        return self.mk_item_group(id_=id_, avoid_ids=avoid_ids, cat_id=EveItemCat.structure)
+    def mk_struct_group(self, *, id_: Union[int, Type[Default]] = Default) -> Group:
+        return self.mk_item_group(id_=id_, cat_id=EveItemCat.structure)
 
     def __fetch_or_mk_item_group(
             self, *,
             id_: Union[int, Type[Default]],
-            avoid_ids: Union[tuple[int], list[int]],
             cat_id: Union[int, Type[Absent], Type[Default]],
     ) -> Group:
         # Fetch existing group if consistency is not broken:
@@ -185,12 +160,11 @@ class EveObjects:
                 group = groups[0]
                 if cat_id is Default or cat_id == group.category_id:
                     return group
-        return self.mk_item_group(id_=id_, avoid_ids=avoid_ids, cat_id=cat_id)
+        return self.mk_item_group(id_=id_, cat_id=cat_id)
 
     def mk_attr(
             self, *,
             id_: Union[int, Type[Default]] = Default,
-            avoid_ids: Union[tuple[int], list[int]] = (),
             stackable: Union[int, bool, Type[Absent], Type[Default]] = Default,
             high_is_good: Union[int, bool, Type[Absent], Type[Default]] = Default,
             def_val: Union[float, Type[Absent], Type[Default]] = Default,
@@ -198,7 +172,7 @@ class EveObjects:
             max_attr_id: Union[int, Type[Absent], Type[Default]] = Default,
     ) -> Attribute:
         if id_ is Default:
-            id_ = self.alloc_attr_id(avoid_ids=avoid_ids)
+            id_ = self.alloc_attr_id()
         attr = Attribute(
             id_=id_,
             stackable=1 if stackable is Default else stackable,
@@ -212,7 +186,6 @@ class EveObjects:
     def mk_effect(
             self, *,
             id_: Union[int, Type[Default]] = Default,
-            avoid_ids: Union[tuple[int], list[int]] = (),
             cat_id: Union[int, Type[Absent], Type[Default]] = Default,
             is_assistance: Union[int, bool, Type[Absent], Type[Default]] = Default,
             is_offensive: Union[int, bool, Type[Absent], Type[Default]] = Default,
@@ -226,7 +199,7 @@ class EveObjects:
             mod_info: Union[list[EffectModifier], tuple[EffectModifier], Type[Absent], Type[Default]] = Default,
     ) -> Effect:
         if id_ is Default:
-            id_ = self.alloc_effect_id(avoid_ids=avoid_ids)
+            id_ = self.alloc_effect_id()
         effect = Effect(
             id_=id_,
             category_id=EveEffCat.passive if cat_id is Default else cat_id,
@@ -261,7 +234,6 @@ class EveObjects:
     def mk_buff(
             self, *,
             id_: Union[int, Type[Default]] = Default,
-            avoid_ids: Union[tuple[int], list[int]] = (),
             aggr_mode: Union[str, Type[Absent], Type[Default]] = Default,
             op: Union[str, Type[Absent], Type[Default]] = Default,
             item_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
@@ -270,7 +242,7 @@ class EveObjects:
             loc_srq_mods: Union[list[BuffModifier], tuple[BuffModifier], Type[Absent], Type[Default]] = Default,
     ) -> Buff:
         if id_ is Default:
-            id_ = self.alloc_buff_id(avoid_ids=avoid_ids)
+            id_ = self.alloc_buff_id()
         buff = Buff(
             id_=id_,
             aggregate_mode=Absent if aggr_mode is Default else aggr_mode,
@@ -285,14 +257,12 @@ class EveObjects:
     def mk_mutator(
             self, *,
             id_: Union[int, Type[Default]] = Default,
-            avoid_ids: Union[tuple[int], list[int]] = (),
             items: Union[list[tuple[list[int], int]], Type[Absent], Type[Default]] = Default,
             attributes: Union[dict[int, tuple[float, float]], Type[Absent], Type[Default]] = Default,
     ) -> Mutator:
         # Mutators are a special case of an item, create an item for it
         item = self.mk_item(
             id_=id_,
-            avoid_ids=avoid_ids,
             grp_id=EveItemGrp.mutaplasmids,
             cat_id=EveItemCat.commodity)
         mutator = Mutator(

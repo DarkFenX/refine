@@ -4,29 +4,30 @@ from tests import approx, check_no_field
 def test_valid_to_valid_matching(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
-    eve_chance_attr_id = eve_d1.mk_attr().id
-    eve_affector_attr_id = eve_d1.mk_attr().id
-    eve_affectee_attr_id = eve_d1.mk_attr().id
-    eve_d2.mk_attr(id_=eve_chance_attr_id)
-    eve_d2.mk_attr(id_=eve_affector_attr_id)
-    eve_d2.mk_attr(id_=eve_affectee_attr_id)
+    eve_chance_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = eve_d1.mk_effect(chance_attr_id=eve_chance_attr_id, mod_info=[eve_mod]).id
-    eve_d2.mk_effect(id_=eve_effect_id, chance_attr_id=eve_chance_attr_id, mod_info=[eve_mod])
-    eve_booster_id = eve_d1.mk_item(
+    eve_effect_id = client.mk_eve_effect(datas=[eve_d1, eve_d2], chance_attr_id=eve_chance_attr_id, mod_info=[eve_mod])
+    eve_booster_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(
+        datas=[eve_d1],
+        id_=eve_booster_id,
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 25},
-        eff_ids=[eve_effect_id]).id
-    eve_d2.mk_item(
+        eff_ids=[eve_effect_id])
+    client.mk_eve_item(
+        datas=[eve_d2],
         id_=eve_booster_id,
         attrs={eve_chance_attr_id: 0.5, eve_affector_attr_id: 30},
         eff_ids=[eve_effect_id])
-    eve_ship_id = eve_d1.mk_ship(attrs={eve_affectee_attr_id: 100}).id
-    eve_d2.mk_ship(id_=eve_ship_id, attrs={eve_affectee_attr_id: 200})
+    eve_ship_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_ship(datas=[eve_d1], id_=eve_ship_id, attrs={eve_affectee_attr_id: 100})
+    client.mk_eve_ship(datas=[eve_d2], id_=eve_ship_id, attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -71,37 +72,50 @@ def test_valid_to_valid_matching(client, consts):
 def test_valid_to_valid_different(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
-    eve_d1_chance_attr = eve_d1.mk_attr()
-    eve_d1_affector_attr = eve_d1.mk_attr()
-    eve_d1_affectee_attr = eve_d1.mk_attr()
-    eve_d2_chance_attr = eve_d2.mk_attr()
-    eve_d2_affector_attr = eve_d2.mk_attr()
-    eve_d2_affectee_attr = eve_d2.mk_attr()
+    eve_d1_chance_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_chance_attr_id)
+    eve_d1_affector_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_affector_attr_id)
+    eve_d1_affectee_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_affectee_attr_id)
+    eve_d2_chance_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_attr(datas=[eve_d2], id_=eve_d2_chance_attr_id)
+    eve_d2_affector_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_attr(datas=[eve_d2], id_=eve_d2_affector_attr_id)
+    eve_d2_affectee_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_attr(datas=[eve_d2], id_=eve_d2_affectee_attr_id)
     eve_d1_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_percent,
-        affector_attr_id=eve_d1_affector_attr.id,
-        affectee_attr_id=eve_d1_affectee_attr.id)
+        affector_attr_id=eve_d1_affector_attr_id,
+        affectee_attr_id=eve_d1_affectee_attr_id)
     eve_d2_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_percent,
-        affector_attr_id=eve_d2_affector_attr.id,
-        affectee_attr_id=eve_d2_affectee_attr.id)
-    eve_effect_id = eve_d1.mk_effect(chance_attr_id=eve_d1_chance_attr.id, mod_info=[eve_d1_mod]).id
-    eve_d2.mk_effect(id_=eve_effect_id, chance_attr_id=eve_d2_chance_attr.id, mod_info=[eve_d2_mod])
-    eve_booster_id = eve_d1.mk_item(
-        attrs={eve_d1_chance_attr.id: 0.4, eve_d1_affector_attr.id: 25},
-        eff_ids=[eve_effect_id]).id
-    eve_d2.mk_item(
+        affector_attr_id=eve_d2_affector_attr_id,
+        affectee_attr_id=eve_d2_affectee_attr_id)
+    eve_effect_id = client.alloc_effect_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_effect(datas=[eve_d1], id_=eve_effect_id, chance_attr_id=eve_d1_chance_attr_id, mod_info=[eve_d1_mod])
+    client.mk_eve_effect(datas=[eve_d2], id_=eve_effect_id, chance_attr_id=eve_d2_chance_attr_id, mod_info=[eve_d2_mod])
+    eve_booster_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(
+        datas=[eve_d1],
         id_=eve_booster_id,
-        attrs={eve_d2_chance_attr.id: 0.5, eve_d2_affector_attr.id: 30},
+        attrs={eve_d1_chance_attr_id: 0.4, eve_d1_affector_attr_id: 25},
         eff_ids=[eve_effect_id])
-    eve_ship_id = eve_d1.mk_ship(attrs={eve_d1_affectee_attr.id: 100}).id
-    eve_d2.mk_ship(id_=eve_ship_id)
-    eve_module_id = eve_d1.mk_item().id
-    eve_d2.mk_item(id_=eve_module_id, attrs={eve_d2_affectee_attr.id: 150})
+    client.mk_eve_item(
+        datas=[eve_d2],
+        id_=eve_booster_id,
+        attrs={eve_d2_chance_attr_id: 0.5, eve_d2_affector_attr_id: 30},
+        eff_ids=[eve_effect_id])
+    eve_ship_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_ship(datas=[eve_d1], id_=eve_ship_id, attrs={eve_d1_affectee_attr_id: 100})
+    client.mk_eve_ship(datas=[eve_d2], id_=eve_ship_id)
+    eve_module_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d1], id_=eve_module_id)
+    client.mk_eve_item(datas=[eve_d2], id_=eve_module_id, attrs={eve_d2_affectee_attr_id: 150})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -109,7 +123,7 @@ def test_valid_to_valid_different(client, consts):
     api_module = api_fit.add_mod(type_id=eve_module_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    assert api_ship.update().attrs[eve_d1_affectee_attr.id].extra == approx(100)
+    assert api_ship.update().attrs[eve_d1_affectee_attr_id].extra == approx(100)
     api_module.update()
     with check_no_field():
         api_module.attrs  # pylint: disable=W0104
@@ -124,7 +138,7 @@ def test_valid_to_valid_different(client, consts):
     api_ship.update()
     with check_no_field():
         api_ship.attrs  # pylint: disable=W0104
-    assert api_module.update().attrs[eve_d2_affectee_attr.id].extra == approx(150)
+    assert api_module.update().attrs[eve_d2_affectee_attr_id].extra == approx(150)
     api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.5)
     assert api_side.status is False
@@ -136,7 +150,7 @@ def test_valid_to_valid_different(client, consts):
     api_ship.update()
     with check_no_field():
         api_ship.attrs  # pylint: disable=W0104
-    assert api_module.update().attrs[eve_d2_affectee_attr.id].extra == approx(195)
+    assert api_module.update().attrs[eve_d2_affectee_attr_id].extra == approx(195)
     api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.5)
     assert api_side.status is True
@@ -145,7 +159,7 @@ def test_valid_to_valid_different(client, consts):
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_ship.update().attrs[eve_d1_affectee_attr.id].extra == approx(125)
+    assert api_ship.update().attrs[eve_d1_affectee_attr_id].extra == approx(125)
     api_module.update()
     with check_no_field():
         api_module.attrs  # pylint: disable=W0104
@@ -159,26 +173,32 @@ def test_valid_to_valid_different(client, consts):
 def test_absent_retains_state(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
-    eve_chance_attr_id = eve_d1.mk_attr().id
-    eve_affector_attr_id = eve_d1.mk_attr().id
-    eve_affectee_attr_id = eve_d1.mk_attr().id
-    eve_d2.mk_attr(id_=eve_chance_attr_id)
-    eve_d2.mk_attr(id_=eve_affector_attr_id)
-    eve_d2.mk_attr(id_=eve_affectee_attr_id)
+    eve_chance_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_d1_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = eve_d1.mk_effect(chance_attr_id=eve_chance_attr_id, mod_info=[eve_d1_mod]).id
-    eve_d2.mk_effect(id_=eve_effect_id)
-    eve_booster_id = eve_d1.mk_item(
+    eve_effect_id = client.alloc_effect_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_effect(datas=[eve_d1], id_=eve_effect_id, chance_attr_id=eve_chance_attr_id, mod_info=[eve_d1_mod])
+    client.mk_eve_effect(datas=[eve_d2], id_=eve_effect_id)
+    eve_booster_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(
+        datas=[eve_d1],
+        id_=eve_booster_id,
         attrs={eve_chance_attr_id: 0.4, eve_affector_attr_id: 25},
-        eff_ids=[eve_effect_id]).id
-    eve_d2.mk_item(id_=eve_booster_id, attrs={eve_chance_attr_id: 0.5, eve_affector_attr_id: 30})
-    eve_ship_id = eve_d1.mk_ship(attrs={eve_affectee_attr_id: 100}).id
-    eve_d2.mk_ship(id_=eve_ship_id, attrs={eve_affectee_attr_id: 200})
+        eff_ids=[eve_effect_id])
+    client.mk_eve_item(
+        datas=[eve_d2],
+        id_=eve_booster_id,
+        attrs={eve_chance_attr_id: 0.5, eve_affector_attr_id: 30},
+        eff_ids=[eve_effect_id])
+    eve_ship_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_ship(datas=[eve_d1], id_=eve_ship_id, attrs={eve_affectee_attr_id: 100})
+    client.mk_eve_ship(datas=[eve_d2], id_=eve_ship_id, attrs={eve_affectee_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()

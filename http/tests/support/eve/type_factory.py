@@ -19,6 +19,8 @@ class EveTypeFactory(EveDataManager):
         if datas is Default:
             datas = [self._get_default_eve_data()]
         id_ = max(d.prealloc_item_id() for d in datas)
+        while any(id_ in d.items for d in datas):
+            id_ += 1
         for data in datas:
             data.items[id_] = []
         return id_
@@ -27,6 +29,8 @@ class EveTypeFactory(EveDataManager):
         if datas is Default:
             datas = [self._get_default_eve_data()]
         id_ = max(d.prealloc_group_id() for d in datas)
+        while any(id_ in d.item_groups for d in datas):
+            id_ += 1
         for data in datas:
             data.item_groups[id_] = []
         return id_
@@ -35,6 +39,8 @@ class EveTypeFactory(EveDataManager):
         if datas is Default:
             datas = [self._get_default_eve_data()]
         id_ = max(d.prealloc_attr_id() for d in datas)
+        while any(id_ in d.attributes for d in datas):
+            id_ += 1
         for data in datas:
             data.attributes[id_] = []
         return id_
@@ -43,6 +49,8 @@ class EveTypeFactory(EveDataManager):
         if datas is Default:
             datas = [self._get_default_eve_data()]
         id_ = max(d.prealloc_effect_id() for d in datas)
+        while any(id_ in d.effects for d in datas):
+            id_ += 1
         for data in datas:
             data.effects[id_] = []
         return id_
@@ -51,6 +59,8 @@ class EveTypeFactory(EveDataManager):
         if datas is Default:
             datas = [self._get_default_eve_data()]
         id_ = max(d.prealloc_buff_id() for d in datas)
+        while any(id_ in d.buffs for d in datas):
+            id_ += 1
         for data in datas:
             data.buffs[id_] = []
         return id_
