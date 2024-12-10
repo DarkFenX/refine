@@ -161,12 +161,9 @@ def test_replace_root(client, consts):
 def test_src_switch_to_ship(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
-    eve_skill_id = eve_d1.mk_item().id
-    eve_d2.mk_item(id_=eve_skill_id)
-    eve_affector_attr_id = eve_d1.mk_attr().id
-    eve_d2.mk_attr(id_=eve_affector_attr_id)
-    eve_affectee_attr_id = eve_d1.mk_attr().id
-    eve_d2.mk_attr(id_=eve_affectee_attr_id)
+    eve_skill_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_srq,
         dom=consts.EveModDom.struct,
@@ -174,14 +171,15 @@ def test_src_switch_to_ship(client, consts):
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
-    eve_effect_id = eve_d1.mk_effect(cat_id=consts.EveEffCat.system, mod_info=[eve_mod]).id
-    eve_d2.mk_effect(id_=eve_effect_id, cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
-    eve_fw_effect_id = eve_d1.mk_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id]).id
-    eve_d2.mk_item(id_=eve_fw_effect_id, attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
-    eve_rig_id = eve_d1.mk_item(attrs={eve_affectee_attr_id: 100}, srqs={eve_skill_id: 1}).id
-    eve_d2.mk_item(id_=eve_rig_id, attrs={eve_affectee_attr_id: 100}, srqs={eve_skill_id: 1})
-    eve_root_id = eve_d1.mk_struct().id
-    eve_d2.mk_ship(id_=eve_root_id)
+    eve_effect_id = client.mk_eve_effect(datas=[eve_d1, eve_d2], cat_id=consts.EveEffCat.system, mod_info=[eve_mod])
+    eve_fw_effect_id = client.mk_eve_item(
+        datas=[eve_d1, eve_d2],
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_effect_id])
+    eve_rig_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_affectee_attr_id: 100}, srqs={eve_skill_id: 1})
+    eve_root_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_struct(datas=[eve_d1], id_=eve_root_id)
+    client.mk_eve_ship(datas=[eve_d2], id_=eve_root_id)
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
