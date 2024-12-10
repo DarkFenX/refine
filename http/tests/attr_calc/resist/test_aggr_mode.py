@@ -28,7 +28,8 @@ def test_resist_aggr_max(client, consts):
             eve_buff_type_attr_id: eve_buff_id, eve_buff_val_attr_id: -30,
             eve_remote_resist_attr_id: eve_resist_attr2_id},
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 150, eve_resist_attr1_id: 0.1, eve_resist_attr2_id: 0.5})
+    eve_ship_id = client.mk_eve_ship(
+        attrs={eve_affectee_attr_id: 150, eve_resist_attr1_id: 0.1, eve_resist_attr2_id: 0.5})
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect1_id)

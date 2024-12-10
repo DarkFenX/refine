@@ -11,7 +11,9 @@ def test_force_run(client, consts):
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod])
-    eve_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 100}, eff_ids=[eve_effect_id])
+    eve_item_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20, eve_affectee_attr_id: 100},
+        eff_ids=[eve_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
