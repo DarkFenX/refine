@@ -176,8 +176,8 @@ def test_absolute_no_mutation_range(client, consts):
     assert api_item.attrs[eve_roll_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
     # Since there was no mutation range on first source, attribute mutations defined via absolute
-    # value were discarded. However, on second source roll and absolute value are still exposed, but
-    # without mutation applied
+    # value were discarded. However, on second source absolute value is still exposed, but without
+    # mutation applied
     api_sol.change_src(data=eve_d2)
     api_item.update()
     assert len(api_item.mutation.attrs) == 2
@@ -242,8 +242,8 @@ def test_absolute_zero_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(54)
     # Since mutation ranges had zero width on first source, attribute mutations defined via absolute
-    # value were discarded. However, on second source roll and absolute value are still exposed, but
-    # without mutation applied
+    # value were discarded. However, on second source absolute value are still exposed, but without
+    # mutation applied
     api_sol.change_src(data=eve_d2)
     api_item.update()
     assert len(api_item.mutation.attrs) == 4
@@ -261,7 +261,7 @@ def test_absolute_zero_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(50)
 
 
-def test_base_out_of_range(client, consts):
+def test_base_out_of_range(client):
     # Check which value is exposed if base value is out of range (as of 2024-12-11, a thing for
     # decayed disruptor rolls)
     eve_attr1_id = client.mk_eve_attr()
@@ -321,7 +321,7 @@ def test_modification(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(263.424)
 
 
-def test_mutated_item_type_id(client, consts):
+def test_mutated_item_type_id(client):
     # Check that mutated item type ID is used
     eve_base_item_id = client.mk_eve_item()
     eve_mutated_item_id = client.mk_eve_item()
