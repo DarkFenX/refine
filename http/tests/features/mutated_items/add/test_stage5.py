@@ -194,49 +194,96 @@ def test_absolute_zero_mutation_range(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
-    eve_absolute_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
-    eve_base_item_id = client.mk_eve_item(
-        datas=[eve_d1, eve_d2],
-        attrs={eve_roll_attr_id: 50, eve_absolute_attr_id: 50})
+    eve_absolute_low_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_absolute_mid_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_absolute_high_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={
+        eve_roll_attr_id: 50,
+        eve_absolute_low_attr_id: 50,
+        eve_absolute_mid_attr_id: 50,
+        eve_absolute_high_attr_id: 50})
     eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_roll_attr_id: (1.08, 1.08), eve_absolute_attr_id: (1.08, 1.08)})
+        attributes={
+            eve_roll_attr_id: (1.08, 1.08),
+            eve_absolute_low_attr_id: (0.92, 0.92),
+            eve_absolute_mid_attr_id: (1, 1),
+            eve_absolute_high_attr_id: (1.08, 1.08)})
     client.mk_eve_mutator(
         datas=[eve_d2],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
+        attributes={
+            eve_roll_attr_id: (0.8, 1.2),
+            eve_absolute_low_attr_id: (0.8, 1.2),
+            eve_absolute_mid_attr_id: (0.8, 1.2),
+            eve_absolute_high_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
-        eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
+        eve_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: 54},
+        eve_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 54},
+        eve_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
     # Verification
     api_item.update()
     assert len(api_item.mutation.attrs) == 1
     assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.7)
     assert api_item.mutation.attrs[eve_roll_attr_id].absolute == approx(54)
     assert api_item.attrs[eve_roll_attr_id].base == approx(54)
-    # Mutation was discarded - which will be verified later; here, value 54 is returned, because
-    # base value is put onto mutation range
-    assert api_item.attrs[eve_absolute_attr_id].base == approx(54)
-    # Since mutation range had zero width on first source, attribute mutations defined via absolute
+    # Mutations were discarded - which will be verified later; here, something is still returned,
+    # because it's just base value put onto range
+    assert api_item.attrs[eve_absolute_low_attr_id].base == approx(46)
+    assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_absolute_high_attr_id].base == approx(54)
+    # Since mutation ranges had zero width on first source, attribute mutations defined via absolute
     # value were discarded. However, on second source roll and absolute value are still exposed, but
     # without mutation applied
     api_sol.change_src(data=eve_d2)
     api_item.update()
-    assert len(api_item.mutation.attrs) == 2
+    assert len(api_item.mutation.attrs) == 4
     assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.7)
     assert api_item.mutation.attrs[eve_roll_attr_id].absolute == approx(54)
-    assert api_item.mutation.attrs[eve_absolute_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_absolute_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_absolute_low_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_absolute_low_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_absolute_mid_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_absolute_mid_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_absolute_high_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_absolute_high_attr_id].absolute == approx(50)
     assert api_item.attrs[eve_roll_attr_id].base == approx(54)
-    assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
+    assert api_item.attrs[eve_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_absolute_high_attr_id].base == approx(50)
+
+
+def test_base_out_of_range(client, consts):
+    # Check which value is exposed if base value is out of range (as of 2024-12-11, a thing for
+    # decayed disruptor rolls)
+    eve_attr1_id = client.mk_eve_attr()
+    eve_attr2_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
+    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_attr1_id: (1.1, 1.3), eve_attr2_id: (0.7, 0.9)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    # Verification - all the values are put onto mutation range
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(110)
+    assert api_item.mutation.attrs[eve_attr2_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(90)
+    assert api_item.attrs[eve_attr1_id].base == approx(110)
+    assert api_item.attrs[eve_attr2_id].base == approx(90)
 
 
 def test_modification(client, consts):
