@@ -321,7 +321,7 @@ def test_modification(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(263.424)
 
 
-def test_mutated_item_type_id(client):
+def test_item_type_id(client):
     # Check that mutated item type ID is used
     eve_base_item_id = client.mk_eve_item()
     eve_mutated_item_id = client.mk_eve_item()
@@ -335,7 +335,7 @@ def test_mutated_item_type_id(client):
     assert api_item.type_id == eve_mutated_item_id
 
 
-def test_mutated_item_group(client, consts):
+def test_item_group(client, consts):
     # Check that mutated item group is used
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
@@ -389,7 +389,7 @@ def test_mutated_item_group(client, consts):
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(134.4)
 
 
-def test_mutated_item_category(client, consts):
+def test_item_category(client, consts):
     # Check that mutated item category is used
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr(stackable=False)
@@ -419,7 +419,7 @@ def test_mutated_item_category(client, consts):
     assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(144)
 
 
-def test_mutated_item_skillreqs(client, consts):
+def test_item_skillreqs(client, consts):
     # Check that mutated item skill requirements are used
     eve_skill1_id = client.mk_eve_item()
     eve_skill2_id = client.mk_eve_item()
@@ -473,7 +473,7 @@ def test_mutated_item_skillreqs(client, consts):
     assert api_item.attrs[eve_affectee2_attr_id].dogma == approx(134.4)
 
 
-def test_mutated_item_effects(client, consts):
+def test_item_effects(client, consts):
     # Check that mutated item effects are used
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr1_id = client.mk_eve_attr()
@@ -507,7 +507,7 @@ def test_mutated_item_effects(client, consts):
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(120)
 
 
-def test_mutated_item_default_effect(client, consts):
+def test_item_default_effect(client, consts):
     # Check that mutated item effects are used
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr1_id = client.mk_eve_attr()

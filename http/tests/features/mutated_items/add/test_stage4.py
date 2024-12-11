@@ -259,3 +259,17 @@ def test_absolute_zero_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_low_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(50)
+
+
+def test_item_type_id(client):
+    # Check that base item type ID is used
+    eve_base_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.alloc_item_id()
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
