@@ -321,6 +321,20 @@ def test_modification(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(263.424)
 
 
+def test_mutated_item_type_id(client, consts):
+    # Check that mutated item type ID is used
+    eve_base_item_id = client.mk_eve_item()
+    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+
+
 def test_mutated_item_group(client, consts):
     # Check that mutated item group is used
     eve_grp1_id = client.mk_eve_item_group()
