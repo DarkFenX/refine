@@ -144,7 +144,7 @@ def test_no_base_value(client, consts):
     assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
 
 
-def test_absolute_no_mutation_range(client, consts):
+def test_no_mutation_range(client, consts):
     # Check that absolute values are discarded when mutation range is not defined
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -189,7 +189,7 @@ def test_absolute_no_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
 
 
-def test_absolute_zero_mutation_range(client, consts):
+def test_zero_mutation_range(client, consts):
     # Check that absolute values are discarded when mutation range has zero width
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
