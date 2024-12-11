@@ -319,3 +319,213 @@ def test_modification(client, consts):
     assert api_item.attrs[eve_affector_attr_id].dogma == approx(17.6)
     assert api_item.attrs[eve_affectee_attr_id].base == approx(224)
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(263.424)
+
+
+def test_mutated_item_group(client, consts):
+    # Check that mutated item group is used
+    eve_grp1_id = client.mk_eve_item_group()
+    eve_grp2_id = client.mk_eve_item_group()
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr1_id = client.mk_eve_attr()
+    eve_affectee_attr2_id = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp1_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr1_id)
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp2_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr2_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod1, eve_mod2])
+    eve_implant_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
+    eve_base_item_id = client.mk_eve_item(
+        grp_id=eve_grp1_id,
+        attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
+    eve_mutated_item_id = client.mk_eve_item(grp_id=eve_grp2_id)
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_implant(type_id=eve_implant_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_affectee_attr1_id: {consts.ApiAttrMutation.roll: 0.2},
+        eve_affectee_attr2_id: {consts.ApiAttrMutation.roll: 0.8}}))
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_affectee_attr1_id].roll == approx(0.2)
+    assert api_item.mutation.attrs[eve_affectee_attr1_id].absolute == approx(88)
+    assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.8)
+    assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(112)
+    assert api_item.attrs[eve_affectee_attr1_id].base == approx(88)
+    # Not modified, since group would match only if item was unmutated
+    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(88)
+    assert api_item.attrs[eve_affectee_attr2_id].base == approx(112)
+    # Modified, since modifier group matches to what mutated item has
+    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(134.4)
+
+
+def test_mutated_item_category(client, consts):
+    # Check that mutated item category is used
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr(stackable=False)
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_base_item_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.module,
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_effect_id])
+    eve_mutated_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.implant, eff_ids=[eve_effect_id])
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attributes={})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    # Verification - value is 144 because change is non-penalized thanks to implant category of
+    # mutated item.
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(144)
+
+
+def test_mutated_item_skillreqs(client, consts):
+    # Check that mutated item skill requirements are used
+    eve_skill1_id = client.mk_eve_item()
+    eve_skill2_id = client.mk_eve_item()
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee1_attr_id = client.mk_eve_attr()
+    eve_affectee2_attr_id = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_srq,
+        dom=consts.EveModDom.ship,
+        srq=eve_skill1_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee1_attr_id)
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_srq,
+        dom=consts.EveModDom.ship,
+        srq=eve_skill2_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee2_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod1, eve_mod2])
+    eve_implant_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect_id])
+    eve_base_item_id = client.mk_eve_item(
+        attrs={eve_affectee1_attr_id: 100, eve_affectee2_attr_id: 100},
+        srqs={eve_skill1_id: 1})
+    eve_mutated_item_id = client.mk_eve_item(srqs={eve_skill2_id: 1})
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_affectee1_attr_id: (0.8, 1.2), eve_affectee2_attr_id: (0.8, 1.2)})
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_implant(type_id=eve_implant_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_affectee1_attr_id: {consts.ApiAttrMutation.roll: 0.2},
+        eve_affectee2_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_affectee1_attr_id].roll == approx(0.2)
+    assert api_item.mutation.attrs[eve_affectee1_attr_id].absolute == approx(88)
+    assert api_item.mutation.attrs[eve_affectee2_attr_id].roll == approx(0.8)
+    assert api_item.mutation.attrs[eve_affectee2_attr_id].absolute == approx(112)
+    assert api_item.attrs[eve_affectee1_attr_id].base == approx(88)
+    # Not modified, since skill requirement check would pass only if item was unmutated
+    assert api_item.attrs[eve_affectee1_attr_id].dogma == approx(88)
+    assert api_item.attrs[eve_affectee2_attr_id].base == approx(112)
+    # Modified, since modifier skill requirement check passes only against mutated item skillreqs
+    assert api_item.attrs[eve_affectee2_attr_id].dogma == approx(134.4)
+
+
+def test_mutated_item_effects(client, consts):
+    # Check that mutated item effects are used
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr1_id = client.mk_eve_attr()
+    eve_affectee_attr2_id = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr1_id)
+    eve_effect1_id = client.mk_eve_effect(mod_info=[eve_mod1])
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr2_id)
+    eve_effect2_id = client.mk_eve_effect(mod_info=[eve_mod2])
+    eve_base_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect1_id])
+    eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect2_id])
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attributes={})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    # Verification - 1st attr would be changed by base item effects, 2nd by mutated ones
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
+    assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(120)
+
+
+def test_mutated_item_default_effect(client, consts):
+    # Check that mutated item effects are used
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr1_id = client.mk_eve_attr()
+    eve_affectee_attr2_id = client.mk_eve_attr()
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr1_id)
+    eve_effect1_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod1])
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr2_id)
+    eve_effect2_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod2])
+    eve_base_item_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_effect1_id, eve_effect2_id],
+        defeff_id=eve_effect1_id)
+    eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect1_id, eve_effect2_id], defeff_id=eve_effect2_id)
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attributes={})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id, state=consts.ApiState.active)
+    # Verification - 1st attr would be modified by base item (which has 1st effect is default), 2nd
+    # gets modified because mutated item declares 2nd effect as default.
+    api_ship.update()
+    assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
+    assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(120)
