@@ -50,7 +50,7 @@ class LogEntry:
             span: Union[str, None] = None,
     ) -> bool:
         # Span of None just means no span specified
-        if span != self.span:
+        if span is not None and span != self.span:
             return False
         # Level of None means we do not check level
         if level is not None and level != self.level:
@@ -129,7 +129,7 @@ class LogReader:
             msg=m.group('msg'))
 
     def __execute(self) -> None:
-        for line in  self.__follow():
+        for line in self.__follow():
             # Should happen only if we were asked to stop following
             if line is None:
                 return
@@ -151,12 +151,15 @@ class LogCollector:
     def __init__(self):
         self.__buffer: queue.SimpleQueue[LogEntry] = queue.SimpleQueue()
         self.__errors: list[ParseError] = []
+        self.__collecting = True
 
     def append_error(self, *, error: ParseError) -> None:
-        self.__errors.append(error)
+        if self.__collecting:
+            self.__errors.append(error)
 
     def append_entry(self, *, entry: LogEntry) -> None:
-        self.__buffer.put(entry)
+        if self.__collecting:
+            self.__buffer.put(entry)
 
     def wait_log_entry(
             self, *,
@@ -166,14 +169,16 @@ class LogCollector:
             timeout: Union[int, float] = 1,
     ) -> None:
         timer = Timer(timeout=timeout)
-        while timer.remainder > 0:
+        while True:
             try:
                 entry = self.__buffer.get(timeout=timer.remainder)
             except queue.Empty as e:
                 raise LogEntryNotFound(f'cannot find log entry with level {level}, span {span}, message "{msg}"') from e
             if entry.check(msg=msg, level=level, span=span):
                 return
-        raise LogEntryNotFound(f'cannot find log entry with level {level}, span {span}, message "{msg}"')
+            # Prevent more entries getting into queue after timeout while checking remaining ones
+            if timer.remainder == 0:
+                self.__collecting = False
 
     @property
     def buffer(self) -> queue.SimpleQueue[LogEntry]:

@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import pytest
 import requests
 
 from tests.support import eve
 from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
+from tests.support.log import LogEntryNotFound
 from tests.support.request import Request
 from tests.support.response import Response
 from tests.support.util import Absent, Default, conditional_insert
@@ -17,16 +19,18 @@ if TYPE_CHECKING:
     from typing import Tuple, Type, Union
 
     from tests.support.consts import ApiEffMode, ApiModAddMode, ApiRack, ApiState
+    from tests.support.log import LogReader
 
 
 class ApiClient(eve.EveDataManager, eve.EveDataServer):
 
-    def __init__(self, *, port: int, **kwargs):
+    def __init__(self, *, port: int, log_reader: LogReader, **kwargs):
         super().__init__(**kwargs)
         self.__session: requests.Session = requests.Session()
         self.__base_url: str = f'http://localhost:{port}'
         self.__created_data_aliases: set[str] = set()
         self.__created_sols: set[SolarSystem] = set()
+        self.__log_reader = log_reader
 
     def send_prepared(self, *, req: Request) -> Response:
         response = self.__session.send(req)
@@ -52,7 +56,10 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         if data is Default:
             data = self._get_default_eve_data()
         self._setup_eve_data_server(data=data)
-        resp = self.create_source_request(data=data).send()
+        with self.__log_reader.get_collector() as log_collector:
+            resp = self.create_source_request(data=data).send()
+            with pytest.raises(LogEntryNotFound):
+                log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', timeout=0)
         assert resp.status_code == 201
         self.__created_data_aliases.add(data.alias)
 
