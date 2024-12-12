@@ -50,7 +50,7 @@ class LogEntry:
             span: Union[str, None] = None,
     ) -> bool:
         # Span of None just means no span specified
-        if span is not None and span != self.span:
+        if span is not None and not self.span.endswith(span):
             return False
         # Level of None means we do not check level
         if level is not None and level != self.level:

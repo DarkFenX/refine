@@ -56,10 +56,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         if data is Default:
             data = self._get_default_eve_data()
         self._setup_eve_data_server(data=data)
-        with self.__log_reader.get_collector() as log_collector:
-            resp = self.create_source_request(data=data).send()
-            with pytest.raises(LogEntryNotFound):
-                log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', timeout=0)
+        resp = self.create_source_request(data=data).send()
         assert resp.status_code == 201
         self.__created_data_aliases.add(data.alias)
 
@@ -74,12 +71,20 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         assert resp.status_code == 204
         self.__created_data_aliases.remove(src_alias)
 
-    def create_sources(self) -> None:
+    def create_sources(self, log_check: bool = True) -> None:
         # If no data was created, create default one
         if not self._eve_datas:
             self._get_default_eve_data()
-        for data in self._eve_datas.values():
-            self.create_source(data=data)
+        if log_check:
+            with self.__log_reader.get_collector() as log_collector:
+                for data in self._eve_datas.values():
+                    self.create_source(data=data)
+                with pytest.raises(LogEntryNotFound):
+                    # Timeout of zero is not reliable, but don't want to slow tests down much
+                    log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='src-new:adg', timeout=0)
+        else:
+            for data in self._eve_datas.values():
+                self.create_source(data=data)
 
     def cleanup_sources(self) -> None:
         for alias in self.__created_data_aliases.copy():

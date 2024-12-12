@@ -5,6 +5,8 @@ def test_unloaded_item(client):
     eve_chance_attr_id = client.mk_eve_attr()
     eve_booster_id = client.alloc_item_id()
     eve_effect_id = client.mk_eve_effect(chance_attr_id=eve_chance_attr_id)
+    # Create item with the effect just to make sure it is not getting removed during cleanup
+    client.mk_eve_item(eff_ids=[eve_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
