@@ -152,51 +152,55 @@ impl SolItemBaseMutable {
             Some(cache) => cache.base_type_id,
             None => self.base.get_type_id(),
         };
-        let base_a_item = match src.get_a_item(&base_type_id) {
-            Some(base_a_item) => base_a_item,
-            // No base item - invalidate mutated cache and use base item data we have, i.e. just ID
-            None => {
-                self.base.set_type_id(base_type_id);
-                self.base.remove_a_item();
-                item_mutation.cache = None;
-                return;
-            }
-        };
         let a_mutator = match src.get_a_muta(&item_mutation.mutator_id) {
             Some(a_mutator) => a_mutator,
             // No mutator - invalidate mutated cache and use non-mutated item
-            None => {
-                self.base.set_type_id(base_type_id);
-                self.base.set_a_item(base_a_item.clone());
-                item_mutation.cache = None;
-                return;
-            }
+            None => match src.get_a_item(&base_type_id) {
+                Some(base_a_item) => {
+                    self.base.set_type_id(base_type_id);
+                    self.base.set_a_item(base_a_item.clone());
+                    item_mutation.cache = None;
+                    return;
+                }
+                None => {
+                    self.base.set_type_id(base_type_id);
+                    self.base.remove_a_item();
+                    item_mutation.cache = None;
+                    return;
+                }
+            },
         };
-        let mutated_type_id = match a_mutator.item_map.get(&base_type_id) {
-            Some(mutated_type_id) => *mutated_type_id,
-            // No mutated item type ID - invalidate mutated cache and use non-mutated item
-            None => {
-                self.base.set_type_id(base_type_id);
-                self.base.set_a_item(base_a_item.clone());
-                item_mutation.cache = None;
-                return;
-            }
-        };
-        let mutated_a_item = match src.get_a_item(&mutated_type_id) {
+        let mutated_a_item = match a_mutator
+            .item_map
+            .get(&base_type_id)
+            .map(|v| src.get_a_item(v))
+            .flatten()
+        {
             Some(mutated_a_item) => mutated_a_item,
-            // No mutated item - invalidate mutated cache and use non-mutated item
-            None => {
-                self.base.set_type_id(base_type_id);
-                self.base.set_a_item(base_a_item.clone());
-                item_mutation.cache = None;
-                return;
-            }
+            // No mutated item type ID - invalidate mutated cache and use non-mutated item
+            None => match src.get_a_item(&base_type_id) {
+                Some(base_a_item) => {
+                    self.base.set_type_id(base_type_id);
+                    self.base.set_a_item(base_a_item.clone());
+                    item_mutation.cache = None;
+                    return;
+                }
+                None => {
+                    self.base.set_type_id(base_type_id);
+                    self.base.remove_a_item();
+                    item_mutation.cache = None;
+                    return;
+                }
+            },
         };
         // Compose attribute cache
-        let mut attrs = get_combined_attr_values(base_a_item, mutated_a_item);
+        let mut attrs = match src.get_a_item(&base_type_id) {
+            Some(base_a_item) => get_combined_attr_values(base_a_item, mutated_a_item),
+            None => mutated_a_item.attr_vals.clone(),
+        };
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
-        self.base.set_type_id(mutated_type_id);
+        self.base.set_type_id(mutated_a_item.id);
         self.base.set_a_item(mutated_a_item.clone());
         item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, a_mutator.clone(), attrs))
     }
@@ -225,11 +229,11 @@ impl SolItemBaseMutable {
                 // Nothing guarantees that rolls are set for all attributes mutable by currently set
                 // mutator. If that's the case, calculate roll value before exposing it
                 None => {
-                    // Since cache was set, base item and mutated item should be available
+                    // Since cache was set, mutated item should be available
                     let base_a_item = src.get_a_item(&mutation_cache.base_type_id).unwrap();
                     let mutated_a_item = self.base.get_a_item().unwrap();
                     // If there is a value in cached attributes, unmutated value has to be available
-                    let unmutated_value = get_unmutated_attr_value(base_a_item, mutated_a_item, &attr_id).unwrap();
+                    let unmutated_value = get_combined_attr_value(base_a_item, mutated_a_item, &attr_id).unwrap();
                     // In some fringe cases it's impossible to calculate roll value, but it's needed
                     // for info; skip attribute mutation when it happens
                     let roll = match normalize_attr_value(*value, unmutated_value, attr_mutation_range) {
@@ -347,7 +351,7 @@ impl SolItemBaseMutable {
         // Process mutation requests, recording attributes whose values were changed for the item
         let mut changed_attrs = Vec::new();
         for (attr_id, attr_mutation_request) in attr_mutation_requests.into_iter() {
-            let unmutated_value = get_unmutated_attr_value(base_a_item, mutated_a_item, &attr_id);
+            let unmutated_value = get_combined_attr_value(base_a_item, mutated_a_item, &attr_id);
             let new_value = match attr_mutation_request {
                 // Mutation change request
                 Some(attr_mutation) => {
@@ -599,7 +603,7 @@ fn limit_attr_value(unmutated_value: AttrVal, roll_range: &ad::AMutaAttrRange) -
 }
 
 // Misc functions
-fn get_unmutated_attr_value(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem, attr_id: &EAttrId) -> Option<AttrVal> {
+fn get_combined_attr_value(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem, attr_id: &EAttrId) -> Option<AttrVal> {
     match mutated_a_item.attr_vals.get(&attr_id) {
         Some(unmutated_value) => Some(*unmutated_value),
         None => base_a_item.attr_vals.get(&attr_id).copied(),
