@@ -42,59 +42,47 @@ impl SolItemBaseMutable {
                 }
             }
         };
-        let base_a_item = match src.get_a_item(&type_id) {
-            Some(base_a_item) => base_a_item,
-            // No base item - base unloaded item with discarded absolute mutation values
-            None => {
-                return Self {
-                    base: SolItemBase::new_with_id_unloaded(id, type_id, state),
-                    mutation: Some(convert_item_mutation_basic(mutation_request)),
-                }
-            }
-        };
         let a_mutator = match src.get_a_muta(&mutation_request.mutator_id) {
             Some(a_mutator) => a_mutator,
-            // No mutator - base loaded item with discarded absolute mutation values
+            // No mutator - base item with discarded absolute mutation values
             None => {
                 return Self {
-                    base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
+                    base: SolItemBase::new(src, id, type_id, state),
                     mutation: Some(convert_item_mutation_basic(mutation_request)),
                 }
             }
         };
-        let mutated_type_id = match a_mutator.item_map.get(&type_id) {
-            Some(mutated_type_id) => *mutated_type_id,
-            // No mutated item type ID - base item, but with all the mutations applied. Unlike on
-            // previous steps, here it's possible to convert absolute mutated attribute values into
-            // rolls using base item attributes as unmutated values
-            None => {
-                return Self {
-                    base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
-                    mutation: Some(convert_item_mutation_full(
-                        mutation_request,
-                        &base_a_item.attr_vals,
-                        a_mutator,
-                    )),
-                }
-            }
-        };
-        let mutated_a_item = match src.get_a_item(&mutated_type_id) {
+        // No mutated item ID in mapping or no mutated item itself
+        let mutated_a_item = match a_mutator.item_map.get(&type_id).map(|v| src.get_a_item(v)).flatten() {
             Some(mutated_a_item) => mutated_a_item,
-            // No mutated item - same as previous step, i.e. base item, but with all the mutations
-            // applied
-            None => {
-                return Self {
-                    base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
-                    mutation: Some(convert_item_mutation_full(
-                        mutation_request,
-                        &base_a_item.attr_vals,
-                        a_mutator,
-                    )),
+            None => match src.get_a_item(&type_id) {
+                // If base item is available, return base item, but with all the mutations resolved
+                // into rolls against base item attributes.
+                Some(base_a_item) => {
+                    return Self {
+                        base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
+                        mutation: Some(convert_item_mutation_full(
+                            mutation_request,
+                            &base_a_item.attr_vals,
+                            a_mutator,
+                        )),
+                    }
                 }
-            }
+                // No base item - no base attribute values - can't resolve absolute values, accept
+                // just roll values.
+                None => {
+                    return Self {
+                        base: SolItemBase::new_with_id_unloaded(id, type_id, state),
+                        mutation: Some(convert_item_mutation_basic(mutation_request)),
+                    }
+                }
+            },
         };
         // Make proper mutated item once we have all the data
-        let mut attrs = get_unmutated_attr_values(base_a_item, mutated_a_item);
+        let mut attrs = match src.get_a_item(&type_id) {
+            Some(base_a_item) => get_combined_attr_values(base_a_item, mutated_a_item),
+            None => mutated_a_item.attr_vals.clone(),
+        };
         let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         item_mutation.cache = Some(SolItemMutationDataCache::new(type_id, a_mutator.clone(), attrs));
@@ -205,7 +193,7 @@ impl SolItemBaseMutable {
             }
         };
         // Compose attribute cache
-        let mut attrs = get_unmutated_attr_values(base_a_item, mutated_a_item);
+        let mut attrs = get_combined_attr_values(base_a_item, mutated_a_item);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
         self.base.set_type_id(mutated_type_id);
@@ -313,7 +301,7 @@ impl SolItemBaseMutable {
             }
         };
         // Since we have all the data now, apply mutation properly
-        let mut attrs = get_unmutated_attr_values(base_a_item, mutated_a_item);
+        let mut attrs = get_combined_attr_values(base_a_item, mutated_a_item);
         let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, a_mutator.clone(), attrs));
@@ -618,7 +606,7 @@ fn get_unmutated_attr_value(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem,
     }
 }
 
-fn get_unmutated_attr_values(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem) -> StMap<EAttrId, AttrVal> {
+fn get_combined_attr_values(base_a_item: &ad::AItem, mutated_a_item: &ad::AItem) -> StMap<EAttrId, AttrVal> {
     let mut attrs = base_a_item.attr_vals.clone();
     // Mutated item attributes have priority in case of collisions
     for (attr_id, attr_val) in mutated_a_item.attr_vals.iter() {
