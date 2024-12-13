@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def test_complete_to_complete_different_base_value(client, consts):
+def test_stage4_to_stage4_different_base_value(client, consts):
     # Check how mutation values are transferred upon new base attribute value on new source
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -55,7 +55,7 @@ def test_complete_to_complete_different_base_value(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(144)
 
 
-def test_complete_to_complete_different_ranges(client, consts):
+def test_stage4_to_stage4_different_ranges(client, consts):
     # Check how mutation values are transferred upon new mutation ranges on new source
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -110,7 +110,7 @@ def test_complete_to_complete_different_ranges(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(110)
 
 
-def test_complete_to_complete_same_id(client, consts):
+def test_stage4_to_stage4_same_id_different_group(client, consts):
     # Check that new mutated item is used on new source, even if ID is the same
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -167,7 +167,7 @@ def test_complete_to_complete_same_id(client, consts):
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
 
 
-def test_complete_to_complete_different_id(client, consts):
+def test_stage4_to_stage4_different_id(client):
     # Check that mutated item is defined by base item ID and mutator ID, in this case it should
     # be different on second source
     eve_d1 = client.mk_eve_data()
@@ -192,3 +192,54 @@ def test_complete_to_complete_different_id(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_d2_mutated_item_id
+
+
+def test_stage4_to_stage4_without_base_item(client, consts):
+    # Check switch to a mutated item with all the data but base item
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_attr1_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d1], id_=eve_base_item_id, attrs={eve_attr1_id: 100, eve_attr2_id: 100})
+    eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id)
+    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id, attrs={eve_attr1_id: 50})
+    eve_mutator_id = client.mk_eve_mutator(
+        datas=[eve_d1, eve_d2],
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_attr1_id: {consts.ApiAttrMutation.roll: 0.3},
+        eve_attr2_id: {consts.ApiAttrMutation.roll: 0.3}}))
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(92)
+    assert api_item.mutation.attrs[eve_attr2_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(92)
+    assert api_item.attrs[eve_attr1_id].base == approx(92)
+    assert api_item.attrs[eve_attr2_id].base == approx(92)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 1
+    assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(46)
+    assert api_item.attrs[eve_attr1_id].base == approx(46)
+    # Action
+    api_sol.change_src(data=eve_d1)
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(92)
+    assert api_item.mutation.attrs[eve_attr2_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(92)
+    assert api_item.attrs[eve_attr1_id].base == approx(92)
+    assert api_item.attrs[eve_attr2_id].base == approx(92)
