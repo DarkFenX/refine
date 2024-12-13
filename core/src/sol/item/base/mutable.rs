@@ -174,7 +174,8 @@ impl SolItemBaseMutable {
             .flatten()
         {
             Some(mutated_a_item) => mutated_a_item,
-            // No mutated item type ID - invalidate mutated cache and use non-mutated item
+            // No mutated item type ID or item itself - invalidate mutated cache and use non-mutated
+            // item
             None => match src.get_a_item(&base_type_id) {
                 Some(base_a_item) => {
                     self.base.set_type_id(base_type_id);

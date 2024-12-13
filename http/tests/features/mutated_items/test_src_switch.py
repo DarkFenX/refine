@@ -1,7 +1,100 @@
-from tests import approx
+"""
+Stages is just a short description of how much data was available for the mutation:
+- stage 1: mutator is not available;
+- stage 2: mutator is available, but mutated item ID cannot be found for the base item ID;
+- stage 3: mutator and mutated item ID are available, but mutated item is not available;
+- stage 4: all the data was available.
+"""
 
 
-def test_stage4_to_stage4_different_base_value(client, consts):
+from tests import approx, check_no_field
+
+
+def test_stage3_different_group(client, consts):
+    # Check that new mutated item is used on new source, even if ID is the same
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_grp1_id = client.mk_eve_item_group(datas=[eve_d1, eve_d2])
+    eve_grp2_id = client.mk_eve_item_group(datas=[eve_d1, eve_d2])
+    eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_affectee_attr1_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_affectee_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp1_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr1_id)
+    eve_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc_grp,
+        dom=consts.EveModDom.ship,
+        grp=eve_grp2_id,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr2_id)
+    eve_effect_id = client.mk_eve_effect(datas=[eve_d1, eve_d2], mod_info=[eve_mod1, eve_mod2])
+    eve_implant_id = client.mk_eve_item(
+        datas=[eve_d1, eve_d2],
+        attrs={eve_affector_attr_id: 20},
+        eff_ids=[eve_effect_id])
+    eve_base_item_id = client.mk_eve_item(
+        datas=[eve_d1, eve_d2],
+        grp_id=eve_grp2_id,
+        attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
+    eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id, grp_id=eve_grp1_id)
+    eve_mutator_id = client.mk_eve_mutator(
+        datas=[eve_d1, eve_d2],
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
+    eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_fit.add_implant(type_id=eve_implant_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_affectee_attr1_id: {consts.ApiAttrMutation.roll: 0.3},
+        eve_affectee_attr2_id: {consts.ApiAttrMutation.roll: 0.3}}))
+    # Verification - first attribute is modified because mutated item group ID is used
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_affectee_attr1_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_affectee_attr1_id].absolute == approx(92)
+    assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(92)
+    assert api_item.attrs[eve_affectee_attr1_id].base == approx(92)
+    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(110.4)
+    assert api_item.attrs[eve_affectee_attr2_id].base == approx(92)
+    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification - 2nd attribute is modified because base item group ID is used
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(100)
+    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
+    # Action
+    api_sol.change_src(data=eve_d1)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_affectee_attr1_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_affectee_attr1_id].absolute == approx(92)
+    assert api_item.mutation.attrs[eve_affectee_attr2_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_affectee_attr2_id].absolute == approx(92)
+    assert api_item.attrs[eve_affectee_attr1_id].base == approx(92)
+    assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(110.4)
+    assert api_item.attrs[eve_affectee_attr2_id].base == approx(92)
+    assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
+
+
+def test_stage4_different_base_values(client, consts):
     # Check how mutation values are transferred upon new base attribute value on new source
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -55,7 +148,7 @@ def test_stage4_to_stage4_different_base_value(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(144)
 
 
-def test_stage4_to_stage4_different_ranges(client, consts):
+def test_stage4_different_ranges(client, consts):
     # Check how mutation values are transferred upon new mutation ranges on new source
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -110,7 +203,7 @@ def test_stage4_to_stage4_different_ranges(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(110)
 
 
-def test_stage4_to_stage4_same_id_different_group(client, consts):
+def test_stage4_different_group(client, consts):
     # Check that new mutated item is used on new source, even if ID is the same
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -167,7 +260,7 @@ def test_stage4_to_stage4_same_id_different_group(client, consts):
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
 
 
-def test_stage4_to_stage4_different_id(client):
+def test_stage4_different_id(client):
     # Check that mutated item is defined by base item ID and mutator ID, in this case it should
     # be different on second source
     eve_d1 = client.mk_eve_data()
@@ -194,7 +287,7 @@ def test_stage4_to_stage4_different_id(client):
     assert api_item.type_id == eve_d2_mutated_item_id
 
 
-def test_stage4_to_stage4_without_base_item(client, consts):
+def test_stage4_without_base_item(client, consts):
     # Check switch to a mutated item with all the data but base item
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
