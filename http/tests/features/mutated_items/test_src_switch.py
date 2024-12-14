@@ -42,8 +42,7 @@ def test_stage2_different_group(client, consts):
         datas=[eve_d1, eve_d2],
         grp_id=eve_grp2_id,
         attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
-    eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(datas=[eve_d1], id_=eve_mutated_item_id, grp_id=eve_grp1_id)
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], grp_id=eve_grp1_id)
     eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_mutator(
         datas=[eve_d1],
