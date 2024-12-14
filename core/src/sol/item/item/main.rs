@@ -291,6 +291,14 @@ impl SolItem {
             Self::SwEffect(_) => None,
         }
     }
+    // True if item has any mutation data on it, even if it's not being in effect
+    pub(in crate::sol) fn is_mutated(&self) -> bool {
+        match self {
+            Self::Drone(drone) => drone.is_mutated(),
+            Self::Module(module) => module.is_mutated(),
+            _ => false,
+        }
+    }
     pub(in crate::sol) fn iter_projectee_items(&self) -> Option<impl ExactSizeIterator<Item = &SolItemId>> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_projs().iter_items()),

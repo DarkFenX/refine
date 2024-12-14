@@ -17,6 +17,7 @@ mod sole_get_fit_modules;
 mod sole_get_module;
 mod sole_remove_module;
 mod sole_remove_module_charge;
+mod sole_remove_module_mutation;
 mod sole_remove_module_proj;
 mod sole_set_module_charge;
 mod sole_set_module_state;

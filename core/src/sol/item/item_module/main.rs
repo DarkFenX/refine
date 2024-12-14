@@ -85,6 +85,9 @@ impl SolModule {
         self.base.update_a_data(src);
     }
     // Mutation-specific methods
+    pub(in crate::sol::item) fn is_mutated(&self) -> bool {
+        self.base.is_mutated()
+    }
     pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {
         self.base.get_mutation_info(src)
     }

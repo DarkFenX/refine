@@ -200,6 +200,9 @@ impl SolItemBaseMutable {
         item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, a_mutator.clone(), attrs))
     }
     // Mutation-specific methods
+    pub(in crate::sol::item) fn is_mutated(&self) -> bool {
+        self.mutation.is_some()
+    }
     pub(in crate::sol::item) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {
         let mutation = match &self.mutation {
             Some(mutation) => mutation,
