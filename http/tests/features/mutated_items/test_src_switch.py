@@ -54,7 +54,7 @@ def test_stage2_different_group(client, consts):
         datas=[eve_d2],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
-        items=[([client.mk_eve_item(datas=[eve_d1])], client.mk_eve_item(datas=[eve_d1]))],
+        items=[([client.mk_eve_item(datas=[eve_d2])], client.mk_eve_item(datas=[eve_d2]))],
         attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
     client.create_sources()
