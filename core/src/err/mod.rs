@@ -5,7 +5,7 @@ pub use crate::{
             GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, SetItemEffectModeError,
             SetItemEffectModesError,
         },
-        sole_fit::{AddFitError, GetFitError, RemoveFitError, SetFitFleetError, UnsetFitFleetError},
+        sole_fit::{GetFitError, RemoveFitError, SetFitFleetError, UnsetFitFleetError},
         sole_fleet::{AddFleetError, GetFleetError, RemoveFleetError},
         sole_item::{
             AddBoosterError, AddDroneError, AddDroneProjError, AddFighterError, AddFighterProjError, AddFwEffectError,

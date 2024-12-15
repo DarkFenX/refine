@@ -3,16 +3,9 @@ use crate::{cmd::HCmdResp, util::HExecError};
 #[derive(serde::Deserialize)]
 pub(crate) struct HCreateFitCmd {}
 impl HCreateFitCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
-        let core_fit = match core_sol.add_fit() {
-            Ok(core_fit) => core_fit,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::AddFitError::FitIdAllocFailed(e) => HExecError::FitCapacityReached(e),
-                })
-            }
-        };
-        Ok(core_fit.into())
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HCmdResp {
+        let core_fit = core_sol.add_fit();
+        core_fit.into()
     }
 }
 

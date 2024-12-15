@@ -86,7 +86,7 @@ impl HChangeSolCommand {
             Self::CreateFleet(cmd) => cmd.execute(core_sol),
             Self::DeleteFleet(cmd) => cmd.execute(core_sol),
             // Fit commands
-            Self::CreateFit(cmd) => cmd.execute(core_sol),
+            Self::CreateFit(cmd) => Ok(cmd.execute(core_sol)),
             Self::DeleteFit(cmd) => cmd.execute(core_sol),
             // Item commands
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),

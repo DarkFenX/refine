@@ -1,11 +1,6 @@
 use std::num::Wrapping;
 
-use crate::{
-    defs::SolFitId,
-    err::basic::{FitAllocError, FitFoundError},
-    sol::fit::SolFit,
-    util::StMap,
-};
+use crate::{defs::SolFitId, err::basic::FitFoundError, sol::fit::SolFit, util::StMap};
 
 #[derive(Clone)]
 pub(in crate::sol) struct SolFits {
@@ -19,10 +14,10 @@ impl SolFits {
             data: StMap::new(),
         }
     }
-    pub(in crate::sol) fn add_fit(&mut self) -> Result<SolFitId, FitAllocError> {
-        let fit_id = self.alloc_fit_id()?;
+    pub(in crate::sol) fn add_fit(&mut self) -> SolFitId {
+        let fit_id = self.alloc_fit_id();
         self.data.insert(fit_id, SolFit::new(fit_id));
-        Ok(fit_id)
+        fit_id
     }
     pub(in crate::sol) fn get_fit(&self, fit_id: &SolFitId) -> Result<&SolFit, FitFoundError> {
         self.data.get(fit_id).ok_or_else(|| FitFoundError::new(*fit_id))
@@ -54,16 +49,16 @@ impl SolFits {
     pub(in crate::sol) fn len(&self) -> usize {
         self.data.len()
     }
-    fn alloc_fit_id(&mut self) -> Result<SolFitId, FitAllocError> {
+    fn alloc_fit_id(&mut self) -> SolFitId {
         let start = self.counter;
         while self.data.contains_key(&self.counter.0) {
             self.counter += 1;
             if start == self.counter {
-                return Err(FitAllocError::new());
+                panic!("ran out of fit ID space");
             }
         }
         let fit_id = self.counter.0;
         self.counter += 1;
-        Ok(fit_id)
+        fit_id
     }
 }

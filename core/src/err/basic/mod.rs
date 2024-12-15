@@ -1,6 +1,5 @@
 pub use attr_meta_found::AttrMetaFoundError;
 pub use charge_found::ChargeFoundError;
-pub use fit_alloc::FitAllocError;
 pub use fit_fleet_assigned::FitFleetAssignedError;
 pub use fit_found::FitFoundError;
 pub use fit_has_item_kind::FitHasItemKindError;
@@ -22,7 +21,6 @@ pub use skill_level::SkillLevelError;
 
 mod attr_meta_found;
 mod charge_found;
-mod fit_alloc;
 mod fit_fleet_assigned;
 mod fit_found;
 mod fit_has_item_kind;

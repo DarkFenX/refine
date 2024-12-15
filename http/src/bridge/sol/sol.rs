@@ -246,12 +246,8 @@ impl HSolarSystem {
         let sync_span = tracing::trace_span!("sync");
         let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = match core_sol.add_fit() {
-                Ok(core_fit) => HFitInfo::mk_info(&mut core_sol, &core_fit.id, fit_mode, item_mode),
-                Err(core_err) => Err(match core_err {
-                    rc::err::AddFitError::FitIdAllocFailed(e) => HExecError::FitCapacityReached(e),
-                }),
-            };
+            let core_fit = core_sol.add_fit();
+            let result = HFitInfo::mk_info(&mut core_sol, &core_fit.id, fit_mode, item_mode);
             (core_sol, result.map_err(|exec_err| HBrError::from(exec_err)))
         })
         .await;

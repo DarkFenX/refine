@@ -1,7 +1,6 @@
 #[derive(Debug)]
 pub(crate) enum HExecError {
     // Fits
-    FitCapacityReached(rc::err::basic::FitAllocError),
     FitNotFoundPrimary(rc::err::basic::FitFoundError),
     FitNotFoundSecondary(rc::err::basic::FitFoundError),
     FitCharacterNotFound(rc::SolFitId),
@@ -32,7 +31,6 @@ impl std::fmt::Display for HExecError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             // Fits
-            HExecError::FitCapacityReached(e) => write!(f, "{e}"),
             HExecError::FitNotFoundPrimary(e) => write!(f, "{e}"),
             HExecError::FitNotFoundSecondary(e) => write!(f, "{e}"),
             HExecError::FitCharacterNotFound(fit_id) => write!(f, "fit {fit_id} has no character set"),
@@ -64,7 +62,6 @@ impl HExecError {
     pub(crate) fn get_code(&self) -> String {
         match self {
             // Fits
-            HExecError::FitCapacityReached(_) => "EXC-001",
             HExecError::FitNotFoundPrimary(_) => "EXC-002",
             HExecError::FitNotFoundSecondary(_) => "EXC-003",
             HExecError::FitCharacterNotFound(_) => "EXC-004",

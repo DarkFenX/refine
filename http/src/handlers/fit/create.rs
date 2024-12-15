@@ -6,10 +6,8 @@ use axum::{
 };
 
 use crate::{
-    bridge::HBrError,
     handlers::{fit::HFitInfoParams, get_guarded_sol, HGSolResult, HSingleErr},
     state::HAppState,
-    util::HExecError,
 };
 
 pub(crate) async fn create_fit(
@@ -28,16 +26,7 @@ pub(crate) async fn create_fit(
         .await
     {
         Ok(fit_info) => (StatusCode::CREATED, Json(fit_info)).into_response(),
-        Err(br_err) => {
-            let code = match &br_err {
-                HBrError::ExecFailed(exec_err) => match exec_err {
-                    HExecError::FitCapacityReached(_) => StatusCode::SERVICE_UNAVAILABLE,
-                    _ => StatusCode::INTERNAL_SERVER_ERROR,
-                },
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            (code, Json(HSingleErr::from(br_err))).into_response()
-        }
+        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(br_err))).into_response(),
     };
     resp
 }
