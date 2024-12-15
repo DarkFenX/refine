@@ -9,7 +9,6 @@ pub(crate) enum HExecError {
     FitIsNotInFleet(rc::err::basic::FitFleetAssignedError),
     FitIsNotInThisFleet(rc::SolFleetId, rc::SolFitId),
     // Fleets
-    FleetCapacityReached(rc::err::basic::FleetAllocError),
     FleetNotFoundPrimary(rc::err::basic::FleetFoundError),
     FleetNotFoundSecondary(rc::err::basic::FleetFoundError),
     // Items
@@ -39,7 +38,6 @@ impl std::fmt::Display for HExecError {
             HExecError::FitIsNotInFleet(e) => write!(f, "{e}"),
             HExecError::FitIsNotInThisFleet(fleet_id, fit_id) => write!(f, "fit {fit_id} is not in fleet {fleet_id}"),
             // Fleets
-            HExecError::FleetCapacityReached(e) => write!(f, "{e}"),
             HExecError::FleetNotFoundPrimary(e) => write!(f, "{e}"),
             HExecError::FleetNotFoundSecondary(e) => write!(f, "{e}"),
             // Items
@@ -70,7 +68,6 @@ impl HExecError {
             HExecError::FitIsNotInFleet(_) => "EXC-007",
             HExecError::FitIsNotInThisFleet(_, _) => "EXC-008",
             // Fleets
-            HExecError::FleetCapacityReached(_) => "EXC-009",
             HExecError::FleetNotFoundPrimary(_) => "EXC-010",
             HExecError::FleetNotFoundSecondary(_) => "EXC-011",
             // Items

@@ -1,11 +1,6 @@
 use std::num::Wrapping;
 
-use crate::{
-    defs::SolFleetId,
-    err::basic::{FleetAllocError, FleetFoundError},
-    sol::fleet::SolFleet,
-    util::StMap,
-};
+use crate::{defs::SolFleetId, err::basic::FleetFoundError, sol::fleet::SolFleet, util::StMap};
 
 #[derive(Clone)]
 pub(in crate::sol) struct SolFleets {
@@ -19,10 +14,10 @@ impl SolFleets {
             data: StMap::new(),
         }
     }
-    pub(in crate::sol) fn add_fleet(&mut self) -> Result<SolFleetId, FleetAllocError> {
-        let fleet_id = self.alloc_fleet_id()?;
+    pub(in crate::sol) fn add_fleet(&mut self) -> SolFleetId {
+        let fleet_id = self.alloc_fleet_id();
         self.data.insert(fleet_id, SolFleet::new(fleet_id));
-        Ok(fleet_id)
+        fleet_id
     }
     pub(in crate::sol) fn get_fleet(&self, fleet_id: &SolFleetId) -> Result<&SolFleet, FleetFoundError> {
         self.data.get(fleet_id).ok_or_else(|| FleetFoundError::new(*fleet_id))
@@ -44,16 +39,16 @@ impl SolFleets {
     pub(in crate::sol) fn iter_fleets(&self) -> impl ExactSizeIterator<Item = &SolFleet> {
         self.data.values()
     }
-    fn alloc_fleet_id(&mut self) -> Result<SolFleetId, FleetAllocError> {
+    fn alloc_fleet_id(&mut self) -> SolFleetId {
         let start = self.counter;
         while self.data.contains_key(&self.counter.0) {
             self.counter += 1;
             if start == self.counter {
-                return Err(FleetAllocError::new());
+                panic!("ran out of fleet ID space");
             }
         }
         let fleet_id = self.counter.0;
         self.counter += 1;
-        Ok(fleet_id)
+        fleet_id
     }
 }

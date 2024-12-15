@@ -154,12 +154,8 @@ impl HSolarSystem {
         let sync_span = tracing::trace_span!("sync");
         let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = match core_sol.add_fleet() {
-                Ok(core_fleet) => HFleetInfo::mk_info(&mut core_sol, &core_fleet.id, fleet_mode),
-                Err(core_err) => Err(match core_err {
-                    rc::err::AddFleetError::FleetIdAllocFailed(e) => HExecError::FleetCapacityReached(e),
-                }),
-            };
+            let core_fleet = core_sol.add_fleet();
+            let result = HFleetInfo::mk_info(&mut core_sol, &core_fleet.id, fleet_mode);
             (core_sol, result.map_err(|e| HBrError::from(e)))
         })
         .await;

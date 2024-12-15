@@ -3,16 +3,9 @@ use crate::{cmd::HCmdResp, util::HExecError};
 #[derive(serde::Deserialize)]
 pub(crate) struct HCreateFleetCmd {}
 impl HCreateFleetCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
-        let core_fleet = match core_sol.add_fleet() {
-            Ok(core_fleet) => core_fleet,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::AddFleetError::FleetIdAllocFailed(e) => HExecError::FleetCapacityReached(e),
-                })
-            }
-        };
-        Ok(core_fleet.into())
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HCmdResp {
+        let core_fleet = core_sol.add_fleet();
+        core_fleet.into()
     }
 }
 

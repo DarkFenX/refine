@@ -6,10 +6,8 @@ use axum::{
 };
 
 use crate::{
-    bridge::HBrError,
     handlers::{fleet::HFleetInfoParams, get_guarded_sol, HGSolResult, HSingleErr},
     state::HAppState,
-    util::HExecError,
 };
 
 pub(crate) async fn create_fleet(
@@ -23,16 +21,7 @@ pub(crate) async fn create_fleet(
     };
     let resp = match guarded_sol.lock().await.add_fleet(params.fleet.into()).await {
         Ok(fleet_info) => (StatusCode::CREATED, Json(fleet_info)).into_response(),
-        Err(br_err) => {
-            let code = match &br_err {
-                HBrError::ExecFailed(exec_err) => match exec_err {
-                    HExecError::FleetCapacityReached(_) => StatusCode::SERVICE_UNAVAILABLE,
-                    _ => StatusCode::INTERNAL_SERVER_ERROR,
-                },
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            (code, Json(HSingleErr::from(br_err))).into_response()
-        }
+        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(br_err))).into_response(),
     };
     resp
 }
