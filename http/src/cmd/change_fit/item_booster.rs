@@ -27,7 +27,6 @@ impl HAddBoosterCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddBoosterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::AddBoosterError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };

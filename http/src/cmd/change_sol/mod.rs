@@ -113,11 +113,11 @@ impl HChangeSolCommand {
             Self::ChangeFighter(cmd) => cmd.execute(core_sol),
             Self::ChangeCharge(cmd) => cmd.execute(core_sol),
             Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
-            Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeSwEffect(cmd) => cmd.execute(core_sol),
             Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFwEffect(cmd) => cmd.execute(core_sol),
-            Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeProjEffect(cmd) => cmd.execute(core_sol),
         }
     }

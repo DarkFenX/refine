@@ -12,7 +12,6 @@ pub(crate) enum HExecError {
     FleetNotFoundPrimary(rc::err::basic::FleetFoundError),
     FleetNotFoundSecondary(rc::err::basic::FleetFoundError),
     // Items
-    ItemCapacityReached(rc::err::basic::ItemAllocError),
     ItemNotFoundPrimary(rc::err::basic::ItemFoundError),
     ItemNotFoundSecondary(rc::err::basic::ItemFoundError),
     ItemKindMismatch(rc::err::basic::ItemKindMatchError),
@@ -41,7 +40,6 @@ impl std::fmt::Display for HExecError {
             HExecError::FleetNotFoundPrimary(e) => write!(f, "{e}"),
             HExecError::FleetNotFoundSecondary(e) => write!(f, "{e}"),
             // Items
-            HExecError::ItemCapacityReached(e) => write!(f, "{e}"),
             HExecError::ItemNotFoundPrimary(e) => write!(f, "{e}"),
             HExecError::ItemNotFoundSecondary(e) => write!(f, "{e}"),
             HExecError::ItemKindMismatch(e) => write!(f, "{e}"),
@@ -71,7 +69,6 @@ impl HExecError {
             HExecError::FleetNotFoundPrimary(_) => "EXC-010",
             HExecError::FleetNotFoundSecondary(_) => "EXC-011",
             // Items
-            HExecError::ItemCapacityReached(_) => "EXC-012",
             HExecError::ItemNotFoundPrimary(_) => "EXC-013",
             HExecError::ItemNotFoundSecondary(_) => "EXC-014",
             HExecError::ItemKindMismatch(_) => "EXC-015",

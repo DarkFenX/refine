@@ -1,4 +1,3 @@
-pub use sole_add_proj_effect::AddProjEffectError;
 pub use sole_add_proj_effect_proj::AddProjEffectProjError;
 pub use sole_get_proj_effect::GetProjEffectError;
 pub use sole_remove_proj_effect::RemoveProjEffectError;

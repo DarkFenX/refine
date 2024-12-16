@@ -19,7 +19,6 @@ impl HSetCharacterCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::SetFitCharacterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::SetFitCharacterError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };

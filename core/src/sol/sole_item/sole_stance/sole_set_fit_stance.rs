@@ -1,6 +1,6 @@
 use crate::{
     defs::{EItemId, SolFitId},
-    err::basic::{FitFoundError, ItemAllocError},
+    err::basic::FitFoundError,
     sol::{
         item::{SolItem, SolStance},
         item_info::SolStanceInfo,
@@ -24,8 +24,7 @@ impl SolarSystem {
             self.items.remove_item(&old_item_id);
         }
         // Add new stance
-        // Should be fallible only if we didn't remove old stance, so don't handle failure
-        let item_id = self.items.alloc_item_id()?;
+        let item_id = self.items.alloc_item_id();
         let stance = SolStance::new(&self.src, item_id, type_id, fit_id, state);
         let info = SolStanceInfo::from(&stance);
         let item = SolItem::Stance(stance);
@@ -40,13 +39,11 @@ impl SolarSystem {
 #[derive(Debug)]
 pub enum SetFitStanceError {
     FitNotFound(FitFoundError),
-    ItemIdAllocFailed(ItemAllocError),
 }
 impl std::error::Error for SetFitStanceError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::FitNotFound(e) => Some(e),
-            Self::ItemIdAllocFailed(e) => Some(e),
         }
     }
 }
@@ -54,17 +51,11 @@ impl std::fmt::Display for SetFitStanceError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::FitNotFound(e) => e.fmt(f),
-            Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
     }
 }
 impl From<FitFoundError> for SetFitStanceError {
     fn from(error: FitFoundError) -> Self {
         Self::FitNotFound(error)
-    }
-}
-impl From<ItemAllocError> for SetFitStanceError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
     }
 }

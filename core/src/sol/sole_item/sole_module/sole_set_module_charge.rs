@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     defs::{EItemId, SolItemId},
-    err::basic::{ItemAllocError, ItemFoundError, ItemKindMatchError},
+    err::basic::{ItemFoundError, ItemKindMatchError},
     sol::{
         item::{SolCharge, SolItem},
         item_info::SolChargeInfo,
@@ -47,7 +47,7 @@ impl SolarSystem {
         // Set new charge
         // Allocation can fail only if we didn't remove charge first, so if it fails - we don't need
         // to restore anything
-        let charge_id = self.items.alloc_item_id()?;
+        let charge_id = self.items.alloc_item_id();
         // Update skeleton
         let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
         module.set_charge_id(Some(charge_id));
@@ -100,14 +100,12 @@ impl SolarSystem {
 pub enum SetModuleChargeError {
     ItemNotFound(ItemFoundError),
     ItemIsNotModule(ItemKindMatchError),
-    ItemIdAllocFailed(ItemAllocError),
 }
 impl std::error::Error for SetModuleChargeError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::ItemNotFound(e) => Some(e),
             Self::ItemIsNotModule(e) => Some(e),
-            Self::ItemIdAllocFailed(e) => Some(e),
         }
     }
 }
@@ -116,7 +114,6 @@ impl std::fmt::Display for SetModuleChargeError {
         match self {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotModule(e) => e.fmt(f),
-            Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
     }
 }
@@ -128,10 +125,5 @@ impl From<ItemFoundError> for SetModuleChargeError {
 impl From<ItemKindMatchError> for SetModuleChargeError {
     fn from(error: ItemKindMatchError) -> Self {
         Self::ItemIsNotModule(error)
-    }
-}
-impl From<ItemAllocError> for SetModuleChargeError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
     }
 }

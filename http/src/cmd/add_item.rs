@@ -76,7 +76,7 @@ impl HAddItemCommand {
                 Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
             }
             Self::SwEffect(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
+                let core_info = cmd.execute(core_sol);
                 Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
             }
             Self::FwEffect(cmd) => {
@@ -84,7 +84,7 @@ impl HAddItemCommand {
                 Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
             }
             Self::ProjEffect(cmd) => {
-                let core_info = cmd.execute(core_sol)?;
+                let core_info = cmd.execute(core_sol);
                 Ok(HItemInfo::mk_info(core_sol, &core_info, item_mode))
             }
         }

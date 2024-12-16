@@ -9,16 +9,8 @@ pub(crate) struct HAddSwEffectCmd {
     state: Option<bool>,
 }
 impl HAddSwEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolSwEffectInfo, HExecError> {
-        let sw_effect = match core_sol.add_sw_effect(self.type_id, self.state.unwrap_or(true)) {
-            Ok(sw_effect) => sw_effect,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::AddSwEffectError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
-                })
-            }
-        };
-        Ok(sw_effect)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::SolSwEffectInfo {
+        core_sol.add_sw_effect(self.type_id, self.state.unwrap_or(true))
     }
 }
 

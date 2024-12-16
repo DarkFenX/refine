@@ -19,7 +19,6 @@ impl HSetShipCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::SetFitShipError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::SetFitShipError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };

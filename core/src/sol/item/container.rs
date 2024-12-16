@@ -1,11 +1,6 @@
 use std::num::Wrapping;
 
-use crate::{
-    defs::SolItemId,
-    err::basic::{ItemAllocError, ItemFoundError},
-    sol::item::SolItem,
-    util::StMap,
-};
+use crate::{defs::SolItemId, err::basic::ItemFoundError, sol::item::SolItem, util::StMap};
 
 #[derive(Clone)]
 pub(in crate::sol) struct SolItems {
@@ -19,17 +14,17 @@ impl SolItems {
             data: StMap::new(),
         }
     }
-    pub(in crate::sol) fn alloc_item_id(&mut self) -> Result<SolItemId, ItemAllocError> {
+    pub(in crate::sol) fn alloc_item_id(&mut self) -> SolItemId {
         let start = self.counter;
         while self.data.contains_key(&self.counter.0) {
             self.counter += 1;
             if start == self.counter {
-                return Err(ItemAllocError::new());
+                panic!("ran out of item ID space");
             }
         }
         let item_id = self.counter.0;
         self.counter += 1;
-        Ok(item_id)
+        item_id
     }
     // Generic item methods
     pub(in crate::sol) fn add_item(&mut self, item: SolItem) {

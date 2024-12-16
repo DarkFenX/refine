@@ -292,10 +292,10 @@ impl SolItem {
         }
     }
     // True if item has any mutation data on it, even if it's not being in effect
-    pub(in crate::sol) fn is_mutated(&self) -> bool {
+    pub(in crate::sol) fn has_mutation_data(&self) -> bool {
         match self {
-            Self::Drone(drone) => drone.is_mutated(),
-            Self::Module(module) => module.is_mutated(),
+            Self::Drone(drone) => drone.has_mutation_data(),
+            Self::Module(module) => module.has_mutation_data(),
             _ => false,
         }
     }

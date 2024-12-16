@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     defs::{EItemId, SolFitId},
-    err::basic::{FitFoundError, ItemAllocError},
+    err::basic::FitFoundError,
     sol::{
         item::{SolFighter, SolItem, SolItemState},
         item_info::SolFighterInfo,
@@ -18,16 +18,12 @@ impl SolarSystem {
         state: SolItemState,
     ) -> Result<SolFighterInfo, AddFighterError> {
         // Do everything needed to reserve ID for fighter itself
-        let item_id = self.items.alloc_item_id()?;
+        let item_id = self.items.alloc_item_id();
         let fighter = SolFighter::new(&self.src, item_id, type_id, fit_id, state);
         let item = SolItem::Fighter(fighter);
         self.items.add_item(item);
         // Reserve IDs for autocharges
-        if let Err(e) = self.add_item_autocharges(&item_id) {
-            // If it failed, remove fighter
-            self.items.remove_item(&item_id);
-            return Err(e.into());
-        }
+        self.add_item_autocharges(&item_id);
         // Finalize updates of skeleton
         let fit = self.fits.get_fit_mut(&fit_id)?;
         fit.fighters.insert(item_id);
@@ -46,13 +42,11 @@ impl SolarSystem {
 #[derive(Debug)]
 pub enum AddFighterError {
     FitNotFound(FitFoundError),
-    ItemIdAllocFailed(ItemAllocError),
 }
 impl std::error::Error for AddFighterError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::FitNotFound(e) => Some(e),
-            Self::ItemIdAllocFailed(e) => Some(e),
         }
     }
 }
@@ -60,17 +54,11 @@ impl std::fmt::Display for AddFighterError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::FitNotFound(e) => e.fmt(f),
-            Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
     }
 }
 impl From<FitFoundError> for AddFighterError {
     fn from(error: FitFoundError) -> Self {
         Self::FitNotFound(error)
-    }
-}
-impl From<ItemAllocError> for AddFighterError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
     }
 }

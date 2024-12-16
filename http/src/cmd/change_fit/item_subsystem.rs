@@ -19,7 +19,6 @@ impl HAddSubsystemCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddSubsystemError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::AddSubsystemError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };

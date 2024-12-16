@@ -107,26 +107,15 @@ impl HSolarSystem {
         let mut core_sol = self.take_sol()?;
         let sol_id_mv = self.id.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
+        let (core_sol, info) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = match core_sol.set_src(src) {
-                Ok(_) => Ok(HSolInfo::mk_info(
-                    sol_id_mv,
-                    &mut core_sol,
-                    sol_mode,
-                    fleet_mode,
-                    fit_mode,
-                    item_mode,
-                )),
-                Err(core_err) => Err(match core_err {
-                    rc::err::SetSrcError::ItemIdAllocFailed(e) => HBrError::from(HExecError::ItemCapacityReached(e)),
-                }),
-            };
-            (core_sol, result)
+            core_sol.set_src(src);
+            let info = HSolInfo::mk_info(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
+            (core_sol, info)
         })
         .await;
         self.put_sol_back(core_sol);
-        result
+        Ok(info)
     }
     // Fleet methods
     #[tracing::instrument(name = "sol-fleet-get", level = "trace", skip_all)]

@@ -20,7 +20,6 @@ impl HAddFighterCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddFighterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::AddFighterError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };

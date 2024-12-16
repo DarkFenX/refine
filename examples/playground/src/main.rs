@@ -59,7 +59,7 @@ fn main() {
     ));
     let src = Src::new(dh, ch).unwrap();
     let mut sol_sys = SolarSystem::new(src);
-    let fit = sol_sys.add_fit().unwrap();
+    let fit = sol_sys.add_fit();
     let ship = sol_sys.set_fit_ship(fit.id, 11184, true).unwrap();
     for skill_id in skill_ids.iter() {
         sol_sys.add_skill(fit.id, skill_id.to_owned(), 5, true);

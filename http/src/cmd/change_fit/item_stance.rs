@@ -19,7 +19,6 @@ impl HSetStanceCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::SetFitStanceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::SetFitStanceError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };

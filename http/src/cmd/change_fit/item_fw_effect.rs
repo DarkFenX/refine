@@ -19,7 +19,6 @@ impl HAddFwEffectCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddFwEffectError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::AddFwEffectError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };

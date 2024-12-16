@@ -1,6 +1,6 @@
 use crate::{
     defs::{EItemId, SolFitId},
-    err::basic::{FitFoundError, ItemAllocError},
+    err::basic::FitFoundError,
     sol::{
         item::{SolCharacter, SolItem},
         item_info::SolCharacterInfo,
@@ -22,8 +22,7 @@ impl SolarSystem {
             self.items.remove_item(&old_item_id);
         }
         // Add new character
-        // Should be fallible only if we didn't remove old character, so don't handle failure
-        let item_id = self.items.alloc_item_id()?;
+        let item_id = self.items.alloc_item_id();
         let character = SolCharacter::new(&self.src, item_id, type_id, fit_id, state);
         let info = SolCharacterInfo::from(&character);
         let item = SolItem::Character(character);
@@ -38,13 +37,11 @@ impl SolarSystem {
 #[derive(Debug)]
 pub enum SetFitCharacterError {
     FitNotFound(FitFoundError),
-    ItemIdAllocFailed(ItemAllocError),
 }
 impl std::error::Error for SetFitCharacterError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::FitNotFound(e) => Some(e),
-            Self::ItemIdAllocFailed(e) => Some(e),
         }
     }
 }
@@ -52,17 +49,11 @@ impl std::fmt::Display for SetFitCharacterError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::FitNotFound(e) => e.fmt(f),
-            Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
     }
 }
 impl From<FitFoundError> for SetFitCharacterError {
     fn from(error: FitFoundError) -> Self {
         Self::FitNotFound(error)
-    }
-}
-impl From<ItemAllocError> for SetFitCharacterError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
     }
 }

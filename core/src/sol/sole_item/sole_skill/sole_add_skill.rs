@@ -1,6 +1,6 @@
 use crate::{
     defs::{EItemId, SkillLevel, SolFitId},
-    err::basic::{FitFoundError, ItemAllocError, SkillLevelError},
+    err::basic::{FitFoundError, SkillLevelError},
     sol::{
         item::{SolItem, SolSkill},
         item_info::SolSkillInfo,
@@ -19,7 +19,7 @@ impl SolarSystem {
         state: bool,
     ) -> Result<SolSkillInfo, AddSkillError> {
         check_skill_level(level)?;
-        let item_id = self.items.alloc_item_id()?;
+        let item_id = self.items.alloc_item_id();
         let skill = SolSkill::new(&self.src, item_id, type_id, fit_id, level, state);
         let info = SolSkillInfo::from(&skill);
         let item = SolItem::Skill(skill);
@@ -35,14 +35,12 @@ impl SolarSystem {
 pub enum AddSkillError {
     InvalidSkillLevel(SkillLevelError),
     FitNotFound(FitFoundError),
-    ItemIdAllocFailed(ItemAllocError),
 }
 impl std::error::Error for AddSkillError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::InvalidSkillLevel(e) => Some(e),
             Self::FitNotFound(e) => Some(e),
-            Self::ItemIdAllocFailed(e) => Some(e),
         }
     }
 }
@@ -51,7 +49,6 @@ impl std::fmt::Display for AddSkillError {
         match self {
             Self::InvalidSkillLevel(e) => e.fmt(f),
             Self::FitNotFound(e) => e.fmt(f),
-            Self::ItemIdAllocFailed(e) => e.fmt(f),
         }
     }
 }
@@ -63,10 +60,5 @@ impl From<SkillLevelError> for AddSkillError {
 impl From<FitFoundError> for AddSkillError {
     fn from(error: FitFoundError) -> Self {
         Self::FitNotFound(error)
-    }
-}
-impl From<ItemAllocError> for AddSkillError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
     }
 }

@@ -26,7 +26,6 @@ impl HAddDroneCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddDroneError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::AddDroneError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };

@@ -19,7 +19,6 @@ impl HAddRigCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddRigError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::AddRigError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };

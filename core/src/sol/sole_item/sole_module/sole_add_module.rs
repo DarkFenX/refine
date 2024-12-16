@@ -1,6 +1,6 @@
 use crate::{
     defs::{EItemId, SolFitId},
-    err::basic::{FitFoundError, ItemAllocError, OrderedSlotError},
+    err::basic::{FitFoundError, OrderedSlotError},
     sol::{
         item::{SolCharge, SolItem, SolItemMutation, SolItemState, SolModule},
         item_info::SolModuleInfo,
@@ -21,36 +21,73 @@ impl SolarSystem {
         mutation: Option<SolItemMutation>,
         charge_type_id: Option<EItemId>,
     ) -> Result<SolModuleInfo, AddModuleError> {
-        let module_item_id = self.items.alloc_item_id()?;
-        // Calculate position for the module
+        let module_item_id = self.items.alloc_item_id();
         let fit = self.fits.get_fit(&fit_id)?;
-        let infos = self.int_get_fit_module_infos(fit, rack);
-        let mut old_module_item_id = None;
+        // Calculate position for the module
+        let rack_module_ids = match rack {
+            SolModRack::High => &fit.mods_high,
+            SolModRack::Mid => &fit.mods_mid,
+            SolModRack::Low => &fit.mods_low,
+        };
         let pos = match pos_mode {
-            SolOrdAddMode::Append => infos.iter().map(|v| v.pos).max().map(|v| 1 + v).unwrap_or(0),
+            // Add to the end of module rack
+            SolOrdAddMode::Append => {
+                match rack_module_ids
+                    .iter()
+                    .map(|v| self.items.get_item(v).unwrap().get_module().unwrap().get_pos())
+                    .max()
+                {
+                    Some(pos) => pos + 1,
+                    None => 0,
+                }
+            }
+            // Take first spare slot in the rack
             SolOrdAddMode::Equip => {
-                let positions = infos.iter().map(|v| v.pos).collect();
+                let positions = rack_module_ids
+                    .iter()
+                    .map(|v| self.items.get_item(v).unwrap().get_module().unwrap().get_pos())
+                    .collect();
                 find_equip_pos(positions)
             }
-            SolOrdAddMode::Insert(pos) => pos,
-            // Check if there is a module on position we want to have module:
-            // - if it's there, and we were asked to replace it, record ID to do it later
-            // - if it's there, and we were not asked to replace it, return an error
-            SolOrdAddMode::Place(pos, replace) => {
-                for info in infos.iter() {
-                    let module = self.items.get_item(&info.id).unwrap().get_module().unwrap();
-                    if module.get_rack() == rack && module.get_pos() == pos {
-                        old_module_item_id = Some(info.id);
-                        break;
+            // Insert at specified position, shifting other modules to the right
+            SolOrdAddMode::Insert(pos) => {
+                for rack_module_id in rack_module_ids.iter() {
+                    let rack_module = self
+                        .items
+                        .get_item_mut(rack_module_id)
+                        .unwrap()
+                        .get_module_mut()
+                        .unwrap();
+                    let rack_module_pos = rack_module.get_pos();
+                    if rack_module_pos >= pos {
+                        rack_module.set_pos(rack_module_pos + 1);
                     }
                 }
-                if let (Some(old_module_item_id), false) = (old_module_item_id, replace) {
-                    return Err(OrderedSlotError::new(rack, pos, old_module_item_id).into());
+                pos
+            }
+            // Check if there is a module on position we want to have module:
+            // - if it's there, and we were asked to replace it, remove old module
+            // - if it's there, and we were not asked to replace it, return an error
+            SolOrdAddMode::Place(pos, replace) => {
+                let mut old_module_id = None;
+                for rack_module_id in rack_module_ids.iter() {
+                    let module = self.items.get_item(rack_module_id).unwrap().get_module().unwrap();
+                    if module.get_pos() == pos {
+                        if replace {
+                            old_module_id = Some(*rack_module_id);
+                            break;
+                        } else {
+                            return Err(OrderedSlotError::new(rack, pos, *rack_module_id).into());
+                        }
+                    }
+                }
+                if let Some(old_module_id) = old_module_id {
+                    self.remove_module(&old_module_id).unwrap();
                 }
                 pos
             }
         };
-        // Create module and add it to items, to ensure its ID is taken
+        // Create module and add it to items
         let module = SolModule::new(
             &self.src,
             module_item_id,
@@ -66,14 +103,7 @@ impl SolarSystem {
         self.items.add_item(module_item);
         let mut charge_info = None;
         if let Some(charge_type_id) = charge_type_id {
-            let charge_id = match self.items.alloc_item_id() {
-                Ok(charge_id) => charge_id,
-                // Revert the only change we already did if charge allocation fails
-                Err(e) => {
-                    self.items.remove_item(&module_item_id).unwrap();
-                    return Err(e.into());
-                }
-            };
+            let charge_id = self.items.alloc_item_id();
             // Update skeleton with new charge info
             self.items
                 .get_item_mut(&module_item_id)
@@ -93,21 +123,6 @@ impl SolarSystem {
             charge_info = Some(SolChargeInfo::from(&charge));
             let item = SolItem::Charge(charge);
             self.items.add_item(item);
-        }
-        // After this point we can't fail, so do the rest of changes - update positions if we were
-        // inserting the module
-        if let SolOrdAddMode::Insert(_) = pos_mode {
-            for info in infos.iter() {
-                let module = self.items.get_item_mut(&info.id).unwrap().get_module_mut().unwrap();
-                let module_pos = module.get_pos();
-                if module_pos >= pos && module.get_rack() == rack {
-                    module.set_pos(module_pos + 1);
-                }
-            }
-        }
-        // Remove old module if needed
-        if let Some(old_module_item_id) = old_module_item_id {
-            self.remove_module(&old_module_item_id).unwrap();
         }
         // Finalize updating skeleton
         let fit = self.fits.get_fit_mut(&fit_id).unwrap();
@@ -134,14 +149,12 @@ impl SolarSystem {
 #[derive(Debug)]
 pub enum AddModuleError {
     FitNotFound(FitFoundError),
-    ItemIdAllocFailed(ItemAllocError),
     SlotTaken(OrderedSlotError),
 }
 impl std::error::Error for AddModuleError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::FitNotFound(e) => Some(e),
-            Self::ItemIdAllocFailed(e) => Some(e),
             Self::SlotTaken(e) => Some(e),
         }
     }
@@ -150,7 +163,6 @@ impl std::fmt::Display for AddModuleError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::FitNotFound(e) => e.fmt(f),
-            Self::ItemIdAllocFailed(e) => e.fmt(f),
             Self::SlotTaken(e) => e.fmt(f),
         }
     }
@@ -158,11 +170,6 @@ impl std::fmt::Display for AddModuleError {
 impl From<FitFoundError> for AddModuleError {
     fn from(error: FitFoundError) -> Self {
         Self::FitNotFound(error)
-    }
-}
-impl From<ItemAllocError> for AddModuleError {
-    fn from(error: ItemAllocError) -> Self {
-        Self::ItemIdAllocFailed(error)
     }
 }
 impl From<OrderedSlotError> for AddModuleError {

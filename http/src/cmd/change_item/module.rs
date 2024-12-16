@@ -45,7 +45,6 @@ impl HChangeModuleCmd {
                         return Err(match error {
                             rc::err::SetModuleChargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                             rc::err::SetModuleChargeError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
-                            rc::err::SetModuleChargeError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                         });
                     }
                 }

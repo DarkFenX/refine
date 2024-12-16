@@ -9,16 +9,8 @@ pub(crate) struct HAddProjEffectCmd {
     state: Option<bool>,
 }
 impl HAddProjEffectCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<rc::SolProjEffectInfo, HExecError> {
-        let proj_effect = match core_sol.add_proj_effect(self.type_id, self.state.unwrap_or(true)) {
-            Ok(proj_effect) => proj_effect,
-            Err(error) => {
-                return Err(match error {
-                    rc::err::AddProjEffectError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
-                })
-            }
-        };
-        Ok(proj_effect)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> rc::SolProjEffectInfo {
+        core_sol.add_proj_effect(self.type_id, self.state.unwrap_or(true))
     }
 }
 

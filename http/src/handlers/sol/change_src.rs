@@ -9,7 +9,6 @@ use crate::{
     bridge::HBrError,
     handlers::{get_guarded_sol, sol::HSolInfoParams, HGSolResult, HSingleErr},
     state::HAppState,
-    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
@@ -52,14 +51,7 @@ pub(crate) async fn change_sol_src(
     {
         Ok(sol_info) => sol_info,
         Err(br_err) => {
-            let code = match &br_err {
-                HBrError::ExecFailed(exec_err) => match exec_err {
-                    HExecError::ItemCapacityReached(_) => StatusCode::SERVICE_UNAVAILABLE,
-                    _ => StatusCode::INTERNAL_SERVER_ERROR,
-                },
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            return (code, Json(HSingleErr::from(br_err))).into_response();
+            return (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(br_err))).into_response();
         }
     };
     (StatusCode::OK, Json(sol_info)).into_response()

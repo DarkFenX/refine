@@ -31,7 +31,7 @@ pub use sole_module::{
     RemoveModuleChargeError, RemoveModuleError, RemoveModuleProjError, SetModuleChargeError, SetModuleStateError,
 };
 pub use sole_proj_effect::{
-    AddProjEffectError, AddProjEffectProjError, GetProjEffectError, RemoveProjEffectError, RemoveProjEffectProjError,
+    AddProjEffectProjError, GetProjEffectError, RemoveProjEffectError, RemoveProjEffectProjError,
     SetProjEffectStateError,
 };
 pub use sole_rig::{AddRigError, GetFitRigsError, GetRigError, RemoveRigError, SetRigStateError};
@@ -48,7 +48,7 @@ pub use sole_stance::{
 pub use sole_subsystem::{
     AddSubsystemError, GetFitSubsystemsError, GetSubsystemError, RemoveSubsystemError, SetSubsystemStateError,
 };
-pub use sole_sw_effect::{AddSwEffectError, GetSwEffectError, RemoveSwEffectError, SetSwEffectStateError};
+pub use sole_sw_effect::{GetSwEffectError, RemoveSwEffectError, SetSwEffectStateError};
 
 mod misc;
 mod sole_autocharge;

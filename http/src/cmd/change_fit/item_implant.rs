@@ -19,7 +19,6 @@ impl HAddImplantCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddImplantError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::AddImplantError::ItemIdAllocFailed(e) => HExecError::ItemCapacityReached(e),
                 })
             }
         };
