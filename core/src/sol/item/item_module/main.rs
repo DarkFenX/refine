@@ -1,7 +1,7 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, Idx, SkillLevel, SolFitId, SolItemId},
-    err::basic::ItemLoadedError,
+    err::basic::{ItemLoadedError, ItemMutatedError},
     sol::{
         item::{SolEffectModes, SolItemBaseMutable, SolItemMutation, SolItemState, SolProjs},
         item_info::SolItemMutationInfo,
@@ -85,11 +85,14 @@ impl SolModule {
         self.base.update_a_data(src);
     }
     // Mutation-specific methods
-    pub(in crate::sol::item) fn has_mutation_data(&self) -> bool {
+    pub(in crate::sol) fn has_mutation_data(&self) -> bool {
         self.base.has_mutation_data()
     }
     pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {
         self.base.get_mutation_info(src)
+    }
+    pub(in crate::sol) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
+        self.base.unmutate(src)
     }
     // Item-specific methods
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {

@@ -1,13 +1,32 @@
 use crate::{
     defs::SolItemId,
-    err::basic::{ChargeFoundError, ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    err::basic::{ItemFoundError, ItemKindMatchError, ItemMutatedError},
+    sol::{SolView, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn remove_module_mutation(&mut self, item_id: &SolItemId) -> Result<(), RemoveModuleMutationError> {
-        let module = self.items.get_item(item_id)?.get_module()?;
-
+        let item = self.items.get_item(item_id)?;
+        self.svcs
+            .unload_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        let module = match self.items.get_item_mut(item_id).unwrap().get_module_mut() {
+            Ok(module) => module,
+            Err(error) => {
+                let item = self.items.get_item(item_id).unwrap();
+                self.svcs
+                    .load_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+                return Err(error.into());
+            }
+        };
+        if let Err(error) = module.unmutate(&self.src) {
+            let item = self.items.get_item(item_id).unwrap();
+            self.svcs
+                .load_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+            return Err(error.into());
+        }
+        let item = self.items.get_item(item_id).unwrap();
+        self.svcs
+            .load_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
         Ok(())
     }
 }
@@ -16,7 +35,7 @@ impl SolarSystem {
 pub enum RemoveModuleMutationError {
     ItemNotFound(ItemFoundError),
     ItemIsNotModule(ItemKindMatchError),
-    MutationNotSet(ChargeFoundError),
+    MutationNotSet(ItemMutatedError),
 }
 impl std::error::Error for RemoveModuleMutationError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
@@ -44,5 +63,10 @@ impl From<ItemFoundError> for RemoveModuleMutationError {
 impl From<ItemKindMatchError> for RemoveModuleMutationError {
     fn from(error: ItemKindMatchError) -> Self {
         Self::ItemIsNotModule(error)
+    }
+}
+impl From<ItemMutatedError> for RemoveModuleMutationError {
+    fn from(error: ItemMutatedError) -> Self {
+        Self::MutationNotSet(error)
     }
 }
