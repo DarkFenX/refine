@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        shared::{apply_effect_modes, HEffectModeMap, HProjDef},
+        shared::{apply_effect_modes, HEffectModeMap, HItemMutation, HProjDef},
         HCmdResp,
     },
     shared::HState,
@@ -11,6 +11,8 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
     state: Option<HState>,
+    #[serde(default, with = "::serde_with::rust::double_option")]
+    mutation: Option<Option<HItemMutation>>,
     #[serde(default, with = "::serde_with::rust::double_option")]
     charge: Option<Option<rc::EItemId>>,
     #[serde(default)]
@@ -37,6 +39,20 @@ impl HChangeModuleCmd {
                     rc::err::SetModuleStateError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
                 });
             };
+        }
+        if let Some(mutation_opt) = &self.mutation {
+            match mutation_opt {
+                Some(_) => (),
+                None => {
+                    if let Err(error) = core_sol.remove_module_mutation(item_id) {
+                        return Err(match error {
+                            rc::err::RemoveModuleMutationError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                            rc::err::RemoveModuleMutationError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                            rc::err::RemoveModuleMutationError::MutationNotSet(e) => HExecError::MutationNotSet(e),
+                        });
+                    };
+                }
+            }
         }
         if let Some(charge_opt) = &self.charge {
             match charge_opt {
