@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
         change_item,
-        shared::{HAddMode, HItemMutation},
+        shared::{HAddMode, HMutationOnAdd},
         HCmdResp,
     },
     shared::{HModRack, HState},
@@ -14,7 +14,7 @@ pub(crate) struct HAddModuleCmd {
     add_mode: HAddMode,
     type_id: rc::EItemId,
     state: HState,
-    mutation: Option<HItemMutation>,
+    mutation: Option<HMutationOnAdd>,
     charge_type_id: Option<rc::EItemId>,
 }
 impl HAddModuleCmd {

@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_item, shared::HItemMutation, HCmdResp},
+    cmd::{change_item, shared::HMutationOnAdd, HCmdResp},
     shared::HState,
     util::HExecError,
 };
@@ -8,7 +8,7 @@ use crate::{
 pub(crate) struct HAddDroneCmd {
     type_id: rc::EItemId,
     state: HState,
-    mutation: Option<HItemMutation>,
+    mutation: Option<HMutationOnAdd>,
 }
 impl HAddDroneCmd {
     pub(in crate::cmd) fn execute(

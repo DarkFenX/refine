@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        shared::{apply_effect_modes, HEffectModeMap, HItemMutation, HProjDef},
+        shared::{apply_effect_modes, HEffectModeMap, HMutationOnChange, HProjDef},
         HCmdResp,
     },
     shared::HState,
@@ -12,7 +12,7 @@ use crate::{
 pub(crate) struct HChangeModuleCmd {
     state: Option<HState>,
     #[serde(default, with = "::serde_with::rust::double_option")]
-    mutation: Option<Option<HItemMutation>>,
+    mutation: Option<Option<HMutationOnChange>>,
     #[serde(default, with = "::serde_with::rust::double_option")]
     charge: Option<Option<rc::EItemId>>,
     #[serde(default)]

@@ -2,17 +2,25 @@ use std::collections::HashMap;
 
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
-pub(in crate::cmd) enum HItemMutation {
+pub(in crate::cmd) enum HMutationOnAdd {
     Short(rc::EItemId),
     Full(HItemMutationFull),
 }
-impl Into<rc::SolItemMutation> for &HItemMutation {
+impl Into<rc::SolItemMutation> for &HMutationOnAdd {
     fn into(self) -> rc::SolItemMutation {
         match self {
-            HItemMutation::Short(mutator_id) => rc::SolItemMutation::new(*mutator_id),
-            HItemMutation::Full(full_mutation) => full_mutation.into(),
+            HMutationOnAdd::Short(mutator_id) => rc::SolItemMutation::new(*mutator_id),
+            HMutationOnAdd::Full(full_mutation) => full_mutation.into(),
         }
     }
+}
+
+#[derive(serde::Deserialize)]
+#[serde(untagged)]
+pub(in crate::cmd) enum HMutationOnChange {
+    NewShort(rc::EItemId),
+    NewFull(HItemMutationFull),
+    ChangeAttrs(HashMap<rc::EAttrId, Option<HItemAttrMutation>>),
 }
 
 #[serde_with::serde_as]
