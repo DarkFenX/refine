@@ -1,9 +1,9 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, Idx, SkillLevel, SolFitId, SolItemId},
-    err::basic::{ItemLoadedError, ItemMutatedError},
+    err::basic::{ItemLoadedError, ItemMutatedError, ItemNotMutatedError},
     sol::{
-        item::{SolEffectModes, SolItemBaseMutable, SolItemMutation, SolItemState, SolProjs},
+        item::{SolEffectModes, SolItemAttrMutation, SolItemBaseMutable, SolItemMutation, SolItemState, SolProjs},
         item_info::SolItemMutationInfo,
         SolModRack,
     },
@@ -90,6 +90,16 @@ impl SolModule {
     }
     pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {
         self.base.get_mutation_info(src)
+    }
+    pub(in crate::sol) fn mutate(&mut self, src: &Src, mutation: SolItemMutation) -> Result<(), ItemNotMutatedError> {
+        self.base.mutate(src, mutation)
+    }
+    pub(in crate::sol) fn change_mutation_attrs(
+        &mut self,
+        src: &Src,
+        attr_mutations: StMap<EAttrId, Option<SolItemAttrMutation>>,
+    ) -> Result<Vec<EAttrId>, ItemMutatedError> {
+        self.base.change_mutation_attrs(src, attr_mutations)
     }
     pub(in crate::sol) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
         self.base.unmutate(src)

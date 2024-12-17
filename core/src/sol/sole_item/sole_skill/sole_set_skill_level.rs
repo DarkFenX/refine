@@ -11,8 +11,7 @@ impl SolarSystem {
     pub fn set_skill_level(&mut self, item_id: &SolItemId, level: SkillLevel) -> Result<(), SetSkillLevelError> {
         check_skill_level(level)?;
         self.items.get_item_mut(item_id)?.get_skill_mut()?.set_level(level);
-        // TODO: change it to use attribute overrides, and make calc_force_attr_recalc private
-        self.svcs.calc_force_attr_recalc(
+        self.svcs.item_attr_value_changed(
             &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
             item_id,
             &ec::attrs::SKILL_LEVEL,

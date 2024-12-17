@@ -3,11 +3,10 @@ use crate::{
     err::basic::{FitFoundError, OrderedSlotError},
     sol::{
         item::{SolCharge, SolItem, SolItemMutation, SolItemState, SolModule},
-        item_info::SolModuleInfo,
+        item_info::{SolChargeInfo, SolModuleInfo},
         sole_item::misc::find_equip_pos,
         SolModRack, SolOrdAddMode, SolView, SolarSystem,
     },
-    SolChargeInfo,
 };
 
 impl SolarSystem {

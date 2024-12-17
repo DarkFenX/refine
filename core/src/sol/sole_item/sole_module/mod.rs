@@ -12,7 +12,9 @@ pub use sole_set_module_state::SetModuleStateError;
 
 mod misc;
 mod sole_add_module;
+mod sole_add_module_mutation;
 mod sole_add_module_proj;
+mod sole_change_module_mutation;
 mod sole_change_module_proj;
 mod sole_get_fit_modules;
 mod sole_get_module;

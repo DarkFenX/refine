@@ -246,19 +246,16 @@ impl SolSvcs {
             }
         }
     }
-    pub(in crate::sol) fn calc_force_attr_recalc(
+    pub(in crate::sol::svc) fn calc_force_attr_recalc(
         &mut self,
         sol_view: &SolView,
         item_id: &SolItemId,
         attr_id: &EAttrId,
     ) {
-        match self.calc_data.attrs.get_item_attrs_mut(item_id) {
-            Ok(item_attrs) => {
-                if item_attrs.remove(attr_id).is_some() {
-                    self.notify_attr_val_changed(sol_view, item_id, attr_id);
-                }
+        if let Ok(item_attrs) = self.calc_data.attrs.get_item_attrs_mut(item_id) {
+            if item_attrs.remove(attr_id).is_some() {
+                self.notify_attr_val_changed(sol_view, item_id, attr_id);
             }
-            _ => return,
         }
     }
     // Private methods
