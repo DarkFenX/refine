@@ -24,7 +24,7 @@ def test_rolls_range(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
-        items=[([client.mk_eve_item(datas=[eve_d1])], client.mk_eve_item(datas=[eve_d1]))],
+        items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
         datas=[eve_d2],
@@ -77,7 +77,7 @@ def test_absolute_value_range(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
-        items=[([client.mk_eve_item(datas=[eve_d1])], client.mk_eve_item(datas=[eve_d1]))],
+        items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
         datas=[eve_d2],
@@ -132,7 +132,7 @@ def test_no_base_item(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
-        items=[([client.mk_eve_item(datas=[eve_d1])], client.mk_eve_item(datas=[eve_d1]))],
+        items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attributes={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
         datas=[eve_d2],
@@ -179,7 +179,7 @@ def test_no_base_value(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
-        items=[([client.mk_eve_item(datas=[eve_d1])], client.mk_eve_item(datas=[eve_d1]))],
+        items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attributes={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
         datas=[eve_d2],
@@ -226,7 +226,7 @@ def test_no_mutation_range(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
-        items=[([client.mk_eve_item(datas=[eve_d1])], client.mk_eve_item(datas=[eve_d1]))])
+        items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)])
     client.mk_eve_mutator(
         datas=[eve_d2],
         id_=eve_mutator_id,
@@ -276,7 +276,7 @@ def test_zero_mutation_range(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
-        items=[([client.mk_eve_item(datas=[eve_d1])], client.mk_eve_item(datas=[eve_d1]))],
+        items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
         attributes={
             eve_roll_attr_id: (1.08, 1.08),
             eve_absolute_low_attr_id: (0.92, 0.92),

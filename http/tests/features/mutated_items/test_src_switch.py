@@ -10,7 +10,7 @@ Stages is just a short description of how much data was available for the mutati
 from tests import approx, check_no_field
 
 
-def test_stage1_different_group(client, consts):
+def test_to_stage1_different_group(client, consts):
     # Check how item which is switched to new source with incomplete data behaves
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -61,6 +61,7 @@ def test_stage1_different_group(client, consts):
     # Verification - first attribute is modified because mutated item group ID is used
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_affectee_attr1_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr1_id].absolute == approx(92)
@@ -84,6 +85,7 @@ def test_stage1_different_group(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_affectee_attr1_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr1_id].absolute == approx(92)
@@ -95,7 +97,7 @@ def test_stage1_different_group(client, consts):
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
 
 
-def test_stage1_no_base_item(client, consts):
+def test_to_stage1_no_base_item(client, consts):
     # Check how item which is switched to new source with incomplete data behaves
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -120,6 +122,7 @@ def test_stage1_no_base_item(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 1
     assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(92)
@@ -138,13 +141,14 @@ def test_stage1_no_base_item(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 1
     assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(92)
     assert api_item.attrs[eve_attr_id].base == approx(92)
 
 
-def test_stage2_different_group(client, consts):
+def test_to_stage2_different_group(client, consts):
     # Check how item which is switched to new source with incomplete data behaves
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -187,7 +191,7 @@ def test_stage2_different_group(client, consts):
         datas=[eve_d2],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
-        items=[([client.mk_eve_item(datas=[eve_d2])], client.mk_eve_item(datas=[eve_d2]))],
+        items=[([client.mk_eve_item(datas=[eve_d2])], eve_mutated_item_id)],
         attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
     client.create_sources()
@@ -201,6 +205,7 @@ def test_stage2_different_group(client, consts):
     # Verification - first attribute is modified because mutated item group ID is used
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_affectee_attr1_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr1_id].absolute == approx(92)
@@ -224,6 +229,7 @@ def test_stage2_different_group(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_affectee_attr1_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr1_id].absolute == approx(92)
@@ -235,7 +241,7 @@ def test_stage2_different_group(client, consts):
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
 
 
-def test_stage2_no_base_item(client, consts):
+def test_to_stage2_no_base_item(client, consts):
     # Check how item which is switched to new source with incomplete data behaves
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -253,7 +259,7 @@ def test_stage2_no_base_item(client, consts):
         datas=[eve_d2],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
-        items=[([client.mk_eve_item(datas=[eve_d2])], client.mk_eve_item(datas=[eve_d2]))],
+        items=[([client.mk_eve_item(datas=[eve_d2])], eve_mutated_item_id)],
         attributes={eve_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
@@ -264,6 +270,7 @@ def test_stage2_no_base_item(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 1
     assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(92)
@@ -282,13 +289,14 @@ def test_stage2_no_base_item(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 1
     assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(92)
     assert api_item.attrs[eve_attr_id].base == approx(92)
 
 
-def test_stage3_different_group(client, consts):
+def test_to_stage3_different_group(client, consts):
     # Check how item which is switched to new source with incomplete data behaves
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -338,6 +346,7 @@ def test_stage3_different_group(client, consts):
     # Verification - first attribute is modified because mutated item group ID is used
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_affectee_attr1_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr1_id].absolute == approx(92)
@@ -361,6 +370,7 @@ def test_stage3_different_group(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_affectee_attr1_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_affectee_attr1_id].absolute == approx(92)
@@ -372,7 +382,7 @@ def test_stage3_different_group(client, consts):
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(92)
 
 
-def test_stage4_different_base_values(client, consts):
+def test_to_stage4_different_base_values(client, consts):
     # Check how mutation values are transferred upon new base attribute value on new source
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -426,7 +436,7 @@ def test_stage4_different_base_values(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(144)
 
 
-def test_stage4_different_ranges(client, consts):
+def test_to_stage4_different_ranges(client, consts):
     # Check how mutation values are transferred upon new mutation ranges on new source
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -481,7 +491,7 @@ def test_stage4_different_ranges(client, consts):
     assert api_item.attrs[eve_higher_attr_id].base == approx(110)
 
 
-def test_stage4_different_group(client, consts):
+def test_to_stage4_different_group(client, consts):
     # Check that new mutated item is used on new source, even if ID is the same
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -526,6 +536,7 @@ def test_stage4_different_group(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(120)
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(100)
     # Action
@@ -534,11 +545,12 @@ def test_stage4_different_group(client, consts):
     # used
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
 
 
-def test_stage4_different_id(client):
+def test_to_stage4_different_id(client):
     # Check that mutated item is defined by base item ID and mutator ID, in this case it should
     # be different on second source
     eve_d1 = client.mk_eve_data()
@@ -558,14 +570,16 @@ def test_stage4_different_id(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_d1_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_d2_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
 
 
-def test_stage4_no_base_item(client, consts):
+def test_to_stage4_no_base_item(client, consts):
     # Check switch to a mutated item with all the data but base item
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -614,3 +628,116 @@ def test_stage4_no_base_item(client, consts):
     assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(92)
     assert api_item.attrs[eve_attr1_id].base == approx(92)
     assert api_item.attrs[eve_attr2_id].base == approx(92)
+
+
+def test_from_stage3(client, consts):
+    # Check that proper base item ID is taken when switching source from incomplete mutated item
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_attr_id: 100})
+    eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id)
+    eve_mutator_id = client.mk_eve_mutator(
+        datas=[eve_d1, eve_d2],
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(
+        type_id=eve_base_item_id,
+        mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_attr_id].base == approx(100)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
+    assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.8)
+    assert api_item.mutation.attrs[eve_attr_id].absolute == approx(112)
+    assert api_item.attrs[eve_attr_id].base == approx(112)
+
+
+def test_from_stage2(client, consts):
+    # Check that proper base item ID is taken when switching source from incomplete mutated item
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_mutator(
+        datas=[eve_d1],
+        id_=eve_mutator_id,
+        # Valid input or output item is needed just to keep mutator data alive during cleanup
+        items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
+        attributes={eve_attr_id: (0.8, 1.2)})
+    client.mk_eve_mutator(
+        datas=[eve_d2],
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(
+        type_id=eve_base_item_id,
+        mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_attr_id].base == approx(100)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
+    assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.8)
+    assert api_item.mutation.attrs[eve_attr_id].absolute == approx(112)
+    assert api_item.attrs[eve_attr_id].base == approx(112)
+
+
+def test_from_stage1(client, consts):
+    # Check that proper base item ID is taken when switching source from incomplete mutated item
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={eve_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_mutator(
+        datas=[eve_d2],
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(
+        type_id=eve_base_item_id,
+        mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_attr_id].base == approx(100)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
+    assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.8)
+    assert api_item.mutation.attrs[eve_attr_id].absolute == approx(112)
+    assert api_item.attrs[eve_attr_id].base == approx(112)
