@@ -11,7 +11,7 @@ from .side_effect_info import SideEffectInfo, SideEffectStrInfo
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-    from typing import Type, Union
+    from typing import Tuple, Type, Union
 
     from tests.support.api import ApiClient
     from tests.support.consts import ApiEffMode, ApiState
@@ -253,6 +253,7 @@ class Item(AttrDict):
     def change_mod_request(
             self, *,
             state: Union[ApiState, Type[Absent]],
+            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], None, Type[Absent]],
             charge: Union[int, None, Type[Absent]],
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
@@ -264,6 +265,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            mutation=mutation,
             charge=charge,
             add_projs=add_projs,
             change_projs=change_projs,
@@ -274,6 +276,7 @@ class Item(AttrDict):
     def change_mod(
             self, *,
             state: Union[ApiState, Type[Absent]] = Absent,
+            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], None, Type[Absent]] = Absent,
             charge: Union[int, Type[Absent]] = Absent,
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
@@ -284,6 +287,7 @@ class Item(AttrDict):
     ) -> Union[Item, None]:
         resp = self.change_mod_request(
             state=state,
+            mutation=mutation,
             charge=charge,
             add_projs=add_projs,
             change_projs=change_projs,

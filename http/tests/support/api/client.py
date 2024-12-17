@@ -622,6 +622,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
             sol_id: str,
             item_id: str,
             state: Union[ApiState, Type[Absent]],
+            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], None, Type[Absent]],
             charge: Union[int, None, Type[Absent]],
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
@@ -631,6 +632,7 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
     ) -> Request:
         body = {'type': 'module'}
         conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='mutation', value=mutation)
         conditional_insert(container=body, key='charge', value=charge)
         conditional_insert(container=body, key='add_projs', value=add_projs)
         conditional_insert(container=body, key='change_projs', value=change_projs)
