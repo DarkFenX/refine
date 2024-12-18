@@ -1,9 +1,3 @@
-"""
-Stage 4 means that all the prerequisites for mutated item have been met:
-- mutator is available;
-- mutated item ID and item itself are available.
-"""
-
 from tests import approx, check_no_field
 
 

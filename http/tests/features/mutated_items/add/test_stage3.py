@@ -1,11 +1,3 @@
-"""
-Stage 3 means that:
-- mutator is available;
-- mutated item ID is available in mapping;
-- mutated item itself is not available.
-Stage 3 items accept roll values and use base item attributes to accept absolute values.
-"""
-
 from tests import approx, check_no_field
 
 

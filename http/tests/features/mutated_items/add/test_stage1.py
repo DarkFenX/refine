@@ -1,8 +1,3 @@
-"""
-Stage 1 means that mutator is not available. Stage 1 items accept roll values and always discard
-absolute roll values.
-"""
-
 from tests import approx, check_no_field
 
 

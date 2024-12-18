@@ -1,12 +1,3 @@
-"""
-Stages is just a short description of how much data was available for the mutation:
-- stage 1: mutator is not available;
-- stage 2: mutator is available, but mutated item ID cannot be found for the base item ID;
-- stage 3: mutator and mutated item ID are available, but mutated item is not available;
-- stage 4: all the data was available.
-"""
-
-
 from tests import approx, check_no_field
 
 

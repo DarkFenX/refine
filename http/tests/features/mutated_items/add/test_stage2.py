@@ -1,10 +1,3 @@
-"""
-Stage 2 means that:
-- mutator is available;
-- mutated item ID is not available in mapping;
-Stage 2 items accept roll values and use base item attributes to accept absolute values.
-"""
-
 from tests import approx, check_no_field
 
 
