@@ -18,8 +18,8 @@ impl Into<rc::SolItemAddMutation> for &HMutationOnAdd {
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd) enum HMutationOnChange {
-    NewShort(rc::EItemId),
-    NewFull(HItemMutationFull),
+    AddShort(rc::EItemId),
+    AddFull(HItemMutationFull),
     ChangeAttrs(HashMap<rc::EAttrId, Option<HItemAttrMutationValue>>),
 }
 

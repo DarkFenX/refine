@@ -309,7 +309,7 @@ class Fit(AttrDict):
             type_id: int,
             rack: ApiRack,
             state: ApiState,
-            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], Type[Absent]],
+            mutation: Union[int, Tuple[int, dict[int, dict]], Type[Absent]],
             charge_type_id: Union[int, Type[Absent]],
             mode: ApiModAddMode,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]],

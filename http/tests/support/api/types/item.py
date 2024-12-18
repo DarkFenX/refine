@@ -253,7 +253,7 @@ class Item(AttrDict):
     def change_mod_request(
             self, *,
             state: Union[ApiState, Type[Absent]],
-            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], None, Type[Absent]],
+            mutation: Union[int, Tuple[int, dict[int, dict]], dict[int, dict], None, Type[Absent]],
             charge: Union[int, None, Type[Absent]],
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
@@ -276,7 +276,7 @@ class Item(AttrDict):
     def change_mod(
             self, *,
             state: Union[ApiState, Type[Absent]] = Absent,
-            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], None, Type[Absent]] = Absent,
+            mutation: Union[int, Tuple[int, dict[int, dict]], dict[int, dict], None, Type[Absent]] = Absent,
             charge: Union[int, Type[Absent]] = Absent,
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
