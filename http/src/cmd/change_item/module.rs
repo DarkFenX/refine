@@ -42,7 +42,36 @@ impl HChangeModuleCmd {
         }
         if let Some(mutation_opt) = &self.mutation {
             match mutation_opt {
-                Some(_) => (),
+                Some(mutation) => match mutation {
+                    HMutationOnChange::NewShort(mutator_id) => {
+                        // Remove old mutation if we had any, ignore any errors on the way
+                        let _ = core_sol.remove_module_mutation(item_id);
+                        let mutation = rc::SolItemAddMutation::new(*mutator_id);
+                        if let Err(error) = core_sol.add_module_mutation(item_id, mutation) {
+                            return Err(match error {
+                                rc::err::AddModuleMutationError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                                rc::err::AddModuleMutationError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                                rc::err::AddModuleMutationError::MutationAlreadySet(e) => {
+                                    panic!("no mutation should be set")
+                                }
+                            });
+                        }
+                    }
+                    HMutationOnChange::NewFull(mutation) => {
+                        // Remove old mutation if we had any, ignore any errors on the way
+                        let _ = core_sol.remove_module_mutation(item_id);
+                        if let Err(error) = core_sol.add_module_mutation(item_id, mutation.into()) {
+                            return Err(match error {
+                                rc::err::AddModuleMutationError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                                rc::err::AddModuleMutationError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
+                                rc::err::AddModuleMutationError::MutationAlreadySet(e) => {
+                                    panic!("no mutation should be set")
+                                }
+                            });
+                        }
+                    }
+                    HMutationOnChange::ChangeAttrs(attr_mutations) => (),
+                },
                 None => {
                     if let Err(error) = core_sol.remove_module_mutation(item_id) {
                         return Err(match error {

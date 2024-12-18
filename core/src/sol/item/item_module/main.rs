@@ -3,7 +3,9 @@ use crate::{
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, Idx, SkillLevel, SolFitId, SolItemId},
     err::basic::{ItemLoadedError, ItemMutatedError, ItemNotMutatedError},
     sol::{
-        item::{SolEffectModes, SolItemAttrMutation, SolItemBaseMutable, SolItemMutation, SolItemState, SolProjs},
+        item::{
+            SolEffectModes, SolItemAddMutation, SolItemBaseMutable, SolItemChangeAttrMutation, SolItemState, SolProjs,
+        },
         item_info::SolItemMutationInfo,
         SolModRack,
     },
@@ -29,7 +31,7 @@ impl SolModule {
         state: SolItemState,
         rack: SolModRack,
         pos: Idx,
-        mutation: Option<SolItemMutation>,
+        mutation: Option<SolItemAddMutation>,
         charge_id: Option<SolItemId>,
     ) -> Self {
         Self {
@@ -91,13 +93,17 @@ impl SolModule {
     pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {
         self.base.get_mutation_info(src)
     }
-    pub(in crate::sol) fn mutate(&mut self, src: &Src, mutation: SolItemMutation) -> Result<(), ItemNotMutatedError> {
+    pub(in crate::sol) fn mutate(
+        &mut self,
+        src: &Src,
+        mutation: SolItemAddMutation,
+    ) -> Result<(), ItemNotMutatedError> {
         self.base.mutate(src, mutation)
     }
     pub(in crate::sol) fn change_mutation_attrs(
         &mut self,
         src: &Src,
-        attr_mutations: StMap<EAttrId, Option<SolItemAttrMutation>>,
+        attr_mutations: Vec<SolItemChangeAttrMutation>,
     ) -> Result<Vec<EAttrId>, ItemMutatedError> {
         self.base.change_mutation_attrs(src, attr_mutations)
     }

@@ -1,7 +1,7 @@
 pub(in crate::sol::item) use autocharges::SolAutocharges;
 pub(in crate::sol::item) use effect_modes::SolEffectModes;
 pub(in crate::sol::item) use func::{bool_to_state, state_to_bool};
-pub use mutation::{SolItemAttrMutation, SolItemMutation};
+pub use mutation::{SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation};
 pub(in crate::sol::item) use proj::SolProjs;
 pub use state::SolItemState;
 

@@ -1,5 +1,7 @@
 pub use sole_add_module::AddModuleError;
+pub use sole_add_module_mutation::AddModuleMutationError;
 pub use sole_add_module_proj::AddModuleProjError;
+pub use sole_change_module_mutation::ChangeModuleMutationError;
 pub use sole_change_module_proj::ChangeModuleProjError;
 pub use sole_get_fit_modules::GetFitModulesError;
 pub use sole_get_module::GetModuleError;

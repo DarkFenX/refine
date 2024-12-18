@@ -1,29 +1,52 @@
-use crate::{
-    defs::{AttrVal, EAttrId, EItemId, MutaRoll},
-    util::StMap,
-};
+use crate::defs::{AttrVal, EAttrId, EItemId, MutaRoll};
 
 /// Specifies how item should be mutated.
-pub struct SolItemMutation {
+pub struct SolItemAddMutation {
     /// Mutator type ID.
     pub mutator_id: EItemId,
-    /// Attribute mutation map.
-    pub attrs: StMap<EAttrId, SolItemAttrMutation>,
+    /// Attribute mutation list.
+    pub attrs: Vec<SolItemAddAttrMutation>,
 }
-impl SolItemMutation {
+impl SolItemAddMutation {
     pub fn new(mutator_id: EItemId) -> Self {
         Self {
             mutator_id,
-            attrs: StMap::new(),
+            attrs: Vec::new(),
         }
     }
-    pub fn new_with_attrs(mutator_id: EItemId, attrs: StMap<EAttrId, SolItemAttrMutation>) -> Self {
+    pub fn new_with_attrs(mutator_id: EItemId, attrs: Vec<SolItemAddAttrMutation>) -> Self {
         Self { mutator_id, attrs }
     }
 }
 
-/// Specifies mutation of a single attribute.
-pub enum SolItemAttrMutation {
+/// Specifies single attribute mutation.
+pub struct SolItemAddAttrMutation {
+    /// ID of attribute to mutate.
+    pub attr_id: EAttrId,
+    /// Mutation value.
+    pub value: SolItemAttrMutationValue,
+}
+impl SolItemAddAttrMutation {
+    pub fn new(attr_id: EAttrId, value: SolItemAttrMutationValue) -> Self {
+        Self { attr_id, value }
+    }
+}
+
+/// Specifies single attribute mutation.
+pub struct SolItemChangeAttrMutation {
+    /// ID of attribute to mutate.
+    pub attr_id: EAttrId,
+    /// Mutation value, None to remove.
+    pub value: Option<SolItemAttrMutationValue>,
+}
+impl SolItemChangeAttrMutation {
+    pub fn new(attr_id: EAttrId, value: Option<SolItemAttrMutationValue>) -> Self {
+        Self { attr_id, value }
+    }
+}
+
+/// Specifies value of a single attribute mutation.
+pub enum SolItemAttrMutationValue {
     /// Roll quality as a value on range \[0, 1\].
     Roll(MutaRoll),
     /// Absolute value of the attribute.

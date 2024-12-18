@@ -33,8 +33,9 @@ pub use sol::{
         SolProjEffectInfo, SolProjInfo, SolRigInfo, SolShipInfo, SolSideEffectInfo, SolSideEffectStr, SolSkillInfo,
         SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
     },
-    SolAffectorInfo, SolAttrVal, SolEffectInfo, SolEffectMode, SolItemAttrMutation, SolItemMutation, SolItemState,
-    SolModRack, SolModificationInfo, SolOpInfo, SolOrdAddMode, SolOrdRmMode, SolarSystem,
+    SolAffectorInfo, SolAttrVal, SolEffectInfo, SolEffectMode, SolItemAddAttrMutation, SolItemAddMutation,
+    SolItemAttrMutationValue, SolItemChangeAttrMutation, SolItemState, SolModRack, SolModificationInfo, SolOpInfo,
+    SolOrdAddMode, SolOrdRmMode, SolarSystem,
 };
 pub use src::Src;
 
