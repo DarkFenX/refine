@@ -9,6 +9,41 @@ Stages is just a short description of how much data was available for the mutati
 from tests import approx, check_no_field
 
 
+def test_from_unmutated(client, consts):
+    eve_attr_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    # Action
+    api_item.change_mod(mutation=None)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_base_item_id
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    # Action
+    api_item.change_mod(mutation=eve_mutator_id)
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.base_type_id == eve_base_item_id
+    assert len(api_item.mutation.attrs) == 1
+    assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_attr_id].absolute == approx(100)
+    assert api_item.attrs[eve_attr_id].base == approx(100)
+
+
 def test_from_stage1(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})

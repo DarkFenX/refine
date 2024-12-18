@@ -284,6 +284,7 @@ class Item(AttrDict):
             effect_modes: Union[dict[int, ApiEffMode], Type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: Union[dict, None] = None,
     ) -> Union[Item, None]:
         resp = self.change_mod_request(
             state=state,
@@ -295,7 +296,7 @@ class Item(AttrDict):
             effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
