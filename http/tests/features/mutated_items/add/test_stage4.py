@@ -150,10 +150,11 @@ def test_no_base_value(client, consts):
     assert len(api_item.mutation.attrs) == 0
     with check_no_field():
         api_item.attrs  # pylint: disable=W0104
-    # Since there were no base attribute values on first source, attribute mutations defined via
-    # absolute value were discarded. However, on second source roll and absolute value are still
-    # exposed, but without mutation applied
+    # Action
     api_sol.change_src(data=eve_d2)
+    # Verification - since there were no base attribute values on first source, attribute mutations
+    # defined via absolute value were discarded. However, on second source roll and absolute value
+    # are still exposed, but without mutation applied
     api_item.update()
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.7)
@@ -195,10 +196,11 @@ def test_no_mutation_range(client, consts):
     assert len(api_item.mutation.attrs) == 0
     assert api_item.attrs[eve_roll_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
-    # Since there was no mutation range on first source, attribute mutations defined via absolute
-    # value were discarded. However, on second source absolute value is still exposed, but without
-    # mutation applied
+    # Action
     api_sol.change_src(data=eve_d2)
+    # Verification - since there was no mutation range on first source, attribute mutations defined
+    # via absolute value were discarded. However, on second source absolute value is still exposed,
+    # but without mutation applied
     api_item.update()
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.7)
@@ -261,10 +263,11 @@ def test_zero_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_low_attr_id].base == approx(46)
     assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(54)
-    # Since mutation ranges had zero width on first source, attribute mutations defined via absolute
-    # value were discarded. However, on second source absolute value are still exposed, but without
-    # mutation applied
+    # Action
     api_sol.change_src(data=eve_d2)
+    # Verification - since mutation ranges had zero width on first source, attribute mutations
+    # defined via absolute value were discarded. However, on second source absolute value are still
+    # exposed, but without mutation applied
     api_item.update()
     assert len(api_item.mutation.attrs) == 4
     assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.7)
