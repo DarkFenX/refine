@@ -9,7 +9,7 @@ Stages is just a short description of how much data was available for the mutati
 from tests import approx, check_no_field
 
 
-def test_from_unmutated(client, consts):
+def test_from_unmutated(client):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item_id = client.mk_eve_item()
