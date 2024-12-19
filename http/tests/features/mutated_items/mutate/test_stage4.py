@@ -1,6 +1,57 @@
 from tests import approx, check_no_field
 
 
+def test_overwrite(client, consts):
+    # Check results of overwriting one mutation by another
+    eve_first_attr_id = client.mk_eve_attr()
+    eve_second_attr_id = client.mk_eve_attr()
+    eve_both_attr_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(
+        attrs={eve_first_attr_id: 100, eve_second_attr_id: 100, eve_both_attr_id: 100})
+    eve_mutated_item1_id = client.mk_eve_item()
+    eve_mutated_item2_id = client.mk_eve_item()
+    eve_mutator1_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item1_id)],
+        attributes={eve_first_attr_id: (0.8, 1.2), eve_both_attr_id: (0.7, 1.1)})
+    eve_mutator2_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item2_id)],
+        attributes={eve_second_attr_id: (0.8, 1.2), eve_both_attr_id: (0.9, 1.3)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator1_id, {
+        eve_first_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_both_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
+    # Verification
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item1_id
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_first_attr_id].roll == approx(0.7)
+    assert api_item.mutation.attrs[eve_first_attr_id].absolute == approx(108)
+    assert api_item.mutation.attrs[eve_both_attr_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_both_attr_id].absolute == approx(82)
+    assert api_item.attrs[eve_first_attr_id].base == approx(108)
+    assert api_item.attrs[eve_second_attr_id].base == approx(100)
+    assert api_item.attrs[eve_both_attr_id].base == approx(82)
+    # Action
+    api_item.change_mod(mutation=(eve_mutator2_id, {
+        eve_second_attr_id: {consts.ApiAttrMutation.roll: 0.6},
+        eve_both_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
+    # Verification - first mutation only attribute is back to base value, attribute present on both
+    # mutations has to update value against new mutation range, second mutation only attribute has
+    # to expose mutated value
+    api_item.update()
+    assert api_item.type_id == eve_mutated_item2_id
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_second_attr_id].roll == approx(0.6)
+    assert api_item.mutation.attrs[eve_second_attr_id].absolute == approx(104)
+    assert api_item.mutation.attrs[eve_both_attr_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_both_attr_id].absolute == approx(102)
+    assert api_item.attrs[eve_first_attr_id].base == approx(100)
+    assert api_item.attrs[eve_second_attr_id].base == approx(104)
+    assert api_item.attrs[eve_both_attr_id].base == approx(102)
+
+
 def test_rolls_range(client, consts):
     # Check processing of roll values - within range and out of range
     eve_lower_attr_id = client.mk_eve_attr()
