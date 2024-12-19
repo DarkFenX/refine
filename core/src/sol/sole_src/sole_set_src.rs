@@ -15,9 +15,7 @@ impl SolarSystem {
         // Process non-autocharge items
         let sol_view = &SolView::new(&self.src, &self.fleets, &self.fits, &self.items);
         for item in self.items.iter() {
-            if item.is_loaded() {
-                self.svcs.unload_item(sol_view, item);
-            }
+            self.svcs.unload_item(sol_view, item);
         }
         // Reload items & set new source
         std::mem::swap(&mut self.src, &mut src);
@@ -60,11 +58,7 @@ impl SolarSystem {
                         );
                     }
                 }
-                _ => {
-                    if item.is_loaded() {
-                        self.svcs.load_item(sol_view, item);
-                    }
-                }
+                _ => self.svcs.load_item(sol_view, item),
             }
         }
     }
