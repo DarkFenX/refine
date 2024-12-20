@@ -36,12 +36,16 @@ impl SolAttrValInfo {
         }
     }
     fn merge(&mut self, mut other: SolAttrValInfo) {
-        self.effective_infos.extend(other.effective_infos.extract_if(|_| true));
-        self.filtered_infos.extend(other.filtered_infos.extract_if(|_| true));
+        self.effective_infos
+            .extend(other.effective_infos.extract_if(.., |_| true));
+        self.filtered_infos
+            .extend(other.filtered_infos.extract_if(.., |_| true));
     }
     fn merge_ineffective(&mut self, mut other: SolAttrValInfo) {
-        self.filtered_infos.extend(other.effective_infos.extract_if(|_| true));
-        self.filtered_infos.extend(other.filtered_infos.extract_if(|_| true));
+        self.filtered_infos
+            .extend(other.effective_infos.extract_if(.., |_| true));
+        self.filtered_infos
+            .extend(other.filtered_infos.extract_if(.., |_| true));
     }
     fn is_single_effective(&self) -> bool {
         self.effective_infos.len() <= 1
@@ -392,7 +396,7 @@ impl SolAttrAggr {
         // Resolve aggregations
         for attr_infos in self.aggr_min.values_mut() {
             if let Some(mut attr_info) = extract_min(attr_infos) {
-                for other_attr_info in attr_infos.extract_if(|_| true) {
+                for other_attr_info in attr_infos.extract_if(.., |_| true) {
                     attr_info.merge_ineffective(other_attr_info)
                 }
                 self.stack.push(attr_info);
@@ -400,7 +404,7 @@ impl SolAttrAggr {
         }
         for attr_infos in self.aggr_max.values_mut() {
             if let Some(mut attr_info) = extract_max(attr_infos) {
-                for other_attr_info in attr_infos.extract_if(|_| true) {
+                for other_attr_info in attr_infos.extract_if(.., |_| true) {
                     attr_info.merge_ineffective(other_attr_info)
                 }
                 self.stack.push(attr_info);
@@ -465,7 +469,7 @@ fn combine_assigns<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, high_is_good:
     match effective {
         // Only one assign is considered effective, the rest are not
         Some(mut attr_info) => {
-            for other_attr_info in attr_infos.extract_if(|_| true) {
+            for other_attr_info in attr_infos.extract_if(.., |_| true) {
                 attr_info.merge_ineffective(other_attr_info)
             }
             Some(attr_info)
@@ -479,7 +483,7 @@ fn combine_adds<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
     }
     let value = attr_infos.iter().map(|v| v.value).sum();
     let mut attr_info = SolAttrValInfo::new(value);
-    for other_attr_info in attr_infos.extract_if(|_| true) {
+    for other_attr_info in attr_infos.extract_if(.., |_| true) {
         match other_attr_info.value {
             // Adding 0 is not changing the result
             0.0 => attr_info.merge_ineffective(other_attr_info),
@@ -498,7 +502,7 @@ fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
         // Value of 0 means that some multipliers were 0. Expose only those, and hide the rest,
         // those we hid have no effect on value anyway
         0.0 => {
-            for other_attr_info in attr_infos.extract_if(|_| true) {
+            for other_attr_info in attr_infos.extract_if(.., |_| true) {
                 match other_attr_info.value {
                     0.0 => attr_info.merge(other_attr_info),
                     _ => attr_info.merge_ineffective(other_attr_info),
@@ -506,7 +510,7 @@ fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
             }
         }
         _ => {
-            for other_attr_info in attr_infos.extract_if(|_| true) {
+            for other_attr_info in attr_infos.extract_if(.., |_| true) {
                 // Multiplication by 1 is not changing result. But, as an exception, we add all the
                 // modifications from it, if 1 is a result of multiple effective modifications. This
                 // can happen when stacking penalty chains are calculated and aggregated into value
@@ -531,7 +535,7 @@ where
     let mut positive = Vec::new();
     let mut negative = Vec::new();
     let mut neutral = Vec::new();
-    for attr_info in attr_infos.extract_if(|_| true) {
+    for attr_info in attr_infos.extract_if(.., |_| true) {
         if attr_info.value > 1.0 {
             positive.push(attr_info);
         } else if attr_info.value < 1.0 {

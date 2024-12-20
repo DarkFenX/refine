@@ -103,14 +103,14 @@ fn known_fighter_abilities(g_data: &mut GData) {
     let mut unknown_ids = StSet::new();
     let abils = g_data
         .abils
-        .extract_if(|v| ec::extras::get_abil_effect(v.id).is_none())
+        .extract_if(.., |v| ec::extras::get_abil_effect(v.id).is_none())
         .update(|v| {
             unknown_ids.insert(v.id);
         })
         .count();
     let item_abils = g_data
         .item_abils
-        .extract_if(|v| ec::extras::get_abil_effect(v.abil_id).is_none())
+        .extract_if(.., |v| ec::extras::get_abil_effect(v.abil_id).is_none())
         .update(|v| {
             unknown_ids.insert(v.abil_id);
         })
@@ -140,7 +140,7 @@ fn fighter_ability_effect(g_data: &mut GData) {
     let mut invalids = StSet::new();
     g_data
         .item_abils
-        .extract_if(|v| match ec::extras::get_abil_effect(v.abil_id) {
+        .extract_if(.., |v| match ec::extras::get_abil_effect(v.abil_id) {
             Some(eid) => match item_eff_map.get(&v.item_id) {
                 Some(eids) => !eids.contains(&eid),
                 None => true,

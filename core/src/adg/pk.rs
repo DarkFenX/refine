@@ -8,7 +8,7 @@ use crate::{
 fn dedup_pks_vec<T: Pk + Named>(vec: &mut Vec<T>) {
     let mut seen_pks = StSet::new();
     let removed = vec
-        .extract_if(|v| {
+        .extract_if(.., |v| {
             let pk = v.get_pk();
             if seen_pks.contains(&pk) {
                 true

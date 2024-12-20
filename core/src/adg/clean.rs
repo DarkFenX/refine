@@ -38,7 +38,7 @@ fn move_data<T, F>(src_vec: &mut Vec<T>, dst_vec: &mut Vec<T>, filter: F) -> boo
 where
     F: FnMut(&mut T) -> bool,
 {
-    let drained = src_vec.extract_if(filter).collect_vec();
+    let drained = src_vec.extract_if(.., filter).collect_vec();
     let changes = drained.len() > 0;
     dst_vec.extend(drained);
     changes

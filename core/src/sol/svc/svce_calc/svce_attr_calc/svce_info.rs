@@ -55,8 +55,8 @@ impl SolSvcs {
                 _ => continue,
             };
             let mut info_vec = Vec::new();
-            info_vec.extend(attr_info.effective_infos.extract_if(|_| true));
-            // info_vec.extend(attr_info.filtered_infos.extract_if(|_| true));
+            info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
+            // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
             if !info_vec.is_empty() {
                 info_map.extend_entries(attr_id, info_vec.into_iter());
             }
