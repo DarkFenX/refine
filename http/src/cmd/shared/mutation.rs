@@ -15,12 +15,16 @@ impl Into<rc::SolItemAddMutation> for &HMutationOnAdd {
     }
 }
 
+#[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd) enum HMutationOnChange {
     AddShort(rc::EItemId),
     AddFull(HItemMutationFull),
-    ChangeAttrs(HashMap<rc::EAttrId, Option<HItemAttrMutationValue>>),
+    ChangeAttrs(
+        #[serde_as(as = "std::collections::HashMap<serde_with::DisplayFromStr, _>")]
+        HashMap<rc::EAttrId, Option<HItemAttrMutationValue>>,
+    ),
 }
 
 #[serde_with::serde_as]
