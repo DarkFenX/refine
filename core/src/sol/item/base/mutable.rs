@@ -403,7 +403,11 @@ impl SolItemBaseMutable {
                         // No unmutated value - can't do any comparisons
                         None => continue,
                     };
-                    unmutated_value
+                    // Limit possible values by roll range, if it is available
+                    match mutation_cache.mutator.attr_mods.get(&attr_mutation_request.attr_id) {
+                        Some(attr_mutation_range) => limit_attr_value(unmutated_value, attr_mutation_range),
+                        None => unmutated_value,
+                    }
                 }
             };
             // Since unmutated value of the attribute is available by now, we can safely assume that

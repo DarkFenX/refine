@@ -358,3 +358,81 @@ def test_zero_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_low_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(50)
+
+
+def test_modification_incoming(client, consts):
+    # Check that changing mutated value correctly triggers recalculation
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_add_attr_id = client.mk_eve_attr()
+    eve_change_attr_id = client.mk_eve_attr()
+    eve_remove_attr_id = client.mk_eve_attr()
+    eve_add_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_add_attr_id)
+    eve_change_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_change_attr_id)
+    eve_remove_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_remove_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_add_mod, eve_change_mod, eve_remove_mod])
+    eve_base_item_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: 20, eve_add_attr_id: 200, eve_change_attr_id: 200, eve_remove_attr_id: 200})
+    eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attributes={eve_add_attr_id: (0.5, 0.9), eve_change_attr_id: (0.8, 1.2), eve_remove_attr_id: (1.1, 1.5)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_change_attr_id: {consts.ApiAttrMutation.roll: 0.2},
+        eve_remove_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 3
+    assert api_item.mutation.attrs[eve_add_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_add_attr_id].absolute == approx(180)
+    assert api_item.mutation.attrs[eve_change_attr_id].roll == approx(0.2)
+    assert api_item.mutation.attrs[eve_change_attr_id].absolute == approx(176)
+    assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.8)
+    assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(284)
+    assert api_item.attrs[eve_affector_attr_id].base == approx(20)
+    assert api_item.attrs[eve_affector_attr_id].dogma == approx(20)
+    assert api_item.attrs[eve_add_attr_id].base == approx(180)
+    assert api_item.attrs[eve_add_attr_id].dogma == approx(216)
+    assert api_item.attrs[eve_change_attr_id].base == approx(176)
+    assert api_item.attrs[eve_change_attr_id].dogma == approx(211.2)
+    assert api_item.attrs[eve_remove_attr_id].base == approx(284)
+    assert api_item.attrs[eve_remove_attr_id].dogma == approx(340.8)
+    # Action
+    api_item.change_mod(mutation={
+        eve_add_attr_id: {consts.ApiAttrMutation.roll: 0.9},
+        eve_change_attr_id: {consts.ApiAttrMutation.roll: 0.3},
+        eve_remove_attr_id: None})
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 3
+    assert api_item.mutation.attrs[eve_add_attr_id].roll == approx(0.9)
+    assert api_item.mutation.attrs[eve_add_attr_id].absolute == approx(172)
+    assert api_item.mutation.attrs[eve_change_attr_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_change_attr_id].absolute == approx(184)
+    assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(220)
+    assert api_item.attrs[eve_affector_attr_id].base == approx(20)
+    assert api_item.attrs[eve_affector_attr_id].dogma == approx(20)
+    assert api_item.attrs[eve_add_attr_id].base == approx(172)
+    assert api_item.attrs[eve_add_attr_id].dogma == approx(206.4)
+    assert api_item.attrs[eve_change_attr_id].base == approx(184)
+    assert api_item.attrs[eve_change_attr_id].dogma == approx(220.8)
+    assert api_item.attrs[eve_remove_attr_id].base == approx(220)
+    assert api_item.attrs[eve_remove_attr_id].dogma == approx(264)
