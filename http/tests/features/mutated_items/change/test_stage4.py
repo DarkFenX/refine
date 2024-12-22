@@ -969,6 +969,88 @@ def test_zero_base_value(client, consts):
     assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(50)
 
 
+def test_base_out_of_range(client, consts):
+    eve_add_lower_attr_id = client.mk_eve_attr()
+    eve_add_higher_attr_id = client.mk_eve_attr()
+    eve_change_lower_attr_id = client.mk_eve_attr()
+    eve_change_higher_attr_id = client.mk_eve_attr()
+    eve_remove_lower_attr_id = client.mk_eve_attr()
+    eve_remove_higher_attr_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(attrs={
+        eve_add_lower_attr_id: 100,
+        eve_add_higher_attr_id: 100,
+        eve_change_lower_attr_id: 100,
+        eve_change_higher_attr_id: 100,
+        eve_remove_lower_attr_id: 100,
+        eve_remove_higher_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attrs={
+        eve_add_lower_attr_id: (0.7, 0.9),
+        eve_add_higher_attr_id: (1.1, 1.3),
+        eve_change_lower_attr_id: (0.7, 0.9),
+        eve_change_higher_attr_id: (1.1, 1.3),
+        eve_remove_lower_attr_id: (0.7, 0.9),
+        eve_remove_higher_attr_id: (1.1, 1.3)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_change_lower_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_change_higher_attr_id: {consts.ApiAttrMutation.roll: 0.3},
+        eve_remove_lower_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_remove_higher_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 6
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].absolute == approx(90)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].absolute == approx(110)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].roll == approx(0.7)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].absolute == approx(84)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].absolute == approx(116)
+    assert api_item.mutation.attrs[eve_remove_lower_attr_id].roll == approx(0.7)
+    assert api_item.mutation.attrs[eve_remove_lower_attr_id].absolute == approx(84)
+    assert api_item.mutation.attrs[eve_remove_higher_attr_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_remove_higher_attr_id].absolute == approx(116)
+    assert api_item.attrs[eve_add_lower_attr_id].base == approx(90)
+    assert api_item.attrs[eve_add_higher_attr_id].base == approx(110)
+    assert api_item.attrs[eve_change_lower_attr_id].base == approx(84)
+    assert api_item.attrs[eve_change_higher_attr_id].base == approx(116)
+    assert api_item.attrs[eve_remove_lower_attr_id].base == approx(84)
+    assert api_item.attrs[eve_remove_higher_attr_id].base == approx(116)
+    # Action
+    api_item.change_mod(mutation={
+        eve_add_lower_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_add_higher_attr_id: {consts.ApiAttrMutation.roll: 0.3},
+        eve_change_lower_attr_id: {consts.ApiAttrMutation.roll: 0.8},
+        eve_change_higher_attr_id: {consts.ApiAttrMutation.roll: 0.2},
+        eve_remove_lower_attr_id: None,
+        eve_remove_higher_attr_id: None})
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 6
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].roll == approx(0.7)
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].absolute == approx(84)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].absolute == approx(116)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].roll == approx(0.8)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].absolute == approx(86)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].roll == approx(0.2)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].absolute == approx(114)
+    assert api_item.mutation.attrs[eve_remove_lower_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_remove_lower_attr_id].absolute == approx(90)
+    assert api_item.mutation.attrs[eve_remove_higher_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_remove_higher_attr_id].absolute == approx(110)
+    assert api_item.attrs[eve_add_lower_attr_id].base == approx(84)
+    assert api_item.attrs[eve_add_higher_attr_id].base == approx(116)
+    assert api_item.attrs[eve_change_lower_attr_id].base == approx(86)
+    assert api_item.attrs[eve_change_higher_attr_id].base == approx(114)
+    assert api_item.attrs[eve_remove_lower_attr_id].base == approx(90)
+    assert api_item.attrs[eve_remove_higher_attr_id].base == approx(110)
+
+
 def test_modification_incoming(client, consts):
     # Check that changing mutated value correctly triggers recalculation
     eve_affector_attr_id = client.mk_eve_attr()
