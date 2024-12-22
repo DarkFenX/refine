@@ -242,12 +242,7 @@ impl SolItemBaseMutable {
                         attr_id,
                     )
                     .unwrap();
-                    // In some fringe cases it's impossible to calculate roll value, but it's needed
-                    // for info; skip attribute mutation when it happens
-                    let roll = match normalize_attr_value(*value, unmutated_value, attr_mutation_range) {
-                        Some(roll) => roll,
-                        None => continue,
-                    };
+                    let roll = normalize_attr_value(*value, unmutated_value, attr_mutation_range);
                     let attr_info = SolAttrMutationInfo::new(*attr_id, roll, *value);
                     attr_infos.push(attr_info);
                 }
@@ -534,7 +529,7 @@ fn normalize_attr_mutation_full_with_unmutated_values(
                 Some(mutation_range) => mutation_range,
                 None => return None,
             };
-            normalize_attr_value(absolute, unmutated_value, mutation_range)
+            Some(normalize_attr_value(absolute, unmutated_value, mutation_range))
         }
     }
 }
@@ -556,7 +551,7 @@ fn normalize_attr_mutation_full_with_unmutated_value(
                 Some(mutation_range) => mutation_range,
                 None => return None,
             };
-            normalize_attr_value(absolute, unmutated_value, mutation_range)
+            Some(normalize_attr_value(absolute, unmutated_value, mutation_range))
         }
     }
 }
@@ -565,14 +560,23 @@ fn normalize_attr_value(
     absolute_value: AttrVal,
     unmutated_value: AttrVal,
     mutation_range: &ad::AMutaAttrRange,
-) -> Option<MutaRoll> {
-    if mutation_range.min_mult == mutation_range.max_mult {
-        return None;
-    }
+) -> MutaRoll {
     let min_value = unmutated_value * mutation_range.min_mult;
     let max_value = unmutated_value * mutation_range.max_mult;
+    if min_value == max_value {
+        if unmutated_value == min_value {
+            return 0.5;
+        }
+        if unmutated_value > min_value && unmutated_value.is_sign_positive() {
+            return 1.0;
+        }
+        if unmutated_value < min_value && unmutated_value.is_sign_negative() {
+            return 1.0;
+        }
+        return 0.0;
+    }
     let value = (absolute_value - min_value) / (max_value - min_value);
-    Some(limit_roll(value))
+    limit_roll(value)
 }
 
 fn limit_roll(roll: MutaRoll) -> MutaRoll {
