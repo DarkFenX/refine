@@ -3,141 +3,307 @@ from tests import approx, check_no_field
 
 def test_rolls_range(client, consts):
     # Check processing of roll values - within range and out of range
-    eve_lower_attr_id = client.mk_eve_attr()
-    eve_within_attr_id = client.mk_eve_attr()
-    eve_higher_attr_id = client.mk_eve_attr()
-    eve_base_item_id = client.mk_eve_item(
-        attrs={eve_lower_attr_id: 100, eve_within_attr_id: 100, eve_higher_attr_id: 100})
+    eve_add_lower_attr_id = client.mk_eve_attr()
+    eve_add_within_attr_id = client.mk_eve_attr()
+    eve_add_higher_attr_id = client.mk_eve_attr()
+    eve_change_lower_attr_id = client.mk_eve_attr()
+    eve_change_within_attr_id = client.mk_eve_attr()
+    eve_change_higher_attr_id = client.mk_eve_attr()
+    eve_remove_attr_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(attrs={
+        eve_add_lower_attr_id: 100,
+        eve_add_within_attr_id: 100,
+        eve_add_higher_attr_id: 100,
+        eve_change_lower_attr_id: 100,
+        eve_change_within_attr_id: 100,
+        eve_change_higher_attr_id: 100,
+        eve_remove_attr_id: 100})
     eve_mutated_item_id = client.mk_eve_item()
-    eve_mutator_id = client.mk_eve_mutator(
-        items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attributes={
+        eve_add_lower_attr_id: (0.8, 1.2),
+        eve_add_within_attr_id: (0.8, 1.2),
+        eve_add_higher_attr_id: (0.8, 1.2),
+        eve_change_lower_attr_id: (0.8, 1.2),
+        eve_change_within_attr_id: (0.8, 1.2),
+        eve_change_higher_attr_id: (0.8, 1.2),
+        eve_remove_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_change_lower_attr_id: {consts.ApiAttrMutation.roll: 111},
+        eve_change_within_attr_id: {consts.ApiAttrMutation.roll: 0.6},
+        eve_change_higher_attr_id: {consts.ApiAttrMutation.roll: -8},
+        eve_remove_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
     api_item.update()
-    assert len(api_item.mutation.attrs) == 3
-    assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_lower_attr_id].absolute == approx(100)
-    assert api_item.mutation.attrs[eve_within_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_within_attr_id].absolute == approx(100)
-    assert api_item.mutation.attrs[eve_higher_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_higher_attr_id].absolute == approx(100)
-    assert api_item.attrs[eve_lower_attr_id].base == approx(100)
-    assert api_item.attrs[eve_within_attr_id].base == approx(100)
-    assert api_item.attrs[eve_higher_attr_id].base == approx(100)
+    assert len(api_item.mutation.attrs) == 7
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_add_within_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_within_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].absolute == approx(120)
+    assert api_item.mutation.attrs[eve_change_within_attr_id].roll == approx(0.6)
+    assert api_item.mutation.attrs[eve_change_within_attr_id].absolute == approx(104)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].absolute == approx(80)
+    assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.8)
+    assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(112)
+    assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
+    assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
+    assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
+    assert api_item.attrs[eve_change_lower_attr_id].base == approx(120)
+    assert api_item.attrs[eve_change_within_attr_id].base == approx(104)
+    assert api_item.attrs[eve_change_higher_attr_id].base == approx(80)
+    assert api_item.attrs[eve_remove_attr_id].base == approx(112)
     # Action
     api_item.change_mod(mutation={
-        eve_lower_attr_id: {consts.ApiAttrMutation.roll: -5},
-        eve_within_attr_id: {consts.ApiAttrMutation.roll: 0.3},
-        eve_higher_attr_id: {consts.ApiAttrMutation.roll: 128}})
+        eve_add_lower_attr_id: {consts.ApiAttrMutation.roll: -5},
+        eve_add_within_attr_id: {consts.ApiAttrMutation.roll: 0.3},
+        eve_add_higher_attr_id: {consts.ApiAttrMutation.roll: 128},
+        eve_change_lower_attr_id: {consts.ApiAttrMutation.roll: -60},
+        eve_change_within_attr_id: {consts.ApiAttrMutation.roll: 0.1},
+        eve_change_higher_attr_id: {consts.ApiAttrMutation.roll: 1.1},
+        eve_remove_attr_id: None})
     # Verification
     api_item.update()
-    assert len(api_item.mutation.attrs) == 3
-    assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0)
-    assert api_item.mutation.attrs[eve_lower_attr_id].absolute == approx(80)
-    assert api_item.mutation.attrs[eve_within_attr_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_within_attr_id].absolute == approx(92)
-    assert api_item.mutation.attrs[eve_higher_attr_id].roll == approx(1)
-    assert api_item.mutation.attrs[eve_higher_attr_id].absolute == approx(120)
-    assert api_item.attrs[eve_lower_attr_id].base == approx(80)
-    assert api_item.attrs[eve_within_attr_id].base == approx(92)
-    assert api_item.attrs[eve_higher_attr_id].base == approx(120)
+    assert len(api_item.mutation.attrs) == 7
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].absolute == approx(80)
+    assert api_item.mutation.attrs[eve_add_within_attr_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_add_within_attr_id].absolute == approx(92)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].absolute == approx(120)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].absolute == approx(80)
+    assert api_item.mutation.attrs[eve_change_within_attr_id].roll == approx(0.1)
+    assert api_item.mutation.attrs[eve_change_within_attr_id].absolute == approx(84)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].absolute == approx(120)
+    assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(100)
+    assert api_item.attrs[eve_add_lower_attr_id].base == approx(80)
+    assert api_item.attrs[eve_add_within_attr_id].base == approx(92)
+    assert api_item.attrs[eve_add_higher_attr_id].base == approx(120)
+    assert api_item.attrs[eve_change_lower_attr_id].base == approx(80)
+    assert api_item.attrs[eve_change_within_attr_id].base == approx(84)
+    assert api_item.attrs[eve_change_higher_attr_id].base == approx(120)
+    assert api_item.attrs[eve_remove_attr_id].base == approx(100)
 
 
 def test_absolute_base_attr_value(client, consts):
     # Check what is used as base attribute value for converting absolute value into roll
-    eve_base_attr_id = client.mk_eve_attr()
-    eve_overlap_attr_id = client.mk_eve_attr()
-    eve_mutated_attr_id = client.mk_eve_attr()
-    eve_base_item_id = client.mk_eve_item(attrs={eve_base_attr_id: 50, eve_overlap_attr_id: 70})
-    eve_mutated_item_id = client.mk_eve_item(attrs={eve_overlap_attr_id: 80, eve_mutated_attr_id: 100})
-    eve_mutator_id = client.mk_eve_mutator(
-        items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_base_attr_id: (0.8, 1.2), eve_overlap_attr_id: (0.8, 1.2), eve_mutated_attr_id: (0.8, 1.2)})
+    eve_add_base_attr_id = client.mk_eve_attr()
+    eve_add_overlap_attr_id = client.mk_eve_attr()
+    eve_add_mutated_attr_id = client.mk_eve_attr()
+    eve_change_base_attr_id = client.mk_eve_attr()
+    eve_change_overlap_attr_id = client.mk_eve_attr()
+    eve_change_mutated_attr_id = client.mk_eve_attr()
+    eve_remove_base_attr_id = client.mk_eve_attr()
+    eve_remove_overlap_attr_id = client.mk_eve_attr()
+    eve_remove_mutated_attr_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(attrs={
+        eve_add_base_attr_id: 50,
+        eve_add_overlap_attr_id: 70,
+        eve_change_base_attr_id: 50,
+        eve_change_overlap_attr_id: 70,
+        eve_remove_base_attr_id: 50,
+        eve_remove_overlap_attr_id: 70})
+    eve_mutated_item_id = client.mk_eve_item(attrs={
+        eve_add_overlap_attr_id: 80,
+        eve_add_mutated_attr_id: 100,
+        eve_change_overlap_attr_id: 80,
+        eve_change_mutated_attr_id: 100,
+        eve_remove_overlap_attr_id: 80,
+        eve_remove_mutated_attr_id: 100})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attributes={
+        eve_add_base_attr_id: (0.8, 1.2),
+        eve_add_overlap_attr_id: (0.8, 1.2),
+        eve_add_mutated_attr_id: (0.8, 1.2),
+        eve_change_base_attr_id: (0.8, 1.2),
+        eve_change_overlap_attr_id: (0.8, 1.2),
+        eve_change_mutated_attr_id: (0.8, 1.2),
+        eve_remove_base_attr_id: (0.8, 1.2),
+        eve_remove_overlap_attr_id: (0.8, 1.2),
+        eve_remove_mutated_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_change_base_attr_id: {consts.ApiAttrMutation.absolute: 55},
+        eve_change_overlap_attr_id: {consts.ApiAttrMutation.absolute: 85},
+        eve_change_mutated_attr_id: {consts.ApiAttrMutation.absolute: 115},
+        eve_remove_base_attr_id: {consts.ApiAttrMutation.absolute: 55},
+        eve_remove_overlap_attr_id: {consts.ApiAttrMutation.absolute: 75},
+        eve_remove_mutated_attr_id: {consts.ApiAttrMutation.absolute: 115}}))
     # Verification
     api_item.update()
-    assert len(api_item.mutation.attrs) == 3
-    assert api_item.mutation.attrs[eve_base_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_base_attr_id].absolute == approx(50)
-    assert api_item.mutation.attrs[eve_overlap_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_overlap_attr_id].absolute == approx(80)
-    assert api_item.mutation.attrs[eve_mutated_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_mutated_attr_id].absolute == approx(100)
-    assert api_item.attrs[eve_base_attr_id].base == approx(50)
-    assert api_item.attrs[eve_overlap_attr_id].base == approx(80)
-    assert api_item.attrs[eve_mutated_attr_id].base == approx(100)
+    assert len(api_item.mutation.attrs) == 9
+    assert api_item.mutation.attrs[eve_add_base_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_base_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_add_overlap_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_overlap_attr_id].absolute == approx(80)
+    assert api_item.mutation.attrs[eve_add_mutated_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_mutated_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_change_base_attr_id].roll == approx(0.75)
+    assert api_item.mutation.attrs[eve_change_base_attr_id].absolute == approx(55)
+    assert api_item.mutation.attrs[eve_change_overlap_attr_id].roll == approx(0.65625)
+    assert api_item.mutation.attrs[eve_change_overlap_attr_id].absolute == approx(85)
+    assert api_item.mutation.attrs[eve_change_mutated_attr_id].roll == approx(0.875)
+    assert api_item.mutation.attrs[eve_change_mutated_attr_id].absolute == approx(115)
+    assert api_item.mutation.attrs[eve_remove_base_attr_id].roll == approx(0.75)
+    assert api_item.mutation.attrs[eve_remove_base_attr_id].absolute == approx(55)
+    assert api_item.mutation.attrs[eve_remove_overlap_attr_id].roll == approx(0.34375)
+    assert api_item.mutation.attrs[eve_remove_overlap_attr_id].absolute == approx(75)
+    assert api_item.mutation.attrs[eve_remove_mutated_attr_id].roll == approx(0.875)
+    assert api_item.mutation.attrs[eve_remove_mutated_attr_id].absolute == approx(115)
+    assert api_item.attrs[eve_add_base_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_overlap_attr_id].base == approx(80)
+    assert api_item.attrs[eve_add_mutated_attr_id].base == approx(100)
+    assert api_item.attrs[eve_change_base_attr_id].base == approx(55)
+    assert api_item.attrs[eve_change_overlap_attr_id].base == approx(85)
+    assert api_item.attrs[eve_change_mutated_attr_id].base == approx(115)
+    assert api_item.attrs[eve_remove_base_attr_id].base == approx(55)
+    assert api_item.attrs[eve_remove_overlap_attr_id].base == approx(75)
+    assert api_item.attrs[eve_remove_mutated_attr_id].base == approx(115)
     # Action
     api_item.change_mod(mutation={
-        eve_base_attr_id: {consts.ApiAttrMutation.absolute: 55},
-        eve_overlap_attr_id: {consts.ApiAttrMutation.absolute: 75},
-        eve_mutated_attr_id: {consts.ApiAttrMutation.absolute: 115}})
-    # Verification
+        eve_add_base_attr_id: {consts.ApiAttrMutation.absolute: 55},
+        eve_add_overlap_attr_id: {consts.ApiAttrMutation.absolute: 85},
+        eve_add_mutated_attr_id: {consts.ApiAttrMutation.absolute: 115},
+        eve_change_base_attr_id: {consts.ApiAttrMutation.absolute: 45},
+        eve_change_overlap_attr_id: {consts.ApiAttrMutation.absolute: 75},
+        eve_change_mutated_attr_id: {consts.ApiAttrMutation.absolute: 85},
+        eve_remove_base_attr_id: None,
+        eve_remove_overlap_attr_id: None,
+        eve_remove_mutated_attr_id: None})
+    # Verification - for overlapping values, mutated item values should be taken, we check it
+    # indirectly via roll values
     api_item.update()
-    assert len(api_item.mutation.attrs) == 3
-    assert api_item.mutation.attrs[eve_base_attr_id].roll == approx(0.75)
-    assert api_item.mutation.attrs[eve_base_attr_id].absolute == approx(55)
-    # For overlapping values, mutated item values should be taken; we check it here via roll value,
-    # which is below 0.5 if base value is 80 instead of 70
-    assert api_item.mutation.attrs[eve_overlap_attr_id].roll == approx(0.34375)
-    assert api_item.mutation.attrs[eve_overlap_attr_id].absolute == approx(75)
-    assert api_item.mutation.attrs[eve_mutated_attr_id].roll == approx(0.875)
-    assert api_item.mutation.attrs[eve_mutated_attr_id].absolute == approx(115)
-    assert api_item.attrs[eve_base_attr_id].base == approx(55)
-    assert api_item.attrs[eve_overlap_attr_id].base == approx(75)
-    assert api_item.attrs[eve_mutated_attr_id].base == approx(115)
+    assert len(api_item.mutation.attrs) == 9
+    assert api_item.mutation.attrs[eve_add_base_attr_id].roll == approx(0.75)
+    assert api_item.mutation.attrs[eve_add_base_attr_id].absolute == approx(55)
+    assert api_item.mutation.attrs[eve_add_overlap_attr_id].roll == approx(0.65625)
+    assert api_item.mutation.attrs[eve_add_overlap_attr_id].absolute == approx(85)
+    assert api_item.mutation.attrs[eve_add_mutated_attr_id].roll == approx(0.875)
+    assert api_item.mutation.attrs[eve_add_mutated_attr_id].absolute == approx(115)
+    assert api_item.mutation.attrs[eve_change_base_attr_id].roll == approx(0.25)
+    assert api_item.mutation.attrs[eve_change_base_attr_id].absolute == approx(45)
+    assert api_item.mutation.attrs[eve_change_overlap_attr_id].roll == approx(0.34375)
+    assert api_item.mutation.attrs[eve_change_overlap_attr_id].absolute == approx(75)
+    assert api_item.mutation.attrs[eve_change_mutated_attr_id].roll == approx(0.125)
+    assert api_item.mutation.attrs[eve_change_mutated_attr_id].absolute == approx(85)
+    assert api_item.mutation.attrs[eve_remove_base_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_base_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_remove_overlap_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_overlap_attr_id].absolute == approx(80)
+    assert api_item.mutation.attrs[eve_remove_mutated_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_mutated_attr_id].absolute == approx(100)
+    assert api_item.attrs[eve_add_base_attr_id].base == approx(55)
+    assert api_item.attrs[eve_add_overlap_attr_id].base == approx(85)
+    assert api_item.attrs[eve_add_mutated_attr_id].base == approx(115)
+    assert api_item.attrs[eve_change_base_attr_id].base == approx(45)
+    assert api_item.attrs[eve_change_overlap_attr_id].base == approx(75)
+    assert api_item.attrs[eve_change_mutated_attr_id].base == approx(85)
+    assert api_item.attrs[eve_remove_base_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_overlap_attr_id].base == approx(80)
+    assert api_item.attrs[eve_remove_mutated_attr_id].base == approx(100)
 
 
 def test_absolute_value_range(client, consts):
     # Check processing of absolute values - within range and out of range
-    eve_lower_attr_id = client.mk_eve_attr()
-    eve_within_attr_id = client.mk_eve_attr()
-    eve_higher_attr_id = client.mk_eve_attr()
-    eve_base_item_id = client.mk_eve_item(
-        attrs={eve_lower_attr_id: 100, eve_within_attr_id: 100, eve_higher_attr_id: 100})
+    eve_add_lower_attr_id = client.mk_eve_attr()
+    eve_add_within_attr_id = client.mk_eve_attr()
+    eve_add_higher_attr_id = client.mk_eve_attr()
+    eve_change_lower_attr_id = client.mk_eve_attr()
+    eve_change_within_attr_id = client.mk_eve_attr()
+    eve_change_higher_attr_id = client.mk_eve_attr()
+    eve_remove_attr_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(attrs={
+        eve_add_lower_attr_id: 100,
+        eve_add_within_attr_id: 100,
+        eve_add_higher_attr_id: 100,
+        eve_change_lower_attr_id: 100,
+        eve_change_within_attr_id: 100,
+        eve_change_higher_attr_id: 100,
+        eve_remove_attr_id: 100})
     eve_mutated_item_id = client.mk_eve_item()
-    eve_mutator_id = client.mk_eve_mutator(
-        items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attributes={
+        eve_add_lower_attr_id: (0.8, 1.2),
+        eve_add_within_attr_id: (0.8, 1.2),
+        eve_add_higher_attr_id: (0.8, 1.2),
+        eve_change_lower_attr_id: (0.8, 1.2),
+        eve_change_within_attr_id: (0.8, 1.2),
+        eve_change_higher_attr_id: (0.8, 1.2),
+        eve_remove_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_change_lower_attr_id: {consts.ApiAttrMutation.absolute: 260},
+        eve_change_within_attr_id: {consts.ApiAttrMutation.absolute: 104},
+        eve_change_higher_attr_id: {consts.ApiAttrMutation.absolute: 0.5},
+        eve_remove_attr_id: {consts.ApiAttrMutation.absolute: 112}}))
     # Verification
     api_item.update()
-    assert len(api_item.mutation.attrs) == 3
-    assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_lower_attr_id].absolute == approx(100)
-    assert api_item.mutation.attrs[eve_within_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_within_attr_id].absolute == approx(100)
-    assert api_item.mutation.attrs[eve_higher_attr_id].roll == approx(0.5)
-    assert api_item.mutation.attrs[eve_higher_attr_id].absolute == approx(100)
-    assert api_item.attrs[eve_lower_attr_id].base == approx(100)
-    assert api_item.attrs[eve_within_attr_id].base == approx(100)
-    assert api_item.attrs[eve_higher_attr_id].base == approx(100)
+    assert len(api_item.mutation.attrs) == 7
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_add_within_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_within_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].absolute == approx(120)
+    assert api_item.mutation.attrs[eve_change_within_attr_id].roll == approx(0.6)
+    assert api_item.mutation.attrs[eve_change_within_attr_id].absolute == approx(104)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].absolute == approx(80)
+    assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.8)
+    assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(112)
+    assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
+    assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
+    assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
+    assert api_item.attrs[eve_change_lower_attr_id].base == approx(120)
+    assert api_item.attrs[eve_change_within_attr_id].base == approx(104)
+    assert api_item.attrs[eve_change_higher_attr_id].base == approx(80)
+    assert api_item.attrs[eve_remove_attr_id].base == approx(112)
     # Action
     api_item.change_mod(mutation={
-        eve_lower_attr_id: {consts.ApiAttrMutation.absolute: -53},
-        eve_within_attr_id: {consts.ApiAttrMutation.absolute: 92},
-        eve_higher_attr_id: {consts.ApiAttrMutation.absolute: 1009}})
+        eve_add_lower_attr_id: {consts.ApiAttrMutation.absolute: -502},
+        eve_add_within_attr_id: {consts.ApiAttrMutation.absolute: 92},
+        eve_add_higher_attr_id: {consts.ApiAttrMutation.absolute: 1001},
+        eve_change_lower_attr_id: {consts.ApiAttrMutation.absolute: 0},
+        eve_change_within_attr_id: {consts.ApiAttrMutation.absolute: 84},
+        eve_change_higher_attr_id: {consts.ApiAttrMutation.absolute: 130},
+        eve_remove_attr_id: None})
     # Verification
     api_item.update()
-    assert len(api_item.mutation.attrs) == 3
-    assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0)
-    assert api_item.mutation.attrs[eve_lower_attr_id].absolute == approx(80)
-    assert api_item.mutation.attrs[eve_within_attr_id].roll == approx(0.3)
-    assert api_item.mutation.attrs[eve_within_attr_id].absolute == approx(92)
-    assert api_item.mutation.attrs[eve_higher_attr_id].roll == approx(1)
-    assert api_item.mutation.attrs[eve_higher_attr_id].absolute == approx(120)
-    assert api_item.attrs[eve_lower_attr_id].base == approx(80)
-    assert api_item.attrs[eve_within_attr_id].base == approx(92)
-    assert api_item.attrs[eve_higher_attr_id].base == approx(120)
+    assert len(api_item.mutation.attrs) == 7
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_add_lower_attr_id].absolute == approx(80)
+    assert api_item.mutation.attrs[eve_add_within_attr_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_add_within_attr_id].absolute == approx(92)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_add_higher_attr_id].absolute == approx(120)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_change_lower_attr_id].absolute == approx(80)
+    assert api_item.mutation.attrs[eve_change_within_attr_id].roll == approx(0.1)
+    assert api_item.mutation.attrs[eve_change_within_attr_id].absolute == approx(84)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_change_higher_attr_id].absolute == approx(120)
+    assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(100)
+    assert api_item.attrs[eve_add_lower_attr_id].base == approx(80)
+    assert api_item.attrs[eve_add_within_attr_id].base == approx(92)
+    assert api_item.attrs[eve_add_higher_attr_id].base == approx(120)
+    assert api_item.attrs[eve_change_lower_attr_id].base == approx(80)
+    assert api_item.attrs[eve_change_within_attr_id].base == approx(84)
+    assert api_item.attrs[eve_change_higher_attr_id].base == approx(120)
+    assert api_item.attrs[eve_remove_attr_id].base == approx(100)
 
 
 def test_no_base_item(client, consts):
