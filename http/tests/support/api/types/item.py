@@ -29,7 +29,7 @@ class ItemMutation:
 @dataclass(kw_only=True)
 class AttrMutation:
 
-    roll: float
+    roll: Union[float, None]
     absolute: float
 
 

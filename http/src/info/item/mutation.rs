@@ -22,7 +22,7 @@ impl From<&rc::SolItemMutationInfo> for HItemMutationInfo {
 
 #[derive(serde_tuple::Serialize_tuple)]
 pub struct HAttrMutationInfo {
-    pub(crate) roll: rc::MutaRoll,
+    pub(crate) roll: Option<rc::MutaRoll>,
     pub(crate) value: rc::AttrVal,
 }
 impl From<&rc::SolAttrMutationInfo> for HAttrMutationInfo {

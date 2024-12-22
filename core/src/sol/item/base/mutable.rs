@@ -225,7 +225,7 @@ impl SolItemBaseMutable {
             };
             match mutation.attr_rolls.get(attr_id) {
                 Some(roll) => {
-                    let attr_info = SolAttrMutationInfo::new(*attr_id, *roll, *value);
+                    let attr_info = SolAttrMutationInfo::new(*attr_id, Some(*roll), *value);
                     attr_infos.push(attr_info);
                 }
                 // Nothing guarantees that rolls are set for all attributes mutable by currently set
@@ -529,7 +529,7 @@ fn normalize_attr_mutation_full_with_unmutated_values(
                 Some(mutation_range) => mutation_range,
                 None => return None,
             };
-            Some(normalize_attr_value(absolute, unmutated_value, mutation_range))
+            normalize_attr_value(absolute, unmutated_value, mutation_range)
         }
     }
 }
@@ -551,7 +551,7 @@ fn normalize_attr_mutation_full_with_unmutated_value(
                 Some(mutation_range) => mutation_range,
                 None => return None,
             };
-            Some(normalize_attr_value(absolute, unmutated_value, mutation_range))
+            normalize_attr_value(absolute, unmutated_value, mutation_range)
         }
     }
 }
@@ -560,23 +560,14 @@ fn normalize_attr_value(
     absolute_value: AttrVal,
     unmutated_value: AttrVal,
     mutation_range: &ad::AMutaAttrRange,
-) -> MutaRoll {
+) -> Option<MutaRoll> {
     let min_value = unmutated_value * mutation_range.min_mult;
     let max_value = unmutated_value * mutation_range.max_mult;
     if min_value == max_value {
-        if unmutated_value == min_value {
-            return 0.5;
-        }
-        if unmutated_value > min_value && unmutated_value.is_sign_positive() {
-            return 1.0;
-        }
-        if unmutated_value < min_value && unmutated_value.is_sign_negative() {
-            return 1.0;
-        }
-        return 0.0;
+        return None;
     }
     let value = (absolute_value - min_value) / (max_value - min_value);
-    limit_roll(value)
+    Some(limit_roll(value))
 }
 
 fn limit_roll(roll: MutaRoll) -> MutaRoll {

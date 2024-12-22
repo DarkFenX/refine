@@ -17,11 +17,11 @@ impl SolItemMutationInfo {
 
 pub struct SolAttrMutationInfo {
     pub attr_id: EAttrId,
-    pub roll: MutaRoll,
+    pub roll: Option<MutaRoll>,
     pub value: AttrVal,
 }
 impl SolAttrMutationInfo {
-    pub(in crate::sol) fn new(attr_id: EAttrId, roll: MutaRoll, value: AttrVal) -> Self {
+    pub(in crate::sol) fn new(attr_id: EAttrId, roll: Option<MutaRoll>, value: AttrVal) -> Self {
         Self { attr_id, roll, value }
     }
 }
