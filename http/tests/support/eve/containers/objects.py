@@ -206,12 +206,12 @@ class EveObjects:
             self, *,
             id_: int,
             items: Union[list[tuple[list[int], int]], Type[Absent]],
-            attributes: Union[dict[int, tuple[float, float]], Type[Absent]],
+            attrs: Union[dict[int, tuple[float, float]], Type[Absent]],
     ) -> Mutator:
         mutator = Mutator(
             id_=id_,
             items=items,
-            attributes=attributes)
+            attributes=attrs)
         self.mutators.setdefault(id_, []).append(mutator)
         return mutator
 

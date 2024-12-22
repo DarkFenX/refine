@@ -340,7 +340,7 @@ class EveTypeFactory(EveDataManager):
             datas: Union[list[EveObjects], Type[Default]] = Default,
             id_: Union[int, Type[Default]] = Default,
             items: Union[list[tuple[list[int], int]], Type[Absent], Type[Default]] = Default,
-            attributes: Union[dict[int, tuple[float, float]], Type[Absent], Type[Default]] = Default,
+            attrs: Union[dict[int, tuple[float, float]], Type[Absent], Type[Default]] = Default,
     ) -> int:
         if datas is Default:
             datas = [self._get_default_eve_data()]
@@ -354,5 +354,5 @@ class EveTypeFactory(EveDataManager):
             data.mk_mutator(
                 id_=id_,
                 items=[] if items is Default else items,
-                attributes={} if attributes is Default else attributes)
+                attrs={} if attrs is Default else attrs)
         return id_

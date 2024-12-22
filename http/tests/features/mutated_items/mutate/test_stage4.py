@@ -12,10 +12,10 @@ def test_overwrite(client, consts):
     eve_mutated_item2_id = client.mk_eve_item()
     eve_mutator1_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item1_id)],
-        attributes={eve_first_attr_id: (0.8, 1.2), eve_both_attr_id: (0.7, 1.1)})
+        attrs={eve_first_attr_id: (0.8, 1.2), eve_both_attr_id: (0.7, 1.1)})
     eve_mutator2_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item2_id)],
-        attributes={eve_second_attr_id: (0.8, 1.2), eve_both_attr_id: (0.9, 1.3)})
+        attrs={eve_second_attr_id: (0.8, 1.2), eve_both_attr_id: (0.9, 1.3)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -62,7 +62,7 @@ def test_rolls_range(client, consts):
     eve_mutated_item_id = client.mk_eve_item()
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
+        attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -102,7 +102,7 @@ def test_absolute_base_attr_value(client, consts):
     eve_mutated_item_id = client.mk_eve_item(attrs={eve_overlap_attr_id: 80, eve_mutated_attr_id: 100})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_base_attr_id: (0.8, 1.2), eve_overlap_attr_id: (0.8, 1.2), eve_mutated_attr_id: (0.8, 1.2)})
+        attrs={eve_base_attr_id: (0.8, 1.2), eve_overlap_attr_id: (0.8, 1.2), eve_mutated_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -145,7 +145,7 @@ def test_absolute_value_range(client, consts):
     eve_mutated_item_id = client.mk_eve_item()
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
+        attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -185,7 +185,7 @@ def test_no_base_item(client, consts):
     eve_mutated_item_id = client.mk_eve_item(attrs={eve_roll_attr_id: 50, eve_absolute_attr_id: 50})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
+        attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -224,7 +224,7 @@ def test_no_base_value(client, consts):
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
+        attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -278,7 +278,7 @@ def test_no_mutation_range(client, consts):
         datas=[eve_d2],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
+        attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -332,7 +332,7 @@ def test_zero_mutation_range(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={
+        attrs={
             eve_roll_attr_id: (1.08, 1.08),
             eve_absolute_low_attr_id: (0.92, 0.92),
             eve_absolute_mid_attr_id: (1, 1),
@@ -341,7 +341,7 @@ def test_zero_mutation_range(client, consts):
         datas=[eve_d2],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={
+        attrs={
             eve_roll_attr_id: (0.8, 1.2),
             eve_absolute_low_attr_id: (0.8, 1.2),
             eve_absolute_mid_attr_id: (0.8, 1.2),
@@ -411,27 +411,21 @@ def test_zero_base_value(client, consts):
     eve_absolute_mid_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_absolute_high_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_item(
-        datas=[eve_d1],
-        id_=eve_base_item_id,
-        attrs={
-            eve_roll_attr_id: 0,
-            eve_absolute_low_attr_id: 0,
-            eve_absolute_mid_attr_id: 0,
-            eve_absolute_high_attr_id: 0})
-    client.mk_eve_item(
-        datas=[eve_d2],
-        id_=eve_base_item_id,
-        attrs={
-            eve_roll_attr_id: 50,
-            eve_absolute_low_attr_id: 50,
-            eve_absolute_mid_attr_id: 50,
-            eve_absolute_high_attr_id: 50})
+    client.mk_eve_item(datas=[eve_d1], id_=eve_base_item_id, attrs={
+        eve_roll_attr_id: 0,
+        eve_absolute_low_attr_id: 0,
+        eve_absolute_mid_attr_id: 0,
+        eve_absolute_high_attr_id: 0})
+    client.mk_eve_item(datas=[eve_d2], id_=eve_base_item_id, attrs={
+        eve_roll_attr_id: 50,
+        eve_absolute_low_attr_id: 50,
+        eve_absolute_mid_attr_id: 50,
+        eve_absolute_high_attr_id: 50})
     eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={
+        attrs={
             eve_roll_attr_id: (0.8, 1.2),
             eve_absolute_low_attr_id: (0.8, 1.2),
             eve_absolute_mid_attr_id: (0.8, 1.2),
@@ -499,7 +493,7 @@ def test_base_out_of_range(client):
     eve_mutated_item_id = client.mk_eve_item()
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_attr1_id: (1.1, 1.3), eve_attr2_id: (0.7, 0.9)})
+        attrs={eve_attr1_id: (1.1, 1.3), eve_attr2_id: (0.7, 0.9)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -538,7 +532,7 @@ def test_modification(client, consts):
     eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect_id])
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_affector_attr_id: (0.8, 1.2), eve_affectee_attr_id: (0.8, 1.2)})
+        attrs={eve_affector_attr_id: (0.8, 1.2), eve_affectee_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -616,7 +610,7 @@ def test_item_group(client, consts):
     eve_mutated_item_id = client.mk_eve_item(grp_id=eve_grp2_id)
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
+        attrs={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
@@ -665,7 +659,7 @@ def test_item_category(client, consts):
         attrs={eve_affector_attr_id: 20},
         eff_ids=[eve_effect_id])
     eve_mutated_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.implant, eff_ids=[eve_effect_id])
-    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attributes={})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attrs={})
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
@@ -715,7 +709,7 @@ def test_item_skillreqs(client, consts):
     eve_mutated_item_id = client.mk_eve_item(srqs={eve_skill2_id: 1})
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
+        attrs={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
@@ -769,7 +763,7 @@ def test_item_effects(client, consts):
     eve_effect2_id = client.mk_eve_effect(mod_info=[eve_mod2])
     eve_base_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 20}, eff_ids=[eve_effect1_id])
     eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect2_id])
-    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attributes={})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attrs={})
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
@@ -812,7 +806,7 @@ def test_item_default_effect(client, consts):
         eff_ids=[eve_effect1_id, eve_effect2_id],
         defeff_id=eve_effect1_id)
     eve_mutated_item_id = client.mk_eve_item(eff_ids=[eve_effect1_id, eve_effect2_id], defeff_id=eve_effect2_id)
-    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attributes={})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)], attrs={})
     eve_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr1_id: 100, eve_affectee_attr2_id: 100})
     client.create_sources()
     api_sol = client.create_sol()

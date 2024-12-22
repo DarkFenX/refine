@@ -17,7 +17,7 @@ def test_rolls_range(client, consts):
         datas=[eve_d2],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
+        attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -73,7 +73,7 @@ def test_absolute_value_range(client, consts):
         datas=[eve_d2],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
+        attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -130,7 +130,7 @@ def test_no_base_item(client, consts):
         datas=[eve_d2],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
+        attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
     # Make an item to ensure that attributes are not cleaned up on 1st source
     client.mk_eve_item(datas=[eve_d1], attrs={eve_roll_attr_id: 1, eve_absolute_attr_id: 1})
     client.create_sources()

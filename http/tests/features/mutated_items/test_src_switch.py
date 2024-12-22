@@ -21,7 +21,7 @@ def test_to_stage4_different_base_values(client, consts):
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
+        attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -71,12 +71,12 @@ def test_to_stage4_different_ranges(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
+        attrs={eve_lower_attr_id: (0.8, 1.2), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
         datas=[eve_d2],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_lower_attr_id: (0.7, 1.1), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.9, 1.3)})
+        attrs={eve_lower_attr_id: (0.7, 1.1), eve_within_attr_id: (0.8, 1.2), eve_higher_attr_id: (0.9, 1.3)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -212,7 +212,7 @@ def test_to_stage4_no_base_item(client, consts):
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (0.8, 1.2)})
+        attrs={eve_attr1_id: (0.8, 1.2), eve_attr2_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -286,7 +286,7 @@ def test_to_stage3_different_group(client, consts):
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
+        attrs={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
@@ -373,13 +373,13 @@ def test_to_stage2_different_group(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
+        attrs={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     client.mk_eve_mutator(
         datas=[eve_d2],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d2])], eve_mutated_item_id)],
-        attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
+        attrs={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
@@ -441,13 +441,13 @@ def test_to_stage2_no_base_item(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_attr_id: (0.8, 1.2)})
+        attrs={eve_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
         datas=[eve_d2],
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d2])], eve_mutated_item_id)],
-        attributes={eve_attr_id: (0.8, 1.2)})
+        attrs={eve_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -521,7 +521,7 @@ def test_to_stage1_different_group(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
+        attrs={eve_affectee_attr1_id: (0.8, 1.2), eve_affectee_attr2_id: (0.8, 1.2)})
     eve_ship_id = client.mk_eve_ship(datas=[eve_d1, eve_d2])
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
@@ -583,7 +583,7 @@ def test_to_stage1_no_base_item(client, consts):
         datas=[eve_d1],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_attr_id: (0.8, 1.2)})
+        attrs={eve_attr_id: (0.8, 1.2)})
     # Make an item to ensure that attribute data is not cleaned up on 2nd source
     client.mk_eve_item(datas=[eve_d2], attrs={eve_attr_id: 1})
     client.create_sources()
@@ -632,7 +632,7 @@ def test_from_stage3(client, consts):
     eve_mutator_id = client.mk_eve_mutator(
         datas=[eve_d1, eve_d2],
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_attr_id: (0.8, 1.2)})
+        attrs={eve_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -669,12 +669,12 @@ def test_from_stage2(client, consts):
         id_=eve_mutator_id,
         # Valid input or output item is needed just to keep mutator data alive during cleanup
         items=[([client.mk_eve_item(datas=[eve_d1])], eve_mutated_item_id)],
-        attributes={eve_attr_id: (0.8, 1.2)})
+        attrs={eve_attr_id: (0.8, 1.2)})
     client.mk_eve_mutator(
         datas=[eve_d2],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_attr_id: (0.8, 1.2)})
+        attrs={eve_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
@@ -710,7 +710,7 @@ def test_from_stage1(client, consts):
         datas=[eve_d2],
         id_=eve_mutator_id,
         items=[([eve_base_item_id], eve_mutated_item_id)],
-        attributes={eve_attr_id: (0.8, 1.2)})
+        attrs={eve_attr_id: (0.8, 1.2)})
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
