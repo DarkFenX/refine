@@ -276,3 +276,420 @@ def test_no_base_value(client, consts):
     assert api_item.attrs[eve_change_roll_attr_id].base == approx(48)
     assert api_item.attrs[eve_change_absolute_attr_id].base == approx(50)
     assert api_item.attrs[eve_remove_attr_id].base == approx(50)
+
+
+def test_no_mutation_range(client, consts):
+    # Check that absolute values are discarded when mutation range is not defined
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_add_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_add_absolute_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_absolute_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_remove_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={
+        eve_add_roll_attr_id: 50,
+        eve_add_absolute_attr_id: 50,
+        eve_change_roll_attr_id: 50,
+        eve_change_absolute_attr_id: 50,
+        eve_remove_attr_id: 50})
+    eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id)
+    eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_mutator(
+        datas=[eve_d1],
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)])
+    client.mk_eve_mutator(
+        datas=[eve_d2],
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={
+            eve_add_roll_attr_id: (0.8, 1.2),
+            eve_add_absolute_attr_id: (0.8, 1.2),
+            eve_change_roll_attr_id: (0.8, 1.2),
+            eve_change_absolute_attr_id: (0.8, 1.2),
+            eve_remove_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.3},
+        eve_change_absolute_attr_id: {consts.ApiAttrMutation.absolute: 46},
+        eve_remove_attr_id: {consts.ApiAttrMutation.roll: 0.2}}))
+    # Verification
+    api_item.update()
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_add_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_absolute_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_attr_id].base == approx(50)
+    # Action
+    api_item.change_mod(mutation={
+        eve_add_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_add_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54},
+        eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.4},
+        eve_change_absolute_attr_id: {consts.ApiAttrMutation.absolute: 45},
+        eve_remove_attr_id: None})
+    # Verification
+    api_item.update()
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_add_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_absolute_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_attr_id].base == approx(50)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification - since there was no mutation range on first source, attribute mutations defined
+    # via absolute value were discarded. However, on second source absolute value is still exposed,
+    # but without mutation applied
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 5
+    assert api_item.mutation.attrs[eve_add_roll_attr_id].roll == approx(0.7)
+    assert api_item.mutation.attrs[eve_add_roll_attr_id].absolute == approx(54)
+    assert api_item.mutation.attrs[eve_add_absolute_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_absolute_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_change_roll_attr_id].roll == approx(0.4)
+    assert api_item.mutation.attrs[eve_change_roll_attr_id].absolute == approx(48)
+    assert api_item.mutation.attrs[eve_change_absolute_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_change_absolute_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(50)
+    assert api_item.attrs[eve_add_roll_attr_id].base == approx(54)
+    assert api_item.attrs[eve_add_absolute_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_roll_attr_id].base == approx(48)
+    assert api_item.attrs[eve_change_absolute_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_attr_id].base == approx(50)
+
+
+def test_zero_mutation_range(client, consts):
+    # Check that absolute values are discarded when mutation range has zero width
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_add_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_add_absolute_low_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_add_absolute_mid_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_add_absolute_high_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_absolute_low_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_absolute_mid_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_absolute_high_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_remove_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_remove_absolute_low_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_remove_absolute_mid_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_remove_absolute_high_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_base_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2], attrs={
+        eve_add_roll_attr_id: 50,
+        eve_add_absolute_low_attr_id: 50,
+        eve_add_absolute_mid_attr_id: 50,
+        eve_add_absolute_high_attr_id: 50,
+        eve_change_roll_attr_id: -50,
+        eve_change_absolute_low_attr_id: -50,
+        eve_change_absolute_mid_attr_id: -50,
+        eve_change_absolute_high_attr_id: -50,
+        eve_remove_roll_attr_id: 50,
+        eve_remove_absolute_low_attr_id: 50,
+        eve_remove_absolute_mid_attr_id: 50,
+        eve_remove_absolute_high_attr_id: 50})
+    eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id)
+    eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_mutator(
+        datas=[eve_d1],
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={
+            eve_add_roll_attr_id: (1.08, 1.08),
+            eve_add_absolute_low_attr_id: (0.92, 0.92),
+            eve_add_absolute_mid_attr_id: (1, 1),
+            eve_add_absolute_high_attr_id: (1.08, 1.08),
+            eve_change_roll_attr_id: (0.92, 0.92),
+            eve_change_absolute_low_attr_id: (0.92, 0.92),
+            eve_change_absolute_mid_attr_id: (1, 1),
+            eve_change_absolute_high_attr_id: (1.08, 1.08),
+            eve_remove_roll_attr_id: (1.08, 1.08),
+            eve_remove_absolute_low_attr_id: (0.92, 0.92),
+            eve_remove_absolute_mid_attr_id: (1, 1),
+            eve_remove_absolute_high_attr_id: (1.08, 1.08)})
+    client.mk_eve_mutator(
+        datas=[eve_d2],
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={
+            eve_add_roll_attr_id: (0.8, 1.2),
+            eve_add_absolute_low_attr_id: (0.8, 1.2),
+            eve_add_absolute_mid_attr_id: (0.8, 1.2),
+            eve_add_absolute_high_attr_id: (0.8, 1.2),
+            eve_change_roll_attr_id: (0.8, 1.2),
+            eve_change_absolute_low_attr_id: (0.8, 1.2),
+            eve_change_absolute_mid_attr_id: (0.8, 1.2),
+            eve_change_absolute_high_attr_id: (0.8, 1.2),
+            eve_remove_roll_attr_id: (0.8, 1.2),
+            eve_remove_absolute_low_attr_id: (0.8, 1.2),
+            eve_remove_absolute_mid_attr_id: (0.8, 1.2),
+            eve_remove_absolute_high_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_change_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -54},
+        eve_change_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: -54},
+        eve_change_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: -54},
+        eve_remove_roll_attr_id: {consts.ApiAttrMutation.roll: 0.4},
+        eve_remove_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: 54},
+        eve_remove_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 54},
+        eve_remove_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
+    # Verification
+    api_item.update()
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_add_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_high_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_roll_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_change_absolute_low_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_change_absolute_mid_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_change_absolute_high_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_remove_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(50)
+    # Action
+    api_item.change_mod(mutation={
+        eve_add_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_add_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: 50},
+        eve_add_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 50},
+        eve_add_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 50},
+        eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.2},
+        eve_change_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -50},
+        eve_change_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: -50},
+        eve_change_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: -50},
+        eve_remove_roll_attr_id: None,
+        eve_remove_absolute_low_attr_id: None,
+        eve_remove_absolute_mid_attr_id: None,
+        eve_remove_absolute_high_attr_id: None})
+    # Verification
+    api_item.update()
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_add_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_high_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_roll_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_change_absolute_low_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_change_absolute_mid_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_change_absolute_high_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_remove_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(50)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 12
+    assert api_item.mutation.attrs[eve_add_roll_attr_id].roll == approx(0.7)
+    assert api_item.mutation.attrs[eve_add_roll_attr_id].absolute == approx(54)
+    assert api_item.mutation.attrs[eve_add_absolute_low_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_absolute_low_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_add_absolute_mid_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_absolute_mid_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_add_absolute_high_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_absolute_high_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_change_roll_attr_id].roll == approx(0.2)
+    assert api_item.mutation.attrs[eve_change_roll_attr_id].absolute == approx(-44)
+    assert api_item.mutation.attrs[eve_change_absolute_low_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_change_absolute_low_attr_id].absolute == approx(-50)
+    assert api_item.mutation.attrs[eve_change_absolute_mid_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_change_absolute_mid_attr_id].absolute == approx(-50)
+    assert api_item.mutation.attrs[eve_change_absolute_high_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_change_absolute_high_attr_id].absolute == approx(-50)
+    assert api_item.mutation.attrs[eve_remove_roll_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_roll_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_remove_absolute_low_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_absolute_low_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_remove_absolute_mid_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_absolute_mid_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_remove_absolute_high_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_absolute_high_attr_id].absolute == approx(50)
+    assert api_item.attrs[eve_add_roll_attr_id].base == approx(54)
+    assert api_item.attrs[eve_add_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_high_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_roll_attr_id].base == approx(-44)
+    assert api_item.attrs[eve_change_absolute_low_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_change_absolute_mid_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_change_absolute_high_attr_id].base == approx(-50)
+    assert api_item.attrs[eve_remove_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(50)
+
+
+def test_zero_base_value(client, consts):
+    # Check that absolute values are discarded when base value is zero
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_add_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_add_absolute_low_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_add_absolute_mid_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_add_absolute_high_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_absolute_low_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_absolute_mid_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_change_absolute_high_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_remove_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_remove_absolute_low_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_remove_absolute_mid_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_remove_absolute_high_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d1], id_=eve_base_item_id, attrs={
+        eve_add_roll_attr_id: 0,
+        eve_add_absolute_low_attr_id: 0,
+        eve_add_absolute_mid_attr_id: 0,
+        eve_add_absolute_high_attr_id: 0,
+        eve_change_roll_attr_id: 0,
+        eve_change_absolute_low_attr_id: 0,
+        eve_change_absolute_mid_attr_id: 0,
+        eve_change_absolute_high_attr_id: 0,
+        eve_remove_roll_attr_id: 0,
+        eve_remove_absolute_low_attr_id: 0,
+        eve_remove_absolute_mid_attr_id: 0,
+        eve_remove_absolute_high_attr_id: 0})
+    client.mk_eve_item(datas=[eve_d2], id_=eve_base_item_id, attrs={
+        eve_add_roll_attr_id: 50,
+        eve_add_absolute_low_attr_id: 50,
+        eve_add_absolute_mid_attr_id: 50,
+        eve_add_absolute_high_attr_id: 50,
+        eve_change_roll_attr_id: 50,
+        eve_change_absolute_low_attr_id: 50,
+        eve_change_absolute_mid_attr_id: 50,
+        eve_change_absolute_high_attr_id: 50,
+        eve_remove_roll_attr_id: 50,
+        eve_remove_absolute_low_attr_id: 50,
+        eve_remove_absolute_mid_attr_id: 50,
+        eve_remove_absolute_high_attr_id: 50})
+    eve_mutated_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d2], id_=eve_mutated_item_id)
+    eve_mutator_id = client.mk_eve_mutator(
+        datas=[eve_d1, eve_d2],
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={
+            eve_add_roll_attr_id: (0.8, 1.2),
+            eve_add_absolute_low_attr_id: (0.8, 1.2),
+            eve_add_absolute_mid_attr_id: (0.8, 1.2),
+            eve_add_absolute_high_attr_id: (0.8, 1.2),
+            eve_change_roll_attr_id: (0.8, 1.2),
+            eve_change_absolute_low_attr_id: (0.8, 1.2),
+            eve_change_absolute_mid_attr_id: (0.8, 1.2),
+            eve_change_absolute_high_attr_id: (0.8, 1.2),
+            eve_remove_roll_attr_id: (0.8, 1.2),
+            eve_remove_absolute_low_attr_id: (0.8, 1.2),
+            eve_remove_absolute_mid_attr_id: (0.8, 1.2),
+            eve_remove_absolute_high_attr_id: (0.8, 1.2)})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_change_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: 0},
+        eve_change_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 0},
+        eve_change_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 0},
+        eve_remove_roll_attr_id: {consts.ApiAttrMutation.roll: 0.4},
+        eve_remove_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -3},
+        eve_remove_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 0},
+        eve_remove_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 6}}))
+    # Verification
+    api_item.update()
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_add_roll_attr_id].base == approx(0)
+    assert api_item.attrs[eve_add_absolute_low_attr_id].base == approx(0)
+    assert api_item.attrs[eve_add_absolute_mid_attr_id].base == approx(0)
+    assert api_item.attrs[eve_add_absolute_high_attr_id].base == approx(0)
+    assert api_item.attrs[eve_change_roll_attr_id].base == approx(0)
+    assert api_item.attrs[eve_change_absolute_low_attr_id].base == approx(0)
+    assert api_item.attrs[eve_change_absolute_mid_attr_id].base == approx(0)
+    assert api_item.attrs[eve_change_absolute_high_attr_id].base == approx(0)
+    assert api_item.attrs[eve_remove_roll_attr_id].base == approx(0)
+    assert api_item.attrs[eve_remove_absolute_low_attr_id].base == approx(0)
+    assert api_item.attrs[eve_remove_absolute_mid_attr_id].base == approx(0)
+    assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(0)
+    # Action
+    api_item.change_mod(mutation={
+        eve_add_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
+        eve_add_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -8},
+        eve_add_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 0},
+        eve_add_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 2},
+        eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.2},
+        eve_change_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -3},
+        eve_change_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 0},
+        eve_change_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 6},
+        eve_remove_roll_attr_id: None,
+        eve_remove_absolute_low_attr_id: None,
+        eve_remove_absolute_mid_attr_id: None,
+        eve_remove_absolute_high_attr_id: None})
+    # Verification
+    api_item.update()
+    with check_no_field():
+        api_item.mutation  # pylint: disable=W0104
+    assert api_item.attrs[eve_add_roll_attr_id].base == approx(0)
+    assert api_item.attrs[eve_add_absolute_low_attr_id].base == approx(0)
+    assert api_item.attrs[eve_add_absolute_mid_attr_id].base == approx(0)
+    assert api_item.attrs[eve_add_absolute_high_attr_id].base == approx(0)
+    assert api_item.attrs[eve_change_roll_attr_id].base == approx(0)
+    assert api_item.attrs[eve_change_absolute_low_attr_id].base == approx(0)
+    assert api_item.attrs[eve_change_absolute_mid_attr_id].base == approx(0)
+    assert api_item.attrs[eve_change_absolute_high_attr_id].base == approx(0)
+    assert api_item.attrs[eve_remove_roll_attr_id].base == approx(0)
+    assert api_item.attrs[eve_remove_absolute_low_attr_id].base == approx(0)
+    assert api_item.attrs[eve_remove_absolute_mid_attr_id].base == approx(0)
+    assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(0)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 12
+    assert api_item.mutation.attrs[eve_add_roll_attr_id].roll == approx(0.7)
+    assert api_item.mutation.attrs[eve_add_roll_attr_id].absolute == approx(54)
+    assert api_item.mutation.attrs[eve_add_absolute_low_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_absolute_low_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_add_absolute_mid_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_absolute_mid_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_add_absolute_high_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_add_absolute_high_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_change_roll_attr_id].roll == approx(0.2)
+    assert api_item.mutation.attrs[eve_change_roll_attr_id].absolute == approx(44)
+    assert api_item.mutation.attrs[eve_change_absolute_low_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_change_absolute_low_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_change_absolute_mid_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_change_absolute_mid_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_change_absolute_high_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_change_absolute_high_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_remove_roll_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_roll_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_remove_absolute_low_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_absolute_low_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_remove_absolute_mid_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_absolute_mid_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_remove_absolute_high_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_remove_absolute_high_attr_id].absolute == approx(50)
+    assert api_item.attrs[eve_add_roll_attr_id].base == approx(54)
+    assert api_item.attrs[eve_add_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_add_absolute_high_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_roll_attr_id].base == approx(44)
+    assert api_item.attrs[eve_change_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_change_absolute_high_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_roll_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_low_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_mid_attr_id].base == approx(50)
+    assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(50)
