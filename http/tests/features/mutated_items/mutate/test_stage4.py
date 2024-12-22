@@ -366,12 +366,18 @@ def test_zero_mutation_range(client, consts):
         eve_absolute_high_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
     # Verification
     api_item.update()
-    assert len(api_item.mutation.attrs) == 1
+    assert len(api_item.mutation.attrs) == 4
     assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.7)
     assert api_item.mutation.attrs[eve_roll_attr_id].absolute == approx(54)
+    assert api_item.mutation.attrs[eve_absolute_low_attr_id].roll is None
+    assert api_item.mutation.attrs[eve_absolute_low_attr_id].absolute == approx(46)
+    assert api_item.mutation.attrs[eve_absolute_mid_attr_id].roll is None
+    assert api_item.mutation.attrs[eve_absolute_mid_attr_id].absolute == approx(50)
+    assert api_item.mutation.attrs[eve_absolute_high_attr_id].roll is None
+    assert api_item.mutation.attrs[eve_absolute_high_attr_id].absolute == approx(54)
     assert api_item.attrs[eve_roll_attr_id].base == approx(54)
-    # Mutations were discarded - which will be verified later; here, something is still returned,
-    # because it's just base value put onto range
+    # Mutations requests were discarded - which will be verified later; here, something is still
+    # returned, because it's just base value put onto range
     assert api_item.attrs[eve_absolute_low_attr_id].base == approx(46)
     assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(54)
