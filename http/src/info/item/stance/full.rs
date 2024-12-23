@@ -1,4 +1,4 @@
-use crate::info::HItemExtendedInfo;
+use crate::info::item::extended::HItemExtendedInfo;
 
 use super::HStanceInfoPartial;
 

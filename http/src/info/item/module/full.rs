@@ -1,4 +1,4 @@
-use crate::info::{HItemExtendedInfo, HItemInfoMode};
+use crate::info::{item::extended::HItemExtendedInfo, HItemInfoMode};
 
 use super::HModuleInfoPartial;
 

@@ -22,6 +22,7 @@ mod booster;
 mod character;
 mod charge;
 mod drone;
+mod extended;
 mod fighter;
 mod fw_effect;
 mod implant;
