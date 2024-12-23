@@ -732,3 +732,51 @@ def test_from_stage1(client, consts):
     assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.8)
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(112)
     assert api_item.attrs[eve_attr_id].base == approx(112)
+
+
+def test_drone(client, consts):
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_roll_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_absolute_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
+    eve_base_item_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_item(datas=[eve_d1], id_=eve_base_item_id, attrs={eve_roll_attr_id: 100, eve_absolute_attr_id: 100})
+    client.mk_eve_item(datas=[eve_d2], id_=eve_base_item_id, attrs={eve_roll_attr_id: 80, eve_absolute_attr_id: 120})
+    eve_mutated_item_id = client.mk_eve_item(datas=[eve_d1, eve_d2])
+    eve_mutator_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    client.mk_eve_mutator(
+        datas=[eve_d1],
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={eve_roll_attr_id: (0.8, 1.2), eve_absolute_attr_id: (0.8, 1.2)})
+    client.mk_eve_mutator(
+        datas=[eve_d2],
+        id_=eve_mutator_id,
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={eve_roll_attr_id: (0.7, 1.1), eve_absolute_attr_id: (0.9, 1.3)})
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_drone(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+        eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.2},
+        eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 115}}))
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.2)
+    assert api_item.mutation.attrs[eve_roll_attr_id].absolute == approx(88)
+    assert api_item.mutation.attrs[eve_absolute_attr_id].roll == approx(0.875)
+    assert api_item.mutation.attrs[eve_absolute_attr_id].absolute == approx(115)
+    assert api_item.attrs[eve_roll_attr_id].base == approx(88)
+    assert api_item.attrs[eve_absolute_attr_id].base == approx(115)
+    # Action
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_roll_attr_id].roll == approx(0.2)
+    assert api_item.mutation.attrs[eve_roll_attr_id].absolute == approx(62.4)
+    assert api_item.mutation.attrs[eve_absolute_attr_id].roll == approx(0.875)
+    assert api_item.mutation.attrs[eve_absolute_attr_id].absolute == approx(150)
+    assert api_item.attrs[eve_roll_attr_id].base == approx(62.4)
+    assert api_item.attrs[eve_absolute_attr_id].base == approx(150)

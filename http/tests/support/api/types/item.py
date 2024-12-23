@@ -332,6 +332,7 @@ class Item(AttrDict):
     def change_drone_request(
             self, *,
             state: Union[ApiState, Type[Absent]],
+            mutation: Union[int, Tuple[int, dict[int, dict]], dict[int, dict], None, Type[Absent]],
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]],
             rm_projs: Union[Iterable[str], Type[Absent]],
@@ -342,6 +343,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            mutation=mutation,
             add_projs=add_projs,
             change_projs=change_projs,
             rm_projs=rm_projs,
@@ -351,6 +353,7 @@ class Item(AttrDict):
     def change_drone(
             self, *,
             state: Union[ApiState, Type[Absent]] = Absent,
+            mutation: Union[int, Tuple[int, dict[int, dict]], dict[int, dict], None, Type[Absent]] = Absent,
             add_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
             change_projs: Union[Iterable[(str, Union[float, None])], Type[Absent]] = Absent,
             rm_projs: Union[Iterable[str], Type[Absent]] = Absent,
@@ -360,6 +363,7 @@ class Item(AttrDict):
     ) -> Union[Item, None]:
         resp = self.change_drone_request(
             state=state,
+            mutation=mutation,
             add_projs=add_projs,
             change_projs=change_projs,
             rm_projs=rm_projs,
