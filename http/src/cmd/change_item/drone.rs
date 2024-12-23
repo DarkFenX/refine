@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        shared::{apply_effect_modes, HEffectModeMap, HProjDef},
+        shared::{apply_effect_modes, HEffectModeMap, HMutationOnChange, HProjDef},
         HCmdResp,
     },
     shared::HState,
@@ -11,6 +11,8 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeDroneCmd {
     state: Option<HState>,
+    #[serde(default, with = "::serde_with::rust::double_option")]
+    mutation: Option<Option<HMutationOnChange>>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -34,6 +36,78 @@ impl HChangeDroneCmd {
                     rc::err::SetDroneStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::SetDroneStateError::ItemIsNotDrone(e) => HExecError::ItemKindMismatch(e),
                 });
+            }
+        }
+        if let Some(mutation_opt) = &self.mutation {
+            match mutation_opt {
+                // Mutation add/change was requested
+                Some(mutation) => match mutation {
+                    HMutationOnChange::AddShort(mutator_id) => {
+                        // Remove old mutation if we had any, ignore any errors on the way
+                        let _ = core_sol.remove_drone_mutation(item_id);
+                        let mutation = rc::SolItemAddMutation::new(*mutator_id);
+                        if let Err(error) = core_sol.add_drone_mutation(item_id, mutation) {
+                            match error {
+                                rc::err::AddDroneMutationError::ItemNotFound(e) => {
+                                    return Err(HExecError::ItemNotFoundPrimary(e))
+                                }
+                                rc::err::AddDroneMutationError::ItemIsNotDrone(e) => {
+                                    return Err(HExecError::ItemKindMismatch(e))
+                                }
+                                rc::err::AddDroneMutationError::MutationAlreadySet(_) => {
+                                    panic!("no mutation should be set")
+                                }
+                            };
+                        }
+                    }
+                    HMutationOnChange::AddFull(mutation) => {
+                        // Remove old mutation if we had any, ignore any errors on the way
+                        let _ = core_sol.remove_drone_mutation(item_id);
+                        if let Err(error) = core_sol.add_drone_mutation(item_id, mutation.into()) {
+                            match error {
+                                rc::err::AddDroneMutationError::ItemNotFound(e) => {
+                                    return Err(HExecError::ItemNotFoundPrimary(e))
+                                }
+                                rc::err::AddDroneMutationError::ItemIsNotDrone(e) => {
+                                    return Err(HExecError::ItemKindMismatch(e))
+                                }
+                                rc::err::AddDroneMutationError::MutationAlreadySet(_) => {
+                                    panic!("no mutation should be set")
+                                }
+                            };
+                        }
+                    }
+                    HMutationOnChange::ChangeAttrs(attr_mutations) => {
+                        let attr_mutations = attr_mutations
+                            .iter()
+                            .map(|(k, v)| rc::SolItemChangeAttrMutation::new(*k, v.as_ref().map(|v| v.into())))
+                            .collect();
+                        if let Err(error) = core_sol.change_drone_mutation(item_id, attr_mutations) {
+                            return Err(match error {
+                                rc::err::ChangeDroneMutationError::ItemNotFound(e) => {
+                                    HExecError::ItemNotFoundPrimary(e)
+                                }
+                                rc::err::ChangeDroneMutationError::ItemIsNotDrone(e) => HExecError::ItemKindMismatch(e),
+                                rc::err::ChangeDroneMutationError::MutationNotSet(e) => HExecError::MutationNotSet(e),
+                            });
+                        }
+                    }
+                },
+                // Mutation change was requested with None value
+                None => {
+                    if let Err(error) = core_sol.remove_drone_mutation(item_id) {
+                        match error {
+                            rc::err::RemoveDroneMutationError::ItemNotFound(e) => {
+                                return Err(HExecError::ItemNotFoundPrimary(e))
+                            }
+                            rc::err::RemoveDroneMutationError::ItemIsNotDrone(e) => {
+                                return Err(HExecError::ItemKindMismatch(e))
+                            }
+                            // Do nothing if mutation was not there
+                            rc::err::RemoveDroneMutationError::MutationNotSet(_) => (),
+                        };
+                    };
+                }
             }
         }
         for proj_def in self.add_projs.iter() {

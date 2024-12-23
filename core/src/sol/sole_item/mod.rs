@@ -12,8 +12,9 @@ pub use sole_character::{
 };
 pub use sole_charge::{GetChargeError, RemoveChargeError, SetChargeStateError};
 pub use sole_drone::{
-    AddDroneError, AddDroneProjError, ChangeDroneProjError, GetDroneError, GetFitDronesError, RemoveDroneError,
-    RemoveDroneProjError, SetDroneStateError,
+    AddDroneError, AddDroneMutationError, AddDroneProjError, ChangeDroneMutationError, ChangeDroneProjError,
+    GetDroneError, GetFitDronesError, RemoveDroneError, RemoveDroneMutationError, RemoveDroneProjError,
+    SetDroneStateError,
 };
 pub use sole_fighter::{
     AddFighterError, AddFighterProjError, ChangeFighterProjError, GetFighterError, GetFitFightersError,
