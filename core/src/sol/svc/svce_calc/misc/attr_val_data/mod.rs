@@ -1,4 +1,5 @@
-pub(in crate::sol::svc::svce_calc) use main::SolAttrValData;
+pub(in crate::sol::svc::svce_calc) use sol::SolAttrValData;
 
 mod debug;
-mod main;
+mod item;
+mod sol;
