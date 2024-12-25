@@ -10,8 +10,7 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolItemAttrValData {
     pub(in crate::sol::svc::svce_calc) values: StMap<EAttrId, SolAttrVal>,
-    pub(in crate::sol::svc::svce_calc) overrides:
-        StMap<EAttrId, fn(&mut SolSvcs, &SolView, &SolItemId) -> Option<SolAttrVal>>,
+    pub(in crate::sol::svc::svce_calc) overrides: StMap<EAttrId, fn(&mut SolSvcs, &SolView, &SolItemId) -> SolAttrVal>,
 }
 impl SolItemAttrValData {
     pub(super) fn new() -> Self {

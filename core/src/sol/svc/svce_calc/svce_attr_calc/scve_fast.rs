@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{
     defs::{AttrVal, EAttrId, SolItemId},
     ec,
@@ -31,11 +33,9 @@ impl SolSvcs {
     ) -> Result<SolAttrVal, AttrCalcError> {
         // Try accessing cached value
         let item_attr_data = self.calc_data.attrs.get_item_attr_data(item_id)?;
-        // if let Some(ovr_fn) = item_attr_data.overrides.get(attr_id) {
-        //     if let Some(val) = ovr_fn(self, sol_view, item_id) {
-        //         return Ok(val);
-        //     }
-        // }
+        if let Some(ovr_fn) = item_attr_data.overrides.get(attr_id) {
+            return Ok(ovr_fn(self, sol_view, item_id));
+        }
         if let Some(val) = item_attr_data.values.get(attr_id) {
             return Ok(*val);
         }
@@ -55,11 +55,12 @@ impl SolSvcs {
         item_id: &SolItemId,
     ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SolAttrVal)>, LoadedItemFoundError> {
         let item = sol_view.items.get_item(item_id)?;
-        let item_attr_data = self.calc_data.attrs.get_item_attr_data(&item.get_id())?;
         // SolItem can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
+        let item_attr_data = self.calc_data.attrs.get_item_attr_data(item_id)?;
+        let ovr_attr_ids = item_attr_data.overrides.keys().map(|v| *v).collect_vec();
         let mut vals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
@@ -71,12 +72,19 @@ impl SolSvcs {
                 };
             }
         }
-        // Go through overrides and use those to overwrite values
-        // for (attr_id, ovr_fn) in item_attr_data.overrides.iter() {
-        //     if let Some(val) = ovr_fn(self, sol_view, item_id) {
-        //         vals.insert(*attr_id, val);
-        //     }
-        // }
+        // Overrides have the highest priority
+        for ovr_attr_id in ovr_attr_ids {
+            let ovr_fn = self
+                .calc_data
+                .attrs
+                .get_item_attr_data(item_id)
+                .unwrap()
+                .overrides
+                .get(&ovr_attr_id)
+                .unwrap();
+            let val = ovr_fn(self, sol_view, item_id);
+            vals.insert(ovr_attr_id, val);
+        }
         Ok(vals.into_iter())
     }
     // Private methods
