@@ -52,7 +52,7 @@ impl SolSvcs {
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
-        let mut vals = self.calc_data.attrs.get_item_attrs_mut(&item.get_id())?.clone();
+        let mut vals = self.calc_data.attrs.get_item_attrs(&item.get_id())?.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
         for attr_id in item.get_attrs().unwrap().keys() {
