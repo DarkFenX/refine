@@ -30,10 +30,9 @@ impl SolSvcs {
         attr_id: &EAttrId,
     ) -> Result<SolAttrVal, AttrCalcError> {
         // Try accessing cached value
-        match self.calc_data.attrs.get_item_attrs(item_id)?.get(attr_id) {
-            Some(v) => return Ok(*v),
-            _ => (),
-        };
+        if let Some(val) = self.calc_data.attrs.get_item_attrs(item_id)?.get(attr_id) {
+            return Ok(*val);
+        }
         // If it is not cached, calculate and cache it
         let val = self.calc_calc_item_attr_val(sol_view, item_id, attr_id)?;
         self.calc_data
