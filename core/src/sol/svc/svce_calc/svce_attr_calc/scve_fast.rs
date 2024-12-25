@@ -33,20 +33,19 @@ impl SolSvcs {
     ) -> Result<SolAttrVal, AttrCalcError> {
         // Try accessing cached value
         let item_attr_data = self.calc_data.attrs.get_item_attr_data(item_id)?;
-        if let Some(ovr_fn) = item_attr_data.overrides.get(attr_id) {
-            return ovr_fn(self, sol_view, item_id);
-        }
         if let Some(val) = item_attr_data.values.get(attr_id) {
-            return Ok(*val);
+            return Ok(match item_attr_data.postprocessors.get(attr_id) {
+                Some(pp_fn) => pp_fn(self, sol_view, item_id, *val),
+                None => *val,
+            });
         }
         // If it is not cached, calculate and cache it
-        let val = self.calc_calc_item_attr_val(sol_view, item_id, attr_id)?;
-        self.calc_data
-            .attrs
-            .get_item_attr_data_mut(item_id)
-            .unwrap()
-            .values
-            .insert(*attr_id, val);
+        let mut val = self.calc_calc_item_attr_val(sol_view, item_id, attr_id)?;
+        let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(item_id).unwrap();
+        item_attr_data.values.insert(*attr_id, val);
+        if let Some(pp_fn) = item_attr_data.postprocessors.get(attr_id) {
+            val = pp_fn(self, sol_view, item_id, val);
+        }
         Ok(val)
     }
     pub(in crate::sol) fn calc_iter_item_attr_vals(
@@ -60,7 +59,7 @@ impl SolSvcs {
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
         let item_attr_data = self.calc_data.attrs.get_item_attr_data(item_id)?;
-        let ovr_attr_ids = item_attr_data.overrides.keys().map(|v| *v).collect_vec();
+        let pp_attr_ids = item_attr_data.postprocessors.keys().map(|v| *v).collect_vec();
         let mut vals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
@@ -72,22 +71,19 @@ impl SolSvcs {
                 };
             }
         }
-        // Overrides have the highest priority
-        for ovr_attr_id in ovr_attr_ids {
-            let ovr_fn = self
-                .calc_data
-                .attrs
-                .get_item_attr_data(item_id)
-                .unwrap()
-                .overrides
-                .get(&ovr_attr_id)
-                .unwrap();
-            match ovr_fn(self, sol_view, item_id) {
-                Ok(val) => vals.insert(ovr_attr_id, val),
-                // Remove attribute just to replicate behavior of single attr val getter, which
-                // fails completely when override fails
-                Err(_) => vals.remove(&ovr_attr_id),
-            };
+        for pp_attr_id in pp_attr_ids {
+            if let Some(val) = vals.get(&pp_attr_id) {
+                let pp_fn = self
+                    .calc_data
+                    .attrs
+                    .get_item_attr_data(item_id)
+                    .unwrap()
+                    .postprocessors
+                    .get(&pp_attr_id)
+                    .unwrap();
+                let val = pp_fn(self, sol_view, item_id, *val);
+                vals.insert(pp_attr_id, val);
+            }
         }
         Ok(vals.into_iter())
     }
@@ -141,16 +137,6 @@ impl SolSvcs {
             Some(orig_val) => *orig_val,
             None => attr.def_val,
         };
-        match (attr_id, item) {
-            (&ec::attrs::SKILL_LEVEL, SolItem::Skill(s)) => {
-                return Ok(SolAttrVal::new(
-                    base_val,
-                    s.get_level() as AttrVal,
-                    s.get_level() as AttrVal,
-                ))
-            }
-            _ => (),
-        }
         let mut accumulator = SolModAccumFast::new();
         for modification in self.calc_iter_modifications(sol_view, item, attr_id) {
             accumulator.add_val(

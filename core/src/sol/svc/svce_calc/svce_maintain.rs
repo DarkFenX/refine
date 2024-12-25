@@ -69,7 +69,7 @@ impl SolSvcs {
         }
     }
     pub(in crate::sol::svc) fn calc_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.calc_data.attrs.item_loaded(item.get_id());
+        self.calc_data.attrs.item_loaded(item);
         self.calc_data.std.reg_affectee(sol_view, item);
         self.handle_location_owner_change(sol_view, item);
     }
