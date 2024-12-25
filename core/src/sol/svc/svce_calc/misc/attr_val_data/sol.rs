@@ -1,6 +1,4 @@
-use crate::{defs::SolItemId, err::basic::ItemLoadedError, util::StMap};
-
-use super::item::SolItemAttrValData;
+use crate::{defs::SolItemId, err::basic::ItemLoadedError, sol::svc::svce_calc::misc::SolItemAttrValData, util::StMap};
 
 #[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolAttrValData {
