@@ -82,7 +82,7 @@ impl SolSvcs {
                 .overrides
                 .get(&ovr_attr_id)
                 .unwrap();
-            let val = match ovr_fn(self, sol_view, item_id) {
+            match ovr_fn(self, sol_view, item_id) {
                 Ok(val) => vals.insert(ovr_attr_id, val),
                 // Remove attribute just to replicate behavior of single attr val getter, which
                 // fails completely when override fails
