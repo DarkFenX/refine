@@ -1,9 +1,4 @@
-use crate::{
-    defs::{EAttrId, SolItemId},
-    err::basic::ItemLoadedError,
-    sol::svc::svce_calc::SolAttrVal,
-    util::StMap,
-};
+use crate::{defs::SolItemId, err::basic::ItemLoadedError, util::StMap};
 
 use super::item::SolItemAttrValData;
 
@@ -16,23 +11,23 @@ impl SolAttrValData {
         Self { data: StMap::new() }
     }
     // Query methods
-    pub(in crate::sol::svc::svce_calc) fn get_item_attrs(
+    pub(in crate::sol::svc::svce_calc) fn get_item_attr_data(
         &self,
         item_id: &SolItemId,
-    ) -> Result<&StMap<EAttrId, SolAttrVal>, ItemLoadedError> {
+    ) -> Result<&SolItemAttrValData, ItemLoadedError> {
         match self.data.get(item_id) {
-            Some(data) => Ok(data.get_attrs()),
+            Some(data) => Ok(data),
             // All items known to calculator should be added to the map, so consider absence an
             // error
             None => Err(ItemLoadedError::new(*item_id)),
         }
     }
-    pub(in crate::sol::svc::svce_calc) fn get_item_attrs_mut(
+    pub(in crate::sol::svc::svce_calc) fn get_item_attr_data_mut(
         &mut self,
         item_id: &SolItemId,
-    ) -> Result<&mut StMap<EAttrId, SolAttrVal>, ItemLoadedError> {
+    ) -> Result<&mut SolItemAttrValData, ItemLoadedError> {
         match self.data.get_mut(item_id) {
-            Some(data) => Ok(data.get_attrs_mut()),
+            Some(data) => Ok(data),
             // All items known to calculator should be added to the map, so consider absence an
             // error
             None => Err(ItemLoadedError::new(*item_id)),

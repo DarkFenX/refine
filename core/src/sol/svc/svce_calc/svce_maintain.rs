@@ -252,8 +252,8 @@ impl SolSvcs {
         item_id: &SolItemId,
         attr_id: &EAttrId,
     ) {
-        if let Ok(item_attrs) = self.calc_data.attrs.get_item_attrs_mut(item_id) {
-            if item_attrs.remove(attr_id).is_some() {
+        if let Ok(item_attr_data) = self.calc_data.attrs.get_item_attr_data_mut(item_id) {
+            if item_attr_data.values.remove(attr_id).is_some() {
                 self.notify_attr_val_changed(sol_view, item_id, attr_id);
             }
         }

@@ -30,15 +30,16 @@ impl SolSvcs {
         attr_id: &EAttrId,
     ) -> Result<SolAttrVal, AttrCalcError> {
         // Try accessing cached value
-        if let Some(val) = self.calc_data.attrs.get_item_attrs(item_id)?.get(attr_id) {
+        if let Some(val) = self.calc_data.attrs.get_item_attr_data(item_id)?.values.get(attr_id) {
             return Ok(*val);
         }
         // If it is not cached, calculate and cache it
         let val = self.calc_calc_item_attr_val(sol_view, item_id, attr_id)?;
         self.calc_data
             .attrs
-            .get_item_attrs_mut(item_id)
+            .get_item_attr_data_mut(item_id)
             .unwrap()
+            .values
             .insert(*attr_id, val);
         Ok(val)
     }
@@ -52,7 +53,7 @@ impl SolSvcs {
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
-        let mut vals = self.calc_data.attrs.get_item_attrs(&item.get_id())?.clone();
+        let mut vals = self.calc_data.attrs.get_item_attr_data(&item.get_id())?.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
         for attr_id in item.get_attrs().unwrap().keys() {

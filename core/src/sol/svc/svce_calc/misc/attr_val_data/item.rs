@@ -5,9 +5,9 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub(super) struct SolItemAttrValData {
-    pub(super) values: StMap<EAttrId, SolAttrVal>,
-    pub(super) overrides: StMap<EAttrId, fn(&SolView, &SolItem) -> Option<SolAttrVal>>,
+pub(in crate::sol::svc::svce_calc) struct SolItemAttrValData {
+    pub(in crate::sol::svc::svce_calc) values: StMap<EAttrId, SolAttrVal>,
+    pub(in crate::sol::svc::svce_calc) overrides: StMap<EAttrId, fn(&SolView, &SolItem) -> Option<SolAttrVal>>,
 }
 impl SolItemAttrValData {
     pub(super) fn new() -> Self {
@@ -15,11 +15,5 @@ impl SolItemAttrValData {
             values: StMap::new(),
             overrides: StMap::new(),
         }
-    }
-    pub(super) fn get_attrs(&self) -> &StMap<EAttrId, SolAttrVal> {
-        &self.values
-    }
-    pub(super) fn get_attrs_mut(&mut self) -> &mut StMap<EAttrId, SolAttrVal> {
-        &mut self.values
     }
 }

@@ -73,7 +73,7 @@ impl SolSvcs {
         for attr_id in sol_view.items.get_item(item_id)?.get_attrs()?.keys() {
             attr_ids.insert(*attr_id);
         }
-        for attr_id in self.calc_data.attrs.get_item_attrs(item_id).unwrap().keys() {
+        for attr_id in self.calc_data.attrs.get_item_attr_data(item_id).unwrap().values.keys() {
             attr_ids.insert(*attr_id);
         }
         Ok(attr_ids.into_iter())
