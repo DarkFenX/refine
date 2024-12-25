@@ -34,7 +34,7 @@ impl SolSvcs {
         // Try accessing cached value
         let item_attr_data = self.calc_data.attrs.get_item_attr_data(item_id)?;
         if let Some(ovr_fn) = item_attr_data.overrides.get(attr_id) {
-            return Ok(ovr_fn(self, sol_view, item_id));
+            return ovr_fn(self, sol_view, item_id);
         }
         if let Some(val) = item_attr_data.values.get(attr_id) {
             return Ok(*val);
@@ -82,7 +82,10 @@ impl SolSvcs {
                 .overrides
                 .get(&ovr_attr_id)
                 .unwrap();
-            let val = ovr_fn(self, sol_view, item_id);
+            let val = match ovr_fn(self, sol_view, item_id) {
+                Ok(val) => val,
+                Err(_) => continue,
+            };
             vals.insert(ovr_attr_id, val);
         }
         Ok(vals.into_iter())

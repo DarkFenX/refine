@@ -1,7 +1,7 @@
 use crate::{
     defs::{EAttrId, SolItemId},
     sol::{
-        svc::{svce_calc::SolAttrVal, SolSvcs},
+        svc::{err::AttrCalcError, svce_calc::SolAttrVal, SolSvcs},
         SolView,
     },
     util::StMap,
@@ -10,7 +10,8 @@ use crate::{
 #[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolItemAttrValData {
     pub(in crate::sol::svc::svce_calc) values: StMap<EAttrId, SolAttrVal>,
-    pub(in crate::sol::svc::svce_calc) overrides: StMap<EAttrId, fn(&mut SolSvcs, &SolView, &SolItemId) -> SolAttrVal>,
+    pub(in crate::sol::svc::svce_calc) overrides:
+        StMap<EAttrId, fn(&mut SolSvcs, &SolView, &SolItemId) -> Result<SolAttrVal, AttrCalcError>>,
 }
 impl SolItemAttrValData {
     pub(super) fn new() -> Self {
