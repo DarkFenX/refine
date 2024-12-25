@@ -1,13 +1,17 @@
 use crate::{
-    defs::EAttrId,
-    sol::{item::SolItem, svc::svce_calc::SolAttrVal, SolView},
+    defs::{EAttrId, SolItemId},
+    sol::{
+        svc::{svce_calc::SolAttrVal, SolSvcs},
+        SolView,
+    },
     util::StMap,
 };
 
 #[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolItemAttrValData {
     pub(in crate::sol::svc::svce_calc) values: StMap<EAttrId, SolAttrVal>,
-    pub(in crate::sol::svc::svce_calc) overrides: StMap<EAttrId, fn(&SolView, &SolItem) -> Option<SolAttrVal>>,
+    pub(in crate::sol::svc::svce_calc) overrides:
+        StMap<EAttrId, fn(&mut SolSvcs, &SolView, &SolItemId) -> Option<SolAttrVal>>,
 }
 impl SolItemAttrValData {
     pub(super) fn new() -> Self {

@@ -30,7 +30,13 @@ impl SolSvcs {
         attr_id: &EAttrId,
     ) -> Result<SolAttrVal, AttrCalcError> {
         // Try accessing cached value
-        if let Some(val) = self.calc_data.attrs.get_item_attr_data(item_id)?.values.get(attr_id) {
+        let item_attr_data = self.calc_data.attrs.get_item_attr_data(item_id)?;
+        // if let Some(ovr_fn) = item_attr_data.overrides.get(attr_id) {
+        //     if let Some(val) = ovr_fn(self, sol_view, item_id) {
+        //         return Ok(val);
+        //     }
+        // }
+        if let Some(val) = item_attr_data.values.get(attr_id) {
             return Ok(*val);
         }
         // If it is not cached, calculate and cache it
@@ -49,19 +55,28 @@ impl SolSvcs {
         item_id: &SolItemId,
     ) -> Result<impl ExactSizeIterator<Item = (EAttrId, SolAttrVal)>, LoadedItemFoundError> {
         let item = sol_view.items.get_item(item_id)?;
+        let item_attr_data = self.calc_data.attrs.get_item_attr_data(&item.get_id())?;
         // SolItem can have attributes which are not defined on the original EVE item. This happens
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
-        let mut vals = self.calc_data.attrs.get_item_attr_data(&item.get_id())?.values.clone();
+        let mut vals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
         for attr_id in item.get_attrs().unwrap().keys() {
-            match self.calc_get_item_attr_val(sol_view, &item.get_id(), attr_id) {
-                Ok(v) => vals.entry(*attr_id).or_insert(v),
-                _ => continue,
-            };
+            if let std::collections::hash_map::Entry::Vacant(entry) = vals.entry(*attr_id) {
+                match self.calc_get_item_attr_val(sol_view, &item.get_id(), attr_id) {
+                    Ok(v) => entry.insert(v),
+                    _ => continue,
+                };
+            }
         }
+        // Go through overrides and use those to overwrite values
+        // for (attr_id, ovr_fn) in item_attr_data.overrides.iter() {
+        //     if let Some(val) = ovr_fn(self, sol_view, item_id) {
+        //         vals.insert(*attr_id, val);
+        //     }
+        // }
         Ok(vals.into_iter())
     }
     // Private methods
