@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl SolSvcs {
-    fn handle_effect_started(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
+    fn calc_rah_effects_started(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
         // TODO: set callbacks and emit "attr changed" events for cleared results
         if let SolItem::Module(module) = item {
             if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
@@ -24,7 +24,7 @@ impl SolSvcs {
             }
         }
     }
-    fn handle_effect_stopped(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
+    fn calc_rah_effects_stopped(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
         // TODO: remove callbacks and emit "attr changed" events for cleared results
         if let SolItem::Module(module) = item {
             if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
@@ -39,7 +39,7 @@ impl SolSvcs {
             }
         }
     }
-    fn handle_attr_value_changed(&mut self) {
+    fn calc_rah_attr_value_changed(&mut self) {
         // Args: item ID, attr ID
         // Ship resistance attributes
         // - get item from view, if not ship do nothing, if ship go on
@@ -52,7 +52,7 @@ impl SolSvcs {
         // - if fit has only one RAH (check in fit-to-rah map), do nothing, if more go on
         // - clear results for all items for its fit
     }
-    fn handle_dmg_profile_changed(&mut self) {}
+    fn calc_rah_dmg_profile_changed(&mut self) {}
     fn clear_results_for_item(&mut self, item_id: &SolItemId) {
         self.calc_data.rah.resonances.get_mut(item_id).unwrap().clear();
     }
