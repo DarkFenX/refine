@@ -18,6 +18,7 @@ pub(crate) const SUBSYSTEM: EEffectId = 3772;
 pub(crate) const HARDPOINT_MODIFIER_EFFECT: EEffectId = 3773;
 pub(crate) const SLOT_MODIFIER: EEffectId = 3774;
 pub(crate) const WARP_DISRUPT_SPHERE: EEffectId = 3380;
+pub(crate) const ADAPTIVE_ARMOR_HARDENER: EEffectId = 4928;
 pub(crate) const FUELED_ARMOR_REPAIR: EEffectId = 5275;
 pub(crate) const STRUCTURE_WARP_SCRAMBLE_BLOCK_MWD_WITH_NPC: EEffectId = 6222;
 pub(crate) const REMOTE_WEBIFIER_FALLOFF: EEffectId = 6426;
