@@ -98,6 +98,7 @@ impl SolSvcs {
             // Buff maintenance - add info about effects which use default buff attributes
             self.calc_data.buffs.reg_effect(item_id, effect);
         }
+        self.calc_rah_effects_started(sol_view, item, effects);
     }
     pub(in crate::sol::svc) fn calc_effects_stopped(
         &mut self,
@@ -105,6 +106,7 @@ impl SolSvcs {
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
+        self.calc_rah_effects_stopped(sol_view, item, effects);
         let item_id = item.get_id();
         let mut raw_modifiers = Vec::new();
         let mut util_items = Vec::new();

@@ -2,30 +2,56 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    defs::SolItemId,
+    defs::{EAttrId, SolItemId},
     ec,
-    sol::{item::SolItem, svc::SolSvcs},
+    sol::{item::SolItem, svc::SolSvcs, SolView},
     util::StMap,
 };
 
+// List all armor resonance attributes and also define default sorting order. When equal damage is
+// received across several damage types, those which come earlier in this list will be picked as
+// donors
+const RES_ATTR_IDS: [EAttrId; 4] = [
+    ec::attrs::ARMOR_EM_DMG_RESONANCE,
+    ec::attrs::ARMOR_EXPL_DMG_RESONANCE,
+    ec::attrs::ARMOR_KIN_DMG_RESONANCE,
+    ec::attrs::ARMOR_THERM_DMG_RESONANCE,
+];
+
 impl SolSvcs {
-    fn calc_rah_effects_started(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
-        // TODO: set callbacks and emit "attr changed" events for cleared results
+    pub(in crate::sol::svc::svce_calc) fn calc_rah_effects_started(
+        &mut self,
+        sol_view: &SolView,
+        item: &SolItem,
+        effects: &Vec<ad::ArcEffect>,
+    ) {
+        if self.calc_data.rah.running {
+            return;
+        }
+        // TODO: set callbacks
         if let SolItem::Module(module) = item {
             if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
                 let item_id = module.get_id();
                 let fit_id = module.get_fit_id();
                 let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
                 for other_item_id in other_item_ids {
-                    self.clear_results_for_item(&other_item_id);
+                    self.clear_results_for_item(sol_view, &other_item_id);
                 }
                 self.calc_data.rah.resonances.insert(item_id, StMap::new());
                 self.calc_data.rah.by_fit.add_entry(fit_id, item_id);
             }
         }
     }
-    fn calc_rah_effects_stopped(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
-        // TODO: remove callbacks and emit "attr changed" events for cleared results
+    pub(in crate::sol::svc::svce_calc) fn calc_rah_effects_stopped(
+        &mut self,
+        sol_view: &SolView,
+        item: &SolItem,
+        effects: &Vec<ad::ArcEffect>,
+    ) {
+        if self.calc_data.rah.running {
+            return;
+        }
+        // TODO: remove callbacks
         if let SolItem::Module(module) = item {
             if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
                 let item_id = module.get_id();
@@ -34,12 +60,15 @@ impl SolSvcs {
                 self.calc_data.rah.by_fit.remove_entry(&module.get_fit_id(), &item_id);
                 let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
                 for other_item_id in other_item_ids {
-                    self.clear_results_for_item(&other_item_id);
+                    self.clear_results_for_item(sol_view, &other_item_id);
                 }
             }
         }
     }
     fn calc_rah_attr_value_changed(&mut self) {
+        if self.calc_data.rah.running {
+            return;
+        }
         // Args: item ID, attr ID
         // Ship resistance attributes
         // - get item from view, if not ship do nothing, if ship go on
@@ -52,8 +81,18 @@ impl SolSvcs {
         // - if fit has only one RAH (check in fit-to-rah map), do nothing, if more go on
         // - clear results for all items for its fit
     }
-    fn calc_rah_dmg_profile_changed(&mut self) {}
-    fn clear_results_for_item(&mut self, item_id: &SolItemId) {
-        self.calc_data.rah.resonances.get_mut(item_id).unwrap().clear();
+    fn calc_rah_dmg_profile_changed(&mut self) {
+        if self.calc_data.rah.running {
+            return;
+        }
+    }
+    fn clear_results_for_item(&mut self, sol_view: &SolView, item_id: &SolItemId) {
+        let rah_resos = self.calc_data.rah.resonances.get_mut(item_id).unwrap();
+        if !rah_resos.is_empty() {
+            rah_resos.clear();
+            for attr_id in RES_ATTR_IDS.iter() {
+                self.notify_attr_val_changed(sol_view, item_id, attr_id)
+            }
+        }
     }
 }
