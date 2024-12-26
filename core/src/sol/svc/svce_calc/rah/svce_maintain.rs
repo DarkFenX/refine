@@ -12,15 +12,7 @@ use crate::{
     util::StMap,
 };
 
-// List all armor resonance attributes and also define default sorting order. When equal damage is
-// received across several damage types, those which come earlier in this list will be picked as
-// donors
-const RES_ATTR_IDS: [EAttrId; 4] = [
-    ec::attrs::ARMOR_EM_DMG_RESONANCE,
-    ec::attrs::ARMOR_EXPL_DMG_RESONANCE,
-    ec::attrs::ARMOR_KIN_DMG_RESONANCE,
-    ec::attrs::ARMOR_THERM_DMG_RESONANCE,
-];
+use super::shared::RES_ATTR_IDS;
 
 impl SolSvcs {
     pub(in crate::sol::svc::svce_calc) fn calc_rah_effects_started(
@@ -29,7 +21,7 @@ impl SolSvcs {
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        if self.calc_data.rah.running {
+        if self.calc_data.rah.sim_running {
             return;
         }
         if let SolItem::Module(module) = item {
@@ -67,7 +59,7 @@ impl SolSvcs {
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        if self.calc_data.rah.running {
+        if self.calc_data.rah.sim_running {
             return;
         }
         if let SolItem::Module(module) = item {
@@ -98,7 +90,7 @@ impl SolSvcs {
         }
     }
     fn calc_rah_attr_value_changed(&mut self) {
-        if self.calc_data.rah.running {
+        if self.calc_data.rah.sim_running {
             return;
         }
         // Args: item ID, attr ID
@@ -114,11 +106,11 @@ impl SolSvcs {
         // - clear results for all items for its fit
     }
     fn calc_rah_dmg_profile_changed(&mut self) {
-        if self.calc_data.rah.running {
+        if self.calc_data.rah.sim_running {
             return;
         }
     }
-    // "Private" methods
+    // Private methods
     fn clear_results_for_item(&mut self, sol_view: &SolView, item_id: &SolItemId) {
         let rah_resos = self.calc_data.rah.resonances.get_mut(item_id).unwrap();
         if !rah_resos.is_empty() {
@@ -135,6 +127,13 @@ impl SolSvcs {
         val: SolAttrVal,
         attr_id: EAttrId,
     ) -> SolAttrVal {
+        if let Some(val) = self.calc_data.rah.resonances.get(item_id).unwrap().get(&attr_id) {
+            return *val;
+        }
+        self.calc_data.rah.sim_running = true;
+        let fit_id = sol_view.items.get_item(item_id).unwrap().get_fit_id().unwrap();
+        self.calc_rah_run_simulation(sol_view, &fit_id);
+        self.calc_data.rah.sim_running = false;
         val
     }
 }

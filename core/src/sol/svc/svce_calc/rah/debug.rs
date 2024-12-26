@@ -13,7 +13,7 @@ impl SolRahSim {
                 check_attr(sol_view, attr_id)?;
             }
             // RAH sim should never be running during debug requests
-            if self.running {
+            if self.sim_running {
                 return Err(SolDebugError::new());
             }
         }
