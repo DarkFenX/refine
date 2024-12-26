@@ -1,33 +1,26 @@
+use itertools::Itertools;
+
 use crate::{
     ad,
-    defs::{EAttrId, SolFitId, SolItemId},
+    defs::SolItemId,
     ec,
-    sol::{item::SolItem, svc::svce_calc::SolAttrVal},
-    util::{StMap, StMapSetL1},
+    sol::{item::SolItem, svc::SolSvcs},
+    util::StMap,
 };
 
-struct RahSim {
-    resonances: StMap<SolItemId, StMap<EAttrId, SolAttrVal>>,
-    by_fit: StMapSetL1<SolFitId, SolItemId>,
-}
-impl RahSim {
-    fn new() -> Self {
-        Self {
-            resonances: StMap::new(),
-            by_fit: StMapSetL1::new(),
-        }
-    }
+impl SolSvcs {
     fn handle_effect_started(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
         // TODO: set callbacks and emit "attr changed" events for cleared results
         if let SolItem::Module(module) = item {
             if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
                 let item_id = module.get_id();
                 let fit_id = module.get_fit_id();
-                for other_item_id in self.by_fit.get(&fit_id) {
-                    self.resonances.get_mut(other_item_id).unwrap().clear();
+                let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
+                for other_item_id in other_item_ids {
+                    self.clear_results_for_item(&other_item_id);
                 }
-                self.resonances.insert(item_id, StMap::new());
-                self.by_fit.add_entry(fit_id, item_id);
+                self.calc_data.rah.resonances.insert(item_id, StMap::new());
+                self.calc_data.rah.by_fit.add_entry(fit_id, item_id);
             }
         }
     }
@@ -37,10 +30,11 @@ impl RahSim {
             if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
                 let item_id = module.get_id();
                 let fit_id = module.get_fit_id();
-                self.resonances.remove(&item_id);
-                self.by_fit.remove_entry(&module.get_fit_id(), &item_id);
-                for other_item_id in self.by_fit.get(&fit_id) {
-                    self.resonances.get_mut(other_item_id).unwrap().clear();
+                self.calc_data.rah.resonances.remove(&item_id);
+                self.calc_data.rah.by_fit.remove_entry(&module.get_fit_id(), &item_id);
+                let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
+                for other_item_id in other_item_ids {
+                    self.clear_results_for_item(&other_item_id);
                 }
             }
         }
@@ -59,4 +53,7 @@ impl RahSim {
         // - clear results for all items for its fit
     }
     fn handle_dmg_profile_changed(&mut self) {}
+    fn clear_results_for_item(&mut self, item_id: &SolItemId) {
+        self.calc_data.rah.resonances.get_mut(item_id).unwrap().clear();
+    }
 }

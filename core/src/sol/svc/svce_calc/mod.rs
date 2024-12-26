@@ -45,6 +45,7 @@ mod data;
 mod misc;
 mod mod_info;
 mod modifier;
+mod rah;
 mod registers;
 mod svce_attr_calc;
 mod svce_maintain;
