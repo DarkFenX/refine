@@ -4,7 +4,11 @@ use crate::{
     ad,
     defs::{EAttrId, SolItemId},
     ec,
-    sol::{item::SolItem, svc::SolSvcs, SolView},
+    sol::{
+        item::SolItem,
+        svc::{svce_calc::SolAttrVal, SolSvcs},
+        SolView,
+    },
     util::StMap,
 };
 
@@ -28,7 +32,6 @@ impl SolSvcs {
         if self.calc_data.rah.running {
             return;
         }
-        // TODO: set callbacks
         if let SolItem::Module(module) = item {
             if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
                 let item_id = module.get_id();
@@ -39,6 +42,19 @@ impl SolSvcs {
                 }
                 self.calc_data.rah.resonances.insert(item_id, StMap::new());
                 self.calc_data.rah.by_fit.add_entry(fit_id, item_id);
+                let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(&item_id).unwrap();
+                item_attr_data
+                    .postprocessors
+                    .insert(ec::attrs::ARMOR_EM_DMG_RESONANCE, rah_em_resonance_postprocessor);
+                item_attr_data
+                    .postprocessors
+                    .insert(ec::attrs::ARMOR_THERM_DMG_RESONANCE, rah_therm_resonance_postprocessor);
+                item_attr_data
+                    .postprocessors
+                    .insert(ec::attrs::ARMOR_KIN_DMG_RESONANCE, rah_kin_resonance_postprocessor);
+                item_attr_data
+                    .postprocessors
+                    .insert(ec::attrs::ARMOR_EXPL_DMG_RESONANCE, rah_expl_resonance_postprocessor);
             }
         }
     }
@@ -51,11 +67,21 @@ impl SolSvcs {
         if self.calc_data.rah.running {
             return;
         }
-        // TODO: remove callbacks
         if let SolItem::Module(module) = item {
             if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
                 let item_id = module.get_id();
                 let fit_id = module.get_fit_id();
+                let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(&item_id).unwrap();
+                item_attr_data.postprocessors.remove(&ec::attrs::ARMOR_EM_DMG_RESONANCE);
+                item_attr_data
+                    .postprocessors
+                    .remove(&ec::attrs::ARMOR_THERM_DMG_RESONANCE);
+                item_attr_data
+                    .postprocessors
+                    .remove(&ec::attrs::ARMOR_KIN_DMG_RESONANCE);
+                item_attr_data
+                    .postprocessors
+                    .remove(&ec::attrs::ARMOR_EXPL_DMG_RESONANCE);
                 self.calc_data.rah.resonances.remove(&item_id);
                 self.calc_data.rah.by_fit.remove_entry(&module.get_fit_id(), &item_id);
                 let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
@@ -86,6 +112,7 @@ impl SolSvcs {
             return;
         }
     }
+    // "Private" methods
     fn clear_results_for_item(&mut self, sol_view: &SolView, item_id: &SolItemId) {
         let rah_resos = self.calc_data.rah.resonances.get_mut(item_id).unwrap();
         if !rah_resos.is_empty() {
@@ -95,4 +122,50 @@ impl SolSvcs {
             }
         }
     }
+}
+
+fn rah_resonance_postprocessor(
+    svcs: &mut SolSvcs,
+    sol_view: &SolView,
+    item_id: &SolItemId,
+    val: SolAttrVal,
+    attr_id: EAttrId,
+) -> SolAttrVal {
+    val
+}
+
+fn rah_em_resonance_postprocessor(
+    svcs: &mut SolSvcs,
+    sol_view: &SolView,
+    item_id: &SolItemId,
+    val: SolAttrVal,
+) -> SolAttrVal {
+    rah_resonance_postprocessor(svcs, sol_view, item_id, val, ec::attrs::ARMOR_EM_DMG_RESONANCE)
+}
+
+fn rah_therm_resonance_postprocessor(
+    svcs: &mut SolSvcs,
+    sol_view: &SolView,
+    item_id: &SolItemId,
+    val: SolAttrVal,
+) -> SolAttrVal {
+    rah_resonance_postprocessor(svcs, sol_view, item_id, val, ec::attrs::ARMOR_THERM_DMG_RESONANCE)
+}
+
+fn rah_kin_resonance_postprocessor(
+    svcs: &mut SolSvcs,
+    sol_view: &SolView,
+    item_id: &SolItemId,
+    val: SolAttrVal,
+) -> SolAttrVal {
+    rah_resonance_postprocessor(svcs, sol_view, item_id, val, ec::attrs::ARMOR_KIN_DMG_RESONANCE)
+}
+
+fn rah_expl_resonance_postprocessor(
+    svcs: &mut SolSvcs,
+    sol_view: &SolView,
+    item_id: &SolItemId,
+    val: SolAttrVal,
+) -> SolAttrVal {
+    rah_resonance_postprocessor(svcs, sol_view, item_id, val, ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
 }
