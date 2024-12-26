@@ -120,21 +120,24 @@ impl SolSvcs {
             }
         }
     }
-    fn get_rah_resonance(
-        &mut self,
-        sol_view: &SolView,
-        item_id: &SolItemId,
-        val: SolAttrVal,
-        attr_id: EAttrId,
-    ) -> SolAttrVal {
+    fn get_rah_resonance(&mut self, sol_view: &SolView, item_id: &SolItemId, attr_id: EAttrId) -> SolAttrVal {
+        // Unwrap item, since method is supposed to be called only for registered RAHs
         if let Some(val) = self.calc_data.rah.resonances.get(item_id).unwrap().get(&attr_id) {
             return *val;
         }
-        self.calc_data.rah.sim_running = true;
+        // Unwrap item and its fit ID, since registered RAHs are supposed to be modules, which have
+        // fit ID
         let fit_id = sol_view.items.get_item(item_id).unwrap().get_fit_id().unwrap();
         self.calc_rah_run_simulation(sol_view, &fit_id);
-        self.calc_data.rah.sim_running = false;
-        val
+        // Unwrap value, since simulation is supposed to always set value for requested attr
+        *self
+            .calc_data
+            .rah
+            .resonances
+            .get(item_id)
+            .unwrap()
+            .get(&attr_id)
+            .unwrap()
     }
 }
 
@@ -142,34 +145,34 @@ fn rah_em_resonance_postprocessor(
     svcs: &mut SolSvcs,
     sol_view: &SolView,
     item_id: &SolItemId,
-    val: SolAttrVal,
+    _: SolAttrVal,
 ) -> SolAttrVal {
-    svcs.get_rah_resonance(sol_view, item_id, val, ec::attrs::ARMOR_EM_DMG_RESONANCE)
+    svcs.get_rah_resonance(sol_view, item_id, ec::attrs::ARMOR_EM_DMG_RESONANCE)
 }
 
 fn rah_therm_resonance_postprocessor(
     svcs: &mut SolSvcs,
     sol_view: &SolView,
     item_id: &SolItemId,
-    val: SolAttrVal,
+    _: SolAttrVal,
 ) -> SolAttrVal {
-    svcs.get_rah_resonance(sol_view, item_id, val, ec::attrs::ARMOR_THERM_DMG_RESONANCE)
+    svcs.get_rah_resonance(sol_view, item_id, ec::attrs::ARMOR_THERM_DMG_RESONANCE)
 }
 
 fn rah_kin_resonance_postprocessor(
     svcs: &mut SolSvcs,
     sol_view: &SolView,
     item_id: &SolItemId,
-    val: SolAttrVal,
+    _: SolAttrVal,
 ) -> SolAttrVal {
-    svcs.get_rah_resonance(sol_view, item_id, val, ec::attrs::ARMOR_KIN_DMG_RESONANCE)
+    svcs.get_rah_resonance(sol_view, item_id, ec::attrs::ARMOR_KIN_DMG_RESONANCE)
 }
 
 fn rah_expl_resonance_postprocessor(
     svcs: &mut SolSvcs,
     sol_view: &SolView,
     item_id: &SolItemId,
-    val: SolAttrVal,
+    _: SolAttrVal,
 ) -> SolAttrVal {
-    svcs.get_rah_resonance(sol_view, item_id, val, ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
+    svcs.get_rah_resonance(sol_view, item_id, ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
 }
