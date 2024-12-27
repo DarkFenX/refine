@@ -13,7 +13,13 @@ impl SolarSystem {
             // Update services for charge
             let projectee_item = self.items.get_item(projectee_item_id).unwrap();
             self.svcs.remove_item_projection(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                &SolView::new(
+                    &self.src,
+                    &self.fleets,
+                    &self.fits,
+                    &self.items,
+                    &self.default_incoming_dmg,
+                ),
                 item,
                 projectee_item,
             );
@@ -22,8 +28,16 @@ impl SolarSystem {
             self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         }
         // Update services
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.svcs.remove_item(
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
+            item,
+        );
         // Update skeleton
         let module_item_id = charge.get_cont_id();
         let module = self

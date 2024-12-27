@@ -14,7 +14,13 @@ impl SolarSystem {
             // Update services
             let projectee_item = self.items.get_item(projectee_item_id).unwrap();
             self.svcs.remove_item_projection(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                &SolView::new(
+                    &self.src,
+                    &self.fleets,
+                    &self.fits,
+                    &self.items,
+                    &self.default_incoming_dmg,
+                ),
                 item,
                 projectee_item,
             );

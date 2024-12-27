@@ -8,8 +8,16 @@ impl SolarSystem {
     pub fn remove_fw_effect(&mut self, item_id: &SolItemId) -> Result<(), RemoveFwEffectError> {
         let item = self.items.get_item(item_id)?;
         let fw_effect = item.get_fw_effect()?;
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.svcs.remove_item(
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
+            item,
+        );
         let fit = self.fits.get_fit_mut(&fw_effect.get_fit_id()).unwrap();
         fit.fw_effects.remove(item_id);
         self.items.remove_item(item_id);

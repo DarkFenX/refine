@@ -17,7 +17,13 @@ impl SolarSystem {
             .set(*effect_id, mode);
         let item = self.items.get_item(item_id).unwrap();
         self.svcs.process_effects(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
             item,
             item.get_state(),
         );

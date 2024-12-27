@@ -7,26 +7,58 @@ use crate::{
 impl SolarSystem {
     pub fn remove_module_mutation(&mut self, item_id: &SolItemId) -> Result<(), RemoveModuleMutationError> {
         let item = self.items.get_item(item_id)?;
-        self.svcs
-            .unload_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.svcs.unload_item(
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
+            item,
+        );
         let module = match self.items.get_item_mut(item_id).unwrap().get_module_mut() {
             Ok(module) => module,
             Err(error) => {
                 let item = self.items.get_item(item_id).unwrap();
-                self.svcs
-                    .load_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+                self.svcs.load_item(
+                    &SolView::new(
+                        &self.src,
+                        &self.fleets,
+                        &self.fits,
+                        &self.items,
+                        &self.default_incoming_dmg,
+                    ),
+                    item,
+                );
                 return Err(error.into());
             }
         };
         if let Err(error) = module.unmutate(&self.src) {
             let item = self.items.get_item(item_id).unwrap();
-            self.svcs
-                .load_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+            self.svcs.load_item(
+                &SolView::new(
+                    &self.src,
+                    &self.fleets,
+                    &self.fits,
+                    &self.items,
+                    &self.default_incoming_dmg,
+                ),
+                item,
+            );
             return Err(error.into());
         }
         let item = self.items.get_item(item_id).unwrap();
-        self.svcs
-            .load_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.svcs.load_item(
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
+            item,
+        );
         Ok(())
     }
 }

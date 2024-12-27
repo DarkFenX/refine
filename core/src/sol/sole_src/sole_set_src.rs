@@ -13,7 +13,13 @@ impl SolarSystem {
     pub fn set_src(&mut self, mut src: Src) {
         self.remove_autocharges();
         // Process non-autocharge items
-        let sol_view = &SolView::new(&self.src, &self.fleets, &self.fits, &self.items);
+        let sol_view = &SolView::new(
+            &self.src,
+            &self.fleets,
+            &self.fits,
+            &self.items,
+            &self.default_incoming_dmg,
+        );
         for item in self.items.iter() {
             self.svcs.unload_item(sol_view, item);
         }
@@ -40,7 +46,13 @@ impl SolarSystem {
             self.add_item_autocharges(&autocharge_carrier_id);
         }
         // Register things in services again
-        let sol_view = &SolView::new(&self.src, &self.fleets, &self.fits, &self.items);
+        let sol_view = &SolView::new(
+            &self.src,
+            &self.fleets,
+            &self.fits,
+            &self.items,
+            &self.default_incoming_dmg,
+        );
         for item in self.items.iter() {
             match item {
                 SolItem::Autocharge(autocharge) => {
@@ -51,7 +63,13 @@ impl SolarSystem {
                         self.proj_tracker.reg_projectee(autocharge.get_id(), *projectee_item_id);
                         let projectee_item = self.items.get_item(projectee_item_id).unwrap();
                         self.svcs.add_item_projection(
-                            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                            &SolView::new(
+                                &self.src,
+                                &self.fleets,
+                                &self.fits,
+                                &self.items,
+                                &self.default_incoming_dmg,
+                            ),
                             item,
                             projectee_item,
                             *range,
@@ -74,7 +92,13 @@ impl SolarSystem {
                         let projectee_item = self.items.get_item(projectee_item_id).unwrap();
                         // Update services
                         self.svcs.remove_item_projection(
-                            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                            &SolView::new(
+                                &self.src,
+                                &self.fleets,
+                                &self.fits,
+                                &self.items,
+                                &self.default_incoming_dmg,
+                            ),
                             autocharge_item,
                             projectee_item,
                         );
@@ -84,7 +108,13 @@ impl SolarSystem {
                     }
                     // Remove from services
                     self.svcs.remove_item(
-                        &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                        &SolView::new(
+                            &self.src,
+                            &self.fleets,
+                            &self.fits,
+                            &self.items,
+                            &self.default_incoming_dmg,
+                        ),
                         autocharge_item,
                     );
                     autocharge_map.add_entry(item.get_id(), *autocharge_id);

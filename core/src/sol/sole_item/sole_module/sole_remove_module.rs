@@ -23,7 +23,13 @@ impl SolarSystem {
                     let projectee_item = self.items.get_item(projectee_item_id).unwrap();
                     // Update services for charge
                     self.svcs.remove_item_projection(
-                        &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                        &SolView::new(
+                            &self.src,
+                            &self.fleets,
+                            &self.fits,
+                            &self.items,
+                            &self.default_incoming_dmg,
+                        ),
                         charge_item,
                         projectee_item,
                     );
@@ -36,7 +42,13 @@ impl SolarSystem {
                 // Update services for module
                 let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
                 self.svcs.remove_item_projection(
-                    &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                    &SolView::new(
+                        &self.src,
+                        &self.fleets,
+                        &self.fits,
+                        &self.items,
+                        &self.default_incoming_dmg,
+                    ),
                     item,
                     projectee_item,
                 );
@@ -50,7 +62,13 @@ impl SolarSystem {
             // Update services for charge
             let charge_item = self.items.get_item(&charge_id).unwrap();
             self.svcs.remove_item(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                &SolView::new(
+                    &self.src,
+                    &self.fleets,
+                    &self.fits,
+                    &self.items,
+                    &self.default_incoming_dmg,
+                ),
                 charge_item,
             );
             // Update skeleton for charge - not updating module<->charge references because both

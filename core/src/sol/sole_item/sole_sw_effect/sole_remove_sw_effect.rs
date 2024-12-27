@@ -9,8 +9,16 @@ impl SolarSystem {
         let item = self.items.get_item(item_id)?;
         // Just to check item kind
         item.get_sw_effect()?;
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.svcs.remove_item(
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
+            item,
+        );
         self.sw_effects.remove(item_id);
         self.items.remove_item(item_id);
         Ok(())

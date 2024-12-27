@@ -12,13 +12,29 @@ use crate::{
 impl SolarSystem {
     pub(in crate::sol) fn add_item_id_to_svcs(&mut self, item_id: &SolItemId) {
         let item = self.items.get_item(&item_id).unwrap();
-        self.svcs
-            .add_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.svcs.add_item(
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
+            item,
+        );
     }
     pub(in crate::sol) fn remove_item_id_from_svcs(&mut self, item_id: &SolItemId) {
         let item = self.items.get_item(&item_id).unwrap();
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.svcs.remove_item(
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
+            item,
+        );
     }
     pub(in crate::sol::sole_item) fn change_item_id_state_in_svcs(
         &mut self,
@@ -29,7 +45,13 @@ impl SolarSystem {
         if new_state != old_state {
             let item = self.items.get_item(item_id).unwrap();
             self.svcs.switch_item_state(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                &SolView::new(
+                    &self.src,
+                    &self.fleets,
+                    &self.fits,
+                    &self.items,
+                    &self.default_incoming_dmg,
+                ),
                 item,
                 old_state,
                 new_state,
@@ -45,7 +67,13 @@ impl SolarSystem {
         let projector_item = self.items.get_item(&projector_item_id).unwrap();
         let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
         self.svcs.add_item_projection(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
             projector_item,
             projectee_item,
             range,
@@ -60,7 +88,13 @@ impl SolarSystem {
         let projector_item = self.items.get_item(&projector_item_id).unwrap();
         let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
         self.svcs.change_item_proj_range(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
             projector_item,
             projectee_item,
             range,
@@ -74,7 +108,13 @@ impl SolarSystem {
         let projector_item = self.items.get_item(&projector_item_id).unwrap();
         let projectee_item = self.items.get_item(&projectee_item_id).unwrap();
         self.svcs.remove_item_projection(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
             projector_item,
             projectee_item,
         );

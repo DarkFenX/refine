@@ -15,7 +15,13 @@ impl SolarSystem {
             }
             let old_fleet = self.fleets.get_fleet(&old_fleet_id).unwrap();
             self.svcs.remove_fit_from_fleet(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                &SolView::new(
+                    &self.src,
+                    &self.fleets,
+                    &self.fits,
+                    &self.items,
+                    &self.default_incoming_dmg,
+                ),
                 old_fleet,
                 fit_id,
             );
@@ -28,7 +34,13 @@ impl SolarSystem {
         let fleet = self.fleets.get_fleet_mut(&fleet_id).unwrap();
         fleet.add_fit(*fit_id);
         self.svcs.add_fit_to_fleet(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
             self.fleets.get_fleet(&fleet_id).unwrap(),
             fit_id,
         );

@@ -8,8 +8,16 @@ impl SolarSystem {
     pub fn remove_rig(&mut self, item_id: &SolItemId) -> Result<(), RemoveRigError> {
         let item = self.items.get_item(item_id)?;
         let rig = item.get_rig()?;
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.svcs.remove_item(
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
+            item,
+        );
         let fit = self.fits.get_fit_mut(&rig.get_fit_id()).unwrap();
         fit.rigs.remove(item_id);
         self.items.remove_item(item_id);

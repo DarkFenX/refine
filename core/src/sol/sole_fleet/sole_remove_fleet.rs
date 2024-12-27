@@ -12,7 +12,13 @@ impl SolarSystem {
         let fit_ids = fleet.iter_fits().map(|v| *v).collect_vec();
         for fit_id in fit_ids.iter() {
             self.svcs.remove_fit_from_fleet(
-                &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+                &SolView::new(
+                    &self.src,
+                    &self.fleets,
+                    &self.fits,
+                    &self.items,
+                    &self.default_incoming_dmg,
+                ),
                 fleet,
                 fit_id,
             );

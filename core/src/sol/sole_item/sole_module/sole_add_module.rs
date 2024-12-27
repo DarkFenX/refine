@@ -135,7 +135,13 @@ impl SolarSystem {
         let module = module_item.get_module().unwrap();
         let module_info = SolModuleInfo::from_mod_and_charge_with_source(&self.src, module, charge_info);
         self.svcs.add_item(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
             module_item,
         );
         if let Some(charge_info) = &module_info.charge {

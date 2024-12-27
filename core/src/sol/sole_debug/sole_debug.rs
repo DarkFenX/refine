@@ -10,7 +10,13 @@ impl SolarSystem {
     // should be checked, and this function should be called from tests, to ensure there are no
     // memory leaks.
     pub fn debug_consistency_check(&self) -> bool {
-        let sol_view = SolView::new(&self.src, &self.fleets, &self.fits, &self.items);
+        let sol_view = SolView::new(
+            &self.src,
+            &self.fleets,
+            &self.fits,
+            &self.items,
+            &self.default_incoming_dmg,
+        );
         // Check solar system structure
         if self.check_sol_structure(&sol_view).is_err() {
             return false;

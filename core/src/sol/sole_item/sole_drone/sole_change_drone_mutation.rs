@@ -12,7 +12,13 @@ impl SolarSystem {
     ) -> Result<(), ChangeDroneMutationError> {
         let drone = self.items.get_item_mut(item_id)?.get_drone_mut()?;
         let changed_attr_ids = drone.change_mutation_attrs(&self.src, attr_mutations)?;
-        let sol_view = SolView::new(&self.src, &self.fleets, &self.fits, &self.items);
+        let sol_view = SolView::new(
+            &self.src,
+            &self.fleets,
+            &self.fits,
+            &self.items,
+            &self.default_incoming_dmg,
+        );
         for attr_id in changed_attr_ids {
             self.svcs.item_attr_value_changed(&sol_view, item_id, &attr_id);
         }

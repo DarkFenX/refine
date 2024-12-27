@@ -13,7 +13,13 @@ impl SolarSystem {
         };
         let fleet = self.fleets.get_fleet(&fleet_id).unwrap();
         self.svcs.remove_fit_from_fleet(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
             fleet,
             fit_id,
         );

@@ -8,8 +8,16 @@ impl SolarSystem {
     pub fn remove_character(&mut self, item_id: &SolItemId) -> Result<(), RemoveCharacterError> {
         let item = self.items.get_item(item_id)?;
         let character = item.get_character()?;
-        self.svcs
-            .remove_item(&SolView::new(&self.src, &self.fleets, &self.fits, &self.items), item);
+        self.svcs.remove_item(
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
+            item,
+        );
         let fit = self.fits.get_fit_mut(&character.get_fit_id()).unwrap();
         fit.character = None;
         self.items.remove_item(item_id);

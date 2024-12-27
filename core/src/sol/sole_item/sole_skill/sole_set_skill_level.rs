@@ -12,7 +12,13 @@ impl SolarSystem {
         check_skill_level(level)?;
         self.items.get_item_mut(item_id)?.get_skill_mut()?.set_level(level);
         self.svcs.item_attr_value_changed(
-            &SolView::new(&self.src, &self.fleets, &self.fits, &self.items),
+            &SolView::new(
+                &self.src,
+                &self.fleets,
+                &self.fits,
+                &self.items,
+                &self.default_incoming_dmg,
+            ),
             item_id,
             &ec::attrs::SKILL_LEVEL,
         );
