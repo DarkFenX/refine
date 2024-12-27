@@ -40,6 +40,7 @@ impl SolRahAttrs {
 impl SolSvcs {
     pub(super) fn calc_rah_run_simulation(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
         let fit_rah_attrs = self.get_fit_rah_attrs(sol_view, fit_id);
+        // If the map is empty, no setting fallbacks needed, they were set in the map getter
         if fit_rah_attrs.is_empty() {
             return;
         }
@@ -47,6 +48,16 @@ impl SolSvcs {
             Some(dmg_profile) => dmg_profile,
             None => *sol_view.default_incoming_dmg,
         };
+        if dmg_profile.em <= 0.0
+            && dmg_profile.thermal <= 0.0
+            && dmg_profile.kinetic <= 0.0
+            && dmg_profile.explosive <= 0.0
+        {
+            for item_id in fit_rah_attrs.keys() {
+                self.set_rah_fallbacks(sol_view, item_id);
+            }
+            return;
+        }
         self.set_fit_rah_fallbacks(sol_view, fit_id);
     }
     fn get_fit_rah_attrs(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> StMap<SolItemId, SolRahAttrs> {
