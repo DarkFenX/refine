@@ -40,20 +40,27 @@ impl SolRahAttrs {
 impl SolSvcs {
     pub(super) fn calc_rah_run_simulation(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
         let fit_rah_attrs = self.get_fit_rah_attrs(sol_view, fit_id);
-        if fit_rah_attrs.values().all(|v| v.is_none()) {
-            self.set_fallback_results(sol_view, fit_id);
+        if fit_rah_attrs.is_empty() {
             return;
         }
         let dmg_profile = match sol_view.fits.get_fit(fit_id).unwrap().rah_incoming_dmg {
             Some(dmg_profile) => dmg_profile,
             None => *sol_view.default_incoming_dmg,
         };
-        self.set_fallback_results(sol_view, fit_id);
+        self.set_fit_rah_fallbacks(sol_view, fit_id);
     }
-    fn get_fit_rah_attrs(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> StMap<SolItemId, Option<SolRahAttrs>> {
+    fn get_fit_rah_attrs(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> StMap<SolItemId, SolRahAttrs> {
         let mut fit_rah_attrs = StMap::new();
         for item_id in self.calc_data.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
-            let rah_attrs = self.get_rah_attrs(sol_view, &item_id);
+            let rah_attrs = match self.get_rah_attrs(sol_view, &item_id) {
+                Some(rah_attrs) => rah_attrs,
+                // Whenever a RAH has unacceptable attributes, set fallback values and don't add it
+                // to the map
+                None => {
+                    self.set_rah_fallbacks(sol_view, &item_id);
+                    continue;
+                }
+            };
             fit_rah_attrs.insert(item_id, rah_attrs);
         }
         fit_rah_attrs
@@ -95,20 +102,23 @@ impl SolSvcs {
         Some(rah_attrs)
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fallback_results(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
+    fn set_fit_rah_fallbacks(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
         for item_id in self.calc_data.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
-            for attr_id in RES_ATTR_IDS {
-                let val = match self.calc_get_item_attr_val_no_pp(sol_view, &item_id, &attr_id) {
-                    Ok(val) => val,
-                    Err(_) => continue,
-                };
-                self.calc_data
-                    .rah
-                    .resonances
-                    .get_mut(&item_id)
-                    .unwrap()
-                    .insert(attr_id, val);
-            }
+            self.set_rah_fallbacks(sol_view, &item_id);
+        }
+    }
+    fn set_rah_fallbacks(&mut self, sol_view: &SolView, item_id: &SolItemId) {
+        for attr_id in RES_ATTR_IDS {
+            let val = match self.calc_get_item_attr_val_no_pp(sol_view, item_id, &attr_id) {
+                Ok(val) => val,
+                Err(_) => continue,
+            };
+            self.calc_data
+                .rah
+                .resonances
+                .get_mut(item_id)
+                .unwrap()
+                .insert(attr_id, val);
         }
     }
 }
