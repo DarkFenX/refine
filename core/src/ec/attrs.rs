@@ -47,6 +47,7 @@ pub(crate) const LAUNCHER_HARDPOINT_MODIFIER: EAttrId = 1369;
 pub(crate) const HI_SLOT_MODIFIER: EAttrId = 1374;
 pub(crate) const MED_SLOT_MODIFIER: EAttrId = 1375;
 pub(crate) const LOW_SLOT_MODIFIER: EAttrId = 1376;
+pub(crate) const RESIST_SHIFT_AMOUNT: EAttrId = 1849;
 pub(crate) const CHARGED_ARMOR_DMG_MULT: EAttrId = 1886;
 pub(crate) const GATE_SCRAMBLE_STATUS: EAttrId = 1973;
 pub(crate) const GATE_SCRAMBLE_STRENGTH: EAttrId = 1974;

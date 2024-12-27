@@ -12,7 +12,7 @@ use crate::{
     util::StMap,
 };
 
-use super::shared::RES_ATTR_IDS;
+use super::shared::{RAH_EFFECT_ID, RES_ATTR_IDS};
 
 impl SolSvcs {
     pub(in crate::sol::svc::svce_calc) fn calc_rah_effects_started(
@@ -25,7 +25,7 @@ impl SolSvcs {
             return;
         }
         if let SolItem::Module(module) = item {
-            if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
+            if effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
                 let item_id = module.get_id();
                 let fit_id = module.get_fit_id();
                 // Clear sim data for other RAHs on the same fit
@@ -63,7 +63,7 @@ impl SolSvcs {
             return;
         }
         if let SolItem::Module(module) = item {
-            if effects.iter().any(|v| v.id == ec::effects::ADAPTIVE_ARMOR_HARDENER) {
+            if effects.iter().any(|v| v.id == RAH_EFFECT_ID) {
                 let item_id = module.get_id();
                 let fit_id = module.get_fit_id();
                 // Remove postprocessors
@@ -128,7 +128,9 @@ impl SolSvcs {
         // Unwrap item and its fit ID, since registered RAHs are supposed to be modules, which have
         // fit ID
         let fit_id = sol_view.items.get_item(item_id).unwrap().get_fit_id().unwrap();
+        self.calc_data.rah.sim_running = true;
         self.calc_rah_run_simulation(sol_view, &fit_id);
+        self.calc_data.rah.sim_running = false;
         // Unwrap value, since simulation is supposed to always set value for requested attr
         *self
             .calc_data

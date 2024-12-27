@@ -48,7 +48,7 @@ impl SolSvcs {
         }
         Ok(val)
     }
-    pub(in crate::sol::svc::svce_calc) fn calc_get_item_attr_val_no_postprocessing(
+    pub(in crate::sol::svc::svce_calc) fn calc_get_item_attr_val_no_pp(
         &mut self,
         sol_view: &SolView,
         item_id: &SolItemId,

@@ -9,5 +9,6 @@ mod misc;
 mod svc;
 mod svce_calc;
 mod svce_debug;
+mod svce_effect;
 mod svce_interface;
 mod svce_notify;
