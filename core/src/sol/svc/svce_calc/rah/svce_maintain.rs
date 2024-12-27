@@ -129,15 +129,18 @@ impl SolSvcs {
         // fit ID
         let fit_id = sol_view.items.get_item(item_id).unwrap().get_fit_id().unwrap();
         self.calc_rah_run_simulation(sol_view, &fit_id);
+        // TODO: after sim is done, remove this and uncomment actual attr fetching
+        let val = sol_view.items.get_item(item_id).unwrap().get_attrs().unwrap().get(&attr_id).unwrap();
+        SolAttrVal::new(*val, *val, *val)
         // Unwrap value, since simulation is supposed to always set value for requested attr
-        *self
-            .calc_data
-            .rah
-            .resonances
-            .get(item_id)
-            .unwrap()
-            .get(&attr_id)
-            .unwrap()
+        // *self
+        //     .calc_data
+        //     .rah
+        //     .resonances
+        //     .get(item_id)
+        //     .unwrap()
+        //     .get(&attr_id)
+        //     .unwrap()
     }
 }
 

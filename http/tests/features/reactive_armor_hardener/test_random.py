@@ -28,7 +28,7 @@ def test_random(client, consts):
             eve_res_shift_attr_id: 6},
         eff_ids=[eve_effect_id],
         defeff_id=eve_effect_id)
-    eve_ship_id = client.mk_eve_item(attrs={
+    eve_ship_id = client.mk_eve_ship(attrs={
         eve_res_em_attr_id: 0.5,
         eve_res_therm_attr_id: 0.65,
         eve_res_kin_attr_id: 0.75,
@@ -40,6 +40,6 @@ def test_random(client, consts):
     api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
     # Verification
     api_ship.update()
-    assert api_ship.attrs[eve_res_em_attr_id].dogma == approx(0.5)
+    assert api_ship.attrs[eve_res_em_attr_id].dogma == approx(0.425)
     api_rah.update()
-    assert api_rah.attrs[eve_res_em_attr_id].dogma == approx(0.5)
+    assert api_rah.attrs[eve_res_em_attr_id].dogma == approx(0.85)
