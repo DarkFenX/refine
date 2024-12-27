@@ -1,6 +1,12 @@
 use crate::{
     defs::SolItemId,
-    sol::{fit::SolFits, fleet::SolFleets, item::SolItems, svc::SolSvcs, SolProjTracker},
+    sol::{
+        fit::SolFits,
+        fleet::SolFleets,
+        item::SolItems,
+        misc::{SolDmgProfile, SolProjTracker},
+        svc::SolSvcs,
+    },
     src::Src,
     util::StSet,
 };
@@ -20,6 +26,7 @@ pub struct SolarSystem {
     pub(in crate::sol) proj_effects: StSet<SolItemId>,
     pub(in crate::sol) proj_tracker: SolProjTracker,
     pub(in crate::sol) svcs: SolSvcs,
+    pub(in crate::sol) default_incoming_dmg: SolDmgProfile,
 }
 impl SolarSystem {
     pub fn new(src: Src) -> Self {
@@ -32,6 +39,7 @@ impl SolarSystem {
             proj_effects: StSet::new(),
             proj_tracker: SolProjTracker::new(),
             svcs: SolSvcs::new(),
+            default_incoming_dmg: SolDmgProfile::new(1.0, 1.0, 1.0, 1.0),
         }
     }
 }

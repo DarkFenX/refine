@@ -1,6 +1,6 @@
 use crate::{
     defs::{SolFitId, SolFleetId, SolItemId},
-    sol::item::SolShipKind,
+    sol::{item::SolShipKind, misc::SolDmgProfile},
     util::StSet,
 };
 
@@ -23,6 +23,7 @@ pub(in crate::sol) struct SolFit {
     pub(in crate::sol) drones: StSet<SolItemId>,
     pub(in crate::sol) fighters: StSet<SolItemId>,
     pub(in crate::sol) fw_effects: StSet<SolItemId>,
+    pub(in crate::sol) rah_incoming_dmg: Option<SolDmgProfile>,
 }
 impl SolFit {
     pub(in crate::sol) fn new(id: SolFitId) -> Self {
@@ -44,6 +45,7 @@ impl SolFit {
             drones: StSet::new(),
             fighters: StSet::new(),
             fw_effects: StSet::new(),
+            rah_incoming_dmg: None,
         }
     }
     pub(in crate::sol) fn all_items(&self) -> Vec<SolItemId> {

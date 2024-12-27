@@ -1,5 +1,6 @@
 use crate::defs::AttrVal;
 
+#[derive(Copy, Clone)]
 pub struct SolDmgProfile {
     pub em: AttrVal,
     pub thermal: AttrVal,
