@@ -49,6 +49,7 @@ class EveEffect(IntEnum):
     hardpoint_modifier_effect = 3773
     slot_modifier = 3774
     max_range_hidden_preass_warp_scramble_range = 4894
+    adaptive_armor_hardener = 4928
     fueled_armor_repair = 5275
     structure_warp_scramble_block_mwd_with_npc = 6222
     doomsday_aoe_web = 6476
@@ -152,6 +153,7 @@ class EveAttr(IntEnum):
     speed = 51
     max_range = 54
     dmg_mult = 64
+    duration = 73
     armor_dmg_amount = 84
     launcher_slots_left = 101
     turret_slots_left = 102
@@ -164,6 +166,10 @@ class EveAttr(IntEnum):
     therm_dmg = 118
     falloff = 158
     missile_dmg_mult = 212
+    armor_em_dmg_resonance = 267
+    armor_expl_dmg_resonance = 268
+    armor_kin_dmg_resonance = 269
+    armor_therm_dmg_resonance = 270
     skill_level = 280
     dmg_mult_bonus = 292
     rof_bonus = 293
@@ -181,6 +187,8 @@ class EveAttr(IntEnum):
     hi_slot_modifier = 1374
     med_slot_modifier = 1375
     low_slot_modifier = 1376
+    armor_max_dmg_resonance = 1527
+    resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886
     gate_scramble_status = 1973
     gate_scramble_strength = 1974
