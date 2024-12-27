@@ -1,47 +1,22 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::{AttrVal, SolFitId, SolItemId},
+    defs::{SolFitId, SolItemId},
     ec,
     sol::{svc::SolSvcs, SolView},
     util::StMap,
 };
 
-use super::shared::{RAH_EFFECT_ID, RES_ATTR_IDS};
-
-struct SolRahAttrs {
-    em: AttrVal,
-    therm: AttrVal,
-    kin: AttrVal,
-    expl: AttrVal,
-    cycle_time: AttrVal,
-    shift_amount: AttrVal,
-}
-impl SolRahAttrs {
-    fn new(
-        em: AttrVal,
-        therm: AttrVal,
-        kin: AttrVal,
-        expl: AttrVal,
-        cycle_time: AttrVal,
-        shift_amount: AttrVal,
-    ) -> Self {
-        Self {
-            em,
-            therm,
-            kin,
-            expl,
-            cycle_time,
-            shift_amount,
-        }
-    }
-}
+use super::{
+    rah_info::SolRahInfo,
+    shared::{RAH_EFFECT_ID, RES_ATTR_IDS},
+};
 
 impl SolSvcs {
     pub(super) fn calc_rah_run_simulation(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
-        let fit_rah_attrs = self.get_fit_rah_attrs(sol_view, fit_id);
+        let fit_rahs = self.get_fit_rah_infos(sol_view, fit_id);
         // If the map is empty, no setting fallbacks needed, they were set in the map getter
-        if fit_rah_attrs.is_empty() {
+        if fit_rahs.is_empty() {
             return;
         }
         let dmg_profile = match sol_view.fits.get_fit(fit_id).unwrap().rah_incoming_dmg {
@@ -53,20 +28,20 @@ impl SolSvcs {
             && dmg_profile.kinetic <= 0.0
             && dmg_profile.explosive <= 0.0
         {
-            for item_id in fit_rah_attrs.keys() {
+            for item_id in fit_rahs.keys() {
                 self.set_rah_fallbacks(sol_view, item_id);
             }
             return;
         }
         self.set_fit_rah_fallbacks(sol_view, fit_id);
     }
-    fn get_fit_rah_attrs(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> StMap<SolItemId, SolRahAttrs> {
+    fn get_fit_rah_infos(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> StMap<SolItemId, SolRahInfo> {
         let mut fit_rah_attrs = StMap::new();
         for item_id in self.calc_data.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
-            let rah_attrs = match self.get_rah_attrs(sol_view, &item_id) {
+            let rah_attrs = match self.get_rah_info(sol_view, &item_id) {
                 Some(rah_attrs) => rah_attrs,
-                // Whenever a RAH has unacceptable attributes, set fallback values and don't add it
-                // to the map
+                // Whenever a RAH has unacceptable for sim attributes, set fallback values and don't
+                // add it to the map
                 None => {
                     self.set_rah_fallbacks(sol_view, &item_id);
                     continue;
@@ -76,7 +51,7 @@ impl SolSvcs {
         }
         fit_rah_attrs
     }
-    fn get_rah_attrs(&mut self, sol_view: &SolView, item_id: &SolItemId) -> Option<SolRahAttrs> {
+    fn get_rah_info(&mut self, sol_view: &SolView, item_id: &SolItemId) -> Option<SolRahInfo> {
         // Get resonances through postprocessing functions, since we already installed them for RAHs
         let res_em = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
@@ -109,8 +84,8 @@ impl SolSvcs {
         if cycle_time <= 0.0 {
             return None;
         }
-        let rah_attrs = SolRahAttrs::new(res_em, res_therm, res_kin, res_expl, cycle_time, shift_amount);
-        Some(rah_attrs)
+        let rah_info = SolRahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_time, shift_amount);
+        Some(rah_info)
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
     fn set_fit_rah_fallbacks(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
