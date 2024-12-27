@@ -8,7 +8,7 @@ use crate::{
 };
 
 use super::{
-    rah_info::SolRahInfo,
+    info::SolRahInfo,
     shared::{RAH_EFFECT_ID, RES_ATTR_IDS},
 };
 

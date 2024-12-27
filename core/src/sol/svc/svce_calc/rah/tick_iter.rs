@@ -3,7 +3,7 @@ use crate::{
     util::StMap,
 };
 
-use super::rah_info::SolRahInfo;
+use super::info::SolRahInfo;
 
 pub(super) struct SolRahSimTickData {
     time: AttrVal,
@@ -11,18 +11,49 @@ pub(super) struct SolRahSimTickData {
     cycling_data: StMap<SolItemId, AttrVal>,
 }
 
-pub(super) struct SolRahSimTickIter<'a> {
-    info: &'a StMap<SolItemId, SolRahInfo>,
+pub(super) struct SolRahSimTickIterRahData {
+    info: SolRahInfo,
+    cycling_time: AttrVal,
 }
-impl<'a> SolRahSimTickIter<'a> {
-    pub(super) fn new(info: &'a StMap<SolItemId, SolRahInfo>) -> Self {
-        Self { info }
+impl SolRahSimTickIterRahData {
+    fn new(info: SolRahInfo) -> Self {
+        Self {
+            info,
+            cycling_time: 0.0,
+        }
     }
 }
-impl<'a> Iterator for SolRahSimTickIter<'a> {
+
+pub(super) struct SolRahSimTickIter {
+    tick: usize,
+    rah_data: StMap<SolItemId, SolRahSimTickIterRahData>,
+}
+impl SolRahSimTickIter {
+    pub(super) fn new(infos: &StMap<SolItemId, SolRahInfo>) -> Self {
+        let mut rah_data = StMap::with_capacity(infos.len());
+        for (item_id, info) in infos.iter() {
+            rah_data.insert(*item_id, SolRahSimTickIterRahData::new(*info));
+        }
+        Self { tick: 0, rah_data }
+    }
+}
+impl Iterator for SolRahSimTickIter {
     type Item = SolRahSimTickData;
 
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        loop {
+            if self.tick >= 500 {
+                return None;
+            }
+            self.tick += 1;
+            // Pick time remaining until some RAH finishes its cycle
+            let time_passed = self
+                .rah_data
+                .values()
+                .map(|v| v.info.cycle_time - v.cycling_time)
+                .min_by(|a, b| a.total_cmp(b))
+                .unwrap();
+            // let mut cycled = Vec::new();
+        }
     }
 }

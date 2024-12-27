@@ -4,7 +4,7 @@ use std::{
     hash::Hash,
 };
 
-use rustc_hash::FxHashMap;
+use rustc_hash::{FxBuildHasher, FxHashMap};
 
 #[derive(Clone)]
 pub struct StMap<K, V> {
@@ -14,6 +14,11 @@ impl<K: Eq + Hash, V> StMap<K, V> {
     pub fn new() -> StMap<K, V> {
         Self {
             data: FxHashMap::default(),
+        }
+    }
+    pub fn with_capacity(capacity: usize) -> StMap<K, V> {
+        Self {
+            data: FxHashMap::with_capacity_and_hasher(capacity, FxBuildHasher::default()),
         }
     }
     pub fn get<Q: ?Sized>(&self, key: &Q) -> Option<&V>

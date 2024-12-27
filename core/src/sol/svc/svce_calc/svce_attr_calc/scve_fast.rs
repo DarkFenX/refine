@@ -13,7 +13,7 @@ use crate::{
         },
         SolView,
     },
-    util::StMap,
+    util::{round, StMap},
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
@@ -187,7 +187,7 @@ impl SolSvcs {
             }
         }
         if LIMITED_PRECISION_ATTR_IDS.contains(attr_id) {
-            dogma_val = (dogma_val * 100.0).round() / 100.0
+            dogma_val = round(dogma_val, 2);
         }
         // Post-dogma calculations
         let extra_val = accumulator.apply_extra_mods(dogma_val, attr.hig);
