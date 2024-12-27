@@ -48,6 +48,24 @@ impl SolSvcs {
         }
         Ok(val)
     }
+    pub(in crate::sol::svc::svce_calc) fn calc_get_item_attr_val_no_postprocessing(
+        &mut self,
+        sol_view: &SolView,
+        item_id: &SolItemId,
+        attr_id: &EAttrId,
+    ) -> Result<SolAttrVal, AttrCalcError> {
+        if let Some(val) = self.calc_data.attrs.get_item_attr_data(item_id)?.values.get(attr_id) {
+            return Ok(*val);
+        };
+        let val = self.calc_calc_item_attr_val(sol_view, item_id, attr_id)?;
+        self.calc_data
+            .attrs
+            .get_item_attr_data_mut(item_id)
+            .unwrap()
+            .values
+            .insert(*attr_id, val);
+        Ok(val)
+    }
     pub(in crate::sol) fn calc_iter_item_attr_vals(
         &mut self,
         sol_view: &SolView,
