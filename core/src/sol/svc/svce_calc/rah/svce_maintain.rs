@@ -30,7 +30,7 @@ impl SolSvcs {
                 // Clear sim data for other RAHs on the same fit
                 let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
                 for other_item_id in other_item_ids {
-                    self.clear_results_for_item(sol_view, &other_item_id);
+                    self.clear_rah_result(sol_view, &other_item_id);
                 }
                 // Add sim data for RAH being started
                 self.calc_data.rah.resonances.insert(item_id, None);
@@ -83,7 +83,7 @@ impl SolSvcs {
                 // Clear sim data for other RAHs on the same fit
                 let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
                 for other_item_id in other_item_ids {
-                    self.clear_results_for_item(sol_view, &other_item_id);
+                    self.clear_rah_result(sol_view, &other_item_id);
                 }
             }
         }
@@ -110,7 +110,7 @@ impl SolSvcs {
         }
     }
     // Private methods
-    fn clear_results_for_item(&mut self, sol_view: &SolView, item_id: &SolItemId) {
+    fn clear_rah_result(&mut self, sol_view: &SolView, item_id: &SolItemId) {
         if self.calc_data.rah.resonances.get_mut(item_id).unwrap().take().is_some() {
             for attr_id in RES_ATTR_IDS.iter() {
                 self.notify_attr_val_changed(sol_view, item_id, attr_id)

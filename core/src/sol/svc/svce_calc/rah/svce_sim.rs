@@ -10,7 +10,11 @@ use crate::{
     util::StMap,
 };
 
-use super::{info::SolRahInfo, shared::RAH_EFFECT_ID, tick_iter::SolRahSimTickIter};
+use super::{
+    info::SolRahInfo,
+    shared::{RAH_EFFECT_ID, RES_ATTR_IDS},
+    tick_iter::SolRahSimTickIter,
+};
 
 impl SolSvcs {
     pub(super) fn calc_rah_run_simulation(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
@@ -21,9 +25,9 @@ impl SolSvcs {
                 return;
             }
         };
-        let fit_rahs = self.get_fit_rah_infos(sol_view, fit_id);
+        let rah_infos = self.get_fit_rah_infos(sol_view, fit_id);
         // If the map is empty, no setting fallbacks needed, they were set in the map getter
-        if fit_rahs.is_empty() {
+        if rah_infos.is_empty() {
             return;
         }
         let dmg_profile = match sol_view.fits.get_fit(fit_id).unwrap().rah_incoming_dmg {
@@ -35,23 +39,27 @@ impl SolSvcs {
             && dmg_profile.kinetic <= 0.0
             && dmg_profile.explosive <= 0.0
         {
-            for item_id in fit_rahs.keys() {
+            for item_id in rah_infos.keys() {
                 self.set_rah_fallback(sol_view, item_id);
             }
             return;
         }
+        // Run "zero" simulation tick - write initial results and TODO: record initial state in history
+        for (item_id, rah_info) in rah_infos.iter() {
+            self.set_rah_result(sol_view, item_id, rah_info.resos)
+        }
         // Container for damage each RAH received during its cycle. May span across several
         // simulation ticks for multi-RAH setups
-        let mut fit_dmg_data = StMap::with_capacity(fit_rahs.len());
-        for item_id in fit_rahs.keys() {
+        let mut fit_dmg_data = StMap::with_capacity(rah_infos.len());
+        for item_id in rah_infos.keys() {
             fit_dmg_data.insert(*item_id, SolDmgTypes::new(0.0, 0.0, 0.0, 0.0));
         }
-        for tick_data in SolRahSimTickIter::new(&fit_rahs) {
+        for tick_data in SolRahSimTickIter::new(&rah_infos) {
             // For each RAH, calculate damage received during this tick
             let ship_resos = match self.get_ship_resonances(sol_view, &ship_id) {
                 Some(ship_resos) => ship_resos,
                 None => {
-                    for item_id in fit_rahs.keys() {
+                    for item_id in rah_infos.keys() {
                         self.set_rah_fallback(sol_view, item_id);
                     }
                     return;
@@ -110,21 +118,17 @@ impl SolSvcs {
         // Get resonances through postprocessing functions, since we already installed them for RAHs
         let res_em = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
-            .ok()?
-            .dogma;
+            .ok()?;
         let res_therm = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_THERM_DMG_RESONANCE)
-            .ok()?
-            .dogma;
+            .ok()?;
         let res_kin = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_KIN_DMG_RESONANCE)
-            .ok()?
-            .dogma;
+            .ok()?;
         let res_expl = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
-            .ok()?
-            .dogma;
-        if res_em == 1.0 && res_therm == 1.0 && res_kin == 1.0 && res_expl == 1.0 {
+            .ok()?;
+        if res_em.dogma == 1.0 && res_therm.dogma == 1.0 && res_kin.dogma == 1.0 && res_expl.dogma == 1.0 {
             return None;
         }
         // Other attributes using regular getters
@@ -144,7 +148,11 @@ impl SolSvcs {
             res_therm,
             res_kin,
             res_expl,
+            // Raw form of cycle time is defined in milliseconds (we don't really care in RAH sim,
+            // just to be more intuitive during debugging)
             cycle_ms / 1000.0,
+            // Raw form of shift amount is defined in percentages, while resonances are in
+            // absolute form
             shift_amount / 100.0,
         );
         Some(rah_info)
@@ -169,12 +177,13 @@ impl SolSvcs {
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
             .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
         let rah_resos = SolDmgTypes::new(em, therm, kin, expl);
-        self.calc_data
-            .rah
-            .resonances
-            .get_mut(item_id)
-            .unwrap()
-            .replace(rah_resos);
+        self.set_rah_result(sol_view, item_id, rah_resos);
+    }
+    fn set_rah_result(&mut self, sol_view: &SolView, item_id: &SolItemId, resos: SolDmgTypes<SolAttrVal>) {
+        self.calc_data.rah.resonances.get_mut(item_id).unwrap().replace(resos);
+        for attr_id in RES_ATTR_IDS.iter() {
+            self.notify_attr_val_changed(sol_view, item_id, attr_id)
+        }
     }
 }
 
