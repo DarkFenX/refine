@@ -17,7 +17,10 @@ def test_random(client, consts):
         max_attr_id=eve_res_max_attr_id)
     eve_cycle_time_attr_id = client.mk_eve_attr(id_=consts.EveAttr.duration)
     eve_res_shift_attr_id = client.mk_eve_attr(id_=consts.EveAttr.resist_shift_amount)
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.adaptive_armor_hardener, cat_id=consts.EveEffCat.active)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.adaptive_armor_hardener,
+        cat_id=consts.EveEffCat.active,
+        duration_attr_id=eve_cycle_time_attr_id)
     eve_rah_id = client.mk_eve_item(
         attrs={
             eve_res_em_attr_id: 0.85,

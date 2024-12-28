@@ -225,7 +225,7 @@ fn get_next_resonances(
         let new_value = current_value.dogma + to_donate;
         resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
     }
-    // Take
+    // Distribute
     for index in sorted_indices[donors..].iter() {
         let current_value = resonances[*index];
         let new_value = current_value.dogma - donated_amount / recipients as f64;
