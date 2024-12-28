@@ -3,15 +3,14 @@ use itertools::Itertools;
 use crate::{
     defs::{AttrVal, SolFitId, SolItemId},
     ec,
-    sol::{svc::SolSvcs, SolDmgTypes, SolView},
+    sol::{
+        svc::{svce_calc::SolAttrVal, SolSvcs},
+        SolDmgTypes, SolView,
+    },
     util::StMap,
 };
 
-use super::{
-    info::SolRahInfo,
-    shared::{RAH_EFFECT_ID, RES_ATTR_IDS},
-    tick_iter::SolRahSimTickIter,
-};
+use super::{info::SolRahInfo, shared::RAH_EFFECT_ID, tick_iter::SolRahSimTickIter};
 
 impl SolSvcs {
     pub(super) fn calc_rah_run_simulation(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
@@ -37,7 +36,7 @@ impl SolSvcs {
             && dmg_profile.explosive <= 0.0
         {
             for item_id in fit_rahs.keys() {
-                self.set_rah_fallbacks(sol_view, item_id);
+                self.set_rah_fallback(sol_view, item_id);
             }
             return;
         }
@@ -53,7 +52,7 @@ impl SolSvcs {
                 Some(ship_resos) => ship_resos,
                 None => {
                     for item_id in fit_rahs.keys() {
-                        self.set_rah_fallbacks(sol_view, item_id);
+                        self.set_rah_fallback(sol_view, item_id);
                     }
                     return;
                 }
@@ -65,7 +64,10 @@ impl SolSvcs {
                 rah_cycle_dmg_data.explosive += dmg_profile.explosive * ship_resos.explosive * tick_data.time_passed;
             }
             // If RAH just finished its cycle, make resist switch
-            for item_id in tick_data.cycled {}
+            for cycled_item_id in tick_data.cycled {
+                let received_dmg = fit_dmg_data.get(&cycled_item_id).unwrap();
+                // let next_resos = get_next_resonances(received_dmg);
+            }
         }
         self.set_fit_rah_fallbacks(sol_view, fit_id);
     }
@@ -96,7 +98,7 @@ impl SolSvcs {
                 // Whenever a RAH has unacceptable for sim attributes, set fallback values and don't
                 // add it to the map
                 None => {
-                    self.set_rah_fallbacks(sol_view, &item_id);
+                    self.set_rah_fallback(sol_view, &item_id);
                     continue;
                 }
             };
@@ -137,27 +139,49 @@ impl SolSvcs {
         if cycle_ms <= 0.0 {
             return None;
         }
-        let rah_info = SolRahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_ms / 1000.0, shift_amount);
+        let rah_info = SolRahInfo::new(
+            res_em,
+            res_therm,
+            res_kin,
+            res_expl,
+            cycle_ms / 1000.0,
+            shift_amount / 100.0,
+        );
         Some(rah_info)
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
     fn set_fit_rah_fallbacks(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
         for item_id in self.calc_data.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
-            self.set_rah_fallbacks(sol_view, &item_id);
+            self.set_rah_fallback(sol_view, &item_id);
         }
     }
-    fn set_rah_fallbacks(&mut self, sol_view: &SolView, item_id: &SolItemId) {
-        for attr_id in RES_ATTR_IDS {
-            let val = match self.calc_get_item_attr_val_no_pp(sol_view, item_id, &attr_id) {
-                Ok(val) => val,
-                Err(_) => continue,
-            };
-            self.calc_data
-                .rah
-                .resonances
-                .get_mut(item_id)
-                .unwrap()
-                .insert(attr_id, val);
-        }
+    fn set_rah_fallback(&mut self, sol_view: &SolView, item_id: &SolItemId) {
+        let em = self
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
+            .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
+        let therm = self
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_THERM_DMG_RESONANCE)
+            .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
+        let kin = self
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_KIN_DMG_RESONANCE)
+            .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
+        let expl = self
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
+            .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
+        let rah_resos = SolDmgTypes::new(em, therm, kin, expl);
+        self.calc_data
+            .rah
+            .resonances
+            .get_mut(item_id)
+            .unwrap()
+            .replace(rah_resos);
     }
+}
+
+fn get_next_resonances(
+    current_resos: &SolDmgTypes<AttrVal>,
+    received_dmg: &SolDmgTypes<AttrVal>,
+    shift_amount: AttrVal,
+) -> SolDmgTypes<AttrVal> {
+    *current_resos
 }

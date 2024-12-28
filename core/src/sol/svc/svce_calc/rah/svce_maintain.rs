@@ -2,14 +2,13 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    defs::{EAttrId, SolItemId},
+    defs::SolItemId,
     ec,
     sol::{
         item::SolItem,
         svc::{svce_calc::SolAttrVal, SolSvcs},
-        SolView,
+        SolDmgTypes, SolView,
     },
-    util::StMap,
 };
 
 use super::shared::{RAH_EFFECT_ID, RES_ATTR_IDS};
@@ -34,7 +33,7 @@ impl SolSvcs {
                     self.clear_results_for_item(sol_view, &other_item_id);
                 }
                 // Add sim data for RAH being started
-                self.calc_data.rah.resonances.insert(item_id, StMap::new());
+                self.calc_data.rah.resonances.insert(item_id, None);
                 self.calc_data.rah.by_fit.add_entry(fit_id, item_id);
                 // Add postprocessors
                 let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(&item_id).unwrap();
@@ -112,17 +111,15 @@ impl SolSvcs {
     }
     // Private methods
     fn clear_results_for_item(&mut self, sol_view: &SolView, item_id: &SolItemId) {
-        let rah_resos = self.calc_data.rah.resonances.get_mut(item_id).unwrap();
-        if !rah_resos.is_empty() {
-            rah_resos.clear();
+        if self.calc_data.rah.resonances.get_mut(item_id).unwrap().take().is_some() {
             for attr_id in RES_ATTR_IDS.iter() {
                 self.notify_attr_val_changed(sol_view, item_id, attr_id)
             }
         }
     }
-    fn get_rah_resonance(&mut self, sol_view: &SolView, item_id: &SolItemId, attr_id: EAttrId) -> SolAttrVal {
+    fn get_rah_resonances(&mut self, sol_view: &SolView, item_id: &SolItemId) -> SolDmgTypes<SolAttrVal> {
         // Unwrap item, since method is supposed to be called only for registered RAHs
-        if let Some(val) = self.calc_data.rah.resonances.get(item_id).unwrap().get(&attr_id) {
+        if let Some(val) = self.calc_data.rah.resonances.get(item_id).unwrap() {
             return *val;
         }
         // Unwrap item and its fit ID, since registered RAHs are supposed to be modules, which have
@@ -131,15 +128,8 @@ impl SolSvcs {
         self.calc_data.rah.sim_running = true;
         self.calc_rah_run_simulation(sol_view, &fit_id);
         self.calc_data.rah.sim_running = false;
-        // Unwrap value, since simulation is supposed to always set value for requested attr
-        *self
-            .calc_data
-            .rah
-            .resonances
-            .get(item_id)
-            .unwrap()
-            .get(&attr_id)
-            .unwrap()
+        // Unwrap value, since simulation is supposed to always set results for requested RAH
+        self.calc_data.rah.resonances.get(item_id).unwrap().unwrap()
     }
 }
 
@@ -149,7 +139,7 @@ fn rah_em_resonance_postprocessor(
     item_id: &SolItemId,
     _: SolAttrVal,
 ) -> SolAttrVal {
-    svcs.get_rah_resonance(sol_view, item_id, ec::attrs::ARMOR_EM_DMG_RESONANCE)
+    svcs.get_rah_resonances(sol_view, item_id).em
 }
 
 fn rah_therm_resonance_postprocessor(
@@ -158,7 +148,7 @@ fn rah_therm_resonance_postprocessor(
     item_id: &SolItemId,
     _: SolAttrVal,
 ) -> SolAttrVal {
-    svcs.get_rah_resonance(sol_view, item_id, ec::attrs::ARMOR_THERM_DMG_RESONANCE)
+    svcs.get_rah_resonances(sol_view, item_id).thermal
 }
 
 fn rah_kin_resonance_postprocessor(
@@ -167,7 +157,7 @@ fn rah_kin_resonance_postprocessor(
     item_id: &SolItemId,
     _: SolAttrVal,
 ) -> SolAttrVal {
-    svcs.get_rah_resonance(sol_view, item_id, ec::attrs::ARMOR_KIN_DMG_RESONANCE)
+    svcs.get_rah_resonances(sol_view, item_id).kinetic
 }
 
 fn rah_expl_resonance_postprocessor(
@@ -176,5 +166,5 @@ fn rah_expl_resonance_postprocessor(
     item_id: &SolItemId,
     _: SolAttrVal,
 ) -> SolAttrVal {
-    svcs.get_rah_resonance(sol_view, item_id, ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
+    svcs.get_rah_resonances(sol_view, item_id).explosive
 }

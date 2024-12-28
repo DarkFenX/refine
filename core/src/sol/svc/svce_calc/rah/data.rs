@@ -1,12 +1,12 @@
 use crate::{
-    defs::{EAttrId, SolFitId, SolItemId},
-    sol::svc::svce_calc::SolAttrVal,
+    defs::{SolFitId, SolItemId},
+    sol::{svc::svce_calc::SolAttrVal, SolDmgTypes},
     util::{StMap, StMapSetL1},
 };
 
 #[derive(Clone)]
 pub(in crate::sol::svc::svce_calc) struct SolRahSim {
-    pub(super) resonances: StMap<SolItemId, StMap<EAttrId, SolAttrVal>>,
+    pub(super) resonances: StMap<SolItemId, Option<SolDmgTypes<SolAttrVal>>>,
     pub(super) by_fit: StMapSetL1<SolFitId, SolItemId>,
     pub(super) sim_running: bool,
 }
