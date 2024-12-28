@@ -1,7 +1,10 @@
 use crate::{
     defs::{EAttrId, SolItemId},
     err::basic::{AttrMetaFoundError, ItemFoundError, ItemLoadedError},
-    sol::{svc::err::AttrCalcError, SolAttrVal, SolView, SolarSystem},
+    sol::{
+        svc::{err::AttrCalcError, svce_calc::SolAttrVal},
+        SolView, SolarSystem,
+    },
 };
 
 impl SolarSystem {

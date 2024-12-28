@@ -5,7 +5,7 @@ pub use misc::{SolDmgProfile, SolDmgTypes, SolEffectInfo, SolEffectMode, SolModR
 pub use sol::SolarSystem;
 pub(in crate::sol) use sole_debug::{SolDebugError, SolDebugResult};
 pub use sole_item::{SolOrdAddMode, SolOrdRmMode};
-pub use svc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo};
+pub use svc::{SolAffectorInfo, SolModificationInfo, SolOpInfo};
 pub(in crate::sol) use view::SolView;
 
 mod fit;
@@ -22,5 +22,5 @@ pub(crate) mod sole_fit;
 pub(crate) mod sole_fleet;
 pub(crate) mod sole_item;
 pub(crate) mod sole_src;
-mod svc;
+pub(crate) mod svc;
 mod view;

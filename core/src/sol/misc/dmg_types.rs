@@ -61,8 +61,8 @@ impl<'a, T> Iterator for SolDmgTypesIter<'a, T> {
                 0..4 => {
                     let result = &self.item[self.index];
                     self.index += 1;
-                    return Some(result)
-                },
+                    return Some(result);
+                }
                 _ => return None,
             };
         }
