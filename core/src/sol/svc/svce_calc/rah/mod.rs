@@ -4,6 +4,7 @@ mod data;
 mod debug;
 mod info;
 mod shared;
+mod state;
 mod svce_maintain;
 mod svce_sim;
 mod tick_iter;
