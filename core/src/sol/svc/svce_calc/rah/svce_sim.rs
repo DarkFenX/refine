@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::{SolFitId, SolItemId},
+    defs::{AttrVal, SolFitId, SolItemId},
     ec,
     sol::{svc::SolSvcs, SolDmgTypes, SolView},
     util::StMap,
@@ -15,6 +15,13 @@ use super::{
 
 impl SolSvcs {
     pub(super) fn calc_rah_run_simulation(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
+        let ship_id = match sol_view.fits.get_fit(fit_id).unwrap().ship {
+            Some(ship_id) => ship_id,
+            None => {
+                self.set_fit_rah_fallbacks(sol_view, fit_id);
+                return;
+            }
+        };
         let fit_rahs = self.get_fit_rah_infos(sol_view, fit_id);
         // If the map is empty, no setting fallbacks needed, they were set in the map getter
         if fit_rahs.is_empty() {
@@ -36,12 +43,50 @@ impl SolSvcs {
         }
         // Container for damage each RAH received during its cycle. May span across several
         // simulation ticks for multi-RAH setups
-        let mut cycle_dmg_data = StMap::with_capacity(fit_rahs.len());
+        let mut fit_dmg_data = StMap::with_capacity(fit_rahs.len());
         for item_id in fit_rahs.keys() {
-            cycle_dmg_data.insert(*item_id, SolDmgTypes::new(0.0, 0.0, 0.0, 0.0));
+            fit_dmg_data.insert(*item_id, SolDmgTypes::new(0.0, 0.0, 0.0, 0.0));
         }
-        for tick_data in SolRahSimTickIter::new(&fit_rahs) {}
+        for tick_data in SolRahSimTickIter::new(&fit_rahs) {
+            // For each RAH, calculate damage received during this tick
+            let ship_resos = match self.get_ship_resonances(sol_view, &ship_id) {
+                Some(ship_resos) => ship_resos,
+                None => {
+                    for item_id in fit_rahs.keys() {
+                        self.set_rah_fallbacks(sol_view, item_id);
+                    }
+                    return;
+                }
+            };
+            for rah_cycle_dmg_data in fit_dmg_data.values_mut() {
+                rah_cycle_dmg_data.em += dmg_profile.em * ship_resos.em * tick_data.time_passed;
+                rah_cycle_dmg_data.thermal += dmg_profile.thermal * ship_resos.thermal * tick_data.time_passed;
+                rah_cycle_dmg_data.kinetic += dmg_profile.kinetic * ship_resos.kinetic * tick_data.time_passed;
+                rah_cycle_dmg_data.explosive += dmg_profile.explosive * ship_resos.explosive * tick_data.time_passed;
+            }
+            // If RAH just finished its cycle, make resist switch
+            for item_id in tick_data.cycled {}
+        }
         self.set_fit_rah_fallbacks(sol_view, fit_id);
+    }
+    fn get_ship_resonances(&mut self, sol_view: &SolView, ship_id: &SolItemId) -> Option<SolDmgTypes<AttrVal>> {
+        let em = self
+            .calc_get_item_attr_val(sol_view, ship_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
+            .ok()?
+            .dogma;
+        let therm = self
+            .calc_get_item_attr_val(sol_view, ship_id, &ec::attrs::ARMOR_THERM_DMG_RESONANCE)
+            .ok()?
+            .dogma;
+        let kin = self
+            .calc_get_item_attr_val(sol_view, ship_id, &ec::attrs::ARMOR_KIN_DMG_RESONANCE)
+            .ok()?
+            .dogma;
+        let expl = self
+            .calc_get_item_attr_val(sol_view, ship_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
+            .ok()?
+            .dogma;
+        Some(SolDmgTypes::new(em, therm, kin, expl))
     }
     fn get_fit_rah_infos(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> StMap<SolItemId, SolRahInfo> {
         let mut fit_rah_attrs = StMap::new();
@@ -88,11 +133,11 @@ impl SolSvcs {
         if shift_amount == 0.0 {
             return None;
         }
-        let cycle_time = self.get_item_effect_id_duration(sol_view, &item_id, &RAH_EFFECT_ID)?;
-        if cycle_time <= 0.0 {
+        let cycle_ms = self.get_item_effect_id_duration(sol_view, &item_id, &RAH_EFFECT_ID)?;
+        if cycle_ms <= 0.0 {
             return None;
         }
-        let rah_info = SolRahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_time, shift_amount);
+        let rah_info = SolRahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_ms / 1000.0, shift_amount);
         Some(rah_info)
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
