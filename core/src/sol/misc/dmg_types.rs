@@ -14,6 +14,9 @@ impl<T> SolDmgTypes<T> {
             explosive,
         }
     }
+    pub fn iter(&self) -> impl Iterator<Item = &T> {
+        SolDmgTypesIter::new(self)
+    }
 }
 impl<T> std::ops::Index<usize> for SolDmgTypes<T> {
     type Output = T;
@@ -36,6 +39,28 @@ impl<T> std::ops::IndexMut<usize> for SolDmgTypes<T> {
             2 => &mut self.kinetic,
             3 => &mut self.explosive,
             n => panic!("invalid SolDmgTypes index: {}", n),
+        }
+    }
+}
+
+pub struct SolDmgTypesIter<'a, T> {
+    item: &'a SolDmgTypes<T>,
+    index: usize,
+}
+impl<'a, T> SolDmgTypesIter<'a, T> {
+    pub(super) fn new(item: &'a SolDmgTypes<T>) -> Self {
+        Self { item, index: 0 }
+    }
+}
+impl<'a, T> Iterator for SolDmgTypesIter<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            return match self.index {
+                0..4 => Some(&self.item[self.index]),
+                _ => None,
+            };
         }
     }
 }

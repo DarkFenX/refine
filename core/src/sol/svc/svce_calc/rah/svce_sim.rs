@@ -8,7 +8,6 @@ use crate::{
         SolDmgTypes, SolView,
     },
     util::StMap,
-    EAttrId,
 };
 
 use super::{
@@ -206,22 +205,9 @@ fn get_next_resonances(
     taken_dmg: SolDmgTypes<AttrVal>,
     shift_amount: AttrVal,
 ) -> SolDmgTypes<SolAttrVal> {
-    // We borrow resistances from at least 2 resist types, possibly more if ship didn't take damage
-    // of these types
-    let mut donors = 0;
-    if taken_dmg.em == 0.0 {
-        donors += 1;
-    }
-    if taken_dmg.thermal == 0.0 {
-        donors += 1;
-    }
-    if taken_dmg.kinetic == 0.0 {
-        donors += 1;
-    }
-    if taken_dmg.explosive == 0.0 {
-        donors += 1;
-    }
-    donors = donors.max(2);
+    // We borrow resistances from at least 2 resist types, possibly more if ship didn't take any
+    // damage of those types
+    let donors = taken_dmg.iter().filter(|v| **v == 0.0).count().max(2);
     let recipients = 4 - donors;
     // Indices are against damage type container, i.e. order is EM, explosive, kinetic, explosive.
     // When equal damage is received across several damage types, those which come earlier in this
