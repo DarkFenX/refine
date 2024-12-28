@@ -70,14 +70,18 @@ impl SolSvcs {
             }
             // If RAH just finished its cycle, make resist switch
             for cycled_item_id in tick_data.cycled {
-                let mut taken_dmg = SolDmgTypes::new(0.0, 0.0, 0.0, 0.0);
                 let rah_info = rah_datas.get_mut(&cycled_item_id).unwrap();
+                let mut taken_dmg = SolDmgTypes::new(0.0, 0.0, 0.0, 0.0);
+                // Extract damage ship taken during RAH cycle, replacing it with 0's
                 std::mem::swap(&mut taken_dmg, &mut rah_info.taken_dmg);
                 let next_resos = get_next_resonances(
                     self.calc_data.rah.resonances.get(&cycled_item_id).unwrap().unwrap(),
                     taken_dmg,
                     rah_info.shift_amount,
                 );
+                // Write new resonances to results, letting everyone know about the changes. This is
+                // needed to get updated ship resonances next tick.
+                self.set_rah_result(sol_view, &cycled_item_id, next_resos, true);
             }
         }
         self.set_fit_rah_fallbacks(sol_view, fit_id);
