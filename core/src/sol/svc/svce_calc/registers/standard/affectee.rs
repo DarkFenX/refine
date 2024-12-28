@@ -9,7 +9,7 @@ use crate::{
     util::extend_vec_from_map_set_l1,
 };
 
-use super::{PotentialLocations, SolStandardRegister};
+use super::{SolPotentialLocations, SolStandardRegister};
 
 impl SolStandardRegister {
     // Query methods
@@ -44,17 +44,17 @@ impl SolStandardRegister {
             self.affectee_root.add_entry((fit.id, root_loc), item_id);
         }
         if let Some(fit) = fit_opt {
-            for loc in PotentialLocations::new(item) {
+            for loc in SolPotentialLocations::new(item) {
                 self.affectee_loc.add_entry((fit.id, loc), item_id);
             }
         }
         if let (Some(fit), Some(grp_id)) = (fit_opt, grp_id_opt) {
-            for loc in PotentialLocations::new(item) {
+            for loc in SolPotentialLocations::new(item) {
                 self.affectee_loc_grp.add_entry((fit.id, loc, grp_id), item_id);
             }
         }
         if let (Some(fit), Some(srqs)) = (fit_opt, &srqs_opt) {
-            for loc in PotentialLocations::new(item) {
+            for loc in SolPotentialLocations::new(item) {
                 for srq_id in srqs.keys() {
                     self.affectee_loc_srq.add_entry((fit.id, loc, *srq_id), item_id);
                 }
@@ -85,17 +85,17 @@ impl SolStandardRegister {
             self.affectee_root.remove_entry(&(fit.id, root_loc), &item_id);
         }
         if let Some(fit) = fit_opt {
-            for loc in PotentialLocations::new(item) {
+            for loc in SolPotentialLocations::new(item) {
                 self.affectee_loc.remove_entry(&(fit.id, loc), &item_id);
             }
         }
         if let (Some(fit), Some(grp_id)) = (fit_opt, grp_id_opt) {
-            for loc in PotentialLocations::new(item) {
+            for loc in SolPotentialLocations::new(item) {
                 self.affectee_loc_grp.remove_entry(&(fit.id, loc, grp_id), &item_id);
             }
         }
         if let (Some(fit), Some(srqs)) = (fit_opt, &srqs_opt) {
-            for loc in PotentialLocations::new(item) {
+            for loc in SolPotentialLocations::new(item) {
                 for srq_id in srqs.keys() {
                     self.affectee_loc_srq.remove_entry(&(fit.id, loc, *srq_id), &item_id);
                 }

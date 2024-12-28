@@ -1,13 +1,10 @@
-use crate::{defs::AttrVal, util::sig_round};
+use crate::{defs::AttrVal, sol::SolDmgTypes, util::sig_round};
 
 use super::shared::SIG_DIGITS;
 
 #[derive(Copy, Clone)]
 pub(super) struct SolRahInfo {
-    pub(super) em: AttrVal,
-    pub(super) therm: AttrVal,
-    pub(super) kin: AttrVal,
-    pub(super) expl: AttrVal,
+    pub(super) resos: SolDmgTypes<AttrVal>,
     pub(super) cycle_time: AttrVal,
     pub(super) cycle_time_rounded: AttrVal,
     pub(super) shift_amount: AttrVal,
@@ -22,10 +19,7 @@ impl SolRahInfo {
         shift_amount: AttrVal,
     ) -> Self {
         Self {
-            em,
-            therm,
-            kin,
-            expl,
+            resos: SolDmgTypes::new(em, therm, kin, expl),
             cycle_time,
             cycle_time_rounded: sig_round(cycle_time, SIG_DIGITS),
             shift_amount,

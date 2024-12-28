@@ -3,13 +3,14 @@ use itertools::Itertools;
 use crate::{
     defs::{SolFitId, SolItemId},
     ec,
-    sol::{svc::SolSvcs, SolView},
+    sol::{svc::SolSvcs, SolDmgTypes, SolView},
     util::StMap,
 };
 
 use super::{
     info::SolRahInfo,
     shared::{RAH_EFFECT_ID, RES_ATTR_IDS},
+    tick_iter::SolRahSimTickIter,
 };
 
 impl SolSvcs {
@@ -33,6 +34,13 @@ impl SolSvcs {
             }
             return;
         }
+        // Container for damage each RAH received during its cycle. May span across several
+        // simulation ticks for multi-RAH setups
+        let mut cycle_dmg_data = StMap::with_capacity(fit_rahs.len());
+        for item_id in fit_rahs.keys() {
+            cycle_dmg_data.insert(*item_id, SolDmgTypes::new(0.0, 0.0, 0.0, 0.0));
+        }
+        for tick_data in SolRahSimTickIter::new(&fit_rahs) {}
         self.set_fit_rah_fallbacks(sol_view, fit_id);
     }
     fn get_fit_rah_infos(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> StMap<SolItemId, SolRahInfo> {

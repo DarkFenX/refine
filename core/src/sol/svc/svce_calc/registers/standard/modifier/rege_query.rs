@@ -10,7 +10,7 @@ use crate::{
     util::StMapSetL1,
 };
 
-use super::ActiveLocations;
+use super::SolActiveLocations;
 
 impl SolStandardRegister {
     pub(in crate::sol::svc::svce_calc) fn get_mods_for_affectee(
@@ -33,17 +33,17 @@ impl SolStandardRegister {
             filter_and_extend(&mut mods, &self.cmods_root, &(fit.id, root_loc), attr_id);
         }
         if let Some(fit) = fit_opt {
-            for loc_kind in ActiveLocations::new(item, fit) {
+            for loc_kind in SolActiveLocations::new(item, fit) {
                 filter_and_extend(&mut mods, &self.cmods_loc, &(fit.id, loc_kind), attr_id);
             }
         }
         if let (Some(fit), Some(grp_id)) = (fit_opt, grp_id_opt) {
-            for loc_kind in ActiveLocations::new(item, fit) {
+            for loc_kind in SolActiveLocations::new(item, fit) {
                 filter_and_extend(&mut mods, &self.cmods_loc_grp, &(fit.id, loc_kind, grp_id), attr_id);
             }
         }
         if let (Some(fit), Some(srqs)) = (fit_opt, &srqs_opt) {
-            for loc_kind in ActiveLocations::new(item, fit) {
+            for loc_kind in SolActiveLocations::new(item, fit) {
                 for srq_id in srqs.keys() {
                     filter_and_extend(&mut mods, &self.cmods_loc_srq, &(fit.id, loc_kind, *srq_id), attr_id);
                 }

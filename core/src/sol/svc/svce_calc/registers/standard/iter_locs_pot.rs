@@ -1,16 +1,16 @@
 use crate::sol::{item::SolItem, svc::svce_calc::SolLocationKind};
 
 // Iterator over item's potential location roots
-pub(super) struct PotentialLocations<'a> {
+pub(super) struct SolPotentialLocations<'a> {
     item: &'a SolItem,
     index: usize,
 }
-impl<'a> PotentialLocations<'a> {
+impl<'a> SolPotentialLocations<'a> {
     pub(super) fn new(item: &'a SolItem) -> Self {
         Self { item, index: 0 }
     }
 }
-impl<'a> Iterator for PotentialLocations<'a> {
+impl<'a> Iterator for SolPotentialLocations<'a> {
     type Item = SolLocationKind;
 
     fn next(&mut self) -> Option<Self::Item> {

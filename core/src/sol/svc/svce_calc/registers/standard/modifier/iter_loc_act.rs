@@ -5,17 +5,17 @@ use crate::sol::{
 };
 
 // Iterator over item's root location kinds which are actually assigned to a fit
-pub(super) struct ActiveLocations<'a> {
+pub(super) struct SolActiveLocations<'a> {
     item: &'a SolItem,
     fit: &'a SolFit,
     index: usize,
 }
-impl<'a> ActiveLocations<'a> {
+impl<'a> SolActiveLocations<'a> {
     pub(super) fn new(item: &'a SolItem, fit: &'a SolFit) -> Self {
         Self { item, fit, index: 0 }
     }
 }
-impl<'a> Iterator for ActiveLocations<'a> {
+impl<'a> Iterator for SolActiveLocations<'a> {
     type Item = SolLocationKind;
 
     fn next(&mut self) -> Option<Self::Item> {

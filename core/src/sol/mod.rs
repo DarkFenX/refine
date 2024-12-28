@@ -1,7 +1,7 @@
 pub use item::{
     SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolItemState,
 };
-pub use misc::{SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack};
+pub use misc::{SolDmgProfile, SolDmgTypes, SolEffectInfo, SolEffectMode, SolModRack};
 pub use sol::SolarSystem;
 pub(in crate::sol) use sole_debug::{SolDebugError, SolDebugResult};
 pub use sole_item::{SolOrdAddMode, SolOrdRmMode};
