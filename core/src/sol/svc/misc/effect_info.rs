@@ -1,4 +1,4 @@
-use super::SolEffectMode;
+use crate::sol::SolEffectMode;
 
 pub struct SolEffectInfo {
     pub running: bool,

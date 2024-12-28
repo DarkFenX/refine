@@ -27,15 +27,20 @@ pub use defs::{
 pub use sol::{
     fit_info::SolFitInfo,
     fleet_info::SolFleetInfo,
+    item::{
+        SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolItemState,
+    },
     item_info::{
         SolAttrMutationInfo, SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo,
         SolFighterInfo, SolFwEffectInfo, SolImplantInfo, SolItemInfo, SolItemMutationInfo, SolModuleInfo,
         SolProjEffectInfo, SolProjInfo, SolRigInfo, SolShipInfo, SolSideEffectInfo, SolSideEffectStr, SolSkillInfo,
         SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
     },
-    svc::svce_calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
-    SolDmgProfile, SolEffectInfo, SolEffectMode, SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue,
-    SolItemChangeAttrMutation, SolItemState, SolModRack, SolOrdAddMode, SolOrdRmMode, SolarSystem,
+    svc::{
+        svce_calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
+        SolEffectInfo,
+    },
+    SolDmgProfile, SolEffectMode, SolModRack, SolOrdAddMode, SolOrdRmMode, SolarSystem,
 };
 pub use src::Src;
 

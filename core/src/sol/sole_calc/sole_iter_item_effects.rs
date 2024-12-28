@@ -1,7 +1,7 @@
 use crate::{
     defs::{EEffectId, SolItemId},
     err::basic::{ItemFoundError, ItemLoadedError},
-    sol::{SolEffectInfo, SolarSystem},
+    sol::{svc::SolEffectInfo, SolarSystem},
 };
 
 impl SolarSystem {

@@ -1,5 +1,3 @@
-use crate::defs::{EEffectId, SolItemId};
-
 use super::{misc::SolRunningEffects, svce_calc::SolSvcCalcData};
 
 // TODO: add item, remove item, add projection and remove projection methods are not called in
@@ -18,8 +16,5 @@ impl SolSvcs {
             running_effects: SolRunningEffects::new(),
             calc_data: SolSvcCalcData::new(),
         }
-    }
-    pub(in crate::sol) fn is_effect_running(&self, item_id: &SolItemId, effect_id: &EEffectId) -> bool {
-        self.running_effects.is_running(item_id, effect_id)
     }
 }
