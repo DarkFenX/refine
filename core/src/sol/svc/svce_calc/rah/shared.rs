@@ -5,6 +5,7 @@ pub(super) const SIG_DIGITS: u32 = 10;
 
 pub(super) const RAH_EFFECT_ID: EEffectId = ec::effects::ADAPTIVE_ARMOR_HARDENER;
 
+// TODO: since order has been defined in the resonance function itself, consider removing / changing comment
 // List all armor resonance attributes and also define default sorting order. When equal damage is
 // received across several damage types, those which come earlier in this list will be picked as
 // donors

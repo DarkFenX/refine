@@ -8,10 +8,11 @@ use crate::{
         SolDmgTypes, SolView,
     },
     util::StMap,
+    EAttrId,
 };
 
 use super::{
-    info::SolRahInfo,
+    info::SolRahSimRahData,
     shared::{RAH_EFFECT_ID, RES_ATTR_IDS},
     tick_iter::SolRahSimTickIter,
 };
@@ -25,9 +26,9 @@ impl SolSvcs {
                 return;
             }
         };
-        let mut rah_infos = self.get_fit_rah_infos(sol_view, fit_id);
-        // If the map is empty, no setting fallbacks needed, they were set in the map getter
-        if rah_infos.is_empty() {
+        let mut rah_datas = self.get_fit_rah_datas(sol_view, fit_id);
+        // If the map is empty, no setting fallbacks needed, they were set in the info getter
+        if rah_datas.is_empty() {
             return;
         }
         let dmg_profile = match sol_view.fits.get_fit(fit_id).unwrap().rah_incoming_dmg {
@@ -39,27 +40,27 @@ impl SolSvcs {
             && dmg_profile.kinetic <= 0.0
             && dmg_profile.explosive <= 0.0
         {
-            for item_id in rah_infos.keys() {
+            for item_id in rah_datas.keys() {
                 self.set_rah_fallback(sol_view, item_id);
             }
             return;
         }
         // Run "zero" simulation tick - write initial results and TODO: record initial state in history
-        for (item_id, rah_info) in rah_infos.iter() {
-            self.set_rah_result(sol_view, item_id, rah_info.resos)
+        for (item_id, rah_data) in rah_datas.iter() {
+            self.set_rah_result(sol_view, item_id, rah_data.resos, false)
         }
-        for tick_data in SolRahSimTickIter::new(&rah_infos) {
+        for tick_data in SolRahSimTickIter::new(&rah_datas) {
             // For each RAH, calculate damage received during this tick
             let ship_resos = match self.get_ship_resonances(sol_view, &ship_id) {
                 Some(ship_resos) => ship_resos,
                 None => {
-                    for item_id in rah_infos.keys() {
+                    for item_id in rah_datas.keys() {
                         self.set_rah_fallback(sol_view, item_id);
                     }
                     return;
                 }
             };
-            for rah_cycle_dmg_data in rah_infos.values_mut() {
+            for rah_cycle_dmg_data in rah_datas.values_mut() {
                 rah_cycle_dmg_data.taken_dmg.em += dmg_profile.em * ship_resos.em * tick_data.time_passed;
                 rah_cycle_dmg_data.taken_dmg.thermal +=
                     dmg_profile.thermal * ship_resos.thermal * tick_data.time_passed;
@@ -71,7 +72,7 @@ impl SolSvcs {
             // If RAH just finished its cycle, make resist switch
             for cycled_item_id in tick_data.cycled {
                 let mut taken_dmg = SolDmgTypes::new(0.0, 0.0, 0.0, 0.0);
-                let rah_info = rah_infos.get_mut(&cycled_item_id).unwrap();
+                let rah_info = rah_datas.get_mut(&cycled_item_id).unwrap();
                 std::mem::swap(&mut taken_dmg, &mut rah_info.taken_dmg);
                 let next_resos = get_next_resonances(
                     self.calc_data.rah.resonances.get(&cycled_item_id).unwrap().unwrap(),
@@ -101,10 +102,10 @@ impl SolSvcs {
             .dogma;
         Some(SolDmgTypes::new(em, therm, kin, expl))
     }
-    fn get_fit_rah_infos(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> StMap<SolItemId, SolRahInfo> {
+    fn get_fit_rah_datas(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> StMap<SolItemId, SolRahSimRahData> {
         let mut fit_rah_attrs = StMap::new();
         for item_id in self.calc_data.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
-            let rah_attrs = match self.get_rah_info(sol_view, &item_id) {
+            let rah_attrs = match self.get_rah_data(sol_view, &item_id) {
                 Some(rah_attrs) => rah_attrs,
                 // Whenever a RAH has unacceptable for sim attributes, set fallback values and don't
                 // add it to the map
@@ -117,7 +118,7 @@ impl SolSvcs {
         }
         fit_rah_attrs
     }
-    fn get_rah_info(&mut self, sol_view: &SolView, item_id: &SolItemId) -> Option<SolRahInfo> {
+    fn get_rah_data(&mut self, sol_view: &SolView, item_id: &SolItemId) -> Option<SolRahSimRahData> {
         // Get resonances through postprocessing functions, since we already installed them for RAHs
         let res_em = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
@@ -146,7 +147,7 @@ impl SolSvcs {
         if cycle_ms <= 0.0 {
             return None;
         }
-        let rah_info = SolRahInfo::new(
+        let rah_info = SolRahSimRahData::new(
             res_em,
             res_therm,
             res_kin,
@@ -180,20 +181,69 @@ impl SolSvcs {
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
             .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
         let rah_resos = SolDmgTypes::new(em, therm, kin, expl);
-        self.set_rah_result(sol_view, item_id, rah_resos);
+        // Fallback is just unsimulated RAH attribs, and fallback is supposed to be called before
+        // any simulated results were written, so no notification about changed attribs needed
+        self.set_rah_result(sol_view, item_id, rah_resos, false);
     }
-    fn set_rah_result(&mut self, sol_view: &SolView, item_id: &SolItemId, resos: SolDmgTypes<SolAttrVal>) {
+    fn set_rah_result(
+        &mut self,
+        sol_view: &SolView,
+        item_id: &SolItemId,
+        resos: SolDmgTypes<SolAttrVal>,
+        notify: bool,
+    ) {
         self.calc_data.rah.resonances.get_mut(item_id).unwrap().replace(resos);
-        for attr_id in RES_ATTR_IDS.iter() {
-            self.notify_attr_val_changed(sol_view, item_id, attr_id)
+        if notify {
+            for attr_id in RES_ATTR_IDS.iter() {
+                self.notify_attr_val_changed(sol_view, item_id, attr_id)
+            }
         }
     }
 }
 
 fn get_next_resonances(
-    current_resos: SolDmgTypes<SolAttrVal>,
+    mut resonances: SolDmgTypes<SolAttrVal>,
     taken_dmg: SolDmgTypes<AttrVal>,
     shift_amount: AttrVal,
 ) -> SolDmgTypes<SolAttrVal> {
-    current_resos
+    // We borrow resistances from at least 2 resist types, possibly more if ship didn't take damage
+    // of these types
+    let mut donors = 0;
+    if taken_dmg.em == 0.0 {
+        donors += 1;
+    }
+    if taken_dmg.thermal == 0.0 {
+        donors += 1;
+    }
+    if taken_dmg.kinetic == 0.0 {
+        donors += 1;
+    }
+    if taken_dmg.explosive == 0.0 {
+        donors += 1;
+    }
+    donors = donors.max(2);
+    let recipients = 4 - donors;
+    // Indices are against damage type container, i.e. order is EM, explosive, kinetic, explosive.
+    // When equal damage is received across several damage types, those which come earlier in this
+    // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,
+    // since the list is in attribute ID ascending order.
+    let mut sorted_indices: [usize; 4] = [0, 3, 2, 1];
+    sorted_indices.sort_by(|a, b| taken_dmg[*a].partial_cmp(&taken_dmg[*b]).unwrap());
+    let mut donated_amount = 0.0;
+    // Donate
+    for index in sorted_indices[..donors].iter() {
+        let current_value = resonances[*index];
+        // Can't borrow more than it has
+        let to_donate = shift_amount.min(1.0 - current_value.dogma);
+        donated_amount += to_donate;
+        let new_value = current_value.dogma + to_donate;
+        resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
+    }
+    // Take
+    for index in sorted_indices[donors..].iter() {
+        let current_value = resonances[*index];
+        let new_value = current_value.dogma - donated_amount / recipients as f64;
+        resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
+    }
+    resonances
 }

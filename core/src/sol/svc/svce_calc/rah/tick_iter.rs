@@ -4,7 +4,7 @@ use crate::{
 };
 
 use super::{
-    info::SolRahInfo,
+    info::SolRahSimRahData,
     shared::{SIG_DIGITS, TICK_LIMIT},
 };
 
@@ -24,11 +24,11 @@ impl SolRahSimTickData {
 }
 
 pub(super) struct SolRahSimTickIterRahData {
-    info: SolRahInfo,
+    info: SolRahSimRahData,
     cycling_time: AttrVal,
 }
 impl SolRahSimTickIterRahData {
-    fn new(info: SolRahInfo) -> Self {
+    fn new(info: SolRahSimRahData) -> Self {
         Self {
             info,
             cycling_time: 0.0,
@@ -41,7 +41,7 @@ pub(super) struct SolRahSimTickIter {
     rah_data: StMap<SolItemId, SolRahSimTickIterRahData>,
 }
 impl SolRahSimTickIter {
-    pub(super) fn new(infos: &StMap<SolItemId, SolRahInfo>) -> Self {
+    pub(super) fn new(infos: &StMap<SolItemId, SolRahSimRahData>) -> Self {
         let mut rah_data = StMap::with_capacity(infos.len());
         for (item_id, info) in infos.iter() {
             rah_data.insert(*item_id, SolRahSimTickIterRahData::new(*info));

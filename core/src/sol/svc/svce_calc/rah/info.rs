@@ -7,7 +7,7 @@ use crate::{
 use super::shared::SIG_DIGITS;
 
 #[derive(Copy, Clone)]
-pub(super) struct SolRahInfo {
+pub(super) struct SolRahSimRahData {
     // Info about initial RAH attributes
     pub(super) resos: SolDmgTypes<SolAttrVal>,
     pub(super) cycle_time: AttrVal,
@@ -16,7 +16,7 @@ pub(super) struct SolRahInfo {
     // RAH sim state
     pub(super) taken_dmg: SolDmgTypes<AttrVal>,
 }
-impl SolRahInfo {
+impl SolRahSimRahData {
     pub(super) fn new(
         em: SolAttrVal,
         therm: SolAttrVal,
