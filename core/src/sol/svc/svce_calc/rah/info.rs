@@ -1,4 +1,6 @@
-use crate::defs::AttrVal;
+use crate::{defs::AttrVal, util::sig_round};
+
+use super::shared::SIG_DIGITS;
 
 #[derive(Copy, Clone)]
 pub(super) struct SolRahInfo {
@@ -7,6 +9,7 @@ pub(super) struct SolRahInfo {
     pub(super) kin: AttrVal,
     pub(super) expl: AttrVal,
     pub(super) cycle_time: AttrVal,
+    pub(super) cycle_time_rounded: AttrVal,
     pub(super) shift_amount: AttrVal,
 }
 impl SolRahInfo {
@@ -24,6 +27,7 @@ impl SolRahInfo {
             kin,
             expl,
             cycle_time,
+            cycle_time_rounded: sig_round(cycle_time, SIG_DIGITS),
             shift_amount,
         }
     }

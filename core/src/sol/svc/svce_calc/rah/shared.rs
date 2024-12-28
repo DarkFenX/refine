@@ -1,5 +1,8 @@
 use crate::{defs::EAttrId, ec, EEffectId};
 
+pub(super) const TICK_LIMIT: usize = 500;
+pub(super) const SIG_DIGITS: u32 = 10;
+
 pub(super) const RAH_EFFECT_ID: EEffectId = ec::effects::ADAPTIVE_ARMOR_HARDENER;
 
 // List all armor resonance attributes and also define default sorting order. When equal damage is

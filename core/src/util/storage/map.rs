@@ -11,6 +11,7 @@ pub struct StMap<K, V> {
     data: FxHashMap<K, V>,
 }
 impl<K: Eq + Hash, V> StMap<K, V> {
+    // Constructors
     pub fn new() -> StMap<K, V> {
         Self {
             data: FxHashMap::default(),
@@ -21,6 +22,7 @@ impl<K: Eq + Hash, V> StMap<K, V> {
             data: FxHashMap::with_capacity_and_hasher(capacity, FxBuildHasher::default()),
         }
     }
+    // View methods
     pub fn get<Q: ?Sized>(&self, key: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
@@ -47,6 +49,9 @@ impl<K: Eq + Hash, V> StMap<K, V> {
         self.data.len()
     }
     // Modification methods
+    pub fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = (&K, &mut V)> {
+        self.data.iter_mut()
+    }
     pub fn entry(&mut self, key: K) -> Entry<'_, K, V> {
         self.data.entry(key)
     }
