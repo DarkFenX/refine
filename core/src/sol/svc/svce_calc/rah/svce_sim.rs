@@ -25,7 +25,7 @@ impl SolSvcs {
                 return;
             }
         };
-        let rah_infos = self.get_fit_rah_infos(sol_view, fit_id);
+        let mut rah_infos = self.get_fit_rah_infos(sol_view, fit_id);
         // If the map is empty, no setting fallbacks needed, they were set in the map getter
         if rah_infos.is_empty() {
             return;
@@ -48,12 +48,6 @@ impl SolSvcs {
         for (item_id, rah_info) in rah_infos.iter() {
             self.set_rah_result(sol_view, item_id, rah_info.resos)
         }
-        // Container for damage each RAH received during its cycle. May span across several
-        // simulation ticks for multi-RAH setups
-        let mut fit_dmg_data = StMap::with_capacity(rah_infos.len());
-        for item_id in rah_infos.keys() {
-            fit_dmg_data.insert(*item_id, SolDmgTypes::new(0.0, 0.0, 0.0, 0.0));
-        }
         for tick_data in SolRahSimTickIter::new(&rah_infos) {
             // For each RAH, calculate damage received during this tick
             let ship_resos = match self.get_ship_resonances(sol_view, &ship_id) {
@@ -65,16 +59,25 @@ impl SolSvcs {
                     return;
                 }
             };
-            for rah_cycle_dmg_data in fit_dmg_data.values_mut() {
-                rah_cycle_dmg_data.em += dmg_profile.em * ship_resos.em * tick_data.time_passed;
-                rah_cycle_dmg_data.thermal += dmg_profile.thermal * ship_resos.thermal * tick_data.time_passed;
-                rah_cycle_dmg_data.kinetic += dmg_profile.kinetic * ship_resos.kinetic * tick_data.time_passed;
-                rah_cycle_dmg_data.explosive += dmg_profile.explosive * ship_resos.explosive * tick_data.time_passed;
+            for rah_cycle_dmg_data in rah_infos.values_mut() {
+                rah_cycle_dmg_data.taken_dmg.em += dmg_profile.em * ship_resos.em * tick_data.time_passed;
+                rah_cycle_dmg_data.taken_dmg.thermal +=
+                    dmg_profile.thermal * ship_resos.thermal * tick_data.time_passed;
+                rah_cycle_dmg_data.taken_dmg.kinetic +=
+                    dmg_profile.kinetic * ship_resos.kinetic * tick_data.time_passed;
+                rah_cycle_dmg_data.taken_dmg.explosive +=
+                    dmg_profile.explosive * ship_resos.explosive * tick_data.time_passed;
             }
             // If RAH just finished its cycle, make resist switch
             for cycled_item_id in tick_data.cycled {
-                let received_dmg = fit_dmg_data.get(&cycled_item_id).unwrap();
-                // let next_resos = get_next_resonances(received_dmg);
+                let mut taken_dmg = SolDmgTypes::new(0.0, 0.0, 0.0, 0.0);
+                let rah_info = rah_infos.get_mut(&cycled_item_id).unwrap();
+                std::mem::swap(&mut taken_dmg, &mut rah_info.taken_dmg);
+                let next_resos = get_next_resonances(
+                    self.calc_data.rah.resonances.get(&cycled_item_id).unwrap().unwrap(),
+                    taken_dmg,
+                    rah_info.shift_amount,
+                );
             }
         }
         self.set_fit_rah_fallbacks(sol_view, fit_id);
@@ -188,9 +191,9 @@ impl SolSvcs {
 }
 
 fn get_next_resonances(
-    current_resos: &SolDmgTypes<AttrVal>,
-    received_dmg: &SolDmgTypes<AttrVal>,
+    current_resos: SolDmgTypes<SolAttrVal>,
+    taken_dmg: SolDmgTypes<AttrVal>,
     shift_amount: AttrVal,
-) -> SolDmgTypes<AttrVal> {
-    *current_resos
+) -> SolDmgTypes<SolAttrVal> {
+    current_resos
 }
