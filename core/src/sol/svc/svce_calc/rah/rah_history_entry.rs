@@ -9,17 +9,23 @@ use super::shared::SIG_DIGITS;
 #[derive(Copy, Clone)]
 pub(super) struct SolRahSimHistoryEntry {
     item_id: SolItemId,
-    resonances: SolDmgTypes<SolAttrVal>,
+    resonances: SolDmgTypes<AttrVal>,
     cycling_time_rounded: AttrVal,
     resonances_rounded: SolDmgTypes<AttrVal>,
 }
 impl SolRahSimHistoryEntry {
-    pub(super) fn new(item_id: SolItemId, cycling_time: AttrVal, resonances: SolDmgTypes<SolAttrVal>) -> Self {
+    pub(super) fn new(item_id: SolItemId, cycling_time: AttrVal, resonances: &SolDmgTypes<SolAttrVal>) -> Self {
+        let resonances = SolDmgTypes::new(
+            resonances.em.dogma,
+            resonances.thermal.dogma,
+            resonances.kinetic.dogma,
+            resonances.explosive.dogma,
+        );
         let resonances_rounded = SolDmgTypes::new(
-            sig_round(resonances.em.dogma, SIG_DIGITS),
-            sig_round(resonances.thermal.dogma, SIG_DIGITS),
-            sig_round(resonances.kinetic.dogma, SIG_DIGITS),
-            sig_round(resonances.explosive.dogma, SIG_DIGITS),
+            sig_round(resonances.em, SIG_DIGITS),
+            sig_round(resonances.thermal, SIG_DIGITS),
+            sig_round(resonances.kinetic, SIG_DIGITS),
+            sig_round(resonances.explosive, SIG_DIGITS),
         );
         Self {
             item_id,

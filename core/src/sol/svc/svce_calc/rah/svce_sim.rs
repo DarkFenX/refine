@@ -56,7 +56,7 @@ impl SolSvcs {
         let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
         for (item_id, item_sim_data) in sim_datas.iter() {
             self.set_rah_result(sol_view, item_id, item_sim_data.info.resos, false);
-            let item_history_entry = SolRahSimHistoryEntry::new(*item_id, OF(0.0), item_sim_data.info.resos);
+            let item_history_entry = SolRahSimHistoryEntry::new(*item_id, OF(0.0), &item_sim_data.info.resos);
             sim_history_entry.push(item_history_entry);
         }
         history_entries_seen.insert(sim_history_entry.clone());
@@ -100,13 +100,14 @@ impl SolSvcs {
             for item_id in sim_datas.keys() {
                 let item_cycling_time = *tick_data.cycling_times.get(item_id).unwrap();
                 let item_resos = self.calc_data.rah.resonances.get(item_id).unwrap().unwrap();
-                let item_history_entry = SolRahSimHistoryEntry::new(*item_id, item_cycling_time, item_resos);
+                let item_history_entry = SolRahSimHistoryEntry::new(*item_id, item_cycling_time, &item_resos);
                 sim_history_entry.push(item_history_entry);
             }
             // See if we're in a loop, if we are - calculate average resists across tick states
             // which are within the loop
             if history_entries_seen.contains(&sim_history_entry) {
                 // TODO: add loop processing
+                self.set_fit_rah_fallbacks(sol_view, fit_id);
                 return;
             }
             // Update history
