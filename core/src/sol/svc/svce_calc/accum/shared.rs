@@ -51,5 +51,5 @@ pub(super) fn diminish_mul(val: AttrVal, proj_mult: Option<AttrVal>, res_mult: O
     if res_mult.is_none() && proj_mult.is_none() {
         return val;
     }
-    diminish_basic(val - 1.0, res_mult, proj_mult) + 1.0
+    diminish_basic(val - OF(1.0), res_mult, proj_mult) + OF(1.0)
 }
