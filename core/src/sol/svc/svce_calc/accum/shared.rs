@@ -1,7 +1,5 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
-    defs::{AttrVal, EItemCatId},
+    defs::{AttrVal, EItemCatId, OF},
     ec,
 };
 

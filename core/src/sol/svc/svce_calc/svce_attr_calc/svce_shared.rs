@@ -1,7 +1,7 @@
-use ordered_float::{Float, OrderedFloat as OF};
+use ordered_float::Float;
 
 use crate::{
-    defs::AttrVal,
+    defs::{AttrVal, OF},
     sol::{
         svc::{
             svce_calc::{SolContext, SolCtxModifier, SolModifierKind},

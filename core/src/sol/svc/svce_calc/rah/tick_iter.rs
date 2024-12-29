@@ -1,7 +1,5 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
-    defs::{AttrVal, SolItemId},
+    defs::{AttrVal, SolItemId, OF},
     util::{sig_round, StMap},
 };
 

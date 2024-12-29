@@ -8,12 +8,12 @@ license = "LGPL-3.0-or-later"
 
 [features]
 full = ["json", "ram"]
-json = ["dep:num-rational", "dep:serde", "dep:serde_repr", "dep:serde_tuple", "dep:serde_json", "dep:tracing", "dep:zstd"]
+json = ["dep:ordered-float", "dep:serde", "dep:serde_repr", "dep:serde_tuple", "dep:serde_json", "dep:tracing", "dep:zstd"]
 ram = []
 
 [dependencies]
 rc = { package = "reefast-core", path = "../core" }
-num-rational = { version = ">=0.4.2", features = ["serde"], optional = true }
+ordered-float = { version = ">=4.6.0", features = ["serde"], optional = true }
 serde = { version = ">=1.0.216", features = ["derive"], optional = true }
 serde_repr = { version = ">=0.1.19", optional = true }
 serde_tuple = { version = ">=1.1.0", optional = true }

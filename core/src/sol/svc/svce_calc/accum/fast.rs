@@ -4,10 +4,8 @@
 //! what went into it. Since they duplicate each other, when doing any changes, MAKE SURE TO APPLY
 //! THEM TO BOTH.
 
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
-    defs::{AggrKey, AttrVal, EItemCatId},
+    defs::{AggrKey, AttrVal, EItemCatId, OF},
     sol::svc::svce_calc::{SolAggrMode, SolOp},
     util::StMap,
 };

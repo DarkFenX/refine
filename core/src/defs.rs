@@ -1,12 +1,12 @@
-use ordered_float::OrderedFloat;
+pub use ordered_float::OrderedFloat as OF;
 
 // Generic aliases
 pub type Idx = usize;
 pub type Amount = u32;
 // EVE-specific aliases, but not specific to any entity category
 pub(crate) type AggrKey = i32;
-pub type AttrVal = OrderedFloat<f64>;
-pub type MutaRoll = OrderedFloat<f64>;
+pub type AttrVal = OF<f64>;
+pub type MutaRoll = OF<f64>;
 pub type SkillLevel = u8;
 pub type SlotNumber = i32;
 // Aliases for EVE-related entities

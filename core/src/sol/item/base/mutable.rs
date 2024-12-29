@@ -1,8 +1,6 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
     ad,
-    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, MutaRoll, SkillLevel, SolItemId},
+    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, MutaRoll, SkillLevel, SolItemId, OF},
     err::basic::{ItemLoadedError, ItemMutatedError, ItemNotMutatedError},
     sol::{
         item::{

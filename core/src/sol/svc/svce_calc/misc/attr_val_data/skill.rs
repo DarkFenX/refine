@@ -1,7 +1,5 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
-    defs::{EAttrId, SolItemId},
+    defs::{EAttrId, SolItemId, OF},
     ec,
     sol::{
         svc::{svce_calc::SolAttrVal, SolSvcs},

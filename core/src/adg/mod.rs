@@ -1,9 +1,8 @@
 //! Adapted data generator
-use ordered_float::OrderedFloat as OF;
 
 use crate::{
     ad,
-    defs::{EAttrId, EAttrUnitId, EBuffId, EItemCatId, EItemGrpId},
+    defs::{EAttrId, EAttrUnitId, EBuffId, EItemCatId, EItemGrpId, OF},
     ec, ed,
     src::SrcInitError,
     util::StMap,

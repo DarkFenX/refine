@@ -20,18 +20,33 @@ impl HSideEffectStr {
         };
         match core_se_str.op {
             rc::ad::AOp::PreAssign => None,
-            rc::ad::AOp::PreMul => Some(HSideEffectStr::new(HSideEffectOp::Perc, (val - 1.0) * 100.0)),
+            rc::ad::AOp::PreMul => Some(HSideEffectStr::new(
+                HSideEffectOp::Perc,
+                (val - rc::OF(1.0)) * rc::OF(100.0),
+            )),
             rc::ad::AOp::PreDiv => match val {
-                0.0 => None,
-                _ => Some(HSideEffectStr::new(HSideEffectOp::Perc, (1.0 / val - 1.0) * 100.0)),
+                rc::OF(0.0) => None,
+                _ => Some(HSideEffectStr::new(
+                    HSideEffectOp::Perc,
+                    (rc::OF(1.0) / val - rc::OF(1.0)) * rc::OF(100.0),
+                )),
             },
             rc::ad::AOp::Add => Some(HSideEffectStr::new(HSideEffectOp::Add, val)),
             rc::ad::AOp::Sub => Some(HSideEffectStr::new(HSideEffectOp::Add, -val)),
-            rc::ad::AOp::PostMul => Some(HSideEffectStr::new(HSideEffectOp::Perc, (val - 1.0) * 100.0)),
-            rc::ad::AOp::PostMulImmune => Some(HSideEffectStr::new(HSideEffectOp::Perc, (val - 1.0) * 100.0)),
+            rc::ad::AOp::PostMul => Some(HSideEffectStr::new(
+                HSideEffectOp::Perc,
+                (val - rc::OF(1.0)) * rc::OF(100.0),
+            )),
+            rc::ad::AOp::PostMulImmune => Some(HSideEffectStr::new(
+                HSideEffectOp::Perc,
+                (val - rc::OF(1.0)) * rc::OF(100.0),
+            )),
             rc::ad::AOp::PostDiv => match val {
-                0.0 => None,
-                _ => Some(HSideEffectStr::new(HSideEffectOp::Perc, (1.0 / val - 1.0) * 100.0)),
+                rc::OF(0.0) => None,
+                _ => Some(HSideEffectStr::new(
+                    HSideEffectOp::Perc,
+                    (rc::OF(1.0) / val - rc::OF(1.0)) * rc::OF(100.0),
+                )),
             },
             rc::ad::AOp::PostPerc => Some(HSideEffectStr::new(HSideEffectOp::Perc, val)),
             rc::ad::AOp::PostAssign => None,

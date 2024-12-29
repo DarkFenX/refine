@@ -1,7 +1,5 @@
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
-    defs::SolItemId,
+    defs::{SolItemId, OF},
     sol::{
         fit::SolFits,
         fleet::SolFleets,

@@ -1,6 +1,4 @@
-use ordered_float::OrderedFloat as OF;
-
-use crate::{ad, adg::GData};
+use crate::{ad, adg::GData, defs::OF};
 
 pub(in crate::adg::conv) fn conv_attrs(g_data: &GData) -> Vec<ad::AAttr> {
     g_data

@@ -76,7 +76,7 @@ impl Into<rc::ad::AEffectBuffSrc> for &CEffectBuffSrc {
 #[derive(serde::Serialize, serde::Deserialize)]
 pub(in crate::handler_json) enum CEffectBuffSrcCustom {
     AffectorVal(rc::EBuffId, rc::EAttrId),
-    HardcodedVal(rc::EBuffId, rc::Rational),
+    HardcodedVal(rc::EBuffId, rc::AttrVal),
 }
 impl From<&rc::ad::AEffectBuffSrcCustom> for CEffectBuffSrcCustom {
     fn from(buff_data_src_custom: &rc::ad::AEffectBuffSrcCustom) -> Self {

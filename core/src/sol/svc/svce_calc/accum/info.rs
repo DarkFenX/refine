@@ -3,10 +3,8 @@
 //! Whenever regular calculator changes, those changes have to be carried over here, to keep actual
 //! calculation process and modification info consistent.
 
-use ordered_float::OrderedFloat as OF;
-
 use crate::{
-    defs::{AggrKey, AttrVal, EItemCatId},
+    defs::{AggrKey, AttrVal, EItemCatId, OF},
     sol::svc::svce_calc::{SolAggrMode, SolModificationInfo, SolOp},
     util::StMap,
     SolAffectorInfo,
