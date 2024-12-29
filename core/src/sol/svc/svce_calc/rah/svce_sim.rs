@@ -9,7 +9,7 @@ use crate::{
         svc::{svce_calc::SolAttrVal, SolSvcs},
         SolDmgTypes, SolView,
     },
-    util::StSet,
+    util::{StMap, StSet},
 };
 
 use super::{
@@ -273,4 +273,41 @@ fn get_next_resonances(
         resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
     }
     resonances
+}
+
+fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<SolItemId, SolDmgTypes<AttrVal>> {
+    let mut resos_used = StMap::new();
+    for sim_history_entry in sim_history {
+        for item_history_entry in sim_history_entry {
+            // Add resonances to container only when RAH cycle is just starting
+            if item_history_entry.cycling_time_rounded == OF(0.0) {
+                resos_used
+                    .entry(item_history_entry.item_id)
+                    .or_insert_with(Vec::new)
+                    .push(item_history_entry.resonances);
+            }
+        }
+    }
+    let mut avg_resos = StMap::with_capacity(resos_used.len());
+    for (item_id, resos) in resos_used.into_iter() {
+        let reso_len = resos.len() as f64;
+        let item_avg_resos = match resos.into_iter().reduce(|a, v| {
+            SolDmgTypes::new(
+                a.em + v.em,
+                a.thermal + v.thermal,
+                a.kinetic + v.kinetic,
+                a.explosive + v.explosive,
+            )
+        }) {
+            Some(sum) => SolDmgTypes::new(
+                sum.em / reso_len,
+                sum.thermal / reso_len,
+                sum.kinetic / reso_len,
+                sum.explosive / reso_len,
+            ),
+            None => continue,
+        };
+        avg_resos.insert(item_id, item_avg_resos);
+    }
+    avg_resos
 }

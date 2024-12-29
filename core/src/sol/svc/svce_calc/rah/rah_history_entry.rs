@@ -8,9 +8,9 @@ use super::shared::SIG_DIGITS;
 
 #[derive(Copy, Clone)]
 pub(super) struct SolRahSimHistoryEntry {
-    item_id: SolItemId,
-    resonances: SolDmgTypes<AttrVal>,
-    cycling_time_rounded: AttrVal,
+    pub(super) item_id: SolItemId,
+    pub(super) resonances: SolDmgTypes<AttrVal>,
+    pub(super) cycling_time_rounded: AttrVal,
     resonances_rounded: SolDmgTypes<AttrVal>,
 }
 impl SolRahSimHistoryEntry {
