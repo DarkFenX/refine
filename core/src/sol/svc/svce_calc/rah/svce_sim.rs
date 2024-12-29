@@ -1,9 +1,10 @@
 use std::collections::BTreeMap;
 
 use itertools::Itertools;
+use ordered_float::Float;
 
 use crate::{
-    defs::{AttrVal, SolFitId, SolItemId, OF},
+    defs::{Amount, AttrVal, SolFitId, SolItemId, OF},
     ec,
     sol::{
         svc::{svce_calc::SolAttrVal, SolSvcs},
@@ -144,7 +145,7 @@ impl SolSvcs {
                 }
                 return;
             }
-            // Update history
+            // No loop - update history
             history_entries_seen.insert(sim_history_entry.clone());
             sim_history.push(sim_history_entry);
         }
@@ -338,9 +339,47 @@ fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<S
                 sum.kinetic / reso_len,
                 sum.explosive / reso_len,
             ),
+            // Should happen when resonance container is empty
             None => continue,
         };
         avg_resos.insert(item_id, item_avg_resos);
     }
     avg_resos
+}
+
+fn estimate_initial_adaptation_ticks(
+    sim_datas: &BTreeMap<SolItemId, SolRahDataSim>,
+    sim_history: &Vec<Vec<SolRahSimHistoryEntry>>,
+) -> Amount {
+    // Get amount of cycles it takes for each RAH to exhaust its highest resistance
+    let mut exhaustion_cycles = StMap::new();
+    for (item_id, item_sim_data) in sim_datas.iter() {
+        let min_reso = *[
+            item_sim_data.info.resos.em.dogma,
+            item_sim_data.info.resos.thermal.dogma,
+            item_sim_data.info.resos.kinetic.dogma,
+            item_sim_data.info.resos.explosive.dogma,
+        ]
+        .iter()
+        .min()
+        .unwrap();
+        let item_exhaustion_cycles = ((OF(1.0) - min_reso) / item_sim_data.info.shift_amount).ceil();
+        exhaustion_cycles.insert(*item_id, item_exhaustion_cycles);
+    }
+    // Slowest RAH is the one which takes the most time to exhaust its highest resistance when it's
+    // used strictly as donor
+    let slowest_item_id = sim_datas
+        .iter()
+        .max_by_key(|(k, v)| AttrVal::from(*exhaustion_cycles.get(k).unwrap()) * v.info.cycle_time)
+        .map(|v| *v.0)
+        .unwrap();
+    // Multiply quantity of resistance exhaustion cycles by 1.5, to give RAH more time for 'finer'
+    // adjustments
+    let slowest_cycles = (exhaustion_cycles.get(&slowest_item_id).unwrap() * OF(1.5))
+        .ceil()
+        .into_inner() as Amount;
+    if slowest_cycles == 0 {
+        return 0;
+    }
+    0
 }
