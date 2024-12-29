@@ -25,7 +25,10 @@ impl SolSvcs {
         let ship_id = match sol_view.fits.get_fit(fit_id).unwrap().ship {
             Some(ship_id) => ship_id,
             None => {
-                self.set_fit_rah_fallbacks(sol_view, fit_id);
+                // Since there were no calculated values stored in sim prior to simulation, and we
+                // are setting unadapted values - effectively values of resonances do not change,
+                // and no updates needed
+                self.set_fit_rahs_unadapted(sol_view, fit_id, false);
                 return;
             }
         };
@@ -45,8 +48,9 @@ impl SolSvcs {
             && dmg_profile.kinetic <= OF(0.0)
             && dmg_profile.explosive <= OF(0.0)
         {
-            for item_id in sim_datas.keys() {
-                self.set_rah_fallback(sol_view, item_id);
+            for (item_id, item_sim_data) in sim_datas.iter() {
+                // Sets unadapted values, since info contains unadapted resonance values
+                self.set_rah_result(sol_view, item_id, item_sim_data.info.resos, false);
             }
             return;
         }
@@ -55,6 +59,7 @@ impl SolSvcs {
         // Run "zero" simulation tick - write initial results and record initial state in history
         let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
         for (item_id, item_sim_data) in sim_datas.iter() {
+            // Sets unadapted values, since info contains unadapted resonance values
             self.set_rah_result(sol_view, item_id, item_sim_data.info.resos, false);
             let item_history_entry = SolRahSimHistoryEntry::new(*item_id, OF(0.0), &item_sim_data.info.resos);
             sim_history_entry.push(item_history_entry);
@@ -68,7 +73,9 @@ impl SolSvcs {
                 Some(ship_resos) => ship_resos,
                 None => {
                     for item_id in sim_datas.keys() {
-                        self.set_rah_fallback(sol_view, item_id);
+                        // Any issues with ship resonance fetch should happen on the very first sim
+                        // tick, so results should coincide to default
+                        self.set_rah_unadapted(sol_view, item_id, false);
                     }
                     return;
                 }
@@ -106,8 +113,35 @@ impl SolSvcs {
             // See if we're in a loop, if we are - calculate average resists across tick states
             // which are within the loop
             if history_entries_seen.contains(&sim_history_entry) {
-                // TODO: add loop processing
-                self.set_fit_rah_fallbacks(sol_view, fit_id);
+                let index = sim_history.iter().position(|v| v == &sim_history_entry).unwrap();
+                let avg_resos = get_average_resonances(&sim_history[index..]);
+                for (item_id, item_sim_data) in sim_datas.iter() {
+                    // Average resonance getter might not return resonances for all RAHs, and it's
+                    // hard to trace when/why this might happen. For safety, just use unadapted
+                    // values if that happens
+                    let item_resos = match avg_resos.get(item_id) {
+                        Some(item_avg_resos) => SolDmgTypes::new(
+                            SolAttrVal::new(item_sim_data.info.resos.em.base, item_avg_resos.em, item_avg_resos.em),
+                            SolAttrVal::new(
+                                item_sim_data.info.resos.thermal.base,
+                                item_avg_resos.thermal,
+                                item_avg_resos.thermal,
+                            ),
+                            SolAttrVal::new(
+                                item_sim_data.info.resos.kinetic.base,
+                                item_avg_resos.kinetic,
+                                item_avg_resos.kinetic,
+                            ),
+                            SolAttrVal::new(
+                                item_sim_data.info.resos.explosive.base,
+                                item_avg_resos.explosive,
+                                item_avg_resos.explosive,
+                            ),
+                        ),
+                        None => item_sim_data.info.resos,
+                    };
+                    self.set_rah_result(sol_view, item_id, item_resos, true)
+                }
                 return;
             }
             // Update history
@@ -117,7 +151,7 @@ impl SolSvcs {
         // If we didn't find any RAH state loops during specified quantity of sim ticks, calculate
         // average resonances based on whole history, excluding initial adaptation period
         // TODO: add non-loop processing and remove fallback
-        self.set_fit_rah_fallbacks(sol_view, fit_id);
+        self.set_fit_rahs_unadapted(sol_view, fit_id, true);
     }
     fn get_ship_resonances(&mut self, sol_view: &SolView, ship_id: &SolItemId) -> Option<SolDmgTypes<AttrVal>> {
         let em = self
@@ -143,10 +177,11 @@ impl SolSvcs {
         for item_id in self.calc_data.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
             let rah_attrs = match self.get_rah_sim_data(sol_view, &item_id) {
                 Some(rah_attrs) => rah_attrs,
-                // Whenever a RAH has unacceptable for sim attributes, set fallback values and don't
-                // add it to the map
+                // Whenever a RAH has unacceptable for sim attributes, set unadapted values and
+                // don't add it to the map. No updates needed, since this method should be called
+                // before sim makes any changes
                 None => {
-                    self.set_rah_fallback(sol_view, &item_id);
+                    self.set_rah_unadapted(sol_view, &item_id, false);
                     continue;
                 }
             };
@@ -202,12 +237,12 @@ impl SolSvcs {
         Some(SolRahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rah_fallbacks(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
+    fn set_fit_rahs_unadapted(&mut self, sol_view: &SolView, fit_id: &SolFitId, notify: bool) {
         for item_id in self.calc_data.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
-            self.set_rah_fallback(sol_view, &item_id);
+            self.set_rah_unadapted(sol_view, &item_id, notify);
         }
     }
-    fn set_rah_fallback(&mut self, sol_view: &SolView, item_id: &SolItemId) {
+    fn set_rah_unadapted(&mut self, sol_view: &SolView, item_id: &SolItemId, notify: bool) {
         let em = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
@@ -221,9 +256,7 @@ impl SolSvcs {
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let rah_resos = SolDmgTypes::new(em, therm, kin, expl);
-        // Fallback is just unsimulated RAH attribs, and fallback is supposed to be called before
-        // any simulated results were written, so no notification about changed attribs needed
-        self.set_rah_result(sol_view, item_id, rah_resos, false);
+        self.set_rah_result(sol_view, item_id, rah_resos, notify);
     }
     fn set_rah_result(
         &mut self,
