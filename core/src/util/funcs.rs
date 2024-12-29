@@ -9,6 +9,9 @@ pub(crate) fn vec_push_opt<T>(vec: &mut Vec<T>, opt: Option<T>) {
 }
 
 pub(crate) fn sig_round(val: AttrVal, sig_digits: u32) -> AttrVal {
+    if val == OF(0.0) {
+        return val;
+    }
     let highest_magnitude = val.abs().log10().floor().into_inner() as i32;
     let digits = -highest_magnitude - 1 + sig_digits as i32;
     round(val, digits)
