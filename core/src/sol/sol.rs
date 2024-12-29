@@ -1,3 +1,5 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     defs::SolItemId,
     sol::{
@@ -39,7 +41,7 @@ impl SolarSystem {
             proj_effects: StSet::new(),
             proj_tracker: SolProjTracker::new(),
             svcs: SolSvcs::new(),
-            default_incoming_dmg: SolDmgProfile::new(1.0, 1.0, 1.0, 1.0),
+            default_incoming_dmg: SolDmgProfile::new(OF(1.0), OF(1.0), OF(1.0), OF(1.0)),
         }
     }
 }

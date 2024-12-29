@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{AttrVal, EAttrId, EEffectId, Rational, SolItemId},
+    defs::{AttrVal, EAttrId, EEffectId, SolItemId},
     ec,
     sol::{
         item::SolItem,
@@ -120,7 +120,7 @@ impl SolRawModifier {
         a_effect: &ad::AEffect,
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
-        affector_val: Rational,
+        affector_val: AttrVal,
         domain: SolDomain,
     ) -> Option<Self> {
         SolRawModifier::from_a_buff(
@@ -228,7 +228,10 @@ pub(in crate::sol::svc::svce_calc) fn get_resist_attr_id(item: &SolItem, effect:
     match effect.resist_attr_id {
         Some(resist_attr_id) => Some(resist_attr_id),
         None => match item.get_attrs() {
-            Ok(attrs) => match attrs.get(&ec::attrs::REMOTE_RESISTANCE_ID).map(|v| *v as EAttrId) {
+            Ok(attrs) => match attrs
+                .get(&ec::attrs::REMOTE_RESISTANCE_ID)
+                .map(|v| v.into_inner() as EAttrId)
+            {
                 Some(attr_id) if attr_id != 0 => Some(attr_id),
                 _ => None,
             },

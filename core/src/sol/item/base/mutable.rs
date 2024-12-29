@@ -1,3 +1,5 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, MutaRoll, SkillLevel, SolItemId},
@@ -571,7 +573,7 @@ fn normalize_attr_value(
 }
 
 fn limit_roll(roll: MutaRoll) -> MutaRoll {
-    AttrVal::max(0.0, AttrVal::min(1.0, roll))
+    MutaRoll::max(OF(0.0), MutaRoll::min(OF(1.0), roll))
 }
 
 // Attribute mutations
@@ -604,10 +606,10 @@ fn mutate_attr_value(unmutated_value: AttrVal, roll_range: &ad::AMutaAttrRange, 
 }
 
 fn limit_attr_value(unmutated_value: AttrVal, roll_range: &ad::AMutaAttrRange) -> AttrVal {
-    if roll_range.min_mult >= 1.0 {
+    if roll_range.min_mult >= OF(1.0) {
         return unmutated_value * roll_range.min_mult;
     }
-    if roll_range.max_mult <= 1.0 {
+    if roll_range.max_mult <= OF(1.0) {
         return unmutated_value * roll_range.max_mult;
     }
     unmutated_value

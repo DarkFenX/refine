@@ -1,3 +1,5 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     defs::{AttrVal, SolItemId},
     util::{sig_round, StMap},
@@ -31,7 +33,7 @@ impl SolRahSimTickIterRahData {
     fn new(info: SolRahSimRahData) -> Self {
         Self {
             info,
-            cycling_time: 0.0,
+            cycling_time: OF(0.0),
         }
     }
 }
@@ -79,7 +81,7 @@ impl Iterator for SolRahSimTickIter {
             // Update iterator state
             for (item_id, item_data) in self.rah_data.iter_mut() {
                 match cycled.contains(item_id) {
-                    true => item_data.cycling_time = 0.0,
+                    true => item_data.cycling_time = OF(0.0),
                     false => item_data.cycling_time += time_passed,
                 }
             }

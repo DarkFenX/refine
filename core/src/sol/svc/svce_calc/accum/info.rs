@@ -3,6 +3,8 @@
 //! Whenever regular calculator changes, those changes have to be carried over here, to keep actual
 //! calculation process and modification info consistent.
 
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     defs::{AggrKey, AttrVal, EItemCatId},
     sol::svc::svce_calc::{SolAggrMode, SolModificationInfo, SolOp},
@@ -422,10 +424,10 @@ fn revert_sub(val: AttrVal) -> AttrVal {
     -val
 }
 fn revert_div(val: AttrVal) -> AttrVal {
-    1.0 / val
+    OF(1.0) / val
 }
 fn revert_perc(val: AttrVal) -> AttrVal {
-    (val - 1.0) * 100.0
+    (val - OF(1.0)) * OF(100.0)
 }
 
 // Application functions - they treat left side and right side differently
@@ -450,7 +452,7 @@ fn apply_mul(mut base_attr_info: SolAttrValInfo, other_attr_info: Option<SolAttr
     if let Some(other_attr_info) = other_attr_info {
         match base_attr_info.value {
             // Left side 0 means right side has no effect on the result
-            0.0 => base_attr_info.merge_ineffective(other_attr_info),
+            OF(0.0) => base_attr_info.merge_ineffective(other_attr_info),
             _ => {
                 base_attr_info.value *= other_attr_info.value;
                 base_attr_info.merge(other_attr_info);
@@ -486,7 +488,7 @@ fn combine_adds<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
     for other_attr_info in attr_infos.extract_if(.., |_| true) {
         match other_attr_info.value {
             // Adding 0 is not changing the result
-            0.0 => attr_info.merge_ineffective(other_attr_info),
+            OF(0.0) => attr_info.merge_ineffective(other_attr_info),
             _ => attr_info.merge(other_attr_info),
         }
     }
@@ -501,10 +503,10 @@ fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
     match value {
         // Value of 0 means that some multipliers were 0. Expose only those, and hide the rest,
         // those we hid have no effect on value anyway
-        0.0 => {
+        OF(0.0) => {
             for other_attr_info in attr_infos.extract_if(.., |_| true) {
                 match other_attr_info.value {
-                    0.0 => attr_info.merge(other_attr_info),
+                    OF(0.0) => attr_info.merge(other_attr_info),
                     _ => attr_info.merge_ineffective(other_attr_info),
                 }
             }
@@ -516,7 +518,7 @@ fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
                 // can happen when stacking penalty chains are calculated and aggregated into value
                 // of 1.0; we want to expose all modifications which led to it even if final result
                 // is 1.0
-                if other_attr_info.value == 1.0 && other_attr_info.is_single_effective() {
+                if other_attr_info.value == OF(1.0) && other_attr_info.is_single_effective() {
                     attr_info.merge_ineffective(other_attr_info)
                 } else {
                     attr_info.merge(other_attr_info);
@@ -536,9 +538,9 @@ where
     let mut negative = Vec::new();
     let mut neutral = Vec::new();
     for attr_info in attr_infos.extract_if(.., |_| true) {
-        if attr_info.value > 1.0 {
+        if attr_info.value > OF(1.0) {
             positive.push(attr_info);
-        } else if attr_info.value < 1.0 {
+        } else if attr_info.value < OF(1.0) {
             negative.push(attr_info);
         } else {
             neutral.push(attr_info)
@@ -549,14 +551,14 @@ where
     }
     positive.sort_by(|a, b| b.value.partial_cmp(&a.value).unwrap());
     negative.sort_by(|a, b| a.value.partial_cmp(&b.value).unwrap());
-    let mut attr_info = SolAttrValInfo::new(1.0);
+    let mut attr_info = SolAttrValInfo::new(OF(1.0));
     // Do negative chain first, since it can result in final multiplier of 0
     let negative_attr_info = get_chain_attr_info(negative, revert_func);
     attr_info.value *= negative_attr_info.value;
     attr_info.merge(negative_attr_info);
     let positive_attr_info = get_chain_attr_info(positive, revert_func);
     // It doesn't matter what is in positive chain if our multiplier is 0 already
-    if attr_info.value == 0.0 {
+    if attr_info.value == OF(0.0) {
         attr_info.merge_ineffective(positive_attr_info);
     } else {
         attr_info.value *= positive_attr_info.value;
@@ -596,28 +598,28 @@ fn get_chain_attr_info<R>(attr_infos: Vec<SolAttrValInfo>, revert_func: &R) -> S
 where
     R: Fn(AttrVal) -> AttrVal,
 {
-    let mut attr_info = SolAttrValInfo::new(1.0);
+    let mut attr_info = SolAttrValInfo::new(OF(1.0));
     // Special case for when first element of chain is a multiplier by 0, for the same reason as in
     // multiplication combination function. We know final chain multiplier is going to be 0, we know
     // other elements are not going to be multipliers by 0 after penalty is applied, so we just
     // expose multiplier by 0 as the only effective modification, and consider others ineffective
     let first_zero = match attr_infos.get(0) {
-        Some(other_attr_info) => other_attr_info.value == 0.0,
+        Some(other_attr_info) => other_attr_info.value == OF(0.0),
         None => false,
     };
     for (i, mut other_attr_info) in attr_infos.into_iter().enumerate() {
         // Ignore 12th modification and further as insignificant
         if i > 10 {
             for info in other_attr_info.effective_infos.iter_mut() {
-                info.stacking_mult = Some(0.0);
-                info.applied_val = revert_func(1.0);
+                info.stacking_mult = Some(OF(0.0));
+                info.applied_val = revert_func(OF(1.0));
             }
             attr_info.merge_ineffective(other_attr_info);
         } else {
             let penalty_multiplier = PENALTY_BASE.powi((i as i32).pow(2));
-            let value_multiplier = 1.0 + (other_attr_info.value - 1.0) * penalty_multiplier;
+            let value_multiplier = OF(1.0) + (other_attr_info.value - OF(1.0)) * penalty_multiplier;
             for info in other_attr_info.effective_infos.iter_mut() {
-                info.stacking_mult = Some(penalty_multiplier);
+                info.stacking_mult = Some(OF(penalty_multiplier));
                 info.applied_val = revert_func(value_multiplier);
             }
             if first_zero && i > 0 {

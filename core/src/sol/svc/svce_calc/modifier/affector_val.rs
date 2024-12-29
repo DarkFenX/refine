@@ -1,7 +1,5 @@
-use num_traits::cast::ToPrimitive;
-
 use crate::{
-    defs::{AttrVal, EAttrId, EEffectId, Rational, SolItemId},
+    defs::{AttrVal, EAttrId, EEffectId, SolItemId},
     sol::{
         item::SolItem,
         svc::{svce_calc::SolAffectorInfo, SolSvcs},
@@ -14,7 +12,7 @@ use super::custom::{aar, prop};
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(super) enum SolAffectorValue {
     AttrId(EAttrId),
-    Hardcoded(Rational),
+    Hardcoded(AttrVal),
     PropulsionModule,
     AncillaryArmorRep,
 }
@@ -46,7 +44,7 @@ impl SolAffectorValue {
     ) -> Option<AttrVal> {
         match self {
             Self::AttrId(attr_id) => Some(svc.calc_get_item_attr_val(sol_view, item_id, attr_id).ok()?.dogma),
-            Self::Hardcoded(val_rational) => Some(val_rational.to_f64().unwrap()),
+            Self::Hardcoded(val) => Some(*val),
             Self::PropulsionModule => prop::get_mod_val(svc, sol_view, item_id, effect_id),
             Self::AncillaryArmorRep => aar::get_mod_val(svc, sol_view, item_id),
         }

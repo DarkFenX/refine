@@ -1,7 +1,9 @@
 //! Adapted data generator
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     ad,
-    defs::{EAttrId, EAttrUnitId, EBuffId, EItemCatId, EItemGrpId, Rational},
+    defs::{EAttrId, EAttrUnitId, EBuffId, EItemCatId, EItemGrpId},
     ec, ed,
     src::SrcInitError,
     util::StMap,
@@ -152,13 +154,10 @@ impl GSupport {
             ec::effects::DEBUFF_LANCE,
             ad::AEffectBuffInfo::new(
                 ad::AEffectBuffSrc::Customized(vec![
-                    ad::AEffectBuffSrcCustom::HardcodedVal(
-                        ec::buffs::REMOTE_REPAIR_IMPEDANCE,
-                        Rational::from_integer(-50),
-                    ),
-                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::WARP_PENALTY, Rational::from_integer(100)),
-                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::DISALLOW_DOCK_JUMP, Rational::from_integer(1)),
-                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::DISALLOW_TETHER, Rational::from_integer(1)),
+                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::REMOTE_REPAIR_IMPEDANCE, OF(-50.0)),
+                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::WARP_PENALTY, OF(100.0)),
+                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::DISALLOW_DOCK_JUMP, OF(1.0)),
+                    ad::AEffectBuffSrcCustom::HardcodedVal(ec::buffs::DISALLOW_TETHER, OF(1.0)),
                 ]),
                 ad::AEffectBuffScope::Everything,
             ),

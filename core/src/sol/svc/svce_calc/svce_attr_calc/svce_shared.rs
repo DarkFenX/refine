@@ -1,3 +1,5 @@
+use ordered_float::{Float, OrderedFloat as OF};
+
 use crate::{
     defs::AttrVal,
     sol::{
@@ -60,38 +62,38 @@ impl SolSvcs {
             Some(optimal_attr_id) => {
                 match self.calc_get_item_attr_val(sol_view, &modifier.raw.affector_item_id, &optimal_attr_id) {
                     Ok(val) => val.dogma,
-                    _ => 0.0,
+                    _ => OF(0.0),
                 }
             }
-            None => 0.0,
+            None => OF(0.0),
         };
         // Assume falloff range is 0 if it's not available
         let affector_falloff = match modifier.raw.falloff_attr_id {
             Some(falloff_attr_id) => {
                 match self.calc_get_item_attr_val(sol_view, &modifier.raw.affector_item_id, &falloff_attr_id) {
                     Ok(val) => val.dogma,
-                    _ => 0.0,
+                    _ => OF(0.0),
                 }
             }
-            None => 0.0,
+            None => OF(0.0),
         };
         // TODO: do not hardcode it here, define on a per-effect basis
         let restricted_range = false;
         // Calculate actual range multiplier after collecting all the data
-        if affector_falloff > 0.0 {
-            if restricted_range && proj_range > affector_optimal + 3.0 * affector_falloff {
-                Some(0.0)
+        if affector_falloff > OF(0.0) {
+            if restricted_range && proj_range > affector_optimal + OF(3.0) * affector_falloff {
+                Some(OF(0.0))
             } else {
-                let val = AttrVal::powf(
-                    0.5,
-                    (AttrVal::max(0.0, proj_range - affector_optimal) / affector_falloff).powi(2),
+                let val = Float::powf(
+                    OF(0.5),
+                    (Float::max(OF(0.0), proj_range - affector_optimal) / affector_falloff).powi(2),
                 );
                 Some(val)
             }
         } else if proj_range <= affector_optimal {
-            Some(1.0)
+            Some(OF(1.0))
         } else {
-            Some(0.0)
+            Some(OF(0.0))
         }
     }
     fn calc_proj_mult_buff(
@@ -106,16 +108,16 @@ impl SolSvcs {
                     Ok(val) => val.dogma,
                     // If optimal range attribute ID is defined but value is not available, assume
                     // optimal range of 0
-                    _ => 0.0,
+                    _ => OF(0.0),
                 }
             }
             // If optimal range attribute ID not defined, assume buff is not restricted by range
             None => return None,
         };
         if proj_range <= affector_optimal {
-            Some(1.0)
+            Some(OF(1.0))
         } else {
-            Some(0.0)
+            Some(OF(0.0))
         }
     }
 }

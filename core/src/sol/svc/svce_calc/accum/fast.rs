@@ -4,6 +4,8 @@
 //! what went into it. Since they duplicate each other, when doing any changes, MAKE SURE TO APPLY
 //! THEM TO BOTH.
 
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     defs::{AggrKey, AttrVal, EItemCatId},
     sol::svc::svce_calc::{SolAggrMode, SolOp},
@@ -282,9 +284,9 @@ fn combine_muls_pen(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
     let mut positive = Vec::new();
     let mut negative = Vec::new();
     for val in vals.iter() {
-        if *val > 1.0 {
+        if *val > OF(1.0) {
             positive.push(*val);
-        } else if *val < 1.0 {
+        } else if *val < OF(1.0) {
             negative.push(*val);
         }
     }
@@ -304,13 +306,13 @@ fn get_max(vals: &Vec<AttrVal>) -> Option<AttrVal> {
     vals.iter().max_by(|a, b| a.total_cmp(b)).copied()
 }
 fn get_chain_val(vals: Vec<AttrVal>) -> AttrVal {
-    let mut val = 1.0;
+    let mut val = OF(1.0);
     for (i, mod_val) in vals.iter().enumerate() {
         // Ignore 12th modification and further as non-significant
         if i > 10 {
             break;
         }
-        val *= 1.0 + (mod_val - 1.0) * PENALTY_BASE.powi((i as i32).pow(2));
+        val *= OF(1.0) + (mod_val - OF(1.0)) * PENALTY_BASE.powi((i as i32).pow(2));
     }
     val
 }

@@ -1,3 +1,5 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     defs::{AttrVal, EItemCatId},
     ec,
@@ -11,7 +13,7 @@ const PENALTY_IMMUNE_CATS: [EItemCatId; 5] = [
     ec::itemcats::SUBSYSTEM,
 ];
 // Source expression: 1 / e^((1 / 2.67)^2)
-pub(super) const PENALTY_BASE: f64 = 0.86911998080039742919922218788997270166873931884765625;
+pub(super) const PENALTY_BASE: AttrVal = OF(0.86911998080039742919922218788997270166873931884765625);
 
 pub(in crate::sol::svc::svce_calc) fn is_penal(attr_penalizable: bool, affector_item_cat_id: &EItemCatId) -> bool {
     attr_penalizable && !PENALTY_IMMUNE_CATS.contains(affector_item_cat_id)
@@ -25,13 +27,13 @@ pub(super) fn normalize_sub(val: AttrVal) -> Option<AttrVal> {
     Some(-val)
 }
 pub(super) fn normalize_div(val: AttrVal) -> Option<AttrVal> {
-    if val == 0.0 {
+    if val == OF(0.0) {
         return None;
     }
-    Some(1.0 / val)
+    Some(OF(1.0) / val)
 }
 pub(super) fn normalize_perc(val: AttrVal) -> Option<AttrVal> {
-    Some(1.0 + val / 100.0)
+    Some(OF(1.0) + val / OF(100.0))
 }
 
 // Apply diminishing factors (resistance- and projection-related reductions)

@@ -1,5 +1,7 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
-    defs::{AttrVal, EAttrId, SolItemId},
+    defs::{EAttrId, SolItemId},
     ec,
     sol::{
         svc::{svce_calc::SolAttrVal, SolSvcs},
@@ -22,7 +24,8 @@ pub(super) fn skill_level_postprocessor(
         .get_skill()
         .unwrap()
         .get_level();
-    val.dogma = level as AttrVal;
-    val.extra = level as AttrVal;
+    let level = OF::from(level);
+    val.dogma = level;
+    val.extra = level;
     val
 }

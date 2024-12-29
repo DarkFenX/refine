@@ -1,3 +1,5 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     defs::AttrVal,
     sol::{svc::svce_calc::SolAttrVal, SolDmgTypes},
@@ -30,7 +32,7 @@ impl SolRahSimRahData {
             cycle_time,
             cycle_time_rounded: sig_round(cycle_time, SIG_DIGITS),
             shift_amount,
-            taken_dmg: SolDmgTypes::new(0.0, 0.0, 0.0, 0.0),
+            taken_dmg: SolDmgTypes::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0)),
         }
     }
 }

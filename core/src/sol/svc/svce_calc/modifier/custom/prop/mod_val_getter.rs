@@ -1,3 +1,5 @@
+use ordered_float::OrderedFloat as OF;
+
 use crate::{
     defs::{AttrVal, EEffectId, SolItemId},
     sol::{svc::SolSvcs, SolView},
@@ -23,7 +25,7 @@ pub(in crate::sol::svc::svce_calc::modifier) fn get_mod_val(
     if perc.is_infinite() {
         return None;
     }
-    let val = 1.0 + perc / 100.0;
+    let val = OF(1.0) + perc / OF(100.0);
     // Register dependencies, so that affectee attribute is properly cleared up when any of affector
     // attributes change
     reg_dependencies(svc, ship_id, *item_id, *effect_id);

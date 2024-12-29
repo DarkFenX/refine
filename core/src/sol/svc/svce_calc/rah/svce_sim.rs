@@ -1,4 +1,5 @@
 use itertools::Itertools;
+use ordered_float::OrderedFloat as OF;
 
 use crate::{
     defs::{AttrVal, SolFitId, SolItemId},
@@ -34,10 +35,10 @@ impl SolSvcs {
             Some(dmg_profile) => dmg_profile,
             None => *sol_view.default_incoming_dmg,
         };
-        if dmg_profile.em <= 0.0
-            && dmg_profile.thermal <= 0.0
-            && dmg_profile.kinetic <= 0.0
-            && dmg_profile.explosive <= 0.0
+        if dmg_profile.em <= OF(0.0)
+            && dmg_profile.thermal <= OF(0.0)
+            && dmg_profile.kinetic <= OF(0.0)
+            && dmg_profile.explosive <= OF(0.0)
         {
             for item_id in rah_datas.keys() {
                 self.set_rah_fallback(sol_view, item_id);
@@ -71,7 +72,7 @@ impl SolSvcs {
             // If RAH just finished its cycle, make resist switch
             for cycled_item_id in tick_data.cycled {
                 let rah_info = rah_datas.get_mut(&cycled_item_id).unwrap();
-                let mut taken_dmg = SolDmgTypes::new(0.0, 0.0, 0.0, 0.0);
+                let mut taken_dmg = SolDmgTypes::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0));
                 // Extract damage ship taken during RAH cycle, replacing it with 0's
                 std::mem::swap(&mut taken_dmg, &mut rah_info.taken_dmg);
                 let next_resos = get_next_resonances(
@@ -135,7 +136,11 @@ impl SolSvcs {
         let res_expl = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
             .ok()?;
-        if res_em.dogma == 1.0 && res_therm.dogma == 1.0 && res_kin.dogma == 1.0 && res_expl.dogma == 1.0 {
+        if res_em.dogma == OF(1.0)
+            && res_therm.dogma == OF(1.0)
+            && res_kin.dogma == OF(1.0)
+            && res_expl.dogma == OF(1.0)
+        {
             return None;
         }
         // Other attributes using regular getters
@@ -143,11 +148,11 @@ impl SolSvcs {
             .calc_get_item_attr_val(sol_view, item_id, &ec::attrs::RESIST_SHIFT_AMOUNT)
             .ok()?
             .dogma;
-        if shift_amount == 0.0 {
+        if shift_amount == OF(0.0) {
             return None;
         }
         let cycle_ms = self.get_item_effect_id_duration(sol_view, &item_id, &RAH_EFFECT_ID)?;
-        if cycle_ms <= 0.0 {
+        if cycle_ms <= OF(0.0) {
             return None;
         }
         let rah_info = SolRahSimRahData::new(
@@ -157,10 +162,10 @@ impl SolSvcs {
             res_expl,
             // Raw form of cycle time is defined in milliseconds (we don't really care in RAH sim,
             // just to be more intuitive during debugging)
-            cycle_ms / 1000.0,
+            cycle_ms / OF(1000.0),
             // Raw form of shift amount is defined in percentages, while resonances are in
             // absolute form
-            shift_amount / 100.0,
+            shift_amount / OF(100.0),
         );
         Some(rah_info)
     }
@@ -173,16 +178,16 @@ impl SolSvcs {
     fn set_rah_fallback(&mut self, sol_view: &SolView, item_id: &SolItemId) {
         let em = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
-            .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
+            .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let therm = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_THERM_DMG_RESONANCE)
-            .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
+            .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let kin = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_KIN_DMG_RESONANCE)
-            .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
+            .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let expl = self
             .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
-            .unwrap_or(SolAttrVal::new(1.0, 1.0, 1.0));
+            .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let rah_resos = SolDmgTypes::new(em, therm, kin, expl);
         // Fallback is just unsimulated RAH attribs, and fallback is supposed to be called before
         // any simulated results were written, so no notification about changed attribs needed
@@ -211,20 +216,20 @@ fn get_next_resonances(
 ) -> SolDmgTypes<SolAttrVal> {
     // We borrow resistances from at least 2 resist types, possibly more if ship didn't take any
     // damage of those types
-    let donors = taken_dmg.iter().filter(|v| **v == 0.0).count().max(2);
-    let recipients = 4 - donors;
+    let donors = taken_dmg.iter().filter(|v| **v == OF(0.0)).count().max(2);
+    let recipients = 4 - donors as u8;
     // Indices are against damage type container, i.e. order is EM, explosive, kinetic, explosive.
     // When equal damage is received across several damage types, those which come earlier in this
     // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,
     // since the list is in attribute ID ascending order.
     let mut sorted_indices: [usize; 4] = [0, 3, 2, 1];
     sorted_indices.sort_by(|a, b| taken_dmg[*a].partial_cmp(&taken_dmg[*b]).unwrap());
-    let mut donated_amount = 0.0;
+    let mut donated_amount = OF(0.0);
     // Donate
     for index in sorted_indices[..donors].iter() {
         let current_value = resonances[*index];
         // Can't borrow more than it has
-        let to_donate = shift_amount.min(1.0 - current_value.dogma);
+        let to_donate = shift_amount.min(OF(1.0) - current_value.dogma);
         donated_amount += to_donate;
         let new_value = current_value.dogma + to_donate;
         resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
@@ -232,7 +237,7 @@ fn get_next_resonances(
     // Distribute
     for index in sorted_indices[donors..].iter() {
         let current_value = resonances[*index];
-        let new_value = current_value.dogma - donated_amount / recipients as f64;
+        let new_value = current_value.dogma - donated_amount / AttrVal::from(recipients);
         resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
     }
     resonances

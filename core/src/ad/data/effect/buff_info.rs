@@ -1,4 +1,4 @@
-use crate::defs::{EAttrId, EBuffId, Rational};
+use crate::defs::{AttrVal, EAttrId, EBuffId};
 
 /// Effect-specific buff information.
 #[derive(Clone)]
@@ -39,5 +39,5 @@ pub enum AEffectBuffSrcCustom {
     /// Hardcoded buff ID, but buff value is stored on affecting item.
     AffectorVal(EBuffId, EAttrId),
     /// Hardcoded buff ID and buff value for the effect.
-    HardcodedVal(EBuffId, Rational),
+    HardcodedVal(EBuffId, AttrVal),
 }

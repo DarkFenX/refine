@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{EAttrId, EBuffId, EEffectId, Rational},
+    defs::{AttrVal, EAttrId, EBuffId, EEffectId},
     ec,
     sol::{
         item::SolItem,
@@ -40,7 +40,7 @@ impl SolSvcs {
                                 sol_view,
                                 item,
                                 effect,
-                                &(buff_id.extra as EBuffId),
+                                &(buff_id.extra.into_inner() as EBuffId),
                                 &buff_info.scope,
                                 Some(buff_type_attr_id),
                                 buff_val_attr_id,
@@ -104,7 +104,7 @@ impl SolSvcs {
                             sol_view,
                             item,
                             effect,
-                            &(buff_id.extra as EBuffId),
+                            &(buff_id.extra.into_inner() as EBuffId),
                             &buff_info.scope,
                             Some(*buff_type_attr_id),
                             buff_value_attr_id,
@@ -153,7 +153,7 @@ fn add_buff_mods_hardcoded(
     effect: &ad::AEffect,
     buff_id: &EBuffId,
     buff_scope: &ad::AEffectBuffScope,
-    buff_val: Rational,
+    buff_val: AttrVal,
 ) {
     if let Some(buff) = sol_view.src.get_a_buff(buff_id) {
         for buff_mod in buff.mods.iter() {

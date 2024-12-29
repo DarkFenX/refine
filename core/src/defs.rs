@@ -1,13 +1,12 @@
-use num_rational::Rational64;
+use ordered_float::OrderedFloat;
 
 // Generic aliases
 pub type Idx = usize;
 pub type Amount = u32;
-pub type Rational = Rational64;
 // EVE-specific aliases, but not specific to any entity category
 pub(crate) type AggrKey = i32;
-pub type AttrVal = f64;
-pub type MutaRoll = f64;
+pub type AttrVal = OrderedFloat<f64>;
+pub type MutaRoll = OrderedFloat<f64>;
 pub type SkillLevel = u8;
 pub type SlotNumber = i32;
 // Aliases for EVE-related entities
