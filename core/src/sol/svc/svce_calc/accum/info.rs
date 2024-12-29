@@ -574,7 +574,7 @@ fn extract_min(attr_infos: &mut Vec<SolAttrValInfo>) -> Option<SolAttrValInfo> {
     let index = attr_infos
         .iter()
         .enumerate()
-        .min_by(|(_, a), (_, b)| a.value.total_cmp(&b.value))
+        .min_by_key(|(_, v)| v.value)
         .map(|(index, _)| index);
     match index {
         Some(index) => Some(attr_infos.remove(index)),
@@ -585,7 +585,7 @@ fn extract_max(attr_infos: &mut Vec<SolAttrValInfo>) -> Option<SolAttrValInfo> {
     let index = attr_infos
         .iter()
         .enumerate()
-        .max_by(|(_, a), (_, b)| a.value.total_cmp(&b.value))
+        .max_by_key(|(_, v)| v.value)
         .map(|(index, _)| index);
     match index {
         Some(index) => Some(attr_infos.remove(index)),

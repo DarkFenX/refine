@@ -298,10 +298,10 @@ fn combine_muls_pen(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
 
 // Misc functions
 fn get_min(vals: &Vec<AttrVal>) -> Option<AttrVal> {
-    vals.iter().min_by(|a, b| a.total_cmp(b)).copied()
+    vals.iter().min().copied()
 }
 fn get_max(vals: &Vec<AttrVal>) -> Option<AttrVal> {
-    vals.iter().max_by(|a, b| a.total_cmp(b)).copied()
+    vals.iter().max().copied()
 }
 fn get_chain_val(vals: Vec<AttrVal>) -> AttrVal {
     let mut val = OF(1.0);

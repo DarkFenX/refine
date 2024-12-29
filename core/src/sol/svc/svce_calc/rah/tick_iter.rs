@@ -63,7 +63,7 @@ impl Iterator for SolRahSimTickIter {
                 .rah_data
                 .values()
                 .map(|v| v.info.cycle_time - v.cycling_time)
-                .min_by(|a, b| a.total_cmp(b))
+                .min()
                 .unwrap();
             // Compose list of RAHs which finish their cycle this tick
             let mut cycled = Vec::new();
