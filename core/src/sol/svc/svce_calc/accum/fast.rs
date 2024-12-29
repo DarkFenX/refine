@@ -291,8 +291,8 @@ fn combine_muls_pen(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
     if positive.is_empty() && negative.is_empty() {
         return None;
     }
-    positive.sort_by(|a, b| b.partial_cmp(a).unwrap());
-    negative.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    positive.sort_by_key(|v| -v);
+    negative.sort();
     Some(get_chain_val(positive) * get_chain_val(negative))
 }
 

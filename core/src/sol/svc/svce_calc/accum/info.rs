@@ -547,8 +547,8 @@ where
     if positive.is_empty() && negative.is_empty() {
         return None;
     }
-    positive.sort_by(|a, b| b.value.partial_cmp(&a.value).unwrap());
-    negative.sort_by(|a, b| a.value.partial_cmp(&b.value).unwrap());
+    positive.sort_by_key(|v| -v.value);
+    negative.sort_by_key(|v| v.value);
     let mut attr_info = SolAttrValInfo::new(OF(1.0));
     // Do negative chain first, since it can result in final multiplier of 0
     let negative_attr_info = get_chain_attr_info(negative, revert_func);
