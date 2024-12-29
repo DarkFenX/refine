@@ -1,4 +1,4 @@
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub struct SolDmgTypes<T> {
     pub em: T,
     pub thermal: T,
