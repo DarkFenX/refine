@@ -95,7 +95,27 @@ impl SolSvcs {
                 // needed to get updated ship resonances next tick.
                 self.set_rah_result(sol_view, &cycled_item_id, next_resos, true);
             }
+            // Compose history entry of current tick
+            let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
+            for item_id in sim_datas.keys() {
+                let item_cycling_time = *tick_data.cycling_times.get(item_id).unwrap();
+                let item_resos = self.calc_data.rah.resonances.get(item_id).unwrap().unwrap();
+                let item_history_entry = SolRahSimHistoryEntry::new(*item_id, item_cycling_time, item_resos);
+                sim_history_entry.push(item_history_entry);
+            }
+            // See if we're in a loop, if we are - calculate average resists across tick states
+            // which are within the loop
+            if history_entries_seen.contains(&sim_history_entry) {
+                // TODO: add loop processing
+                return;
+            }
+            // Update history
+            history_entries_seen.insert(sim_history_entry.clone());
+            sim_history.push(sim_history_entry);
         }
+        // If we didn't find any RAH state loops during specified quantity of sim ticks, calculate
+        // average resonances based on whole history, excluding initial adaptation period
+        // TODO: add non-loop processing and remove fallback
         self.set_fit_rah_fallbacks(sol_view, fit_id);
     }
     fn get_ship_resonances(&mut self, sol_view: &SolView, ship_id: &SolItemId) -> Option<SolDmgTypes<AttrVal>> {
