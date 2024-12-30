@@ -3,7 +3,6 @@ use itertools::Itertools;
 use crate::{
     ad,
     defs::{EAttrId, SolFitId, SolItemId},
-    ec,
     sol::{
         item::SolItem,
         svc::{svce_calc::SolAttrVal, SolSvcs},
@@ -11,7 +10,7 @@ use crate::{
     },
 };
 
-use super::shared::{RAH_EFFECT_ID, RES_ATTR_IDS};
+use super::shared::{EM_ATTR_ID, EXPL_ATTR_ID, KIN_ATTR_ID, RAH_EFFECT_ID, SHIFT_ATTR_ID, THERM_ATTR_ID};
 
 impl SolSvcs {
     pub(in crate::sol::svc::svce_calc) fn calc_rah_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
@@ -52,16 +51,16 @@ impl SolSvcs {
                 let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(&item_id).unwrap();
                 item_attr_data
                     .postprocessors
-                    .insert(ec::attrs::ARMOR_EM_DMG_RESONANCE, rah_em_resonance_postprocessor);
+                    .insert(EM_ATTR_ID, rah_em_resonance_postprocessor);
                 item_attr_data
                     .postprocessors
-                    .insert(ec::attrs::ARMOR_THERM_DMG_RESONANCE, rah_therm_resonance_postprocessor);
+                    .insert(THERM_ATTR_ID, rah_therm_resonance_postprocessor);
                 item_attr_data
                     .postprocessors
-                    .insert(ec::attrs::ARMOR_KIN_DMG_RESONANCE, rah_kin_resonance_postprocessor);
+                    .insert(KIN_ATTR_ID, rah_kin_resonance_postprocessor);
                 item_attr_data
                     .postprocessors
-                    .insert(ec::attrs::ARMOR_EXPL_DMG_RESONANCE, rah_expl_resonance_postprocessor);
+                    .insert(EXPL_ATTR_ID, rah_expl_resonance_postprocessor);
             }
         }
     }
@@ -80,16 +79,10 @@ impl SolSvcs {
                 let fit_id = module.get_fit_id();
                 // Remove postprocessors
                 let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(&item_id).unwrap();
-                item_attr_data.postprocessors.remove(&ec::attrs::ARMOR_EM_DMG_RESONANCE);
-                item_attr_data
-                    .postprocessors
-                    .remove(&ec::attrs::ARMOR_THERM_DMG_RESONANCE);
-                item_attr_data
-                    .postprocessors
-                    .remove(&ec::attrs::ARMOR_KIN_DMG_RESONANCE);
-                item_attr_data
-                    .postprocessors
-                    .remove(&ec::attrs::ARMOR_EXPL_DMG_RESONANCE);
+                item_attr_data.postprocessors.remove(&EM_ATTR_ID);
+                item_attr_data.postprocessors.remove(&THERM_ATTR_ID);
+                item_attr_data.postprocessors.remove(&KIN_ATTR_ID);
+                item_attr_data.postprocessors.remove(&EXPL_ATTR_ID);
                 // Remove sim data for RAH being stopped
                 self.calc_data.rah.resonances.remove(&item_id);
                 self.calc_data.rah.by_fit.remove_entry(&module.get_fit_id(), &item_id);
@@ -104,20 +97,19 @@ impl SolSvcs {
         }
         match *attr_id {
             // Ship armor resonances and RAH resonances
-            ec::attrs::ARMOR_EM_DMG_RESONANCE
-            | ec::attrs::ARMOR_THERM_DMG_RESONANCE
-            | ec::attrs::ARMOR_KIN_DMG_RESONANCE
-            | ec::attrs::ARMOR_EXPL_DMG_RESONANCE => match sol_view.items.get_item(item_id).unwrap() {
-                SolItem::Ship(ship) => self.clear_fit_rah_results(sol_view, &ship.get_fit_id()),
-                SolItem::Module(module) => {
-                    if self.calc_data.rah.resonances.contains_key(&item_id) {
-                        self.clear_fit_rah_results(sol_view, &module.get_fit_id());
+            EM_ATTR_ID | THERM_ATTR_ID | KIN_ATTR_ID | EXPL_ATTR_ID => {
+                match sol_view.items.get_item(item_id).unwrap() {
+                    SolItem::Ship(ship) => self.clear_fit_rah_results(sol_view, &ship.get_fit_id()),
+                    SolItem::Module(module) => {
+                        if self.calc_data.rah.resonances.contains_key(&item_id) {
+                            self.clear_fit_rah_results(sol_view, &module.get_fit_id());
+                        }
                     }
+                    _ => (),
                 }
-                _ => (),
-            },
+            }
             // RAH shift amount
-            ec::attrs::RESIST_SHIFT_AMOUNT => {
+            SHIFT_ATTR_ID => {
                 if self.calc_data.rah.resonances.contains_key(&item_id) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
@@ -144,9 +136,10 @@ impl SolSvcs {
     }
     fn clear_rah_result(&mut self, sol_view: &SolView, item_id: &SolItemId) {
         if self.calc_data.rah.resonances.get_mut(item_id).unwrap().take().is_some() {
-            for attr_id in RES_ATTR_IDS.iter() {
-                self.notify_attr_val_changed(sol_view, item_id, attr_id)
-            }
+            self.notify_attr_val_changed(sol_view, item_id, &EM_ATTR_ID);
+            self.notify_attr_val_changed(sol_view, item_id, &THERM_ATTR_ID);
+            self.notify_attr_val_changed(sol_view, item_id, &KIN_ATTR_ID);
+            self.notify_attr_val_changed(sol_view, item_id, &EXPL_ATTR_ID);
         }
     }
     fn get_rah_resonances(&mut self, sol_view: &SolView, item_id: &SolItemId) -> SolDmgTypes<SolAttrVal> {

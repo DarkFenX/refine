@@ -5,7 +5,6 @@ use ordered_float::Float;
 
 use crate::{
     defs::{Amount, AttrVal, SolFitId, SolItemId, OF},
-    ec,
     sol::{
         svc::{svce_calc::SolAttrVal, SolSvcs},
         SolDmgTypes, SolView,
@@ -17,7 +16,7 @@ use super::{
     rah_data_sim::SolRahDataSim,
     rah_history_entry::SolRahSimHistoryEntry,
     rah_info::SolRahInfo,
-    shared::{RAH_EFFECT_ID, RES_ATTR_IDS},
+    shared::{EM_ATTR_ID, EXPL_ATTR_ID, KIN_ATTR_ID, RAH_EFFECT_ID, SHIFT_ATTR_ID, THERM_ATTR_ID},
     tick_iter::SolRahSimTickIter,
 };
 
@@ -132,20 +131,14 @@ impl SolSvcs {
         self.set_partial_fit_rahs_result(sol_view, avg_resos, &sim_datas);
     }
     fn get_ship_resonances(&mut self, sol_view: &SolView, ship_id: &SolItemId) -> Option<SolDmgTypes<AttrVal>> {
-        let em = self
-            .calc_get_item_attr_val(sol_view, ship_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
-            .ok()?
-            .dogma;
+        let em = self.calc_get_item_attr_val(sol_view, ship_id, &EM_ATTR_ID).ok()?.dogma;
         let therm = self
-            .calc_get_item_attr_val(sol_view, ship_id, &ec::attrs::ARMOR_THERM_DMG_RESONANCE)
+            .calc_get_item_attr_val(sol_view, ship_id, &THERM_ATTR_ID)
             .ok()?
             .dogma;
-        let kin = self
-            .calc_get_item_attr_val(sol_view, ship_id, &ec::attrs::ARMOR_KIN_DMG_RESONANCE)
-            .ok()?
-            .dogma;
+        let kin = self.calc_get_item_attr_val(sol_view, ship_id, &KIN_ATTR_ID).ok()?.dogma;
         let expl = self
-            .calc_get_item_attr_val(sol_view, ship_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
+            .calc_get_item_attr_val(sol_view, ship_id, &EXPL_ATTR_ID)
             .ok()?
             .dogma;
         Some(SolDmgTypes::new(em, therm, kin, expl))
@@ -169,17 +162,15 @@ impl SolSvcs {
     }
     fn get_rah_sim_data(&mut self, sol_view: &SolView, item_id: &SolItemId) -> Option<SolRahDataSim> {
         // Get resonances through postprocessing functions, since we already installed them for RAHs
-        let res_em = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
-            .ok()?;
+        let res_em = self.calc_get_item_attr_val_no_pp(sol_view, item_id, &EM_ATTR_ID).ok()?;
         let res_therm = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_THERM_DMG_RESONANCE)
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &THERM_ATTR_ID)
             .ok()?;
         let res_kin = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_KIN_DMG_RESONANCE)
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &KIN_ATTR_ID)
             .ok()?;
         let res_expl = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &EXPL_ATTR_ID)
             .ok()?;
         if res_em.dogma == OF(1.0)
             && res_therm.dogma == OF(1.0)
@@ -190,7 +181,7 @@ impl SolSvcs {
         }
         // Other attributes using regular getters
         let shift_amount = self
-            .calc_get_item_attr_val(sol_view, item_id, &ec::attrs::RESIST_SHIFT_AMOUNT)
+            .calc_get_item_attr_val(sol_view, item_id, &SHIFT_ATTR_ID)
             .ok()?
             .dogma;
         if shift_amount == OF(0.0) {
@@ -222,16 +213,16 @@ impl SolSvcs {
     }
     fn set_rah_unadapted(&mut self, sol_view: &SolView, item_id: &SolItemId, notify: bool) {
         let em = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EM_DMG_RESONANCE)
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &EM_ATTR_ID)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let therm = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_THERM_DMG_RESONANCE)
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &THERM_ATTR_ID)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let kin = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_KIN_DMG_RESONANCE)
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &KIN_ATTR_ID)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let expl = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &ec::attrs::ARMOR_EXPL_DMG_RESONANCE)
+            .calc_get_item_attr_val_no_pp(sol_view, item_id, &EXPL_ATTR_ID)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let rah_resos = SolDmgTypes::new(em, therm, kin, expl);
         self.set_rah_result(sol_view, item_id, rah_resos, notify);
@@ -246,9 +237,10 @@ impl SolSvcs {
     ) {
         self.calc_data.rah.resonances.get_mut(item_id).unwrap().replace(resos);
         if notify {
-            for attr_id in RES_ATTR_IDS.iter() {
-                self.notify_attr_val_changed(sol_view, item_id, attr_id)
-            }
+            self.notify_attr_val_changed(sol_view, item_id, &EM_ATTR_ID);
+            self.notify_attr_val_changed(sol_view, item_id, &THERM_ATTR_ID);
+            self.notify_attr_val_changed(sol_view, item_id, &KIN_ATTR_ID);
+            self.notify_attr_val_changed(sol_view, item_id, &EXPL_ATTR_ID);
         }
     }
     fn set_partial_fit_rahs_result(
