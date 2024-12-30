@@ -136,6 +136,7 @@ impl SolSvcs {
                     }
                 }
             }
+            _ => (),
         }
     }
     pub(in crate::sol::svc::svce_calc) fn calc_rah_src_changed(&mut self, src: &Src) {

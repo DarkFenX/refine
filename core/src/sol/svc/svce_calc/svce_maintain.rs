@@ -69,11 +69,17 @@ impl SolSvcs {
         }
     }
     pub(in crate::sol::svc) fn calc_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
+        // Notify core calc services
         self.calc_data.attrs.item_loaded(item);
         self.calc_data.std.reg_affectee(sol_view, item);
         self.handle_location_owner_change(sol_view, item);
+        // Notify RAH sim
+        self.calc_rah_item_loaded(sol_view, item);
     }
     pub(in crate::sol::svc) fn calc_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
+        // Notify RAH sim
+        self.calc_rah_item_unloaded(sol_view, item);
+        // Notify core calc services
         self.handle_location_owner_change(sol_view, item);
         self.calc_data.std.unreg_affectee(sol_view, item);
         let item_id = item.get_id();
@@ -86,6 +92,7 @@ impl SolSvcs {
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
+        // Notify core calc services
         let item_id = item.get_id();
         let mut raw_modifiers = Vec::new();
         let mut util_items = Vec::new();
@@ -98,6 +105,7 @@ impl SolSvcs {
             // Buff maintenance - add info about effects which use default buff attributes
             self.calc_data.buffs.reg_effect(item_id, effect);
         }
+        // Notify RAH sim
         self.calc_rah_effects_started(sol_view, item, effects);
     }
     pub(in crate::sol::svc) fn calc_effects_stopped(
@@ -106,7 +114,9 @@ impl SolSvcs {
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
+        // Notify RAH sim
         self.calc_rah_effects_stopped(sol_view, item, effects);
+        // Notify core calc services
         let item_id = item.get_id();
         let mut raw_modifiers = Vec::new();
         let mut util_items = Vec::new();
@@ -247,6 +257,8 @@ impl SolSvcs {
                 }
             }
         }
+        // Notify RAH sim
+        self.calc_rah_attr_value_changed(sol_view, item_id, attr_id);
     }
     pub(in crate::sol::svc) fn calc_force_attr_recalc(
         &mut self,
