@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    defs::{EAttrId, SolItemId},
+    defs::{EAttrId, SolFitId, SolItemId},
     ec,
     sol::{
         item::SolItem,
@@ -19,19 +19,15 @@ impl SolSvcs {
             return;
         }
         if let SolItem::Ship(ship) = item {
-            for item_id in self.calc_data.rah.by_fit.get(&ship.get_fit_id()) {
-                self.clear_rah_result(sol_view, item_id);
-            }
+            self.clear_fit_rah_results(sol_view, &ship.get_fit_id());
         }
     }
-    pub(in crate::sol::svc::svce_calc) fn calc_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
+    pub(in crate::sol::svc::svce_calc) fn calc_rah_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
         if self.calc_data.rah.sim_running {
             return;
         }
         if let SolItem::Ship(ship) = item {
-            for item_id in self.calc_data.rah.by_fit.get(&ship.get_fit_id()) {
-                self.clear_rah_result(sol_view, item_id);
-            }
+            self.clear_fit_rah_results(sol_view, &ship.get_fit_id());
         }
     }
     pub(in crate::sol::svc::svce_calc) fn calc_rah_effects_started(
@@ -48,10 +44,7 @@ impl SolSvcs {
                 let item_id = module.get_id();
                 let fit_id = module.get_fit_id();
                 // Clear sim data for other RAHs on the same fit
-                let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
-                for other_item_id in other_item_ids {
-                    self.clear_rah_result(sol_view, &other_item_id);
-                }
+                self.clear_fit_rah_results(sol_view, &fit_id);
                 // Add sim data for RAH being started
                 self.calc_data.rah.resonances.insert(item_id, None);
                 self.calc_data.rah.by_fit.add_entry(fit_id, item_id);
@@ -101,10 +94,7 @@ impl SolSvcs {
                 self.calc_data.rah.resonances.remove(&item_id);
                 self.calc_data.rah.by_fit.remove_entry(&module.get_fit_id(), &item_id);
                 // Clear sim data for other RAHs on the same fit
-                let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
-                for other_item_id in other_item_ids {
-                    self.clear_rah_result(sol_view, &other_item_id);
-                }
+                self.clear_fit_rah_results(sol_view, &fit_id);
             }
         }
     }
@@ -112,24 +102,46 @@ impl SolSvcs {
         if self.calc_data.rah.sim_running {
             return;
         }
-        // Args: item ID, attr ID
-        // Ship resistance attributes
-        // - get item from view, if not ship do nothing, if ship go on
-        // - clear results for all RAHs for ship's fit
-        // RAH resistance attributes, shift amount
-        // - check if item is in main storage, if no do nothing, if yes go on
-        // - clear results for all items for its fit
-        // RAH cycle time
-        // - check if item is in main storage, if no do nothing, if yes go on
-        // - if fit has only one RAH (check in fit-to-rah map), do nothing, if more go on
-        // - clear results for all items for its fit
+        match *attr_id {
+            // Ship armor resonances and RAH resonances
+            ec::attrs::ARMOR_EM_DMG_RESONANCE
+            | ec::attrs::ARMOR_THERM_DMG_RESONANCE
+            | ec::attrs::ARMOR_KIN_DMG_RESONANCE
+            | ec::attrs::ARMOR_EXPL_DMG_RESONANCE => match sol_view.items.get_item(item_id).unwrap() {
+                SolItem::Ship(ship) => self.clear_fit_rah_results(sol_view, &ship.get_fit_id()),
+                SolItem::Module(module) => {
+                    if self.calc_data.rah.resonances.contains_key(&item_id) {
+                        self.clear_fit_rah_results(sol_view, &module.get_fit_id());
+                    }
+                }
+                _ => (),
+            },
+            // RAH shift amount
+            ec::attrs::RESIST_SHIFT_AMOUNT => {
+                if self.calc_data.rah.resonances.contains_key(&item_id) {
+                    // Only modules should be registered in resonances container, and those are
+                    // guaranteed to have fit ID
+                    let fit_id = sol_view.items.get_item(item_id).unwrap().get_fit_id().unwrap();
+                    self.clear_fit_rah_results(sol_view, &fit_id);
+                }
+            }
+            // TODO: RAH cycle time
+            _ => (),
+        }
     }
-    fn calc_rah_dmg_profile_changed(&mut self) {
+    fn calc_rah_dmg_profile_changed(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
         if self.calc_data.rah.sim_running {
             return;
         }
+        self.clear_fit_rah_results(sol_view, fit_id);
     }
     // Private methods
+    fn clear_fit_rah_results(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
+        let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
+        for other_item_id in other_item_ids {
+            self.clear_rah_result(sol_view, &other_item_id);
+        }
+    }
     fn clear_rah_result(&mut self, sol_view: &SolView, item_id: &SolItemId) {
         if self.calc_data.rah.resonances.get_mut(item_id).unwrap().take().is_some() {
             for attr_id in RES_ATTR_IDS.iter() {
