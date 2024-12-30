@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    defs::SolItemId,
+    defs::{EAttrId, SolItemId},
     ec,
     sol::{
         item::SolItem,
@@ -14,6 +14,26 @@ use crate::{
 use super::shared::{RAH_EFFECT_ID, RES_ATTR_IDS};
 
 impl SolSvcs {
+    pub(in crate::sol::svc::svce_calc) fn calc_rah_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
+        if self.calc_data.rah.sim_running {
+            return;
+        }
+        if let SolItem::Ship(ship) = item {
+            for item_id in self.calc_data.rah.by_fit.get(&ship.get_fit_id()) {
+                self.clear_rah_result(sol_view, item_id);
+            }
+        }
+    }
+    pub(in crate::sol::svc::svce_calc) fn calc_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
+        if self.calc_data.rah.sim_running {
+            return;
+        }
+        if let SolItem::Ship(ship) = item {
+            for item_id in self.calc_data.rah.by_fit.get(&ship.get_fit_id()) {
+                self.clear_rah_result(sol_view, item_id);
+            }
+        }
+    }
     pub(in crate::sol::svc::svce_calc) fn calc_rah_effects_started(
         &mut self,
         sol_view: &SolView,
@@ -88,7 +108,7 @@ impl SolSvcs {
             }
         }
     }
-    fn calc_rah_attr_value_changed(&mut self) {
+    fn calc_rah_attr_value_changed(&mut self, sol_view: &SolView, item_id: &SolItemId, attr_id: &EAttrId) {
         if self.calc_data.rah.sim_running {
             return;
         }
