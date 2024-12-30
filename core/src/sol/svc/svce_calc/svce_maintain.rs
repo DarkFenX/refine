@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad,
-    defs::{EAttrId, SolFitId, SolItemId},
+    defs::{AttrVal, EAttrId, SolFitId, SolItemId},
     ec,
     sol::{
         fleet::SolFleet,
@@ -13,11 +13,14 @@ use crate::{
         },
         SolView,
     },
-    AttrVal,
+    src::Src,
 };
 
 impl SolSvcs {
     // Modification methods
+    pub(in crate::sol::svc) fn calc_src_changed(&mut self, src: &Src) {
+        self.calc_rah_src_changed(src);
+    }
     pub(in crate::sol::svc) fn calc_fit_added(&mut self, fit_id: &SolFitId) {
         self.calc_data.std.reg_fit_for_sw(fit_id)
     }

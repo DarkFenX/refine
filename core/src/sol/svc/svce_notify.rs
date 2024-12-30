@@ -7,9 +7,13 @@ use crate::{
         svc::SolSvcs,
         SolView,
     },
+    src::Src,
 };
 
 impl SolSvcs {
+    pub(in crate::sol::svc) fn notify_src_changed(&mut self, src: &Src) {
+        self.calc_src_changed(src);
+    }
     pub(in crate::sol::svc) fn notify_fit_added(&mut self, fit_id: &SolFitId) {
         self.calc_fit_added(fit_id);
     }

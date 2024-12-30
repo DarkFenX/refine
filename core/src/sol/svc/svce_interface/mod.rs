@@ -10,3 +10,4 @@ mod svce_item;
 mod svce_item_effects;
 mod svce_item_projection;
 mod svce_item_state;
+mod svce_src;

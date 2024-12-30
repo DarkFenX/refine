@@ -23,8 +23,9 @@ impl SolarSystem {
         for item in self.items.iter() {
             self.svcs.unload_item(sol_view, item);
         }
-        // Reload items & set new source
+        // Set new source, update source-dependent data in services and reload items
         std::mem::swap(&mut self.src, &mut src);
+        self.svcs.src_changed(&self.src);
         for item in self.items.iter_mut() {
             item.update_a_data(&self.src)
         }
