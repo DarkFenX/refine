@@ -8,6 +8,7 @@ use crate::{
         svc::{svce_calc::SolAttrVal, SolSvcs},
         SolDmgTypes, SolView,
     },
+    src::Src,
 };
 
 use super::shared::{EM_ATTR_ID, EXPL_ATTR_ID, KIN_ATTR_ID, RAH_EFFECT_ID, SHIFT_ATTR_ID, THERM_ATTR_ID};
@@ -91,7 +92,12 @@ impl SolSvcs {
             }
         }
     }
-    fn calc_rah_attr_value_changed(&mut self, sol_view: &SolView, item_id: &SolItemId, attr_id: &EAttrId) {
+    pub(in crate::sol::svc::svce_calc) fn calc_rah_attr_value_changed(
+        &mut self,
+        sol_view: &SolView,
+        item_id: &SolItemId,
+        attr_id: &EAttrId,
+    ) {
         if self.calc_data.rah.sim_running {
             return;
         }
@@ -121,10 +127,14 @@ impl SolSvcs {
             _ => (),
         }
     }
-    fn calc_rah_dmg_profile_changed(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
-        if self.calc_data.rah.sim_running {
-            return;
-        }
+    pub(in crate::sol::svc::svce_calc) fn calc_rah_src_changed(&mut self, src: &Src) {
+        self.calc_data.rah.cycle_time_attr_id = src.get_a_effect(&RAH_EFFECT_ID).map(|v| v.duration_attr_id).flatten();
+    }
+    pub(in crate::sol::svc::svce_calc) fn calc_rah_dmg_profile_changed(
+        &mut self,
+        sol_view: &SolView,
+        fit_id: &SolFitId,
+    ) {
         self.clear_fit_rah_results(sol_view, fit_id);
     }
     // Private methods

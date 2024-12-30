@@ -1,9 +1,12 @@
-use crate::sol::svc::svce_calc::{
-    misc::SolAttrValData,
-    rah::SolRahSim,
-    registers::{
-        SolBuffRegister, SolDependencyRegister, SolProjectionRegister, SolRevisionRegister, SolStandardRegister,
+use crate::{
+    sol::svc::svce_calc::{
+        misc::SolAttrValData,
+        rah::SolRahSim,
+        registers::{
+            SolBuffRegister, SolDependencyRegister, SolProjectionRegister, SolRevisionRegister, SolStandardRegister,
+        },
     },
+    src::Src,
 };
 
 #[derive(Clone)]
@@ -17,7 +20,7 @@ pub(in crate::sol::svc) struct SolSvcCalcData {
     pub(in crate::sol::svc::svce_calc) rah: SolRahSim,
 }
 impl SolSvcCalcData {
-    pub(in crate::sol::svc) fn new() -> Self {
+    pub(in crate::sol::svc) fn new(src: &Src) -> Self {
         Self {
             attrs: SolAttrValData::new(),
             std: SolStandardRegister::new(),
@@ -25,7 +28,7 @@ impl SolSvcCalcData {
             deps: SolDependencyRegister::new(),
             revs: SolRevisionRegister::new(),
             projs: SolProjectionRegister::new(),
-            rah: SolRahSim::new(),
+            rah: SolRahSim::new(src),
         }
     }
 }

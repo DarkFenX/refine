@@ -30,6 +30,7 @@ pub struct SolarSystem {
 }
 impl SolarSystem {
     pub fn new(src: Src) -> Self {
+        let svcs = SolSvcs::new(&src);
         Self {
             src,
             fleets: SolFleets::new(),
@@ -38,7 +39,7 @@ impl SolarSystem {
             sw_effects: StSet::new(),
             proj_effects: StSet::new(),
             proj_tracker: SolProjTracker::new(),
-            svcs: SolSvcs::new(),
+            svcs,
             default_incoming_dmg: SolDmgProfile::new(OF(1.0), OF(1.0), OF(1.0), OF(1.0)),
         }
     }

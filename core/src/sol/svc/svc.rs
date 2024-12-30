@@ -1,3 +1,5 @@
+use crate::src::Src;
+
 use super::{misc::SolRunningEffects, svce_calc::SolSvcCalcData};
 
 // TODO: add item, remove item, add projection and remove projection methods are not called in
@@ -11,10 +13,10 @@ pub(in crate::sol) struct SolSvcs {
     pub(in crate::sol::svc) calc_data: SolSvcCalcData,
 }
 impl SolSvcs {
-    pub(in crate::sol) fn new() -> Self {
+    pub(in crate::sol) fn new(src: &Src) -> Self {
         Self {
             running_effects: SolRunningEffects::new(),
-            calc_data: SolSvcCalcData::new(),
+            calc_data: SolSvcCalcData::new(src),
         }
     }
 }
