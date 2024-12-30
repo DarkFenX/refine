@@ -123,8 +123,19 @@ impl SolSvcs {
                     self.clear_fit_rah_results(sol_view, &fit_id);
                 }
             }
-            // TODO: RAH cycle time
-            _ => (),
+            // RAH cycle time
+            a if Some(a) == self.calc_data.rah.cycle_time_attr_id => {
+                if self.calc_data.rah.resonances.contains_key(&item_id) {
+                    // Only modules should be registered in resonances container, and those are
+                    // guaranteed to have fit ID
+                    let fit_id = sol_view.items.get_item(item_id).unwrap().get_fit_id().unwrap();
+                    // Clear only for fits with 2+ RAHs, since changing cycle time of 1 RAH does not
+                    // change sim results
+                    if self.calc_data.rah.by_fit.get(&fit_id).len() >= 2 {
+                        self.clear_fit_rah_results(sol_view, &fit_id);
+                    }
+                }
+            }
         }
     }
     pub(in crate::sol::svc::svce_calc) fn calc_rah_src_changed(&mut self, src: &Src) {
