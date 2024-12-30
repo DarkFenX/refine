@@ -116,33 +116,7 @@ impl SolSvcs {
             if history_entries_seen.contains(&sim_history_entry) {
                 let index = sim_history.iter().position(|v| v == &sim_history_entry).unwrap();
                 let avg_resos = get_average_resonances(&sim_history[index..]);
-                for (item_id, item_sim_data) in sim_datas.iter() {
-                    // Average resonance getter might not return resonances for all RAHs, and it's
-                    // hard to trace when/why this might happen. For safety, just use unadapted
-                    // values if that happens
-                    let item_resos = match avg_resos.get(item_id) {
-                        Some(item_avg_resos) => SolDmgTypes::new(
-                            SolAttrVal::new(item_sim_data.info.resos.em.base, item_avg_resos.em, item_avg_resos.em),
-                            SolAttrVal::new(
-                                item_sim_data.info.resos.thermal.base,
-                                item_avg_resos.thermal,
-                                item_avg_resos.thermal,
-                            ),
-                            SolAttrVal::new(
-                                item_sim_data.info.resos.kinetic.base,
-                                item_avg_resos.kinetic,
-                                item_avg_resos.kinetic,
-                            ),
-                            SolAttrVal::new(
-                                item_sim_data.info.resos.explosive.base,
-                                item_avg_resos.explosive,
-                                item_avg_resos.explosive,
-                            ),
-                        ),
-                        None => item_sim_data.info.resos,
-                    };
-                    self.set_rah_result(sol_view, item_id, item_resos, true)
-                }
+                self.set_partial_fit_rahs_result(sol_view, avg_resos, &sim_datas);
                 return;
             }
             // No loop - update history
@@ -151,8 +125,11 @@ impl SolSvcs {
         }
         // If we didn't find any RAH state loops during specified quantity of sim ticks, calculate
         // average resonances based on whole history, excluding initial adaptation period
-        // TODO: add non-loop processing and remove fallback
-        self.set_fit_rahs_unadapted(sol_view, fit_id, true);
+        let ticks_to_ignore = estimate_initial_adaptation_ticks(&sim_datas, &sim_history);
+        // Never ignore more than half of the history
+        let ticks_to_ignore = ticks_to_ignore.min(sim_history.len() / 2);
+        let avg_resos = get_average_resonances(&sim_history[ticks_to_ignore..]);
+        self.set_partial_fit_rahs_result(sol_view, avg_resos, &sim_datas);
     }
     fn get_ship_resonances(&mut self, sol_view: &SolView, ship_id: &SolItemId) -> Option<SolDmgTypes<AttrVal>> {
         let em = self
@@ -259,6 +236,7 @@ impl SolSvcs {
         let rah_resos = SolDmgTypes::new(em, therm, kin, expl);
         self.set_rah_result(sol_view, item_id, rah_resos, notify);
     }
+    // Result application methods
     fn set_rah_result(
         &mut self,
         sol_view: &SolView,
@@ -271,6 +249,40 @@ impl SolSvcs {
             for attr_id in RES_ATTR_IDS.iter() {
                 self.notify_attr_val_changed(sol_view, item_id, attr_id)
             }
+        }
+    }
+    fn set_partial_fit_rahs_result(
+        &mut self,
+        sol_view: &SolView,
+        resos: StMap<SolItemId, SolDmgTypes<AttrVal>>,
+        sim_datas: &BTreeMap<SolItemId, SolRahDataSim>,
+    ) {
+        for (item_id, item_sim_data) in sim_datas.iter() {
+            // Average resonance is what passed as resonances for this method; average resonance
+            // getter might not return resonances for all RAHs, and it's hard to trace when/why this
+            // might happen. For safety, just use unadapted values if that happens
+            let item_resos = match resos.get(item_id) {
+                Some(item_avg_resos) => SolDmgTypes::new(
+                    SolAttrVal::new(item_sim_data.info.resos.em.base, item_avg_resos.em, item_avg_resos.em),
+                    SolAttrVal::new(
+                        item_sim_data.info.resos.thermal.base,
+                        item_avg_resos.thermal,
+                        item_avg_resos.thermal,
+                    ),
+                    SolAttrVal::new(
+                        item_sim_data.info.resos.kinetic.base,
+                        item_avg_resos.kinetic,
+                        item_avg_resos.kinetic,
+                    ),
+                    SolAttrVal::new(
+                        item_sim_data.info.resos.explosive.base,
+                        item_avg_resos.explosive,
+                        item_avg_resos.explosive,
+                    ),
+                ),
+                None => item_sim_data.info.resos,
+            };
+            self.set_rah_result(sol_view, item_id, item_resos, true)
         }
     }
 }
@@ -295,7 +307,7 @@ fn get_next_resonances(
     for index in sorted_indices[..donors].iter() {
         let current_value = resonances[*index];
         // Can't borrow more than it has
-        let to_donate = shift_amount.min(OF(1.0) - current_value.dogma);
+        let to_donate = Float::min(shift_amount, OF(1.0) - current_value.dogma);
         donated_amount += to_donate;
         let new_value = current_value.dogma + to_donate;
         resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
@@ -350,7 +362,7 @@ fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<S
 fn estimate_initial_adaptation_ticks(
     sim_datas: &BTreeMap<SolItemId, SolRahDataSim>,
     sim_history: &Vec<Vec<SolRahSimHistoryEntry>>,
-) -> Amount {
+) -> usize {
     // Get amount of cycles it takes for each RAH to exhaust its highest resistance
     let mut exhaustion_cycles = StMap::new();
     for (item_id, item_sim_data) in sim_datas.iter() {
@@ -381,5 +393,26 @@ fn estimate_initial_adaptation_ticks(
     if slowest_cycles == 0 {
         return 0;
     }
-    0
+    // We rely on cycling time attribute to be zero in order to determine that cycle for the slowest
+    // RAH has just ended. It is zero for the very first tick in the history too, thus we skip it,
+    // but take it into initial tick count
+    let ignored_tick_count = 1;
+    let mut tick_count = ignored_tick_count;
+    let mut cycle_count = 0;
+    for sim_history_entry in sim_history[ignored_tick_count..].iter() {
+        // Once slowest RAH finished last cycle, do not count this tick and break the loop
+        for item_history_entry in sim_history_entry.iter() {
+            if item_history_entry.item_id == slowest_item_id {
+                if item_history_entry.cycling_time_rounded == OF(0.0) {
+                    cycle_count += 1;
+                }
+                break;
+            }
+        }
+        if cycle_count >= slowest_cycles {
+            break;
+        }
+        tick_count += 1;
+    }
+    tick_count
 }
