@@ -2,6 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     info::{HItemInfo, HItemInfoMode, MkItemInfo},
+    shared::HDmgProfile,
     util::HExecError,
 };
 
@@ -37,6 +38,8 @@ pub(crate) struct HFitInfoFull {
     pub(crate) fighters: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) fw_effects: Vec<HItemInfo>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) rah_incoming_dmg: Option<HDmgProfile>,
 }
 impl HFitInfoFull {
     pub(in crate::info::fit) fn mk_info(
@@ -158,6 +161,7 @@ impl HFitInfoFull {
                 .into_iter()
                 .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
                 .collect(),
+            rah_incoming_dmg: core_fit.rah_incoming_dmg.map(|v| (&v).into()),
         };
         Ok(fit)
     }

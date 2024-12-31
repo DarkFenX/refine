@@ -1,4 +1,7 @@
-use crate::info::{HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, MkItemInfo};
+use crate::{
+    info::{HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, MkItemInfo},
+    shared::HDmgProfile,
+};
 
 #[derive(serde::Serialize)]
 pub(crate) struct HSolInfoFull {
@@ -11,6 +14,7 @@ pub(crate) struct HSolInfoFull {
     pub(crate) sw_effects: Vec<HItemInfo>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub(crate) proj_effects: Vec<HItemInfo>,
+    pub(crate) default_incoming_dmg: HDmgProfile,
 }
 impl HSolInfoFull {
     pub(in crate::info::sol) fn mk_info(
@@ -42,6 +46,7 @@ impl HSolInfoFull {
                 .iter()
                 .map(|v| HItemInfo::mk_info(core_sol, v, item_mode))
                 .collect(),
+            default_incoming_dmg: core_sol.get_default_incoming_dmg().into(),
         }
     }
 }
