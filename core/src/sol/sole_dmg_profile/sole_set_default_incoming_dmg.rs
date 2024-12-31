@@ -5,10 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn set_default_incoming_dmg_profile(
-        &mut self,
-        dmg_profile: SolDmgProfile,
-    ) -> Result<(), SetDefaultIncomingDmgProfileError> {
+    pub fn set_default_incoming_dmg(&mut self, dmg_profile: SolDmgProfile) -> Result<(), SetDefaultIncomingDmgError> {
         if dmg_profile.em < OF(0.0) {
             return Err(EmDmgNonNegError::new(dmg_profile.em).into());
         }
@@ -25,29 +22,30 @@ impl SolarSystem {
         if total <= OF(0.0) {
             return Err(TotalDmgPositiveError::new(total).into());
         }
-        if self.default_incoming_dmg != dmg_profile {
-            self.default_incoming_dmg = dmg_profile;
-            self.svcs.default_incoming_dmg_profile_changed(&SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ));
+        if self.default_incoming_dmg == dmg_profile {
+            return Ok(());
         }
+        self.default_incoming_dmg = dmg_profile;
+        self.svcs.default_incoming_dmg_profile_changed(&SolView::new(
+            &self.src,
+            &self.fleets,
+            &self.fits,
+            &self.items,
+            &self.default_incoming_dmg,
+        ));
         Ok(())
     }
 }
 
 #[derive(Debug)]
-pub enum SetDefaultIncomingDmgProfileError {
+pub enum SetDefaultIncomingDmgError {
     EmDmgNegative(EmDmgNonNegError),
     ThermDmgNegative(ThermDmgNonNegError),
     KinDmgNegative(KinDmgNonNegError),
     ExplDmgNegative(ExplDmgNonNegError),
     TotalDmgNonPositive(TotalDmgPositiveError),
 }
-impl std::error::Error for SetDefaultIncomingDmgProfileError {
+impl std::error::Error for SetDefaultIncomingDmgError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::EmDmgNegative(e) => Some(e),
@@ -58,7 +56,7 @@ impl std::error::Error for SetDefaultIncomingDmgProfileError {
         }
     }
 }
-impl std::fmt::Display for SetDefaultIncomingDmgProfileError {
+impl std::fmt::Display for SetDefaultIncomingDmgError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::EmDmgNegative(e) => e.fmt(f),
@@ -69,27 +67,27 @@ impl std::fmt::Display for SetDefaultIncomingDmgProfileError {
         }
     }
 }
-impl From<EmDmgNonNegError> for SetDefaultIncomingDmgProfileError {
+impl From<EmDmgNonNegError> for SetDefaultIncomingDmgError {
     fn from(error: EmDmgNonNegError) -> Self {
         Self::EmDmgNegative(error)
     }
 }
-impl From<ThermDmgNonNegError> for SetDefaultIncomingDmgProfileError {
+impl From<ThermDmgNonNegError> for SetDefaultIncomingDmgError {
     fn from(error: ThermDmgNonNegError) -> Self {
         Self::ThermDmgNegative(error)
     }
 }
-impl From<KinDmgNonNegError> for SetDefaultIncomingDmgProfileError {
+impl From<KinDmgNonNegError> for SetDefaultIncomingDmgError {
     fn from(error: KinDmgNonNegError) -> Self {
         Self::KinDmgNegative(error)
     }
 }
-impl From<ExplDmgNonNegError> for SetDefaultIncomingDmgProfileError {
+impl From<ExplDmgNonNegError> for SetDefaultIncomingDmgError {
     fn from(error: ExplDmgNonNegError) -> Self {
         Self::ExplDmgNegative(error)
     }
 }
-impl From<TotalDmgPositiveError> for SetDefaultIncomingDmgProfileError {
+impl From<TotalDmgPositiveError> for SetDefaultIncomingDmgError {
     fn from(error: TotalDmgPositiveError) -> Self {
         Self::TotalDmgNonPositive(error)
     }

@@ -14,7 +14,7 @@ mod misc;
 mod sol;
 pub(crate) mod sole_calc;
 mod sole_debug;
-mod sole_dmg_profile;
+pub(crate) mod sole_dmg_profile;
 pub(crate) mod sole_fit;
 pub(crate) mod sole_fleet;
 pub(crate) mod sole_item;

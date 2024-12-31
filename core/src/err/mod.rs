@@ -5,6 +5,10 @@ pub use crate::{
             GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, SetItemEffectModeError,
             SetItemEffectModesError,
         },
+        sole_dmg_profile::{
+            GetFitRahIncomingDmgError, RemoveFitRahIncomingDmgError, SetDefaultIncomingDmgError,
+            SetFitRahIncomingDmgError,
+        },
         sole_fit::{GetFitError, RemoveFitError, SetFitFleetError, UnsetFitFleetError},
         sole_fleet::{GetFleetError, RemoveFleetError},
         sole_item::{
