@@ -36,6 +36,9 @@ impl SolSvcs {
     ) {
         self.calc_fit_removed_from_fleet(sol_view, fleet, fit_id);
     }
+    pub(in crate::sol::svc) fn notify_fit_rah_dmg_profile_changed(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
+        self.calc_fit_rah_dmg_profile_changed(sol_view, fit_id);
+    }
     pub(in crate::sol::svc) fn notify_item_added(&mut self, sol_view: &SolView, item: &SolItem) {
         self.calc_item_added(sol_view, item);
     }

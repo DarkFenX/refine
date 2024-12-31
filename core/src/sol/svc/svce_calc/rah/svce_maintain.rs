@@ -142,7 +142,7 @@ impl SolSvcs {
     pub(in crate::sol::svc::svce_calc) fn calc_rah_src_changed(&mut self, src: &Src) {
         self.calc_data.rah.cycle_time_attr_id = src.get_a_effect(&RAH_EFFECT_ID).map(|v| v.duration_attr_id).flatten();
     }
-    pub(in crate::sol::svc::svce_calc) fn calc_rah_dmg_profile_changed(
+    pub(in crate::sol::svc::svce_calc) fn calc_rah_fit_rah_dmg_profile_changed(
         &mut self,
         sol_view: &SolView,
         fit_id: &SolFitId,

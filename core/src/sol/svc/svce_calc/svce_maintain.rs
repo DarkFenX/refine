@@ -51,6 +51,9 @@ impl SolSvcs {
             self.force_mod_affectee_attr_recalc(&mut affectees, sol_view, ctx_modifier);
         }
     }
+    pub(in crate::sol::svc) fn calc_fit_rah_dmg_profile_changed(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
+        self.calc_rah_fit_rah_dmg_profile_changed(sol_view, fit_id);
+    }
     pub(in crate::sol::svc) fn calc_item_added(&mut self, sol_view: &SolView, item: &SolItem) {
         // Custom modifiers
         let ctx_modifiers = self.calc_data.revs.get_mods_on_item_add();
