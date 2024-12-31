@@ -6,6 +6,11 @@ pub(crate) enum HCmdResp {
     FleetId(HFleetIdResp),
     ItemIds(HItemIdsResp),
 }
+impl From<()> for HCmdResp {
+    fn from(_: ()) -> Self {
+        HCmdResp::NoData
+    }
+}
 impl From<rc::SolFleetInfo> for HCmdResp {
     fn from(core_fleet: rc::SolFleetInfo) -> Self {
         HCmdResp::FleetId(core_fleet.into())
