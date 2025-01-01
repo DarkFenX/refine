@@ -113,6 +113,43 @@ class SolarSystem(AttrDict):
     def check(self) -> None:
         self._client.check_sol(sol_id=self.id)
 
+    def change_default_incoming_dmg_request(
+            self, *,
+            dmg_profile: Union[eve.EveObjects, Type[Absent]],
+            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        return self._client.change_sol_default_incoming_dmg_request(
+            sol_id=self.id,
+            dmg_profile=dmg_profile,
+            sol_info_mode=sol_info_mode,
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
+
+    def change_default_incoming_dmg(
+            self, *,
+            dmg_profile: Union[eve.EveObjects, Type[Absent]],
+            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]] = ApiSolInfoMode.id,
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.id,
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.id,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> SolarSystem:
+        resp = self.change_default_incoming_dmg_request(
+            dmg_profile=dmg_profile,
+            sol_info_mode=sol_info_mode,
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
+        self.check()
+        resp.check(status_code=status_code)
+        if resp.status_code == 200:
+            self._data = resp.json()['solar_system']
+        return self
+
     # Fleet methods
     def get_fleet_request(
             self, *,

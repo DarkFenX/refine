@@ -223,6 +223,29 @@ class ApiClient(eve.EveDataManager, eve.EveDataServer):
         for sol in self.__created_sols.copy():
             sol.remove()
 
+    def change_sol_default_incoming_dmg_request(
+            self, *,
+            sol_id: str,
+            dmg_profile: Union[eve.EveObjects, Type[Absent]],
+            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
+            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        command = {'type': 'change_default_incoming_dmg'}
+        conditional_insert(container=command, key='dmg_profile', value=dmg_profile)
+        params = {}
+        conditional_insert(container=params, key='sol', value=sol_info_mode)
+        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
+        conditional_insert(container=params, key='fit', value=fit_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self.__base_url}/sol/{sol_id}',
+            params=params,
+            json={'commands': [command]})
+
     # Fleet methods
     def get_fleet_request(
             self, *,
