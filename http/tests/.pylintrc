@@ -3,7 +3,8 @@ max-args = 15
 max-attributes = 15
 max-locals = 50
 max-module-lines = 2000
-max-public-methods = 100
+max-parents = 12
+max-public-methods = 50
 max-statements = 150
 
 [FORMAT]
