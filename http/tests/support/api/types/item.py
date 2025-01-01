@@ -51,30 +51,28 @@ class EffectInfo:
 class Item(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str):
-        super().__init__(
-            data=data,
-            hooks={
-                'mutation': AttrHookDef(func=lambda m: ItemMutation(
-                    base_type_id=m[0],
-                    mutator_id=m[1],
-                    attrs={int(k): AttrMutation(roll=v[0], absolute=v[1]) for k, v in m[2].items()})),
-                'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
-                'autocharges': AttrHookDef(func=lambda acs: {
-                    int(k): Item(client=client, data=v, sol_id=sol_id)
-                    for k, v in acs.items()}),
-                'side_effects': AttrHookDef(func=lambda ses: {
-                    int(k): SideEffectInfo(
-                        chance=v[0],
-                        status=v[1],
-                        str=None if v[2] is None else SideEffectStrInfo(op=v[2][0], val=v[2][1]))
-                    for k, v in ses.items()}),
-                'attrs': AttrHookDef(func=lambda attrs: {
-                    int(k): AttrVals(base=v[0], dogma=v[1], extra=v[2])
-                    for k, v in attrs.items()}),
-                'effects': AttrHookDef(func=lambda effects: {
-                    int(k): EffectInfo(running=v[0], mode=v[1])
-                    for k, v in effects.items()}),
-                'mods': AttrHookDef(func=lambda m: AttrModInfoMap(data=m))})
+        super().__init__(data=data, hooks={
+            'mutation': AttrHookDef(func=lambda m: ItemMutation(
+                base_type_id=m[0],
+                mutator_id=m[1],
+                attrs={int(k): AttrMutation(roll=v[0], absolute=v[1]) for k, v in m[2].items()})),
+            'charge': AttrHookDef(func=lambda charge: Item(client=client, data=charge, sol_id=sol_id)),
+            'autocharges': AttrHookDef(func=lambda acs: {
+                int(k): Item(client=client, data=v, sol_id=sol_id)
+                for k, v in acs.items()}),
+            'side_effects': AttrHookDef(func=lambda ses: {
+                int(k): SideEffectInfo(
+                    chance=v[0],
+                    status=v[1],
+                    str=None if v[2] is None else SideEffectStrInfo(op=v[2][0], val=v[2][1]))
+                for k, v in ses.items()}),
+            'attrs': AttrHookDef(func=lambda attrs: {
+                int(k): AttrVals(base=v[0], dogma=v[1], extra=v[2])
+                for k, v in attrs.items()}),
+            'effects': AttrHookDef(func=lambda effects: {
+                int(k): EffectInfo(running=v[0], mode=v[1])
+                for k, v in effects.items()}),
+            'mods': AttrHookDef(func=lambda m: AttrModInfoMap(data=m))})
         self._client = client
         self._sol_id = sol_id
 

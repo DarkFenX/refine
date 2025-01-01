@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiModAddMode, ApiRack, ApiState
-from tests.support.util import AttrDict, Absent
+from tests.support.util import Absent, AttrDict, AttrHookDef
+from .dmg_types import DmgTypes
 from .item import Item
 
 if TYPE_CHECKING:
@@ -16,7 +17,9 @@ if TYPE_CHECKING:
 class Fit(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str):
-        super().__init__(data=data)
+        super().__init__(data=data, hooks={
+            'rah_incoming_dmg': AttrHookDef(
+                func=lambda dp: DmgTypes(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3]))})
         self._client = client
         self._sol_id = sol_id
 

@@ -16,9 +16,7 @@ if TYPE_CHECKING:
 class Fleet(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str):
-        super().__init__(
-            data=data,
-            hooks={'fits': AttrHookDef(func=lambda fits: fits)})
+        super().__init__(data=data, hooks={'fits': AttrHookDef(func=lambda fits: fits)})
         self._client = client
         self._sol_id = sol_id
 

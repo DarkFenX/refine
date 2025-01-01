@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef, Default
+from .dmg_types import DmgTypes
 from .fit import Fit
 from .fleet import Fleet
 from .item import Item
@@ -19,13 +20,13 @@ if TYPE_CHECKING:
 class SolarSystem(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict):
-        super().__init__(
-            data=data,
-            hooks={
-                'fits': AttrHookDef(
-                    func=lambda fs: {f.id: f for f in [Fit(client=client, data=f, sol_id=self.id) for f in fs]}),
-                'fleets': AttrHookDef(
-                    func=lambda fs: {f.id: f for f in [Fleet(client=client, data=f, sol_id=self.id) for f in fs]})})
+        super().__init__(data=data, hooks={
+            'default_incoming_dmg': AttrHookDef(
+                func=lambda dp: DmgTypes(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3])),
+            'fits': AttrHookDef(
+                func=lambda fs: {f.id: f for f in [Fit(client=client, data=f, sol_id=self.id) for f in fs]}),
+            'fleets': AttrHookDef(
+                func=lambda fs: {f.id: f for f in [Fleet(client=client, data=f, sol_id=self.id) for f in fs]})})
         self._client = client
 
     def update_request(
