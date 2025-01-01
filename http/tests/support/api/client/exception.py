@@ -1,3 +1,0 @@
-
-class ApiSolCheckError(Exception):
-    pass

@@ -8,12 +8,15 @@ from tests.support.consts import ApiSolInfoMode
 from tests.support.request import Request
 from tests.support.util import Absent, Default, conditional_insert
 from .base import ApiClientBase
-from .exception import ApiSolCheckError
 
 if TYPE_CHECKING:
     from typing import Type, Union
 
     from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
+
+
+class ApiSolCheckError(Exception):
+    pass
 
 
 class ApiClientSol(ApiClientBase, eve.EveDataManager):
