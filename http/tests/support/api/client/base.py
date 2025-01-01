@@ -2,17 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import pytest
 import requests
 
-from tests.support import eve
-from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
-from tests.support.log import LogEntryNotFound
+from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
 from tests.support.request import Request
 from tests.support.response import Response
-from tests.support.util import Absent, Default, conditional_insert
-from .exception import ApiSolCheckError
-from .types import SolarSystem
+from tests.support.util import Absent, conditional_insert
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -22,229 +17,25 @@ if TYPE_CHECKING:
     from tests.support.log import LogReader
 
 
-class ApiClient(eve.EveDataManager, eve.EveDataServer):
+class ApiClientBase:
 
     def __init__(self, *, port: int, log_reader: LogReader, **kwargs):
         super().__init__(**kwargs)
         self.__session: requests.Session = requests.Session()
         self.__base_url: str = f'http://localhost:{port}'
-        self.__created_data_aliases: set[str] = set()
-        self.__created_sols: set[SolarSystem] = set()
-        self.__log_reader = log_reader
+        self.__log_reader: LogReader = log_reader
 
     def send_prepared(self, *, req: Request) -> Response:
         response = self.__session.send(req)
         return Response(response=response)
 
-    # Data source methods
-    def create_source_request(
-            self, *,
-            data: Union[eve.EveObjects, Type[Default]],
-    ) -> Request:
-        if data is Default:
-            data = self._get_default_eve_data()
-        return Request(
-            self,
-            method='POST',
-            url=f'{self.__base_url}/src/{data.alias}',
-            json={'data_version': '1', 'data_base_url': f'{self._eve_data_server_base_url}/{data.alias}/'})
-
-    def create_source(
-            self, *,
-            data: Union[eve.EveObjects, Type[Default]] = Default,
-    ) -> None:
-        if data is Default:
-            data = self._get_default_eve_data()
-        self._setup_eve_data_server(data=data)
-        resp = self.create_source_request(data=data).send()
-        assert resp.status_code == 201
-        self.__created_data_aliases.add(data.alias)
-
-    def remove_source_request(self, *, src_alias: str) -> Request:
-        return Request(
-            self,
-            method='DELETE',
-            url=f'{self.__base_url}/src/{src_alias}')
-
-    def remove_source(self, *, src_alias: str) -> None:
-        resp = self.remove_source_request(src_alias=src_alias).send()
-        assert resp.status_code == 204
-        self.__created_data_aliases.remove(src_alias)
-
-    def create_sources(self, log_check: bool = True) -> None:
-        # If no data was created, create default one
-        if not self._eve_datas:
-            self._get_default_eve_data()
-        if log_check:
-            with self.__log_reader.get_collector() as log_collector:
-                for data in self._eve_datas.values():
-                    self.create_source(data=data)
-                with pytest.raises(LogEntryNotFound):
-                    # Timeout of zero is not reliable, but don't want to slow tests down much
-                    log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='src-new:adg', timeout=0)
-        else:
-            for data in self._eve_datas.values():
-                self.create_source(data=data)
-
-    def cleanup_sources(self) -> None:
-        for alias in self.__created_data_aliases.copy():
-            self.remove_source(src_alias=alias)
-
-    # Solar system methods
-    def create_sol_request(
-            self, *,
-            data: Union[eve.EveObjects, Type[Absent], Type[Default]],
-            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
-    ) -> Request:
-        params = {}
-        conditional_insert(container=params, key='sol', value=sol_info_mode)
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
-        body = {}
-        if data is not Absent:
-            if data is Default:
-                data = self._get_default_eve_data()
-            body['src_alias'] = data.alias
-        return Request(self, method='POST', url=f'{self.__base_url}/sol', params=params, json=body)
-
-    def create_sol(
-            self, *,
-            data: Union[eve.EveObjects, Type[Absent], Type[Default]] = Default,
-            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]] = ApiSolInfoMode.id,
-            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = Absent,
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = Absent,
-    ) -> SolarSystem:
-        if data is Default:
-            data = self._get_default_eve_data()
-        resp = self.create_sol_request(
-            data=data,
-            sol_info_mode=sol_info_mode,
-            fleet_info_mode=fleet_info_mode,
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode).send()
-        assert resp.status_code == 201
-        sol_sys = SolarSystem(client=self, data=resp.json())
-        self.__created_sols.add(sol_sys)
-        return sol_sys
+    @property
+    def _base_url(self) -> str:
+        return self.__base_url
 
     @property
-    def created_sols(self):
-        return self.__created_sols
-
-    def get_sol(
-            self, *,
-            sol_id: str,
-            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
-            status_code: int = 200,
-            json_predicate: Union[dict, None] = None,
-    ) -> Union[SolarSystem, None]:
-        resp = self.get_sol_request(
-            sol_id=sol_id,
-            sol_info_mode=sol_info_mode,
-            fleet_info_mode=fleet_info_mode,
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode).send()
-        resp.check(status_code=status_code, json_predicate=json_predicate)
-        if resp.status_code == 200:
-            return SolarSystem(client=self, data=resp.json())
-        return None
-
-    def get_sol_request(
-            self, *,
-            sol_id: str,
-            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
-    ) -> Request:
-        params = {}
-        conditional_insert(container=params, key='sol', value=sol_info_mode)
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
-        return Request(
-            self,
-            method='GET',
-            url=f'{self.__base_url}/sol/{sol_id}',
-            params=params)
-
-    def change_sol_src_request(
-            self, *,
-            sol_id: str,
-            data: Union[eve.EveObjects, Type[Absent], Type[Default]],
-            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
-    ) -> Request:
-        body = {}
-        if data is not Absent:
-            if data is Default:
-                data = self._get_default_eve_data()
-            body['src_alias'] = data.alias
-        params = {}
-        conditional_insert(container=params, key='sol', value=sol_info_mode)
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
-        return Request(
-            self,
-            method='PATCH',
-            url=f'{self.__base_url}/sol/{sol_id}/src',
-            params=params,
-            json=body)
-
-    def remove_sol_request(self, *, sol_id: str) -> Request:
-        return Request(
-            self,
-            method='DELETE',
-            url=f'{self.__base_url}/sol/{sol_id}')
-
-    def check_sol(self, *, sol_id: str) -> None:
-        resp = self.check_sol_request(sol_id=sol_id).send()
-        if resp.status_code != 200:
-            raise ApiSolCheckError
-
-    def check_sol_request(self, *, sol_id: str) -> Request:
-        return Request(
-            self,
-            method='GET',
-            url=f'{self.__base_url}/sol/{sol_id}/check')
-
-    def cleanup_sols(self) -> None:
-        for sol in self.__created_sols.copy():
-            sol.remove()
-
-    def change_sol_default_incoming_dmg_request(
-            self, *,
-            sol_id: str,
-            dmg_profile: Union[eve.EveObjects, Type[Absent]],
-            sol_info_mode: Union[ApiSolInfoMode, Type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
-    ) -> Request:
-        command = {'type': 'change_default_incoming_dmg'}
-        conditional_insert(container=command, key='dmg_profile', value=dmg_profile)
-        params = {}
-        conditional_insert(container=params, key='sol', value=sol_info_mode)
-        conditional_insert(container=params, key='fleet', value=fleet_info_mode)
-        conditional_insert(container=params, key='fit', value=fit_info_mode)
-        conditional_insert(container=params, key='item', value=item_info_mode)
-        return Request(
-            self,
-            method='PATCH',
-            url=f'{self.__base_url}/sol/{sol_id}',
-            params=params,
-            json={'commands': [command]})
+    def _log_reader(self) -> LogReader:
+        return self.__log_reader
 
     # Fleet methods
     def get_fleet_request(
