@@ -17,6 +17,7 @@ pub(in crate::cmd) use item_stance::{
     HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd,
 };
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
+pub(in crate::cmd) use rah_incoming_dmg::HSetRahIncomingDmgCmd;
 
 use crate::{cmd::HCmdResp, util::HExecError};
 
@@ -35,11 +36,13 @@ mod item_ship;
 mod item_skill;
 mod item_stance;
 mod item_subsystem;
+mod rah_incoming_dmg;
 
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeFitCommand {
     SetFleet(HSetFleetCmd),
+    SetRahIncomingDmg(HSetRahIncomingDmgCmd),
     // Item commands
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
@@ -76,6 +79,7 @@ impl HChangeFitCommand {
     ) -> Result<HCmdResp, HExecError> {
         match self {
             Self::SetFleet(cmd) => cmd.execute(core_sol, fit_id),
+            Self::SetRahIncomingDmg(cmd) => cmd.execute(core_sol, fit_id),
             // Item commands
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeCharacter(cmd) => cmd.execute(core_sol, fit_id),

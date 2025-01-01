@@ -1,6 +1,5 @@
 use crate::{cmd::HCmdResp, shared::HDmgProfile, util::HExecError};
 
-#[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeDefaultIncomingDmg {
     dmg_profile: HDmgProfile,
