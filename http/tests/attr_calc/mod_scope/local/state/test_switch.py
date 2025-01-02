@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def get_value_after_switch(client, consts, state_from, state_to):
+def get_value_after_switch(*, client, consts, state_from, state_to):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_affector_attr_offline_id = client.mk_eve_attr()
     eve_affector_attr_online_id = client.mk_eve_attr()
@@ -53,20 +53,36 @@ def get_value_after_switch(client, consts, state_from, state_to):
 
 
 def test_switch_up_single(client, consts):
-    value = get_value_after_switch(client, consts, state_from=consts.ApiState.offline, state_to=consts.ApiState.online)
+    value = get_value_after_switch(
+        client=client,
+        consts=consts,
+        state_from=consts.ApiState.offline,
+        state_to=consts.ApiState.online)
     assert value == approx(143)
 
 
 def test_switch_up_multiple(client, consts):
-    value = get_value_after_switch(client, consts, state_from=consts.ApiState.online, state_to=consts.ApiState.overload)
+    value = get_value_after_switch(
+        client=client,
+        consts=consts,
+        state_from=consts.ApiState.online,
+        state_to=consts.ApiState.overload)
     assert value == approx(364.65)
 
 
 def test_switch_down_single(client, consts):
-    value = get_value_after_switch(client, consts, state_from=consts.ApiState.overload, state_to=consts.ApiState.active)
+    value = get_value_after_switch(
+        client=client,
+        consts=consts,
+        state_from=consts.ApiState.overload,
+        state_to=consts.ApiState.active)
     assert value == approx(214.5)
 
 
 def test_switch_down_multiple(client, consts):
-    value = get_value_after_switch(client, consts, state_from=consts.ApiState.active, state_to=consts.ApiState.offline)
+    value = get_value_after_switch(
+        client=client,
+        consts=consts,
+        state_from=consts.ApiState.active,
+        state_to=consts.ApiState.offline)
     assert value == approx(110)

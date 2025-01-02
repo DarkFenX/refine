@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def get_value_for_state(client, consts, state):
+def get_value_for_state(*, client, consts, state):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_affector_attr_offline_id = client.mk_eve_attr()
     eve_affector_attr_online_id = client.mk_eve_attr()
@@ -52,16 +52,16 @@ def get_value_for_state(client, consts, state):
 
 
 def test_fit_offline(client, consts):
-    assert get_value_for_state(client, consts, state=consts.ApiState.offline) == approx(110)
+    assert get_value_for_state(client=client, consts=consts, state=consts.ApiState.offline) == approx(110)
 
 
 def test_fit_online(client, consts):
-    assert get_value_for_state(client, consts, state=consts.ApiState.online) == approx(143)
+    assert get_value_for_state(client=client, consts=consts, state=consts.ApiState.online) == approx(143)
 
 
 def test_fit_active(client, consts):
-    assert get_value_for_state(client, consts, state=consts.ApiState.active) == approx(214.5)
+    assert get_value_for_state(client=client, consts=consts, state=consts.ApiState.active) == approx(214.5)
 
 
 def test_fit_overload(client, consts):
-    assert get_value_for_state(client, consts, state=consts.ApiState.overload) == approx(364.65)
+    assert get_value_for_state(client=client, consts=consts, state=consts.ApiState.overload) == approx(364.65)

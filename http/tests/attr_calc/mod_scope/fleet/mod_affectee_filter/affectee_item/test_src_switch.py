@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def setup_test(client, consts):
+def setup_test(*, client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_buff_type_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2], id_=consts.EveAttr.warfare_buff_1_id)

@@ -1,7 +1,7 @@
 from tests import approx
 
 
-def setup_penalization_test(client, consts, stackable):
+def setup_penalization_test(*, client, consts, stackable):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr(stackable=stackable)
     eve_mod = client.mk_eve_effect_mod(
@@ -36,7 +36,7 @@ def setup_penalization_test(client, consts, stackable):
 
 def test_non_penalized(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2, api_item_affector3 = setup_penalization_test(
-        client, consts, stackable=True)
+        client=client, consts=consts, stackable=True)
     assert attr_val == approx(143.02)
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
@@ -58,7 +58,7 @@ def test_non_penalized(client, consts):
 
 def test_penalized(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2, api_item_affector3 = setup_penalization_test(
-        client, consts, stackable=False)
+        client=client, consts=consts, stackable=False)
     assert attr_val == approx(143.02)
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
