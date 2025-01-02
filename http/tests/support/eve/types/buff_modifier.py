@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from tests.support.util import conditional_insert, make_repr_str
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Union
 
     from tests.support.util import Absent
 
@@ -14,9 +14,9 @@ class BuffModifier:
 
     def __init__(
             self, *,
-            attr_id: Union[int, Type[Absent]],
-            group_id: Union[int, Type[Absent]],
-            skill_id: Union[int, Type[Absent]],
+            attr_id: Union[int, type[Absent]],
+            group_id: Union[int, type[Absent]],
+            skill_id: Union[int, type[Absent]],
     ):
         self.attr_id = attr_id
         self.group_id = group_id

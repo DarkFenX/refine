@@ -6,7 +6,7 @@ from tests.support.util import conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Union
 
     from tests.support.eve.containers.primitives import EvePrimitives
     from tests.support.util import Absent
@@ -18,17 +18,17 @@ class Effect:
     def __init__(
             self, *,
             id_: int,
-            category_id: Union[int, Type[Absent]],
-            is_assistance: Union[int, bool, Type[Absent]],
-            is_offensive: Union[int, bool, Type[Absent]],
-            discharge_attribute_id: Union[int, Type[Absent]],
-            duration_attribute_id: Union[int, Type[Absent]],
-            range_attribute_id: Union[int, Type[Absent]],
-            falloff_attribute_id: Union[int, Type[Absent]],
-            tracking_attribute_id: Union[int, Type[Absent]],
-            usage_chance_attribute_id: Union[int, Type[Absent]],
-            resist_attribute_id: Union[int, Type[Absent]],
-            modifier_info: Union[list[EffectModifier], Type[Absent]],
+            category_id: Union[int, type[Absent]],
+            is_assistance: Union[int, bool, type[Absent]],
+            is_offensive: Union[int, bool, type[Absent]],
+            discharge_attribute_id: Union[int, type[Absent]],
+            duration_attribute_id: Union[int, type[Absent]],
+            range_attribute_id: Union[int, type[Absent]],
+            falloff_attribute_id: Union[int, type[Absent]],
+            tracking_attribute_id: Union[int, type[Absent]],
+            usage_chance_attribute_id: Union[int, type[Absent]],
+            resist_attribute_id: Union[int, type[Absent]],
+            modifier_info: Union[list[EffectModifier], type[Absent]],
     ):
         self.id = id_
         self.category_id = category_id

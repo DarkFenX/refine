@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from tests.support.util import conditional_insert, make_repr_str
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Union
 
     from tests.support.util import Absent
 
@@ -14,13 +14,13 @@ class EffectModifier:
 
     def __init__(
             self, *,
-            func: Union[str, Type[Absent]],
-            domain: Union[str, Type[Absent]],
-            group: Union[int, Type[Absent]],
-            skill_req: Union[int, Type[Absent]],
-            affector_attr_id: Union[int, Type[Absent]],
-            affectee_attr_id: Union[int, Type[Absent]],
-            operation: Union[int, Type[Absent]],
+            func: Union[str, type[Absent]],
+            domain: Union[str, type[Absent]],
+            group: Union[int, type[Absent]],
+            skill_req: Union[int, type[Absent]],
+            affector_attr_id: Union[int, type[Absent]],
+            affectee_attr_id: Union[int, type[Absent]],
+            operation: Union[int, type[Absent]],
     ):
         self.func = func
         self.domain = domain

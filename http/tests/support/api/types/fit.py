@@ -8,7 +8,7 @@ from .dmg_types import DmgTypes
 from .item import Item
 
 if TYPE_CHECKING:
-    from typing import Tuple, Type, Union
+    from typing import Union
 
     from tests.support.api import ApiClient
 
@@ -24,8 +24,8 @@ class Fit(AttrDict):
 
     def update(
             self, *,
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            fit_info_mode: Union[ApiFitInfoMode, type[Absent]] = ApiFitInfoMode.full,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[Fit, None]:
         resp = self._client.get_fit_request(
@@ -48,8 +48,8 @@ class Fit(AttrDict):
     def set_fleet(
             self, *,
             fleet_id: Union[str, None],
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            fit_info_mode: Union[ApiFitInfoMode, type[Absent]] = ApiFitInfoMode.full,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> None:
         resp = self._client.set_fit_fleet_request(
@@ -63,9 +63,9 @@ class Fit(AttrDict):
 
     def set_rah_incoming_dmg(
             self, *,
-            dmg_profile: Union[tuple[float, float, float, float], Type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            dmg_profile: Union[tuple[float, float, float, float], type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, type[Absent]] = ApiFitInfoMode.full,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> None:
         resp = self._client.set_fit_rah_incoming_dmg_request(
@@ -86,8 +86,8 @@ class Fit(AttrDict):
     def set_char(
             self, *,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            state: Union[bool, type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.set_char_request(
@@ -107,8 +107,8 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             level: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            state: Union[bool, type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.add_skill_request(
@@ -128,8 +128,8 @@ class Fit(AttrDict):
     def add_implant(
             self, *,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            state: Union[bool, type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.add_implant_request(
@@ -148,9 +148,9 @@ class Fit(AttrDict):
     def add_booster(
             self, *,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            side_effects: Union[dict[int, bool], Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            state: Union[bool, type[Absent]] = Absent,
+            side_effects: Union[dict[int, bool], type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.add_booster_request(
@@ -170,8 +170,8 @@ class Fit(AttrDict):
     def set_ship(
             self, *,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            state: Union[bool, type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.set_ship_request(
@@ -190,8 +190,8 @@ class Fit(AttrDict):
     def set_stance(
             self, *,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            state: Union[bool, type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.set_stance_request(
@@ -210,8 +210,8 @@ class Fit(AttrDict):
     def add_subsystem(
             self, *,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            state: Union[bool, type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.add_subsystem_request(
@@ -232,10 +232,10 @@ class Fit(AttrDict):
             type_id: int,
             rack: ApiRack = ApiRack.high,
             state: ApiState = ApiState.offline,
-            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], Type[Absent]] = Absent,
-            charge_type_id: Union[int, Type[Absent]] = Absent,
+            mutation: Union[int, tuple[int, dict[int, dict[str, float]]], type[Absent]] = Absent,
+            charge_type_id: Union[int, type[Absent]] = Absent,
             mode: ApiModAddMode = ApiModAddMode.equip,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.add_mod_request(
@@ -258,8 +258,8 @@ class Fit(AttrDict):
     def add_rig(
             self, *,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            state: Union[bool, type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.add_rig_request(
@@ -279,8 +279,8 @@ class Fit(AttrDict):
             self, *,
             type_id,
             state: ApiState = ApiState.offline,
-            mutation: Union[int, Tuple[int, dict[int, dict[str, float]]], Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            mutation: Union[int, tuple[int, dict[int, dict[str, float]]], type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.add_drone_request(
@@ -301,7 +301,7 @@ class Fit(AttrDict):
             self, *,
             type_id,
             state: ApiState = ApiState.offline,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.add_fighter_request(
@@ -320,8 +320,8 @@ class Fit(AttrDict):
     def add_fw_effect(
             self, *,
             type_id: int,
-            state: Union[bool, Type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            state: Union[bool, type[Absent]] = Absent,
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Union[Item, None]:
         resp = self._client.add_fw_effect_request(

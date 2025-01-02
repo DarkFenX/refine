@@ -11,7 +11,7 @@ from tests.support.util import Default
 from .base import ApiClientBase
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Union
 
 
 class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
@@ -22,7 +22,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
     def create_source_request(
             self, *,
-            data: Union[eve.EveObjects, Type[Default]],
+            data: Union[eve.EveObjects, type[Default]],
     ) -> Request:
         if data is Default:
             data = self._get_default_eve_data()
@@ -34,7 +34,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
     def create_source(
             self, *,
-            data: Union[eve.EveObjects, Type[Default]] = Default,
+            data: Union[eve.EveObjects, type[Default]] = Default,
     ) -> None:
         if data is Default:
             data = self._get_default_eve_data()

@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 from tests.support.util import Absent, conditional_insert, make_repr_str
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Union
 
     from tests.support.eve.containers.primitives import EvePrimitives
 
 
 def convert_items(
-        items: list[tuple[Union[list[int], Type[Absent]], Union[int, Type[Absent]]]]
+        items: list[tuple[Union[list[int], type[Absent]], Union[int, type[Absent]]]]
 ) -> list[dict[str, Union[list[int], int]]]:
     converted = []
     for in_items, out_item in items:
@@ -23,7 +23,7 @@ def convert_items(
 
 
 def convert_attributes(
-        attributes: dict[int, tuple[Union[float, Type[Absent]], Union[float, Type[Absent]]]]
+        attributes: dict[int, tuple[Union[float, type[Absent]], Union[float, type[Absent]]]]
 ) -> dict[int: dict[str, float]]:
     converted = {}
     for attr_id, (min_mult, max_mult) in attributes.items():
@@ -40,8 +40,8 @@ class Mutator:
     def __init__(
             self, *,
             id_: int,
-            items: Union[list[tuple[list[int], int]], Type[Absent]],
-            attributes: Union[dict[int, tuple[float, float]], Type[Absent]],
+            items: Union[list[tuple[list[int], int]], type[Absent]],
+            attributes: Union[dict[int, tuple[float, float]], type[Absent]],
     ):
         self.id = id_
         self.items = items

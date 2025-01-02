@@ -6,7 +6,7 @@ from tests.support.consts import ApiFleetInfoMode
 from tests.support.util import AttrDict, AttrHookDef
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Union
 
     from tests.support.api import ApiClient
     from tests.support.util import Absent
@@ -21,7 +21,7 @@ class Fleet(AttrDict):
 
     def update(
             self, *,
-            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.full,
+            fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]] = ApiFleetInfoMode.full,
             status_code: int = 200
     ) -> Union[Fleet, None]:
         resp = self._client.get_fleet_request(
@@ -39,7 +39,7 @@ class Fleet(AttrDict):
             self, *,
             add_fits: list[str] = (),
             remove_fits: list[str] = (),
-            fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.full,
+            fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]] = ApiFleetInfoMode.full,
             status_code: int = 200,
     ) -> Union[Fleet, None]:
         resp = self._client.change_fleet_request(

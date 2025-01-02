@@ -6,7 +6,7 @@ from tests.support.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Union
 
     from tests.support.eve.containers.primitives import EvePrimitives
 
@@ -16,15 +16,15 @@ class Item:
     def __init__(
             self, *,
             id_: int,
-            group_id: Union[int, Type[Absent]],
-            attributes: Union[dict[int, float], Type[Absent]],
-            effect_ids: Union[list[int], Type[Absent]],
+            group_id: Union[int, type[Absent]],
+            attributes: Union[dict[int, float], type[Absent]],
+            effect_ids: Union[list[int], type[Absent]],
             default_effect_id: Union[int, None],
-            skill_reqs: Union[dict[int, int], Type[Absent]],
-            capacity: Union[float, Type[Absent]],
-            mass: Union[float, Type[Absent]],
-            radius: Union[float, Type[Absent]],
-            volume: Union[float, Type[Absent]],
+            skill_reqs: Union[dict[int, int], type[Absent]],
+            capacity: Union[float, type[Absent]],
+            mass: Union[float, type[Absent]],
+            radius: Union[float, type[Absent]],
+            volume: Union[float, type[Absent]],
     ):
         self.id = id_
         self.group_id = group_id

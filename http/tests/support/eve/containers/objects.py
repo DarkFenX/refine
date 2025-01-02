@@ -7,7 +7,7 @@ from tests.support.util import Absent
 from .primitives import EvePrimitives
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Union
 
     from tests.support.eve.types import BuffModifier, EffectModifier
     from .strings import EveStrings
@@ -99,14 +99,14 @@ class EveObjects:
             self, *,
             id_: int,
             grp_id: int,
-            attrs: Union[dict[int, float], Type[Absent]],
-            eff_ids: Union[list[int], Type[Absent]],
-            defeff_id: Union[int, None, Type[Absent]],
-            srqs: Union[dict[int, int], Type[Absent]],
-            capacity: Union[float, Type[Absent]],
-            mass: Union[float, Type[Absent]],
-            radius: Union[float, Type[Absent]],
-            volume: Union[float, Type[Absent]],
+            attrs: Union[dict[int, float], type[Absent]],
+            eff_ids: Union[list[int], type[Absent]],
+            defeff_id: Union[int, None, type[Absent]],
+            srqs: Union[dict[int, int], type[Absent]],
+            capacity: Union[float, type[Absent]],
+            mass: Union[float, type[Absent]],
+            radius: Union[float, type[Absent]],
+            volume: Union[float, type[Absent]],
     ) -> Item:
         item = Item(
             id_=id_,
@@ -125,7 +125,7 @@ class EveObjects:
     def mk_item_group(
             self, *,
             id_: int,
-            cat_id: Union[int, Type[Absent]],
+            cat_id: Union[int, type[Absent]],
     ) -> Group:
         group = Group(id_=id_, category_id=cat_id)
         self.item_groups.setdefault(id_, []).append(group)
@@ -134,11 +134,11 @@ class EveObjects:
     def mk_attr(
             self, *,
             id_: int,
-            stackable: Union[int, bool, Type[Absent]],
-            high_is_good: Union[int, bool, Type[Absent]],
-            def_val: Union[float, Type[Absent]],
-            min_attr_id: Union[int, Type[Absent]],
-            max_attr_id: Union[int, Type[Absent]],
+            stackable: Union[int, bool, type[Absent]],
+            high_is_good: Union[int, bool, type[Absent]],
+            def_val: Union[float, type[Absent]],
+            min_attr_id: Union[int, type[Absent]],
+            max_attr_id: Union[int, type[Absent]],
     ) -> Attribute:
         attr = Attribute(
             id_=id_,
@@ -153,17 +153,17 @@ class EveObjects:
     def mk_effect(
             self, *,
             id_: int,
-            cat_id: Union[int, Type[Absent]],
-            is_assistance: Union[int, bool, Type[Absent]],
-            is_offensive: Union[int, bool, Type[Absent]],
-            discharge_attr_id: Union[int, Type[Absent]],
-            duration_attr_id: Union[int, Type[Absent]],
-            range_attr_id: Union[int, Type[Absent]],
-            falloff_attr_id: Union[int, Type[Absent]],
-            tracking_attr_id: Union[int, Type[Absent]],
-            chance_attr_id: Union[int, Type[Absent]],
-            resist_attr_id: Union[int, Type[Absent]],
-            mod_info: Union[list[EffectModifier], Type[Absent]],
+            cat_id: Union[int, type[Absent]],
+            is_assistance: Union[int, bool, type[Absent]],
+            is_offensive: Union[int, bool, type[Absent]],
+            discharge_attr_id: Union[int, type[Absent]],
+            duration_attr_id: Union[int, type[Absent]],
+            range_attr_id: Union[int, type[Absent]],
+            falloff_attr_id: Union[int, type[Absent]],
+            tracking_attr_id: Union[int, type[Absent]],
+            chance_attr_id: Union[int, type[Absent]],
+            resist_attr_id: Union[int, type[Absent]],
+            mod_info: Union[list[EffectModifier], type[Absent]],
     ) -> Effect:
         effect = Effect(
             id_=id_,
@@ -184,12 +184,12 @@ class EveObjects:
     def mk_buff(
             self, *,
             id_: int,
-            aggr_mode: Union[str, Type[Absent]],
-            op: Union[str, Type[Absent]],
-            item_mods: Union[list[BuffModifier], Type[Absent]],
-            loc_mods: Union[list[BuffModifier], Type[Absent]],
-            loc_grp_mods: Union[list[BuffModifier], Type[Absent]],
-            loc_srq_mods: Union[list[BuffModifier], Type[Absent]],
+            aggr_mode: Union[str, type[Absent]],
+            op: Union[str, type[Absent]],
+            item_mods: Union[list[BuffModifier], type[Absent]],
+            loc_mods: Union[list[BuffModifier], type[Absent]],
+            loc_grp_mods: Union[list[BuffModifier], type[Absent]],
+            loc_srq_mods: Union[list[BuffModifier], type[Absent]],
     ) -> Buff:
         buff = Buff(
             id_=id_,
@@ -205,8 +205,8 @@ class EveObjects:
     def mk_mutator(
             self, *,
             id_: int,
-            items: Union[list[tuple[list[int], int]], Type[Absent]],
-            attrs: Union[dict[int, tuple[float, float]], Type[Absent]],
+            items: Union[list[tuple[list[int], int]], type[Absent]],
+            attrs: Union[dict[int, tuple[float, float]], type[Absent]],
     ) -> Mutator:
         mutator = Mutator(
             id_=id_,

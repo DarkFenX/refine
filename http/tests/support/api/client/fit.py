@@ -7,7 +7,7 @@ from tests.support.util import conditional_insert
 from .base import ApiClientBase
 
 if TYPE_CHECKING:
-    from typing import Type, Union
+    from typing import Union
 
     from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode
     from tests.support.util import Absent
@@ -19,8 +19,8 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             fit_id: str,
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         params = {}
         conditional_insert(container=params, key='fit', value=fit_info_mode)
@@ -34,8 +34,8 @@ class ApiClientFit(ApiClientBase):
     def create_fit_request(
             self, *,
             sol_id: str,
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         params = {}
         conditional_insert(container=params, key='fit', value=fit_info_mode)
@@ -51,8 +51,8 @@ class ApiClientFit(ApiClientBase):
             sol_id: str,
             fit_id: str,
             fleet_id: Union[str, None],
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         command = {'type': 'set_fleet', 'fleet_id': fleet_id}
         params = {}
@@ -69,9 +69,9 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             fit_id: str,
-            dmg_profile: Union[tuple[float, float, float, float], Type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+            dmg_profile: Union[tuple[float, float, float, float], type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         command = {'type': 'set_rah_incoming_dmg', 'dmg_profile': dmg_profile}
         params = {}
