@@ -45,7 +45,6 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
-    # Fleet methods
     def set_fleet(
             self, *,
             fleet_id: Union[str, None],
@@ -57,6 +56,22 @@ class Fit(AttrDict):
             sol_id=self._sol_id,
             fit_id=self.id,
             fleet_id=fleet_id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+
+    def set_rah_incoming_dmg(
+            self, *,
+            dmg_profile: Union[tuple[float, float, float, float], Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.full,
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]] = ApiItemInfoMode.id,
+            status_code: int = 200,
+    ) -> None:
+        resp = self._client.set_fit_rah_incoming_dmg_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            dmg_profile=dmg_profile,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)

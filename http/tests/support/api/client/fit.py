@@ -65,6 +65,25 @@ class ApiClientFit(ApiClientBase):
             params=params,
             json={'commands': [command]})
 
+    def set_fit_rah_incoming_dmg_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            dmg_profile: Union[tuple[float, float, float, float], Type[Absent]],
+            fit_info_mode: Union[ApiFitInfoMode, Type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, Type[Absent]],
+    ) -> Request:
+        command = {'type': 'set_rah_incoming_dmg', 'dmg_profile': dmg_profile}
+        params = {}
+        conditional_insert(container=params, key='fit', value=fit_info_mode)
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            self,
+            method='PATCH',
+            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
+            params=params,
+            json={'commands': [command]})
+
     def remove_fit_request(
             self, *,
             sol_id: str,

@@ -83,7 +83,7 @@ class SolarSystem(AttrDict):
 
     def change_default_incoming_dmg(
             self, *,
-            dmg_profile: Union[eve.EveObjects, Type[Absent]],
+            dmg_profile: Union[tuple[float, float, float, float], Type[Absent]],
             sol_info_mode: Union[ApiSolInfoMode, Type[Absent]] = ApiSolInfoMode.id,
             fleet_info_mode: Union[ApiFleetInfoMode, Type[Absent]] = ApiFleetInfoMode.id,
             fit_info_mode: Union[ApiFitInfoMode, Type[Absent]] = ApiFitInfoMode.id,
