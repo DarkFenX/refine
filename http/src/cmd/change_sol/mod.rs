@@ -1,5 +1,5 @@
 pub(in crate::cmd) use default_incoming_dmg::HChangeDefaultIncomingDmg;
-pub(in crate::cmd) use fit::{HCreateFitCmd, HDeleteFitCmd};
+pub(in crate::cmd) use fit::HDeleteFitCmd;
 pub(in crate::cmd) use fleet::{HCreateFleetCmd, HDeleteFleetCmd};
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
@@ -18,7 +18,10 @@ pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HSetStanceCmd};
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
 
-use crate::{cmd::HCmdResp, util::HExecError};
+use crate::{
+    cmd::{HAddFitCmd, HCmdResp},
+    util::HExecError,
+};
 
 mod default_incoming_dmg;
 mod fit;
@@ -47,7 +50,7 @@ pub(crate) enum HChangeSolCommand {
     CreateFleet(HCreateFleetCmd),
     DeleteFleet(HDeleteFleetCmd),
     // Fit commands
-    CreateFit(HCreateFitCmd),
+    CreateFit(HAddFitCmd),
     DeleteFit(HDeleteFitCmd),
     // Item commands
     SetCharacter(HSetCharacterCmd),
@@ -90,7 +93,7 @@ impl HChangeSolCommand {
             Self::CreateFleet(cmd) => Ok(cmd.execute(core_sol)),
             Self::DeleteFleet(cmd) => cmd.execute(core_sol),
             // Fit commands
-            Self::CreateFit(cmd) => Ok(cmd.execute(core_sol)),
+            Self::CreateFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFit(cmd) => cmd.execute(core_sol),
             // Item commands
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),

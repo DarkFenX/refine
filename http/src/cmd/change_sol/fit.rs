@@ -1,14 +1,5 @@
 use crate::{cmd::HCmdResp, util::HExecError};
 
-#[derive(serde::Deserialize)]
-pub(crate) struct HCreateFitCmd {}
-impl HCreateFitCmd {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HCmdResp {
-        let core_fit = core_sol.add_fit();
-        core_fit.into()
-    }
-}
-
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HDeleteFitCmd {
