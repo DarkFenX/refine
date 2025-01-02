@@ -10,7 +10,7 @@ use crate::{
     cmd::HAddSolCmd,
     handlers::{sol::HSolInfoParams, HSingleErr},
     state::HAppState,
-    util::HExecError,
+    util::{body_json_or_empty::JsonOrEmpty, HExecError},
 };
 
 #[derive(serde::Deserialize)]
@@ -19,11 +19,19 @@ pub(crate) struct HCreateSolReq {
     #[serde(flatten)]
     cmd: HAddSolCmd,
 }
+impl Default for HCreateSolReq {
+    fn default() -> Self {
+        Self {
+            src_alias: None,
+            cmd: Default::default(),
+        }
+    }
+}
 
 pub(crate) async fn create_sol(
     State(state): State<HAppState>,
     Query(params): Query<HSolInfoParams>,
-    Json(payload): Json<HCreateSolReq>,
+    JsonOrEmpty(payload): JsonOrEmpty<HCreateSolReq>,
 ) -> impl IntoResponse {
     let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
         Ok(src) => src,

@@ -23,3 +23,10 @@ impl HAddSolCmd {
         Ok(core_sol)
     }
 }
+impl Default for HAddSolCmd {
+    fn default() -> Self {
+        Self {
+            default_incoming_dmg: None,
+        }
+    }
+}

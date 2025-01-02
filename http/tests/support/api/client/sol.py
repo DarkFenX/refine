@@ -45,7 +45,11 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
                 data = self._get_default_eve_data()
             body['src_alias'] = data.alias
         conditional_insert(container=body, key='default_incoming_dmg', value=default_incoming_dmg)
-        return Request(self, method='POST', url=f'{self._base_url}/sol', params=params, json=body)
+        if body:
+            return Request(self, method='POST', url=f'{self._base_url}/sol', params=params, json=body)
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
+        return Request(self, method='POST', url=f'{self._base_url}/sol', params=params)
 
     def create_sol(
             self, *,
