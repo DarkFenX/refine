@@ -7,13 +7,17 @@ use axum::{
 
 use crate::{
     bridge::HBrError,
+    cmd::HAddSolCmd,
     handlers::{sol::HSolInfoParams, HSingleErr},
     state::HAppState,
+    util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HCreateSolReq {
     src_alias: Option<String>,
+    #[serde(flatten)]
+    cmd: HAddSolCmd,
 }
 
 pub(crate) async fn create_sol(
@@ -21,28 +25,44 @@ pub(crate) async fn create_sol(
     Query(params): Query<HSolInfoParams>,
     Json(payload): Json<HCreateSolReq>,
 ) -> impl IntoResponse {
-    let resp = match state.src_mgr.get(payload.src_alias.as_deref()).await {
-        Ok(src) => {
-            let sol_info = state
-                .sol_mgr
-                .add_sol(
-                    src,
-                    params.sol.into(),
-                    params.fleet.into(),
-                    params.fit.into(),
-                    params.item.into(),
-                )
-                .await;
-            (StatusCode::CREATED, Json(sol_info)).into_response()
-        }
+    let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
+        Ok(src) => src,
         Err(br_err) => {
             let code = match br_err {
                 HBrError::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 HBrError::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
-            (code, Json(HSingleErr::from(br_err))).into_response()
+            return (code, Json(HSingleErr::from(br_err))).into_response();
         }
     };
-    resp
+    let sol_info = match state
+        .sol_mgr
+        .add_sol(
+            payload.cmd,
+            src,
+            params.sol.into(),
+            params.fleet.into(),
+            params.fit.into(),
+            params.item.into(),
+        )
+        .await
+    {
+        Ok(sol_info) => sol_info,
+        Err(br_err) => {
+            let code = match &br_err {
+                HBrError::ExecFailed(exec_err) => match &exec_err {
+                    HExecError::InvalidDmgProfileEm(_)
+                    | HExecError::InvalidDmgProfileTherm(_)
+                    | HExecError::InvalidDmgProfileKin(_)
+                    | HExecError::InvalidDmgProfileExpl(_)
+                    | HExecError::InvalidDmgProfileTotal(_) => StatusCode::BAD_REQUEST,
+                    _ => StatusCode::INTERNAL_SERVER_ERROR,
+                },
+                _ => StatusCode::INTERNAL_SERVER_ERROR,
+            };
+            return (code, Json(HSingleErr::from(br_err))).into_response();
+        }
+    };
+    (StatusCode::CREATED, Json(sol_info)).into_response()
 }

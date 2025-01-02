@@ -5,6 +5,7 @@ use uuid::Uuid;
 
 use crate::{
     bridge::{HBrError, HGuardedSol},
+    cmd::HAddSolCmd,
     info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfo, HSolInfoMode},
 };
 
@@ -21,27 +22,33 @@ impl HSolMgr {
     #[tracing::instrument(name = "solmgr-add", level = "trace", skip_all)]
     pub(crate) async fn add_sol(
         &self,
+        command: HAddSolCmd,
         src: rc::Src,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> HSolInfo {
+    ) -> Result<HSolInfo, HBrError> {
         let id = get_id();
         let id_mv = id.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, sol_info) = tokio_rayon::spawn_fifo(move || {
+        match tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let mut core_sol = rc::SolarSystem::new(src);
+            let mut core_sol = command.execute(src).map_err(|exec_err| HBrError::from(exec_err))?;
             let sol_info = HSolInfo::mk_info(id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
-            (core_sol, sol_info)
+            Ok((core_sol, sol_info))
         })
-        .await;
-        self.id_sol_map
-            .write()
-            .await
-            .insert(id.clone(), HGuardedSol::new(id, core_sol));
-        sol_info
+        .await
+        {
+            Ok((core_sol, sol_info)) => {
+                self.id_sol_map
+                    .write()
+                    .await
+                    .insert(id.clone(), HGuardedSol::new(id, core_sol));
+                Ok(sol_info)
+            }
+            Err(br_err) => Err(br_err),
+        }
     }
     pub(crate) async fn get_sol(&self, id: &str) -> Result<HGuardedSol, HBrError> {
         self.id_sol_map

@@ -1,5 +1,6 @@
 pub(crate) use add_fit::HAddFitCmd;
 pub(crate) use add_item::HAddItemCommand;
+pub(crate) use add_sol::HAddSolCmd;
 pub(crate) use change_fit::HChangeFitCommand;
 pub(crate) use change_fleet::HChangeFleetCmd;
 pub(crate) use change_item::HChangeItemCommand;
@@ -8,6 +9,7 @@ pub(crate) use shared::HCmdResp;
 
 mod add_fit;
 mod add_item;
+mod add_sol;
 mod change_fit;
 mod change_fleet;
 mod change_item;
