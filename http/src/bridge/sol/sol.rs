@@ -1,6 +1,9 @@
 use crate::{
     bridge::HBrError,
-    cmd::{HAddItemCommand, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp},
+    cmd::{
+        HAddFitCmd, HAddItemCommand, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand,
+        HCmdResp,
+    },
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo, HSolInfoMode,
         MkItemInfo,
@@ -224,20 +227,33 @@ impl HSolarSystem {
     #[tracing::instrument(name = "sol-fit-add", level = "trace", skip_all)]
     pub(crate) async fn add_fit(
         &mut self,
+        command: HAddFitCmd,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> Result<HFitInfo, HBrError> {
         let mut core_sol = self.take_sol()?;
+        let core_sol_backup = core_sol.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
+        match tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let core_fit = core_sol.add_fit();
-            let result = HFitInfo::mk_info(&mut core_sol, &core_fit.id, fit_mode, item_mode);
-            (core_sol, result.map_err(|exec_err| HBrError::from(exec_err)))
+            let fit_id = command
+                .execute(&mut core_sol)
+                .map_err(|exec_err| HBrError::from(exec_err))?;
+            let fit_info = HFitInfo::mk_info(&mut core_sol, &fit_id, fit_mode, item_mode)
+                .map_err(|exec_err| HBrError::from(exec_err))?;
+            Ok((core_sol, fit_info))
         })
-        .await;
-        self.put_sol_back(core_sol);
-        result
+        .await
+        {
+            Ok((core_sol, item_info)) => {
+                self.put_sol_back(core_sol);
+                Ok(item_info)
+            }
+            Err(br_err) => {
+                self.put_sol_back(core_sol_backup);
+                Err(br_err)
+            }
+        }
     }
     #[tracing::instrument(name = "sol-fit-chg", level = "trace", skip_all)]
     pub(crate) async fn change_fit(
