@@ -2,7 +2,11 @@ from tests import approx
 
 
 def setup_immunity_test(*, client, consts, cat_id):
-    return setup_immunity_test_ext(client=client, consts=consts, affector1_cat_id=cat_id, affector2_cat_id=cat_id)
+    return setup_immunity_test_ext(
+        client=client,
+        consts=consts,
+        affector1_cat_id=cat_id,
+        affector2_cat_id=cat_id)
 
 
 def setup_immunity_test_ext(*, client, consts, affector1_cat_id, affector2_cat_id):
@@ -85,7 +89,10 @@ def test_subsystem(client, consts):
 
 def test_mixed(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2 = setup_immunity_test_ext(
-        client=client, consts=consts, affector1_cat_id=consts.EveItemCat.charge, affector2_cat_id=consts.EveItemCat.implant)
+        client=client,
+        consts=consts,
+        affector1_cat_id=consts.EveItemCat.charge,
+        affector2_cat_id=consts.EveItemCat.implant)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
@@ -94,7 +101,10 @@ def test_mixed(client, consts):
 
 def test_with_not_immune(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2 = setup_immunity_test_ext(
-        client=client, consts=consts, affector1_cat_id=consts.EveItemCat.charge, affector2_cat_id=consts.EveItemCat.module)
+        client=client,
+        consts=consts,
+        affector1_cat_id=consts.EveItemCat.charge,
+        affector2_cat_id=consts.EveItemCat.module)
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
