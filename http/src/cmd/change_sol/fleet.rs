@@ -1,8 +1,8 @@
 use crate::{cmd::HCmdResp, util::HExecError};
 
 #[derive(serde::Deserialize)]
-pub(crate) struct HCreateFleetCmd {}
-impl HCreateFleetCmd {
+pub(crate) struct HAddFleetCmd {}
+impl HAddFleetCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HCmdResp {
         let core_fleet = core_sol.add_fleet();
         core_fleet.into()

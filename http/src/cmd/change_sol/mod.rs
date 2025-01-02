@@ -1,6 +1,6 @@
 pub(in crate::cmd) use default_incoming_dmg::HChangeDefaultIncomingDmg;
 pub(in crate::cmd) use fit::HDeleteFitCmd;
-pub(in crate::cmd) use fleet::{HCreateFleetCmd, HDeleteFleetCmd};
+pub(in crate::cmd) use fleet::{HAddFleetCmd, HDeleteFleetCmd};
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(in crate::cmd) use item_character::{HChangeCharacterCmd, HSetCharacterCmd};
@@ -47,10 +47,10 @@ mod item_sw_effect;
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeSolCommand {
     // Fleet commands
-    CreateFleet(HCreateFleetCmd),
+    AddFleet(HAddFleetCmd),
     DeleteFleet(HDeleteFleetCmd),
     // Fit commands
-    CreateFit(HAddFitCmd),
+    AddFit(HAddFitCmd),
     DeleteFit(HDeleteFitCmd),
     // Item commands
     SetCharacter(HSetCharacterCmd),
@@ -90,10 +90,10 @@ impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match self {
             // Fleet commands
-            Self::CreateFleet(cmd) => Ok(cmd.execute(core_sol)),
+            Self::AddFleet(cmd) => Ok(cmd.execute(core_sol)),
             Self::DeleteFleet(cmd) => cmd.execute(core_sol),
             // Fit commands
-            Self::CreateFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFit(cmd) => cmd.execute(core_sol),
             // Item commands
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
