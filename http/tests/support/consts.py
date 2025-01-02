@@ -44,6 +44,7 @@ class EveEffect(IntEnum):
     missile_kin_dmg_bonus = 668
     drone_dmg_bonus = 1730
     self_rof = 1851
+    overload_self_duration_bonus = 3002
     warp_disrupt_sphere = 3380
     script_warp_scramble_range_bonus = 3648
     hardpoint_modifier_effect = 3773
@@ -178,6 +179,7 @@ class EveAttr(IntEnum):
     speed_boost_factor = 567
     mass_addition = 796
     disallow_assistance = 854
+    overload_self_duration_bonus = 1206
     max_range_hidden = 1317
     warp_scramble_range_bonus = 1327
     activation_blocked = 1349
