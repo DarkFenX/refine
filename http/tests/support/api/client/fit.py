@@ -34,12 +34,24 @@ class ApiClientFit(ApiClientBase):
     def create_fit_request(
             self, *,
             sol_id: str,
+            rah_incoming_dmg: Union[tuple[float, float, float, float], type[Absent]],
             fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
+        body = {}
+        conditional_insert(container=body, key='rah_incoming_dmg', value=rah_incoming_dmg)
         params = {}
         conditional_insert(container=params, key='fit', value=fit_info_mode)
         conditional_insert(container=params, key='item', value=item_info_mode)
+        if body:
+            return Request(
+                self,
+                method='POST',
+                url=f'{self._base_url}/sol/{sol_id}/fit',
+                params=params,
+                json=body)
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
         return Request(
             self,
             method='POST',
@@ -69,11 +81,12 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             fit_id: str,
-            dmg_profile: Union[tuple[float, float, float, float], type[Absent]],
+            dmg_profile: Union[tuple[float, float, float, float], None, type[Absent]],
             fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
-        command = {'type': 'set_rah_incoming_dmg', 'dmg_profile': dmg_profile}
+        command = {'type': 'set_rah_incoming_dmg'}
+        conditional_insert(container=command, key='dmg_profile', value=dmg_profile)
         params = {}
         conditional_insert(container=params, key='fit', value=fit_info_mode)
         conditional_insert(container=params, key='item', value=item_info_mode)

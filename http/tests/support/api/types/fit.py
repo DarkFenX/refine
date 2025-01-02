@@ -63,7 +63,7 @@ class Fit(AttrDict):
 
     def set_rah_incoming_dmg(
             self, *,
-            dmg_profile: Union[tuple[float, float, float, float], type[Absent]],
+            dmg_profile: Union[tuple[float, float, float, float], None, type[Absent]],
             fit_info_mode: Union[ApiFitInfoMode, type[Absent]] = ApiFitInfoMode.full,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,

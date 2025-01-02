@@ -157,12 +157,14 @@ class SolarSystem(AttrDict):
 
     def create_fit(
             self, *,
+            rah_incoming_dmg: Union[tuple[float, float, float, float], type[Absent]] = Absent,
             fit_info_mode: Union[ApiFitInfoMode, type[Absent]] = ApiFitInfoMode.id,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = Absent,
             status_code: int = 201,
     ) -> Union[Fit, None]:
         resp = self._client.create_fit_request(
             sol_id=self.id,
+            rah_incoming_dmg=rah_incoming_dmg,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self.check()
