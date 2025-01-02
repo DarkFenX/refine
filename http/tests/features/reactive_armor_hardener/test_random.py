@@ -37,7 +37,7 @@ def test_random(client, consts):
         eve_res_kin_attr_id: 0.75,
         eve_res_expl_attr_id: 0.9})
     client.create_sources()
-    api_sol = client.create_sol()
+    api_sol = client.create_sol(default_incoming_dmg=(1, 1, 0, 0))
     api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 0, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
@@ -53,7 +53,6 @@ def test_random(client, consts):
     assert api_rah.attrs[eve_res_kin_attr_id].dogma == approx(1.0)
     assert api_rah.attrs[eve_res_expl_attr_id].dogma == approx(0.4)
     api_fit.set_rah_incoming_dmg(dmg_profile=None)
-    api_sol.change_default_incoming_dmg(dmg_profile=(1, 1, 0, 0))
     api_sol.update()
     api_ship.update()
     assert api_ship.attrs[eve_res_em_attr_id].dogma == approx(0.35)

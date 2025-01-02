@@ -28,6 +28,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def create_sol_request(
             self, *,
             data: Union[eve.EveObjects, type[Absent], type[Default]],
+            default_incoming_dmg: Union[tuple[float, float, float, float], type[Absent]],
             sol_info_mode: Union[ApiSolInfoMode, type[Absent]],
             fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]],
             fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
@@ -43,11 +44,13 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             if data is Default:
                 data = self._get_default_eve_data()
             body['src_alias'] = data.alias
+        conditional_insert(container=body, key='default_incoming_dmg', value=default_incoming_dmg)
         return Request(self, method='POST', url=f'{self._base_url}/sol', params=params, json=body)
 
     def create_sol(
             self, *,
             data: Union[eve.EveObjects, type[Absent], type[Default]] = Default,
+            default_incoming_dmg: Union[tuple[float, float, float, float], type[Absent]] = Absent,
             sol_info_mode: Union[ApiSolInfoMode, type[Absent]] = ApiSolInfoMode.id,
             fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]] = Absent,
             fit_info_mode: Union[ApiFitInfoMode, type[Absent]] = Absent,
@@ -57,6 +60,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             data = self._get_default_eve_data()
         resp = self.create_sol_request(
             data=data,
+            default_incoming_dmg=default_incoming_dmg,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
