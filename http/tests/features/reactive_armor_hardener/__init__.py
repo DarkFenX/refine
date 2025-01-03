@@ -3,7 +3,7 @@ from tests.support.util import Default
 
 
 @dataclass(kw_only=True)
-class RahEveInfo:
+class RahBasicInfo:
     res_max_attr_id: int
     res_em_attr_id: int
     res_therm_attr_id: int
@@ -14,21 +14,9 @@ class RahEveInfo:
     res_shift_attr_id: int
     rah_effect_id: int
     heat_effect_id: int
-    rah_id: int
-    ship_id: int
 
 
-def setup_rah(
-        *,
-        client,
-        consts,
-        datas=Default,
-        ship_resos=(0.5, 0.65, 0.75, 0.9),
-        rah_resos=(0.85, 0.85, 0.85, 0.85),
-        rah_shift_amount=6,
-        cycle_time=10000,
-        heat_cycle_mod=-15,
-) -> RahEveInfo:
+def setup_rah_basics(*, client, consts, datas=Default) -> RahBasicInfo:
     eve_res_max_attr_id = client.mk_eve_attr(
         datas=datas,
         id_=consts.EveAttr.armor_max_dmg_resonance,
@@ -72,26 +60,7 @@ def setup_rah(
         id_=consts.EveEffect.overload_self_duration_bonus,
         cat_id=consts.EveEffCat.overload,
         mod_info=[eve_heat_mod])
-    eve_rah_id = client.mk_eve_item(
-        datas=datas,
-        attrs=dict(zip(
-            (eve_res_em_attr_id,
-             eve_res_therm_attr_id,
-             eve_res_kin_attr_id,
-             eve_res_expl_attr_id,
-             eve_res_shift_attr_id,
-             eve_cycle_time_attr_id,
-             eve_cycle_time_bonus_attr_id),
-            (*rah_resos,
-             rah_shift_amount,
-             cycle_time,
-             heat_cycle_mod))),
-        eff_ids=[eve_rah_effect_id, eve_heat_effect_id],
-        defeff_id=eve_rah_effect_id)
-    eve_ship_id = client.mk_eve_ship(datas=datas, attrs=dict(zip(
-        (eve_res_em_attr_id, eve_res_therm_attr_id, eve_res_kin_attr_id, eve_res_expl_attr_id),
-        ship_resos)))
-    return RahEveInfo(
+    return RahBasicInfo(
         res_max_attr_id=eve_res_max_attr_id,
         res_em_attr_id=eve_res_em_attr_id,
         res_therm_attr_id=eve_res_therm_attr_id,
@@ -101,6 +70,47 @@ def setup_rah(
         cycle_time_bonus_attr_id=eve_cycle_time_bonus_attr_id,
         res_shift_attr_id=eve_res_shift_attr_id,
         rah_effect_id=eve_rah_effect_id,
-        heat_effect_id=eve_heat_effect_id,
-        rah_id=eve_rah_id,
-        ship_id=eve_ship_id)
+        heat_effect_id=eve_heat_effect_id)
+
+
+def make_eve_rah(
+        *,
+        client,
+        datas=Default,
+        basic_info: RahBasicInfo,
+        resos=(0.85, 0.85, 0.85, 0.85),
+        shift_amount=6,
+        cycle_time=10000,
+        heat_cycle_mod=-15):
+    eve_rah_id = client.mk_eve_item(
+        datas=datas,
+        attrs=dict(zip(
+            (basic_info.res_em_attr_id,
+             basic_info.res_therm_attr_id,
+             basic_info.res_kin_attr_id,
+             basic_info.res_expl_attr_id,
+             basic_info.res_shift_attr_id,
+             basic_info.cycle_time_attr_id,
+             basic_info.cycle_time_bonus_attr_id),
+            (*resos,
+             shift_amount,
+             cycle_time,
+             heat_cycle_mod))),
+        eff_ids=[basic_info.rah_effect_id, basic_info.heat_effect_id],
+        defeff_id=basic_info.rah_effect_id)
+    return eve_rah_id
+
+
+def make_eve_ship(
+        *,
+        client,
+        datas=Default,
+        basic_info: RahBasicInfo,
+        resos=(0.5, 0.65, 0.75, 0.9)):
+    eve_ship_id = client.mk_eve_ship(datas=datas, attrs=dict(zip(
+        (basic_info.res_em_attr_id,
+         basic_info.res_therm_attr_id,
+         basic_info.res_kin_attr_id,
+         basic_info.res_expl_attr_id),
+        resos)))
+    return eve_ship_id
