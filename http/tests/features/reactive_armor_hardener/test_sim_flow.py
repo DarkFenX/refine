@@ -3,6 +3,8 @@ from tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, 
 
 
 def test_complete_single(client, consts):
+    # Check simulation of single RAH, with sim state loop detected before sim tick limit is broken.
+    # Also check non-dogma attribute values.
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
@@ -33,6 +35,7 @@ def test_complete_single(client, consts):
 
 
 def test_complete_double_synced(client, consts):
+    # Check simulation of dual RAHs, with sim state loop detected before sim tick limit is broken.
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
@@ -61,6 +64,9 @@ def test_complete_double_synced(client, consts):
 
 
 def test_complete_double_unsynced(client, consts):
+    # Check simulation of dual RAHs with different cycle times (realistic scenario with one RAH
+    # being heated and the other one cold, as much as realistic scenario with 2 RAHs can be that
+    # is), with sim state loop detected before sim tick limit is broken.
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
