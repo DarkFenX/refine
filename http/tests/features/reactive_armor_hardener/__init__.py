@@ -78,8 +78,8 @@ def make_eve_rah(
         client,
         datas=Default,
         basic_info: RahBasicInfo,
-        resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
+        resos,
+        shift_amount,
         cycle_time=10000,
         heat_cycle_mod=-15):
     eve_rah_id = client.mk_eve_item(
@@ -106,7 +106,7 @@ def make_eve_ship(
         client,
         datas=Default,
         basic_info: RahBasicInfo,
-        resos=(0.5, 0.65, 0.75, 0.9)):
+        resos):
     eve_ship_id = client.mk_eve_ship(datas=datas, attrs=dict(zip(
         (basic_info.res_em_attr_id,
          basic_info.res_therm_attr_id,
