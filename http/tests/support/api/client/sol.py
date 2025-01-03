@@ -165,7 +165,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         for sol in self.__created_sols.copy():
             sol.remove()
 
-    def change_sol_default_incoming_dmg_request(
+    def set_sol_default_incoming_dmg_request(
             self, *,
             sol_id: str,
             dmg_profile: Union[tuple[float, float, float, float], type[Absent]],
@@ -174,7 +174,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
-        command = {'type': 'change_default_incoming_dmg'}
+        command = {'type': 'set_default_incoming_dmg'}
         conditional_insert(container=command, key='dmg_profile', value=dmg_profile)
         params = {}
         conditional_insert(container=params, key='sol', value=sol_info_mode)

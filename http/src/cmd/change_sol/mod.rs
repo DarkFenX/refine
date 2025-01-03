@@ -1,4 +1,4 @@
-pub(in crate::cmd) use default_incoming_dmg::HChangeDefaultIncomingDmg;
+pub(in crate::cmd) use default_incoming_dmg::HSetDefaultIncomingDmg;
 pub(in crate::cmd) use fit::HDeleteFitCmd;
 pub(in crate::cmd) use fleet::{HAddFleetCmd, HDeleteFleetCmd};
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
@@ -84,7 +84,7 @@ pub(crate) enum HChangeSolCommand {
     AddProjEffect(HAddProjEffectCmd),
     ChangeProjEffect(HChangeProjEffectCmd),
     // Misc
-    ChangeDefaultIncomingDmg(HChangeDefaultIncomingDmg),
+    SetDefaultIncomingDmg(HSetDefaultIncomingDmg),
 }
 impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
@@ -127,7 +127,7 @@ impl HChangeSolCommand {
             Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeProjEffect(cmd) => cmd.execute(core_sol),
             // Misc
-            Self::ChangeDefaultIncomingDmg(cmd) => cmd.execute(core_sol),
+            Self::SetDefaultIncomingDmg(cmd) => cmd.execute(core_sol),
         }
     }
 }

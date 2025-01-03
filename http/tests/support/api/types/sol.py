@@ -80,7 +80,7 @@ class SolarSystem(AttrDict):
     def check(self) -> None:
         self._client.check_sol(sol_id=self.id)
 
-    def change_default_incoming_dmg(
+    def set_default_incoming_dmg(
             self, *,
             dmg_profile: Union[tuple[float, float, float, float], type[Absent]],
             sol_info_mode: Union[ApiSolInfoMode, type[Absent]] = ApiSolInfoMode.id,
@@ -89,7 +89,7 @@ class SolarSystem(AttrDict):
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> SolarSystem:
-        resp = self._client.change_sol_default_incoming_dmg_request(
+        resp = self._client.set_sol_default_incoming_dmg_request(
             sol_id=self.id,
             dmg_profile=dmg_profile,
             sol_info_mode=sol_info_mode,

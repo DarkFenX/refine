@@ -1,10 +1,10 @@
 use crate::{cmd::HCmdResp, shared::HDmgProfile, util::HExecError};
 
 #[derive(serde::Deserialize)]
-pub(crate) struct HChangeDefaultIncomingDmg {
+pub(crate) struct HSetDefaultIncomingDmg {
     dmg_profile: HDmgProfile,
 }
-impl HChangeDefaultIncomingDmg {
+impl HSetDefaultIncomingDmg {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match core_sol.set_default_incoming_dmg((&self.dmg_profile).into()) {
             Ok(()) => Ok(().into()),
