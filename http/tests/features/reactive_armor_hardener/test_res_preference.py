@@ -1,9 +1,12 @@
+"""
+Check which damage types RAH chooses when receiving equal damage.
+"""
+
 from tests import approx
 from tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, setup_rah_basics
 
 
 def test_multi(client, consts):
-    # Check which damage types RAH chooses when receiving equal damage
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
@@ -29,7 +32,6 @@ def test_multi(client, consts):
 
 
 def test_therm_kin_expl(client, consts):
-    # Check which damage types RAH chooses when receiving equal damage
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
@@ -59,7 +61,6 @@ def test_therm_kin_expl(client, consts):
 
 
 def test_em_kin_expl(client, consts):
-    # Check which damage types RAH chooses when receiving equal damage
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
@@ -89,7 +90,6 @@ def test_em_kin_expl(client, consts):
 
 
 def test_em_therm_expl(client, consts):
-    # Check which damage types RAH chooses when receiving equal damage
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
@@ -119,7 +119,6 @@ def test_em_therm_expl(client, consts):
 
 
 def test_em_therm_kin(client, consts):
-    # Check which damage types RAH chooses when receiving equal damage
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.675, 0.675, 0.675, 0.675))
