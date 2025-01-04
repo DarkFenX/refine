@@ -47,10 +47,10 @@ def test_res_changed_em(client, consts):
     assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
     assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.88)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.445491)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.390957)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.4454908)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3909571)
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4081136)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.401993)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4019927)
     # Action
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification - results for both RAHs should be reset, despite only one having its attr updated
@@ -66,6 +66,6 @@ def test_res_changed_em(client, consts):
     assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.835)
     api_ship.update()
     assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3627876)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.390957)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.414421)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.358228)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3909571)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4144208)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3582281)

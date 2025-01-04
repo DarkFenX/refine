@@ -1,4 +1,5 @@
 import contextlib
+import math
 import os
 
 import pytest
@@ -18,7 +19,12 @@ TEST_FOLDER_SPLIT = os.path.dirname(os.path.normpath(os.path.realpath(__file__))
 def approx(expected):
     if abs(expected) >= 1:
         return pytest.approx(expected=expected, abs=1e-6)
-    return pytest.approx(expected=expected, rel=1e-6)
+    if expected == 0:
+        return pytest.approx(expected=expected, abs=1e-7)
+    # 7 significant digits for numbers between 0 and 1/-1
+    highest_magnitude = math.floor(math.log10(abs(expected)))
+    tolerance = 10 ** (highest_magnitude - 6)
+    return pytest.approx(expected=expected, abs=tolerance)
 
 
 @contextlib.contextmanager

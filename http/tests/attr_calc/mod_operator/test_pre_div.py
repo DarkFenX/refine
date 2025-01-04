@@ -106,7 +106,7 @@ def test_penalized(client, consts):
     assert api_mod4.op == consts.ApiModOp.pre_div
     assert api_mod4.initial_val == approx(0.75)
     assert api_mod4.stacking_mult == approx(consts.PenaltyStr.p2)
-    assert api_mod4.applied_val == approx(0.77537)
+    assert api_mod4.applied_val == approx(0.7753701)
     api_mod5 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector5.id).one()
     assert api_mod5.op == consts.ApiModOp.pre_div
     assert api_mod5.initial_val == approx(5)
