@@ -203,15 +203,15 @@ def test_attr_changed_res_em(client, consts):
     eve_rah1_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp1_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp1_id)
+        shift_amount=6)
     eve_rah2_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp2_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp2_id)
+        shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
@@ -272,15 +272,15 @@ def test_attr_changed_res_therm(client, consts):
     eve_rah1_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp1_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp1_id)
+        shift_amount=6)
     eve_rah2_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp2_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp2_id)
+        shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
@@ -341,15 +341,15 @@ def test_attr_changed_res_kin(client, consts):
     eve_rah1_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp1_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp1_id)
+        shift_amount=6)
     eve_rah2_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp2_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp2_id)
+        shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
@@ -410,15 +410,15 @@ def test_attr_changed_res_expl(client, consts):
     eve_rah1_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp1_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp1_id)
+        shift_amount=6)
     eve_rah2_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp2_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp2_id)
+        shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
@@ -479,15 +479,15 @@ def test_attr_changed_shift_amount(client, consts):
     eve_rah1_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp1_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp1_id)
+        shift_amount=6)
     eve_rah2_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
+        grp_id=eve_grp2_id,
         resos=(0.85, 0.85, 0.85, 0.85),
-        shift_amount=6,
-        grp_id=eve_grp2_id)
+        shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_shift_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
@@ -539,3 +539,127 @@ def test_attr_changed_shift_amount(client, consts):
     assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.4331672)
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3931826)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4136945)
+
+
+def test_attr_changed_cycle_time(client, consts):
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    eve_d1_cycle_time_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
+    eve_d2_cycle_time_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
+    eve_d1_basic_info = setup_rah_basics(
+        client=client,
+        consts=consts,
+        datas=[eve_d1],
+        attr_cycle_time=eve_d1_cycle_time_attr_id)
+    eve_d2_basic_info = setup_rah_basics(
+        client=client,
+        consts=consts,
+        datas=[eve_d2],
+        attr_cycle_time=eve_d2_cycle_time_attr_id)
+    eve_rah_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    make_eve_rah(
+        client=client,
+        datas=[eve_d1],
+        basic_info=eve_d1_basic_info,
+        id_=eve_rah_id,
+        resos=(0.85, 0.85, 0.85, 0.85),
+        shift_amount=6)
+    make_eve_rah(
+        client=client,
+        datas=[eve_d2],
+        basic_info=eve_d2_basic_info,
+        id_=eve_rah_id,
+        resos=(0.85, 0.85, 0.85, 0.85),
+        shift_amount=6)
+    eve_ship_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
+    make_eve_ship(
+        client=client,
+        datas=[eve_d1],
+        basic_info=eve_d1_basic_info,
+        id_=eve_ship_id,
+        resos=(0.5, 0.65, 0.59, 0.51))
+    make_eve_ship(
+        client=client,
+        datas=[eve_d2],
+        basic_info=eve_d2_basic_info,
+        id_=eve_ship_id,
+        resos=(0.5, 0.65, 0.75, 0.9))
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    # Verification
+    api_rah1.update()
+    assert api_rah1.attrs[eve_d1_basic_info.res_em_attr_id].dogma == approx(0.94)
+    assert api_rah1.attrs[eve_d1_basic_info.res_therm_attr_id].dogma == approx(0.76)
+    assert api_rah1.attrs[eve_d1_basic_info.res_kin_attr_id].dogma == approx(0.82)
+    assert api_rah1.attrs[eve_d1_basic_info.res_expl_attr_id].dogma == approx(0.88)
+    api_rah2.update()
+    assert api_rah2.attrs[eve_d1_basic_info.res_em_attr_id].dogma == approx(0.94)
+    assert api_rah2.attrs[eve_d1_basic_info.res_therm_attr_id].dogma == approx(0.76)
+    assert api_rah2.attrs[eve_d1_basic_info.res_kin_attr_id].dogma == approx(0.82)
+    assert api_rah2.attrs[eve_d1_basic_info.res_expl_attr_id].dogma == approx(0.88)
+    api_ship.update()
+    assert api_ship.attrs[eve_d1_basic_info.res_em_attr_id].dogma == approx(0.4454908)
+    assert api_ship.attrs[eve_d1_basic_info.res_therm_attr_id].dogma == approx(0.3909571)
+    assert api_ship.attrs[eve_d1_basic_info.res_kin_attr_id].dogma == approx(0.4081136)
+    assert api_ship.attrs[eve_d1_basic_info.res_expl_attr_id].dogma == approx(0.4019927)
+    # Action
+    api_rah2.change_mod(state=consts.ApiState.overload)
+    # Verification - results for both RAHs should be reset, despite only one having its attr updated
+    api_rah1.update()
+    assert api_rah1.attrs[eve_d1_basic_info.res_em_attr_id].dogma == approx(0.9752941)
+    assert api_rah1.attrs[eve_d1_basic_info.res_therm_attr_id].dogma == approx(0.7961765)
+    assert api_rah1.attrs[eve_d1_basic_info.res_kin_attr_id].dogma == approx(0.775)
+    assert api_rah1.attrs[eve_d1_basic_info.res_expl_attr_id].dogma == approx(0.8535294)
+    api_rah2.update()
+    assert api_rah2.attrs[eve_d1_basic_info.res_em_attr_id].dogma == approx(0.817)
+    assert api_rah2.attrs[eve_d1_basic_info.res_therm_attr_id].dogma == approx(0.748)
+    assert api_rah2.attrs[eve_d1_basic_info.res_kin_attr_id].dogma == approx(0.895)
+    assert api_rah2.attrs[eve_d1_basic_info.res_expl_attr_id].dogma == approx(0.94)
+    api_ship.update()
+    assert api_ship.attrs[eve_d1_basic_info.res_em_attr_id].dogma == approx(0.3997285)
+    assert api_ship.attrs[eve_d1_basic_info.res_therm_attr_id].dogma == approx(0.4000711)
+    assert api_ship.attrs[eve_d1_basic_info.res_kin_attr_id].dogma == approx(0.4155225)
+    assert api_ship.attrs[eve_d1_basic_info.res_expl_attr_id].dogma == approx(0.4126003)
+    # Action - unlike for other attribute change tests, here we do source switch. Since duration
+    # attribute is not hardcoded into simulator, it can change between sources. Sim stores attribute
+    # ID for optimization reasons, and has to update it during source switch.
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    api_rah1.update()
+    assert api_rah1.attrs[eve_d2_basic_info.res_em_attr_id].dogma == approx(0.9752941)
+    assert api_rah1.attrs[eve_d2_basic_info.res_therm_attr_id].dogma == approx(0.835)
+    assert api_rah1.attrs[eve_d2_basic_info.res_kin_attr_id].dogma == approx(0.8297059)
+    assert api_rah1.attrs[eve_d2_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    api_rah2.update()
+    assert api_rah2.attrs[eve_d2_basic_info.res_em_attr_id].dogma == approx(0.979)
+    assert api_rah2.attrs[eve_d2_basic_info.res_therm_attr_id].dogma == approx(0.91)
+    assert api_rah2.attrs[eve_d2_basic_info.res_kin_attr_id].dogma == approx(0.796)
+    assert api_rah2.attrs[eve_d2_basic_info.res_expl_attr_id].dogma == approx(0.715)
+    api_ship.update()
+    assert api_ship.attrs[eve_d2_basic_info.res_em_attr_id].dogma == approx(0.4787468)
+    assert api_ship.attrs[eve_d2_basic_info.res_therm_attr_id].dogma == approx(0.5002957)
+    assert api_ship.attrs[eve_d2_basic_info.res_kin_attr_id].dogma == approx(0.5086404)
+    assert api_ship.attrs[eve_d2_basic_info.res_expl_attr_id].dogma == approx(0.5092731)
+    # Action
+    api_rah1.change_mod(state=consts.ApiState.overload)
+    # Verification - on second source it should work as well, if attribute reference was updated
+    # during source switch
+    api_rah1.update()
+    assert api_rah1.attrs[eve_d2_basic_info.res_em_attr_id].dogma == approx(0.97)
+    assert api_rah1.attrs[eve_d2_basic_info.res_therm_attr_id].dogma == approx(0.88)
+    assert api_rah1.attrs[eve_d2_basic_info.res_kin_attr_id].dogma == approx(0.805)
+    assert api_rah1.attrs[eve_d2_basic_info.res_expl_attr_id].dogma == approx(0.745)
+    api_rah2.update()
+    assert api_rah2.attrs[eve_d2_basic_info.res_em_attr_id].dogma == approx(0.97)
+    assert api_rah2.attrs[eve_d2_basic_info.res_therm_attr_id].dogma == approx(0.88)
+    assert api_rah2.attrs[eve_d2_basic_info.res_kin_attr_id].dogma == approx(0.805)
+    assert api_rah2.attrs[eve_d2_basic_info.res_expl_attr_id].dogma == approx(0.745)
+    api_ship.update()
+    assert api_ship.attrs[eve_d2_basic_info.res_em_attr_id].dogma == approx(0.4723543)
+    assert api_ship.attrs[eve_d2_basic_info.res_therm_attr_id].dogma == approx(0.5123436)
+    assert api_ship.attrs[eve_d2_basic_info.res_kin_attr_id].dogma == approx(0.5014274)
+    assert api_ship.attrs[eve_d2_basic_info.res_expl_attr_id].dogma == approx(0.5219)

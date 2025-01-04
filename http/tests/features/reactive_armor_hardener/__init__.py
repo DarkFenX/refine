@@ -27,6 +27,7 @@ def setup_rah_basics(
         attr_res_therm: Union[int, None, type[Default]] = Default,
         attr_res_kin: Union[int, None, type[Default]] = Default,
         attr_res_expl: Union[int, None, type[Default]] = Default,
+        attr_cycle_time: Union[int, type[Default]] = Default,
 ) -> RahBasicInfo:
     eve_res_max_attr_id = client.mk_eve_attr(
         datas=datas,
@@ -64,7 +65,9 @@ def setup_rah_basics(
             id_=consts.EveAttr.armor_expl_dmg_resonance if attr_res_expl is Default else attr_res_expl,
             stackable=False,
             max_attr_id=eve_res_max_attr_id)
-    eve_cycle_time_attr_id = client.mk_eve_attr(datas=datas, id_=consts.EveAttr.duration)
+    eve_cycle_time_attr_id = client.mk_eve_attr(
+        datas=datas,
+        id_=consts.EveAttr.duration if attr_cycle_time is Default else attr_cycle_time)
     eve_cycle_time_bonus_attr_id = client.mk_eve_attr(datas=datas, id_=consts.EveAttr.overload_self_duration_bonus)
     eve_res_shift_attr_id = client.mk_eve_attr(datas=datas, id_=consts.EveAttr.resist_shift_amount)
     eve_rah_effect_id = client.mk_eve_effect(
@@ -101,13 +104,16 @@ def make_eve_rah(
         client,
         datas=Default,
         basic_info: RahBasicInfo,
+        id_: Union[int, type[Default]] = Default,
+        grp_id: Union[int, type[Default]] = Default,
         resos: tuple[float, float, float, float],
         shift_amount: float,
         cycle_time: float = 10000,
         heat_cycle_mod: float = -15,
-        grp_id: Union[int, type[Default]] = Default):
+):
     eve_rah_id = client.mk_eve_item(
         datas=datas,
+        id_=id_,
         grp_id=grp_id,
         attrs={
             k: v for k, v in zip(
@@ -133,8 +139,9 @@ def make_eve_ship(
         client,
         datas=Default,
         basic_info: RahBasicInfo,
+        id_: Union[int, type[Default]] = Default,
         resos: tuple[float, float, float, float]):
-    eve_ship_id = client.mk_eve_ship(datas=datas, attrs={
+    eve_ship_id = client.mk_eve_ship(datas=datas, id_=id_, attrs={
         k: v  for k, v in zip(
             (basic_info.res_em_attr_id,
              basic_info.res_therm_attr_id,
