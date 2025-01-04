@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Union
 
 from tests.support.util import Default
 
@@ -22,10 +23,10 @@ def setup_rah_basics(
         client,
         consts,
         datas=Default,
-        attr_res_em=Default,
-        attr_res_therm=Default,
-        attr_res_kin=Default,
-        attr_res_expl=Default,
+        attr_res_em: Union[int, None, type[Default]] = Default,
+        attr_res_therm: Union[int, None, type[Default]] = Default,
+        attr_res_kin: Union[int, None, type[Default]] = Default,
+        attr_res_expl: Union[int, None, type[Default]] = Default,
 ) -> RahBasicInfo:
     eve_res_max_attr_id = client.mk_eve_attr(
         datas=datas,
@@ -100,12 +101,14 @@ def make_eve_rah(
         client,
         datas=Default,
         basic_info: RahBasicInfo,
-        resos,
-        shift_amount,
-        cycle_time=10000,
-        heat_cycle_mod=-15):
+        resos: tuple[float, float, float, float],
+        shift_amount: float,
+        cycle_time: float = 10000,
+        heat_cycle_mod: float = -15,
+        grp_id: Union[int, type[Default]] = Default):
     eve_rah_id = client.mk_eve_item(
         datas=datas,
+        grp_id=grp_id,
         attrs={
             k: v for k, v in zip(
                 (basic_info.res_em_attr_id,
@@ -130,7 +133,7 @@ def make_eve_ship(
         client,
         datas=Default,
         basic_info: RahBasicInfo,
-        resos):
+        resos: tuple[float, float, float, float]):
     eve_ship_id = client.mk_eve_ship(datas=datas, attrs={
         k: v  for k, v in zip(
             (basic_info.res_em_attr_id,
