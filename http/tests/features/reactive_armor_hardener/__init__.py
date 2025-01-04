@@ -17,31 +17,52 @@ class RahBasicInfo:
     heat_effect_id: int
 
 
-def setup_rah_basics(*, client, consts, datas=Default) -> RahBasicInfo:
+def setup_rah_basics(
+        *,
+        client,
+        consts,
+        datas=Default,
+        attr_res_em=Default,
+        attr_res_therm=Default,
+        attr_res_kin=Default,
+        attr_res_expl=Default,
+) -> RahBasicInfo:
     eve_res_max_attr_id = client.mk_eve_attr(
         datas=datas,
         id_=consts.EveAttr.armor_max_dmg_resonance,
         def_val=1)
-    eve_res_em_attr_id = client.mk_eve_attr(
-        datas=datas,
-        id_=consts.EveAttr.armor_em_dmg_resonance,
-        stackable=False,
-        max_attr_id=eve_res_max_attr_id)
-    eve_res_therm_attr_id = client.mk_eve_attr(
-        datas=datas,
-        id_=consts.EveAttr.armor_therm_dmg_resonance,
-        stackable=False,
-        max_attr_id=eve_res_max_attr_id)
-    eve_res_kin_attr_id = client.mk_eve_attr(
-        datas=datas,
-        id_=consts.EveAttr.armor_kin_dmg_resonance,
-        stackable=False,
-        max_attr_id=eve_res_max_attr_id)
-    eve_res_expl_attr_id = client.mk_eve_attr(
-        datas=datas,
-        id_=consts.EveAttr.armor_expl_dmg_resonance,
-        stackable=False,
-        max_attr_id=eve_res_max_attr_id)
+    if attr_res_em is None:
+        eve_res_em_attr_id = None
+    else:
+        eve_res_em_attr_id = client.mk_eve_attr(
+            datas=datas,
+            id_=consts.EveAttr.armor_em_dmg_resonance if attr_res_em is Default else attr_res_em,
+            stackable=False,
+            max_attr_id=eve_res_max_attr_id)
+    if attr_res_therm is None:
+        eve_res_therm_attr_id = None
+    else:
+        eve_res_therm_attr_id = client.mk_eve_attr(
+            datas=datas,
+            id_=consts.EveAttr.armor_therm_dmg_resonance if attr_res_therm is Default else attr_res_therm,
+            stackable=False,
+            max_attr_id=eve_res_max_attr_id)
+    if attr_res_kin is None:
+        eve_res_kin_attr_id = None
+    else:
+        eve_res_kin_attr_id = client.mk_eve_attr(
+            datas=datas,
+            id_=consts.EveAttr.armor_kin_dmg_resonance if attr_res_kin is Default else attr_res_kin,
+            stackable=False,
+            max_attr_id=eve_res_max_attr_id)
+    if attr_res_expl is None:
+        eve_res_expl_attr_id = None
+    else:
+        eve_res_expl_attr_id = client.mk_eve_attr(
+            datas=datas,
+            id_=consts.EveAttr.armor_expl_dmg_resonance if attr_res_expl is Default else attr_res_expl,
+            stackable=False,
+            max_attr_id=eve_res_max_attr_id)
     eve_cycle_time_attr_id = client.mk_eve_attr(datas=datas, id_=consts.EveAttr.duration)
     eve_cycle_time_bonus_attr_id = client.mk_eve_attr(datas=datas, id_=consts.EveAttr.overload_self_duration_bonus)
     eve_res_shift_attr_id = client.mk_eve_attr(datas=datas, id_=consts.EveAttr.resist_shift_amount)
@@ -85,18 +106,20 @@ def make_eve_rah(
         heat_cycle_mod=-15):
     eve_rah_id = client.mk_eve_item(
         datas=datas,
-        attrs=dict(zip(
-            (basic_info.res_em_attr_id,
-             basic_info.res_therm_attr_id,
-             basic_info.res_kin_attr_id,
-             basic_info.res_expl_attr_id,
-             basic_info.res_shift_attr_id,
-             basic_info.cycle_time_attr_id,
-             basic_info.cycle_time_bonus_attr_id),
-            (*resos,
-             shift_amount,
-             cycle_time,
-             heat_cycle_mod))),
+        attrs={
+            k: v for k, v in zip(
+                (basic_info.res_em_attr_id,
+                 basic_info.res_therm_attr_id,
+                 basic_info.res_kin_attr_id,
+                 basic_info.res_expl_attr_id,
+                 basic_info.res_shift_attr_id,
+                 basic_info.cycle_time_attr_id,
+                 basic_info.cycle_time_bonus_attr_id),
+                (*resos,
+                 shift_amount,
+                 cycle_time,
+                 heat_cycle_mod))
+            if k is not None},
         eff_ids=[basic_info.rah_effect_id, basic_info.heat_effect_id],
         defeff_id=basic_info.rah_effect_id)
     return eve_rah_id
@@ -108,10 +131,12 @@ def make_eve_ship(
         datas=Default,
         basic_info: RahBasicInfo,
         resos):
-    eve_ship_id = client.mk_eve_ship(datas=datas, attrs=dict(zip(
-        (basic_info.res_em_attr_id,
-         basic_info.res_therm_attr_id,
-         basic_info.res_kin_attr_id,
-         basic_info.res_expl_attr_id),
-        resos)))
+    eve_ship_id = client.mk_eve_ship(datas=datas, attrs={
+        k: v  for k, v in zip(
+            (basic_info.res_em_attr_id,
+             basic_info.res_therm_attr_id,
+             basic_info.res_kin_attr_id,
+             basic_info.res_expl_attr_id),
+            resos)
+        if k is not None})
     return eve_ship_id
