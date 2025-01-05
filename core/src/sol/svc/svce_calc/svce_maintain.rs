@@ -206,7 +206,6 @@ impl SolSvcs {
         item_id: &SolItemId,
         attr_id: &EAttrId,
     ) {
-        let item = sol_view.items.get_item(item_id).unwrap();
         // Clear up attribute values which rely on passed attribute as an upper/lower limit
         let attr_specs = self
             .calc_data
@@ -237,6 +236,7 @@ impl SolSvcs {
         }
         // Process buffs which rely on attribute being modified
         if ec::extras::BUFF_STDATTR_IDS.contains(attr_id) {
+            let item = sol_view.items.get_item(item_id).unwrap();
             // Remove modifiers of buffs which rely on the attribute
             if let Some(raw_modifiers) = self.calc_data.buffs.extract_dependent_mods(item_id, attr_id) {
                 let mut util_items = Vec::new();
