@@ -284,7 +284,7 @@ def test_no_ship(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4484)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4794)
     # Action
-    api_fit.set_ship(type_id=None)
+    api_ship.remove()
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
