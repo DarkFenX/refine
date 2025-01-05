@@ -616,74 +616,120 @@ def test_shift_non_positive_base(client, consts):
         resos=(0.85, 0.85, 0.85, 0.85),
         shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
-    eve_implant_attr_id = client.mk_eve_attr()
-    eve_implant_mod = client.mk_eve_effect_mod(
+    eve_implant1_attr_id = client.mk_eve_attr()
+    eve_implant1_mods = [
+        client.mk_eve_effect_mod(
+            func=consts.EveModFunc.loc,
+            dom=consts.EveModDom.ship,
+            op=consts.EveModOp.post_percent,
+            affector_attr_id=eve_implant1_attr_id,
+            affectee_attr_id=attr_id)
+        for attr_id in (
+            eve_basic_info.res_em_attr_id,
+            eve_basic_info.res_therm_attr_id,
+            eve_basic_info.res_kin_attr_id,
+            eve_basic_info.res_expl_attr_id)]
+    eve_implant1_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=eve_implant1_mods)
+    eve_implant1_id = client.mk_eve_item(attrs={eve_implant1_attr_id: -10}, eff_ids=[eve_implant1_effect_id])
+    eve_implant2_attr_id = client.mk_eve_attr()
+    eve_implant2_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
         dom=consts.EveModDom.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.pre_assign,
-        affector_attr_id=eve_implant_attr_id,
+        affector_attr_id=eve_implant2_attr_id,
         affectee_attr_id=eve_basic_info.res_shift_attr_id)
-    eve_implant_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_implant_mod])
-    eve_implant_id = client.mk_eve_item(attrs={eve_implant_attr_id: 6}, eff_ids=[eve_implant_effect_id])
+    eve_implant2_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_implant2_mod])
+    eve_implant2_id = client.mk_eve_item(attrs={eve_implant2_attr_id: 6}, eff_ids=[eve_implant2_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit.add_implant(type_id=eve_implant1_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
     api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
     api_rah3 = api_fit.add_mod(type_id=eve_rah3_id, state=consts.ApiState.active)
     # Verification - third RAH can adapt, despite first two being unable to
     api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].base == approx(-6)
     assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(-6)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.765)
     api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].base == approx(0)
     assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(0)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.765)
     api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
     assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
     assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.955)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.79)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.655)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.6775)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.5875)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3695936)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.468135)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4711574)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4687718)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.304377)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3494064)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3501266)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3643384)
     # Action
-    api_fit.add_implant(type_id=eve_implant_id)
+    api_fit.add_implant(type_id=eve_implant2_id)
     # Verification - since after modification RAH shift becomes greater than zero, RAH sim can
     # properly run again for all RAHs
     api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].base == approx(-6)
     assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].base == approx(0)
     assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
     assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.4302394)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.4772634)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4655063)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4671962)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3427137)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3750061)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3601336)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3550695)
 
 
 def test_shift_non_positive_modified(client, consts):
@@ -711,124 +757,185 @@ def test_shift_non_positive_modified(client, consts):
         resos=(0.85, 0.85, 0.85, 0.85),
         shift_amount=6)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
-    eve_implant1_attr1_id = client.mk_eve_attr()
-    eve_implant1_attr2_id = client.mk_eve_attr()
-    eve_implant1_mod1 = client.mk_eve_effect_mod(
+    eve_implant1_attr_id = client.mk_eve_attr()
+    eve_implant1_mods = [
+        client.mk_eve_effect_mod(
+            func=consts.EveModFunc.loc,
+            dom=consts.EveModDom.ship,
+            op=consts.EveModOp.post_percent,
+            affector_attr_id=eve_implant1_attr_id,
+            affectee_attr_id=attr_id)
+        for attr_id in (
+            eve_basic_info.res_em_attr_id,
+            eve_basic_info.res_therm_attr_id,
+            eve_basic_info.res_kin_attr_id,
+            eve_basic_info.res_expl_attr_id)]
+    eve_implant1_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=eve_implant1_mods)
+    eve_implant1_id = client.mk_eve_item(attrs={eve_implant1_attr_id: -10}, eff_ids=[eve_implant1_effect_id])
+    eve_implant2_attr1_id = client.mk_eve_attr()
+    eve_implant2_attr2_id = client.mk_eve_attr()
+    eve_implant2_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
         dom=consts.EveModDom.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.pre_assign,
-        affector_attr_id=eve_implant1_attr1_id,
+        affector_attr_id=eve_implant2_attr1_id,
         affectee_attr_id=eve_basic_info.res_shift_attr_id)
-    eve_implant1_mod2 = client.mk_eve_effect_mod(
+    eve_implant2_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
         dom=consts.EveModDom.ship,
         grp=eve_grp2_id,
         op=consts.EveModOp.pre_assign,
-        affector_attr_id=eve_implant1_attr2_id,
+        affector_attr_id=eve_implant2_attr2_id,
         affectee_attr_id=eve_basic_info.res_shift_attr_id)
-    eve_implant1_effect_id = client.mk_eve_effect(
+    eve_implant2_effect_id = client.mk_eve_effect(
         cat_id=consts.EveEffCat.passive,
-        mod_info=[eve_implant1_mod1, eve_implant1_mod2])
-    eve_implant1_id = client.mk_eve_item(
-        attrs={eve_implant1_attr1_id: -6, eve_implant1_attr2_id: 0},
-        eff_ids=[eve_implant1_effect_id])
-    eve_implant2_attr_id = client.mk_eve_attr()
-    eve_implant2_mods = [
+        mod_info=[eve_implant2_mod1, eve_implant2_mod2])
+    eve_implant2_id = client.mk_eve_item(
+        attrs={eve_implant2_attr1_id: -6, eve_implant2_attr2_id: 0},
+        eff_ids=[eve_implant2_effect_id])
+    eve_implant3_attr_id = client.mk_eve_attr()
+    eve_implant3_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc_grp,
             dom=consts.EveModDom.ship,
             grp=grp_id,
             op=consts.EveModOp.post_assign,
-            affector_attr_id=eve_implant2_attr_id,
+            affector_attr_id=eve_implant3_attr_id,
             affectee_attr_id=eve_basic_info.res_shift_attr_id)
         for grp_id in (eve_grp1_id, eve_grp2_id)]
-    eve_implant2_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=eve_implant2_mods)
-    eve_implant2_id = client.mk_eve_item(attrs={eve_implant2_attr_id: 6}, eff_ids=[eve_implant2_effect_id])
+    eve_implant3_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=eve_implant3_mods)
+    eve_implant3_id = client.mk_eve_item(attrs={eve_implant3_attr_id: 6}, eff_ids=[eve_implant3_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit.add_implant(type_id=eve_implant1_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
     api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
     api_rah3 = api_fit.add_mod(type_id=eve_rah3_id, state=consts.ApiState.active)
     # Verification
     api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
     assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
     assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
     assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.4302394)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.4772634)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4655063)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4671962)
-    # Action
-    api_fit.add_implant(type_id=eve_implant1_id)
-    # Verification - third RAH can adapt, despite first two being unable to
-    api_rah1.update()
-    assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(-6)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
-    api_rah2.update()
-    assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(0)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
-    api_rah3.update()
-    assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.955)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.79)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.655)
-    api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3695936)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.468135)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4711574)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4687718)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3427137)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3750061)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3601336)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3550695)
     # Action
     api_fit.add_implant(type_id=eve_implant2_id)
+    # Verification - third RAH can adapt, despite first two being unable to
+    api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
+    assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(-6)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.765)
+    api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
+    assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(0)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.765)
+    api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
+    assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.6775)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.5875)
+    api_ship.update()
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.304377)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3494064)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3501266)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3643384)
+    # Action
+    api_fit.add_implant(type_id=eve_implant3_id)
     # Verification - since after modification RAH shift becomes greater than zero, RAH sim can
     # properly run again for all RAHs
     api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
     assert api_rah1.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
     assert api_rah2.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].base == approx(6)
     assert api_rah3.attrs[eve_basic_info.res_shift_attr_id].dogma == approx(6)
-    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.4302394)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.4772634)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4655063)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4671962)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3427137)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3750061)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3601336)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3550695)
 
 
 def test_cycle_non_positive_base(client, consts):
@@ -855,74 +962,120 @@ def test_cycle_non_positive_base(client, consts):
         resos=(0.85, 0.85, 0.85, 0.85),
         cycle_time=10000)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
-    eve_implant_attr_id = client.mk_eve_attr()
-    eve_implant_mod = client.mk_eve_effect_mod(
+    eve_implant1_attr_id = client.mk_eve_attr()
+    eve_implant1_mods = [
+        client.mk_eve_effect_mod(
+            func=consts.EveModFunc.loc,
+            dom=consts.EveModDom.ship,
+            op=consts.EveModOp.post_percent,
+            affector_attr_id=eve_implant1_attr_id,
+            affectee_attr_id=attr_id)
+        for attr_id in (
+            eve_basic_info.res_em_attr_id,
+            eve_basic_info.res_therm_attr_id,
+            eve_basic_info.res_kin_attr_id,
+            eve_basic_info.res_expl_attr_id)]
+    eve_implant1_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=eve_implant1_mods)
+    eve_implant1_id = client.mk_eve_item(attrs={eve_implant1_attr_id: -10}, eff_ids=[eve_implant1_effect_id])
+    eve_implant2_attr_id = client.mk_eve_attr()
+    eve_implant2_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
         dom=consts.EveModDom.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.pre_assign,
-        affector_attr_id=eve_implant_attr_id,
+        affector_attr_id=eve_implant2_attr_id,
         affectee_attr_id=eve_basic_info.cycle_time_attr_id)
-    eve_implant_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_implant_mod])
-    eve_implant_id = client.mk_eve_item(attrs={eve_implant_attr_id: 10000}, eff_ids=[eve_implant_effect_id])
+    eve_implant2_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_implant2_mod])
+    eve_implant2_id = client.mk_eve_item(attrs={eve_implant2_attr_id: 10000}, eff_ids=[eve_implant2_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit.add_implant(type_id=eve_implant1_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
     api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
     api_rah3 = api_fit.add_mod(type_id=eve_rah3_id, state=consts.ApiState.active)
     # Verification - third RAH can adapt, despite first two being unable to
     api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].base == approx(-10000)
     assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(-10000)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.765)
     api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].base == approx(0)
     assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(0)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.765)
     api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
     assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
     assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.955)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.79)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.655)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.6775)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.5875)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3695936)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.468135)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4711574)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4687718)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.304377)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3494064)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3501266)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3643384)
     # Action
-    api_fit.add_implant(type_id=eve_implant_id)
+    api_fit.add_implant(type_id=eve_implant2_id)
     # Verification - since after modification RAH cycle time becomes greater than zero, RAH sim can
     # properly run again for all RAHs
     api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].base == approx(-10000)
     assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].base == approx(0)
     assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
     assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.4302394)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.4772634)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4655063)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4671962)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3427137)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3750061)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3601336)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3550695)
 
 
 def test_cycle_non_positive_modified(client, consts):
@@ -950,121 +1103,182 @@ def test_cycle_non_positive_modified(client, consts):
         resos=(0.85, 0.85, 0.85, 0.85),
         cycle_time=10000)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
-    eve_implant1_attr1_id = client.mk_eve_attr()
-    eve_implant1_attr2_id = client.mk_eve_attr()
-    eve_implant1_mod1 = client.mk_eve_effect_mod(
+    eve_implant1_attr_id = client.mk_eve_attr()
+    eve_implant1_mods = [
+        client.mk_eve_effect_mod(
+            func=consts.EveModFunc.loc,
+            dom=consts.EveModDom.ship,
+            op=consts.EveModOp.post_percent,
+            affector_attr_id=eve_implant1_attr_id,
+            affectee_attr_id=attr_id)
+        for attr_id in (
+            eve_basic_info.res_em_attr_id,
+            eve_basic_info.res_therm_attr_id,
+            eve_basic_info.res_kin_attr_id,
+            eve_basic_info.res_expl_attr_id)]
+    eve_implant1_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=eve_implant1_mods)
+    eve_implant1_id = client.mk_eve_item(attrs={eve_implant1_attr_id: -10}, eff_ids=[eve_implant1_effect_id])
+    eve_implant2_attr1_id = client.mk_eve_attr()
+    eve_implant2_attr2_id = client.mk_eve_attr()
+    eve_implant2_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
         dom=consts.EveModDom.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.pre_assign,
-        affector_attr_id=eve_implant1_attr1_id,
+        affector_attr_id=eve_implant2_attr1_id,
         affectee_attr_id=eve_basic_info.cycle_time_attr_id)
-    eve_implant1_mod2 = client.mk_eve_effect_mod(
+    eve_implant2_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
         dom=consts.EveModDom.ship,
         grp=eve_grp2_id,
         op=consts.EveModOp.pre_assign,
-        affector_attr_id=eve_implant1_attr2_id,
+        affector_attr_id=eve_implant2_attr2_id,
         affectee_attr_id=eve_basic_info.cycle_time_attr_id)
-    eve_implant1_effect_id = client.mk_eve_effect(
+    eve_implant2_effect_id = client.mk_eve_effect(
         cat_id=consts.EveEffCat.passive,
-        mod_info=[eve_implant1_mod1, eve_implant1_mod2])
-    eve_implant1_id = client.mk_eve_item(
-        attrs={eve_implant1_attr1_id: -10000, eve_implant1_attr2_id: 0},
-        eff_ids=[eve_implant1_effect_id])
-    eve_implant2_attr_id = client.mk_eve_attr()
-    eve_implant2_mods = [
+        mod_info=[eve_implant2_mod1, eve_implant2_mod2])
+    eve_implant2_id = client.mk_eve_item(
+        attrs={eve_implant2_attr1_id: -10000, eve_implant2_attr2_id: 0},
+        eff_ids=[eve_implant2_effect_id])
+    eve_implant3_attr_id = client.mk_eve_attr()
+    eve_implant3_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc_grp,
             dom=consts.EveModDom.ship,
             grp=grp_id,
             op=consts.EveModOp.post_assign,
-            affector_attr_id=eve_implant2_attr_id,
+            affector_attr_id=eve_implant3_attr_id,
             affectee_attr_id=eve_basic_info.cycle_time_attr_id)
         for grp_id in (eve_grp1_id, eve_grp2_id)]
-    eve_implant2_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=eve_implant2_mods)
-    eve_implant2_id = client.mk_eve_item(attrs={eve_implant2_attr_id: 10000}, eff_ids=[eve_implant2_effect_id])
+    eve_implant3_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=eve_implant3_mods)
+    eve_implant3_id = client.mk_eve_item(attrs={eve_implant3_attr_id: 10000}, eff_ids=[eve_implant3_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
+    api_fit.add_implant(type_id=eve_implant1_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
     api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
     api_rah3 = api_fit.add_mod(type_id=eve_rah3_id, state=consts.ApiState.active)
     # Verification
     api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
     assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
     assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
     assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.4302394)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.4772634)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4655063)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4671962)
-    # Action
-    api_fit.add_implant(type_id=eve_implant1_id)
-    # Verification - third RAH can adapt, despite first two being unable to
-    api_rah1.update()
-    assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(-10000)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
-    api_rah2.update()
-    assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(0)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
-    api_rah3.update()
-    assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.955)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.79)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.655)
-    api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3695936)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.468135)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4711574)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4687718)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3427137)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3750061)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3601336)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3550695)
     # Action
     api_fit.add_implant(type_id=eve_implant2_id)
+    # Verification - third RAH can adapt, despite first two being unable to
+    api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
+    assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(-10000)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.765)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.765)
+    api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
+    assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(0)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.765)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.765)
+    api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
+    assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.6775)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.5875)
+    api_ship.update()
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.304377)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3494064)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3501266)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3643384)
+    # Action
+    api_fit.add_implant(type_id=eve_implant3_id)
     # Verification - since after modification RAH cycle time becomes greater than zero, RAH sim can
     # properly run again for all RAHs
     api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
     assert api_rah1.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
     assert api_rah2.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_rah3.update()
+    assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].base == approx(10000)
     assert api_rah3.attrs[eve_basic_info.cycle_time_attr_id].dogma == approx(10000)
-    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
-    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.88)
-    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.82)
-    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.76)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.795)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.735)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].base == approx(0.85)
+    assert api_rah3.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.675)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.4302394)
-    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.4772634)
-    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4655063)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4671962)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3427137)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.3750061)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3601336)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3550695)
