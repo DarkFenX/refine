@@ -11,9 +11,9 @@ class RahBasicInfo:
     res_therm_attr_id: int
     res_kin_attr_id: int
     res_expl_attr_id: int
+    res_shift_attr_id: int
     cycle_time_attr_id: int
     cycle_time_bonus_attr_id: int
-    res_shift_attr_id: int
     rah_effect_id: int
     heat_effect_id: int
 
@@ -27,6 +27,7 @@ def setup_rah_basics(
         attr_res_therm: Union[int, None, type[Default]] = Default,
         attr_res_kin: Union[int, None, type[Default]] = Default,
         attr_res_expl: Union[int, None, type[Default]] = Default,
+        attr_shift: Union[int, None, type[Default]] = Default,
         attr_cycle_time: Union[int, type[Default]] = Default,
 ) -> RahBasicInfo:
     eve_res_max_attr_id = client.mk_eve_attr(
@@ -65,11 +66,16 @@ def setup_rah_basics(
             id_=consts.EveAttr.armor_expl_dmg_resonance if attr_res_expl is Default else attr_res_expl,
             stackable=False,
             max_attr_id=eve_res_max_attr_id)
+    if attr_shift is None:
+        eve_res_shift_attr_id = None
+    else:
+        eve_res_shift_attr_id = client.mk_eve_attr(
+            datas=datas,
+            id_=consts.EveAttr.resist_shift_amount if attr_shift is Default else attr_shift)
     eve_cycle_time_attr_id = client.mk_eve_attr(
         datas=datas,
         id_=consts.EveAttr.duration if attr_cycle_time is Default else attr_cycle_time)
     eve_cycle_time_bonus_attr_id = client.mk_eve_attr(datas=datas, id_=consts.EveAttr.overload_self_duration_bonus)
-    eve_res_shift_attr_id = client.mk_eve_attr(datas=datas, id_=consts.EveAttr.resist_shift_amount)
     eve_rah_effect_id = client.mk_eve_effect(
         datas=datas,
         id_=consts.EveEffect.adaptive_armor_hardener,
@@ -107,7 +113,7 @@ def make_eve_rah(
         id_: Union[int, type[Default]] = Default,
         grp_id: Union[int, type[Default]] = Default,
         resos: tuple[float, float, float, float],
-        shift_amount: float,
+        shift_amount: float = 6,
         cycle_time: float = 10000,
         heat_cycle_mod: float = -15,
 ):

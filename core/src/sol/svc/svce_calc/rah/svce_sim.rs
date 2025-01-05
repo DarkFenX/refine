@@ -184,7 +184,7 @@ impl SolSvcs {
             .calc_get_item_attr_val(sol_view, item_id, &SHIFT_ATTR_ID)
             .ok()?
             .dogma;
-        if shift_amount == OF(0.0) {
+        if shift_amount <= OF(0.0) {
             return None;
         }
         let cycle_ms = self.get_item_effect_id_duration(sol_view, &item_id, &RAH_EFFECT_ID)?;
