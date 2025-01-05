@@ -237,10 +237,10 @@ impl SolSvcs {
     ) {
         self.calc_data.rah.resonances.get_mut(item_id).unwrap().replace(resos);
         if notify {
-            self.notify_attr_val_changed(sol_view, item_id, &EM_ATTR_ID);
-            self.notify_attr_val_changed(sol_view, item_id, &THERM_ATTR_ID);
-            self.notify_attr_val_changed(sol_view, item_id, &KIN_ATTR_ID);
-            self.notify_attr_val_changed(sol_view, item_id, &EXPL_ATTR_ID);
+            self.item_attr_postprocess_changed(sol_view, item_id, &EM_ATTR_ID);
+            self.item_attr_postprocess_changed(sol_view, item_id, &THERM_ATTR_ID);
+            self.item_attr_postprocess_changed(sol_view, item_id, &KIN_ATTR_ID);
+            self.item_attr_postprocess_changed(sol_view, item_id, &EXPL_ATTR_ID);
         }
     }
     fn set_partial_fit_rahs_result(

@@ -158,10 +158,10 @@ impl SolSvcs {
     }
     fn clear_rah_result(&mut self, sol_view: &SolView, item_id: &SolItemId) {
         if self.calc_data.rah.resonances.get_mut(item_id).unwrap().take().is_some() {
-            self.notify_attr_val_changed(sol_view, item_id, &EM_ATTR_ID);
-            self.notify_attr_val_changed(sol_view, item_id, &THERM_ATTR_ID);
-            self.notify_attr_val_changed(sol_view, item_id, &KIN_ATTR_ID);
-            self.notify_attr_val_changed(sol_view, item_id, &EXPL_ATTR_ID);
+            self.item_attr_postprocess_changed(sol_view, item_id, &EM_ATTR_ID);
+            self.item_attr_postprocess_changed(sol_view, item_id, &THERM_ATTR_ID);
+            self.item_attr_postprocess_changed(sol_view, item_id, &KIN_ATTR_ID);
+            self.item_attr_postprocess_changed(sol_view, item_id, &EXPL_ATTR_ID);
         }
     }
     fn get_rah_resonances(&mut self, sol_view: &SolView, item_id: &SolItemId) -> SolDmgTypes<SolAttrVal> {

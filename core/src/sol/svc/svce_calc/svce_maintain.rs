@@ -214,7 +214,7 @@ impl SolSvcs {
             .map(|v| *v)
             .collect_vec();
         for attr_spec in attr_specs.iter() {
-            self.calc_force_attr_recalc(sol_view, &attr_spec.item_id, &attr_spec.attr_id);
+            self.calc_force_attr_value_recalc(sol_view, &attr_spec.item_id, &attr_spec.attr_id);
         }
         // Clear up attribute values which rely on passed attribute as a modification source
         let ctx_modifiers = self
@@ -230,7 +230,7 @@ impl SolSvcs {
                     .std
                     .fill_affectees(&mut affectees, sol_view, &ctx_modifier);
                 for projectee_item_id in affectees.iter() {
-                    self.calc_force_attr_recalc(sol_view, projectee_item_id, &ctx_modifier.raw.affectee_attr_id);
+                    self.calc_force_attr_value_recalc(sol_view, projectee_item_id, &ctx_modifier.raw.affectee_attr_id);
                 }
             }
         }
@@ -266,17 +266,42 @@ impl SolSvcs {
         // Notify RAH sim
         self.calc_rah_attr_value_changed(sol_view, item_id, attr_id);
     }
-    pub(in crate::sol::svc) fn calc_force_attr_recalc(
+    pub(in crate::sol::svc) fn calc_force_attr_value_recalc(
         &mut self,
         sol_view: &SolView,
         item_id: &SolItemId,
         attr_id: &EAttrId,
     ) {
-        // All loaded items should have item attribute data, and notifications shouldn't be arriving
-        // for unloaded or unknown items
-        let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(item_id).unwrap();
-        if item_attr_data.values.remove(attr_id).is_some() {
-            self.notify_attr_val_changed(sol_view, item_id, attr_id);
+        // Sometimes calc service receives requests to clear attributes it does not know yet; this
+        // can happen in multiple cases, e.g. when adding module with charge, with "other" domain
+        // modifier on module. User data gets references between charge and module set right away,
+        // but calculator registers module before charge, and attempts to clear charge attributes.
+        // Due to cases like this, we cannot just unwrap item attribute data.
+        if let Ok(item_attr_data) = self.calc_data.attrs.get_item_attr_data_mut(item_id) {
+            // No value calculated before that - there are no dependents to clear (dependents always
+            // request dependencies while calculating their values). Removing attribute forces
+            // recalculation
+            if item_attr_data.values.remove(attr_id).is_some() {
+                self.notify_attr_val_changed(sol_view, item_id, attr_id);
+            }
+        }
+    }
+    pub(in crate::sol::svc) fn calc_force_attr_postprocess_recalc(
+        &mut self,
+        sol_view: &SolView,
+        item_id: &SolItemId,
+        attr_id: &EAttrId,
+    ) {
+        // Almost-copy of force recalc method without attribute removal. When something that
+        // installed a postprocessing function thinks its output can change, it can let calc service
+        // know about it via this method.
+        if let Ok(item_attr_data) = self.calc_data.attrs.get_item_attr_data_mut(item_id) {
+            // No value calculated before that - there are no dependents to clear (dependents always
+            // request dependencies while calculating their values). In this case we do not remove
+            // attribute, because only postprocessing output is supposed to change
+            if item_attr_data.values.contains_key(attr_id) {
+                self.notify_attr_val_changed(sol_view, item_id, attr_id);
+            }
         }
     }
     // Private methods
@@ -450,7 +475,7 @@ impl SolSvcs {
     ) {
         self.calc_data.std.fill_affectees(affectees, sol_view, modifier);
         for projectee_item_id in affectees.iter() {
-            self.calc_force_attr_recalc(sol_view, projectee_item_id, &modifier.raw.affectee_attr_id);
+            self.calc_force_attr_value_recalc(sol_view, projectee_item_id, &modifier.raw.affectee_attr_id);
         }
     }
     fn handle_location_owner_change(&mut self, sol_view: &SolView, item: &SolItem) {

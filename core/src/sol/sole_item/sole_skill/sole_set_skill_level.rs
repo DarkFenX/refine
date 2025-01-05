@@ -11,7 +11,7 @@ impl SolarSystem {
     pub fn set_skill_level(&mut self, item_id: &SolItemId, level: SkillLevel) -> Result<(), SetSkillLevelError> {
         check_skill_level(level)?;
         self.items.get_item_mut(item_id)?.get_skill_mut()?.set_level(level);
-        self.svcs.item_attr_value_changed(
+        self.svcs.item_attr_postprocess_changed(
             &SolView::new(
                 &self.src,
                 &self.fleets,
