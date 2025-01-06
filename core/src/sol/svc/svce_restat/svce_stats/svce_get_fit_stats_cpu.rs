@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use crate::{
     defs::{SolFitId, OF},
     ec,
@@ -6,8 +8,8 @@ use crate::{
         svc::{svce_restat::SolStatResource, SolSvcs},
         SolView,
     },
+    util::round,
 };
-use itertools::Itertools;
 
 impl SolSvcs {
     pub(in crate::sol::svc) fn get_fit_stats_cpu(
@@ -40,6 +42,8 @@ impl SolSvcs {
                     .map(|v| v.extra)
             })
             .sum();
+        // Round possible float errors despite individual use values being rounded
+        let used = round(used, 2);
         let stats = SolStatResource::new(used, output);
         Ok(stats)
     }
