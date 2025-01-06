@@ -13,4 +13,4 @@ mod svce_effect;
 mod svce_effect_attrs;
 mod svce_interface;
 mod svce_notify;
-mod svce_stats;
+mod svce_restat;

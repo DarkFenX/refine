@@ -16,11 +16,11 @@ impl SolSvcs {
     }
     pub(in crate::sol::svc) fn notify_fit_added(&mut self, fit_id: &SolFitId) {
         self.calc_fit_added(fit_id);
-        self.stats_fit_added(fit_id);
+        self.restat_fit_added(fit_id);
     }
     pub(in crate::sol::svc) fn notify_fit_removed(&mut self, fit_id: &SolFitId) {
         self.calc_fit_removed(fit_id);
-        self.stats_fit_removed(fit_id);
+        self.restat_fit_removed(fit_id);
     }
     pub(in crate::sol::svc) fn notify_fit_added_to_fleet(
         &mut self,
@@ -63,11 +63,11 @@ impl SolSvcs {
     }
     pub(in crate::sol::svc) fn notify_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
         self.calc_item_loaded(sol_view, item);
-        self.stats_item_loaded(sol_view, item);
+        self.restat_item_loaded(sol_view, item);
     }
     pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
         self.calc_item_unloaded(sol_view, item);
-        self.stats_item_unloaded(sol_view, item);
+        self.restat_item_unloaded(sol_view, item);
     }
     pub(in crate::sol::svc) fn notify_item_state_activated_loaded(
         &mut self,
@@ -75,7 +75,7 @@ impl SolSvcs {
         item: &SolItem,
         state: &SolItemState,
     ) {
-        self.stats_item_state_activated_loaded(item, state);
+        self.restat_item_state_activated_loaded(item, state);
     }
     pub(in crate::sol::svc) fn notify_item_state_deactivated_loaded(
         &mut self,
@@ -83,7 +83,7 @@ impl SolSvcs {
         item: &SolItem,
         state: &SolItemState,
     ) {
-        self.stats_item_state_deactivated_loaded(item, state);
+        self.restat_item_state_deactivated_loaded(item, state);
     }
     pub(in crate::sol::svc) fn notify_effects_started(
         &mut self,
