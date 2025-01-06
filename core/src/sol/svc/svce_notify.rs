@@ -63,11 +63,11 @@ impl SolSvcs {
     }
     pub(in crate::sol::svc) fn notify_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
         self.calc_item_loaded(sol_view, item);
-        self.restat_item_loaded(sol_view, item);
+        self.restat_item_loaded(item);
     }
     pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
         self.calc_item_unloaded(sol_view, item);
-        self.restat_item_unloaded(sol_view, item);
+        self.restat_item_unloaded(item);
     }
     pub(in crate::sol::svc) fn notify_item_state_activated_loaded(
         &mut self,
@@ -94,6 +94,7 @@ impl SolSvcs {
         self.running_effects
             .effects_started(item.get_id(), effects.iter().map(|v| v.id));
         self.calc_effects_started(sol_view, item, effects);
+        self.restat_effects_started(item, effects);
     }
     pub(in crate::sol::svc) fn notify_effects_stopped(
         &mut self,
@@ -104,6 +105,7 @@ impl SolSvcs {
         self.calc_effects_stopped(sol_view, item, effects);
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| &v.id));
+        self.restat_effects_stopped(item, effects);
     }
     pub(in crate::sol::svc) fn notify_item_projected(
         &mut self,
