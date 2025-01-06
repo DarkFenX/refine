@@ -1,13 +1,13 @@
-use crate::sol::svc::svce_stats::stat_cpu::SolStatRegCpu;
+use crate::sol::svc::svce_stats::stat_mods_online::SolStatRegModsOnline;
 
 #[derive(Clone)]
 pub(in crate::sol::svc) struct SolSvcStatsData {
-    pub(in crate::sol::svc::svce_stats) cpu: SolStatRegCpu,
+    pub(in crate::sol::svc::svce_stats) mods_online: SolStatRegModsOnline,
 }
 impl SolSvcStatsData {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
-            cpu: SolStatRegCpu::new(),
+            mods_online: SolStatRegModsOnline::new(),
         }
     }
 }
