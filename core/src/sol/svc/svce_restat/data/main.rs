@@ -1,6 +1,7 @@
 use crate::{
-    defs::SolFitId, err::basic::FitFoundError, sol::svc::svce_restat::reg_mods_online::SolRestatRegModsOnline,
-    util::StMap,
+    defs::{SolFitId, SolItemId},
+    err::basic::FitFoundError,
+    util::{StMap, StSet},
 };
 
 #[derive(Clone)]
@@ -33,12 +34,12 @@ impl SolSvcRestatData {
 
 #[derive(Clone)]
 pub(in crate::sol::svc::svce_restat) struct SolSvcRestatFitData {
-    pub(in crate::sol::svc::svce_restat) mods_online: SolRestatRegModsOnline,
+    pub(in crate::sol::svc::svce_restat) mods_online: StSet<SolItemId>,
 }
 impl SolSvcRestatFitData {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
-            mods_online: SolRestatRegModsOnline::new(),
+            mods_online: StSet::new(),
         }
     }
 }
