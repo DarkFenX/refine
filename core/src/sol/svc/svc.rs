@@ -1,6 +1,6 @@
 use crate::src::Src;
 
-use super::{misc::SolRunningEffects, svce_calc::SolSvcCalcData};
+use super::{misc::SolRunningEffects, svce_calc::SolSvcCalcData, svce_stats::SolSvcStatsData};
 
 // TODO: add item, remove item, add projection and remove projection methods are not called in
 // situations where type ID of an item changes (e.g. item mutation / unmutation, source switch with
@@ -10,13 +10,15 @@ use super::{misc::SolRunningEffects, svce_calc::SolSvcCalcData};
 #[derive(Clone)]
 pub(in crate::sol) struct SolSvcs {
     pub(in crate::sol::svc) running_effects: SolRunningEffects,
-    pub(in crate::sol::svc) calc_data: SolSvcCalcData,
+    pub(in crate::sol::svc) calc: SolSvcCalcData,
+    pub(in crate::sol::svc) stats: SolSvcStatsData,
 }
 impl SolSvcs {
     pub(in crate::sol) fn new(src: &Src) -> Self {
         Self {
             running_effects: SolRunningEffects::new(),
-            calc_data: SolSvcCalcData::new(src),
+            calc: SolSvcCalcData::new(src),
+            stats: SolSvcStatsData::new(),
         }
     }
 }

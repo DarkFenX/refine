@@ -73,7 +73,7 @@ impl SolSvcs {
         for attr_id in sol_view.items.get_item(item_id)?.get_attrs()?.keys() {
             attr_ids.insert(*attr_id);
         }
-        for attr_id in self.calc_data.attrs.get_item_attr_data(item_id).unwrap().values.keys() {
+        for attr_id in self.calc.attrs.get_item_attr_data(item_id).unwrap().values.keys() {
             attr_ids.insert(*attr_id);
         }
         Ok(attr_ids.into_iter())
@@ -85,12 +85,7 @@ impl SolSvcs {
         attr_id: &EAttrId,
     ) -> impl Iterator<Item = SolAffection> {
         let mut mods = StMap::new();
-        for modifier in self
-            .calc_data
-            .std
-            .get_mods_for_affectee(item, attr_id, sol_view.fits)
-            .iter()
-        {
+        for modifier in self.calc.std.get_mods_for_affectee(item, attr_id, sol_view.fits).iter() {
             let val = match modifier.raw.get_mod_val(self, sol_view) {
                 Some(v) => v,
                 None => continue,
@@ -151,9 +146,7 @@ impl SolSvcs {
         // Lower value limit
         if let Some(limiter_attr_id) = attr.min_attr_id {
             if let Ok(limiter_val) = self.calc_get_item_attr_val(sol_view, item_id, &limiter_attr_id) {
-                self.calc_data
-                    .deps
-                    .add_direct_local(*item_id, limiter_attr_id, *attr_id);
+                self.calc.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
                 if limiter_val.dogma > dogma_attr_info.value {
                     dogma_attr_info.value = limiter_val.dogma;
                     dogma_attr_info.effective_infos.push(SolModificationInfo::new(
@@ -171,9 +164,7 @@ impl SolSvcs {
         // Upper value limit
         if let Some(limiter_attr_id) = attr.max_attr_id {
             if let Ok(limiter_val) = self.calc_get_item_attr_val(sol_view, item_id, &limiter_attr_id) {
-                self.calc_data
-                    .deps
-                    .add_direct_local(*item_id, limiter_attr_id, *attr_id);
+                self.calc.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
                 if limiter_val.dogma < dogma_attr_info.value {
                     dogma_attr_info.value = limiter_val.dogma;
                     dogma_attr_info.effective_infos.push(SolModificationInfo::new(

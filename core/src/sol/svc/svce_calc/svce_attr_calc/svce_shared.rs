@@ -36,14 +36,15 @@ impl SolSvcs {
             SolContext::Item(projectee_item_id) => projectee_item_id,
             _ => return None,
         };
-        let proj_range = match self.calc_data.projs.get_range(
-            modifier.raw.affector_item_id,
-            modifier.raw.effect_id,
-            projectee_item_id,
-        ) {
-            Some(range) => range,
-            None => return None,
-        };
+        let proj_range =
+            match self
+                .calc
+                .projs
+                .get_range(modifier.raw.affector_item_id, modifier.raw.effect_id, projectee_item_id)
+            {
+                Some(range) => range,
+                None => return None,
+            };
         match modifier.raw.kind {
             SolModifierKind::Targeted => self.calc_proj_mult_targeted(sol_view, modifier, proj_range),
             SolModifierKind::Buff => self.calc_proj_mult_buff(sol_view, modifier, proj_range),

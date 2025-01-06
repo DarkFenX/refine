@@ -94,7 +94,7 @@ impl SolSvcs {
                 // Extract damage ship taken during RAH cycle, replacing it with 0's
                 std::mem::swap(&mut taken_dmg, &mut item_sim_data.taken_dmg);
                 let next_resos = get_next_resonances(
-                    self.calc_data.rah.resonances.get(&cycled_item_id).unwrap().unwrap(),
+                    self.calc.rah.resonances.get(&cycled_item_id).unwrap().unwrap(),
                     taken_dmg,
                     item_sim_data.info.shift_amount,
                 );
@@ -106,7 +106,7 @@ impl SolSvcs {
             let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
             for item_id in sim_datas.keys() {
                 let item_cycling_time = *tick_data.cycling_times.get(item_id).unwrap();
-                let item_resos = self.calc_data.rah.resonances.get(item_id).unwrap().unwrap();
+                let item_resos = self.calc.rah.resonances.get(item_id).unwrap().unwrap();
                 let item_history_entry = SolRahSimHistoryEntry::new(*item_id, item_cycling_time, &item_resos);
                 sim_history_entry.push(item_history_entry);
             }
@@ -145,7 +145,7 @@ impl SolSvcs {
     }
     fn get_fit_rah_sim_datas(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> BTreeMap<SolItemId, SolRahDataSim> {
         let mut rah_datas = BTreeMap::new();
-        for item_id in self.calc_data.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
+        for item_id in self.calc.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
             let rah_attrs = match self.get_rah_sim_data(sol_view, &item_id) {
                 Some(rah_attrs) => rah_attrs,
                 // Whenever a RAH has unacceptable for sim attributes, set unadapted values and
@@ -207,7 +207,7 @@ impl SolSvcs {
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
     fn set_fit_rahs_unadapted(&mut self, sol_view: &SolView, fit_id: &SolFitId, notify: bool) {
-        for item_id in self.calc_data.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
+        for item_id in self.calc.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
             self.set_rah_unadapted(sol_view, &item_id, notify);
         }
     }
@@ -235,7 +235,7 @@ impl SolSvcs {
         resos: SolDmgTypes<SolAttrVal>,
         notify: bool,
     ) {
-        self.calc_data.rah.resonances.get_mut(item_id).unwrap().replace(resos);
+        self.calc.rah.resonances.get_mut(item_id).unwrap().replace(resos);
         if notify {
             self.item_attr_postprocess_changed(sol_view, item_id, &EM_ATTR_ID);
             self.item_attr_postprocess_changed(sol_view, item_id, &THERM_ATTR_ID);

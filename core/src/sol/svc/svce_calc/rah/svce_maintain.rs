@@ -15,7 +15,7 @@ use super::shared::{EM_ATTR_ID, EXPL_ATTR_ID, KIN_ATTR_ID, RAH_EFFECT_ID, SHIFT_
 
 impl SolSvcs {
     pub(in crate::sol::svc::svce_calc) fn calc_rah_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
-        if self.calc_data.rah.sim_running {
+        if self.calc.rah.sim_running {
             return;
         }
         if let SolItem::Ship(ship) = item {
@@ -23,7 +23,7 @@ impl SolSvcs {
         }
     }
     pub(in crate::sol::svc::svce_calc) fn calc_rah_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
-        if self.calc_data.rah.sim_running {
+        if self.calc.rah.sim_running {
             return;
         }
         if let SolItem::Ship(ship) = item {
@@ -36,7 +36,7 @@ impl SolSvcs {
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        if self.calc_data.rah.sim_running {
+        if self.calc.rah.sim_running {
             return;
         }
         if let SolItem::Module(module) = item {
@@ -46,10 +46,10 @@ impl SolSvcs {
                 // Clear sim data for other RAHs on the same fit
                 self.clear_fit_rah_results(sol_view, &fit_id);
                 // Add sim data for RAH being started
-                self.calc_data.rah.resonances.insert(item_id, None);
-                self.calc_data.rah.by_fit.add_entry(fit_id, item_id);
+                self.calc.rah.resonances.insert(item_id, None);
+                self.calc.rah.by_fit.add_entry(fit_id, item_id);
                 // Add postprocessors
-                let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(&item_id).unwrap();
+                let item_attr_data = self.calc.attrs.get_item_attr_data_mut(&item_id).unwrap();
                 item_attr_data
                     .postprocessors
                     .insert(EM_ATTR_ID, rah_em_resonance_postprocessor);
@@ -71,7 +71,7 @@ impl SolSvcs {
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        if self.calc_data.rah.sim_running {
+        if self.calc.rah.sim_running {
             return;
         }
         if let SolItem::Module(module) = item {
@@ -79,14 +79,14 @@ impl SolSvcs {
                 let item_id = module.get_id();
                 let fit_id = module.get_fit_id();
                 // Remove postprocessors
-                let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(&item_id).unwrap();
+                let item_attr_data = self.calc.attrs.get_item_attr_data_mut(&item_id).unwrap();
                 item_attr_data.postprocessors.remove(&EM_ATTR_ID);
                 item_attr_data.postprocessors.remove(&THERM_ATTR_ID);
                 item_attr_data.postprocessors.remove(&KIN_ATTR_ID);
                 item_attr_data.postprocessors.remove(&EXPL_ATTR_ID);
                 // Remove sim data for RAH being stopped
-                self.calc_data.rah.resonances.remove(&item_id);
-                self.calc_data.rah.by_fit.remove_entry(&module.get_fit_id(), &item_id);
+                self.calc.rah.resonances.remove(&item_id);
+                self.calc.rah.by_fit.remove_entry(&module.get_fit_id(), &item_id);
                 // Clear sim data for other RAHs on the same fit
                 self.clear_fit_rah_results(sol_view, &fit_id);
             }
@@ -98,7 +98,7 @@ impl SolSvcs {
         item_id: &SolItemId,
         attr_id: &EAttrId,
     ) {
-        if self.calc_data.rah.sim_running {
+        if self.calc.rah.sim_running {
             return;
         }
         match *attr_id {
@@ -107,7 +107,7 @@ impl SolSvcs {
                 match sol_view.items.get_item(item_id).unwrap() {
                     SolItem::Ship(ship) => self.clear_fit_rah_results(sol_view, &ship.get_fit_id()),
                     SolItem::Module(module) => {
-                        if self.calc_data.rah.resonances.contains_key(&item_id) {
+                        if self.calc.rah.resonances.contains_key(&item_id) {
                             self.clear_fit_rah_results(sol_view, &module.get_fit_id());
                         }
                     }
@@ -116,7 +116,7 @@ impl SolSvcs {
             }
             // RAH shift amount
             SHIFT_ATTR_ID => {
-                if self.calc_data.rah.resonances.contains_key(&item_id) {
+                if self.calc.rah.resonances.contains_key(&item_id) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
                     let fit_id = sol_view.items.get_item(item_id).unwrap().get_fit_id().unwrap();
@@ -124,14 +124,14 @@ impl SolSvcs {
                 }
             }
             // RAH cycle time
-            a if Some(a) == self.calc_data.rah.cycle_time_attr_id => {
-                if self.calc_data.rah.resonances.contains_key(&item_id) {
+            a if Some(a) == self.calc.rah.cycle_time_attr_id => {
+                if self.calc.rah.resonances.contains_key(&item_id) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
                     let fit_id = sol_view.items.get_item(item_id).unwrap().get_fit_id().unwrap();
                     // Clear only for fits with 2+ RAHs, since changing cycle time of 1 RAH does not
                     // change sim results
-                    if self.calc_data.rah.by_fit.get(&fit_id).len() >= 2 {
+                    if self.calc.rah.by_fit.get(&fit_id).len() >= 2 {
                         self.clear_fit_rah_results(sol_view, &fit_id);
                     }
                 }
@@ -140,7 +140,7 @@ impl SolSvcs {
         }
     }
     pub(in crate::sol::svc::svce_calc) fn calc_rah_src_changed(&mut self, src: &Src) {
-        self.calc_data.rah.cycle_time_attr_id = src.get_a_effect(&RAH_EFFECT_ID).map(|v| v.duration_attr_id).flatten();
+        self.calc.rah.cycle_time_attr_id = src.get_a_effect(&RAH_EFFECT_ID).map(|v| v.duration_attr_id).flatten();
     }
     pub(in crate::sol::svc::svce_calc) fn calc_rah_fit_rah_dmg_profile_changed(
         &mut self,
@@ -151,13 +151,13 @@ impl SolSvcs {
     }
     // Private methods
     fn clear_fit_rah_results(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
-        let other_item_ids = self.calc_data.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
+        let other_item_ids = self.calc.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
         for other_item_id in other_item_ids {
             self.clear_rah_result(sol_view, &other_item_id);
         }
     }
     fn clear_rah_result(&mut self, sol_view: &SolView, item_id: &SolItemId) {
-        if self.calc_data.rah.resonances.get_mut(item_id).unwrap().take().is_some() {
+        if self.calc.rah.resonances.get_mut(item_id).unwrap().take().is_some() {
             self.item_attr_postprocess_changed(sol_view, item_id, &EM_ATTR_ID);
             self.item_attr_postprocess_changed(sol_view, item_id, &THERM_ATTR_ID);
             self.item_attr_postprocess_changed(sol_view, item_id, &KIN_ATTR_ID);
@@ -166,17 +166,17 @@ impl SolSvcs {
     }
     fn get_rah_resonances(&mut self, sol_view: &SolView, item_id: &SolItemId) -> SolDmgTypes<SolAttrVal> {
         // Unwrap item, since method is supposed to be called only for registered RAHs
-        if let Some(val) = self.calc_data.rah.resonances.get(item_id).unwrap() {
+        if let Some(val) = self.calc.rah.resonances.get(item_id).unwrap() {
             return *val;
         }
         // Unwrap item and its fit ID, since registered RAHs are supposed to be modules, which have
         // fit ID
         let fit_id = sol_view.items.get_item(item_id).unwrap().get_fit_id().unwrap();
-        self.calc_data.rah.sim_running = true;
+        self.calc.rah.sim_running = true;
         self.calc_rah_run_simulation(sol_view, &fit_id);
-        self.calc_data.rah.sim_running = false;
+        self.calc.rah.sim_running = false;
         // Unwrap value, since simulation is supposed to always set results for requested RAH
-        self.calc_data.rah.resonances.get(item_id).unwrap().unwrap()
+        self.calc.rah.resonances.get(item_id).unwrap().unwrap()
     }
 }
 

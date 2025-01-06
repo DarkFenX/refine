@@ -32,7 +32,7 @@ impl SolSvcs {
         attr_id: &EAttrId,
     ) -> Result<SolAttrVal, AttrCalcError> {
         // Try accessing cached value
-        let item_attr_data = self.calc_data.attrs.get_item_attr_data(item_id)?;
+        let item_attr_data = self.calc.attrs.get_item_attr_data(item_id)?;
         if let Some(val) = item_attr_data.values.get(attr_id) {
             return Ok(match item_attr_data.postprocessors.get(attr_id) {
                 Some(pp_fn) => pp_fn(self, sol_view, item_id, *val),
@@ -41,7 +41,7 @@ impl SolSvcs {
         }
         // If it is not cached, calculate and cache it
         let mut val = self.calc_calc_item_attr_val(sol_view, item_id, attr_id)?;
-        let item_attr_data = self.calc_data.attrs.get_item_attr_data_mut(item_id).unwrap();
+        let item_attr_data = self.calc.attrs.get_item_attr_data_mut(item_id).unwrap();
         item_attr_data.values.insert(*attr_id, val);
         if let Some(pp_fn) = item_attr_data.postprocessors.get(attr_id) {
             val = pp_fn(self, sol_view, item_id, val);
@@ -54,11 +54,11 @@ impl SolSvcs {
         item_id: &SolItemId,
         attr_id: &EAttrId,
     ) -> Result<SolAttrVal, AttrCalcError> {
-        if let Some(val) = self.calc_data.attrs.get_item_attr_data(item_id)?.values.get(attr_id) {
+        if let Some(val) = self.calc.attrs.get_item_attr_data(item_id)?.values.get(attr_id) {
             return Ok(*val);
         };
         let val = self.calc_calc_item_attr_val(sol_view, item_id, attr_id)?;
-        self.calc_data
+        self.calc
             .attrs
             .get_item_attr_data_mut(item_id)
             .unwrap()
@@ -76,7 +76,7 @@ impl SolSvcs {
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
-        let item_attr_data = self.calc_data.attrs.get_item_attr_data(item_id)?;
+        let item_attr_data = self.calc.attrs.get_item_attr_data(item_id)?;
         let pp_attr_ids = item_attr_data.postprocessors.keys().map(|v| *v).collect_vec();
         let mut vals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
@@ -92,7 +92,7 @@ impl SolSvcs {
         for pp_attr_id in pp_attr_ids {
             if let Some(val) = vals.get(&pp_attr_id) {
                 let pp_fn = self
-                    .calc_data
+                    .calc
                     .attrs
                     .get_item_attr_data(item_id)
                     .unwrap()
@@ -113,12 +113,7 @@ impl SolSvcs {
         attr_id: &EAttrId,
     ) -> impl Iterator<Item = SolModification> {
         let mut mods = StMap::new();
-        for modifier in self
-            .calc_data
-            .std
-            .get_mods_for_affectee(item, attr_id, sol_view.fits)
-            .iter()
-        {
+        for modifier in self.calc.std.get_mods_for_affectee(item, attr_id, sol_view.fits).iter() {
             let val = match modifier.raw.get_mod_val(self, sol_view) {
                 Some(v) => v,
                 None => continue,
@@ -171,18 +166,14 @@ impl SolSvcs {
         // Lower value limit
         if let Some(limiter_attr_id) = attr.min_attr_id {
             if let Ok(limiter_val) = self.calc_get_item_attr_val(sol_view, item_id, &limiter_attr_id) {
-                self.calc_data
-                    .deps
-                    .add_direct_local(*item_id, limiter_attr_id, *attr_id);
+                self.calc.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
                 dogma_val = AttrVal::max(dogma_val, limiter_val.dogma);
             }
         }
         // Upper value limit
         if let Some(limiter_attr_id) = attr.max_attr_id {
             if let Ok(limiter_val) = self.calc_get_item_attr_val(sol_view, item_id, &limiter_attr_id) {
-                self.calc_data
-                    .deps
-                    .add_direct_local(*item_id, limiter_attr_id, *attr_id);
+                self.calc.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
                 dogma_val = AttrVal::min(dogma_val, limiter_val.dogma);
             }
         }

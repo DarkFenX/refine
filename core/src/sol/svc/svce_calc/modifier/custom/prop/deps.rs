@@ -11,7 +11,7 @@ pub(super) fn reg_dependencies(
     prop_item_id: SolItemId,
     prop_effect_id: EEffectId,
 ) {
-    svc.calc_data.deps.add_with_source(
+    svc.calc.deps.add_with_source(
         prop_item_id,
         prop_effect_id,
         prop_item_id,
@@ -19,7 +19,7 @@ pub(super) fn reg_dependencies(
         ship_item_id,
         SHIP_SPEED,
     );
-    svc.calc_data.deps.add_with_source(
+    svc.calc.deps.add_with_source(
         prop_item_id,
         prop_effect_id,
         prop_item_id,
@@ -27,7 +27,7 @@ pub(super) fn reg_dependencies(
         ship_item_id,
         SHIP_SPEED,
     );
-    svc.calc_data.deps.add_with_source(
+    svc.calc.deps.add_with_source(
         prop_item_id,
         prop_effect_id,
         ship_item_id,
