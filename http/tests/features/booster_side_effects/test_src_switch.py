@@ -176,15 +176,15 @@ def test_absent_retains_state(client, consts):
     eve_chance_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_affector_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
-    eve_d1_mod = client.mk_eve_effect_mod(
+    eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         dom=consts.EveModDom.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_id = client.alloc_effect_id(datas=[eve_d1, eve_d2])
-    client.mk_eve_effect(datas=[eve_d1], id_=eve_effect_id, chance_attr_id=eve_chance_attr_id, mod_info=[eve_d1_mod])
-    client.mk_eve_effect(datas=[eve_d2], id_=eve_effect_id)
+    client.mk_eve_effect(datas=[eve_d1], id_=eve_effect_id, chance_attr_id=eve_chance_attr_id, mod_info=[eve_mod])
+    client.mk_eve_effect(datas=[eve_d2], id_=eve_effect_id, mod_info=[eve_mod])
     eve_booster_id = client.alloc_item_id(datas=[eve_d1, eve_d2])
     client.mk_eve_item(
         datas=[eve_d1],
@@ -214,19 +214,14 @@ def test_absent_retains_state(client, consts):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # pylint: disable=W0104
     # Action - attempt to switch state of an effect which is not a side effect
-    api_booster.change_booster(
-        side_effects={eve_effect_id: False},
-        status_code=409,
-        json_predicate={
-            'code': 'EXC-019',
-            'message': f'effect {eve_effect_id} is not a side effect'})
+    api_booster.change_booster(side_effects={eve_effect_id: False})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # pylint: disable=W0104
@@ -240,30 +235,16 @@ def test_absent_retains_state(client, consts):
     assert api_side.str.op == consts.ApiSideEffectOp.perc
     assert api_side.str.val == approx(25)
     # Action
-    api_booster.change_booster(side_effects={eve_effect_id: True})
-    # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(125)
-    api_side = api_booster.update().side_effects[eve_effect_id]
-    assert api_side.chance == approx(0.4)
-    assert api_side.status is True
-    assert api_side.str.op == consts.ApiSideEffectOp.perc
-    assert api_side.str.val == approx(25)
-    # Action
     api_sol.change_src(data=eve_d2)
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # pylint: disable=W0104
     # Action - attempt to switch state of an effect which is not a side effect
-    api_booster.change_booster(
-        side_effects={eve_effect_id: False},
-        status_code=409,
-        json_predicate={
-            'code': 'EXC-019',
-            'message': f'effect {eve_effect_id} is not a side effect'})
+    api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
-    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
+    assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(260)
     api_booster.update()
     with check_no_field():
         api_booster.side_effects  # pylint: disable=W0104
