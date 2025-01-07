@@ -5,6 +5,7 @@ pub use sole_item::{SolOrdAddMode, SolOrdRmMode};
 
 pub(crate) mod info;
 mod misc;
+mod proj_tracker;
 mod sol;
 pub(crate) mod sole_calc;
 mod sole_debug;
