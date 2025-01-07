@@ -4,9 +4,9 @@ use crate::sol::{
     SolDebugResult,
 };
 
-use super::{SolSvcRestatData, SolSvcRestatFitData};
+use super::{SolRest, SolRestFitData};
 
-impl SolSvcRestatData {
+impl SolRest {
     pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
         for (fit_id, fit_data) in self.data.iter() {
             check_fit(uad, fit_id)?;
@@ -16,7 +16,7 @@ impl SolSvcRestatData {
     }
 }
 
-impl SolSvcRestatFitData {
+impl SolRestFitData {
     pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
         for item_id in self.mods_online.iter() {
             check_item(uad, item_id)?;
