@@ -3,17 +3,17 @@ use crate::{
     defs::SolFitId,
     ec,
     sol::{
-        svc::rest::SolRest,
+        svc::rest::{SolRest, SolRestFitData},
         uad::item::{SolItem, SolItemState},
     },
 };
 
 impl SolRest {
     pub(in crate::sol::svc) fn fit_added(&mut self, fit_id: &SolFitId) {
-        self.add_fit(*fit_id);
+        self.data.insert(*fit_id, SolRestFitData::new());
     }
     pub(in crate::sol::svc) fn fit_removed(&mut self, fit_id: &SolFitId) {
-        self.remove_fit(fit_id);
+        self.data.remove(fit_id);
     }
     pub(in crate::sol::svc) fn item_loaded(&mut self, item: &SolItem) {}
     pub(in crate::sol::svc) fn item_unloaded(&mut self, item: &SolItem) {}
