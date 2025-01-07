@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{AttrVal, EAttrId, SolFitId, SolItemId},
+    defs::{AttrVal, SolFitId},
     sol::{
         svc::SolSvc,
         uad::{
@@ -145,13 +145,5 @@ impl SolSvc {
     ) {
         self.calc
             .effect_proj_range_changed(uad, projector_item, effect, projectee_item, range);
-    }
-    pub(in crate::sol::svc) fn notify_attr_val_changed(
-        &mut self,
-        uad: &SolUad,
-        item_id: &SolItemId,
-        attr_id: &EAttrId,
-    ) {
-        self.calc.attr_value_changed(uad, item_id, attr_id);
     }
 }
