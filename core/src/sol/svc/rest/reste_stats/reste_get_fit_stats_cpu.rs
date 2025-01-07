@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{
     defs::{SolFitId, OF},
     ec,
@@ -29,15 +27,11 @@ impl SolRest {
             },
             None => OF(0.0),
         };
-        let users = self
+        let used = self
             .data
             .get(fit_id)
             .unwrap()
             .mods_online
-            .iter()
-            .map(|v| *v)
-            .collect_vec();
-        let used = users
             .iter()
             .filter_map(|i| calc.get_item_attr_val(uad, i, &ec::attrs::CPU).ok().map(|v| v.extra))
             .sum();
