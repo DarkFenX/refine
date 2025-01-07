@@ -1,6 +1,6 @@
-use crate::{defs::SolFitId, sol::svc::SolSvcs};
+use crate::{defs::SolFitId, sol::svc::SolSvc};
 
-impl SolSvcs {
+impl SolSvc {
     pub(in crate::sol) fn add_fit(&mut self, fit_id: &SolFitId) {
         self.notify_fit_added(fit_id);
     }

@@ -1,12 +1,12 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item_info::SolFighterInfo, SolarSystem},
+    sol::{info::SolFighterInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_fighter(&self, item_id: &SolItemId) -> Result<SolFighterInfo, GetFighterError> {
-        let fighter = self.items.get_item(item_id)?.get_fighter()?;
+        let fighter = self.uad.items.get_item(item_id)?.get_fighter()?;
         Ok(self.make_fighter_info(fighter))
     }
 }

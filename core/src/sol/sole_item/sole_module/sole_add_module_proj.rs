@@ -13,6 +13,7 @@ impl SolarSystem {
     ) -> Result<(), AddModuleProjError> {
         // Check projector
         let module = self
+            .uad
             .items
             .get_item(item_id)
             .map_err(|e| AddModuleProjError::ProjectorNotFound(e))?
@@ -27,6 +28,7 @@ impl SolarSystem {
         }
         // Check if projectee can receive projections
         let projectee_item = self
+            .uad
             .items
             .get_item(&projectee_item_id)
             .map_err(|e| AddModuleProjError::ProjecteeNotFound(e))?;
@@ -37,7 +39,7 @@ impl SolarSystem {
             )));
         }
         // Update skeleton for module
-        let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
+        let module = self.uad.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
         let charge_id = module.get_charge_id();
         module.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
@@ -45,7 +47,13 @@ impl SolarSystem {
         self.add_item_id_projection_to_svcs(item_id, &projectee_item_id, range);
         if let Some(charge_id) = charge_id {
             // Update skeleton for charge
-            let charge = self.items.get_item_mut(&charge_id).unwrap().get_charge_mut().unwrap();
+            let charge = self
+                .uad
+                .items
+                .get_item_mut(&charge_id)
+                .unwrap()
+                .get_charge_mut()
+                .unwrap();
             charge.get_projs_mut().add(projectee_item_id, range);
             self.proj_tracker.reg_projectee(charge_id, projectee_item_id);
             // Update services for charge

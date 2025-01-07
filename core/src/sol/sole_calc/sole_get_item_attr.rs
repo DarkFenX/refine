@@ -3,23 +3,13 @@ use crate::{
     err::basic::{AttrMetaFoundError, ItemFoundError, ItemLoadedError},
     sol::{
         svc::{err::AttrCalcError, svce_calc::SolAttrVal},
-        SolView, SolarSystem,
+        SolarSystem,
     },
 };
 
 impl SolarSystem {
     pub fn get_item_attr(&mut self, item_id: &SolItemId, attr_id: &EAttrId) -> Result<SolAttrVal, GetItemAttrError> {
-        let val = self.svcs.calc_get_item_attr_val(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            item_id,
-            attr_id,
-        )?;
+        let val = self.svc.calc_get_item_attr_val(&self.uad, item_id, attr_id)?;
         Ok(val)
     }
 }

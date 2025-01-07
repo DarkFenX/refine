@@ -11,7 +11,7 @@ impl SolarSystem {
         projectee_item_id: &SolItemId,
     ) -> Result<(), RemoveModuleProjError> {
         // Check if projection is defined
-        let module = self.items.get_item(item_id)?.get_module()?;
+        let module = self.uad.items.get_item(item_id)?.get_module()?;
         if !module.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
         };
@@ -21,14 +21,20 @@ impl SolarSystem {
             self.remove_item_id_projection_from_svcs(&charge_id, projectee_item_id);
             // Update skeleton for charge
             self.proj_tracker.unreg_projectee(&charge_id, projectee_item_id);
-            let charge = self.items.get_item_mut(&charge_id).unwrap().get_charge_mut().unwrap();
+            let charge = self
+                .uad
+                .items
+                .get_item_mut(&charge_id)
+                .unwrap()
+                .get_charge_mut()
+                .unwrap();
             charge.get_projs_mut().remove(projectee_item_id);
         }
         // Update services for module
         self.remove_item_id_projection_from_svcs(item_id, projectee_item_id);
         // Update skeleton for module
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
-        let module = self.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
+        let module = self.uad.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
         module.get_projs_mut().remove(projectee_item_id);
         Ok(())
     }

@@ -1,12 +1,12 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item_info::SolImplantInfo, SolarSystem},
+    sol::{info::SolImplantInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_implant(&self, item_id: &SolItemId) -> Result<SolImplantInfo, GetImplantError> {
-        let implant = self.items.get_item(item_id)?.get_implant()?;
+        let implant = self.uad.items.get_item(item_id)?.get_implant()?;
         Ok(SolImplantInfo::from(implant))
     }
 }

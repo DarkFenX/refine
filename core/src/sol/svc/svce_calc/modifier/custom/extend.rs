@@ -1,6 +1,6 @@
 use crate::{
     ec,
-    sol::{item::SolItem, svc::svce_calc::modifier::SolRawModifier},
+    sol::{svc::svce_calc::modifier::SolRawModifier, uad::item::SolItem},
     EEffectId,
 };
 

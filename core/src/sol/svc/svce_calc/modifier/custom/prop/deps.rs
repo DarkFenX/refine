@@ -1,12 +1,12 @@
 use crate::{
     defs::{EEffectId, SolItemId},
-    sol::svc::SolSvcs,
+    sol::svc::SolSvc,
 };
 
 use super::attr::{PROP_BOOST, PROP_THRUST, SHIP_MASS, SHIP_SPEED};
 
 pub(super) fn reg_dependencies(
-    svc: &mut SolSvcs,
+    svc: &mut SolSvc,
     ship_item_id: SolItemId,
     prop_item_id: SolItemId,
     prop_effect_id: EEffectId,

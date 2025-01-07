@@ -1,10 +1,10 @@
-use crate::sol::{svc::SolSvcs, SolDebugResult, SolView};
+use crate::sol::{svc::SolSvc, uad::SolUad, SolDebugResult};
 
-impl SolSvcs {
-    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
-        self.running_effects.debug_consistency_check(sol_view)?;
-        self.calc.debug_consistency_check(sol_view)?;
-        self.restat.debug_consistency_check(sol_view)?;
+impl SolSvc {
+    pub(in crate::sol) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
+        self.running_effects.debug_consistency_check(uad)?;
+        self.calc.debug_consistency_check(uad)?;
+        self.restat.debug_consistency_check(uad)?;
         Ok(())
     }
 }

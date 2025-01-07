@@ -9,7 +9,7 @@ impl SolarSystem {
         &self,
         fit_id: &SolFitId,
     ) -> Result<&Option<SolDmgProfile>, GetFitRahIncomingDmgError> {
-        let fit = self.fits.get_fit(fit_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(&fit.rah_incoming_dmg)
     }
 }

@@ -1,7 +1,7 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
@@ -11,27 +11,17 @@ impl SolarSystem {
         projectee_item_id: &SolItemId,
     ) -> Result<(), RemoveDroneProjError> {
         // Check if projection is defined
-        let drone_item = self.items.get_item(item_id)?;
+        let drone_item = self.uad.items.get_item(item_id)?;
         let drone = drone_item.get_drone()?;
         if !drone.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
         };
         // Update services
-        let projectee_item = self.items.get_item(projectee_item_id).unwrap();
-        self.svcs.remove_item_projection(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            drone_item,
-            projectee_item,
-        );
+        let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+        self.svc.remove_item_projection(&self.uad, drone_item, projectee_item);
         // Update skeleton
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
-        let drone = self.items.get_item_mut(item_id).unwrap().get_drone_mut().unwrap();
+        let drone = self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut().unwrap();
         drone.get_projs_mut().remove(projectee_item_id);
         Ok(())
     }

@@ -13,6 +13,7 @@ impl SolarSystem {
     ) -> Result<(), AddDroneProjError> {
         // Check projector
         let drone = self
+            .uad
             .items
             .get_item(item_id)
             .map_err(|e| AddDroneProjError::ProjectorNotFound(e))?
@@ -27,6 +28,7 @@ impl SolarSystem {
         }
         // Check if projectee can receive projections
         let projectee_item = self
+            .uad
             .items
             .get_item(&projectee_item_id)
             .map_err(|e| AddDroneProjError::ProjecteeNotFound(e))?;
@@ -37,7 +39,7 @@ impl SolarSystem {
             )));
         }
         // Update skeleton
-        let drone = self.items.get_item_mut(item_id).unwrap().get_drone_mut().unwrap();
+        let drone = self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut().unwrap();
         drone.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         // Update services

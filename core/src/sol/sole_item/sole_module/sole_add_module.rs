@@ -2,10 +2,10 @@ use crate::{
     defs::{EItemId, SolFitId},
     err::basic::{FitFoundError, OrderedSlotError},
     sol::{
-        item::{SolCharge, SolItem, SolItemAddMutation, SolItemState, SolModule},
-        item_info::{SolChargeInfo, SolModuleInfo},
+        info::{SolChargeInfo, SolModuleInfo},
         sole_item::misc::find_equip_pos,
-        SolModRack, SolOrdAddMode, SolView, SolarSystem,
+        uad::item::{SolCharge, SolItem, SolItemAddMutation, SolItemState, SolModule},
+        SolModRack, SolOrdAddMode, SolarSystem,
     },
 };
 
@@ -20,8 +20,8 @@ impl SolarSystem {
         mutation: Option<SolItemAddMutation>,
         charge_type_id: Option<EItemId>,
     ) -> Result<SolModuleInfo, AddModuleError> {
-        let module_item_id = self.items.alloc_item_id();
-        let fit = self.fits.get_fit(&fit_id)?;
+        let module_item_id = self.uad.items.alloc_item_id();
+        let fit = self.uad.fits.get_fit(&fit_id)?;
         // Calculate position for the module
         let rack_module_ids = match rack {
             SolModRack::High => &fit.mods_high,
@@ -33,7 +33,7 @@ impl SolarSystem {
             SolOrdAddMode::Append => {
                 match rack_module_ids
                     .iter()
-                    .map(|v| self.items.get_item(v).unwrap().get_module().unwrap().get_pos())
+                    .map(|v| self.uad.items.get_item(v).unwrap().get_module().unwrap().get_pos())
                     .max()
                 {
                     Some(pos) => pos + 1,
@@ -44,7 +44,7 @@ impl SolarSystem {
             SolOrdAddMode::Equip => {
                 let positions = rack_module_ids
                     .iter()
-                    .map(|v| self.items.get_item(v).unwrap().get_module().unwrap().get_pos())
+                    .map(|v| self.uad.items.get_item(v).unwrap().get_module().unwrap().get_pos())
                     .collect();
                 find_equip_pos(positions)
             }
@@ -52,6 +52,7 @@ impl SolarSystem {
             SolOrdAddMode::Insert(pos) => {
                 for rack_module_id in rack_module_ids.iter() {
                     let rack_module = self
+                        .uad
                         .items
                         .get_item_mut(rack_module_id)
                         .unwrap()
@@ -70,7 +71,7 @@ impl SolarSystem {
             SolOrdAddMode::Place(pos, replace) => {
                 let mut old_module_id = None;
                 for rack_module_id in rack_module_ids.iter() {
-                    let module = self.items.get_item(rack_module_id).unwrap().get_module().unwrap();
+                    let module = self.uad.items.get_item(rack_module_id).unwrap().get_module().unwrap();
                     if module.get_pos() == pos {
                         if replace {
                             old_module_id = Some(*rack_module_id);
@@ -88,7 +89,7 @@ impl SolarSystem {
         };
         // Create module and add it to items
         let module = SolModule::new(
-            &self.src,
+            &self.uad.src,
             module_item_id,
             type_id,
             fit_id,
@@ -99,19 +100,20 @@ impl SolarSystem {
             None,
         );
         let module_item = SolItem::Module(module);
-        self.items.add_item(module_item);
+        self.uad.items.add_item(module_item);
         let mut charge_info = None;
         if let Some(charge_type_id) = charge_type_id {
-            let charge_id = self.items.alloc_item_id();
+            let charge_id = self.uad.items.alloc_item_id();
             // Update skeleton with new charge info
-            self.items
+            self.uad
+                .items
                 .get_item_mut(&module_item_id)
                 .unwrap()
                 .get_module_mut()
                 .unwrap()
                 .set_charge_id(Some(charge_id));
             let charge = SolCharge::new(
-                &self.src,
+                &self.uad.src,
                 charge_id,
                 charge_type_id,
                 fit_id,
@@ -121,29 +123,20 @@ impl SolarSystem {
             );
             charge_info = Some(SolChargeInfo::from(&charge));
             let item = SolItem::Charge(charge);
-            self.items.add_item(item);
+            self.uad.items.add_item(item);
         }
         // Finalize updating skeleton
-        let fit = self.fits.get_fit_mut(&fit_id).unwrap();
+        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         match rack {
             SolModRack::High => fit.mods_high.insert(module_item_id),
             SolModRack::Mid => fit.mods_mid.insert(module_item_id),
             SolModRack::Low => fit.mods_low.insert(module_item_id),
         };
         // Add module and charge to services
-        let module_item = self.items.get_item(&module_item_id).unwrap();
+        let module_item = self.uad.items.get_item(&module_item_id).unwrap();
         let module = module_item.get_module().unwrap();
-        let module_info = SolModuleInfo::from_mod_and_charge_with_source(&self.src, module, charge_info);
-        self.svcs.add_item(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            module_item,
-        );
+        let module_info = SolModuleInfo::from_mod_and_charge_with_source(&self.uad.src, module, charge_info);
+        self.svc.add_item(&self.uad, module_item);
         if let Some(charge_info) = &module_info.charge {
             self.add_item_id_to_svcs(&charge_info.id);
         }

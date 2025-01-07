@@ -2,8 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     sol::{
-        item::SolBooster,
-        item_info::{SolBoosterInfo, SolSideEffectInfo, SolSideEffectStr},
+        info::{SolBoosterInfo, SolSideEffectInfo, SolSideEffectStr},
+        uad::item::SolBooster,
         SolEffectMode, SolarSystem,
     },
     util::StMap,
@@ -14,7 +14,7 @@ impl SolarSystem {
         let mut side_effects = StMap::new();
         if let Ok(effect_datas) = booster.get_effect_datas() {
             for effect_id in effect_datas.keys() {
-                if let Some(effect) = self.src.get_a_effect(effect_id) {
+                if let Some(effect) = self.uad.src.get_a_effect(effect_id) {
                     if let Some(chance_attr_id) = effect.chance_attr_id {
                         let se_strs = effect
                             .mods

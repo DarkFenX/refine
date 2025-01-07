@@ -1,29 +1,19 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
     pub fn remove_proj_effect(&mut self, item_id: &SolItemId) -> Result<(), RemoveProjEffectError> {
         // Check if everything is correct
-        let item = self.items.get_item(item_id)?;
+        let item = self.uad.items.get_item(item_id)?;
         let proj_effect = item.get_proj_effect()?;
         // Remove outgoing projections
         for projectee_item_id in proj_effect.get_projs().iter_items() {
             // Update services
-            let projectee_item = self.items.get_item(projectee_item_id).unwrap();
-            self.svcs.remove_item_projection(
-                &SolView::new(
-                    &self.src,
-                    &self.fleets,
-                    &self.fits,
-                    &self.items,
-                    &self.default_incoming_dmg,
-                ),
-                item,
-                projectee_item,
-            );
+            let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+            self.svc.remove_item_projection(&self.uad, item, projectee_item);
             // Update skeleton - do not update info on projected effect, because projected effect
             // will be discarded anyway
             self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
@@ -31,8 +21,8 @@ impl SolarSystem {
         // Remove effect from services
         self.remove_item_id_from_svcs(item_id);
         // Remove effect from skeleton
-        self.proj_effects.remove(item_id);
-        self.items.remove_item(item_id);
+        self.uad.proj_effects.remove(item_id);
+        self.uad.items.remove_item(item_id);
         Ok(())
     }
 }

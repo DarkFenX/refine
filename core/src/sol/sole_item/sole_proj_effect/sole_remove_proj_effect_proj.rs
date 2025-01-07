@@ -1,7 +1,7 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ProjFoundError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
@@ -11,27 +11,24 @@ impl SolarSystem {
         projectee_item_id: &SolItemId,
     ) -> Result<(), RemoveProjEffectProjError> {
         // Check if projection is defined
-        let proj_effect_item = self.items.get_item(item_id)?;
+        let proj_effect_item = self.uad.items.get_item(item_id)?;
         let proj_effect = proj_effect_item.get_proj_effect()?;
         if !proj_effect.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
         };
         // Update services
-        let projectee_item = self.items.get_item(projectee_item_id).unwrap();
-        self.svcs.remove_item_projection(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            proj_effect_item,
-            projectee_item,
-        );
+        let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+        self.svc
+            .remove_item_projection(&self.uad, proj_effect_item, projectee_item);
         // Update skeleton
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
-        let proj_effect = self.items.get_item_mut(item_id).unwrap().get_proj_effect_mut().unwrap();
+        let proj_effect = self
+            .uad
+            .items
+            .get_item_mut(item_id)
+            .unwrap()
+            .get_proj_effect_mut()
+            .unwrap();
         proj_effect.get_projs_mut().remove(projectee_item_id);
         Ok(())
     }

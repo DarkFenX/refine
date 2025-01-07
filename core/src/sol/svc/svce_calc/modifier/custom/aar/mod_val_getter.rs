@@ -1,17 +1,20 @@
 use crate::{
     defs::{AttrVal, SolItemId, OF},
     ec,
-    sol::{item::SolItem, svc::SolSvcs, SolView},
+    sol::{
+        svc::SolSvc,
+        uad::{item::SolItem, SolUad},
+    },
 };
 
 use super::affector_attr::AAR_AFFECTOR_ATTR_ID;
 
 pub(in crate::sol::svc::svce_calc::modifier) fn get_mod_val(
-    svc: &mut SolSvcs,
-    sol_view: &SolView,
+    svc: &mut SolSvc,
+    uad: &SolUad,
     item_id: &SolItemId,
 ) -> Option<AttrVal> {
-    let item = sol_view.items.get_item(item_id).unwrap();
+    let item = uad.items.get_item(item_id).unwrap();
     match item {
         SolItem::Module(module) => {
             let charge_id = match module.get_charge_id() {
@@ -20,9 +23,9 @@ pub(in crate::sol::svc::svce_calc::modifier) fn get_mod_val(
                 None => return Some(OF(1.0)),
             };
             // If charge is referenced, we're supposed to always be able to fetch it
-            let charge = sol_view.items.get_item(&charge_id).unwrap();
+            let charge = uad.items.get_item(&charge_id).unwrap();
             if charge.get_type_id() == ec::items::NANITE_REPAIR_PASTE {
-                match svc.calc_get_item_attr_val(sol_view, item_id, &AAR_AFFECTOR_ATTR_ID) {
+                match svc.calc_get_item_attr_val(uad, item_id, &AAR_AFFECTOR_ATTR_ID) {
                     Ok(sol_attr) => Some(sol_attr.dogma),
                     // Can't fetch multiplier attr - no extra reps
                     Err(_) => Some(OF(1.0)),

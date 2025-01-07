@@ -1,16 +1,16 @@
 use crate::{
     defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{item_info::SolFwEffectInfo, SolarSystem},
+    sol::{info::SolFwEffectInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_fit_fw_effects(&self, fit_id: &SolFitId) -> Result<Vec<SolFwEffectInfo>, GetFitFwEffectsError> {
-        let fit = self.fits.get_fit(fit_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
         let fw_effect_infos = fit
             .fw_effects
             .iter()
-            .map(|v| SolFwEffectInfo::from(self.items.get_item(v).unwrap().get_fw_effect().unwrap()))
+            .map(|v| SolFwEffectInfo::from(self.uad.items.get_item(v).unwrap().get_fw_effect().unwrap()))
             .collect();
         Ok(fw_effect_infos)
     }

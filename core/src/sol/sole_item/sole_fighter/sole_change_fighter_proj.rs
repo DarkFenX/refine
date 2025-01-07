@@ -14,7 +14,7 @@ impl SolarSystem {
         range: Option<AttrVal>,
     ) -> Result<(), ChangeFighterProjError> {
         // Check if projection is defined before changing it
-        let fighter = self.items.get_item(item_id)?.get_fighter()?;
+        let fighter = self.uad.items.get_item(item_id)?.get_fighter()?;
         let old_range = match fighter.get_projs().get(projectee_item_id) {
             Some(old_range) => *old_range,
             None => return Err(ProjFoundError::new(*item_id, *projectee_item_id).into()),
@@ -24,7 +24,7 @@ impl SolarSystem {
             return Ok(());
         }
         // Update skeleton for fighter
-        let fighter = self.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
+        let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
         let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         fighter.get_projs_mut().add(*projectee_item_id, range);
         // Update services for fighter
@@ -32,6 +32,7 @@ impl SolarSystem {
         for autocharge_id in autocharge_ids {
             // Update skeleton for autocharge
             let autocharge = self
+                .uad
                 .items
                 .get_item_mut(&autocharge_id)
                 .unwrap()

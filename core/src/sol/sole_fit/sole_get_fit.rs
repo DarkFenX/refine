@@ -1,12 +1,12 @@
 use crate::{
     defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{fit_info::SolFitInfo, SolarSystem},
+    sol::{info::SolFitInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_fit(&self, fit_id: &SolFitId) -> Result<SolFitInfo, GetFitError> {
-        let fit = self.fits.get_fit(fit_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(SolFitInfo::from(fit))
     }
 }

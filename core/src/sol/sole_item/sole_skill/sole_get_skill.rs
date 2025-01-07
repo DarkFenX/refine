@@ -1,12 +1,12 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item_info::SolSkillInfo, SolarSystem},
+    sol::{info::SolSkillInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_skill(&self, item_id: &SolItemId) -> Result<SolSkillInfo, GetSkillError> {
-        let skill = self.items.get_item(item_id)?.get_skill()?;
+        let skill = self.uad.items.get_item(item_id)?.get_skill()?;
         Ok(SolSkillInfo::from(skill))
     }
 }

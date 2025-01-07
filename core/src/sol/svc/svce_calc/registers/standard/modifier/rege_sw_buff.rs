@@ -1,9 +1,11 @@
 use crate::sol::{
-    item::{SolItem, SolShipKind},
     svc::svce_calc::{
         registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolDomain, SolLocationKind, SolRawModifier,
     },
-    SolView,
+    uad::{
+        item::{SolItem, SolShipKind},
+        SolUad,
+    },
 };
 
 use super::{add_ctx_modifier, remove_ctx_modifier};
@@ -12,7 +14,7 @@ impl SolStandardRegister {
     pub(in crate::sol::svc::svce_calc) fn reg_sw_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<SolCtxModifier>,
-        sol_view: &SolView,
+        uad: &SolUad,
         raw_modifier: SolRawModifier,
     ) -> bool {
         ctx_modifiers.clear();
@@ -36,8 +38,8 @@ impl SolStandardRegister {
                 }
                 SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(sol_view.fits.len());
-                    for fit in sol_view.fits.iter_fits() {
+                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
                                 let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
@@ -58,8 +60,8 @@ impl SolStandardRegister {
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(sol_view.fits.len());
-                    for fit in sol_view.fits.iter_fits() {
+                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
                                 let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
@@ -80,8 +82,8 @@ impl SolStandardRegister {
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(sol_view.fits.len());
-                    for fit in sol_view.fits.iter_fits() {
+                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
                                 let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
@@ -102,8 +104,8 @@ impl SolStandardRegister {
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(sol_view.fits.len());
-                    for fit in sol_view.fits.iter_fits() {
+                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
                                 let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
@@ -133,7 +135,7 @@ impl SolStandardRegister {
     pub(in crate::sol::svc::svce_calc) fn unreg_sw_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<SolCtxModifier>,
-        sol_view: &SolView,
+        uad: &SolUad,
         raw_modifier: &SolRawModifier,
     ) {
         ctx_modifiers.clear();
@@ -156,8 +158,8 @@ impl SolStandardRegister {
                 }
                 SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(sol_view.fits.len());
-                    for fit in sol_view.fits.iter_fits() {
+                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
                                 let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);
@@ -177,8 +179,8 @@ impl SolStandardRegister {
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(sol_view.fits.len());
-                    for fit in sol_view.fits.iter_fits() {
+                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
                                 let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);
@@ -198,8 +200,8 @@ impl SolStandardRegister {
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(sol_view.fits.len());
-                    for fit in sol_view.fits.iter_fits() {
+                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
                                 let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);
@@ -219,8 +221,8 @@ impl SolStandardRegister {
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(sol_view.fits.len());
-                    for fit in sol_view.fits.iter_fits() {
+                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
                                 let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);

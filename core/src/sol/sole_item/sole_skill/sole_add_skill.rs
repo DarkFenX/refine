@@ -2,8 +2,8 @@ use crate::{
     defs::{EItemId, SkillLevel, SolFitId},
     err::basic::{FitFoundError, SkillLevelError},
     sol::{
-        item::{SolItem, SolSkill},
-        item_info::SolSkillInfo,
+        info::SolSkillInfo,
+        uad::item::{SolItem, SolSkill},
         SolarSystem,
     },
 };
@@ -19,13 +19,13 @@ impl SolarSystem {
         state: bool,
     ) -> Result<SolSkillInfo, AddSkillError> {
         check_skill_level(level)?;
-        let item_id = self.items.alloc_item_id();
-        let skill = SolSkill::new(&self.src, item_id, type_id, fit_id, level, state);
+        let item_id = self.uad.items.alloc_item_id();
+        let skill = SolSkill::new(&self.uad.src, item_id, type_id, fit_id, level, state);
         let info = SolSkillInfo::from(&skill);
         let item = SolItem::Skill(skill);
-        let fit = self.fits.get_fit_mut(&fit_id)?;
+        let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.skills.insert(item_id);
-        self.items.add_item(item);
+        self.uad.items.add_item(item);
         self.add_item_id_to_svcs(&item_id);
         Ok(info)
     }

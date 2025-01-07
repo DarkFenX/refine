@@ -1,7 +1,7 @@
 use crate::{
     defs::OF,
     err::basic::{EmDmgNonNegError, ExplDmgNonNegError, KinDmgNonNegError, ThermDmgNonNegError, TotalDmgPositiveError},
-    sol::{SolDmgProfile, SolView, SolarSystem},
+    sol::{SolDmgProfile, SolarSystem},
 };
 
 impl SolarSystem {
@@ -22,17 +22,11 @@ impl SolarSystem {
         if total <= OF(0.0) {
             return Err(TotalDmgPositiveError::new(total).into());
         }
-        if self.default_incoming_dmg == dmg_profile {
+        if self.uad.default_incoming_dmg == dmg_profile {
             return Ok(());
         }
-        self.default_incoming_dmg = dmg_profile;
-        self.svcs.default_incoming_dmg_profile_changed(&SolView::new(
-            &self.src,
-            &self.fleets,
-            &self.fits,
-            &self.items,
-            &self.default_incoming_dmg,
-        ));
+        self.uad.default_incoming_dmg = dmg_profile;
+        self.svc.default_incoming_dmg_profile_changed(&self.uad);
         Ok(())
     }
 }

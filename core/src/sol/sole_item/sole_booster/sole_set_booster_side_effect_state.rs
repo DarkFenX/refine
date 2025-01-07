@@ -1,7 +1,7 @@
 use crate::{
     defs::{EEffectId, SolItemId},
     err::basic::{ItemFoundError, ItemKindMatchError, SideEffectError},
-    sol::{view::SolView, SolEffectMode, SolarSystem},
+    sol::{SolEffectMode, SolarSystem},
 };
 
 impl SolarSystem {
@@ -11,14 +11,14 @@ impl SolarSystem {
         effect_id: &EEffectId,
         state: bool,
     ) -> Result<(), SetBoosterSideEffectStateError> {
-        let booster = self.items.get_item_mut(item_id)?.get_booster_mut()?;
+        let booster = self.uad.items.get_item_mut(item_id)?.get_booster_mut()?;
         let effect_datas = booster
             .get_effect_datas()
             .map_err(|_| SideEffectError::new(*effect_id))?;
         if !effect_datas.contains_key(effect_id) {
             return Err(SideEffectError::new(*effect_id).into());
         }
-        let effect = match self.src.get_a_effect(effect_id) {
+        let effect = match self.uad.src.get_a_effect(effect_id) {
             Some(effect) => effect,
             None => return Err(SideEffectError::new(*effect_id).into()),
         };
@@ -30,18 +30,8 @@ impl SolarSystem {
             false => SolEffectMode::FullCompliance,
         };
         booster.get_effect_modes_mut().set(*effect_id, effect_state);
-        let item = self.items.get_item(item_id).unwrap();
-        self.svcs.process_effects(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            item,
-            item.get_state(),
-        );
+        let item = self.uad.items.get_item(item_id).unwrap();
+        self.svc.process_effects(&self.uad, item, item.get_state());
         Ok(())
     }
 }

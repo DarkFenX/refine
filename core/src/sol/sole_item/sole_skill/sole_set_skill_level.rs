@@ -2,7 +2,7 @@ use crate::{
     defs::{SkillLevel, SolItemId},
     ec,
     err::basic::{ItemFoundError, ItemKindMatchError, SkillLevelError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 use super::check_skill_level;
@@ -10,18 +10,9 @@ use super::check_skill_level;
 impl SolarSystem {
     pub fn set_skill_level(&mut self, item_id: &SolItemId, level: SkillLevel) -> Result<(), SetSkillLevelError> {
         check_skill_level(level)?;
-        self.items.get_item_mut(item_id)?.get_skill_mut()?.set_level(level);
-        self.svcs.item_attr_postprocess_changed(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            item_id,
-            &ec::attrs::SKILL_LEVEL,
-        );
+        self.uad.items.get_item_mut(item_id)?.get_skill_mut()?.set_level(level);
+        self.svc
+            .item_attr_postprocess_changed(&self.uad, item_id, &ec::attrs::SKILL_LEVEL);
         Ok(())
     }
 }

@@ -1,13 +1,13 @@
 use crate::{
     defs::SolFitId,
     err::basic::{FitFoundError, FitHasItemKindError},
-    sol::{item::SolShip, SolarSystem},
+    sol::{uad::item::SolShip, SolarSystem},
     util::Named,
 };
 
 impl SolarSystem {
     pub fn remove_fit_ship(&mut self, fit_id: &SolFitId) -> Result<(), RemoveFitShipError> {
-        let fit = self.fits.get_fit(fit_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
         let item_id = match fit.ship {
             Some(item_id) => item_id,
             None => return Err(FitHasItemKindError::new(*fit_id, SolShip::get_name()).into()),

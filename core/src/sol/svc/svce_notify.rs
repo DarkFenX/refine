@@ -2,15 +2,17 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, SolFitId, SolItemId},
     sol::{
-        fleet::SolFleet,
-        item::{SolItem, SolItemState},
-        svc::SolSvcs,
-        SolView,
+        svc::SolSvc,
+        uad::{
+            fleet::SolFleet,
+            item::{SolItem, SolItemState},
+            SolUad,
+        },
     },
     src::Src,
 };
 
-impl SolSvcs {
+impl SolSvc {
     pub(in crate::sol::svc) fn notify_src_changed(&mut self, src: &Src) {
         self.calc_src_changed(src);
     }
@@ -22,56 +24,40 @@ impl SolSvcs {
         self.calc_fit_removed(fit_id);
         self.restat_fit_removed(fit_id);
     }
-    pub(in crate::sol::svc) fn notify_fit_added_to_fleet(
-        &mut self,
-        sol_view: &SolView,
-        fleet: &SolFleet,
-        fit_id: &SolFitId,
-    ) {
-        self.calc_fit_added_to_fleet(sol_view, fleet, fit_id);
+    pub(in crate::sol::svc) fn notify_fit_added_to_fleet(&mut self, uad: &SolUad, fleet: &SolFleet, fit_id: &SolFitId) {
+        self.calc_fit_added_to_fleet(uad, fleet, fit_id);
     }
     pub(in crate::sol::svc) fn notify_fit_removed_from_fleet(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         fleet: &SolFleet,
         fit_id: &SolFitId,
     ) {
-        self.calc_fit_removed_from_fleet(sol_view, fleet, fit_id);
+        self.calc_fit_removed_from_fleet(uad, fleet, fit_id);
     }
-    pub(in crate::sol::svc) fn notify_fit_rah_dmg_profile_changed(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
-        self.calc_fit_rah_dmg_profile_changed(sol_view, fit_id);
+    pub(in crate::sol::svc) fn notify_fit_rah_dmg_profile_changed(&mut self, uad: &SolUad, fit_id: &SolFitId) {
+        self.calc_fit_rah_dmg_profile_changed(uad, fit_id);
     }
-    pub(in crate::sol::svc) fn notify_item_added(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.calc_item_added(sol_view, item);
+    pub(in crate::sol::svc) fn notify_item_added(&mut self, uad: &SolUad, item: &SolItem) {
+        self.calc_item_added(uad, item);
     }
-    pub(in crate::sol::svc) fn notify_item_removed(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.calc_item_removed(sol_view, item);
+    pub(in crate::sol::svc) fn notify_item_removed(&mut self, uad: &SolUad, item: &SolItem) {
+        self.calc_item_removed(uad, item);
     }
-    pub(in crate::sol::svc) fn notify_state_activated(
-        &mut self,
-        sol_view: &SolView,
-        item: &SolItem,
-        state: &SolItemState,
-    ) {
+    pub(in crate::sol::svc) fn notify_state_activated(&mut self, uad: &SolUad, item: &SolItem, state: &SolItemState) {}
+    pub(in crate::sol::svc) fn notify_state_deactivated(&mut self, uad: &SolUad, item: &SolItem, state: &SolItemState) {
     }
-    pub(in crate::sol::svc) fn notify_state_deactivated(
-        &mut self,
-        sol_view: &SolView,
-        item: &SolItem,
-        state: &SolItemState,
-    ) {
-    }
-    pub(in crate::sol::svc) fn notify_item_loaded(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.calc_item_loaded(sol_view, item);
+    pub(in crate::sol::svc) fn notify_item_loaded(&mut self, uad: &SolUad, item: &SolItem) {
+        self.calc_item_loaded(uad, item);
         self.restat_item_loaded(item);
     }
-    pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, sol_view: &SolView, item: &SolItem) {
-        self.calc_item_unloaded(sol_view, item);
+    pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, uad: &SolUad, item: &SolItem) {
+        self.calc_item_unloaded(uad, item);
         self.restat_item_unloaded(item);
     }
     pub(in crate::sol::svc) fn notify_item_state_activated_loaded(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         item: &SolItem,
         state: &SolItemState,
     ) {
@@ -79,7 +65,7 @@ impl SolSvcs {
     }
     pub(in crate::sol::svc) fn notify_item_state_deactivated_loaded(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         item: &SolItem,
         state: &SolItemState,
     ) {
@@ -87,82 +73,82 @@ impl SolSvcs {
     }
     pub(in crate::sol::svc) fn notify_effects_started(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
         self.running_effects
             .effects_started(item.get_id(), effects.iter().map(|v| v.id));
-        self.calc_effects_started(sol_view, item, effects);
+        self.calc_effects_started(uad, item, effects);
         self.restat_effects_started(item, effects);
     }
     pub(in crate::sol::svc) fn notify_effects_stopped(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         item: &SolItem,
         effects: &Vec<ad::ArcEffect>,
     ) {
-        self.calc_effects_stopped(sol_view, item, effects);
+        self.calc_effects_stopped(uad, item, effects);
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| &v.id));
         self.restat_effects_stopped(item, effects);
     }
     pub(in crate::sol::svc) fn notify_item_projected(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         projector_item: &SolItem,
         projectee_item: &SolItem,
     ) {
     }
     pub(in crate::sol::svc) fn notify_item_unprojected(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         projector_item: &SolItem,
         projectee_item: &SolItem,
     ) {
     }
     pub(in crate::sol::svc) fn notify_item_proj_range_changed(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         projector_item: &SolItem,
         projectee_item: &SolItem,
     ) {
     }
     pub(in crate::sol::svc) fn notify_effect_projected(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         projector_item: &SolItem,
         effect: &ad::ArcEffect,
         projectee_item: &SolItem,
         range: Option<AttrVal>,
     ) {
-        self.calc_effect_projected(sol_view, projector_item, effect, projectee_item, range);
+        self.calc_effect_projected(uad, projector_item, effect, projectee_item, range);
     }
     pub(in crate::sol::svc) fn notify_effect_unprojected(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         projector_item: &SolItem,
         effect: &ad::ArcEffect,
         projectee_item: &SolItem,
     ) {
-        self.calc_effect_unprojected(sol_view, projector_item, effect, projectee_item);
+        self.calc_effect_unprojected(uad, projector_item, effect, projectee_item);
     }
     pub(in crate::sol::svc) fn notify_effect_proj_range_changed(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         projector_item: &SolItem,
         effect: &ad::ArcEffect,
         projectee_item: &SolItem,
         range: Option<AttrVal>,
     ) {
-        self.calc_effect_proj_range_changed(sol_view, projector_item, effect, projectee_item, range);
+        self.calc_effect_proj_range_changed(uad, projector_item, effect, projectee_item, range);
     }
     pub(in crate::sol::svc) fn notify_attr_val_changed(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         item_id: &SolItemId,
         attr_id: &EAttrId,
     ) {
-        self.calc_attr_value_changed(sol_view, item_id, attr_id);
+        self.calc_attr_value_changed(uad, item_id, attr_id);
     }
 }

@@ -1,18 +1,24 @@
 use crate::{
     defs::SolFitId,
     err::basic::{FitFoundError, FitHasItemKindError},
-    sol::{item::SolCharacter, SolarSystem},
+    sol::{uad::item::SolCharacter, SolarSystem},
     util::Named,
 };
 
 impl SolarSystem {
     pub fn set_fit_character_state(&mut self, fit_id: &SolFitId, state: bool) -> Result<(), SetFitCharacterStateError> {
-        let fit = self.fits.get_fit(fit_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
         let item_id = match fit.character {
             Some(item_id) => item_id,
             None => return Err(FitHasItemKindError::new(*fit_id, SolCharacter::get_name()).into()),
         };
-        let character = self.items.get_item_mut(&item_id).unwrap().get_character_mut().unwrap();
+        let character = self
+            .uad
+            .items
+            .get_item_mut(&item_id)
+            .unwrap()
+            .get_character_mut()
+            .unwrap();
         let old_state = character.get_state();
         character.set_bool_state(state);
         let new_state = character.get_state();

@@ -1,13 +1,11 @@
 use crate::{
     defs::SolFitId,
     sol::{
-        fleet::SolFleet,
-        item::SolItem,
         svc::svce_calc::{
             registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolDomain, SolLocationKind,
             SolRawModifier,
         },
-        SolView,
+        uad::{fleet::SolFleet, item::SolItem, SolUad},
     },
 };
 
@@ -17,7 +15,7 @@ impl SolStandardRegister {
     pub(in crate::sol::svc::svce_calc) fn reg_fleet_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<SolCtxModifier>,
-        sol_view: &SolView,
+        uad: &SolUad,
         item: &SolItem,
         raw_modifier: SolRawModifier,
     ) -> bool {
@@ -26,10 +24,10 @@ impl SolStandardRegister {
             Some(fit_id) => fit_id,
             None => return false,
         };
-        let affector_fit = sol_view.fits.get_fit(&fit_id).unwrap();
+        let affector_fit = uad.fits.get_fit(&fit_id).unwrap();
         match affector_fit.fleet {
             Some(fleet_id) => {
-                let fleet = sol_view.fleets.get_fleet(&fleet_id).unwrap();
+                let fleet = uad.fleets.get_fleet(&fleet_id).unwrap();
                 for fleet_fit_id in fleet.iter_fits() {
                     if let Some(ctx_modifier) = self.apply_fleet_mod(raw_modifier, *fleet_fit_id) {
                         ctx_modifiers.push(ctx_modifier);
@@ -54,7 +52,7 @@ impl SolStandardRegister {
     pub(in crate::sol::svc::svce_calc) fn unreg_fleet_buff_mod(
         &mut self,
         ctx_modifiers: &mut Vec<SolCtxModifier>,
-        sol_view: &SolView,
+        uad: &SolUad,
         item: &SolItem,
         raw_modifier: SolRawModifier,
     ) {
@@ -63,10 +61,10 @@ impl SolStandardRegister {
             Some(fit_id) => fit_id,
             None => return,
         };
-        let affector_fit = sol_view.fits.get_fit(&fit_id).unwrap();
+        let affector_fit = uad.fits.get_fit(&fit_id).unwrap();
         match affector_fit.fleet {
             Some(fleet_id) => {
-                let fleet = sol_view.fleets.get_fleet(&fleet_id).unwrap();
+                let fleet = uad.fleets.get_fleet(&fleet_id).unwrap();
                 for fleet_fit_id in fleet.iter_fits() {
                     if let Some(ctx_modifier) = self.unapply_fleet_mod(raw_modifier, *fleet_fit_id) {
                         ctx_modifiers.push(ctx_modifier);

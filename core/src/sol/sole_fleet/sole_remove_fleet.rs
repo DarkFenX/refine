@@ -1,31 +1,17 @@
 use itertools::Itertools;
 
-use crate::{
-    defs::SolFleetId,
-    err::basic::FleetFoundError,
-    sol::{SolView, SolarSystem},
-};
+use crate::{defs::SolFleetId, err::basic::FleetFoundError, sol::SolarSystem};
 
 impl SolarSystem {
     pub fn remove_fleet(&mut self, fleet_id: &SolFleetId) -> Result<(), RemoveFleetError> {
-        let fleet = self.fleets.get_fleet(fleet_id)?;
+        let fleet = self.uad.fleets.get_fleet(fleet_id)?;
         let fit_ids = fleet.iter_fits().map(|v| *v).collect_vec();
         for fit_id in fit_ids.iter() {
-            self.svcs.remove_fit_from_fleet(
-                &SolView::new(
-                    &self.src,
-                    &self.fleets,
-                    &self.fits,
-                    &self.items,
-                    &self.default_incoming_dmg,
-                ),
-                fleet,
-                fit_id,
-            );
-            let fit = self.fits.get_fit_mut(fit_id).unwrap();
+            self.svc.remove_fit_from_fleet(&self.uad, fleet, fit_id);
+            let fit = self.uad.fits.get_fit_mut(fit_id).unwrap();
             fit.fleet = None;
         }
-        self.fleets.remove_fleet(fleet_id).unwrap();
+        self.uad.fleets.remove_fleet(fleet_id).unwrap();
         Ok(())
     }
 }

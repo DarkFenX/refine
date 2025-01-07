@@ -1,31 +1,21 @@
 use crate::{
     defs::SolFitId,
     err::basic::{FitFleetAssignedError, FitFoundError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
     pub fn unset_fit_fleet(&mut self, fit_id: &SolFitId) -> Result<(), UnsetFitFleetError> {
-        let fit = self.fits.get_fit(fit_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
         let fleet_id = match fit.fleet {
             Some(fleet_id) => fleet_id,
             None => return Err(FitFleetAssignedError::new(*fit_id).into()),
         };
-        let fleet = self.fleets.get_fleet(&fleet_id).unwrap();
-        self.svcs.remove_fit_from_fleet(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            fleet,
-            fit_id,
-        );
-        let fleet = self.fleets.get_fleet_mut(&fleet_id).unwrap();
+        let fleet = self.uad.fleets.get_fleet(&fleet_id).unwrap();
+        self.svc.remove_fit_from_fleet(&self.uad, fleet, fit_id);
+        let fleet = self.uad.fleets.get_fleet_mut(&fleet_id).unwrap();
         fleet.remove_fit(fit_id);
-        let fit = self.fits.get_fit_mut(fit_id).unwrap();
+        let fit = self.uad.fits.get_fit_mut(fit_id).unwrap();
         fit.fleet = None;
         Ok(())
     }

@@ -2,7 +2,7 @@ use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindRemoveError},
     sol::{
-        item::{SolAutocharge, SolItem},
+        uad::item::{SolAutocharge, SolItem},
         SolarSystem,
     },
     util::Named,
@@ -10,7 +10,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_item(&mut self, item_id: &SolItemId) -> Result<(), RemoveItemError> {
-        let item = self.items.get_item(item_id)?;
+        let item = self.uad.items.get_item(item_id)?;
         match item {
             // Auto charge can't be removed no matter what
             SolItem::Autocharge(_) => Err(RemoveItemError::UnremovableAutocharge(ItemKindRemoveError::new(

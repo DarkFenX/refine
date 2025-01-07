@@ -12,6 +12,7 @@ impl SolarSystem {
     ) -> Result<(), AddProjEffectProjError> {
         // Check projector
         let proj_effect = self
+            .uad
             .items
             .get_item(item_id)
             .map_err(|e| AddProjEffectProjError::ProjectorNotFound(e))?
@@ -26,6 +27,7 @@ impl SolarSystem {
         }
         // Check if projectee can receive projections
         let projectee_item = self
+            .uad
             .items
             .get_item(&projectee_item_id)
             .map_err(|e| AddProjEffectProjError::ProjecteeNotFound(e))?;
@@ -35,7 +37,13 @@ impl SolarSystem {
             ));
         }
         // Update skeleton
-        let proj_effect = self.items.get_item_mut(item_id).unwrap().get_proj_effect_mut().unwrap();
+        let proj_effect = self
+            .uad
+            .items
+            .get_item_mut(item_id)
+            .unwrap()
+            .get_proj_effect_mut()
+            .unwrap();
         proj_effect.get_projs_mut().add(projectee_item_id, None);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         // Update services

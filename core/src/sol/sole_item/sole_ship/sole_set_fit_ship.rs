@@ -2,8 +2,8 @@ use crate::{
     defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        item::{SolItem, SolShip},
-        item_info::SolShipInfo,
+        info::SolShipInfo,
+        uad::item::{SolItem, SolShip},
         SolarSystem,
     },
 };
@@ -15,21 +15,21 @@ impl SolarSystem {
         type_id: EItemId,
         state: bool,
     ) -> Result<SolShipInfo, SetFitShipError> {
-        let fit = self.fits.get_fit(&fit_id)?;
+        let fit = self.uad.fits.get_fit(&fit_id)?;
         // Remove old ship, if it was set
         if let Some(old_item_id) = fit.ship {
             self.remove_ship(&old_item_id).unwrap();
         }
         // Add new ship
-        let item_id = self.items.alloc_item_id();
-        let ship = SolShip::new(&self.src, item_id, type_id, fit_id, state);
+        let item_id = self.uad.items.alloc_item_id();
+        let ship = SolShip::new(&self.uad.src, item_id, type_id, fit_id, state);
         let ship_kind = ship.get_kind();
         let info = SolShipInfo::from(&ship);
         let item = SolItem::Ship(ship);
-        let fit = self.fits.get_fit_mut(&fit_id).unwrap();
+        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.ship = Some(item_id);
         fit.kind = ship_kind;
-        self.items.add_item(item);
+        self.uad.items.add_item(item);
         self.add_item_id_to_svcs(&item_id);
         Ok(info)
     }

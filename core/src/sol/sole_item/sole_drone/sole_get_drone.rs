@@ -1,12 +1,12 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item_info::SolDroneInfo, SolarSystem},
+    sol::{info::SolDroneInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_drone(&self, item_id: &SolItemId) -> Result<SolDroneInfo, GetDroneError> {
-        let drone = self.items.get_item(item_id)?.get_drone()?;
+        let drone = self.uad.items.get_item(item_id)?.get_drone()?;
         Ok(self.make_drone_info(drone))
     }
 }

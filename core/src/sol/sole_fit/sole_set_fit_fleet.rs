@@ -1,49 +1,30 @@
 use crate::{
     defs::{SolFitId, SolFleetId},
     err::basic::{FitFoundError, FleetFoundError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
     pub fn set_fit_fleet(&mut self, fit_id: &SolFitId, fleet_id: SolFleetId) -> Result<(), SetFitFleetError> {
-        let fit = self.fits.get_fit(fit_id)?;
-        self.fleets.get_fleet(&fleet_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
+        self.uad.fleets.get_fleet(&fleet_id)?;
         // Unassign from old fleet
         if let Some(old_fleet_id) = fit.fleet {
             if old_fleet_id == fleet_id {
                 return Ok(());
             }
-            let old_fleet = self.fleets.get_fleet(&old_fleet_id).unwrap();
-            self.svcs.remove_fit_from_fleet(
-                &SolView::new(
-                    &self.src,
-                    &self.fleets,
-                    &self.fits,
-                    &self.items,
-                    &self.default_incoming_dmg,
-                ),
-                old_fleet,
-                fit_id,
-            );
-            let old_fleet = self.fleets.get_fleet_mut(&fleet_id).unwrap();
+            let old_fleet = self.uad.fleets.get_fleet(&old_fleet_id).unwrap();
+            self.svc.remove_fit_from_fleet(&self.uad, old_fleet, fit_id);
+            let old_fleet = self.uad.fleets.get_fleet_mut(&fleet_id).unwrap();
             old_fleet.remove_fit(fit_id);
         }
         // Assign new fleet
-        let fit = self.fits.get_fit_mut(fit_id).unwrap();
+        let fit = self.uad.fits.get_fit_mut(fit_id).unwrap();
         fit.fleet = Some(fleet_id);
-        let fleet = self.fleets.get_fleet_mut(&fleet_id).unwrap();
+        let fleet = self.uad.fleets.get_fleet_mut(&fleet_id).unwrap();
         fleet.add_fit(*fit_id);
-        self.svcs.add_fit_to_fleet(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            self.fleets.get_fleet(&fleet_id).unwrap(),
-            fit_id,
-        );
+        self.svc
+            .add_fit_to_fleet(&self.uad, self.uad.fleets.get_fleet(&fleet_id).unwrap(), fit_id);
         Ok(())
     }
 }

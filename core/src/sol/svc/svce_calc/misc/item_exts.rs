@@ -1,8 +1,8 @@
 use crate::{
     defs::SolItemId,
     sol::{
-        item::{SolItem, SolShipKind},
         svc::svce_calc::SolLocationKind,
+        uad::item::{SolItem, SolShipKind},
     },
 };
 

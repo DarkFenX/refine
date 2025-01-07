@@ -15,6 +15,7 @@ impl SolarSystem {
     ) -> Result<(), AddFighterProjError> {
         // Check projector
         let fighter = self
+            .uad
             .items
             .get_item(item_id)
             .map_err(|e| AddFighterProjError::ProjectorNotFound(e))?
@@ -29,6 +30,7 @@ impl SolarSystem {
         }
         // Check if projectee can receive projections
         let projectee_item = self
+            .uad
             .items
             .get_item(&projectee_item_id)
             .map_err(|e| AddFighterProjError::ProjecteeNotFound(e))?;
@@ -39,7 +41,7 @@ impl SolarSystem {
             )));
         }
         // Update skeleton for fighter
-        let fighter = self.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
+        let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
         let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         fighter.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
@@ -48,6 +50,7 @@ impl SolarSystem {
         for autocharge_id in autocharge_ids {
             // Update skeleton for autocharge
             let autocharge = self
+                .uad
                 .items
                 .get_item_mut(&autocharge_id)
                 .unwrap()

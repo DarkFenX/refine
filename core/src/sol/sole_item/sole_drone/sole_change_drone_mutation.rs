@@ -1,7 +1,7 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ItemMutatedError},
-    sol::{item::SolItemChangeAttrMutation, SolView, SolarSystem},
+    sol::{uad::item::SolItemChangeAttrMutation, SolarSystem},
 };
 
 impl SolarSystem {
@@ -10,17 +10,10 @@ impl SolarSystem {
         item_id: &SolItemId,
         attr_mutations: Vec<SolItemChangeAttrMutation>,
     ) -> Result<(), ChangeDroneMutationError> {
-        let drone = self.items.get_item_mut(item_id)?.get_drone_mut()?;
-        let changed_attr_ids = drone.change_mutation_attrs(&self.src, attr_mutations)?;
-        let sol_view = SolView::new(
-            &self.src,
-            &self.fleets,
-            &self.fits,
-            &self.items,
-            &self.default_incoming_dmg,
-        );
+        let drone = self.uad.items.get_item_mut(item_id)?.get_drone_mut()?;
+        let changed_attr_ids = drone.change_mutation_attrs(&self.uad.src, attr_mutations)?;
         for attr_id in changed_attr_ids {
-            self.svcs.item_attr_value_changed(&sol_view, item_id, &attr_id);
+            self.svc.item_base_attr_value_changed(&self.uad, item_id, &attr_id);
         }
         Ok(())
     }

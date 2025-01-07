@@ -1,12 +1,12 @@
 use crate::{
     defs::SolItemId,
     err::basic::ItemFoundError,
-    sol::{item_info::SolItemInfo, SolarSystem},
+    sol::{info::SolItemInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_item(&self, item_id: &SolItemId) -> Result<SolItemInfo, GetItemError> {
-        let item = self.items.get_item(item_id)?;
+        let item = self.uad.items.get_item(item_id)?;
         Ok(SolItemInfo::from_sol_item(item, self))
     }
 }

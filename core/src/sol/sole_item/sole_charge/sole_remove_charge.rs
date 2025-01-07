@@ -1,53 +1,35 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
     pub fn remove_charge(&mut self, item_id: &SolItemId) -> Result<(), RemoveChargeError> {
-        let item = self.items.get_item(item_id)?;
+        let item = self.uad.items.get_item(item_id)?;
         let charge = item.get_charge()?;
         // Remove outgoing projections
         for projectee_item_id in charge.get_projs().iter_items() {
             // Update services for charge
-            let projectee_item = self.items.get_item(projectee_item_id).unwrap();
-            self.svcs.remove_item_projection(
-                &SolView::new(
-                    &self.src,
-                    &self.fleets,
-                    &self.fits,
-                    &self.items,
-                    &self.default_incoming_dmg,
-                ),
-                item,
-                projectee_item,
-            );
+            let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
+            self.svc.remove_item_projection(&self.uad, item, projectee_item);
             // Update skeleton for charge - do not touch projections container on charge itself,
             // because we're removing it anyway
             self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         }
         // Update services
-        self.svcs.remove_item(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            item,
-        );
+        self.svc.remove_item(&self.uad, item);
         // Update skeleton
         let module_item_id = charge.get_cont_id();
         let module = self
+            .uad
             .items
             .get_item_mut(&module_item_id)
             .unwrap()
             .get_module_mut()
             .unwrap();
         module.set_charge_id(None);
-        self.items.remove_item(item_id);
+        self.uad.items.remove_item(item_id);
         Ok(())
     }
 }

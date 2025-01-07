@@ -6,7 +6,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn remove_module_charge(&mut self, item_id: &SolItemId) -> Result<(), RemoveModuleChargeError> {
-        let module = self.items.get_item(item_id)?.get_module()?;
+        let module = self.uad.items.get_item(item_id)?.get_module()?;
         let charge_id = match module.get_charge_id() {
             Some(charge_id) => charge_id,
             None => return Err(ChargeFoundError::new(*item_id).into()),

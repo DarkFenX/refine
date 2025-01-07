@@ -1,7 +1,7 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ItemNotMutatedError},
-    sol::{item::SolItemAddMutation, SolView, SolarSystem},
+    sol::{uad::item::SolItemAddMutation, SolarSystem},
 };
 
 impl SolarSystem {
@@ -10,59 +10,23 @@ impl SolarSystem {
         item_id: &SolItemId,
         mutation: SolItemAddMutation,
     ) -> Result<(), AddDroneMutationError> {
-        let item = self.items.get_item(item_id)?;
-        self.svcs.unload_item(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            item,
-        );
-        let drone = match self.items.get_item_mut(item_id).unwrap().get_drone_mut() {
+        let item = self.uad.items.get_item(item_id)?;
+        self.svc.unload_item(&self.uad, item);
+        let drone = match self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut() {
             Ok(drone) => drone,
             Err(error) => {
-                let item = self.items.get_item(item_id).unwrap();
-                self.svcs.load_item(
-                    &SolView::new(
-                        &self.src,
-                        &self.fleets,
-                        &self.fits,
-                        &self.items,
-                        &self.default_incoming_dmg,
-                    ),
-                    item,
-                );
+                let item = self.uad.items.get_item(item_id).unwrap();
+                self.svc.load_item(&self.uad, item);
                 return Err(error.into());
             }
         };
-        if let Err(error) = drone.mutate(&self.src, mutation) {
-            let item = self.items.get_item(item_id).unwrap();
-            self.svcs.load_item(
-                &SolView::new(
-                    &self.src,
-                    &self.fleets,
-                    &self.fits,
-                    &self.items,
-                    &self.default_incoming_dmg,
-                ),
-                item,
-            );
+        if let Err(error) = drone.mutate(&self.uad.src, mutation) {
+            let item = self.uad.items.get_item(item_id).unwrap();
+            self.svc.load_item(&self.uad, item);
             return Err(error.into());
         }
-        let item = self.items.get_item(item_id).unwrap();
-        self.svcs.load_item(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            item,
-        );
+        let item = self.uad.items.get_item(item_id).unwrap();
+        self.svc.load_item(&self.uad, item);
         Ok(())
     }
 }

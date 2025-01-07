@@ -12,7 +12,7 @@ impl SolarSystem {
         range: Option<AttrVal>,
     ) -> Result<(), ChangeModuleProjError> {
         // Check if projection is defined before changing it
-        let module = self.items.get_item_mut(item_id)?.get_module_mut()?;
+        let module = self.uad.items.get_item_mut(item_id)?.get_module_mut()?;
         let old_range = match module.get_projs().get(projectee_item_id) {
             Some(old_range) => *old_range,
             None => return Err(ProjFoundError::new(*item_id, *projectee_item_id).into()),
@@ -28,7 +28,13 @@ impl SolarSystem {
         self.change_item_id_projection_range_in_svcs(item_id, projectee_item_id, range);
         if let Some(charge_id) = charge_id {
             // Update skeleton for charge
-            let charge = self.items.get_item_mut(&charge_id).unwrap().get_charge_mut().unwrap();
+            let charge = self
+                .uad
+                .items
+                .get_item_mut(&charge_id)
+                .unwrap()
+                .get_charge_mut()
+                .unwrap();
             charge.get_projs_mut().add(*projectee_item_id, range);
             // Update services for charge
             self.change_item_id_projection_range_in_svcs(&charge_id, projectee_item_id, range);

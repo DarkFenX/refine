@@ -1,7 +1,7 @@
 use crate::{
     defs::SolFitId,
     err::basic::{EmDmgNonNegError, ExplDmgNonNegError, FitFoundError, KinDmgNonNegError, ThermDmgNonNegError},
-    sol::{SolDmgProfile, SolView, SolarSystem},
+    sol::{SolDmgProfile, SolarSystem},
     OF,
 };
 
@@ -24,26 +24,17 @@ impl SolarSystem {
         if dmg_profile.explosive < OF(0.0) {
             return Err(ExplDmgNonNegError::new(dmg_profile.explosive).into());
         }
-        let fit = self.fits.get_fit_mut(fit_id)?;
+        let fit = self.uad.fits.get_fit_mut(fit_id)?;
         if fit.rah_incoming_dmg == Some(dmg_profile) {
             return Ok(());
         }
         let old_dmg_profile = fit.rah_incoming_dmg.replace(dmg_profile);
         // Do not trigger anything in services if effectively RAH profile is not changed - RAH sim
         // uses default incoming dmg if RAH profile is not set
-        if old_dmg_profile.is_none() && self.default_incoming_dmg == dmg_profile {
+        if old_dmg_profile.is_none() && self.uad.default_incoming_dmg == dmg_profile {
             return Ok(());
         }
-        self.svcs.fit_rah_dmg_profile_changed(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            fit_id,
-        );
+        self.svc.fit_rah_dmg_profile_changed(&self.uad, fit_id);
         Ok(())
     }
 }

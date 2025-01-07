@@ -1,6 +1,6 @@
 use crate::{
     defs::{AttrVal, EEffectId, SolItemId, OF},
-    sol::{svc::SolSvcs, SolView},
+    sol::{svc::SolSvc, uad::SolUad},
 };
 
 use super::{
@@ -10,15 +10,15 @@ use super::{
 };
 
 pub(in crate::sol::svc::svce_calc::modifier) fn get_mod_val(
-    svc: &mut SolSvcs,
-    sol_view: &SolView,
+    svc: &mut SolSvc,
+    uad: &SolUad,
     item_id: &SolItemId,
     effect_id: &EEffectId,
 ) -> Option<AttrVal> {
-    let speed_boost = svc.calc_get_item_attr_val(sol_view, item_id, &PROP_BOOST).ok()?;
-    let thrust = svc.calc_get_item_attr_val(sol_view, item_id, &PROP_THRUST).ok()?;
-    let ship_id = get_ship_id(sol_view, item_id)?;
-    let mass = svc.calc_get_item_attr_val(sol_view, &ship_id, &SHIP_MASS).ok()?;
+    let speed_boost = svc.calc_get_item_attr_val(uad, item_id, &PROP_BOOST).ok()?;
+    let thrust = svc.calc_get_item_attr_val(uad, item_id, &PROP_THRUST).ok()?;
+    let ship_id = get_ship_id(uad, item_id)?;
+    let mass = svc.calc_get_item_attr_val(uad, &ship_id, &SHIP_MASS).ok()?;
     let perc = speed_boost.dogma * thrust.dogma / mass.dogma;
     if perc.is_infinite() {
         return None;

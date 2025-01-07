@@ -2,7 +2,7 @@
 
 pub(in crate::sol::svc) use misc::debug;
 pub use misc::SolEffectInfo;
-pub(in crate::sol) use svc::SolSvcs;
+pub(in crate::sol) use svc::SolSvc;
 
 pub(in crate::sol) mod err;
 mod misc;

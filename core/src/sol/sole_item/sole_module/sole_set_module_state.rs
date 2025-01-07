@@ -1,13 +1,13 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item::SolItemState, SolarSystem},
+    sol::{uad::item::SolItemState, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn set_module_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetModuleStateError> {
         // Update skeleton for module
-        let module = self.items.get_item_mut(item_id)?.get_module_mut()?;
+        let module = self.uad.items.get_item_mut(item_id)?.get_module_mut()?;
         let charge_id = module.get_charge_id();
         let old_state = module.get_state();
         module.set_state(state);
@@ -16,7 +16,13 @@ impl SolarSystem {
         self.change_item_id_state_in_svcs(item_id, old_state, new_state);
         if let Some(charge_id) = charge_id {
             // Update skeleton for charge
-            let charge = self.items.get_item_mut(&charge_id).unwrap().get_charge_mut().unwrap();
+            let charge = self
+                .uad
+                .items
+                .get_item_mut(&charge_id)
+                .unwrap()
+                .get_charge_mut()
+                .unwrap();
             let old_state = charge.get_state();
             charge.set_state(state);
             // Update services for charge

@@ -1,7 +1,9 @@
 use crate::sol::{
-    fit::SolFit,
-    item::{SolItem, SolShipKind},
     svc::svce_calc::SolLocationKind,
+    uad::{
+        fit::SolFit,
+        item::{SolItem, SolShipKind},
+    },
 };
 
 // Iterator over item's root location kinds which are actually assigned to a fit

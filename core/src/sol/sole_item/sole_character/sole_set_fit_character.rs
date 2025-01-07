@@ -2,8 +2,8 @@ use crate::{
     defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        item::{SolCharacter, SolItem},
-        item_info::SolCharacterInfo,
+        info::SolCharacterInfo,
+        uad::item::{SolCharacter, SolItem},
         SolarSystem,
     },
 };
@@ -15,20 +15,20 @@ impl SolarSystem {
         type_id: EItemId,
         state: bool,
     ) -> Result<SolCharacterInfo, SetFitCharacterError> {
-        let fit = self.fits.get_fit(&fit_id)?;
+        let fit = self.uad.fits.get_fit(&fit_id)?;
         // Remove old character, if it was set
         if let Some(old_item_id) = fit.character {
             self.remove_item_id_from_svcs(&old_item_id);
-            self.items.remove_item(&old_item_id);
+            self.uad.items.remove_item(&old_item_id);
         }
         // Add new character
-        let item_id = self.items.alloc_item_id();
-        let character = SolCharacter::new(&self.src, item_id, type_id, fit_id, state);
+        let item_id = self.uad.items.alloc_item_id();
+        let character = SolCharacter::new(&self.uad.src, item_id, type_id, fit_id, state);
         let info = SolCharacterInfo::from(&character);
         let item = SolItem::Character(character);
-        let fit = self.fits.get_fit_mut(&fit_id).unwrap();
+        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.character = Some(item_id);
-        self.items.add_item(item);
+        self.uad.items.add_item(item);
         self.add_item_id_to_svcs(&item_id);
         Ok(info)
     }

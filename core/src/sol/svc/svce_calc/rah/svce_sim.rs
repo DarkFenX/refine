@@ -6,8 +6,9 @@ use ordered_float::Float;
 use crate::{
     defs::{Amount, AttrVal, SolFitId, SolItemId, OF},
     sol::{
-        svc::{svce_calc::SolAttrVal, SolSvcs},
-        SolDmgTypes, SolView,
+        svc::{svce_calc::SolAttrVal, SolSvc},
+        uad::SolUad,
+        SolDmgTypes,
     },
     util::{StMap, StSet},
 };
@@ -20,28 +21,28 @@ use super::{
     tick_iter::SolRahSimTickIter,
 };
 
-impl SolSvcs {
-    pub(super) fn calc_rah_run_simulation(&mut self, sol_view: &SolView, fit_id: &SolFitId) {
-        let ship_id = match sol_view.fits.get_fit(fit_id).unwrap().ship {
+impl SolSvc {
+    pub(super) fn calc_rah_run_simulation(&mut self, uad: &SolUad, fit_id: &SolFitId) {
+        let ship_id = match uad.fits.get_fit(fit_id).unwrap().ship {
             Some(ship_id) => ship_id,
             None => {
                 // Since there were no calculated values stored in sim prior to simulation, and we
                 // are setting unadapted values - effectively values of resonances do not change,
                 // and no updates needed
-                self.set_fit_rahs_unadapted(sol_view, fit_id, false);
+                self.set_fit_rahs_unadapted(uad, fit_id, false);
                 return;
             }
         };
         // Keys in this map have to be sorted, since it defines RAH order in simulation history,
         // which hashes vectors with history entries
-        let mut sim_datas = self.get_fit_rah_sim_datas(sol_view, fit_id);
+        let mut sim_datas = self.get_fit_rah_sim_datas(uad, fit_id);
         // If the map is empty, no setting fallbacks needed, they were set in the data getter
         if sim_datas.is_empty() {
             return;
         }
-        let dmg_profile = match sol_view.fits.get_fit(fit_id).unwrap().rah_incoming_dmg {
+        let dmg_profile = match uad.fits.get_fit(fit_id).unwrap().rah_incoming_dmg {
             Some(dmg_profile) => dmg_profile,
-            None => *sol_view.default_incoming_dmg,
+            None => uad.default_incoming_dmg,
         };
         if dmg_profile.em <= OF(0.0)
             && dmg_profile.thermal <= OF(0.0)
@@ -50,7 +51,7 @@ impl SolSvcs {
         {
             for (item_id, item_sim_data) in sim_datas.iter() {
                 // Sets unadapted values, since info contains unadapted resonance values
-                self.set_rah_result(sol_view, item_id, item_sim_data.info.resos, false);
+                self.set_rah_result(uad, item_id, item_sim_data.info.resos, false);
             }
             return;
         }
@@ -60,7 +61,7 @@ impl SolSvcs {
         let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
         for (item_id, item_sim_data) in sim_datas.iter() {
             // Sets unadapted values, since info contains unadapted resonance values
-            self.set_rah_result(sol_view, item_id, item_sim_data.info.resos, false);
+            self.set_rah_result(uad, item_id, item_sim_data.info.resos, false);
             let item_history_entry = SolRahSimHistoryEntry::new(*item_id, OF(0.0), &item_sim_data.info.resos);
             sim_history_entry.push(item_history_entry);
         }
@@ -69,13 +70,13 @@ impl SolSvcs {
         // Run simulation
         for tick_data in SolRahSimTickIter::new(sim_datas.iter()) {
             // For each RAH, calculate damage received during this tick
-            let ship_resos = match self.get_ship_resonances(sol_view, &ship_id) {
+            let ship_resos = match self.get_ship_resonances(uad, &ship_id) {
                 Some(ship_resos) => ship_resos,
                 None => {
                     for item_id in sim_datas.keys() {
                         // Any issues with ship resonance fetch should happen on the very first sim
                         // tick, so results should coincide to default
-                        self.set_rah_unadapted(sol_view, item_id, false);
+                        self.set_rah_unadapted(uad, item_id, false);
                     }
                     return;
                 }
@@ -100,7 +101,7 @@ impl SolSvcs {
                 );
                 // Write new resonances to results, letting everyone know about the changes. This is
                 // needed to get updated ship resonances next tick.
-                self.set_rah_result(sol_view, &cycled_item_id, next_resos, true);
+                self.set_rah_result(uad, &cycled_item_id, next_resos, true);
             }
             // Compose history entry of current tick
             let mut sim_history_entry = Vec::with_capacity(sim_datas.len());
@@ -115,7 +116,7 @@ impl SolSvcs {
             if history_entries_seen.contains(&sim_history_entry) {
                 let index = sim_history.iter().position(|v| v == &sim_history_entry).unwrap();
                 let avg_resos = get_average_resonances(&sim_history[index..]);
-                self.set_partial_fit_rahs_result(sol_view, avg_resos, &sim_datas);
+                self.set_partial_fit_rahs_result(uad, avg_resos, &sim_datas);
                 return;
             }
             // No loop - update history
@@ -128,31 +129,25 @@ impl SolSvcs {
         // Never ignore more than half of the history
         let ticks_to_ignore = ticks_to_ignore.min(sim_history.len() / 2);
         let avg_resos = get_average_resonances(&sim_history[ticks_to_ignore..]);
-        self.set_partial_fit_rahs_result(sol_view, avg_resos, &sim_datas);
+        self.set_partial_fit_rahs_result(uad, avg_resos, &sim_datas);
     }
-    fn get_ship_resonances(&mut self, sol_view: &SolView, ship_id: &SolItemId) -> Option<SolDmgTypes<AttrVal>> {
-        let em = self.calc_get_item_attr_val(sol_view, ship_id, &EM_ATTR_ID).ok()?.dogma;
-        let therm = self
-            .calc_get_item_attr_val(sol_view, ship_id, &THERM_ATTR_ID)
-            .ok()?
-            .dogma;
-        let kin = self.calc_get_item_attr_val(sol_view, ship_id, &KIN_ATTR_ID).ok()?.dogma;
-        let expl = self
-            .calc_get_item_attr_val(sol_view, ship_id, &EXPL_ATTR_ID)
-            .ok()?
-            .dogma;
+    fn get_ship_resonances(&mut self, uad: &SolUad, ship_id: &SolItemId) -> Option<SolDmgTypes<AttrVal>> {
+        let em = self.calc_get_item_attr_val(uad, ship_id, &EM_ATTR_ID).ok()?.dogma;
+        let therm = self.calc_get_item_attr_val(uad, ship_id, &THERM_ATTR_ID).ok()?.dogma;
+        let kin = self.calc_get_item_attr_val(uad, ship_id, &KIN_ATTR_ID).ok()?.dogma;
+        let expl = self.calc_get_item_attr_val(uad, ship_id, &EXPL_ATTR_ID).ok()?.dogma;
         Some(SolDmgTypes::new(em, therm, kin, expl))
     }
-    fn get_fit_rah_sim_datas(&mut self, sol_view: &SolView, fit_id: &SolFitId) -> BTreeMap<SolItemId, SolRahDataSim> {
+    fn get_fit_rah_sim_datas(&mut self, uad: &SolUad, fit_id: &SolFitId) -> BTreeMap<SolItemId, SolRahDataSim> {
         let mut rah_datas = BTreeMap::new();
         for item_id in self.calc.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
-            let rah_attrs = match self.get_rah_sim_data(sol_view, &item_id) {
+            let rah_attrs = match self.get_rah_sim_data(uad, &item_id) {
                 Some(rah_attrs) => rah_attrs,
                 // Whenever a RAH has unacceptable for sim attributes, set unadapted values and
                 // don't add it to the map. No updates needed, since this method should be called
                 // before sim makes any changes
                 None => {
-                    self.set_rah_unadapted(sol_view, &item_id, false);
+                    self.set_rah_unadapted(uad, &item_id, false);
                     continue;
                 }
             };
@@ -160,18 +155,12 @@ impl SolSvcs {
         }
         rah_datas
     }
-    fn get_rah_sim_data(&mut self, sol_view: &SolView, item_id: &SolItemId) -> Option<SolRahDataSim> {
+    fn get_rah_sim_data(&mut self, uad: &SolUad, item_id: &SolItemId) -> Option<SolRahDataSim> {
         // Get resonances through postprocessing functions, since we already installed them for RAHs
-        let res_em = self.calc_get_item_attr_val_no_pp(sol_view, item_id, &EM_ATTR_ID).ok()?;
-        let res_therm = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &THERM_ATTR_ID)
-            .ok()?;
-        let res_kin = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &KIN_ATTR_ID)
-            .ok()?;
-        let res_expl = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &EXPL_ATTR_ID)
-            .ok()?;
+        let res_em = self.calc_get_item_attr_val_no_pp(uad, item_id, &EM_ATTR_ID).ok()?;
+        let res_therm = self.calc_get_item_attr_val_no_pp(uad, item_id, &THERM_ATTR_ID).ok()?;
+        let res_kin = self.calc_get_item_attr_val_no_pp(uad, item_id, &KIN_ATTR_ID).ok()?;
+        let res_expl = self.calc_get_item_attr_val_no_pp(uad, item_id, &EXPL_ATTR_ID).ok()?;
         if res_em.dogma == OF(1.0)
             && res_therm.dogma == OF(1.0)
             && res_kin.dogma == OF(1.0)
@@ -180,14 +169,11 @@ impl SolSvcs {
             return None;
         }
         // Other attributes using regular getters
-        let shift_amount = self
-            .calc_get_item_attr_val(sol_view, item_id, &SHIFT_ATTR_ID)
-            .ok()?
-            .dogma;
+        let shift_amount = self.calc_get_item_attr_val(uad, item_id, &SHIFT_ATTR_ID).ok()?.dogma;
         if shift_amount <= OF(0.0) {
             return None;
         }
-        let cycle_ms = self.get_item_effect_id_duration(sol_view, &item_id, &RAH_EFFECT_ID)?;
+        let cycle_ms = self.get_item_effect_id_duration(uad, &item_id, &RAH_EFFECT_ID)?;
         if cycle_ms <= OF(0.0) {
             return None;
         }
@@ -206,46 +192,40 @@ impl SolSvcs {
         Some(SolRahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rahs_unadapted(&mut self, sol_view: &SolView, fit_id: &SolFitId, notify: bool) {
+    fn set_fit_rahs_unadapted(&mut self, uad: &SolUad, fit_id: &SolFitId, notify: bool) {
         for item_id in self.calc.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
-            self.set_rah_unadapted(sol_view, &item_id, notify);
+            self.set_rah_unadapted(uad, &item_id, notify);
         }
     }
-    fn set_rah_unadapted(&mut self, sol_view: &SolView, item_id: &SolItemId, notify: bool) {
+    fn set_rah_unadapted(&mut self, uad: &SolUad, item_id: &SolItemId, notify: bool) {
         let em = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &EM_ATTR_ID)
+            .calc_get_item_attr_val_no_pp(uad, item_id, &EM_ATTR_ID)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let therm = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &THERM_ATTR_ID)
+            .calc_get_item_attr_val_no_pp(uad, item_id, &THERM_ATTR_ID)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let kin = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &KIN_ATTR_ID)
+            .calc_get_item_attr_val_no_pp(uad, item_id, &KIN_ATTR_ID)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let expl = self
-            .calc_get_item_attr_val_no_pp(sol_view, item_id, &EXPL_ATTR_ID)
+            .calc_get_item_attr_val_no_pp(uad, item_id, &EXPL_ATTR_ID)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
         let rah_resos = SolDmgTypes::new(em, therm, kin, expl);
-        self.set_rah_result(sol_view, item_id, rah_resos, notify);
+        self.set_rah_result(uad, item_id, rah_resos, notify);
     }
     // Result application methods
-    fn set_rah_result(
-        &mut self,
-        sol_view: &SolView,
-        item_id: &SolItemId,
-        resos: SolDmgTypes<SolAttrVal>,
-        notify: bool,
-    ) {
+    fn set_rah_result(&mut self, uad: &SolUad, item_id: &SolItemId, resos: SolDmgTypes<SolAttrVal>, notify: bool) {
         self.calc.rah.resonances.get_mut(item_id).unwrap().replace(resos);
         if notify {
-            self.item_attr_postprocess_changed(sol_view, item_id, &EM_ATTR_ID);
-            self.item_attr_postprocess_changed(sol_view, item_id, &THERM_ATTR_ID);
-            self.item_attr_postprocess_changed(sol_view, item_id, &KIN_ATTR_ID);
-            self.item_attr_postprocess_changed(sol_view, item_id, &EXPL_ATTR_ID);
+            self.item_attr_postprocess_changed(uad, item_id, &EM_ATTR_ID);
+            self.item_attr_postprocess_changed(uad, item_id, &THERM_ATTR_ID);
+            self.item_attr_postprocess_changed(uad, item_id, &KIN_ATTR_ID);
+            self.item_attr_postprocess_changed(uad, item_id, &EXPL_ATTR_ID);
         }
     }
     fn set_partial_fit_rahs_result(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         resos: StMap<SolItemId, SolDmgTypes<AttrVal>>,
         sim_datas: &BTreeMap<SolItemId, SolRahDataSim>,
     ) {
@@ -274,7 +254,7 @@ impl SolSvcs {
                 ),
                 None => item_sim_data.info.resos,
             };
-            self.set_rah_result(sol_view, item_id, item_resos, true)
+            self.set_rah_result(uad, item_id, item_resos, true)
         }
     }
 }

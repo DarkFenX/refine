@@ -8,12 +8,12 @@ use super::{misc::SolRunningEffects, svce_calc::SolSvcCalcData, svce_restat::Sol
 // and if there are any which rely on item type ID, should call those in situations where type ID
 // can potentially change
 #[derive(Clone)]
-pub(in crate::sol) struct SolSvcs {
+pub(in crate::sol) struct SolSvc {
     pub(in crate::sol::svc) running_effects: SolRunningEffects,
     pub(in crate::sol::svc) calc: SolSvcCalcData,
     pub(in crate::sol::svc) restat: SolSvcRestatData,
 }
-impl SolSvcs {
+impl SolSvc {
     pub(in crate::sol) fn new(src: &Src) -> Self {
         Self {
             running_effects: SolRunningEffects::new(),

@@ -6,7 +6,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_charge_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetChargeStateError> {
-        let charge = self.items.get_item_mut(item_id)?.get_charge_mut()?;
+        let charge = self.uad.items.get_item_mut(item_id)?.get_charge_mut()?;
         let old_state = charge.get_state();
         charge.set_force_disable(!state);
         let new_state = charge.get_state();

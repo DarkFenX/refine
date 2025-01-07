@@ -6,7 +6,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_skill_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetSkillStateError> {
-        let skill = self.items.get_item_mut(item_id)?.get_skill_mut()?;
+        let skill = self.uad.items.get_item_mut(item_id)?.get_skill_mut()?;
         let old_state = skill.get_state();
         skill.set_bool_state(state);
         let new_state = skill.get_state();

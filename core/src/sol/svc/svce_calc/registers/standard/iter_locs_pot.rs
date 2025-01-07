@@ -1,4 +1,4 @@
-use crate::sol::{item::SolItem, svc::svce_calc::SolLocationKind};
+use crate::sol::{svc::svce_calc::SolLocationKind, uad::item::SolItem};
 
 // Iterator over item's potential location roots
 pub(super) struct SolPotentialLocations<'a> {

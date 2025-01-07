@@ -13,7 +13,7 @@ impl SolarSystem {
         projectee_item_id: &SolItemId,
     ) -> Result<(), RemoveFighterProjError> {
         // Check if projection is defined
-        let fighter = self.items.get_item(item_id)?.get_fighter()?;
+        let fighter = self.uad.items.get_item(item_id)?.get_fighter()?;
         if !fighter.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
         };
@@ -24,6 +24,7 @@ impl SolarSystem {
             // Update skeleton for autocharge
             self.proj_tracker.unreg_projectee(&autocharge_id, projectee_item_id);
             let autocharge = self
+                .uad
                 .items
                 .get_item_mut(&autocharge_id)
                 .unwrap()
@@ -35,7 +36,7 @@ impl SolarSystem {
         self.remove_item_id_projection_from_svcs(item_id, projectee_item_id);
         // Update skeleton for fighter
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
-        let fighter = self.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
+        let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
         fighter.get_projs_mut().remove(projectee_item_id);
         Ok(())
     }

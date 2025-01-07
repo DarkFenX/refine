@@ -1,15 +1,15 @@
 use crate::{
     defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{item_info::SolShipInfo, SolarSystem},
+    sol::{info::SolShipInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_fit_ship(&self, fit_id: &SolFitId) -> Result<Option<SolShipInfo>, GetFitShipError> {
-        let fit = self.fits.get_fit(&fit_id)?;
+        let fit = self.uad.fits.get_fit(&fit_id)?;
         Ok(fit
             .ship
-            .map(|v| SolShipInfo::from(self.items.get_item(&v).unwrap().get_ship().unwrap())))
+            .map(|v| SolShipInfo::from(self.uad.items.get_item(&v).unwrap().get_ship().unwrap())))
     }
 }
 

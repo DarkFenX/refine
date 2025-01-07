@@ -1,12 +1,12 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item_info::SolRigInfo, SolarSystem},
+    sol::{info::SolRigInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_rig(&self, item_id: &SolItemId) -> Result<SolRigInfo, GetRigError> {
-        let rig = self.items.get_item(item_id)?.get_rig()?;
+        let rig = self.uad.items.get_item(item_id)?.get_rig()?;
         Ok(SolRigInfo::from(rig))
     }
 }

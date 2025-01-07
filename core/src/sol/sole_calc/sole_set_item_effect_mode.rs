@@ -1,7 +1,7 @@
 use crate::{
     defs::{EEffectId, SolItemId},
     err::basic::ItemFoundError,
-    sol::{SolEffectMode, SolView, SolarSystem},
+    sol::{SolEffectMode, SolarSystem},
 };
 
 impl SolarSystem {
@@ -11,22 +11,13 @@ impl SolarSystem {
         effect_id: &EEffectId,
         mode: SolEffectMode,
     ) -> Result<(), SetItemEffectModeError> {
-        self.items
+        self.uad
+            .items
             .get_item_mut(item_id)?
             .get_effect_modes_mut()
             .set(*effect_id, mode);
-        let item = self.items.get_item(item_id).unwrap();
-        self.svcs.process_effects(
-            &SolView::new(
-                &self.src,
-                &self.fleets,
-                &self.fits,
-                &self.items,
-                &self.default_incoming_dmg,
-            ),
-            item,
-            item.get_state(),
-        );
+        let item = self.uad.items.get_item(item_id).unwrap();
+        self.svc.process_effects(&self.uad, item, item.get_state());
         Ok(())
     }
 }

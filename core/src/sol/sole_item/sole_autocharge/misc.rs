@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{EItemId, SolItemId},
     sol::{
-        item::{SolAutocharge, SolItem},
+        uad::item::{SolAutocharge, SolItem},
         SolarSystem,
     },
     util::StMap,
@@ -10,7 +10,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::sol) fn add_item_autocharges(&mut self, item_id: &SolItemId) {
-        let item = self.items.get_item(&item_id).unwrap();
+        let item = self.uad.items.get_item(&item_id).unwrap();
         let item_state = item.get_state();
         let projections = match item.iter_projs() {
             Some(projections) => projections.map(|(i, r)| (*i, *r)).collect(),
@@ -20,13 +20,13 @@ impl SolarSystem {
         if let (Some(fit_id), true, Some(_)) = (item.get_fit_id(), item.is_loaded(), item.get_autocharges()) {
             let cloned_item = item.clone();
             for effect_id in cloned_item.get_effect_datas().unwrap().keys() {
-                if let Some(effect) = self.src.get_a_effect(effect_id) {
+                if let Some(effect) = self.uad.src.get_a_effect(effect_id) {
                     if let Some(charge_info) = effect.charge {
                         if let ad::AEffectChargeInfo::Attr(charge_attr_id) = charge_info {
                             if let Some(autocharge_type_id) = cloned_item.get_attrs().unwrap().get(&charge_attr_id) {
-                                let autocharge_id = self.items.alloc_item_id();
+                                let autocharge_id = self.uad.items.alloc_item_id();
                                 let mut autocharge = SolAutocharge::new(
-                                    &self.src,
+                                    &self.uad.src,
                                     autocharge_id,
                                     autocharge_type_id.into_inner() as EItemId,
                                     fit_id,
@@ -45,7 +45,7 @@ impl SolarSystem {
                                 // Add autocharge item to skeleton and fill info map
                                 new_ac_map.insert(*effect_id, autocharge.get_id());
                                 let ac_item = SolItem::Autocharge(autocharge);
-                                self.items.add_item(ac_item);
+                                self.uad.items.add_item(ac_item);
                             }
                         }
                     }
@@ -54,6 +54,7 @@ impl SolarSystem {
         }
         if !new_ac_map.is_empty() {
             let item_acs = self
+                .uad
                 .items
                 .get_item_mut(&item_id)
                 .unwrap()

@@ -2,8 +2,8 @@ use crate::{
     defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        item::{SolItem, SolStance},
-        item_info::SolStanceInfo,
+        info::SolStanceInfo,
+        uad::item::{SolItem, SolStance},
         SolarSystem,
     },
 };
@@ -15,22 +15,22 @@ impl SolarSystem {
         type_id: EItemId,
         state: bool,
     ) -> Result<SolStanceInfo, SetFitStanceError> {
-        let fit = self.fits.get_fit(&fit_id)?;
+        let fit = self.uad.fits.get_fit(&fit_id)?;
         // Remove old stance, if it was set
         if let Some(old_item_id) = fit.stance {
             // Update services
             self.remove_item_id_from_svcs(&old_item_id);
             // Update skeleton - do not touch fit, since it will be changed later
-            self.items.remove_item(&old_item_id);
+            self.uad.items.remove_item(&old_item_id);
         }
         // Add new stance
-        let item_id = self.items.alloc_item_id();
-        let stance = SolStance::new(&self.src, item_id, type_id, fit_id, state);
+        let item_id = self.uad.items.alloc_item_id();
+        let stance = SolStance::new(&self.uad.src, item_id, type_id, fit_id, state);
         let info = SolStanceInfo::from(&stance);
         let item = SolItem::Stance(stance);
-        let fit = self.fits.get_fit_mut(&fit_id).unwrap();
+        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.stance = Some(item_id);
-        self.items.add_item(item);
+        self.uad.items.add_item(item);
         self.add_item_id_to_svcs(&item_id);
         Ok(info)
     }

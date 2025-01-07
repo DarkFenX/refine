@@ -3,12 +3,11 @@ use crate::{
     defs::{AttrVal, EAttrId, EEffectId, SolItemId},
     ec,
     sol::{
-        item::SolItem,
         svc::{
             svce_calc::{SolAffecteeFilter, SolAffectorInfo, SolAggrMode, SolDomain, SolModifierKind, SolOp},
-            SolSvcs,
+            SolSvc,
         },
-        SolView,
+        uad::{item::SolItem, SolUad},
     },
 };
 
@@ -172,12 +171,12 @@ impl SolRawModifier {
     pub(in crate::sol::svc::svce_calc) fn get_affector_attr_id(&self) -> Option<EAttrId> {
         self.affector_value.get_affector_attr_id()
     }
-    pub(in crate::sol::svc::svce_calc) fn get_affector_info(&self, sol_view: &SolView) -> Vec<SolAffectorInfo> {
-        self.affector_value.get_affector_info(sol_view, &self.affector_item_id)
+    pub(in crate::sol::svc::svce_calc) fn get_affector_info(&self, uad: &SolUad) -> Vec<SolAffectorInfo> {
+        self.affector_value.get_affector_info(uad, &self.affector_item_id)
     }
-    pub(in crate::sol::svc::svce_calc) fn get_mod_val(&self, svc: &mut SolSvcs, sol_view: &SolView) -> Option<AttrVal> {
+    pub(in crate::sol::svc::svce_calc) fn get_mod_val(&self, svc: &mut SolSvc, uad: &SolUad) -> Option<AttrVal> {
         self.affector_value
-            .get_mod_val(svc, sol_view, &self.affector_item_id, &self.effect_id)
+            .get_mod_val(svc, uad, &self.affector_item_id, &self.effect_id)
     }
     // Revision methods - define if modification value can change upon some action
     pub(in crate::sol::svc::svce_calc) fn needs_revision_on_item_add(&self) -> bool {
@@ -186,16 +185,12 @@ impl SolRawModifier {
     pub(in crate::sol::svc::svce_calc) fn needs_revision_on_item_remove(&self) -> bool {
         self.affector_value.revisable_on_item_remove()
     }
-    pub(in crate::sol::svc::svce_calc) fn revise_on_item_add(&self, added_item: &SolItem, sol_view: &SolView) -> bool {
-        let affector_item = sol_view.items.get_item(&self.affector_item_id).unwrap();
+    pub(in crate::sol::svc::svce_calc) fn revise_on_item_add(&self, added_item: &SolItem, uad: &SolUad) -> bool {
+        let affector_item = uad.items.get_item(&self.affector_item_id).unwrap();
         self.affector_value.revise_on_item_add(affector_item, added_item)
     }
-    pub(in crate::sol::svc::svce_calc) fn revise_on_item_remove(
-        &self,
-        added_item: &SolItem,
-        sol_view: &SolView,
-    ) -> bool {
-        let affector_item = sol_view.items.get_item(&self.affector_item_id).unwrap();
+    pub(in crate::sol::svc::svce_calc) fn revise_on_item_remove(&self, added_item: &SolItem, uad: &SolUad) -> bool {
+        let affector_item = uad.items.get_item(&self.affector_item_id).unwrap();
         self.affector_value.revise_on_item_remove(affector_item, added_item)
     }
 }

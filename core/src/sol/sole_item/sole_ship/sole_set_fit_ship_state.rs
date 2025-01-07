@@ -1,18 +1,18 @@
 use crate::{
     defs::SolFitId,
     err::basic::{FitFoundError, FitHasItemKindError},
-    sol::{item::SolShip, SolarSystem},
+    sol::{uad::item::SolShip, SolarSystem},
     util::Named,
 };
 
 impl SolarSystem {
     pub fn set_fit_ship_state(&mut self, fit_id: &SolFitId, state: bool) -> Result<(), SetFitShipStateError> {
-        let fit = self.fits.get_fit(fit_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
         let item_id = match fit.ship {
             Some(item_id) => item_id,
             None => return Err(FitHasItemKindError::new(*fit_id, SolShip::get_name()).into()),
         };
-        let ship = self.items.get_item_mut(&item_id).unwrap().get_ship_mut().unwrap();
+        let ship = self.uad.items.get_item_mut(&item_id).unwrap().get_ship_mut().unwrap();
         let old_state = ship.get_state();
         ship.set_bool_state(state);
         let new_state = ship.get_state();

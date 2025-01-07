@@ -1,15 +1,15 @@
-use crate::sol::{SolDebugError, SolDebugResult, SolView};
+use crate::sol::{uad::SolUad, SolDebugError, SolDebugResult};
 
 use super::SolProjTracker;
 
 impl SolProjTracker {
-    pub(in crate::sol) fn debug_consistency_check(&self, sol_view: &SolView) -> SolDebugResult {
+    pub(in crate::sol) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
         for (projectee_item_id, projector_item_ids) in self.data.iter() {
-            if sol_view.items.get_item(projectee_item_id).is_err() {
+            if uad.items.get_item(projectee_item_id).is_err() {
                 return Err(SolDebugError::new());
             }
             for projector_item_id in projector_item_ids {
-                if sol_view.items.get_item(projector_item_id).is_err() {
+                if uad.items.get_item(projector_item_id).is_err() {
                     return Err(SolDebugError::new());
                 }
             }

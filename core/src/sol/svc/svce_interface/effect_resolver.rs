@@ -1,8 +1,11 @@
 use crate::{
     ad, ec,
     sol::{
-        item::{SolItem, SolItemState},
-        SolEffectMode, SolView,
+        uad::{
+            item::{SolItem, SolItemState},
+            SolUad,
+        },
+        SolEffectMode,
     },
 };
 
@@ -63,14 +66,14 @@ fn resolve_effect_status_full(
 }
 
 pub(in crate::sol::svc) fn resolve_online_effect_status(
-    sol_view: &SolView,
+    uad: &SolUad,
     item: &SolItem,
     item_state: SolItemState,
 ) -> bool {
     if !item.get_effect_datas().unwrap().contains_key(&ec::effects::ONLINE) {
         return false;
     }
-    let effect = match sol_view.src.get_a_effect(&ec::effects::ONLINE) {
+    let effect = match uad.src.get_a_effect(&ec::effects::ONLINE) {
         Some(effect) => effect,
         None => return false,
     };

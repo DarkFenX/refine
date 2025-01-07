@@ -1,8 +1,8 @@
 use crate::sol::{
-    item::{SolItem, SolShipKind},
     svc::svce_calc::{
         registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolDomain, SolLocationKind, SolRawModifier,
     },
+    uad::item::{SolItem, SolShipKind},
 };
 
 use super::{add_ctx_modifier, remove_ctx_modifier};

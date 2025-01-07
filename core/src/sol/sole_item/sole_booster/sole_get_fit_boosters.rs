@@ -1,16 +1,16 @@
 use crate::{
     defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{item_info::SolBoosterInfo, SolarSystem},
+    sol::{info::SolBoosterInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_fit_boosters(&self, fit_id: &SolFitId) -> Result<Vec<SolBoosterInfo>, GetFitBoostersError> {
-        let fit = self.fits.get_fit(fit_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
         let booster_infos = fit
             .boosters
             .iter()
-            .map(|v| self.make_booster_info(self.items.get_item(v).unwrap().get_booster().unwrap()))
+            .map(|v| self.make_booster_info(self.uad.items.get_item(v).unwrap().get_booster().unwrap()))
             .collect();
         Ok(booster_infos)
     }

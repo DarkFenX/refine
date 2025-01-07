@@ -1,7 +1,7 @@
 use crate::{
     defs::SolItemId,
     err::basic::ItemLoadedError,
-    sol::{item::SolItem, svc::svce_calc::misc::SolItemAttrValData},
+    sol::{svc::svce_calc::misc::SolItemAttrValData, uad::item::SolItem},
     util::StMap,
 };
 

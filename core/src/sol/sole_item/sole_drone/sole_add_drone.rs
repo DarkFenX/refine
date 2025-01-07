@@ -2,8 +2,8 @@ use crate::{
     defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
-        item::{SolDrone, SolItem, SolItemAddMutation, SolItemState},
-        item_info::SolDroneInfo,
+        info::SolDroneInfo,
+        uad::item::{SolDrone, SolItem, SolItemAddMutation, SolItemState},
         SolarSystem,
     },
 };
@@ -16,13 +16,13 @@ impl SolarSystem {
         state: SolItemState,
         mutation: Option<SolItemAddMutation>,
     ) -> Result<SolDroneInfo, AddDroneError> {
-        let item_id = self.items.alloc_item_id();
-        let drone = SolDrone::new(&self.src, item_id, type_id, fit_id, state, mutation);
+        let item_id = self.uad.items.alloc_item_id();
+        let drone = SolDrone::new(&self.uad.src, item_id, type_id, fit_id, state, mutation);
         let info = self.make_drone_info(&drone);
         let item = SolItem::Drone(drone);
-        let fit = self.fits.get_fit_mut(&fit_id)?;
+        let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.drones.insert(item_id);
-        self.items.add_item(item);
+        self.uad.items.add_item(item);
         self.add_item_id_to_svcs(&item_id);
         Ok(info)
     }

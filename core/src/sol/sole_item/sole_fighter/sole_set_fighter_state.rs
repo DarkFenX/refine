@@ -3,13 +3,13 @@ use itertools::Itertools;
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item::SolItemState, SolarSystem},
+    sol::{uad::item::SolItemState, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn set_fighter_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetFighterStateError> {
         // Update skeleton for fighter
-        let fighter = self.items.get_item_mut(item_id)?.get_fighter_mut()?;
+        let fighter = self.uad.items.get_item_mut(item_id)?.get_fighter_mut()?;
         let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         let old_state = fighter.get_state();
         fighter.set_state(state);
@@ -18,6 +18,7 @@ impl SolarSystem {
         for autocharge_id in autocharge_ids {
             // Update skeleton for autocharge
             let autocharge = self
+                .uad
                 .items
                 .get_item_mut(&autocharge_id)
                 .unwrap()

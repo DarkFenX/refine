@@ -1,7 +1,7 @@
 use crate::{
     ad,
     defs::{EItemGrpId, EItemId},
-    sol::{item::SolItem, svc::svce_calc::SolDomain},
+    sol::{svc::svce_calc::SolDomain, uad::item::SolItem},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]

@@ -1,25 +1,19 @@
 use crate::{
     defs::SolFitId,
     err::basic::{FitDmgProfileFoundError, FitFoundError},
-    sol::{SolView, SolarSystem},
+    sol::SolarSystem,
 };
 
 impl SolarSystem {
     pub fn remove_fit_rah_incoming_dmg(&mut self, fit_id: &SolFitId) -> Result<(), RemoveFitRahIncomingDmgError> {
-        let fit = self.fits.get_fit_mut(fit_id)?;
+        let fit = self.uad.fits.get_fit_mut(fit_id)?;
         let old_dmg_profile = fit.rah_incoming_dmg.take();
         match old_dmg_profile {
             Some(old_dmg_profile) => {
                 // Do not trigger anything in services if effectively RAH profile is not changed -
                 // RAH sim uses default incoming dmg if RAH profile is not set
-                if self.default_incoming_dmg != old_dmg_profile {
-                    self.svcs.default_incoming_dmg_profile_changed(&SolView::new(
-                        &self.src,
-                        &self.fleets,
-                        &self.fits,
-                        &self.items,
-                        &self.default_incoming_dmg,
-                    ));
+                if self.uad.default_incoming_dmg != old_dmg_profile {
+                    self.svc.default_incoming_dmg_profile_changed(&self.uad);
                 }
             }
             None => return Err(FitDmgProfileFoundError::new(*fit_id).into()),

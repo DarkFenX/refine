@@ -6,7 +6,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_autocharge_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetAutochargeStateError> {
-        let autocharge = self.items.get_item_mut(item_id)?.get_autocharge_mut()?;
+        let autocharge = self.uad.items.get_item_mut(item_id)?.get_autocharge_mut()?;
         let old_state = autocharge.get_state();
         autocharge.set_force_disable(!state);
         let new_state = autocharge.get_state();

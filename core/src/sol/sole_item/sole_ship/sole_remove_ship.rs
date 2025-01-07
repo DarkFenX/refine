@@ -1,13 +1,13 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item::SolShipKind, SolarSystem},
+    sol::{uad::item::SolShipKind, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn remove_ship(&mut self, item_id: &SolItemId) -> Result<(), RemoveShipError> {
         // Just check if everything is correct
-        let item = self.items.get_item(item_id)?;
+        let item = self.uad.items.get_item(item_id)?;
         let ship = item.get_ship()?;
         let fit_id = ship.get_fit_id();
         // Remove incoming projections
@@ -15,10 +15,10 @@ impl SolarSystem {
         // Remove ship from services
         self.remove_item_id_from_svcs(item_id);
         // Remove ship from skeleton
-        let fit = self.fits.get_fit_mut(&fit_id).unwrap();
+        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.ship = None;
         fit.kind = SolShipKind::Unknown;
-        self.items.remove_item(item_id);
+        self.uad.items.remove_item(item_id);
         Ok(())
     }
 }

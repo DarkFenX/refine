@@ -1,12 +1,12 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item_info::SolModuleInfo, SolarSystem},
+    sol::{info::SolModuleInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_module(&self, item_id: &SolItemId) -> Result<SolModuleInfo, GetModuleError> {
-        let module = self.items.get_item(item_id)?.get_module()?;
+        let module = self.uad.items.get_item(item_id)?.get_module()?;
         Ok(self.make_module_info(module))
     }
 }

@@ -3,12 +3,12 @@ use crate::{
     defs::SolFitId,
     ec,
     sol::{
-        item::{SolItem, SolItemState},
-        svc::SolSvcs,
+        svc::SolSvc,
+        uad::item::{SolItem, SolItemState},
     },
 };
 
-impl SolSvcs {
+impl SolSvc {
     pub(in crate::sol::svc) fn restat_fit_added(&mut self, fit_id: &SolFitId) {
         self.restat.add_fit(*fit_id);
     }

@@ -5,14 +5,14 @@ use crate::{
     sol::{
         svc::{
             svce_calc::{SolContext, SolCtxModifier, SolModifierKind},
-            SolSvcs,
+            SolSvc,
         },
-        SolView,
+        uad::SolUad,
     },
 };
 
-impl SolSvcs {
-    pub(super) fn calc_resist_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
+impl SolSvc {
+    pub(super) fn calc_resist_mult(&mut self, uad: &SolUad, modifier: &SolCtxModifier) -> Option<AttrVal> {
         // Only buffs and targeted modifiers can be resisted
         if !matches!(modifier.raw.kind, SolModifierKind::Buff | SolModifierKind::Targeted) {
             return None;
@@ -25,13 +25,13 @@ impl SolSvcs {
             SolContext::Item(projectee_item_id) => projectee_item_id,
             _ => return None,
         };
-        let resist = match self.calc_get_item_attr_val(sol_view, &projectee_item_id, &resist_attr_id) {
+        let resist = match self.calc_get_item_attr_val(uad, &projectee_item_id, &resist_attr_id) {
             Ok(val) => val.dogma,
             _ => return None,
         };
         Some(resist)
     }
-    pub(super) fn calc_proj_mult(&mut self, sol_view: &SolView, modifier: &SolCtxModifier) -> Option<AttrVal> {
+    pub(super) fn calc_proj_mult(&mut self, uad: &SolUad, modifier: &SolCtxModifier) -> Option<AttrVal> {
         let projectee_item_id = match modifier.ctx {
             SolContext::Item(projectee_item_id) => projectee_item_id,
             _ => return None,
@@ -46,22 +46,22 @@ impl SolSvcs {
                 None => return None,
             };
         match modifier.raw.kind {
-            SolModifierKind::Targeted => self.calc_proj_mult_targeted(sol_view, modifier, proj_range),
-            SolModifierKind::Buff => self.calc_proj_mult_buff(sol_view, modifier, proj_range),
+            SolModifierKind::Targeted => self.calc_proj_mult_targeted(uad, modifier, proj_range),
+            SolModifierKind::Buff => self.calc_proj_mult_buff(uad, modifier, proj_range),
             _ => None,
         }
     }
     // Private methods
     fn calc_proj_mult_targeted(
         &mut self,
-        sol_view: &SolView,
+        uad: &SolUad,
         modifier: &SolCtxModifier,
         proj_range: AttrVal,
     ) -> Option<AttrVal> {
         // Assume optimal range is 0 if it's not available
         let affector_optimal = match modifier.raw.optimal_attr_id {
             Some(optimal_attr_id) => {
-                match self.calc_get_item_attr_val(sol_view, &modifier.raw.affector_item_id, &optimal_attr_id) {
+                match self.calc_get_item_attr_val(uad, &modifier.raw.affector_item_id, &optimal_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -71,7 +71,7 @@ impl SolSvcs {
         // Assume falloff range is 0 if it's not available
         let affector_falloff = match modifier.raw.falloff_attr_id {
             Some(falloff_attr_id) => {
-                match self.calc_get_item_attr_val(sol_view, &modifier.raw.affector_item_id, &falloff_attr_id) {
+                match self.calc_get_item_attr_val(uad, &modifier.raw.affector_item_id, &falloff_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -97,15 +97,10 @@ impl SolSvcs {
             Some(OF(0.0))
         }
     }
-    fn calc_proj_mult_buff(
-        &mut self,
-        sol_view: &SolView,
-        modifier: &SolCtxModifier,
-        proj_range: AttrVal,
-    ) -> Option<AttrVal> {
+    fn calc_proj_mult_buff(&mut self, uad: &SolUad, modifier: &SolCtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
         let affector_optimal = match modifier.raw.optimal_attr_id {
             Some(optimal_attr_id) => {
-                match self.calc_get_item_attr_val(sol_view, &modifier.raw.affector_item_id, &optimal_attr_id) {
+                match self.calc_get_item_attr_val(uad, &modifier.raw.affector_item_id, &optimal_attr_id) {
                     Ok(val) => val.dogma,
                     // If optimal range attribute ID is defined but value is not available, assume
                     // optimal range of 0

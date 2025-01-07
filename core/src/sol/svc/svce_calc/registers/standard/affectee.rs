@@ -1,10 +1,12 @@
 use crate::{
     defs::{SolFitId, SolItemId},
     sol::{
-        fit::SolFit,
-        item::{SolItem, SolShipKind},
         svc::svce_calc::{SolAffecteeFilter, SolContext, SolCtxModifier, SolDomain, SolLocationKind, SolModifierKind},
-        SolView,
+        uad::{
+            fit::SolFit,
+            item::{SolItem, SolShipKind},
+            SolUad,
+        },
     },
     util::extend_vec_from_map_set_l1,
 };
@@ -16,27 +18,25 @@ impl SolStandardRegister {
     pub(in crate::sol::svc::svce_calc) fn fill_affectees(
         &self,
         affectees: &mut Vec<SolItemId>,
-        sol_view: &SolView,
+        uad: &SolUad,
         modifier: &SolCtxModifier,
     ) {
         affectees.clear();
         match modifier.ctx {
-            SolContext::None => self.fill_affectees_no_context(affectees, sol_view, modifier),
-            SolContext::Fit(fit_id) => self.fill_affectees_for_fit(affectees, sol_view, modifier, fit_id),
+            SolContext::None => self.fill_affectees_no_context(affectees, uad, modifier),
+            SolContext::Fit(fit_id) => self.fill_affectees_for_fit(affectees, uad, modifier, fit_id),
             SolContext::Item(item_id) => match modifier.raw.kind {
-                SolModifierKind::System => self.fill_affectees_for_item_system(affectees, sol_view, modifier, item_id),
-                SolModifierKind::Targeted => {
-                    self.fill_affectees_for_item_target(affectees, sol_view, modifier, item_id)
-                }
-                SolModifierKind::Buff => self.fill_affectees_for_item_buff(affectees, sol_view, modifier, item_id),
+                SolModifierKind::System => self.fill_affectees_for_item_system(affectees, uad, modifier, item_id),
+                SolModifierKind::Targeted => self.fill_affectees_for_item_target(affectees, uad, modifier, item_id),
+                SolModifierKind::Buff => self.fill_affectees_for_item_buff(affectees, uad, modifier, item_id),
                 _ => (),
             },
         }
     }
     // Modification methods
-    pub(in crate::sol::svc::svce_calc) fn reg_affectee(&mut self, sol_view: &SolView, item: &SolItem) {
+    pub(in crate::sol::svc::svce_calc) fn reg_affectee(&mut self, uad: &SolUad, item: &SolItem) {
         let item_id = item.get_id();
-        let fit_opt = item.get_fit_id().map(|v| sol_view.fits.get_fit(&v).ok()).flatten();
+        let fit_opt = item.get_fit_id().map(|v| uad.fits.get_fit(&v).ok()).flatten();
         let root_loc_opt = item.get_root_loc_kind();
         let grp_id_opt = item.get_group_id().ok();
         let srqs_opt = item.get_skill_reqs().ok();
@@ -75,9 +75,9 @@ impl SolStandardRegister {
             self.reg_buffable_for_fw(item);
         }
     }
-    pub(in crate::sol::svc::svce_calc) fn unreg_affectee(&mut self, sol_view: &SolView, item: &SolItem) {
+    pub(in crate::sol::svc::svce_calc) fn unreg_affectee(&mut self, uad: &SolUad, item: &SolItem) {
         let item_id = item.get_id();
-        let fit_opt = item.get_fit_id().map(|v| sol_view.fits.get_fit(&v).ok()).flatten();
+        let fit_opt = item.get_fit_id().map(|v| uad.fits.get_fit(&v).ok()).flatten();
         let root_loc_opt = item.get_root_loc_kind();
         let grp_id_opt = item.get_group_id().ok();
         let srqs_opt = item.get_skill_reqs().ok();
@@ -117,14 +117,14 @@ impl SolStandardRegister {
         }
     }
     // Private methods
-    fn fill_affectees_no_context(&self, affectees: &mut Vec<SolItemId>, sol_view: &SolView, modifier: &SolCtxModifier) {
+    fn fill_affectees_no_context(&self, affectees: &mut Vec<SolItemId>, uad: &SolUad, modifier: &SolCtxModifier) {
         if let SolAffecteeFilter::Direct(dom) = modifier.raw.affectee_filter {
             match dom {
                 SolDomain::Item => {
                     affectees.push(modifier.raw.affector_item_id);
                 }
                 SolDomain::Other => {
-                    let item = sol_view.items.get_item(&modifier.raw.affector_item_id).unwrap();
+                    let item = uad.items.get_item(&modifier.raw.affector_item_id).unwrap();
                     if let Some(other_item_id) = item.get_other() {
                         affectees.push(other_item_id);
                     }
@@ -136,7 +136,7 @@ impl SolStandardRegister {
     fn fill_affectees_for_fit(
         &self,
         affectees: &mut Vec<SolItemId>,
-        sol_view: &SolView,
+        uad: &SolUad,
         modifier: &SolCtxModifier,
         fit_id: SolFitId,
     ) {
@@ -145,7 +145,7 @@ impl SolStandardRegister {
                 SolDomain::Everything => extend_vec_from_map_set_l1(affectees, &self.affectee_buffable, &fit_id),
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        let fit = sol_view.fits.get_fit(&fit_id).unwrap();
+                        let fit = uad.fits.get_fit(&fit_id).unwrap();
                         if check_domain_owner(dom, fit) {
                             extend_vec_from_map_set_l1(affectees, &self.affectee_root, &(fit_id, loc));
                         }
@@ -154,13 +154,13 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Everything => {
-                    if is_fit_of_ship_kind(sol_view, &fit_id) {
+                    if is_fit_of_ship_kind(uad, &fit_id) {
                         extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &(fit_id, SolLocationKind::Ship))
                     }
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        let fit = sol_view.fits.get_fit(&fit_id).unwrap();
+                        let fit = uad.fits.get_fit(&fit_id).unwrap();
                         if check_domain_owner(dom, fit) {
                             extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &(fit_id, loc));
                         }
@@ -169,7 +169,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Everything => {
-                    if is_fit_of_ship_kind(sol_view, &fit_id) {
+                    if is_fit_of_ship_kind(uad, &fit_id) {
                         extend_vec_from_map_set_l1(
                             affectees,
                             &self.affectee_loc_grp,
@@ -179,7 +179,7 @@ impl SolStandardRegister {
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        let fit = sol_view.fits.get_fit(&fit_id).unwrap();
+                        let fit = uad.fits.get_fit(&fit_id).unwrap();
                         if check_domain_owner(dom, fit) {
                             extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &(fit_id, loc, grp_id));
                         }
@@ -188,7 +188,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Everything => {
-                    if is_fit_of_ship_kind(sol_view, &fit_id) {
+                    if is_fit_of_ship_kind(uad, &fit_id) {
                         extend_vec_from_map_set_l1(
                             affectees,
                             &self.affectee_loc_srq,
@@ -198,7 +198,7 @@ impl SolStandardRegister {
                 }
                 _ => {
                     if let Ok(loc) = dom.try_into() {
-                        let fit = sol_view.fits.get_fit(&fit_id).unwrap();
+                        let fit = uad.fits.get_fit(&fit_id).unwrap();
                         if check_domain_owner(dom, fit) {
                             extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &(fit_id, loc, srq_id));
                         }
@@ -213,14 +213,14 @@ impl SolStandardRegister {
     fn fill_affectees_for_item_system(
         &self,
         affectees: &mut Vec<SolItemId>,
-        sol_view: &SolView,
+        uad: &SolUad,
         modifier: &SolCtxModifier,
         projectee_item_id: SolItemId,
     ) {
         match modifier.raw.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Ship => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             affectees.push(projectee_ship.get_id())
@@ -228,7 +228,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Structure => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Structure) {
                             affectees.push(projectee_ship.get_id())
@@ -236,9 +236,9 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Char => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
-                        if let Some(char_id) = get_fit_character(sol_view, &projectee_ship.get_fit_id()) {
+                        if let Some(char_id) = get_fit_character(uad, &projectee_ship.get_fit_id()) {
                             affectees.push(char_id);
                         }
                     }
@@ -247,7 +247,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Ship => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             extend_vec_from_map_set_l1(
@@ -259,7 +259,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Structure => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Structure) {
                             extend_vec_from_map_set_l1(
@@ -271,7 +271,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Char => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -284,7 +284,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Ship => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             extend_vec_from_map_set_l1(
@@ -296,7 +296,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Structure => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Structure) {
                             extend_vec_from_map_set_l1(
@@ -308,7 +308,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Char => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -321,7 +321,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Ship => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             extend_vec_from_map_set_l1(
@@ -333,7 +333,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Structure => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Structure) {
                             extend_vec_from_map_set_l1(
@@ -345,7 +345,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Char => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         extend_vec_from_map_set_l1(
                             affectees,
@@ -357,7 +357,7 @@ impl SolStandardRegister {
                 _ => (),
             },
             SolAffecteeFilter::OwnSrq(srq_id) => {
-                let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                 if let SolItem::Ship(projectee_ship) = projectee_item {
                     extend_vec_from_map_set_l1(
                         affectees,
@@ -371,7 +371,7 @@ impl SolStandardRegister {
     fn fill_affectees_for_item_target(
         &self,
         affectees: &mut Vec<SolItemId>,
-        sol_view: &SolView,
+        uad: &SolUad,
         modifier: &SolCtxModifier,
         projectee_item_id: SolItemId,
     ) {
@@ -383,7 +383,7 @@ impl SolStandardRegister {
             }
             SolAffecteeFilter::Loc(dom) => {
                 if matches!(dom, SolDomain::Target) {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         match projectee_ship.get_kind() {
                             SolShipKind::Ship => extend_vec_from_map_set_l1(
@@ -403,7 +403,7 @@ impl SolStandardRegister {
             }
             SolAffecteeFilter::LocGrp(dom, grp_id) => {
                 if matches!(dom, SolDomain::Target) {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         match projectee_ship.get_kind() {
                             SolShipKind::Ship => extend_vec_from_map_set_l1(
@@ -423,7 +423,7 @@ impl SolStandardRegister {
             }
             SolAffecteeFilter::LocSrq(dom, srq_id) => {
                 if matches!(dom, SolDomain::Target) {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         match projectee_ship.get_kind() {
                             SolShipKind::Ship => extend_vec_from_map_set_l1(
@@ -442,7 +442,7 @@ impl SolStandardRegister {
                 }
             }
             SolAffecteeFilter::OwnSrq(srq_id) => {
-                let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                 if let SolItem::Ship(projectee_ship) = projectee_item {
                     extend_vec_from_map_set_l1(
                         affectees,
@@ -456,20 +456,20 @@ impl SolStandardRegister {
     fn fill_affectees_for_item_buff(
         &self,
         affectees: &mut Vec<SolItemId>,
-        sol_view: &SolView,
+        uad: &SolUad,
         modifier: &SolCtxModifier,
         projectee_item_id: SolItemId,
     ) {
         match modifier.raw.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Everything => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if projectee_item.is_buffable() {
                         affectees.push(projectee_item_id)
                     }
                 }
                 SolDomain::Ship => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             affectees.push(projectee_ship.get_id())
@@ -480,7 +480,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Everything => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             extend_vec_from_map_set_l1(
@@ -492,7 +492,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Ship => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             extend_vec_from_map_set_l1(
@@ -507,7 +507,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Everything => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             extend_vec_from_map_set_l1(
@@ -519,7 +519,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Ship => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             extend_vec_from_map_set_l1(
@@ -534,7 +534,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Everything => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             extend_vec_from_map_set_l1(
@@ -546,7 +546,7 @@ impl SolStandardRegister {
                     }
                 }
                 SolDomain::Ship => {
-                    let projectee_item = sol_view.items.get_item(&projectee_item_id).unwrap();
+                    let projectee_item = uad.items.get_item(&projectee_item_id).unwrap();
                     if let SolItem::Ship(projectee_ship) = projectee_item {
                         if matches!(projectee_ship.get_kind(), SolShipKind::Ship) {
                             extend_vec_from_map_set_l1(
@@ -564,8 +564,8 @@ impl SolStandardRegister {
     }
 }
 
-fn get_fit_character(sol_view: &SolView, fit_id: &SolFitId) -> Option<SolItemId> {
-    sol_view.fits.get_fit(fit_id).ok().map(|v| v.character).flatten()
+fn get_fit_character(uad: &SolUad, fit_id: &SolFitId) -> Option<SolItemId> {
+    uad.fits.get_fit(fit_id).ok().map(|v| v.character).flatten()
 }
 
 fn check_domain_owner(dom: SolDomain, fit: &SolFit) -> bool {
@@ -577,7 +577,7 @@ fn check_domain_owner(dom: SolDomain, fit: &SolFit) -> bool {
     }
 }
 
-fn is_fit_of_ship_kind(sol_view: &SolView, fit_id: &SolFitId) -> bool {
-    let fit = sol_view.fits.get_fit(&fit_id).unwrap();
+fn is_fit_of_ship_kind(uad: &SolUad, fit_id: &SolFitId) -> bool {
+    let fit = uad.fits.get_fit(&fit_id).unwrap();
     matches!(fit.kind, SolShipKind::Ship)
 }

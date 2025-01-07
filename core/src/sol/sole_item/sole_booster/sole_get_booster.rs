@@ -1,12 +1,12 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{item_info::SolBoosterInfo, SolarSystem},
+    sol::{info::SolBoosterInfo, SolarSystem},
 };
 
 impl SolarSystem {
     pub fn get_booster(&self, item_id: &SolItemId) -> Result<SolBoosterInfo, GetBoosterError> {
-        let booster = self.items.get_item(item_id)?.get_booster()?;
+        let booster = self.uad.items.get_item(item_id)?.get_booster()?;
         Ok(self.make_booster_info(booster))
     }
 }

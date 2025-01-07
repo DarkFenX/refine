@@ -1,9 +1,8 @@
 use crate::{
     defs::{AttrVal, EAttrId, EEffectId, SolItemId},
     sol::{
-        item::SolItem,
-        svc::{svce_calc::SolAffectorInfo, SolSvcs},
-        SolView,
+        svc::{svce_calc::SolAffectorInfo, SolSvc},
+        uad::{item::SolItem, SolUad},
     },
 };
 
@@ -27,26 +26,26 @@ impl SolAffectorValue {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, sol_view: &SolView, item_id: &SolItemId) -> Vec<SolAffectorInfo> {
+    pub(super) fn get_affector_info(&self, uad: &SolUad, item_id: &SolItemId) -> Vec<SolAffectorInfo> {
         match self {
             Self::AttrId(attr_id) => vec![SolAffectorInfo::new(*item_id, Some(*attr_id))],
             Self::Hardcoded(_) => vec![SolAffectorInfo::new(*item_id, None)],
-            Self::PropulsionModule => prop::get_affector_info(sol_view, item_id),
+            Self::PropulsionModule => prop::get_affector_info(uad, item_id),
             Self::AncillaryArmorRep => vec![SolAffectorInfo::new(*item_id, Some(aar::AAR_AFFECTOR_ATTR_ID))],
         }
     }
     pub(super) fn get_mod_val(
         &self,
-        svc: &mut SolSvcs,
-        sol_view: &SolView,
+        svc: &mut SolSvc,
+        uad: &SolUad,
         item_id: &SolItemId,
         effect_id: &EEffectId,
     ) -> Option<AttrVal> {
         match self {
-            Self::AttrId(attr_id) => Some(svc.calc_get_item_attr_val(sol_view, item_id, attr_id).ok()?.dogma),
+            Self::AttrId(attr_id) => Some(svc.calc_get_item_attr_val(uad, item_id, attr_id).ok()?.dogma),
             Self::Hardcoded(val) => Some(*val),
-            Self::PropulsionModule => prop::get_mod_val(svc, sol_view, item_id, effect_id),
-            Self::AncillaryArmorRep => aar::get_mod_val(svc, sol_view, item_id),
+            Self::PropulsionModule => prop::get_mod_val(svc, uad, item_id, effect_id),
+            Self::AncillaryArmorRep => aar::get_mod_val(svc, uad, item_id),
         }
     }
     // Revision methods - define if modification value can change upon some action
