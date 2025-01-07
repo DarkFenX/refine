@@ -32,7 +32,7 @@ pub use sol::{
         SolSkillInfo, SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
     },
     svc::{
-        svce_calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
+        calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
         SolEffectInfo,
     },
     uad::{

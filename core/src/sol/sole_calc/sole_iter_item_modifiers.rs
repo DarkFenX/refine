@@ -2,7 +2,7 @@ use crate::{
     defs::{EAttrId, SolItemId},
     err::basic::{ItemFoundError, ItemLoadedError},
     sol::{
-        svc::{err::LoadedItemFoundError, svce_calc::SolModificationInfo},
+        svc::{calc::SolModificationInfo, err::LoadedItemFoundError},
         SolarSystem,
     },
 };
@@ -12,7 +12,7 @@ impl SolarSystem {
         &mut self,
         item_id: &SolItemId,
     ) -> Result<impl ExactSizeIterator<Item = (EAttrId, Vec<SolModificationInfo>)>, IterItemModifiersError> {
-        let modifiers = self.svc.calc_iter_item_mods(&self.uad, item_id)?;
+        let modifiers = self.svc.calc.iter_item_mods(&self.uad, item_id)?;
         Ok(modifiers)
     }
 }

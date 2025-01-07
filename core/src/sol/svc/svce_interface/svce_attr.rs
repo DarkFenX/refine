@@ -12,7 +12,7 @@ impl SolSvc {
     ) {
         // Go through calculator, because if value wasn't calculated and cached - nobody needs to be
         // notified of the change
-        self.calc_force_attr_value_recalc(uad, item_id, attr_id)
+        self.calc.force_attr_value_recalc(uad, item_id, attr_id)
     }
     pub(in crate::sol) fn item_attr_postprocess_changed(
         &mut self,
@@ -22,6 +22,6 @@ impl SolSvc {
     ) {
         // Go through calculator, because if value wasn't calculated and cached - nobody needs to be
         // notified of the change
-        self.calc_force_attr_postprocess_recalc(uad, item_id, attr_id)
+        self.calc.force_attr_postprocess_recalc(uad, item_id, attr_id)
     }
 }

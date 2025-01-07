@@ -2,14 +2,14 @@ use crate::{
     defs::{EAttrId, SolItemId},
     err::basic::{AttrMetaFoundError, ItemFoundError, ItemLoadedError},
     sol::{
-        svc::{err::AttrCalcError, svce_calc::SolAttrVal},
+        svc::{calc::SolAttrVal, err::AttrCalcError},
         SolarSystem,
     },
 };
 
 impl SolarSystem {
     pub fn get_item_attr(&mut self, item_id: &SolItemId, attr_id: &EAttrId) -> Result<SolAttrVal, GetItemAttrError> {
-        let val = self.svc.calc_get_item_attr_val(&self.uad, item_id, attr_id)?;
+        let val = self.svc.calc.get_item_attr_val(&self.uad, item_id, attr_id)?;
         Ok(val)
     }
 }

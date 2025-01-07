@@ -19,7 +19,7 @@ impl SolSvc {
     ) -> Result<SolStatResource, FitFoundError> {
         let ship_id = uad.fits.get_fit(fit_id)?.ship;
         let output = match ship_id {
-            Some(ship_id) => match self.calc_get_item_attr_val(uad, &ship_id, &ec::attrs::CPU_OUTPUT) {
+            Some(ship_id) => match self.calc.get_item_attr_val(uad, &ship_id, &ec::attrs::CPU_OUTPUT) {
                 Ok(attr_val) => attr_val.extra,
                 Err(_) => OF(0.0),
             },
@@ -37,7 +37,8 @@ impl SolSvc {
         let used = users
             .iter()
             .filter_map(|i| {
-                self.calc_get_item_attr_val(uad, i, &ec::attrs::CPU)
+                self.calc
+                    .get_item_attr_val(uad, i, &ec::attrs::CPU)
                     .ok()
                     .map(|v| v.extra)
             })
