@@ -21,6 +21,7 @@ impl HAddSkillCmd {
                 return Err(match error {
                     rc::err::AddSkillError::InvalidSkillLevel(e) => HExecError::InvalidSkillLevel(e),
                     rc::err::AddSkillError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
+                    rc::err::AddSkillError::SkillIdCollision(e) => HExecError::SkillIdCollision(e),
                 })
             }
         };

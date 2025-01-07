@@ -69,7 +69,7 @@ impl From<&SolFit> for SolFitInfo {
             fit.id,
             fit.fleet,
             fit.character,
-            fit.skills.iter().map(|v| *v).collect(),
+            fit.skills.values().map(|v| *v).collect(),
             fit.implants.iter().map(|v| *v).collect(),
             fit.boosters.iter().map(|v| *v).collect(),
             fit.ship,

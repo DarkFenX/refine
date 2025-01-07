@@ -42,7 +42,7 @@ impl SolFit {
             item.debug_consistency_check(uad)?;
         }
         // Skills
-        for item_id in self.skills.iter() {
+        for item_id in self.skills.values() {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(&item_id) {
                 Ok(item) => item,

@@ -1,7 +1,7 @@
 use crate::{
-    defs::{SolFitId, SolFleetId, SolItemId},
+    defs::{EItemId, SolFitId, SolFleetId, SolItemId},
     sol::{misc::SolDmgProfile, uad::item::SolShipKind},
-    util::StSet,
+    util::{StMap, StSet},
 };
 
 #[derive(Clone)]
@@ -10,7 +10,7 @@ pub(in crate::sol) struct SolFit {
     pub(in crate::sol) kind: SolShipKind,
     pub(in crate::sol) fleet: Option<SolFleetId>,
     pub(in crate::sol) character: Option<SolItemId>,
-    pub(in crate::sol) skills: StSet<SolItemId>,
+    pub(in crate::sol) skills: StMap<EItemId, SolItemId>,
     pub(in crate::sol) implants: StSet<SolItemId>,
     pub(in crate::sol) boosters: StSet<SolItemId>,
     pub(in crate::sol) ship: Option<SolItemId>,
@@ -32,7 +32,7 @@ impl SolFit {
             kind: SolShipKind::Unknown,
             fleet: None,
             character: None,
-            skills: StSet::new(),
+            skills: StMap::new(),
             implants: StSet::new(),
             boosters: StSet::new(),
             ship: None,
@@ -51,7 +51,7 @@ impl SolFit {
     pub(in crate::sol) fn all_items(&self) -> Vec<SolItemId> {
         let mut items = Vec::new();
         conditional_push(&mut items, self.character);
-        items.extend(self.skills.iter());
+        items.extend(self.skills.values());
         items.extend(self.implants.iter());
         items.extend(self.boosters.iter());
         conditional_push(&mut items, self.ship);

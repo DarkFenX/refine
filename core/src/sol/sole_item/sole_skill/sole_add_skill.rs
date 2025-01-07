@@ -1,6 +1,6 @@
 use crate::{
     defs::{EItemId, SkillLevel, SolFitId},
-    err::basic::{FitFoundError, SkillLevelError},
+    err::basic::{FitFoundError, SkillEveTypeError, SkillLevelError},
     sol::{
         info::SolSkillInfo,
         uad::item::{SolItem, SolSkill},
@@ -24,7 +24,14 @@ impl SolarSystem {
         let info = SolSkillInfo::from(&skill);
         let item = SolItem::Skill(skill);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
-        fit.skills.insert(item_id);
+        match fit.skills.entry(type_id) {
+            std::collections::hash_map::Entry::Vacant(entry) => {
+                entry.insert(item_id);
+            }
+            std::collections::hash_map::Entry::Occupied(entry) => {
+                return Err(SkillEveTypeError::new(type_id, fit_id, *entry.get()).into());
+            }
+        }
         self.uad.items.add_item(item);
         self.add_item_id_to_svc(&item_id);
         Ok(info)
@@ -35,12 +42,14 @@ impl SolarSystem {
 pub enum AddSkillError {
     InvalidSkillLevel(SkillLevelError),
     FitNotFound(FitFoundError),
+    SkillIdCollision(SkillEveTypeError),
 }
 impl std::error::Error for AddSkillError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::InvalidSkillLevel(e) => Some(e),
             Self::FitNotFound(e) => Some(e),
+            Self::SkillIdCollision(e) => Some(e),
         }
     }
 }
@@ -49,6 +58,7 @@ impl std::fmt::Display for AddSkillError {
         match self {
             Self::InvalidSkillLevel(e) => e.fmt(f),
             Self::FitNotFound(e) => e.fmt(f),
+            Self::SkillIdCollision(e) => e.fmt(f),
         }
     }
 }
@@ -60,5 +70,10 @@ impl From<SkillLevelError> for AddSkillError {
 impl From<FitFoundError> for AddSkillError {
     fn from(error: FitFoundError) -> Self {
         Self::FitNotFound(error)
+    }
+}
+impl From<SkillEveTypeError> for AddSkillError {
+    fn from(error: SkillEveTypeError) -> Self {
+        Self::SkillIdCollision(error)
     }
 }
