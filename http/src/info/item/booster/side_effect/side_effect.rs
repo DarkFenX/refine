@@ -24,7 +24,7 @@ impl HSideEffectInfo {
             // No attribute - declare it as 0% chance instead of hiding from info, to be consistent
             // with how effect runner behaves (it does not run effect if chance attr ID is defined
             // regardless of its value)
-            Err(error) => rc::OF(0.0),
+            Err(_) => rc::OF(0.0),
         };
         let strength = match core_se_info.strength {
             Some(core_se_str) => HSideEffectStr::from_core_str(core_sol, item_id, &core_se_str),

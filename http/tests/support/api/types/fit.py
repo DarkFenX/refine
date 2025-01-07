@@ -110,6 +110,7 @@ class Fit(AttrDict):
             state: Union[bool, type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: Union[dict, None] = None,
     ) -> Union[Item, None]:
         resp = self._client.add_skill_request(
             sol_id=self._sol_id,
@@ -119,7 +120,7 @@ class Fit(AttrDict):
             state=state,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item
