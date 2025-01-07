@@ -30,7 +30,7 @@ impl SolarSystem {
         fit.ship = Some(item_id);
         fit.kind = ship_kind;
         self.uad.items.add_item(item);
-        self.add_item_id_to_svcs(&item_id);
+        self.add_item_id_to_svc(&item_id);
         Ok(info)
     }
 }

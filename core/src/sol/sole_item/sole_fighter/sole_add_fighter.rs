@@ -28,10 +28,10 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.fighters.insert(item_id);
         // Add fighter and autocharges to services
-        self.add_item_id_to_svcs(&item_id);
+        self.add_item_id_to_svc(&item_id);
         let fighter = self.uad.items.get_item(&item_id).unwrap().get_fighter().unwrap();
         for autocharge_id in fighter.get_autocharges().values().map(|v| *v).collect_vec() {
-            self.add_item_id_to_svcs(&autocharge_id);
+            self.add_item_id_to_svc(&autocharge_id);
         }
         // Make info
         let info = self.get_fighter(&item_id).unwrap();

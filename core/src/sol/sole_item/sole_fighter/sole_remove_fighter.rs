@@ -36,14 +36,14 @@ impl SolarSystem {
         // Remove autocharges
         for autocharge_id in autocharge_ids {
             // Update services for autocharge
-            self.remove_item_id_from_svcs(&autocharge_id);
+            self.remove_item_id_from_svc(&autocharge_id);
             // Update skeleton for autocharge - not updating fighter<->autocharge references because
             // both will be removed
             self.uad.items.remove_item(&autocharge_id);
         }
         // Remove fighter
         // Update services for fighter
-        self.remove_item_id_from_svcs(item_id);
+        self.remove_item_id_from_svc(item_id);
         // Update skeleton for fighter
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.fighters.remove(item_id);

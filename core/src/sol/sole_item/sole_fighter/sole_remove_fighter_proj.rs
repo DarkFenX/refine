@@ -20,7 +20,7 @@ impl SolarSystem {
         let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         for autocharge_id in autocharge_ids {
             // Update services for autocharge
-            self.remove_item_id_projection_from_svcs(&autocharge_id, projectee_item_id);
+            self.remove_item_id_projection_from_svc(&autocharge_id, projectee_item_id);
             // Update skeleton for autocharge
             self.proj_tracker.unreg_projectee(&autocharge_id, projectee_item_id);
             let autocharge = self
@@ -33,7 +33,7 @@ impl SolarSystem {
             autocharge.get_projs_mut().remove(projectee_item_id);
         }
         // Update services for fighter
-        self.remove_item_id_projection_from_svcs(item_id, projectee_item_id);
+        self.remove_item_id_projection_from_svc(item_id, projectee_item_id);
         // Update skeleton for fighter
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();

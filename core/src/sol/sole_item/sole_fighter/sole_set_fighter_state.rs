@@ -14,7 +14,7 @@ impl SolarSystem {
         let old_state = fighter.get_state();
         fighter.set_state(state);
         // Update services for fighter
-        self.change_item_id_state_in_svcs(item_id, old_state, state);
+        self.change_item_id_state_in_svc(item_id, old_state, state);
         for autocharge_id in autocharge_ids {
             // Update skeleton for autocharge
             let autocharge = self
@@ -28,7 +28,7 @@ impl SolarSystem {
             autocharge.set_state(state);
             // Update services for autocharge
             let new_state = autocharge.get_state();
-            self.change_item_id_state_in_svcs(&autocharge_id, old_state, new_state);
+            self.change_item_id_state_in_svc(&autocharge_id, old_state, new_state);
         }
         Ok(())
     }

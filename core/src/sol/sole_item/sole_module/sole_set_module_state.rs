@@ -13,7 +13,7 @@ impl SolarSystem {
         module.set_state(state);
         // Update services for module
         let new_state = module.get_state();
-        self.change_item_id_state_in_svcs(item_id, old_state, new_state);
+        self.change_item_id_state_in_svc(item_id, old_state, new_state);
         if let Some(charge_id) = charge_id {
             // Update skeleton for charge
             let charge = self
@@ -27,7 +27,7 @@ impl SolarSystem {
             charge.set_state(state);
             // Update services for charge
             let new_state = charge.get_state();
-            self.change_item_id_state_in_svcs(&charge_id, old_state, new_state);
+            self.change_item_id_state_in_svc(&charge_id, old_state, new_state);
         }
         Ok(())
     }

@@ -47,7 +47,7 @@ impl SolarSystem {
         proj_effect.get_projs_mut().add(projectee_item_id, None);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         // Update services
-        self.add_item_id_projection_to_svcs(item_id, &projectee_item_id, None);
+        self.add_item_id_projection_to_svc(item_id, &projectee_item_id, None);
         Ok(())
     }
 }

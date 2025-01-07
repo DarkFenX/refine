@@ -24,7 +24,7 @@ impl SolarSystem {
         // Update skeleton
         drone.get_projs_mut().add(*projectee_item_id, range);
         // Update services
-        self.change_item_id_projection_range_in_svcs(item_id, projectee_item_id, range);
+        self.change_item_id_projection_range_in_svc(item_id, projectee_item_id, range);
         Ok(())
     }
 }

@@ -48,7 +48,7 @@ impl SolarSystem {
         }
         // Remove module
         // Update services for module
-        self.remove_item_id_from_svcs(item_id);
+        self.remove_item_id_from_svc(item_id);
         // Update skeleton for module
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         match rack {

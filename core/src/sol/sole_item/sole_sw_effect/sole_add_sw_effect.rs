@@ -15,7 +15,7 @@ impl SolarSystem {
         let item = SolItem::SwEffect(sw_effect);
         self.uad.sw_effects.insert(item_id);
         self.uad.items.add_item(item);
-        self.add_item_id_to_svcs(&item_id);
+        self.add_item_id_to_svc(&item_id);
         info
     }
 }

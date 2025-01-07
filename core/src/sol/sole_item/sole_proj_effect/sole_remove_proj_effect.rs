@@ -19,7 +19,7 @@ impl SolarSystem {
             self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         }
         // Remove effect from services
-        self.remove_item_id_from_svcs(item_id);
+        self.remove_item_id_from_svc(item_id);
         // Remove effect from skeleton
         self.uad.proj_effects.remove(item_id);
         self.uad.items.remove_item(item_id);

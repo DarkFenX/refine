@@ -21,7 +21,7 @@ impl SolarSystem {
         // Remove incoming projections
         self.remove_incoming_projections(item_id);
         // Remove drone from services
-        self.remove_item_id_from_svcs(item_id);
+        self.remove_item_id_from_svc(item_id);
         // Remove drone from skeleton
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.drones.remove(item_id);

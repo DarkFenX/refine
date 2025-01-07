@@ -9,7 +9,7 @@ impl SolarSystem {
         let drone = self.uad.items.get_item_mut(item_id)?.get_drone_mut()?;
         let old_state = drone.get_state();
         drone.set_state(state);
-        self.change_item_id_state_in_svcs(item_id, old_state, state);
+        self.change_item_id_state_in_svc(item_id, old_state, state);
         Ok(())
     }
 }

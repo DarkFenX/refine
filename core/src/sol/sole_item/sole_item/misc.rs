@@ -10,15 +10,15 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::sol) fn add_item_id_to_svcs(&mut self, item_id: &SolItemId) {
+    pub(in crate::sol) fn add_item_id_to_svc(&mut self, item_id: &SolItemId) {
         let item = self.uad.items.get_item(&item_id).unwrap();
         self.svc.add_item(&self.uad, item);
     }
-    pub(in crate::sol) fn remove_item_id_from_svcs(&mut self, item_id: &SolItemId) {
+    pub(in crate::sol) fn remove_item_id_from_svc(&mut self, item_id: &SolItemId) {
         let item = self.uad.items.get_item(&item_id).unwrap();
         self.svc.remove_item(&self.uad, item);
     }
-    pub(in crate::sol::sole_item) fn change_item_id_state_in_svcs(
+    pub(in crate::sol::sole_item) fn change_item_id_state_in_svc(
         &mut self,
         item_id: &SolItemId,
         old_state: SolItemState,
@@ -29,7 +29,7 @@ impl SolarSystem {
             self.svc.switch_item_state(&self.uad, item, old_state, new_state);
         }
     }
-    pub(in crate::sol) fn add_item_id_projection_to_svcs(
+    pub(in crate::sol) fn add_item_id_projection_to_svc(
         &mut self,
         projector_item_id: &SolItemId,
         projectee_item_id: &SolItemId,
@@ -40,7 +40,7 @@ impl SolarSystem {
         self.svc
             .add_item_projection(&self.uad, projector_item, projectee_item, range);
     }
-    pub(in crate::sol) fn change_item_id_projection_range_in_svcs(
+    pub(in crate::sol) fn change_item_id_projection_range_in_svc(
         &mut self,
         projector_item_id: &SolItemId,
         projectee_item_id: &SolItemId,
@@ -51,7 +51,7 @@ impl SolarSystem {
         self.svc
             .change_item_proj_range(&self.uad, projector_item, projectee_item, range);
     }
-    pub(in crate::sol) fn remove_item_id_projection_from_svcs(
+    pub(in crate::sol) fn remove_item_id_projection_from_svc(
         &mut self,
         projector_item_id: &SolItemId,
         projectee_item_id: &SolItemId,

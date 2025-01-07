@@ -26,7 +26,7 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.skills.insert(item_id);
         self.uad.items.add_item(item);
-        self.add_item_id_to_svcs(&item_id);
+        self.add_item_id_to_svc(&item_id);
         Ok(info)
     }
 }

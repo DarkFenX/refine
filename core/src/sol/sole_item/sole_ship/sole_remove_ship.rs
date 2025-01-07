@@ -13,7 +13,7 @@ impl SolarSystem {
         // Remove incoming projections
         self.remove_incoming_projections(item_id);
         // Remove ship from services
-        self.remove_item_id_from_svcs(item_id);
+        self.remove_item_id_from_svc(item_id);
         // Remove ship from skeleton
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.ship = None;

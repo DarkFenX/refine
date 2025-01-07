@@ -10,7 +10,7 @@ impl SolarSystem {
         let old_state = proj_effect.get_state();
         proj_effect.set_bool_state(state);
         let new_state = proj_effect.get_state();
-        self.change_item_id_state_in_svcs(item_id, old_state, new_state);
+        self.change_item_id_state_in_svc(item_id, old_state, new_state);
         Ok(())
     }
 }

@@ -44,7 +44,7 @@ impl SolarSystem {
         module.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
         // Update services for module
-        self.add_item_id_projection_to_svcs(item_id, &projectee_item_id, range);
+        self.add_item_id_projection_to_svc(item_id, &projectee_item_id, range);
         if let Some(charge_id) = charge_id {
             // Update skeleton for charge
             let charge = self
@@ -57,7 +57,7 @@ impl SolarSystem {
             charge.get_projs_mut().add(projectee_item_id, range);
             self.proj_tracker.reg_projectee(charge_id, projectee_item_id);
             // Update services for charge
-            self.add_item_id_projection_to_svcs(&charge_id, &projectee_item_id, range);
+            self.add_item_id_projection_to_svc(&charge_id, &projectee_item_id, range);
         }
         Ok(())
     }

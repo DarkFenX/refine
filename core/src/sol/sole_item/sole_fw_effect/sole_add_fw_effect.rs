@@ -22,7 +22,7 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.fw_effects.insert(item_id);
         self.uad.items.add_item(item);
-        self.add_item_id_to_svcs(&item_id);
+        self.add_item_id_to_svc(&item_id);
         Ok(info)
     }
 }

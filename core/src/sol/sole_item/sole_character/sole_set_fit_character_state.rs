@@ -22,7 +22,7 @@ impl SolarSystem {
         let old_state = character.get_state();
         character.set_bool_state(state);
         let new_state = character.get_state();
-        self.change_item_id_state_in_svcs(&item_id, old_state, new_state);
+        self.change_item_id_state_in_svc(&item_id, old_state, new_state);
         Ok(())
     }
 }

@@ -138,7 +138,7 @@ impl SolarSystem {
         let module_info = SolModuleInfo::from_mod_and_charge_with_source(&self.uad.src, module, charge_info);
         self.svc.add_item(&self.uad, module_item);
         if let Some(charge_info) = &module_info.charge {
-            self.add_item_id_to_svcs(&charge_info.id);
+            self.add_item_id_to_svc(&charge_info.id);
         }
         Ok(module_info)
     }

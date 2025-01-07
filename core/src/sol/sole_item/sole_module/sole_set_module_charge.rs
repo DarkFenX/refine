@@ -58,7 +58,7 @@ impl SolarSystem {
         let charge_item = SolItem::Charge(charge);
         self.uad.items.add_item(charge_item);
         // Update services
-        self.add_item_id_to_svcs(&charge_id);
+        self.add_item_id_to_svc(&charge_id);
         // Reapply module projections to charge
         if !module_projs.is_empty() {
             let charge_projs = self

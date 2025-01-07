@@ -28,7 +28,7 @@ impl SolarSystem {
         let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         fighter.get_projs_mut().add(*projectee_item_id, range);
         // Update services for fighter
-        self.change_item_id_projection_range_in_svcs(item_id, projectee_item_id, range);
+        self.change_item_id_projection_range_in_svc(item_id, projectee_item_id, range);
         for autocharge_id in autocharge_ids {
             // Update skeleton for autocharge
             let autocharge = self
@@ -40,7 +40,7 @@ impl SolarSystem {
                 .unwrap();
             autocharge.get_projs_mut().add(*projectee_item_id, range);
             // Update services for autocharge
-            self.change_item_id_projection_range_in_svcs(&autocharge_id, projectee_item_id, range);
+            self.change_item_id_projection_range_in_svc(&autocharge_id, projectee_item_id, range);
         }
         Ok(())
     }

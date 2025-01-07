@@ -18,7 +18,7 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit(&fit_id)?;
         // Remove old character, if it was set
         if let Some(old_item_id) = fit.character {
-            self.remove_item_id_from_svcs(&old_item_id);
+            self.remove_item_id_from_svc(&old_item_id);
             self.uad.items.remove_item(&old_item_id);
         }
         // Add new character
@@ -29,7 +29,7 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.character = Some(item_id);
         self.uad.items.add_item(item);
-        self.add_item_id_to_svcs(&item_id);
+        self.add_item_id_to_svc(&item_id);
         Ok(info)
     }
 }

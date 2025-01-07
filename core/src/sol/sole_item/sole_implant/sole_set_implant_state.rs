@@ -10,7 +10,7 @@ impl SolarSystem {
         let old_state = implant.get_state();
         implant.set_bool_state(state);
         let new_state = implant.get_state();
-        self.change_item_id_state_in_svcs(item_id, old_state, new_state);
+        self.change_item_id_state_in_svc(item_id, old_state, new_state);
         Ok(())
     }
 }
