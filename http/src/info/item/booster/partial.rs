@@ -19,9 +19,8 @@ impl HBoosterInfoPartial {
     pub(super) fn mk_info(core_sol: &mut rc::SolarSystem, core_booster_info: &rc::SolBoosterInfo) -> Self {
         let mut side_effects = HashMap::new();
         for (effect_id, core_se_info) in core_booster_info.side_effects.iter() {
-            if let Some(se_info) = HSideEffectInfo::from_core_info(core_sol, &core_booster_info.id, core_se_info) {
-                side_effects.insert(*effect_id, se_info);
-            }
+            let se_info = HSideEffectInfo::from_core_info(core_sol, &core_booster_info.id, core_se_info);
+            side_effects.insert(*effect_id, se_info);
         }
         Self {
             id: core_booster_info.id,

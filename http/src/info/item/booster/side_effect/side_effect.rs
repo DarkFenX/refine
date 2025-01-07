@@ -18,15 +18,18 @@ impl HSideEffectInfo {
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::SolItemId,
         core_se_info: &rc::SolSideEffectInfo,
-    ) -> Option<Self> {
+    ) -> Self {
         let chance = match core_sol.get_item_attr(item_id, &core_se_info.chance_attr_id) {
             Ok(val) => val.extra,
-            _ => return None,
+            // No attribute - declare it as 0% chance instead of hiding from info, to be consistent
+            // with how effect runner behaves (it does not run effect if chance attr ID is defined
+            // regardless of its value)
+            Err(error) => rc::OF(0.0),
         };
         let strength = match core_se_info.strength {
             Some(core_se_str) => HSideEffectStr::from_core_str(core_sol, item_id, &core_se_str),
             None => None,
         };
-        Some(Self::new(chance, core_se_info.status, strength))
+        Self::new(chance, core_se_info.status, strength)
     }
 }
