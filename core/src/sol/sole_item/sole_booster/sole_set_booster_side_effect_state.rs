@@ -1,6 +1,6 @@
 use crate::{
     defs::{EEffectId, SolItemId},
-    err::basic::{ItemFoundError, ItemKindMatchError, SideEffectError},
+    err::basic::{ItemFoundError, ItemKindMatchError},
     sol::{SolEffectMode, SolarSystem},
 };
 
@@ -12,19 +12,6 @@ impl SolarSystem {
         state: bool,
     ) -> Result<(), SetBoosterSideEffectStateError> {
         let booster = self.uad.items.get_item_mut(item_id)?.get_booster_mut()?;
-        let effect_datas = booster
-            .get_effect_datas()
-            .map_err(|_| SideEffectError::new(*effect_id))?;
-        if !effect_datas.contains_key(effect_id) {
-            return Err(SideEffectError::new(*effect_id).into());
-        }
-        let effect = match self.uad.src.get_a_effect(effect_id) {
-            Some(effect) => effect,
-            None => return Err(SideEffectError::new(*effect_id).into()),
-        };
-        if effect.chance_attr_id.is_none() {
-            return Err(SideEffectError::new(*effect_id).into());
-        }
         let effect_state = match state {
             true => SolEffectMode::StateCompliance,
             false => SolEffectMode::FullCompliance,
@@ -40,7 +27,6 @@ impl SolarSystem {
 pub enum SetBoosterSideEffectStateError {
     ItemNotFound(ItemFoundError),
     ItemIsNotBooster(ItemKindMatchError),
-    NotSideEffect(SideEffectError),
 }
 impl From<ItemFoundError> for SetBoosterSideEffectStateError {
     fn from(error: ItemFoundError) -> Self {
@@ -57,7 +43,6 @@ impl std::error::Error for SetBoosterSideEffectStateError {
         match self {
             Self::ItemNotFound(e) => Some(e),
             Self::ItemIsNotBooster(e) => Some(e),
-            Self::NotSideEffect(e) => Some(e),
         }
     }
 }
@@ -66,12 +51,6 @@ impl std::fmt::Display for SetBoosterSideEffectStateError {
         match self {
             Self::ItemNotFound(e) => e.fmt(f),
             Self::ItemIsNotBooster(e) => e.fmt(f),
-            Self::NotSideEffect(e) => e.fmt(f),
         }
-    }
-}
-impl From<SideEffectError> for SetBoosterSideEffectStateError {
-    fn from(error: SideEffectError) -> Self {
-        Self::NotSideEffect(error)
     }
 }

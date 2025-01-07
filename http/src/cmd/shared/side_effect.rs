@@ -15,7 +15,6 @@ pub(in crate::cmd) fn apply_side_effects(
                 return Err(match error {
                     rc::err::SetBoosterSideEffectStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::SetBoosterSideEffectStateError::ItemIsNotBooster(e) => HExecError::ItemKindMismatch(e),
-                    rc::err::SetBoosterSideEffectStateError::NotSideEffect(e) => HExecError::NotBoosterSideEffect(e),
                 });
             }
         }
