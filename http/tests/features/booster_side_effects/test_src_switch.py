@@ -170,7 +170,7 @@ def test_valid_to_valid_different(client, consts):
     assert api_side.str.val == approx(25)
 
 
-def test_absent_retains_state(client, consts):
+def test_regular_effect_toggle(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_chance_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
