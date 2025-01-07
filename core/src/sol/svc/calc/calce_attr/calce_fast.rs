@@ -5,9 +5,9 @@ use crate::{
     ec,
     err::basic::AttrMetaFoundError,
     sol::{
-        svc::{
-            calc::{SolAttrVal, SolCalc, SolModAccumFast, SolModification, SolModificationKey},
-            err::{AttrCalcError, LoadedItemFoundError},
+        svc::calc::{
+            AttrCalcError, LoadedItemFoundError, SolAttrVal, SolCalc, SolModAccumFast, SolModification,
+            SolModificationKey,
         },
         uad::{item::SolItem, SolUad},
     },

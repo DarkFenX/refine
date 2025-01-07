@@ -5,7 +5,6 @@ pub use misc::SolEffectInfo;
 pub(in crate::sol) use svc::SolSvc;
 
 pub(crate) mod calc;
-pub(in crate::sol) mod err;
 mod misc;
 mod rest;
 mod svc;

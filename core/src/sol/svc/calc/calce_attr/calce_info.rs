@@ -7,12 +7,9 @@ use crate::{
     ec,
     err::basic::AttrMetaFoundError,
     sol::{
-        svc::{
-            calc::{
-                SolAffectorInfo, SolAttrValInfo, SolCalc, SolModAccumInfo, SolModification, SolModificationInfo,
-                SolModificationKey, SolOpInfo,
-            },
-            err::{AttrCalcError, LoadedItemFoundError},
+        svc::calc::{
+            AttrCalcError, LoadedItemFoundError, SolAffectorInfo, SolAttrValInfo, SolCalc, SolModAccumInfo,
+            SolModification, SolModificationInfo, SolModificationKey, SolOpInfo,
         },
         uad::{item::SolItem, SolUad},
     },

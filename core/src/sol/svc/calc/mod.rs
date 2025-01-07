@@ -32,6 +32,7 @@
 
 use accum::{SolAttrValInfo, SolModAccumFast, SolModAccumInfo};
 pub(in crate::sol::svc) use calc::SolCalc;
+pub(in crate::sol) use err::{AttrCalcError, LoadedItemFoundError};
 pub use misc::SolAttrVal;
 use misc::{SolAttrSpec, SolLocationKind, SolModification, SolModificationKey};
 pub use mod_info::{SolAffectorInfo, SolModificationInfo, SolOpInfo};
@@ -48,6 +49,7 @@ mod calce_effect_attrs;
 mod calce_maintain;
 mod calce_modgen;
 mod calce_rah;
+mod err;
 mod misc;
 mod mod_info;
 mod modifier;
