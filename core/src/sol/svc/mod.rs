@@ -1,11 +1,9 @@
 //! Solar system services - attribute & stats calculations, restrictions, and so on.
 
-pub(in crate::sol::svc) use misc::debug;
-pub use misc::SolEffectInfo;
 pub(in crate::sol) use svc::SolSvc;
 
 pub(crate) mod calc;
-mod misc;
+mod debug;
 mod rest;
 mod running_effects;
 mod svc;
