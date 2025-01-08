@@ -253,7 +253,7 @@ def test_insignificant_stacking(client, consts):
 
 
 def test_insignificant_base(client, consts):
-    # When value on top of which modifications should be applied is 0, all multiplications are
+    # When value on top of which modifications should be applied is 0, all percent modifications are
     # insignificant and are not exposed as modifications
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
@@ -278,7 +278,7 @@ def test_insignificant_base(client, consts):
 
 
 def test_insignificant_modified_base(client, consts):
-    # When value on top of which modifications should be applied is 0, all multiplications are
+    # When value on top of which modifications should be applied is 0, all percent modifications are
     # insignificant and are not exposed as modifications
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()

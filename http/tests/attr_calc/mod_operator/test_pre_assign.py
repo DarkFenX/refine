@@ -18,7 +18,7 @@ def setup_hig_test(*, client, consts, high_is_good):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item_affector1 = api_fit.add_rig(type_id=eve_item_affector1_id)
+    api_fit.add_rig(type_id=eve_item_affector1_id)
     api_item_affector2 = api_fit.add_rig(type_id=eve_item_affector2_id)
     api_item_affector3 = api_fit.add_rig(type_id=eve_item_affector3_id)
     api_item_affectee = api_fit.set_ship(type_id=eve_item_affectee_id)
@@ -26,13 +26,12 @@ def setup_hig_test(*, client, consts, high_is_good):
     return (
         api_item_affectee.attrs[eve_affectee_attr_id].dogma,
         api_item_affectee.mods[eve_affectee_attr_id],
-        api_item_affector1,
         api_item_affector2,
         api_item_affector3)
 
 
 def test_high_is_good(client, consts):
-    attr_val, attr_mods, _, _, api_item_affector3 = setup_hig_test(client=client, consts=consts, high_is_good=True)
+    attr_val, attr_mods, _, api_item_affector3 = setup_hig_test(client=client, consts=consts, high_is_good=True)
     assert attr_val == approx(53.02)
     attr_mod = attr_mods.one()
     assert attr_mod.op == consts.ApiModOp.pre_assign
@@ -43,7 +42,7 @@ def test_high_is_good(client, consts):
 
 
 def test_high_is_bad(client, consts):
-    attr_val, attr_mods, _, api_item_affector2, _ = setup_hig_test(client=client, consts=consts, high_is_good=False)
+    attr_val, attr_mods, api_item_affector2, _ = setup_hig_test(client=client, consts=consts, high_is_good=False)
     assert attr_val == approx(-20)
     attr_mod = attr_mods.one()
     assert attr_mod.op == consts.ApiModOp.pre_assign
