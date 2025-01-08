@@ -44,17 +44,6 @@ impl SolCalc {
             Some(dmg_profile) => dmg_profile,
             None => uad.default_incoming_dmg,
         };
-        if dmg_profile.em <= OF(0.0)
-            && dmg_profile.thermal <= OF(0.0)
-            && dmg_profile.kinetic <= OF(0.0)
-            && dmg_profile.explosive <= OF(0.0)
-        {
-            for (item_id, item_sim_data) in sim_datas.iter() {
-                // Sets unadapted values, since info contains unadapted resonance values
-                self.set_rah_result(uad, item_id, item_sim_data.info.resos, false);
-            }
-            return;
-        }
         let mut history_entries_seen = StSet::new();
         let mut sim_history = Vec::new();
         // Run "zero" simulation tick - write initial results and record initial state in history
