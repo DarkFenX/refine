@@ -268,7 +268,7 @@ fn get_next_resonances(
     // damage of those types
     let donors = taken_dmg.iter().filter(|v| **v == OF(0.0)).count().max(2);
     let recipients = 4 - donors as u8;
-    // Indices are against damage type container, i.e. order is EM, explosive, kinetic, explosive.
+    // Indices are against damage type container, i.e. order is EM, explosive, kinetic, thermal.
     // When equal damage is received across several damage types, those which come earlier in this
     // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,
     // since the list is in attribute ID ascending order.
