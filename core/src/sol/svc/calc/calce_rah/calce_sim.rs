@@ -268,6 +268,11 @@ fn get_next_resonances(
     // damage of those types
     let donors = taken_dmg.iter().filter(|v| **v == OF(0.0)).count().max(2);
     let recipients = 4 - donors as u8;
+    // There can be 4 donors (and thus 0 recipients) in case no damage is received, which can happen
+    // when resists reach 100% (or resonance reaches 0)
+    if recipients == 0 {
+        return resonances;
+    }
     // Indices are against damage type container, i.e. order is EM, explosive, kinetic, thermal.
     // When equal damage is received across several damage types, those which come earlier in this
     // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,
