@@ -172,3 +172,39 @@ def test_duplicate_unloaded(client, consts):
     api_fit.update()
     assert len(api_fit.skills) == 1
     assert api_fit.skills[0].id == api_item.id
+
+
+def test_level_modification(client, consts):
+    # Check that modifications of skill attribute are completely ignored
+    eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.skill_level)
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.item,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 4, eve_affectee_attr_id: 0}, eff_ids=[eve_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_skill(type_id=eve_item_id, level=5)
+    # Verification
+    api_item.update()
+    assert api_item.level == 5
+    assert api_item.attrs[eve_affectee_attr_id].base == approx(0)
+    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(5)
+    assert api_item.attrs[eve_affectee_attr_id].extra == approx(5)
+    with check_no_field():
+        api_item.mods  # pylint: disable=W0104
+    # Action
+    api_item.change_skill(level=3)
+    # Verification
+    api_item.update()
+    assert api_item.level == 3
+    assert api_item.attrs[eve_affectee_attr_id].base == approx(0)
+    assert api_item.attrs[eve_affectee_attr_id].dogma == approx(3)
+    assert api_item.attrs[eve_affectee_attr_id].extra == approx(3)
+    with check_no_field():
+        api_item.mods  # pylint: disable=W0104
