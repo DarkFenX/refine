@@ -217,10 +217,10 @@ impl SolCalc {
     fn set_rah_result(&mut self, uad: &SolUad, item_id: &SolItemId, resos: SolDmgTypes<SolAttrVal>, notify: bool) {
         self.rah.resonances.get_mut(item_id).unwrap().replace(resos);
         if notify {
-            self.force_attr_postprocess_recalc(uad, item_id, &EM_ATTR_ID);
-            self.force_attr_postprocess_recalc(uad, item_id, &THERM_ATTR_ID);
-            self.force_attr_postprocess_recalc(uad, item_id, &KIN_ATTR_ID);
-            self.force_attr_postprocess_recalc(uad, item_id, &EXPL_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &EM_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &THERM_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &KIN_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &EXPL_ATTR_ID);
         }
     }
     fn set_partial_fit_rahs_result(

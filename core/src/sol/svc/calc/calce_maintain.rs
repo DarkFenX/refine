@@ -243,7 +243,7 @@ impl SolCalc {
             }
         }
     }
-    pub(in crate::sol::svc) fn force_attr_postprocess_recalc(
+    pub(in crate::sol::svc) fn force_attr_postproc_recalc(
         &mut self,
         uad: &SolUad,
         item_id: &SolItemId,

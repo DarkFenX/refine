@@ -3,7 +3,7 @@
 //! often than modification info fetching).
 
 use crate::{
-    defs::{AttrVal, EAttrId, SolItemId},
+    defs::{EAttrId, SolItemId},
     ec,
     err::basic::AttrMetaFoundError,
     sol::{
@@ -118,12 +118,6 @@ impl SolCalc {
             Some(orig_val) => *orig_val,
             None => attr.def_val,
         };
-        match (attr_id, item) {
-            (&ec::attrs::SKILL_LEVEL, SolItem::Skill(s)) => {
-                return Ok(SolAttrValInfo::new(AttrVal::from(s.get_level())))
-            }
-            _ => (),
-        }
         let mut accumulator = SolModAccumInfo::new();
         for affection in self.iter_affections(uad, item, attr_id) {
             accumulator.add_val(
@@ -179,6 +173,14 @@ impl SolCalc {
         }
         // Post-dogma calculations
         let extra_attr_info = accumulator.apply_extra_mods(dogma_attr_info, attr.hig);
-        Ok(extra_attr_info)
+        // Custom post-processing functions - since infos are not cached, it's fine to have it here
+        let attr_info = match self.attrs.get_item_attr_data(item_id).unwrap().postprocs.get(attr_id) {
+            Some(postprocs) => {
+                let pp_fn = postprocs.info;
+                pp_fn(self, uad, item_id, extra_attr_info)
+            }
+            None => extra_attr_info,
+        };
+        Ok(attr_info)
     }
 }

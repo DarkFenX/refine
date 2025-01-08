@@ -32,8 +32,11 @@ impl SolCalc {
         // Try accessing cached value
         let item_attr_data = self.attrs.get_item_attr_data(item_id)?;
         if let Some(val) = item_attr_data.values.get(attr_id) {
-            return Ok(match item_attr_data.postprocessors.get(attr_id) {
-                Some(pp_fn) => pp_fn(self, uad, item_id, *val),
+            return Ok(match item_attr_data.postprocs.get(attr_id) {
+                Some(postprocs) => {
+                    let pp_fn = postprocs.fast;
+                    pp_fn(self, uad, item_id, *val)
+                }
                 None => *val,
             });
         }
@@ -41,7 +44,8 @@ impl SolCalc {
         let mut val = self.calc_item_attr_val(uad, item_id, attr_id)?;
         let item_attr_data = self.attrs.get_item_attr_data_mut(item_id).unwrap();
         item_attr_data.values.insert(*attr_id, val);
-        if let Some(pp_fn) = item_attr_data.postprocessors.get(attr_id) {
+        if let Some(postprocs) = item_attr_data.postprocs.get(attr_id) {
+            let pp_fn = postprocs.fast;
             val = pp_fn(self, uad, item_id, val);
         }
         Ok(val)
@@ -74,7 +78,7 @@ impl SolCalc {
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
         let item_attr_data = self.attrs.get_item_attr_data(item_id)?;
-        let pp_attr_ids = item_attr_data.postprocessors.keys().map(|v| *v).collect_vec();
+        let pp_attr_ids = item_attr_data.postprocs.keys().map(|v| *v).collect_vec();
         let mut vals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
@@ -92,9 +96,10 @@ impl SolCalc {
                     .attrs
                     .get_item_attr_data(item_id)
                     .unwrap()
-                    .postprocessors
+                    .postprocs
                     .get(&pp_attr_id)
-                    .unwrap();
+                    .unwrap()
+                    .fast;
                 let val = pp_fn(self, uad, item_id, *val);
                 vals.insert(pp_attr_id, val);
             }

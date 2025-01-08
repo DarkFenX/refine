@@ -4,7 +4,7 @@ use crate::{
     ad,
     defs::{EAttrId, SolFitId, SolItemId},
     sol::{
-        svc::calc::{SolAttrVal, SolCalc},
+        svc::calc::{SolAttrVal, SolAttrValInfo, SolCalc, SolItemAttrPostprocs},
         uad::{item::SolItem, SolUad},
         SolDmgTypes,
     },
@@ -50,18 +50,22 @@ impl SolCalc {
                 self.rah.by_fit.add_entry(fit_id, item_id);
                 // Add postprocessors
                 let item_attr_data = self.attrs.get_item_attr_data_mut(&item_id).unwrap();
-                item_attr_data
-                    .postprocessors
-                    .insert(EM_ATTR_ID, rah_em_resonance_postprocessor);
-                item_attr_data
-                    .postprocessors
-                    .insert(THERM_ATTR_ID, rah_therm_resonance_postprocessor);
-                item_attr_data
-                    .postprocessors
-                    .insert(KIN_ATTR_ID, rah_kin_resonance_postprocessor);
-                item_attr_data
-                    .postprocessors
-                    .insert(EXPL_ATTR_ID, rah_expl_resonance_postprocessor);
+                item_attr_data.postprocs.insert(
+                    EM_ATTR_ID,
+                    SolItemAttrPostprocs::new(rah_em_resonance_postproc_fast, rah_em_resonance_postproc_info),
+                );
+                item_attr_data.postprocs.insert(
+                    THERM_ATTR_ID,
+                    SolItemAttrPostprocs::new(rah_therm_resonance_postproc_fast, rah_therm_resonance_postproc_info),
+                );
+                item_attr_data.postprocs.insert(
+                    KIN_ATTR_ID,
+                    SolItemAttrPostprocs::new(rah_kin_resonance_postproc_fast, rah_kin_resonance_postproc_info),
+                );
+                item_attr_data.postprocs.insert(
+                    EXPL_ATTR_ID,
+                    SolItemAttrPostprocs::new(rah_expl_resonance_postproc_fast, rah_expl_resonance_postproc_info),
+                );
             }
         }
     }
@@ -80,10 +84,10 @@ impl SolCalc {
                 let fit_id = module.get_fit_id();
                 // Remove postprocessors
                 let item_attr_data = self.attrs.get_item_attr_data_mut(&item_id).unwrap();
-                item_attr_data.postprocessors.remove(&EM_ATTR_ID);
-                item_attr_data.postprocessors.remove(&THERM_ATTR_ID);
-                item_attr_data.postprocessors.remove(&KIN_ATTR_ID);
-                item_attr_data.postprocessors.remove(&EXPL_ATTR_ID);
+                item_attr_data.postprocs.remove(&EM_ATTR_ID);
+                item_attr_data.postprocs.remove(&THERM_ATTR_ID);
+                item_attr_data.postprocs.remove(&KIN_ATTR_ID);
+                item_attr_data.postprocs.remove(&EXPL_ATTR_ID);
                 // Remove sim data for RAH being stopped
                 self.rah.resonances.remove(&item_id);
                 self.rah.by_fit.remove_entry(&module.get_fit_id(), &item_id);
@@ -152,10 +156,10 @@ impl SolCalc {
     }
     fn clear_rah_result(&mut self, uad: &SolUad, item_id: &SolItemId) {
         if self.rah.resonances.get_mut(item_id).unwrap().take().is_some() {
-            self.force_attr_postprocess_recalc(uad, item_id, &EM_ATTR_ID);
-            self.force_attr_postprocess_recalc(uad, item_id, &THERM_ATTR_ID);
-            self.force_attr_postprocess_recalc(uad, item_id, &KIN_ATTR_ID);
-            self.force_attr_postprocess_recalc(uad, item_id, &EXPL_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &EM_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &THERM_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &KIN_ATTR_ID);
+            self.force_attr_postproc_recalc(uad, item_id, &EXPL_ATTR_ID);
         }
     }
     fn get_rah_resonances(&mut self, uad: &SolUad, item_id: &SolItemId) -> SolDmgTypes<SolAttrVal> {
@@ -174,11 +178,11 @@ impl SolCalc {
     }
 }
 
-fn rah_em_resonance_postprocessor(calc: &mut SolCalc, uad: &SolUad, item_id: &SolItemId, _: SolAttrVal) -> SolAttrVal {
+fn rah_em_resonance_postproc_fast(calc: &mut SolCalc, uad: &SolUad, item_id: &SolItemId, _: SolAttrVal) -> SolAttrVal {
     calc.get_rah_resonances(uad, item_id).em
 }
 
-fn rah_therm_resonance_postprocessor(
+fn rah_therm_resonance_postproc_fast(
     calc: &mut SolCalc,
     uad: &SolUad,
     item_id: &SolItemId,
@@ -187,15 +191,55 @@ fn rah_therm_resonance_postprocessor(
     calc.get_rah_resonances(uad, item_id).thermal
 }
 
-fn rah_kin_resonance_postprocessor(calc: &mut SolCalc, uad: &SolUad, item_id: &SolItemId, _: SolAttrVal) -> SolAttrVal {
+fn rah_kin_resonance_postproc_fast(calc: &mut SolCalc, uad: &SolUad, item_id: &SolItemId, _: SolAttrVal) -> SolAttrVal {
     calc.get_rah_resonances(uad, item_id).kinetic
 }
 
-fn rah_expl_resonance_postprocessor(
+fn rah_expl_resonance_postproc_fast(
     calc: &mut SolCalc,
     uad: &SolUad,
     item_id: &SolItemId,
     _: SolAttrVal,
 ) -> SolAttrVal {
     calc.get_rah_resonances(uad, item_id).explosive
+}
+
+fn rah_em_resonance_postproc_info(
+    calc: &mut SolCalc,
+    uad: &SolUad,
+    item_id: &SolItemId,
+    mut info: SolAttrValInfo,
+) -> SolAttrValInfo {
+    info.value = calc.get_rah_resonances(uad, item_id).em.extra;
+    info
+}
+
+fn rah_therm_resonance_postproc_info(
+    calc: &mut SolCalc,
+    uad: &SolUad,
+    item_id: &SolItemId,
+    mut info: SolAttrValInfo,
+) -> SolAttrValInfo {
+    info.value = calc.get_rah_resonances(uad, item_id).thermal.extra;
+    info
+}
+
+fn rah_kin_resonance_postproc_info(
+    calc: &mut SolCalc,
+    uad: &SolUad,
+    item_id: &SolItemId,
+    mut info: SolAttrValInfo,
+) -> SolAttrValInfo {
+    info.value = calc.get_rah_resonances(uad, item_id).kinetic.extra;
+    info
+}
+
+fn rah_expl_resonance_postproc_info(
+    calc: &mut SolCalc,
+    uad: &SolUad,
+    item_id: &SolItemId,
+    mut info: SolAttrValInfo,
+) -> SolAttrValInfo {
+    info.value = calc.get_rah_resonances(uad, item_id).explosive.extra;
+    info
 }

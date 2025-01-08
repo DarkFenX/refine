@@ -2,14 +2,14 @@ use crate::{
     defs::{EAttrId, SolItemId, OF},
     ec,
     sol::{
-        svc::calc::{SolAttrVal, SolCalc},
+        svc::calc::{SolAttrVal, SolAttrValInfo, SolCalc},
         uad::SolUad,
     },
 };
 
 pub(super) const SKILL_LVL_ATTR: EAttrId = ec::attrs::SKILL_LEVEL;
 
-pub(super) fn skill_level_postprocessor(
+pub(super) fn skill_level_postproc_fast(
     _: &mut SolCalc,
     uad: &SolUad,
     item_id: &SolItemId,
@@ -20,4 +20,15 @@ pub(super) fn skill_level_postprocessor(
     val.dogma = level;
     val.extra = level;
     val
+}
+
+pub(super) fn skill_level_postproc_info(
+    _: &mut SolCalc,
+    uad: &SolUad,
+    item_id: &SolItemId,
+    _: SolAttrValInfo,
+) -> SolAttrValInfo {
+    let level = uad.items.get_item(item_id).unwrap().get_skill().unwrap().get_level();
+    let level = OF::from(level);
+    SolAttrValInfo::new(level)
 }

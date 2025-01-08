@@ -1,11 +1,14 @@
 use crate::{
     defs::SolItemId,
     err::basic::ItemLoadedError,
-    sol::{svc::calc::misc::SolItemAttrValData, uad::item::SolItem},
+    sol::{
+        svc::calc::{misc::SolItemAttrValData, SolItemAttrPostprocs},
+        uad::item::SolItem,
+    },
     util::StMap,
 };
 
-use super::skill::{skill_level_postprocessor, SKILL_LVL_ATTR};
+use super::skill::{skill_level_postproc_fast, skill_level_postproc_info, SKILL_LVL_ATTR};
 
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct SolAttrValData {
@@ -42,9 +45,10 @@ impl SolAttrValData {
     pub(in crate::sol::svc::calc) fn item_loaded(&mut self, item: &SolItem) {
         let mut item_data = SolItemAttrValData::new();
         if let SolItem::Skill(_) = item {
-            item_data
-                .postprocessors
-                .insert(SKILL_LVL_ATTR, skill_level_postprocessor);
+            item_data.postprocs.insert(
+                SKILL_LVL_ATTR,
+                SolItemAttrPostprocs::new(skill_level_postproc_fast, skill_level_postproc_info),
+            );
         }
         self.data.insert(item.get_id(), item_data);
     }

@@ -12,7 +12,7 @@ impl SolarSystem {
         check_skill_level(level)?;
         self.uad.items.get_item_mut(item_id)?.get_skill_mut()?.set_level(level);
         self.svc
-            .item_attr_postprocess_changed(&self.uad, item_id, &ec::attrs::SKILL_LEVEL);
+            .item_attr_postproc_changed(&self.uad, item_id, &ec::attrs::SKILL_LEVEL);
         Ok(())
     }
 }
