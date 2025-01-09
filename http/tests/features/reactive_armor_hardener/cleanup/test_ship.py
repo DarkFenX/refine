@@ -216,7 +216,11 @@ def test_switch(client, consts):
 
 def test_unloaded(client, consts):
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
+    eve_rah_id = make_eve_rah(
+        client=client,
+        basic_info=eve_basic_info,
+        resos=(0.85000000001, 0.85000000001, 0.85000000001, 0.85000000001),
+        shift_amount=6)
     eve_ship1_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_ship2_id = client.alloc_item_id()
     eve_ship3_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
@@ -240,10 +244,10 @@ def test_unloaded(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship2_id)
     # Verification - unloaded ship should reset attributes and prevent sim from running
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85000000001, accuracy=11)
     api_ship.update()
     with check_no_field():
         api_ship.attrs  # pylint: disable=W0104
@@ -264,7 +268,11 @@ def test_unloaded(client, consts):
 
 def test_no_ship(client, consts):
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
-    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
+    eve_rah_id = make_eve_rah(
+        client=client,
+        basic_info=eve_basic_info,
+        resos=(0.85000000001, 0.85000000001, 0.85000000001, 0.85000000001),
+        shift_amount=6)
     eve_ship1_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     eve_ship2_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.75, 0.9))
     client.create_sources()
@@ -287,10 +295,10 @@ def test_no_ship(client, consts):
     api_ship.remove()
     # Verification
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85)
-    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85)
-    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85000000001, accuracy=11)
     # Action
     api_ship = api_fit.set_ship(type_id=eve_ship2_id)
     # Verification

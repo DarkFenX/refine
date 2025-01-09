@@ -71,13 +71,13 @@ def test_state_on_off(client, consts):
     eve_rah1_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
-        resos=(0.85, 0.85, 0.85, 0.85),
+        resos=(0.85000000001, 0.85000000001, 0.85000000001, 0.85000000001),
         shift_amount=6,
         cycle_time=10000)
     eve_rah2_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
-        resos=(0.7, 0.7, 0.7, 0.7),
+        resos=(0.70000000001, 0.70000000001, 0.70000000001, 0.70000000001),
         shift_amount=5,
         cycle_time=15000)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
@@ -93,6 +93,11 @@ def test_state_on_off(client, consts):
     assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.76)
     assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.76)
     assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.94)
+    api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.70000000001, accuracy=11)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.70000000001, accuracy=11)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.70000000001, accuracy=11)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.70000000001, accuracy=11)
     api_ship.update()
     assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.47)
     assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.494)
@@ -119,6 +124,11 @@ def test_state_on_off(client, consts):
     # Action
     api_rah1.change_mod(state=consts.ApiState.online)
     # Verification - results for remaining RAH should be reset too
+    api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85000000001, accuracy=11)
     api_rah2.update()
     assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.775)
     assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.625)
@@ -136,13 +146,13 @@ def test_effect_mode_on_off(client, consts):
     eve_rah1_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
-        resos=(0.85, 0.85, 0.85, 0.85),
+        resos=(0.85000000001, 0.85000000001, 0.85000000001, 0.85000000001),
         shift_amount=6,
         cycle_time=10000)
     eve_rah2_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
-        resos=(0.7, 0.7, 0.7, 0.7),
+        resos=(0.70000000001, 0.70000000001, 0.70000000001, 0.70000000001),
         shift_amount=5,
         cycle_time=15000)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
@@ -158,6 +168,11 @@ def test_effect_mode_on_off(client, consts):
     assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.76)
     assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.76)
     assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.94)
+    api_rah2.update()
+    assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.70000000001, accuracy=11)
+    assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.70000000001, accuracy=11)
+    assert api_rah2.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.70000000001, accuracy=11)
+    assert api_rah2.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.70000000001, accuracy=11)
     api_ship.update()
     assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.47)
     assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.494)
@@ -184,6 +199,11 @@ def test_effect_mode_on_off(client, consts):
     # Action
     api_rah1.change_mod(effect_modes={eve_basic_info.rah_effect_id: consts.ApiEffMode.force_stop})
     # Verification - results for remaining RAH should be reset too
+    api_rah1.update()
+    assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah1.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah1.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.85000000001, accuracy=11)
+    assert api_rah1.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85000000001, accuracy=11)
     api_rah2.update()
     assert api_rah2.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.775)
     assert api_rah2.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.625)
