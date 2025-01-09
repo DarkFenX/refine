@@ -447,17 +447,26 @@ fn apply_add(mut base_attr_info: SolAttrValInfo, other_attr_info: Option<SolAttr
     base_attr_info
 }
 fn apply_mul(mut base_attr_info: SolAttrValInfo, other_attr_info: Option<SolAttrValInfo>) -> SolAttrValInfo {
-    if let Some(other_attr_info) = other_attr_info {
-        match base_attr_info.value {
+    match other_attr_info {
+        Some(mut other_attr_info) => match (base_attr_info.value, other_attr_info.value) {
             // Left side 0 means right side has no effect on the result
-            OF(0.0) => base_attr_info.merge_ineffective(other_attr_info),
+            (OF(0.0), _) => {
+                base_attr_info.merge_ineffective(other_attr_info);
+                base_attr_info
+            }
+            // Right side 0 means left side has no effect on the result
+            (_, OF(0.0)) => {
+                other_attr_info.merge_ineffective(base_attr_info);
+                other_attr_info
+            }
             _ => {
                 base_attr_info.value *= other_attr_info.value;
                 base_attr_info.merge(other_attr_info);
+                base_attr_info
             }
-        }
+        },
+        None => base_attr_info,
     }
-    base_attr_info
 }
 
 // Combination functions - they treat all values equally

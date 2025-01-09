@@ -263,7 +263,7 @@ fn get_next_resonances(
     // and shifts towards 0/100/0/0 with steps of 10.
     // We borrow resistances from at least 2 resist types, possibly more if ship didn't take any
     // damage of those types
-    let donors = taken_dmg.iter().filter(|v| **v == OF(0.0)).count().max(2);
+    let donors = taken_dmg.iter().filter(|v| **v <= OF(0.0)).count().max(2);
     let recipients = 4 - donors as u8;
     // There can be 4 donors (and thus 0 recipients) in case no damage is received, which can happen
     // when resists reach 100% (or resonance reaches 0)
@@ -275,7 +275,7 @@ fn get_next_resonances(
     // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,
     // since the list is in attribute ID ascending order.
     let mut sorted_indices: [usize; 4] = [0, 3, 2, 1];
-    sorted_indices.sort_by(|a, b| taken_dmg[*a].partial_cmp(&taken_dmg[*b]).unwrap());
+    sorted_indices.sort_by_key(|v| taken_dmg[*v]);
     let mut donated_amount = OF(0.0);
     // Donate
     for index in sorted_indices[..donors].iter() {
