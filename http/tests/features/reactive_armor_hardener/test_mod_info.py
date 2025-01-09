@@ -1,4 +1,4 @@
-from tests import approx, check_no_field
+from tests import approx
 from tests.features.reactive_armor_hardener import make_eve_rah, make_eve_ship, setup_rah_basics
 
 
