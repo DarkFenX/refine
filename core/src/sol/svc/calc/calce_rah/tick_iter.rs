@@ -5,7 +5,7 @@ use crate::{
 
 use super::{
     rah_data_sim::SolRahDataSim,
-    shared::{SIG_DIGITS, TICK_LIMIT},
+    shared::{rah_round, TICK_LIMIT},
 };
 
 struct SolRahDataIter {
@@ -17,7 +17,7 @@ impl SolRahDataIter {
     fn new(cycle_time: AttrVal) -> Self {
         Self {
             cycle_time,
-            cycle_time_rounded: sig_round(cycle_time, SIG_DIGITS),
+            cycle_time_rounded: rah_round(cycle_time),
             cycling_time: OF(0.0),
         }
     }
@@ -77,8 +77,7 @@ impl Iterator for SolRahSimTickIter {
                 // configurations, e.g. when normal RAH does 17 cycles, heated one does 20, but
                 // >>> sum([0.85] * 20) == 17
                 // False
-                if sig_round(item_iter_data.cycling_time + time_passed, SIG_DIGITS) >= item_iter_data.cycle_time_rounded
-                {
+                if rah_round(item_iter_data.cycling_time + time_passed) >= item_iter_data.cycle_time_rounded {
                     cycled.push(*item_id);
                 }
             }

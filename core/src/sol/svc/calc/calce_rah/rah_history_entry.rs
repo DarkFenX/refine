@@ -1,10 +1,9 @@
 use crate::{
     defs::{AttrVal, SolItemId},
     sol::{svc::calc::SolAttrVal, SolDmgTypes},
-    util::sig_round,
 };
 
-use super::shared::SIG_DIGITS;
+use super::shared::rah_round;
 
 #[derive(Copy, Clone)]
 pub(super) struct SolRahSimHistoryEntry {
@@ -22,15 +21,15 @@ impl SolRahSimHistoryEntry {
             resonances.explosive.dogma,
         );
         let resonances_rounded = SolDmgTypes::new(
-            sig_round(resonances.em, SIG_DIGITS),
-            sig_round(resonances.thermal, SIG_DIGITS),
-            sig_round(resonances.kinetic, SIG_DIGITS),
-            sig_round(resonances.explosive, SIG_DIGITS),
+            rah_round(resonances.em),
+            rah_round(resonances.thermal),
+            rah_round(resonances.kinetic),
+            rah_round(resonances.explosive),
         );
         Self {
             item_id,
             resonances,
-            cycling_time_rounded: sig_round(cycling_time, SIG_DIGITS),
+            cycling_time_rounded: rah_round(cycling_time),
             resonances_rounded,
         }
     }
