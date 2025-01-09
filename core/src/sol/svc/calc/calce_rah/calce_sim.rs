@@ -51,7 +51,9 @@ impl SolCalc {
         for (item_id, item_sim_data) in sim_datas.iter() {
             // Sets unadapted values, since info contains unadapted resonance values
             self.set_rah_result(uad, item_id, item_sim_data.info.resos, false);
-            let item_history_entry = SolRahSimHistoryEntry::new(*item_id, OF(0.0), &item_sim_data.info.resos);
+            // Round resonances for the zero history tick. Later they will be rounded by function
+            // which adapts resonances to damage
+            let item_history_entry = SolRahSimHistoryEntry::new(*item_id, OF(0.0), &item_sim_data.info.resos, true);
             sim_history_entry.push(item_history_entry);
         }
         history_entries_seen.insert(sim_history_entry.clone());
@@ -64,7 +66,7 @@ impl SolCalc {
                 None => {
                     for item_id in sim_datas.keys() {
                         // Any issues with ship resonance fetch should happen on the very first sim
-                        // tick, so results should coincide to default
+                        // tick, so results should coincide to default state
                         self.set_rah_unadapted(uad, item_id, false);
                     }
                     return;
@@ -97,12 +99,21 @@ impl SolCalc {
             for item_id in sim_datas.keys() {
                 let item_cycling_time = *tick_data.cycling_times.get(item_id).unwrap();
                 let item_resos = self.rah.resonances.get(item_id).unwrap().unwrap();
-                let item_history_entry = SolRahSimHistoryEntry::new(*item_id, item_cycling_time, &item_resos);
+                let item_history_entry = SolRahSimHistoryEntry::new(*item_id, item_cycling_time, &item_resos, false);
                 sim_history_entry.push(item_history_entry);
             }
             // See if we're in a loop, if we are - calculate average resists across tick states
             // which are within the loop
             if history_entries_seen.contains(&sim_history_entry) {
+                // If there was no need to adapt (= sim history contains only zero tick data), set
+                // unadapted resonances as results to avoid unnecessary for this case rounding.
+                // Normal process uses history values, which contains rounded resonances
+                if sim_history.len() <= 1 {
+                    for (item_id, item_sim_data) in sim_datas.iter() {
+                        self.set_rah_result(uad, item_id, item_sim_data.info.resos, false);
+                    }
+                    return;
+                }
                 let index = sim_history.iter().position(|v| v == &sim_history_entry).unwrap();
                 let avg_resos = get_average_resonances(&sim_history[index..]);
                 self.set_partial_fit_rahs_result(uad, avg_resos, &sim_datas);

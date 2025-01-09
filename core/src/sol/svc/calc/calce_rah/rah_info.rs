@@ -3,6 +3,7 @@ use crate::{
     sol::{svc::calc::SolAttrVal, SolDmgTypes},
 };
 
+// Initial values of a RAH, non-rounded
 #[derive(Copy, Clone)]
 pub(super) struct SolRahInfo {
     pub(super) resos: SolDmgTypes<SolAttrVal>,

@@ -1,6 +1,6 @@
 use crate::{
     defs::{AttrVal, SolItemId, OF},
-    util::{sig_round, StMap},
+    util::StMap,
 };
 
 use super::{
@@ -74,9 +74,8 @@ impl Iterator for SolRahSimTickIter {
             let mut cycled = Vec::new();
             for (item_id, item_iter_data) in self.rah_iter_data.iter() {
                 // Have time tolerance to cancel float calculation errors. It's needed for multi-RAH
-                // configurations, e.g. when normal RAH does 17 cycles, heated one does 20, but
-                // >>> sum([0.85] * 20) == 17
-                // False
+                // configurations which the engine allows, e.g. when normal RAH does 17 cycles,
+                // heated one does 20, but sum of 20x 0.85 f64's is less than 17.
                 if rah_round(item_iter_data.cycling_time + time_passed) >= item_iter_data.cycle_time_rounded {
                     cycled.push(*item_id);
                 }
