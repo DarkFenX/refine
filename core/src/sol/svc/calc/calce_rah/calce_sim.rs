@@ -264,33 +264,48 @@ fn get_next_resonances(
     // We borrow resistances from at least 2 resist types, possibly more if ship didn't take any
     // damage of those types
     let donors = taken_dmg.iter().filter(|v| **v <= OF(0.0)).count().max(2);
-    let recipients = 4 - donors as u8;
+    let recipients = 4 - donors;
     // There can be 4 donors (and thus 0 recipients) in case no damage is received, which can happen
-    // when resists reach 100% (or resonance reaches 0)
+    // when resists reach 100% / resonance reaches 0
     if recipients == 0 {
         return resonances;
     }
+    let recipients = AttrVal::from(recipients as u8);
     // Indices are against damage type container, i.e. order is EM, explosive, kinetic, thermal.
     // When equal damage is received across several damage types, those which come earlier in this
     // list will be picked as donors. In EVE, it's this way probably due to backing attribute IDs,
     // since the list is in attribute ID ascending order.
     let mut sorted_indices: [usize; 4] = [0, 3, 2, 1];
     sorted_indices.sort_by_key(|v| taken_dmg[*v]);
-    let mut donated_amount = OF(0.0);
+    let mut total_transferred = OF(0.0);
     // Donate
     for index in sorted_indices[..donors].iter() {
         let current_value = resonances[*index];
         // Can't borrow more than it has
         let to_donate = rah_round(Float::min(shift_amount, OF(1.0) - current_value.dogma));
-        donated_amount += to_donate;
+        total_transferred += to_donate;
         let new_value = rah_round(current_value.dogma + to_donate);
         resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
     }
     // Distribute
-    for index in sorted_indices[donors..].iter() {
+    let mut to_distribute = total_transferred;
+    for index in sorted_indices.iter().rev() {
         let current_value = resonances[*index];
-        let new_value = rah_round(current_value.dogma - donated_amount / AttrVal::from(recipients));
+        // Can't give more than set threshold, more than we have, and more than target res can take
+        let to_take = [
+            rah_round(total_transferred / recipients),
+            current_value.dogma,
+            to_distribute,
+        ]
+        .into_iter()
+        .min()
+        .unwrap();
+        to_distribute -= to_take;
+        let new_value = rah_round(current_value.dogma - to_take);
         resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
+        if to_distribute <= OF(0.0) {
+            break;
+        }
     }
     resonances
 }
