@@ -158,28 +158,85 @@ def test_incoming(client, consts):
     api_em_mod = api_rah.mods[eve_basic_info.res_em_attr_id].one()
     assert api_em_mod.op == consts.ApiModOp.post_percent
     assert api_em_mod.initial_val == approx(-10)
-    assert api_em_mod.stacking_mult == consts.PenaltyStr.p1
+    assert api_em_mod.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_em_mod.applied_val == approx(-10)
     assert api_em_mod.affectors.one().item_id == api_implant.id
     assert api_em_mod.affectors.one().attr_id == eve_implant_attr_id
     api_therm_mod = api_rah.mods[eve_basic_info.res_therm_attr_id].one()
     assert api_therm_mod.op == consts.ApiModOp.post_percent
     assert api_therm_mod.initial_val == approx(-10)
-    assert api_therm_mod.stacking_mult == consts.PenaltyStr.p1
+    assert api_therm_mod.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_therm_mod.applied_val == approx(-10)
     assert api_therm_mod.affectors.one().item_id == api_implant.id
     assert api_therm_mod.affectors.one().attr_id == eve_implant_attr_id
     api_kin_mod = api_rah.mods[eve_basic_info.res_kin_attr_id].one()
     assert api_kin_mod.op == consts.ApiModOp.post_percent
     assert api_kin_mod.initial_val == approx(-10)
-    assert api_kin_mod.stacking_mult == consts.PenaltyStr.p1
+    assert api_kin_mod.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_kin_mod.applied_val == approx(-10)
     assert api_kin_mod.affectors.one().item_id == api_implant.id
     assert api_kin_mod.affectors.one().attr_id == eve_implant_attr_id
     api_expl_mod = api_rah.mods[eve_basic_info.res_expl_attr_id].one()
     assert api_expl_mod.op == consts.ApiModOp.post_percent
     assert api_expl_mod.initial_val == approx(-10)
-    assert api_expl_mod.stacking_mult == consts.PenaltyStr.p1
+    assert api_expl_mod.stacking_mult == approx(consts.PenaltyStr.p1)
     assert api_expl_mod.applied_val == approx(-10)
     assert api_expl_mod.affectors.one().item_id == api_implant.id
     assert api_expl_mod.affectors.one().attr_id == eve_implant_attr_id
+
+
+def test_outgoing_insignificance(client, consts):
+    # Check that outgoing modifications use adapted values for insignificance testing
+    eve_basic_info = setup_rah_basics(client=client, consts=consts)
+    eve_rah_id = make_eve_rah(
+        client=client,
+        basic_info=eve_basic_info,
+        resos=(1, 1, 1, 0),
+        shift_amount=10)
+    eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
+    eve_implant_attr1_id = client.mk_eve_attr()
+    eve_implant_attr2_id = client.mk_eve_attr()
+    eve_implant_mod1 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_assign,
+        affector_attr_id=eve_implant_attr1_id,
+        affectee_attr_id=eve_basic_info.res_kin_attr_id)
+    eve_implant_mod2 = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_assign,
+        affector_attr_id=eve_implant_attr2_id,
+        affectee_attr_id=eve_basic_info.res_expl_attr_id)
+    eve_implant_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.passive,
+        mod_info=[eve_implant_mod1, eve_implant_mod2])
+    eve_implant_id = client.mk_eve_item(
+        attrs={eve_implant_attr1_id: 0, eve_implant_attr2_id: 1},
+        eff_ids=[eve_implant_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 1, 0, 0))
+    api_fit.add_implant(type_id=eve_implant_id)
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    # Verification - only thermal resistance modification is significant, since it multiplies by 0,
+    # while other 3 multiply by 1 (even those with base value of 0, and modified value of 0).
+    api_rah.update()
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(1)
+    api_ship.update()
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.5)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.59)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.51)
+    assert len(api_ship.mods) == 1
+    api_mod = api_ship.mods[eve_basic_info.res_therm_attr_id].one()
+    assert api_mod.op == consts.ApiModOp.pre_mul
+    assert api_mod.initial_val == approx(0)
+    assert api_mod.stacking_mult == approx(consts.PenaltyStr.p1)
+    assert api_mod.applied_val == approx(0)
+    assert api_mod.affectors.one().item_id == api_rah.id
+    assert api_mod.affectors.one().attr_id == eve_basic_info.res_therm_attr_id
