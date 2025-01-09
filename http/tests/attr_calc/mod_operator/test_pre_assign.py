@@ -32,6 +32,7 @@ def setup_hig_test(*, client, consts, high_is_good):
 
 def test_high_is_good(client, consts):
     attr_val, attr_mods, _, api_item_affector3 = setup_hig_test(client=client, consts=consts, high_is_good=True)
+    # Verification
     assert attr_val == approx(53.02)
     attr_mod = attr_mods.one()
     assert attr_mod.op == consts.ApiModOp.pre_assign
@@ -43,6 +44,7 @@ def test_high_is_good(client, consts):
 
 def test_high_is_bad(client, consts):
     attr_val, attr_mods, api_item_affector2, _ = setup_hig_test(client=client, consts=consts, high_is_good=False)
+    # Verification
     assert attr_val == approx(-20)
     attr_mod = attr_mods.one()
     assert attr_mod.op == consts.ApiModOp.pre_assign

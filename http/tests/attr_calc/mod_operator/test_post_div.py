@@ -48,6 +48,7 @@ def test_non_penalized(client, consts):
      api_item_affector3,
      api_item_affector4,
      api_item_affector5) = setup_penalization_test(client=client, consts=consts, stackable=True)
+    # Verification
     assert attr_val == approx(148.148148)
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
@@ -85,6 +86,7 @@ def test_penalized(client, consts):
      api_item_affector3,
      api_item_affector4,
      api_item_affector5) = setup_penalization_test(client=client, consts=consts, stackable=False)
+    # Verification
     assert attr_val == approx(165.790873)
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
@@ -153,6 +155,7 @@ def test_deep_stacking(client, consts):
     api_affector11 = api_fit.add_rig(type_id=eve_affector11_id)
     api_fit.add_rig(type_id=eve_affector12_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
+    # Verification
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(4395.538972)
     api_mods = api_affectee.mods[eve_affectee_attr_id]
@@ -236,6 +239,7 @@ def test_insignificant_stacking(client, consts):
     api_affector1 = api_fit.add_rig(type_id=eve_affector1_id)
     api_affector2 = api_fit.add_rig(type_id=eve_affector2_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
+    # Verification
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(100)
     api_mods = api_affectee.mods[eve_affectee_attr_id]
@@ -271,6 +275,7 @@ def test_insignificant_base(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_rig(type_id=eve_affector_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
+    # Verification
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
     with check_no_field():
@@ -305,6 +310,7 @@ def test_insignificant_modified_base(client, consts):
     api_fit.add_rig(type_id=eve_affector1_id)
     api_fit.add_rig(type_id=eve_affector2_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
+    # Verification
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
     api_mod = api_affectee.mods[eve_affectee_attr_id].one()

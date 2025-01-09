@@ -48,6 +48,7 @@ def test_non_penalized(client, consts):
      api_item_affector3,
      api_item_affector4,
      api_item_affector5) = setup_penalization_test(client=client, consts=consts, stackable=True)
+    # Verification
     assert attr_val == approx(67.5)
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
@@ -85,6 +86,7 @@ def test_penalized(client, consts):
      api_item_affector3,
      api_item_affector4,
      api_item_affector5) = setup_penalization_test(client=client, consts=consts, stackable=False)
+    # Verification
     assert attr_val == approx(62.549783)
     assert len(attr_mods) == 5
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
@@ -153,6 +155,7 @@ def test_deep_stacking(client, consts):
     api_affector11 = api_fit.add_rig(type_id=eve_affector11_id)
     api_fit.add_rig(type_id=eve_affector12_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
+    # Verification
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(329.202701)
     api_mods = api_affectee.mods[eve_affectee_attr_id]
@@ -236,6 +239,7 @@ def test_insignificant_stacking(client, consts):
     api_affector1 = api_fit.add_rig(type_id=eve_affector1_id)
     api_affector2 = api_fit.add_rig(type_id=eve_affector2_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
+    # Verification
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(100)
     api_mods = api_affectee.mods[eve_affectee_attr_id]
@@ -271,6 +275,7 @@ def test_insignificant_base(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_rig(type_id=eve_affector_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
+    # Verification
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
     with check_no_field():
@@ -305,6 +310,7 @@ def test_insignificant_modified_base(client, consts):
     api_fit.add_rig(type_id=eve_affector1_id)
     api_fit.add_rig(type_id=eve_affector2_id)
     api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
+    # Verification
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
     api_mod = api_affectee.mods[eve_affectee_attr_id].one()
@@ -312,6 +318,136 @@ def test_insignificant_modified_base(client, consts):
     assert api_mod.initial_val == approx(100)
     assert api_mod.stacking_mult is None
     assert api_mod.applied_val == approx(100)
+
+
+def test_insignificant_earlier_ops(client, consts):
+    # When a value is multiplied by 0, all earlier modifications are insignificant
+    eve_affector_attr_id = client.mk_eve_attr()
+    eve_affectee_attr_id = client.mk_eve_attr(stackable=False)
+    # Pre-assignment
+    val_pre_ass = 5
+    eve_mod_pre_ass = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_assign,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_pre_ass_id = client.mk_eve_effect(mod_info=[eve_mod_pre_ass])
+    eve_affector_pre_ass_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: val_pre_ass},
+        eff_ids=[eve_effect_pre_ass_id])
+    # Pre-multiplication
+    val_pre_mul = 50
+    eve_mod_pre_mul = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_mul,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_pre_mul_id = client.mk_eve_effect(mod_info=[eve_mod_pre_mul])
+    eve_affector_pre_mul_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: val_pre_mul},
+        eff_ids=[eve_effect_pre_mul_id])
+    # Pre-division
+    val_pre_div = 0.5
+    eve_mod_pre_div = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.pre_div,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_pre_div_id = client.mk_eve_effect(mod_info=[eve_mod_pre_div])
+    eve_affector_pre_div_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: val_pre_div},
+        eff_ids=[eve_effect_pre_div_id])
+    # Addition
+    val_mod_add = 10
+    eve_mod_mod_add = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_mod_add_id = client.mk_eve_effect(mod_info=[eve_mod_mod_add])
+    eve_affector_mod_add_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: val_mod_add},
+        eff_ids=[eve_effect_mod_add_id])
+    # Subtraction
+    val_mod_sub = 63
+    eve_mod_mod_sub = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.mod_sub,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_mod_sub_id = client.mk_eve_effect(mod_info=[eve_mod_mod_sub])
+    eve_affector_mod_sub_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: val_mod_sub},
+        eff_ids=[eve_effect_mod_sub_id])
+    # Post-multiplication
+    val_post_mul = 0
+    eve_mod_post_mul = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_mul,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_post_mul_id = client.mk_eve_effect(mod_info=[eve_mod_post_mul])
+    eve_affector_post_mul_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: val_post_mul},
+        eff_ids=[eve_effect_post_mul_id])
+    # Post-division
+    val_post_div = 2.7
+    eve_mod_post_div = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_div,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_post_div_id = client.mk_eve_effect(mod_info=[eve_mod_post_div])
+    eve_affector_post_div_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: val_post_div},
+        eff_ids=[eve_effect_post_div_id])
+    # Post-percent
+    val_post_perc = 15
+    eve_mod_post_perc = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        dom=consts.EveModDom.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_affector_attr_id,
+        affectee_attr_id=eve_affectee_attr_id)
+    eve_effect_post_perc_id = client.mk_eve_effect(mod_info=[eve_mod_post_perc])
+    eve_affector_post_perc_id = client.mk_eve_item(
+        attrs={eve_affector_attr_id: val_post_perc},
+        eff_ids=[eve_effect_post_perc_id])
+    eve_affectee_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_rig(type_id=eve_affector_pre_ass_id)
+    api_fit.add_rig(type_id=eve_affector_pre_mul_id)
+    api_fit.add_rig(type_id=eve_affector_pre_div_id)
+    api_fit.add_rig(type_id=eve_affector_mod_add_id)
+    api_fit.add_rig(type_id=eve_affector_mod_sub_id)
+    api_fit.add_rig(type_id=eve_affector_post_mul_id)
+    api_fit.add_rig(type_id=eve_affector_post_div_id)
+    api_fit.add_rig(type_id=eve_affector_post_perc_id)
+    api_affectee = api_fit.set_ship(type_id=eve_affectee_id)
+    # Verification - post-multiplication by 0 should remove earlier modifiers, i.e. pre-assignment,
+    # pre-division, addition and subtraction modifiers. It also removes post-division and
+    # post-percent modifiers as a side effect (doesn't matter what right hand value is when left
+    # hand value is 0), but this is not focus of the test.
+    api_affectee.update()
+    expected_value = (
+            (val_pre_ass * val_pre_mul / val_pre_div + val_mod_add - val_mod_sub)
+            * val_post_mul / val_post_div * (1 + val_post_perc / 100))
+    assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(expected_value)
+    api_mods = api_affectee.mods[eve_affectee_attr_id]
+    assert len(api_mods) == 1
+    api_post_mul_mod = api_mods.find_by_op(op=consts.ApiModOp.post_mul).one()
+    assert api_post_mul_mod.initial_val == approx(val_post_mul)
+    assert api_post_mul_mod.stacking_mult == approx(consts.PenaltyStr.p1)
+    assert api_post_mul_mod.applied_val == approx(val_post_mul)
 
 
 def setup_insignificant_chain_values_test(*, client, consts, stackable):
@@ -351,6 +487,7 @@ def test_insignificant_chain_values_non_penalized(client, consts):
      api_mods,
      api_affector1,
      api_affector3) = setup_insignificant_chain_values_test(client=client, consts=consts, stackable=True)
+    # Verification
     assert attr_val == approx(0)
     # Without stacking penalty, all modifications which multiply by 0 are returned
     assert len(api_mods) == 2
@@ -372,6 +509,7 @@ def test_insignificant_chain_values_penalized(client, consts):
      api_mods,
      api_affector1,
      api_affector3) = setup_insignificant_chain_values_test(client=client, consts=consts, stackable=False)
+    # Verification
     assert attr_val == approx(0)
     # With stacking penalty, only one of modifications is returned, while other one is getting
     # stacking penalized, thus making its final multiplier different from 0

@@ -37,6 +37,7 @@ def setup_penalization_test(*, client, consts, stackable):
 def test_non_penalized(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2, api_item_affector3 = setup_penalization_test(
         client=client, consts=consts, stackable=True)
+    # Verification
     assert attr_val == approx(43.92)
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()
@@ -59,6 +60,7 @@ def test_non_penalized(client, consts):
 def test_penalized(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2, api_item_affector3 = setup_penalization_test(
         client=client, consts=consts, stackable=False)
+    # Verification
     assert attr_val == approx(43.92)
     assert len(attr_mods) == 3
     api_mod1 = attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one()

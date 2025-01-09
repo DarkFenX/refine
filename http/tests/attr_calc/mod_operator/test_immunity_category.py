@@ -45,6 +45,7 @@ def setup_immunity_test_ext(*, client, consts, affector1_cat_id, affector2_cat_i
 def test_ship(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2 = setup_immunity_test(
         client=client, consts=consts, cat_id=consts.EveItemCat.ship)
+    # Verification
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
@@ -54,6 +55,7 @@ def test_ship(client, consts):
 def test_charge(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2 = setup_immunity_test(
         client=client, consts=consts, cat_id=consts.EveItemCat.charge)
+    # Verification
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
@@ -63,6 +65,7 @@ def test_charge(client, consts):
 def test_skill(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2 = setup_immunity_test(
         client=client, consts=consts, cat_id=consts.EveItemCat.skill)
+    # Verification
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
@@ -72,6 +75,7 @@ def test_skill(client, consts):
 def test_implant(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2 = setup_immunity_test(
         client=client, consts=consts, cat_id=consts.EveItemCat.implant)
+    # Verification
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
@@ -81,6 +85,7 @@ def test_implant(client, consts):
 def test_subsystem(client, consts):
     attr_val, attr_mods, api_item_affector1, api_item_affector2 = setup_immunity_test(
         client=client, consts=consts, cat_id=consts.EveItemCat.subsystem)
+    # Verification
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
@@ -93,6 +98,7 @@ def test_mixed(client, consts):
         consts=consts,
         affector1_cat_id=consts.EveItemCat.charge,
         affector2_cat_id=consts.EveItemCat.implant)
+    # Verification
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
@@ -105,6 +111,7 @@ def test_with_not_immune(client, consts):
         consts=consts,
         affector1_cat_id=consts.EveItemCat.charge,
         affector2_cat_id=consts.EveItemCat.module)
+    # Verification
     assert attr_val == approx(300)
     assert len(attr_mods) == 2
     assert attr_mods.find_by_affector_item(affector_item_id=api_item_affector1.id).one().stacking_mult is None
