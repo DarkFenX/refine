@@ -102,31 +102,31 @@ def test_excess_slow_loop(client, consts):
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.0255)
 
 
-def test_excess_fast(client, consts):
+def test_excess_max_takers(client, consts):
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(
         client=client,
         basic_info=eve_basic_info,
-        resos=(0.3, 0.5, 0.3, 0.5),
+        resos=(0, 0, 0.2, 0.4),
         shift_amount=100)
     eve_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, resos=(0.5, 0.65, 0.59, 0.51))
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 1, 1, 0))
+    api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
     # Verification
-    # 0 0.300 0.500 0.300 0.500 - EM gives 0.7, expl gives 0.5, therm takes 0.5, kin takes 0.3, expl
-    # takes 0.4
+    # 0 0.000 0.000 0.200 0.400 - EM gives 1, therm gives 1, expl takes 0.4, kin takes 0.2, therm
+    # takes 1, EM takes 0.4
     # ---loop---
-    # 1 1.000 0.000 0.000 0.600
+    # 1 0.600 0.000 0.000 0.000
     api_rah.update()
-    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.6)
     assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
     assert api_rah.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.6)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0)
     api_ship.update()
-    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.5)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.3)
     assert api_ship.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0)
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0)
-    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.306)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0)
