@@ -1,6 +1,6 @@
 use crate::sol::svc::calc::SolDomain;
 
-#[derive(Copy, Clone, Eq, Hash, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::sol::svc::calc) enum SolLocationKind {
     Ship,
     Structure,

@@ -17,7 +17,7 @@ use super::{
     rah_data_sim::SolRahDataSim,
     rah_history_entry::SolRahSimHistoryEntry,
     rah_info::SolRahInfo,
-    shared::{EM_ATTR_ID, EXPL_ATTR_ID, KIN_ATTR_ID, RAH_EFFECT_ID, SHIFT_ATTR_ID, THERM_ATTR_ID},
+    shared::{rah_round, EM_ATTR_ID, EXPL_ATTR_ID, KIN_ATTR_ID, RAH_EFFECT_ID, SHIFT_ATTR_ID, THERM_ATTR_ID},
     tick_iter::SolRahSimTickIter,
 };
 
@@ -158,26 +158,19 @@ impl SolCalc {
             return None;
         }
         // Other attributes using regular getters
-        let shift_amount = self.get_item_attr_val(uad, item_id, &SHIFT_ATTR_ID).ok()?.dogma;
+        // Divide by 100 for convenience - raw form of shift amount is defined in percentages, while
+        // resonances are in absolute form
+        let shift_amount = self.get_item_attr_val(uad, item_id, &SHIFT_ATTR_ID).ok()?.dogma / OF(100.0);
         if shift_amount <= OF(0.0) {
             return None;
         }
-        let cycle_ms = self.get_item_effect_id_duration(uad, &item_id, &RAH_EFFECT_ID)?;
+        // Raw form of cycle time is defined in milliseconds (we don't really care in RAH sim, just
+        // to be more intuitive during debugging)
+        let cycle_ms = self.get_item_effect_id_duration(uad, &item_id, &RAH_EFFECT_ID)? / OF(1000.0);
         if cycle_ms <= OF(0.0) {
             return None;
         }
-        let rah_info = SolRahInfo::new(
-            res_em,
-            res_therm,
-            res_kin,
-            res_expl,
-            // Raw form of cycle time is defined in milliseconds (we don't really care in RAH sim,
-            // just to be more intuitive during debugging)
-            cycle_ms / OF(1000.0),
-            // Raw form of shift amount is defined in percentages, while resonances are in
-            // absolute form
-            shift_amount / OF(100.0),
-        );
+        let rah_info = SolRahInfo::new(res_em, res_therm, res_kin, res_expl, cycle_ms, shift_amount);
         Some(SolRahDataSim::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
@@ -253,6 +246,10 @@ fn get_next_resonances(
     taken_dmg: SolDmgTypes<AttrVal>,
     shift_amount: AttrVal,
 ) -> SolDmgTypes<SolAttrVal> {
+    // Rounding in this function to avoid float errors serves two purposes:
+    // 1) it helps in history loop detection;
+    // 2) it helps to avoid weird results in unrealistic edge cases, e.g. RAH which starts 0/0/100/0
+    // and shifts towards 0/100/0/0 with steps of 10.
     // We borrow resistances from at least 2 resist types, possibly more if ship didn't take any
     // damage of those types
     let donors = taken_dmg.iter().filter(|v| **v == OF(0.0)).count().max(2);
@@ -273,15 +270,15 @@ fn get_next_resonances(
     for index in sorted_indices[..donors].iter() {
         let current_value = resonances[*index];
         // Can't borrow more than it has
-        let to_donate = Float::min(shift_amount, OF(1.0) - current_value.dogma);
+        let to_donate = rah_round(Float::min(shift_amount, OF(1.0) - current_value.dogma));
         donated_amount += to_donate;
-        let new_value = current_value.dogma + to_donate;
+        let new_value = rah_round(current_value.dogma + to_donate);
         resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
     }
     // Distribute
     for index in sorted_indices[donors..].iter() {
         let current_value = resonances[*index];
-        let new_value = current_value.dogma - donated_amount / AttrVal::from(recipients);
+        let new_value = rah_round(current_value.dogma - donated_amount / AttrVal::from(recipients));
         resonances[*index] = SolAttrVal::new(current_value.base, new_value, new_value);
     }
     resonances
