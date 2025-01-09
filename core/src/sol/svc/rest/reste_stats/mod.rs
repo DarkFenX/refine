@@ -1,1 +1,1 @@
-mod reste_get_fit_stats_cpu;
+mod reste_online_mods;
