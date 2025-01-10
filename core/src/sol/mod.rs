@@ -14,6 +14,6 @@ pub(crate) mod sole_fit;
 pub(crate) mod sole_fleet;
 pub(crate) mod sole_item;
 pub(crate) mod sole_src;
-mod sole_vast;
+pub(crate) mod sole_vast;
 pub(crate) mod svc;
 pub(crate) mod uad;
