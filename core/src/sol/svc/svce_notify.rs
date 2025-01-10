@@ -18,11 +18,11 @@ impl SolSvc {
     }
     pub(in crate::sol::svc) fn notify_fit_added(&mut self, fit_id: &SolFitId) {
         self.calc.fit_added(fit_id);
-        self.rest.fit_added(fit_id);
+        self.vast.fit_added(fit_id);
     }
     pub(in crate::sol::svc) fn notify_fit_removed(&mut self, fit_id: &SolFitId) {
         self.calc.fit_removed(fit_id);
-        self.rest.fit_removed(fit_id);
+        self.vast.fit_removed(fit_id);
     }
     pub(in crate::sol::svc) fn notify_fit_added_to_fleet(&mut self, uad: &SolUad, fleet: &SolFleet, fit_id: &SolFitId) {
         self.calc.fit_added_to_fleet(uad, fleet, fit_id);
@@ -49,11 +49,11 @@ impl SolSvc {
     }
     pub(in crate::sol::svc) fn notify_item_loaded(&mut self, uad: &SolUad, item: &SolItem) {
         self.calc.item_loaded(uad, item);
-        self.rest.item_loaded(item);
+        self.vast.item_loaded(item);
     }
     pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, uad: &SolUad, item: &SolItem) {
         self.calc.item_unloaded(uad, item);
-        self.rest.item_unloaded(item);
+        self.vast.item_unloaded(item);
     }
     pub(in crate::sol::svc) fn notify_item_state_activated_loaded(
         &mut self,
@@ -61,7 +61,7 @@ impl SolSvc {
         item: &SolItem,
         state: &SolItemState,
     ) {
-        self.rest.item_state_activated_loaded(item, state);
+        self.vast.item_state_activated_loaded(item, state);
     }
     pub(in crate::sol::svc) fn notify_item_state_deactivated_loaded(
         &mut self,
@@ -69,7 +69,7 @@ impl SolSvc {
         item: &SolItem,
         state: &SolItemState,
     ) {
-        self.rest.item_state_deactivated_loaded(item, state);
+        self.vast.item_state_deactivated_loaded(item, state);
     }
     pub(in crate::sol::svc) fn notify_effects_started(
         &mut self,
@@ -80,7 +80,7 @@ impl SolSvc {
         self.running_effects
             .effects_started(item.get_id(), effects.iter().map(|v| v.id));
         self.calc.effects_started(uad, item, effects);
-        self.rest.effects_started(item, effects);
+        self.vast.effects_started(item, effects);
     }
     pub(in crate::sol::svc) fn notify_effects_stopped(
         &mut self,
@@ -91,7 +91,7 @@ impl SolSvc {
         self.calc.effects_stopped(uad, item, effects);
         self.running_effects
             .effects_stopped(&item.get_id(), effects.iter().map(|v| &v.id));
-        self.rest.effects_stopped(item, effects);
+        self.vast.effects_stopped(item, effects);
     }
     pub(in crate::sol::svc) fn notify_item_projected(
         &mut self,

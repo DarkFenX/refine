@@ -5,7 +5,7 @@ pub struct SolStatResource {
     pub output: AttrVal,
 }
 impl SolStatResource {
-    pub(in crate::sol::svc::rest) fn new(used: AttrVal, output: AttrVal) -> Self {
+    pub(in crate::sol::svc::vast) fn new(used: AttrVal, output: AttrVal) -> Self {
         SolStatResource { used, output }
     }
 }

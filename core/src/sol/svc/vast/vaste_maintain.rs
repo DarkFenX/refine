@@ -3,17 +3,17 @@ use crate::{
     defs::SolFitId,
     ec,
     sol::{
-        svc::rest::{SolRest, SolRestFitData},
+        svc::vast::{SolVast, SolVastFitData},
         uad::item::{SolItem, SolItemState},
     },
 };
 
-impl SolRest {
+impl SolVast {
     pub(in crate::sol::svc) fn fit_added(&mut self, fit_id: &SolFitId) {
-        self.data.insert(*fit_id, SolRestFitData::new());
+        self.fit_data.insert(*fit_id, SolVastFitData::new());
     }
     pub(in crate::sol::svc) fn fit_removed(&mut self, fit_id: &SolFitId) {
-        self.data.remove(fit_id);
+        self.fit_data.remove(fit_id);
     }
     pub(in crate::sol::svc) fn item_loaded(&mut self, item: &SolItem) {}
     pub(in crate::sol::svc) fn item_unloaded(&mut self, item: &SolItem) {}
@@ -23,7 +23,7 @@ impl SolRest {
         if let SolItem::Module(module) = item {
             for effect in effects {
                 if effect.id == ec::effects::ONLINE {
-                    let fit_data = self.get_data_mut(&module.get_fit_id()).unwrap();
+                    let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                     fit_data.mods_online.insert(module.get_id());
                 }
             }
@@ -33,7 +33,7 @@ impl SolRest {
         if let SolItem::Module(module) = item {
             for effect in effects {
                 if effect.id == ec::effects::ONLINE {
-                    let fit_data = self.get_data_mut(&module.get_fit_id()).unwrap();
+                    let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                     fit_data.mods_online.remove(&module.get_id());
                 }
             }
