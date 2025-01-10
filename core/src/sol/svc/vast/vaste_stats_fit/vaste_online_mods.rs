@@ -12,7 +12,7 @@ use crate::{
 };
 
 impl SolVastFitData {
-    pub(in crate::sol::svc) fn get_stats_cpu(
+    pub(in crate::sol::svc::vast) fn get_stats_cpu(
         &mut self,
         uad: &SolUad,
         calc: &mut SolCalc,
@@ -20,7 +20,7 @@ impl SolVastFitData {
     ) -> SolStatResource {
         self.get_stats_online_mods(uad, calc, fit, &ec::attrs::CPU, &ec::attrs::CPU_OUTPUT)
     }
-    pub(in crate::sol::svc) fn get_stats_pg(
+    pub(in crate::sol::svc::vast) fn get_stats_pg(
         &mut self,
         uad: &SolUad,
         calc: &mut SolCalc,
