@@ -10,7 +10,7 @@ use crate::{
 pub(super) const SKILL_LVL_ATTR: EAttrId = ec::attrs::SKILL_LEVEL;
 
 pub(super) fn skill_level_postproc_fast(
-    _: &mut SolCalc,
+    _calc: &mut SolCalc,
     uad: &SolUad,
     item_id: &SolItemId,
     mut val: SolAttrVal,
@@ -23,10 +23,10 @@ pub(super) fn skill_level_postproc_fast(
 }
 
 pub(super) fn skill_level_postproc_info(
-    _: &mut SolCalc,
+    _calc: &mut SolCalc,
     uad: &SolUad,
     item_id: &SolItemId,
-    _: SolAttrValInfo,
+    _info: SolAttrValInfo,
 ) -> SolAttrValInfo {
     let level = uad.items.get_item(item_id).unwrap().get_skill().unwrap().get_level();
     let level = OF::from(level);

@@ -178,7 +178,12 @@ impl SolCalc {
     }
 }
 
-fn rah_em_resonance_postproc_fast(calc: &mut SolCalc, uad: &SolUad, item_id: &SolItemId, _: SolAttrVal) -> SolAttrVal {
+fn rah_em_resonance_postproc_fast(
+    calc: &mut SolCalc,
+    uad: &SolUad,
+    item_id: &SolItemId,
+    _val: SolAttrVal,
+) -> SolAttrVal {
     calc.get_rah_resonances(uad, item_id).em
 }
 
@@ -186,12 +191,17 @@ fn rah_therm_resonance_postproc_fast(
     calc: &mut SolCalc,
     uad: &SolUad,
     item_id: &SolItemId,
-    _: SolAttrVal,
+    _val: SolAttrVal,
 ) -> SolAttrVal {
     calc.get_rah_resonances(uad, item_id).thermal
 }
 
-fn rah_kin_resonance_postproc_fast(calc: &mut SolCalc, uad: &SolUad, item_id: &SolItemId, _: SolAttrVal) -> SolAttrVal {
+fn rah_kin_resonance_postproc_fast(
+    calc: &mut SolCalc,
+    uad: &SolUad,
+    item_id: &SolItemId,
+    _val: SolAttrVal,
+) -> SolAttrVal {
     calc.get_rah_resonances(uad, item_id).kinetic
 }
 
@@ -199,7 +209,7 @@ fn rah_expl_resonance_postproc_fast(
     calc: &mut SolCalc,
     uad: &SolUad,
     item_id: &SolItemId,
-    _: SolAttrVal,
+    _val: SolAttrVal,
 ) -> SolAttrVal {
     calc.get_rah_resonances(uad, item_id).explosive
 }

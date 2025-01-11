@@ -35,7 +35,7 @@ pub(super) fn normalize_perc(val: AttrVal) -> Option<AttrVal> {
 }
 
 // Apply diminishing factors (resistance- and projection-related reductions)
-pub(super) fn diminish_noop(val: AttrVal, _: Option<AttrVal>, _: Option<AttrVal>) -> AttrVal {
+pub(super) fn diminish_noop(val: AttrVal, _proj_mult: Option<AttrVal>, _res_mult: Option<AttrVal>) -> AttrVal {
     val
 }
 pub(super) fn diminish_basic(mut val: AttrVal, proj_mult: Option<AttrVal>, res_mult: Option<AttrVal>) -> AttrVal {

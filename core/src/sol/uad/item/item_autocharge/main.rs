@@ -76,7 +76,7 @@ impl SolAutocharge {
     pub(in crate::sol) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::sol::uad::item) fn update_a_data(&mut self, _: &Src) {
+    pub(in crate::sol::uad::item) fn update_a_data(&mut self, _src: &Src) {
         // Just panic to expose attempts to reload it, since autocharges should never be reloaded.
         // Instead, they are removed and re-added when source changes.
         panic!("autocharges shouldn't be reloaded");

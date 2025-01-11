@@ -262,13 +262,13 @@ fn combine_assigns(vals: &Vec<AttrVal>, high_is_good: bool) -> Option<AttrVal> {
         false => get_min(vals),
     }
 }
-fn combine_adds(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
+fn combine_adds(vals: &Vec<AttrVal>, _high_is_good: bool) -> Option<AttrVal> {
     if vals.is_empty() {
         return None;
     }
     Some(vals.iter().sum())
 }
-fn combine_muls(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
+fn combine_muls(vals: &Vec<AttrVal>, _high_is_good: bool) -> Option<AttrVal> {
     if vals.is_empty() {
         return None;
     }
@@ -276,7 +276,7 @@ fn combine_muls(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
 }
 
 // Penalized combination functions
-fn combine_muls_pen(vals: &Vec<AttrVal>, _: bool) -> Option<AttrVal> {
+fn combine_muls_pen(vals: &Vec<AttrVal>, _high_is_good: bool) -> Option<AttrVal> {
     // Gather positive multipliers into one chain, negative into another, with stronger
     // modifications being first
     let mut positive = Vec::new();

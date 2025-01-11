@@ -1,1 +1,1 @@
-mod vaste_online_mods;
+mod vaste_resource;

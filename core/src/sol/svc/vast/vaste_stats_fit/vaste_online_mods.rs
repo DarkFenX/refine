@@ -33,11 +33,11 @@ impl SolVastFitData {
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        item_attr_id: &EAttrId,
-        ship_attr_id: &EAttrId,
+        use_attr_id: &EAttrId,
+        output_attr_id: &EAttrId,
     ) -> SolStatResource {
         let output = match fit.ship {
-            Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, ship_attr_id) {
+            Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
                 Ok(attr_val) => attr_val.extra,
                 Err(_) => OF(0.0),
             },
@@ -46,7 +46,7 @@ impl SolVastFitData {
         let used = self
             .mods_online
             .iter()
-            .filter_map(|i| calc.get_item_attr_val(uad, i, item_attr_id).ok().map(|v| v.extra))
+            .filter_map(|i| calc.get_item_attr_val(uad, i, use_attr_id).ok().map(|v| v.extra))
             .sum();
         // Round possible float errors despite individual use values being rounded
         let used = round(used, 2);

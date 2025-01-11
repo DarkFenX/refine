@@ -470,7 +470,11 @@ fn apply_mul(mut base_attr_info: SolAttrValInfo, other_attr_info: Option<SolAttr
 }
 
 // Combination functions - they treat all values equally
-fn combine_assigns<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, high_is_good: bool) -> Option<SolAttrValInfo> {
+fn combine_assigns<R>(
+    attr_infos: &mut Vec<SolAttrValInfo>,
+    _revert_func: &R,
+    high_is_good: bool,
+) -> Option<SolAttrValInfo> {
     let effective = match high_is_good {
         true => extract_max(attr_infos),
         false => extract_min(attr_infos),
@@ -486,7 +490,11 @@ fn combine_assigns<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, high_is_good:
         None => None,
     }
 }
-fn combine_adds<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Option<SolAttrValInfo> {
+fn combine_adds<R>(
+    attr_infos: &mut Vec<SolAttrValInfo>,
+    _revert_func: &R,
+    _high_is_good: bool,
+) -> Option<SolAttrValInfo> {
     if attr_infos.is_empty() {
         return None;
     }
@@ -501,7 +509,11 @@ fn combine_adds<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
     }
     Some(attr_info)
 }
-fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Option<SolAttrValInfo> {
+fn combine_muls<R>(
+    attr_infos: &mut Vec<SolAttrValInfo>,
+    _revert_func: &R,
+    _high_is_good: bool,
+) -> Option<SolAttrValInfo> {
     if attr_infos.is_empty() {
         return None;
     }
@@ -535,7 +547,11 @@ fn combine_muls<R>(attr_infos: &mut Vec<SolAttrValInfo>, _: &R, _: bool) -> Opti
     }
     Some(attr_info)
 }
-fn combine_muls_pen<R>(attr_infos: &mut Vec<SolAttrValInfo>, revert_func: &R, _: bool) -> Option<SolAttrValInfo>
+fn combine_muls_pen<R>(
+    attr_infos: &mut Vec<SolAttrValInfo>,
+    revert_func: &R,
+    _high_is_good: bool,
+) -> Option<SolAttrValInfo>
 where
     R: Fn(AttrVal) -> AttrVal,
 {
