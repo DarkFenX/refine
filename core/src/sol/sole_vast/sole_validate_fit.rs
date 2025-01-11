@@ -1,7 +1,10 @@
 use crate::{
     defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{svc::vast::SolValOptions, SolarSystem},
+    sol::{
+        svc::vast::{SolValFails, SolValOptions},
+        SolarSystem,
+    },
 };
 
 impl SolarSystem {
@@ -16,12 +19,12 @@ impl SolarSystem {
         &mut self,
         fit_id: &SolFitId,
         options: SolValOptions,
-    ) -> Result<bool, ValidateFitError> {
+    ) -> Result<SolValFails, ValidateFitError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(self
             .svc
             .vast
-            .validate_fit_fast(&self.uad, &mut self.svc.calc, fit, options))
+            .validate_fit_verbose(&self.uad, &mut self.svc.calc, fit, options))
     }
 }
 

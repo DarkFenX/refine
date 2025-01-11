@@ -1,15 +1,22 @@
 use crate::{
-    defs::{EAttrId, OF},
+    defs::{AttrVal, EAttrId, OF},
     ec,
     sol::{
-        svc::{
-            calc::SolCalc,
-            vast::{SolStatResource, SolVastFitData},
-        },
+        svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{fit::SolFit, SolUad},
     },
     util::round,
 };
+
+pub struct SolStatRes {
+    pub used: AttrVal,
+    pub output: AttrVal,
+}
+impl SolStatRes {
+    pub(in crate::sol::svc::vast) fn new(used: AttrVal, output: AttrVal) -> Self {
+        SolStatRes { used, output }
+    }
+}
 
 impl SolVastFitData {
     pub(in crate::sol::svc::vast) fn get_stats_cpu(
@@ -17,15 +24,10 @@ impl SolVastFitData {
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-    ) -> SolStatResource {
+    ) -> SolStatRes {
         self.get_stats_online_mods(uad, calc, fit, &ec::attrs::CPU, &ec::attrs::CPU_OUTPUT)
     }
-    pub(in crate::sol::svc::vast) fn get_stats_pg(
-        &self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> SolStatResource {
+    pub(in crate::sol::svc::vast) fn get_stats_pg(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> SolStatRes {
         self.get_stats_online_mods(uad, calc, fit, &ec::attrs::POWER, &ec::attrs::POWER_OUTPUT)
     }
     fn get_stats_online_mods(
@@ -35,7 +37,7 @@ impl SolVastFitData {
         fit: &SolFit,
         use_attr_id: &EAttrId,
         output_attr_id: &EAttrId,
-    ) -> SolStatResource {
+    ) -> SolStatRes {
         let output = match fit.ship {
             Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
                 Ok(attr_val) => attr_val.extra,
@@ -50,6 +52,6 @@ impl SolVastFitData {
             .sum();
         // Round possible float errors despite individual use values being rounded
         let used = round(used, 2);
-        SolStatResource::new(used, output)
+        SolStatRes::new(used, output)
     }
 }

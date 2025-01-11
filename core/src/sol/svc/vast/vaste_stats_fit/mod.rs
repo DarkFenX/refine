@@ -1,1 +1,3 @@
-mod vaste_online_mods;
+pub use vaste_resource::SolStatRes;
+
+mod vaste_resource;

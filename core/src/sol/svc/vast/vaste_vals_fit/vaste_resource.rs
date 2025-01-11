@@ -4,7 +4,7 @@ use crate::{
     sol::{
         svc::{
             calc::SolCalc,
-            vast::{SolStatResource, SolVastFitData},
+            vast::{SolStatRes, SolVastFitData},
         },
         uad::{fit::SolFit, SolUad},
     },
@@ -36,6 +36,16 @@ impl SolResUser {
 }
 
 impl SolVastFitData {
+    // Fast validations
+    pub(in crate::sol::svc::vast) fn validate_cpu_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
+        let stats = self.get_stats_cpu(uad, calc, fit);
+        stats.used > stats.output
+    }
+    pub(in crate::sol::svc::vast) fn validate_pg_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
+        let stats = self.get_stats_pg(uad, calc, fit);
+        stats.used > stats.output
+    }
+    // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
         &self,
         uad: &SolUad,
@@ -58,7 +68,7 @@ impl SolVastFitData {
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
-        stat: SolStatResource,
+        stat: SolStatRes,
         use_attr_id: &EAttrId,
     ) -> Option<SolResValFail> {
         if stat.used <= stat.output {
@@ -72,13 +82,5 @@ impl SolVastFitData {
             };
         }
         Some(SolResValFail::new(stat.used, stat.output, users))
-    }
-    pub(in crate::sol::svc::vast) fn validate_cpu_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
-        let stats = self.get_stats_cpu(uad, calc, fit);
-        stats.used > stats.output
-    }
-    pub(in crate::sol::svc::vast) fn validate_pg_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
-        let stats = self.get_stats_pg(uad, calc, fit);
-        stats.used > stats.output
     }
 }
