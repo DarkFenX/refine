@@ -8,7 +8,7 @@ use super::{SolVast, SolVastFitData};
 
 impl SolVast {
     pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
-        for (fit_id, fit_data) in self.fit_data.iter() {
+        for (fit_id, fit_data) in self.fit_datas.iter() {
             check_fit(uad, fit_id)?;
             fit_data.debug_consistency_check(uad)?;
         }

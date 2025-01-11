@@ -10,10 +10,10 @@ use crate::{
 
 impl SolVast {
     pub(in crate::sol::svc) fn fit_added(&mut self, fit_id: &SolFitId) {
-        self.fit_data.insert(*fit_id, SolVastFitData::new());
+        self.fit_datas.insert(*fit_id, SolVastFitData::new());
     }
     pub(in crate::sol::svc) fn fit_removed(&mut self, fit_id: &SolFitId) {
-        self.fit_data.remove(fit_id);
+        self.fit_datas.remove(fit_id);
     }
     pub(in crate::sol::svc) fn item_loaded(&mut self, item: &SolItem) {}
     pub(in crate::sol::svc) fn item_unloaded(&mut self, item: &SolItem) {}

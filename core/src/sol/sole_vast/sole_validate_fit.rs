@@ -1,11 +1,27 @@
-use crate::{err::basic::FitFoundError, sol::SolarSystem};
+use crate::{
+    defs::SolFitId,
+    err::basic::FitFoundError,
+    sol::{svc::vast::SolValOptions, SolarSystem},
+};
 
 impl SolarSystem {
-    pub fn validate_fit_verbose(&self) -> Result<bool, ValidateFitError> {
-        Ok(true)
+    pub fn validate_fit_fast(&mut self, fit_id: &SolFitId, options: SolValOptions) -> Result<bool, ValidateFitError> {
+        let fit = self.uad.fits.get_fit(fit_id)?;
+        Ok(self
+            .svc
+            .vast
+            .validate_fit_fast(&self.uad, &mut self.svc.calc, fit, options))
     }
-    pub fn validate_fit_fast(&self) -> Result<bool, ValidateFitError> {
-        Ok(true)
+    pub fn validate_fit_verbose(
+        &mut self,
+        fit_id: &SolFitId,
+        options: SolValOptions,
+    ) -> Result<bool, ValidateFitError> {
+        let fit = self.uad.fits.get_fit(fit_id)?;
+        Ok(self
+            .svc
+            .vast
+            .validate_fit_fast(&self.uad, &mut self.svc.calc, fit, options))
     }
 }
 

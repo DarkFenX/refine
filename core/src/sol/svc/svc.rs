@@ -10,7 +10,7 @@ use super::{calc::SolCalc, running_effects::SolRunningEffects, vast::SolVast};
 #[derive(Clone)]
 pub(in crate::sol) struct SolSvc {
     pub(in crate::sol) calc: SolCalc,
-    pub(in crate::sol::svc) vast: SolVast,
+    pub(in crate::sol) vast: SolVast,
     pub(in crate::sol::svc) running_effects: SolRunningEffects,
 }
 impl SolSvc {

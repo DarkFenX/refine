@@ -10,4 +10,4 @@ mod svce_debug;
 mod svce_effect;
 mod svce_interface;
 mod svce_notify;
-mod vast;
+pub(crate) mod vast;
