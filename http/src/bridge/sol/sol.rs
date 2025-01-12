@@ -2,11 +2,11 @@ use crate::{
     bridge::HBrError,
     cmd::{
         HAddFitCmd, HAddItemCommand, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand,
-        HCmdResp,
+        HCmdResp, HValidFitCmd,
     },
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo, HSolInfoMode,
-        MkItemInfo,
+        HValidInfo, HValidInfoMode, MkItemInfo,
     },
     util::HExecError,
 };
@@ -303,6 +303,25 @@ impl HSolarSystem {
                 rc::err::RemoveFitError::FitNotFound(e) => HBrError::from(HExecError::FitNotFoundPrimary(e)),
             });
             (core_sol, result)
+        })
+        .await;
+        self.put_sol_back(core_sol);
+        result
+    }
+    #[tracing::instrument(name = "sol-fit-val", level = "trace", skip_all)]
+    pub(crate) async fn validate_fit(
+        &mut self,
+        fit_id: &str,
+        command: HValidFitCmd,
+        valid_mode: HValidInfoMode,
+    ) -> Result<HValidInfo, HBrError> {
+        let fit_id = self.str_to_fit_id(fit_id)?;
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
+            let _sg = sync_span.enter();
+            let result = command.execute(&mut core_sol, &fit_id, valid_mode);
+            (core_sol, result.map_err(|exec_err| HBrError::from(exec_err)))
         })
         .await;
         self.put_sol_back(core_sol);

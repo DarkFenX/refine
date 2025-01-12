@@ -46,3 +46,15 @@ impl From<Option<HFleetInfoMode>> for HFleetInfoMode {
         mode_opt.unwrap_or_else(|| Self::Id)
     }
 }
+
+#[derive(Copy, Clone, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum HValidInfoMode {
+    Simple,
+    Detailed,
+}
+impl From<Option<HValidInfoMode>> for HValidInfoMode {
+    fn from(mode_opt: Option<HValidInfoMode>) -> Self {
+        mode_opt.unwrap_or_else(|| Self::Detailed)
+    }
+}

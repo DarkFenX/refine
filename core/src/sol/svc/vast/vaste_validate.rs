@@ -1,7 +1,7 @@
 use crate::sol::{
     svc::{
         calc::SolCalc,
-        vast::{SolValFails, SolValOptions, SolVast},
+        vast::{SolValOptions, SolValResult, SolVast},
     },
     uad::{fit::SolFit, SolUad},
 };
@@ -34,16 +34,16 @@ impl SolVast {
         calc: &mut SolCalc,
         fit: &SolFit,
         options: SolValOptions,
-    ) -> SolValFails {
+    ) -> SolValResult {
         // All registered fits should have an entry, so just unwrap
         let fit_data = self.get_fit_data(&fit.id).unwrap();
-        let mut fail_data = SolValFails::new();
+        let mut result = SolValResult::new();
         if options.cpu {
-            fail_data.cpu = fit_data.validate_cpu_verbose(uad, calc, fit);
+            result.cpu = fit_data.validate_cpu_verbose(uad, calc, fit);
         }
         if options.pg {
-            fail_data.pg = fit_data.validate_pg_verbose(uad, calc, fit);
+            result.pg = fit_data.validate_pg_verbose(uad, calc, fit);
         }
-        fail_data
+        result
     }
 }

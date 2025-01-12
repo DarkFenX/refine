@@ -31,7 +31,10 @@ pub use sol::{
         SolModuleInfo, SolProjEffectInfo, SolProjInfo, SolRigInfo, SolShipInfo, SolSideEffectInfo, SolSideEffectStr,
         SolSkillInfo, SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
     },
-    svc::calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
+    svc::{
+        calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
+        vast::{SolResUser, SolResValFail, SolValOptions, SolValResult},
+    },
     uad::{
         SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolItemState,
     },

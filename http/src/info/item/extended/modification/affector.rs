@@ -1,9 +1,9 @@
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub struct HAffectorInfo {
+pub(crate) struct HAffectorInfo {
     #[serde_as(as = "serde_with::DisplayFromStr")]
-    pub item_id: rc::SolItemId,
-    pub attr_id: Option<rc::EAttrId>,
+    pub(crate) item_id: rc::SolItemId,
+    pub(crate) attr_id: Option<rc::EAttrId>,
 }
 impl HAffectorInfo {
     fn new(item_id: rc::SolItemId, attr_id: Option<rc::EAttrId>) -> Self {

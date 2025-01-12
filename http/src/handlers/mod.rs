@@ -6,6 +6,7 @@ pub(crate) use root::root;
 use shared::{get_guarded_sol, HGSolResult, HSingleErr};
 pub(crate) use sol::{change_sol, change_sol_src, create_sol, delete_sol, get_sol};
 pub(crate) use src::{create_source, delete_source};
+pub(crate) use validate::validate_fit;
 
 mod debug;
 mod fit;
@@ -15,3 +16,4 @@ mod root;
 mod shared;
 mod sol;
 mod src;
+mod validate;

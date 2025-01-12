@@ -2,7 +2,7 @@ use crate::{
     defs::SolFitId,
     err::basic::FitFoundError,
     sol::{
-        svc::vast::{SolValFails, SolValOptions},
+        svc::vast::{SolValOptions, SolValResult},
         SolarSystem,
     },
 };
@@ -19,7 +19,7 @@ impl SolarSystem {
         &mut self,
         fit_id: &SolFitId,
         options: SolValOptions,
-    ) -> Result<SolValFails, ValidateFitError> {
+    ) -> Result<SolValResult, ValidateFitError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(self
             .svc

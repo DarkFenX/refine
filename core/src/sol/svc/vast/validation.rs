@@ -11,14 +11,20 @@ impl SolValOptions {
     pub fn new_enabled() -> Self {
         Self { cpu: true, pg: true }
     }
+    pub fn new_disabled() -> Self {
+        Self { cpu: false, pg: false }
+    }
 }
 
-pub struct SolValFails {
+pub struct SolValResult {
     pub cpu: Option<SolResValFail>,
     pub pg: Option<SolResValFail>,
 }
-impl SolValFails {
+impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
         Self { cpu: None, pg: None }
+    }
+    pub fn all_passed(&self) -> bool {
+        self.cpu.is_none() && self.pg.is_none()
     }
 }
