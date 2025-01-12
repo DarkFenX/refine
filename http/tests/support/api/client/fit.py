@@ -9,7 +9,7 @@ from .base import ApiClientBase
 if TYPE_CHECKING:
     from typing import Union
 
-    from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode
+    from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
     from tests.support.util import Absent
 
 
@@ -29,6 +29,20 @@ class ApiClientFit(ApiClientBase):
             self,
             method='GET',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
+            params=params)
+
+    def validate_fit_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            val_info_mode: Union[ApiValInfoMode, type[Absent]],
+    ) -> Request:
+        params = {}
+        conditional_insert(container=params, key='validation', value=val_info_mode)
+        return Request(
+            self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/validate',
             params=params)
 
     def create_fit_request(

@@ -309,6 +309,12 @@ class ApiItemInfoMode(StrEnum):
 
 
 @unique
+class ApiValInfoMode(StrEnum):
+    simple = 'simple'
+    detailed = 'detailed'
+
+
+@unique
 class ApiAttrMutation(StrEnum):
     roll = 'roll'
     absolute = 'absolute'

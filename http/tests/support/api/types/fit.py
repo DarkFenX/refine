@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiModAddMode, ApiRack, ApiState
+from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiModAddMode, ApiRack, ApiState, ApiValInfoMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .dmg_types import DmgTypes
 from .item import Item
@@ -44,6 +44,16 @@ class Fit(AttrDict):
         resp = self._client.remove_fit_request(sol_id=self._sol_id, fit_id=self.id).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
+
+    # TODO: add return type
+    def validate(self, status_code=200):
+        resp = self._client.validate_fit_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            val_info_mode=ApiValInfoMode.detailed).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=status_code)
+
 
     def set_fleet(
             self, *,
