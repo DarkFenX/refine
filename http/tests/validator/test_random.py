@@ -11,7 +11,11 @@ def test_random(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
-    api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
-    api_fit.validate()
-    # api_fit.update(fit_info_mode=consts.ApiFitInfoMode.full, item_info_mode=consts.ApiItemInfoMode.full)
+    api_mod1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
+    api_mod2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
+    api_val = api_fit.validate()
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 150
+    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.users[api_mod1.id] == 50
+    assert api_val.details.cpu.users[api_mod2.id] == 100

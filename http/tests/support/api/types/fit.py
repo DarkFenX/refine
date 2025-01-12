@@ -6,6 +6,7 @@ from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiModAddMode,
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .dmg_types import DmgTypes
 from .item import Item
+from .val_result import ValResult
 
 if TYPE_CHECKING:
     from typing import Union
@@ -50,18 +51,33 @@ class Fit(AttrDict):
             self, *,
             include: Union[list[ApiValType], type[Absent]] = Absent,
             exclude: Union[list[ApiValType], type[Absent]] = Absent,
-            status_code=200,
-    # TODO: add return type
-    ):
-        resp = self._client.validate_fit_request(
+            status_code: int = 200,
+    ) -> Union[ValResult, None]:
+        # Simple
+        resp_simple = self._client.validate_fit_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            include=include,
+            exclude=exclude,
+            val_info_mode=ApiValInfoMode.simple).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp_simple.check(status_code=status_code)
+        # Detailed
+        resp_detailed = self._client.validate_fit_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             include=include,
             exclude=exclude,
             val_info_mode=ApiValInfoMode.detailed).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
-
+        resp_detailed.check(status_code=status_code)
+        # Ensure simple results are consistent with full results
+        if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
+            result_simple = ValResult(data=resp_simple.json())
+            result_detailed = ValResult(data=resp_detailed.json())
+            assert result_simple.passed is result_detailed.passed
+            return result_detailed
+        return None
 
     def set_fleet(
             self, *,
