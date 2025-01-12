@@ -11,14 +11,14 @@ use crate::{
 };
 
 pub struct SolResValFail {
-    pub total_use: AttrVal,
+    pub used: AttrVal,
     pub output: AttrVal,
     pub users: Vec<SolResUser>,
 }
 impl SolResValFail {
-    fn new(total_use: AttrVal, output: AttrVal, users: Vec<SolResUser>) -> Self {
+    fn new(used: AttrVal, output: AttrVal, users: Vec<SolResUser>) -> Self {
         Self {
-            total_use,
+            used,
             output,
             users,
         }
