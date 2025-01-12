@@ -244,6 +244,12 @@ class ApiRack(StrEnum):
 
 
 @unique
+class ApiAttrMutation(StrEnum):
+    roll = 'roll'
+    absolute = 'absolute'
+
+
+@unique
 class ApiEffMode(StrEnum):
     full_compliance = 'full'
     state_compliance = 'state'
@@ -284,6 +290,12 @@ class ApiSideEffectOp(StrEnum):
 
 
 @unique
+class ApiValType(StrEnum):
+    cpu = 'cpu'
+    pg = 'pg'
+
+
+@unique
 class ApiSolInfoMode(StrEnum):
     id = 'id'
     full = 'full'
@@ -312,12 +324,6 @@ class ApiItemInfoMode(StrEnum):
 class ApiValInfoMode(StrEnum):
     simple = 'simple'
     detailed = 'detailed'
-
-
-@unique
-class ApiAttrMutation(StrEnum):
-    roll = 'roll'
-    absolute = 'absolute'
 
 
 @unique

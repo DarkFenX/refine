@@ -26,7 +26,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='GET',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params)
@@ -37,7 +37,7 @@ class ApiClientItem(ApiClientBase):
             item_id: str,
     ) -> Request:
         return Request(
-            self,
+            client=self,
             method='DELETE',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}')
 
@@ -91,7 +91,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/item',
             params=params,
@@ -113,7 +113,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,
@@ -169,7 +169,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/item',
             params=params,
@@ -189,7 +189,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,
@@ -285,7 +285,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/item',
             params=params,
@@ -315,7 +315,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,
@@ -371,7 +371,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/item',
             params=params,
@@ -399,7 +399,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,
@@ -442,7 +442,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,
@@ -491,7 +491,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/item',
             params=params,
@@ -555,7 +555,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/item',
             params=params,
@@ -577,7 +577,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,
@@ -601,7 +601,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/item',
             params=params,
@@ -620,7 +620,7 @@ class ApiClientItem(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,

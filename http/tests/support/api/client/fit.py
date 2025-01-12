@@ -9,7 +9,7 @@ from .base import ApiClientBase
 if TYPE_CHECKING:
     from typing import Union
 
-    from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
+    from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode, ApiValType
     from tests.support.util import Absent
 
 
@@ -26,7 +26,7 @@ class ApiClientFit(ApiClientBase):
         conditional_insert(container=params, key='fit', value=fit_info_mode)
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='GET',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
             params=params)
@@ -35,15 +35,24 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             fit_id: str,
+            include: Union[list[ApiValType], type[Absent]],
+            exclude: Union[list[ApiValType], type[Absent]],
             val_info_mode: Union[ApiValInfoMode, type[Absent]],
     ) -> Request:
         params = {}
         conditional_insert(container=params, key='validation', value=val_info_mode)
-        return Request(
-            self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/validate',
-            params=params)
+        body = {}
+        conditional_insert(container=body, key='include', value=include)
+        conditional_insert(container=body, key='exclude', value=exclude)
+        kwargs = {
+            'method': 'POST',
+            'url': f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/validate',
+            'params': params}
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
+        if body:
+            kwargs['json'] = body
+        return Request(client=self, **kwargs)
 
     def create_fit_request(
             self, *,
@@ -52,25 +61,20 @@ class ApiClientFit(ApiClientBase):
             fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
-        body = {}
-        conditional_insert(container=body, key='rah_incoming_dmg', value=rah_incoming_dmg)
         params = {}
         conditional_insert(container=params, key='fit', value=fit_info_mode)
         conditional_insert(container=params, key='item', value=item_info_mode)
-        if body:
-            return Request(
-                self,
-                method='POST',
-                url=f'{self._base_url}/sol/{sol_id}/fit',
-                params=params,
-                json=body)
+        body = {}
+        conditional_insert(container=body, key='rah_incoming_dmg', value=rah_incoming_dmg)
+        kwargs = {
+            'method': 'POST',
+            'url': f'{self._base_url}/sol/{sol_id}/fit',
+            'params': params}
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header
-        return Request(
-            self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/fit',
-            params=params)
+        if body:
+            kwargs['json'] = body
+        return Request(client=self, **kwargs)
 
     def set_fit_fleet_request(
             self, *,
@@ -85,7 +89,7 @@ class ApiClientFit(ApiClientBase):
         conditional_insert(container=params, key='fit', value=fit_info_mode)
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
             params=params,
@@ -105,7 +109,7 @@ class ApiClientFit(ApiClientBase):
         conditional_insert(container=params, key='fit', value=fit_info_mode)
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
             params=params,
@@ -117,6 +121,6 @@ class ApiClientFit(ApiClientBase):
             fit_id: str,
     ) -> Request:
         return Request(
-            self,
+            client=self,
             method='DELETE',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}')

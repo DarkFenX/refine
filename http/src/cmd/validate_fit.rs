@@ -22,7 +22,7 @@ impl HValidFitCmd {
             Self::Exclude(options) => (rc::SolValOptions::new_enabled(), options, false),
         };
         for option in options {
-            match option.to_lowercase().as_str() {
+            match option.as_str() {
                 "cpu" => core_options.cpu = alt_value,
                 "pg" => core_options.pg = alt_value,
                 _ => (),

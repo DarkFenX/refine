@@ -27,7 +27,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
         if data is Default:
             data = self._get_default_eve_data()
         return Request(
-            self,
+            client=self,
             method='POST',
             url=f'{self._base_url}/src/{data.alias}',
             json={'data_version': '1', 'data_base_url': f'{self._eve_data_server_base_url}/{data.alias}/'})
@@ -45,7 +45,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
     def remove_source_request(self, *, src_alias: str) -> Request:
         return Request(
-            self,
+            client=self,
             method='DELETE',
             url=f'{self._base_url}/src/{src_alias}')
 

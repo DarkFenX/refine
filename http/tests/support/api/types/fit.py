@@ -10,6 +10,7 @@ from .item import Item
 if TYPE_CHECKING:
     from typing import Union
 
+    from tests.support.consts import ApiValType
     from tests.support.api import ApiClient
 
 
@@ -45,11 +46,18 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
+    def validate(
+            self, *,
+            include: Union[list[ApiValType], type[Absent]] = Absent,
+            exclude: Union[list[ApiValType], type[Absent]] = Absent,
+            status_code=200,
     # TODO: add return type
-    def validate(self, status_code=200):
+    ):
         resp = self._client.validate_fit_request(
             sol_id=self._sol_id,
             fit_id=self.id,
+            include=include,
+            exclude=exclude,
             val_info_mode=ApiValInfoMode.detailed).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)

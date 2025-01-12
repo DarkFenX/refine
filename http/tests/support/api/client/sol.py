@@ -45,11 +45,15 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
                 data = self._get_default_eve_data()
             body['src_alias'] = data.alias
         conditional_insert(container=body, key='default_incoming_dmg', value=default_incoming_dmg)
-        if body:
-            return Request(self, method='POST', url=f'{self._base_url}/sol', params=params, json=body)
+        kwargs = {
+            'method': 'POST',
+            'url': f'{self._base_url}/sol',
+            'params': params}
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header
-        return Request(self, method='POST', url=f'{self._base_url}/sol', params=params)
+        if body:
+            kwargs['json'] = body
+        return Request(client=self, **kwargs)
 
     def create_sol(
             self, *,
@@ -113,7 +117,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         conditional_insert(container=params, key='fit', value=fit_info_mode)
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='GET',
             url=f'{self._base_url}/sol/{sol_id}',
             params=params)
@@ -138,7 +142,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         conditional_insert(container=params, key='fit', value=fit_info_mode)
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/src',
             params=params,
@@ -146,7 +150,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
 
     def remove_sol_request(self, *, sol_id: str) -> Request:
         return Request(
-            self,
+            client=self,
             method='DELETE',
             url=f'{self._base_url}/sol/{sol_id}')
 
@@ -157,7 +161,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
 
     def check_sol_request(self, *, sol_id: str) -> Request:
         return Request(
-            self,
+            client=self,
             method='GET',
             url=f'{self._base_url}/sol/{sol_id}/check')
 
@@ -182,7 +186,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         conditional_insert(container=params, key='fit', value=fit_info_mode)
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}',
             params=params,

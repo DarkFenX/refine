@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 class Request(requests.PreparedRequest):
 
-    def __init__(self, client: ApiClientBase, *args, **kwargs):  # pylint: disable=W0231
-        prepared_request = requests.Request(*args, **kwargs).prepare()
+    def __init__(self, *, client: ApiClientBase, **kwargs):  # pylint: disable=W0231
+        prepared_request = requests.Request(**kwargs).prepare()
         self.__dict__.update(prepared_request.__dict__)
         self.__client = client
         self.__body_bytes = None

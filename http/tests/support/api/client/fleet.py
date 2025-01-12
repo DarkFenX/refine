@@ -24,7 +24,7 @@ class ApiClientFleet(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='fleet', value=fleet_info_mode)
         return Request(
-            self,
+            client=self,
             method='GET',
             url=f'{self._base_url}/sol/{sol_id}/fleet/{fleet_id}',
             params=params)
@@ -37,7 +37,7 @@ class ApiClientFleet(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='fleet', value=fleet_info_mode)
         return Request(
-            self,
+            client=self,
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/fleet',
             params=params)
@@ -56,7 +56,7 @@ class ApiClientFleet(ApiClientBase):
         params = {}
         conditional_insert(container=params, key='fleet', value=fleet_info_mode)
         return Request(
-            self,
+            client=self,
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/fleet/{fleet_id}',
             params=params,
@@ -68,6 +68,6 @@ class ApiClientFleet(ApiClientBase):
             fleet_id: str,
     ) -> Request:
         return Request(
-            self,
+            client=self,
             method='DELETE',
             url=f'{self._base_url}/sol/{sol_id}/fleet/{fleet_id}')

@@ -6,7 +6,7 @@ def test_random(client, consts):
     eve_effect_id = client.mk_eve_online_effect()
     eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 50}, eff_ids=[eve_effect_id])
     eve_module2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 150})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
