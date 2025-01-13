@@ -117,7 +117,8 @@ def test_modified_output(client, consts):
 
 
 def test_sum_rounding(client, consts):
-    # Check that total sum of users is rounded as well
+    # Check that total sum of users is rounded; if there would be no rounding, one of sums of 0.1
+    # elements would lead to float inaccuracies
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
