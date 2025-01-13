@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, EAttrId, SolItemId},
+    defs::{AttrVal, EAttrId, SolItemId, OF},
     ec,
     sol::{
         svc::{
@@ -17,11 +17,7 @@ pub struct SolResValFail {
 }
 impl SolResValFail {
     fn new(used: AttrVal, output: AttrVal, users: Vec<SolResUser>) -> Self {
-        Self {
-            used,
-            output,
-            users,
-        }
+        Self { used, output, users }
     }
 }
 
@@ -77,8 +73,8 @@ impl SolVastFitData {
         let mut users = Vec::with_capacity(self.mods_online.len());
         for item_id in self.mods_online.iter() {
             match calc.get_item_attr_val(uad, item_id, use_attr_id) {
-                Ok(sol_val) => users.push(SolResUser::new(*item_id, sol_val.extra)),
-                Err(_) => continue,
+                Ok(sol_val) if sol_val.extra > OF(0.0) => users.push(SolResUser::new(*item_id, sol_val.extra)),
+                _ => continue,
             };
         }
         Some(SolResValFail::new(stat.used, stat.output, users))
