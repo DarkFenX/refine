@@ -25,6 +25,7 @@ impl HValidFitCmd {
             match option.as_str() {
                 "cpu" => core_options.cpu = alt_value,
                 "pg" => core_options.pg = alt_value,
+                "calibration" => core_options.calibration = alt_value,
                 _ => (),
             }
         }

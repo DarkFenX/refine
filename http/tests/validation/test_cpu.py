@@ -11,14 +11,14 @@ def test_fail_single(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 125
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod.id] == 150
+    assert api_val.details.cpu.users[api_module.id] == 150
 
 
 def test_fail_multiple(client, consts):
@@ -32,16 +32,16 @@ def test_fail_multiple(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_mod1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
-    api_mod2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 125
     assert len(api_val.details.cpu.users) == 2
-    assert api_val.details.cpu.users[api_mod1.id] == 50
-    assert api_val.details.cpu.users[api_mod2.id] == 100
+    assert api_val.details.cpu.users[api_module1.id] == 50
+    assert api_val.details.cpu.users[api_module2.id] == 100
 
 
 def test_modified_use(client, consts):
@@ -63,7 +63,7 @@ def test_modified_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True
@@ -77,7 +77,7 @@ def test_modified_use(client, consts):
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 125
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod.id] == 150
+    assert api_val.details.cpu.users[api_module.id] == 150
 
 
 def test_modified_output(client, consts):
@@ -99,7 +99,7 @@ def test_modified_output(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True
@@ -113,7 +113,7 @@ def test_modified_output(client, consts):
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 100
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod.id] == 150
+    assert api_val.details.cpu.users[api_module.id] == 150
 
 
 def test_sum_rounding(client, consts):
@@ -151,14 +151,14 @@ def test_no_ship(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 5
     assert api_val.details.cpu.output == 0
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod.id] == 5
+    assert api_val.details.cpu.users[api_module.id] == 5
 
 
 def test_unloaded_ship(client, consts):
@@ -173,14 +173,14 @@ def test_unloaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 5
     assert api_val.details.cpu.output == 0
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod.id] == 5
+    assert api_val.details.cpu.users[api_module.id] == 5
 
 
 def test_unloaded_user(client, consts):
@@ -216,7 +216,7 @@ def test_non_positive(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
-    api_mod2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
     api_fit.add_mod(type_id=eve_module3_id, state=consts.ApiState.online)
     # Verification - items with negative and 0 use are not exposed
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
@@ -224,7 +224,7 @@ def test_non_positive(client, consts):
     assert api_val.details.cpu.used == 140
     assert api_val.details.cpu.output == 125
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod2.id] == 150
+    assert api_val.details.cpu.users[api_module2.id] == 150
 
 
 def test_no_attr_use(client, consts):
@@ -253,14 +253,14 @@ def test_no_attr_output(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 0
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod.id] == 150
+    assert api_val.details.cpu.users[api_module.id] == 150
 
 
 def test_criterion_state(client, consts):
@@ -273,23 +273,23 @@ def test_criterion_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.offline)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.offline)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
     # Action
-    api_mod.change_mod(state=consts.ApiState.online)
+    api_module.change_mod(state=consts.ApiState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 125
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod.id] == 150
+    assert api_val.details.cpu.users[api_module.id] == 150
     # Action
-    api_mod.change_mod(state=consts.ApiState.offline)
+    api_module.change_mod(state=consts.ApiState.offline)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True
@@ -307,32 +307,32 @@ def test_criterion_effect(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 125
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod.id] == 150
+    assert api_val.details.cpu.users[api_module.id] == 150
     # Action
-    api_mod.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    api_module.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
     # Action
-    api_mod.change_mod(state=consts.ApiState.online, effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
+    api_module.change_mod(state=consts.ApiState.online, effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 125
     assert len(api_val.details.cpu.users) == 1
-    assert api_val.details.cpu.users[api_mod.id] == 150
+    assert api_val.details.cpu.users[api_module.id] == 150
     # Action
-    api_mod.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    api_module.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True

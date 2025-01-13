@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, EAttrId, OF},
+    defs::{AttrVal, EAttrId, SolItemId, OF},
     ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
@@ -25,16 +25,46 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatRes {
-        self.get_stats_online_mods(uad, calc, fit, &ec::attrs::CPU, &ec::attrs::CPU_OUTPUT)
+        self.get_resource_stats(
+            uad,
+            calc,
+            fit,
+            self.mods_online.iter(),
+            &ec::attrs::CPU,
+            &ec::attrs::CPU_OUTPUT,
+        )
     }
     pub(in crate::sol::svc::vast) fn get_stats_pg(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> SolStatRes {
-        self.get_stats_online_mods(uad, calc, fit, &ec::attrs::POWER, &ec::attrs::POWER_OUTPUT)
+        self.get_resource_stats(
+            uad,
+            calc,
+            fit,
+            self.mods_online.iter(),
+            &ec::attrs::POWER,
+            &ec::attrs::POWER_OUTPUT,
+        )
     }
-    fn get_stats_online_mods(
+    pub(in crate::sol::svc::vast) fn get_stats_calibration(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+    ) -> SolStatRes {
+        self.get_resource_stats(
+            uad,
+            calc,
+            fit,
+            self.rigs_rigslot.iter(),
+            &ec::attrs::UPGRADE_COST,
+            &ec::attrs::UPGRADE_CAPACITY,
+        )
+    }
+    fn get_resource_stats<'a>(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+        items: impl Iterator<Item = &'a SolItemId>,
         use_attr_id: &EAttrId,
         output_attr_id: &EAttrId,
     ) -> SolStatRes {
@@ -45,9 +75,7 @@ impl SolVastFitData {
             },
             None => OF(0.0),
         };
-        let used = self
-            .mods_online
-            .iter()
+        let used = items
             .filter_map(|i| calc.get_item_attr_val(uad, i, use_attr_id).ok().map(|v| v.extra))
             .sum();
         // Round possible float errors despite individual use values being rounded

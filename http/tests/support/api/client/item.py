@@ -63,6 +63,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: Union[bool, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -70,6 +71,7 @@ class ApiClientItem(ApiClientBase):
             sol_id=sol_id,
             item_id=item_id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode)
 
     # Skill methods
@@ -141,6 +143,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: Union[bool, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -148,6 +151,7 @@ class ApiClientItem(ApiClientBase):
             sol_id=sol_id,
             item_id=item_id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode)
 
     # Booster methods
@@ -217,6 +221,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: Union[bool, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -224,6 +229,7 @@ class ApiClientItem(ApiClientBase):
             sol_id=sol_id,
             item_id=item_id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode)
 
     # Stance methods
@@ -343,6 +349,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: Union[bool, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -350,6 +357,7 @@ class ApiClientItem(ApiClientBase):
             sol_id=sol_id,
             item_id=item_id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode)
 
     # Drone methods
@@ -454,6 +462,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: Union[bool, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -461,6 +470,7 @@ class ApiClientItem(ApiClientBase):
             sol_id=sol_id,
             item_id=item_id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode)
 
     # Autocharge methods
@@ -469,6 +479,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: Union[bool, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -476,6 +487,7 @@ class ApiClientItem(ApiClientBase):
             sol_id=sol_id,
             item_id=item_id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode)
 
     # System-wide effect methods
@@ -502,6 +514,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: Union[bool, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -509,6 +522,7 @@ class ApiClientItem(ApiClientBase):
             sol_id=sol_id,
             item_id=item_id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode)
 
     # Fit-wide effect methods
@@ -533,6 +547,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: Union[bool, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         return self.__change_simple_item_request(
@@ -540,6 +555,7 @@ class ApiClientItem(ApiClientBase):
             sol_id=sol_id,
             item_id=item_id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode)
 
     # Projected effect methods
@@ -613,10 +629,12 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: Union[bool, str, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         body = {'type': cmd_name}
         conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='effect_modes', value=effect_modes)
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(

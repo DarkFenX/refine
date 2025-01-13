@@ -26,6 +26,11 @@ impl SolVast {
                 return false;
             }
         }
+        if options.calibration {
+            if !fit_data.validate_calibration_fast(uad, calc, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -43,6 +48,9 @@ impl SolVast {
         }
         if options.pg {
             result.pg = fit_data.validate_pg_verbose(uad, calc, fit);
+        }
+        if options.calibration {
+            result.calibration = fit_data.validate_calibration_verbose(uad, calc, fit);
         }
         result
     }

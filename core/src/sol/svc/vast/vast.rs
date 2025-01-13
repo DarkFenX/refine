@@ -30,12 +30,16 @@ impl SolVast {
 
 #[derive(Clone)]
 pub(in crate::sol::svc::vast) struct SolVastFitData {
+    // Modules with "online" effect active
     pub(in crate::sol::svc::vast) mods_online: StSet<SolItemId>,
+    // Rigs with "rigSlot" effect active
+    pub(in crate::sol::svc::vast) rigs_rigslot: StSet<SolItemId>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
             mods_online: StSet::new(),
+            rigs_rigslot: StSet::new(),
         }
     }
 }

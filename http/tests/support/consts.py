@@ -44,6 +44,7 @@ class EveEffect(IntEnum):
     missile_kin_dmg_bonus = 668
     drone_dmg_bonus = 1730
     self_rof = 1851
+    rig_slot = 2663
     overload_self_duration_bonus = 3002
     warp_disrupt_sphere = 3380
     script_warp_scramble_range_bonus = 3648
@@ -179,6 +180,8 @@ class EveAttr(IntEnum):
     speed_boost_factor = 567
     mass_addition = 796
     disallow_assistance = 854
+    upgrade_capacity = 1132
+    upgrade_cost = 1153
     overload_self_duration_bonus = 1206
     max_range_hidden = 1317
     warp_scramble_range_bonus = 1327
@@ -293,6 +296,7 @@ class ApiSideEffectOp(StrEnum):
 class ApiValType(StrEnum):
     cpu = 'cpu'
     pg = 'pg'
+    calibration = 'calibration'
 
 
 @unique
