@@ -118,9 +118,11 @@ def test_modified_output(client, consts):
 
 def test_no_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
+    # Create an item which has the attribute, just to prevent it from being removed
+    client.mk_eve_item(attrs={eve_output_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -136,9 +138,11 @@ def test_no_ship(client, consts):
 
 def test_unloaded_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
+    # Create an item which has the attribute, just to prevent it from being removed
+    client.mk_eve_item(attrs={eve_output_attr_id: 5})
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -152,6 +156,26 @@ def test_unloaded_ship(client, consts):
     assert api_val.details.cpu.output == 0
     assert len(api_val.details.cpu.users) == 1
     assert api_val.details.cpu.users[api_mod.id] == 5
+
+
+def test_unloaded_user(client, consts):
+    # Just check that nothing crashes, unloaded items are not supposed to even be registered
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    # Create an item which has the attribute, just to prevent it from being removed
+    client.mk_eve_item(attrs={eve_use_attr_id: 5})
+    eve_module_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
 
 
 def test_non_positive(client, consts):
@@ -176,3 +200,116 @@ def test_non_positive(client, consts):
     assert api_val.details.cpu.output == 125
     assert len(api_val.details.cpu.users) == 1
     assert api_val.details.cpu.users[api_mod2.id] == 150
+
+
+def test_no_attr_use(client, consts):
+    eve_use_attr_id = consts.EveAttr.cpu
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_effect_id = client.mk_eve_online_effect()
+    eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is True
+
+
+def test_no_attr_output(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
+    eve_output_attr_id = consts.EveAttr.cpu_output
+    eve_effect_id = client.mk_eve_online_effect()
+    eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 150
+    assert api_val.details.cpu.output == 0
+    assert len(api_val.details.cpu.users) == 1
+    assert api_val.details.cpu.users[api_mod.id] == 150
+
+
+def test_criterion_state(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_effect_id = client.mk_eve_online_effect()
+    eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.offline)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+    # Action
+    api_mod.change_mod(state=consts.ApiState.online)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 150
+    assert api_val.details.cpu.output == 125
+    assert len(api_val.details.cpu.users) == 1
+    assert api_val.details.cpu.users[api_mod.id] == 150
+    # Action
+    api_mod.change_mod(state=consts.ApiState.offline)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+
+
+def test_criterion_effect(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_effect_id = client.mk_eve_online_effect()
+    eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_mod = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 150
+    assert api_val.details.cpu.output == 125
+    assert len(api_val.details.cpu.users) == 1
+    assert api_val.details.cpu.users[api_mod.id] == 150
+    # Action
+    api_mod.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+    # Action
+    api_mod.change_mod(state=consts.ApiState.online, effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 150
+    assert api_val.details.cpu.output == 125
+    assert len(api_val.details.cpu.users) == 1
+    assert api_val.details.cpu.users[api_mod.id] == 150
+    # Action
+    api_mod.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
