@@ -146,7 +146,7 @@ def test_no_ship(client, consts):
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
-    # Create an item which has the attribute, just to prevent it from being removed
+    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
     client.mk_eve_item(attrs={eve_output_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
@@ -166,7 +166,7 @@ def test_unloaded_ship(client, consts):
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
-    # Create an item which has the attribute, just to prevent it from being removed
+    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
     client.mk_eve_item(attrs={eve_output_attr_id: 5})
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
@@ -188,7 +188,7 @@ def test_unloaded_user(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_output)
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
-    # Create an item which has the attribute, just to prevent it from being removed
+    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
     client.mk_eve_item(attrs={eve_use_attr_id: 5})
     eve_module_id = client.alloc_item_id()
     client.create_sources()
