@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, EAttrId, SolItemId, OF},
+    defs::{AttrVal, EAttrId, SolItemId},
     ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
@@ -10,10 +10,10 @@ use crate::{
 
 pub struct SolStatRes {
     pub used: AttrVal,
-    pub output: AttrVal,
+    pub output: Option<AttrVal>,
 }
 impl SolStatRes {
-    pub(in crate::sol::svc::vast) fn new(used: AttrVal, output: AttrVal) -> Self {
+    pub(in crate::sol::svc::vast) fn new(used: AttrVal, output: Option<AttrVal>) -> Self {
         SolStatRes { used, output }
     }
 }
@@ -70,10 +70,10 @@ impl SolVastFitData {
     ) -> SolStatRes {
         let output = match fit.ship {
             Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
-                Ok(attr_val) => attr_val.extra,
-                Err(_) => OF(0.0),
+                Ok(attr_val) => Some(attr_val.extra),
+                Err(_) => None,
             },
-            None => OF(0.0),
+            None => None,
         };
         let used = items
             .filter_map(|i| calc.get_item_attr_val(uad, i, use_attr_id).ok().map(|v| v.extra))

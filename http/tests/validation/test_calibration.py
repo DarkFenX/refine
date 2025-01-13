@@ -156,7 +156,7 @@ def test_no_ship(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
     assert api_val.details.calibration.used == 5
-    assert api_val.details.calibration.output == 0
+    assert api_val.details.calibration.output is None
     assert len(api_val.details.calibration.users) == 1
     assert api_val.details.calibration.users[api_rig.id] == 5
 
@@ -178,7 +178,7 @@ def test_unloaded_ship(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
     assert api_val.details.calibration.used == 5
-    assert api_val.details.calibration.output == 0
+    assert api_val.details.calibration.output is None
     assert len(api_val.details.calibration.users) == 1
     assert api_val.details.calibration.users[api_rig.id] == 5
 
@@ -258,7 +258,7 @@ def test_no_attr_output(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
     assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output == 0
+    assert api_val.details.calibration.output is None
     assert len(api_val.details.calibration.users) == 1
     assert api_val.details.calibration.users[api_rig.id] == 150
 

@@ -4,7 +4,7 @@ use std::collections::HashMap;
 #[derive(serde::Serialize)]
 pub(in crate::info::valid) struct HResValFail {
     used: rc::AttrVal,
-    output: rc::AttrVal,
+    output: Option<rc::AttrVal>,
     #[serde_as(as = "std::collections::HashMap<serde_with::DisplayFromStr, _>")]
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     users: HashMap<rc::SolItemId, rc::AttrVal>,

@@ -12,11 +12,11 @@ use crate::{
 
 pub struct SolResValFail {
     pub used: AttrVal,
-    pub output: AttrVal,
+    pub output: Option<AttrVal>,
     pub users: Vec<SolResUser>,
 }
 impl SolResValFail {
-    fn new(used: AttrVal, output: AttrVal, users: Vec<SolResUser>) -> Self {
+    fn new(used: AttrVal, output: Option<AttrVal>, users: Vec<SolResUser>) -> Self {
         Self { used, output, users }
     }
 }
@@ -35,11 +35,11 @@ impl SolVastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_cpu_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
         let stats = self.get_stats_cpu(uad, calc, fit);
-        stats.used <= stats.output
+        stats.used <= stats.output.unwrap_or(OF(0.0))
     }
     pub(in crate::sol::svc::vast) fn validate_pg_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
         let stats = self.get_stats_pg(uad, calc, fit);
-        stats.used <= stats.output
+        stats.used <= stats.output.unwrap_or(OF(0.0))
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_fast(
         &self,
@@ -48,7 +48,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> bool {
         let stats = self.get_stats_calibration(uad, calc, fit);
-        stats.used <= stats.output
+        stats.used <= stats.output.unwrap_or(OF(0.0))
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
@@ -86,7 +86,7 @@ impl SolVastFitData {
         items: impl ExactSizeIterator<Item = &'a SolItemId>,
         use_attr_id: &EAttrId,
     ) -> Option<SolResValFail> {
-        if stat.used <= stat.output {
+        if stat.used <= stat.output.unwrap_or(OF(0.0)) {
             return None;
         };
         let mut users = Vec::with_capacity(items.len());
