@@ -39,11 +39,11 @@ impl SolVastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_cpu_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
         let stats = self.get_stats_cpu(uad, calc, fit);
-        stats.used > stats.output
+        stats.used <= stats.output
     }
     pub(in crate::sol::svc::vast) fn validate_pg_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
         let stats = self.get_stats_pg(uad, calc, fit);
-        stats.used > stats.output
+        stats.used <= stats.output
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
