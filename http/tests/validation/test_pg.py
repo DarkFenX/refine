@@ -116,6 +116,30 @@ def test_modified_output(client, consts):
     assert api_val.details.pg.users[api_mod.id] == 150
 
 
+def test_sum_rounding(client, consts):
+    # Check that total sum of users is rounded as well
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_output)
+    eve_effect_id = client.mk_eve_online_effect()
+    eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.1}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 0.15})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    for i in range(1, 21):
+        # Action
+        api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+        if i == 1:
+            continue
+        # Verification
+        api_val = api_fit.validate(include=[consts.ApiValType.pg])
+        assert api_val.passed is False
+        assert api_val.details.pg.used == round(i / 10, 1)
+        assert api_val.details.pg.output == 0.15
+        assert len(api_val.details.pg.users) == i
+
+
 def test_no_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_output)
