@@ -95,6 +95,7 @@ class Item(AttrDict):
     def change_char(
             self, *,
             state: Union[bool, type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[Item, None]:
@@ -102,6 +103,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -135,6 +137,7 @@ class Item(AttrDict):
     def change_implant(
             self, *,
             state: Union[bool, type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[Item, None]:
@@ -142,6 +145,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -174,6 +178,7 @@ class Item(AttrDict):
     def change_ship(
             self, *,
             state: Union[bool, type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[Item, None]:
@@ -181,6 +186,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -297,6 +303,7 @@ class Item(AttrDict):
     def change_charge(
             self, *,
             state: Union[bool, type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[Item, None]:
@@ -304,6 +311,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -315,6 +323,7 @@ class Item(AttrDict):
     def change_autocharge(
             self, *,
             state: Union[bool, type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[Item, None]:
@@ -322,6 +331,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -333,6 +343,7 @@ class Item(AttrDict):
     def change_sw_effect(
             self, *,
             state: Union[bool, type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[Item, None]:
@@ -340,6 +351,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -351,6 +363,7 @@ class Item(AttrDict):
     def change_fw_effect(
             self, *,
             state: Union[bool, type[Absent]] = Absent,
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]] = Absent,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Union[Item, None]:
@@ -358,6 +371,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            effect_modes=effect_modes,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
