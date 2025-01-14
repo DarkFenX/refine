@@ -11,6 +11,13 @@ from tests.support.util import next_free_port
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
+def pytest_addoption(parser):
+    parser.addoption(
+        "--fast-cleanup-check",
+        action="store_true",
+        help="make log check during source creation faster, but unreliable")
+
+
 @pytest.fixture(scope='session')
 def reefast_tmp_folder(tmp_path_factory):
     yield tmp_path_factory.mktemp('reefast_test')
@@ -39,8 +46,12 @@ def reefast_server(reefast_config, log_reader):  # pylint: disable=W0621
 
 
 @pytest.fixture()
-def client(httpserver, reefast_config, log_reader):  # pylint: disable=W0621
-    test_client = TestClient(eve_data_server=httpserver, api_port=reefast_config.port, log_reader=log_reader)
+def client(pytestconfig, httpserver, reefast_config, log_reader):  # pylint: disable=W0621
+    test_client = TestClient(
+        eve_data_server=httpserver,
+        api_port=reefast_config.port,
+        log_reader=log_reader,
+        fast_cleanup_check=pytestconfig.getoption("fast_cleanup_check"))
     yield test_client
     test_client.cleanup_sols()
     test_client.cleanup_sources()
