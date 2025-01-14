@@ -144,27 +144,32 @@ fn restore_fk_tgts(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) -> b
 // Reporting
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn cleanup_report(alive: &GData, trash: &GData) {
-    vec_report(&alive.items, &trash.items);
-    vec_report(&alive.groups, &trash.groups);
-    vec_report(&alive.attrs, &trash.attrs);
-    vec_report(&alive.item_attrs, &trash.item_attrs);
-    vec_report(&alive.effects, &trash.effects);
-    vec_report(&alive.item_effects, &trash.item_effects);
-    vec_report(&alive.abils, &trash.abils);
-    vec_report(&alive.item_abils, &trash.item_abils);
-    vec_report(&alive.buffs, &trash.buffs);
-    vec_report(&alive.item_srqs, &trash.item_srqs);
-    vec_report(&alive.muta_items, &trash.muta_items);
-    vec_report(&alive.muta_attrs, &trash.muta_attrs);
+    if vec_report(&alive.items, &trash.items)
+        && vec_report(&alive.groups, &trash.groups)
+        && vec_report(&alive.attrs, &trash.attrs)
+        && vec_report(&alive.item_attrs, &trash.item_attrs)
+        && vec_report(&alive.effects, &trash.effects)
+        && vec_report(&alive.item_effects, &trash.item_effects)
+        && vec_report(&alive.abils, &trash.abils)
+        && vec_report(&alive.item_abils, &trash.item_abils)
+        && vec_report(&alive.buffs, &trash.buffs)
+        && vec_report(&alive.item_srqs, &trash.item_srqs)
+        && vec_report(&alive.muta_items, &trash.muta_items)
+        && vec_report(&alive.muta_attrs, &trash.muta_attrs)
+    {
+        tracing::info!("no unused data found during cleanup");
+    }
 }
 
-fn vec_report<T: Named>(alive: &Vec<T>, trash: &Vec<T>) {
+fn vec_report<T: Named>(alive: &Vec<T>, trash: &Vec<T>) -> bool {
     let total = alive.len() + trash.len();
     if total == 0 {
-        return;
+        return true;
     }
     let ratio = trash.len() as f64 / total as f64;
     if ratio > 0.0 {
         tracing::info!("cleaned {:.1}% of {}", ratio * 100.0, T::get_name());
+        return false;
     }
+    true
 }

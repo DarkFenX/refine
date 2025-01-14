@@ -18,6 +18,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.__fast_src_log_check: bool = True
         self.__created_data_aliases: set[str] = set()
 
     def create_source_request(
@@ -35,13 +36,32 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
     def create_source(
             self, *,
             data: Union[eve.EveObjects, type[Default]] = Default,
+            log_check: bool = True,
     ) -> None:
         if data is Default:
             data = self._get_default_eve_data()
         self._setup_eve_data_server(data=data)
-        resp = self.create_source_request(data=data).send()
-        assert resp.status_code == 201
-        self.__created_data_aliases.add(data.alias)
+        if log_check:
+            with self._log_reader.get_collector() as log_collector:
+                resp = self.create_source_request(data=data).send()
+                assert resp.status_code == 201
+                self.__created_data_aliases.add(data.alias)
+                if self.__fast_src_log_check:
+                    # Check if there are any "cleaned" entries in log upon completion w/o any
+                    # waiting for a fast way
+                    with pytest.raises(LogEntryNotFound):
+                        log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='src-new:adg', timeout=0)
+                else:
+                    # Wait for negative report to appear for regular check
+                    log_collector.wait_log_entry(
+                        msg='no unused data found during cleanup',
+                        level='INFO',
+                        span='src-new:adg',
+                        timeout=3)
+        else:
+            resp = self.create_source_request(data=data).send()
+            assert resp.status_code == 201
+            self.__created_data_aliases.add(data.alias)
 
     def remove_source_request(self, *, src_alias: str) -> Request:
         return Request(
@@ -58,16 +78,18 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
         # If no data was created, create default one
         if not self._eve_datas:
             self._get_default_eve_data()
-        if log_check:
+        # Fast log check is done when we create multiple sources if possible, it becomes more
+        # reliable this way; we check if there are any "cleaned" entries in log upon completion w/o
+        # any waiting
+        if log_check and self.__fast_src_log_check:
             with self._log_reader.get_collector() as log_collector:
                 for data in self._eve_datas.values():
-                    self.create_source(data=data)
+                    self.create_source(data=data, log_check=False)
                 with pytest.raises(LogEntryNotFound):
-                    # Timeout of zero is not reliable, but don't want to slow tests down much
                     log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='src-new:adg', timeout=0)
         else:
             for data in self._eve_datas.values():
-                self.create_source(data=data)
+                self.create_source(data=data, log_check=log_check)
 
     def cleanup_sources(self) -> None:
         for alias in self.__created_data_aliases.copy():
