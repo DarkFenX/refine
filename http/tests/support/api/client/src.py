@@ -39,7 +39,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             cleanup_check: bool = True,
     ) -> None:
 
-        def process() -> None:
+        def process(*, data: eve.EveObjects) -> None:
             resp = self.create_source_request(data=data).send()
             assert resp.status_code == 201
             self.__created_data_aliases.add(data.alias)
@@ -49,7 +49,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
         self._setup_eve_data_server(data=data)
         if cleanup_check:
             with self._log_reader.get_collector() as log_collector:
-                process()
+                process(data=data)
                 if self.__fast_cleanup_check:
                     # Check if there are any "cleaned" entries in log upon completion w/o any
                     # waiting for a fast way
@@ -63,7 +63,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
                         span='src-new:adg',
                         timeout=3)
         else:
-            process()
+            process(data=data)
 
     def remove_source_request(self, *, src_alias: str) -> Request:
         return Request(
