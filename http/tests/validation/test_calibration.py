@@ -1,4 +1,4 @@
-from tests import check_no_field
+from tests import approx, check_no_field
 
 
 def test_fail_single(client, consts):
@@ -116,29 +116,28 @@ def test_modified_output(client, consts):
     assert api_val.details.calibration.users[api_rig.id] == 150
 
 
-def test_sum_rounding(client, consts):
-    # Check that total sum of users is rounded; if there would be no rounding, one of sums of 0.1
-    # elements would lead to float inaccuracies
+def test_rounding(client, consts):
+    # Calibration shouldn't have its sum or individual values rounded
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.1}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 0.15})
+    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.002}, eff_ids=[eve_effect_id])
+    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 5.227}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 5.223})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    for i in range(1, 21):
-        # Action
-        api_fit.add_rig(type_id=eve_rig_id)
-        if i == 1:
-            continue
-        # Verification
-        api_val = api_fit.validate(include=[consts.ApiValType.calibration])
-        assert api_val.passed is False
-        assert api_val.details.calibration.used == round(i / 10, 1)
-        assert api_val.details.calibration.output == 0.15
-        assert len(api_val.details.calibration.users) == i
+    api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
+    api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(5.229)
+    assert api_val.details.calibration.output == approx(5.223)
+    assert len(api_val.details.calibration.users) == 2
+    assert api_val.details.calibration.users[api_rig1.id] == approx(0.002)
+    assert api_val.details.calibration.users[api_rig2.id] == approx(5.227)
 
 
 def test_no_ship(client, consts):

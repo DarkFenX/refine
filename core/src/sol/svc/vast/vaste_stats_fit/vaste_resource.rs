@@ -32,6 +32,7 @@ impl SolVastFitData {
             self.mods_online.iter(),
             &ec::attrs::CPU,
             &ec::attrs::CPU_OUTPUT,
+            true,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_pg(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> SolStatRes {
@@ -42,6 +43,7 @@ impl SolVastFitData {
             self.mods_online.iter(),
             &ec::attrs::POWER,
             &ec::attrs::POWER_OUTPUT,
+            true,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_calibration(
@@ -57,6 +59,7 @@ impl SolVastFitData {
             self.rigs_rigslot.iter(),
             &ec::attrs::UPGRADE_COST,
             &ec::attrs::UPGRADE_CAPACITY,
+            false,
         )
     }
     fn get_resource_stats<'a>(
@@ -67,6 +70,7 @@ impl SolVastFitData {
         items: impl Iterator<Item = &'a SolItemId>,
         use_attr_id: &EAttrId,
         output_attr_id: &EAttrId,
+        round_used: bool,
     ) -> SolStatRes {
         let output = match fit.ship {
             Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
@@ -78,8 +82,10 @@ impl SolVastFitData {
         let used = items
             .filter_map(|i| calc.get_item_attr_val(uad, i, use_attr_id).ok().map(|v| v.extra))
             .sum();
-        // Round possible float errors despite individual use values being rounded
-        let used = round(used, 2);
-        SolStatRes::new(used, output)
+        match round_used {
+            // Round possible float errors despite individual use values being rounded
+            true => SolStatRes::new(round(used, 2), output),
+            false => SolStatRes::new(used, output),
+        }
     }
 }
