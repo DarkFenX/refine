@@ -90,6 +90,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
         # w/o any waiting
         if cleanup_check and self.__fast_cleanup_check:
             with self._log_reader.get_collector() as log_collector:
+                # No need to have per-source check when we do wider one
                 process(cleanup_check=False)
                 with pytest.raises(LogEntryNotFound):
                     log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='src-new:adg', timeout=0)
