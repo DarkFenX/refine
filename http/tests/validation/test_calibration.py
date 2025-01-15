@@ -67,6 +67,24 @@ def test_fail_multiple_struct(client, consts):
     assert api_val.details.calibration.users[api_rig2.id] == approx(100)
 
 
+def test_equal(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 150})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_rig(type_id=eve_rig_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+
+
 def test_modified_use(client, consts):
     # Calibration use is never modified, so the lib just uses unmodified attributes for speed
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
