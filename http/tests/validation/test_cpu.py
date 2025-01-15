@@ -157,6 +157,53 @@ def test_modified_output(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
+def test_mutation_use(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_effect_id = client.mk_eve_online_effect()
+    eve_base_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 120}, eff_ids=[eve_effect_id])
+    eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_module_id], eve_mutated_module_id)],
+        attrs={eve_use_attr_id: (0.8, 1.2)})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiState.online)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+    # Action
+    api_module.change_mod(mutation=(eve_mutator_id, {eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.7}}))
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 129.6
+    assert api_val.details.cpu.output == 125
+    assert len(api_val.details.cpu.users) == 1
+    assert api_val.details.cpu.users[api_module.id] == 129.6
+    # Action
+    api_module.change_mod(mutation={eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}})
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 134.4
+    assert api_val.details.cpu.output == 125
+    assert len(api_val.details.cpu.users) == 1
+    assert api_val.details.cpu.users[api_module.id] == 134.4
+    # Action
+    api_module.change_mod(mutation=None)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.cpu])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+
+
 def test_rounding(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
