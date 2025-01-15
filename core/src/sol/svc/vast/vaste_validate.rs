@@ -62,6 +62,9 @@ impl SolVast {
         if options.calibration {
             result.calibration = fit_data.validate_calibration_verbose(uad, calc, fit);
         }
+        if options.dronebay_volume {
+            result.dronebay_volume = fit_data.validate_dronebay_volume_verbose(uad, calc, fit);
+        }
         if options.drone_bandwidth {
             result.drone_bandwidth = fit_data.validate_drone_bandwidth_verbose(uad, calc, fit);
         }
