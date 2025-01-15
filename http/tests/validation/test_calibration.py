@@ -15,10 +15,10 @@ def test_fail_single(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output == 125
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig.id] == 150
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
 
 
 def test_fail_multiple_ship(client, consts):
@@ -37,11 +37,11 @@ def test_fail_multiple_ship(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output == 125
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
     assert len(api_val.details.calibration.users) == 2
-    assert api_val.details.calibration.users[api_rig1.id] == 50
-    assert api_val.details.calibration.users[api_rig2.id] == 100
+    assert api_val.details.calibration.users[api_rig1.id] == approx(50)
+    assert api_val.details.calibration.users[api_rig2.id] == approx(100)
 
 
 def test_fail_multiple_struct(client, consts):
@@ -60,14 +60,15 @@ def test_fail_multiple_struct(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output == 125
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
     assert len(api_val.details.calibration.users) == 2
-    assert api_val.details.calibration.users[api_rig1.id] == 50
-    assert api_val.details.calibration.users[api_rig2.id] == 100
+    assert api_val.details.calibration.users[api_rig1.id] == approx(50)
+    assert api_val.details.calibration.users[api_rig2.id] == approx(100)
 
 
 def test_modified_use(client, consts):
+    # Calibration use is never modified, so the lib just uses unmodified attributes for speed
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_mod_attr_id = client.mk_eve_attr()
@@ -79,9 +80,9 @@ def test_modified_use(client, consts):
         affectee_attr_id=eve_use_attr_id)
     eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_online_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 100},eff_ids=[eve_online_effect_id])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150},eff_ids=[eve_online_effect_id])
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
-    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: 50},eff_ids=[eve_mod_effect_id])
+    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: -50},eff_ids=[eve_mod_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -89,21 +90,24 @@ def test_modified_use(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # pylint: disable=W0104
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
+    assert len(api_val.details.calibration.users) == 1
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output == 125
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig.id] == 150
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
 
 
 def test_modified_output(client, consts):
+    # Calibration output is never modified, so the lib just uses unmodified attributes for speed
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_mod_attr_id = client.mk_eve_attr()
@@ -116,8 +120,8 @@ def test_modified_output(client, consts):
     eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_online_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
     eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150},eff_ids=[eve_online_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 200})
-    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: -50},eff_ids=[eve_mod_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 120})
+    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: 50},eff_ids=[eve_mod_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -125,18 +129,20 @@ def test_modified_output(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # pylint: disable=W0104
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(120)
+    assert len(api_val.details.calibration.users) == 1
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output == 100
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(120)
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig.id] == 150
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
 
 
 def test_rounding(client, consts):
@@ -177,10 +183,10 @@ def test_no_ship(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 5
+    assert api_val.details.calibration.used == approx(5)
     assert api_val.details.calibration.output is None
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig.id] == 5
+    assert api_val.details.calibration.users[api_rig.id] == approx(5)
 
 
 def test_unloaded_ship(client, consts):
@@ -199,10 +205,10 @@ def test_unloaded_ship(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 5
+    assert api_val.details.calibration.used == approx(5)
     assert api_val.details.calibration.output is None
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig.id] == 5
+    assert api_val.details.calibration.users[api_rig.id] == approx(5)
 
 
 def test_unloaded_user(client, consts):
@@ -243,13 +249,15 @@ def test_non_positive(client, consts):
     # Verification - items with negative and 0 use are not exposed
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 140
-    assert api_val.details.calibration.output == 125
+    assert api_val.details.calibration.used == approx(140)
+    assert api_val.details.calibration.output == approx(125)
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig2.id] == 150
+    assert api_val.details.calibration.users[api_rig2.id] == approx(150)
 
 
 def test_no_attr_use(client, consts):
+    # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
+    # irrelevant
     eve_use_attr_id = consts.EveAttr.upgrade_cost
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
@@ -259,13 +267,19 @@ def test_no_attr_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_rig(type_id=eve_rig_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
-    assert api_val.passed is True
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
+    assert len(api_val.details.calibration.users) == 1
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
 
 
 def test_no_attr_output(client, consts):
+    # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
+    # irrelevant
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_output_attr_id = consts.EveAttr.upgrade_capacity
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
@@ -279,10 +293,10 @@ def test_no_attr_output(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output is None
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig.id] == 150
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
 
 
 def test_criterion_state(client, consts):
@@ -306,10 +320,10 @@ def test_criterion_state(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output == 125
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig.id] == 150
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
     # Action
     api_rig.change_rig(state=False)
     # Verification
@@ -333,10 +347,10 @@ def test_criterion_effect(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output == 125
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig.id] == 150
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
     # Action
     api_rig.change_rig(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification
@@ -349,10 +363,10 @@ def test_criterion_effect(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
-    assert api_val.details.calibration.used == 150
-    assert api_val.details.calibration.output == 125
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
     assert len(api_val.details.calibration.users) == 1
-    assert api_val.details.calibration.users[api_rig.id] == 150
+    assert api_val.details.calibration.users[api_rig.id] == approx(150)
     # Action
     api_rig.change_rig(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification

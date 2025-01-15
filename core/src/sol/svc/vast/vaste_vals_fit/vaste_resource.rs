@@ -41,12 +41,7 @@ impl SolVastFitData {
         let stats = self.get_stats_pg(uad, calc, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
-    pub(in crate::sol::svc::vast) fn validate_calibration_fast(
-        &self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        fit: &SolFit,
-    ) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_calibration_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
         let stats = self.get_stats_calibration(uad, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
@@ -58,7 +53,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolResValFail> {
         let stat = self.get_stats_cpu(uad, calc, fit);
-        self.validate_resource_verbose(uad, calc, stat, self.mods_online.iter(), &ec::attrs::CPU)
+        self.validate_resource_verbose_fitting(uad, calc, stat, self.mods_online.iter(), &ec::attrs::CPU)
     }
     pub(in crate::sol::svc::vast) fn validate_pg_verbose(
         &self,
@@ -67,18 +62,17 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolResValFail> {
         let stat = self.get_stats_pg(uad, calc, fit);
-        self.validate_resource_verbose(uad, calc, stat, self.mods_online.iter(), &ec::attrs::POWER)
+        self.validate_resource_verbose_fitting(uad, calc, stat, self.mods_online.iter(), &ec::attrs::POWER)
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_verbose(
         &self,
         uad: &SolUad,
-        calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolResValFail> {
         let stat = self.get_stats_calibration(uad, fit);
-        self.validate_resource_verbose(uad, calc, stat, self.rigs_rigslot.iter(), &ec::attrs::UPGRADE_COST)
+        self.validate_resource_verbose_other(stat, self.rigs_rigslot_calibration.iter())
     }
-    fn validate_resource_verbose<'a>(
+    fn validate_resource_verbose_fitting<'a>(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
@@ -95,6 +89,22 @@ impl SolVastFitData {
                 Ok(sol_val) if sol_val.extra > OF(0.0) => users.push(SolResUser::new(*item_id, sol_val.extra)),
                 _ => continue,
             };
+        }
+        Some(SolResValFail::new(stat.used, stat.output, users))
+    }
+    fn validate_resource_verbose_other<'a>(
+        &self,
+        stat: SolStatRes,
+        items: impl ExactSizeIterator<Item = (&'a SolItemId, &'a AttrVal)>,
+    ) -> Option<SolResValFail> {
+        if stat.used <= stat.output.unwrap_or(OF(0.0)) {
+            return None;
+        };
+        let mut users = Vec::with_capacity(items.len());
+        for (&item_id, &res_used) in items {
+            if res_used > OF(0.0) {
+                users.push(SolResUser::new(item_id, res_used))
+            }
         }
         Some(SolResValFail::new(stat.used, stat.output, users))
     }

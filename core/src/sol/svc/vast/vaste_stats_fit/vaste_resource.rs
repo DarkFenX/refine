@@ -48,8 +48,7 @@ impl SolVastFitData {
         self.get_resource_stats_other(
             uad,
             fit,
-            self.rigs_rigslot.iter(),
-            &ec::attrs::UPGRADE_COST,
+            self.rigs_rigslot_calibration.values(),
             &ec::attrs::UPGRADE_CAPACITY,
         )
     }
@@ -79,17 +78,14 @@ impl SolVastFitData {
         &self,
         uad: &SolUad,
         fit: &SolFit,
-        items: impl Iterator<Item = &'a SolItemId>,
-        use_attr_id: &EAttrId,
+        items_use: impl Iterator<Item = &'a AttrVal>,
         output_attr_id: &EAttrId,
     ) -> SolStatRes {
         let output = match fit.ship {
             Some(ship_id) => uad.items.get_item(&ship_id).unwrap().get_attr(output_attr_id),
             None => None,
         };
-        let used = items
-            .filter_map(|i| uad.items.get_item(i).unwrap().get_attr(use_attr_id))
-            .sum();
+        let used = items_use.sum();
         SolStatRes::new(used, output)
     }
 }

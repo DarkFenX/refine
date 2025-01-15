@@ -27,7 +27,7 @@ impl SolVast {
             }
         }
         if options.calibration {
-            if !fit_data.validate_calibration_fast(uad, calc, fit) {
+            if !fit_data.validate_calibration_fast(uad, fit) {
                 return false;
             }
         }
@@ -50,7 +50,7 @@ impl SolVast {
             result.pg = fit_data.validate_pg_verbose(uad, calc, fit);
         }
         if options.calibration {
-            result.calibration = fit_data.validate_calibration_verbose(uad, calc, fit);
+            result.calibration = fit_data.validate_calibration_verbose(uad, fit);
         }
         result
     }

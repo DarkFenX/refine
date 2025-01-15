@@ -32,8 +32,10 @@ impl SolVast {
             SolItem::Rig(rig) => {
                 for effect in effects {
                     if effect.id == ec::effects::RIG_SLOT {
-                        let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
-                        fit_data.rigs_rigslot.insert(rig.get_id());
+                        if let Some(val) = rig.get_attrs().unwrap().get(&ec::attrs::UPGRADE_COST) {
+                            let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
+                            fit_data.rigs_rigslot_calibration.insert(rig.get_id(), *val);
+                        }
                     }
                 }
             }
@@ -54,7 +56,7 @@ impl SolVast {
                 for effect in effects {
                     if effect.id == ec::effects::RIG_SLOT {
                         let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
-                        fit_data.rigs_rigslot.remove(&rig.get_id());
+                        fit_data.rigs_rigslot_calibration.remove(&rig.get_id());
                     }
                 }
             }
