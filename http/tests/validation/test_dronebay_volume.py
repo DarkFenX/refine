@@ -150,11 +150,9 @@ def test_modified_output(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
-    assert api_val.passed is False
-    assert api_val.details.dronebay_volume.used == approx(150)
-    assert api_val.details.dronebay_volume.output == approx(120)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
 
 
 def test_rounding(client, consts):
@@ -263,6 +261,48 @@ def test_non_positive(client, consts):
     assert api_val.details.dronebay_volume.users[api_drone2.id] == approx(150)
 
 
+def test_no_value_use(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_capacity)
+    eve_drone1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_drone2_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id)
+    api_fit.add_drone(type_id=eve_drone2_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
+    assert api_val.passed is False
+    assert api_val.details.dronebay_volume.used == approx(150)
+    assert api_val.details.dronebay_volume.output == approx(125)
+    assert len(api_val.details.dronebay_volume.users) == 1
+    assert api_val.details.dronebay_volume.users[api_drone1.id] == approx(150)
+
+
+def test_no_value_output(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_capacity)
+    eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_ship_id = client.mk_eve_ship()
+    # Make an item to ensure that output attribute is not cleaned up
+    client.mk_eve_item(attrs={eve_output_attr_id: 50})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
+    assert api_val.passed is False
+    assert api_val.details.dronebay_volume.used == approx(150)
+    assert api_val.details.dronebay_volume.output == approx(0)
+    assert len(api_val.details.dronebay_volume.users) == 1
+    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+
+
 def test_no_attr_use(client, consts):
     # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
     # irrelevant
@@ -300,7 +340,7 @@ def test_no_attr_output(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
-    assert api_val.details.dronebay_volume.output == approx(125)
+    assert api_val.details.dronebay_volume.output is None
     assert len(api_val.details.dronebay_volume.users) == 1
     assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
 

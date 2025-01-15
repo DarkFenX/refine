@@ -292,6 +292,50 @@ def test_non_positive(client, consts):
     assert api_val.details.powergrid.users[api_module2.id] == 150
 
 
+def test_no_value_use(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_output)
+    eve_effect_id = client.mk_eve_online_effect()
+    eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_module2_id = client.mk_eve_item(eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
+    api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
+    assert api_val.passed is False
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 125
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module1.id] == 150
+
+
+def test_no_value_output(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_output)
+    eve_effect_id = client.mk_eve_online_effect()
+    eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship()
+    # Make an item to ensure that output attribute is not cleaned up
+    client.mk_eve_item(attrs={eve_output_attr_id: 50})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
+    assert api_val.passed is False
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 0
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 150
+
+
 def test_no_attr_use(client, consts):
     # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
     # irrelevant

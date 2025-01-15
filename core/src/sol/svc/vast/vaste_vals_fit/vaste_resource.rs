@@ -46,12 +46,22 @@ impl SolVastFitData {
         let stats = self.get_stats_powergrid(uad, calc, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
-    pub(in crate::sol::svc::vast) fn validate_calibration_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
-        let stats = self.get_stats_calibration(uad, fit);
+    pub(in crate::sol::svc::vast) fn validate_calibration_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_calibration(uad, calc, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
-    pub(in crate::sol::svc::vast) fn validate_dronebay_volume_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
-        let stats = self.get_stats_dronebay_volume(uad, fit);
+    pub(in crate::sol::svc::vast) fn validate_dronebay_volume_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_dronebay_volume(uad, calc, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
     // Verbose validations
@@ -61,8 +71,8 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolResValFail> {
-        let stat = self.get_stats_cpu(uad, calc, fit);
-        self.validate_resource_verbose_fitting(uad, calc, stat, self.mods_online.iter(), &ec::attrs::CPU)
+        let stats = self.get_stats_cpu(uad, calc, fit);
+        self.validate_resource_verbose_fitting(uad, calc, stats, self.mods_online.iter(), &ec::attrs::CPU)
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_verbose(
         &self,
@@ -70,34 +80,36 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolResValFail> {
-        let stat = self.get_stats_powergrid(uad, calc, fit);
-        self.validate_resource_verbose_fitting(uad, calc, stat, self.mods_online.iter(), &ec::attrs::POWER)
+        let stats = self.get_stats_powergrid(uad, calc, fit);
+        self.validate_resource_verbose_fitting(uad, calc, stats, self.mods_online.iter(), &ec::attrs::POWER)
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_verbose(
         &self,
         uad: &SolUad,
+        calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolResValFail> {
-        let stat = self.get_stats_calibration(uad, fit);
-        self.validate_resource_verbose_other(stat, self.rigs_rigslot_calibration.iter())
+        let stats = self.get_stats_calibration(uad, calc, fit);
+        self.validate_resource_verbose_other(stats, self.rigs_rigslot_calibration.iter())
     }
     pub(in crate::sol::svc::vast) fn validate_dronebay_volume_verbose(
         &self,
         uad: &SolUad,
+        calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolResValFail> {
-        let stat = self.get_stats_dronebay_volume(uad, fit);
-        self.validate_resource_verbose_other(stat, self.drones_volume.iter())
+        let stats = self.get_stats_dronebay_volume(uad, calc, fit);
+        self.validate_resource_verbose_other(stats, self.drones_volume.iter())
     }
     fn validate_resource_verbose_fitting<'a>(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
-        stat: SolStatRes,
+        stats: SolStatRes,
         items: impl ExactSizeIterator<Item = &'a SolItemId>,
         use_attr_id: &EAttrId,
     ) -> Option<SolResValFail> {
-        if stat.used <= stat.output.unwrap_or(OF(0.0)) {
+        if stats.used <= stats.output.unwrap_or(OF(0.0)) {
             return None;
         };
         let mut users = Vec::with_capacity(items.len());
@@ -107,14 +119,14 @@ impl SolVastFitData {
                 _ => continue,
             };
         }
-        Some(SolResValFail::new(stat.used, stat.output, users))
+        Some(SolResValFail::new(stats.used, stats.output, users))
     }
     fn validate_resource_verbose_other<'a>(
         &self,
-        stat: SolStatRes,
+        stats: SolStatRes,
         items: impl ExactSizeIterator<Item = (&'a SolItemId, &'a AttrVal)>,
     ) -> Option<SolResValFail> {
-        if stat.used <= stat.output.unwrap_or(OF(0.0)) {
+        if stats.used <= stats.output.unwrap_or(OF(0.0)) {
             return None;
         };
         let mut users = Vec::with_capacity(items.len());
@@ -123,6 +135,6 @@ impl SolVastFitData {
                 users.push(SolResUser::new(item_id, res_used))
             }
         }
-        Some(SolResValFail::new(stat.used, stat.output, users))
+        Some(SolResValFail::new(stats.used, stats.output, users))
     }
 }

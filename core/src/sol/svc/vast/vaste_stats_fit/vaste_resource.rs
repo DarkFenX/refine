@@ -49,16 +49,27 @@ impl SolVastFitData {
             &ec::attrs::POWER_OUTPUT,
         )
     }
-    pub(in crate::sol::svc::vast) fn get_stats_calibration(&self, uad: &SolUad, fit: &SolFit) -> SolStatRes {
+    pub(in crate::sol::svc::vast) fn get_stats_calibration(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatRes {
         self.get_resource_stats_other(
             uad,
+            calc,
             fit,
             self.rigs_rigslot_calibration.values(),
             &ec::attrs::UPGRADE_CAPACITY,
         )
     }
-    pub(in crate::sol::svc::vast) fn get_stats_dronebay_volume(&self, uad: &SolUad, fit: &SolFit) -> SolStatRes {
-        self.get_resource_stats_other(uad, fit, self.drones_volume.values(), &ec::attrs::DRONE_CAPACITY)
+    pub(in crate::sol::svc::vast) fn get_stats_dronebay_volume(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatRes {
+        self.get_resource_stats_other(uad, calc, fit, self.drones_volume.values(), &ec::attrs::DRONE_CAPACITY)
     }
     fn get_resource_stats_fitting<'a>(
         &self,
@@ -85,12 +96,16 @@ impl SolVastFitData {
     fn get_resource_stats_other<'a>(
         &self,
         uad: &SolUad,
+        calc: &mut SolCalc,
         fit: &SolFit,
         items_use: impl Iterator<Item = &'a AttrVal>,
         output_attr_id: &EAttrId,
     ) -> SolStatRes {
         let output = match fit.ship {
-            Some(ship_id) => uad.items.get_item(&ship_id).unwrap().get_attr(output_attr_id),
+            Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
+                Ok(attr_val) => Some(attr_val.extra),
+                Err(_) => None,
+            },
             None => None,
         };
         let used = items_use.sum();

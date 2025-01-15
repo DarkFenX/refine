@@ -27,12 +27,12 @@ impl SolVast {
             }
         }
         if options.calibration {
-            if !fit_data.validate_calibration_fast(uad, fit) {
+            if !fit_data.validate_calibration_fast(uad, calc, fit) {
                 return false;
             }
         }
         if options.dronebay_volume {
-            if !fit_data.validate_dronebay_volume_fast(uad, fit) {
+            if !fit_data.validate_dronebay_volume_fast(uad, calc, fit) {
                 return false;
             }
         }
@@ -55,10 +55,10 @@ impl SolVast {
             result.powergrid = fit_data.validate_powergrid_verbose(uad, calc, fit);
         }
         if options.calibration {
-            result.calibration = fit_data.validate_calibration_verbose(uad, fit);
+            result.calibration = fit_data.validate_calibration_verbose(uad, calc, fit);
         }
         if options.dronebay_volume {
-            result.dronebay_volume = fit_data.validate_dronebay_volume_verbose(uad, fit);
+            result.dronebay_volume = fit_data.validate_dronebay_volume_verbose(uad, calc, fit);
         }
         result
     }
