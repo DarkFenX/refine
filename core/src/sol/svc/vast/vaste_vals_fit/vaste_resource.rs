@@ -45,6 +45,10 @@ impl SolVastFitData {
         let stats = self.get_stats_calibration(uad, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
+    pub(in crate::sol::svc::vast) fn validate_dronebay_volume_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
+        let stats = self.get_stats_dronebay_volume(uad, fit);
+        stats.used <= stats.output.unwrap_or(OF(0.0))
+    }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
         &self,

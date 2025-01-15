@@ -96,11 +96,10 @@ def test_modified_use(client, consts):
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_use_attr_id)
-    eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_online_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150},eff_ids=[eve_online_effect_id])
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
-    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: -50},eff_ids=[eve_mod_effect_id])
+    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: -50}, eff_ids=[eve_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -135,11 +134,10 @@ def test_modified_output(client, consts):
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_output_attr_id)
-    eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_online_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
-    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150},eff_ids=[eve_online_effect_id])
+    eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_rig_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 120})
-    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: 50},eff_ids=[eve_mod_effect_id])
+    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: 50}, eff_ids=[eve_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

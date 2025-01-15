@@ -167,12 +167,14 @@ class EveAttr(IntEnum):
     kin_dmg = 117
     therm_dmg = 118
     falloff = 158
+    volume = 161
     missile_dmg_mult = 212
     armor_em_dmg_resonance = 267
     armor_expl_dmg_resonance = 268
     armor_kin_dmg_resonance = 269
     armor_therm_dmg_resonance = 270
     skill_level = 280
+    drone_capacity = 283
     dmg_mult_bonus = 292
     rof_bonus = 293
     sig_radius = 552
@@ -297,6 +299,7 @@ class ApiValType(StrEnum):
     cpu = 'cpu'
     pg = 'pg'
     calibration = 'calibration'
+    dronebay_volume = 'dronebay_volume'
 
 
 @unique

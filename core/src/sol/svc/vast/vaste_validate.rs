@@ -31,6 +31,11 @@ impl SolVast {
                 return false;
             }
         }
+        if options.dronebay_volume {
+            if !fit_data.validate_dronebay_volume_fast(uad, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -51,6 +56,9 @@ impl SolVast {
         }
         if options.calibration {
             result.calibration = fit_data.validate_calibration_verbose(uad, fit);
+        }
+        if options.dronebay_volume {
+            result.dronebay_volume = fit_data.validate_dronebay_volume_verbose(uad, fit);
         }
         result
     }
