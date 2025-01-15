@@ -72,6 +72,14 @@ impl SolVastFitData {
         let stat = self.get_stats_calibration(uad, fit);
         self.validate_resource_verbose_other(stat, self.rigs_rigslot_calibration.iter())
     }
+    pub(in crate::sol::svc::vast) fn validate_dronebay_volume_verbose(
+        &self,
+        uad: &SolUad,
+        fit: &SolFit,
+    ) -> Option<SolResValFail> {
+        let stat = self.get_stats_dronebay_volume(uad, fit);
+        self.validate_resource_verbose_other(stat, self.drones_volume.iter())
+    }
     fn validate_resource_verbose_fitting<'a>(
         &self,
         uad: &SolUad,

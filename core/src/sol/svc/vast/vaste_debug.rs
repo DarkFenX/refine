@@ -24,6 +24,9 @@ impl SolVastFitData {
         for item_id in self.rigs_rigslot_calibration.keys() {
             check_item(uad, item_id)?;
         }
+        for item_id in self.drones_volume.keys() {
+            check_item(uad, item_id)?;
+        }
         Ok(())
     }
 }

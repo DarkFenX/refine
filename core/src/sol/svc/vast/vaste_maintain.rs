@@ -15,8 +15,20 @@ impl SolVast {
     pub(in crate::sol::svc) fn fit_removed(&mut self, fit_id: &SolFitId) {
         self.fit_datas.remove(fit_id);
     }
-    pub(in crate::sol::svc) fn item_loaded(&mut self, item: &SolItem) {}
-    pub(in crate::sol::svc) fn item_unloaded(&mut self, item: &SolItem) {}
+    pub(in crate::sol::svc) fn item_loaded(&mut self, item: &SolItem) {
+        if let SolItem::Drone(drone) = item {
+            if let Some(val) = drone.get_attrs().unwrap().get(&ec::attrs::VOLUME) {
+                let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
+                fit_data.drones_volume.insert(drone.get_id(), *val);
+            }
+        }
+    }
+    pub(in crate::sol::svc) fn item_unloaded(&mut self, item: &SolItem) {
+        if let SolItem::Drone(drone) = item {
+            let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
+            fit_data.drones_volume.remove(&drone.get_id());
+        }
+    }
     pub(in crate::sol::svc) fn item_state_activated_loaded(&mut self, item: &SolItem, state: &SolItemState) {}
     pub(in crate::sol::svc) fn item_state_deactivated_loaded(&mut self, item: &SolItem, state: &SolItemState) {}
     pub(in crate::sol::svc) fn effects_started(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
