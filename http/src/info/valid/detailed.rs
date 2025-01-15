@@ -25,10 +25,16 @@ struct HValidInfoDetails {
     calibration: Option<HResValFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     dronebay_volume: Option<HResValFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    drone_bandwidth: Option<HResValFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
-        self.cpu.is_none() && self.powergrid.is_none() && self.calibration.is_none() && self.dronebay_volume.is_none()
+        self.cpu.is_none()
+            && self.powergrid.is_none()
+            && self.calibration.is_none()
+            && self.dronebay_volume.is_none()
+            && self.drone_bandwidth.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -38,6 +44,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             powergrid: core_val_result.powergrid.as_ref().map(|v| v.into()),
             calibration: core_val_result.calibration.as_ref().map(|v| v.into()),
             dronebay_volume: core_val_result.dronebay_volume.as_ref().map(|v| v.into()),
+            drone_bandwidth: core_val_result.drone_bandwidth.as_ref().map(|v| v.into()),
         }
     }
 }

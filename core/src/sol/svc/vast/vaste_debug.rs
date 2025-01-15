@@ -27,6 +27,9 @@ impl SolVastFitData {
         for item_id in self.drones_volume.keys() {
             check_item(uad, item_id)?;
         }
+        for item_id in self.drones_online_bandwidth.keys() {
+            check_item(uad, item_id)?;
+        }
         Ok(())
     }
 }

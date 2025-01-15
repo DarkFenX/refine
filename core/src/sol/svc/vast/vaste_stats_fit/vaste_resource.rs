@@ -71,6 +71,20 @@ impl SolVastFitData {
     ) -> SolStatRes {
         self.get_resource_stats_other(uad, calc, fit, self.drones_volume.values(), &ec::attrs::DRONE_CAPACITY)
     }
+    pub(in crate::sol::svc::vast) fn get_stats_drone_bandwidth(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatRes {
+        self.get_resource_stats_other(
+            uad,
+            calc,
+            fit,
+            self.drones_online_bandwidth.values(),
+            &ec::attrs::DRONE_BANDWIDTH,
+        )
+    }
     fn get_resource_stats_fitting<'a>(
         &self,
         uad: &SolUad,

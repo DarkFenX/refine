@@ -35,6 +35,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     // Rigs with "rigSlot" effect active, with calibration cost values
     pub(in crate::sol::svc::vast) rigs_rigslot_calibration: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) drones_volume: StMap<SolItemId, AttrVal>,
+    pub(in crate::sol::svc::vast) drones_online_bandwidth: StMap<SolItemId, AttrVal>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -42,6 +43,7 @@ impl SolVastFitData {
             mods_online: StSet::new(),
             rigs_rigslot_calibration: StMap::new(),
             drones_volume: StMap::new(),
+            drones_online_bandwidth: StMap::new(),
         }
     }
 }

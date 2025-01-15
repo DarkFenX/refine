@@ -64,6 +64,15 @@ impl SolVastFitData {
         let stats = self.get_stats_dronebay_volume(uad, calc, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
+    pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_drone_bandwidth(uad, calc, fit);
+        stats.used <= stats.output.unwrap_or(OF(0.0))
+    }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
         &self,
@@ -101,6 +110,16 @@ impl SolVastFitData {
         let stats = self.get_stats_dronebay_volume(uad, calc, fit);
         self.validate_resource_verbose_other(stats, self.drones_volume.iter())
     }
+    pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_verbose(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> Option<SolResValFail> {
+        let stats = self.get_stats_drone_bandwidth(uad, calc, fit);
+        self.validate_resource_verbose_other(stats, self.drones_online_bandwidth.iter())
+    }
+    // Private methods
     fn validate_resource_verbose_fitting<'a>(
         &self,
         uad: &SolUad,

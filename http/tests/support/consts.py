@@ -185,6 +185,8 @@ class EveAttr(IntEnum):
     upgrade_capacity = 1132
     upgrade_cost = 1153
     overload_self_duration_bonus = 1206
+    drone_bandwidth = 1271
+    drone_bandwidth_used = 1272
     max_range_hidden = 1317
     warp_scramble_range_bonus = 1327
     activation_blocked = 1349
@@ -300,6 +302,7 @@ class ApiValType(StrEnum):
     powergrid = 'powergrid'
     calibration = 'calibration'
     dronebay_volume = 'dronebay_volume'
+    drone_bandwidth = 'drone_bandwidth'
 
 
 @unique
