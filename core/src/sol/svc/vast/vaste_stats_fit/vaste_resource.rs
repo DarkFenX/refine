@@ -34,7 +34,12 @@ impl SolVastFitData {
             &ec::attrs::CPU_OUTPUT,
         )
     }
-    pub(in crate::sol::svc::vast) fn get_stats_pg(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> SolStatRes {
+    pub(in crate::sol::svc::vast) fn get_stats_powergrid(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatRes {
         self.get_resource_stats_fitting(
             uad,
             calc,

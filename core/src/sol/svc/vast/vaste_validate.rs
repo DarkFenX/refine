@@ -21,8 +21,8 @@ impl SolVast {
                 return false;
             }
         }
-        if options.pg {
-            if !fit_data.validate_pg_fast(uad, calc, fit) {
+        if options.powergrid {
+            if !fit_data.validate_powergrid_fast(uad, calc, fit) {
                 return false;
             }
         }
@@ -51,8 +51,8 @@ impl SolVast {
         if options.cpu {
             result.cpu = fit_data.validate_cpu_verbose(uad, calc, fit);
         }
-        if options.pg {
-            result.pg = fit_data.validate_pg_verbose(uad, calc, fit);
+        if options.powergrid {
+            result.powergrid = fit_data.validate_powergrid_verbose(uad, calc, fit);
         }
         if options.calibration {
             result.calibration = fit_data.validate_calibration_verbose(uad, fit);

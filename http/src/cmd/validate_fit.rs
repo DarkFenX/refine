@@ -24,7 +24,7 @@ impl HValidFitCmd {
         for option in options {
             match option.as_str() {
                 "cpu" => core_options.cpu = alt_value,
-                "pg" => core_options.pg = alt_value,
+                "powergrid" => core_options.powergrid = alt_value,
                 "calibration" => core_options.calibration = alt_value,
                 "dronebay_volume" => core_options.dronebay_volume = alt_value,
                 _ => (),

@@ -37,8 +37,13 @@ impl SolVastFitData {
         let stats = self.get_stats_cpu(uad, calc, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
-    pub(in crate::sol::svc::vast) fn validate_pg_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
-        let stats = self.get_stats_pg(uad, calc, fit);
+    pub(in crate::sol::svc::vast) fn validate_powergrid_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_powergrid(uad, calc, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
@@ -59,13 +64,13 @@ impl SolVastFitData {
         let stat = self.get_stats_cpu(uad, calc, fit);
         self.validate_resource_verbose_fitting(uad, calc, stat, self.mods_online.iter(), &ec::attrs::CPU)
     }
-    pub(in crate::sol::svc::vast) fn validate_pg_verbose(
+    pub(in crate::sol::svc::vast) fn validate_powergrid_verbose(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolResValFail> {
-        let stat = self.get_stats_pg(uad, calc, fit);
+        let stat = self.get_stats_powergrid(uad, calc, fit);
         self.validate_resource_verbose_fitting(uad, calc, stat, self.mods_online.iter(), &ec::attrs::POWER)
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_verbose(

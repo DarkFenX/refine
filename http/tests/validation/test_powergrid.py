@@ -13,12 +13,12 @@ def test_fail_single(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 150
-    assert api_val.details.pg.output == 125
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module.id] == 150
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 125
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 150
 
 
 def test_fail_multiple_ship(client, consts):
@@ -35,13 +35,13 @@ def test_fail_multiple_ship(client, consts):
     api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
     api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 150
-    assert api_val.details.pg.output == 125
-    assert len(api_val.details.pg.users) == 2
-    assert api_val.details.pg.users[api_module1.id] == 50
-    assert api_val.details.pg.users[api_module2.id] == 100
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 125
+    assert len(api_val.details.powergrid.users) == 2
+    assert api_val.details.powergrid.users[api_module1.id] == 50
+    assert api_val.details.powergrid.users[api_module2.id] == 100
 
 
 def test_fail_multiple_struct(client, consts):
@@ -58,13 +58,13 @@ def test_fail_multiple_struct(client, consts):
     api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
     api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 150
-    assert api_val.details.pg.output == 125
-    assert len(api_val.details.pg.users) == 2
-    assert api_val.details.pg.users[api_module1.id] == 50
-    assert api_val.details.pg.users[api_module2.id] == 100
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 125
+    assert len(api_val.details.powergrid.users) == 2
+    assert api_val.details.powergrid.users[api_module1.id] == 50
+    assert api_val.details.powergrid.users[api_module2.id] == 100
 
 
 def test_equal(client, consts):
@@ -79,7 +79,7 @@ def test_equal(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
@@ -106,16 +106,16 @@ def test_modified_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 150
-    assert api_val.details.pg.output == 125
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module.id] == 150
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 125
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 150
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
@@ -142,16 +142,16 @@ def test_modified_output(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 150
-    assert api_val.details.pg.output == 120
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module.id] == 150
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 120
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 150
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
@@ -171,13 +171,13 @@ def test_rounding(client, consts):
     api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
     api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 5.24
-    assert api_val.details.pg.output == 5.23
-    assert len(api_val.details.pg.users) == 2
-    assert api_val.details.pg.users[api_module1.id] == 0.01
-    assert api_val.details.pg.users[api_module2.id] == 5.23
+    assert api_val.details.powergrid.used == 5.24
+    assert api_val.details.powergrid.output == 5.23
+    assert len(api_val.details.powergrid.users) == 2
+    assert api_val.details.powergrid.users[api_module1.id] == 0.01
+    assert api_val.details.powergrid.users[api_module2.id] == 5.23
 
 
 def test_sum_rounding(client, consts):
@@ -199,11 +199,11 @@ def test_sum_rounding(client, consts):
         if i == 1:
             continue
         # Verification
-        api_val = api_fit.validate(include=[consts.ApiValType.pg])
+        api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
         assert api_val.passed is False
-        assert api_val.details.pg.used == round(i / 10, 1)
-        assert api_val.details.pg.output == 0.15
-        assert len(api_val.details.pg.users) == i
+        assert api_val.details.powergrid.used == round(i / 10, 1)
+        assert api_val.details.powergrid.output == 0.15
+        assert len(api_val.details.powergrid.users) == i
 
 
 def test_no_ship(client, consts):
@@ -218,12 +218,12 @@ def test_no_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 5
-    assert api_val.details.pg.output is None
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module.id] == 5
+    assert api_val.details.powergrid.used == 5
+    assert api_val.details.powergrid.output is None
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 5
 
 
 def test_unloaded_ship(client, consts):
@@ -240,12 +240,12 @@ def test_unloaded_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 5
-    assert api_val.details.pg.output is None
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module.id] == 5
+    assert api_val.details.powergrid.used == 5
+    assert api_val.details.powergrid.output is None
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 5
 
 
 def test_unloaded_user(client, consts):
@@ -262,7 +262,7 @@ def test_unloaded_user(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
@@ -284,12 +284,12 @@ def test_non_positive(client, consts):
     api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
     api_fit.add_mod(type_id=eve_module3_id, state=consts.ApiState.online)
     # Verification - items with negative and 0 use are not exposed
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 140
-    assert api_val.details.pg.output == 125
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module2.id] == 150
+    assert api_val.details.powergrid.used == 140
+    assert api_val.details.powergrid.output == 125
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module2.id] == 150
 
 
 def test_no_attr_use(client, consts):
@@ -306,7 +306,7 @@ def test_no_attr_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
 
 
@@ -324,12 +324,12 @@ def test_no_attr_output(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 150
-    assert api_val.details.pg.output is None
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module.id] == 150
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output is None
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 150
 
 
 def test_criterion_state(client, consts):
@@ -344,23 +344,23 @@ def test_criterion_state(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.offline)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
     # Action
     api_module.change_mod(state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 150
-    assert api_val.details.pg.output == 125
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module.id] == 150
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 125
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 150
     # Action
     api_module.change_mod(state=consts.ApiState.offline)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
@@ -378,32 +378,32 @@ def test_criterion_effect(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 150
-    assert api_val.details.pg.output == 125
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module.id] == 150
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 125
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 150
     # Action
     api_module.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
     # Action
     api_module.change_mod(state=consts.ApiState.online, effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
-    assert api_val.details.pg.used == 150
-    assert api_val.details.pg.output == 125
-    assert len(api_val.details.pg.users) == 1
-    assert api_val.details.pg.users[api_module.id] == 150
+    assert api_val.details.powergrid.used == 150
+    assert api_val.details.powergrid.output == 125
+    assert len(api_val.details.powergrid.users) == 1
+    assert api_val.details.powergrid.users[api_module.id] == 150
     # Action
     api_module.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
@@ -422,7 +422,7 @@ def test_criterion_module(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.pg])
+    api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104

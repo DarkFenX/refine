@@ -297,7 +297,7 @@ class ApiSideEffectOp(StrEnum):
 @unique
 class ApiValType(StrEnum):
     cpu = 'cpu'
-    pg = 'pg'
+    powergrid = 'powergrid'
     calibration = 'calibration'
     dronebay_volume = 'dronebay_volume'
 
