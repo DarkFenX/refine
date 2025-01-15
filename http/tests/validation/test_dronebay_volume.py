@@ -346,6 +346,7 @@ def test_no_attr_output(client, consts):
 
 
 def test_criterion_state(client, consts):
+    # Drones take dronebay volume in any state, even ghost
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_capacity)
     eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
@@ -354,14 +355,7 @@ def test_criterion_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=False)
-    # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # pylint: disable=W0104
-    # Action
-    api_drone.change_drone(state=True)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.offline)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is False
@@ -370,16 +364,18 @@ def test_criterion_state(client, consts):
     assert len(api_val.details.dronebay_volume.users) == 1
     assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
     # Action
-    api_drone.change_drone(state=False)
+    api_drone.change_drone(state=consts.ApiState.ghost)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # pylint: disable=W0104
+    assert api_val.passed is False
+    assert api_val.details.dronebay_volume.used == approx(150)
+    assert api_val.details.dronebay_volume.output == approx(125)
+    assert len(api_val.details.dronebay_volume.users) == 1
+    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
 
 
-def test_criterion_rig(client, consts):
-    # Validation applies only to rigs
+def test_criterion_drone(client, consts):
+    # Validation applies only to drones
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_capacity)
     eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
@@ -388,7 +384,7 @@ def test_criterion_rig(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_fit.add_fighter(type_id=eve_drone_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is True
