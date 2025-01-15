@@ -47,7 +47,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        let stats = self.get_stats_calibration(uad, calc, fit);
+        let stats = self.get_stats_calibration(uad, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
     // Verbose validations
@@ -75,7 +75,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolResValFail> {
-        let stat = self.get_stats_calibration(uad, calc, fit);
+        let stat = self.get_stats_calibration(uad, fit);
         self.validate_resource_verbose(uad, calc, stat, self.rigs_rigslot.iter(), &ec::attrs::UPGRADE_COST)
     }
     fn validate_resource_verbose<'a>(

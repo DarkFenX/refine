@@ -682,6 +682,13 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.get_category_id(),
         }
     }
+    pub(in crate::sol) fn get_attr(&self, attr_id: &EAttrId) -> Option<AttrVal> {
+        match self.get_attrs() {
+            Ok(attrs) => attrs.get(attr_id).cloned(),
+            Err(_) => None,
+        }
+    }
+
     pub(in crate::sol) fn get_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_attrs(),
