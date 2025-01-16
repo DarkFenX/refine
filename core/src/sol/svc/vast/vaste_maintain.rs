@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::SolFitId,
+    defs::{SolFitId, OF},
     ec,
     sol::{
         svc::vast::{SolVast, SolVastFitData},
@@ -29,17 +29,22 @@ impl SolVast {
             fit_data.drones_volume.remove(&drone.get_id());
         }
     }
-    pub(in crate::sol::svc) fn item_state_activated_loaded(&mut self, item: &SolItem, state: &SolItemState) {
+    pub(in crate::sol::svc) fn item_state_activated(&mut self, item: &SolItem, state: &SolItemState) {
         if let SolItemState::Online = state {
             if let SolItem::Drone(drone) = item {
-                if let Some(val) = drone.get_attrs().unwrap().get(&ec::attrs::DRONE_BANDWIDTH_USED) {
-                    let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
-                    fit_data.drones_online_bandwidth.insert(drone.get_id(), *val);
-                }
+                let val = match drone.get_attrs() {
+                    Ok(attrs) => match attrs.get(&ec::attrs::DRONE_BANDWIDTH_USED) {
+                        Some(val) => *val,
+                        None => OF(0.0),
+                    },
+                    Err(_) => OF(0.0),
+                };
+                let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
+                fit_data.drones_online_bandwidth.insert(drone.get_id(), val);
             }
         }
     }
-    pub(in crate::sol::svc) fn item_state_deactivated_loaded(&mut self, item: &SolItem, state: &SolItemState) {
+    pub(in crate::sol::svc) fn item_state_deactivated(&mut self, item: &SolItem, state: &SolItemState) {
         if let SolItemState::Online = state {
             if let SolItem::Drone(drone) = item {
                 let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
@@ -47,6 +52,8 @@ impl SolVast {
             }
         }
     }
+    pub(in crate::sol::svc) fn item_state_activated_loaded(&mut self, item: &SolItem, state: &SolItemState) {}
+    pub(in crate::sol::svc) fn item_state_deactivated_loaded(&mut self, item: &SolItem, state: &SolItemState) {}
     pub(in crate::sol::svc) fn effects_started(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
         match item {
             SolItem::Module(module) => {

@@ -19,16 +19,17 @@ impl SolVast {
 impl SolVastFitData {
     pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
         for item_id in self.mods_online.iter() {
-            check_item(uad, item_id)?;
+            check_item(uad, item_id, true)?;
         }
         for item_id in self.rigs_rigslot_calibration.keys() {
-            check_item(uad, item_id)?;
+            check_item(uad, item_id, true)?;
         }
         for item_id in self.drones_volume.keys() {
-            check_item(uad, item_id)?;
+            check_item(uad, item_id, true)?;
         }
         for item_id in self.drones_online_bandwidth.keys() {
-            check_item(uad, item_id)?;
+            // Holds unloaded drones as well
+            check_item(uad, item_id, false)?;
         }
         Ok(())
     }

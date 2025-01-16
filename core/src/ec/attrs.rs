@@ -34,6 +34,7 @@ pub(crate) const DRONE_CAPACITY: EAttrId = 283;
 pub(crate) const DMG_MULT_BONUS: EAttrId = 292;
 pub(crate) const ROF_BONUS: EAttrId = 293;
 pub(crate) const IMPLANTNESS: EAttrId = 331;
+pub(crate) const MAX_ACTIVE_DRONES: EAttrId = 352;
 pub(crate) const SIG_RADIUS: EAttrId = 552;
 pub(crate) const SIG_RADIUS_BONUS: EAttrId = 554;
 pub(crate) const SPEED_BOOST_FACTOR: EAttrId = 567;

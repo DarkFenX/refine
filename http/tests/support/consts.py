@@ -178,6 +178,7 @@ class EveAttr(IntEnum):
     drone_capacity = 283
     dmg_mult_bonus = 292
     rof_bonus = 293
+    max_active_drones = 352
     sig_radius = 552
     sig_radius_bonus = 554
     speed_boost_factor = 567
@@ -308,6 +309,7 @@ class ApiValType(StrEnum):
     drone_bandwidth = 'drone_bandwidth'
     rig_slots = 'rig_slots'
     subsystem_slots = 'subsystem_slots'
+    launched_drones = 'launched_drones'
 
 
 @unique

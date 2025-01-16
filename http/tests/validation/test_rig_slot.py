@@ -233,3 +233,19 @@ def test_criterion_state(client, consts):
     assert api_val.details.rig_slots.total == 0
     assert len(api_val.details.rig_slots.users) == 1
     assert api_rig.id in api_val.details.rig_slots.users
+
+
+def test_criterion_rig(client, consts):
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_slots_left)
+    eve_subsystem_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_subsystem(type_id=eve_subsystem_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.rig_slots])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104

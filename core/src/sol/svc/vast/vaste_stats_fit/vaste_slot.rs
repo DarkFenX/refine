@@ -41,6 +41,20 @@ impl SolVastFitData {
             fit.subsystems.len() as Amount,
         )
     }
+    pub(in crate::sol::svc::vast) fn get_stats_launched_drones(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit,
+            &ec::attrs::MAX_ACTIVE_DRONES,
+            self.drones_online_bandwidth.len() as Amount,
+        )
+    }
     // Private methods
     fn get_stats_slots(
         &self,

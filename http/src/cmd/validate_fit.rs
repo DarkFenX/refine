@@ -30,6 +30,7 @@ impl HValidFitCmd {
                 "drone_bandwidth" => core_options.drone_bandwidth = alt_value,
                 "rig_slots" => core_options.rig_slots = alt_value,
                 "subsystem_slots" => core_options.subsystem_slots = alt_value,
+                "launched_drones" => core_options.launched_drones = alt_value,
                 _ => (),
             }
         }

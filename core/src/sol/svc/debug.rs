@@ -10,12 +10,12 @@ pub(in crate::sol::svc) fn check_fit(uad: &SolUad, fit_id: &SolFitId) -> SolDebu
     Ok(())
 }
 
-pub(in crate::sol::svc) fn check_item(uad: &SolUad, item_id: &SolItemId) -> SolDebugResult {
+pub(in crate::sol::svc) fn check_item(uad: &SolUad, item_id: &SolItemId, check_load: bool) -> SolDebugResult {
     let item = match uad.items.get_item(item_id) {
         Ok(item) => item,
         _ => return Err(SolDebugError::new()),
     };
-    if !item.is_loaded() {
+    if check_load && !item.is_loaded() {
         return Err(SolDebugError::new());
     }
     Ok(())
