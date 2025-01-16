@@ -3,7 +3,7 @@
 
 use crate::{
     ad,
-    defs::{EAttrId, EEffectId, EItemGrpId, OF},
+    defs::{EAttrId, EItemGrpId, OF},
     ec,
 };
 

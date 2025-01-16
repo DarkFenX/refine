@@ -3,6 +3,7 @@ pub use sol::SolarSystem;
 pub(in crate::sol) use sole_debug::{SolDebugError, SolDebugResult};
 pub use sole_item::{SolOrdAddMode, SolOrdRmMode};
 
+mod debug;
 pub(crate) mod info;
 mod misc;
 mod proj_tracker;

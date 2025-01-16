@@ -19,7 +19,7 @@ pub(in crate::sol) use item_skill::SolSkill;
 pub(in crate::sol) use item_stance::SolStance;
 pub(in crate::sol) use item_subsystem::SolSubsystem;
 pub(in crate::sol) use item_sw_effect::SolSwEffect;
-use misc::{bool_to_state, debug, state_to_bool, SolAutocharges, SolEffectModes, SolProjs};
+use misc::{bool_to_state, state_to_bool, SolAutocharges, SolEffectModes, SolProjs};
 pub use misc::{
     SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolItemState,
 };

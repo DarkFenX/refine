@@ -3,7 +3,6 @@
 pub(in crate::sol) use svc::SolSvc;
 
 pub(crate) mod calc;
-mod debug;
 mod running_effects;
 mod svc;
 mod svce_debug;

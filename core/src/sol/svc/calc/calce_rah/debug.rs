@@ -1,4 +1,4 @@
-use crate::sol::{svc::debug::check_item, uad::SolUad, SolDebugError, SolDebugResult};
+use crate::sol::{debug::check_item, uad::SolUad, SolDebugError, SolDebugResult};
 
 use super::SolRahSim;
 

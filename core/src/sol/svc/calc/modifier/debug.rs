@@ -1,8 +1,6 @@
 use crate::sol::{
-    svc::{
-        calc::{SolContext, SolCtxModifier, SolRawModifier},
-        debug::{check_effect, check_fit, check_item},
-    },
+    debug::{check_effect, check_fit, check_item},
+    svc::calc::{SolContext, SolCtxModifier, SolRawModifier},
     uad::SolUad,
     SolDebugResult,
 };

@@ -6,7 +6,6 @@ pub(in crate::sol::uad::item) use proj::SolProjs;
 pub use state::SolItemState;
 
 mod autocharges;
-pub(in crate::sol::uad::item) mod debug;
 mod effect_modes;
 mod func;
 mod mutation;
