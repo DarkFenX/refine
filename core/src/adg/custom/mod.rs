@@ -12,6 +12,7 @@ mod prop_mods;
 mod reactive_armor_hardener;
 mod structure_point;
 mod subsystem_mods;
+mod subsystem_slots;
 mod wdfg;
 mod web;
 mod wubble;
@@ -34,4 +35,6 @@ pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
     missile_rof_self_srq::mk_self_skillreq_modifiers_launcher_rof(a_data);
     missile_dmg_self_srq::mk_self_skillreq_modifier_missile_dmg(a_data);
     drone_dmg_self_srq::mk_self_skillreq_drone_dmg(a_data);
+    // Attribute value fixes
+    subsystem_slots::fix_subsysem_slot_amount(a_data);
 }

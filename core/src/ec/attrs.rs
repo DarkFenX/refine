@@ -49,6 +49,7 @@ pub(crate) const MAX_RANGE_HIDDEN: EAttrId = 1317;
 pub(crate) const ACTIVATION_BLOCKED: EAttrId = 1349;
 pub(crate) const ACTIVATION_BLOCKED_STRENGTH: EAttrId = 1350;
 pub(crate) const SUBSYSTEM_SLOT: EAttrId = 1366;
+pub(crate) const MAX_SUBSYSTEMS: EAttrId = 1367;
 pub(crate) const TURRET_HARDPOINT_MODIFIER: EAttrId = 1368;
 pub(crate) const LAUNCHER_HARDPOINT_MODIFIER: EAttrId = 1369;
 pub(crate) const HI_SLOT_MODIFIER: EAttrId = 1374;
