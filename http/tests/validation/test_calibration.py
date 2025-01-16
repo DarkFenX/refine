@@ -125,7 +125,6 @@ def test_modified_use(client, consts):
 
 
 def test_modified_output(client, consts):
-    # Calibration output is never modified, so the lib just uses unmodified attributes for speed
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_mod_attr_id = client.mk_eve_attr()

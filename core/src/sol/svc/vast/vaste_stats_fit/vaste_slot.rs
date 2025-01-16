@@ -26,7 +26,7 @@ impl SolVastFitData {
     ) -> SolStatSlot {
         let total = match fit.ship {
             Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, &ec::attrs::UPGRADE_SLOTS_LEFT) {
-                Ok(attr_val) => Some(attr_val.extra.into_inner() as Amount),
+                Ok(attr_val) => Some(attr_val.extra.into_inner().round() as Amount),
                 Err(_) => None,
             },
             None => None,

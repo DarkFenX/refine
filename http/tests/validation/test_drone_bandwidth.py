@@ -82,7 +82,7 @@ def test_equal(client, consts):
 
 
 def test_modified_use(client, consts):
-    # Calibration use is never modified, so the lib just uses unmodified attributes for speed
+    # Drone bandwidth use is never modified, so the lib just uses unmodified attributes for speed
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_mod_attr_id = client.mk_eve_attr()
@@ -120,7 +120,6 @@ def test_modified_use(client, consts):
 
 
 def test_modified_output(client, consts):
-    # Calibration output is never modified, so the lib just uses unmodified attributes for speed
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_mod_attr_id = client.mk_eve_attr()
@@ -197,7 +196,7 @@ def test_mutation_use(client, consts):
 
 
 def test_rounding(client, consts):
-    # Calibration shouldn't have its sum or individual values rounded
+    # Bandwidth shouldn't have its sum or individual values rounded
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_drone1_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.002})
