@@ -56,6 +56,11 @@ impl SolVast {
                 return false;
             }
         }
+        if options.launched_fighters {
+            if !fit_data.validate_launched_fighters_fast(uad, calc, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -91,6 +96,9 @@ impl SolVast {
         }
         if options.launched_drones {
             result.launched_drones = fit_data.validate_launched_drones_verbose(uad, calc, fit);
+        }
+        if options.launched_fighters {
+            result.launched_fighters = fit_data.validate_launched_fighters_verbose(uad, calc, fit);
         }
         result
     }

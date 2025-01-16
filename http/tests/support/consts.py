@@ -206,8 +206,9 @@ class EveAttr(IntEnum):
     gate_scramble_status = 1973
     gate_scramble_strength = 1974
     remote_resistance_id = 2138
-    fighter_ability_launch_bomb_type = 2324
+    fighter_tubes = 2216
     doomsday_aoe_range = 2279
+    fighter_ability_launch_bomb_type = 2324
     warfare_buff_1_id = 2468
     warfare_buff_1_value = 2469
     warfare_buff_2_id = 2470
@@ -310,6 +311,7 @@ class ApiValType(StrEnum):
     rig_slots = 'rig_slots'
     subsystem_slots = 'subsystem_slots'
     launched_drones = 'launched_drones'
+    launched_fighters = 'launched_fighters'
 
 
 @unique

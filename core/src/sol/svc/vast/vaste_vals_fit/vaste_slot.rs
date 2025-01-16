@@ -46,6 +46,15 @@ impl SolVastFitData {
         let stats = self.get_stats_launched_drones(uad, calc, fit);
         stats.used <= stats.total.unwrap_or(0)
     }
+    pub(in crate::sol::svc::vast) fn validate_launched_fighters_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_launched_fighters(uad, calc, fit);
+        stats.used <= stats.total.unwrap_or(0)
+    }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_slots_verbose(
         &self,
@@ -84,6 +93,19 @@ impl SolVastFitData {
             return None;
         }
         let users = self.drones_online_bandwidth.keys().map(|v| *v).collect();
+        Some(SolSlotValFail::new(stats.used, stats.total, users))
+    }
+    pub(in crate::sol::svc::vast) fn validate_launched_fighters_verbose(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> Option<SolSlotValFail> {
+        let stats = self.get_stats_launched_fighters(uad, calc, fit);
+        if stats.used <= stats.total.unwrap_or(0) {
+            return None;
+        }
+        let users = self.fighters_online.iter().map(|v| *v).collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     // Private methods

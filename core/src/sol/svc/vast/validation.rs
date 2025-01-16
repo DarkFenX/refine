@@ -9,6 +9,7 @@ pub struct SolValOptions {
     pub rig_slots: bool,
     pub subsystem_slots: bool,
     pub launched_drones: bool,
+    pub launched_fighters: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -20,6 +21,7 @@ impl SolValOptions {
         rig_slots: bool,
         subsystem_slots: bool,
         launched_drones: bool,
+        launched_fighters: bool,
     ) -> Self {
         Self {
             cpu,
@@ -30,6 +32,7 @@ impl SolValOptions {
             rig_slots,
             subsystem_slots,
             launched_drones,
+            launched_fighters,
         }
     }
     pub fn new_enabled() -> Self {
@@ -42,6 +45,7 @@ impl SolValOptions {
             rig_slots: true,
             subsystem_slots: true,
             launched_drones: true,
+            launched_fighters: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -54,6 +58,7 @@ impl SolValOptions {
             rig_slots: false,
             subsystem_slots: false,
             launched_drones: false,
+            launched_fighters: false,
         }
     }
 }
@@ -67,6 +72,7 @@ pub struct SolValResult {
     pub rig_slots: Option<SolSlotValFail>,
     pub subsystem_slots: Option<SolSlotValFail>,
     pub launched_drones: Option<SolSlotValFail>,
+    pub launched_fighters: Option<SolSlotValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -79,6 +85,7 @@ impl SolValResult {
             rig_slots: None,
             subsystem_slots: None,
             launched_drones: None,
+            launched_fighters: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -90,5 +97,6 @@ impl SolValResult {
             && self.rig_slots.is_none()
             && self.subsystem_slots.is_none()
             && self.launched_drones.is_none()
+            && self.launched_fighters.is_none()
     }
 }

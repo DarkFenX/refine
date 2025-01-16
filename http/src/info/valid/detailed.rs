@@ -33,6 +33,8 @@ struct HValidInfoDetails {
     subsystem_slots: Option<HSlotValFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     launched_drones: Option<HSlotValFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    launched_fighters: Option<HSlotValFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -44,6 +46,7 @@ impl HValidInfoDetails {
             && self.rig_slots.is_none()
             && self.subsystem_slots.is_none()
             && self.launched_drones.is_none()
+            && self.launched_fighters.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -57,6 +60,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             rig_slots: core_val_result.rig_slots.as_ref().map(|v| v.into()),
             subsystem_slots: core_val_result.subsystem_slots.as_ref().map(|v| v.into()),
             launched_drones: core_val_result.launched_drones.as_ref().map(|v| v.into()),
+            launched_fighters: core_val_result.launched_fighters.as_ref().map(|v| v.into()),
         }
     }
 }
