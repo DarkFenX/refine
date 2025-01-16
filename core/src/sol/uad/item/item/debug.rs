@@ -1,4 +1,4 @@
-use crate::sol::{uad::SolUad, SolDebugResult};
+use crate::sol::{debug::SolDebugResult, uad::SolUad};
 
 use super::SolItem;
 

@@ -1,8 +1,8 @@
 use crate::{
     defs::SolItemId,
     sol::{
+        debug::{SolDebugError, SolDebugResult},
         uad::{item::SolItem, SolUad},
-        SolDebugError, SolDebugResult,
     },
     util::StSet,
 };

@@ -1,12 +1,13 @@
 use crate::{
     defs::{SolFitId, SolItemId},
     sol::{
+        debug::{SolDebugError, SolDebugResult},
         uad::{
             fit::SolFit,
             item::{SolFighter, SolItem, SolModule},
             SolUad,
         },
-        SolDebugError, SolDebugResult, SolModRack,
+        SolModRack,
     },
 };
 

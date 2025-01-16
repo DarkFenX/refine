@@ -1,7 +1,6 @@
 use crate::sol::{
-    debug::{check_fit, check_item},
+    debug::{check_fit, check_item, SolDebugResult},
     uad::SolUad,
-    SolDebugResult,
 };
 
 use super::SolCharge;

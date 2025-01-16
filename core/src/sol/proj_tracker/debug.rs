@@ -1,4 +1,7 @@
-use crate::sol::{uad::SolUad, SolDebugError, SolDebugResult};
+use crate::sol::{
+    debug::{SolDebugError, SolDebugResult},
+    uad::SolUad,
+};
 
 use super::SolProjTracker;
 

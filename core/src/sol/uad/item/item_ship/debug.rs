@@ -1,4 +1,7 @@
-use crate::sol::{debug::check_fit, uad::SolUad, SolDebugResult};
+use crate::sol::{
+    debug::{check_fit, SolDebugResult},
+    uad::SolUad,
+};
 
 use super::SolShip;
 

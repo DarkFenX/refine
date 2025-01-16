@@ -1,4 +1,4 @@
-use crate::sol::{svc::calc::debug::check_ctx_modifier, uad::SolUad, SolDebugResult};
+use crate::sol::{debug::SolDebugResult, svc::calc::debug::check_ctx_modifier, uad::SolUad};
 
 use super::SolRevisionRegister;
 

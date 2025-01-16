@@ -1,4 +1,7 @@
-use crate::sol::{debug::check_item, uad::SolUad, SolDebugResult};
+use crate::sol::{
+    debug::{check_item, SolDebugResult},
+    uad::SolUad,
+};
 
 use super::SolAutocharges;
 

@@ -1,8 +1,7 @@
 use crate::sol::{
-    debug::{check_attr, check_effect, check_item},
+    debug::{check_attr, check_effect, check_item, SolDebugResult},
     svc::calc::debug::check_raw_modifier,
     uad::SolUad,
-    SolDebugResult,
 };
 
 use super::SolBuffRegister;

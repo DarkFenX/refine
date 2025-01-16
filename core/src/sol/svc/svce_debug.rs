@@ -1,4 +1,4 @@
-use crate::sol::{svc::SolSvc, uad::SolUad, SolDebugResult};
+use crate::sol::{debug::SolDebugResult, svc::SolSvc, uad::SolUad};
 
 impl SolSvc {
     pub(in crate::sol) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {

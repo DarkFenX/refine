@@ -1,8 +1,7 @@
 use crate::sol::{
-    debug::{check_effect, check_fit, check_item},
+    debug::{check_effect, check_fit, check_item, SolDebugResult},
     svc::calc::{SolContext, SolCtxModifier, SolRawModifier},
     uad::SolUad,
-    SolDebugResult,
 };
 
 pub(in crate::sol::svc) fn check_raw_modifier(uad: &SolUad, modifier: &SolRawModifier) -> SolDebugResult {

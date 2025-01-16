@@ -1,7 +1,6 @@
 use crate::sol::{
-    debug::{check_attr, check_effect, check_item},
+    debug::{check_attr, check_effect, check_item, SolDebugResult},
     uad::SolUad,
-    SolDebugResult,
 };
 
 use super::SolDependencyRegister;
