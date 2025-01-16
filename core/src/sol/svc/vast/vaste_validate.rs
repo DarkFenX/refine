@@ -46,6 +46,11 @@ impl SolVast {
                 return false;
             }
         }
+        if options.subsystem_slots {
+            if !fit_data.validate_subsystem_slots_fast(uad, calc, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -75,6 +80,9 @@ impl SolVast {
         }
         if options.rig_slots {
             result.rig_slots = fit_data.validate_rig_slots_verbose(uad, calc, fit);
+        }
+        if options.subsystem_slots {
+            result.subsystem_slots = fit_data.validate_subsystem_slots_verbose(uad, calc, fit);
         }
         result
     }

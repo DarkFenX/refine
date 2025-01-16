@@ -3,12 +3,12 @@
 
 use crate::{
     ad,
-    defs::{EAttrId, EEffectId, OF},
+    defs::{EAttrId, EEffectId, EItemGrpId, OF},
     ec,
 };
 
-const SLOT_ATTR: EEffectId = ec::attrs::MAX_SUBSYSTEMS;
-const SHIP_GROUP: EEffectId = ec::itemgrps::STRATEGIC_CRUISER;
+const SLOT_ATTR: EAttrId = ec::attrs::MAX_SUBSYSTEMS;
+const SHIP_GROUP: EItemGrpId = ec::itemgrps::STRATEGIC_CRUISER;
 
 pub(in crate::adg::custom) fn fix_subsysem_slot_amount(a_data: &mut ad::AData) {
     let mut applied = false;

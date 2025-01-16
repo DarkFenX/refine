@@ -266,6 +266,22 @@ class ApiClientItem(ApiClientBase):
             state=state,
             item_info_mode=item_info_mode)
 
+    def change_subsystem_request(
+            self, *,
+            sol_id: str,
+            item_id: int,
+            state: Union[bool, type[Absent]],
+            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
+            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+    ) -> Request:
+        return self.__change_simple_item_request(
+            cmd_name='subsystem',
+            sol_id=sol_id,
+            item_id=item_id,
+            state=state,
+            effect_modes=effect_modes,
+            item_info_mode=item_info_mode)
+
     # Module methods
     def add_mod_request(
             self, *,

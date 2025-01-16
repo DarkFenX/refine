@@ -7,6 +7,7 @@ pub struct SolValOptions {
     pub dronebay_volume: bool,
     pub drone_bandwidth: bool,
     pub rig_slots: bool,
+    pub subsystem_slots: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -16,6 +17,7 @@ impl SolValOptions {
         dronebay_volume: bool,
         drone_bandwidth: bool,
         rig_slots: bool,
+        subsystem_slots: bool,
     ) -> Self {
         Self {
             cpu,
@@ -24,6 +26,7 @@ impl SolValOptions {
             dronebay_volume,
             drone_bandwidth,
             rig_slots,
+            subsystem_slots,
         }
     }
     pub fn new_enabled() -> Self {
@@ -34,6 +37,7 @@ impl SolValOptions {
             dronebay_volume: true,
             drone_bandwidth: true,
             rig_slots: true,
+            subsystem_slots: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -44,6 +48,7 @@ impl SolValOptions {
             dronebay_volume: false,
             drone_bandwidth: false,
             rig_slots: false,
+            subsystem_slots: false,
         }
     }
 }
@@ -55,6 +60,7 @@ pub struct SolValResult {
     pub dronebay_volume: Option<SolResValFail>,
     pub drone_bandwidth: Option<SolResValFail>,
     pub rig_slots: Option<SolSlotValFail>,
+    pub subsystem_slots: Option<SolSlotValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -65,6 +71,7 @@ impl SolValResult {
             dronebay_volume: None,
             drone_bandwidth: None,
             rig_slots: None,
+            subsystem_slots: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -74,5 +81,6 @@ impl SolValResult {
             && self.dronebay_volume.is_none()
             && self.drone_bandwidth.is_none()
             && self.rig_slots.is_none()
+            && self.subsystem_slots.is_none()
     }
 }

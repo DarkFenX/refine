@@ -16,6 +16,7 @@ class EveItem(IntEnum):
 class EveItemGrp(IntEnum):
     character = 1
     effect_beacon = 920
+    strategic_cruiser = 963
     mutaplasmids = 1964
 
 
@@ -192,6 +193,7 @@ class EveAttr(IntEnum):
     warp_scramble_range_bonus = 1327
     activation_blocked = 1349
     activation_blocked_strength = 1350
+    max_subsystems = 1367
     turret_hardpoint_modifier = 1368
     launcher_hardpoint_modifier = 1369
     hi_slot_modifier = 1374
@@ -305,6 +307,7 @@ class ApiValType(StrEnum):
     dronebay_volume = 'dronebay_volume'
     drone_bandwidth = 'drone_bandwidth'
     rig_slots = 'rig_slots'
+    subsystem_slots = 'subsystem_slots'
 
 
 @unique

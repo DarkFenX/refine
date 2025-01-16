@@ -19,6 +19,7 @@ impl SolStatRes {
 }
 
 impl SolVastFitData {
+    // Public methods
     pub(in crate::sol::svc::vast) fn get_stats_cpu(
         &self,
         uad: &SolUad,
@@ -85,6 +86,7 @@ impl SolVastFitData {
             &ec::attrs::DRONE_BANDWIDTH,
         )
     }
+    // Private methods
     fn get_resource_stats_fitting<'a>(
         &self,
         uad: &SolUad,

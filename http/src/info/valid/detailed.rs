@@ -29,6 +29,8 @@ struct HValidInfoDetails {
     drone_bandwidth: Option<HResValFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     rig_slots: Option<HSlotValFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    subsystem_slots: Option<HSlotValFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -38,6 +40,7 @@ impl HValidInfoDetails {
             && self.dronebay_volume.is_none()
             && self.drone_bandwidth.is_none()
             && self.rig_slots.is_none()
+            && self.subsystem_slots.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -49,6 +52,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             dronebay_volume: core_val_result.dronebay_volume.as_ref().map(|v| v.into()),
             drone_bandwidth: core_val_result.drone_bandwidth.as_ref().map(|v| v.into()),
             rig_slots: core_val_result.rig_slots.as_ref().map(|v| v.into()),
+            subsystem_slots: core_val_result.subsystem_slots.as_ref().map(|v| v.into()),
         }
     }
 }
