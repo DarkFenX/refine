@@ -1,4 +1,4 @@
-use crate::info::valid::details::HResValFail;
+use crate::info::valid::details::{HResValFail, HSlotValFail};
 
 #[derive(serde::Serialize)]
 pub(crate) struct HValidInfoDetailed {
@@ -27,6 +27,8 @@ struct HValidInfoDetails {
     dronebay_volume: Option<HResValFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     drone_bandwidth: Option<HResValFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    rig_slots: Option<HSlotValFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -35,6 +37,7 @@ impl HValidInfoDetails {
             && self.calibration.is_none()
             && self.dronebay_volume.is_none()
             && self.drone_bandwidth.is_none()
+            && self.rig_slots.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -45,6 +48,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             calibration: core_val_result.calibration.as_ref().map(|v| v.into()),
             dronebay_volume: core_val_result.dronebay_volume.as_ref().map(|v| v.into()),
             drone_bandwidth: core_val_result.drone_bandwidth.as_ref().map(|v| v.into()),
+            rig_slots: core_val_result.rig_slots.as_ref().map(|v| v.into()),
         }
     }
 }

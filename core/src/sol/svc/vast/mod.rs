@@ -1,8 +1,8 @@
 pub use validation::{SolValOptions, SolValResult};
 pub(in crate::sol::svc) use vast::SolVast;
 use vast::SolVastFitData;
-use vaste_stats_fit::SolStatRes;
-pub use vaste_vals_fit::{SolResUser, SolResValFail};
+use vaste_stats_fit::{SolStatRes, SolStatSlot};
+pub use vaste_vals_fit::{SolResUser, SolResValFail, SolSlotValFail};
 
 mod validation;
 mod vast;

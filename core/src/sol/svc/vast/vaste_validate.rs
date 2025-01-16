@@ -41,6 +41,11 @@ impl SolVast {
                 return false;
             }
         }
+        if options.rig_slots {
+            if !fit_data.validate_rig_slots_fast(uad, calc, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -67,6 +72,9 @@ impl SolVast {
         }
         if options.drone_bandwidth {
             result.drone_bandwidth = fit_data.validate_drone_bandwidth_verbose(uad, calc, fit);
+        }
+        if options.rig_slots {
+            result.rig_slots = fit_data.validate_rig_slots_verbose(uad, calc, fit);
         }
         result
     }

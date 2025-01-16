@@ -33,7 +33,7 @@ pub use sol::{
     },
     svc::{
         calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
-        vast::{SolResUser, SolResValFail, SolValOptions, SolValResult},
+        vast::{SolResUser, SolResValFail, SolSlotValFail, SolValOptions, SolValResult},
     },
     uad::{
         SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolItemState,

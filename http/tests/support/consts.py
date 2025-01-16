@@ -184,6 +184,7 @@ class EveAttr(IntEnum):
     disallow_assistance = 854
     upgrade_capacity = 1132
     upgrade_cost = 1153
+    upgrade_slots_left = 1154
     overload_self_duration_bonus = 1206
     drone_bandwidth = 1271
     drone_bandwidth_used = 1272
@@ -303,6 +304,7 @@ class ApiValType(StrEnum):
     calibration = 'calibration'
     dronebay_volume = 'dronebay_volume'
     drone_bandwidth = 'drone_bandwidth'
+    rig_slots = 'rig_slots'
 
 
 @unique

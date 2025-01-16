@@ -42,6 +42,7 @@ pub(crate) const DISALLOW_ASSISTANCE: EAttrId = 854;
 pub(crate) const BOOSTERNESS: EAttrId = 1087;
 pub(crate) const UPGRADE_CAPACITY: EAttrId = 1132;
 pub(crate) const UPGRADE_COST: EAttrId = 1153;
+pub(crate) const UPGRADE_SLOTS_LEFT: EAttrId = 1154;
 pub(crate) const DRONE_BANDWIDTH: EAttrId = 1271;
 pub(crate) const DRONE_BANDWIDTH_USED: EAttrId = 1272;
 pub(crate) const MAX_RANGE_HIDDEN: EAttrId = 1317;
