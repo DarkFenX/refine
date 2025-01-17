@@ -1,4 +1,4 @@
-pub use misc::{SolDmgProfile, SolDmgTypes, SolEffectInfo, SolEffectMode, SolModRack};
+pub use misc::{SolDmgKinds, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack};
 pub use sol::SolarSystem;
 pub use sole_item::{SolOrdAddMode, SolOrdRmMode};
 

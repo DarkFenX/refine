@@ -1,12 +1,12 @@
 use crate::{
     defs::AttrVal,
-    sol::{svc::calc::SolAttrVal, SolDmgTypes},
+    sol::{svc::calc::SolAttrVal, SolDmgKinds},
 };
 
 // Initial values of a RAH, non-rounded
 #[derive(Copy, Clone)]
 pub(super) struct SolRahInfo {
-    pub(super) resos: SolDmgTypes<SolAttrVal>,
+    pub(super) resos: SolDmgKinds<SolAttrVal>,
     pub(super) cycle_time: AttrVal,
     pub(super) shift_amount: AttrVal,
 }
@@ -20,7 +20,7 @@ impl SolRahInfo {
         shift_amount: AttrVal,
     ) -> Self {
         Self {
-            resos: SolDmgTypes::new(res_em, res_therm, res_kin, res_expl),
+            resos: SolDmgKinds::new(res_em, res_therm, res_kin, res_expl),
             cycle_time,
             shift_amount,
         }

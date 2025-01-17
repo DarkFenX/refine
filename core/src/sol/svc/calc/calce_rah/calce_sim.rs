@@ -8,7 +8,7 @@ use crate::{
     sol::{
         svc::calc::{SolAttrVal, SolCalc},
         uad::SolUad,
-        SolDmgTypes,
+        SolDmgKinds,
     },
     util::{StMap, StSet},
 };
@@ -82,7 +82,7 @@ impl SolCalc {
             // If RAH just finished its cycle, make resist switch
             for cycled_item_id in tick_data.cycled {
                 let item_sim_data = sim_datas.get_mut(&cycled_item_id).unwrap();
-                let mut taken_dmg = SolDmgTypes::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0));
+                let mut taken_dmg = SolDmgKinds::new(OF(0.0), OF(0.0), OF(0.0), OF(0.0));
                 // Extract damage ship taken during RAH cycle, replacing it with 0's
                 std::mem::swap(&mut taken_dmg, &mut item_sim_data.taken_dmg);
                 let next_resos = get_next_resonances(
@@ -131,12 +131,12 @@ impl SolCalc {
         let avg_resos = get_average_resonances(&sim_history[ticks_to_ignore..]);
         self.set_partial_fit_rahs_result(uad, avg_resos, &sim_datas);
     }
-    fn get_ship_resonances(&mut self, uad: &SolUad, ship_id: &SolItemId) -> Option<SolDmgTypes<AttrVal>> {
+    fn get_ship_resonances(&mut self, uad: &SolUad, ship_id: &SolItemId) -> Option<SolDmgKinds<AttrVal>> {
         let em = self.get_item_attr_val(uad, ship_id, &EM_ATTR_ID).ok()?.dogma;
         let therm = self.get_item_attr_val(uad, ship_id, &THERM_ATTR_ID).ok()?.dogma;
         let kin = self.get_item_attr_val(uad, ship_id, &KIN_ATTR_ID).ok()?.dogma;
         let expl = self.get_item_attr_val(uad, ship_id, &EXPL_ATTR_ID).ok()?.dogma;
-        Some(SolDmgTypes::new(em, therm, kin, expl))
+        Some(SolDmgKinds::new(em, therm, kin, expl))
     }
     fn get_fit_rah_sim_datas(&mut self, uad: &SolUad, fit_id: &SolFitId) -> BTreeMap<SolItemId, SolRahDataSim> {
         let mut rah_datas = BTreeMap::new();
@@ -203,11 +203,11 @@ impl SolCalc {
         let expl = self
             .get_item_attr_val_no_pp(uad, item_id, &EXPL_ATTR_ID)
             .unwrap_or(SolAttrVal::new(OF(1.0), OF(1.0), OF(1.0)));
-        let rah_resos = SolDmgTypes::new(em, therm, kin, expl);
+        let rah_resos = SolDmgKinds::new(em, therm, kin, expl);
         self.set_rah_result(uad, item_id, rah_resos, notify);
     }
     // Result application methods
-    fn set_rah_result(&mut self, uad: &SolUad, item_id: &SolItemId, resos: SolDmgTypes<SolAttrVal>, notify: bool) {
+    fn set_rah_result(&mut self, uad: &SolUad, item_id: &SolItemId, resos: SolDmgKinds<SolAttrVal>, notify: bool) {
         self.rah.resonances.get_mut(item_id).unwrap().replace(resos);
         if notify {
             self.force_attr_postproc_recalc(uad, item_id, &EM_ATTR_ID);
@@ -219,7 +219,7 @@ impl SolCalc {
     fn set_partial_fit_rahs_result(
         &mut self,
         uad: &SolUad,
-        resos: StMap<SolItemId, SolDmgTypes<AttrVal>>,
+        resos: StMap<SolItemId, SolDmgKinds<AttrVal>>,
         sim_datas: &BTreeMap<SolItemId, SolRahDataSim>,
     ) {
         for (item_id, item_sim_data) in sim_datas.iter() {
@@ -227,7 +227,7 @@ impl SolCalc {
             // getter might not return resonances for all RAHs, and it's hard to trace when/why this
             // might happen. For safety, just use unadapted values if that happens
             let item_resos = match resos.get(item_id) {
-                Some(item_avg_resos) => SolDmgTypes::new(
+                Some(item_avg_resos) => SolDmgKinds::new(
                     SolAttrVal::new(item_sim_data.info.resos.em.base, item_avg_resos.em, item_avg_resos.em),
                     SolAttrVal::new(
                         item_sim_data.info.resos.thermal.base,
@@ -253,10 +253,10 @@ impl SolCalc {
 }
 
 fn get_next_resonances(
-    mut resonances: SolDmgTypes<SolAttrVal>,
-    taken_dmg: SolDmgTypes<AttrVal>,
+    mut resonances: SolDmgKinds<SolAttrVal>,
+    taken_dmg: SolDmgKinds<AttrVal>,
     shift_amount: AttrVal,
-) -> SolDmgTypes<SolAttrVal> {
+) -> SolDmgKinds<SolAttrVal> {
     // Rounding in this function to avoid float errors serves two purposes:
     // 1) it helps in history loop detection;
     // 2) it helps to avoid weird results in unrealistic edge cases, e.g. RAH which starts 0/0/100/0
@@ -310,7 +310,7 @@ fn get_next_resonances(
     resonances
 }
 
-fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<SolItemId, SolDmgTypes<AttrVal>> {
+fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<SolItemId, SolDmgKinds<AttrVal>> {
     let mut resos_used = StMap::new();
     for sim_history_entry in sim_history {
         for item_history_entry in sim_history_entry {
@@ -327,14 +327,14 @@ fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<S
     for (item_id, resos) in resos_used.into_iter() {
         let reso_len = resos.len() as f64;
         let item_avg_resos = match resos.into_iter().reduce(|a, v| {
-            SolDmgTypes::new(
+            SolDmgKinds::new(
                 a.em + v.em,
                 a.thermal + v.thermal,
                 a.kinetic + v.kinetic,
                 a.explosive + v.explosive,
             )
         }) {
-            Some(sum) => SolDmgTypes::new(
+            Some(sum) => SolDmgKinds::new(
                 sum.em / reso_len,
                 sum.thermal / reso_len,
                 sum.kinetic / reso_len,

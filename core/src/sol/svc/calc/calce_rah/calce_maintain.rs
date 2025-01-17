@@ -6,7 +6,7 @@ use crate::{
     sol::{
         svc::calc::{SolAttrVal, SolAttrValInfo, SolCalc, SolItemAttrPostprocs},
         uad::{item::SolItem, SolUad},
-        SolDmgTypes,
+        SolDmgKinds,
     },
     src::Src,
 };
@@ -162,7 +162,7 @@ impl SolCalc {
             self.force_attr_postproc_recalc(uad, item_id, &EXPL_ATTR_ID);
         }
     }
-    fn get_rah_resonances(&mut self, uad: &SolUad, item_id: &SolItemId) -> SolDmgTypes<SolAttrVal> {
+    fn get_rah_resonances(&mut self, uad: &SolUad, item_id: &SolItemId) -> SolDmgKinds<SolAttrVal> {
         // Unwrap item, since method is supposed to be called only for registered RAHs
         if let Some(val) = self.rah.resonances.get(item_id).unwrap() {
             return *val;
