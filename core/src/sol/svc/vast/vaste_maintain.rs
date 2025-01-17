@@ -123,9 +123,20 @@ impl SolVast {
         match item {
             SolItem::Module(module) => {
                 for effect in effects {
-                    if effect.id == ec::effects::ONLINE {
-                        let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
-                        fit_data.mods_online.insert(module.get_id());
+                    match effect.id {
+                        ec::effects::ONLINE => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_online.insert(module.get_id());
+                        }
+                        ec::effects::TURRET_FITTED => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_turret.insert(module.get_id());
+                        }
+                        ec::effects::LAUNCHER_FITTED => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_launcher.insert(module.get_id());
+                        }
+                        _ => (),
                     }
                 }
             }
@@ -146,9 +157,20 @@ impl SolVast {
         match item {
             SolItem::Module(module) => {
                 for effect in effects {
-                    if effect.id == ec::effects::ONLINE {
-                        let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
-                        fit_data.mods_online.remove(&module.get_id());
+                    match effect.id {
+                        ec::effects::ONLINE => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_online.remove(&module.get_id());
+                        }
+                        ec::effects::TURRET_FITTED => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_turret.remove(&module.get_id());
+                        }
+                        ec::effects::LAUNCHER_FITTED => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_launcher.remove(&module.get_id());
+                        }
+                        _ => (),
                     }
                 }
             }

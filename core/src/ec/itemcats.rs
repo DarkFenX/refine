@@ -11,3 +11,4 @@ pub(crate) const SHIP: EItemCatId = 6;
 pub(crate) const SKILL: EItemCatId = 16;
 pub(crate) const SUBSYSTEM: EItemCatId = 32;
 pub(crate) const STRUCTURE: EItemCatId = 65;
+pub(crate) const STRUCTURE_MODULE: EItemCatId = 66;

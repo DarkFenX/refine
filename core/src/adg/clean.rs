@@ -72,6 +72,7 @@ fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
         ec::itemcats::SHIP,
         ec::itemcats::SKILL,
         ec::itemcats::STRUCTURE,
+        ec::itemcats::STRUCTURE_MODULE,
         ec::itemcats::SUBSYSTEM,
     ];
     let mut grps = vec![ec::itemgrps::CHARACTER, ec::itemgrps::EFFECT_BEACON];

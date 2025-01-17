@@ -45,6 +45,10 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) standup_support_fighters_online: StSet<SolItemId>,
     pub(in crate::sol::svc::vast) standup_light_fighters_online: StSet<SolItemId>,
     pub(in crate::sol::svc::vast) standup_heavy_fighters_online: StSet<SolItemId>,
+    // Modules with "turretFitted" effect active
+    pub(in crate::sol::svc::vast) mods_turret: StSet<SolItemId>,
+    // Modules with "launcherFitted" effect active
+    pub(in crate::sol::svc::vast) mods_launcher: StSet<SolItemId>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -60,6 +64,8 @@ impl SolVastFitData {
             standup_support_fighters_online: StSet::new(),
             standup_light_fighters_online: StSet::new(),
             standup_heavy_fighters_online: StSet::new(),
+            mods_turret: StSet::new(),
+            mods_launcher: StSet::new(),
         }
     }
 }
