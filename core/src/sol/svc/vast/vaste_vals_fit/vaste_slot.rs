@@ -109,6 +109,24 @@ impl SolVastFitData {
         let stats = self.get_stats_launched_standup_heavy_fighters(uad, calc, fit);
         stats.used <= stats.total.unwrap_or(0)
     }
+    pub(in crate::sol::svc::vast) fn validate_turret_slots_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_turret_slots(uad, calc, fit);
+        stats.used <= stats.total.unwrap_or(0)
+    }
+    pub(in crate::sol::svc::vast) fn validate_launcher_slots_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_launcher_slots(uad, calc, fit);
+        stats.used <= stats.total.unwrap_or(0)
+    }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_slots_verbose(
         &self,
@@ -238,6 +256,32 @@ impl SolVastFitData {
             return None;
         }
         let users = self.standup_heavy_fighters_online.iter().map(|v| *v).collect();
+        Some(SolSlotValFail::new(stats.used, stats.total, users))
+    }
+    pub(in crate::sol::svc::vast) fn validate_turret_slots_verbose(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> Option<SolSlotValFail> {
+        let stats = self.get_stats_turret_slots(uad, calc, fit);
+        if stats.used <= stats.total.unwrap_or(0) {
+            return None;
+        }
+        let users = self.mods_turret.iter().map(|v| *v).collect();
+        Some(SolSlotValFail::new(stats.used, stats.total, users))
+    }
+    pub(in crate::sol::svc::vast) fn validate_launcher_slots_verbose(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> Option<SolSlotValFail> {
+        let stats = self.get_stats_launcher_slots(uad, calc, fit);
+        if stats.used <= stats.total.unwrap_or(0) {
+            return None;
+        }
+        let users = self.mods_launcher.iter().map(|v| *v).collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     // Private methods

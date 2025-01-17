@@ -47,6 +47,10 @@ struct HValidInfoDetails {
     launched_standup_light_fighters: Option<HSlotValFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     launched_standup_heavy_fighters: Option<HSlotValFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    turret_slots: Option<HSlotValFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    launcher_slots: Option<HSlotValFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -65,6 +69,8 @@ impl HValidInfoDetails {
             && self.launched_standup_support_fighters.is_none()
             && self.launched_standup_light_fighters.is_none()
             && self.launched_standup_heavy_fighters.is_none()
+            && self.turret_slots.is_none()
+            && self.launcher_slots.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -94,6 +100,8 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
                 .launched_standup_heavy_fighters
                 .as_ref()
                 .map(|v| v.into()),
+            turret_slots: core_val_result.turret_slots.as_ref().map(|v| v.into()),
+            launcher_slots: core_val_result.launcher_slots.as_ref().map(|v| v.into()),
         }
     }
 }

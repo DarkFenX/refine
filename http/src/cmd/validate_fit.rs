@@ -38,6 +38,8 @@ impl HValidFitCmd {
                 "launched_standup_support_fighters" => core_options.launched_standup_support_fighters = alt_value,
                 "launched_standup_light_fighters" => core_options.launched_standup_light_fighters = alt_value,
                 "launched_standup_heavy_fighters" => core_options.launched_standup_heavy_fighters = alt_value,
+                "turret_slots" => core_options.turret_slots = alt_value,
+                "launcher_slots" => core_options.launcher_slots = alt_value,
                 _ => (),
             }
         }

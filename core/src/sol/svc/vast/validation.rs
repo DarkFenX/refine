@@ -1,5 +1,6 @@
 use crate::sol::svc::vast::{SolResValFail, SolSlotValFail};
 
+#[derive(Copy, Clone)]
 pub struct SolValOptions {
     pub cpu: bool,
     pub powergrid: bool,
@@ -16,6 +17,8 @@ pub struct SolValOptions {
     pub launched_standup_support_fighters: bool,
     pub launched_standup_light_fighters: bool,
     pub launched_standup_heavy_fighters: bool,
+    pub turret_slots: bool,
+    pub launcher_slots: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -34,6 +37,8 @@ impl SolValOptions {
         launched_standup_support_fighters: bool,
         launched_standup_light_fighters: bool,
         launched_standup_heavy_fighters: bool,
+        turret_slots: bool,
+        launcher_slots: bool,
     ) -> Self {
         Self {
             cpu,
@@ -51,6 +56,8 @@ impl SolValOptions {
             launched_standup_support_fighters,
             launched_standup_light_fighters,
             launched_standup_heavy_fighters,
+            turret_slots,
+            launcher_slots,
         }
     }
     pub fn new_enabled() -> Self {
@@ -70,6 +77,8 @@ impl SolValOptions {
             launched_standup_support_fighters: true,
             launched_standup_light_fighters: true,
             launched_standup_heavy_fighters: true,
+            turret_slots: true,
+            launcher_slots: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -89,6 +98,8 @@ impl SolValOptions {
             launched_standup_support_fighters: false,
             launched_standup_light_fighters: false,
             launched_standup_heavy_fighters: false,
+            turret_slots: false,
+            launcher_slots: false,
         }
     }
 }
@@ -109,6 +120,8 @@ pub struct SolValResult {
     pub launched_standup_support_fighters: Option<SolSlotValFail>,
     pub launched_standup_light_fighters: Option<SolSlotValFail>,
     pub launched_standup_heavy_fighters: Option<SolSlotValFail>,
+    pub turret_slots: Option<SolSlotValFail>,
+    pub launcher_slots: Option<SolSlotValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -128,6 +141,8 @@ impl SolValResult {
             launched_standup_support_fighters: None,
             launched_standup_light_fighters: None,
             launched_standup_heavy_fighters: None,
+            turret_slots: None,
+            launcher_slots: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -146,5 +161,7 @@ impl SolValResult {
             && self.launched_standup_support_fighters.is_none()
             && self.launched_standup_light_fighters.is_none()
             && self.launched_standup_heavy_fighters.is_none()
+            && self.turret_slots.is_none()
+            && self.launcher_slots.is_none()
     }
 }

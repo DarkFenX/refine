@@ -80,6 +80,8 @@ fn main() {
     //     println!("{attr_id} {}", val.extra);
     // }
 
+    let val_options = rc::SolValOptions::new_enabled();
+
     let iterations = 1000000;
     tracing::error!("starting");
     let before = Utc::now();
@@ -96,8 +98,10 @@ fn main() {
             )
             .unwrap();
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
+        // sol_sys.validate_fit_fast(&fit.id, val_options);
         sol_sys.remove_item(&anp.id);
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
+        // sol_sys.validate_fit_fast(&fit.id, val_options);
     }
     let after = Utc::now();
     tracing::error!("done");

@@ -91,6 +91,16 @@ impl SolVast {
                 return false;
             }
         }
+        if options.turret_slots {
+            if !fit_data.validate_turret_slots_fast(uad, calc, fit) {
+                return false;
+            }
+        }
+        if options.launcher_slots {
+            if !fit_data.validate_launcher_slots_fast(uad, calc, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -150,6 +160,12 @@ impl SolVast {
         if options.launched_standup_heavy_fighters {
             result.launched_standup_heavy_fighters =
                 fit_data.validate_launched_standup_heavy_fighters_verbose(uad, calc, fit);
+        }
+        if options.turret_slots {
+            result.turret_slots = fit_data.validate_turret_slots_verbose(uad, calc, fit);
+        }
+        if options.launcher_slots {
+            result.launcher_slots = fit_data.validate_launcher_slots_verbose(uad, calc, fit);
         }
         result
     }

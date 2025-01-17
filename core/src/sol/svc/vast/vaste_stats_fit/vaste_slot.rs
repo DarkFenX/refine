@@ -153,6 +153,34 @@ impl SolVastFitData {
             self.standup_heavy_fighters_online.len() as Amount,
         )
     }
+    pub(in crate::sol::svc::vast) fn get_stats_turret_slots(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit,
+            &ec::attrs::TURRET_SLOTS_LEFT,
+            self.mods_turret.len() as Amount,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn get_stats_launcher_slots(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit,
+            &ec::attrs::LAUNCHER_SLOTS_LEFT,
+            self.mods_launcher.len() as Amount,
+        )
+    }
     // Private methods
     fn get_stats_slots(
         &self,
