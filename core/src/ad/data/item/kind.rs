@@ -5,7 +5,7 @@ pub enum AItemKind {
     Charge,
     Drone,
     EffectBeacon,
-    FighterSquad,
+    FighterSquad(AFighterKind),
     Implant,
     ModHigh,
     ModLow,
@@ -16,4 +16,14 @@ pub enum AItemKind {
     Skill,
     Stance,
     Subsystem,
+}
+
+/// Contains adapted fighter squad types.
+pub enum AFighterKind {
+    Support,
+    Light,
+    Heavy,
+    StandupSupport,
+    StandupLight,
+    StandupHeavy,
 }

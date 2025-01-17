@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad,
     adg::{GData, GSupport},
-    defs::{EEffectId, EItemId},
+    defs::{EAttrId, EEffectId, EItemId, OF},
     ec,
     util::StMap,
 };
@@ -116,12 +116,33 @@ fn get_item_kinds(a_item: &ad::AItem) -> Vec<ad::AItemKind> {
     if a_item.grp_id == ec::itemgrps::EFFECT_BEACON {
         kinds.push(ad::AItemKind::EffectBeacon);
     };
-    if a_item.cat_id == ec::itemcats::FIGHTER
-        && (a_item.attr_vals.contains_key(&ec::attrs::FTR_SQ_IS_HEAVY)
-            || a_item.attr_vals.contains_key(&ec::attrs::FTR_SQ_IS_LIGHT)
-            || a_item.attr_vals.contains_key(&ec::attrs::FTR_SQ_IS_SUPPORT))
-    {
-        kinds.push(ad::AItemKind::FighterSquad);
+    if a_item.cat_id == ec::itemcats::FIGHTER {
+        process_fighter_type(
+            &mut kinds,
+            a_item,
+            &ec::attrs::FTR_SQ_IS_SUPPORT,
+            ad::AFighterKind::Support,
+        );
+        process_fighter_type(&mut kinds, a_item, &ec::attrs::FTR_SQ_IS_LIGHT, ad::AFighterKind::Light);
+        process_fighter_type(&mut kinds, a_item, &ec::attrs::FTR_SQ_IS_HEAVY, ad::AFighterKind::Heavy);
+        process_fighter_type(
+            &mut kinds,
+            a_item,
+            &ec::attrs::FTR_SQ_IS_STANDUP_SUPPORT,
+            ad::AFighterKind::StandupSupport,
+        );
+        process_fighter_type(
+            &mut kinds,
+            a_item,
+            &ec::attrs::FTR_SQ_IS_STANDUP_LIGHT,
+            ad::AFighterKind::StandupLight,
+        );
+        process_fighter_type(
+            &mut kinds,
+            a_item,
+            &ec::attrs::FTR_SQ_IS_STANDUP_HEAVY,
+            ad::AFighterKind::StandupHeavy,
+        );
     };
     if a_item.cat_id == ec::itemcats::IMPLANT && a_item.attr_vals.contains_key(&ec::attrs::IMPLANTNESS) {
         kinds.push(ad::AItemKind::Implant);
@@ -154,4 +175,12 @@ fn get_item_kinds(a_item: &ad::AItem) -> Vec<ad::AItemKind> {
         kinds.push(ad::AItemKind::Subsystem);
     };
     kinds
+}
+
+fn process_fighter_type(kinds: &mut Vec<ad::AItemKind>, a_item: &ad::AItem, attr_id: &EAttrId, kind: ad::AFighterKind) {
+    if let Some(&val) = a_item.attr_vals.get(attr_id) {
+        if val != OF(0.0) {
+            kinds.push(ad::AItemKind::FighterSquad(kind));
+        }
+    }
 }
