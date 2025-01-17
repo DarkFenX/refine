@@ -642,6 +642,26 @@ impl SolItem {
     }
     // Calculator-specific getters
     // TODO: consider moving to calculator specific item extensions
+    pub(in crate::sol) fn get_a_item_kind(&self) -> Option<Option<ad::AItemKind>> {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.get_a_item_kind(),
+            Self::Booster(booster) => booster.get_a_item_kind(),
+            Self::Character(character) => character.get_a_item_kind(),
+            Self::Charge(charge) => charge.get_a_item_kind(),
+            Self::Drone(drone) => drone.get_a_item_kind(),
+            Self::Fighter(fighter) => fighter.get_a_item_kind(),
+            Self::FwEffect(fw_effect) => fw_effect.get_a_item_kind(),
+            Self::Implant(implant) => implant.get_a_item_kind(),
+            Self::Module(module) => module.get_a_item_kind(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_a_item_kind(),
+            Self::Rig(rig) => rig.get_a_item_kind(),
+            Self::Ship(ship) => ship.get_a_item_kind(),
+            Self::Skill(skill) => skill.get_a_item_kind(),
+            Self::Stance(stance) => stance.get_a_item_kind(),
+            Self::Subsystem(subsystem) => subsystem.get_a_item_kind(),
+            Self::SwEffect(sw_effect) => sw_effect.get_a_item_kind(),
+        }
+    }
     pub(in crate::sol) fn get_group_id(&self) -> Option<EItemGrpId> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_group_id(),

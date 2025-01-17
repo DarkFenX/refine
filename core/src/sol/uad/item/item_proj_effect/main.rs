@@ -25,6 +25,9 @@ impl SolProjEffect {
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
         self.base.get_type_id()
     }
+    pub(in crate::sol) fn get_a_item_kind(&self) -> Option<Option<ad::AItemKind>> {
+        self.base.get_a_item_kind()
+    }
     pub(in crate::sol) fn get_group_id(&self) -> Option<EItemGrpId> {
         self.base.get_group_id()
     }

@@ -100,6 +100,9 @@ impl SolItemBaseMutable {
     pub(in crate::sol::uad::item) fn get_group_id(&self) -> Option<EItemGrpId> {
         self.base.get_group_id()
     }
+    pub(in crate::sol::uad::item) fn get_a_item_kind(&self) -> Option<Option<ad::AItemKind>> {
+        self.base.get_a_item_kind()
+    }
     pub(in crate::sol::uad::item) fn get_category_id(&self) -> Option<EItemGrpId> {
         self.base.get_category_id()
     }

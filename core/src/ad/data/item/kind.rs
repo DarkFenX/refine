@@ -1,4 +1,5 @@
 /// Contains adapted item types.
+#[derive(Copy, Clone)]
 pub enum AItemKind {
     Booster,
     Character,
@@ -19,6 +20,7 @@ pub enum AItemKind {
 }
 
 /// Contains adapted fighter squad types.
+#[derive(Copy, Clone)]
 pub enum AFighterKind {
     Support,
     Light,
