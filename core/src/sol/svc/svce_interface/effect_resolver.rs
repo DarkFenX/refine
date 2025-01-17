@@ -53,11 +53,11 @@ fn resolve_effect_status_full(
                 return false;
             };
             match item.get_defeff_id() {
-                Ok(defeff_id_opt) => match defeff_id_opt {
+                Some(defeff_id_opt) => match defeff_id_opt {
                     Some(defeff_id) => defeff_id == effect.id,
                     _ => false,
                 },
-                _ => false,
+                None => false,
             }
         }
         // No additional restrictions for overload effects except for item being overloaded

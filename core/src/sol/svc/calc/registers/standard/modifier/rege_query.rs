@@ -21,8 +21,8 @@ impl SolStandardRegister {
         let item_id = item.get_id();
         let fit_opt = item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
         let root_loc_opt = item.get_root_loc_kind();
-        let grp_id_opt = item.get_group_id().ok();
-        let srqs_opt = item.get_skill_reqs().ok();
+        let grp_id_opt = item.get_group_id();
+        let srqs_opt = item.get_skill_reqs();
         let mut mods = Vec::new();
         filter_and_extend(&mut mods, &self.cmods_direct, &item_id, attr_id);
         if let Some(other_item_id) = item.get_other() {

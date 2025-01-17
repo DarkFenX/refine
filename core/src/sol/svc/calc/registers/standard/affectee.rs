@@ -38,8 +38,8 @@ impl SolStandardRegister {
         let item_id = item.get_id();
         let fit_opt = item.get_fit_id().map(|v| uad.fits.get_fit(&v).ok()).flatten();
         let root_loc_opt = item.get_root_loc_kind();
-        let grp_id_opt = item.get_group_id().ok();
-        let srqs_opt = item.get_skill_reqs().ok();
+        let grp_id_opt = item.get_group_id();
+        let srqs_opt = item.get_skill_reqs();
         if let (Some(fit), Some(root_loc)) = (fit_opt, root_loc_opt) {
             self.affectee_root.add_entry((fit.id, root_loc), item_id);
         }
@@ -79,8 +79,8 @@ impl SolStandardRegister {
         let item_id = item.get_id();
         let fit_opt = item.get_fit_id().map(|v| uad.fits.get_fit(&v).ok()).flatten();
         let root_loc_opt = item.get_root_loc_kind();
-        let grp_id_opt = item.get_group_id().ok();
-        let srqs_opt = item.get_skill_reqs().ok();
+        let grp_id_opt = item.get_group_id();
+        let srqs_opt = item.get_skill_reqs();
         if let (Some(fit), Some(root_loc)) = (fit_opt, root_loc_opt) {
             self.affectee_root.remove_entry(&(fit.id, root_loc), &item_id);
         }

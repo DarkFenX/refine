@@ -642,7 +642,7 @@ impl SolItem {
     }
     // Calculator-specific getters
     // TODO: consider moving to calculator specific item extensions
-    pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
+    pub(in crate::sol) fn get_group_id(&self) -> Option<EItemGrpId> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_group_id(),
             Self::Booster(booster) => booster.get_group_id(),
@@ -662,7 +662,7 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.get_group_id(),
         }
     }
-    pub(in crate::sol) fn get_category_id(&self) -> Result<EItemCatId, ItemLoadedError> {
+    pub(in crate::sol) fn get_category_id(&self) -> Option<EItemCatId> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_category_id(),
             Self::Booster(booster) => booster.get_category_id(),
@@ -684,12 +684,12 @@ impl SolItem {
     }
     pub(in crate::sol) fn get_attr(&self, attr_id: &EAttrId) -> Option<AttrVal> {
         match self.get_attrs() {
-            Ok(attrs) => attrs.get(attr_id).cloned(),
-            Err(_) => None,
+            Some(attrs) => attrs.get(attr_id).cloned(),
+            None => None,
         }
     }
 
-    pub(in crate::sol) fn get_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
+    pub(in crate::sol) fn get_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_attrs(),
             Self::Booster(booster) => booster.get_attrs(),
@@ -709,7 +709,10 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.get_attrs(),
         }
     }
-    pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
+    pub(in crate::sol) fn get_attrs_err(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
+        self.get_attrs().ok_or_else(|| ItemLoadedError::new(self.get_id()))
+    }
+    pub(in crate::sol) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_effect_datas(),
             Self::Booster(booster) => booster.get_effect_datas(),
@@ -729,7 +732,13 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.get_effect_datas(),
         }
     }
-    pub(in crate::sol) fn get_defeff_id(&self) -> Result<Option<EEffectId>, ItemLoadedError> {
+    pub(in crate::sol) fn get_effect_datas_err(
+        &self,
+    ) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
+        self.get_effect_datas()
+            .ok_or_else(|| ItemLoadedError::new(self.get_id()))
+    }
+    pub(in crate::sol) fn get_defeff_id(&self) -> Option<Option<EEffectId>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_defeff_id(),
             Self::Booster(booster) => booster.get_defeff_id(),
@@ -749,7 +758,7 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.get_defeff_id(),
         }
     }
-    pub(in crate::sol) fn get_skill_reqs(&self) -> Result<&StMap<EItemId, SkillLevel>, ItemLoadedError> {
+    pub(in crate::sol) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_skill_reqs(),
             Self::Booster(booster) => booster.get_skill_reqs(),

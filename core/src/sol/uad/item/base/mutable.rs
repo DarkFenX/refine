@@ -1,7 +1,7 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, MutaRoll, SkillLevel, SolItemId, OF},
-    err::basic::{ItemLoadedError, ItemMutatedError, ItemNotMutatedError},
+    err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
         info::{SolAttrMutationInfo, SolItemMutationInfo},
         uad::item::{
@@ -97,31 +97,29 @@ impl SolItemBaseMutable {
     pub(in crate::sol::uad::item) fn get_type_id(&self) -> EItemId {
         self.base.get_type_id()
     }
-    pub(in crate::sol::uad::item) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_group_id(&self) -> Option<EItemGrpId> {
         self.base.get_group_id()
     }
-    pub(in crate::sol::uad::item) fn get_category_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_category_id(&self) -> Option<EItemGrpId> {
         self.base.get_category_id()
     }
-    pub(in crate::sol::uad::item) fn get_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
         let item_mutation = match &self.mutation {
             Some(item_mutation) => item_mutation,
             None => return self.base.get_attrs(),
         };
         match &item_mutation.cache {
-            Some(cache) => Ok(&cache.merged_attrs),
+            Some(cache) => Some(&cache.merged_attrs),
             None => self.base.get_attrs(),
         }
     }
-    pub(in crate::sol::uad::item) fn get_effect_datas(
-        &self,
-    ) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
         self.base.get_effect_datas()
     }
-    pub(in crate::sol::uad::item) fn get_defeff_id(&self) -> Result<Option<EEffectId>, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_defeff_id(&self) -> Option<Option<EEffectId>> {
         self.base.get_defeff_id()
     }
-    pub(in crate::sol::uad::item) fn get_skill_reqs(&self) -> Result<&StMap<EItemId, SkillLevel>, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
         self.base.get_skill_reqs()
     }
     pub(in crate::sol::uad::item) fn get_state(&self) -> SolItemState {
@@ -284,7 +282,7 @@ impl SolItemBaseMutable {
                 // Base item available - store all the mutations. Here it's possible to convert
                 // absolute mutated attribute values into rolls using base item attributes as
                 // unmutated values
-                Ok(base_a_item) => {
+                Some(base_a_item) => {
                     self.mutation = Some(convert_item_mutation_full(
                         mutation_request,
                         &base_a_item.attr_vals,
@@ -292,14 +290,14 @@ impl SolItemBaseMutable {
                     ));
                     return Ok(());
                 }
-                Err(_) => {
+                None => {
                     self.mutation = Some(convert_item_mutation_basic(mutation_request));
                     return Ok(());
                 }
             },
         };
         // Since we have all the data now, apply mutation properly
-        let mut attrs = get_combined_attr_values(self.base.get_a_item().ok(), mutated_a_item);
+        let mut attrs = get_combined_attr_values(self.base.get_a_item(), mutated_a_item);
         let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, a_mutator.clone(), attrs));
@@ -323,12 +321,7 @@ impl SolItemBaseMutable {
             // changes which can be applied, and return empty list, since effectively none of item
             // attributes can change regardless of what was requested
             None => {
-                change_mutation_attrs_ineffective(
-                    src,
-                    self.base.get_attrs().ok(),
-                    item_mutation,
-                    attr_mutation_requests,
-                );
+                change_mutation_attrs_ineffective(src, self.base.get_attrs(), item_mutation, attr_mutation_requests);
                 return Ok(Vec::new());
             }
         };

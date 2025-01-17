@@ -1,7 +1,6 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolItemId},
-    err::basic::ItemLoadedError,
     sol::uad::item::{SolEffectModes, SolItemState},
     src::Src,
     util::StMap,
@@ -34,24 +33,22 @@ impl SolItemBase {
     pub(in crate::sol::uad::item) fn get_type_id(&self) -> EItemId {
         self.type_id
     }
-    pub(in crate::sol::uad::item) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_group_id(&self) -> Option<EItemGrpId> {
         self.get_a_item().map(|v| v.grp_id)
     }
-    pub(in crate::sol::uad::item) fn get_category_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_category_id(&self) -> Option<EItemGrpId> {
         self.get_a_item().map(|v| v.cat_id)
     }
-    pub(in crate::sol::uad::item) fn get_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
         self.get_a_item().map(|v| &v.attr_vals)
     }
-    pub(in crate::sol::uad::item) fn get_effect_datas(
-        &self,
-    ) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
         self.get_a_item().map(|v| &v.effect_datas)
     }
-    pub(in crate::sol::uad::item) fn get_defeff_id(&self) -> Result<Option<EEffectId>, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_defeff_id(&self) -> Option<Option<EEffectId>> {
         self.get_a_item().map(|v| v.defeff_id)
     }
-    pub(in crate::sol::uad::item) fn get_skill_reqs(&self) -> Result<&StMap<EItemId, SkillLevel>, ItemLoadedError> {
+    pub(in crate::sol::uad::item) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
         self.get_a_item().map(|v| &v.srqs)
     }
     pub(in crate::sol::uad::item) fn get_state(&self) -> SolItemState {
@@ -115,11 +112,8 @@ impl SolItemBase {
     pub(in crate::sol::uad::item::base) fn remove_a_item(&mut self) {
         self.cache = None;
     }
-    pub(in crate::sol::uad::item::base) fn get_a_item(&self) -> Result<&ad::ArcItem, ItemLoadedError> {
-        match &self.cache {
-            Some(cache) => Ok(&cache.a_item),
-            None => Err(ItemLoadedError::new(self.id)),
-        }
+    pub(in crate::sol::uad::item::base) fn get_a_item(&self) -> Option<&ad::ArcItem> {
+        self.cache.as_ref().map(|v| &v.a_item)
     }
 }
 

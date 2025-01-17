@@ -10,7 +10,7 @@ impl SolarSystem {
         item_id: &'a SolItemId,
     ) -> Result<impl ExactSizeIterator<Item = (EEffectId, SolEffectInfo)> + 'a, IterItemEffectsError> {
         let item = self.uad.items.get_item(item_id)?;
-        let a_effect_ids = item.get_effect_datas()?.keys();
+        let a_effect_ids = item.get_effect_datas_err()?.keys();
         let effect_infos = a_effect_ids.map(move |v| {
             let running = self.svc.is_effect_running(item_id, v);
             let mode = item.get_effect_modes().get(v);

@@ -147,7 +147,7 @@ impl SolCalc {
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure
-        let base_val = match item.get_attrs()?.get(attr_id) {
+        let base_val = match item.get_attrs_err()?.get(attr_id) {
             Some(orig_val) => *orig_val,
             None => attr.def_val,
         };

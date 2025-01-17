@@ -220,14 +220,14 @@ pub(in crate::sol::svc::calc) fn get_resist_attr_id(item: &SolItem, effect: &ad:
     match effect.resist_attr_id {
         Some(resist_attr_id) => Some(resist_attr_id),
         None => match item.get_attrs() {
-            Ok(attrs) => match attrs
+            Some(attrs) => match attrs
                 .get(&ec::attrs::REMOTE_RESISTANCE_ID)
                 .map(|v| v.into_inner() as EAttrId)
             {
                 Some(attr_id) if attr_id != 0 => Some(attr_id),
                 _ => None,
             },
-            _ => None,
+            None => None,
         },
     }
 }

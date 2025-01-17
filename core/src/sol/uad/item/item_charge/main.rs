@@ -1,7 +1,6 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
-    err::basic::ItemLoadedError,
     sol::uad::item::{SolEffectModes, SolItemBase, SolItemState, SolProjs},
     src::Src,
     util::{Named, StMap},
@@ -40,22 +39,22 @@ impl SolCharge {
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
         self.base.get_type_id()
     }
-    pub(in crate::sol) fn get_group_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
+    pub(in crate::sol) fn get_group_id(&self) -> Option<EItemGrpId> {
         self.base.get_group_id()
     }
-    pub(in crate::sol) fn get_category_id(&self) -> Result<EItemGrpId, ItemLoadedError> {
+    pub(in crate::sol) fn get_category_id(&self) -> Option<EItemGrpId> {
         self.base.get_category_id()
     }
-    pub(in crate::sol) fn get_attrs(&self) -> Result<&StMap<EAttrId, AttrVal>, ItemLoadedError> {
+    pub(in crate::sol) fn get_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
         self.base.get_attrs()
     }
-    pub(in crate::sol) fn get_effect_datas(&self) -> Result<&StMap<EEffectId, ad::AItemEffectData>, ItemLoadedError> {
+    pub(in crate::sol) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
         self.base.get_effect_datas()
     }
-    pub(in crate::sol) fn get_defeff_id(&self) -> Result<Option<EEffectId>, ItemLoadedError> {
+    pub(in crate::sol) fn get_defeff_id(&self) -> Option<Option<EEffectId>> {
         self.base.get_defeff_id()
     }
-    pub(in crate::sol) fn get_skill_reqs(&self) -> Result<&StMap<EItemId, SkillLevel>, ItemLoadedError> {
+    pub(in crate::sol) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
         self.base.get_skill_reqs()
     }
     pub(in crate::sol) fn get_state(&self) -> SolItemState {

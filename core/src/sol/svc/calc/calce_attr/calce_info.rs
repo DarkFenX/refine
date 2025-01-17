@@ -65,7 +65,7 @@ impl SolCalc {
         item_id: &SolItemId,
     ) -> Result<impl ExactSizeIterator<Item = EAttrId>, LoadedItemFoundError> {
         let mut attr_ids = StSet::new();
-        for attr_id in uad.items.get_item(item_id)?.get_attrs()?.keys() {
+        for attr_id in uad.items.get_item(item_id)?.get_attrs_err()?.keys() {
             attr_ids.insert(*attr_id);
         }
         for attr_id in self.attrs.get_item_attr_data(item_id).unwrap().values.keys() {
@@ -114,7 +114,7 @@ impl SolCalc {
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure
-        let base_val = match item.get_attrs()?.get(attr_id) {
+        let base_val = match item.get_attrs_err()?.get(attr_id) {
             Some(orig_val) => *orig_val,
             None => attr.def_val,
         };
