@@ -69,6 +69,90 @@ impl SolVastFitData {
             self.fighters_online.len() as Amount,
         )
     }
+    pub(in crate::sol::svc::vast) fn get_stats_launched_support_fighters(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit,
+            &ec::attrs::FTR_SUPPORT_SLOTS,
+            self.support_fighters_online.len() as Amount,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn get_stats_launched_light_fighters(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit,
+            &ec::attrs::FTR_LIGHT_SLOTS,
+            self.light_fighters_online.len() as Amount,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn get_stats_launched_heavy_fighters(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit,
+            &ec::attrs::FTR_HEAVY_SLOTS,
+            self.heavy_fighters_online.len() as Amount,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn get_stats_launched_standup_support_fighters(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit,
+            &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS,
+            self.standup_support_fighters_online.len() as Amount,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn get_stats_launched_standup_light_fighters(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit,
+            &ec::attrs::FTR_STANDUP_LIGHT_SLOTS,
+            self.standup_light_fighters_online.len() as Amount,
+        )
+    }
+    pub(in crate::sol::svc::vast) fn get_stats_launched_standup_heavy_fighters(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit,
+            &ec::attrs::FTR_STANDUP_HEAVY_SLOTS,
+            self.standup_heavy_fighters_online.len() as Amount,
+        )
+    }
     // Private methods
     fn get_stats_slots(
         &self,

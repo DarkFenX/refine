@@ -8,7 +8,7 @@ from tests import approx
 
 
 def test_proj_unproj(client, consts):
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
@@ -48,7 +48,7 @@ def test_proj_unproj(client, consts):
 
 
 def test_remove(client, consts):
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
@@ -85,7 +85,7 @@ def test_remove(client, consts):
 
 
 def test_states(client, consts):
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_autocharge_effect_id = client.mk_eve_effect(
@@ -150,7 +150,7 @@ def test_states(client, consts):
 
 def test_range(client, consts):
     # Check that module range change affects charge as well
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_optimal_attr_id = client.mk_eve_attr()
@@ -202,7 +202,7 @@ def test_src_switch(client, consts):
     # The same autocharge attr ID
     eve_autocharge_attr_id = client.mk_eve_attr(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+        id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     # Different affector attrs IDs
     eve_d1_affector_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
     client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_affector_attr_id)

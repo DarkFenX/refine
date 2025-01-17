@@ -93,7 +93,7 @@ def test_unaffected_fighter_to_autocharge(client, consts):
     # modifications from its carrier
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_autocharge_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fighter_ability_launch_bomb,
         cat_id=consts.EveEffCat.active)
@@ -123,7 +123,7 @@ def test_unaffected_autocharge_to_fighter(client, consts):
     # modifications from autocharge
     eve_affector_attr_id = client.mk_eve_attr()
     eve_affectee_attr_id = client.mk_eve_attr()
-    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_autocharge_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fighter_ability_launch_bomb,
         cat_id=consts.EveEffCat.active)

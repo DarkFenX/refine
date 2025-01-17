@@ -66,8 +66,57 @@ impl SolVast {
             }
         }
     }
-    pub(in crate::sol::svc) fn item_state_activated_loaded(&mut self, item: &SolItem, state: &SolItemState) {}
-    pub(in crate::sol::svc) fn item_state_deactivated_loaded(&mut self, item: &SolItem, state: &SolItemState) {}
+    pub(in crate::sol::svc) fn item_state_activated_loaded(&mut self, item: &SolItem, state: &SolItemState) {
+        if let SolItemState::Online = state {
+            if let SolItem::Fighter(fighter) = item {
+                let fit_data = self.get_fit_data_mut(&fighter.get_fit_id()).unwrap();
+                let attrs = fighter.get_attrs().unwrap();
+                if let Some(&val) = attrs.get(&ec::attrs::FTR_SQ_IS_SUPPORT) {
+                    if val != OF(0.0) {
+                        fit_data.support_fighters_online.insert(fighter.get_id());
+                    }
+                };
+                if let Some(&val) = attrs.get(&ec::attrs::FTR_SQ_IS_LIGHT) {
+                    if val != OF(0.0) {
+                        fit_data.light_fighters_online.insert(fighter.get_id());
+                    }
+                }
+                if let Some(&val) = attrs.get(&ec::attrs::FTR_SQ_IS_HEAVY) {
+                    if val != OF(0.0) {
+                        fit_data.heavy_fighters_online.insert(fighter.get_id());
+                    }
+                }
+                if let Some(&val) = attrs.get(&ec::attrs::FTR_SQ_IS_STANDUP_SUPPORT) {
+                    if val != OF(0.0) {
+                        fit_data.standup_support_fighters_online.insert(fighter.get_id());
+                    }
+                };
+                if let Some(&val) = attrs.get(&ec::attrs::FTR_SQ_IS_STANDUP_LIGHT) {
+                    if val != OF(0.0) {
+                        fit_data.standup_light_fighters_online.insert(fighter.get_id());
+                    }
+                }
+                if let Some(&val) = attrs.get(&ec::attrs::FTR_SQ_IS_STANDUP_HEAVY) {
+                    if val != OF(0.0) {
+                        fit_data.standup_heavy_fighters_online.insert(fighter.get_id());
+                    }
+                }
+            }
+        }
+    }
+    pub(in crate::sol::svc) fn item_state_deactivated_loaded(&mut self, item: &SolItem, state: &SolItemState) {
+        if let SolItemState::Online = state {
+            if let SolItem::Fighter(fighter) = item {
+                let fit_data = self.get_fit_data_mut(&fighter.get_fit_id()).unwrap();
+                fit_data.support_fighters_online.remove(&fighter.get_id());
+                fit_data.light_fighters_online.remove(&fighter.get_id());
+                fit_data.heavy_fighters_online.remove(&fighter.get_id());
+                fit_data.standup_support_fighters_online.remove(&fighter.get_id());
+                fit_data.standup_light_fighters_online.remove(&fighter.get_id());
+                fit_data.standup_heavy_fighters_online.remove(&fighter.get_id());
+            }
+        }
+    }
     pub(in crate::sol::svc) fn effects_started(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
         match item {
             SolItem::Module(module) => {

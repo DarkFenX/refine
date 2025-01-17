@@ -32,6 +32,12 @@ impl HValidFitCmd {
                 "subsystem_slots" => core_options.subsystem_slots = alt_value,
                 "launched_drones" => core_options.launched_drones = alt_value,
                 "launched_fighters" => core_options.launched_fighters = alt_value,
+                "launched_support_fighters" => core_options.launched_support_fighters = alt_value,
+                "launched_light_fighters" => core_options.launched_light_fighters = alt_value,
+                "launched_heavy_fighters" => core_options.launched_heavy_fighters = alt_value,
+                "launched_standup_support_fighters" => core_options.launched_standup_support_fighters = alt_value,
+                "launched_standup_light_fighters" => core_options.launched_standup_light_fighters = alt_value,
+                "launched_standup_heavy_fighters" => core_options.launched_standup_heavy_fighters = alt_value,
                 _ => (),
             }
         }

@@ -39,6 +39,12 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) drones_volume: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) drones_online_bandwidth: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) fighters_online: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) support_fighters_online: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) light_fighters_online: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) heavy_fighters_online: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) standup_support_fighters_online: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) standup_light_fighters_online: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) standup_heavy_fighters_online: StSet<SolItemId>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -48,6 +54,12 @@ impl SolVastFitData {
             drones_volume: StMap::new(),
             drones_online_bandwidth: StMap::new(),
             fighters_online: StSet::new(),
+            support_fighters_online: StSet::new(),
+            light_fighters_online: StSet::new(),
+            heavy_fighters_online: StSet::new(),
+            standup_support_fighters_online: StSet::new(),
+            standup_light_fighters_online: StSet::new(),
+            standup_heavy_fighters_online: StSet::new(),
         }
     }
 }

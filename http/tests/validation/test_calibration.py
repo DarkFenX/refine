@@ -86,7 +86,8 @@ def test_equal(client, consts):
 
 
 def test_modified_use(client, consts):
-    # Calibration use is never modified, so the lib just uses unmodified attributes for speed
+    # Calibration use is never modified, so the lib just uses unmodified attributes for faster
+    # access to the attr value
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_mod_attr_id = client.mk_eve_attr()
@@ -104,9 +105,11 @@ def test_modified_use(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
+    api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
+    assert api_rig.update().attrs[eve_use_attr_id].extra == approx(75)
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
@@ -114,8 +117,9 @@ def test_modified_use(client, consts):
     assert len(api_val.details.calibration.users) == 1
     assert api_val.details.calibration.users[api_rig.id] == approx(150)
     # Action
-    api_fit.add_implant(type_id=eve_implant_id)
+    api_implant.remove()
     # Verification
+    assert api_rig.update().attrs[eve_use_attr_id].extra == approx(150)
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
@@ -142,9 +146,10 @@ def test_modified_output(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
+    assert api_ship.update().attrs[eve_output_attr_id].extra == approx(120)
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
@@ -154,6 +159,7 @@ def test_modified_output(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
+    assert api_ship.update().attrs[eve_output_attr_id].extra == approx(180)
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is True
     with check_no_field():

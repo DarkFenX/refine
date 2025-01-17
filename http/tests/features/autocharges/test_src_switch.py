@@ -7,7 +7,7 @@ def test_specified_same(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_autocharge_attr_id = client.mk_eve_attr(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+        id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_d1_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
     client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_attr_id)
     eve_d2_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
@@ -49,7 +49,7 @@ def test_specified_different(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_autocharge_attr_id = client.mk_eve_attr(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+        id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_d1_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
     client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_attr_id)
     eve_d2_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
@@ -98,7 +98,7 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_autocharge_attr_id = client.mk_eve_attr(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+        id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_d1_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
     client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_attr_id)
     eve_d2_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
@@ -154,7 +154,7 @@ def test_valid_to_no_reference_to_valid(client, consts):
     eve_d2 = client.mk_eve_data()
     eve_autocharge_attr_id = client.mk_eve_attr(
         datas=[eve_d1, eve_d2],
-        id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+        id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_d1_attr_id = client.alloc_attr_id(datas=[eve_d1, eve_d2])
     client.mk_eve_attr(datas=[eve_d1], id_=eve_d1_attr_id)
     eve_effect_id = client.mk_eve_effect(

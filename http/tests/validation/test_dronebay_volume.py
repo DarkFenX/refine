@@ -82,26 +82,31 @@ def test_equal(client, consts):
 
 
 def test_modified_use(client, consts):
-    # Drone volume is never modified, so the lib just uses unmodified attributes for speed
+    # Drone volume is never modified, so the lib just uses unmodified attributes for faster access
+    # to the attr value
+    eve_skill_id = client.mk_eve_item()
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_capacity)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
-        func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        func=consts.EveModFunc.own_srq,
+        dom=consts.EveModDom.char,
+        srq=eve_skill_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_use_attr_id)
     eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, srqs={eve_skill_id: 1})
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
     eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: -50}, eff_ids=[eve_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
+    api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
+    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(75)
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
@@ -109,8 +114,9 @@ def test_modified_use(client, consts):
     assert len(api_val.details.dronebay_volume.users) == 1
     assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
     # Action
-    api_fit.add_implant(type_id=eve_implant_id)
+    api_implant.remove()
     # Verification
+    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(150)
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
@@ -136,9 +142,10 @@ def test_modified_output(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
+    assert api_ship.update().attrs[eve_output_attr_id].extra == approx(120)
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
@@ -148,6 +155,7 @@ def test_modified_output(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
+    assert api_ship.update().attrs[eve_output_attr_id].extra == approx(180)
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is True
     with check_no_field():
@@ -169,30 +177,33 @@ def test_mutation_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_base_drone_id)
     # Verification
+    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(120)
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # pylint: disable=W0104
     # Action
-    api_drone.change_drone(mutation=eve_mutator_id)
+    api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification - unrealistic scenario, but testing here detail of implementation: mutated drone
-    # has different volume, it should be used instead
+    # has different volume, the lib uses volume the drone had upon addition
+    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(145.6)
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is False
-    assert api_val.details.dronebay_volume.used == approx(130)
+    assert api_val.details.dronebay_volume.used == approx(145.6)
     assert api_val.details.dronebay_volume.output == approx(125)
     assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(130)
+    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(145.6)
     # Action
-    api_drone.change_drone(mutation={eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}})
+    api_drone.change_drone(mutation={eve_use_attr_id: None})
     # Verification - unrealistic scenario, but testing here detail of implementation: mutated volume
     # value does not change anything for the validation
+    assert api_drone.update().attrs[eve_use_attr_id].extra == approx(130)
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is False
-    assert api_val.details.dronebay_volume.used == approx(130)
+    assert api_val.details.dronebay_volume.used == approx(145.6)
     assert api_val.details.dronebay_volume.output == approx(125)
     assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(130)
+    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(145.6)
 
 
 def test_rounding(client, consts):

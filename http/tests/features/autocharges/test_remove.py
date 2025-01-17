@@ -1,6 +1,6 @@
 
 def test_remove_item(client, consts):
-    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fighter_ability_launch_bomb,
         cat_id=consts.EveEffCat.active)
@@ -27,7 +27,7 @@ def test_remove_item(client, consts):
 
 
 def test_remove_fit(client, consts):
-    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.fighter_ability_launch_bomb_type)
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
     eve_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.fighter_ability_launch_bomb,
         cat_id=consts.EveEffCat.active)

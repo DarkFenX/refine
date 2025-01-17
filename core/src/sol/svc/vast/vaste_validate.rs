@@ -61,6 +61,36 @@ impl SolVast {
                 return false;
             }
         }
+        if options.launched_support_fighters {
+            if !fit_data.validate_launched_support_fighters_fast(uad, calc, fit) {
+                return false;
+            }
+        }
+        if options.launched_light_fighters {
+            if !fit_data.validate_launched_light_fighters_fast(uad, calc, fit) {
+                return false;
+            }
+        }
+        if options.launched_heavy_fighters {
+            if !fit_data.validate_launched_heavy_fighters_fast(uad, calc, fit) {
+                return false;
+            }
+        }
+        if options.launched_standup_support_fighters {
+            if !fit_data.validate_launched_standup_support_fighters_fast(uad, calc, fit) {
+                return false;
+            }
+        }
+        if options.launched_standup_light_fighters {
+            if !fit_data.validate_launched_standup_light_fighters_fast(uad, calc, fit) {
+                return false;
+            }
+        }
+        if options.launched_standup_heavy_fighters {
+            if !fit_data.validate_launched_standup_heavy_fighters_fast(uad, calc, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -99,6 +129,27 @@ impl SolVast {
         }
         if options.launched_fighters {
             result.launched_fighters = fit_data.validate_launched_fighters_verbose(uad, calc, fit);
+        }
+        if options.launched_support_fighters {
+            result.launched_support_fighters = fit_data.validate_launched_support_fighters_verbose(uad, calc, fit);
+        }
+        if options.launched_light_fighters {
+            result.launched_light_fighters = fit_data.validate_launched_light_fighters_verbose(uad, calc, fit);
+        }
+        if options.launched_heavy_fighters {
+            result.launched_heavy_fighters = fit_data.validate_launched_heavy_fighters_verbose(uad, calc, fit);
+        }
+        if options.launched_standup_support_fighters {
+            result.launched_standup_support_fighters =
+                fit_data.validate_launched_standup_support_fighters_verbose(uad, calc, fit);
+        }
+        if options.launched_standup_light_fighters {
+            result.launched_standup_light_fighters =
+                fit_data.validate_launched_standup_light_fighters_verbose(uad, calc, fit);
+        }
+        if options.launched_standup_heavy_fighters {
+            result.launched_standup_heavy_fighters =
+                fit_data.validate_launched_standup_heavy_fighters_verbose(uad, calc, fit);
         }
         result
     }

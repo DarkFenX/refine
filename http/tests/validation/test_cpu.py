@@ -106,6 +106,7 @@ def test_modified_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
+    assert api_module.update().attrs[eve_use_attr_id].extra == 150
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
@@ -115,6 +116,7 @@ def test_modified_use(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
+    assert api_module.update().attrs[eve_use_attr_id].extra == 75
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True
     with check_no_field():
@@ -139,9 +141,10 @@ def test_modified_output(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_ship_id)
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
     # Verification
+    assert api_ship.update().attrs[eve_output_attr_id].extra == 120
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
@@ -151,6 +154,7 @@ def test_modified_output(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
+    assert api_ship.update().attrs[eve_output_attr_id].extra == 180
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True
     with check_no_field():
@@ -173,6 +177,7 @@ def test_mutation_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiState.online)
     # Verification
+    assert api_module.update().attrs[eve_use_attr_id].extra == 120
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True
     with check_no_field():
@@ -180,6 +185,7 @@ def test_mutation_use(client, consts):
     # Action
     api_module.change_mod(mutation=(eve_mutator_id, {eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.7}}))
     # Verification
+    assert api_module.update().attrs[eve_use_attr_id].extra == 129.6
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 129.6
@@ -189,6 +195,7 @@ def test_mutation_use(client, consts):
     # Action
     api_module.change_mod(mutation={eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}})
     # Verification
+    assert api_module.update().attrs[eve_use_attr_id].extra == 134.4
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is False
     assert api_val.details.cpu.used == 134.4
@@ -198,6 +205,7 @@ def test_mutation_use(client, consts):
     # Action
     api_module.change_mod(mutation=None)
     # Verification
+    assert api_module.update().attrs[eve_use_attr_id].extra == 120
     api_val = api_fit.validate(include=[consts.ApiValType.cpu])
     assert api_val.passed is True
     with check_no_field():
