@@ -36,33 +36,17 @@ fn setup_logger() -> () {
 fn main() {
     setup_logger();
     let dh = Box::new(rdhe::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    // Get some data for skills
-    let grp_ids = dh
-        .get_item_groups()
-        .unwrap()
-        .data
-        .iter()
-        .filter(|v| v.category_id == 16)
-        .map(|v| v.id)
-        .collect_vec();
-    let skill_ids = dh
-        .get_items()
-        .unwrap()
-        .data
-        .iter()
-        .filter(|v| grp_ids.contains(&v.group_id))
-        .map(|v| v.id)
-        .collect_vec();
-    let mut ch = Box::new(rdha::RamJsonAdh::new(
+    let ch = Box::new(rdha::RamJsonAdh::new(
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    let src = Src::new(dh, ch).unwrap();
-    // test_crusader(src.clone(), &skill_ids);
-    test_nphoon(src.clone(), &skill_ids);
+    // test_crusader(dh, ch);
+    test_nphoon(dh, ch);
 }
 
-fn test_crusader(src: Src, skill_ids: &Vec<rc::EItemId>) {
+fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
+    let skill_ids = get_skill_ids(&dh);
+    let src = Src::new(dh, ch).unwrap();
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit();
     let ship = sol_sys.set_fit_ship(fit.id, 11184, true).unwrap();
@@ -110,7 +94,11 @@ fn test_crusader(src: Src, skill_ids: &Vec<rc::EItemId>) {
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }
 
-fn test_nphoon(src: Src, skill_ids: &Vec<rc::EItemId>) {
+fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
+    let low_mod_ids = get_low_slot_mods(&dh);
+    let skill_ids = get_skill_ids(&dh);
+    let src = Src::new(dh, ch).unwrap();
+
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit();
 
@@ -290,15 +278,80 @@ fn test_nphoon(src: Src, skill_ids: &Vec<rc::EItemId>) {
 
     let val_options = SolValOptions::new_enabled();
 
-    let iterations = 1000000;
-    tracing::error!("starting nphoon test");
+    let iterations = 1000;
+    tracing::error!(
+        "starting nphoon test, trying {} modules per iteration",
+        low_mod_ids.len()
+    );
     let before = Utc::now();
     for _ in 0..iterations {
-        sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+        for &low_mod_id in low_mod_ids.iter() {
+            let info = sol_sys
+                .add_module(
+                    fit.id,
+                    SolModRack::Low,
+                    SolOrdAddMode::Equip,
+                    low_mod_id,
+                    SolItemState::Online,
+                    None,
+                    None,
+                )
+                .unwrap();
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            sol_sys.remove_item(&info.id).unwrap();
+        }
     }
     let after = Utc::now();
     tracing::error!("done with nphoon test");
     let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
     let ips = iterations as f64 / delta_seconds;
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
+}
+
+fn get_skill_ids(dh: &Box<rdhe::PhbFileEdh>) -> Vec<rc::EItemId> {
+    let grp_ids = dh
+        .get_item_groups()
+        .unwrap()
+        .data
+        .iter()
+        .filter(|v| v.category_id == 16)
+        .map(|v| v.id)
+        .collect_vec();
+    let skill_ids = dh
+        .get_items()
+        .unwrap()
+        .data
+        .iter()
+        .filter(|v| grp_ids.contains(&v.group_id))
+        .map(|v| v.id)
+        .collect_vec();
+    skill_ids
+}
+
+fn get_low_slot_mods(dh: &Box<rdhe::PhbFileEdh>) -> Vec<rc::EItemId> {
+    let grp_ids = dh
+        .get_item_groups()
+        .unwrap()
+        .data
+        .iter()
+        .filter(|v| v.category_id == 7)
+        .map(|v| v.id)
+        .collect_vec();
+    let low_ids = dh
+        .get_item_effects()
+        .unwrap()
+        .data
+        .iter()
+        .filter(|v| v.effect_id == 11)
+        .map(|v| v.item_id)
+        .collect_vec();
+    let item_ids = dh
+        .get_items()
+        .unwrap()
+        .data
+        .iter()
+        .filter(|v| low_ids.contains(&v.id) && grp_ids.contains(&v.group_id))
+        .map(|v| v.id)
+        .collect_vec();
+    item_ids
 }
