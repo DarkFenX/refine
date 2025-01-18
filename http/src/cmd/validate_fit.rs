@@ -40,6 +40,9 @@ impl HValidFitCmd {
                 "launched_standup_heavy_fighters" => core_options.launched_standup_heavy_fighters = alt_value,
                 "turret_slots" => core_options.turret_slots = alt_value,
                 "launcher_slots" => core_options.launcher_slots = alt_value,
+                "high_slots" => core_options.high_slots = alt_value,
+                "mid_slots" => core_options.mid_slots = alt_value,
+                "low_slots" => core_options.low_slots = alt_value,
                 _ => (),
             }
         }

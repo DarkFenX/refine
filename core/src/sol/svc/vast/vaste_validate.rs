@@ -101,6 +101,21 @@ impl SolVast {
                 return false;
             }
         }
+        if options.high_slots {
+            if !fit_data.validate_high_slots_fast(uad, calc, fit) {
+                return false;
+            }
+        }
+        if options.mid_slots {
+            if !fit_data.validate_mid_slots_fast(uad, calc, fit) {
+                return false;
+            }
+        }
+        if options.low_slots {
+            if !fit_data.validate_low_slots_fast(uad, calc, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -166,6 +181,15 @@ impl SolVast {
         }
         if options.launcher_slots {
             result.launcher_slots = fit_data.validate_launcher_slots_verbose(uad, calc, fit);
+        }
+        if options.high_slots {
+            result.high_slots = fit_data.validate_high_slots_verbose(uad, calc, fit);
+        }
+        if options.mid_slots {
+            result.mid_slots = fit_data.validate_mid_slots_verbose(uad, calc, fit);
+        }
+        if options.low_slots {
+            result.low_slots = fit_data.validate_low_slots_verbose(uad, calc, fit);
         }
         result
     }

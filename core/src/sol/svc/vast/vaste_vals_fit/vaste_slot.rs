@@ -127,6 +127,33 @@ impl SolVastFitData {
         let stats = self.get_stats_launcher_slots(uad, calc, fit);
         stats.used <= stats.total.unwrap_or(0)
     }
+    pub(in crate::sol::svc::vast) fn validate_high_slots_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_high_slots(uad, calc, fit);
+        stats.used <= stats.total.unwrap_or(0)
+    }
+    pub(in crate::sol::svc::vast) fn validate_mid_slots_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_mid_slots(uad, calc, fit);
+        stats.used <= stats.total.unwrap_or(0)
+    }
+    pub(in crate::sol::svc::vast) fn validate_low_slots_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> bool {
+        let stats = self.get_stats_low_slots(uad, calc, fit);
+        stats.used <= stats.total.unwrap_or(0)
+    }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_slots_verbose(
         &self,
@@ -284,5 +311,43 @@ impl SolVastFitData {
         let users = self.mods_launcher.iter().map(|v| *v).collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
-    // Private methods
+    pub(in crate::sol::svc::vast) fn validate_high_slots_verbose(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> Option<SolSlotValFail> {
+        let stats = self.get_stats_high_slots(uad, calc, fit);
+        if stats.used <= stats.total.unwrap_or(0) {
+            return None;
+        }
+        let users = fit.mods_high.iter_ids().map(|v| *v).collect();
+        Some(SolSlotValFail::new(stats.used, stats.total, users))
+    }
+    pub(in crate::sol::svc::vast) fn validate_mid_slots_verbose(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> Option<SolSlotValFail> {
+        let stats = self.get_stats_mid_slots(uad, calc, fit);
+        if stats.used <= stats.total.unwrap_or(0) {
+            return None;
+        }
+        let users = fit.mods_mid.iter_ids().map(|v| *v).collect();
+        Some(SolSlotValFail::new(stats.used, stats.total, users))
+    }
+    pub(in crate::sol::svc::vast) fn validate_low_slots_verbose(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> Option<SolSlotValFail> {
+        let stats = self.get_stats_low_slots(uad, calc, fit);
+        if stats.used <= stats.total.unwrap_or(0) {
+            return None;
+        }
+        let users = fit.mods_low.iter_ids().map(|v| *v).collect();
+        Some(SolSlotValFail::new(stats.used, stats.total, users))
+    }
 }

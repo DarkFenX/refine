@@ -187,6 +187,30 @@ impl SolVastFitData {
             self.mods_launcher.len() as Amount,
         )
     }
+    pub(in crate::sol::svc::vast) fn get_stats_high_slots(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::HI_SLOTS, fit.mods_high.len() as Amount)
+    }
+    pub(in crate::sol::svc::vast) fn get_stats_mid_slots(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::MED_SLOTS, fit.mods_mid.len() as Amount)
+    }
+    pub(in crate::sol::svc::vast) fn get_stats_low_slots(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatSlot {
+        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::LOW_SLOTS, fit.mods_low.len() as Amount)
+    }
     // Private methods
     fn get_stats_slots(
         &self,

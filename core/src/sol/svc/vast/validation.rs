@@ -19,6 +19,9 @@ pub struct SolValOptions {
     pub launched_standup_heavy_fighters: bool,
     pub turret_slots: bool,
     pub launcher_slots: bool,
+    pub high_slots: bool,
+    pub mid_slots: bool,
+    pub low_slots: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -39,6 +42,9 @@ impl SolValOptions {
         launched_standup_heavy_fighters: bool,
         turret_slots: bool,
         launcher_slots: bool,
+        high_slots: bool,
+        mid_slots: bool,
+        low_slots: bool,
     ) -> Self {
         Self {
             cpu,
@@ -58,6 +64,9 @@ impl SolValOptions {
             launched_standup_heavy_fighters,
             turret_slots,
             launcher_slots,
+            high_slots,
+            mid_slots,
+            low_slots,
         }
     }
     pub fn new_enabled() -> Self {
@@ -79,6 +88,9 @@ impl SolValOptions {
             launched_standup_heavy_fighters: true,
             turret_slots: true,
             launcher_slots: true,
+            high_slots: true,
+            mid_slots: true,
+            low_slots: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -100,6 +112,9 @@ impl SolValOptions {
             launched_standup_heavy_fighters: false,
             turret_slots: false,
             launcher_slots: false,
+            high_slots: false,
+            mid_slots: false,
+            low_slots: false,
         }
     }
 }
@@ -122,6 +137,9 @@ pub struct SolValResult {
     pub launched_standup_heavy_fighters: Option<SolSlotValFail>,
     pub turret_slots: Option<SolSlotValFail>,
     pub launcher_slots: Option<SolSlotValFail>,
+    pub high_slots: Option<SolSlotValFail>,
+    pub mid_slots: Option<SolSlotValFail>,
+    pub low_slots: Option<SolSlotValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -143,6 +161,9 @@ impl SolValResult {
             launched_standup_heavy_fighters: None,
             turret_slots: None,
             launcher_slots: None,
+            high_slots: None,
+            mid_slots: None,
+            low_slots: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -163,5 +184,8 @@ impl SolValResult {
             && self.launched_standup_heavy_fighters.is_none()
             && self.turret_slots.is_none()
             && self.launcher_slots.is_none()
+            && self.high_slots.is_none()
+            && self.mid_slots.is_none()
+            && self.low_slots.is_none()
     }
 }
