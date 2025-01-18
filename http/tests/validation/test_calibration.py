@@ -237,8 +237,10 @@ def test_unloaded_user(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
-    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_use_attr_id: 5})
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
+    # Create an item which has the attribute and the effect, just to prevent them from being cleaned
+    # up
+    client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
     eve_rig_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()

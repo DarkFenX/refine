@@ -38,6 +38,8 @@ class EveItemCat(IntEnum):
 @unique
 class EveEffect(IntEnum):
     online = 16
+    launcher_fitted = 40
+    turret_fitted = 42
     use_missiles = 101
     missile_em_dmg_bonus = 660
     missile_expl_dmg_bonus = 661
@@ -330,6 +332,8 @@ class ApiValType(StrEnum):
     launched_standup_support_fighters = 'launched_standup_support_fighters'
     launched_standup_light_fighters = 'launched_standup_light_fighters'
     launched_standup_heavy_fighters = 'launched_standup_heavy_fighters'
+    turret_slots = 'turret_slots'
+    launcher_slots = 'launcher_slots'
 
 
 @unique
