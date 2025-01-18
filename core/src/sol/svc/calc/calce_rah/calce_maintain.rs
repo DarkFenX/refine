@@ -34,7 +34,7 @@ impl SolCalc {
         &mut self,
         uad: &SolUad,
         item: &SolItem,
-        effects: &Vec<ad::ArcEffect>,
+        effects: &[ad::ArcEffect],
     ) {
         if self.rah.sim_running {
             return;
@@ -73,7 +73,7 @@ impl SolCalc {
         &mut self,
         uad: &SolUad,
         item: &SolItem,
-        effects: &Vec<ad::ArcEffect>,
+        effects: &[ad::ArcEffect],
     ) {
         if self.rah.sim_running {
             return;

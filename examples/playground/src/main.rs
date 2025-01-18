@@ -126,7 +126,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     sol_sys.set_fit_ship(fit.id, 32311, true).unwrap(); // NTyphoon
 
     // High slots
-    for _ in 0..4 {
+    for _ in 0..2 {
         sol_sys
             .add_module(
                 fit.id,
@@ -139,7 +139,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             )
             .unwrap(); // T2 800mm with hail
     }
-    for _ in 0..4 {
+    for _ in 0..2 {
         sol_sys
             .add_module(
                 fit.id,

@@ -54,7 +54,7 @@ impl SolUad {
     }
 }
 
-fn check_item_duplicates(item_ids: &Vec<SolItemId>) -> bool {
+fn check_item_duplicates(item_ids: &[SolItemId]) -> bool {
     let mut uniq = StSet::new();
     !item_ids.iter().all(|x| uniq.insert(x))
 }

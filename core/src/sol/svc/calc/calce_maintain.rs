@@ -77,7 +77,7 @@ impl SolCalc {
         self.deps.remove_item(&item_id);
         self.attrs.item_unloaded(&item_id);
     }
-    pub(in crate::sol::svc) fn effects_started(&mut self, uad: &SolUad, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
+    pub(in crate::sol::svc) fn effects_started(&mut self, uad: &SolUad, item: &SolItem, effects: &[ad::ArcEffect]) {
         // Notify core calc services
         let item_id = item.get_id();
         let mut raw_modifiers = Vec::new();
@@ -94,7 +94,7 @@ impl SolCalc {
         // Notify RAH sim
         self.rah_effects_started(uad, item, effects);
     }
-    pub(in crate::sol::svc) fn effects_stopped(&mut self, uad: &SolUad, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
+    pub(in crate::sol::svc) fn effects_stopped(&mut self, uad: &SolUad, item: &SolItem, effects: &[ad::ArcEffect]) {
         // Notify RAH sim
         self.rah_effects_stopped(uad, item, effects);
         // Notify core calc services

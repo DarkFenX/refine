@@ -170,8 +170,8 @@ impl SolAttrStack {
     }
     fn get_comb_val<F1, F2>(&mut self, comb_func: F1, pen_func: F2, hig: bool) -> Option<AttrVal>
     where
-        F1: Fn(&Vec<AttrVal>, bool) -> Option<AttrVal>,
-        F2: Fn(&Vec<AttrVal>, bool) -> Option<AttrVal>,
+        F1: Fn(&[AttrVal], bool) -> Option<AttrVal>,
+        F2: Fn(&[AttrVal], bool) -> Option<AttrVal>,
     {
         if let Some(val) = self.penalized.get_comb_val(pen_func, hig) {
             self.stacked.add_processed_val(val, &SolAggrMode::Stack);
@@ -221,7 +221,7 @@ impl SolAttrAggr {
     }
     fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool) -> Option<AttrVal>
     where
-        F: Fn(&Vec<AttrVal>, bool) -> Option<AttrVal>,
+        F: Fn(&[AttrVal], bool) -> Option<AttrVal>,
     {
         // Resolve aggregations
         for vals in self.aggr_min.values() {
@@ -256,19 +256,19 @@ fn apply_mul(base_val: AttrVal, other_val: Option<AttrVal>) -> AttrVal {
 }
 
 // Regular combination functions
-fn combine_assigns(vals: &Vec<AttrVal>, high_is_good: bool) -> Option<AttrVal> {
+fn combine_assigns(vals: &[AttrVal], high_is_good: bool) -> Option<AttrVal> {
     match high_is_good {
         true => get_max(vals),
         false => get_min(vals),
     }
 }
-fn combine_adds(vals: &Vec<AttrVal>, _high_is_good: bool) -> Option<AttrVal> {
+fn combine_adds(vals: &[AttrVal], _high_is_good: bool) -> Option<AttrVal> {
     if vals.is_empty() {
         return None;
     }
     Some(vals.iter().sum())
 }
-fn combine_muls(vals: &Vec<AttrVal>, _high_is_good: bool) -> Option<AttrVal> {
+fn combine_muls(vals: &[AttrVal], _high_is_good: bool) -> Option<AttrVal> {
     if vals.is_empty() {
         return None;
     }
@@ -276,7 +276,7 @@ fn combine_muls(vals: &Vec<AttrVal>, _high_is_good: bool) -> Option<AttrVal> {
 }
 
 // Penalized combination functions
-fn combine_muls_pen(vals: &Vec<AttrVal>, _high_is_good: bool) -> Option<AttrVal> {
+fn combine_muls_pen(vals: &[AttrVal], _high_is_good: bool) -> Option<AttrVal> {
     // Gather positive multipliers into one chain, negative into another, with stronger
     // modifications being first
     let mut positive = Vec::new();
@@ -297,10 +297,10 @@ fn combine_muls_pen(vals: &Vec<AttrVal>, _high_is_good: bool) -> Option<AttrVal>
 }
 
 // Misc functions
-fn get_min(vals: &Vec<AttrVal>) -> Option<AttrVal> {
+fn get_min(vals: &[AttrVal]) -> Option<AttrVal> {
     vals.iter().min().copied()
 }
-fn get_max(vals: &Vec<AttrVal>) -> Option<AttrVal> {
+fn get_max(vals: &[AttrVal]) -> Option<AttrVal> {
     vals.iter().max().copied()
 }
 fn get_chain_val(vals: Vec<AttrVal>) -> AttrVal {

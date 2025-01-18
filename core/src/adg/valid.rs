@@ -34,7 +34,7 @@ fn fk_check(g_data: &GData, g_supp: &GSupport) {
     fk_check_referer(&g_data.muta_items, &pkdb, g_supp);
     fk_check_referer(&g_data.muta_attrs, &pkdb, g_supp);
 }
-fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, g_supp: &GSupport) {
+fn fk_check_referer<T: Fk + Named>(rer_vec: &[T], pkdb: &KeyDb, g_supp: &GSupport) {
     fk_check_referee(rer_vec, &pkdb.items, g_supp, T::get_item_fks, ed::EItem::get_name());
     fk_check_referee(
         rer_vec,
@@ -60,7 +60,7 @@ fn fk_check_referer<T: Fk + Named>(rer_vec: &Vec<T>, pkdb: &KeyDb, g_supp: &GSup
     );
     fk_check_referee(rer_vec, &pkdb.buffs, g_supp, T::get_buff_fks, ed::EBuff::get_name());
 }
-fn fk_check_referee<T, F>(rer_vec: &Vec<T>, ree_pks: &StSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
+fn fk_check_referee<T, F>(rer_vec: &[T], ree_pks: &StSet<KeyPart>, g_supp: &GSupport, func: F, ree_name: &str)
 where
     T: Fk + Named,
     F: Fn(&T, &GSupport) -> Vec<KeyPart>,

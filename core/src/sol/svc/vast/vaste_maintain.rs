@@ -119,7 +119,7 @@ impl SolVast {
             }
         }
     }
-    pub(in crate::sol::svc) fn effects_started(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
+    pub(in crate::sol::svc) fn effects_started(&mut self, item: &SolItem, effects: &[ad::ArcEffect]) {
         match item {
             SolItem::Module(module) => {
                 for effect in effects {
@@ -153,7 +153,7 @@ impl SolVast {
             _ => (),
         }
     }
-    pub(in crate::sol::svc) fn effects_stopped(&mut self, item: &SolItem, effects: &Vec<ad::ArcEffect>) {
+    pub(in crate::sol::svc) fn effects_stopped(&mut self, item: &SolItem, effects: &[ad::ArcEffect]) {
         match item {
             SolItem::Module(module) => {
                 for effect in effects {

@@ -37,7 +37,7 @@ impl KeyDb {
         Self::extend_pk_vec(&mut pkdb.buffs, &g_data.buffs);
         pkdb
     }
-    fn extend_pk_vec<T: Pk>(set: &mut StSet<KeyPart>, vec: &Vec<T>) {
+    fn extend_pk_vec<T: Pk>(set: &mut StSet<KeyPart>, vec: &[T]) {
         for i in vec.iter() {
             set.extend(i.get_pk())
         }
@@ -59,7 +59,7 @@ impl KeyDb {
         fkdb.extend_fk_vec(&g_data.muta_attrs, &g_supp);
         fkdb
     }
-    fn extend_fk_vec<T: Fk>(&mut self, vec: &Vec<T>, g_supp: &GSupport) {
+    fn extend_fk_vec<T: Fk>(&mut self, vec: &[T], g_supp: &GSupport) {
         for v in vec.iter() {
             self.items.extend(v.get_item_fks(g_supp));
             self.groups.extend(v.get_group_fks(g_supp));

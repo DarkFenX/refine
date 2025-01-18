@@ -78,7 +78,7 @@ impl SolSvc {
         &mut self,
         uad: &SolUad,
         item: &SolItem,
-        effects: &Vec<ad::ArcEffect>,
+        effects: &[ad::ArcEffect],
     ) {
         self.running_effects
             .effects_started(item.get_id(), effects.iter().map(|v| v.id));
@@ -89,7 +89,7 @@ impl SolSvc {
         &mut self,
         uad: &SolUad,
         item: &SolItem,
-        effects: &Vec<ad::ArcEffect>,
+        effects: &[ad::ArcEffect],
     ) {
         self.calc.effects_stopped(uad, item, effects);
         self.running_effects

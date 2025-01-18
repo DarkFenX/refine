@@ -162,7 +162,7 @@ fn cleanup_report(alive: &GData, trash: &GData) {
     }
 }
 
-fn vec_report<T: Named>(alive: &Vec<T>, trash: &Vec<T>) -> bool {
+fn vec_report<T: Named>(alive: &[T], trash: &[T]) -> bool {
     let total = alive.len() + trash.len();
     if total == 0 {
         return true;

@@ -350,7 +350,7 @@ fn get_average_resonances(sim_history: &[Vec<SolRahSimHistoryEntry>]) -> StMap<S
 
 fn estimate_initial_adaptation_ticks(
     sim_datas: &BTreeMap<SolItemId, SolRahDataSim>,
-    sim_history: &Vec<Vec<SolRahSimHistoryEntry>>,
+    sim_history: &[Vec<SolRahSimHistoryEntry>],
 ) -> usize {
     // Get amount of cycles it takes for each RAH to exhaust its highest resistance
     let mut exhaustion_cycles = StMap::new();
