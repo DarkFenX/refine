@@ -32,8 +32,7 @@ impl SolAutocharges {
         self.data.remove(effect_id);
     }
     pub(in crate::sol) fn clear(&mut self) {
-        self.data.clear();
         // Autocharges are supposed to be rarely used, so deallocate whenever map is empty.
-        self.data.shrink_to_fit();
+        self.data = StMap::new();
     }
 }
