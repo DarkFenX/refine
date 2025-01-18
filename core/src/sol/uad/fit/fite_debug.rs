@@ -133,7 +133,7 @@ impl SolFit {
             item.debug_consistency_check(uad)?;
         }
         // High slot modules
-        for item_id in self.mods_high.iter() {
+        for item_id in self.mods_high.iter_ids() {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(&item_id) {
                 Ok(item) => item,
@@ -153,7 +153,7 @@ impl SolFit {
             check_module_charge(uad, &self.id, module, seen_items)?;
         }
         // Mid slot modules
-        for item_id in self.mods_mid.iter() {
+        for item_id in self.mods_mid.iter_ids() {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(&item_id) {
                 Ok(item) => item,
@@ -173,7 +173,7 @@ impl SolFit {
             check_module_charge(uad, &self.id, module, seen_items)?;
         }
         // Low slot modules
-        for item_id in self.mods_low.iter() {
+        for item_id in self.mods_low.iter_ids() {
             seen_items.push(*item_id);
             let item = match uad.items.get_item(&item_id) {
                 Ok(item) => item,

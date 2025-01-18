@@ -10,7 +10,7 @@ impl SolarSystem {
         &self,
         fit_id: &SolFitId,
         rack: SolModRack,
-    ) -> Result<Vec<SolModuleInfo>, GetFitModulesError> {
+    ) -> Result<Vec<Option<SolModuleInfo>>, GetFitModulesError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         let module_ids = match rack {
             SolModRack::High => &fit.mods_high,
@@ -18,8 +18,8 @@ impl SolarSystem {
             SolModRack::Low => &fit.mods_low,
         };
         let module_infos = module_ids
-            .iter()
-            .map(|v| self.make_module_info(self.uad.items.get_item(v).unwrap().get_module().unwrap()))
+            .iter_all()
+            .map(|o| o.map(|v| self.make_module_info(self.uad.items.get_item(&v).unwrap().get_module().unwrap())))
             .collect();
         Ok(module_infos)
     }

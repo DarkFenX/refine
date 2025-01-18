@@ -24,7 +24,7 @@ impl SolStandardRegister {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Everything => {
                     let projectee_item_ids = self.affectee_buffable.get(&fw_effect.get_fit_id());
-                    ctx_modifiers.reserve_exact(projectee_item_ids.len());
+                    ctx_modifiers.reserve(projectee_item_ids.len());
                     for projectee_item_id in projectee_item_ids {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, *projectee_item_id);
                         add_ctx_modifier(
@@ -133,7 +133,7 @@ impl SolStandardRegister {
             SolAffecteeFilter::Direct(dom) => match dom {
                 SolDomain::Everything => {
                     let projectee_item_ids = self.affectee_buffable.get(&fw_effect.get_fit_id());
-                    ctx_modifiers.reserve_exact(projectee_item_ids.len());
+                    ctx_modifiers.reserve(projectee_item_ids.len());
                     for projectee_item_id in projectee_item_ids {
                         let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, *projectee_item_id);
                         remove_ctx_modifier(

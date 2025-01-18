@@ -3,8 +3,10 @@ use crate::{
     err::basic::{FitFoundError, OrderedSlotError},
     sol::{
         info::{SolChargeInfo, SolModuleInfo},
-        sole_item::misc::find_equip_pos,
-        uad::item::{SolCharge, SolItem, SolItemAddMutation, SolItemState, SolModule},
+        uad::{
+            fit::{SolFits, SolItemVec},
+            item::{SolCharge, SolItem, SolItemAddMutation, SolItemState, SolModule},
+        },
         SolModRack, SolOrdAddMode, SolarSystem,
     },
 };
@@ -21,46 +23,28 @@ impl SolarSystem {
         charge_type_id: Option<EItemId>,
     ) -> Result<SolModuleInfo, AddModuleError> {
         let module_item_id = self.uad.items.alloc_item_id();
-        let fit = self.uad.fits.get_fit(&fit_id)?;
-        // Calculate position for the module
-        let rack_module_ids = match rack {
-            SolModRack::High => &fit.mods_high,
-            SolModRack::Mid => &fit.mods_mid,
-            SolModRack::Low => &fit.mods_low,
-        };
+        let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack)?;
+        // Calculate position for the module and update part of user data (fit rack and modules from
+        // it)
         let pos = match pos_mode {
             // Add to the end of module rack
-            SolOrdAddMode::Append => {
-                match rack_module_ids
-                    .iter()
-                    .map(|v| self.uad.items.get_item(v).unwrap().get_module().unwrap().get_pos())
-                    .max()
-                {
-                    Some(pos) => pos + 1,
-                    None => 0,
-                }
-            }
+            SolOrdAddMode::Append => fit_rack.append(module_item_id),
             // Take first spare slot in the rack
-            SolOrdAddMode::Equip => {
-                let positions = rack_module_ids
-                    .iter()
-                    .map(|v| self.uad.items.get_item(v).unwrap().get_module().unwrap().get_pos())
-                    .collect();
-                find_equip_pos(positions)
-            }
+            SolOrdAddMode::Equip => fit_rack.equip(module_item_id),
             // Insert at specified position, shifting other modules to the right
             SolOrdAddMode::Insert(pos) => {
-                for rack_module_id in rack_module_ids.iter() {
-                    let rack_module = self
-                        .uad
-                        .items
-                        .get_item_mut(rack_module_id)
-                        .unwrap()
-                        .get_module_mut()
-                        .unwrap();
-                    let rack_module_pos = rack_module.get_pos();
-                    if rack_module_pos >= pos {
-                        rack_module.set_pos(rack_module_pos + 1);
+                // True means inserted module is not the last in the rack
+                if fit_rack.insert(pos, module_item_id) {
+                    for (i, rack_module_id) in fit_rack.inner()[pos + 1..].iter().enumerate() {
+                        if let Some(rack_module_id) = rack_module_id {
+                            self.uad
+                                .items
+                                .get_item_mut(rack_module_id)
+                                .unwrap()
+                                .get_module_mut()
+                                .unwrap()
+                                .set_pos(pos + 1 + i);
+                        }
                     }
                 }
                 pos
@@ -69,20 +53,16 @@ impl SolarSystem {
             // - if it's there, and we were asked to replace it, remove old module
             // - if it's there, and we were not asked to replace it, return an error
             SolOrdAddMode::Place(pos, replace) => {
-                let mut old_module_id = None;
-                for rack_module_id in rack_module_ids.iter() {
-                    let module = self.uad.items.get_item(rack_module_id).unwrap().get_module().unwrap();
-                    if module.get_pos() == pos {
-                        if replace {
-                            old_module_id = Some(*rack_module_id);
-                            break;
-                        } else {
-                            return Err(OrderedSlotError::new(rack, pos, *rack_module_id).into());
+                match fit_rack.get(pos) {
+                    Some(old_module_id) => match replace {
+                        true => {
+                            self.remove_module(&old_module_id).unwrap();
+                            let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
+                            fit_rack.place(pos, module_item_id);
                         }
-                    }
-                }
-                if let Some(old_module_id) = old_module_id {
-                    self.remove_module(&old_module_id).unwrap();
+                        false => return Err(OrderedSlotError::new(rack, pos, old_module_id).into()),
+                    },
+                    None => fit_rack.place(pos, module_item_id),
                 }
                 pos
             }
@@ -125,13 +105,6 @@ impl SolarSystem {
             let item = SolItem::Charge(charge);
             self.uad.items.add_item(item);
         }
-        // Finalize updating skeleton
-        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
-        match rack {
-            SolModRack::High => fit.mods_high.insert(module_item_id),
-            SolModRack::Mid => fit.mods_mid.insert(module_item_id),
-            SolModRack::Low => fit.mods_low.insert(module_item_id),
-        };
         // Add module and charge to services
         let module_item = self.uad.items.get_item(&module_item_id).unwrap();
         let module = module_item.get_module().unwrap();
@@ -174,4 +147,18 @@ impl From<OrderedSlotError> for AddModuleError {
     fn from(error: OrderedSlotError) -> Self {
         Self::SlotTaken(error)
     }
+}
+
+fn get_fit_rack<'a>(
+    uad_fits: &'a mut SolFits,
+    fit_id: &SolFitId,
+    rack: SolModRack,
+) -> Result<&'a mut SolItemVec, FitFoundError> {
+    let fit = uad_fits.get_fit_mut(&fit_id)?;
+    let fit_rack = match rack {
+        SolModRack::High => &mut fit.mods_high,
+        SolModRack::Mid => &mut fit.mods_mid,
+        SolModRack::Low => &mut fit.mods_low,
+    };
+    Ok(fit_rack)
 }

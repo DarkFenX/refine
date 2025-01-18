@@ -38,7 +38,7 @@ impl SolStandardRegister {
                 }
                 SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
@@ -60,7 +60,7 @@ impl SolStandardRegister {
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
@@ -82,7 +82,7 @@ impl SolStandardRegister {
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
@@ -104,7 +104,7 @@ impl SolStandardRegister {
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
@@ -158,7 +158,7 @@ impl SolStandardRegister {
                 }
                 SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
@@ -179,7 +179,7 @@ impl SolStandardRegister {
             SolAffecteeFilter::Loc(dom) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
@@ -200,7 +200,7 @@ impl SolStandardRegister {
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {
@@ -221,7 +221,7 @@ impl SolStandardRegister {
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
                 SolDomain::Everything | SolDomain::Ship => {
                     // Assume all fits are of ship type
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit in uad.fits.iter_fits() {
                         if matches!(fit.kind, SolShipKind::Ship) {
                             if let Some(ship_id) = fit.ship {

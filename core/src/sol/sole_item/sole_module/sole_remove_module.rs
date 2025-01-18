@@ -52,9 +52,9 @@ impl SolarSystem {
         // Update skeleton for module
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         match rack {
-            SolModRack::High => fit.mods_high.remove(item_id),
-            SolModRack::Mid => fit.mods_mid.remove(item_id),
-            SolModRack::Low => fit.mods_low.remove(item_id),
+            SolModRack::High => fit.mods_high.free(item_id),
+            SolModRack::Mid => fit.mods_mid.free(item_id),
+            SolModRack::Low => fit.mods_low.free(item_id),
         };
         self.uad.items.remove_item(item_id);
         Ok(())

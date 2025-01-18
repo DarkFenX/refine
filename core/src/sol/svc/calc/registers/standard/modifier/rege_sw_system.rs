@@ -19,7 +19,7 @@ impl SolStandardRegister {
         let valid = match raw_modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => match dom.try_into() {
                 Ok(loc) => {
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit_id in uad.fits.iter_fit_ids() {
                         let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                         add_ctx_modifier(
@@ -36,7 +36,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::Loc(dom) => match dom.try_into() {
                 Ok(loc) => {
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit_id in uad.fits.iter_fit_ids() {
                         let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                         add_ctx_modifier(
@@ -53,7 +53,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocGrp(dom, grp_id) => match dom.try_into() {
                 Ok(loc) => {
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit_id in uad.fits.iter_fit_ids() {
                         let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                         add_ctx_modifier(
@@ -70,7 +70,7 @@ impl SolStandardRegister {
             },
             SolAffecteeFilter::LocSrq(dom, srq_id) => match dom.try_into() {
                 Ok(loc) => {
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit_id in uad.fits.iter_fit_ids() {
                         let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                         add_ctx_modifier(
@@ -86,7 +86,7 @@ impl SolStandardRegister {
                 _ => false,
             },
             SolAffecteeFilter::OwnSrq(srq_id) => {
-                ctx_modifiers.reserve_exact(uad.fits.len());
+                ctx_modifiers.reserve(uad.fits.len());
                 for fit_id in uad.fits.iter_fit_ids() {
                     let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                     add_ctx_modifier(
@@ -116,7 +116,7 @@ impl SolStandardRegister {
         match raw_modifier.affectee_filter {
             SolAffecteeFilter::Direct(dom) => {
                 if let Ok(loc) = dom.try_into() {
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit_id in uad.fits.iter_fit_ids() {
                         let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                         remove_ctx_modifier(
@@ -131,7 +131,7 @@ impl SolStandardRegister {
             }
             SolAffecteeFilter::Loc(dom) => {
                 if let Ok(loc) = dom.try_into() {
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit_id in uad.fits.iter_fit_ids() {
                         let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                         remove_ctx_modifier(
@@ -146,7 +146,7 @@ impl SolStandardRegister {
             }
             SolAffecteeFilter::LocGrp(dom, grp_id) => {
                 if let Ok(loc) = dom.try_into() {
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit_id in uad.fits.iter_fit_ids() {
                         let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                         remove_ctx_modifier(
@@ -161,7 +161,7 @@ impl SolStandardRegister {
             }
             SolAffecteeFilter::LocSrq(dom, srq_id) => {
                 if let Ok(loc) = dom.try_into() {
-                    ctx_modifiers.reserve_exact(uad.fits.len());
+                    ctx_modifiers.reserve(uad.fits.len());
                     for fit_id in uad.fits.iter_fit_ids() {
                         let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                         remove_ctx_modifier(
@@ -175,7 +175,7 @@ impl SolStandardRegister {
                 }
             }
             SolAffecteeFilter::OwnSrq(srq_id) => {
-                ctx_modifiers.reserve_exact(uad.fits.len());
+                ctx_modifiers.reserve(uad.fits.len());
                 for fit_id in uad.fits.iter_fit_ids() {
                     let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, *fit_id);
                     remove_ctx_modifier(

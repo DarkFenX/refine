@@ -19,22 +19,3 @@ pub enum SolOrdRmMode {
     /// Just free up item's place without shifting anything.
     Free,
 }
-
-// Find first slot not taken by any module
-pub(in crate::sol::sole_item) fn find_equip_pos(mut positions: Vec<Idx>) -> Idx {
-    for i in 0..positions.len() {
-        while (positions[i] < positions.len()) && (positions[i] != i) {
-            let j = positions[i];
-            if positions[j] == positions[i] {
-                break;
-            }
-            positions.swap(i, j);
-        }
-    }
-    for i in 0..positions.len() {
-        if i != positions[i] {
-            return i;
-        }
-    }
-    positions.len()
-}

@@ -1,6 +1,9 @@
 use crate::{
     defs::{EItemId, SolFitId, SolFleetId, SolItemId},
-    sol::{misc::SolDmgProfile, uad::item::SolShipKind},
+    sol::{
+        misc::SolDmgProfile,
+        uad::{fit::SolItemVec, item::SolShipKind},
+    },
     util::{StMap, StSet},
 };
 
@@ -16,9 +19,9 @@ pub(in crate::sol) struct SolFit {
     pub(in crate::sol) ship: Option<SolItemId>,
     pub(in crate::sol) stance: Option<SolItemId>,
     pub(in crate::sol) subsystems: StSet<SolItemId>,
-    pub(in crate::sol) mods_high: StSet<SolItemId>,
-    pub(in crate::sol) mods_mid: StSet<SolItemId>,
-    pub(in crate::sol) mods_low: StSet<SolItemId>,
+    pub(in crate::sol) mods_high: SolItemVec,
+    pub(in crate::sol) mods_mid: SolItemVec,
+    pub(in crate::sol) mods_low: SolItemVec,
     pub(in crate::sol) rigs: StSet<SolItemId>,
     pub(in crate::sol) drones: StSet<SolItemId>,
     pub(in crate::sol) fighters: StSet<SolItemId>,
@@ -38,9 +41,9 @@ impl SolFit {
             ship: None,
             stance: None,
             subsystems: StSet::new(),
-            mods_high: StSet::new(),
-            mods_mid: StSet::new(),
-            mods_low: StSet::new(),
+            mods_high: SolItemVec::new(),
+            mods_mid: SolItemVec::new(),
+            mods_low: SolItemVec::new(),
             rigs: StSet::new(),
             drones: StSet::new(),
             fighters: StSet::new(),
@@ -57,9 +60,9 @@ impl SolFit {
         conditional_push(&mut items, self.ship);
         conditional_push(&mut items, self.stance);
         items.extend(self.subsystems.iter());
-        items.extend(self.mods_high.iter());
-        items.extend(self.mods_mid.iter());
-        items.extend(self.mods_low.iter());
+        items.extend(self.mods_high.iter_ids());
+        items.extend(self.mods_mid.iter_ids());
+        items.extend(self.mods_low.iter_ids());
         items.extend(self.rigs.iter());
         items.extend(self.drones.iter());
         items.extend(self.fighters.iter());

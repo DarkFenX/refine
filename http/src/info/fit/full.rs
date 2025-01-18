@@ -107,26 +107,26 @@ impl HFitInfoFull {
                 high: core_fit
                     .mods_high
                     .iter()
-                    .filter_map(|v| core_sol.get_item(&v).ok())
+                    .filter_map(|o| o.map(|v| core_sol.get_item(&v).ok()))
                     .collect_vec()
                     .into_iter()
-                    .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                    .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
                     .collect(),
                 mid: core_fit
                     .mods_mid
                     .iter()
-                    .filter_map(|v| core_sol.get_item(&v).ok())
+                    .filter_map(|o| o.map(|v| core_sol.get_item(&v).ok()))
                     .collect_vec()
                     .into_iter()
-                    .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                    .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
                     .collect(),
                 low: core_fit
                     .mods_low
                     .iter()
-                    .filter_map(|v| core_sol.get_item(&v).ok())
+                    .filter_map(|o| o.map(|v| core_sol.get_item(&v).ok()))
                     .collect_vec()
                     .into_iter()
-                    .map(|v| HItemInfo::mk_info(core_sol, &v, item_mode))
+                    .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
                     .collect(),
             },
             rigs: core_fit
@@ -170,11 +170,11 @@ impl HFitInfoFull {
 #[derive(serde::Serialize)]
 pub(crate) struct HModuleRacks {
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) high: Vec<HItemInfo>,
+    pub(crate) high: Vec<Option<HItemInfo>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) mid: Vec<HItemInfo>,
+    pub(crate) mid: Vec<Option<HItemInfo>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub(crate) low: Vec<HItemInfo>,
+    pub(crate) low: Vec<Option<HItemInfo>>,
 }
 impl HModuleRacks {
     fn is_empty(&self) -> bool {
