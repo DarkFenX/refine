@@ -7,7 +7,7 @@ use chrono::Utc;
 use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
-use rc::{ed::EveDataHandler, SolItemState, SolModRack, SolOrdAddMode, SolarSystem, Src, VERSION};
+use rc::{ed::EveDataHandler, SolItemState, SolModRack, SolOrdAddMode, SolValOptions, SolarSystem, Src, VERSION};
 
 fn setup_logger() -> () {
     let time_format_full = time::macros::format_description!(
@@ -58,13 +58,17 @@ fn main() {
         "tq".to_string(),
     ));
     let src = Src::new(dh, ch).unwrap();
+    // test_crusader(src.clone(), &skill_ids);
+    test_nphoon(src.clone(), &skill_ids);
+}
+
+fn test_crusader(src: Src, skill_ids: &Vec<rc::EItemId>) {
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit();
     let ship = sol_sys.set_fit_ship(fit.id, 11184, true).unwrap();
     for skill_id in skill_ids.iter() {
         sol_sys.add_skill(fit.id, skill_id.to_owned(), 5, true);
     }
-
     // RAH
     // sol_sys.add_module(
     //     fit.id,
@@ -80,10 +84,8 @@ fn main() {
     //     println!("{attr_id} {}", val.extra);
     // }
 
-    let val_options = rc::SolValOptions::new_enabled();
-
     let iterations = 1000000;
-    tracing::error!("starting");
+    tracing::error!("starting crusader test");
     let before = Utc::now();
     for _ in 0..iterations {
         let anp = sol_sys
@@ -98,18 +100,205 @@ fn main() {
             )
             .unwrap();
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
-        // sol_sys.validate_fit_fast(&fit.id, val_options);
         sol_sys.remove_item(&anp.id);
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
-        // sol_sys.validate_fit_fast(&fit.id, val_options);
     }
     let after = Utc::now();
-    tracing::error!("done");
+    tracing::error!("done with crusader test");
     let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
     let ips = iterations as f64 / delta_seconds;
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
+}
 
-    // println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
-    // sol_sys.set_module_state(&anp.id, State::Online);
-    // println!("{}", sol_sys.get_item_attr(&ship.id, &267).unwrap().dogma);
+fn test_nphoon(src: Src, skill_ids: &Vec<rc::EItemId>) {
+    let mut sol_sys = SolarSystem::new(src);
+    let fit = sol_sys.add_fit();
+
+    // Character
+    sol_sys.set_fit_character(fit.id, 1373, true).unwrap();
+
+    // Skills
+    for skill_id in skill_ids.iter() {
+        sol_sys.add_skill(fit.id, skill_id.to_owned(), 5, true);
+    }
+
+    // Implants
+    sol_sys.add_implant(fit.id, 13231, true).unwrap(); // TD-603
+    sol_sys.add_implant(fit.id, 10228, true).unwrap(); // SM-703
+    sol_sys.add_implant(fit.id, 24663, true).unwrap(); // Zor hyperlink
+    sol_sys.add_implant(fit.id, 13244, true).unwrap(); // SS-903
+    sol_sys.add_implant(fit.id, 13219, true).unwrap(); // LP-1003
+
+    // Boosters
+    sol_sys.add_booster(fit.id, 28674, true).unwrap(); // Synth drop
+    sol_sys.add_booster(fit.id, 28672, true).unwrap(); // Synth crash
+    sol_sys.add_booster(fit.id, 45999, true).unwrap(); // Pyro 2
+
+    // Ship
+    sol_sys.set_fit_ship(fit.id, 32311, true).unwrap(); // NTyphoon
+
+    // High slots
+    for _ in 0..4 {
+        sol_sys
+            .add_module(
+                fit.id,
+                SolModRack::High,
+                SolOrdAddMode::Equip,
+                2929,
+                SolItemState::Overload,
+                None,
+                Some(12779),
+            )
+            .unwrap(); // T2 800mm with hail
+    }
+    for _ in 0..4 {
+        sol_sys
+            .add_module(
+                fit.id,
+                SolModRack::High,
+                SolOrdAddMode::Equip,
+                2420,
+                SolItemState::Overload,
+                None,
+                Some(2811),
+            )
+            .unwrap(); // T2 torps with thermal rages
+    }
+
+    // Mid slots
+    sol_sys
+        .add_module(
+            fit.id,
+            SolModRack::Mid,
+            SolOrdAddMode::Equip,
+            5945,
+            SolItemState::Active,
+            None,
+            None,
+        )
+        .unwrap(); // Enduring 500MN
+    sol_sys
+        .add_module(
+            fit.id,
+            SolModRack::Mid,
+            SolOrdAddMode::Equip,
+            2024,
+            SolItemState::Active,
+            None,
+            Some(32014),
+        )
+        .unwrap(); // T2 med cap booster with navy 800
+    sol_sys
+        .add_module(
+            fit.id,
+            SolModRack::Mid,
+            SolOrdAddMode::Equip,
+            2301,
+            SolItemState::Active,
+            None,
+            None,
+        )
+        .unwrap(); // T2 EM hardener
+    sol_sys
+        .add_module(
+            fit.id,
+            SolModRack::Mid,
+            SolOrdAddMode::Equip,
+            448,
+            SolItemState::Active,
+            None,
+            None,
+        )
+        .unwrap(); // T2 scram
+    sol_sys
+        .add_module(
+            fit.id,
+            SolModRack::Mid,
+            SolOrdAddMode::Equip,
+            2281,
+            SolItemState::Active,
+            None,
+            None,
+        )
+        .unwrap(); // T2 invuln
+
+    // Low slots
+    sol_sys
+        .add_module(
+            fit.id,
+            SolModRack::Low,
+            SolOrdAddMode::Equip,
+            2048,
+            SolItemState::Online,
+            None,
+            None,
+        )
+        .unwrap(); // T2 DC
+    for _ in 0..2 {
+        sol_sys
+            .add_module(
+                fit.id,
+                SolModRack::Low,
+                SolOrdAddMode::Equip,
+                519,
+                SolItemState::Online,
+                None,
+                None,
+            )
+            .unwrap(); // T2 gyrostab
+    }
+    for _ in 0..2 {
+        sol_sys
+            .add_module(
+                fit.id,
+                SolModRack::Low,
+                SolOrdAddMode::Equip,
+                22291,
+                SolItemState::Online,
+                None,
+                None,
+            )
+            .unwrap(); // T2 BCS
+    }
+    for _ in 0..2 {
+        sol_sys
+            .add_module(
+                fit.id,
+                SolModRack::Low,
+                SolOrdAddMode::Equip,
+                4405,
+                SolItemState::Online,
+                None,
+                None,
+            )
+            .unwrap(); // T2 DDA
+    }
+
+    // Rigs
+    sol_sys.add_rig(fit.id, 26082, true).unwrap(); // T1 therm rig
+    for _ in 0..2 {
+        sol_sys.add_rig(fit.id, 26088, true).unwrap(); // T1 CDFE
+    }
+
+    // Drones
+    for _ in 0..5 {
+        sol_sys.add_drone(fit.id, 2446, SolItemState::Active, None).unwrap(); // T2 ogre
+    }
+    for _ in 0..3 {
+        sol_sys.add_drone(fit.id, 2446, SolItemState::Offline, None).unwrap(); // T2 ogre
+    }
+
+    let val_options = SolValOptions::new_enabled();
+
+    let iterations = 1000000;
+    tracing::error!("starting nphoon test");
+    let before = Utc::now();
+    for _ in 0..iterations {
+        sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+    }
+    let after = Utc::now();
+    tracing::error!("done with nphoon test");
+    let delta_seconds = (after - before).num_milliseconds() as f64 / 1000.0;
+    let ips = iterations as f64 / delta_seconds;
+    println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }

@@ -1,5 +1,5 @@
 use crate::{
-    defs::{Amount, EAttrId},
+    defs::{Amount, EAttrId, SolItemId},
     ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
@@ -25,7 +25,13 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(uad, calc, fit, &ec::attrs::UPGRADE_SLOTS_LEFT, fit.rigs.len() as Amount)
+        self.get_stats_slots(
+            uad,
+            calc,
+            fit.ship,
+            &ec::attrs::UPGRADE_SLOTS_LEFT,
+            fit.rigs.len() as Amount,
+        )
     }
     pub(in crate::sol::svc::vast) fn get_stats_subsystem_slots(
         &self,
@@ -36,7 +42,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::MAX_SUBSYSTEMS,
             fit.subsystems.len() as Amount,
         )
@@ -50,7 +56,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.character,
             &ec::attrs::MAX_ACTIVE_DRONES,
             self.drones_online_bandwidth.len() as Amount,
         )
@@ -64,7 +70,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::FTR_TUBES,
             self.fighters_online.len() as Amount,
         )
@@ -78,7 +84,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::FTR_SUPPORT_SLOTS,
             self.support_fighters_online.len() as Amount,
         )
@@ -92,7 +98,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::FTR_LIGHT_SLOTS,
             self.light_fighters_online.len() as Amount,
         )
@@ -106,7 +112,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::FTR_HEAVY_SLOTS,
             self.heavy_fighters_online.len() as Amount,
         )
@@ -120,7 +126,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS,
             self.standup_support_fighters_online.len() as Amount,
         )
@@ -134,7 +140,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::FTR_STANDUP_LIGHT_SLOTS,
             self.standup_light_fighters_online.len() as Amount,
         )
@@ -148,7 +154,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::FTR_STANDUP_HEAVY_SLOTS,
             self.standup_heavy_fighters_online.len() as Amount,
         )
@@ -162,7 +168,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::TURRET_SLOTS_LEFT,
             self.mods_turret.len() as Amount,
         )
@@ -176,7 +182,7 @@ impl SolVastFitData {
         self.get_stats_slots(
             uad,
             calc,
-            fit,
+            fit.ship,
             &ec::attrs::LAUNCHER_SLOTS_LEFT,
             self.mods_launcher.len() as Amount,
         )
@@ -186,12 +192,12 @@ impl SolVastFitData {
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
-        fit: &SolFit,
+        output_item_id: Option<SolItemId>,
         output_attr_id: &EAttrId,
         user_amount: Amount,
     ) -> SolStatSlot {
-        let total = match fit.ship {
-            Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
+        let total = match output_item_id {
+            Some(output_item_id) => match calc.get_item_attr_val(uad, &output_item_id, output_attr_id) {
                 Ok(attr_val) => Some(attr_val.extra.into_inner().round() as Amount),
                 Err(_) => None,
             },
