@@ -5,6 +5,7 @@ pub(crate) use change_fit::HChangeFitCommand;
 pub(crate) use change_fleet::HChangeFleetCmd;
 pub(crate) use change_item::HChangeItemCommand;
 pub(crate) use change_sol::HChangeSolCommand;
+pub(crate) use remove_item::HRemoveItemCmd;
 pub(crate) use shared::HCmdResp;
 pub(crate) use validate_fit::HValidFitCmd;
 
@@ -15,5 +16,6 @@ mod change_fit;
 mod change_fleet;
 mod change_item;
 mod change_sol;
+mod remove_item;
 mod shared;
 mod validate_fit;

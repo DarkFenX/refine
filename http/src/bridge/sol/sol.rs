@@ -2,7 +2,7 @@ use crate::{
     bridge::HBrError,
     cmd::{
         HAddFitCmd, HAddItemCommand, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand,
-        HCmdResp, HValidFitCmd,
+        HCmdResp, HRemoveItemCmd, HValidFitCmd,
     },
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo, HSolInfoMode,
@@ -415,27 +415,28 @@ impl HSolarSystem {
         }
     }
     #[tracing::instrument(name = "sol-item-del", level = "trace", skip_all)]
-    pub(crate) async fn remove_item(&mut self, item_id: &str) -> Result<(), HBrError> {
+    pub(crate) async fn remove_item(&mut self, item_id: &str, command: HRemoveItemCmd) -> Result<(), HBrError> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
+        match tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = match core_sol.remove_item(&item_id, rc::SolOrdRmMode::Free) {
-                Ok(_) => Ok(()),
-                Err(core_err) => {
-                    let exec_err = match core_err {
-                        rc::err::RemoveItemError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                        rc::err::RemoveItemError::UnremovableAutocharge(e) => HExecError::UnremovableAutocharge(e),
-                    };
-                    Err(HBrError::from(exec_err))
-                }
-            };
-            (core_sol, result)
+            match command.execute(&mut core_sol, item_id) {
+                Ok(()) => Ok(core_sol),
+                Err(exec_err) => Err((core_sol, HBrError::from(exec_err))),
+            }
         })
-        .await;
-        self.put_sol_back(core_sol);
-        result
+        .await
+        {
+            Ok(core_sol) => {
+                self.put_sol_back(core_sol);
+                Ok(())
+            }
+            Err((core_sol, br_err)) => {
+                self.put_sol_back(core_sol);
+                Err(br_err)
+            }
+        }
     }
     // Helper methods
     fn take_sol(&mut self) -> Result<rc::SolarSystem, HBrError> {
