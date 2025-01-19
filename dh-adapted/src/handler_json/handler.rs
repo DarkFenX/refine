@@ -150,6 +150,9 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
         self.update_memory_cache(a_data, fingerprint);
     }
     /// Get adapted handler version.
+    ///
+    /// Change in adapted handler version triggers adapted data cache rebuild, even if source data
+    /// and core library version stayed the same.
     fn get_handler_version(&self) -> String {
         VERSION.to_string()
     }

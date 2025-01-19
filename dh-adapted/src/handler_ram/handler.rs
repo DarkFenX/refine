@@ -74,6 +74,9 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
         move_vec_to_map(a_data.buffs, &mut self.storage_buffs);
     }
     /// Get adapted handler version.
+    ///
+    /// Change in adapted handler version triggers adapted data cache rebuild, even if source data
+    /// and core library version stayed the same.
     fn get_handler_version(&self) -> String {
         VERSION.to_string()
     }

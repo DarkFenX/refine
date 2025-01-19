@@ -28,5 +28,8 @@ pub trait AdaptedDataHandler: fmt::Debug + Send + Sync {
     /// Update data in handler with passed data.
     fn update_data(&mut self, data: AData, fingerprint: String);
     /// Get adapted handler version.
+    ///
+    /// Change in adapted handler version triggers adapted data cache rebuild, even if source data
+    /// and core library version stayed the same.
     fn get_handler_version(&self) -> String;
 }
