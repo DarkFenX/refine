@@ -23,9 +23,6 @@ impl SolSwEffect {
     pub(in crate::sol) fn get_type_id(&self) -> EItemId {
         self.base.get_type_id()
     }
-    pub(in crate::sol) fn get_a_item_kind(&self) -> Option<Option<ad::AItemKind>> {
-        self.base.get_a_item_kind()
-    }
     pub(in crate::sol) fn get_group_id(&self) -> Option<EItemGrpId> {
         self.base.get_group_id()
     }
@@ -43,6 +40,9 @@ impl SolSwEffect {
     }
     pub(in crate::sol) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
         self.base.get_skill_reqs()
+    }
+    pub(in crate::sol) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
+        self.base.get_a_extras()
     }
     pub(in crate::sol) fn get_state(&self) -> SolItemState {
         self.base.get_state()

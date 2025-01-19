@@ -1,6 +1,5 @@
 use crate::{
     ad,
-    ad::AItemKind,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolItemId},
     sol::uad::item::{SolEffectModes, SolItemState},
     src::Src,
@@ -34,9 +33,6 @@ impl SolItemBase {
     pub(in crate::sol::uad::item) fn get_type_id(&self) -> EItemId {
         self.type_id
     }
-    pub(in crate::sol::uad::item) fn get_a_item_kind(&self) -> Option<Option<AItemKind>> {
-        self.get_a_item().map(|v| v.extras.kind)
-    }
     pub(in crate::sol::uad::item) fn get_group_id(&self) -> Option<EItemGrpId> {
         self.get_a_item().map(|v| v.grp_id)
     }
@@ -54,6 +50,9 @@ impl SolItemBase {
     }
     pub(in crate::sol::uad::item) fn get_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
         self.get_a_item().map(|v| &v.srqs)
+    }
+    pub(in crate::sol::uad::item) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
+        self.get_a_item().map(|v| &v.extras)
     }
     pub(in crate::sol::uad::item) fn get_state(&self) -> SolItemState {
         self.state
