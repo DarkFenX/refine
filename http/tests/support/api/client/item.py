@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
     from typing import Union
 
-    from tests.support.consts import ApiItemInfoMode, ApiEffMode, ApiModAddMode, ApiRack, ApiState
+    from tests.support.consts import ApiItemInfoMode, ApiEffMode, ApiModAddMode, ApiModRmMode, ApiRack, ApiState
     from tests.support.util import Absent
 
 
@@ -35,11 +35,16 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
+            mode: Union[ApiModRmMode, type[Absent]],
     ) -> Request:
-        return Request(
-            client=self,
-            method='DELETE',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}')
+        body = {}
+        conditional_insert(container=body, key='rm_mode', value=mode)
+        kwargs = {'method': 'DELETE', 'url': f'{self._base_url}/sol/{sol_id}/item/{item_id}'}
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
+        if body:
+            kwargs['json'] = body
+        return Request(client=self, **kwargs)
 
     # Character methods
     def set_char_request(

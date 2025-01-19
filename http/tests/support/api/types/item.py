@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from tests.support.consts import ApiItemInfoMode
+from tests.support.consts import ApiItemInfoMode, ApiModRmMode
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
 from .side_effect_info import SideEffectInfo, SideEffectStrInfo
@@ -87,8 +87,13 @@ class Item(AttrDict):
             return self
         return None
 
-    def remove(self, *, status_code: int = 204, json_predicate: Union[dict, None] = None) -> None:
-        resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=self.id).send()
+    def remove(
+            self, *,
+            mode: Union[ApiModRmMode, type[Absent]] = Absent,
+            status_code: int = 204,
+            json_predicate: Union[dict, None] = None,
+    ) -> None:
+        resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=self.id, mode=mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
 

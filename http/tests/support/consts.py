@@ -313,6 +313,12 @@ class ApiModAddMode(StrEnum):
 
 
 @unique
+class ApiModRmMode(StrEnum):
+    remove = 'remove'
+    free = 'free'
+
+
+@unique
 class ApiSideEffectOp(StrEnum):
     add = 'add'
     perc = 'perc'
