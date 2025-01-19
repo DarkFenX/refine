@@ -309,7 +309,7 @@ class ApiModAddMode(StrEnum):
     append = 'append'
     equip = 'equip'
     insert = 'insert'
-    place = 'place'
+    replace = 'replace'
 
 
 @unique

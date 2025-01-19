@@ -8,8 +8,8 @@ pub enum SolOrdAddMode {
     Equip,
     /// Add to specific position, shifting modules on this position and after it to the right.
     Insert(Idx),
-    /// Add to specific position, replacing item on it if 2nd argument is true.
-    Place(Idx, bool),
+    /// Add to specific position, replacing item if position is taken.
+    Replace(Idx),
 }
 
 /// Defines how an item is removed from an ordered container.

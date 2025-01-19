@@ -4,7 +4,7 @@ pub(in crate::cmd) enum HAddMode {
     Append,
     Equip,
     Insert(rc::Idx),
-    Place(rc::Idx, bool),
+    Replace(rc::Idx),
 }
 impl Into<rc::SolOrdAddMode> for &HAddMode {
     fn into(self) -> rc::SolOrdAddMode {
@@ -12,7 +12,7 @@ impl Into<rc::SolOrdAddMode> for &HAddMode {
             HAddMode::Append => rc::SolOrdAddMode::Append,
             HAddMode::Equip => rc::SolOrdAddMode::Equip,
             HAddMode::Insert(i) => rc::SolOrdAddMode::Insert(*i),
-            HAddMode::Place(i, r) => rc::SolOrdAddMode::Place(*i, *r),
+            HAddMode::Replace(i) => rc::SolOrdAddMode::Replace(*i),
         }
     }
 }

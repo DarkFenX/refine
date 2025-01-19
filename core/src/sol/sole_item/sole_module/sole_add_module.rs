@@ -48,19 +48,15 @@ impl SolarSystem {
                 }
                 pos
             }
-            // Check if there is a module on position we want to have module:
-            // - if it's there, and we were asked to replace it, remove old module
-            // - if it's there, and we were not asked to replace it, return an error
-            SolOrdAddMode::Place(pos, replace) => {
+            // Check if there is a module on position we want to have module, and if yes, remove it
+            // before adding new one
+            SolOrdAddMode::Replace(pos) => {
                 match fit_rack.get(pos) {
-                    Some(old_module_id) => match replace {
-                        true => {
-                            self.remove_module(&old_module_id, SolOrdRmMode::Free).unwrap();
-                            let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
-                            fit_rack.place(pos, module_item_id);
-                        }
-                        false => return Err(OrderedSlotError::new(rack, pos, old_module_id).into()),
-                    },
+                    Some(old_module_id) => {
+                        self.remove_module(&old_module_id, SolOrdRmMode::Free).unwrap();
+                        let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
+                        fit_rack.place(pos, module_item_id);
+                    }
                     None => fit_rack.place(pos, module_item_id),
                 }
                 pos
