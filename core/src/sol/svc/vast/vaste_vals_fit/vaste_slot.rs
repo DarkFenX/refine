@@ -1,5 +1,5 @@
 use crate::{
-    defs::{Amount, SolItemId},
+    defs::{Amount, Idx, SolItemId},
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{fit::SolFit, SolUad},
@@ -318,10 +318,17 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolSlotValFail> {
         let stats = self.get_stats_high_slots(uad, calc, fit);
-        if stats.used <= stats.total.unwrap_or(0) {
+        let total = stats.total.unwrap_or(0);
+        if stats.used <= total {
             return None;
         }
-        let users = fit.mods_high.iter_ids().map(|v| *v).collect();
+        let users = match total >= fit.mods_high.len() as Amount {
+            true => Vec::new(),
+            false => fit.mods_high.inner()[total as Idx..]
+                .iter()
+                .filter_map(|v| *v)
+                .collect(),
+        };
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_mid_slots_verbose(
@@ -331,10 +338,14 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolSlotValFail> {
         let stats = self.get_stats_mid_slots(uad, calc, fit);
-        if stats.used <= stats.total.unwrap_or(0) {
+        let total = stats.total.unwrap_or(0);
+        if stats.used <= total {
             return None;
         }
-        let users = fit.mods_mid.iter_ids().map(|v| *v).collect();
+        let users = match total >= fit.mods_mid.len() as Amount {
+            true => Vec::new(),
+            false => fit.mods_mid.inner()[total as Idx..].iter().filter_map(|v| *v).collect(),
+        };
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_low_slots_verbose(
@@ -344,10 +355,14 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolSlotValFail> {
         let stats = self.get_stats_low_slots(uad, calc, fit);
-        if stats.used <= stats.total.unwrap_or(0) {
+        let total = stats.total.unwrap_or(0);
+        if stats.used <= total {
             return None;
         }
-        let users = fit.mods_low.iter_ids().map(|v| *v).collect();
+        let users = match total >= fit.mods_low.len() as Amount {
+            true => Vec::new(),
+            false => fit.mods_low.inner()[total as Idx..].iter().filter_map(|v| *v).collect(),
+        };
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
 }

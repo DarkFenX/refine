@@ -64,6 +64,11 @@ impl SolItemVec {
     pub(in crate::sol) fn free(&mut self, &val: &SolItemId) {
         if let Some(pos) = self.data.iter().position(|&v| v == Some(val)) {
             self.data[pos] = None;
+            if pos + 1 == self.data.len() {
+                while self.data.last().map_or(false, |last| last.is_none()) {
+                    self.data.pop();
+                }
+            }
         }
     }
 }

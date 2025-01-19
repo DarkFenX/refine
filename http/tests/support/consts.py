@@ -306,7 +306,10 @@ class ApiAggrMode(StrEnum):
 
 @unique
 class ApiModAddMode(StrEnum):
+    append = 'append'
     equip = 'equip'
+    insert = 'insert'
+    place = 'place'
 
 
 @unique
@@ -334,6 +337,9 @@ class ApiValType(StrEnum):
     launched_standup_heavy_fighters = 'launched_standup_heavy_fighters'
     turret_slots = 'turret_slots'
     launcher_slots = 'launcher_slots'
+    high_slots = 'high_slots'
+    mid_slots = 'mid_slots'
+    low_slots = 'low_slots'
 
 
 @unique
