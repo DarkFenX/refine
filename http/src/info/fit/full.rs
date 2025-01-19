@@ -107,7 +107,7 @@ impl HFitInfoFull {
                 high: core_fit
                     .mods_high
                     .iter()
-                    .filter_map(|o| o.map(|v| core_sol.get_item(&v).ok()))
+                    .map(|o| o.map(|v| core_sol.get_item(&v).ok()).flatten())
                     .collect_vec()
                     .into_iter()
                     .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
@@ -115,7 +115,7 @@ impl HFitInfoFull {
                 mid: core_fit
                     .mods_mid
                     .iter()
-                    .filter_map(|o| o.map(|v| core_sol.get_item(&v).ok()))
+                    .map(|o| o.map(|v| core_sol.get_item(&v).ok()).flatten())
                     .collect_vec()
                     .into_iter()
                     .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
@@ -123,7 +123,7 @@ impl HFitInfoFull {
                 low: core_fit
                     .mods_low
                     .iter()
-                    .filter_map(|o| o.map(|v| core_sol.get_item(&v).ok()))
+                    .map(|o| o.map(|v| core_sol.get_item(&v).ok()).flatten())
                     .collect_vec()
                     .into_iter()
                     .map(|o| o.map(|v| HItemInfo::mk_info(core_sol, &v, item_mode)))
