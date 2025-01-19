@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad,
     adg::{GData, GSupport},
-    defs::{EAttrId, EEffectId, EItemId, OF},
+    defs::{EEffectId, EItemId},
     ec,
     util::StMap,
 };
@@ -38,7 +38,6 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
             StMap::new(),
             defeff_id,
             StMap::new(),
-            ad::AItemExtras::new(None),
         );
         a_item_map.insert(a_item.id, a_item);
     }
@@ -77,110 +76,13 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
             .get_mut(&e_item_srq.item_id)
             .and_then(|v| v.srqs.insert(e_item_srq.skill_id, e_item_srq.level));
     }
-    // Item type
+    // Item extra data
     let mut a_items = Vec::new();
     for mut a_item in a_item_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id) {
-        let mut item_kinds = get_item_kinds(&a_item);
-        match item_kinds.len() {
-            0 => {
-                a_items.push(a_item);
-            }
-            1 => {
-                a_item.extras.kind = Some(item_kinds.pop().unwrap());
-                a_items.push(a_item);
-            }
-            _ => {
-                let msg = format!("{} is eligible for {} item types", a_item, item_kinds.len());
-                tracing::warn!("{msg}");
-                continue;
-            }
-        }
+        a_item
+            .extras
+            .fill(a_item.grp_id, a_item.cat_id, &a_item.attr_vals, &a_item.effect_datas);
+        a_items.push(a_item);
     }
     a_items
-}
-
-fn get_item_kinds(a_item: &ad::AItem) -> Vec<ad::AItemKind> {
-    let mut kinds = Vec::new();
-    if a_item.cat_id == ec::itemcats::IMPLANT && a_item.attr_vals.contains_key(&ec::attrs::BOOSTERNESS) {
-        kinds.push(ad::AItemKind::Booster);
-    };
-    if a_item.grp_id == ec::itemgrps::CHARACTER {
-        kinds.push(ad::AItemKind::Character);
-    };
-    if a_item.cat_id == ec::itemcats::CHARGE {
-        kinds.push(ad::AItemKind::Charge);
-    };
-    if a_item.cat_id == ec::itemcats::DRONE {
-        kinds.push(ad::AItemKind::Drone);
-    };
-    if a_item.grp_id == ec::itemgrps::EFFECT_BEACON {
-        kinds.push(ad::AItemKind::EffectBeacon);
-    };
-    if a_item.cat_id == ec::itemcats::FIGHTER {
-        process_fighter_kind(
-            &mut kinds,
-            a_item,
-            &ec::attrs::FTR_SQ_IS_SUPPORT,
-            ad::AFighterKind::Support,
-        );
-        process_fighter_kind(&mut kinds, a_item, &ec::attrs::FTR_SQ_IS_LIGHT, ad::AFighterKind::Light);
-        process_fighter_kind(&mut kinds, a_item, &ec::attrs::FTR_SQ_IS_HEAVY, ad::AFighterKind::Heavy);
-        process_fighter_kind(
-            &mut kinds,
-            a_item,
-            &ec::attrs::FTR_SQ_IS_STANDUP_SUPPORT,
-            ad::AFighterKind::StandupSupport,
-        );
-        process_fighter_kind(
-            &mut kinds,
-            a_item,
-            &ec::attrs::FTR_SQ_IS_STANDUP_LIGHT,
-            ad::AFighterKind::StandupLight,
-        );
-        process_fighter_kind(
-            &mut kinds,
-            a_item,
-            &ec::attrs::FTR_SQ_IS_STANDUP_HEAVY,
-            ad::AFighterKind::StandupHeavy,
-        );
-    };
-    if a_item.cat_id == ec::itemcats::IMPLANT && a_item.attr_vals.contains_key(&ec::attrs::IMPLANTNESS) {
-        kinds.push(ad::AItemKind::Implant);
-    };
-    if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::HI_POWER) {
-        kinds.push(ad::AItemKind::ModHigh);
-    };
-    if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::LO_POWER) {
-        kinds.push(ad::AItemKind::ModLow);
-    };
-    if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::MED_POWER) {
-        kinds.push(ad::AItemKind::ModMid);
-    };
-    if a_item.cat_id == ec::itemcats::MODULE && a_item.effect_datas.contains_key(&ec::effects::RIG_SLOT) {
-        kinds.push(ad::AItemKind::Rig);
-    };
-    if a_item.grp_id == ec::itemgrps::MUTAPLASMID {
-        kinds.push(ad::AItemKind::Mutator);
-    };
-    if a_item.cat_id == ec::itemcats::SHIP {
-        kinds.push(ad::AItemKind::Ship);
-    };
-    if a_item.cat_id == ec::itemcats::SKILL {
-        kinds.push(ad::AItemKind::Skill);
-    };
-    if a_item.grp_id == ec::itemgrps::SHIP_MOD {
-        kinds.push(ad::AItemKind::Stance);
-    };
-    if a_item.cat_id == ec::itemcats::SUBSYSTEM && a_item.effect_datas.contains_key(&ec::effects::SUBSYSTEM) {
-        kinds.push(ad::AItemKind::Subsystem);
-    };
-    kinds
-}
-
-fn process_fighter_kind(kinds: &mut Vec<ad::AItemKind>, a_item: &ad::AItem, attr_id: &EAttrId, kind: ad::AFighterKind) {
-    if let Some(&val) = a_item.attr_vals.get(attr_id) {
-        if val != OF(0.0) {
-            kinds.push(ad::AItemKind::FighterSquad(kind));
-        }
-    }
 }

@@ -36,7 +36,6 @@ impl AItem {
         effect_datas: StMap<EEffectId, AItemEffectData>,
         defeff_id: Option<EEffectId>,
         srqs: StMap<EItemId, SkillLevel>,
-        extras: AItemExtras,
     ) -> Self {
         Self {
             id,
@@ -46,7 +45,7 @@ impl AItem {
             effect_datas,
             defeff_id,
             srqs,
-            extras,
+            extras: AItemExtras::new(),
         }
     }
 }
