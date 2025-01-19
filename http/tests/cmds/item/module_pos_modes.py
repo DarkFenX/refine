@@ -1,9 +1,12 @@
 
+from tests.support.util import Absent
+
+
 def flatten(*, rack) -> list:
     return [None if i is None else i.id for i in rack]
 
 
-def test_append(client, consts):
+def test_add_append(client, consts):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -48,7 +51,7 @@ def test_append(client, consts):
     assert api_module4.update().pos == 4
 
 
-def test_equip(client, consts):
+def test_add_equip(client, consts):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -93,7 +96,7 @@ def test_equip(client, consts):
     assert api_module4.update().pos == 2
 
 
-def test_insert(client, consts):
+def test_add_insert(client, consts):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -137,3 +140,17 @@ def test_insert(client, consts):
     assert api_module2.update().pos == 3
     assert api_module3.update().pos == 6
     assert api_module4.update().pos == 2
+
+
+def test_add_absent(client, consts):
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Verification
+    api_fit.add_mod(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        mode=Absent,
+        status_code=422,
+        text_predicate='Failed to deserialize the JSON body into the target type: missing field `add_mode`')

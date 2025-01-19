@@ -269,9 +269,10 @@ class Fit(AttrDict):
             state: ApiState = ApiState.offline,
             mutation: Union[int, tuple[int, dict[int, dict[str, float]]], type[Absent]] = Absent,
             charge_type_id: Union[int, type[Absent]] = Absent,
-            mode: ApiModAddMode = ApiModAddMode.equip,
+            mode: Union[ApiModAddMode, type[Absent]] = ApiModAddMode.equip,
             item_info_mode: Union[ApiItemInfoMode, type[Absent]] = ApiItemInfoMode.id,
             status_code: int = 201,
+            text_predicate: Union[str, None] = None,
     ) -> Union[Item, None]:
         resp = self._client.add_mod_request(
             sol_id=self._sol_id,
@@ -284,7 +285,7 @@ class Fit(AttrDict):
             mode=mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, text_predicate=text_predicate)
         if resp.status_code == 201:
             item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
             return item

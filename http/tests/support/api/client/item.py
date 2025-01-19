@@ -292,18 +292,18 @@ class ApiClientItem(ApiClientBase):
             state: ApiState,
             mutation: Union[int, tuple[int, dict[int, dict]], type[Absent]],
             charge_type_id: Union[int, type[Absent]],
-            mode: ApiModAddMode,
+            mode: Union[ApiModAddMode, type[Absent]],
             item_info_mode: Union[ApiItemInfoMode, type[Absent]],
     ) -> Request:
         body = {
             'type': 'module',
             'fit_id': fit_id,
             'rack': rack,
-            'add_mode': mode,
             'type_id': type_id,
             'state': state}
         conditional_insert(container=body, key='mutation', value=mutation)
         conditional_insert(container=body, key='charge_type_id', value=charge_type_id)
+        conditional_insert(container=body, key='add_mode', value=mode)
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
         return Request(
