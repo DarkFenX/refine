@@ -16,6 +16,8 @@ impl SolVast {
     ) -> bool {
         // All registered fits should have an entry, so just unwrap
         let fit_data = self.get_fit_data(&fit.id).unwrap();
+        // Order of validations matters here; the faster validation and the more likely it is to
+        // fail, the closer to top it should be
         if options.cpu {
             if !fit_data.validate_cpu_fast(uad, calc, fit) {
                 return false;
