@@ -38,7 +38,7 @@ pub use sol::{
     uad::{
         SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolItemState,
     },
-    SolDmgProfile, SolEffectInfo, SolEffectMode, SolModAddMode, SolModRack, SolModRmMode, SolarSystem,
+    SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolarSystem,
 };
 pub use src::Src;
 

@@ -1,4 +1,4 @@
-pub use pos_modes::{SolModAddMode, SolModRmMode};
+pub use pos_modes::{SolAddMode, SolRmMode};
 pub use sole_add_module::AddModuleError;
 pub use sole_add_module_mutation::AddModuleMutationError;
 pub use sole_add_module_proj::AddModuleProjError;

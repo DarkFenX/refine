@@ -6,13 +6,13 @@ pub(in crate::cmd) enum HAddMode {
     Insert(rc::Idx),
     Replace(rc::Idx),
 }
-impl Into<rc::SolModAddMode> for &HAddMode {
-    fn into(self) -> rc::SolModAddMode {
+impl Into<rc::SolAddMode> for &HAddMode {
+    fn into(self) -> rc::SolAddMode {
         match self {
-            HAddMode::Append => rc::SolModAddMode::Append,
-            HAddMode::Equip => rc::SolModAddMode::Equip,
-            HAddMode::Insert(i) => rc::SolModAddMode::Insert(*i),
-            HAddMode::Replace(i) => rc::SolModAddMode::Replace(*i),
+            HAddMode::Append => rc::SolAddMode::Append,
+            HAddMode::Equip => rc::SolAddMode::Equip,
+            HAddMode::Insert(i) => rc::SolAddMode::Insert(*i),
+            HAddMode::Replace(i) => rc::SolAddMode::Replace(*i),
         }
     }
 }

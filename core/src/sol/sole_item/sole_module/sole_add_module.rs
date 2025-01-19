@@ -10,7 +10,7 @@ use crate::{
 
 use super::{
     misc::get_fit_rack,
-    pos_modes::{SolModAddMode, SolModRmMode},
+    pos_modes::{SolAddMode, SolRmMode},
 };
 
 impl SolarSystem {
@@ -18,7 +18,7 @@ impl SolarSystem {
         &mut self,
         fit_id: SolFitId,
         rack: SolModRack,
-        pos_mode: SolModAddMode,
+        pos_mode: SolAddMode,
         type_id: EItemId,
         state: SolItemState,
         mutation: Option<SolItemAddMutation>,
@@ -30,11 +30,11 @@ impl SolarSystem {
         // it)
         let pos = match pos_mode {
             // Add to the end of module rack
-            SolModAddMode::Append => fit_rack.append(module_item_id),
+            SolAddMode::Append => fit_rack.append(module_item_id),
             // Take first spare slot in the rack
-            SolModAddMode::Equip => fit_rack.equip(module_item_id),
+            SolAddMode::Equip => fit_rack.equip(module_item_id),
             // Insert at specified position, shifting other modules to the right
-            SolModAddMode::Insert(pos) => {
+            SolAddMode::Insert(pos) => {
                 // True means inserted module is not the last in the rack
                 if fit_rack.insert(pos, module_item_id) {
                     for (i, rack_module_id) in fit_rack.inner()[pos + 1..].iter().enumerate() {
@@ -53,10 +53,10 @@ impl SolarSystem {
             }
             // Check if there is a module on position we want to have module, and if yes, remove it
             // before adding new one
-            SolModAddMode::Replace(pos) => {
+            SolAddMode::Replace(pos) => {
                 match fit_rack.get(pos) {
                     Some(old_module_id) => {
-                        self.remove_module(&old_module_id, SolModRmMode::Free).unwrap();
+                        self.remove_module(&old_module_id, SolRmMode::Free).unwrap();
                         let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
                         fit_rack.place(pos, module_item_id);
                     }

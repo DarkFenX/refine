@@ -7,7 +7,7 @@ use chrono::Utc;
 use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
-use rc::{ed::EveDataHandler, SolItemState, SolModAddMode, SolModRack, SolValOptions, SolarSystem, Src, VERSION};
+use rc::{ed::EveDataHandler, SolAddMode, SolItemState, SolModRack, SolValOptions, SolarSystem, Src, VERSION};
 
 fn setup_logger() -> () {
     let time_format_full = time::macros::format_description!(
@@ -76,7 +76,7 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             .add_module(
                 fit.id,
                 SolModRack::Low,
-                SolModAddMode::Equip,
+                SolAddMode::Equip,
                 1306,
                 SolItemState::Online,
                 None,
@@ -84,7 +84,7 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             )
             .unwrap();
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
-        sol_sys.remove_item(&anp.id, rc::SolModRmMode::Free);
+        sol_sys.remove_item(&anp.id, rc::SolRmMode::Free);
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
     }
     let after = Utc::now();
@@ -131,7 +131,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             .add_module(
                 fit.id,
                 SolModRack::High,
-                SolModAddMode::Equip,
+                SolAddMode::Equip,
                 2929,
                 SolItemState::Overload,
                 None,
@@ -144,7 +144,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             .add_module(
                 fit.id,
                 SolModRack::High,
-                SolModAddMode::Equip,
+                SolAddMode::Equip,
                 2420,
                 SolItemState::Overload,
                 None,
@@ -158,7 +158,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         .add_module(
             fit.id,
             SolModRack::Mid,
-            SolModAddMode::Equip,
+            SolAddMode::Equip,
             5945,
             SolItemState::Active,
             None,
@@ -169,7 +169,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         .add_module(
             fit.id,
             SolModRack::Mid,
-            SolModAddMode::Equip,
+            SolAddMode::Equip,
             2024,
             SolItemState::Active,
             None,
@@ -180,7 +180,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         .add_module(
             fit.id,
             SolModRack::Mid,
-            SolModAddMode::Equip,
+            SolAddMode::Equip,
             2301,
             SolItemState::Active,
             None,
@@ -191,7 +191,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         .add_module(
             fit.id,
             SolModRack::Mid,
-            SolModAddMode::Equip,
+            SolAddMode::Equip,
             448,
             SolItemState::Active,
             None,
@@ -202,7 +202,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         .add_module(
             fit.id,
             SolModRack::Mid,
-            SolModAddMode::Equip,
+            SolAddMode::Equip,
             2281,
             SolItemState::Active,
             None,
@@ -215,7 +215,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         .add_module(
             fit.id,
             SolModRack::Low,
-            SolModAddMode::Equip,
+            SolAddMode::Equip,
             2048,
             SolItemState::Online,
             None,
@@ -227,7 +227,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             .add_module(
                 fit.id,
                 SolModRack::Low,
-                SolModAddMode::Equip,
+                SolAddMode::Equip,
                 519,
                 SolItemState::Online,
                 None,
@@ -240,7 +240,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             .add_module(
                 fit.id,
                 SolModRack::Low,
-                SolModAddMode::Equip,
+                SolAddMode::Equip,
                 22291,
                 SolItemState::Online,
                 None,
@@ -253,7 +253,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             .add_module(
                 fit.id,
                 SolModRack::Low,
-                SolModAddMode::Equip,
+                SolAddMode::Equip,
                 4405,
                 SolItemState::Online,
                 None,
@@ -290,7 +290,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 .add_module(
                     fit.id,
                     SolModRack::Low,
-                    SolModAddMode::Equip,
+                    SolAddMode::Equip,
                     low_mod_id,
                     SolItemState::Online,
                     None,
@@ -298,7 +298,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 )
                 .unwrap();
             sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
-            sol_sys.remove_item(&info.id, rc::SolModRmMode::Free).unwrap();
+            sol_sys.remove_item(&info.id, rc::SolRmMode::Free).unwrap();
         }
     }
     let after = Utc::now();

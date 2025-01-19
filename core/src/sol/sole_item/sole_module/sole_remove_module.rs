@@ -6,10 +6,10 @@ use crate::{
     sol::SolarSystem,
 };
 
-use super::{misc::get_fit_rack, pos_modes::SolModRmMode};
+use super::{misc::get_fit_rack, pos_modes::SolRmMode};
 
 impl SolarSystem {
-    pub fn remove_module(&mut self, item_id: &SolItemId, pos_mode: SolModRmMode) -> Result<(), RemoveModuleError> {
+    pub fn remove_module(&mut self, item_id: &SolItemId, pos_mode: SolRmMode) -> Result<(), RemoveModuleError> {
         let item = self.uad.items.get_item(item_id)?;
         let module = item.get_module()?;
         let fit_id = module.get_fit_id();
@@ -54,8 +54,8 @@ impl SolarSystem {
         // Update user data for module
         let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
         match pos_mode {
-            SolModRmMode::Free => fit_rack.free(item_id),
-            SolModRmMode::Remove => {
+            SolRmMode::Free => fit_rack.free(item_id),
+            SolRmMode::Remove => {
                 if let Some(pos) = fit_rack.remove(item_id) {
                     for (i, rack_module_id) in fit_rack.inner()[pos..].iter().enumerate() {
                         if let Some(rack_module_id) = rack_module_id {

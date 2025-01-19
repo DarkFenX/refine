@@ -1,7 +1,7 @@
 use crate::defs::Idx;
 
 /// Defines how a module is added.
-pub enum SolModAddMode {
+pub enum SolAddMode {
     /// Add to the end of a rack.
     Append,
     /// Add to first free position of a rack.
@@ -13,7 +13,7 @@ pub enum SolModAddMode {
 }
 
 /// Defines how a module is removed from a rack.
-pub enum SolModRmMode {
+pub enum SolRmMode {
     /// Shift all items after the item being removed to the left.
     Remove,
     /// Just free up item's place without shifting anything.

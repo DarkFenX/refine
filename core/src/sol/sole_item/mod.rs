@@ -29,7 +29,7 @@ pub use sole_item::{GetItemError, RemoveItemError};
 pub use sole_module::{
     AddModuleError, AddModuleMutationError, AddModuleProjError, ChangeModuleMutationError, ChangeModuleProjError,
     GetFitModulesError, GetModuleError, RemoveModuleChargeError, RemoveModuleError, RemoveModuleMutationError,
-    RemoveModuleProjError, SetModuleChargeError, SetModuleStateError, SolModAddMode, SolModRmMode,
+    RemoveModuleProjError, SetModuleChargeError, SetModuleStateError, SolAddMode, SolRmMode,
 };
 pub use sole_proj_effect::{
     AddProjEffectProjError, GetProjEffectError, RemoveProjEffectError, RemoveProjEffectProjError,
