@@ -1,3 +1,4 @@
+pub use pos_modes::{SolModAddMode, SolModRmMode};
 pub use sole_add_module::AddModuleError;
 pub use sole_add_module_mutation::AddModuleMutationError;
 pub use sole_add_module_proj::AddModuleProjError;
@@ -13,6 +14,7 @@ pub use sole_set_module_charge::SetModuleChargeError;
 pub use sole_set_module_state::SetModuleStateError;
 
 mod misc;
+mod pos_modes;
 mod sole_add_module;
 mod sole_add_module_mutation;
 mod sole_add_module_proj;

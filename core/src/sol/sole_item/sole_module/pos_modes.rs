@@ -1,10 +1,10 @@
 use crate::defs::Idx;
 
-/// Defines how an item is added to an ordered container.
-pub enum SolOrdAddMode {
-    /// Add to the end of container.
+/// Defines how a module is added.
+pub enum SolModAddMode {
+    /// Add to the end of a rack.
     Append,
-    /// Add to first free position of container.
+    /// Add to first free position of a rack.
     Equip,
     /// Add to specific position, shifting modules on this position and after it to the right.
     Insert(Idx),
@@ -12,8 +12,8 @@ pub enum SolOrdAddMode {
     Replace(Idx),
 }
 
-/// Defines how an item is removed from an ordered container.
-pub enum SolOrdRmMode {
+/// Defines how a module is removed from a rack.
+pub enum SolModRmMode {
     /// Shift all items after the item being removed to the left.
     Remove,
     /// Just free up item's place without shifting anything.

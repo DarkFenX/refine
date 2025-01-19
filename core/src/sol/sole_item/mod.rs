@@ -1,6 +1,5 @@
 //! Solar system extension methods which handle item manipulation.
 
-pub use misc::{SolOrdAddMode, SolOrdRmMode};
 pub use sole_autocharge::{GetAutochargeError, SetAutochargeStateError};
 pub use sole_booster::{
     AddBoosterError, GetBoosterError, GetFitBoostersError, RemoveBoosterError, SetBoosterSideEffectStateError,
@@ -30,7 +29,7 @@ pub use sole_item::{GetItemError, RemoveItemError};
 pub use sole_module::{
     AddModuleError, AddModuleMutationError, AddModuleProjError, ChangeModuleMutationError, ChangeModuleProjError,
     GetFitModulesError, GetModuleError, RemoveModuleChargeError, RemoveModuleError, RemoveModuleMutationError,
-    RemoveModuleProjError, SetModuleChargeError, SetModuleStateError,
+    RemoveModuleProjError, SetModuleChargeError, SetModuleStateError, SolModAddMode, SolModRmMode,
 };
 pub use sole_proj_effect::{
     AddProjEffectProjError, GetProjEffectError, RemoveProjEffectError, RemoveProjEffectProjError,
@@ -52,7 +51,6 @@ pub use sole_subsystem::{
 };
 pub use sole_sw_effect::{GetSwEffectError, RemoveSwEffectError, SetSwEffectStateError};
 
-mod misc;
 mod sole_autocharge;
 mod sole_booster;
 mod sole_character;

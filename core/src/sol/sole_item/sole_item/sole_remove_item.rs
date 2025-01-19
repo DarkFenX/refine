@@ -3,13 +3,13 @@ use crate::{
     err::basic::{ItemFoundError, ItemKindRemoveError},
     sol::{
         uad::item::{SolAutocharge, SolItem},
-        SolOrdRmMode, SolarSystem,
+        SolModRmMode, SolarSystem,
     },
     util::Named,
 };
 
 impl SolarSystem {
-    pub fn remove_item(&mut self, item_id: &SolItemId, pos_mode: SolOrdRmMode) -> Result<(), RemoveItemError> {
+    pub fn remove_item(&mut self, item_id: &SolItemId, pos_mode: SolModRmMode) -> Result<(), RemoveItemError> {
         let item = self.uad.items.get_item(item_id)?;
         match item {
             // Auto charge can't be removed no matter what

@@ -1,6 +1,6 @@
 pub use misc::{SolDmgKinds, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack};
 pub use sol::SolarSystem;
-pub use sole_item::{SolOrdAddMode, SolOrdRmMode};
+pub use sole_item::{SolModAddMode, SolModRmMode};
 
 mod debug;
 pub(crate) mod info;
