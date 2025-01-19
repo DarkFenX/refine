@@ -84,7 +84,7 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             )
             .unwrap();
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
-        sol_sys.remove_item(&anp.id);
+        sol_sys.remove_item(&anp.id, rc::SolOrdRmMode::Free);
         black_box(sol_sys.iter_item_attrs(&ship.id).iter().for_each(drop));
     }
     let after = Utc::now();
@@ -298,7 +298,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 )
                 .unwrap();
             sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
-            sol_sys.remove_item(&info.id).unwrap();
+            sol_sys.remove_item(&info.id, rc::SolOrdRmMode::Free).unwrap();
         }
     }
     let after = Utc::now();
