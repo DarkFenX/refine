@@ -5,7 +5,10 @@ use std::{
     path::PathBuf,
 };
 
-use crate::util::{move_vec_to_map, Error};
+use crate::{
+    util::{move_vec_to_map, Error},
+    VERSION,
+};
 
 use super::data;
 
@@ -116,8 +119,8 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
         self.storage_buffs.get(&id)
     }
     /// Get cached data fingerprint.
-    fn get_data_fingerprint(&self) -> Option<&str> {
-        self.fingerprint.as_deref()
+    fn get_data_fingerprint(&self) -> Option<String> {
+        self.fingerprint.clone()
     }
     /// Load cache from persistent storage.
     fn load_cache(&mut self) -> rc::ad::AResult<()> {
@@ -145,5 +148,9 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
         }
         // Update memory cache
         self.update_memory_cache(a_data, fingerprint);
+    }
+    /// Get adapted handler version.
+    fn get_handler_version(&self) -> String {
+        VERSION.to_string()
     }
 }

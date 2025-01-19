@@ -21,3 +21,5 @@ mod handler_json;
 #[cfg(feature = "ram")]
 mod handler_ram;
 mod util;
+
+const VERSION: &str = env!("CARGO_PKG_VERSION");

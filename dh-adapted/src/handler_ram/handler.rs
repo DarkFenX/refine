@@ -1,6 +1,9 @@
 use std::fmt;
 
-use crate::util::{move_vec_to_map, Error};
+use crate::{
+    util::{move_vec_to_map, Error},
+    VERSION,
+};
 
 /// Adapted data handler implementation without persistence.
 ///
@@ -53,7 +56,7 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
     /// Get adapted data fingerprint.
     ///
     /// Always return None, since it does not persist data and does not store fingerprint.
-    fn get_data_fingerprint(&self) -> Option<&str> {
+    fn get_data_fingerprint(&self) -> Option<String> {
         None
     }
     /// Load cache from persistent storage.
@@ -69,5 +72,9 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
         move_vec_to_map(a_data.effects, &mut self.storage_effects);
         move_vec_to_map(a_data.mutas, &mut self.storage_mutas);
         move_vec_to_map(a_data.buffs, &mut self.storage_buffs);
+    }
+    /// Get adapted handler version.
+    fn get_handler_version(&self) -> String {
+        VERSION.to_string()
     }
 }
