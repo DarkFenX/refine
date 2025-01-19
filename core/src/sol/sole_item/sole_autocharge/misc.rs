@@ -42,7 +42,7 @@ impl SolarSystem {
                                 for (projectee_item_id, range) in projections.iter() {
                                     autocharge.get_projs_mut().add(*projectee_item_id, *range);
                                 }
-                                // Add autocharge item to skeleton and fill info map
+                                // Add autocharge item to user data and fill info map
                                 new_ac_map.insert(*effect_id, autocharge.get_id());
                                 let ac_item = SolItem::Autocharge(autocharge);
                                 self.uad.items.add_item(ac_item);

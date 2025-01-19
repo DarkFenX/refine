@@ -8,7 +8,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_fighter_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetFighterStateError> {
-        // Update skeleton for fighter
+        // Update user data for fighter
         let fighter = self.uad.items.get_item_mut(item_id)?.get_fighter_mut()?;
         let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         let old_state = fighter.get_state();
@@ -16,7 +16,7 @@ impl SolarSystem {
         // Update services for fighter
         self.change_item_id_state_in_svc(item_id, old_state, state);
         for autocharge_id in autocharge_ids {
-            // Update skeleton for autocharge
+            // Update user data for autocharge
             let autocharge = self
                 .uad
                 .items

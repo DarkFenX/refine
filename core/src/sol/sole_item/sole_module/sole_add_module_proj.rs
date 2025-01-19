@@ -38,7 +38,7 @@ impl SolarSystem {
                 projectee_item.get_name(),
             )));
         }
-        // Update skeleton for module
+        // Update user data for module
         let module = self.uad.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
         let charge_id = module.get_charge_id();
         module.get_projs_mut().add(projectee_item_id, range);
@@ -46,7 +46,7 @@ impl SolarSystem {
         // Update services for module
         self.add_item_id_projection_to_svc(item_id, &projectee_item_id, range);
         if let Some(charge_id) = charge_id {
-            // Update skeleton for charge
+            // Update user data for charge
             let charge = self
                 .uad
                 .items

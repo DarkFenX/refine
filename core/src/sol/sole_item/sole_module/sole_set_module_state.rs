@@ -6,7 +6,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn set_module_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetModuleStateError> {
-        // Update skeleton for module
+        // Update user data for module
         let module = self.uad.items.get_item_mut(item_id)?.get_module_mut()?;
         let charge_id = module.get_charge_id();
         let old_state = module.get_state();
@@ -15,7 +15,7 @@ impl SolarSystem {
         let new_state = module.get_state();
         self.change_item_id_state_in_svc(item_id, old_state, new_state);
         if let Some(charge_id) = charge_id {
-            // Update skeleton for charge
+            // Update user data for charge
             let charge = self
                 .uad
                 .items

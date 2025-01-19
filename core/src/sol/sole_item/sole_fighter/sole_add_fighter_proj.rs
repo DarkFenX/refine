@@ -40,7 +40,7 @@ impl SolarSystem {
                 projectee_item.get_name(),
             )));
         }
-        // Update skeleton for fighter
+        // Update user data for fighter
         let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
         let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
         fighter.get_projs_mut().add(projectee_item_id, range);
@@ -48,7 +48,7 @@ impl SolarSystem {
         // Update services for fighter
         self.add_item_id_projection_to_svc(item_id, &projectee_item_id, range);
         for autocharge_id in autocharge_ids {
-            // Update skeleton for autocharge
+            // Update user data for autocharge
             let autocharge = self
                 .uad
                 .items

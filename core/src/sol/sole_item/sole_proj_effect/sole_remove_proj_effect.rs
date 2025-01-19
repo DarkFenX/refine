@@ -14,13 +14,13 @@ impl SolarSystem {
             // Update services
             let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
             self.svc.remove_item_projection(&self.uad, item, projectee_item);
-            // Update skeleton - do not update info on projected effect, because projected effect
+            // Update user data - do not update info on projected effect, because projected effect
             // will be discarded anyway
             self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         }
         // Remove effect from services
         self.remove_item_id_from_svc(item_id);
-        // Remove effect from skeleton
+        // Remove effect from user data
         self.uad.proj_effects.remove(item_id);
         self.uad.items.remove_item(item_id);
         Ok(())

@@ -84,7 +84,7 @@ impl SolarSystem {
         let mut charge_info = None;
         if let Some(charge_type_id) = charge_type_id {
             let charge_id = self.uad.items.alloc_item_id();
-            // Update skeleton with new charge info
+            // Update user data with new charge info
             self.uad
                 .items
                 .get_item_mut(&module_item_id)

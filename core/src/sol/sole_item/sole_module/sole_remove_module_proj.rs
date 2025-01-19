@@ -19,7 +19,7 @@ impl SolarSystem {
         if let Some(charge_id) = charge_id {
             // Update services for charge
             self.remove_item_id_projection_from_svc(&charge_id, projectee_item_id);
-            // Update skeleton for charge
+            // Update user data for charge
             self.proj_tracker.unreg_projectee(&charge_id, projectee_item_id);
             let charge = self
                 .uad
@@ -32,7 +32,7 @@ impl SolarSystem {
         }
         // Update services for module
         self.remove_item_id_projection_from_svc(item_id, projectee_item_id);
-        // Update skeleton for module
+        // Update user data for module
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         let module = self.uad.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
         module.get_projs_mut().remove(projectee_item_id);

@@ -27,13 +27,13 @@ impl SolarSystem {
                 // Update services for charge being removed
                 let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
                 self.svc.remove_item_projection(&self.uad, charge_item, projectee_item);
-                // Update skeleton for charge - do not touch projections container on charge itself,
-                // because we're removing it anyway
+                // Update user data for charge - do not touch projections container on charge
+                // itself, because we're removing it anyway
                 self.proj_tracker.unreg_projectee(&charge_id, projectee_item_id);
             }
             // Update services for charge being removed
             self.svc.remove_item(&self.uad, charge_item);
-            // Update skeleton for charge - do not update module<->charge references because charge
+            // Update user data for charge - do not update module<->charge references because charge
             // will be removed, and module will be updated later
             self.uad.items.remove_item(&charge_id);
         };
@@ -41,7 +41,7 @@ impl SolarSystem {
         // Allocation can fail only if we didn't remove charge first, so if it fails - we don't need
         // to restore anything
         let charge_id = self.uad.items.alloc_item_id();
-        // Update skeleton
+        // Update user data
         let module = self.uad.items.get_item_mut(item_id).unwrap().get_module_mut().unwrap();
         module.set_charge_id(Some(charge_id));
         let fit_id = module.get_fit_id();
@@ -69,7 +69,7 @@ impl SolarSystem {
                 .get_charge_mut()
                 .unwrap()
                 .get_projs_mut();
-            // Update skeleton for charge
+            // Update user data for charge
             for (projectee_item_id, range) in module_projs.iter() {
                 self.proj_tracker.reg_projectee(charge_id, *projectee_item_id);
                 charge_projs.add(*projectee_item_id, *range);

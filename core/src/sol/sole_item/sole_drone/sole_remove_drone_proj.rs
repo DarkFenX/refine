@@ -19,7 +19,7 @@ impl SolarSystem {
         // Update services
         let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
         self.svc.remove_item_projection(&self.uad, drone_item, projectee_item);
-        // Update skeleton
+        // Update user data
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         let drone = self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut().unwrap();
         drone.get_projs_mut().remove(projectee_item_id);

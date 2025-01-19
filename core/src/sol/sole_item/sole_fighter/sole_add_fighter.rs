@@ -24,7 +24,7 @@ impl SolarSystem {
         self.uad.items.add_item(item);
         // Reserve IDs for autocharges
         self.add_item_autocharges(&item_id);
-        // Finalize updates of skeleton
+        // Finalize updates of user data
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         fit.fighters.insert(item_id);
         // Add fighter and autocharges to services

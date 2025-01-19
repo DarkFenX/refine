@@ -20,7 +20,7 @@ impl SolarSystem {
         let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
         self.svc
             .remove_item_projection(&self.uad, proj_effect_item, projectee_item);
-        // Update skeleton
+        // Update user data
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         let proj_effect = self
             .uad

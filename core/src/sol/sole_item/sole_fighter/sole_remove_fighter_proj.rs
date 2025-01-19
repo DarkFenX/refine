@@ -21,7 +21,7 @@ impl SolarSystem {
         for autocharge_id in autocharge_ids {
             // Update services for autocharge
             self.remove_item_id_projection_from_svc(&autocharge_id, projectee_item_id);
-            // Update skeleton for autocharge
+            // Update user data for autocharge
             self.proj_tracker.unreg_projectee(&autocharge_id, projectee_item_id);
             let autocharge = self
                 .uad
@@ -34,7 +34,7 @@ impl SolarSystem {
         }
         // Update services for fighter
         self.remove_item_id_projection_from_svc(item_id, projectee_item_id);
-        // Update skeleton for fighter
+        // Update user data for fighter
         self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
         fighter.get_projs_mut().remove(projectee_item_id);

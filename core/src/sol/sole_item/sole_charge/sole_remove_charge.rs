@@ -13,13 +13,13 @@ impl SolarSystem {
             // Update services for charge
             let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
             self.svc.remove_item_projection(&self.uad, item, projectee_item);
-            // Update skeleton for charge - do not touch projections container on charge itself,
+            // Update user data for charge - do not touch projections container on charge itself,
             // because we're removing it anyway
             self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         }
         // Update services
         self.svc.remove_item(&self.uad, item);
-        // Update skeleton
+        // Update user data
         let module_item_id = charge.get_cont_id();
         let module = self
             .uad

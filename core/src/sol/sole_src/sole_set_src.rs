@@ -77,8 +77,8 @@ impl SolarSystem {
                         // Update services
                         self.svc
                             .remove_item_projection(&self.uad, autocharge_item, projectee_item);
-                        // Update skeleton for autocharge - don't touch data on charge itself, since
-                        // charge will be removed later anyway
+                        // Update user data for autocharge - don't touch data on charge itself,
+                        // since charge will be removed later anyway
                         self.proj_tracker.unreg_projectee(&autocharge_id, projectee_item_id);
                     }
                     // Remove from services

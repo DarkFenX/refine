@@ -20,7 +20,7 @@ impl SolarSystem {
         if let Some(old_item_id) = fit.stance {
             // Update services
             self.remove_item_id_from_svc(&old_item_id);
-            // Update skeleton - do not touch fit, since it will be changed later
+            // Update user data - do not touch fit, since it will be changed later
             self.uad.items.remove_item(&old_item_id);
         }
         // Add new stance

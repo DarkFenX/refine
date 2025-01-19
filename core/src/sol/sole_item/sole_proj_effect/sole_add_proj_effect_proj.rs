@@ -36,7 +36,7 @@ impl SolarSystem {
                 ItemReceiveProjError::new(projectee_item_id, projectee_item.get_name()),
             ));
         }
-        // Update skeleton
+        // Update user data
         let proj_effect = self
             .uad
             .items

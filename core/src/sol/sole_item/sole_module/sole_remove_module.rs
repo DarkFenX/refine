@@ -23,7 +23,7 @@ impl SolarSystem {
                     let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
                     // Update services for charge
                     self.svc.remove_item_projection(&self.uad, charge_item, projectee_item);
-                    // Update skeleton for charge - don't touch data on charge itself, since charge
+                    // Update user data for charge - don't touch data on charge itself, since charge
                     // will be removed later anyway
                     self.proj_tracker.unreg_projectee(&charge_id, projectee_item_id);
                 }
@@ -32,8 +32,8 @@ impl SolarSystem {
                 // Update services for module
                 let projectee_item = self.uad.items.get_item(&projectee_item_id).unwrap();
                 self.svc.remove_item_projection(&self.uad, item, projectee_item);
-                // Update skeleton for module - don't touch data on module itself, since module will
-                // be removed later anyway
+                // Update user data for module - don't touch data on module itself, since module
+                // will be removed later anyway
                 self.proj_tracker.unreg_projectee(item_id, &projectee_item_id);
             }
         }
@@ -42,14 +42,14 @@ impl SolarSystem {
             // Update services for charge
             let charge_item = self.uad.items.get_item(&charge_id).unwrap();
             self.svc.remove_item(&self.uad, charge_item);
-            // Update skeleton for charge - not updating module<->charge references because both
+            // Update user data for charge - not updating module<->charge references because both
             // will be removed
             self.uad.items.remove_item(&charge_id);
         }
         // Remove module
         // Update services for module
         self.remove_item_id_from_svc(item_id);
-        // Update skeleton for module
+        // Update user data for module
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         match rack {
             SolModRack::High => fit.mods_high.free(item_id),

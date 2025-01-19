@@ -21,13 +21,13 @@ impl SolarSystem {
         if range == old_range {
             return Ok(());
         }
-        // Update skeleton for module
+        // Update user data for module
         let charge_id = module.get_charge_id();
         module.get_projs_mut().add(*projectee_item_id, range);
         // Update services for module
         self.change_item_id_projection_range_in_svc(item_id, projectee_item_id, range);
         if let Some(charge_id) = charge_id {
-            // Update skeleton for charge
+            // Update user data for charge
             let charge = self
                 .uad
                 .items

@@ -21,13 +21,13 @@ impl SolarSystem {
                 let autocharge_item = self.uad.items.get_item(autocharge_id).unwrap();
                 self.svc
                     .remove_item_projection(&self.uad, autocharge_item, projectee_item);
-                // Update skeleton for autocharge - don't touch data on charge itself, since charge
+                // Update user data for autocharge - don't touch data on charge itself, since charge
                 // will be removed later anyway
                 self.proj_tracker.unreg_projectee(autocharge_id, projectee_item_id);
             }
             // Update services for fighter
             self.svc.remove_item_projection(&self.uad, item, projectee_item);
-            // Update skeleton for fighter - don't touch data on fighter itself, since fighter will
+            // Update user data for fighter - don't touch data on fighter itself, since fighter will
             // be removed later anyway
             self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         }
@@ -37,14 +37,14 @@ impl SolarSystem {
         for autocharge_id in autocharge_ids {
             // Update services for autocharge
             self.remove_item_id_from_svc(&autocharge_id);
-            // Update skeleton for autocharge - not updating fighter<->autocharge references because
-            // both will be removed
+            // Update user data for autocharge - not updating fighter<->autocharge references
+            // because both will be removed
             self.uad.items.remove_item(&autocharge_id);
         }
         // Remove fighter
         // Update services for fighter
         self.remove_item_id_from_svc(item_id);
-        // Update skeleton for fighter
+        // Update user data for fighter
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.fighters.remove(item_id);
         self.uad.items.remove_item(item_id);

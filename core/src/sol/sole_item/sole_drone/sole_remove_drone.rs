@@ -15,14 +15,15 @@ impl SolarSystem {
             // Update services
             let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
             self.svc.remove_item_projection(&self.uad, item, projectee_item);
-            // Update skeleton - do not update info on drone, because drone will be discarded anyway
+            // Update user data - do not update info on drone, because drone will be discarded
+            // anyway
             self.proj_tracker.unreg_projectee(item_id, projectee_item_id);
         }
         // Remove incoming projections
         self.remove_incoming_projections(item_id);
         // Remove drone from services
         self.remove_item_id_from_svc(item_id);
-        // Remove drone from skeleton
+        // Remove drone from user data
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.drones.remove(item_id);
         self.uad.items.remove_item(item_id);

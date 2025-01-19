@@ -14,7 +14,7 @@ impl SolarSystem {
         self.remove_incoming_projections(item_id);
         // Remove ship from services
         self.remove_item_id_from_svc(item_id);
-        // Remove ship from skeleton
+        // Remove ship from user data
         let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
         fit.ship = None;
         fit.kind = SolShipKind::Unknown;

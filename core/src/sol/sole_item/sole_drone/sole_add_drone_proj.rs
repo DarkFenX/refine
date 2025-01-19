@@ -38,7 +38,7 @@ impl SolarSystem {
                 projectee_item.get_name(),
             )));
         }
-        // Update skeleton
+        // Update user data
         let drone = self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut().unwrap();
         drone.get_projs_mut().add(projectee_item_id, range);
         self.proj_tracker.reg_projectee(*item_id, projectee_item_id);
