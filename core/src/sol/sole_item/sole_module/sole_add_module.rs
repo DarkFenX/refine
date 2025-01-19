@@ -3,13 +3,12 @@ use crate::{
     err::basic::{FitFoundError, OrderedSlotError},
     sol::{
         info::{SolChargeInfo, SolModuleInfo},
-        uad::{
-            fit::{SolFits, SolItemVec},
-            item::{SolCharge, SolItem, SolItemAddMutation, SolItemState, SolModule},
-        },
-        SolModRack, SolOrdAddMode, SolarSystem,
+        uad::item::{SolCharge, SolItem, SolItemAddMutation, SolItemState, SolModule},
+        SolModRack, SolOrdAddMode, SolOrdRmMode, SolarSystem,
     },
 };
+
+use super::misc::get_fit_rack;
 
 impl SolarSystem {
     pub fn add_module(
@@ -56,7 +55,7 @@ impl SolarSystem {
                 match fit_rack.get(pos) {
                     Some(old_module_id) => match replace {
                         true => {
-                            self.remove_module(&old_module_id).unwrap();
+                            self.remove_module(&old_module_id, SolOrdRmMode::Free).unwrap();
                             let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
                             fit_rack.place(pos, module_item_id);
                         }
@@ -147,18 +146,4 @@ impl From<OrderedSlotError> for AddModuleError {
     fn from(error: OrderedSlotError) -> Self {
         Self::SlotTaken(error)
     }
-}
-
-fn get_fit_rack<'a>(
-    uad_fits: &'a mut SolFits,
-    fit_id: &SolFitId,
-    rack: SolModRack,
-) -> Result<&'a mut SolItemVec, FitFoundError> {
-    let fit = uad_fits.get_fit_mut(&fit_id)?;
-    let fit_rack = match rack {
-        SolModRack::High => &mut fit.mods_high,
-        SolModRack::Mid => &mut fit.mods_mid,
-        SolModRack::Low => &mut fit.mods_low,
-    };
-    Ok(fit_rack)
 }

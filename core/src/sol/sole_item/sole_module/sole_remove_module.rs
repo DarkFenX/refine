@@ -3,11 +3,13 @@ use itertools::Itertools;
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{SolModRack, SolarSystem},
+    sol::{SolOrdRmMode, SolarSystem},
 };
 
+use super::misc::get_fit_rack;
+
 impl SolarSystem {
-    pub fn remove_module(&mut self, item_id: &SolItemId) -> Result<(), RemoveModuleError> {
+    pub fn remove_module(&mut self, item_id: &SolItemId, pos_mode: SolOrdRmMode) -> Result<(), RemoveModuleError> {
         let item = self.uad.items.get_item(item_id)?;
         let module = item.get_module()?;
         let fit_id = module.get_fit_id();
@@ -50,12 +52,25 @@ impl SolarSystem {
         // Update services for module
         self.remove_item_id_from_svc(item_id);
         // Update user data for module
-        let fit = self.uad.fits.get_fit_mut(&fit_id).unwrap();
-        match rack {
-            SolModRack::High => fit.mods_high.free(item_id),
-            SolModRack::Mid => fit.mods_mid.free(item_id),
-            SolModRack::Low => fit.mods_low.free(item_id),
-        };
+        let fit_rack = get_fit_rack(&mut self.uad.fits, &fit_id, rack).unwrap();
+        match pos_mode {
+            SolOrdRmMode::Free => fit_rack.free(item_id),
+            SolOrdRmMode::Remove => {
+                if let Some(pos) = fit_rack.remove(item_id) {
+                    for (i, rack_module_id) in fit_rack.inner()[pos..].iter().enumerate() {
+                        if let Some(rack_module_id) = rack_module_id {
+                            self.uad
+                                .items
+                                .get_item_mut(rack_module_id)
+                                .unwrap()
+                                .get_module_mut()
+                                .unwrap()
+                                .set_pos(pos + i);
+                        }
+                    }
+                }
+            }
+        }
         self.uad.items.remove_item(item_id);
         Ok(())
     }

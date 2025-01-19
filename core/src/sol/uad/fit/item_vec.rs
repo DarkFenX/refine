@@ -43,6 +43,7 @@ impl SolItemVec {
         self.append(val)
     }
     pub(in crate::sol) fn insert(&mut self, index: Idx, val: SolItemId) -> bool {
+        // Returns true if other modules might need their positions updated
         if index > self.data.len() {
             // Resize with extra element & replace it, to avoid extra allocations
             self.data.resize(index + 1, None);
@@ -60,15 +61,30 @@ impl SolItemVec {
         }
         let _ = std::mem::replace(&mut self.data[index], Some(val));
     }
-
     pub(in crate::sol) fn free(&mut self, &val: &SolItemId) {
         if let Some(pos) = self.data.iter().position(|&v| v == Some(val)) {
             self.data[pos] = None;
             if pos + 1 == self.data.len() {
-                while self.data.last().map_or(false, |last| last.is_none()) {
-                    self.data.pop();
-                }
+                self.clear_tail();
             }
+        }
+    }
+    pub(in crate::sol) fn remove(&mut self, &val: &SolItemId) -> Option<Idx> {
+        // Returns Some if other modules might need their positions updated
+        if let Some(pos) = self.data.iter().position(|&v| v == Some(val)) {
+            self.data.remove(pos);
+            if pos == self.data.len() {
+                self.clear_tail();
+                return None;
+            }
+            return Some(pos);
+        }
+        None
+    }
+    // Private methods
+    fn clear_tail(&mut self) {
+        while self.data.last().map_or(false, |last| last.is_none()) {
+            self.data.pop();
         }
     }
 }

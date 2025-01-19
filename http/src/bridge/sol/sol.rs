@@ -421,7 +421,7 @@ impl HSolarSystem {
         let sync_span = tracing::trace_span!("sync");
         let (core_sol, result) = tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let result = match core_sol.remove_item(&item_id) {
+            let result = match core_sol.remove_item(&item_id, rc::SolOrdRmMode::Free) {
                 Ok(_) => Ok(()),
                 Err(core_err) => {
                     let exec_err = match core_err {
