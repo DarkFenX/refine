@@ -1,5 +1,5 @@
-/// Defines domain which is affected by a modification.
-pub enum AEffectDomain {
+/// Defines dogma location which is affected by a modification.
+pub enum AEffectLocation {
     /// Ship or items belonging to it.
     Ship,
     /// Structure or items belonging to it.

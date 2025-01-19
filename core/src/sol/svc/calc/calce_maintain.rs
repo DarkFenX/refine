@@ -230,7 +230,7 @@ impl SolCalc {
         attr_id: &EAttrId,
     ) {
         // Sometimes calc service receives requests to clear attributes it does not know yet; this
-        // can happen in multiple cases, e.g. when adding module with charge, with "other" domain
+        // can happen in multiple cases, e.g. when adding module with charge, with "other" location
         // modifier on module. User data gets references between charge and module set right away,
         // but calculator registers module before charge, and attempts to clear charge attributes.
         // Due to cases like this, we cannot just unwrap item attribute data.

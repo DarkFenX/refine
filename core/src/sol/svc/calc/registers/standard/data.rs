@@ -45,7 +45,7 @@ pub(in crate::sol::svc::calc) struct SolStandardRegister {
     // Modifiers which modify item directly
     // Map<affectee item ID, modifiers>
     pub(super) cmods_direct: StMapSetL1<SolItemId, SolCtxModifier>,
-    // Modifiers which modify 'other' domain are always stored here, regardless if they actually
+    // Modifiers which modify 'other' location are always stored here, regardless if they actually
     // modify something or not
     // Map<affector item ID, modifiers>
     pub(super) cmods_other: StMapSetL1<SolItemId, SolCtxModifier>,

@@ -2,7 +2,7 @@ use crate::{
     defs::SolFitId,
     sol::{
         svc::calc::{
-            registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolDomain, SolLocationKind,
+            registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolLocation, SolLocationKind,
             SolRawModifier,
         },
         uad::{fleet::SolFleet, item::SolItem, SolUad},
@@ -150,8 +150,8 @@ impl SolStandardRegister {
     // Private methods
     fn apply_fleet_mod(&mut self, raw_modifier: SolRawModifier, fit_id: SolFitId) -> Option<SolCtxModifier> {
         match raw_modifier.affectee_filter {
-            SolAffecteeFilter::Direct(dom) => match dom {
-                SolDomain::Ship => {
+            SolAffecteeFilter::Direct(loc) => match loc {
+                SolLocation::Ship => {
                     let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                     add_ctx_modifier(
                         &mut self.cmods_root,
@@ -163,8 +163,8 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::Loc(dom) => match dom {
-                SolDomain::Ship => {
+            SolAffecteeFilter::Loc(loc) => match loc {
+                SolLocation::Ship => {
                     let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                     add_ctx_modifier(
                         &mut self.cmods_loc,
@@ -176,8 +176,8 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::LocGrp(dom, grp_id) => match dom {
-                SolDomain::Ship => {
+            SolAffecteeFilter::LocGrp(loc, grp_id) => match loc {
+                SolLocation::Ship => {
                     let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                     add_ctx_modifier(
                         &mut self.cmods_loc_grp,
@@ -189,8 +189,8 @@ impl SolStandardRegister {
                 }
                 _ => None,
             },
-            SolAffecteeFilter::LocSrq(dom, srq_id) => match dom {
-                SolDomain::Ship => {
+            SolAffecteeFilter::LocSrq(loc, srq_id) => match loc {
+                SolLocation::Ship => {
                     let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
                     add_ctx_modifier(
                         &mut self.cmods_loc_srq,
@@ -206,8 +206,8 @@ impl SolStandardRegister {
         }
     }
     fn unapply_fleet_mod(&mut self, raw_modifier: SolRawModifier, fit_id: SolFitId) -> Option<SolCtxModifier> {
-        // We don't check domain here, since logic on layers above ensures we receive only modifiers
-        // which passed checks when they were added, and domain check is part of those
+        // We don't check location here, since logic on layers above ensures we receive only
+        // modifiers which passed checks when they were added, and location check is part of those
         match raw_modifier.affectee_filter {
             SolAffecteeFilter::Direct(_) => {
                 let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);

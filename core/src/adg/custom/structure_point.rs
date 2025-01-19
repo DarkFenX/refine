@@ -13,7 +13,7 @@ pub(in crate::adg::custom) fn add_structure_point_modifiers(a_data: &mut ad::ADa
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::WARP_SCRAMBLE_STRENGTH,
             ad::AOp::Add,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Target),
             ec::attrs::WARP_SCRAMBLE_STATUS,
         ));
         // MWD blocker
@@ -21,7 +21,7 @@ pub(in crate::adg::custom) fn add_structure_point_modifiers(a_data: &mut ad::ADa
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
             ad::AEffectAffecteeFilter::LocSrq(
-                ad::AEffectDomain::Target,
+                ad::AEffectLocation::Target,
                 ad::AModifierSrq::ItemId(ec::items::HIGH_SPEED_MANEUVERING),
             ),
             ec::attrs::ACTIVATION_BLOCKED,
@@ -31,7 +31,7 @@ pub(in crate::adg::custom) fn add_structure_point_modifiers(a_data: &mut ad::ADa
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
             ad::AEffectAffecteeFilter::LocSrq(
-                ad::AEffectDomain::Target,
+                ad::AEffectLocation::Target,
                 ad::AModifierSrq::ItemId(ec::items::MICRO_JUMP_DRIVE_OPERATION),
             ),
             ec::attrs::ACTIVATION_BLOCKED,
@@ -41,7 +41,7 @@ pub(in crate::adg::custom) fn add_structure_point_modifiers(a_data: &mut ad::ADa
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
             ad::AEffectAffecteeFilter::LocSrq(
-                ad::AEffectDomain::Target,
+                ad::AEffectLocation::Target,
                 ad::AModifierSrq::ItemId(ec::items::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
             ),
             ec::attrs::ACTIVATION_BLOCKED,

@@ -6,7 +6,7 @@
 
 pub use data::{
     AAttr, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier, AData, AEffect, AEffectAffecteeFilter,
-    AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectChargeInfo, AEffectDomain,
+    AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom, AEffectChargeInfo, AEffectLocation,
     AEffectModBuildStatus, AEffectModifier, AFighterKind, AItem, AItemEffectData, AItemKind, AModifierSrq, AMuta,
     AMutaAttrRange, AOp, AState, ArcAttr, ArcBuff, ArcEffect, ArcItem, ArcMuta,
 };

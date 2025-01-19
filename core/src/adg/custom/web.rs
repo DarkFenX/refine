@@ -22,7 +22,7 @@ fn process_web_effect(a_data: &mut ad::AData, effect_id: EEffectId) {
         let modifier = ad::AEffectModifier::new(
             ec::attrs::SPEED_FACTOR,
             ad::AOp::PostPerc,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Target),
             ec::attrs::MAX_VELOCITY,
         );
         effect.mods.push(modifier);

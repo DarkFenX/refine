@@ -37,7 +37,7 @@ fn mk_rah_resonance_mod(attr_id: EAttrId) -> ad::AEffectModifier {
     ad::AEffectModifier::new(
         attr_id,
         ad::AOp::PreMul,
-        ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
+        ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
         attr_id,
     )
 }

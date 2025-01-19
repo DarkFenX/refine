@@ -4,7 +4,7 @@ pub use attr::AAttr;
 pub use buff::{ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffModifier};
 pub use effect::{
     AEffect, AEffectAffecteeFilter, AEffectBuffInfo, AEffectBuffScope, AEffectBuffSrc, AEffectBuffSrcCustom,
-    AEffectChargeInfo, AEffectDomain, AEffectModBuildStatus, AEffectModifier,
+    AEffectChargeInfo, AEffectLocation, AEffectModBuildStatus, AEffectModifier,
 };
 pub use item::{AFighterKind, AItem, AItemEffectData, AItemKind};
 pub use muta::{AMuta, AMutaAttrRange};

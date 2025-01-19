@@ -1,15 +1,15 @@
 use crate::{
     ad,
     defs::{EItemGrpId, EItemId},
-    sol::{svc::calc::SolDomain, uad::item::SolItem},
+    sol::{svc::calc::SolLocation, uad::item::SolItem},
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(in crate::sol::svc::calc) enum SolAffecteeFilter {
-    Direct(SolDomain),
-    Loc(SolDomain),
-    LocGrp(SolDomain, EItemGrpId),
-    LocSrq(SolDomain, EItemId),
+    Direct(SolLocation),
+    Loc(SolLocation),
+    LocGrp(SolLocation, EItemGrpId),
+    LocSrq(SolLocation, EItemId),
     OwnSrq(EItemId),
 }
 impl SolAffecteeFilter {
@@ -18,23 +18,23 @@ impl SolAffecteeFilter {
         sol_item: &SolItem,
     ) -> Self {
         match a_effect_affectee_filter {
-            ad::AEffectAffecteeFilter::Direct(dom) => Self::Direct(dom.into()),
-            ad::AEffectAffecteeFilter::Loc(dom) => Self::Loc(dom.into()),
-            ad::AEffectAffecteeFilter::LocGrp(dom, grp_id) => Self::LocGrp(dom.into(), *grp_id),
-            ad::AEffectAffecteeFilter::LocSrq(dom, mod_srq) => Self::LocSrq(dom.into(), get_srq(mod_srq, sol_item)),
+            ad::AEffectAffecteeFilter::Direct(loc) => Self::Direct(loc.into()),
+            ad::AEffectAffecteeFilter::Loc(loc) => Self::Loc(loc.into()),
+            ad::AEffectAffecteeFilter::LocGrp(loc, grp_id) => Self::LocGrp(loc.into(), *grp_id),
+            ad::AEffectAffecteeFilter::LocSrq(loc, mod_srq) => Self::LocSrq(loc.into(), get_srq(mod_srq, sol_item)),
             ad::AEffectAffecteeFilter::OwnSrq(mod_srq) => Self::OwnSrq(get_srq(mod_srq, sol_item)),
         }
     }
     pub(super) fn from_a_buff_affectee_filter(
         a_buff_affectee_filter: &ad::ABuffAffecteeFilter,
-        sol_domain: SolDomain,
+        sol_loc: SolLocation,
         sol_item: &SolItem,
     ) -> Self {
         match a_buff_affectee_filter {
-            ad::ABuffAffecteeFilter::Direct => Self::Direct(sol_domain),
-            ad::ABuffAffecteeFilter::Loc => Self::Loc(sol_domain),
-            ad::ABuffAffecteeFilter::LocGrp(grp_id) => Self::LocGrp(sol_domain, *grp_id),
-            ad::ABuffAffecteeFilter::LocSrq(mod_srq) => Self::LocSrq(sol_domain, get_srq(mod_srq, sol_item)),
+            ad::ABuffAffecteeFilter::Direct => Self::Direct(sol_loc),
+            ad::ABuffAffecteeFilter::Loc => Self::Loc(sol_loc),
+            ad::ABuffAffecteeFilter::LocGrp(grp_id) => Self::LocGrp(sol_loc, *grp_id),
+            ad::ABuffAffecteeFilter::LocSrq(mod_srq) => Self::LocSrq(sol_loc, get_srq(mod_srq, sol_item)),
         }
     }
 }

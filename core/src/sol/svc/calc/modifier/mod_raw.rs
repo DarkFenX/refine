@@ -3,7 +3,7 @@ use crate::{
     defs::{AttrVal, EAttrId, EEffectId, SolItemId},
     ec,
     sol::{
-        svc::calc::{SolAffecteeFilter, SolAffectorInfo, SolAggrMode, SolCalc, SolDomain, SolModifierKind, SolOp},
+        svc::calc::{SolAffecteeFilter, SolAffectorInfo, SolAggrMode, SolCalc, SolLocation, SolModifierKind, SolOp},
         uad::{item::SolItem, SolUad},
     },
 };
@@ -98,7 +98,7 @@ impl SolRawModifier {
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
         affector_attr_id: EAttrId,
-        domain: SolDomain,
+        loc: SolLocation,
         buff_type_attr_id: Option<EAttrId>,
     ) -> Option<Self> {
         SolRawModifier::from_a_buff(
@@ -107,7 +107,7 @@ impl SolRawModifier {
             a_buff,
             a_mod,
             SolAffectorValue::AttrId(affector_attr_id),
-            domain,
+            loc,
             buff_type_attr_id,
         )
     }
@@ -117,7 +117,7 @@ impl SolRawModifier {
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
         affector_val: AttrVal,
-        domain: SolDomain,
+        loc: SolLocation,
     ) -> Option<Self> {
         SolRawModifier::from_a_buff(
             affector_item,
@@ -125,7 +125,7 @@ impl SolRawModifier {
             a_buff,
             a_mod,
             SolAffectorValue::Hardcoded(affector_val),
-            domain,
+            loc,
             None,
         )
     }
@@ -135,11 +135,11 @@ impl SolRawModifier {
         a_buff: &ad::ABuff,
         a_mod: &ad::ABuffModifier,
         affector_val: SolAffectorValue,
-        domain: SolDomain,
+        loc: SolLocation,
         buff_type_attr_id: Option<EAttrId>,
     ) -> Option<Self> {
         let affectee_filter =
-            SolAffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, domain, affector_item);
+            SolAffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, loc, affector_item);
         let kind = match get_mod_kind(a_effect, &affectee_filter) {
             Some(kind) => kind,
             None => return None,
@@ -193,8 +193,8 @@ impl SolRawModifier {
 }
 
 fn get_mod_kind(effect: &ad::AEffect, affectee_filter: &SolAffecteeFilter) -> Option<SolModifierKind> {
-    if let SolAffecteeFilter::Direct(domain) = affectee_filter {
-        if matches!(domain, SolDomain::Item | SolDomain::Other) {
+    if let SolAffecteeFilter::Direct(loc) = affectee_filter {
+        if matches!(loc, SolLocation::Item | SolLocation::Other) {
             return Some(SolModifierKind::Local);
         }
     }

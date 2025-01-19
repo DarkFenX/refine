@@ -12,7 +12,7 @@ pub(in crate::adg::custom) fn mk_self_skillreq_modifiers_launcher_rof(a_data: &m
         let modifier = ad::AEffectModifier::new(
             ec::attrs::ROF_BONUS,
             ad::AOp::PostPerc,
-            ad::AEffectAffecteeFilter::LocSrq(ad::AEffectDomain::Ship, ad::AModifierSrq::SelfRef),
+            ad::AEffectAffecteeFilter::LocSrq(ad::AEffectLocation::Ship, ad::AModifierSrq::SelfRef),
             ec::attrs::SPEED,
         );
         effect.mods.push(modifier);

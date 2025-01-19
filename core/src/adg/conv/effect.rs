@@ -159,7 +159,7 @@ fn conv_item_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> Result<
     Ok(ad::AEffectModifier::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AEffectAffecteeFilter::Direct(get_mod_domain(e_modifier, a_effect)?),
+        ad::AEffectAffecteeFilter::Direct(get_mod_location(e_modifier, a_effect)?),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
@@ -168,7 +168,7 @@ fn conv_loc_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> Result<a
     Ok(ad::AEffectModifier::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AEffectAffecteeFilter::Loc(get_mod_domain(e_modifier, a_effect)?),
+        ad::AEffectAffecteeFilter::Loc(get_mod_location(e_modifier, a_effect)?),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
@@ -177,7 +177,7 @@ fn conv_locgrp_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> Resul
     Ok(ad::AEffectModifier::new(
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
-        ad::AEffectAffecteeFilter::LocGrp(get_mod_domain(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
+        ad::AEffectAffecteeFilter::LocGrp(get_mod_location(e_modifier, a_effect)?, get_mod_grp_id(e_modifier)?),
         get_mod_affectee_attr_id(e_modifier)?,
     ))
 }
@@ -187,7 +187,7 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> Resul
         get_mod_src_attr_id(e_modifier)?,
         get_mod_operation(e_modifier)?,
         ad::AEffectAffecteeFilter::LocSrq(
-            get_mod_domain(e_modifier, a_effect)?,
+            get_mod_location(e_modifier, a_effect)?,
             ad::AModifierSrq::ItemId(get_mod_skill_id(e_modifier)?),
         ),
         get_mod_affectee_attr_id(e_modifier)?,
@@ -196,8 +196,8 @@ fn conv_locsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> Resul
 
 fn conv_ownsrq_mod(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> Result<ad::AEffectModifier, StrMsgError> {
     if !matches!(
-        get_mod_domain(e_modifier, a_effect)?,
-        ad::AEffectDomain::Char | ad::AEffectDomain::Target
+        get_mod_location(e_modifier, a_effect)?,
+        ad::AEffectLocation::Char | ad::AEffectLocation::Target
     ) {
         return Err(StrMsgError::new(format!(
             "unexpected domain \"{}\" for owner-filtered modification",
@@ -220,21 +220,21 @@ fn get_mod_affectee_attr_id(e_modifier: &ed::EEffectMod) -> Result<EAttrId, StrM
     get_arg_int(&e_modifier.args, "modifiedAttributeID")
 }
 
-fn get_mod_domain(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> Result<ad::AEffectDomain, StrMsgError> {
+fn get_mod_location(e_modifier: &ed::EEffectMod, a_effect: &ad::AEffect) -> Result<ad::AEffectLocation, StrMsgError> {
     let domain = get_arg_str(&e_modifier.args, "domain")?;
     match domain.as_str() {
-        "itemID" => Ok(ad::AEffectDomain::Item),
-        "charID" => Ok(ad::AEffectDomain::Char),
-        "shipID" => Ok(ad::AEffectDomain::Ship),
-        "structureID" => Ok(ad::AEffectDomain::Structure),
+        "itemID" => Ok(ad::AEffectLocation::Item),
+        "charID" => Ok(ad::AEffectLocation::Char),
+        "shipID" => Ok(ad::AEffectLocation::Ship),
+        "structureID" => Ok(ad::AEffectLocation::Structure),
         "targetID" => match a_effect.category {
-            ec::effcats::TARGET => Ok(ad::AEffectDomain::Target),
+            ec::effcats::TARGET => Ok(ad::AEffectLocation::Target),
             _ => Err(StrMsgError::new(format!(
                 "modifier uses {} domain on untargeted effect",
                 domain
             ))),
         },
-        "otherID" => Ok(ad::AEffectDomain::Other),
+        "otherID" => Ok(ad::AEffectLocation::Other),
         _ => Err(StrMsgError::new(format!("unknown domain {domain}"))),
     }
 }

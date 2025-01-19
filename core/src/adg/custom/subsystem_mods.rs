@@ -63,7 +63,7 @@ fn mk_modifier(src_attr_id: EAttrId, affectee_attr_id: EAttrId) -> ad::AEffectMo
     ad::AEffectModifier::new(
         src_attr_id,
         ad::AOp::Add,
-        ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
+        ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
         affectee_attr_id,
     )
 }

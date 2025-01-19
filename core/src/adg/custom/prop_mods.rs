@@ -40,7 +40,7 @@ fn mk_mass_mod() -> ad::AEffectModifier {
     ad::AEffectModifier::new(
         ec::attrs::MASS_ADDITION,
         ad::AOp::Add,
-        ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
+        ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
         ec::attrs::MASS,
     )
 }
@@ -49,7 +49,7 @@ fn mk_sig_mod() -> ad::AEffectModifier {
     ad::AEffectModifier::new(
         ec::attrs::SIG_RADIUS_BONUS,
         ad::AOp::PostPerc,
-        ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
+        ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
         ec::attrs::SIG_RADIUS,
     )
 }

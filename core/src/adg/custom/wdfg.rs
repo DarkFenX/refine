@@ -34,28 +34,28 @@ fn add_bubble_modifiers(a_data: &mut ad::AData) {
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::SIG_RADIUS_BONUS,
             ad::AOp::PostPerc,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
             ec::attrs::SIG_RADIUS,
         ));
         // Disallow assistance
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::DISALLOW_ASSISTANCE,
             ad::AOp::PostAssign,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Ship),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Ship),
             ec::attrs::DISALLOW_ASSISTANCE,
         ));
         // Transfer warp core scram strength to script
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::WARP_SCRAMBLE_STRENGTH,
             ad::AOp::PreAssign,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Other),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Other),
             ec::attrs::WARP_SCRAMBLE_STRENGTH,
         ));
         // Transfer activation block strength to script
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::PreAssign,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Other),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Other),
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
         ));
         effect.mod_build_status = ad::AEffectModBuildStatus::Custom;
@@ -75,14 +75,14 @@ fn adjust_scram_script_effect(a_data: &mut ad::AData) {
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::WARP_SCRAMBLE_STRENGTH,
             ad::AOp::Add,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Target),
             ec::attrs::WARP_SCRAMBLE_STATUS,
         ));
         // Gate jump scrambling
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::GATE_SCRAMBLE_STRENGTH,
             ad::AOp::Add,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Target),
             ec::attrs::GATE_SCRAMBLE_STATUS,
         ));
         // MWD blocker
@@ -90,7 +90,7 @@ fn adjust_scram_script_effect(a_data: &mut ad::AData) {
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
             ad::AEffectAffecteeFilter::LocSrq(
-                ad::AEffectDomain::Target,
+                ad::AEffectLocation::Target,
                 ad::AModifierSrq::ItemId(ec::items::HIGH_SPEED_MANEUVERING),
             ),
             ec::attrs::ACTIVATION_BLOCKED,
@@ -100,7 +100,7 @@ fn adjust_scram_script_effect(a_data: &mut ad::AData) {
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
             ad::AEffectAffecteeFilter::LocSrq(
-                ad::AEffectDomain::Target,
+                ad::AEffectLocation::Target,
                 ad::AModifierSrq::ItemId(ec::items::MICRO_JUMP_DRIVE_OPERATION),
             ),
             ec::attrs::ACTIVATION_BLOCKED,
@@ -110,7 +110,7 @@ fn adjust_scram_script_effect(a_data: &mut ad::AData) {
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
             ad::AEffectAffecteeFilter::LocSrq(
-                ad::AEffectDomain::Target,
+                ad::AEffectLocation::Target,
                 ad::AModifierSrq::ItemId(ec::items::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
             ),
             ec::attrs::ACTIVATION_BLOCKED,
@@ -137,14 +137,14 @@ fn adjust_point_script_effect(a_data: &mut ad::AData) {
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::WARP_SCRAMBLE_STRENGTH,
             ad::AOp::Add,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Target),
             ec::attrs::WARP_SCRAMBLE_STATUS,
         ));
         // Gate jump scrambling
         effect.mods.push(ad::AEffectModifier::new(
             ec::attrs::GATE_SCRAMBLE_STRENGTH,
             ad::AOp::Add,
-            ad::AEffectAffecteeFilter::Direct(ad::AEffectDomain::Target),
+            ad::AEffectAffecteeFilter::Direct(ad::AEffectLocation::Target),
             ec::attrs::GATE_SCRAMBLE_STATUS,
         ));
         // MJD/subcap MJFG blocker
@@ -152,7 +152,7 @@ fn adjust_point_script_effect(a_data: &mut ad::AData) {
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
             ad::AEffectAffecteeFilter::LocSrq(
-                ad::AEffectDomain::Target,
+                ad::AEffectLocation::Target,
                 ad::AModifierSrq::ItemId(ec::items::MICRO_JUMP_DRIVE_OPERATION),
             ),
             ec::attrs::ACTIVATION_BLOCKED,
@@ -162,7 +162,7 @@ fn adjust_point_script_effect(a_data: &mut ad::AData) {
             ec::attrs::ACTIVATION_BLOCKED_STRENGTH,
             ad::AOp::Add,
             ad::AEffectAffecteeFilter::LocSrq(
-                ad::AEffectDomain::Target,
+                ad::AEffectLocation::Target,
                 ad::AModifierSrq::ItemId(ec::items::CAPITAL_MICRO_JUMP_DRIVE_OPERATION),
             ),
             ec::attrs::ACTIVATION_BLOCKED,
