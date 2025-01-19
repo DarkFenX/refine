@@ -32,13 +32,13 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
         // Item construction
         let a_item = ad::AItem::new(
             e_item.id,
-            None,
             e_item.group_id,
             cat_id,
             StMap::new(),
             StMap::new(),
             defeff_id,
             StMap::new(),
+            ad::AItemExtras::new(None),
         );
         a_item_map.insert(a_item.id, a_item);
     }
@@ -86,7 +86,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
                 a_items.push(a_item);
             }
             1 => {
-                a_item.kind = Some(item_kinds.pop().unwrap());
+                a_item.extras.kind = Some(item_kinds.pop().unwrap());
                 a_items.push(a_item);
             }
             _ => {

@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AItemEffectData, AItemKind},
+    ad::{AItemEffectData, AItemExtras},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
     util::{Named, StMap},
 };
@@ -11,8 +11,6 @@ use crate::{
 pub struct AItem {
     /// Item ID.
     pub id: EItemId,
-    /// Item type.
-    pub kind: Option<AItemKind>,
     /// Item group ID.
     pub grp_id: EItemGrpId,
     /// Item category ID.
@@ -25,28 +23,30 @@ pub struct AItem {
     pub defeff_id: Option<EEffectId>,
     /// Skill requirement map.
     pub srqs: StMap<EItemId, SkillLevel>,
+    /// Struct with extra data which is calculated during cache generation.
+    pub extras: AItemExtras,
 }
 impl AItem {
     /// Make a new adapted item type out of passed data.
     pub(crate) fn new(
         id: EItemId,
-        kind: Option<AItemKind>,
         grp_id: EItemGrpId,
         cat_id: EItemCatId,
         attr_vals: StMap<EAttrId, AttrVal>,
         effect_datas: StMap<EEffectId, AItemEffectData>,
         defeff_id: Option<EEffectId>,
         srqs: StMap<EItemId, SkillLevel>,
+        extras: AItemExtras,
     ) -> Self {
         Self {
             id,
-            kind,
             grp_id,
             cat_id,
             attr_vals,
             effect_datas,
             defeff_id,
             srqs,
+            extras,
         }
     }
 }

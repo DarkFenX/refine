@@ -35,7 +35,7 @@ impl SolItemBase {
         self.type_id
     }
     pub(in crate::sol::uad::item) fn get_a_item_kind(&self) -> Option<Option<AItemKind>> {
-        self.get_a_item().map(|v| v.kind)
+        self.get_a_item().map(|v| v.extras.kind)
     }
     pub(in crate::sol::uad::item) fn get_group_id(&self) -> Option<EItemGrpId> {
         self.get_a_item().map(|v| v.grp_id)
