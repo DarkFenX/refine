@@ -251,8 +251,9 @@ def test_remove_remove(client, consts):
     # Action
     api_module1.remove(mode=consts.ApiModRmMode.remove)
     # Verification
+    api_fit.update()
     with check_no_field():
-        api_fit.update().modules  # pylint: disable=W0104
+        api_fit.modules  # pylint: disable=W0104
 
 
 def test_remove_free(client, consts):
@@ -292,8 +293,9 @@ def test_remove_free(client, consts):
     # Action
     api_module1.remove(mode=consts.ApiModRmMode.free)
     # Verification
+    api_fit.update()
     with check_no_field():
-        api_fit.update().modules  # pylint: disable=W0104
+        api_fit.modules  # pylint: disable=W0104
 
 
 def test_remove_absent(client, consts):
@@ -334,5 +336,6 @@ def test_remove_absent(client, consts):
     # Action
     api_module1.remove()
     # Verification
+    api_fit.update()
     with check_no_field():
-        api_fit.update().modules  # pylint: disable=W0104
+        api_fit.modules  # pylint: disable=W0104
