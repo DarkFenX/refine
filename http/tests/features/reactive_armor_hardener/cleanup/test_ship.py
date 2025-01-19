@@ -9,7 +9,7 @@ def test_res_changed_em(client, consts):
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_res_boost_attr_id,
         affectee_attr_id=eve_basic_info.res_em_attr_id)
@@ -53,7 +53,7 @@ def test_res_changed_therm(client, consts):
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_res_boost_attr_id,
         affectee_attr_id=eve_basic_info.res_therm_attr_id)
@@ -97,7 +97,7 @@ def test_res_changed_kin(client, consts):
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_res_boost_attr_id,
         affectee_attr_id=eve_basic_info.res_kin_attr_id)
@@ -141,7 +141,7 @@ def test_res_changed_expl(client, consts):
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_res_boost_attr_id,
         affectee_attr_id=eve_basic_info.res_expl_attr_id)

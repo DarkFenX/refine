@@ -383,7 +383,7 @@ def test_range_dscript(client, consts):
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
     eve_wdfg_range_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_range_attr_id,
         affectee_attr_id=eve_range_hidden_attr_id)
@@ -401,7 +401,7 @@ def test_range_dscript(client, consts):
         defeff_id=eve_wdfg_main_effect_id)
     eve_script_range_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_range_bonus_attr_id,
         affectee_attr_id=eve_range_attr_id)
@@ -441,7 +441,7 @@ def test_range_sscript(client, consts):
     eve_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status, def_val=0)
     eve_wdfg_range_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_range_attr_id,
         affectee_attr_id=eve_range_hidden_attr_id)
@@ -459,7 +459,7 @@ def test_range_sscript(client, consts):
         defeff_id=eve_wdfg_main_effect_id)
     eve_script_range_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_range_bonus_attr_id,
         affectee_attr_id=eve_range_attr_id)

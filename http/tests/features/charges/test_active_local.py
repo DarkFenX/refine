@@ -11,7 +11,7 @@ def test_bundled_remove(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -35,7 +35,7 @@ def test_charge_charge_uncharge(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr1_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -46,7 +46,7 @@ def test_charge_charge_uncharge(client, consts):
         defeff_id=eve_effect1_id)
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr2_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -81,7 +81,7 @@ def test_states(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -143,7 +143,7 @@ def test_src_switch(client, consts):
     # Different effect IDs
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_d1_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -151,7 +151,7 @@ def test_src_switch(client, consts):
     client.mk_eve_effect(datas=[eve_d1], id_=eve_d1_effect_id, cat_id=consts.EveEffCat.target, mod_info=[eve_mod1])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_d2_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

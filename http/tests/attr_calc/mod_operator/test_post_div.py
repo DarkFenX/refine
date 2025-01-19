@@ -6,7 +6,7 @@ def setup_penalization_test(*, client, consts, stackable):
     eve_affectee_attr_id = client.mk_eve_attr(stackable=stackable)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_div,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -121,7 +121,7 @@ def test_deep_stacking(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr(stackable=False)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_div,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -225,7 +225,7 @@ def test_insignificant_stacking(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr(stackable=False)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_div,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -263,7 +263,7 @@ def test_insignificant_base(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_div,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -289,7 +289,7 @@ def test_insignificant_modified_base(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -297,7 +297,7 @@ def test_insignificant_modified_base(client, consts):
     eve_affector1_id = client.mk_eve_item(attrs={eve_affector_attr_id: 0}, eff_ids=[eve_effect1_id])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_div,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -325,7 +325,7 @@ def test_zero(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_div,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

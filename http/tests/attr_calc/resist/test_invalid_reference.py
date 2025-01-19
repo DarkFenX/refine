@@ -7,7 +7,7 @@ def test_on_effect(client, consts):
     eve_resist_attr_id = client.alloc_attr_id()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -48,7 +48,7 @@ def test_on_affector_item(client, consts):
     eve_resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

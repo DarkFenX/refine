@@ -236,7 +236,7 @@ def test_attr_changed_res_em(client, consts):
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_res_boost_attr_id,
@@ -323,7 +323,7 @@ def test_attr_changed_res_therm(client, consts):
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_res_boost_attr_id,
@@ -410,7 +410,7 @@ def test_attr_changed_res_kin(client, consts):
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_res_boost_attr_id,
@@ -497,7 +497,7 @@ def test_attr_changed_res_expl(client, consts):
     eve_res_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_res_boost_attr_id,
@@ -584,7 +584,7 @@ def test_attr_changed_shift_amount(client, consts):
     eve_shift_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_shift_boost_attr_id,

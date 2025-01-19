@@ -6,7 +6,7 @@ def setup_penalization_test(*, client, consts, stackable):
     eve_affectee_attr_id = client.mk_eve_attr(stackable=stackable)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_sub,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

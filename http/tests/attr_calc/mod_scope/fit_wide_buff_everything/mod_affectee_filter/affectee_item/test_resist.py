@@ -20,7 +20,7 @@ def test_resisted_value_change_root(client, consts):
         eff_ids=[eve_fw_effect_effect_id], defeff_id=eve_fw_effect_effect_id)
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_boost_attr_id,
         affectee_attr_id=eve_resist_attr_id)
@@ -59,7 +59,7 @@ def test_resisted_value_change_child(client, consts):
         eff_ids=[eve_fw_effect_effect_id], defeff_id=eve_fw_effect_effect_id)
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.own_srq,
-        dom=consts.EveModDom.char,
+        loc=consts.EveModLoc.char,
         srq=eve_skill_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_boost_attr_id,

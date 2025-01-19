@@ -173,7 +173,7 @@ def test_speed_mod_stacking(client, consts):
     eve_speed_boost_attr_sw_id = client.mk_eve_attr()
     eve_sw_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_speed_boost_attr_sw_id,
         affectee_attr_id=eve_speed_attr_id)
@@ -218,7 +218,7 @@ def test_sig_mod_stacking(client, consts):
     eve_sig_affector_attr_rig_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_sig_affector_attr_rig_id,
         affectee_attr_id=eve_sig_affectee_attr_id)
@@ -293,7 +293,7 @@ def test_speed_mod_mass_changed(client, consts):
     eve_mass_boost_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mass_boost_attr_id,
         affectee_attr_id=eve_mass_attr_id)
@@ -364,7 +364,7 @@ def test_speed_mod_boost_changed(client, consts):
     eve_boost_booster_attr_id = client.mk_eve_attr()
     eve_implant_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_boost_booster_attr_id,
         affectee_attr_id=eve_speed_boost_attr_id)
@@ -435,7 +435,7 @@ def test_speed_mod_thrust_changed(client, consts):
     eve_thrust_booster_attr_id = client.mk_eve_attr()
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_thrust_booster_attr_id,
         affectee_attr_id=eve_thrust_attr_id)

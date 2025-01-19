@@ -83,7 +83,7 @@ def setup_rah_basics(
         duration_attr_id=eve_cycle_time_attr_id)
     eve_heat_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_cycle_time_bonus_attr_id,
         affectee_attr_id=eve_cycle_time_attr_id)

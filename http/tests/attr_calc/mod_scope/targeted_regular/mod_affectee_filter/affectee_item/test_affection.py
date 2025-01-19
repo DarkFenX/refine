@@ -7,7 +7,7 @@ def test_affected_root_ship(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -30,7 +30,7 @@ def test_affected_root_struct(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -53,7 +53,7 @@ def test_affected_child(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -76,7 +76,7 @@ def test_unaffected_root(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -100,7 +100,7 @@ def test_unaffected_child_via_root(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -124,7 +124,7 @@ def test_unaffected_root_via_child(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -148,7 +148,7 @@ def test_unaffected_root_other_fit(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -172,7 +172,7 @@ def test_unaffected_child_other_fit(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -191,13 +191,13 @@ def test_unaffected_child_other_fit(client, consts):
     assert api_drone3.update().attrs[eve_attr2_id].dogma == approx(-2)
 
 
-def test_unaffected_nontgt_domain_item(client, consts):
-    # Targets shouldn't be affected by modifiers which do not have target domain
+def test_unaffected_nontgt_location_item(client, consts):
+    # Targets shouldn't be affected by modifiers which do not have target location
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -214,13 +214,13 @@ def test_unaffected_nontgt_domain_item(client, consts):
     assert api_ship.update().attrs[eve_attr2_id].dogma == approx(-2)
 
 
-def test_unaffected_nontgt_domain_ship(client, consts):
-    # Targets shouldn't be affected by modifiers which do not have target domain
+def test_unaffected_nontgt_location_ship(client, consts):
+    # Targets shouldn't be affected by modifiers which do not have target location
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)

@@ -7,7 +7,7 @@ def test_target_untarget(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)
@@ -33,7 +33,7 @@ def test_affector_state_change(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_attr1_id,
         affectee_attr_id=eve_attr2_id)

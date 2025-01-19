@@ -8,7 +8,7 @@ def test_stacking(client, consts):
     eve_resist_attr2_id = client.mk_eve_attr()
     eve_module1_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -22,7 +22,7 @@ def test_stacking(client, consts):
         defeff_id=eve_module1_effect_id)
     eve_module2_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

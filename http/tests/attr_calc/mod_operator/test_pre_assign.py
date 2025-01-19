@@ -6,7 +6,7 @@ def setup_hig_test(*, client, consts, high_is_good):
     eve_affectee_attr_id = client.mk_eve_attr(high_is_good=high_is_good)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

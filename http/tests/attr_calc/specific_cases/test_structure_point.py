@@ -43,7 +43,7 @@ def test_mwd_block(client, consts):
         defeff_id=eve_point_effect_id)
     eve_script_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_assign,
         affector_attr_id=eve_str_attr_id,
         affectee_attr_id=eve_str_attr_id)
@@ -90,7 +90,7 @@ def test_mjd_block(client, consts):
         defeff_id=eve_point_effect_id)
     eve_script_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_assign,
         affector_attr_id=eve_str_attr_id,
         affectee_attr_id=eve_str_attr_id)

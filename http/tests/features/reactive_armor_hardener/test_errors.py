@@ -14,7 +14,7 @@ def test_no_attr_res_em(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -63,7 +63,7 @@ def test_no_attr_res_therm(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -112,7 +112,7 @@ def test_no_attr_res_kin(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -161,7 +161,7 @@ def test_no_attr_res_expl(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -209,7 +209,7 @@ def test_no_attr_shift(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -295,7 +295,7 @@ def test_no_attr_cycle_time(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -381,7 +381,7 @@ def test_no_cycle_time(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -444,7 +444,7 @@ def test_res_zero_base(client, consts):
     eve_implant_attr_id = client.mk_eve_attr()
     eve_implant_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_implant_attr_id,
@@ -520,7 +520,7 @@ def test_res_zero_modified(client, consts):
     eve_implant1_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc_grp,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             grp=eve_grp1_id,
             op=consts.EveModOp.pre_assign,
             affector_attr_id=eve_implant1_attr_id,
@@ -535,7 +535,7 @@ def test_res_zero_modified(client, consts):
     eve_implant2_attr_id = client.mk_eve_attr()
     eve_implant2_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_implant2_attr_id,
@@ -639,7 +639,7 @@ def test_shift_non_positive_base(client, consts):
     eve_implant1_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant1_attr_id,
             affectee_attr_id=attr_id)
@@ -653,7 +653,7 @@ def test_shift_non_positive_base(client, consts):
     eve_implant2_attr_id = client.mk_eve_attr()
     eve_implant2_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_implant2_attr_id,
@@ -780,7 +780,7 @@ def test_shift_non_positive_modified(client, consts):
     eve_implant1_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant1_attr_id,
             affectee_attr_id=attr_id)
@@ -795,14 +795,14 @@ def test_shift_non_positive_modified(client, consts):
     eve_implant2_attr2_id = client.mk_eve_attr()
     eve_implant2_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_implant2_attr1_id,
         affectee_attr_id=eve_basic_info.res_shift_attr_id)
     eve_implant2_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp2_id,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_implant2_attr2_id,
@@ -817,7 +817,7 @@ def test_shift_non_positive_modified(client, consts):
     eve_implant3_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc_grp,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             grp=grp_id,
             op=consts.EveModOp.post_assign,
             affector_attr_id=eve_implant3_attr_id,
@@ -985,7 +985,7 @@ def test_cycle_non_positive_base(client, consts):
     eve_implant1_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant1_attr_id,
             affectee_attr_id=attr_id)
@@ -999,7 +999,7 @@ def test_cycle_non_positive_base(client, consts):
     eve_implant2_attr_id = client.mk_eve_attr()
     eve_implant2_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_implant2_attr_id,
@@ -1126,7 +1126,7 @@ def test_cycle_non_positive_modified(client, consts):
     eve_implant1_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant1_attr_id,
             affectee_attr_id=attr_id)
@@ -1141,14 +1141,14 @@ def test_cycle_non_positive_modified(client, consts):
     eve_implant2_attr2_id = client.mk_eve_attr()
     eve_implant2_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_implant2_attr1_id,
         affectee_attr_id=eve_basic_info.cycle_time_attr_id)
     eve_implant2_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp2_id,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_implant2_attr2_id,
@@ -1163,7 +1163,7 @@ def test_cycle_non_positive_modified(client, consts):
     eve_implant3_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc_grp,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             grp=grp_id,
             op=consts.EveModOp.post_assign,
             affector_attr_id=eve_implant3_attr_id,

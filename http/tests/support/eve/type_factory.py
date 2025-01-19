@@ -281,7 +281,7 @@ class EveTypeFactory(EveDataManager):
     def mk_eve_effect_mod(
             *,
             func: Union[str, type[Absent]] = Absent,
-            dom: Union[str, type[Absent]] = Absent,
+            loc: Union[str, type[Absent]] = Absent,
             grp: Union[int, type[Absent]] = Absent,
             srq: Union[int, type[Absent]] = Absent,
             op: Union[int, type[Absent]] = Absent,
@@ -290,7 +290,7 @@ class EveTypeFactory(EveDataManager):
     ) -> EffectModifier:
         return EffectModifier(
             func=func,
-            domain=dom,
+            location=loc,
             group=grp,
             skill_req=srq,
             operation=op,

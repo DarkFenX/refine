@@ -8,7 +8,7 @@ def test_affected_child_ship(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
@@ -35,7 +35,7 @@ def test_affected_child_struct(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
@@ -62,7 +62,7 @@ def test_unaffected_root(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
@@ -87,7 +87,7 @@ def test_unaffected_char_child(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
@@ -116,7 +116,7 @@ def test_unaffected_targeted_child(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
@@ -143,7 +143,7 @@ def test_unaffected_via_child_target(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
@@ -173,7 +173,7 @@ def test_unaffected_other_group(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
@@ -199,7 +199,7 @@ def test_unaffected_other_fit(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
@@ -221,14 +221,14 @@ def test_unaffected_other_fit(client, consts):
     assert api_rig.update().attrs[eve_attr2_id].dogma == approx(80)
 
 
-def test_unaffected_nontgt_domain_item(client, consts):
-    # Targets shouldn't be affected by modifiers which do not have target domain
+def test_unaffected_nontgt_location_item(client, consts):
+    # Targets shouldn't be affected by modifiers which do not have target location
     eve_grp_id = client.mk_eve_item_group()
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,
@@ -248,14 +248,14 @@ def test_unaffected_nontgt_domain_item(client, consts):
     assert api_rig.update().attrs[eve_attr2_id].dogma == approx(80)
 
 
-def test_unaffected_nontgt_domain_ship(client, consts):
-    # Targets shouldn't be affected by modifiers which do not have target domain
+def test_unaffected_nontgt_location_ship(client, consts):
+    # Targets shouldn't be affected by modifiers which do not have target location
     eve_grp_id = client.mk_eve_item_group()
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,

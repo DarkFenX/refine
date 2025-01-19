@@ -6,7 +6,7 @@ def test_root_add_afor_afee_proj_remove_state_proj_fit(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -39,7 +39,7 @@ def test_root_add_afee_afor_proj_state_remove_afor_afee(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -74,7 +74,7 @@ def test_root_add_afee_afor_proj_remove_afee(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -105,7 +105,7 @@ def test_child_add_afor_afee_proj_remove_state_proj_fit(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -138,7 +138,7 @@ def test_child_add_afee_afor_proj_state_remove_afor_afee(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -173,7 +173,7 @@ def test_child_add_afee_afor_proj_remove_afee(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

@@ -9,7 +9,7 @@ def test_valid_to_valid_matching(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -86,13 +86,13 @@ def test_valid_to_valid_different(client, consts):
     client.mk_eve_attr(datas=[eve_d2], id_=eve_d2_affectee_attr_id)
     eve_d1_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_d1_affector_attr_id,
         affectee_attr_id=eve_d1_affectee_attr_id)
     eve_d2_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_d2_affector_attr_id,
         affectee_attr_id=eve_d2_affectee_attr_id)
@@ -178,7 +178,7 @@ def test_regular_effect_toggle(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

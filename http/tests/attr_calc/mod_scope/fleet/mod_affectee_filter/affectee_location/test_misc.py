@@ -19,7 +19,7 @@ def test_propagation(client, consts):
         eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_implant_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_buff_mult_attr_id,
         affectee_attr_id=eve_buff_val_attr_id)

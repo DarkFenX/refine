@@ -43,13 +43,13 @@ def test_switch(client, consts):
         defeff_id=eve_module_effect_id)
     eve_charge_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_assign,
         affector_attr_id=eve_buff_type_attr_id,
         affectee_attr_id=eve_buff_type_attr_id)
     eve_charge_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.other,
+        loc=consts.EveModLoc.other,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_buff_val_mult_attr_id,
         affectee_attr_id=eve_buff_val_attr_id)

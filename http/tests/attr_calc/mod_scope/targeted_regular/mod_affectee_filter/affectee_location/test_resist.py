@@ -8,7 +8,7 @@ def test_resisted_value_change(client, consts):
     eve_boost_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -22,7 +22,7 @@ def test_resisted_value_change(client, consts):
         defeff_id=eve_module_effect_id)
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_boost_attr_id,
         affectee_attr_id=eve_resist_attr_id)

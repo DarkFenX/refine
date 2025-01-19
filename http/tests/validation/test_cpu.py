@@ -91,7 +91,7 @@ def test_modified_use(client, consts):
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_use_attr_id)
@@ -129,7 +129,7 @@ def test_modified_output(client, consts):
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_output_attr_id)

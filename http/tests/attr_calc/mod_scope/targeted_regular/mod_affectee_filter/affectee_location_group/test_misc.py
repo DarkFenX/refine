@@ -9,7 +9,7 @@ def test_propagation(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_affector_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_middle_attr_id)
@@ -17,7 +17,7 @@ def test_propagation(client, consts):
     eve_affector_item_id = client.mk_eve_item(attrs={eve_affector_attr_id: 50}, eff_ids=[eve_affector_effect_id])
     eve_middle_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_middle_attr_id,
@@ -51,7 +51,7 @@ def test_replace_proj(client, consts):
     eve_attr2_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_attr1_id,

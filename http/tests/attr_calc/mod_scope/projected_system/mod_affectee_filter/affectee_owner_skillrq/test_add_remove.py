@@ -7,7 +7,7 @@ def test_add_pe_item_proj_remove_state_proj_fit(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.own_srq,
-        dom=consts.EveModDom.char,
+        loc=consts.EveModLoc.char,
         srq=eve_skill_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -42,7 +42,7 @@ def test_add_item_pe_proj_state_remove_pe_item(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.own_srq,
-        dom=consts.EveModDom.char,
+        loc=consts.EveModLoc.char,
         srq=eve_skill_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -78,7 +78,7 @@ def test_add_item_pe_proj_remove_item(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.own_srq,
-        dom=consts.EveModDom.char,
+        loc=consts.EveModLoc.char,
         srq=eve_skill_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,

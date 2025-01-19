@@ -7,7 +7,7 @@ def test_add_sw_fit_item_remove_sw_item_fit(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.struct,
+        loc=consts.EveModLoc.struct,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -36,7 +36,7 @@ def test_add_fit_sw_item_remove_item_sw_fit(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.char,
+        loc=consts.EveModLoc.char,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -64,7 +64,7 @@ def test_add_fit_item_sw_remove_fit_sw(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -92,7 +92,7 @@ def test_add_sw_fit_item_state_remove_state_item_fit_sw(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.struct,
+        loc=consts.EveModLoc.struct,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,

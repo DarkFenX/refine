@@ -23,7 +23,7 @@ def test_resisted_value_change(client, consts):
     eve_affectee_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 200}, srqs={eve_skill_id: 1})
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_boost_attr_id,
         affectee_attr_id=eve_resist_attr_id)

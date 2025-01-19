@@ -9,7 +9,7 @@ def test_add_with_change_without_remove(client, consts):
     eve_falloff_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -49,7 +49,7 @@ def test_add_without_change_with_remove(client, consts):
     eve_falloff_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -89,7 +89,7 @@ def test_add_with_change_with_remove(client, consts):
     eve_falloff_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -130,7 +130,7 @@ def test_value_change_optimal(client, consts):
     eve_boost_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -146,7 +146,7 @@ def test_value_change_optimal(client, consts):
         defeff_id=eve_module_effect_id)
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_boost_attr_id,
         affectee_attr_id=eve_optimal_attr_id)
@@ -180,7 +180,7 @@ def test_value_change_falloff(client, consts):
     eve_boost_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         grp=eve_grp_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -196,7 +196,7 @@ def test_value_change_falloff(client, consts):
         defeff_id=eve_module_effect_id)
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_boost_attr_id,
         affectee_attr_id=eve_falloff_attr_id)

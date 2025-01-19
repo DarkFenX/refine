@@ -12,21 +12,21 @@ def test_influence(client, consts):
     eve_side2_affectee_attr_id = client.mk_eve_attr()
     eve_primary_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_primary_affector_attr_id,
         affectee_attr_id=eve_primary_affectee_attr_id)
     eve_primary_effect_id = client.mk_eve_effect(mod_info=[eve_primary_mod])
     eve_side1_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_side1_affector_attr_id,
         affectee_attr_id=eve_side1_affectee_attr_id)
     eve_side1_effect_id = client.mk_eve_effect(chance_attr_id=eve_side1_chance_attr_id, mod_info=[eve_side1_mod])
     eve_side2_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_side2_affector_attr_id,
         affectee_attr_id=eve_side2_affectee_attr_id)
@@ -173,7 +173,7 @@ def test_booster_state(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

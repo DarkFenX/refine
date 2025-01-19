@@ -12,7 +12,7 @@ def test_regular_resist(client, consts):
     eve_resmod_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.item,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_resmod_attr_id,
             affectee_attr_id=attr_id)
@@ -52,7 +52,7 @@ def test_damage_control(client, consts):
     eve_dc_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.item,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.pre_mul,
             affector_attr_id=eve_dc_attr_id,
             affectee_attr_id=attr_id)

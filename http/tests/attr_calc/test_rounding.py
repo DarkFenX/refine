@@ -26,7 +26,7 @@ def test_cpu_modified(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

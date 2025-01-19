@@ -93,7 +93,7 @@ class EveModFunc(StrEnum):
 
 
 @unique
-class EveModDom(StrEnum):
+class EveModLoc(StrEnum):
     item = 'itemID'
     char = 'charID'
     ship = 'shipID'

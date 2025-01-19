@@ -10,7 +10,7 @@ def test_rah_to_rah(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -65,7 +65,7 @@ def test_rah_to_rah_no_dmg(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)

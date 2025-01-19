@@ -100,7 +100,7 @@ def test_mult_change(client, consts):
     eve_paste_item_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_affector_attr_id,
         affectee_attr_id=eve_aar_affector_attr_id)
@@ -142,7 +142,7 @@ def test_penalties(client, consts):
     eve_paste_id = client.mk_eve_item(id_=consts.EveItem.nanite_repair_paste)
     eve_rig_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_mod_affector_attr_id,
         affectee_attr_id=eve_aar_affectee_attr_id)

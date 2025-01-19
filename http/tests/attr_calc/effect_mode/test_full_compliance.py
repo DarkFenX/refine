@@ -10,14 +10,14 @@ def test_state_offline(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr1_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect1_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_mod1])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr2_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -86,7 +86,7 @@ def test_state_online_running(client, consts):
     eve_online_effect_id = client.mk_eve_online_effect()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -141,7 +141,7 @@ def test_state_online_absent(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -174,14 +174,14 @@ def test_state_active_default(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr1_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect1_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod1])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr2_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -227,14 +227,14 @@ def test_state_active_absent(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr1_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect1_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod1])
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr2_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -279,7 +279,7 @@ def test_state_overload(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

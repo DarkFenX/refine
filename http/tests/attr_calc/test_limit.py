@@ -9,7 +9,7 @@ def test_default_max(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limitee_attr_id)
@@ -42,7 +42,7 @@ def test_default_min(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limitee_attr_id)
@@ -74,7 +74,7 @@ def test_unmodified_max(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limitee_attr_id)
@@ -106,7 +106,7 @@ def test_unmodified_min(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limitee_attr_id)
@@ -138,13 +138,13 @@ def test_modified(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limitee_attr_id)
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limiter_attr_id)
@@ -176,7 +176,7 @@ def test_update(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_limitee_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limitee_attr_id)
@@ -186,7 +186,7 @@ def test_update(client, consts):
         eff_ids=[eve_limitee_effect_id])
     eve_limiter_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limiter_attr_id)
@@ -228,7 +228,7 @@ def test_unlimited(client, consts):
     eve_affector_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_limitee_attr_id)

@@ -10,28 +10,28 @@ def get_value_after_switch(*, client, consts, state_from, state_to):
     eve_effect_online_id = client.mk_eve_online_effect()
     eve_mod_cat_offline = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_offline_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_cat_offline_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_mod_cat_offline])
     eve_mod_cat_online = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_online_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_cat_online_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod_cat_online])
     eve_mod_cat_active = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_active_id,
         affectee_attr_id=eve_affectee_attr_id)
     eve_effect_cat_active_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod_cat_active])
     eve_mod_cat_overload = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.item,
+        loc=consts.EveModLoc.item,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_overload_id,
         affectee_attr_id=eve_affectee_attr_id)

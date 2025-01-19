@@ -8,7 +8,7 @@ def test_pre_assign(client, consts):
     eve_resist_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -44,7 +44,7 @@ def test_pre_mul(client, consts):
     eve_resist_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.pre_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -80,7 +80,7 @@ def test_pre_div(client, consts):
     eve_resist_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.pre_div,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -116,7 +116,7 @@ def test_add(client, consts):
     eve_resist_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -153,7 +153,7 @@ def test_sub(client, consts):
     eve_resist_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.mod_sub,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -189,7 +189,7 @@ def test_post_mul(client, consts):
     eve_resist_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_mul,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -225,7 +225,7 @@ def test_post_div(client, consts):
     eve_resist_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_div,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -260,7 +260,7 @@ def test_post_percent(client, consts):
     eve_resist_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
@@ -296,7 +296,7 @@ def test_post_assign(client, consts):
     eve_resist_attr_id = client.mk_eve_attr()
     eve_module_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         op=consts.EveModOp.post_assign,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)

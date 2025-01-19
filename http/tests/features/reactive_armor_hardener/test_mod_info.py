@@ -14,7 +14,7 @@ def test_normal(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -132,7 +132,7 @@ def test_incoming(client, consts):
     eve_implant_mods = [
         client.mk_eve_effect_mod(
             func=consts.EveModFunc.loc,
-            dom=consts.EveModDom.ship,
+            loc=consts.EveModLoc.ship,
             op=consts.EveModOp.post_percent,
             affector_attr_id=eve_implant_attr_id,
             affectee_attr_id=attr_id)
@@ -198,13 +198,13 @@ def test_outgoing_insignificance(client, consts):
     eve_implant_attr2_id = client.mk_eve_attr()
     eve_implant_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_implant_attr1_id,
         affectee_attr_id=eve_basic_info.res_kin_attr_id)
     eve_implant_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.pre_assign,
         affector_attr_id=eve_implant_attr2_id,
         affectee_attr_id=eve_basic_info.res_expl_attr_id)

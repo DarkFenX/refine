@@ -61,7 +61,7 @@ def test_modified_total(client, consts):
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.char,
+        loc=consts.EveModLoc.char,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_total_attr_id)

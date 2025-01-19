@@ -121,14 +121,14 @@ def test_to_stage4_different_group(client, consts):
     eve_affectee_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr1_id)
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp2_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -260,14 +260,14 @@ def test_to_stage3_different_group(client, consts):
     eve_affectee_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr1_id)
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp2_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -346,14 +346,14 @@ def test_to_stage2_different_group(client, consts):
     eve_affectee_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr1_id)
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp2_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -494,14 +494,14 @@ def test_to_stage1_different_group(client, consts):
     eve_affectee_attr2_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
     eve_mod1 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp1_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr1_id)
     eve_mod2 = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_grp,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         grp=eve_grp2_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,

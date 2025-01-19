@@ -15,7 +15,7 @@ class EffectModifier:
     def __init__(
             self, *,
             func: Union[str, type[Absent]],
-            domain: Union[str, type[Absent]],
+            location: Union[str, type[Absent]],
             group: Union[int, type[Absent]],
             skill_req: Union[int, type[Absent]],
             affector_attr_id: Union[int, type[Absent]],
@@ -23,7 +23,7 @@ class EffectModifier:
             operation: Union[int, type[Absent]],
     ):
         self.func = func
-        self.domain = domain
+        self.location = location
         self.group = group
         self.skill_req = skill_req
         self.affector_attr_id = affector_attr_id
@@ -33,7 +33,7 @@ class EffectModifier:
     def to_primitives(self) -> dict:
         mod_entry = {}
         conditional_insert(container=mod_entry, key='func', value=self.func)
-        conditional_insert(container=mod_entry, key='domain', value=self.domain)
+        conditional_insert(container=mod_entry, key='domain', value=self.location)
         conditional_insert(container=mod_entry, key='groupID', value=self.group)
         conditional_insert(container=mod_entry, key='skillTypeID', value=self.skill_req)
         conditional_insert(container=mod_entry, key='modifyingAttributeID', value=self.affector_attr_id)

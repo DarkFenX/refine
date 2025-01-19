@@ -7,7 +7,7 @@ def test_add_afor_afee_proj_remove_state_proj_fit(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_srq,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         srq=eve_skill_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -44,7 +44,7 @@ def test_add_afee_afor_proj_state_remove_afor_afee(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_srq,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         srq=eve_skill_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
@@ -83,7 +83,7 @@ def test_add_afee_afor_proj_remove_afee(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc_srq,
-        dom=consts.EveModDom.tgt,
+        loc=consts.EveModLoc.tgt,
         srq=eve_skill_id,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,

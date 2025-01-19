@@ -14,7 +14,7 @@ def setup_immunity_test_ext(*, client, consts, affector1_cat_id, affector2_cat_i
     eve_affectee_attr_id = client.mk_eve_attr(stackable=False)
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
-        dom=consts.EveModDom.ship,
+        loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_affector_attr_id,
         affectee_attr_id=eve_affectee_attr_id)
