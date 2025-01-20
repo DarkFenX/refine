@@ -263,7 +263,7 @@ def test_criterion_state(client, consts):
     assert api_rig.id in api_val.details.rig_slots.users
 
 
-def test_criterion_rig(client, consts):
+def test_criterion_item_type(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_slots_left)
     eve_subsystem_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})

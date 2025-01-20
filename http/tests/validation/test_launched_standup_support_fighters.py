@@ -392,7 +392,7 @@ def test_criterion_fighter_type(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_criterion_fighter(client, consts):
+def test_criterion_item_type(client, consts):
     eve_ftr_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_is_standup_support)
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_standup_support_slots)
     eve_drone_id = client.mk_eve_item(cat_id=consts.EveItemCat.fighter, attrs={eve_ftr_type_attr_id: 1})

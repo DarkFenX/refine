@@ -429,7 +429,7 @@ def test_criterion_state(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_criterion_drone(client, consts):
+def test_criterion_item_type(client, consts):
     # Validation applies only to drones
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)

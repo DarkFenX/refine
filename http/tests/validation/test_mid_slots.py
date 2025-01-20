@@ -324,7 +324,7 @@ def test_criterion_rack(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_criterion_module(client, consts):
+def test_criterion_item_type(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.med_slots)
     eve_rig_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})

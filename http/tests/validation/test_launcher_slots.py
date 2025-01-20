@@ -324,7 +324,7 @@ def test_criterion_effect(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_criterion_module(client, consts):
+def test_criterion_item_type(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.launcher_slots_left)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.launcher_fitted)
     eve_rig_id = client.mk_eve_item(eff_ids=[eve_effect_id])

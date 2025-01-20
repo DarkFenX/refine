@@ -180,12 +180,14 @@ class EveAttr(IntEnum):
     drone_capacity = 283
     dmg_mult_bonus = 292
     rof_bonus = 293
+    implantness = 331
     max_active_drones = 352
     sig_radius = 552
     sig_radius_bonus = 554
     speed_boost_factor = 567
     mass_addition = 796
     disallow_assistance = 854
+    boosterness = 1087
     upgrade_capacity = 1132
     upgrade_cost = 1153
     upgrade_slots_left = 1154
@@ -196,6 +198,7 @@ class EveAttr(IntEnum):
     warp_scramble_range_bonus = 1327
     activation_blocked = 1349
     activation_blocked_strength = 1350
+    subsystem_slot = 1366
     max_subsystems = 1367
     turret_hardpoint_modifier = 1368
     launcher_hardpoint_modifier = 1369
@@ -346,6 +349,9 @@ class ApiValType(StrEnum):
     high_slots = 'high_slots'
     mid_slots = 'mid_slots'
     low_slots = 'low_slots'
+    implant_slot_index = 'implant_slot_index'
+    booster_slot_index = 'booster_slot_index'
+    subsystem_slot_index = 'subsystem_slot_index'
 
 
 @unique

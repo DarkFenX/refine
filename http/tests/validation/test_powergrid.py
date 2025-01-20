@@ -510,7 +510,7 @@ def test_criterion_effect(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_criterion_module(client, consts):
+def test_criterion_item_type(client, consts):
     # Validation applies only to modules
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_output)

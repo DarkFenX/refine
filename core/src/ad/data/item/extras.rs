@@ -118,10 +118,7 @@ fn get_item_kind(
     if grp_id == ec::itemgrps::SHIP_MOD {
         kinds.push(AItemKind::Stance);
     };
-    if cat_id == ec::itemcats::SUBSYSTEM
-        && effects.contains_key(&ec::effects::SUBSYSTEM)
-        && attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT)
-    {
+    if cat_id == ec::itemcats::SUBSYSTEM && attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT) {
         kinds.push(AItemKind::Subsystem(
             attrs.get(&ec::attrs::SUBSYSTEM_SLOT).unwrap().round() as SlotNumber,
         ));
