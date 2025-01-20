@@ -248,7 +248,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             )
             .unwrap(); // T2 BCS
     }
-    for _ in 0..2 {
+    for _ in 0..1 {
         sol_sys
             .add_module(
                 fit.id,
