@@ -18,15 +18,17 @@ impl SolVast {
     pub(in crate::sol::svc) fn item_loaded(&mut self, item: &SolItem) {
         match item {
             SolItem::Module(module) => {
-                if module.get_a_extras().unwrap().ship_limit.is_some() {
+                if let Some(ship_limit) = &module.get_a_extras().unwrap().ship_limit {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
-                    fit_data.ship_limited_mods_rigs.insert(module.get_id());
+                    fit_data
+                        .ship_limited_mods_rigs
+                        .insert(module.get_id(), ship_limit.clone());
                 }
             }
             SolItem::Rig(rig) => {
-                if rig.get_a_extras().unwrap().ship_limit.is_some() {
+                if let Some(ship_limit) = &rig.get_a_extras().unwrap().ship_limit {
                     let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
-                    fit_data.ship_limited_mods_rigs.insert(rig.get_id());
+                    fit_data.ship_limited_mods_rigs.insert(rig.get_id(), ship_limit.clone());
                 }
             }
             SolItem::Drone(drone) => {

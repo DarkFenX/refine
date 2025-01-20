@@ -1,4 +1,5 @@
 use crate::{
+    ad,
     defs::{AttrVal, SlotNumber, SolFitId, SolItemId},
     err::basic::FitFoundError,
     util::{StMap, StMapSetL1, StSet},
@@ -52,7 +53,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) slotted_implants: StMapSetL1<SlotNumber, SolItemId>,
     pub(in crate::sol::svc::vast) slotted_boosters: StMapSetL1<SlotNumber, SolItemId>,
     pub(in crate::sol::svc::vast) slotted_subsystems: StMapSetL1<SlotNumber, SolItemId>,
-    pub(in crate::sol::svc::vast) ship_limited_mods_rigs: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) ship_limited_mods_rigs: StMap<SolItemId, ad::AItemShipLimit>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -73,7 +74,7 @@ impl SolVastFitData {
             slotted_implants: StMapSetL1::new(),
             slotted_boosters: StMapSetL1::new(),
             slotted_subsystems: StMapSetL1::new(),
-            ship_limited_mods_rigs: StSet::new(),
+            ship_limited_mods_rigs: StMap::new(),
         }
     }
 }

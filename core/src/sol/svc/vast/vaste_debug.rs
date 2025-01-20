@@ -72,7 +72,7 @@ impl SolVastFitData {
                 check_item(uad, item_id, true)?;
             }
         }
-        for item_id in self.ship_limited_mods_rigs.iter() {
+        for item_id in self.ship_limited_mods_rigs.keys() {
             check_item(uad, item_id, true)?;
         }
         Ok(())
