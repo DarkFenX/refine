@@ -1,4 +1,4 @@
-use crate::sol::svc::vast::{SolResValFail, SolSlotValFail};
+use crate::sol::svc::vast::{SolResValFail, SolSlotIndexValFail, SolSlotValFail};
 
 #[derive(Copy, Clone)]
 pub struct SolValOptions {
@@ -22,6 +22,9 @@ pub struct SolValOptions {
     pub high_slots: bool,
     pub mid_slots: bool,
     pub low_slots: bool,
+    pub implant_slot_index: bool,
+    pub booster_slot_index: bool,
+    pub subsystem_slot_index: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -45,6 +48,9 @@ impl SolValOptions {
         high_slots: bool,
         mid_slots: bool,
         low_slots: bool,
+        implant_slot_index: bool,
+        booster_slot_index: bool,
+        subsystem_slot_index: bool,
     ) -> Self {
         Self {
             cpu,
@@ -67,6 +73,9 @@ impl SolValOptions {
             high_slots,
             mid_slots,
             low_slots,
+            implant_slot_index,
+            booster_slot_index,
+            subsystem_slot_index,
         }
     }
     pub fn new_enabled() -> Self {
@@ -91,6 +100,9 @@ impl SolValOptions {
             high_slots: true,
             mid_slots: true,
             low_slots: true,
+            implant_slot_index: true,
+            booster_slot_index: true,
+            subsystem_slot_index: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -115,6 +127,9 @@ impl SolValOptions {
             high_slots: false,
             mid_slots: false,
             low_slots: false,
+            implant_slot_index: false,
+            booster_slot_index: false,
+            subsystem_slot_index: false,
         }
     }
 }
@@ -140,6 +155,9 @@ pub struct SolValResult {
     pub high_slots: Option<SolSlotValFail>,
     pub mid_slots: Option<SolSlotValFail>,
     pub low_slots: Option<SolSlotValFail>,
+    pub implant_slot_index: Vec<SolSlotIndexValFail>,
+    pub booster_slot_index: Vec<SolSlotIndexValFail>,
+    pub subsystem_slot_index: Vec<SolSlotIndexValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -164,6 +182,9 @@ impl SolValResult {
             high_slots: None,
             mid_slots: None,
             low_slots: None,
+            implant_slot_index: Vec::new(),
+            booster_slot_index: Vec::new(),
+            subsystem_slot_index: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -187,5 +208,8 @@ impl SolValResult {
             && self.high_slots.is_none()
             && self.mid_slots.is_none()
             && self.low_slots.is_none()
+            && self.implant_slot_index.is_empty()
+            && self.booster_slot_index.is_empty()
+            && self.subsystem_slot_index.is_empty()
     }
 }

@@ -43,6 +43,9 @@ impl HValidFitCmd {
                 "high_slots" => core_options.high_slots = alt_value,
                 "mid_slots" => core_options.mid_slots = alt_value,
                 "low_slots" => core_options.low_slots = alt_value,
+                "implant_slot_index" => core_options.implant_slot_index = alt_value,
+                "booster_slot_index" => core_options.booster_slot_index = alt_value,
+                "subsystem_slot_index" => core_options.subsystem_slot_index = alt_value,
                 _ => (),
             }
         }

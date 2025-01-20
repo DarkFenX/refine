@@ -1,4 +1,4 @@
-use crate::info::valid::details::{HResValFail, HSlotValFail};
+use crate::info::valid::details::{HResValFail, HSlotIndexValFail, HSlotValFail};
 
 #[derive(serde::Serialize)]
 pub(crate) struct HValidInfoDetailed {
@@ -57,6 +57,12 @@ struct HValidInfoDetails {
     mid_slots: Option<HSlotValFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     low_slots: Option<HSlotValFail>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    implant_slot_index: Vec<HSlotIndexValFail>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    booster_slot_index: Vec<HSlotIndexValFail>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    subsystem_slot_index: Vec<HSlotIndexValFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -80,6 +86,9 @@ impl HValidInfoDetails {
             && self.high_slots.is_none()
             && self.mid_slots.is_none()
             && self.low_slots.is_none()
+            && self.implant_slot_index.is_empty()
+            && self.booster_slot_index.is_empty()
+            && self.subsystem_slot_index.is_empty()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -114,6 +123,9 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             high_slots: core_val_result.high_slots.as_ref().map(|v| v.into()),
             mid_slots: core_val_result.mid_slots.as_ref().map(|v| v.into()),
             low_slots: core_val_result.low_slots.as_ref().map(|v| v.into()),
+            implant_slot_index: core_val_result.implant_slot_index.iter().map(|v| v.into()).collect(),
+            booster_slot_index: core_val_result.booster_slot_index.iter().map(|v| v.into()).collect(),
+            subsystem_slot_index: core_val_result.subsystem_slot_index.iter().map(|v| v.into()).collect(),
         }
     }
 }
