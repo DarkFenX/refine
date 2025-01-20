@@ -36,7 +36,6 @@ impl HAddModuleCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddModuleError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                    rc::err::AddModuleError::SlotTaken(e) => HExecError::ModuleSlotTaken(e),
                 })
             }
         };

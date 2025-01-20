@@ -1,6 +1,6 @@
 use crate::{
     defs::{EItemId, SolFitId},
-    err::basic::{FitFoundError, OrderedSlotError},
+    err::basic::FitFoundError,
     sol::{
         info::{SolChargeInfo, SolModuleInfo},
         uad::item::{SolCharge, SolItem, SolItemAddMutation, SolItemState, SolModule},
@@ -118,13 +118,11 @@ impl SolarSystem {
 #[derive(Debug)]
 pub enum AddModuleError {
     FitNotFound(FitFoundError),
-    SlotTaken(OrderedSlotError),
 }
 impl std::error::Error for AddModuleError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::FitNotFound(e) => Some(e),
-            Self::SlotTaken(e) => Some(e),
         }
     }
 }
@@ -132,17 +130,11 @@ impl std::fmt::Display for AddModuleError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::FitNotFound(e) => e.fmt(f),
-            Self::SlotTaken(e) => e.fmt(f),
         }
     }
 }
 impl From<FitFoundError> for AddModuleError {
     fn from(error: FitFoundError) -> Self {
         Self::FitNotFound(error)
-    }
-}
-impl From<OrderedSlotError> for AddModuleError {
-    fn from(error: OrderedSlotError) -> Self {
-        Self::SlotTaken(error)
     }
 }
