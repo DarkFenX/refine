@@ -194,6 +194,14 @@ class EveAttr(IntEnum):
     overload_self_duration_bonus = 1206
     drone_bandwidth = 1271
     drone_bandwidth_used = 1272
+    can_fit_ship_group1 = 1298
+    can_fit_ship_group2 = 1299
+    can_fit_ship_group3 = 1300
+    can_fit_ship_group4 = 1301
+    can_fit_ship_type1 = 1302
+    can_fit_ship_type2 = 1303
+    can_fit_ship_type3 = 1304
+    can_fit_ship_type4 = 1305
     max_range_hidden = 1317
     warp_scramble_range_bonus = 1327
     activation_blocked = 1349
@@ -208,8 +216,11 @@ class EveAttr(IntEnum):
     armor_max_dmg_resonance = 1527
     resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886
+    can_fit_ship_type5 = 1944
     gate_scramble_status = 1973
     gate_scramble_strength = 1974
+    can_fit_ship_group9 = 2065
+    can_fit_ship_type6 = 2103
     remote_resistance_id = 2138
     ftr_tubes = 2216
     ftr_light_slots = 2217
@@ -220,12 +231,27 @@ class EveAttr(IntEnum):
     ftr_sq_is_heavy = 2214
     doomsday_aoe_range = 2279
     ftr_abil_launch_bomb_type = 2324
+    can_fit_ship_group10 = 2396
+    can_fit_ship_type7 = 2463
     warfare_buff_1_id = 2468
     warfare_buff_1_value = 2469
     warfare_buff_2_id = 2470
     warfare_buff_2_value = 2471
     warfare_buff_3_id = 2472
     warfare_buff_3_value = 2473
+    can_fit_ship_group11 = 2476
+    can_fit_ship_group12 = 2477
+    can_fit_ship_group13 = 2478
+    can_fit_ship_group14 = 2479
+    can_fit_ship_group15 = 2480
+    can_fit_ship_group16 = 2481
+    can_fit_ship_group17 = 2482
+    can_fit_ship_group18 = 2483
+    can_fit_ship_group19 = 2484
+    can_fit_ship_group20 = 2485
+    can_fit_ship_type8 = 2486
+    can_fit_ship_type9 = 2487
+    can_fit_ship_type10 = 2488
     warfare_buff_4_id = 2536
     warfare_buff_4_value = 2537
     ftr_standup_light_slots = 2737
@@ -234,6 +260,7 @@ class EveAttr(IntEnum):
     ftr_sq_is_standup_light = 2740
     ftr_sq_is_standup_support = 2741
     ftr_sq_is_standup_heavy = 2742
+    can_fit_ship_type11 = 2758
 
 
 @unique
@@ -352,6 +379,7 @@ class ApiValType(StrEnum):
     implant_slot_index = 'implant_slot_index'
     booster_slot_index = 'booster_slot_index'
     subsystem_slot_index = 'subsystem_slot_index'
+    ship_limit = 'ship_limit'
 
 
 @unique
