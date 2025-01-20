@@ -16,8 +16,7 @@ pub struct AItemExtras {
     pub kind: Option<AItemKind>,
     /// Unmodified and unmutated item volume.
     pub volume: Option<AttrVal>,
-    /// Defines which ships this item can be fit to. If set, item is limited either via type or
-    /// group.
+    /// If set, item can be fit to a ship which has a type or group match with the limit.
     pub ship_limit: Option<AItemShipLimit>,
 }
 impl AItemExtras {
