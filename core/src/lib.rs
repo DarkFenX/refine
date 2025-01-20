@@ -22,7 +22,7 @@
 
 pub use defs::{
     Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
-    Idx, MutaRoll, SkillLevel, SolFitId, SolFleetId, SolItemId, OF, VERSION,
+    Idx, MutaRoll, SkillLevel, SlotNumber, SolFitId, SolFleetId, SolItemId, OF, VERSION,
 };
 pub use sol::{
     info::{

@@ -1,7 +1,6 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SlotNumber, SolFitId, SolItemId},
-    ec,
     sol::uad::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
     src::Src,
     util::{Named, StMap},
@@ -73,10 +72,10 @@ impl SolSubsystem {
         self.base.set_state(bool_to_state(state))
     }
     pub(in crate::sol) fn get_slot(&self) -> Option<SlotNumber> {
-        match self.get_attrs() {
-            Some(attrs) => match attrs.get(&ec::attrs::SUBSYSTEM_SLOT) {
-                None => None,
-                Some(value) => Some(value.round() as SlotNumber),
+        match self.get_a_extras() {
+            Some(extras) => match extras.kind {
+                Some(ad::AItemKind::Subsystem(slot)) => Some(slot),
+                _ => None,
             },
             None => None,
         }

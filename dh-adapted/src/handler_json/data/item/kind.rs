@@ -1,13 +1,13 @@
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::handler_json) enum CItemKind {
-    Booster,
+    Booster(rc::SlotNumber),
     Character,
     Charge,
     Drone,
     EffectBeacon,
     FighterSquad(CFighterKind),
-    Implant,
+    Implant(rc::SlotNumber),
     ModHigh,
     ModLow,
     ModMid,
@@ -16,18 +16,18 @@ pub(in crate::handler_json) enum CItemKind {
     Ship,
     Skill,
     Stance,
-    Subsystem,
+    Subsystem(rc::SlotNumber),
 }
 impl From<&rc::ad::AItemKind> for CItemKind {
     fn from(item_kind: &rc::ad::AItemKind) -> Self {
         match item_kind {
-            rc::ad::AItemKind::Booster => Self::Booster,
+            rc::ad::AItemKind::Booster(slot) => Self::Booster(*slot),
             rc::ad::AItemKind::Character => Self::Character,
             rc::ad::AItemKind::Charge => Self::Charge,
             rc::ad::AItemKind::Drone => Self::Drone,
             rc::ad::AItemKind::EffectBeacon => Self::EffectBeacon,
             rc::ad::AItemKind::FighterSquad(fighter_kind) => Self::FighterSquad(fighter_kind.into()),
-            rc::ad::AItemKind::Implant => Self::Implant,
+            rc::ad::AItemKind::Implant(slot) => Self::Implant(*slot),
             rc::ad::AItemKind::ModHigh => Self::ModHigh,
             rc::ad::AItemKind::ModLow => Self::ModLow,
             rc::ad::AItemKind::ModMid => Self::ModMid,
@@ -36,20 +36,20 @@ impl From<&rc::ad::AItemKind> for CItemKind {
             rc::ad::AItemKind::Ship => Self::Ship,
             rc::ad::AItemKind::Skill => Self::Skill,
             rc::ad::AItemKind::Stance => Self::Stance,
-            rc::ad::AItemKind::Subsystem => Self::Subsystem,
+            rc::ad::AItemKind::Subsystem(slot) => Self::Subsystem(*slot),
         }
     }
 }
 impl Into<rc::ad::AItemKind> for &CItemKind {
     fn into(self) -> rc::ad::AItemKind {
         match self {
-            CItemKind::Booster => rc::ad::AItemKind::Booster,
+            CItemKind::Booster(slot) => rc::ad::AItemKind::Booster(*slot),
             CItemKind::Character => rc::ad::AItemKind::Character,
             CItemKind::Charge => rc::ad::AItemKind::Charge,
             CItemKind::Drone => rc::ad::AItemKind::Drone,
             CItemKind::EffectBeacon => rc::ad::AItemKind::EffectBeacon,
             CItemKind::FighterSquad(fighter_kind) => rc::ad::AItemKind::FighterSquad(fighter_kind.into()),
-            CItemKind::Implant => rc::ad::AItemKind::Implant,
+            CItemKind::Implant(slot) => rc::ad::AItemKind::Implant(*slot),
             CItemKind::ModHigh => rc::ad::AItemKind::ModHigh,
             CItemKind::ModLow => rc::ad::AItemKind::ModLow,
             CItemKind::ModMid => rc::ad::AItemKind::ModMid,
@@ -58,7 +58,7 @@ impl Into<rc::ad::AItemKind> for &CItemKind {
             CItemKind::Ship => rc::ad::AItemKind::Ship,
             CItemKind::Skill => rc::ad::AItemKind::Skill,
             CItemKind::Stance => rc::ad::AItemKind::Stance,
-            CItemKind::Subsystem => rc::ad::AItemKind::Subsystem,
+            CItemKind::Subsystem(slot) => rc::ad::AItemKind::Subsystem(*slot),
         }
     }
 }

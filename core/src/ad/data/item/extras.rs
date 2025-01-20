@@ -1,6 +1,6 @@
 use crate::{
     ad::{AFighterKind, AItemEffectData, AItemKind},
-    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, OF},
+    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, SlotNumber, OF},
     ec,
     util::StMap,
 };
@@ -50,7 +50,9 @@ fn get_item_kind(
 ) -> Option<AItemKind> {
     let mut kinds = Vec::new();
     if cat_id == ec::itemcats::IMPLANT && attrs.contains_key(&ec::attrs::BOOSTERNESS) {
-        kinds.push(AItemKind::Booster);
+        kinds.push(AItemKind::Booster(
+            attrs.get(&ec::attrs::BOOSTERNESS).unwrap().round() as SlotNumber
+        ));
     };
     if grp_id == ec::itemgrps::CHARACTER {
         kinds.push(AItemKind::Character);
@@ -88,7 +90,9 @@ fn get_item_kind(
         );
     };
     if cat_id == ec::itemcats::IMPLANT && attrs.contains_key(&ec::attrs::IMPLANTNESS) {
-        kinds.push(AItemKind::Implant);
+        kinds.push(AItemKind::Implant(
+            attrs.get(&ec::attrs::IMPLANTNESS).unwrap().round() as SlotNumber
+        ));
     };
     if cat_id == ec::itemcats::MODULE && effects.contains_key(&ec::effects::HI_POWER) {
         kinds.push(AItemKind::ModHigh);
@@ -114,8 +118,13 @@ fn get_item_kind(
     if grp_id == ec::itemgrps::SHIP_MOD {
         kinds.push(AItemKind::Stance);
     };
-    if cat_id == ec::itemcats::SUBSYSTEM && effects.contains_key(&ec::effects::SUBSYSTEM) {
-        kinds.push(AItemKind::Subsystem);
+    if cat_id == ec::itemcats::SUBSYSTEM
+        && effects.contains_key(&ec::effects::SUBSYSTEM)
+        && attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT)
+    {
+        kinds.push(AItemKind::Subsystem(
+            attrs.get(&ec::attrs::SUBSYSTEM_SLOT).unwrap().round() as SlotNumber,
+        ));
     };
     match kinds.len() {
         1 => Some(kinds.pop().unwrap()),

@@ -1,13 +1,15 @@
+use crate::defs::SlotNumber;
+
 /// Contains adapted item types.
 #[derive(Copy, Clone)]
 pub enum AItemKind {
-    Booster,
+    Booster(SlotNumber),
     Character,
     Charge,
     Drone,
     EffectBeacon,
     FighterSquad(AFighterKind),
-    Implant,
+    Implant(SlotNumber),
     ModHigh,
     ModLow,
     ModMid,
@@ -16,7 +18,7 @@ pub enum AItemKind {
     Ship,
     Skill,
     Stance,
-    Subsystem,
+    Subsystem(SlotNumber),
 }
 
 /// Contains adapted fighter squad types.
