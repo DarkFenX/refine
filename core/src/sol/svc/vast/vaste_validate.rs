@@ -133,6 +133,11 @@ impl SolVast {
                 return false;
             }
         }
+        if options.ship_limit {
+            if !fit_data.validate_ship_limit_fast(uad, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -216,6 +221,9 @@ impl SolVast {
         }
         if options.subsystem_slot_index {
             result.subsystem_slot_index = fit_data.validate_subsystem_slot_index_verbose();
+        }
+        if options.ship_limit {
+            result.ship_limit = fit_data.validate_ship_limit_verbose(uad, fit);
         }
         result
     }

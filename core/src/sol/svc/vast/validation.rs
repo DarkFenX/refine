@@ -1,4 +1,4 @@
-use crate::sol::svc::vast::{SolResValFail, SolSlotIndexValFail, SolSlotValFail};
+use crate::sol::svc::vast::{SolResValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail};
 
 #[derive(Copy, Clone)]
 pub struct SolValOptions {
@@ -25,6 +25,7 @@ pub struct SolValOptions {
     pub implant_slot_index: bool,
     pub booster_slot_index: bool,
     pub subsystem_slot_index: bool,
+    pub ship_limit: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -51,6 +52,7 @@ impl SolValOptions {
         implant_slot_index: bool,
         booster_slot_index: bool,
         subsystem_slot_index: bool,
+        ship_limit: bool,
     ) -> Self {
         Self {
             cpu,
@@ -76,6 +78,7 @@ impl SolValOptions {
             implant_slot_index,
             booster_slot_index,
             subsystem_slot_index,
+            ship_limit,
         }
     }
     pub fn new_enabled() -> Self {
@@ -103,6 +106,7 @@ impl SolValOptions {
             implant_slot_index: true,
             booster_slot_index: true,
             subsystem_slot_index: true,
+            ship_limit: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -130,6 +134,7 @@ impl SolValOptions {
             implant_slot_index: false,
             booster_slot_index: false,
             subsystem_slot_index: false,
+            ship_limit: false,
         }
     }
 }
@@ -158,6 +163,7 @@ pub struct SolValResult {
     pub implant_slot_index: Vec<SolSlotIndexValFail>,
     pub booster_slot_index: Vec<SolSlotIndexValFail>,
     pub subsystem_slot_index: Vec<SolSlotIndexValFail>,
+    pub ship_limit: Option<SolShipLimitValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -185,6 +191,7 @@ impl SolValResult {
             implant_slot_index: Vec::new(),
             booster_slot_index: Vec::new(),
             subsystem_slot_index: Vec::new(),
+            ship_limit: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -211,5 +218,6 @@ impl SolValResult {
             && self.implant_slot_index.is_empty()
             && self.booster_slot_index.is_empty()
             && self.subsystem_slot_index.is_empty()
+            && self.ship_limit.is_none()
     }
 }

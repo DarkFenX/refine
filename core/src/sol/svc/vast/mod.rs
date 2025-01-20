@@ -2,7 +2,9 @@ pub use validation::{SolValOptions, SolValResult};
 pub(in crate::sol::svc) use vast::SolVast;
 use vast::SolVastFitData;
 use vaste_stats_fit::{SolStatRes, SolStatSlot};
-pub use vaste_vals_fit::{SolResUser, SolResValFail, SolSlotIndexValFail, SolSlotValFail};
+pub use vaste_vals_fit::{
+    SolResUser, SolResValFail, SolShipLimitMismatch, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail,
+};
 
 mod validation;
 mod vast;
