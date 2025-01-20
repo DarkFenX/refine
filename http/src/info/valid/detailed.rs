@@ -1,4 +1,4 @@
-use crate::info::valid::details::{HResValFail, HSlotIndexValFail, HSlotValFail};
+use crate::info::valid::details::{HResValFail, HShipLimitValFail, HSlotIndexValFail, HSlotValFail};
 
 #[derive(serde::Serialize)]
 pub(crate) struct HValidInfoDetailed {
@@ -63,6 +63,8 @@ struct HValidInfoDetails {
     booster_slot_index: HSlotIndexValFail,
     #[serde(skip_serializing_if = "HSlotIndexValFail::is_empty")]
     subsystem_slot_index: HSlotIndexValFail,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ship_limit: Option<HShipLimitValFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -89,6 +91,7 @@ impl HValidInfoDetails {
             && self.implant_slot_index.is_empty()
             && self.booster_slot_index.is_empty()
             && self.subsystem_slot_index.is_empty()
+            && self.ship_limit.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -126,6 +129,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             implant_slot_index: (&core_val_result.implant_slot_index).into(),
             booster_slot_index: (&core_val_result.booster_slot_index).into(),
             subsystem_slot_index: (&core_val_result.subsystem_slot_index).into(),
+            ship_limit: core_val_result.ship_limit.as_ref().map(|v| v.into()),
         }
     }
 }

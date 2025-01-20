@@ -46,6 +46,7 @@ impl HValidFitCmd {
                 "implant_slot_index" => core_options.implant_slot_index = alt_value,
                 "booster_slot_index" => core_options.booster_slot_index = alt_value,
                 "subsystem_slot_index" => core_options.subsystem_slot_index = alt_value,
+                "ship_limit" => core_options.ship_limit = alt_value,
                 _ => (),
             }
         }
