@@ -1,10 +1,10 @@
 use crate::{
-    ad::{AItemEffectData, AItemKind},
+    ad::{AItemEffectData, AItemKind, AItemShipLimit},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId},
     util::StMap,
 };
 
-use super::{kind::get_item_kind, volume::get_item_volume};
+use super::{kind::get_item_kind, ship_limit::get_item_ship_limit, volume::get_item_volume};
 
 /// Holds extra item-specific data.
 ///
@@ -16,6 +16,9 @@ pub struct AItemExtras {
     pub kind: Option<AItemKind>,
     /// Unmodified and unmutated item volume.
     pub volume: Option<AttrVal>,
+    /// Defines which ships this item can be fit to. If set, item is limited either via type or
+    /// group.
+    pub ship_limit: Option<AItemShipLimit>,
 }
 impl AItemExtras {
     pub(crate) fn new_with_data(
@@ -27,6 +30,7 @@ impl AItemExtras {
         let mut extras = Self {
             kind: None,
             volume: None,
+            ship_limit: None,
         };
         extras.update(grp_id, cat_id, attrs, effects);
         extras
@@ -40,5 +44,6 @@ impl AItemExtras {
     ) {
         self.kind = get_item_kind(grp_id, cat_id, attrs, effects);
         self.volume = get_item_volume(attrs);
+        self.ship_limit = get_item_ship_limit(attrs);
     }
 }
