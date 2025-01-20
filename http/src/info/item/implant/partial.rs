@@ -7,6 +7,8 @@ pub(crate) struct HImplantInfoPartial {
     pub(crate) type_id: rc::EItemId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SolFitId,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) slot: Option<rc::SlotNumber>,
     pub(crate) enabled: bool,
 }
 impl From<&rc::SolImplantInfo> for HImplantInfoPartial {
@@ -16,6 +18,7 @@ impl From<&rc::SolImplantInfo> for HImplantInfoPartial {
             kind: "implant",
             type_id: core_implant_info.type_id,
             fit_id: core_implant_info.fit_id,
+            slot: core_implant_info.slot,
             enabled: core_implant_info.enabled,
         }
     }

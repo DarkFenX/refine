@@ -7,6 +7,8 @@ pub(crate) struct HSubsystemInfoPartial {
     pub(crate) type_id: rc::EItemId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SolFitId,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) slot: Option<rc::SlotNumber>,
     pub(crate) enabled: bool,
 }
 impl From<&rc::SolSubsystemInfo> for HSubsystemInfoPartial {
@@ -16,6 +18,7 @@ impl From<&rc::SolSubsystemInfo> for HSubsystemInfoPartial {
             kind: "subsystem",
             type_id: core_subsystem_info.type_id,
             fit_id: core_subsystem_info.fit_id,
+            slot: core_subsystem_info.slot,
             enabled: core_subsystem_info.enabled,
         }
     }

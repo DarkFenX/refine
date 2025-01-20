@@ -11,6 +11,8 @@ pub(crate) struct HBoosterInfoPartial {
     pub(crate) type_id: rc::EItemId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SolFitId,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) slot: Option<rc::SlotNumber>,
     pub(crate) enabled: bool,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) side_effects: HashMap<rc::EEffectId, HSideEffectInfo>,
@@ -27,6 +29,7 @@ impl HBoosterInfoPartial {
             kind: "booster",
             type_id: core_booster_info.type_id,
             fit_id: core_booster_info.fit_id,
+            slot: core_booster_info.slot,
             enabled: core_booster_info.enabled,
             side_effects,
         }
