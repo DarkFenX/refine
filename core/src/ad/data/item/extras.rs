@@ -13,7 +13,7 @@ use crate::{
 pub struct AItemExtras {
     /// Item type.
     pub kind: Option<AItemKind>,
-    /// Unmodified item volume.
+    /// Unmodified and unmutated item volume.
     pub volume: Option<AttrVal>,
 }
 impl AItemExtras {
