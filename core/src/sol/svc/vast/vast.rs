@@ -1,7 +1,7 @@
 use crate::{
-    defs::{AttrVal, SolFitId, SolItemId},
+    defs::{AttrVal, SlotNumber, SolFitId, SolItemId},
     err::basic::FitFoundError,
-    util::{StMap, StSet},
+    util::{StMap, StMapSetL1, StSet},
 };
 
 // Vast stands for VAlidation and STats.
@@ -49,6 +49,9 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) mods_turret: StSet<SolItemId>,
     // Modules with "launcherFitted" effect active
     pub(in crate::sol::svc::vast) mods_launcher: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) slotted_implants: StMapSetL1<SlotNumber, SolItemId>,
+    pub(in crate::sol::svc::vast) slotted_boosters: StMapSetL1<SlotNumber, SolItemId>,
+    pub(in crate::sol::svc::vast) slotted_subsystems: StMapSetL1<SlotNumber, SolItemId>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -66,6 +69,9 @@ impl SolVastFitData {
             standup_heavy_fighters_online: StSet::new(),
             mods_turret: StSet::new(),
             mods_launcher: StSet::new(),
+            slotted_implants: StMapSetL1::new(),
+            slotted_boosters: StMapSetL1::new(),
+            slotted_subsystems: StMapSetL1::new(),
         }
     }
 }

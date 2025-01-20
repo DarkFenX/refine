@@ -57,6 +57,21 @@ impl SolVastFitData {
         for item_id in self.mods_launcher.iter() {
             check_item(uad, item_id, true)?;
         }
+        for item_ids in self.slotted_implants.values() {
+            for item_id in item_ids {
+                check_item(uad, item_id, true)?;
+            }
+        }
+        for item_ids in self.slotted_boosters.values() {
+            for item_id in item_ids {
+                check_item(uad, item_id, true)?;
+            }
+        }
+        for item_ids in self.slotted_subsystems.values() {
+            for item_id in item_ids {
+                check_item(uad, item_id, true)?;
+            }
+        }
         Ok(())
     }
 }

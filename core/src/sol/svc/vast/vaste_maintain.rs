@@ -16,17 +16,59 @@ impl SolVast {
         self.fit_datas.remove(fit_id);
     }
     pub(in crate::sol::svc) fn item_loaded(&mut self, item: &SolItem) {
-        if let SolItem::Drone(drone) = item {
-            if let Some(val) = drone.get_a_extras().unwrap().volume {
-                let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
-                fit_data.drones_volume.insert(drone.get_id(), val);
+        match item {
+            SolItem::Drone(drone) => {
+                if let Some(val) = drone.get_a_extras().unwrap().volume {
+                    let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
+                    fit_data.drones_volume.insert(drone.get_id(), val);
+                }
             }
+            SolItem::Implant(implant) => {
+                if let Some(ad::AItemKind::Implant(slot)) = implant.get_a_extras().unwrap().kind {
+                    let fit_data = self.get_fit_data_mut(&implant.get_fit_id()).unwrap();
+                    fit_data.slotted_implants.add_entry(slot, implant.get_id());
+                }
+            }
+            SolItem::Booster(booster) => {
+                if let Some(ad::AItemKind::Booster(slot)) = booster.get_a_extras().unwrap().kind {
+                    let fit_data = self.get_fit_data_mut(&booster.get_fit_id()).unwrap();
+                    fit_data.slotted_boosters.add_entry(slot, booster.get_id());
+                }
+            }
+            SolItem::Subsystem(subsystem) => {
+                if let Some(ad::AItemKind::Subsystem(slot)) = subsystem.get_a_extras().unwrap().kind {
+                    let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
+                    fit_data.slotted_subsystems.add_entry(slot, subsystem.get_id());
+                }
+            }
+            _ => (),
         }
     }
     pub(in crate::sol::svc) fn item_unloaded(&mut self, item: &SolItem) {
-        if let SolItem::Drone(drone) = item {
-            let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
-            fit_data.drones_volume.remove(&drone.get_id());
+        match item {
+            SolItem::Drone(drone) => {
+                let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
+                fit_data.drones_volume.remove(&drone.get_id());
+            }
+            SolItem::Implant(implant) => {
+                if let Some(ad::AItemKind::Implant(slot)) = implant.get_a_extras().unwrap().kind {
+                    let fit_data = self.get_fit_data_mut(&implant.get_fit_id()).unwrap();
+                    fit_data.slotted_implants.remove_entry(&slot, &implant.get_id());
+                }
+            }
+            SolItem::Booster(booster) => {
+                if let Some(ad::AItemKind::Booster(slot)) = booster.get_a_extras().unwrap().kind {
+                    let fit_data = self.get_fit_data_mut(&booster.get_fit_id()).unwrap();
+                    fit_data.slotted_boosters.remove_entry(&slot, &booster.get_id());
+                }
+            }
+            SolItem::Subsystem(subsystem) => {
+                if let Some(ad::AItemKind::Subsystem(slot)) = subsystem.get_a_extras().unwrap().kind {
+                    let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
+                    fit_data.slotted_subsystems.remove_entry(&slot, &subsystem.get_id());
+                }
+            }
+            _ => (),
         }
     }
     pub(in crate::sol::svc) fn item_state_activated(&mut self, item: &SolItem, state: &SolItemState) {
