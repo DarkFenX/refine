@@ -17,9 +17,9 @@ impl SolVast {
     }
     pub(in crate::sol::svc) fn item_loaded(&mut self, item: &SolItem) {
         if let SolItem::Drone(drone) = item {
-            if let Some(val) = drone.get_attrs().unwrap().get(&ec::attrs::VOLUME) {
+            if let Some(val) = drone.get_a_extras().unwrap().volume {
                 let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
-                fit_data.drones_volume.insert(drone.get_id(), *val);
+                fit_data.drones_volume.insert(drone.get_id(), val);
             }
         }
     }

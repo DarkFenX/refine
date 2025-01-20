@@ -13,22 +13,24 @@ use crate::{
 pub struct AItemExtras {
     /// Item type.
     pub kind: Option<AItemKind>,
+    /// Unmodified item volume.
+    pub volume: Option<AttrVal>,
 }
 impl AItemExtras {
-    pub(crate) fn new_empty() -> Self {
-        Self { kind: None }
-    }
     pub(crate) fn new_with_data(
         grp_id: EItemGrpId,
         cat_id: EItemCatId,
         attrs: &StMap<EAttrId, AttrVal>,
         effects: &StMap<EEffectId, AItemEffectData>,
     ) -> Self {
-        let mut extras = AItemExtras::new_empty();
-        extras.fill(grp_id, cat_id, attrs, effects);
+        let mut extras = Self {
+            kind: None,
+            volume: None,
+        };
+        extras.update(grp_id, cat_id, attrs, effects);
         extras
     }
-    pub(crate) fn fill(
+    pub(crate) fn update(
         &mut self,
         grp_id: EItemGrpId,
         cat_id: EItemCatId,
@@ -36,6 +38,7 @@ impl AItemExtras {
         effects: &StMap<EEffectId, AItemEffectData>,
     ) {
         self.kind = get_item_kind(grp_id, cat_id, attrs, effects);
+        self.volume = attrs.get(&ec::attrs::VOLUME).map(|v| *v);
     }
 }
 

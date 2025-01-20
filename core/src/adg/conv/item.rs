@@ -81,7 +81,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
     for mut a_item in a_item_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id) {
         a_item
             .extras
-            .fill(a_item.grp_id, a_item.cat_id, &a_item.attr_vals, &a_item.effect_datas);
+            .update(a_item.grp_id, a_item.cat_id, &a_item.attr_vals, &a_item.effect_datas);
         a_items.push(a_item);
     }
     a_items
