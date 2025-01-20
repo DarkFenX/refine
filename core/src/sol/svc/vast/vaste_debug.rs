@@ -30,6 +30,33 @@ impl SolVastFitData {
             // Holds unloaded drones as well
             check_item(uad, item_id, false)?;
         }
+        for item_id in self.fighters_online.iter() {
+            check_item(uad, item_id, false)?;
+        }
+        for item_id in self.support_fighters_online.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.light_fighters_online.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.heavy_fighters_online.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.standup_support_fighters_online.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.standup_light_fighters_online.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.standup_heavy_fighters_online.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.mods_turret.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.mods_launcher.iter() {
+            check_item(uad, item_id, true)?;
+        }
         Ok(())
     }
 }
