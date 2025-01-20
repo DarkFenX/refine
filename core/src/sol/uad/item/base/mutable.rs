@@ -83,9 +83,15 @@ impl SolItemBaseMutable {
         };
         // Make proper mutated item once we have all the data
         let mut attrs = get_combined_attr_values(src.get_a_item(&type_id), mutated_a_item);
+        let extras = ad::AItemExtras::new_with_data(
+            mutated_a_item.grp_id,
+            mutated_a_item.cat_id,
+            &attrs,
+            &mutated_a_item.effect_datas,
+        );
         let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
-        item_mutation.cache = Some(SolItemMutationDataCache::new(type_id, a_mutator.clone(), attrs));
+        item_mutation.cache = Some(SolItemMutationDataCache::new(type_id, a_mutator.clone(), attrs, extras));
         Self {
             base: SolItemBase::new_with_item(id, mutated_a_item.clone(), state),
             mutation: Some(item_mutation),
@@ -123,7 +129,14 @@ impl SolItemBaseMutable {
         self.base.get_skill_reqs()
     }
     pub(in crate::sol::uad::item) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
-        self.base.get_a_extras()
+        let item_mutation = match &self.mutation {
+            Some(item_mutation) => item_mutation,
+            None => return self.base.get_a_extras(),
+        };
+        match &item_mutation.cache {
+            Some(cache) => Some(&cache.extras),
+            None => self.base.get_a_extras(),
+        }
     }
     pub(in crate::sol::uad::item) fn get_state(&self) -> SolItemState {
         self.base.get_state()
@@ -197,11 +210,22 @@ impl SolItemBaseMutable {
         };
         // Compose attribute cache
         let mut attrs = get_combined_attr_values(src.get_a_item(&base_type_id), mutated_a_item);
+        let extras = ad::AItemExtras::new_with_data(
+            mutated_a_item.grp_id,
+            mutated_a_item.cat_id,
+            &attrs,
+            &mutated_a_item.effect_datas,
+        );
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
         self.base.set_type_id(mutated_a_item.id);
         self.base.set_a_item(mutated_a_item.clone());
-        item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, a_mutator.clone(), attrs))
+        item_mutation.cache = Some(SolItemMutationDataCache::new(
+            base_type_id,
+            a_mutator.clone(),
+            attrs,
+            extras,
+        ))
     }
     // Mutation-specific methods
     pub(in crate::sol::uad::item) fn has_mutation_data(&self) -> bool {
@@ -301,9 +325,20 @@ impl SolItemBaseMutable {
         };
         // Since we have all the data now, apply mutation properly
         let mut attrs = get_combined_attr_values(self.base.get_a_item(), mutated_a_item);
+        let extras = ad::AItemExtras::new_with_data(
+            mutated_a_item.grp_id,
+            mutated_a_item.cat_id,
+            &attrs,
+            &mutated_a_item.effect_datas,
+        );
         let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
-        item_mutation.cache = Some(SolItemMutationDataCache::new(base_type_id, a_mutator.clone(), attrs));
+        item_mutation.cache = Some(SolItemMutationDataCache::new(
+            base_type_id,
+            a_mutator.clone(),
+            attrs,
+            extras,
+        ));
         self.base.set_type_id(mutated_a_item.id);
         self.base.set_a_item(mutated_a_item.clone());
         self.mutation = Some(item_mutation);
@@ -459,13 +494,20 @@ struct SolItemMutationDataCache {
     base_type_id: EItemId,
     mutator: ad::ArcMuta,
     merged_attrs: StMap<EAttrId, AttrVal>,
+    extras: ad::AItemExtras,
 }
 impl SolItemMutationDataCache {
-    fn new(base_type_id: EItemId, mutator: ad::ArcMuta, merged_attrs: StMap<EAttrId, AttrVal>) -> Self {
+    fn new(
+        base_type_id: EItemId,
+        mutator: ad::ArcMuta,
+        merged_attrs: StMap<EAttrId, AttrVal>,
+        extras: ad::AItemExtras,
+    ) -> Self {
         Self {
             base_type_id,
             mutator,
             merged_attrs,
+            extras,
         }
     }
 }

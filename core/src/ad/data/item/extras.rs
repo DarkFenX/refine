@@ -9,13 +9,24 @@ use crate::{
 ///
 /// It is derived from data normally available on item and other entities, but is calculated on
 /// cache generation time for optimization purposes.
+#[derive(Clone)]
 pub struct AItemExtras {
     /// Item type.
     pub kind: Option<AItemKind>,
 }
 impl AItemExtras {
-    pub(crate) fn new() -> Self {
+    pub(crate) fn new_empty() -> Self {
         Self { kind: None }
+    }
+    pub(crate) fn new_with_data(
+        grp_id: EItemGrpId,
+        cat_id: EItemCatId,
+        attrs: &StMap<EAttrId, AttrVal>,
+        effects: &StMap<EEffectId, AItemEffectData>,
+    ) -> Self {
+        let mut extras = AItemExtras::new_empty();
+        extras.fill(grp_id, cat_id, attrs, effects);
+        extras
     }
     pub(crate) fn fill(
         &mut self,
