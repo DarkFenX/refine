@@ -1,6 +1,5 @@
 from tests.support.consts import ApiValType
 from tests.support.util import AttrDict, AttrHookDef
-
 from .resource import ValResourceDetails
 from .ship_limit import ValShipLimitDetails
 from .slot_amount import ValSlotAmountDetails

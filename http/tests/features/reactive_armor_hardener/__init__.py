@@ -148,7 +148,7 @@ def make_eve_ship(
         id_: Union[int, type[Default]] = Default,
         resos: tuple[float, float, float, float]):
     eve_ship_id = client.mk_eve_ship(datas=datas, id_=id_, attrs={
-        k: v  for k, v in zip(
+        k: v for k, v in zip(
             (basic_info.res_em_attr_id,
              basic_info.res_therm_attr_id,
              basic_info.res_kin_attr_id,

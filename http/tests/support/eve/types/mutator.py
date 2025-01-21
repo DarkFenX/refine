@@ -34,7 +34,6 @@ def convert_attributes(
     return converted
 
 
-
 class Mutator:
 
     def __init__(
