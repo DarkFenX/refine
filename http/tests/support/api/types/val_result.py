@@ -1,3 +1,4 @@
+from tests.support.consts import ApiValType
 from tests.support.util import AttrDict, AttrHookDef
 
 
@@ -11,9 +12,9 @@ class ValResultDetails(AttrDict):
 
     def __init__(self, *, data: dict):
         super().__init__(data=data, hooks={
-            'implant_slot_index': AttrHookDef(func=lambda d: ValSlotIndexDetails(data=d)),
-            'booster_slot_index': AttrHookDef(func=lambda d: ValSlotIndexDetails(data=d)),
-            'subsystem_slot_index': AttrHookDef(func=lambda d: ValSlotIndexDetails(data=d))})
+            ApiValType.implant_slot_index: AttrHookDef(func=lambda d: ValSlotIndexDetails(data=d)),
+            ApiValType.booster_slot_index: AttrHookDef(func=lambda d: ValSlotIndexDetails(data=d)),
+            ApiValType.subsystem_slot_index: AttrHookDef(func=lambda d: ValSlotIndexDetails(data=d))})
 
 
 class ValSlotIndexDetails(dict):

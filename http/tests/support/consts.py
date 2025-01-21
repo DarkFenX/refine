@@ -264,6 +264,12 @@ class EveAttr(IntEnum):
 
 
 @unique
+class EveAttrUnit(IntEnum):
+    group_id = 115
+    item_id = 116
+
+
+@unique
 class ApiItemKind(StrEnum):
     autocharge = 'autocharge'
     booster = 'booster'

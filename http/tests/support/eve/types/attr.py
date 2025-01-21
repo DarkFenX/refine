@@ -22,6 +22,7 @@ class Attribute:
             default_value: Union[float, type[Absent]],
             min_attribute_id: Union[int, type[Absent]],
             max_attribute_id: Union[int, type[Absent]],
+            unit_id: Union[int, type[Absent]],
     ):
         self.id = id_
         self.stackable = stackable
@@ -29,6 +30,7 @@ class Attribute:
         self.default_value = default_value
         self.min_attribute_id = min_attribute_id
         self.max_attribute_id = max_attribute_id
+        self.unit_id = unit_id
 
     def to_primitives(self, *, primitive_data: EvePrimitives) -> None:
         attr_entry = {'attributeID': self.id}
@@ -37,6 +39,7 @@ class Attribute:
         conditional_insert(container=attr_entry, key='defaultValue', value=self.default_value, cast_to=float)
         conditional_insert(container=attr_entry, key='minAttributeID', value=self.min_attribute_id, cast_to=int)
         conditional_insert(container=attr_entry, key='maxAttributeID', value=self.max_attribute_id, cast_to=int)
+        conditional_insert(container=attr_entry, key='unitID', value=self.unit_id, cast_to=int)
         if self.id in primitive_data.dogmaattributes:
             raise TestDataConsistencyError(f'attempt to add attribute with duplicate ID {self.id}')
         primitive_data.dogmaattributes[self.id] = attr_entry

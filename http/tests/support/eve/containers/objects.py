@@ -139,6 +139,7 @@ class EveObjects:
             def_val: Union[float, type[Absent]],
             min_attr_id: Union[int, type[Absent]],
             max_attr_id: Union[int, type[Absent]],
+            unit_id: Union[int, type[Absent]],
     ) -> Attribute:
         attr = Attribute(
             id_=id_,
@@ -146,7 +147,8 @@ class EveObjects:
             high_is_good=high_is_good,
             default_value=def_val,
             min_attribute_id=min_attr_id,
-            max_attribute_id=max_attr_id)
+            max_attribute_id=max_attr_id,
+            unit_id=unit_id)
         self.attributes.setdefault(id_, []).append(attr)
         return attr
 

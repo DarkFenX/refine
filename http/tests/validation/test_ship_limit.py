@@ -2,7 +2,7 @@
 def test_mismatch_group(client, consts):
     eve_grp1_id = client.mk_eve_ship_group()
     eve_grp2_id = client.mk_eve_ship_group()
-    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1)
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
     eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp1_id})
     eve_ship_id = client.mk_eve_ship(grp_id=eve_grp2_id)
     client.create_sources()
@@ -15,3 +15,5 @@ def test_mismatch_group(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_grp2_id
+    assert api_val.details.ship_limit.mismatches[api_module.id].allowed_type_ids == []
+    assert api_val.details.ship_limit.mismatches[api_module.id].allowed_group_ids == [eve_grp1_id]
