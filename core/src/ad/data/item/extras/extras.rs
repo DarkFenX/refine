@@ -20,17 +20,20 @@ pub struct AItemExtras {
     pub ship_limit: Option<AItemShipLimit>,
 }
 impl AItemExtras {
+    pub(crate) fn new_empty() -> Self {
+        Self {
+            kind: None,
+            volume: None,
+            ship_limit: None,
+        }
+    }
     pub(crate) fn new_with_data(
         grp_id: EItemGrpId,
         cat_id: EItemCatId,
         attrs: &StMap<EAttrId, AttrVal>,
         effects: &StMap<EEffectId, AItemEffectData>,
     ) -> Self {
-        let mut extras = Self {
-            kind: None,
-            volume: None,
-            ship_limit: None,
-        };
+        let mut extras = Self::new_empty();
         extras.update(grp_id, cat_id, attrs, effects);
         extras
     }

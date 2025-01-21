@@ -11,6 +11,7 @@ use crate::{
 mod clean;
 mod conv;
 mod custom;
+mod extras;
 mod fetch;
 mod norm;
 mod pk;
@@ -31,6 +32,7 @@ pub(crate) fn generate_adapted_data(e_handler: &dyn ed::EveDataHandler) -> Resul
     valid::validate(&mut g_data, &g_supp);
     conv::convert(&g_data, &g_supp, &mut a_data);
     custom::customize(&mut a_data);
+    extras::fill_extra_data(&mut a_data);
     Ok(a_data)
 }
 

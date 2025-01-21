@@ -78,10 +78,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
     }
     // Item extra data
     let mut a_items = Vec::new();
-    for mut a_item in a_item_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id) {
-        a_item
-            .extras
-            .update(a_item.grp_id, a_item.cat_id, &a_item.attr_vals, &a_item.effect_datas);
+    for a_item in a_item_map.into_iter().map(|(_, v)| v).sorted_by_key(|v| v.id) {
         a_items.push(a_item);
     }
     a_items
