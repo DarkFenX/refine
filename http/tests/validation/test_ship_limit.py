@@ -45,8 +45,7 @@ def test_type1(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches[api_module.id].allowed_type_ids == [eve_allowed_ship_id]
-    assert api_val.details.ship_limit.mismatches[api_module.id].allowed_group_ids == []
+    assert api_val.details.ship_limit.mismatches == {api_module.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification

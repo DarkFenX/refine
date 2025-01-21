@@ -15,8 +15,7 @@ def test_fail_single(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total == 0
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
 
 
 def test_fail_multiple_ship(client, consts):
@@ -34,9 +33,7 @@ def test_fail_multiple_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 2
     assert api_val.details.subsystem_slots.total == 1
-    assert len(api_val.details.subsystem_slots.users) == 2
-    assert api_subsystem1.id in api_val.details.subsystem_slots.users
-    assert api_subsystem2.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == sorted([api_subsystem1.id, api_subsystem2.id])
 
 
 def test_fail_multiple_struct(client, consts):
@@ -54,9 +51,7 @@ def test_fail_multiple_struct(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 2
     assert api_val.details.subsystem_slots.total == 1
-    assert len(api_val.details.subsystem_slots.users) == 2
-    assert api_subsystem1.id in api_val.details.subsystem_slots.users
-    assert api_subsystem2.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == sorted([api_subsystem1.id, api_subsystem2.id])
 
 
 def test_equal(client, consts):
@@ -100,8 +95,7 @@ def test_modified_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total == 0
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -127,8 +121,7 @@ def test_fractional_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total == 0
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
@@ -152,8 +145,7 @@ def test_no_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total is None
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
 
 
 def test_unloaded_user(client, consts):
@@ -171,8 +163,7 @@ def test_unloaded_user(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total == 0
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
 
 
 def test_unloaded_ship(client, consts):
@@ -191,8 +182,7 @@ def test_unloaded_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total is None
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
 
 
 def test_no_value_total(client, consts):
@@ -211,8 +201,7 @@ def test_no_value_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total == 0
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
 
 
 def test_no_attr_total(client, consts):
@@ -231,8 +220,7 @@ def test_no_attr_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total is None
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
 
 
 def test_criterion_state(client, consts):
@@ -250,8 +238,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total == 0
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
     # Action
     api_subsystem.change_subsystem(state=False)
     # Verification
@@ -259,8 +246,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.subsystem_slots.used == 1
     assert api_val.details.subsystem_slots.total == 0
-    assert len(api_val.details.subsystem_slots.users) == 1
-    assert api_subsystem.id in api_val.details.subsystem_slots.users
+    assert api_val.details.subsystem_slots.users == [api_subsystem.id]
 
 
 def test_criterion_item_type(client, consts):

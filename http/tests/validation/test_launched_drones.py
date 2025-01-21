@@ -15,8 +15,7 @@ def test_fail_single(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 1
     assert api_val.details.launched_drones.total == 0
-    assert len(api_val.details.launched_drones.users) == 1
-    assert api_drone.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == [api_drone.id]
 
 
 def test_fail_multiple(client, consts):
@@ -34,9 +33,7 @@ def test_fail_multiple(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 2
     assert api_val.details.launched_drones.total == 1
-    assert len(api_val.details.launched_drones.users) == 2
-    assert api_drone1.id in api_val.details.launched_drones.users
-    assert api_drone2.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == sorted([api_drone1.id, api_drone2.id])
 
 
 def test_equal(client, consts):
@@ -80,8 +77,7 @@ def test_modified_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 1
     assert api_val.details.launched_drones.total == 0
-    assert len(api_val.details.launched_drones.users) == 1
-    assert api_drone.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == [api_drone.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -107,8 +103,7 @@ def test_fractional_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 1
     assert api_val.details.launched_drones.total == 0
-    assert len(api_val.details.launched_drones.users) == 1
-    assert api_drone.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == [api_drone.id]
     # Action
     api_fit.set_char(type_id=eve_char2_id)
     # Verification
@@ -132,8 +127,7 @@ def test_no_char(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 1
     assert api_val.details.launched_drones.total is None
-    assert len(api_val.details.launched_drones.users) == 1
-    assert api_drone.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == [api_drone.id]
 
 
 def test_unloaded_user(client, consts):
@@ -151,8 +145,7 @@ def test_unloaded_user(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 1
     assert api_val.details.launched_drones.total == 0
-    assert len(api_val.details.launched_drones.users) == 1
-    assert api_drone.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == [api_drone.id]
 
 
 def test_unloaded_char(client, consts):
@@ -171,8 +164,7 @@ def test_unloaded_char(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 1
     assert api_val.details.launched_drones.total is None
-    assert len(api_val.details.launched_drones.users) == 1
-    assert api_drone.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == [api_drone.id]
 
 
 def test_no_value_total(client, consts):
@@ -191,8 +183,7 @@ def test_no_value_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 1
     assert api_val.details.launched_drones.total == 0
-    assert len(api_val.details.launched_drones.users) == 1
-    assert api_drone.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == [api_drone.id]
 
 
 def test_no_attr_total(client, consts):
@@ -211,8 +202,7 @@ def test_no_attr_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 1
     assert api_val.details.launched_drones.total is None
-    assert len(api_val.details.launched_drones.users) == 1
-    assert api_drone.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == [api_drone.id]
 
 
 def test_criterion_state(client, consts):
@@ -236,8 +226,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_drones.used == 1
     assert api_val.details.launched_drones.total == 0
-    assert len(api_val.details.launched_drones.users) == 1
-    assert api_drone.id in api_val.details.launched_drones.users
+    assert api_val.details.launched_drones.users == [api_drone.id]
     # Action
     api_drone.change_drone(state=consts.ApiState.offline)
     # Verification

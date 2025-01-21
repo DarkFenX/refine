@@ -16,8 +16,7 @@ def test_fail_single(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
 
 
 def test_fail_multiple_ship(client, consts):
@@ -37,9 +36,7 @@ def test_fail_multiple_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 2
-    assert api_val.details.dronebay_volume.users[api_drone1.id] == approx(50)
-    assert api_val.details.dronebay_volume.users[api_drone2.id] == approx(100)
+    assert api_val.details.dronebay_volume.users == {api_drone1.id: approx(50), api_drone2.id: approx(100)}
 
 
 def test_fail_multiple_struct(client, consts):
@@ -59,9 +56,7 @@ def test_fail_multiple_struct(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 2
-    assert api_val.details.dronebay_volume.users[api_drone1.id] == approx(50)
-    assert api_val.details.dronebay_volume.users[api_drone2.id] == approx(100)
+    assert api_val.details.dronebay_volume.users == {api_drone1.id: approx(50), api_drone2.id: approx(100)}
 
 
 def test_equal(client, consts):
@@ -111,8 +106,7 @@ def test_modified_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
     # Action
     api_implant.remove()
     # Verification
@@ -121,8 +115,7 @@ def test_modified_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
 
 
 def test_modified_output(client, consts):
@@ -150,8 +143,7 @@ def test_modified_output(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(120)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -190,8 +182,7 @@ def test_mutation_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(130)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(130)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(130)}
     # Action
     api_drone.change_drone(mutation={eve_use_attr_id: None})
     # Verification
@@ -200,8 +191,7 @@ def test_mutation_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(130)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(130)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(130)}
 
 
 def test_rounding(client, consts):
@@ -222,9 +212,7 @@ def test_rounding(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(5.229)
     assert api_val.details.dronebay_volume.output == approx(5.223)
-    assert len(api_val.details.dronebay_volume.users) == 2
-    assert api_val.details.dronebay_volume.users[api_drone1.id] == approx(0.002)
-    assert api_val.details.dronebay_volume.users[api_drone2.id] == approx(5.227)
+    assert api_val.details.dronebay_volume.users == {api_drone1.id: approx(0.002), api_drone2.id: approx(5.227)}
 
 
 def test_no_ship(client, consts):
@@ -242,8 +230,7 @@ def test_no_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(5)
     assert api_val.details.dronebay_volume.output is None
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(5)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(5)}
 
 
 def test_unloaded_ship(client, consts):
@@ -263,8 +250,7 @@ def test_unloaded_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(5)
     assert api_val.details.dronebay_volume.output is None
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(5)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(5)}
 
 
 def test_unloaded_user(client, consts):
@@ -306,8 +292,7 @@ def test_non_positive(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(140)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone2.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone2.id: approx(150)}
 
 
 def test_no_value_use(client, consts):
@@ -327,8 +312,7 @@ def test_no_value_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone1.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone1.id: approx(150)}
 
 
 def test_no_value_output(client, consts):
@@ -348,8 +332,7 @@ def test_no_value_output(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(0)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
 
 
 def test_no_attr_use(client, consts):
@@ -369,8 +352,7 @@ def test_no_attr_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
 
 
 def test_no_attr_output(client, consts):
@@ -390,8 +372,7 @@ def test_no_attr_output(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output is None
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
 
 
 def test_criterion_state(client, consts):
@@ -410,8 +391,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
     # Action
     api_drone.change_drone(state=consts.ApiState.ghost)
     # Verification
@@ -419,8 +399,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.dronebay_volume.used == approx(150)
     assert api_val.details.dronebay_volume.output == approx(125)
-    assert len(api_val.details.dronebay_volume.users) == 1
-    assert api_val.details.dronebay_volume.users[api_drone.id] == approx(150)
+    assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
 
 
 def test_criterion_item_type(client, consts):

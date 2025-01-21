@@ -15,8 +15,7 @@ def test_fail_single(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total == 0
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
 
 
 def test_fail_multiple_ship(client, consts):
@@ -30,13 +29,13 @@ def test_fail_multiple_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiState.offline)
     api_module2 = api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiState.offline)
+    api_module3 = api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiState.offline)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.mid_slots])
     assert api_val.passed is False
-    assert api_val.details.mid_slots.used == 2
+    assert api_val.details.mid_slots.used == 3
     assert api_val.details.mid_slots.total == 1
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module2.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == sorted([api_module2.id, api_module3.id])
 
 
 def test_fail_multiple_struct(client, consts):
@@ -50,13 +49,13 @@ def test_fail_multiple_struct(client, consts):
     api_fit.set_ship(type_id=eve_struct_id)
     api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiState.offline)
     api_module2 = api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiState.offline)
+    api_module3 = api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiState.offline)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.mid_slots])
     assert api_val.passed is False
-    assert api_val.details.mid_slots.used == 2
+    assert api_val.details.mid_slots.used == 3
     assert api_val.details.mid_slots.total == 1
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module2.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == sorted([api_module2.id, api_module3.id])
 
 
 def test_holes(client, consts):
@@ -78,8 +77,7 @@ def test_holes(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 6
     assert api_val.details.mid_slots.total == 3
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module1.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module1.id]
     # Action
     api_fit.add_mod(
         type_id=eve_module_id,
@@ -91,8 +89,7 @@ def test_holes(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 7
     assert api_val.details.mid_slots.total == 3
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module1.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module1.id]
     # Action
     api_module1.remove()
     # Verification
@@ -143,8 +140,7 @@ def test_modified_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total == 0
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -170,8 +166,7 @@ def test_fractional_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total == 0
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
@@ -195,8 +190,7 @@ def test_no_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total is None
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
 
 
 def test_unloaded_user(client, consts):
@@ -214,8 +208,7 @@ def test_unloaded_user(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total == 0
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
 
 
 def test_unloaded_ship(client, consts):
@@ -234,8 +227,7 @@ def test_unloaded_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total is None
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
 
 
 def test_no_value_total(client, consts):
@@ -254,8 +246,7 @@ def test_no_value_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total == 0
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
 
 
 def test_no_attr_total(client, consts):
@@ -274,8 +265,7 @@ def test_no_attr_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total is None
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
 
 
 def test_criterion_state(client, consts):
@@ -293,8 +283,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total == 0
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
     # Action
     api_module.change_mod(state=consts.ApiState.ghost)
     # Verification
@@ -302,8 +291,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.mid_slots.used == 1
     assert api_val.details.mid_slots.total == 0
-    assert len(api_val.details.mid_slots.users) == 1
-    assert api_module.id in api_val.details.mid_slots.users
+    assert api_val.details.mid_slots.users == [api_module.id]
 
 
 def test_criterion_rack(client, consts):

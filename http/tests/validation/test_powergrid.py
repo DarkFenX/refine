@@ -17,8 +17,7 @@ def test_fail_single(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 150
+    assert api_val.details.powergrid.users == {api_module.id: 150}
 
 
 def test_fail_multiple_ship(client, consts):
@@ -39,9 +38,7 @@ def test_fail_multiple_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 2
-    assert api_val.details.powergrid.users[api_module1.id] == 50
-    assert api_val.details.powergrid.users[api_module2.id] == 100
+    assert api_val.details.powergrid.users == {api_module1.id: 50, api_module2.id: 100}
 
 
 def test_fail_multiple_struct(client, consts):
@@ -62,9 +59,7 @@ def test_fail_multiple_struct(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 2
-    assert api_val.details.powergrid.users[api_module1.id] == 50
-    assert api_val.details.powergrid.users[api_module2.id] == 100
+    assert api_val.details.powergrid.users == {api_module1.id: 50, api_module2.id: 100}
 
 
 def test_equal(client, consts):
@@ -111,8 +106,7 @@ def test_modified_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 150
+    assert api_val.details.powergrid.users == {api_module.id: 150}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -149,8 +143,7 @@ def test_modified_output(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 120
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 150
+    assert api_val.details.powergrid.users == {api_module.id: 150}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -190,8 +183,7 @@ def test_mutation_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 129.6
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 129.6
+    assert api_val.details.powergrid.users == {api_module.id: 129.6}
     # Action
     api_module.change_mod(mutation={eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}})
     # Verification
@@ -200,8 +192,7 @@ def test_mutation_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 134.4
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 134.4
+    assert api_val.details.powergrid.users == {api_module.id: 134.4}
     # Action
     api_module.change_mod(mutation=None)
     # Verification
@@ -230,9 +221,7 @@ def test_rounding(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 5.24
     assert api_val.details.powergrid.output == 5.23
-    assert len(api_val.details.powergrid.users) == 2
-    assert api_val.details.powergrid.users[api_module1.id] == 0.01
-    assert api_val.details.powergrid.users[api_module2.id] == 5.23
+    assert api_val.details.powergrid.users == {api_module1.id: 0.01, api_module2.id: 5.23}
 
 
 def test_sum_rounding(client, consts):
@@ -277,8 +266,7 @@ def test_no_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 5
     assert api_val.details.powergrid.output is None
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 5
+    assert api_val.details.powergrid.users == {api_module.id: 5}
 
 
 def test_unloaded_ship(client, consts):
@@ -299,8 +287,7 @@ def test_unloaded_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 5
     assert api_val.details.powergrid.output is None
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 5
+    assert api_val.details.powergrid.users == {api_module.id: 5}
 
 
 def test_unloaded_user(client, consts):
@@ -345,8 +332,7 @@ def test_non_positive(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 140
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module2.id] == 150
+    assert api_val.details.powergrid.users == {api_module2.id: 150}
 
 
 def test_no_value_use(client, consts):
@@ -367,8 +353,7 @@ def test_no_value_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module1.id] == 150
+    assert api_val.details.powergrid.users == {api_module1.id: 150}
 
 
 def test_no_value_output(client, consts):
@@ -389,8 +374,7 @@ def test_no_value_output(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 0
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 150
+    assert api_val.details.powergrid.users == {api_module.id: 150}
 
 
 def test_no_attr_use(client, consts):
@@ -429,8 +413,7 @@ def test_no_attr_output(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output is None
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 150
+    assert api_val.details.powergrid.users == {api_module.id: 150}
 
 
 def test_criterion_state(client, consts):
@@ -456,8 +439,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 150
+    assert api_val.details.powergrid.users == {api_module.id: 150}
     # Action
     api_module.change_mod(state=consts.ApiState.offline)
     # Verification
@@ -483,8 +465,7 @@ def test_criterion_effect(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 150
+    assert api_val.details.powergrid.users == {api_module.id: 150}
     # Action
     api_module.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification
@@ -499,8 +480,7 @@ def test_criterion_effect(client, consts):
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
     assert api_val.details.powergrid.output == 125
-    assert len(api_val.details.powergrid.users) == 1
-    assert api_val.details.powergrid.users[api_module.id] == 150
+    assert api_val.details.powergrid.users == {api_module.id: 150}
     # Action
     api_module.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification

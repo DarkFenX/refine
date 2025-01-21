@@ -15,8 +15,7 @@ def test_fail_single(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 1
     assert api_val.details.launched_fighters.total == 0
-    assert len(api_val.details.launched_fighters.users) == 1
-    assert api_fighter.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == [api_fighter.id]
 
 
 def test_fail_multiple_ship(client, consts):
@@ -34,9 +33,7 @@ def test_fail_multiple_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 2
     assert api_val.details.launched_fighters.total == 1
-    assert len(api_val.details.launched_fighters.users) == 2
-    assert api_fighter1.id in api_val.details.launched_fighters.users
-    assert api_fighter2.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == sorted([api_fighter1.id, api_fighter2.id])
 
 
 def test_fail_multiple_struct(client, consts):
@@ -54,9 +51,7 @@ def test_fail_multiple_struct(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 2
     assert api_val.details.launched_fighters.total == 1
-    assert len(api_val.details.launched_fighters.users) == 2
-    assert api_fighter1.id in api_val.details.launched_fighters.users
-    assert api_fighter2.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == sorted([api_fighter1.id, api_fighter2.id])
 
 
 def test_equal(client, consts):
@@ -100,8 +95,7 @@ def test_modified_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 1
     assert api_val.details.launched_fighters.total == 0
-    assert len(api_val.details.launched_fighters.users) == 1
-    assert api_fighter.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == [api_fighter.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -127,8 +121,7 @@ def test_fractional_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 1
     assert api_val.details.launched_fighters.total == 0
-    assert len(api_val.details.launched_fighters.users) == 1
-    assert api_fighter.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == [api_fighter.id]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
@@ -152,8 +145,7 @@ def test_no_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 1
     assert api_val.details.launched_fighters.total is None
-    assert len(api_val.details.launched_fighters.users) == 1
-    assert api_fighter.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == [api_fighter.id]
 
 
 def test_unloaded_user(client, consts):
@@ -171,8 +163,7 @@ def test_unloaded_user(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 1
     assert api_val.details.launched_fighters.total == 0
-    assert len(api_val.details.launched_fighters.users) == 1
-    assert api_fighter.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == [api_fighter.id]
 
 
 def test_unloaded_ship(client, consts):
@@ -191,8 +182,7 @@ def test_unloaded_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 1
     assert api_val.details.launched_fighters.total is None
-    assert len(api_val.details.launched_fighters.users) == 1
-    assert api_fighter.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == [api_fighter.id]
 
 
 def test_no_value_total(client, consts):
@@ -211,8 +201,7 @@ def test_no_value_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 1
     assert api_val.details.launched_fighters.total == 0
-    assert len(api_val.details.launched_fighters.users) == 1
-    assert api_fighter.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == [api_fighter.id]
 
 
 def test_no_attr_total(client, consts):
@@ -231,8 +220,7 @@ def test_no_attr_total(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 1
     assert api_val.details.launched_fighters.total is None
-    assert len(api_val.details.launched_fighters.users) == 1
-    assert api_fighter.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == [api_fighter.id]
 
 
 def test_criterion_state(client, consts):
@@ -256,8 +244,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_fighters.used == 1
     assert api_val.details.launched_fighters.total == 0
-    assert len(api_val.details.launched_fighters.users) == 1
-    assert api_fighter.id in api_val.details.launched_fighters.users
+    assert api_val.details.launched_fighters.users == [api_fighter.id]
     # Action
     api_fighter.change_fighter(state=consts.ApiState.offline)
     # Verification

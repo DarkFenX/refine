@@ -29,3 +29,6 @@ class ValShipLimitAllowed:
     def __init__(self, *, data):
         self.allowed_type_ids = sorted(data[0])
         self.allowed_group_ids = sorted(data[1])
+
+    def __eq__(self, other):
+        return (self.allowed_type_ids, self.allowed_group_ids) == (sorted(other[0]), sorted(other[1]))
