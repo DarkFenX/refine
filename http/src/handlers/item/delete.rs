@@ -10,18 +10,19 @@ use crate::{
     cmd::HRemoveItemCmd,
     handlers::{get_guarded_sol, HGSolResult, HSingleErr},
     state::HAppState,
-    util::{body_json_or_empty::JsonOrEmpty, HExecError},
+    util::HExecError,
 };
 
 pub(crate) async fn delete_item(
     State(state): State<HAppState>,
     Path((sol_id, item_id)): Path<(String, String)>,
-    JsonOrEmpty(payload): JsonOrEmpty<HRemoveItemCmd>,
+    payload: Option<Json<HRemoveItemCmd>>,
 ) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
+    let Json(payload) = payload.unwrap_or_default();
     let resp = match guarded_sol.lock().await.remove_item(&item_id, payload).await {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(br_err) => {
