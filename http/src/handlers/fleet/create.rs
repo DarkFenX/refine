@@ -19,7 +19,12 @@ pub(crate) async fn create_fleet(
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_sol.lock().await.add_fleet(params.fleet.into()).await {
+    let resp = match guarded_sol
+        .lock()
+        .await
+        .add_fleet(params.fleet.unwrap_or_default())
+        .await
+    {
         Ok(fleet_info) => (StatusCode::CREATED, Json(fleet_info)).into_response(),
         Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from(br_err))).into_response(),
     };

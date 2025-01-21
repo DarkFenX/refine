@@ -23,7 +23,12 @@ pub(crate) async fn create_item(
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_sol.lock().await.add_item(payload, params.item.into()).await {
+    let resp = match guarded_sol
+        .lock()
+        .await
+        .add_item(payload, params.item.unwrap_or_default())
+        .await
+    {
         Ok(item_info) => (StatusCode::CREATED, Json(item_info)).into_response(),
         Err(br_err) => {
             let code = match &br_err {

@@ -21,7 +21,12 @@ pub(crate) async fn get_fleet(
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_sol.lock().await.get_fleet(&fleet_id, params.fleet.into()).await {
+    let resp = match guarded_sol
+        .lock()
+        .await
+        .get_fleet(&fleet_id, params.fleet.unwrap_or_default())
+        .await
+    {
         Ok(fleet_info) => (StatusCode::OK, Json(fleet_info)).into_response(),
         Err(br_err) => {
             let code = match &br_err {

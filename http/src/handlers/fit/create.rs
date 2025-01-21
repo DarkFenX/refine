@@ -25,7 +25,7 @@ pub(crate) async fn create_fit(
     let resp = match guarded_sol
         .lock()
         .await
-        .add_fit(payload, params.fit.into(), params.item.into())
+        .add_fit(payload, params.fit.unwrap_or_default(), params.item.unwrap_or_default())
         .await
     {
         Ok(fit_info) => (StatusCode::CREATED, Json(fit_info)).into_response(),

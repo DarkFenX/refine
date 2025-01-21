@@ -27,7 +27,7 @@ pub(crate) async fn validate_fit(
     let resp = match guarded_sol
         .lock()
         .await
-        .validate_fit(&fit_id, payload, params.validation.into())
+        .validate_fit(&fit_id, payload, params.validation.unwrap_or_default())
         .await
     {
         Ok(valid_info) => (StatusCode::OK, Json(valid_info)).into_response(),

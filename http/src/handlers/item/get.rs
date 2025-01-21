@@ -21,7 +21,12 @@ pub(crate) async fn get_item(
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_sol.lock().await.get_item(&item_id, params.item.into()).await {
+    let resp = match guarded_sol
+        .lock()
+        .await
+        .get_item(&item_id, params.item.unwrap_or_default())
+        .await
+    {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),
         Err(br_err) => {
             let code = match &br_err {

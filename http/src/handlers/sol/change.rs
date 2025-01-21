@@ -46,10 +46,10 @@ pub(crate) async fn change_sol(
         .await
         .change_sol(
             payload.commands,
-            params.sol.into(),
-            params.fleet.into(),
-            params.fit.into(),
-            params.item.into(),
+            params.sol.unwrap_or_default(),
+            params.fleet.unwrap_or_default(),
+            params.fit.unwrap_or_default(),
+            params.item.unwrap_or_default(),
         )
         .await
     {

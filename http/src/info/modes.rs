@@ -4,9 +4,9 @@ pub(crate) enum HSolInfoMode {
     Id,
     Full,
 }
-impl From<Option<HSolInfoMode>> for HSolInfoMode {
-    fn from(mode_opt: Option<HSolInfoMode>) -> Self {
-        mode_opt.unwrap_or_else(|| Self::Full)
+impl Default for HSolInfoMode {
+    fn default() -> Self {
+        Self::Full
     }
 }
 
@@ -16,9 +16,9 @@ pub(crate) enum HFitInfoMode {
     Id,
     Full,
 }
-impl From<Option<HFitInfoMode>> for HFitInfoMode {
-    fn from(mode_opt: Option<HFitInfoMode>) -> Self {
-        mode_opt.unwrap_or_else(|| Self::Full)
+impl Default for HFitInfoMode {
+    fn default() -> Self {
+        Self::Full
     }
 }
 
@@ -29,9 +29,9 @@ pub(crate) enum HItemInfoMode {
     Partial,
     Full,
 }
-impl From<Option<HItemInfoMode>> for HItemInfoMode {
-    fn from(mode_opt: Option<HItemInfoMode>) -> Self {
-        mode_opt.unwrap_or_else(|| Self::Partial)
+impl Default for HItemInfoMode {
+    fn default() -> Self {
+        Self::Partial
     }
 }
 
@@ -41,9 +41,9 @@ pub(crate) enum HFleetInfoMode {
     Id,
     Full,
 }
-impl From<Option<HFleetInfoMode>> for HFleetInfoMode {
-    fn from(mode_opt: Option<HFleetInfoMode>) -> Self {
-        mode_opt.unwrap_or_else(|| Self::Id)
+impl Default for HFleetInfoMode {
+    fn default() -> Self {
+        Self::Id
     }
 }
 
@@ -53,8 +53,8 @@ pub(crate) enum HValidInfoMode {
     Simple,
     Detailed,
 }
-impl From<Option<HValidInfoMode>> for HValidInfoMode {
-    fn from(mode_opt: Option<HValidInfoMode>) -> Self {
-        mode_opt.unwrap_or_else(|| Self::Detailed)
+impl Default for HValidInfoMode {
+    fn default() -> Self {
+        Self::Detailed
     }
 }

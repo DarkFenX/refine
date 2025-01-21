@@ -24,7 +24,7 @@ pub(crate) async fn get_fit(
     let resp = match guarded_sol
         .lock()
         .await
-        .get_fit(&fit_id, params.fit.into(), params.item.into())
+        .get_fit(&fit_id, params.fit.unwrap_or_default(), params.item.unwrap_or_default())
         .await
     {
         Ok(fit_info) => (StatusCode::OK, Json(fit_info)).into_response(),

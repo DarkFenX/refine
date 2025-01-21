@@ -43,7 +43,12 @@ pub(crate) async fn change_fit(
     let resp = match guarded_sol
         .lock()
         .await
-        .change_fit(&fit_id, payload.commands, params.fit.into(), params.item.into())
+        .change_fit(
+            &fit_id,
+            payload.commands,
+            params.fit.unwrap_or_default(),
+            params.item.unwrap_or_default(),
+        )
         .await
     {
         Ok((fit_info, cmd_results)) => {

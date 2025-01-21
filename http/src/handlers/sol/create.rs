@@ -50,10 +50,10 @@ pub(crate) async fn create_sol(
         .add_sol(
             payload.cmd,
             src,
-            params.sol.into(),
-            params.fleet.into(),
-            params.fit.into(),
-            params.item.into(),
+            params.sol.unwrap_or_default(),
+            params.fleet.unwrap_or_default(),
+            params.fit.unwrap_or_default(),
+            params.item.unwrap_or_default(),
         )
         .await
     {
