@@ -1,7 +1,7 @@
 from tests import check_no_field
 
 
-def test_mismatch_group(client, consts):
+def test_group1(client, consts):
     eve_allowed_grp_id = client.mk_eve_ship_group()
     eve_disallowed_grp_id = client.mk_eve_ship_group()
     eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
@@ -29,7 +29,7 @@ def test_mismatch_group(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_mismatch_type(client, consts):
+def test_type1(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
