@@ -46,11 +46,11 @@ impl SolVastFitData {
     pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
         let ship = match fit.ship {
             Some(ship_id) => uad.items.get_item(&ship_id).unwrap(),
-            None => return self.ship_limited_mods_rigs.is_empty(),
+            None => return self.ship_limited_mods_rigs_subs.is_empty(),
         };
         let ship_type_id = ship.get_type_id();
         let ship_group_id = ship.get_group_id();
-        for ship_limit in self.ship_limited_mods_rigs.values() {
+        for ship_limit in self.ship_limited_mods_rigs_subs.values() {
             if ship_limit.type_ids.contains(&ship_type_id) {
                 continue;
             }
@@ -69,7 +69,7 @@ impl SolVastFitData {
         uad: &SolUad,
         fit: &SolFit,
     ) -> Option<SolShipLimitValFail> {
-        if self.ship_limited_mods_rigs.is_empty() {
+        if self.ship_limited_mods_rigs_subs.is_empty() {
             return None;
         }
         let (ship_type_id, ship_group_id) = match fit.ship {
@@ -80,7 +80,7 @@ impl SolVastFitData {
             None => (None, None),
         };
         let mut mismatches = Vec::new();
-        for (limited_item_id, ship_limit) in self.ship_limited_mods_rigs.iter() {
+        for (limited_item_id, ship_limit) in self.ship_limited_mods_rigs_subs.iter() {
             if let Some(ship_type_id) = ship_type_id {
                 if ship_limit.type_ids.contains(&ship_type_id) {
                     continue;

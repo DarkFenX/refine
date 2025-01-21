@@ -21,14 +21,16 @@ impl SolVast {
                 if let Some(ship_limit) = &module.get_a_extras().unwrap().ship_limit {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                     fit_data
-                        .ship_limited_mods_rigs
+                        .ship_limited_mods_rigs_subs
                         .insert(module.get_id(), ship_limit.clone());
                 }
             }
             SolItem::Rig(rig) => {
                 if let Some(ship_limit) = &rig.get_a_extras().unwrap().ship_limit {
                     let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
-                    fit_data.ship_limited_mods_rigs.insert(rig.get_id(), ship_limit.clone());
+                    fit_data
+                        .ship_limited_mods_rigs_subs
+                        .insert(rig.get_id(), ship_limit.clone());
                 }
             }
             SolItem::Drone(drone) => {
@@ -50,9 +52,16 @@ impl SolVast {
                 }
             }
             SolItem::Subsystem(subsystem) => {
-                if let Some(ad::AItemKind::Subsystem(slot)) = subsystem.get_a_extras().unwrap().kind {
+                let extras = subsystem.get_a_extras().unwrap();
+                if let Some(ad::AItemKind::Subsystem(slot)) = extras.kind {
                     let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
                     fit_data.slotted_subsystems.add_entry(slot, subsystem.get_id());
+                }
+                if let Some(ship_limit) = &extras.ship_limit {
+                    let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
+                    fit_data
+                        .ship_limited_mods_rigs_subs
+                        .insert(subsystem.get_id(), ship_limit.clone());
                 }
             }
             _ => (),
@@ -63,13 +72,13 @@ impl SolVast {
             SolItem::Module(module) => {
                 if module.get_a_extras().unwrap().ship_limit.is_some() {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
-                    fit_data.ship_limited_mods_rigs.remove(&module.get_id());
+                    fit_data.ship_limited_mods_rigs_subs.remove(&module.get_id());
                 }
             }
             SolItem::Rig(rig) => {
                 if rig.get_a_extras().unwrap().ship_limit.is_some() {
                     let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
-                    fit_data.ship_limited_mods_rigs.remove(&rig.get_id());
+                    fit_data.ship_limited_mods_rigs_subs.remove(&rig.get_id());
                 }
             }
             SolItem::Drone(drone) => {
@@ -89,9 +98,14 @@ impl SolVast {
                 }
             }
             SolItem::Subsystem(subsystem) => {
-                if let Some(ad::AItemKind::Subsystem(slot)) = subsystem.get_a_extras().unwrap().kind {
+                let extras = subsystem.get_a_extras().unwrap();
+                if let Some(ad::AItemKind::Subsystem(slot)) = extras.kind {
                     let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
                     fit_data.slotted_subsystems.remove_entry(&slot, &subsystem.get_id());
+                }
+                if extras.ship_limit.is_some() {
+                    let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
+                    fit_data.ship_limited_mods_rigs_subs.remove(&subsystem.get_id());
                 }
             }
             _ => (),

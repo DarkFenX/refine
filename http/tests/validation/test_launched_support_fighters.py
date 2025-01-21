@@ -175,7 +175,8 @@ def test_fractional_fighter_type(client, consts):
     assert api_val.passed is False
     assert api_val.details.launched_support_fighters.used == 3
     assert api_val.details.launched_support_fighters.total == 2
-    assert api_val.details.launched_support_fighters.users == sorted([api_fighter1.id, api_fighter2.id, api_fighter3.id])
+    assert api_val.details.launched_support_fighters.users == sorted([
+        api_fighter1.id, api_fighter2.id, api_fighter3.id])
 
 
 def test_fractional_total(client, consts):

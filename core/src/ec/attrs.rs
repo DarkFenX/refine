@@ -64,6 +64,7 @@ pub(crate) const LAUNCHER_HARDPOINT_MODIFIER: EAttrId = 1369;
 pub(crate) const HI_SLOT_MODIFIER: EAttrId = 1374;
 pub(crate) const MED_SLOT_MODIFIER: EAttrId = 1375;
 pub(crate) const LOW_SLOT_MODIFIER: EAttrId = 1376;
+pub(crate) const FITS_TO_SHIP_TYPE: EAttrId = 1380;
 pub(crate) const RESIST_SHIFT_AMOUNT: EAttrId = 1849;
 pub(crate) const CAN_FIT_SHIP_GROUP5: EAttrId = 1872;
 pub(crate) const CAN_FIT_SHIP_GROUP6: EAttrId = 1879;

@@ -213,6 +213,7 @@ class EveAttr(IntEnum):
     hi_slot_modifier = 1374
     med_slot_modifier = 1375
     low_slot_modifier = 1376
+    fits_to_ship_type = 1380
     armor_max_dmg_resonance = 1527
     resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886

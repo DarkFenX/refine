@@ -6,7 +6,7 @@ use crate::{
     util::StMap,
 };
 
-static TYPE_ATTRS: [EAttrId; 11] = [
+static TYPE_ATTRS: [EAttrId; 12] = [
     ec::attrs::CAN_FIT_SHIP_TYPE1,
     ec::attrs::CAN_FIT_SHIP_TYPE2,
     ec::attrs::CAN_FIT_SHIP_TYPE3,
@@ -18,6 +18,7 @@ static TYPE_ATTRS: [EAttrId; 11] = [
     ec::attrs::CAN_FIT_SHIP_TYPE9,
     ec::attrs::CAN_FIT_SHIP_TYPE10,
     ec::attrs::CAN_FIT_SHIP_TYPE11,
+    ec::attrs::FITS_TO_SHIP_TYPE,
 ];
 
 static GROUP_ATTRS: [EAttrId; 20] = [
