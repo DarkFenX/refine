@@ -6,7 +6,7 @@ from tests.support.consts import ApiFitInfoMode, ApiItemInfoMode, ApiModAddMode,
 from tests.support.util import Absent, AttrDict, AttrHookDef
 from .dmg_types import DmgTypes
 from .item import Item
-from .val_result import ValResult
+from .validation import ValResult
 
 if TYPE_CHECKING:
     from typing import Union
