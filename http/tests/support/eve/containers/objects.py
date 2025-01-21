@@ -13,9 +13,6 @@ if TYPE_CHECKING:
     from .strings import EveStrings
 
 
-ID_START = 1000000
-
-
 class EveObjects:
 
     def __init__(self, *, alias: str):
@@ -29,11 +26,11 @@ class EveObjects:
         self.buffs: dict[int, list[Buff]] = {}
         self.mutators: dict[int, list[Mutator]] = {}
         # Variables point at next ID to allocate
-        self.item_id: int = ID_START
-        self.item_group_id: int = ID_START
-        self.attr_id: int = ID_START
-        self.effect_id: int = ID_START
-        self.buff_id: int = ID_START
+        self.item_id: int = 1000000
+        self.item_group_id: int = 2000000
+        self.attr_id: int = 3000000
+        self.effect_id: int = 4000000
+        self.buff_id: int = 5000000
 
     def prealloc_item_id(self) -> int:
         id_ = self.item_id

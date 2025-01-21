@@ -27,7 +27,7 @@ def test_affected_root_ship(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(260)
 
 
-def test_unaffected_root_structure(client, consts):
+def test_unaffected_root_struct(client, consts):
     eve_buff_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_id)
     eve_buff_val_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warfare_buff_1_value)
     eve_affectee_attr_id = client.mk_eve_attr()

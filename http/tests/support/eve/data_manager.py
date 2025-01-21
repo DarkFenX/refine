@@ -8,7 +8,7 @@ from .containers import EveObjects
 if TYPE_CHECKING:
     from tests.support.util import TestKey
 
-data_id: int = 10000000  # pylint: disable=C0103
+data_id: int = 10000  # pylint: disable=C0103
 
 
 class EveDataManager:
