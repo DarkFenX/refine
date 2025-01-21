@@ -60,11 +60,13 @@ pub(super) fn get_item_ship_limit(attrs: &StMap<EAttrId, AttrVal>) -> Option<AIt
         .iter()
         .filter_map(|a| attrs.get(a))
         .map(|v| v.round() as EItemId)
+        .unique()
         .collect_vec();
     let group_ids = GROUP_ATTRS
         .iter()
         .filter_map(|a| attrs.get(a))
         .map(|v| v.round() as EItemGrpId)
+        .unique()
         .collect_vec();
     if type_ids.is_empty() && group_ids.is_empty() {
         return None;
