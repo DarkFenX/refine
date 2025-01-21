@@ -1,12 +1,11 @@
 use std::collections::HashMap;
 
 #[serde_with::serde_as]
-#[derive(serde::Serialize)]
+#[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info::valid) struct HResValFail {
     used: rc::AttrVal,
     output: Option<rc::AttrVal>,
-    #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
-    #[serde(skip_serializing_if = "HashMap::is_empty")]
+    #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
     users: HashMap<rc::SolItemId, rc::AttrVal>,
 }
 impl From<&rc::SolResValFail> for HResValFail {
