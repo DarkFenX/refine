@@ -1,7 +1,7 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
-    sol::uad::item::{bool_to_state, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
+    sol::uad::item::{bool_to_state_offline, state_to_bool, SolEffectModes, SolItemBase, SolItemState},
     src::Src,
     util::{Named, StMap},
 };
@@ -14,7 +14,7 @@ pub(in crate::sol) struct SolStance {
 impl SolStance {
     pub(in crate::sol) fn new(src: &Src, id: SolItemId, type_id: EItemId, fit_id: SolFitId, state: bool) -> Self {
         Self {
-            base: SolItemBase::new(src, id, type_id, bool_to_state(state)),
+            base: SolItemBase::new(src, id, type_id, bool_to_state_offline(state)),
             fit_id,
         }
     }
@@ -69,7 +69,7 @@ impl SolStance {
         state_to_bool(self.base.get_state())
     }
     pub(in crate::sol) fn set_bool_state(&mut self, state: bool) {
-        self.base.set_state(bool_to_state(state))
+        self.base.set_state(bool_to_state_offline(state))
     }
 }
 impl Named for SolStance {
