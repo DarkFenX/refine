@@ -185,8 +185,10 @@ class EveAttr(IntEnum):
     sig_radius = 552
     sig_radius_bonus = 554
     speed_boost_factor = 567
+    max_group_active = 763
     mass_addition = 796
     disallow_assistance = 854
+    max_group_online = 978
     boosterness = 1087
     upgrade_capacity = 1132
     upgrade_cost = 1153
@@ -215,6 +217,7 @@ class EveAttr(IntEnum):
     low_slot_modifier = 1376
     fits_to_ship_type = 1380
     armor_max_dmg_resonance = 1527
+    max_group_fitted = 1544
     resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886
     can_fit_ship_type5 = 1944
@@ -387,6 +390,9 @@ class ApiValType(StrEnum):
     booster_slot_index = 'booster_slot_index'
     subsystem_slot_index = 'subsystem_slot_index'
     ship_limit = 'ship_limit'
+    max_group_fitted = 'max_group_fitted'
+    max_group_online = 'max_group_online'
+    max_group_active = 'max_group_active'
 
 
 @unique

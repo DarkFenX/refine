@@ -18,32 +18,22 @@ impl From<&Vec<rc::SolMaxGroupValFail>> for HMaxGroupValFail {
     }
 }
 
+#[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info::valid) struct HMaxGroupGroup {
     count: rc::Amount,
-    items: Vec<HMaxGroupItem>,
+    #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
+    items: HashMap<rc::SolItemId, rc::Amount>,
 }
 impl From<&rc::SolMaxGroupValFail> for HMaxGroupGroup {
     fn from(core_val_fail: &rc::SolMaxGroupValFail) -> Self {
         Self {
             count: core_val_fail.count,
-            items: core_val_fail.items.iter().map(|v| v.into()).collect(),
-        }
-    }
-}
-
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HMaxGroupItem {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
-    item_id: rc::SolItemId,
-    max_allowed_count: rc::Amount,
-}
-impl From<&rc::SolMaxGroupItem> for HMaxGroupItem {
-    fn from(core_max_group_item: &rc::SolMaxGroupItem) -> Self {
-        Self {
-            item_id: core_max_group_item.item_id,
-            max_allowed_count: core_max_group_item.max_allowed_count,
+            items: core_val_fail
+                .items
+                .iter()
+                .map(|v| (v.item_id, v.max_allowed_count))
+                .collect(),
         }
     }
 }
