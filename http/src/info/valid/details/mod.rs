@@ -1,8 +1,10 @@
+pub(in crate::info::valid) use max_group::HMaxGroupValFail;
 pub(in crate::info::valid) use resource::HResValFail;
 pub(in crate::info::valid) use ship_limit::HShipLimitValFail;
 pub(in crate::info::valid) use slot::HSlotValFail;
 pub(in crate::info::valid) use slot_index::HSlotIndexValFail;
 
+mod max_group;
 mod resource;
 mod ship_limit;
 mod slot;

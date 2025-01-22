@@ -1,4 +1,4 @@
-use crate::info::valid::details::{HResValFail, HShipLimitValFail, HSlotIndexValFail, HSlotValFail};
+use crate::info::valid::details::{HMaxGroupValFail, HResValFail, HShipLimitValFail, HSlotIndexValFail, HSlotValFail};
 
 #[derive(serde::Serialize)]
 pub(crate) struct HValidInfoDetailed {
@@ -65,6 +65,12 @@ struct HValidInfoDetails {
     subsystem_slot_index: HSlotIndexValFail,
     #[serde(skip_serializing_if = "Option::is_none")]
     ship_limit: Option<HShipLimitValFail>,
+    #[serde(skip_serializing_if = "HMaxGroupValFail::is_empty")]
+    max_group_fitted: HMaxGroupValFail,
+    #[serde(skip_serializing_if = "HMaxGroupValFail::is_empty")]
+    max_group_online: HMaxGroupValFail,
+    #[serde(skip_serializing_if = "HMaxGroupValFail::is_empty")]
+    max_group_active: HMaxGroupValFail,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -92,6 +98,9 @@ impl HValidInfoDetails {
             && self.booster_slot_index.is_empty()
             && self.subsystem_slot_index.is_empty()
             && self.ship_limit.is_none()
+            && self.max_group_fitted.is_empty()
+            && self.max_group_online.is_empty()
+            && self.max_group_active.is_empty()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -130,6 +139,9 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             booster_slot_index: (&core_val_result.booster_slot_index).into(),
             subsystem_slot_index: (&core_val_result.subsystem_slot_index).into(),
             ship_limit: core_val_result.ship_limit.as_ref().map(|v| v.into()),
+            max_group_fitted: (&core_val_result.max_group_fitted).into(),
+            max_group_online: (&core_val_result.max_group_online).into(),
+            max_group_active: (&core_val_result.max_group_active).into(),
         }
     }
 }

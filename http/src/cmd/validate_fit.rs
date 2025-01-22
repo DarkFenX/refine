@@ -47,6 +47,9 @@ impl HValidFitCmd {
                 "booster_slot_index" => core_options.booster_slot_index = alt_value,
                 "subsystem_slot_index" => core_options.subsystem_slot_index = alt_value,
                 "ship_limit" => core_options.ship_limit = alt_value,
+                "max_group_fitted" => core_options.max_group_fitted = alt_value,
+                "max_group_online" => core_options.max_group_online = alt_value,
+                "max_group_active" => core_options.max_group_active = alt_value,
                 _ => (),
             }
         }
