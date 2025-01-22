@@ -52,13 +52,12 @@ impl SolVast {
                 }
             }
             SolItem::Subsystem(subsystem) => {
+                let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
                 let extras = subsystem.get_a_extras().unwrap();
                 if let Some(ad::AItemKind::Subsystem(slot)) = extras.kind {
-                    let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
                     fit_data.slotted_subsystems.add_entry(slot, subsystem.get_id());
                 }
                 if let Some(ship_limit) = &extras.ship_limit {
-                    let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
                     fit_data
                         .ship_limited_mods_rigs_subs
                         .insert(subsystem.get_id(), ship_limit.clone());
@@ -98,13 +97,12 @@ impl SolVast {
                 }
             }
             SolItem::Subsystem(subsystem) => {
+                let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
                 let extras = subsystem.get_a_extras().unwrap();
                 if let Some(ad::AItemKind::Subsystem(slot)) = extras.kind {
-                    let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
                     fit_data.slotted_subsystems.remove_entry(&slot, &subsystem.get_id());
                 }
                 if extras.ship_limit.is_some() {
-                    let fit_data = self.get_fit_data_mut(&subsystem.get_fit_id()).unwrap();
                     fit_data.ship_limited_mods_rigs_subs.remove(&subsystem.get_id());
                 }
             }
@@ -191,13 +189,6 @@ impl SolVast {
                         }
                     };
                 }
-                let fit_data = self.get_fit_data_mut(&fighter.get_fit_id()).unwrap();
-                fit_data.support_fighters_online.remove(&fighter.get_id());
-                fit_data.light_fighters_online.remove(&fighter.get_id());
-                fit_data.heavy_fighters_online.remove(&fighter.get_id());
-                fit_data.standup_support_fighters_online.remove(&fighter.get_id());
-                fit_data.standup_light_fighters_online.remove(&fighter.get_id());
-                fit_data.standup_heavy_fighters_online.remove(&fighter.get_id());
             }
         }
     }
