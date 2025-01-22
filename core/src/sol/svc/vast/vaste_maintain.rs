@@ -18,19 +18,37 @@ impl SolVast {
     pub(in crate::sol::svc) fn item_loaded(&mut self, item: &SolItem) {
         match item {
             SolItem::Module(module) => {
-                if let Some(ship_limit) = &module.get_a_extras().unwrap().ship_limit {
+                let extras = module.get_a_extras().unwrap();
+                if let Some(ship_limit) = &extras.ship_limit {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                     fit_data
                         .ship_limited_mods_rigs_subs
                         .insert(module.get_id(), ship_limit.clone());
                 }
+                if let Some(grp_id) = extras.val_fitted_group_id {
+                    let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                    fit_data
+                        .mods_rigs_max_group_fitted_all
+                        .add_entry(grp_id, module.get_id());
+                    if module.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_FITTED) {
+                        fit_data.mods_rigs_max_group_fitted_limited.insert(module.get_id());
+                    }
+                }
             }
             SolItem::Rig(rig) => {
-                if let Some(ship_limit) = &rig.get_a_extras().unwrap().ship_limit {
+                let extras = rig.get_a_extras().unwrap();
+                if let Some(ship_limit) = &extras.ship_limit {
                     let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                     fit_data
                         .ship_limited_mods_rigs_subs
                         .insert(rig.get_id(), ship_limit.clone());
+                }
+                if let Some(grp_id) = extras.val_fitted_group_id {
+                    let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
+                    fit_data.mods_rigs_max_group_fitted_all.add_entry(grp_id, rig.get_id());
+                    if rig.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_FITTED) {
+                        fit_data.mods_rigs_max_group_fitted_limited.insert(rig.get_id());
+                    }
                 }
             }
             SolItem::Drone(drone) => {
@@ -69,15 +87,31 @@ impl SolVast {
     pub(in crate::sol::svc) fn item_unloaded(&mut self, item: &SolItem) {
         match item {
             SolItem::Module(module) => {
-                if module.get_a_extras().unwrap().ship_limit.is_some() {
+                let extras = module.get_a_extras().unwrap();
+                if extras.ship_limit.is_some() {
                     let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                     fit_data.ship_limited_mods_rigs_subs.remove(&module.get_id());
                 }
+                if let Some(grp_id) = extras.val_fitted_group_id {
+                    let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                    fit_data
+                        .mods_rigs_max_group_fitted_all
+                        .remove_entry(&grp_id, &module.get_id());
+                    fit_data.mods_rigs_max_group_fitted_limited.remove(&module.get_id());
+                }
             }
             SolItem::Rig(rig) => {
-                if rig.get_a_extras().unwrap().ship_limit.is_some() {
+                let extras = rig.get_a_extras().unwrap();
+                if extras.ship_limit.is_some() {
                     let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                     fit_data.ship_limited_mods_rigs_subs.remove(&rig.get_id());
+                }
+                if let Some(grp_id) = extras.val_fitted_group_id {
+                    let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
+                    fit_data
+                        .mods_rigs_max_group_fitted_all
+                        .remove_entry(&grp_id, &rig.get_id());
+                    fit_data.mods_rigs_max_group_fitted_limited.remove(&rig.get_id());
                 }
             }
             SolItem::Drone(drone) => {
