@@ -138,6 +138,21 @@ impl SolVast {
                 return false;
             }
         }
+        if options.max_group_fitted {
+            if !fit_data.validate_max_group_fitted_fast(uad, calc) {
+                return false;
+            }
+        }
+        if options.max_group_online {
+            if !fit_data.validate_max_group_online_fast(uad, calc) {
+                return false;
+            }
+        }
+        if options.max_group_active {
+            if !fit_data.validate_max_group_active_fast(uad, calc) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -224,6 +239,15 @@ impl SolVast {
         }
         if options.ship_limit {
             result.ship_limit = fit_data.validate_ship_limit_verbose(uad, fit);
+        }
+        if options.max_group_fitted {
+            result.max_group_fitted = fit_data.validate_max_group_fitted_verbose(uad, calc);
+        }
+        if options.max_group_online {
+            result.max_group_online = fit_data.validate_max_group_online_verbose(uad, calc);
+        }
+        if options.max_group_active {
+            result.max_group_active = fit_data.validate_max_group_active_verbose(uad, calc);
         }
         result
     }

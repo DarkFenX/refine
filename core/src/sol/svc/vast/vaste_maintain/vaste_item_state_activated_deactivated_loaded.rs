@@ -15,7 +15,7 @@ impl SolVast {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data.mods_max_group_online_all.add_entry(grp_id, module.get_id());
                         if module.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_ONLINE) {
-                            fit_data.mods_max_group_online_limited.insert(module.get_id());
+                            fit_data.mods_max_group_online_limited.insert(module.get_id(), grp_id);
                         }
                     }
                 }
@@ -46,7 +46,7 @@ impl SolVast {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data.mods_max_group_active_all.add_entry(grp_id, module.get_id());
                         if module.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_ACTIVE) {
-                            fit_data.mods_max_group_active_limited.insert(module.get_id());
+                            fit_data.mods_max_group_active_limited.insert(module.get_id(), grp_id);
                         }
                     }
                 }

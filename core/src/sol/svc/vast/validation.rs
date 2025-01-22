@@ -1,4 +1,6 @@
-use crate::sol::svc::vast::{SolResValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail};
+use crate::sol::svc::vast::{
+    SolMaxGroupValFail, SolResValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail,
+};
 
 #[derive(Copy, Clone)]
 pub struct SolValOptions {
@@ -26,6 +28,9 @@ pub struct SolValOptions {
     pub booster_slot_index: bool,
     pub subsystem_slot_index: bool,
     pub ship_limit: bool,
+    pub max_group_fitted: bool,
+    pub max_group_online: bool,
+    pub max_group_active: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -53,6 +58,9 @@ impl SolValOptions {
         booster_slot_index: bool,
         subsystem_slot_index: bool,
         ship_limit: bool,
+        max_group_fitted: bool,
+        max_group_online: bool,
+        max_group_active: bool,
     ) -> Self {
         Self {
             cpu,
@@ -79,6 +87,9 @@ impl SolValOptions {
             booster_slot_index,
             subsystem_slot_index,
             ship_limit,
+            max_group_fitted,
+            max_group_online,
+            max_group_active,
         }
     }
     pub fn new_enabled() -> Self {
@@ -107,6 +118,9 @@ impl SolValOptions {
             booster_slot_index: true,
             subsystem_slot_index: true,
             ship_limit: true,
+            max_group_fitted: true,
+            max_group_online: true,
+            max_group_active: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -135,6 +149,9 @@ impl SolValOptions {
             booster_slot_index: false,
             subsystem_slot_index: false,
             ship_limit: false,
+            max_group_fitted: false,
+            max_group_online: false,
+            max_group_active: false,
         }
     }
 }
@@ -164,6 +181,9 @@ pub struct SolValResult {
     pub booster_slot_index: Vec<SolSlotIndexValFail>,
     pub subsystem_slot_index: Vec<SolSlotIndexValFail>,
     pub ship_limit: Option<SolShipLimitValFail>,
+    pub max_group_fitted: Vec<SolMaxGroupValFail>,
+    pub max_group_online: Vec<SolMaxGroupValFail>,
+    pub max_group_active: Vec<SolMaxGroupValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -192,6 +212,9 @@ impl SolValResult {
             booster_slot_index: Vec::new(),
             subsystem_slot_index: Vec::new(),
             ship_limit: None,
+            max_group_fitted: Vec::new(),
+            max_group_online: Vec::new(),
+            max_group_active: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -219,5 +242,8 @@ impl SolValResult {
             && self.booster_slot_index.is_empty()
             && self.subsystem_slot_index.is_empty()
             && self.ship_limit.is_none()
+            && self.max_group_fitted.is_empty()
+            && self.max_group_online.is_empty()
+            && self.max_group_active.is_empty()
     }
 }

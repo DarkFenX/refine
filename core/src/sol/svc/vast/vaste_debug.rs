@@ -80,7 +80,7 @@ impl SolVastFitData {
                 check_item(uad, item_id, true)?;
             }
         }
-        for item_id in self.mods_rigs_max_group_fitted_limited.iter() {
+        for item_id in self.mods_rigs_max_group_fitted_limited.keys() {
             check_item(uad, item_id, true)?;
         }
         for item_ids in self.mods_max_group_online_all.values() {
@@ -88,7 +88,7 @@ impl SolVastFitData {
                 check_item(uad, item_id, true)?;
             }
         }
-        for item_id in self.mods_max_group_online_limited.iter() {
+        for item_id in self.mods_max_group_online_limited.keys() {
             check_item(uad, item_id, true)?;
         }
         for item_ids in self.mods_max_group_active_all.values() {
@@ -96,7 +96,7 @@ impl SolVastFitData {
                 check_item(uad, item_id, true)?;
             }
         }
-        for item_id in self.mods_max_group_active_limited.iter() {
+        for item_id in self.mods_max_group_active_limited.keys() {
             check_item(uad, item_id, true)?;
         }
         Ok(())

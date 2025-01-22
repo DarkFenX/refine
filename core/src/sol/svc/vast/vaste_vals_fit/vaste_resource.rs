@@ -81,7 +81,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolResValFail> {
         let stats = self.get_stats_cpu(uad, calc, fit);
-        validate_resource_verbose_fitting(uad, calc, stats, self.mods_online.iter(), &ec::attrs::CPU)
+        validate_verbose_fitting(uad, calc, stats, self.mods_online.iter(), &ec::attrs::CPU)
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_verbose(
         &self,
@@ -90,7 +90,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolResValFail> {
         let stats = self.get_stats_powergrid(uad, calc, fit);
-        validate_resource_verbose_fitting(uad, calc, stats, self.mods_online.iter(), &ec::attrs::POWER)
+        validate_verbose_fitting(uad, calc, stats, self.mods_online.iter(), &ec::attrs::POWER)
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_verbose(
         &self,
@@ -99,7 +99,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolResValFail> {
         let stats = self.get_stats_calibration(uad, calc, fit);
-        validate_resource_verbose_other(stats, self.rigs_rigslot_calibration.iter())
+        validate_verbose_other(stats, self.rigs_rigslot_calibration.iter())
     }
     pub(in crate::sol::svc::vast) fn validate_dronebay_volume_verbose(
         &self,
@@ -108,7 +108,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolResValFail> {
         let stats = self.get_stats_dronebay_volume(uad, calc, fit);
-        validate_resource_verbose_other(stats, self.drones_volume.iter())
+        validate_verbose_other(stats, self.drones_volume.iter())
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_verbose(
         &self,
@@ -117,11 +117,11 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> Option<SolResValFail> {
         let stats = self.get_stats_drone_bandwidth(uad, calc, fit);
-        validate_resource_verbose_other(stats, self.drones_online_bandwidth.iter())
+        validate_verbose_other(stats, self.drones_online_bandwidth.iter())
     }
 }
 
-fn validate_resource_verbose_fitting<'a>(
+fn validate_verbose_fitting<'a>(
     uad: &SolUad,
     calc: &mut SolCalc,
     stats: SolStatRes,
@@ -141,7 +141,7 @@ fn validate_resource_verbose_fitting<'a>(
     Some(SolResValFail::new(stats.used, stats.output, users))
 }
 
-fn validate_resource_verbose_other<'a>(
+fn validate_verbose_other<'a>(
     stats: SolStatRes,
     items: impl ExactSizeIterator<Item = (&'a SolItemId, &'a AttrVal)>,
 ) -> Option<SolResValFail> {
