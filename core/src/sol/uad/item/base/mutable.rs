@@ -66,7 +66,7 @@ impl SolItemBaseMutable {
                         base: SolItemBase::new_with_item(id, base_a_item.clone(), state),
                         mutation: Some(convert_item_mutation_full(
                             mutation_request,
-                            &base_a_item.attr_vals,
+                            &base_a_item.attrs,
                             a_mutator,
                         )),
                     }
@@ -83,12 +83,7 @@ impl SolItemBaseMutable {
         };
         // Make proper mutated item once we have all the data
         let mut attrs = get_combined_attr_values(src.get_a_item(&type_id), mutated_a_item);
-        let extras = ad::AItemExtras::new_with_data(
-            mutated_a_item.grp_id,
-            mutated_a_item.cat_id,
-            &attrs,
-            &mutated_a_item.effect_datas,
-        );
+        let extras = ad::AItemExtras::inherit_with_attrs(&mutated_a_item, &attrs);
         let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         item_mutation.cache = Some(SolItemMutationDataCache::new(type_id, a_mutator.clone(), attrs, extras));
@@ -210,12 +205,7 @@ impl SolItemBaseMutable {
         };
         // Compose attribute cache
         let mut attrs = get_combined_attr_values(src.get_a_item(&base_type_id), mutated_a_item);
-        let extras = ad::AItemExtras::new_with_data(
-            mutated_a_item.grp_id,
-            mutated_a_item.cat_id,
-            &attrs,
-            &mutated_a_item.effect_datas,
-        );
+        let extras = ad::AItemExtras::inherit_with_attrs(&mutated_a_item, &attrs);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
         self.base.set_type_id(mutated_a_item.id);
@@ -312,7 +302,7 @@ impl SolItemBaseMutable {
                 Some(base_a_item) => {
                     self.mutation = Some(convert_item_mutation_full(
                         mutation_request,
-                        &base_a_item.attr_vals,
+                        &base_a_item.attrs,
                         a_mutator,
                     ));
                     return Ok(());
@@ -325,12 +315,7 @@ impl SolItemBaseMutable {
         };
         // Since we have all the data now, apply mutation properly
         let mut attrs = get_combined_attr_values(self.base.get_a_item(), mutated_a_item);
-        let extras = ad::AItemExtras::new_with_data(
-            mutated_a_item.grp_id,
-            mutated_a_item.cat_id,
-            &attrs,
-            &mutated_a_item.effect_datas,
-        );
+        let extras = ad::AItemExtras::inherit_with_attrs(&mutated_a_item, &attrs);
         let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         item_mutation.cache = Some(SolItemMutationDataCache::new(
@@ -659,18 +644,18 @@ fn get_combined_attr_value<'a>(
     mutated_a_item: &ad::AItem,
     attr_id: &EAttrId,
 ) -> Option<AttrVal> {
-    match mutated_a_item.attr_vals.get(&attr_id) {
+    match mutated_a_item.attrs.get(&attr_id) {
         Some(unmutated_value) => Some(*unmutated_value),
         None => match base_a_item_cache {
             Some(opt_base_a_item) => match opt_base_a_item {
-                Some(base_a_item) => base_a_item.attr_vals.get(&attr_id).copied(),
+                Some(base_a_item) => base_a_item.attrs.get(&attr_id).copied(),
                 None => None,
             },
             None => {
                 let opt_base_a_item = src.get_a_item(base_type_id);
                 base_a_item_cache.replace(opt_base_a_item);
                 match opt_base_a_item {
-                    Some(base_a_item) => base_a_item.attr_vals.get(&attr_id).copied(),
+                    Some(base_a_item) => base_a_item.attrs.get(&attr_id).copied(),
                     None => None,
                 }
             }
@@ -681,14 +666,14 @@ fn get_combined_attr_value<'a>(
 fn get_combined_attr_values(base_a_item: Option<&ad::ArcItem>, mutated_a_item: &ad::AItem) -> StMap<EAttrId, AttrVal> {
     match base_a_item {
         Some(base_a_item) => {
-            let mut attrs = base_a_item.attr_vals.clone();
+            let mut attrs = base_a_item.attrs.clone();
             // Mutated item attributes have priority in case of collisions
-            for (attr_id, attr_val) in mutated_a_item.attr_vals.iter() {
+            for (attr_id, attr_val) in mutated_a_item.attrs.iter() {
                 attrs.insert(*attr_id, *attr_val);
             }
             attrs
         }
-        None => mutated_a_item.attr_vals.clone(),
+        None => mutated_a_item.attrs.clone(),
     }
 }
 

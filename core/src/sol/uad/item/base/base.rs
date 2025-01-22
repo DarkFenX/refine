@@ -40,7 +40,7 @@ impl SolItemBase {
         self.get_a_item().map(|v| v.cat_id)
     }
     pub(in crate::sol::uad::item) fn get_attrs(&self) -> Option<&StMap<EAttrId, AttrVal>> {
-        self.get_a_item().map(|v| &v.attr_vals)
+        self.get_a_item().map(|v| &v.attrs)
     }
     pub(in crate::sol::uad::item) fn get_effect_datas(&self) -> Option<&StMap<EEffectId, ad::AItemEffectData>> {
         self.get_a_item().map(|v| &v.effect_datas)

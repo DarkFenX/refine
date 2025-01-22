@@ -45,7 +45,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
     for e_item_attr in g_data.item_attrs.iter() {
         a_item_map
             .get_mut(&e_item_attr.item_id)
-            .and_then(|v| v.attr_vals.insert(e_item_attr.attr_id, e_item_attr.value));
+            .and_then(|v| v.attrs.insert(e_item_attr.attr_id, e_item_attr.value));
     }
     // Item effects & extended effect data from abilities
     for e_item_effect in g_data.item_effects.iter() {

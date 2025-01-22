@@ -16,7 +16,7 @@ pub struct AItem {
     /// Item category ID.
     pub cat_id: EItemCatId,
     /// Attribute values of the item.
-    pub attr_vals: StMap<EAttrId, AttrVal>,
+    pub attrs: StMap<EAttrId, AttrVal>,
     /// Refers effects of the item.
     pub effect_datas: StMap<EEffectId, AItemEffectData>,
     /// Refers an effect which is default for the item.
@@ -41,11 +41,11 @@ impl AItem {
             id,
             grp_id,
             cat_id,
-            attr_vals,
+            attrs: attr_vals,
             effect_datas,
             defeff_id,
             srqs,
-            extras: AItemExtras::new_empty(),
+            extras: AItemExtras::new(),
         }
     }
 }
