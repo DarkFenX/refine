@@ -99,6 +99,9 @@ impl SolVastFitData {
         for item_id in self.mods_max_group_active_limited.keys() {
             check_item(uad, item_id, true)?;
         }
+        for item_id in self.rigs_rig_size.keys() {
+            check_item(uad, item_id, true)?;
+        }
         Ok(())
     }
 }

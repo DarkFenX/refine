@@ -1,5 +1,5 @@
 use crate::sol::svc::vast::{
-    SolMaxGroupValFail, SolResValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail,
+    SolMaxGroupValFail, SolResValFail, SolRigSizeValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail,
 };
 
 #[derive(Copy, Clone)]
@@ -31,6 +31,7 @@ pub struct SolValOptions {
     pub max_group_fitted: bool,
     pub max_group_online: bool,
     pub max_group_active: bool,
+    pub rig_size: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -61,6 +62,7 @@ impl SolValOptions {
         max_group_fitted: bool,
         max_group_online: bool,
         max_group_active: bool,
+        rig_size: bool,
     ) -> Self {
         Self {
             cpu,
@@ -90,6 +92,7 @@ impl SolValOptions {
             max_group_fitted,
             max_group_online,
             max_group_active,
+            rig_size,
         }
     }
     pub fn new_enabled() -> Self {
@@ -121,6 +124,7 @@ impl SolValOptions {
             max_group_fitted: true,
             max_group_online: true,
             max_group_active: true,
+            rig_size: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -152,6 +156,7 @@ impl SolValOptions {
             max_group_fitted: false,
             max_group_online: false,
             max_group_active: false,
+            rig_size: false,
         }
     }
 }
@@ -184,6 +189,7 @@ pub struct SolValResult {
     pub max_group_fitted: Vec<SolMaxGroupValFail>,
     pub max_group_online: Vec<SolMaxGroupValFail>,
     pub max_group_active: Vec<SolMaxGroupValFail>,
+    pub rig_size: Option<SolRigSizeValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -215,6 +221,7 @@ impl SolValResult {
             max_group_fitted: Vec::new(),
             max_group_online: Vec::new(),
             max_group_active: Vec::new(),
+            rig_size: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -245,5 +252,6 @@ impl SolValResult {
             && self.max_group_fitted.is_empty()
             && self.max_group_online.is_empty()
             && self.max_group_active.is_empty()
+            && self.rig_size.is_none()
     }
 }

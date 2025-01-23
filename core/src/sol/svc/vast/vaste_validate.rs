@@ -153,6 +153,11 @@ impl SolVast {
                 return false;
             }
         }
+        if options.rig_size {
+            if !fit_data.validate_rig_size_fast(uad, fit) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -248,6 +253,9 @@ impl SolVast {
         }
         if options.max_group_active {
             result.max_group_active = fit_data.validate_max_group_active_verbose(uad, calc);
+        }
+        if options.rig_size {
+            result.rig_size = fit_data.validate_rig_size_verbose(uad, fit);
         }
         result
     }
