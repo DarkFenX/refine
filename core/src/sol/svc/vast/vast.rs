@@ -60,6 +60,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) mods_max_group_online_limited: StMap<SolItemId, EItemGrpId>,
     pub(in crate::sol::svc::vast) mods_max_group_active_all: StMapSetL1<EItemGrpId, SolItemId>,
     pub(in crate::sol::svc::vast) mods_max_group_active_limited: StMap<SolItemId, EItemGrpId>,
+    pub(in crate::sol::svc::vast) rigs_rig_size: StMap<SolItemId, AttrVal>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -87,6 +88,7 @@ impl SolVastFitData {
             mods_max_group_online_limited: StMap::new(),
             mods_max_group_active_all: StMapSetL1::new(),
             mods_max_group_active_limited: StMap::new(),
+            rigs_rig_size: StMap::new(),
         }
     }
 }

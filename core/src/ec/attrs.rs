@@ -68,6 +68,7 @@ pub(crate) const MED_SLOT_MODIFIER: EAttrId = 1375;
 pub(crate) const LOW_SLOT_MODIFIER: EAttrId = 1376;
 pub(crate) const FITS_TO_SHIP_TYPE: EAttrId = 1380;
 pub(crate) const MAX_GROUP_FITTED: EAttrId = 1544;
+pub(crate) const RIG_SIZE: EAttrId = 1547;
 pub(crate) const RESIST_SHIFT_AMOUNT: EAttrId = 1849;
 pub(crate) const CAN_FIT_SHIP_GROUP5: EAttrId = 1872;
 pub(crate) const CAN_FIT_SHIP_GROUP6: EAttrId = 1879;

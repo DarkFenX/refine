@@ -27,15 +27,17 @@ impl SolVast {
                 }
             }
             SolItem::Rig(rig) => {
+                let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                 let extras = rig.get_a_extras().unwrap();
+                if let Some(rig_size) = item.get_attrs().unwrap().get(&ec::attrs::RIG_SIZE) {
+                    fit_data.rigs_rig_size.insert(rig.get_id(), *rig_size);
+                }
                 if let Some(ship_limit) = &extras.ship_limit {
-                    let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                     fit_data
                         .ship_limited_mods_rigs_subs
                         .insert(rig.get_id(), ship_limit.clone());
                 }
                 if let Some(grp_id) = extras.val_fitted_group_id {
-                    let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                     fit_data.mods_rigs_max_group_fitted_all.add_entry(grp_id, rig.get_id());
                     if rig.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_FITTED) {
                         fit_data.mods_rigs_max_group_fitted_limited.insert(rig.get_id(), grp_id);
@@ -92,13 +94,13 @@ impl SolVast {
                 }
             }
             SolItem::Rig(rig) => {
+                let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                 let extras = rig.get_a_extras().unwrap();
+                fit_data.rigs_rig_size.remove(&rig.get_id());
                 if extras.ship_limit.is_some() {
-                    let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                     fit_data.ship_limited_mods_rigs_subs.remove(&rig.get_id());
                 }
                 if let Some(grp_id) = extras.val_fitted_group_id {
-                    let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                     fit_data
                         .mods_rigs_max_group_fitted_all
                         .remove_entry(&grp_id, &rig.get_id());
