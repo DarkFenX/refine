@@ -113,7 +113,16 @@ fn validate_fast(
     for (item_id, grp_id) in max_group_limited.iter() {
         let allowed = match calc.get_item_attr_val(uad, item_id, &attr_id) {
             Ok(value) => value.extra.round() as Amount,
-            Err(_) => 0,
+            // Limited items are guaranteed to have some unmodified limit value
+            Err(_) => uad
+                .items
+                .get_item(item_id)
+                .unwrap()
+                .get_attrs()
+                .unwrap()
+                .get(&attr_id)
+                .unwrap()
+                .round() as Amount,
         };
         let fitted = max_group_all.get(grp_id).len() as Amount;
         if fitted > allowed {
@@ -134,7 +143,16 @@ fn validate_verbose(
     for (item_id, grp_id) in max_group_limited.iter() {
         let allowed = match calc.get_item_attr_val(uad, item_id, &attr_id) {
             Ok(value) => value.extra.round() as Amount,
-            Err(_) => 0,
+            // Limited items are guaranteed to have some unmodified limit value
+            Err(_) => uad
+                .items
+                .get_item(item_id)
+                .unwrap()
+                .get_attrs()
+                .unwrap()
+                .get(&attr_id)
+                .unwrap()
+                .round() as Amount,
         };
         let fitted = max_group_all.get(grp_id).len() as Amount;
         if fitted > allowed {
