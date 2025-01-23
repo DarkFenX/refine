@@ -43,7 +43,7 @@ impl AItemExtras {
             kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
             volume: get_item_volume(attrs),
             ship_limit: get_item_ship_limit(attrs),
-            val_fitted_group_id: a_item.extras.val_active_group_id,
+            val_fitted_group_id: a_item.extras.val_fitted_group_id,
             val_online_group_id: a_item.extras.val_online_group_id,
             val_active_group_id: a_item.extras.val_active_group_id,
         }
