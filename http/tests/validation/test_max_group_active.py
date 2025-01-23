@@ -1,4 +1,4 @@
-from tests import check_no_field
+from tests import approx, check_no_field
 
 
 def test_same(client, consts):
@@ -67,12 +67,16 @@ def test_modified(client, consts):
     api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.active)
     api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.active)
     # Verification
+    assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(0.6)
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1.4)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is False
     assert api_val.details.max_group_active == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
+    assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1.6)
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2.4)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is True
     with check_no_field():
@@ -80,6 +84,8 @@ def test_modified(client, consts):
     # Action
     api_rig.remove()
     # Verification
+    assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(0.6)
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1.4)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is False
     assert api_val.details.max_group_active == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
@@ -97,6 +103,7 @@ def test_mutation_limit_priority(client, consts):
     api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiState.active)
     api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiState.active)
     # Verification
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is True
     with check_no_field():
@@ -104,12 +111,14 @@ def test_mutation_limit_priority(client, consts):
     # Action
     api_module2.change_mod(mutation=eve_mutator_id)
     # Verification
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is False
     assert api_val.details.max_group_active == {eve_grp_id: [2, {api_module2.id: 1}]}
     # Action
     api_module2.change_mod(mutation=None)
     # Verification
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is True
     with check_no_field():
@@ -130,6 +139,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_fit.add_mod(type_id=eve_other_module_id, state=consts.ApiState.active)
     api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiState.active)
     # Verification
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is True
     with check_no_field():
@@ -137,12 +147,14 @@ def test_mutation_limit_inheritance(client, consts):
     # Action
     api_module2.change_mod(mutation=eve_mutator_id)
     # Verification
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is False
     assert api_val.details.max_group_active == {eve_grp2_id: [2, {api_module2.id: 1}]}
     # Action
     api_module2.change_mod(mutation=None)
     # Verification
+    assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is True
     with check_no_field():
