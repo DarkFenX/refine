@@ -50,6 +50,7 @@ impl HValidFitCmd {
                 "max_group_fitted" => core_options.max_group_fitted = alt_value,
                 "max_group_online" => core_options.max_group_online = alt_value,
                 "max_group_active" => core_options.max_group_active = alt_value,
+                "rig_size" => core_options.rig_size = alt_value,
                 _ => (),
             }
         }
