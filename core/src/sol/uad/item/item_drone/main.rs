@@ -80,7 +80,7 @@ impl SolDrone {
         self.base.update_a_data(src);
     }
     // Mutation-specific methods
-    pub(in crate::sol::uad::item) fn has_mutation_data(&self) -> bool {
+    pub(in crate::sol) fn has_mutation_data(&self) -> bool {
         self.base.has_mutation_data()
     }
     pub(in crate::sol) fn get_mutation_info(&self, src: &Src) -> Option<SolItemMutationInfo> {

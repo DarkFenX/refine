@@ -274,7 +274,7 @@ impl SolItemBaseMutable {
         src: &Src,
         mutation_request: SolItemAddMutation,
     ) -> Result<(), ItemNotMutatedError> {
-        if self.mutation.is_some() {
+        if self.has_mutation_data() {
             return Err(ItemNotMutatedError::new(self.get_id()));
         };
         // Since item is not mutated, base type ID is always on non-mutated item base

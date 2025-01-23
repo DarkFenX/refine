@@ -7,20 +7,19 @@ use crate::{
 impl SolarSystem {
     pub fn remove_drone_mutation(&mut self, item_id: &SolItemId) -> Result<(), RemoveDroneMutationError> {
         let item = self.uad.items.get_item(item_id)?;
-        self.svc.unload_item(&self.uad, item);
-        let drone = match self.uad.items.get_item_mut(item_id).unwrap().get_drone_mut() {
-            Ok(drone) => drone,
-            Err(error) => {
-                let item = self.uad.items.get_item(item_id).unwrap();
-                self.svc.load_item(&self.uad, item);
-                return Err(error.into());
-            }
-        };
-        if let Err(error) = drone.unmutate(&self.uad.src) {
-            let item = self.uad.items.get_item(item_id).unwrap();
-            self.svc.load_item(&self.uad, item);
-            return Err(error.into());
+        let drone = item.get_drone()?;
+        if !drone.has_mutation_data() {
+            return Err(ItemMutatedError::new(*item_id).into());
         }
+        self.svc.unload_item(&self.uad, item);
+        self.uad
+            .items
+            .get_item_mut(item_id)
+            .unwrap()
+            .get_drone_mut()
+            .unwrap()
+            .unmutate(&self.uad.src)
+            .unwrap();
         let item = self.uad.items.get_item(item_id).unwrap();
         self.svc.load_item(&self.uad, item);
         Ok(())
