@@ -2,6 +2,7 @@ from tests.support.consts import ApiValType
 from tests.support.util import AttrDict, AttrHookDef
 from .max_group import ValMaxGroupDetails
 from .resource import ValResourceDetails
+from .rig_size import ValRigSizeDetails
 from .ship_limit import ValShipLimitDetails
 from .slot_amount import ValSlotAmountDetails
 from .slot_index import ValSlotIndexDetails
@@ -43,4 +44,5 @@ class ValResultDetails(AttrDict):
             ApiValType.ship_limit: AttrHookDef(func=lambda d: ValShipLimitDetails(data=d)),
             ApiValType.max_group_fitted: AttrHookDef(func=lambda d: ValMaxGroupDetails(data=d)),
             ApiValType.max_group_online: AttrHookDef(func=lambda d: ValMaxGroupDetails(data=d)),
-            ApiValType.max_group_active: AttrHookDef(func=lambda d: ValMaxGroupDetails(data=d))})
+            ApiValType.max_group_active: AttrHookDef(func=lambda d: ValMaxGroupDetails(data=d)),
+            ApiValType.rig_size: AttrHookDef(func=lambda d: ValRigSizeDetails(data=d))})
