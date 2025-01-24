@@ -1,15 +1,15 @@
 use crate::{
-    defs::{SlotNumber, SolItemId},
+    defs::{SlotIndex, SolItemId},
     sol::svc::vast::SolVastFitData,
     util::StMapSetL1,
 };
 
 pub struct SolSlotIndexValFail {
-    pub slot: SlotNumber,
+    pub slot: SlotIndex,
     pub users: Vec<SolItemId>,
 }
 impl SolSlotIndexValFail {
-    fn new(slot: SlotNumber, users: Vec<SolItemId>) -> Self {
+    fn new(slot: SlotIndex, users: Vec<SolItemId>) -> Self {
         Self { slot, users }
     }
 }
@@ -37,7 +37,7 @@ impl SolVastFitData {
     }
 }
 
-fn validate_slot_index_verbose(data: &StMapSetL1<SlotNumber, SolItemId>) -> Vec<SolSlotIndexValFail> {
+fn validate_slot_index_verbose(data: &StMapSetL1<SlotIndex, SolItemId>) -> Vec<SolSlotIndexValFail> {
     let mut fails = Vec::new();
     for (slot, users) in data.iter() {
         if users.len() >= 2 {

@@ -8,7 +8,7 @@ pub(crate) type AggrKey = i32;
 pub type AttrVal = OF<f64>;
 pub type MutaRoll = OF<f64>;
 pub type SkillLevel = u8;
-pub type SlotNumber = i32;
+pub type SlotIndex = i32;
 // Aliases for EVE-related entities
 pub type EAbilId = i32;
 pub type EAttrId = i32;

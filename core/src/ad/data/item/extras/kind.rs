@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemEffectData,
-    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, SlotNumber, OF},
+    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, SlotIndex, OF},
     ec,
     util::StMap,
 };
@@ -8,13 +8,13 @@ use crate::{
 /// Contains adapted item types.
 #[derive(Copy, Clone)]
 pub enum AItemKind {
-    Booster(SlotNumber),
+    Booster(SlotIndex),
     Character,
     Charge,
     Drone,
     EffectBeacon,
     FighterSquad(AFighterKind),
-    Implant(SlotNumber),
+    Implant(SlotIndex),
     ModHigh,
     ModLow,
     ModMid,
@@ -23,7 +23,7 @@ pub enum AItemKind {
     Ship,
     Skill,
     Stance,
-    Subsystem(SlotNumber),
+    Subsystem(SlotIndex),
 }
 
 /// Contains adapted fighter squad types.
@@ -46,7 +46,7 @@ pub(super) fn get_item_kind(
     let mut kinds = Vec::new();
     if cat_id == ec::itemcats::IMPLANT && attrs.contains_key(&ec::attrs::BOOSTERNESS) {
         kinds.push(AItemKind::Booster(
-            attrs.get(&ec::attrs::BOOSTERNESS).unwrap().round() as SlotNumber
+            attrs.get(&ec::attrs::BOOSTERNESS).unwrap().round() as SlotIndex
         ));
     };
     if grp_id == ec::itemgrps::CHARACTER {
@@ -86,7 +86,7 @@ pub(super) fn get_item_kind(
     };
     if cat_id == ec::itemcats::IMPLANT && attrs.contains_key(&ec::attrs::IMPLANTNESS) {
         kinds.push(AItemKind::Implant(
-            attrs.get(&ec::attrs::IMPLANTNESS).unwrap().round() as SlotNumber
+            attrs.get(&ec::attrs::IMPLANTNESS).unwrap().round() as SlotIndex
         ));
     };
     if cat_id == ec::itemcats::MODULE && effects.contains_key(&ec::effects::HI_POWER) {
@@ -115,7 +115,7 @@ pub(super) fn get_item_kind(
     };
     if cat_id == ec::itemcats::SUBSYSTEM && attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT) {
         kinds.push(AItemKind::Subsystem(
-            attrs.get(&ec::attrs::SUBSYSTEM_SLOT).unwrap().round() as SlotNumber,
+            attrs.get(&ec::attrs::SUBSYSTEM_SLOT).unwrap().round() as SlotIndex,
         ));
     };
     match kinds.len() {

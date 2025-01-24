@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{AttrVal, EItemGrpId, SlotNumber, SolFitId, SolItemId},
+    defs::{AttrVal, EItemGrpId, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
     util::{StMap, StMapSetL1, StSet},
 };
@@ -50,9 +50,9 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) mods_turret: StSet<SolItemId>,
     // Modules with "launcherFitted" effect active
     pub(in crate::sol::svc::vast) mods_launcher: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) slotted_implants: StMapSetL1<SlotNumber, SolItemId>,
-    pub(in crate::sol::svc::vast) slotted_boosters: StMapSetL1<SlotNumber, SolItemId>,
-    pub(in crate::sol::svc::vast) slotted_subsystems: StMapSetL1<SlotNumber, SolItemId>,
+    pub(in crate::sol::svc::vast) slotted_implants: StMapSetL1<SlotIndex, SolItemId>,
+    pub(in crate::sol::svc::vast) slotted_boosters: StMapSetL1<SlotIndex, SolItemId>,
+    pub(in crate::sol::svc::vast) slotted_subsystems: StMapSetL1<SlotIndex, SolItemId>,
     pub(in crate::sol::svc::vast) ship_limited_mods_rigs_subs: StMap<SolItemId, ad::AItemShipLimit>,
     pub(in crate::sol::svc::vast) mods_rigs_max_group_fitted_all: StMapSetL1<EItemGrpId, SolItemId>,
     pub(in crate::sol::svc::vast) mods_rigs_max_group_fitted_limited: StMap<SolItemId, EItemGrpId>,

@@ -5,7 +5,7 @@ use std::collections::HashMap;
 pub(in crate::info::valid) struct HSlotIndexValFail {
     #[serde(flatten)]
     #[serde_as(as = "HashMap<_, Vec<serde_with::DisplayFromStr>>")]
-    data: HashMap<rc::SlotNumber, Vec<rc::SolItemId>>,
+    data: HashMap<rc::SlotIndex, Vec<rc::SolItemId>>,
 }
 impl HSlotIndexValFail {
     pub(in crate::info::valid) fn is_empty(&self) -> bool {

@@ -1,13 +1,13 @@
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::handler_json) enum CItemKind {
-    Booster(rc::SlotNumber),
+    Booster(rc::SlotIndex),
     Character,
     Charge,
     Drone,
     EffectBeacon,
     FighterSquad(CFighterKind),
-    Implant(rc::SlotNumber),
+    Implant(rc::SlotIndex),
     ModHigh,
     ModLow,
     ModMid,
@@ -16,7 +16,7 @@ pub(in crate::handler_json) enum CItemKind {
     Ship,
     Skill,
     Stance,
-    Subsystem(rc::SlotNumber),
+    Subsystem(rc::SlotIndex),
 }
 impl From<&rc::ad::AItemKind> for CItemKind {
     fn from(item_kind: &rc::ad::AItemKind) -> Self {

@@ -1,5 +1,5 @@
 use crate::{
-    defs::{EEffectId, EItemId, SlotNumber, SolFitId, SolItemId},
+    defs::{EEffectId, EItemId, SlotIndex, SolFitId, SolItemId},
     sol::{info::SolSideEffectInfo, uad::item::SolBooster},
     util::StMap,
 };
@@ -8,7 +8,7 @@ pub struct SolBoosterInfo {
     pub id: SolItemId,
     pub type_id: EItemId,
     pub fit_id: SolFitId,
-    pub slot: Option<SlotNumber>,
+    pub slot: Option<SlotIndex>,
     pub enabled: bool,
     pub side_effects: StMap<EEffectId, SolSideEffectInfo>,
 }
@@ -17,7 +17,7 @@ impl SolBoosterInfo {
         id: SolItemId,
         type_id: EItemId,
         fit_id: SolFitId,
-        slot: Option<SlotNumber>,
+        slot: Option<SlotIndex>,
         enabled: bool,
         side_effects: StMap<EEffectId, SolSideEffectInfo>,
     ) -> Self {

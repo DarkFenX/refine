@@ -1,5 +1,5 @@
 use crate::{
-    defs::{EItemId, SlotNumber, SolFitId, SolItemId},
+    defs::{EItemId, SlotIndex, SolFitId, SolItemId},
     sol::uad::item::SolImplant,
 };
 
@@ -7,11 +7,11 @@ pub struct SolImplantInfo {
     pub id: SolItemId,
     pub type_id: EItemId,
     pub fit_id: SolFitId,
-    pub slot: Option<SlotNumber>,
+    pub slot: Option<SlotIndex>,
     pub enabled: bool,
 }
 impl SolImplantInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, slot: Option<SlotNumber>, enabled: bool) -> Self {
+    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, slot: Option<SlotIndex>, enabled: bool) -> Self {
         Self {
             id,
             type_id,
