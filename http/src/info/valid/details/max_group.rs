@@ -21,9 +21,9 @@ impl From<&Vec<rc::SolMaxGroupValFail>> for HMaxGroupValFail {
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info::valid) struct HMaxGroupGroup {
-    count: rc::Amount,
+    count: rc::Count,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    items: HashMap<rc::SolItemId, rc::Amount>,
+    items: HashMap<rc::SolItemId, rc::Count>,
 }
 impl From<&rc::SolMaxGroupValFail> for HMaxGroupGroup {
     fn from(core_val_fail: &rc::SolMaxGroupValFail) -> Self {

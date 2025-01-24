@@ -75,7 +75,7 @@ def test_equal(client, consts):
 
 
 def test_modified_total(client, consts):
-    # Unrealistic scenario, but modification of total amount is supported
+    # Unrealistic scenario, but modification of total count is supported
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.launcher_slots_left)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(

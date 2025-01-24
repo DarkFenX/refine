@@ -19,7 +19,7 @@ def test_fail_single(client, consts):
 
 
 def test_fail_multiple_ship(client, consts):
-    # Unlike other validations, here we expose only users which are outside of total amount of slots
+    # Unlike other validations, here we expose only users which are outside of total count of slots
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.med_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 1})
@@ -39,7 +39,7 @@ def test_fail_multiple_ship(client, consts):
 
 
 def test_fail_multiple_struct(client, consts):
-    # Unlike other validations, here we expose only users which are outside of total amount of slots
+    # Unlike other validations, here we expose only users which are outside of total count of slots
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.med_slots)
     eve_module_id = client.mk_eve_item()
     eve_struct_id = client.mk_eve_struct(attrs={eve_total_attr_id: 1})
@@ -116,7 +116,7 @@ def test_equal(client, consts):
 
 
 def test_modified_total(client, consts):
-    # Unrealistic scenario, but modification of total amount is supported
+    # Unrealistic scenario, but modification of total count is supported
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.med_slots)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(

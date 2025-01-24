@@ -2,7 +2,7 @@ pub use ordered_float::OrderedFloat as OF;
 
 // Generic aliases
 pub type Idx = usize;
-pub type Amount = u32;
+pub type Count = u32;
 // EVE-specific aliases, but not specific to any entity category
 pub(crate) type AggrKey = i32;
 pub type AttrVal = OF<f64>;

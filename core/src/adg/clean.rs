@@ -5,12 +5,12 @@ use crate::{
         rels::{KeyDb, Pk},
         GData, GSupport,
     },
-    defs::Amount,
+    defs::Count,
     ec,
     util::{Named, StSet, StrMsgError},
 };
 
-const MAX_CYCLES: Amount = 100;
+const MAX_CYCLES: Count = 100;
 
 pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> Result<(), StrMsgError> {
     let mut trash = GData::new();

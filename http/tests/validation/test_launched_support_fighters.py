@@ -120,7 +120,7 @@ def test_modified_fighter_type(client, consts):
 
 
 def test_modified_total(client, consts):
-    # Unrealistic scenario, but modification of total amount is supported
+    # Unrealistic scenario, but modification of total count is supported
     eve_ftr_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_is_support)
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_support_slots)
     eve_mod_attr_id = client.mk_eve_attr()
@@ -198,7 +198,7 @@ def test_fractional_total(client, consts):
     assert api_val.details.launched_support_fighters.users == [api_fighter.id]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
-    # Verification - amount is rounded up to int
+    # Verification - value is rounded up to int
     api_val = api_fit.validate(include=[consts.ApiValType.launched_support_fighters])
     assert api_val.passed is True
     with check_no_field():

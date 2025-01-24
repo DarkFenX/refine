@@ -42,7 +42,7 @@ pub(in crate::phb) struct PItemFighterAbilData {
 #[derive(serde::Deserialize)]
 pub(in crate::phb) struct PItemFighterAbilChargeData {
     #[serde(rename = "chargeCount")]
-    pub(in crate::phb) count: rc::Amount,
+    pub(in crate::phb) count: rc::Count,
     #[serde(rename = "rearmTimeSeconds")]
     pub(in crate::phb) rearm_time: rc::AttrVal,
 }

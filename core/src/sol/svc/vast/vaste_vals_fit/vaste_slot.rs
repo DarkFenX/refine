@@ -1,5 +1,5 @@
 use crate::{
-    defs::{Amount, Idx, SolItemId},
+    defs::{Count, Idx, SolItemId},
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{fit::SolFit, SolUad},
@@ -7,12 +7,12 @@ use crate::{
 };
 
 pub struct SolSlotValFail {
-    pub used: Amount,
-    pub total: Option<Amount>,
+    pub used: Count,
+    pub total: Option<Count>,
     pub users: Vec<SolItemId>,
 }
 impl SolSlotValFail {
-    fn new(used: Amount, total: Option<Amount>, users: Vec<SolItemId>) -> Self {
+    fn new(used: Count, total: Option<Count>, users: Vec<SolItemId>) -> Self {
         Self { used, total, users }
     }
 }
@@ -322,7 +322,7 @@ impl SolVastFitData {
         if stats.used <= total {
             return None;
         }
-        let users = match total >= fit.mods_high.len() as Amount {
+        let users = match total >= fit.mods_high.len() as Count {
             true => Vec::new(),
             false => fit.mods_high.inner()[total as Idx..]
                 .iter()
@@ -342,7 +342,7 @@ impl SolVastFitData {
         if stats.used <= total {
             return None;
         }
-        let users = match total >= fit.mods_mid.len() as Amount {
+        let users = match total >= fit.mods_mid.len() as Count {
             true => Vec::new(),
             false => fit.mods_mid.inner()[total as Idx..].iter().filter_map(|v| *v).collect(),
         };
@@ -359,7 +359,7 @@ impl SolVastFitData {
         if stats.used <= total {
             return None;
         }
-        let users = match total >= fit.mods_low.len() as Amount {
+        let users = match total >= fit.mods_low.len() as Count {
             true => Vec::new(),
             false => fit.mods_low.inner()[total as Idx..].iter().filter_map(|v| *v).collect(),
         };

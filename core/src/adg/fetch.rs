@@ -16,11 +16,11 @@ where
     tracing::debug!("fetching {}", T::get_name());
     let e_cont = func(e_handler).map_err(|e| StrMsgError::new(e.to_string()))?;
     vec.extend(e_cont.data);
-    let warn_amt = e_cont.warns.len();
-    if warn_amt > 0 {
+    let warn_count = e_cont.warns.len();
+    if warn_count > 0 {
         tracing::warn!(
             "{} warnings encountered during fetching of {}, showing up to {}:",
-            warn_amt,
+            warn_count,
             T::get_name(),
             MAX_WARNS
         );

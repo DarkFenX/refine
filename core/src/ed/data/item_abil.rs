@@ -1,5 +1,5 @@
 use crate::{
-    defs::{Amount, AttrVal, EAbilId, EItemId},
+    defs::{AttrVal, Count, EAbilId, EItemId},
     util::Named,
 };
 
@@ -12,7 +12,7 @@ pub struct EItemFighterAbil {
     /// Defines cooldown of the ability in seconds.
     pub cooldown: Option<AttrVal>,
     /// Defines how many times the ability can be used before the fighter has to rearm.
-    pub charge_count: Option<Amount>,
+    pub charge_count: Option<Count>,
     /// Defines how long each charge of the ability takes to rearm, in seconds.
     pub charge_rearm_time: Option<AttrVal>,
 }
@@ -22,7 +22,7 @@ impl EItemFighterAbil {
         item_id: EItemId,
         abil_id: EAbilId,
         cooldown: Option<AttrVal>,
-        charge_count: Option<Amount>,
+        charge_count: Option<Count>,
         charge_rearm_time: Option<AttrVal>,
     ) -> Self {
         Self {

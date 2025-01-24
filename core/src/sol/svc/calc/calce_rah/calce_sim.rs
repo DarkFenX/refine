@@ -4,7 +4,7 @@ use itertools::Itertools;
 use ordered_float::Float;
 
 use crate::{
-    defs::{Amount, AttrVal, SolFitId, SolItemId, OF},
+    defs::{AttrVal, Count, SolFitId, SolItemId, OF},
     sol::{
         svc::calc::{SolAttrVal, SolCalc},
         uad::SolUad,
@@ -123,7 +123,7 @@ impl SolCalc {
             history_entries_seen.insert(sim_history_entry.clone());
             sim_history.push(sim_history_entry);
         }
-        // If we didn't find any RAH state loops during specified quantity of sim ticks, calculate
+        // If we didn't find any RAH state loops during specified count of sim ticks, calculate
         // average resonances based on whole history, excluding initial adaptation period
         let ticks_to_ignore = estimate_initial_adaptation_ticks(&sim_datas, &sim_history);
         // Never ignore more than half of the history
@@ -352,7 +352,7 @@ fn estimate_initial_adaptation_ticks(
     sim_datas: &BTreeMap<SolItemId, SolRahDataSim>,
     sim_history: &[Vec<SolRahSimHistoryEntry>],
 ) -> usize {
-    // Get amount of cycles it takes for each RAH to exhaust its highest resistance
+    // Get count of cycles it takes for each RAH to exhaust its highest resistance
     let mut exhaustion_cycles = StMap::new();
     for (item_id, item_sim_data) in sim_datas.iter() {
         let min_reso = *[
@@ -374,11 +374,11 @@ fn estimate_initial_adaptation_ticks(
         .max_by_key(|(k, v)| AttrVal::from(*exhaustion_cycles.get(k).unwrap()) * v.info.cycle_time)
         .map(|v| *v.0)
         .unwrap();
-    // Multiply quantity of resistance exhaustion cycles by 1.5, to give RAH more time for 'finer'
+    // Multiply count of resistance exhaustion cycles by 1.5, to give RAH more time for 'finer'
     // adjustments
     let slowest_cycles = (exhaustion_cycles.get(&slowest_item_id).unwrap() * OF(1.5))
         .ceil()
-        .into_inner() as Amount;
+        .into_inner() as Count;
     if slowest_cycles == 0 {
         return 0;
     }

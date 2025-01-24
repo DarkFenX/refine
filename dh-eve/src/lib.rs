@@ -5,7 +5,7 @@
 //! ## Feature flags
 //!
 //! This library provides two different data handlers, with their availability controlled via
-//! feature flags to reduce the amount of compiled code.
+//! feature flags to reduce the size of compiled code.
 //!
 //! - `full`: Enables both handlers.
 //! - `phb-http`: Enables handler which fetches data over HTTP.

@@ -21,7 +21,7 @@
 //! and items, and fetch data and stats
 
 pub use defs::{
-    Amount, AttrVal, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
+    AttrVal, Count, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
     Idx, MutaRoll, SkillLevel, SlotNumber, SolFitId, SolFleetId, SolItemId, OF, VERSION,
 };
 pub use sol::{

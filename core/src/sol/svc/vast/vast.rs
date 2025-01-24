@@ -30,7 +30,7 @@ impl SolVast {
 }
 
 // TODO: check if some of data containers can be merged to save time and memory (e.g. drone
-// bandwidth, active drone amount)
+// bandwidth, active drone count)
 #[derive(Clone)]
 pub(in crate::sol::svc::vast) struct SolVastFitData {
     // Modules with "online" effect active

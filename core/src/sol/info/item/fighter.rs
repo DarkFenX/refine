@@ -1,5 +1,5 @@
 use crate::{
-    defs::{Amount, EEffectId, EItemId, SolFitId, SolItemId},
+    defs::{Count, EEffectId, EItemId, SolFitId, SolItemId},
     sol::{
         info::{SolAutochargeInfo, SolProjInfo},
         uad::item::{SolFighter, SolItemState},
@@ -12,7 +12,7 @@ pub struct SolFighterInfo {
     pub type_id: EItemId,
     pub fit_id: SolFitId,
     pub state: SolItemState,
-    pub amt_override: Option<Amount>,
+    pub count_override: Option<Count>,
     pub autocharges: StMap<EEffectId, SolAutochargeInfo>,
     pub projs: Vec<SolProjInfo>,
 }
@@ -22,7 +22,7 @@ impl SolFighterInfo {
         type_id: EItemId,
         fit_id: SolFitId,
         state: SolItemState,
-        amt_override: Option<Amount>,
+        count_override: Option<Count>,
         autocharges: StMap<EEffectId, SolAutochargeInfo>,
         projs: Vec<SolProjInfo>,
     ) -> Self {
@@ -31,7 +31,7 @@ impl SolFighterInfo {
             type_id,
             fit_id,
             state,
-            amt_override,
+            count_override,
             autocharges,
             projs,
         }
@@ -45,7 +45,7 @@ impl SolFighterInfo {
             sol_fighter.get_type_id(),
             sol_fighter.get_fit_id(),
             sol_fighter.get_state(),
-            sol_fighter.get_amt_override(),
+            sol_fighter.get_count_override(),
             autocharges,
             sol_fighter
                 .get_projs()

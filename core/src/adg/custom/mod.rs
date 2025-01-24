@@ -36,5 +36,5 @@ pub(in crate::adg) fn customize(a_data: &mut ad::AData) {
     missile_dmg_self_srq::mk_self_skillreq_modifier_missile_dmg(a_data);
     drone_dmg_self_srq::mk_self_skillreq_drone_dmg(a_data);
     // Attribute value fixes
-    subsystem_slots::fix_subsysem_slot_amount(a_data);
+    subsystem_slots::fix_subsysem_slot_count(a_data);
 }

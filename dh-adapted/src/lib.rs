@@ -4,7 +4,7 @@
 //! ## Feature flags
 //!
 //! This library provides two different data handlers, with their availability controlled via
-//! feature flags to reduce the amount of compiled code.
+//! feature flags to reduce the size of compiled code.
 //!
 //! - `full`: Enables both handlers.
 //! - `json`: Enables handler which stores data in RAM, and writes persistent JSON cache to disk.

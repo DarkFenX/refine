@@ -1,7 +1,7 @@
 from tests import check_no_field
 
 
-def test_amount(client, consts):
+def test_multiple(client, consts):
     eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.subsystem_slot)
     eve_subsystem_id = client.mk_eve_item(cat_id=consts.EveItemCat.subsystem, attrs={eve_slot_attr_id: 1})
     client.create_sources()

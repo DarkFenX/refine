@@ -155,7 +155,7 @@ def test_excess_max_takers_limited(client, consts):
     # ---loop---
     # 1 0.8 0.6 0.0 0.0
     # In this case therm couldn't take more than 0.4 because it's the limit - total pool of values
-    # to distribute, divided by amount of resists which take damage - (0.5 + 0.3) / 2 = 0.4
+    # to distribute, divided by count of resists which take damage - (0.5 + 0.3) / 2 = 0.4
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.8)
     assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.6)

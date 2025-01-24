@@ -1,5 +1,5 @@
-// Subsystem amount attribute seems to have no effect on anything in EVE; the lib uses it to expose
-// max amount of subsystem slots, si fix it from 5 in data to 4
+// Subsystem count attribute seems to have no effect on anything in EVE; the lib uses it to expose
+// max count of subsystem slots, so fix it from 5 in data to 4
 
 use crate::{
     ad,
@@ -10,7 +10,7 @@ use crate::{
 const SLOT_ATTR: EAttrId = ec::attrs::MAX_SUBSYSTEMS;
 const SHIP_GROUP: EItemGrpId = ec::itemgrps::STRATEGIC_CRUISER;
 
-pub(in crate::adg::custom) fn fix_subsysem_slot_amount(a_data: &mut ad::AData) {
+pub(in crate::adg::custom) fn fix_subsysem_slot_count(a_data: &mut ad::AData) {
     let mut applied = false;
     for item in a_data.items.iter_mut() {
         if item.grp_id != SHIP_GROUP {
@@ -23,6 +23,6 @@ pub(in crate::adg::custom) fn fix_subsysem_slot_amount(a_data: &mut ad::AData) {
         }
     }
     if !applied {
-        tracing::info!("fix for t3c subsystem amount attribute {SLOT_ATTR} wasn't applied");
+        tracing::info!("fix for t3c subsystem count attribute {SLOT_ATTR} wasn't applied");
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{Amount, AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
+    defs::{AttrVal, Count, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     sol::uad::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState, SolProjs},
     src::Src,
     util::{Named, StMap},
@@ -10,7 +10,7 @@ use crate::{
 pub(in crate::sol) struct SolFighter {
     base: SolItemBase,
     fit_id: SolFitId,
-    amt_override: Option<Amount>,
+    count_override: Option<Count>,
     autocharges: SolAutocharges,
     projs: SolProjs,
 }
@@ -25,7 +25,7 @@ impl SolFighter {
         Self {
             base: SolItemBase::new(src, id, type_id, state),
             fit_id,
-            amt_override: None,
+            count_override: None,
             autocharges: SolAutocharges::new(),
             projs: SolProjs::new(),
         }
@@ -81,8 +81,8 @@ impl SolFighter {
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id
     }
-    pub(in crate::sol) fn get_amt_override(&self) -> Option<Amount> {
-        self.amt_override
+    pub(in crate::sol) fn get_count_override(&self) -> Option<Count> {
+        self.count_override
     }
     pub(in crate::sol) fn get_autocharges(&self) -> &SolAutocharges {
         &self.autocharges

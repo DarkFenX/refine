@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData) {
-    // Build data for item amount in a group limit
+    // Build data for item count in a group limit
     let grp_mutations = get_grp_mutations(a_data);
     let limited_fitted_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ec::attrs::MAX_GROUP_FITTED);
     let limited_online_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ec::attrs::MAX_GROUP_ONLINE);

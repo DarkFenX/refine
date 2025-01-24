@@ -1,4 +1,4 @@
-use crate::defs::Amount;
+use crate::defs::Count;
 
 /// Effect modifier build statuses.
 ///
@@ -8,9 +8,9 @@ pub enum AEffectModBuildStatus {
     /// Modifiers haven't been built yet.
     Unbuilt,
     /// All modifiers failed conversion, with a failure count.
-    Error(Amount),
+    Error(Count),
     /// Some modifiers failed conversion, with a failure count.
-    SuccessPartial(Amount),
+    SuccessPartial(Count),
     /// Conversion was successful.
     Success,
     /// Modifiers on an effect were customized by the library.

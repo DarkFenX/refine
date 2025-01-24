@@ -1,5 +1,5 @@
 use crate::{
-    defs::{Amount, EAttrId, SolItemId},
+    defs::{Count, EAttrId, SolItemId},
     ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
@@ -8,11 +8,11 @@ use crate::{
 };
 
 pub struct SolStatSlot {
-    pub used: Amount,
-    pub total: Option<Amount>,
+    pub used: Count,
+    pub total: Option<Count>,
 }
 impl SolStatSlot {
-    pub(in crate::sol::svc::vast) fn new(used: Amount, total: Option<Amount>) -> Self {
+    pub(in crate::sol::svc::vast) fn new(used: Count, total: Option<Count>) -> Self {
         SolStatSlot { used, total }
     }
 }
@@ -30,7 +30,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::UPGRADE_SLOTS_LEFT,
-            fit.rigs.len() as Amount,
+            fit.rigs.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_subsystem_slots(
@@ -44,7 +44,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::MAX_SUBSYSTEMS,
-            fit.subsystems.len() as Amount,
+            fit.subsystems.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_drones(
@@ -58,7 +58,7 @@ impl SolVastFitData {
             calc,
             fit.character,
             &ec::attrs::MAX_ACTIVE_DRONES,
-            self.drones_online_bandwidth.len() as Amount,
+            self.drones_online_bandwidth.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_fighters(
@@ -72,7 +72,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::FTR_TUBES,
-            self.fighters_online.len() as Amount,
+            self.fighters_online.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_support_fighters(
@@ -86,7 +86,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::FTR_SUPPORT_SLOTS,
-            self.support_fighters_online.len() as Amount,
+            self.support_fighters_online.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_light_fighters(
@@ -100,7 +100,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::FTR_LIGHT_SLOTS,
-            self.light_fighters_online.len() as Amount,
+            self.light_fighters_online.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_heavy_fighters(
@@ -114,7 +114,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::FTR_HEAVY_SLOTS,
-            self.heavy_fighters_online.len() as Amount,
+            self.heavy_fighters_online.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_standup_support_fighters(
@@ -128,7 +128,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS,
-            self.standup_support_fighters_online.len() as Amount,
+            self.standup_support_fighters_online.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_standup_light_fighters(
@@ -142,7 +142,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::FTR_STANDUP_LIGHT_SLOTS,
-            self.standup_light_fighters_online.len() as Amount,
+            self.standup_light_fighters_online.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_launched_standup_heavy_fighters(
@@ -156,7 +156,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::FTR_STANDUP_HEAVY_SLOTS,
-            self.standup_heavy_fighters_online.len() as Amount,
+            self.standup_heavy_fighters_online.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_turret_slots(
@@ -170,7 +170,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::TURRET_SLOTS_LEFT,
-            self.mods_turret.len() as Amount,
+            self.mods_turret.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_launcher_slots(
@@ -184,7 +184,7 @@ impl SolVastFitData {
             calc,
             fit.ship,
             &ec::attrs::LAUNCHER_SLOTS_LEFT,
-            self.mods_launcher.len() as Amount,
+            self.mods_launcher.len() as Count,
         )
     }
     pub(in crate::sol::svc::vast) fn get_stats_high_slots(
@@ -193,7 +193,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::HI_SLOTS, fit.mods_high.len() as Amount)
+        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::HI_SLOTS, fit.mods_high.len() as Count)
     }
     pub(in crate::sol::svc::vast) fn get_stats_mid_slots(
         &self,
@@ -201,7 +201,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::MED_SLOTS, fit.mods_mid.len() as Amount)
+        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::MED_SLOTS, fit.mods_mid.len() as Count)
     }
     pub(in crate::sol::svc::vast) fn get_stats_low_slots(
         &self,
@@ -209,7 +209,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::LOW_SLOTS, fit.mods_low.len() as Amount)
+        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::LOW_SLOTS, fit.mods_low.len() as Count)
     }
     // Private methods
     fn get_stats_slots(
@@ -218,15 +218,15 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         output_item_id: Option<SolItemId>,
         output_attr_id: &EAttrId,
-        user_amount: Amount,
+        user_count: Count,
     ) -> SolStatSlot {
         let total = match output_item_id {
             Some(output_item_id) => match calc.get_item_attr_val(uad, &output_item_id, output_attr_id) {
-                Ok(attr_val) => Some(attr_val.extra.into_inner().round() as Amount),
+                Ok(attr_val) => Some(attr_val.extra.into_inner().round() as Count),
                 Err(_) => None,
             },
             None => None,
         };
-        SolStatSlot::new(user_amount, total)
+        SolStatSlot::new(user_count, total)
     }
 }

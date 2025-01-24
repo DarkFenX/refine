@@ -7,7 +7,7 @@ use crate::{
 /// Represents an adapted dogma effect.
 ///
 /// Effects are higher-level modification descriptors, as opposed to modifiers, which are
-/// lower-level. An effect can contain any amount of modifiers under a single roof, accompanied by
+/// lower-level. An effect can contain any number of modifiers under a single roof, accompanied by
 /// extra effect-wide properties.
 pub struct AEffect {
     /// Effect ID.

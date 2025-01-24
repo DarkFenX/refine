@@ -1,5 +1,5 @@
 use crate::{
-    defs::{Amount, EAttrId, EItemGrpId, SolItemId},
+    defs::{Count, EAttrId, EItemGrpId, SolItemId},
     ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
@@ -10,21 +10,21 @@ use crate::{
 
 pub struct SolMaxGroupValFail {
     pub group_id: EItemGrpId,
-    pub count: Amount,
+    pub count: Count,
     pub items: Vec<SolMaxGroupItem>,
 }
 impl SolMaxGroupValFail {
-    fn new(group_id: EItemGrpId, count: Amount, items: Vec<SolMaxGroupItem>) -> Self {
+    fn new(group_id: EItemGrpId, count: Count, items: Vec<SolMaxGroupItem>) -> Self {
         Self { group_id, count, items }
     }
 }
 
 pub struct SolMaxGroupItem {
     pub item_id: SolItemId,
-    pub max_allowed_count: Amount,
+    pub max_allowed_count: Count,
 }
 impl SolMaxGroupItem {
-    pub fn new(item_id: SolItemId, max_allowed_count: Amount) -> Self {
+    pub fn new(item_id: SolItemId, max_allowed_count: Count) -> Self {
         Self {
             item_id,
             max_allowed_count,
@@ -112,7 +112,7 @@ fn validate_fast(
 ) -> bool {
     for (item_id, grp_id) in max_group_limited.iter() {
         let allowed = match calc.get_item_attr_val(uad, item_id, &attr_id) {
-            Ok(value) => value.extra.round() as Amount,
+            Ok(value) => value.extra.round() as Count,
             // Limited items are guaranteed to have some unmodified limit value
             Err(_) => uad
                 .items
@@ -122,9 +122,9 @@ fn validate_fast(
                 .unwrap()
                 .get(&attr_id)
                 .unwrap()
-                .round() as Amount,
+                .round() as Count,
         };
-        let fitted = max_group_all.get(grp_id).len() as Amount;
+        let fitted = max_group_all.get(grp_id).len() as Count;
         if fitted > allowed {
             return false;
         }
@@ -142,7 +142,7 @@ fn validate_verbose(
     let mut items_by_grp = StMap::new();
     for (item_id, grp_id) in max_group_limited.iter() {
         let allowed = match calc.get_item_attr_val(uad, item_id, &attr_id) {
-            Ok(value) => value.extra.round() as Amount,
+            Ok(value) => value.extra.round() as Count,
             // Limited items are guaranteed to have some unmodified limit value
             Err(_) => uad
                 .items
@@ -152,9 +152,9 @@ fn validate_verbose(
                 .unwrap()
                 .get(&attr_id)
                 .unwrap()
-                .round() as Amount,
+                .round() as Count,
         };
-        let fitted = max_group_all.get(grp_id).len() as Amount;
+        let fitted = max_group_all.get(grp_id).len() as Count;
         if fitted > allowed {
             items_by_grp
                 .entry(*grp_id)
@@ -164,6 +164,6 @@ fn validate_verbose(
     }
     items_by_grp
         .into_iter()
-        .map(|(k, v)| SolMaxGroupValFail::new(k, max_group_all.get(&k).len() as Amount, v))
+        .map(|(k, v)| SolMaxGroupValFail::new(k, max_group_all.get(&k).len() as Count, v))
         .collect()
 }

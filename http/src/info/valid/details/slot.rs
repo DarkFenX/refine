@@ -1,8 +1,8 @@
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info::valid) struct HSlotValFail {
-    used: rc::Amount,
-    total: Option<rc::Amount>,
+    used: rc::Count,
+    total: Option<rc::Count>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     users: Vec<rc::SolItemId>,
 }
