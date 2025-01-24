@@ -235,7 +235,7 @@ def test_no_ship(client, consts):
     assert api_val.details.drone_bandwidth.users == {api_drone.id: approx(5)}
 
 
-def test_unloaded_ship(client, consts):
+def test_not_loaded_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 5})
@@ -255,8 +255,8 @@ def test_unloaded_ship(client, consts):
     assert api_val.details.drone_bandwidth.users == {api_drone.id: approx(5)}
 
 
-def test_unloaded_user(client, consts):
-    # Just check that nothing crashes, unloaded items are not supposed to even be registered
+def test_not_loaded_user(client, consts):
+    # Just check that nothing crashes, not loaded items are not supposed to even be registered
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth_used)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_bandwidth)
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})

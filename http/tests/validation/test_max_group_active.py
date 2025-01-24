@@ -161,7 +161,7 @@ def test_mutation_limit_inheritance(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_unloaded(client, consts):
+def test_not_loaded(client, consts):
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_active)
     eve_module_id = client.alloc_item_id()
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up

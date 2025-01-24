@@ -1,7 +1,7 @@
 from tests import approx, check_no_field
 
 
-def test_unloaded_item(client, consts):
+def test_not_loaded_item(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_chance_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])

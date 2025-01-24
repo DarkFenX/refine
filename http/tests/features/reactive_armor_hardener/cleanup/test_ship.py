@@ -214,7 +214,7 @@ def test_switch(client, consts):
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.5895)
 
 
-def test_unloaded(client, consts):
+def test_not_loaded(client, consts):
     eve_basic_info = setup_rah_basics(client=client, consts=consts)
     eve_rah_id = make_eve_rah(
         client=client,
@@ -242,7 +242,7 @@ def test_unloaded(client, consts):
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4794)
     # Action
     api_ship = api_fit.set_ship(type_id=eve_ship2_id)
-    # Verification - unloaded ship should reset attributes and prevent sim from running
+    # Verification - not loaded ship should reset attributes and prevent sim from running
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85000000001, accuracy=11)
     assert api_rah.attrs[eve_basic_info.res_therm_attr_id].dogma == approx(0.85000000001, accuracy=11)

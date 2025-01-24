@@ -125,7 +125,7 @@ def test_separate(client, consts):
     assert api_charge.attrs[eve_attr_id].dogma == approx(10)
 
 
-def test_unloaded(client, consts):
+def test_not_loaded(client, consts):
     eve_module_id = client.mk_eve_item()
     eve_charge_id = client.alloc_item_id()
     client.create_sources()

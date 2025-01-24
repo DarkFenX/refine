@@ -75,7 +75,7 @@ impl SolItemBaseMutable {
                 // just roll values.
                 None => {
                     return Self {
-                        base: SolItemBase::new_with_id_unloaded(id, type_id, state),
+                        base: SolItemBase::new_with_id_not_loaded(id, type_id, state),
                         mutation: Some(convert_item_mutation_basic(mutation_request)),
                     }
                 }

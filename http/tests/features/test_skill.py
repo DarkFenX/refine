@@ -42,7 +42,7 @@ def test_level_switch_loaded(client, consts):
     assert api_mod.applied_val == approx(3)
 
 
-def test_level_switch_unloaded(client, consts):
+def test_level_switch_not_loaded(client, consts):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_affectee_attr_id = client.mk_eve_attr(datas=[eve_d2])
@@ -143,7 +143,7 @@ def test_duplicate_loaded(client, consts):
     assert api_fit.skills[0].id == api_item.id
 
 
-def test_duplicate_unloaded(client, consts):
+def test_duplicate_not_loaded(client, consts):
     eve_level_attr_id = client.mk_eve_attr(id_=consts.EveAttr.skill_level)
     # Create another item just to make sure level attribute doesn't get cleaned up
     client.mk_eve_item(attrs={eve_level_attr_id: 0})

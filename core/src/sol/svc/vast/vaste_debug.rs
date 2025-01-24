@@ -27,7 +27,7 @@ impl SolVastFitData {
             check_item(uad, item_id, true)?;
         }
         for item_id in self.drones_online_bandwidth.keys() {
-            // Holds unloaded drones as well
+            // Holds not loaded drones as well
             check_item(uad, item_id, false)?;
         }
         for item_id in self.fighters_online.iter() {

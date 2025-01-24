@@ -73,7 +73,7 @@ impl SolItemBase {
         self.cache = src.get_a_item(&self.type_id).map(|v| SolItemBaseCache::new(v.clone()));
     }
     // Non-public methods
-    pub(in crate::sol::uad::item::base) fn new_with_id_unloaded(
+    pub(in crate::sol::uad::item::base) fn new_with_id_not_loaded(
         id: SolItemId,
         type_id: EItemId,
         state: SolItemState,

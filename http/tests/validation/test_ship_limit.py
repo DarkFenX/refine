@@ -333,7 +333,7 @@ def test_no_ship(client, consts):
     assert api_val.details.ship_limit.mismatches == {api_module.id: ([eve_ship_id], [eve_ship_grp1_id])}
 
 
-def test_unloaded_ship(client, consts):
+def test_not_loaded_ship(client, consts):
     eve_ship_grp1_id = client.mk_eve_ship_group()
     eve_ship_grp2_id = client.mk_eve_ship_group()
     eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)

@@ -148,8 +148,8 @@ def test_no_ship(client, consts):
     assert api_val.details.rig_slots.users == [api_rig.id]
 
 
-def test_unloaded_user(client, consts):
-    # Unloaded rigs still take slot
+def test_not_loaded_user(client, consts):
+    # Not loaded rigs still take slot
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_slots_left)
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
     eve_rig_id = client.alloc_item_id()
@@ -166,7 +166,7 @@ def test_unloaded_user(client, consts):
     assert api_val.details.rig_slots.users == [api_rig.id]
 
 
-def test_unloaded_ship(client, consts):
+def test_not_loaded_ship(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_slots_left)
     eve_rig_id = client.mk_eve_item()
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up

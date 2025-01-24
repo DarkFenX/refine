@@ -98,7 +98,7 @@ def test_no_value(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_unloaded_user(client, consts):
+def test_not_loaded_user(client, consts):
     eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.implantness)
     eve_implant_id = client.alloc_item_id()
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up

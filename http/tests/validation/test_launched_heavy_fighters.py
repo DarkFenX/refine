@@ -222,7 +222,7 @@ def test_no_ship(client, consts):
     assert api_val.details.launched_heavy_fighters.users == [api_fighter.id]
 
 
-def test_unloaded_user(client, consts):
+def test_not_loaded_user(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_heavy_slots)
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
     eve_fighter_id = client.alloc_item_id()
@@ -238,7 +238,7 @@ def test_unloaded_user(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_unloaded_ship(client, consts):
+def test_not_loaded_ship(client, consts):
     eve_ftr_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_is_heavy)
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_heavy_slots)
     eve_fighter_id = client.mk_eve_item(cat_id=consts.EveItemCat.fighter, attrs={eve_ftr_type_attr_id: 1})

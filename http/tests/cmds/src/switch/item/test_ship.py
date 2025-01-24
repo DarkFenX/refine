@@ -24,7 +24,7 @@ def test_loaded_to_loaded(client):
     assert api_ship.attrs[eve_d2_attr2_id].dogma == approx(85)
 
 
-def test_loaded_to_unloaded_to_loaded(client):
+def test_loaded_to_not_loaded_to_loaded(client):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_d1_attr1_id = client.mk_eve_attr(datas=[eve_d1])

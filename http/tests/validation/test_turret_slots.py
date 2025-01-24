@@ -155,7 +155,7 @@ def test_no_ship(client, consts):
     assert api_val.details.turret_slots.users == [api_module.id]
 
 
-def test_unloaded_user(client, consts):
+def test_not_loaded_user(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.turret_slots_left)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.turret_fitted)
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
@@ -174,7 +174,7 @@ def test_unloaded_user(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_unloaded_ship(client, consts):
+def test_not_loaded_ship(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.turret_slots_left)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.turret_fitted)
     eve_module_id = client.mk_eve_item(eff_ids=[eve_effect_id])
