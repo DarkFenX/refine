@@ -10,7 +10,16 @@ use super::check_skill_level;
 impl SolarSystem {
     pub fn set_skill_level(&mut self, item_id: &SolItemId, level: SkillLevel) -> Result<(), SetSkillLevelError> {
         check_skill_level(level)?;
-        self.uad.items.get_item_mut(item_id)?.get_skill_mut()?.set_level(level);
+        let skill = self.uad.items.get_item_mut(item_id)?.get_skill_mut()?;
+        skill.set_level(level);
+        self.uad
+            .fits
+            .get_fit_mut(&skill.get_fit_id())
+            .unwrap()
+            .skills
+            .get_mut(&skill.get_type_id())
+            .unwrap()
+            .level = level;
         self.svc
             .item_attr_postproc_changed(&self.uad, item_id, &ec::attrs::SKILL_LEVEL);
         Ok(())

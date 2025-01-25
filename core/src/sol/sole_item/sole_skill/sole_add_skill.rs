@@ -3,7 +3,10 @@ use crate::{
     err::basic::{FitFoundError, SkillEveTypeError, SkillLevelError},
     sol::{
         info::SolSkillInfo,
-        uad::item::{SolItem, SolSkill},
+        uad::{
+            fit::SolFitSkill,
+            item::{SolItem, SolSkill},
+        },
         SolarSystem,
     },
 };
@@ -26,10 +29,10 @@ impl SolarSystem {
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         match fit.skills.entry(type_id) {
             std::collections::hash_map::Entry::Vacant(entry) => {
-                entry.insert(item_id);
+                entry.insert(SolFitSkill::new(item_id, level));
             }
             std::collections::hash_map::Entry::Occupied(entry) => {
-                return Err(SkillEveTypeError::new(type_id, fit_id, *entry.get()).into());
+                return Err(SkillEveTypeError::new(type_id, fit_id, entry.get().item_id).into());
             }
         }
         self.uad.items.add_item(item);

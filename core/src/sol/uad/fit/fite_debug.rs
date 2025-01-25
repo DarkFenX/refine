@@ -43,17 +43,22 @@ impl SolFit {
             item.debug_consistency_check(uad)?;
         }
         // Skills
-        for item_id in self.skills.values() {
-            seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+        for fit_skill in self.skills.values() {
+            seen_items.push(fit_skill.item_id);
+            let item = match uad.items.get_item(&fit_skill.item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
             if item.get_fit_id() != Some(self.id) {
                 return Err(SolDebugError::new());
             }
-            if !matches!(item, SolItem::Skill(_)) {
-                return Err(SolDebugError::new());
+            match item {
+                SolItem::Skill(skill) => {
+                    if skill.get_level() != fit_skill.level {
+                        return Err(SolDebugError::new());
+                    }
+                }
+                _ => return Err(SolDebugError::new()),
             }
             item.debug_consistency_check(uad)?;
         }

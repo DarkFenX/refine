@@ -2,7 +2,10 @@ use crate::{
     defs::{EItemId, SolFitId, SolFleetId, SolItemId},
     sol::{
         misc::SolDmgProfile,
-        uad::{fit::SolItemVec, item::SolShipKind},
+        uad::{
+            fit::{SolFitSkill, SolItemVec},
+            item::SolShipKind,
+        },
     },
     util::{StMap, StSet},
 };
@@ -13,7 +16,7 @@ pub(in crate::sol) struct SolFit {
     pub(in crate::sol) kind: SolShipKind,
     pub(in crate::sol) fleet: Option<SolFleetId>,
     pub(in crate::sol) character: Option<SolItemId>,
-    pub(in crate::sol) skills: StMap<EItemId, SolItemId>,
+    pub(in crate::sol) skills: StMap<EItemId, SolFitSkill>,
     pub(in crate::sol) implants: StSet<SolItemId>,
     pub(in crate::sol) boosters: StSet<SolItemId>,
     pub(in crate::sol) ship: Option<SolItemId>,
@@ -77,7 +80,7 @@ impl SolFit {
         // Fill the data
         let mut items = Vec::with_capacity(capacity);
         conditional_push(&mut items, self.character);
-        items.extend(self.skills.values());
+        items.extend(self.skills.values().map(|v| v.item_id));
         items.extend(self.implants.iter());
         items.extend(self.boosters.iter());
         conditional_push(&mut items, self.ship);
