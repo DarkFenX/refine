@@ -51,8 +51,31 @@ impl SolFit {
             rah_incoming_dmg: None,
         }
     }
-    pub(in crate::sol) fn all_items(&self) -> Vec<SolItemId> {
-        let mut items = Vec::new();
+    pub(in crate::sol) fn all_direct_items(&self) -> Vec<SolItemId> {
+        // Calculate capacity
+        let mut capacity = 0;
+        if self.character.is_some() {
+            capacity += 1;
+        }
+        capacity += self.skills.len();
+        capacity += self.implants.len();
+        capacity += self.boosters.len();
+        if self.ship.is_some() {
+            capacity += 1;
+        }
+        if self.stance.is_some() {
+            capacity += 1;
+        }
+        capacity += self.subsystems.len();
+        capacity += self.mods_high.item_count();
+        capacity += self.mods_mid.item_count();
+        capacity += self.mods_low.item_count();
+        capacity += self.rigs.len();
+        capacity += self.drones.len();
+        capacity += self.fighters.len();
+        capacity += self.fw_effects.len();
+        // Fill the data
+        let mut items = Vec::with_capacity(capacity);
         conditional_push(&mut items, self.character);
         items.extend(self.skills.values());
         items.extend(self.implants.iter());
