@@ -778,6 +778,26 @@ impl SolItem {
             Self::SwEffect(sw_effect) => sw_effect.get_skill_reqs(),
         }
     }
+    pub(in crate::sol) fn get_effective_skill_reqs(&self) -> Option<&StMap<EItemId, SkillLevel>> {
+        match self {
+            Self::Autocharge(_) => None,
+            Self::Booster(booster) => booster.get_skill_reqs(),
+            Self::Character(_) => None,
+            Self::Charge(charge) => charge.get_skill_reqs(),
+            Self::Drone(drone) => drone.get_skill_reqs(),
+            Self::Fighter(fighter) => fighter.get_skill_reqs(),
+            Self::FwEffect(_) => None,
+            Self::Implant(implant) => implant.get_skill_reqs(),
+            Self::Module(module) => module.get_skill_reqs(),
+            Self::ProjEffect(_) => None,
+            Self::Rig(_) => None,
+            Self::Ship(ship) => ship.get_skill_reqs(),
+            Self::Skill(skill) => skill.get_skill_reqs(),
+            Self::Stance(_) => None,
+            Self::Subsystem(subsystem) => subsystem.get_skill_reqs(),
+            Self::SwEffect(_) => None,
+        }
+    }
     pub(in crate::sol) fn get_a_extras(&self) -> Option<&ad::AItemExtras> {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_a_extras(),

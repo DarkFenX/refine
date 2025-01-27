@@ -1,7 +1,8 @@
 use crate::{
     ad,
-    defs::{AttrVal, EItemGrpId, SlotIndex, SolFitId, SolItemId},
+    defs::{AttrVal, EItemGrpId, EItemId, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
+    sol::svc::vast::SolVastSkillReq,
     util::{StMap, StMapSetL1, StSet},
 };
 
@@ -61,6 +62,8 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) mods_max_group_active_all: StMapSetL1<EItemGrpId, SolItemId>,
     pub(in crate::sol::svc::vast) mods_max_group_active_limited: StMap<SolItemId, EItemGrpId>,
     pub(in crate::sol::svc::vast) rigs_rig_size: StMap<SolItemId, AttrVal>,
+    pub(in crate::sol::svc::vast) srqs_skill_item_map: StMapSetL1<EItemId, SolItemId>,
+    pub(in crate::sol::svc::vast) srqs_missing: StMap<SolItemId, StMap<EItemId, SolVastSkillReq>>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -89,6 +92,8 @@ impl SolVastFitData {
             mods_max_group_active_all: StMapSetL1::new(),
             mods_max_group_active_limited: StMap::new(),
             rigs_rig_size: StMap::new(),
+            srqs_skill_item_map: StMapSetL1::new(),
+            srqs_missing: StMap::new(),
         }
     }
 }

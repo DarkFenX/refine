@@ -40,9 +40,11 @@ impl SolSvc {
     }
     pub(in crate::sol::svc) fn notify_item_added(&mut self, uad: &SolUad, item: &SolItem) {
         self.calc.item_added(uad, item);
+        self.vast.item_added(item);
     }
     pub(in crate::sol::svc) fn notify_item_removed(&mut self, uad: &SolUad, item: &SolItem) {
         self.calc.item_removed(uad, item);
+        self.vast.item_removed(uad, item);
     }
     pub(in crate::sol::svc) fn notify_state_activated(&mut self, uad: &SolUad, item: &SolItem, state: &SolItemState) {
         self.vast.item_state_activated(item, state);
@@ -52,7 +54,7 @@ impl SolSvc {
     }
     pub(in crate::sol::svc) fn notify_item_loaded(&mut self, uad: &SolUad, item: &SolItem) {
         self.calc.item_loaded(uad, item);
-        self.vast.item_loaded(item);
+        self.vast.item_loaded(uad, item);
     }
     pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, uad: &SolUad, item: &SolItem) {
         self.calc.item_unloaded(uad, item);

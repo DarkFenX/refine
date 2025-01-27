@@ -102,6 +102,14 @@ impl SolVastFitData {
         for item_id in self.rigs_rig_size.keys() {
             check_item(uad, item_id, true)?;
         }
+        for item_ids in self.srqs_skill_item_map.values() {
+            for item_id in item_ids {
+                check_item(uad, item_id, true)?;
+            }
+        }
+        for item_id in self.srqs_missing.keys() {
+            check_item(uad, item_id, true)?;
+        }
         Ok(())
     }
 }

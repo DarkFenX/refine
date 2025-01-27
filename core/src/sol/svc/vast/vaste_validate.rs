@@ -158,6 +158,11 @@ impl SolVast {
                 return false;
             }
         }
+        if options.skill_reqs {
+            if !fit_data.validate_skill_reqs_fast() {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -256,6 +261,9 @@ impl SolVast {
         }
         if options.rig_size {
             result.rig_size = fit_data.validate_rig_size_verbose(uad, fit);
+        }
+        if options.skill_reqs {
+            result.skill_reqs = fit_data.validate_skill_reqs_verbose();
         }
         result
     }

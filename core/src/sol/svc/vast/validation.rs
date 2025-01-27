@@ -1,5 +1,6 @@
 use crate::sol::svc::vast::{
     SolMaxGroupValFail, SolResValFail, SolRigSizeValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail,
+    SolSrqValFail,
 };
 
 #[derive(Copy, Clone)]
@@ -32,6 +33,7 @@ pub struct SolValOptions {
     pub max_group_online: bool,
     pub max_group_active: bool,
     pub rig_size: bool,
+    pub skill_reqs: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -63,6 +65,7 @@ impl SolValOptions {
         max_group_online: bool,
         max_group_active: bool,
         rig_size: bool,
+        skill_reqs: bool,
     ) -> Self {
         Self {
             cpu,
@@ -93,6 +96,7 @@ impl SolValOptions {
             max_group_online,
             max_group_active,
             rig_size,
+            skill_reqs,
         }
     }
     pub fn new_enabled() -> Self {
@@ -125,6 +129,7 @@ impl SolValOptions {
             max_group_online: true,
             max_group_active: true,
             rig_size: true,
+            skill_reqs: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -157,6 +162,7 @@ impl SolValOptions {
             max_group_online: false,
             max_group_active: false,
             rig_size: false,
+            skill_reqs: false,
         }
     }
 }
@@ -190,6 +196,7 @@ pub struct SolValResult {
     pub max_group_online: Vec<SolMaxGroupValFail>,
     pub max_group_active: Vec<SolMaxGroupValFail>,
     pub rig_size: Option<SolRigSizeValFail>,
+    pub skill_reqs: Vec<SolSrqValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -222,6 +229,7 @@ impl SolValResult {
             max_group_online: Vec::new(),
             max_group_active: Vec::new(),
             rig_size: None,
+            skill_reqs: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -253,5 +261,6 @@ impl SolValResult {
             && self.max_group_online.is_empty()
             && self.max_group_active.is_empty()
             && self.rig_size.is_none()
+            && self.skill_reqs.is_empty()
     }
 }
