@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{AttrVal, SolFitId},
+    defs::{AttrVal, SkillLevel, SolFitId, SolItemId},
     sol::{
         svc::SolSvc,
         uad::{
@@ -10,6 +10,7 @@ use crate::{
         },
     },
     src::Src,
+    EAttrId,
 };
 
 impl SolSvc {
@@ -59,6 +60,14 @@ impl SolSvc {
     pub(in crate::sol::svc) fn notify_item_unloaded(&mut self, uad: &SolUad, item: &SolItem) {
         self.calc.item_unloaded(uad, item);
         self.vast.item_unloaded(item);
+    }
+    pub(in crate::sol::svc) fn notify_base_attr_value_changed(
+        &mut self,
+        uad: &SolUad,
+        item_id: &SolItemId,
+        attr_id: &EAttrId,
+    ) {
+        self.calc.force_attr_value_recalc(uad, item_id, attr_id);
     }
     pub(in crate::sol::svc) fn notify_item_state_activated_loaded(
         &mut self,
@@ -150,5 +159,13 @@ impl SolSvc {
     ) {
         self.calc
             .effect_proj_range_changed(uad, projector_item, effect, projectee_item, range);
+    }
+    pub(in crate::sol::svc) fn notify_skill_level_changed(
+        &mut self,
+        uad: &SolUad,
+        item_id: &SolItemId,
+        level: SkillLevel,
+    ) {
+        self.calc.skill_level_changed(uad, item_id);
     }
 }

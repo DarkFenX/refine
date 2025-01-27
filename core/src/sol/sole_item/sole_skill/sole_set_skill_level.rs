@@ -1,6 +1,5 @@
 use crate::{
     defs::{SkillLevel, SolItemId},
-    ec,
     err::basic::{ItemFoundError, ItemKindMatchError, SkillLevelError},
     sol::SolarSystem,
 };
@@ -20,8 +19,7 @@ impl SolarSystem {
             .get_mut(&skill.get_type_id())
             .unwrap()
             .level = level;
-        self.svc
-            .item_attr_postproc_changed(&self.uad, item_id, &ec::attrs::SKILL_LEVEL);
+        self.svc.skill_level_changed(&self.uad, item_id, level);
         Ok(())
     }
 }

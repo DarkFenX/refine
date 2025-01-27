@@ -261,6 +261,9 @@ impl SolCalc {
             }
         }
     }
+    pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &SolUad, item_id: &SolItemId) {
+        self.force_attr_postproc_recalc(uad, item_id, &ec::attrs::SKILL_LEVEL)
+    }
     // Private methods
     fn reg_raw_mod(
         &mut self,
