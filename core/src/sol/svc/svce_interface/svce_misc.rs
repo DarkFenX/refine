@@ -1,6 +1,9 @@
 use crate::{
-    defs::{EAttrId, SkillLevel, SolItemId},
-    sol::{svc::SolSvc, uad::SolUad},
+    defs::{EAttrId, SolItemId},
+    sol::{
+        svc::SolSvc,
+        uad::{item::SolSkill, SolUad},
+    },
     src::Src,
 };
 
@@ -16,7 +19,7 @@ impl SolSvc {
     ) {
         self.notify_base_attr_value_changed(uad, item_id, attr_id);
     }
-    pub(in crate::sol) fn skill_level_changed(&mut self, uad: &SolUad, item_id: &SolItemId, level: SkillLevel) {
-        self.notify_skill_level_changed(uad, item_id, level);
+    pub(in crate::sol) fn skill_level_changed(&mut self, uad: &SolUad, skill: &SolSkill) {
+        self.notify_skill_level_changed(uad, skill);
     }
 }

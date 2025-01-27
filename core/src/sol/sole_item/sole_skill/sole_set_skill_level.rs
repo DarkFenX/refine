@@ -19,7 +19,8 @@ impl SolarSystem {
             .get_mut(&skill.get_type_id())
             .unwrap()
             .level = level;
-        self.svc.skill_level_changed(&self.uad, item_id, level);
+        let skill = self.uad.items.get_item(item_id).unwrap().get_skill().unwrap();
+        self.svc.skill_level_changed(&self.uad, skill);
         Ok(())
     }
 }

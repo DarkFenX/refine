@@ -1,11 +1,11 @@
 use crate::{
     ad,
-    defs::{AttrVal, SkillLevel, SolFitId, SolItemId},
+    defs::{AttrVal, SolFitId, SolItemId},
     sol::{
         svc::SolSvc,
         uad::{
             fleet::SolFleet,
-            item::{SolItem, SolItemState},
+            item::{SolItem, SolItemState, SolSkill},
             SolUad,
         },
     },
@@ -160,12 +160,8 @@ impl SolSvc {
         self.calc
             .effect_proj_range_changed(uad, projector_item, effect, projectee_item, range);
     }
-    pub(in crate::sol::svc) fn notify_skill_level_changed(
-        &mut self,
-        uad: &SolUad,
-        item_id: &SolItemId,
-        level: SkillLevel,
-    ) {
-        self.calc.skill_level_changed(uad, item_id);
+    pub(in crate::sol::svc) fn notify_skill_level_changed(&mut self, uad: &SolUad, skill: &SolSkill) {
+        self.calc.skill_level_changed(uad, &skill.get_id());
+        self.vast.skill_level_changed(skill);
     }
 }
