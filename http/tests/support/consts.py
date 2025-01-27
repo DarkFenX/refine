@@ -395,6 +395,7 @@ class ApiValType(StrEnum):
     max_group_online = 'max_group_online'
     max_group_active = 'max_group_active'
     rig_size = 'rig_size'
+    skill_reqs = 'skill_reqs'
 
 
 @unique

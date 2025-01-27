@@ -31,7 +31,7 @@ impl SolSrqSkill {
 impl SolVastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_skill_reqs_fast(&self) -> bool {
-        self.srqs_missing.values().any(|v| !v.is_empty())
+        !self.srqs_missing.values().any(|v| !v.is_empty())
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self) -> Vec<SolSrqValFail> {
