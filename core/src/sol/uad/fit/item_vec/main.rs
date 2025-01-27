@@ -2,8 +2,8 @@ use crate::defs::{Idx, SolItemId};
 
 #[derive(Clone)]
 pub(in crate::sol) struct SolItemVec {
-    data: Vec<Option<SolItemId>>,
-    item_count: usize,
+    pub(super) data: Vec<Option<SolItemId>>,
+    pub(super) item_count: usize,
 }
 impl SolItemVec {
     pub(in crate::sol) fn new() -> Self {
