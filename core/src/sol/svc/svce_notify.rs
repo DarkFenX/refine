@@ -162,6 +162,6 @@ impl SolSvc {
     }
     pub(in crate::sol::svc) fn notify_skill_level_changed(&mut self, uad: &SolUad, skill: &SolSkill) {
         self.calc.skill_level_changed(uad, &skill.get_id());
-        self.vast.skill_level_changed(skill);
+        self.vast.skill_level_changed(uad, skill);
     }
 }
