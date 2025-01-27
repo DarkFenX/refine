@@ -51,6 +51,7 @@ impl HValidFitCmd {
                 "max_group_online" => core_options.max_group_online = alt_value,
                 "max_group_active" => core_options.max_group_active = alt_value,
                 "rig_size" => core_options.rig_size = alt_value,
+                "skill_reqs" => core_options.skill_reqs = alt_value,
                 _ => (),
             }
         }

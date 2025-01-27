@@ -1,5 +1,5 @@
 use crate::info::valid::details::{
-    HMaxGroupValFail, HResValFail, HRigSizeValFail, HShipLimitValFail, HSlotIndexValFail, HSlotValFail,
+    HMaxGroupValFail, HResValFail, HRigSizeValFail, HShipLimitValFail, HSlotIndexValFail, HSlotValFail, HSrqValFail,
 };
 
 #[derive(serde::Serialize)]
@@ -75,6 +75,8 @@ struct HValidInfoDetails {
     max_group_active: HMaxGroupValFail,
     #[serde(skip_serializing_if = "Option::is_none")]
     rig_size: Option<HRigSizeValFail>,
+    #[serde(skip_serializing_if = "HSrqValFail::is_empty")]
+    skill_reqs: HSrqValFail,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -106,6 +108,7 @@ impl HValidInfoDetails {
             && self.max_group_online.is_empty()
             && self.max_group_active.is_empty()
             && self.rig_size.is_none()
+            && self.skill_reqs.is_empty()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -148,6 +151,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             max_group_online: (&core_val_result.max_group_online).into(),
             max_group_active: (&core_val_result.max_group_active).into(),
             rig_size: core_val_result.rig_size.as_ref().map(|v| v.into()),
+            skill_reqs: (&core_val_result.skill_reqs).into(),
         }
     }
 }

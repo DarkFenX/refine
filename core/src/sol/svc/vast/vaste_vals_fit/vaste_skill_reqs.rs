@@ -15,15 +15,15 @@ impl SolSrqValFail {
 
 pub struct SolSrqSkill {
     pub skill_type_id: EItemId,
-    pub skill_level: Option<SkillLevel>,
-    pub req_level: SkillLevel,
+    pub skill_lvl: Option<SkillLevel>,
+    pub req_lvl: SkillLevel,
 }
 impl SolSrqSkill {
-    fn new(skill_type_id: EItemId, skill_level: Option<SkillLevel>, req_level: SkillLevel) -> Self {
+    fn new(skill_type_id: EItemId, skill_lvl: Option<SkillLevel>, req_lvl: SkillLevel) -> Self {
         Self {
             skill_type_id,
-            skill_level,
-            req_level,
+            skill_lvl,
+            req_lvl,
         }
     }
 }
