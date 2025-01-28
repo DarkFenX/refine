@@ -7,8 +7,6 @@ from tests.support.util import conditional_insert
 from .base import ApiClientBase
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
-
     from tests.support.consts import ApiItemInfoMode, ApiEffMode, ApiModAddMode, ApiModRmMode, ApiRack, ApiState
     from tests.support.util import Absent
 
@@ -324,9 +322,9 @@ class ApiClientItem(ApiClientBase):
             state: ApiState | type[Absent],
             mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
             charge: int | None | type[Absent],
-            add_projs: Iterable[(str, float | None)] | type[Absent],
-            change_projs: Iterable[(str, float | None)] | type[Absent],
-            rm_projs: Iterable[str] | type[Absent],
+            add_projs: list[tuple[str, float | None] | str] | type[Absent],
+            change_projs: list[tuple[str, float | None] | str] | type[Absent],
+            rm_projs: list[str] | type[Absent],
             effect_modes: dict[int, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -411,9 +409,9 @@ class ApiClientItem(ApiClientBase):
             item_id: int,
             state: ApiState | type[Absent],
             mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
-            add_projs: Iterable[(str, float | None)] | type[Absent],
-            change_projs: Iterable[(str, float | None)] | type[Absent],
-            rm_projs: Iterable[str] | type[Absent],
+            add_projs: list[tuple[str, float | None] | str] | type[Absent],
+            change_projs: list[tuple[str, float | None] | str] | type[Absent],
+            rm_projs: list[str] | type[Absent],
             effect_modes: dict[int, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -455,9 +453,9 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: ApiState | type[Absent],
-            add_projs: Iterable[(str, float | None)] | type[Absent],
-            change_projs: Iterable[(str, float | None)] | type[Absent],
-            rm_projs: Iterable[str] | type[Absent],
+            add_projs: list[tuple[str, float | None] | str] | type[Absent],
+            change_projs: list[tuple[str, float | None] | str] | type[Absent],
+            rm_projs: list[str] | type[Absent],
             effect_modes: dict[int, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -602,8 +600,8 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             item_id: int,
             state: bool | type[Absent],
-            add_projs: Iterable[str] | type[Absent],
-            rm_projs: Iterable[str] | type[Absent],
+            add_projs: list[str] | type[Absent],
+            rm_projs: list[str] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'proj_effect', 'item_id': item_id}

@@ -9,8 +9,6 @@ from .mod_info import AttrModInfoMap
 from .side_effect_info import SideEffectInfo, SideEffectStrInfo
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
-
     from tests.support.api import ApiClient
     from tests.support.consts import ApiEffMode, ApiState
 
@@ -224,9 +222,9 @@ class Item(AttrDict):
             state: ApiState | type[Absent] = Absent,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent] = Absent,
             charge: int | type[Absent] = Absent,
-            add_projs: Iterable[(str, float | None)] | type[Absent] = Absent,
-            change_projs: Iterable[(str, float | None)] | type[Absent] = Absent,
-            rm_projs: Iterable[str] | type[Absent] = Absent,
+            add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
+            change_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
+            rm_projs: list[str] | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -274,9 +272,9 @@ class Item(AttrDict):
             self, *,
             state: ApiState | type[Absent] = Absent,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent] = Absent,
-            add_projs: Iterable[(str, float | None)] | type[Absent] = Absent,
-            change_projs: Iterable[(str, float | None)] | type[Absent] = Absent,
-            rm_projs: Iterable[str] | type[Absent] = Absent,
+            add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
+            change_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
+            rm_projs: list[str] | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -301,9 +299,9 @@ class Item(AttrDict):
     def change_fighter(
             self, *,
             state: ApiState | type[Absent] = Absent,
-            add_projs: Iterable[(str, float | None)] | type[Absent] = Absent,
-            change_projs: Iterable[(str, float | None)] | type[Absent] = Absent,
-            rm_projs: Iterable[str] | type[Absent] = Absent,
+            add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
+            change_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
+            rm_projs: list[str] | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
@@ -407,8 +405,8 @@ class Item(AttrDict):
     def change_proj_effect(
             self, *,
             state: bool | type[Absent] = Absent,
-            add_projs: Iterable[str] | type[Absent] = Absent,
-            rm_projs: Iterable[str] | type[Absent] = Absent,
+            add_projs: list[str] | type[Absent] = Absent,
+            rm_projs: list[str] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
