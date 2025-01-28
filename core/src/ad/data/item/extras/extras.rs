@@ -1,10 +1,12 @@
 use crate::{
-    ad::{AItem, AItemEffectData, AItemKind, AItemShipLimit},
+    ad::{AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId},
     util::StMap,
 };
 
-use super::{kind::get_item_kind, ship_limit::get_item_ship_limit, volume::get_item_volume};
+use super::{
+    charge_limit::get_item_charge_limit, kind::get_item_kind, ship_limit::get_item_ship_limit, volume::get_item_volume,
+};
 
 /// Holds extra item-specific data.
 ///
@@ -18,6 +20,8 @@ pub struct AItemExtras {
     pub volume: Option<AttrVal>,
     /// If set, item can be fit to a ship which has a type or group match with the limit.
     pub ship_limit: Option<AItemShipLimit>,
+    /// If set, item can load only charges which fit into limit.
+    pub charge_limit: Option<AItemChargeLimit>,
     /// Item effectively has this group ID for purposes of "max group fitted" validation.
     pub val_fitted_group_id: Option<EItemGrpId>,
     /// Item effectively has this group ID for purposes of "max group online" validation.
@@ -31,6 +35,7 @@ impl AItemExtras {
             kind: None,
             volume: None,
             ship_limit: None,
+            charge_limit: None,
             val_fitted_group_id: None,
             val_online_group_id: None,
             val_active_group_id: None,
@@ -43,6 +48,7 @@ impl AItemExtras {
             kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
             volume: get_item_volume(attrs),
             ship_limit: get_item_ship_limit(attrs),
+            charge_limit: get_item_charge_limit(attrs),
             val_fitted_group_id: a_item.extras.val_fitted_group_id,
             val_online_group_id: a_item.extras.val_online_group_id,
             val_active_group_id: a_item.extras.val_active_group_id,
@@ -61,6 +67,7 @@ impl AItemExtras {
         self.kind = get_item_kind(grp_id, cat_id, attrs, effects);
         self.volume = get_item_volume(attrs);
         self.ship_limit = get_item_ship_limit(attrs);
+        self.charge_limit = get_item_charge_limit(attrs);
         self.val_fitted_group_id = match fitted_limited_groups.contains(&grp_id) {
             true => Some(grp_id),
             false => None,
