@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Union
 
 from tests.support.util import Default
 
@@ -23,12 +22,12 @@ def setup_rah_basics(
         client,
         consts,
         datas=Default,
-        attr_res_em: Union[int, None, type[Default]] = Default,
-        attr_res_therm: Union[int, None, type[Default]] = Default,
-        attr_res_kin: Union[int, None, type[Default]] = Default,
-        attr_res_expl: Union[int, None, type[Default]] = Default,
-        attr_shift: Union[int, None, type[Default]] = Default,
-        attr_cycle_time: Union[int, type[Default]] = Default,
+        attr_res_em: int | None | type[Default] = Default,
+        attr_res_therm: int | None | type[Default] = Default,
+        attr_res_kin: int | None | type[Default] = Default,
+        attr_res_expl: int | None | type[Default] = Default,
+        attr_shift: int | None | type[Default] = Default,
+        attr_cycle_time: int | type[Default] = Default,
 ) -> RahBasicInfo:
     eve_res_max_attr_id = client.mk_eve_attr(
         datas=datas,
@@ -110,8 +109,8 @@ def make_eve_rah(
         client,
         datas=Default,
         basic_info: RahBasicInfo,
-        id_: Union[int, type[Default]] = Default,
-        grp_id: Union[int, type[Default]] = Default,
+        id_: int | type[Default] = Default,
+        grp_id: int | type[Default] = Default,
         resos: tuple[float, float, float, float],
         shift_amount: float = 6,
         cycle_time: float = 10000,
@@ -145,7 +144,7 @@ def make_eve_ship(
         client,
         datas=Default,
         basic_info: RahBasicInfo,
-        id_: Union[int, type[Default]] = Default,
+        id_: int | type[Default] = Default,
         resos: tuple[float, float, float, float]):
     eve_ship_id = client.mk_eve_ship(datas=datas, id_=id_, attrs={
         k: v for k, v in zip(

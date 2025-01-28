@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING
 from tests.support.util import conditional_insert, make_repr_str
 
 if TYPE_CHECKING:
-    from typing import Union
-
     from tests.support.util import Absent
 
 
@@ -14,13 +12,13 @@ class EffectModifier:
 
     def __init__(
             self, *,
-            func: Union[str, type[Absent]],
-            location: Union[str, type[Absent]],
-            group: Union[int, type[Absent]],
-            skill_req: Union[int, type[Absent]],
-            affector_attr_id: Union[int, type[Absent]],
-            affectee_attr_id: Union[int, type[Absent]],
-            operation: Union[int, type[Absent]],
+            func: str | type[Absent],
+            location: str | type[Absent],
+            group: int | type[Absent],
+            skill_req: int | type[Absent],
+            affector_attr_id: int | type[Absent],
+            affectee_attr_id: int | type[Absent],
+            operation: int | type[Absent],
     ):
         self.func = func
         self.location = location

@@ -6,8 +6,6 @@ from typing import TYPE_CHECKING
 import requests
 
 if TYPE_CHECKING:
-    from typing import Union
-
     from tests.support.api.client import ApiClientBase
     from tests.support.response import Response
 
@@ -28,14 +26,14 @@ class Request(requests.PreparedRequest):
         return self.__body_bytes.decode('utf-8')
 
     @body.setter
-    def body(self, body: Union[str, bytes]) -> None:
+    def body(self, body: str | bytes) -> None:
         if body is None:
             self.__body_bytes = None
-            self.headers['content-length'] = 0
+            self.headers['content-length'] = str(0)
             return
         if not isinstance(body, bytes):
             body = body.encode('utf-8')
-        self.headers['content-length'] = len(body)
+        self.headers['content-length'] = str(len(body))
         self.__body_bytes = body
 
     @property

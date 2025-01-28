@@ -1,10 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from typing import Union
 
 
 class AttrModInfoMap(dict):
@@ -65,9 +61,9 @@ class ModInfo:
 
     op: str
     initial_val: float
-    range_mult: Union[float, None]
-    resist_mult: Union[float, None]
-    stacking_mult: Union[float, None]
+    range_mult: float | None
+    resist_mult: float | None
+    stacking_mult: float | None
     applied_val: float
     affectors: list[ModAffectorInfo]
 
@@ -95,4 +91,4 @@ class ModAffectorInfoList(list):
 class ModAffectorInfo:
 
     item_id: str
-    attr_id: Union[int, None]
+    attr_id: int | None

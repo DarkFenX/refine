@@ -1,17 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from typing import Union
 
 
 @dataclass
 class ValShipLimitDetails:
 
-    ship_type_id: Union[int, None]
-    ship_group_id: Union[int, None]
+    ship_type_id: int | None
+    ship_group_id: int | None
     mismatches: dict[str, ValShipLimitAllowed]
 
     def __init__(self, *, data):

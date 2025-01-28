@@ -1,11 +1,4 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
 import requests
-
-if TYPE_CHECKING:
-    from typing import Union
 
 
 class Response(requests.Response):
@@ -15,9 +8,9 @@ class Response(requests.Response):
 
     def check(
             self, *,
-            status_code: Union[int, None] = None,
-            text_predicate: Union[str, None] = None,
-            json_predicate: Union[dict, None] = None,
+            status_code: int | None = None,
+            text_predicate: str | None = None,
+            json_predicate: dict | None = None,
     ) -> None:
         if status_code is not None:
             assert self.status_code == status_code

@@ -6,8 +6,6 @@ from tests.support.util import conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 if TYPE_CHECKING:
-    from typing import Union
-
     from tests.support.eve.containers.primitives import EvePrimitives
     from tests.support.util import Absent
     from .buff_modifier import BuffModifier
@@ -18,12 +16,12 @@ class Buff:
     def __init__(
             self, *,
             id_: int,
-            aggregate_mode: Union[str, type[Absent]],
-            operation_name: Union[str, type[Absent]],
-            item_modifiers: Union[list[BuffModifier], type[Absent]],
-            location_modifiers: Union[list[BuffModifier], type[Absent]],
-            location_group_modifiers: Union[list[BuffModifier], type[Absent]],
-            location_skillreq_modifiers: Union[list[BuffModifier], type[Absent]],
+            aggregate_mode: str | type[Absent],
+            operation_name: str | type[Absent],
+            item_modifiers: list[BuffModifier] | type[Absent],
+            location_modifiers: list[BuffModifier] | type[Absent],
+            location_group_modifiers: list[BuffModifier] | type[Absent],
+            location_skillreq_modifiers: list[BuffModifier] | type[Absent],
     ):
         self.id = id_
         self.aggregate_mode = aggregate_mode

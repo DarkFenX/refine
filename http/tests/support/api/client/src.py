@@ -1,7 +1,3 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
 import pytest
 
 from tests.support import eve
@@ -9,9 +5,6 @@ from tests.support.log import LogEntryNotFound
 from tests.support.request import Request
 from tests.support.util import Default
 from .base import ApiClientBase
-
-if TYPE_CHECKING:
-    from typing import Union
 
 
 class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
@@ -23,7 +16,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
     def create_source_request(
             self, *,
-            data: Union[eve.EveObjects, type[Default]],
+            data: eve.EveObjects | type[Default],
     ) -> Request:
         if data is Default:
             data = self._get_default_eve_data()
@@ -35,7 +28,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
     def create_source(
             self, *,
-            data: Union[eve.EveObjects, type[Default]] = Default,
+            data: eve.EveObjects | type[Default] = Default,
             cleanup_check: bool = True,
     ) -> None:
 

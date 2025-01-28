@@ -10,8 +10,6 @@ from tests.support.util import Absent, Default, conditional_insert
 from .base import ApiClientBase
 
 if TYPE_CHECKING:
-    from typing import Union
-
     from tests.support.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
 
 
@@ -27,12 +25,12 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
 
     def create_sol_request(
             self, *,
-            data: Union[eve.EveObjects, type[Absent], type[Default]],
-            default_incoming_dmg: Union[tuple[float, float, float, float], type[Absent]],
-            sol_info_mode: Union[ApiSolInfoMode, type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            data: eve.EveObjects | type[Absent] | type[Default],
+            default_incoming_dmg: tuple[float, float, float, float] | type[Absent],
+            sol_info_mode: ApiSolInfoMode | type[Absent],
+            fleet_info_mode: ApiFleetInfoMode | type[Absent],
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
         conditional_insert(container=params, key='sol', value=sol_info_mode)
@@ -57,12 +55,12 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
 
     def create_sol(
             self, *,
-            data: Union[eve.EveObjects, type[Absent], type[Default]] = Default,
-            default_incoming_dmg: Union[tuple[float, float, float, float], type[Absent]] = Absent,
-            sol_info_mode: Union[ApiSolInfoMode, type[Absent]] = ApiSolInfoMode.id,
-            fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]] = Absent,
-            fit_info_mode: Union[ApiFitInfoMode, type[Absent]] = Absent,
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]] = Absent,
+            data: eve.EveObjects | type[Absent] | type[Default] = Default,
+            default_incoming_dmg: tuple[float, float, float, float] | type[Absent] = Absent,
+            sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
+            fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
     ) -> SolarSystem:
         if data is Default:
             data = self._get_default_eve_data()
@@ -85,13 +83,13 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def get_sol(
             self, *,
             sol_id: str,
-            sol_info_mode: Union[ApiSolInfoMode, type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            sol_info_mode: ApiSolInfoMode | type[Absent],
+            fleet_info_mode: ApiFleetInfoMode | type[Absent],
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
             status_code: int = 200,
-            json_predicate: Union[dict, None] = None,
-    ) -> Union[SolarSystem, None]:
+            json_predicate: dict | None = None,
+    ) -> SolarSystem | None:
         resp = self.get_sol_request(
             sol_id=sol_id,
             sol_info_mode=sol_info_mode,
@@ -106,10 +104,10 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def get_sol_request(
             self, *,
             sol_id: str,
-            sol_info_mode: Union[ApiSolInfoMode, type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            sol_info_mode: ApiSolInfoMode | type[Absent],
+            fleet_info_mode: ApiFleetInfoMode | type[Absent],
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
         conditional_insert(container=params, key='sol', value=sol_info_mode)
@@ -125,11 +123,11 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def change_sol_src_request(
             self, *,
             sol_id: str,
-            data: Union[eve.EveObjects, type[Absent], type[Default]],
-            sol_info_mode: Union[ApiSolInfoMode, type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            data: eve.EveObjects | type[Absent] | type[Default],
+            sol_info_mode: ApiSolInfoMode | type[Absent],
+            fleet_info_mode: ApiFleetInfoMode | type[Absent],
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {}
         if data is not Absent:
@@ -172,11 +170,11 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def set_sol_default_incoming_dmg_request(
             self, *,
             sol_id: str,
-            dmg_profile: Union[tuple[float, float, float, float], type[Absent]],
-            sol_info_mode: Union[ApiSolInfoMode, type[Absent]],
-            fleet_info_mode: Union[ApiFleetInfoMode, type[Absent]],
-            fit_info_mode: Union[ApiFitInfoMode, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            dmg_profile: tuple[float, float, float, float] | type[Absent],
+            sol_info_mode: ApiSolInfoMode | type[Absent],
+            fleet_info_mode: ApiFleetInfoMode | type[Absent],
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = {'type': 'set_default_incoming_dmg'}
         conditional_insert(container=command, key='dmg_profile', value=dmg_profile)

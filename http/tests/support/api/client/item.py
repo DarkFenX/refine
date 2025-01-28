@@ -8,7 +8,6 @@ from .base import ApiClientBase
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-    from typing import Union
 
     from tests.support.consts import ApiItemInfoMode, ApiEffMode, ApiModAddMode, ApiModRmMode, ApiRack, ApiState
     from tests.support.util import Absent
@@ -21,7 +20,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
@@ -35,7 +34,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
-            mode: Union[ApiModRmMode, type[Absent]],
+            mode: ApiModRmMode | type[Absent],
     ) -> Request:
         body = {}
         conditional_insert(container=body, key='rm_mode', value=mode)
@@ -52,8 +51,8 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
             cmd_name='character',
@@ -67,9 +66,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
             cmd_name='character',
@@ -86,8 +85,8 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             level: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
             'type': 'skill',
@@ -108,10 +107,10 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
-            level: Union[int, type[Absent]],
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            level: int | type[Absent],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'skill'}
         conditional_insert(container=body, key='level', value=level)
@@ -132,8 +131,8 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
             cmd_name='implant',
@@ -147,9 +146,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
             cmd_name='implant',
@@ -165,9 +164,9 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            side_effects: Union[dict[int, bool], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            side_effects: dict[int, bool] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
             'type': 'booster',
@@ -188,9 +187,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            side_effects: Union[dict[int, bool], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            side_effects: dict[int, bool] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'booster'}
         conditional_insert(container=body, key='state', value=state)
@@ -210,8 +209,8 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
             cmd_name='ship',
@@ -225,9 +224,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
             cmd_name='ship',
@@ -243,8 +242,8 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
             cmd_name='stance',
@@ -260,8 +259,8 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
             cmd_name='subsystem',
@@ -275,9 +274,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
             cmd_name='subsystem',
@@ -295,10 +294,10 @@ class ApiClientItem(ApiClientBase):
             type_id: int,
             rack: ApiRack,
             state: ApiState,
-            mutation: Union[int, tuple[int, dict[int, dict]], type[Absent]],
-            charge_type_id: Union[int, type[Absent]],
-            mode: Union[ApiModAddMode, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent],
+            charge_type_id: int | type[Absent],
+            mode: ApiModAddMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
             'type': 'module',
@@ -322,14 +321,14 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
-            state: Union[ApiState, type[Absent]],
-            mutation: Union[int, tuple[int, dict[int, dict]], dict[int, dict], None, type[Absent]],
-            charge: Union[int, None, type[Absent]],
-            add_projs: Union[Iterable[(str, Union[float, None])], type[Absent]],
-            change_projs: Union[Iterable[(str, Union[float, None])], type[Absent]],
-            rm_projs: Union[Iterable[str], type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: ApiState | type[Absent],
+            mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
+            charge: int | None | type[Absent],
+            add_projs: Iterable[(str, float | None)] | type[Absent],
+            change_projs: Iterable[(str, float | None)] | type[Absent],
+            rm_projs: Iterable[str] | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'module'}
         conditional_insert(container=body, key='state', value=state)
@@ -354,8 +353,8 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
             cmd_name='rig',
@@ -369,9 +368,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
             cmd_name='rig',
@@ -388,8 +387,8 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: ApiState,
-            mutation: Union[int, tuple[int, dict[int, dict[str, float]]], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
             'type': 'drone',
@@ -410,13 +409,13 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[ApiState, type[Absent]],
-            mutation: Union[int, tuple[int, dict[int, dict]], dict[int, dict], None, type[Absent]],
-            add_projs: Union[Iterable[(str, Union[float, None])], type[Absent]],
-            change_projs: Union[Iterable[(str, Union[float, None])], type[Absent]],
-            rm_projs: Union[Iterable[str], type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: ApiState | type[Absent],
+            mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
+            add_projs: Iterable[(str, float | None)] | type[Absent],
+            change_projs: Iterable[(str, float | None)] | type[Absent],
+            rm_projs: Iterable[str] | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'drone', 'item_id': item_id}
         conditional_insert(container=body, key='state', value=state)
@@ -441,7 +440,7 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: ApiState,
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
             cmd_name='fighter',
@@ -455,12 +454,12 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[ApiState, type[Absent]],
-            add_projs: Union[Iterable[(str, Union[float, None])], type[Absent]],
-            change_projs: Union[Iterable[(str, Union[float, None])], type[Absent]],
-            rm_projs: Union[Iterable[str], type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: ApiState | type[Absent],
+            add_projs: Iterable[(str, float | None)] | type[Absent],
+            change_projs: Iterable[(str, float | None)] | type[Absent],
+            rm_projs: Iterable[str] | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'fighter', 'item_id': item_id}
         conditional_insert(container=body, key='state', value=state)
@@ -482,9 +481,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
             cmd_name='charge',
@@ -499,9 +498,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
             cmd_name='autocharge',
@@ -516,8 +515,8 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'sw_effect', 'type_id': type_id}
         conditional_insert(container=body, key='state', value=state)
@@ -534,9 +533,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
             cmd_name='sw_effect',
@@ -552,8 +551,8 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
             cmd_name='fw_effect',
@@ -567,9 +566,9 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__change_simple_item_request(
             cmd_name='fw_effect',
@@ -584,8 +583,8 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             type_id: int,
-            state: Union[bool, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'proj_effect', 'type_id': type_id}
         conditional_insert(container=body, key='state', value=state)
@@ -602,10 +601,10 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: Union[bool, type[Absent]],
-            add_projs: Union[Iterable[str], type[Absent]],
-            rm_projs: Union[Iterable[str], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | type[Absent],
+            add_projs: Iterable[str] | type[Absent],
+            rm_projs: Iterable[str] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': 'proj_effect', 'item_id': item_id}
         conditional_insert(container=body, key='state', value=state)
@@ -627,8 +626,8 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: Union[bool, str, type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | str | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
             'type': cmd_name,
@@ -649,9 +648,9 @@ class ApiClientItem(ApiClientBase):
             cmd_name: str,
             sol_id: str,
             item_id: int,
-            state: Union[bool, str, type[Absent]],
-            effect_modes: Union[dict[int, ApiEffMode], type[Absent]],
-            item_info_mode: Union[ApiItemInfoMode, type[Absent]],
+            state: bool | str | type[Absent],
+            effect_modes: dict[int, ApiEffMode] | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {'type': cmd_name}
         conditional_insert(container=body, key='state', value=state)

@@ -6,8 +6,6 @@ from tests.support.util import conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 if TYPE_CHECKING:
-    from typing import Union
-
     from tests.support.eve.containers.primitives import EvePrimitives
     from tests.support.util import Absent
 
@@ -17,12 +15,12 @@ class Attribute:
     def __init__(
             self, *,
             id_: int,
-            stackable: Union[int, bool, type[Absent]],
-            high_is_good: Union[int, bool, type[Absent]],
-            default_value: Union[float, type[Absent]],
-            min_attribute_id: Union[int, type[Absent]],
-            max_attribute_id: Union[int, type[Absent]],
-            unit_id: Union[int, type[Absent]],
+            stackable: int | bool | type[Absent],
+            high_is_good: int | bool | type[Absent],
+            default_value: float | type[Absent],
+            min_attribute_id: int | type[Absent],
+            max_attribute_id: int | type[Absent],
+            unit_id: int | type[Absent],
     ):
         self.id = id_
         self.stackable = stackable

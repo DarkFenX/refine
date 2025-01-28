@@ -14,7 +14,6 @@ from tests.support.util import Timer, make_repr_str
 
 if TYPE_CHECKING:
     from pathlib import Path
-    from typing import Union
 
 
 class ParseError(Exception):
@@ -46,8 +45,8 @@ class LogEntry:
     def check(
             self, *,
             msg: str,
-            level: Union[Level, str, None] = None,
-            span: Union[str, None] = None,
+            level: Level | str | None = None,
+            span: str | None = None,
     ) -> bool:
         # Span of None just means no span specified
         if span is not None and not self.span.endswith(span):
@@ -164,9 +163,9 @@ class LogCollector:
     def wait_log_entry(
             self, *,
             msg: str,
-            level: Union[Level, str, None] = None,
-            span: Union[str, None] = None,
-            timeout: Union[int, float] = 1,
+            level: Level | str | None = None,
+            span: str | None = None,
+            timeout: int | float = 1,
     ) -> None:
         timer = Timer(timeout=timeout)
         while True:

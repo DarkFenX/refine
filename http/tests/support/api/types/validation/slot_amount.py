@@ -1,17 +1,11 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from typing import Union
 
 
 @dataclass
 class ValSlotAmountDetails:
 
     used: int
-    total: Union[int, None]
+    total: int | None
     users: list[str]
 
     def __init__(self, *, data):

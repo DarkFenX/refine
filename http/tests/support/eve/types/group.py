@@ -6,8 +6,6 @@ from tests.support.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
 if TYPE_CHECKING:
-    from typing import Union
-
     from tests.support.eve.containers.primitives import EvePrimitives
 
 
@@ -16,7 +14,7 @@ class Group:
     def __init__(
             self, *,
             id_: int,
-            category_id: Union[int, type[Absent]],
+            category_id: int | type[Absent],
     ):
         self.id = id_
         self.category_id = category_id
