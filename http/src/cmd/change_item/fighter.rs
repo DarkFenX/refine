@@ -1,6 +1,6 @@
 use crate::{
     cmd::{
-        shared::{apply_effect_modes, HEffectModeMap, HProjDef},
+        shared::{apply_effect_modes, HEffectModeMap, HProjDef, HProjDefFull},
         HCmdResp,
     },
     shared::HState,
@@ -14,7 +14,7 @@ pub(crate) struct HChangeFighterCmd {
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
-    change_projs: Vec<HProjDef>,
+    change_projs: Vec<HProjDefFull>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::SolItemId>,
