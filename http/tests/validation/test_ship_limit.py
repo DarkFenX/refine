@@ -58,6 +58,7 @@ def test_type_multiple_different(client, consts):
 
 
 def test_type_multiple_same(client, consts):
+    # Test rounding as well
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
     eve_type_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type2, unit_id=consts.EveAttrUnit.item_id)
@@ -66,9 +67,9 @@ def test_type_multiple_same(client, consts):
     eve_allowed_ship2_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
     eve_module_id = client.mk_eve_item(attrs={
-        eve_type_attr1_id: eve_allowed_ship1_id,
+        eve_type_attr1_id: eve_allowed_ship1_id - 0.4,
         eve_type_attr2_id: eve_allowed_ship2_id,
-        eve_type_attr3_id: eve_allowed_ship1_id})
+        eve_type_attr3_id: eve_allowed_ship1_id + 0.4})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -149,6 +150,7 @@ def test_group_multiple_different(client, consts):
 
 
 def test_group_multiple_same(client, consts):
+    # Test rounding as well
     eve_allowed_grp1_id = client.mk_eve_ship_group()
     eve_allowed_grp2_id = client.mk_eve_ship_group()
     eve_disallowed_grp_id = client.mk_eve_ship_group()
@@ -158,9 +160,9 @@ def test_group_multiple_same(client, consts):
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_allowed_grp1_id)
     eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_disallowed_grp_id)
     eve_module_id = client.mk_eve_item(attrs={
-        eve_group_attr1_id: eve_allowed_grp1_id,
+        eve_group_attr1_id: eve_allowed_grp1_id - 0.4,
         eve_group_attr2_id: eve_allowed_grp2_id,
-        eve_group_attr3_id: eve_allowed_grp1_id})
+        eve_group_attr3_id: eve_allowed_grp1_id + 0.4})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
