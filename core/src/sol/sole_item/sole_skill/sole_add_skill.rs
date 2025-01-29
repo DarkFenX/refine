@@ -1,3 +1,5 @@
+use std::collections::hash_map::Entry;
+
 use crate::{
     defs::{EItemId, SkillLevel, SolFitId},
     err::basic::{FitFoundError, SkillEveTypeError, SkillLevelError},
@@ -28,10 +30,10 @@ impl SolarSystem {
         let item = SolItem::Skill(skill);
         let fit = self.uad.fits.get_fit_mut(&fit_id)?;
         match fit.skills.entry(type_id) {
-            std::collections::hash_map::Entry::Vacant(entry) => {
+            Entry::Vacant(entry) => {
                 entry.insert(SolFitSkill::new(item_id, level));
             }
-            std::collections::hash_map::Entry::Occupied(entry) => {
+            Entry::Occupied(entry) => {
                 return Err(SkillEveTypeError::new(type_id, fit_id, entry.get().item_id).into());
             }
         }

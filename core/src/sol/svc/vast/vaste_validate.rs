@@ -8,14 +8,14 @@ use crate::sol::{
 
 impl SolVast {
     pub(in crate::sol) fn validate_fit_fast(
-        &self,
+        &mut self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
         options: SolValOptions,
     ) -> bool {
         // All registered fits should have an entry, so just unwrap
-        let fit_data = self.get_fit_data(&fit.id).unwrap();
+        let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         // Order of validations matters here; the faster validation and the more likely it is to
         // fail, the closer to top it should be
         if options.cpu {
@@ -163,17 +163,22 @@ impl SolVast {
                 return false;
             }
         }
+        if options.charge_group {
+            if !fit_data.validate_charge_group_fast(uad) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
-        &self,
+        &mut self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
         options: SolValOptions,
     ) -> SolValResult {
         // All registered fits should have an entry, so just unwrap
-        let fit_data = self.get_fit_data(&fit.id).unwrap();
+        let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         let mut result = SolValResult::new();
         if options.cpu {
             result.cpu = fit_data.validate_cpu_verbose(uad, calc, fit);
@@ -264,6 +269,9 @@ impl SolVast {
         }
         if options.skill_reqs {
             result.skill_reqs = fit_data.validate_skill_reqs_verbose();
+        }
+        if options.charge_group {
+            result.charge_group = fit_data.validate_charge_group_verbose(uad);
         }
         result
     }

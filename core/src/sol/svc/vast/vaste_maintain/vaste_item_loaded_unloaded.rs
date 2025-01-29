@@ -1,3 +1,5 @@
+use std::collections::hash_map::Entry;
+
 use crate::{
     ec,
     sol::{
@@ -42,6 +44,13 @@ impl SolVast {
                         fit_data.mods_rigs_max_group_fitted_limited.insert(item_id, grp_id);
                     }
                 }
+                if extras.charge_limit.is_some() {
+                    // If there is a charge, calculate later, otherwise mark as no issue
+                    match module.get_charge_id() {
+                        Some(_) => fit_data.charge_group.insert(item_id, None),
+                        None => fit_data.charge_group.insert(item_id, Some(None)),
+                    };
+                }
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -81,6 +90,12 @@ impl SolVast {
                     fit_data.ship_limited_mods_rigs_subs.insert(item_id, ship_limit.clone());
                 }
             }
+            SolItem::Charge(charge) => {
+                // Reset result to uncalculated when adding a charge
+                if let Entry::Occupied(mut entry) = fit_data.charge_group.entry(charge.get_cont_id()) {
+                    entry.insert(None);
+                }
+            }
             _ => (),
         }
     }
@@ -109,6 +124,9 @@ impl SolVast {
                 if let Some(grp_id) = extras.val_fitted_group_id {
                     fit_data.mods_rigs_max_group_fitted_all.remove_entry(&grp_id, &item_id);
                     fit_data.mods_rigs_max_group_fitted_limited.remove(&item_id);
+                }
+                if extras.charge_limit.is_some() {
+                    fit_data.charge_group.remove(&item_id);
                 }
             }
             SolItem::Rig(rig) => {
@@ -141,6 +159,12 @@ impl SolVast {
                 }
                 if subsystem.get_a_extras().unwrap().ship_limit.is_some() {
                     fit_data.ship_limited_mods_rigs_subs.remove(&item_id);
+                }
+            }
+            SolItem::Charge(charge) => {
+                // No charge - check should pass
+                if let Entry::Occupied(mut entry) = fit_data.charge_group.entry(charge.get_cont_id()) {
+                    entry.insert(Some(None));
                 }
             }
             _ => (),

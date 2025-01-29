@@ -110,6 +110,13 @@ impl SolVastFitData {
         for item_id in self.srqs_missing.keys() {
             check_item(uad, item_id, true)?;
         }
+        for (item_id, item_data) in self.charge_group.iter() {
+            check_item(uad, item_id, true)?;
+            if let Some(Some(item_fail)) = item_data {
+                check_item(uad, &item_fail.parent_item_id, true)?;
+                check_item(uad, &item_fail.charge_item_id, true)?;
+            }
+        }
         Ok(())
     }
 }

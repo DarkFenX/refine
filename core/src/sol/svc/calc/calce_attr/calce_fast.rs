@@ -1,3 +1,5 @@
+use std::collections::hash_map::Entry;
+
 use itertools::Itertools;
 
 use crate::{
@@ -83,7 +85,7 @@ impl SolCalc {
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item
         for attr_id in item.get_attrs().unwrap().keys() {
-            if let std::collections::hash_map::Entry::Vacant(entry) = vals.entry(*attr_id) {
+            if let Entry::Vacant(entry) = vals.entry(*attr_id) {
                 match self.get_item_attr_val(uad, &item.get_id(), attr_id) {
                     Ok(v) => entry.insert(v),
                     _ => continue,

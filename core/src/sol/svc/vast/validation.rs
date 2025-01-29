@@ -1,6 +1,6 @@
 use crate::sol::svc::vast::{
-    SolMaxGroupValFail, SolResValFail, SolRigSizeValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail,
-    SolSrqValFail,
+    SolChargeGroupValFail, SolMaxGroupValFail, SolResValFail, SolRigSizeValFail, SolShipLimitValFail,
+    SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
 };
 
 #[derive(Copy, Clone)]
@@ -34,6 +34,7 @@ pub struct SolValOptions {
     pub max_group_active: bool,
     pub rig_size: bool,
     pub skill_reqs: bool,
+    pub charge_group: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -66,6 +67,7 @@ impl SolValOptions {
         max_group_active: bool,
         rig_size: bool,
         skill_reqs: bool,
+        charge_group: bool,
     ) -> Self {
         Self {
             cpu,
@@ -97,6 +99,7 @@ impl SolValOptions {
             max_group_active,
             rig_size,
             skill_reqs,
+            charge_group,
         }
     }
     pub fn new_enabled() -> Self {
@@ -130,6 +133,7 @@ impl SolValOptions {
             max_group_active: true,
             rig_size: true,
             skill_reqs: true,
+            charge_group: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -163,6 +167,7 @@ impl SolValOptions {
             max_group_active: false,
             rig_size: false,
             skill_reqs: false,
+            charge_group: false,
         }
     }
 }
@@ -197,6 +202,7 @@ pub struct SolValResult {
     pub max_group_active: Vec<SolMaxGroupValFail>,
     pub rig_size: Option<SolRigSizeValFail>,
     pub skill_reqs: Vec<SolSrqValFail>,
+    pub charge_group: Vec<SolChargeGroupValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -230,6 +236,7 @@ impl SolValResult {
             max_group_active: Vec::new(),
             rig_size: None,
             skill_reqs: Vec::new(),
+            charge_group: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -262,5 +269,6 @@ impl SolValResult {
             && self.max_group_active.is_empty()
             && self.rig_size.is_none()
             && self.skill_reqs.is_empty()
+            && self.charge_group.is_empty()
     }
 }
