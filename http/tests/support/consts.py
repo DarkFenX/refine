@@ -185,6 +185,11 @@ class EveAttr(IntEnum):
     sig_radius = 552
     sig_radius_bonus = 554
     speed_boost_factor = 567
+    charge_group1 = 604
+    charge_group2 = 605
+    charge_group3 = 606
+    charge_group4 = 609
+    charge_group5 = 610
     max_group_active = 763
     mass_addition = 796
     disallow_assistance = 854
@@ -396,6 +401,7 @@ class ApiValType(StrEnum):
     max_group_active = 'max_group_active'
     rig_size = 'rig_size'
     skill_reqs = 'skill_reqs'
+    charge_group = 'charge_group'
 
 
 @unique
