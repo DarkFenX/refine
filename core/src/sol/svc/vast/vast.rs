@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{AttrVal, EItemGrpId, EItemId, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
-    sol::svc::vast::{SolChargeGroupValFail, SolVastSkillReq},
+    sol::svc::vast::{SolChargeGroupValFail, SolChargeSizeValFail, SolValCache, SolVastSkillReq},
     util::{StMap, StMapSetL1, StSet},
 };
 
@@ -64,7 +64,8 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) rigs_rig_size: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) srqs_skill_item_map: StMapSetL1<EItemId, SolItemId>,
     pub(in crate::sol::svc::vast) srqs_missing: StMap<SolItemId, StMap<EItemId, SolVastSkillReq>>,
-    pub(in crate::sol::svc::vast) charge_group: StMap<SolItemId, Option<Option<SolChargeGroupValFail>>>,
+    pub(in crate::sol::svc::vast) mods_charge_group: StMap<SolItemId, SolValCache<(), SolChargeGroupValFail>>,
+    pub(in crate::sol::svc::vast) mods_charge_size: StMap<SolItemId, SolValCache<AttrVal, SolChargeSizeValFail>>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -95,7 +96,8 @@ impl SolVastFitData {
             rigs_rig_size: StMap::new(),
             srqs_skill_item_map: StMapSetL1::new(),
             srqs_missing: StMap::new(),
-            charge_group: StMap::new(),
+            mods_charge_group: StMap::new(),
+            mods_charge_size: StMap::new(),
         }
     }
 }

@@ -1,5 +1,6 @@
 use crate::sol::{
     debug::{check_fit, check_item, SolDebugResult},
+    svc::vast::SolValCache,
     uad::SolUad,
 };
 
@@ -110,11 +111,19 @@ impl SolVastFitData {
         for item_id in self.srqs_missing.keys() {
             check_item(uad, item_id, true)?;
         }
-        for (item_id, item_data) in self.charge_group.iter() {
+        for (item_id, item_data) in self.mods_charge_group.iter() {
             check_item(uad, item_id, true)?;
-            if let Some(Some(item_fail)) = item_data {
+            if let SolValCache::Fail(item_fail) = item_data {
                 check_item(uad, &item_fail.parent_item_id, true)?;
-                // THe container can store info about non-loaded charges
+                // This container can store info about non-loaded charges
+                check_item(uad, &item_fail.charge_item_id, false)?;
+            }
+        }
+        for (item_id, item_data) in self.mods_charge_size.iter() {
+            check_item(uad, item_id, true)?;
+            if let SolValCache::Fail(item_fail) = item_data {
+                check_item(uad, &item_fail.parent_item_id, true)?;
+                // This container can store info about non-loaded charges
                 check_item(uad, &item_fail.charge_item_id, false)?;
             }
         }

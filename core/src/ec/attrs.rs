@@ -23,6 +23,7 @@ pub(crate) const EM_DMG: EAttrId = 114;
 pub(crate) const EXPL_DMG: EAttrId = 116;
 pub(crate) const KIN_DMG: EAttrId = 117;
 pub(crate) const THERM_DMG: EAttrId = 118;
+pub(crate) const CHARGE_SIZE: EAttrId = 128;
 pub(crate) const VOLUME: EAttrId = 161;
 pub(crate) const MISSILE_DMG_MULT: EAttrId = 212;
 pub(crate) const ARMOR_EM_DMG_RESONANCE: EAttrId = 267;

@@ -1,6 +1,9 @@
 use crate::{
     defs::{EItemGrpId, SolItemId},
-    sol::{svc::vast::SolVastFitData, uad::SolUad},
+    sol::{
+        svc::vast::{SolValCache, SolVastFitData},
+        uad::SolUad,
+    },
 };
 
 #[derive(Clone)]
@@ -29,22 +32,18 @@ impl SolChargeGroupValFail {
 impl SolVastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_charge_group_fast(&mut self, uad: &SolUad) -> bool {
-        for (module_item_id, module_data) in self.charge_group.iter_mut() {
-            match module_data {
-                Some(result) => {
-                    if result.is_some() {
+        for (module_item_id, cache) in self.mods_charge_group.iter_mut() {
+            match cache {
+                SolValCache::Todo(_) => match calculate_item_result(uad, module_item_id) {
+                    SolValCache::Pass(pass) => cache.pass(pass),
+                    SolValCache::Fail(fail) => {
+                        cache.fail(fail);
                         return false;
                     }
-                }
-                None => match calculate_fail_data(uad, module_item_id) {
-                    Some(fail) => {
-                        let _ = module_data.insert(Some(fail));
-                        return false;
-                    }
-                    None => {
-                        let _ = module_data.insert(None);
-                    }
+                    _ => (),
                 },
+                SolValCache::Pass(_) => (),
+                SolValCache::Fail(_) => return false,
             }
         }
         true
@@ -55,33 +54,29 @@ impl SolVastFitData {
         uad: &SolUad,
     ) -> Vec<SolChargeGroupValFail> {
         let mut fails = Vec::new();
-        for (module_item_id, module_data) in self.charge_group.iter_mut() {
-            match module_data {
-                Some(result) => {
-                    if let Some(fail) = result {
+        for (module_item_id, cache) in self.mods_charge_group.iter_mut() {
+            match cache {
+                SolValCache::Todo(_) => match calculate_item_result(uad, module_item_id) {
+                    SolValCache::Pass(pass) => cache.pass(pass),
+                    SolValCache::Fail(fail) => {
                         fails.push(fail.clone());
+                        cache.fail(fail);
                     }
-                }
-                None => match calculate_fail_data(uad, module_item_id) {
-                    Some(fail) => {
-                        let _ = module_data.insert(Some(fail.clone()));
-                        fails.push(fail);
-                    }
-                    None => {
-                        let _ = module_data.insert(None);
-                    }
+                    _ => (),
                 },
+                SolValCache::Pass(_) => (),
+                SolValCache::Fail(fail) => fails.push(fail.clone()),
             }
         }
         fails
     }
 }
 
-fn calculate_fail_data(uad: &SolUad, module_item_id: &SolItemId) -> Option<SolChargeGroupValFail> {
+fn calculate_item_result(uad: &SolUad, module_item_id: &SolItemId) -> SolValCache<(), SolChargeGroupValFail> {
     let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
     let charge_item_id = match module.get_charge_id() {
         Some(charge_item_id) => charge_item_id,
-        None => return None,
+        None => return SolValCache::Pass(()),
     };
     let allowed_group_ids = module
         .get_a_extras()
@@ -94,20 +89,21 @@ fn calculate_fail_data(uad: &SolUad, module_item_id: &SolItemId) -> Option<SolCh
     let charge_group_id = match uad.items.get_item(&charge_item_id).unwrap().get_group_id() {
         Some(charge_group_id) => charge_group_id,
         None => {
-            let fail = SolChargeGroupValFail::new(*module_item_id, charge_item_id, None, allowed_group_ids);
-            return Some(fail);
+            return SolValCache::Fail(SolChargeGroupValFail::new(
+                *module_item_id,
+                charge_item_id,
+                None,
+                allowed_group_ids,
+            ))
         }
     };
     match allowed_group_ids.contains(&charge_group_id) {
-        true => None,
-        false => {
-            let fail = SolChargeGroupValFail::new(
-                *module_item_id,
-                charge_item_id,
-                Some(charge_group_id),
-                allowed_group_ids,
-            );
-            Some(fail)
-        }
+        true => SolValCache::Pass(()),
+        false => SolValCache::Fail(SolChargeGroupValFail::new(
+            *module_item_id,
+            charge_item_id,
+            Some(charge_group_id),
+            allowed_group_ids,
+        )),
     }
 }
