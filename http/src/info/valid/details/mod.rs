@@ -1,5 +1,6 @@
 pub(in crate::info::valid) use charge_group::HChargeGroupValFail;
 pub(in crate::info::valid) use charge_size::HChargeSizeValFail;
+pub(in crate::info::valid) use charge_volume::HChargeVolumeValFail;
 pub(in crate::info::valid) use max_group::HMaxGroupValFail;
 pub(in crate::info::valid) use resource::HResValFail;
 pub(in crate::info::valid) use rig_size::HRigSizeValFail;
@@ -10,6 +11,7 @@ pub(in crate::info::valid) use slot_index::HSlotIndexValFail;
 
 mod charge_group;
 mod charge_size;
+mod charge_volume;
 mod max_group;
 mod resource;
 mod rig_size;
