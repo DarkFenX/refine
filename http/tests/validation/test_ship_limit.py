@@ -426,6 +426,13 @@ def test_mutation_type(client, consts):
     with check_no_field():
         api_val.details  # pylint: disable=W0104
     # Action
+    api_fit.set_ship(type_id=eve_ship2_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+    # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
@@ -478,6 +485,13 @@ def test_mutation_group(client, consts):
     assert api_val.details.ship_limit.mismatches == {api_module.id: ([], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
     # Action
     api_module.change_mod(mutation=eve_mutator_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+    # Action
+    api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
