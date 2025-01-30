@@ -169,6 +169,7 @@ class EveAttr(IntEnum):
     expl_dmg = 116
     kin_dmg = 117
     therm_dmg = 118
+    charge_size = 128
     falloff = 158
     volume = 161
     missile_dmg_mult = 212
@@ -402,6 +403,7 @@ class ApiValType(StrEnum):
     rig_size = 'rig_size'
     skill_reqs = 'skill_reqs'
     charge_group = 'charge_group'
+    charge_size = 'charge_size'
 
 
 @unique

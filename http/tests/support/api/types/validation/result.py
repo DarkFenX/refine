@@ -1,6 +1,7 @@
 from tests.support.consts import ApiValType
 from tests.support.util import AttrDict, AttrHookDef
 from .charge_group import ValChargeGroupDetails
+from .charge_size import ValChargeSizeDetails
 from .max_group import ValMaxGroupDetails
 from .resource import ValResourceDetails
 from .rig_size import ValRigSizeDetails
@@ -49,4 +50,5 @@ class ValResultDetails(AttrDict):
             ApiValType.max_group_active: AttrHookDef(func=lambda d: ValMaxGroupDetails(data=d)),
             ApiValType.rig_size: AttrHookDef(func=lambda d: ValRigSizeDetails(data=d)),
             ApiValType.skill_reqs: AttrHookDef(func=lambda d: ValSrqDetails(data=d)),
-            ApiValType.charge_group: AttrHookDef(func=lambda d: ValChargeGroupDetails(data=d))})
+            ApiValType.charge_group: AttrHookDef(func=lambda d: ValChargeGroupDetails(data=d)),
+            ApiValType.charge_size: AttrHookDef(func=lambda d: ValChargeSizeDetails(data=d))})
