@@ -112,8 +112,7 @@ def test_multiple_different(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
-def test_multiple_same(client, consts):
-    # Test rounding as well
+def test_multiple_same_rounding(client, consts):
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
     eve_grp3_id = client.mk_eve_item_group()

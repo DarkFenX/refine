@@ -172,6 +172,50 @@ def test_skill_level_change(client, consts):
         api_module2.id: {eve_skill1_id: (1, 3), eve_skill2_id: (None, 5)}}
 
 
+def test_mutation(client, consts):
+    # Actual use-case, mutated drones switch spec skill
+    eve_skill1_id = client.mk_eve_item()
+    eve_skill2_id = client.mk_eve_item()
+    eve_base_drone_id = client.mk_eve_item(srqs={eve_skill1_id: 2})
+    eve_mutated_drone_id = client.mk_eve_item(srqs={eve_skill2_id: 4})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_drone_id], eve_mutated_drone_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(type_id=eve_base_drone_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {api_drone.id: {eve_skill1_id: (None, 2)}}
+    # Action
+    api_skill1 = api_fit.add_skill(type_id=eve_skill1_id, level=2)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+    # Action
+    api_drone.change_drone(mutation=eve_mutator_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {api_drone.id: {eve_skill2_id: (None, 4)}}
+    # Action
+    api_fit.add_skill(type_id=eve_skill2_id, level=4)
+    api_skill1.remove()
+    # Verification - only 2nd skill is needed, skill requirements are overwritten, not merged
+    api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+    # Action
+    api_drone.change_drone(mutation=None)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {api_drone.id: {eve_skill1_id: (None, 2)}}
+
+
 def test_self_req(client, consts):
     # Unrealistic scenario, but check what happens anyway
     eve_skill_id = client.alloc_item_id()
