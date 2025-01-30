@@ -1,5 +1,6 @@
 pub use vaste_charge_group::SolChargeGroupValFail;
 pub use vaste_charge_size::SolChargeSizeValFail;
+pub use vaste_charge_volume::SolChargeVolumeValFail;
 pub use vaste_max_group::{SolMaxGroupItem, SolMaxGroupValFail};
 pub use vaste_resource::{SolResUser, SolResValFail};
 pub use vaste_rig_size::{SolRigSizeMismatch, SolRigSizeValFail};
@@ -10,6 +11,7 @@ pub use vaste_slot_index::SolSlotIndexValFail;
 
 mod vaste_charge_group;
 mod vaste_charge_size;
+mod vaste_charge_volume;
 mod vaste_max_group;
 mod vaste_resource;
 mod vaste_rig_size;

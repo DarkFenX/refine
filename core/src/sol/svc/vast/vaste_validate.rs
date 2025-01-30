@@ -173,6 +173,11 @@ impl SolVast {
                 return false;
             }
         }
+        if options.charge_volume {
+            if !fit_data.validate_charge_volume_fast(uad) {
+                return false;
+            }
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -280,6 +285,9 @@ impl SolVast {
         }
         if options.charge_size {
             result.charge_size = fit_data.validate_charge_size_verbose(uad);
+        }
+        if options.charge_volume {
+            result.charge_volume = fit_data.validate_charge_volume_verbose(uad);
         }
         result
     }

@@ -62,6 +62,17 @@ impl SolVast {
                             .insert(item_id, SolValCache::Pass(*allowed_charge_size)),
                     };
                 }
+                if let Some(max_charge_volume) = module.get_attrs().unwrap().get(&ec::attrs::CAPACITY) {
+                    // If there is a charge, calculate later, otherwise mark as no issue
+                    match module.get_charge_id() {
+                        Some(_) => fit_data
+                            .mods_charge_size
+                            .insert(item_id, SolValCache::Todo(*max_charge_volume)),
+                        None => fit_data
+                            .mods_charge_size
+                            .insert(item_id, SolValCache::Pass(*max_charge_volume)),
+                    };
+                }
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -103,6 +114,7 @@ impl SolVast {
                 if let Entry::Occupied(mut entry) = fit_data.mods_charge_group.entry(charge.get_cont_id()) {
                     entry.insert(SolValCache::Todo(()));
                 }
+                // Reset result to uncalculated when adding a charge
                 if let Entry::Occupied(mut entry) = fit_data.mods_charge_size.entry(charge.get_cont_id()) {
                     match entry.get() {
                         SolValCache::Pass(allowed_charge_size) => {
@@ -110,6 +122,18 @@ impl SolVast {
                         }
                         SolValCache::Fail(fail) => {
                             entry.insert(SolValCache::Todo(fail.allowed_size));
+                        }
+                        _ => (),
+                    }
+                }
+                // Reset result to uncalculated when adding a charge
+                if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(charge.get_cont_id()) {
+                    match entry.get() {
+                        SolValCache::Pass(max_volume) => {
+                            entry.insert(SolValCache::Todo(*max_volume));
+                        }
+                        SolValCache::Fail(fail) => {
+                            entry.insert(SolValCache::Todo(fail.max_volume));
                         }
                         _ => (),
                     }
@@ -148,6 +172,7 @@ impl SolVast {
                     fit_data.mods_charge_group.remove(&item_id);
                 }
                 fit_data.mods_charge_size.remove(&item_id);
+                fit_data.mods_charge_volume.remove(&item_id);
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -193,6 +218,18 @@ impl SolVast {
                         }
                         SolValCache::Fail(fail) => {
                             entry.insert(SolValCache::Pass(fail.allowed_size));
+                        }
+                        _ => (),
+                    }
+                }
+                if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(charge.get_cont_id()) {
+                    // No charge - check should pass
+                    match entry.get() {
+                        SolValCache::Todo(max_volume) => {
+                            entry.insert(SolValCache::Pass(*max_volume));
+                        }
+                        SolValCache::Fail(fail) => {
+                            entry.insert(SolValCache::Pass(fail.max_volume));
                         }
                         _ => (),
                     }

@@ -297,9 +297,13 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                     None,
                 )
                 .unwrap();
-            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            let r = sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            // if !r {
+            //     println!("{low_mod_id}");
+            // }
             sol_sys.remove_item(&info.id, rc::SolRmMode::Free).unwrap();
         }
+        // break
     }
     let after = Utc::now();
     tracing::error!("done with nphoon test");

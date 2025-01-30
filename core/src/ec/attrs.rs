@@ -10,6 +10,7 @@ pub(crate) const HI_SLOTS: EAttrId = 14;
 pub(crate) const SPEED_FACTOR: EAttrId = 20;
 pub(crate) const POWER: EAttrId = 30;
 pub(crate) const MAX_VELOCITY: EAttrId = 37;
+pub(crate) const CAPACITY: EAttrId = 38;
 pub(crate) const CPU_OUTPUT: EAttrId = 48;
 pub(crate) const CPU: EAttrId = 50;
 pub(crate) const SPEED: EAttrId = 51;

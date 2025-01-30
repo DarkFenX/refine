@@ -1,6 +1,6 @@
 use crate::sol::svc::vast::{
-    SolChargeGroupValFail, SolChargeSizeValFail, SolMaxGroupValFail, SolResValFail, SolRigSizeValFail,
-    SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
+    SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolMaxGroupValFail, SolResValFail,
+    SolRigSizeValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
 };
 
 #[derive(Copy, Clone)]
@@ -36,6 +36,7 @@ pub struct SolValOptions {
     pub skill_reqs: bool,
     pub charge_group: bool,
     pub charge_size: bool,
+    pub charge_volume: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -70,6 +71,7 @@ impl SolValOptions {
         skill_reqs: bool,
         charge_group: bool,
         charge_size: bool,
+        charge_volume: bool,
     ) -> Self {
         Self {
             cpu,
@@ -103,6 +105,7 @@ impl SolValOptions {
             skill_reqs,
             charge_group,
             charge_size,
+            charge_volume,
         }
     }
     pub fn new_enabled() -> Self {
@@ -138,6 +141,7 @@ impl SolValOptions {
             skill_reqs: true,
             charge_group: true,
             charge_size: true,
+            charge_volume: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -173,6 +177,7 @@ impl SolValOptions {
             skill_reqs: false,
             charge_group: false,
             charge_size: false,
+            charge_volume: false,
         }
     }
 }
@@ -209,6 +214,7 @@ pub struct SolValResult {
     pub skill_reqs: Vec<SolSrqValFail>,
     pub charge_group: Vec<SolChargeGroupValFail>,
     pub charge_size: Vec<SolChargeSizeValFail>,
+    pub charge_volume: Vec<SolChargeVolumeValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -244,6 +250,7 @@ impl SolValResult {
             skill_reqs: Vec::new(),
             charge_group: Vec::new(),
             charge_size: Vec::new(),
+            charge_volume: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -278,5 +285,6 @@ impl SolValResult {
             && self.skill_reqs.is_empty()
             && self.charge_group.is_empty()
             && self.charge_size.is_empty()
+            && self.charge_volume.is_empty()
     }
 }

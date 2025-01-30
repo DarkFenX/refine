@@ -34,9 +34,10 @@ pub use sol::{
     svc::{
         calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},
         vast::{
-            SolChargeGroupValFail, SolChargeSizeValFail, SolMaxGroupItem, SolMaxGroupValFail, SolResUser,
-            SolResValFail, SolRigSizeMismatch, SolRigSizeValFail, SolShipLimitMismatch, SolShipLimitValFail,
-            SolSlotIndexValFail, SolSlotValFail, SolSrqSkill, SolSrqValFail, SolValOptions, SolValResult,
+            SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolMaxGroupItem, SolMaxGroupValFail,
+            SolResUser, SolResValFail, SolRigSizeMismatch, SolRigSizeValFail, SolShipLimitMismatch,
+            SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqSkill, SolSrqValFail, SolValOptions,
+            SolValResult,
         },
     },
     uad::{
