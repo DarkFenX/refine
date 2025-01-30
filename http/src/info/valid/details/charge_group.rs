@@ -25,7 +25,7 @@ impl From<&Vec<rc::SolChargeGroupValFail>> for HChargeGroupValFail {
 pub(in crate::info::valid) struct HChargeGroupInfo {
     #[serde_as(as = "serde_with::DisplayFromStr")]
     parent_item_id: rc::SolItemId,
-    charge_group_id: rc::EItemGrpId,
+    charge_group_id: Option<rc::EItemGrpId>,
     allowed_group_ids: Vec<rc::EItemGrpId>,
 }
 impl From<&rc::SolChargeGroupValFail> for HChargeGroupInfo {

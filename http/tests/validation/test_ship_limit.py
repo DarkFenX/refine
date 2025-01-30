@@ -542,14 +542,13 @@ def test_no_ship(client, consts):
 
 
 def test_not_loaded_ship(client, consts):
-    eve_ship_grp1_id = client.mk_eve_ship_group()
-    eve_ship_grp2_id = client.mk_eve_ship_group()
+    eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
     eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
-    eve_ship1_id = client.mk_eve_ship(grp_id=eve_ship_grp2_id)
+    eve_ship1_id = client.alloc_item_id()
     eve_ship2_id = client.alloc_item_id()
-    eve_module1_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship1_id, eve_group_attr_id: eve_ship_grp1_id})
-    eve_module2_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship2_id, eve_group_attr_id: eve_ship_grp1_id})
+    eve_module1_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship1_id, eve_group_attr_id: eve_ship_grp_id})
+    eve_module2_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship2_id, eve_group_attr_id: eve_ship_grp_id})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -561,7 +560,7 @@ def test_not_loaded_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
     assert api_val.details.ship_limit.ship_group_id is None
-    assert api_val.details.ship_limit.mismatches == {api_module1.id: ([eve_ship1_id], [eve_ship_grp1_id])}
+    assert api_val.details.ship_limit.mismatches == {api_module1.id: ([eve_ship1_id], [eve_ship_grp_id])}
     # Action
     api_module1.remove()
     # Verification

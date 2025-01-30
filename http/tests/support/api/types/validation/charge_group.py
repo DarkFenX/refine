@@ -11,7 +11,7 @@ class ValChargeGroupDetails(dict):
 class ValChargeGroupInfo:
 
     parent_item_id: str
-    charge_group_id: int
+    charge_group_id: int | None
     allowed_group_ids: list[int]
 
     def __init__(self, *, data):

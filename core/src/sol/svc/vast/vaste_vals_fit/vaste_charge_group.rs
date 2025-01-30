@@ -7,14 +7,14 @@ use crate::{
 pub struct SolChargeGroupValFail {
     pub parent_item_id: SolItemId,
     pub charge_item_id: SolItemId,
-    pub charge_group_id: EItemGrpId,
+    pub charge_group_id: Option<EItemGrpId>,
     pub allowed_group_ids: Vec<EItemGrpId>,
 }
 impl SolChargeGroupValFail {
     fn new(
         parent_item_id: SolItemId,
         charge_item_id: SolItemId,
-        charge_group_id: EItemGrpId,
+        charge_group_id: Option<EItemGrpId>,
         allowed_group_ids: Vec<EItemGrpId>,
     ) -> Self {
         Self {
@@ -83,10 +83,6 @@ fn calculate_fail_data(uad: &SolUad, module_item_id: &SolItemId) -> Option<SolCh
         Some(charge_item_id) => charge_item_id,
         None => return None,
     };
-    let charge_group_id = match uad.items.get_item(&charge_item_id).unwrap().get_group_id() {
-        Some(charge_group_id) => charge_group_id,
-        None => return None,
-    };
     let allowed_group_ids = module
         .get_a_extras()
         .unwrap()
@@ -95,10 +91,22 @@ fn calculate_fail_data(uad: &SolUad, module_item_id: &SolItemId) -> Option<SolCh
         .unwrap()
         .group_ids
         .clone();
+    let charge_group_id = match uad.items.get_item(&charge_item_id).unwrap().get_group_id() {
+        Some(charge_group_id) => charge_group_id,
+        None => {
+            let fail = SolChargeGroupValFail::new(*module_item_id, charge_item_id, None, allowed_group_ids);
+            return Some(fail);
+        }
+    };
     match allowed_group_ids.contains(&charge_group_id) {
         true => None,
         false => {
-            let fail = SolChargeGroupValFail::new(*module_item_id, charge_item_id, charge_group_id, allowed_group_ids);
+            let fail = SolChargeGroupValFail::new(
+                *module_item_id,
+                charge_item_id,
+                Some(charge_group_id),
+                allowed_group_ids,
+            );
             Some(fail)
         }
     }

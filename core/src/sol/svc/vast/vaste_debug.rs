@@ -114,7 +114,8 @@ impl SolVastFitData {
             check_item(uad, item_id, true)?;
             if let Some(Some(item_fail)) = item_data {
                 check_item(uad, &item_fail.parent_item_id, true)?;
-                check_item(uad, &item_fail.charge_item_id, true)?;
+                // THe container can store info about non-loaded charges
+                check_item(uad, &item_fail.charge_item_id, false)?;
             }
         }
         Ok(())
