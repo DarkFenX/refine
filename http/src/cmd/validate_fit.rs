@@ -53,6 +53,7 @@ impl HValidFitCmd {
                 "rig_size" => core_options.rig_size = alt_value,
                 "skill_reqs" => core_options.skill_reqs = alt_value,
                 "charge_group" => core_options.charge_group = alt_value,
+                "charge_size" => core_options.charge_size = alt_value,
                 _ => (),
             }
         }

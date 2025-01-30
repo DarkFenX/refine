@@ -1,6 +1,6 @@
 use crate::info::valid::details::{
-    HChargeGroupValFail, HMaxGroupValFail, HResValFail, HRigSizeValFail, HShipLimitValFail, HSlotIndexValFail,
-    HSlotValFail, HSrqValFail,
+    HChargeGroupValFail, HChargeSizeValFail, HMaxGroupValFail, HResValFail, HRigSizeValFail, HShipLimitValFail,
+    HSlotIndexValFail, HSlotValFail, HSrqValFail,
 };
 
 #[derive(serde::Serialize)]
@@ -80,6 +80,8 @@ struct HValidInfoDetails {
     skill_reqs: HSrqValFail,
     #[serde(skip_serializing_if = "HChargeGroupValFail::is_empty")]
     charge_group: HChargeGroupValFail,
+    #[serde(skip_serializing_if = "HChargeSizeValFail::is_empty")]
+    charge_size: HChargeSizeValFail,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -113,6 +115,7 @@ impl HValidInfoDetails {
             && self.rig_size.is_none()
             && self.skill_reqs.is_empty()
             && self.charge_group.is_empty()
+            && self.charge_size.is_empty()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -157,6 +160,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             rig_size: core_val_result.rig_size.as_ref().map(|v| v.into()),
             skill_reqs: (&core_val_result.skill_reqs).into(),
             charge_group: (&core_val_result.charge_group).into(),
+            charge_size: (&core_val_result.charge_size).into(),
         }
     }
 }
