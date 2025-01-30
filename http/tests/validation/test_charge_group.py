@@ -356,7 +356,7 @@ def test_autocharge_fighter(client, consts):
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    assert len(api_fighter.update().autocharges) == 1
+    assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
