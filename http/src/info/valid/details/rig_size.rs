@@ -5,7 +5,7 @@ use std::collections::HashMap;
 pub(in crate::info::valid) struct HRigSizeValFail {
     allowed_size: rc::AttrVal,
     #[serde_as(as = "&HashMap<serde_with::DisplayFromStr, _>")]
-    mismatches: HashMap<rc::SolItemId, rc::AttrVal>,
+    mismatches: HashMap<rc::SolItemId, Option<rc::AttrVal>>,
 }
 impl From<&rc::SolRigSizeValFail> for HRigSizeValFail {
     fn from(core_val_fail: &rc::SolRigSizeValFail) -> Self {

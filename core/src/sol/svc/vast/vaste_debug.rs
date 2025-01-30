@@ -101,7 +101,8 @@ impl SolVastFitData {
             check_item(uad, item_id, true)?;
         }
         for item_id in self.rigs_rig_size.keys() {
-            check_item(uad, item_id, true)?;
+            // This container can store info about non-loaded rigs
+            check_item(uad, item_id, false)?;
         }
         for item_ids in self.srqs_skill_item_map.values() {
             for item_id in item_ids {

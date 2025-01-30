@@ -124,6 +124,38 @@ def test_ship_absent(client, consts):
         api_val.details  # pylint: disable=W0104
 
 
+def test_no_value_ship(client, consts):
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.rig_size)
+    eve_rig_id = client.mk_eve_item(attrs={eve_attr_id: 2})
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_rig(type_id=eve_rig_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # pylint: disable=W0104
+
+
+def test_no_value_rig(client, consts):
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.rig_size)
+    eve_rig_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 2})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
+    assert api_val.passed is False
+    assert api_val.details.rig_size.allowed_size == 2
+    assert api_val.details.rig_size.mismatches == {api_rig.id: None}
+
+
 def test_ship_not_loaded(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.rig_size)
     eve_rig_id = client.mk_eve_item(attrs={eve_attr_id: 1})
@@ -148,12 +180,12 @@ def test_rig_not_loaded(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_rig(type_id=eve_rig_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # pylint: disable=W0104
+    assert api_val.passed is False
+    assert api_val.details.rig_size.allowed_size == 3
+    assert api_val.details.rig_size.mismatches == {api_rig.id: None}
 
 
 def test_no_attr(client, consts):

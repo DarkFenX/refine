@@ -61,7 +61,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) mods_max_group_online_limited: StMap<SolItemId, EItemGrpId>,
     pub(in crate::sol::svc::vast) mods_max_group_active_all: StMapSetL1<EItemGrpId, SolItemId>,
     pub(in crate::sol::svc::vast) mods_max_group_active_limited: StMap<SolItemId, EItemGrpId>,
-    pub(in crate::sol::svc::vast) rigs_rig_size: StMap<SolItemId, AttrVal>,
+    pub(in crate::sol::svc::vast) rigs_rig_size: StMap<SolItemId, Option<AttrVal>>,
     pub(in crate::sol::svc::vast) srqs_skill_item_map: StMapSetL1<EItemId, SolItemId>,
     pub(in crate::sol::svc::vast) srqs_missing: StMap<SolItemId, StMap<EItemId, SolVastSkillReq>>,
     pub(in crate::sol::svc::vast) mods_charge_group: StMap<SolItemId, SolValCache<(), SolChargeGroupValFail>>,

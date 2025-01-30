@@ -22,10 +22,10 @@ impl SolRigSizeValFail {
 
 pub struct SolRigSizeMismatch {
     pub item_id: SolItemId,
-    pub rig_size: AttrVal,
+    pub rig_size: Option<AttrVal>,
 }
 impl SolRigSizeMismatch {
-    fn new(item_id: SolItemId, rig_size: AttrVal) -> Self {
+    fn new(item_id: SolItemId, rig_size: Option<AttrVal>) -> Self {
         Self { item_id, rig_size }
     }
 }
@@ -38,7 +38,7 @@ impl SolVastFitData {
             None => return true,
         };
         for &rig_size in self.rigs_rig_size.values() {
-            if rig_size != allowed_size {
+            if rig_size != Some(allowed_size) {
                 return false;
             }
         }
@@ -56,7 +56,7 @@ impl SolVastFitData {
         };
         let mut mismatches = Vec::new();
         for (&item_id, &rig_size) in self.rigs_rig_size.iter() {
-            if rig_size != allowed_size {
+            if rig_size != Some(allowed_size) {
                 mismatches.push(SolRigSizeMismatch::new(item_id, rig_size))
             }
         }
