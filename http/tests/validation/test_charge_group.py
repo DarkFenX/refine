@@ -313,3 +313,26 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
+
+
+def test_state(client, consts):
+    eve_grp1_id = client.mk_eve_item_group()
+    eve_grp2_id = client.mk_eve_item_group()
+    eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_group1, unit_id=consts.EveAttrUnit.group_id)
+    eve_charge_id = client.mk_eve_item(grp_id=eve_grp1_id)
+    eve_module_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_grp2_id})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge_id, state=consts.ApiState.ghost)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
+    assert api_val.passed is False
+    assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
+    # Action
+    api_module.change_mod(state=consts.ApiState.online)
+    api_module.charge.change_charge(state=False)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
+    assert api_val.passed is False
+    assert api_val.details.charge_group == {api_module.charge.id: (api_module.id, eve_grp1_id, [eve_grp2_id])}
