@@ -2,7 +2,7 @@ from tests import check_no_field
 from tests.fw.util import Absent
 
 
-def flatten(*, rack) -> list:
+def flatten(*, rack):
     return [None if i is None else i.id for i in rack]
 
 

@@ -43,7 +43,7 @@ select = [
 ignore = ["F401", "ANN003", "ANN401", "PLR2004"]
 
 [lint.per-file-ignores]
-"tests/*" = ["ANN", "S"]
+"tests/**/test_*.py" = ["ANN", "S"]
 
 [lint.isort]
 no-lines-before = ["local-folder"]

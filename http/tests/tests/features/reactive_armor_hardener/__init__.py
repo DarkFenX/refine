@@ -1,6 +1,15 @@
+from __future__ import annotations
+
+import typing
 from dataclasses import dataclass
 
 from tests.fw.util import Default
+
+if typing.TYPE_CHECKING:
+    from types import ModuleType
+
+    from tests.fw.client import TestClient
+    from tests.fw.eve import EveObjects
 
 
 @dataclass(kw_only=True)
@@ -19,9 +28,9 @@ class RahBasicInfo:
 
 def setup_rah_basics(
         *,
-        client,
-        consts,
-        datas=Default,
+        client: TestClient,
+        consts: ModuleType,
+        datas: list[EveObjects] | type[Default] = Default,
         attr_res_em: int | None | type[Default] = Default,
         attr_res_therm: int | None | type[Default] = Default,
         attr_res_kin: int | None | type[Default] = Default,
@@ -106,8 +115,8 @@ def setup_rah_basics(
 
 def make_eve_rah(
         *,
-        client,
-        datas=Default,
+        client: TestClient,
+        datas: list[EveObjects] | type[Default] = Default,
         basic_info: RahBasicInfo,
         id_: int | type[Default] = Default,
         grp_id: int | type[Default] = Default,
@@ -115,7 +124,7 @@ def make_eve_rah(
         shift_amount: float = 6,
         cycle_time: float = 10000,
         heat_cycle_mod: float = -15,
-):
+) -> int:
     return client.mk_eve_item(
         datas=datas,
         id_=id_,
@@ -140,11 +149,12 @@ def make_eve_rah(
 
 def make_eve_ship(
         *,
-        client,
-        datas=Default,
+        client: TestClient,
+        datas: list[EveObjects] | type[Default] = Default,
         basic_info: RahBasicInfo,
         id_: int | type[Default] = Default,
-        resos: tuple[float, float, float, float]):
+        resos: tuple[float, float, float, float],
+) -> int:
     return client.mk_eve_ship(datas=datas, id_=id_, attrs={
         k: v for k, v in zip(
             (basic_info.res_em_attr_id,
