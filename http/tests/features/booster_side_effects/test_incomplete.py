@@ -33,14 +33,14 @@ def test_not_loaded_item(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # pylint: disable=W0104
+        api_booster.side_effects  # noqa: B018
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # pylint: disable=W0104
+        api_booster.side_effects  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -56,14 +56,14 @@ def test_not_loaded_item(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # pylint: disable=W0104
+        api_booster.side_effects  # noqa: B018
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: False})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].extra == approx(200)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # pylint: disable=W0104
+        api_booster.side_effects  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification

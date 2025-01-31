@@ -73,7 +73,7 @@ def test_equal(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_modified_use(client, consts):
@@ -151,7 +151,7 @@ def test_modified_output(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_mutation_use(client, consts):
@@ -173,7 +173,7 @@ def test_mutation_use(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
@@ -270,7 +270,7 @@ def test_not_loaded_user(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_non_positive(client, consts):
@@ -417,4 +417,4 @@ def test_criterion_item_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.dronebay_volume])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018

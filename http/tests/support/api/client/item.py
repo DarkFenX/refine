@@ -7,7 +7,7 @@ from tests.support.util import conditional_insert
 from .base import ApiClientBase
 
 if TYPE_CHECKING:
-    from tests.support.consts import ApiItemInfoMode, ApiEffMode, ApiModAddMode, ApiModRmMode, ApiRack, ApiState
+    from tests.support.consts import ApiEffMode, ApiItemInfoMode, ApiModAddMode, ApiModRmMode, ApiRack, ApiState
     from tests.support.util import Absent
 
 

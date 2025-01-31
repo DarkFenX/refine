@@ -5,7 +5,7 @@ import pytest
 from tests.support import consts as eve_consts
 from tests.support.client import TestClient
 from tests.support.log import LogReader
-from tests.support.server import build_server, kill_server, run_server, build_config
+from tests.support.server import build_config, build_server, kill_server, run_server
 from tests.support.util import next_free_port
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))

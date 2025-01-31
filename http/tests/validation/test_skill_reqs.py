@@ -193,7 +193,7 @@ def test_mutation(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_drone.change_drone(mutation=eve_mutator_id)
     # Verification
@@ -207,7 +207,7 @@ def test_mutation(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_drone.change_drone(mutation=None)
     # Verification
@@ -234,7 +234,7 @@ def test_self_req(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_skill.change_skill(level=0)
     # Verification
@@ -256,7 +256,7 @@ def test_skill_state(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_item_state(client, consts):
@@ -272,7 +272,7 @@ def test_item_state(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_item_types(client, consts):
@@ -334,7 +334,7 @@ def test_not_loaded_skill(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_skill.change_skill(level=0)
     # Verification
@@ -362,14 +362,14 @@ def test_failed_replacement(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_fit.add_skill(type_id=eve_skill_id, level=2, status_code=409)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_skill.change_skill(level=2)
     # Verification

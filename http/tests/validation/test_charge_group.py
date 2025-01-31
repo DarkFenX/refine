@@ -16,14 +16,14 @@ def test_bundled(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module1.remove()
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module2 = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
@@ -36,7 +36,7 @@ def test_bundled(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_separate(client, consts):
@@ -54,14 +54,14 @@ def test_separate(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module.change_mod(charge=eve_charge1_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module.change_mod(charge=eve_charge2_id)
     # Verification
@@ -74,7 +74,7 @@ def test_separate(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_multiple_different(client, consts):
@@ -95,7 +95,7 @@ def test_multiple_different(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module.change_mod(charge=eve_charge3_id)
     # Verification
@@ -109,7 +109,7 @@ def test_multiple_different(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_multiple_same_rounding(client, consts):
@@ -134,7 +134,7 @@ def test_multiple_same_rounding(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module.change_mod(charge=eve_charge3_id)
     # Verification
@@ -148,7 +148,7 @@ def test_multiple_same_rounding(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_modified(client, consts):
@@ -186,7 +186,7 @@ def test_modified(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_implant.remove()
     # Verification
@@ -194,7 +194,7 @@ def test_modified(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module.change_mod(charge=eve_charge1_id)
     # Verification
@@ -224,7 +224,7 @@ def test_mutation(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module.change_mod(mutation=eve_mutator_id)
     # Verification
@@ -238,7 +238,7 @@ def test_mutation(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     api_module.change_mod(mutation=eve_mutator_id)
     # Action
     api_module.change_mod(mutation=None)
@@ -261,7 +261,7 @@ def test_no_charge(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_not_loaded_module(client, consts):
@@ -278,7 +278,7 @@ def test_not_loaded_module(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_not_loaded_charge(client, consts):
@@ -360,4 +360,4 @@ def test_autocharge_fighter(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.charge_group])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018

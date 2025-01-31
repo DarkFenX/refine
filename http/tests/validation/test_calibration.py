@@ -77,7 +77,7 @@ def test_equal(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_modified_use(client, consts):
@@ -155,7 +155,7 @@ def test_modified_output(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_rounding(client, consts):
@@ -239,7 +239,7 @@ def test_not_loaded_user(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_non_positive(client, consts):
@@ -364,7 +364,7 @@ def test_criterion_state(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_rig.change_rig(state=True)
     # Verification
@@ -379,7 +379,7 @@ def test_criterion_state(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_criterion_effect(client, consts):
@@ -405,7 +405,7 @@ def test_criterion_effect(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_rig.change_rig(state=True, effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
     # Verification
@@ -420,7 +420,7 @@ def test_criterion_effect(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_criterion_item_type(client, consts):
@@ -439,4 +439,4 @@ def test_criterion_item_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.calibration])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018

@@ -9,8 +9,8 @@ from .item import Item
 from .validation import ValResult
 
 if TYPE_CHECKING:
-    from tests.support.consts import ApiValType
     from tests.support.api import ApiClient
+    from tests.support.consts import ApiValType
 
 
 class Fit(AttrDict):

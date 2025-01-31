@@ -23,7 +23,7 @@ def test_ship(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_struct(client, consts):
@@ -48,7 +48,7 @@ def test_struct(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_rounding(client, consts):
@@ -121,7 +121,7 @@ def test_ship_absent(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_no_value_ship(client, consts):
@@ -137,7 +137,7 @@ def test_no_value_ship(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_no_value_rig(client, consts):
@@ -169,7 +169,7 @@ def test_ship_not_loaded(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_rig_not_loaded(client, consts):
@@ -211,7 +211,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_state(client, consts):
@@ -244,4 +244,4 @@ def test_other_item_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018

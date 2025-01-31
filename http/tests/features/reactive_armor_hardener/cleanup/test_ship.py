@@ -250,7 +250,7 @@ def test_not_loaded(client, consts):
     assert api_rah.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.85000000001, accuracy=11)
     api_ship.update()
     with check_no_field():
-        api_ship.attrs  # pylint: disable=W0104
+        api_ship.attrs  # noqa: B018
     # Action
     api_ship = api_fit.set_ship(type_id=eve_ship3_id)
     # Verification

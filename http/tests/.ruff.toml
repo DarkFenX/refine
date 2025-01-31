@@ -4,3 +4,6 @@ indent-width = 4
 [lint]
 select = ["E", "F", "UP", "B", "SIM", "I"]
 ignore = ["F401"]
+
+[lint.isort]
+no-lines-before = ["local-folder"]

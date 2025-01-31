@@ -21,7 +21,7 @@ def test_fit(client):
     # Verification
     api_fleet.update()
     with check_no_field():
-        api_fleet.fits  # pylint: disable=W0104
+        api_fleet.fits  # noqa: B018
 
 
 def test_error_no_fleet_full(client, consts):

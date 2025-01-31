@@ -12,7 +12,7 @@ def test_multiple(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.booster_slot_index])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_booster2 = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
@@ -25,7 +25,7 @@ def test_multiple(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.booster_slot_index])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_different_slots(client, consts):
@@ -41,7 +41,7 @@ def test_different_slots(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.booster_slot_index])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_booster3 = api_fit.add_booster(type_id=eve_booster1_id)
     # Verification
@@ -95,7 +95,7 @@ def test_no_value(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.booster_slot_index])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_not_loaded_user(client, consts):
@@ -112,7 +112,7 @@ def test_not_loaded_user(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.booster_slot_index])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_criterion_state(client, consts):
@@ -142,7 +142,7 @@ def test_criterion_item_category(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.booster_slot_index])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_criterion_item_type(client, consts):
@@ -157,4 +157,4 @@ def test_criterion_item_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.booster_slot_index])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018

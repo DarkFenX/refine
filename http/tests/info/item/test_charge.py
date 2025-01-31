@@ -13,36 +13,36 @@ def test_bundled(client, consts):
     api_charge = api_module.charge
     assert isinstance(api_charge.id, str)
     with check_no_field():
-        api_charge.kind  # pylint: disable=W0104
+        api_charge.kind  # noqa: B018
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge_id = api_charge.id
     # ID only
     api_module.update(item_info_mode=consts.ApiItemInfoMode.id)
     api_charge = api_module.charge
     assert api_charge.id == api_charge_id
     with check_no_field():
-        api_charge.kind  # pylint: disable=W0104
+        api_charge.kind  # noqa: B018
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert api_charge.id == api_charge_id
     with check_no_field():
-        api_charge.kind  # pylint: disable=W0104
+        api_charge.kind  # noqa: B018
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     # Partial
     api_module.update(item_info_mode=consts.ApiItemInfoMode.partial)
     api_charge = api_module.charge
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     # Full
     api_module.update(item_info_mode=consts.ApiItemInfoMode.full)
     api_charge = api_module.charge
@@ -65,54 +65,54 @@ def test_separate(client, consts):
     # Check default upon addition
     api_module = api_fit.add_mod(type_id=eve_module_id)
     with check_no_field():
-        api_module.charge  # pylint: disable=W0104
+        api_module.charge  # noqa: B018
     # ID only
     api_module.update(item_info_mode=consts.ApiItemInfoMode.id)
     with check_no_field():
-        api_module.charge  # pylint: disable=W0104
+        api_module.charge  # noqa: B018
     # Partial
     api_module.update(item_info_mode=consts.ApiItemInfoMode.partial)
     with check_no_field():
-        api_module.charge  # pylint: disable=W0104
+        api_module.charge  # noqa: B018
     # Full
     api_module.update(item_info_mode=consts.ApiItemInfoMode.full)
     with check_no_field():
-        api_module.charge  # pylint: disable=W0104
+        api_module.charge  # noqa: B018
     # Set charge and test response
     api_module.change_mod(charge=eve_charge_id)
     api_charge = api_module.charge
     assert isinstance(api_charge.id, str)
     with check_no_field():
-        api_charge.kind  # pylint: disable=W0104
+        api_charge.kind  # noqa: B018
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge_id = api_charge.id
     # ID only
     api_module.update(item_info_mode=consts.ApiItemInfoMode.id)
     api_charge = api_module.charge
     assert api_charge.id == api_charge_id
     with check_no_field():
-        api_charge.kind  # pylint: disable=W0104
+        api_charge.kind  # noqa: B018
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert api_charge.id == api_charge_id
     with check_no_field():
-        api_charge.kind  # pylint: disable=W0104
+        api_charge.kind  # noqa: B018
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     # Partial
     api_module.update(item_info_mode=consts.ApiItemInfoMode.partial)
     api_charge = api_module.charge
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     # Full
     api_module.update(item_info_mode=consts.ApiItemInfoMode.full)
     api_charge = api_module.charge
@@ -136,45 +136,45 @@ def test_not_loaded(client, consts):
     api_charge = api_module.charge
     assert isinstance(api_charge.id, str)
     with check_no_field():
-        api_charge.kind  # pylint: disable=W0104
+        api_charge.kind  # noqa: B018
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge_id = api_charge.id
     # ID only
     api_module.update(item_info_mode=consts.ApiItemInfoMode.id)
     api_charge = api_module.charge
     assert api_charge.id == api_charge_id
     with check_no_field():
-        api_charge.kind  # pylint: disable=W0104
+        api_charge.kind  # noqa: B018
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert api_charge.id == api_charge_id
     with check_no_field():
-        api_charge.kind  # pylint: disable=W0104
+        api_charge.kind  # noqa: B018
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     # Partial
     api_module.update(item_info_mode=consts.ApiItemInfoMode.partial)
     api_charge = api_module.charge
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     # Full
     api_module.update(item_info_mode=consts.ApiItemInfoMode.full)
     api_charge = api_module.charge
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018
     api_charge.update(item_info_mode=consts.ApiItemInfoMode.full)
     assert api_charge.id == api_charge_id
     assert api_charge.kind == consts.ApiItemKind.charge
     with check_no_field():
-        api_charge.attrs  # pylint: disable=W0104
+        api_charge.attrs  # noqa: B018

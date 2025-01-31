@@ -41,7 +41,7 @@ def test_mix(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_online])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_modified(client, consts):
@@ -80,7 +80,7 @@ def test_modified(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_online])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_rig.remove()
     # Verification
@@ -107,7 +107,7 @@ def test_mutation_limit_priority(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_online])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module2.change_mod(mutation=eve_mutator_id)
     # Verification
@@ -122,7 +122,7 @@ def test_mutation_limit_priority(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_online])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_mutation_limit_inheritance(client, consts):
@@ -143,7 +143,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_online])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module2.change_mod(mutation=eve_mutator_id)
     # Verification
@@ -158,7 +158,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_online])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_not_loaded(client, consts):
@@ -175,7 +175,7 @@ def test_not_loaded(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_online])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_no_attr(client, consts):
@@ -231,7 +231,7 @@ def test_criterion_state(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_online])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_module2.change_mod(state=consts.ApiState.online)
     # Verification
@@ -254,4 +254,4 @@ def test_criterion_item_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_online])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018

@@ -19,7 +19,7 @@ def test_fleet(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.fleet  # pylint: disable=W0104
+        api_fit.fleet  # noqa: B018
 
 
 def test_char(client):
@@ -35,7 +35,7 @@ def test_char(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.character  # pylint: disable=W0104
+        api_fit.character  # noqa: B018
 
 
 def test_skill(client):
@@ -53,7 +53,7 @@ def test_skill(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.skills  # pylint: disable=W0104
+        api_fit.skills  # noqa: B018
 
 
 def test_implant(client):
@@ -71,7 +71,7 @@ def test_implant(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.implants  # pylint: disable=W0104
+        api_fit.implants  # noqa: B018
 
 
 def test_booster(client):
@@ -88,7 +88,7 @@ def test_booster(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.boosters  # pylint: disable=W0104
+        api_fit.boosters  # noqa: B018
 
 
 def test_ship(client):
@@ -104,7 +104,7 @@ def test_ship(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.ship  # pylint: disable=W0104
+        api_fit.ship  # noqa: B018
 
 
 def test_stance(client):
@@ -120,7 +120,7 @@ def test_stance(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.stance  # pylint: disable=W0104
+        api_fit.stance  # noqa: B018
 
 
 def test_subsystem(client):
@@ -138,7 +138,7 @@ def test_subsystem(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.subsystems  # pylint: disable=W0104
+        api_fit.subsystems  # noqa: B018
 
 
 def test_mod_high(client, consts):
@@ -157,7 +157,7 @@ def test_mod_high(client, consts):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.modules  # pylint: disable=W0104
+        api_fit.modules  # noqa: B018
 
 
 def test_mod_mid(client, consts):
@@ -176,7 +176,7 @@ def test_mod_mid(client, consts):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.modules  # pylint: disable=W0104
+        api_fit.modules  # noqa: B018
 
 
 def test_mod_low(client, consts):
@@ -195,7 +195,7 @@ def test_mod_low(client, consts):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.modules  # pylint: disable=W0104
+        api_fit.modules  # noqa: B018
 
 
 def test_rig(client):
@@ -213,7 +213,7 @@ def test_rig(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.rigs  # pylint: disable=W0104
+        api_fit.rigs  # noqa: B018
 
 
 def test_drone(client):
@@ -231,7 +231,7 @@ def test_drone(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.drones  # pylint: disable=W0104
+        api_fit.drones  # noqa: B018
 
 
 def test_fighter(client):
@@ -249,7 +249,7 @@ def test_fighter(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.fighters  # pylint: disable=W0104
+        api_fit.fighters  # noqa: B018
 
 
 def test_fw_effect(client):
@@ -267,7 +267,7 @@ def test_fw_effect(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.fw_effects  # pylint: disable=W0104
+        api_fit.fw_effects  # noqa: B018
 
 
 def test_error_no_fit_full(client, consts):

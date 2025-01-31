@@ -315,7 +315,7 @@ def test_to_stage3_different_group(client, consts):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
     # Action
@@ -408,7 +408,7 @@ def test_to_stage2_different_group(client, consts):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
     # Action
@@ -468,9 +468,9 @@ def test_to_stage2_no_base_item(client, consts):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -550,7 +550,7 @@ def test_to_stage1_different_group(client, consts):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(120)
     # Action
@@ -606,9 +606,9 @@ def test_to_stage1_no_base_item(client, consts):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -643,7 +643,7 @@ def test_from_stage3(client, consts):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_sol.change_src(data=eve_d2)
@@ -685,7 +685,7 @@ def test_from_stage2(client, consts):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_sol.change_src(data=eve_d2)
@@ -721,7 +721,7 @@ def test_from_stage1(client, consts):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_sol.change_src(data=eve_d2)

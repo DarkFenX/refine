@@ -25,7 +25,7 @@ def test_rolls_range(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
@@ -37,7 +37,7 @@ def test_rolls_range(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
@@ -81,7 +81,7 @@ def test_absolute_value_range(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
@@ -93,7 +93,7 @@ def test_absolute_value_range(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
@@ -140,9 +140,9 @@ def test_no_base_item(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     # Action
     api_item.change_mod(mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
@@ -150,9 +150,9 @@ def test_no_base_item(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - on first source lib couldn't interpret absolute values, so defaults are exposed

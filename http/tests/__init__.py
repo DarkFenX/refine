@@ -4,7 +4,6 @@ import os
 
 import pytest
 
-
 pytest.register_assert_rewrite(
     'tests.support.api.client.sol',
     'tests.support.api.client.src',

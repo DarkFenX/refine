@@ -30,7 +30,7 @@ def test_optimal_undefined(client, consts):
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
     with check_no_field():
-        api_affectee_struct.mods  # pylint: disable=W0104
+        api_affectee_struct.mods  # noqa: B018
     # Action
     api_affector_module.change_mod(add_projs=[(api_affectee_struct.id, None)])
     # Verification
@@ -49,7 +49,7 @@ def test_optimal_undefined(client, consts):
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
     with check_no_field():
-        api_affectee_struct.mods  # pylint: disable=W0104
+        api_affectee_struct.mods  # noqa: B018
 
 
 def test_falloff_undefined(client, consts):
@@ -81,7 +81,7 @@ def test_falloff_undefined(client, consts):
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
     with check_no_field():
-        api_affectee_struct.mods  # pylint: disable=W0104
+        api_affectee_struct.mods  # noqa: B018
     # Action
     api_affector_module.change_mod(add_projs=[(api_affectee_struct.id, None)])
     # Verification
@@ -101,11 +101,11 @@ def test_falloff_undefined(client, consts):
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
     # Here, modification was filtered out as ineffective
     with check_no_field():
-        api_affectee_struct.mods  # pylint: disable=W0104
+        api_affectee_struct.mods  # noqa: B018
     # Action
     api_affector_module.change_mod(rm_projs=[api_affectee_struct.id])
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
     with check_no_field():
-        api_affectee_struct.mods  # pylint: disable=W0104
+        api_affectee_struct.mods  # noqa: B018

@@ -17,7 +17,7 @@ def test_fleet(client):
     api_fleet.remove()
     api_sol.update()
     with check_no_field():
-        api_sol.fleets  # pylint: disable=W0104
+        api_sol.fleets  # noqa: B018
 
 
 def test_fit(client):
@@ -31,7 +31,7 @@ def test_fit(client):
     api_fit.remove()
     api_sol.update()
     with check_no_field():
-        api_sol.fits  # pylint: disable=W0104
+        api_sol.fits  # noqa: B018
 
 
 def test_fit_item(client):
@@ -47,7 +47,7 @@ def test_fit_item(client):
     api_item.remove()
     api_fit = api_sol.update().fits[api_fit.id]
     with check_no_field():
-        api_fit.character  # pylint: disable=W0104
+        api_fit.character  # noqa: B018
 
 
 def test_sw_effect(client):
@@ -61,7 +61,7 @@ def test_sw_effect(client):
     api_item.remove()
     api_sol.update()
     with check_no_field():
-        api_sol.sw_effects  # pylint: disable=W0104
+        api_sol.sw_effects  # noqa: B018
 
 
 def test_proj_effect(client):
@@ -75,7 +75,7 @@ def test_proj_effect(client):
     api_item.remove()
     api_sol.update()
     with check_no_field():
-        api_sol.proj_effects  # pylint: disable=W0104
+        api_sol.proj_effects  # noqa: B018
 
 
 def test_error_no_sol_full(client, consts):

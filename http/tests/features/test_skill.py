@@ -67,9 +67,9 @@ def test_level_switch_not_loaded(client, consts):
     api_item.update()
     assert api_item.level == 5
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     with check_no_field():
-        api_item.mods  # pylint: disable=W0104
+        api_item.mods  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -89,18 +89,18 @@ def test_level_switch_not_loaded(client, consts):
     api_item.update()
     assert api_item.level == 5
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     with check_no_field():
-        api_item.mods  # pylint: disable=W0104
+        api_item.mods  # noqa: B018
     # Action
     api_item.change_skill(level=3)
     # Verification
     api_item.update()
     assert api_item.level == 3
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     with check_no_field():
-        api_item.mods  # pylint: disable=W0104
+        api_item.mods  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -156,7 +156,7 @@ def test_duplicate_not_loaded(client, consts):
     api_item.update()
     assert api_item.level == 3
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     api_fit.update()
     assert len(api_fit.skills) == 1
     assert api_fit.skills[0].id == api_item.id
@@ -168,7 +168,7 @@ def test_duplicate_not_loaded(client, consts):
     api_item.update()
     assert api_item.level == 3
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     api_fit.update()
     assert len(api_fit.skills) == 1
     assert api_fit.skills[0].id == api_item.id
@@ -197,7 +197,7 @@ def test_level_modification(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(5)
     assert api_item.attrs[eve_affectee_attr_id].extra == approx(5)
     with check_no_field():
-        api_item.mods  # pylint: disable=W0104
+        api_item.mods  # noqa: B018
     # Action
     api_item.change_skill(level=3)
     # Verification
@@ -207,4 +207,4 @@ def test_level_modification(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(3)
     assert api_item.attrs[eve_affectee_attr_id].extra == approx(3)
     with check_no_field():
-        api_item.mods  # pylint: disable=W0104
+        api_item.mods  # noqa: B018

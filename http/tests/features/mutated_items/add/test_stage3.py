@@ -27,7 +27,7 @@ def test_rolls_range(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
@@ -74,7 +74,7 @@ def test_absolute_value_range(client, consts):
     # values were resolved into rolls using base item attributes
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
@@ -118,9 +118,9 @@ def test_no_base_value(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     with check_no_field():
-        api_item.attrs  # pylint: disable=W0104
+        api_item.attrs  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - since there were no base attribute values on first source, attribute mutations
@@ -166,7 +166,7 @@ def test_no_mutation_range(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_roll_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
     # Action
@@ -229,7 +229,7 @@ def test_zero_mutation_range(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_roll_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_low_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(50)
@@ -295,7 +295,7 @@ def test_zero_base_value(client, consts):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # pylint: disable=W0104
+        api_item.mutation  # noqa: B018
     assert api_item.attrs[eve_roll_attr_id].base == approx(0)
     assert api_item.attrs[eve_absolute_low_attr_id].base == approx(0)
     assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(0)

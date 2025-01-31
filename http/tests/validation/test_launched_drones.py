@@ -49,7 +49,7 @@ def test_equal(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_modified_total(client, consts):
@@ -85,7 +85,7 @@ def test_modified_total(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_fractional_total(client, consts):
@@ -110,7 +110,7 @@ def test_fractional_total(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_no_char(client, consts):
@@ -218,7 +218,7 @@ def test_criterion_state(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_drone.change_drone(state=consts.ApiState.online)
     # Verification
@@ -233,7 +233,7 @@ def test_criterion_state(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_criterion_item_type(client, consts):
@@ -249,4 +249,4 @@ def test_criterion_item_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018

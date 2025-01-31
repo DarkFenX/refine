@@ -40,7 +40,7 @@ def test_loaded_to_not_loaded_to_loaded(client):
     # Verification
     api_ship.update()
     with check_no_field():
-        api_ship.attrs  # pylint: disable=W0104
+        api_ship.attrs  # noqa: B018
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification

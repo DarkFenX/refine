@@ -70,7 +70,7 @@ def test_charge_switch(client, consts):
     assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(100)
     with check_no_field():
-        api_aar_item.mods  # pylint: disable=W0104
+        api_aar_item.mods  # noqa: B018
     # Action
     api_aar_item.change_mod(charge=eve_paste_item_id)
     # Verification
@@ -85,7 +85,7 @@ def test_charge_switch(client, consts):
     assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(100)
     with check_no_field():
-        api_aar_item.mods  # pylint: disable=W0104
+        api_aar_item.mods  # noqa: B018
 
 
 def test_mult_change(client, consts):

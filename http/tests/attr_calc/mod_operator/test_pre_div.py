@@ -279,7 +279,7 @@ def test_insignificant_base(client, consts):
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(0)
     with check_no_field():
-        api_affectee.mods  # pylint: disable=W0104
+        api_affectee.mods  # noqa: B018
 
 
 def test_insignificant_modified_base(client, consts):
@@ -341,4 +341,4 @@ def test_zero(client, consts):
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].dogma == approx(100)
     with check_no_field():
-        api_affectee.mods  # pylint: disable=W0104
+        api_affectee.mods  # noqa: B018

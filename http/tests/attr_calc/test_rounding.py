@@ -1,5 +1,4 @@
 from tests import approx
-
 from tests.support.util import Default
 
 

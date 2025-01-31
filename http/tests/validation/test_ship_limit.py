@@ -24,7 +24,7 @@ def test_type_single(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_type_multiple_different(client, consts):
@@ -54,7 +54,7 @@ def test_type_multiple_different(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_type_multiple_same_rounding(client, consts):
@@ -87,7 +87,7 @@ def test_type_multiple_same_rounding(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_group_single(client, consts):
@@ -114,7 +114,7 @@ def test_group_single(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_group_multiple_different(client, consts):
@@ -145,7 +145,7 @@ def test_group_multiple_different(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_group_multiple_same_rounding(client, consts):
@@ -179,7 +179,7 @@ def test_group_multiple_same_rounding(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_combined(client, consts):
@@ -218,21 +218,21 @@ def test_combined(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_allowed_group_ship_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_allowed_both_ship_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_struct(client, consts):
@@ -258,7 +258,7 @@ def test_struct(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_subsystem(client, consts):
@@ -285,7 +285,7 @@ def test_subsystem(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_rig(client, consts):
@@ -311,7 +311,7 @@ def test_rig(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_modified_type(client, consts):
@@ -351,7 +351,7 @@ def test_modified_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_modified_group(client, consts):
@@ -392,7 +392,7 @@ def test_modified_group(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_mutation_type(client, consts):
@@ -424,14 +424,14 @@ def test_mutation_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
@@ -446,7 +446,7 @@ def test_mutation_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
@@ -489,14 +489,14 @@ def test_mutation_group(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
@@ -511,7 +511,7 @@ def test_mutation_group(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
@@ -567,7 +567,7 @@ def test_not_loaded_ship(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
 
 
 def test_criterion_state(client, consts):
@@ -611,4 +611,4 @@ def test_criterion_item_type(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.ship_limit])
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # pylint: disable=W0104
+        api_val.details  # noqa: B018
