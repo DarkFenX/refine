@@ -20,7 +20,7 @@ class Fleet(AttrDict):
     def update(
             self, *,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.full,
-            status_code: int = 200
+            status_code: int = 200,
     ) -> Fleet | None:
         resp = self._client.get_fleet_request(
             sol_id=self._sol_id,

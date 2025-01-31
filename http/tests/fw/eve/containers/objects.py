@@ -213,9 +213,7 @@ class EveObjects:
         return mutator
 
     def render(self) -> EveStrings:
-        primitives = self.to_primitives()
-        strings = primitives.to_strings()
-        return strings
+        return self.to_primitives().to_strings()
 
     def to_primitives(self) -> EvePrimitives:
         primitive_data = EvePrimitives(alias=self.alias)

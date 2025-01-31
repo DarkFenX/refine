@@ -10,16 +10,40 @@ select = [
     "N",  # pep8-naming
     "UP",  # pyupgrade
     "ANN",  # flake8-annotations
-
     "B",  # flake8-bugbear
+    "A",  # flake8-builtins
+    "COM",  # flake8-commas
+    "C4",  # flake8-comprehensions
+    "EM",  # flake8-errmsg
+    "EXE",  # flake8-executable
+    "ISC",  # flake8-implicit-str-concat
+    "ICN",  # flake8-import-conventions
+    "INP",  # flake8-no-pep420
+    "PIE",  # flake8-pie
+    "T20",  # flake8-print
+    "PYI",  # flake8-pyi
+    "PT",  # flake8-pytest-style
+    "Q",  # flake8-quotes
+    "RSE",  # flake8-raise
+    "RET",  # flake8-return
+    "SLF",  # flake8-self
+    "SLOT",  # flake8-slots
     "SIM",  # flake8-simplify
+    "TID",  # flake8-tidy-imports
     "TC",  # flake8-type-checking
-    #"PL",  # Pylint
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "ERA",  # eradicate
+    "PL",  # Pylint
+    "FLY",  # flynt
+    "PERF",  # Perflint
+    "FURB",  # refurb
+    "RUF",  # Ruff-specific rules
 ]
 ignore = ["F401", "ANN003", "ANN401", "PLR2004"]
 
 [lint.per-file-ignores]
-"tests/*" = ["ANN"]
+"tests/*" = ["ANN", "S"]
 
 [lint.isort]
 no-lines-before = ["local-folder"]
@@ -30,3 +54,6 @@ max-statements = 150
 
 [lint.mccabe]
 max-complexity = 15
+
+[lint.flake8-quotes]
+inline-quotes = "single"

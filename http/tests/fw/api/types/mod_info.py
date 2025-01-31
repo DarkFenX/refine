@@ -47,7 +47,8 @@ class ModInfoList(list):
 
     def one(self) -> ModInfo:
         if len(self) != 1:
-            raise ValueError(f'expected 1 item, {len(self)} found')
+            msg = f'expected 1 item, {len(self)} found'
+            raise ValueError(msg)
         return self[0]
 
     def __repr__(self) -> str:
@@ -78,7 +79,8 @@ class ModAffectorInfoList(list):
 
     def one(self) -> ModInfo:
         if len(self) != 1:
-            raise ValueError(f'expected 1 item, {len(self)} found')
+            msg = f'expected 1 item, {len(self)} found'
+            raise ValueError(msg)
         return self[0]
 
     def __repr__(self) -> str:

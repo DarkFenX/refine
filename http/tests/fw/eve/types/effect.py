@@ -101,7 +101,8 @@ class Effect:
                 if isinstance(self.modifier_info, list)
                 else self.modifier_info))
         if self.id in primitive_data.dogmaeffects:
-            raise TestDataConsistencyError(f'attempt to add effect with duplicate ID {self.id}')
+            msg = f'attempt to add effect with duplicate ID {self.id}'
+            raise TestDataConsistencyError(msg)
         primitive_data.dogmaeffects[self.id] = effect_entry
 
     def __repr__(self) -> str:

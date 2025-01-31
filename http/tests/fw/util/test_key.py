@@ -1,11 +1,11 @@
 import inspect
-import os.path
+from pathlib import Path
 
 from tests import TEST_FOLDER_SPLIT
 
 
 class TestKey(tuple):
-    pass
+    __slots__ = ()
 
 
 def frame_to_primitive(*, frame: inspect.FrameInfo, ignore_local_context: bool = False) -> tuple:
@@ -24,9 +24,9 @@ def frame_to_primitive(*, frame: inspect.FrameInfo, ignore_local_context: bool =
         pos.end_col_offset)
 
 
-def is_path_in_test_folder(*, path: str) -> bool:
+def is_path_in_test_folder(*, path: Path) -> bool:
     # Not a test path if it's a path outside of tests folder altogether
-    split_path = os.path.normpath(os.path.realpath(path)).split(os.sep)
+    split_path = path.resolve().parts
     if split_path[:len(TEST_FOLDER_SPLIT)] != TEST_FOLDER_SPLIT:
         return False
     split_path = split_path[len(TEST_FOLDER_SPLIT):]
@@ -37,8 +37,8 @@ def is_path_in_test_folder(*, path: str) -> bool:
     return split_path[0] != 'support'
 
 
-def is_test_run_func(*, path: str, func: str) -> bool:
-    split_path = os.path.normpath(os.path.realpath(path)).split(os.sep)
+def is_test_run_func(*, path: Path, func: str) -> bool:
+    split_path = path.resolve().parts
     if not split_path[-1].startswith('test_'):
         return False
     return func.startswith('test_')
@@ -51,9 +51,9 @@ def get_test_key() -> TestKey:
     """
     stack = inspect.stack(context=0)
     # Include only frames from test folder
-    stack = [f for f in stack if is_path_in_test_folder(path=f.filename)]
+    stack = [f for f in stack if is_path_in_test_folder(path=Path(f.filename))]
     # Start stack from test function
-    test_frame = next((f for f in stack if is_test_run_func(path=f.filename, func=f.function)), None)
+    test_frame = next((f for f in stack if is_test_run_func(path=Path(f.filename), func=f.function)), None)
     if test_frame is not None:
         test_frame_index = stack.index(test_frame)
         stack = stack[test_frame_index:]

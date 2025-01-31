@@ -6,7 +6,8 @@ def next_free_port(*, start_port: int) -> int:
     for port in range(start_port, 65536):
         if check_port_free(port=port):
             return port
-    raise RuntimeError('unable to find free port')
+    msg = 'unable to find free port'
+    raise RuntimeError(msg)
 
 
 def check_port_free(*, port: int) -> bool:

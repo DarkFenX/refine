@@ -3,19 +3,26 @@ from __future__ import annotations
 import os
 import subprocess
 import typing
-from collections import namedtuple
+from dataclasses import dataclass
 from signal import SIGKILL
 
 if typing.TYPE_CHECKING:
     from pathlib import Path
 
 
-ConfigInfo = namedtuple('ConfigInfo', (['config_path', 'port']))
-ServerInfo = namedtuple('ServerInfo', ['pid'])
+@dataclass(kw_only=True)
+class ConfigInfo:
+    config_path: Path
+    port: int
 
 
-def build_server(*, proj_root: str) -> None:
-    http_path = os.path.join(proj_root, 'http')
+@dataclass(kw_only=True)
+class ServerInfo:
+    pid: int
+
+
+def build_server(*, proj_root: Path) -> None:
+    http_path = proj_root / 'http'
     os.chdir(http_path)
     subprocess.run(
         ['cargo', 'build', '--package=reefast-http', '--profile=release'],
@@ -34,13 +41,13 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
         f'folder = "{log_folder}"',
         'level = "debug"',
         'rotate = false']
-    with open(config_path, 'w', encoding='utf-8') as f:
+    with config_path.open(mode='w') as f:
         f.write('\n'.join(contents))
     return ConfigInfo(config_path=config_path, port=port)
 
 
-def run_server(*, proj_root: str, config_path: str) -> ServerInfo:
-    binary_path = os.path.join(proj_root, 'target', 'release', 'reefast-http')
+def run_server(*, proj_root: Path, config_path: Path) -> ServerInfo:
+    binary_path = proj_root / 'target' / 'release' / 'reefast-http'
     return ServerInfo(pid=subprocess.Popen(
         [binary_path, config_path],
         stdout=subprocess.DEVNULL,

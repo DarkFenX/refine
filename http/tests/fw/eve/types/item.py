@@ -46,7 +46,8 @@ class Item:
         conditional_insert(container=item_entry, key='radius', value=self.radius)
         conditional_insert(container=item_entry, key='volume', value=self.volume)
         if self.id in primitive_data.types:
-            raise TestDataConsistencyError(f'attempt to add item with duplicate ID {self.id}')
+            msg = f'attempt to add item with duplicate ID {self.id}'
+            raise TestDataConsistencyError(msg)
         primitive_data.types[self.id] = item_entry
 
     def __add_primitive_item_attributes(self, *, primitive_data: EvePrimitives) -> None:
@@ -65,9 +66,9 @@ class Item:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
         if isinstance(self.effect_ids, list):
-            effects_entry = item_entry['dogmaEffects'] = []
-            for effect_id in self.effect_ids:
-                effects_entry.append({'effectID': effect_id, 'isDefault': int(effect_id == self.default_effect_id)})
+            item_entry['dogmaEffects'] = [
+                {'effectID': e, 'isDefault': int(e == self.default_effect_id)}
+                for e in self.effect_ids]
         else:
             item_entry['dogmaEffects'] = self.effect_ids
 

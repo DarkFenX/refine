@@ -25,7 +25,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
 
     def create_sol_request(
             self, *,
-            data: eve.EveObjects | type[Absent] | type[Default],
+            data: eve.EveObjects | type[Absent | Default],
             default_incoming_dmg: tuple[float, float, float, float] | type[Absent],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
@@ -55,7 +55,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
 
     def create_sol(
             self, *,
-            data: eve.EveObjects | type[Absent] | type[Default] = Default,
+            data: eve.EveObjects | type[Absent | Default] = Default,
             default_incoming_dmg: tuple[float, float, float, float] | type[Absent] = Absent,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
@@ -123,7 +123,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
     def change_sol_src_request(
             self, *,
             sol_id: str,
-            data: eve.EveObjects | type[Absent] | type[Default],
+            data: eve.EveObjects | type[Absent | Default],
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],

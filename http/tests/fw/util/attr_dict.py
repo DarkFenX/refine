@@ -15,7 +15,7 @@ def convert(*, data: dict | tuple | list) -> AttrDict | tuple | list:
     if isinstance(data, tuple):
         return tuple(convert(data=i) for i in data)
     if isinstance(data, list):
-        return list(convert(data=i) for i in data)
+        return [convert(data=i) for i in data]
     return data
 
 
@@ -47,10 +47,11 @@ class AttrDict:
         if val is NoValue and hook is not None and hook.provides_default:
             val = hook.default()
         if val is NoValue:
-            hook_keys = set(k for k, v in self.__hooks.items() if v.provides_default)
+            hook_keys = {k for k, v in self.__hooks.items() if v.provides_default}
             data_keys = set(self._data.keys())
             keys = sorted(hook_keys.union(data_keys))
-            raise AttributeError(f"no key '{key}' in keys {keys}")
+            msg = f"no key '{key}' in keys {keys}"
+            raise AttributeError(msg)
         if hook is not None:
             return hook.func(val)
         return convert(data=val)
@@ -59,4 +60,4 @@ class AttrDict:
         return len(self._data)
 
     def __repr__(self) -> str:
-        return f'{type(self).__name__}({repr(self._data)})'
+        return f'{type(self).__name__}({self._data!r})'

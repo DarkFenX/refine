@@ -131,8 +131,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def add_skill(
@@ -154,8 +153,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def add_implant(
@@ -174,8 +172,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def add_booster(
@@ -196,8 +193,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def set_ship(
@@ -216,8 +212,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def set_stance(
@@ -236,8 +231,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def add_subsystem(
@@ -256,8 +250,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def add_mod(
@@ -285,8 +278,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, text_predicate=text_predicate)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def add_rig(
@@ -305,8 +297,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def add_drone(
@@ -327,8 +318,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def add_fighter(
@@ -347,8 +337,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
     def add_fw_effect(
@@ -367,6 +356,5 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import contextlib
 import os
-import pathlib
 import queue
 import re
 import time
@@ -25,7 +24,6 @@ class LogEntryNotFoundError(Exception):
     pass
 
 
-# pylint: disable=C0103
 @unique
 class Level(StrEnum):
     error = 'ERROR'
@@ -107,8 +105,8 @@ class LogReader:
             self.__remove_collector(collector=collector)
 
     def __follow(self) -> Iterator[str]:
-        pathlib.Path(self.__path).touch(mode=0o644, exist_ok=True)
-        with open(self.__path) as f:
+        self.__path.touch(mode=0o644, exist_ok=True)
+        with self.__path.open() as f:
             f.seek(0, os.SEEK_END)
             while self.__execute_flag:
                 line = f.readline()
@@ -165,7 +163,7 @@ class LogCollector:
             msg: str,
             level: Level | str | None = None,
             span: str | None = None,
-            timeout: int | float = 1,
+            timeout: float = 1,
     ) -> None:
         timer = Timer(timeout=timeout)
         while True:

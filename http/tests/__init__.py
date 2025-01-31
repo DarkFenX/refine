@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import contextlib
 import math
-import os
 import typing
+from pathlib import Path
 
 import pytest
 
@@ -16,11 +16,11 @@ pytest.register_assert_rewrite(
     'tests.fw.api.types.fit',
     'tests.fw.response')
 
-TEST_FOLDER_SPLIT = os.path.dirname(os.path.normpath(os.path.realpath(__file__))).split(os.sep)
+TEST_FOLDER_SPLIT = Path(__file__).resolve().absolute().parent.parts
 
 
 # Wrapper around pytest approx function, to override default parameters
-def approx(expected: int | float, accuracy: int = 7):  # noqa: ANN201
+def approx(expected: float, accuracy: int = 7):  # noqa: ANN201
     # 6 digits after dot for numbers more than 1 and less than -1
     if abs(expected) >= 1:
         tolerance = 10 ** -(accuracy - 1)

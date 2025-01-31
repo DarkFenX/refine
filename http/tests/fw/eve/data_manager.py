@@ -8,7 +8,7 @@ from .containers import EveObjects
 if typing.TYPE_CHECKING:
     from tests.fw.util import TestKey
 
-data_id: int = 10000  # pylint: disable=C0103
+data_id: int = 10000
 
 
 class EveDataManager:
@@ -19,7 +19,7 @@ class EveDataManager:
         self.__defsrc_stack_alias_map: dict[TestKey, str] = {}
 
     def mk_eve_data(self) -> EveObjects:
-        global data_id  # pylint: disable=C0103,W0603
+        global data_id  # noqa: PLW0603
         alias = str(data_id)
         data = self.__datas[alias] = EveObjects(alias=alias)
         data_id += 1

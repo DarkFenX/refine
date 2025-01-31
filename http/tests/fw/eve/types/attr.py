@@ -39,7 +39,8 @@ class Attribute:
         conditional_insert(container=attr_entry, key='maxAttributeID', value=self.max_attribute_id, cast_to=int)
         conditional_insert(container=attr_entry, key='unitID', value=self.unit_id, cast_to=int)
         if self.id in primitive_data.dogmaattributes:
-            raise TestDataConsistencyError(f'attempt to add attribute with duplicate ID {self.id}')
+            msg = f'attempt to add attribute with duplicate ID {self.id}'
+            raise TestDataConsistencyError(msg)
         primitive_data.dogmaattributes[self.id] = attr_entry
 
     def __repr__(self) -> str:

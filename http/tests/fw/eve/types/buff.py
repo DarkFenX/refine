@@ -52,7 +52,8 @@ class Buff:
             if isinstance(self.location_skillreq_modifiers, list)
             else self.location_skillreq_modifiers))
         if self.id in primitive_data.dbuffcollections:
-            raise TestDataConsistencyError(f'attempt to add buff with duplicate ID {self.id}')
+            msg = f'attempt to add buff with duplicate ID {self.id}'
+            raise TestDataConsistencyError(msg)
         primitive_data.dbuffcollections[self.id] = effect_entry
 
     def __repr__(self) -> str:

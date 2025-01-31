@@ -4,7 +4,7 @@ from .charge_group import ValChargeGroupDetails
 from .charge_size import ValChargeSizeDetails
 from .charge_volume import ValChargeVolumeDetails
 from .max_group import ValMaxGroupDetails
-from .resource import ValResourceDetails
+from .resources import ValResourceDetails
 from .rig_size import ValRigSizeDetails
 from .ship_limit import ValShipLimitDetails
 from .skill_reqs import ValSrqDetails

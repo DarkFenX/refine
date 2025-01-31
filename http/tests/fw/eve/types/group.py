@@ -25,7 +25,8 @@ class Group:
             existing_entry = primitive_data.groups[self.id]
             if ((self.category_id is Absent and 'categoryID' in existing_entry) or
                     (self.category_id is not Absent and existing_entry.get('categoryID', Absent) != self.category_id)):
-                raise TestDataConsistencyError('attempt to add group which already exists and has different category')
+                msg = 'attempt to add group which already exists and has different category'
+                raise TestDataConsistencyError(msg)
         group_entry = {'groupID': self.id}
         conditional_insert(container=group_entry, key='categoryID', value=self.category_id, cast_to=int)
         primitive_data.groups[self.id] = group_entry

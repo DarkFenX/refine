@@ -9,7 +9,7 @@ if typing.TYPE_CHECKING:
 
 
 def convert_items(
-        items: list[tuple[list[int] | type[Absent], int | type[Absent]]]
+        items: list[tuple[list[int] | type[Absent], int | type[Absent]]],
 ) -> list[dict[str, list[int] | int]]:
     converted = []
     for in_items, out_item in items:
@@ -21,7 +21,7 @@ def convert_items(
 
 
 def convert_attributes(
-        attributes: dict[int, tuple[float | type[Absent], float | type[Absent]]]
+        attributes: dict[int, tuple[float | type[Absent], float | type[Absent]]],
 ) -> dict[int: dict[str, float]]:
     converted = {}
     for attr_id, (min_mult, max_mult) in attributes.items():

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import os
 import typing
+from pathlib import Path
 
 import pytest
 
@@ -13,7 +13,6 @@ from tests.fw.util import next_free_port
 
 if typing.TYPE_CHECKING:
     from collections.abc import Iterator
-    from pathlib import Path
     from types import ModuleType
 
     import pytest_httpserver
@@ -21,26 +20,26 @@ if typing.TYPE_CHECKING:
     from tests.fw.log import LogCollector
     from tests.fw.server import ConfigInfo, ServerInfo
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+PROJECT_ROOT = Path(__file__).parent.parent.parent
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
     parser.addoption(
-        "--fast-cleanup-check",
-        action="store_true",
-        help="make log check during source creation faster, but unreliable")
+        '--fast-cleanup-check',
+        action='store_true',
+        help='make log check during source creation faster, but unreliable')
 
 
 @pytest.fixture(scope='session')
-def reefast_tmp_folder(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Path]:
-    yield tmp_path_factory.mktemp('reefast_test')
+def reefast_tmp_folder(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    return tmp_path_factory.mktemp('reefast_test')
 
 
 @pytest.fixture(scope='session')
-def reefast_config(reefast_tmp_folder: Path) -> Iterator[ConfigInfo]:
+def reefast_config(reefast_tmp_folder: Path) -> ConfigInfo:
     config_path = reefast_tmp_folder / 'config.toml'
     port = next_free_port(start_port=8000)
-    yield build_config(config_path=config_path, port=port, log_folder=reefast_tmp_folder)
+    return build_config(config_path=config_path, port=port, log_folder=reefast_tmp_folder)
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -58,7 +57,7 @@ def reefast_server(reefast_config: ConfigInfo, log_reader: LogReader) -> Iterato
     kill_server(pid=server_info.pid)
 
 
-@pytest.fixture()
+@pytest.fixture
 def client(
         pytestconfig: pytest.Config,
         httpserver: pytest_httpserver.HTTPServer,
@@ -69,15 +68,15 @@ def client(
         eve_data_server=httpserver,
         api_port=reefast_config.port,
         log_reader=log_reader,
-        fast_cleanup_check=pytestconfig.getoption("fast_cleanup_check"))
+        fast_cleanup_check=pytestconfig.getoption('fast_cleanup_check'))
     yield test_client
     test_client.cleanup_sols()
     test_client.cleanup_sources()
 
 
-@pytest.fixture()
-def consts() -> Iterator[ModuleType]:
-    yield eve_consts
+@pytest.fixture
+def consts() -> ModuleType:
+    return eve_consts
 
 
 @pytest.fixture(scope='session')
@@ -89,7 +88,7 @@ def log_reader(reefast_tmp_folder: Path) -> Iterator[LogReader]:
     reader.stop()
 
 
-@pytest.fixture()
+@pytest.fixture
 def log(log_reader: LogReader) -> Iterator[LogCollector]:
     with log_reader.get_collector() as log_collector:
         yield log_collector

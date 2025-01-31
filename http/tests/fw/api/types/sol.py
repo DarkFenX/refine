@@ -49,7 +49,7 @@ class SolarSystem(AttrDict):
 
     def change_src(
             self, *,
-            data: eve.EveObjects | type[Absent] | type[Default] = Default,
+            data: eve.EveObjects | type[Absent | Default] = Default,
             sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.full,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
@@ -115,8 +115,7 @@ class SolarSystem(AttrDict):
         self.check()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            fleet = Fleet(client=self._client, data=resp.json(), sol_id=self.id)
-            return fleet
+            return Fleet(client=self._client, data=resp.json(), sol_id=self.id)
         return None
 
     def create_fleet(
@@ -128,8 +127,7 @@ class SolarSystem(AttrDict):
         self.check()
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            fleet = Fleet(client=self._client, data=resp.json(), sol_id=self.id)
-            return fleet
+            return Fleet(client=self._client, data=resp.json(), sol_id=self.id)
         return None
 
     # Fit methods
@@ -149,8 +147,7 @@ class SolarSystem(AttrDict):
         self.check()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            fit = Fit(client=self._client, data=resp.json(), sol_id=self.id)
-            return fit
+            return Fit(client=self._client, data=resp.json(), sol_id=self.id)
         return None
 
     def create_fit(
@@ -168,8 +165,7 @@ class SolarSystem(AttrDict):
         self.check()
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            fit = Fit(client=self._client, data=resp.json(), sol_id=self.id)
-            return fit
+            return Fit(client=self._client, data=resp.json(), sol_id=self.id)
         return None
 
     # Item methods
@@ -202,8 +198,7 @@ class SolarSystem(AttrDict):
         self.check()
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self.id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self.id)
         return None
 
     def add_proj_effect(
@@ -221,6 +216,5 @@ class SolarSystem(AttrDict):
         self.check()
         resp.check(status_code=status_code)
         if resp.status_code == 201:
-            item = Item(client=self._client, data=resp.json(), sol_id=self.id)
-            return item
+            return Item(client=self._client, data=resp.json(), sol_id=self.id)
         return None

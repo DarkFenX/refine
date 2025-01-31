@@ -3,7 +3,7 @@ import time
 
 class Timer:
 
-    def __init__(self, *, timeout: int | float = 0) -> None:
+    def __init__(self, *, timeout: float = 0) -> None:
         self.__timeout = timeout
         self.__start = time.time()
 

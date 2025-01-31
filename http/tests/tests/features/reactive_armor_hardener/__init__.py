@@ -116,7 +116,7 @@ def make_eve_rah(
         cycle_time: float = 10000,
         heat_cycle_mod: float = -15,
 ):
-    eve_rah_id = client.mk_eve_item(
+    return client.mk_eve_item(
         datas=datas,
         id_=id_,
         grp_id=grp_id,
@@ -136,7 +136,6 @@ def make_eve_rah(
             if k is not None},
         eff_ids=[basic_info.rah_effect_id, basic_info.heat_effect_id],
         defeff_id=basic_info.rah_effect_id)
-    return eve_rah_id
 
 
 def make_eve_ship(
@@ -146,7 +145,7 @@ def make_eve_ship(
         basic_info: RahBasicInfo,
         id_: int | type[Default] = Default,
         resos: tuple[float, float, float, float]):
-    eve_ship_id = client.mk_eve_ship(datas=datas, id_=id_, attrs={
+    return client.mk_eve_ship(datas=datas, id_=id_, attrs={
         k: v for k, v in zip(
             (basic_info.res_em_attr_id,
              basic_info.res_therm_attr_id,
@@ -154,4 +153,3 @@ def make_eve_ship(
              basic_info.res_expl_attr_id),
             resos)
         if k is not None})
-    return eve_ship_id
