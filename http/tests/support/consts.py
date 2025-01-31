@@ -153,6 +153,7 @@ class EveAttr(IntEnum):
     speed_factor = 20
     power = 30
     max_velocity = 37
+    capacity = 38
     cpu_output = 48
     cpu = 50
     speed = 51
@@ -404,6 +405,7 @@ class ApiValType(StrEnum):
     skill_reqs = 'skill_reqs'
     charge_group = 'charge_group'
     charge_size = 'charge_size'
+    charge_volume = 'charge_volume'
 
 
 @unique

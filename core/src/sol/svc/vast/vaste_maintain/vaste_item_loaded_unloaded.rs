@@ -66,10 +66,10 @@ impl SolVast {
                     // If there is a charge, calculate later, otherwise mark as no issue
                     match module.get_charge_id() {
                         Some(_) => fit_data
-                            .mods_charge_size
+                            .mods_charge_volume
                             .insert(item_id, SolValCache::Todo(*max_charge_volume)),
                         None => fit_data
-                            .mods_charge_size
+                            .mods_charge_volume
                             .insert(item_id, SolValCache::Pass(*max_charge_volume)),
                     };
                 }
