@@ -108,7 +108,7 @@ class LogReader:
 
     def __follow(self) -> str:
         pathlib.Path(self.__path).touch(mode=0o644, exist_ok=True)
-        with open(self.__path, 'r', encoding='utf-8') as f:
+        with open(self.__path) as f:
             f.seek(0, os.SEEK_END)
             while self.__execute_flag:
                 line = f.readline()

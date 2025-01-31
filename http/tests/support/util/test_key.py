@@ -34,18 +34,14 @@ def is_path_in_test_folder(*, path: str) -> bool:
     if len(split_path) == 0:
         return True
     # Support folder
-    if split_path[0] == 'support':
-        return False
-    return True
+    return split_path[0] != 'support'
 
 
 def is_test_run_func(*, path: str, func: str) -> bool:
     split_path = os.path.normpath(os.path.realpath(path)).split(os.sep)
     if not split_path[-1].startswith('test_'):
         return False
-    if not func.startswith('test_'):
-        return False
-    return True
+    return func.startswith('test_')
 
 
 def get_test_key() -> TestKey:

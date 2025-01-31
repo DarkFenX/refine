@@ -1,0 +1,6 @@
+line-length = 120
+indent-width = 4
+
+[lint]
+select = ["E", "F", "UP", "B", "SIM", "I"]
+ignore = ["F401"]
