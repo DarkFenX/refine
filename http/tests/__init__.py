@@ -5,10 +5,10 @@ import os
 import pytest
 
 pytest.register_assert_rewrite(
-    'tests.support.api.client.sol',
-    'tests.support.api.client.src',
-    'tests.support.api.types.fit',
-    'tests.support.response')
+    'tests.fw.api.client.sol',
+    'tests.fw.api.client.src',
+    'tests.fw.api.types.fit',
+    'tests.fw.response')
 
 TEST_FOLDER_SPLIT = os.path.dirname(os.path.normpath(os.path.realpath(__file__))).split(os.sep)
 

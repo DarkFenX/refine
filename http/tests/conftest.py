@@ -2,11 +2,11 @@ import os
 
 import pytest
 
-from tests.support import consts as eve_consts
-from tests.support.client import TestClient
-from tests.support.log import LogReader
-from tests.support.server import build_config, build_server, kill_server, run_server
-from tests.support.util import next_free_port
+from tests.fw import consts as eve_consts
+from tests.fw.client import TestClient
+from tests.fw.log import LogReader
+from tests.fw.server import build_config, build_server, kill_server, run_server
+from tests.fw.util import next_free_port
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 
