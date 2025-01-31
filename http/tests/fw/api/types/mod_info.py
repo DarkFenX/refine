@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 class AttrModInfoMap(dict):
 
-    def __init__(self, *, data: dict):
+    def __init__(self, *, data: dict) -> None:
         super().__init__({
             int(k): ModInfoList(
                 ModInfo(

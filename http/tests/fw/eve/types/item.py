@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
 
 
@@ -23,7 +23,7 @@ class Item:
             mass: float | type[Absent],
             radius: float | type[Absent],
             volume: float | type[Absent],
-    ):
+    ) -> None:
         self.id = id_
         self.group_id = group_id
         self.attributes = attributes

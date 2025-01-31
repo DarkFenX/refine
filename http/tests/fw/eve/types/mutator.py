@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.util import Absent, conditional_insert, make_repr_str
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
 
 
@@ -39,7 +39,7 @@ class Mutator:
             id_: int,
             items: list[tuple[list[int], int]] | type[Absent],
             attributes: dict[int, tuple[float, float]] | type[Absent],
-    ):
+    ) -> None:
         self.id = id_
         self.items = items
         self.attributes = attributes

@@ -6,13 +6,14 @@ import pathlib
 import queue
 import re
 import time
+import typing
 from enum import StrEnum, unique
 from threading import Thread
-from typing import TYPE_CHECKING
 
 from tests.fw.util import Timer, make_repr_str
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
+    from collections.abc import Iterator
     from pathlib import Path
 
 
@@ -36,7 +37,7 @@ class Level(StrEnum):
 
 class LogEntry:
 
-    def __init__(self, *, timestamp: str, level: Level, span: str, msg: str):
+    def __init__(self, *, timestamp: str, level: Level, span: str, msg: str) -> None:
         self.timestamp = timestamp
         self.level = level
         self.span = span
@@ -63,7 +64,7 @@ class LogEntry:
             return False
         return True
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return make_repr_str(instance=self, spec=['timestamp', 'level', 'span', 'msg'])
 
 
@@ -77,7 +78,7 @@ class LogReader:
         fr'((?P<span>\S+): )?'
         fr'(?P<msg>.*)\n$')
 
-    def __init__(self, *, path: Path):
+    def __init__(self, *, path: Path) -> None:
         self.__path: Path = path
         self.__collectors: list[LogCollector] = []
         self.__execute_flag: bool = False
@@ -97,7 +98,7 @@ class LogReader:
         self.__execute_flag = False
 
     @contextlib.contextmanager
-    def get_collector(self) -> LogCollector:
+    def get_collector(self) -> Iterator[LogCollector]:
         collector = LogCollector()
         self.__add_collector(collector=collector)
         try:
@@ -105,7 +106,7 @@ class LogReader:
         finally:
             self.__remove_collector(collector=collector)
 
-    def __follow(self) -> str:
+    def __follow(self) -> Iterator[str]:
         pathlib.Path(self.__path).touch(mode=0o644, exist_ok=True)
         with open(self.__path) as f:
             f.seek(0, os.SEEK_END)
@@ -146,10 +147,10 @@ class LogReader:
 
 class LogCollector:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__buffer: queue.SimpleQueue[LogEntry] = queue.SimpleQueue()
         self.__errors: list[ParseError] = []
-        self.__collecting = True
+        self.__collecting: bool = True
 
     def append_error(self, *, error: ParseError) -> None:
         if self.__collecting:

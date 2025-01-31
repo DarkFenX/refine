@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.consts import ApiFleetInfoMode
 from tests.fw.util import AttrDict, AttrHookDef
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.util import Absent
 
 
 class Fleet(AttrDict):
 
-    def __init__(self, *, client: ApiClient, data: dict, sol_id: str):
+    def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
         super().__init__(data=data, hooks={'fits': AttrHookDef(func=lambda fits: fits)})
         self._client = client
         self._sol_id = sol_id

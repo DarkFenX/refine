@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.util import get_test_key
 from .containers import EveObjects
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.util import TestKey
 
 data_id: int = 10000  # pylint: disable=C0103
@@ -13,7 +13,7 @@ data_id: int = 10000  # pylint: disable=C0103
 
 class EveDataManager:
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.__datas: dict[str, EveObjects] = {}
         self.__defsrc_stack_alias_map: dict[TestKey, str] = {}

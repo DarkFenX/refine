@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw import eve
 from tests.fw.api.types import SolarSystem
@@ -9,7 +9,7 @@ from tests.fw.request import Request
 from tests.fw.util import Absent, Default, conditional_insert
 from .base import ApiClientBase
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
 
 
@@ -19,7 +19,7 @@ class ApiSolCheckError(Exception):
 
 class ApiClientSol(ApiClientBase, eve.EveDataManager):
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.__created_sols: set[SolarSystem] = set()
 
@@ -77,7 +77,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         return sol_sys
 
     @property
-    def created_sols(self):
+    def created_sols(self) -> set[SolarSystem]:
         return self.__created_sols
 
     def get_sol(

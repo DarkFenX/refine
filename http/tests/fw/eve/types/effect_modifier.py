@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.util import conditional_insert, make_repr_str
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.util import Absent
 
 
@@ -19,7 +19,7 @@ class EffectModifier:
             affector_attr_id: int | type[Absent],
             affectee_attr_id: int | type[Absent],
             operation: int | type[Absent],
-    ):
+    ) -> None:
         self.func = func
         self.location = location
         self.group = group

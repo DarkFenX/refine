@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
 from tests.fw.util import Absent, AttrDict, AttrHookDef, Default
@@ -9,14 +9,14 @@ from .fit import Fit
 from .fleet import Fleet
 from .item import Item
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw import eve
     from tests.fw.api import ApiClient
 
 
 class SolarSystem(AttrDict):
 
-    def __init__(self, *, client: ApiClient, data: dict):
+    def __init__(self, *, client: ApiClient, data: dict) -> None:
         super().__init__(data=data, hooks={
             'default_incoming_dmg': AttrHookDef(
                 func=lambda dp: DmgTypes(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3])),

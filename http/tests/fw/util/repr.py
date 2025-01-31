@@ -1,5 +1,7 @@
+import typing
 
-def make_repr_str(*, instance, spec: None | list[str] = None) -> str:
+
+def make_repr_str(*, instance: typing.Any, spec: None | list[str] = None) -> str:
     arg_list = []
     if spec is None:
         for attr_name in sorted(vars(instance)):

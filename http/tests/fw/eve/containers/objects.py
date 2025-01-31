@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.eve.types import Attribute, Buff, Effect, Group, Item, Mutator
 from .primitives import EvePrimitives
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.eve.types import BuffModifier, EffectModifier
     from tests.fw.util import Absent
     from .strings import EveStrings
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class EveObjects:
 
-    def __init__(self, *, alias: str):
+    def __init__(self, *, alias: str) -> None:
         self.alias: str = alias
         # Dictionaries with various entities. Empty list means ID was allocated (but is not
         # presently used).

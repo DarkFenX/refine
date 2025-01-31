@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.util import conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
     from tests.fw.util import Absent
 
@@ -21,7 +21,7 @@ class Attribute:
             min_attribute_id: int | type[Absent],
             max_attribute_id: int | type[Absent],
             unit_id: int | type[Absent],
-    ):
+    ) -> None:
         self.id = id_
         self.stackable = stackable
         self.high_is_good = high_is_good

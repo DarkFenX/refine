@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.util import conditional_insert, make_repr_str
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.util import Absent
 
 
@@ -15,7 +15,7 @@ class BuffModifier:
             attr_id: int | type[Absent],
             group_id: int | type[Absent],
             skill_id: int | type[Absent],
-    ):
+    ) -> None:
         self.attr_id = attr_id
         self.group_id = group_id
         self.skill_id = skill_id

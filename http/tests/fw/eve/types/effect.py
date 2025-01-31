@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.util import conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
     from tests.fw.util import Absent
     from .effect_modifier import EffectModifier
@@ -27,7 +27,7 @@ class Effect:
             usage_chance_attribute_id: int | type[Absent],
             resist_attribute_id: int | type[Absent],
             modifier_info: list[EffectModifier] | type[Absent],
-    ):
+    ) -> None:
         self.id = id_
         self.category_id = category_id
         self.is_assistance = is_assistance

@@ -14,13 +14,13 @@ from .slot_index import ValSlotIndexDetails
 
 class ValResult(AttrDict):
 
-    def __init__(self, *, data: dict):
+    def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={'details': AttrHookDef(func=lambda d: ValResultDetails(data=d))})
 
 
 class ValResultDetails(AttrDict):
 
-    def __init__(self, *, data: dict):
+    def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={
             ApiValType.cpu: AttrHookDef(func=lambda d: ValResourceDetails(data=d)),
             ApiValType.powergrid: AttrHookDef(func=lambda d: ValResourceDetails(data=d)),

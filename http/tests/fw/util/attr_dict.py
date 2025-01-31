@@ -1,8 +1,15 @@
+from __future__ import annotations
+
+import typing
+
 # Rename it just to avoid confusion, as it's used to mean no value in this module
 from .singletons import Default as NoValue
 
+if typing.TYPE_CHECKING:
+    from collections.abc import Callable
 
-def convert(*, data):
+
+def convert(*, data: dict | tuple | list) -> AttrDict | tuple | list:
     if isinstance(data, dict):
         return AttrDict(data=data)
     if isinstance(data, tuple):
@@ -14,26 +21,26 @@ def convert(*, data):
 
 class AttrHookDef:
 
-    def __init__(self, *, func, default=lambda: NoValue):
-        self.func = func
-        self.default = default
+    def __init__(self, *, func: Callable, default: Callable = lambda: NoValue) -> None:
+        self.func: Callable = func
+        self.default: Callable = default
 
     @property
-    def provides_default(self):
+    def provides_default(self) -> bool:
         # This is confusing, but Default means lack of default value here
         return self.default() is not NoValue
 
 
 class AttrDict:
 
-    def __init__(self, *, data, hooks=None):
-        self._data = data
-        self.__hooks = hooks or {}
+    def __init__(self, *, data: dict, hooks: dict[str, AttrHookDef] | None = None) -> None:
+        self._data: dict = data
+        self.__hooks: dict[str, AttrHookDef] = hooks or {}
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> typing.Any:
         return convert(data=self._data[index])
 
-    def __getattr__(self, key: str):
+    def __getattr__(self, key: str) -> typing.Any:
         hook = self.__hooks.get(key)
         val = self._data.get(key, NoValue)
         # No value on data or default on hook raises an error
@@ -48,7 +55,7 @@ class AttrDict:
             return hook.func(val)
         return convert(data=val)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._data)
 
     def __repr__(self) -> str:

@@ -8,7 +8,7 @@ class TestKey(tuple):
     pass
 
 
-def frame_to_primitive(*, frame, ignore_local_context=False) -> tuple:
+def frame_to_primitive(*, frame: inspect.FrameInfo, ignore_local_context: bool = False) -> tuple:
     if ignore_local_context:
         return (
             frame.filename,

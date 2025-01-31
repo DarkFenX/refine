@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import os
 import subprocess
+import typing
 from collections import namedtuple
 from signal import SIGKILL
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from pathlib import Path
 
 
@@ -14,7 +14,7 @@ ConfigInfo = namedtuple('ConfigInfo', (['config_path', 'port']))
 ServerInfo = namedtuple('ServerInfo', ['pid'])
 
 
-def build_server(*, proj_root: str):
+def build_server(*, proj_root: str) -> None:
     http_path = os.path.join(proj_root, 'http')
     os.chdir(http_path)
     subprocess.run(

@@ -3,7 +3,7 @@ import requests
 
 class Response(requests.Response):
 
-    def __init__(self, *, response: requests.Response):  # pylint: disable=W0231
+    def __init__(self, *, response: requests.Response) -> None:  # pylint: disable=W0231
         self.__dict__.update(response.__dict__)
 
     def check(

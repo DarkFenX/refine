@@ -5,7 +5,7 @@ from .strings import EveStrings
 
 class EvePrimitives:
 
-    def __init__(self, *, alias: str):
+    def __init__(self, *, alias: str) -> None:
         self.alias = alias
         self.types = {}
         self.groups = {}

@@ -1,17 +1,25 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.api import ApiClient
 from tests.fw.eve import EveDataManager, EveTypeFactory
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
+    import pytest_httpserver
+
     from tests.fw.log import LogReader
 
 
 class TestClient(ApiClient, EveTypeFactory, EveDataManager):
 
-    def __init__(self, *, eve_data_server, api_port: int, log_reader: LogReader, fast_cleanup_check: bool):
+    def __init__(
+            self, *,
+            eve_data_server: pytest_httpserver.HTTPServer,
+            api_port: int,
+            log_reader: LogReader,
+            fast_cleanup_check: bool,
+    ) -> None:
         super().__init__(
             data_server=eve_data_server,
             port=api_port,

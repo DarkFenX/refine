@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.request import Request
 from tests.fw.util import conditional_insert
 from .base import ApiClientBase
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode, ApiValType
     from tests.fw.util import Absent
 

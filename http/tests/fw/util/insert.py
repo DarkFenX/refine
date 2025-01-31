@@ -1,7 +1,15 @@
+import typing
+
 from .singletons import Absent, Default
 
 
-def conditional_insert(*, container, key, value, cast_to=None) -> None:
+def conditional_insert(
+        *,
+        container: dict,
+        key: str,
+        value: typing.Any,
+        cast_to: type | None = None
+) -> None:
     if value is Default:
         raise ValueError('value should not be Default')
     if value is Absent:

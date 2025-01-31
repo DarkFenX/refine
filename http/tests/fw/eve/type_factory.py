@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.consts import EveEffCat, EveEffect, EveItemCat, EveItemGrp
 from tests.fw.util import Absent, Default
 from .data_manager import EveDataManager
 from .types import BuffModifier, EffectModifier
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from .containers import EveObjects
 
 

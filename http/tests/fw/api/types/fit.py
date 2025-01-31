@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiModAddMode, ApiRack, ApiState, ApiValInfoMode
 from tests.fw.util import Absent, AttrDict, AttrHookDef
@@ -8,14 +8,14 @@ from .dmg_types import DmgTypes
 from .item import Item
 from .validation import ValResult
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.consts import ApiValType
 
 
 class Fit(AttrDict):
 
-    def __init__(self, *, client: ApiClient, data: dict, sol_id: str):
+    def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
         super().__init__(data=data, hooks={
             'rah_incoming_dmg': AttrHookDef(
                 func=lambda dp: DmgTypes(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3]))})
@@ -311,7 +311,7 @@ class Fit(AttrDict):
 
     def add_drone(
             self, *,
-            type_id,
+            type_id: int,
             state: ApiState = ApiState.offline,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -333,7 +333,7 @@ class Fit(AttrDict):
 
     def add_fighter(
             self, *,
-            type_id,
+            type_id: int,
             state: ApiState = ApiState.offline,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,

@@ -9,7 +9,7 @@ from .base import ApiClientBase
 
 class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
-    def __init__(self, *, fast_cleanup_check: bool, **kwargs):
+    def __init__(self, *, fast_cleanup_check: bool, **kwargs) -> None:
         super().__init__(**kwargs)
         self.__fast_cleanup_check: bool = fast_cleanup_check
         self.__created_data_aliases: set[str] = set()

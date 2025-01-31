@@ -1,9 +1,16 @@
-from .containers import EveObjects
+from __future__ import annotations
+
+import typing
+
+if typing.TYPE_CHECKING:
+    import pytest_httpserver
+
+    from .containers import EveObjects
 
 
 class EveDataServer:
 
-    def __init__(self, *, data_server, **kwargs):
+    def __init__(self, *, data_server: pytest_httpserver.HTTPServer, **kwargs) -> None:
         super().__init__(**kwargs)
         self.__data_server = data_server
 

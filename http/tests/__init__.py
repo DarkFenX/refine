@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 import contextlib
 import math
 import os
+import typing
 
 import pytest
+
+if typing.TYPE_CHECKING:
+    from collections.abc import Iterator
 
 pytest.register_assert_rewrite(
     'tests.fw.api.client.sol',
@@ -14,7 +20,7 @@ TEST_FOLDER_SPLIT = os.path.dirname(os.path.normpath(os.path.realpath(__file__))
 
 
 # Wrapper around pytest approx function, to override default parameters
-def approx(expected, accuracy=7):
+def approx(expected: int | float, accuracy: int = 7):  # noqa: ANN201
     # 6 digits after dot for numbers more than 1 and less than -1
     if abs(expected) >= 1:
         tolerance = 10 ** -(accuracy - 1)
@@ -30,6 +36,6 @@ def approx(expected, accuracy=7):
 
 
 @contextlib.contextmanager
-def check_no_field():
+def check_no_field() -> Iterator[None]:
     with pytest.raises(AttributeError):
         yield

@@ -1,18 +1,18 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+import typing
 
 import requests
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.api.client import ApiClientBase
     from tests.fw.response import Response
 
 
 class Request(requests.PreparedRequest):
 
-    def __init__(self, *, client: ApiClientBase, **kwargs):  # pylint: disable=W0231
+    def __init__(self, *, client: ApiClientBase, **kwargs) -> None:
         prepared_request = requests.Request(**kwargs).prepare()
         self.__dict__.update(prepared_request.__dict__)
         self.__client = client
@@ -37,11 +37,11 @@ class Request(requests.PreparedRequest):
         self.__body_bytes = body
 
     @property
-    def json(self):
+    def json(self) -> typing.Any:
         return json.loads(self.body)
 
     @json.setter
-    def json(self, data):
+    def json(self, data: typing.Any) -> None:
         self.body = json.dumps(data)
 
     def send(self) -> Response:

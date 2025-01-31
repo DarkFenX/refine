@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+import typing
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
 from tests.fw.consts import ApiItemInfoMode, ApiModRmMode
 from tests.fw.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
 from .side_effect_info import SideEffectInfo, SideEffectStrInfo
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.consts import ApiEffMode, ApiState
 
@@ -45,7 +45,7 @@ class EffectInfo:
 
 class Item(AttrDict):
 
-    def __init__(self, *, client: ApiClient, data: dict, sol_id: str):
+    def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
         super().__init__(data=data, hooks={
             'mutation': AttrHookDef(func=lambda m: ItemMutation(
                 base_type_id=m[0],

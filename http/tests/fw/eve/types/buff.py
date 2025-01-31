@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.util import conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
     from tests.fw.util import Absent
     from .buff_modifier import BuffModifier
@@ -22,7 +22,7 @@ class Buff:
             location_modifiers: list[BuffModifier] | type[Absent],
             location_group_modifiers: list[BuffModifier] | type[Absent],
             location_skillreq_modifiers: list[BuffModifier] | type[Absent],
-    ):
+    ) -> None:
         self.id = id_
         self.aggregate_mode = aggregate_mode
         self.operation_name = operation_name

@@ -1,19 +1,19 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 import requests
 
 from tests.fw.response import Response
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.log import LogReader
     from tests.fw.request import Request
 
 
 class ApiClientBase:
 
-    def __init__(self, *, port: int, log_reader: LogReader, **kwargs):
+    def __init__(self, *, port: int, log_reader: LogReader, **kwargs) -> None:
         super().__init__(**kwargs)
         self.__session: requests.Session = requests.Session()
         self.__base_url: str = f'http://localhost:{port}'

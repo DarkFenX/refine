@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import typing
 
 from tests.fw.util import Absent, conditional_insert, make_repr_str
 from .exception import TestDataConsistencyError
 
-if TYPE_CHECKING:
+if typing.TYPE_CHECKING:
     from tests.fw.eve.containers.primitives import EvePrimitives
 
 
@@ -15,7 +15,7 @@ class Group:
             self, *,
             id_: int,
             category_id: int | type[Absent],
-    ):
+    ) -> None:
         self.id = id_
         self.category_id = category_id
 

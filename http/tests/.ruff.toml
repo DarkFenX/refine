@@ -9,12 +9,17 @@ select = [
     "I",  # isort
     "N",  # pep8-naming
     "UP",  # pyupgrade
+    "ANN",  # flake8-annotations
+
     "B",  # flake8-bugbear
     "SIM",  # flake8-simplify
     "TC",  # flake8-type-checking
     #"PL",  # Pylint
 ]
-ignore = ["F401", "PLR2004"]
+ignore = ["F401", "ANN003", "ANN401", "PLR2004"]
+
+[lint.per-file-ignores]
+"tests/*" = ["ANN"]
 
 [lint.isort]
 no-lines-before = ["local-folder"]
