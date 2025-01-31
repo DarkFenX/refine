@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from tests.support.eve.types import Attribute, Buff, Effect, Group, Item, Mutator
-from tests.support.util import Absent
 from .primitives import EvePrimitives
 
 if TYPE_CHECKING:
     from tests.support.eve.types import BuffModifier, EffectModifier
+    from tests.support.util import Absent
     from .strings import EveStrings
 
 

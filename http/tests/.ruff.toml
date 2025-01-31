@@ -2,7 +2,17 @@ line-length = 120
 indent-width = 4
 
 [lint]
-select = ["E", "F", "UP", "B", "SIM", "I"]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # Pyflakes
+    "UP",  # pyupgrade
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "TC",  # flake8-type-checking
+    "PL",  # Pylint
+]
 ignore = ["F401"]
 
 [lint.isort]
