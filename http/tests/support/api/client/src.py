@@ -1,7 +1,7 @@
 import pytest
 
 from tests.support import eve
-from tests.support.log import LogEntryNotFound
+from tests.support.log import LogEntryNotFoundError
 from tests.support.request import Request
 from tests.support.util import Default
 from .base import ApiClientBase
@@ -46,7 +46,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
                 if self.__fast_cleanup_check:
                     # Check if there are any "cleaned" entries in log upon completion w/o any
                     # waiting for a fast way
-                    with pytest.raises(LogEntryNotFound):
+                    with pytest.raises(LogEntryNotFoundError):
                         log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='src-new:adg', timeout=0)
                 else:
                     # Wait for negative report to appear for regular check
@@ -85,7 +85,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             with self._log_reader.get_collector() as log_collector:
                 # No need to have per-source check when we do wider one
                 process(cleanup_check=False)
-                with pytest.raises(LogEntryNotFound):
+                with pytest.raises(LogEntryNotFoundError):
                     log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='src-new:adg', timeout=0)
         else:
             process(cleanup_check=cleanup_check)

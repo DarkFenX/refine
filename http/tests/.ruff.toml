@@ -3,17 +3,25 @@ indent-width = 4
 
 [lint]
 select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
     "F",  # Pyflakes
-    "UP",  # pyupgrade
+    "E", "W",  # pycodestyle
+    "C90",  # mccabe
     "I",  # isort
+    "N",  # pep8-naming
+    "UP",  # pyupgrade
     "B",  # flake8-bugbear
     "SIM",  # flake8-simplify
     "TC",  # flake8-type-checking
-    "PL",  # Pylint
+    #"PL",  # Pylint
 ]
-ignore = ["F401"]
+ignore = ["F401", "PLR2004"]
 
 [lint.isort]
 no-lines-before = ["local-folder"]
+
+[lint.pylint]
+max-args = 15
+max-statements = 150
+
+[lint.mccabe]
+max-complexity = 15

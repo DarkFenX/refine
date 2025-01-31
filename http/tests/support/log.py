@@ -20,7 +20,7 @@ class ParseError(Exception):
     pass
 
 
-class LogEntryNotFound(Exception):
+class LogEntryNotFoundError(Exception):
     pass
 
 
@@ -59,9 +59,8 @@ class LogEntry:
             pattern = msg[3:]
             if not re.match(pattern, self.msg):
                 return False
-        else:
-            if msg != self.msg:
-                return False
+        elif msg != self.msg:
+            return False
         return True
 
     def __repr__(self):
@@ -172,7 +171,8 @@ class LogCollector:
             try:
                 entry = self.__buffer.get(timeout=timer.remainder)
             except queue.Empty as e:
-                raise LogEntryNotFound(f'cannot find log entry with level {level}, span {span}, message "{msg}"') from e
+                e_msg = f'cannot find log entry with level {level}, span {span}, message "{msg}"'
+                raise LogEntryNotFoundError(e_msg) from e
             if entry.check(msg=msg, level=level, span=span):
                 return
             # Prevent more entries getting into queue after timeout while checking remaining ones
