@@ -1,10 +1,10 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    defs::OF,
+    defs::{SolItemId, OF},
     ec,
     sol::{
-        svc::vast::{SolValCache, SolVast, SolVastSkillReq},
+        svc::vast::{SolValCache, SolVast, SolVastFitData, SolVastSkillReq},
         uad::{item::SolItem, SolUad},
     },
     util::StMap,
@@ -65,17 +65,7 @@ impl SolVast {
                 }
                 // Data is added to / removed from this map when charges are added/removed; here,
                 // we just reset validation result when a module is being loaded
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(item_id) {
-                    match entry.get() {
-                        SolValCache::Pass(charge_volume) => {
-                            entry.insert(SolValCache::Todo(*charge_volume));
-                        }
-                        SolValCache::Fail(fail) => {
-                            entry.insert(SolValCache::Todo(fail.charge_volume));
-                        }
-                        _ => (),
-                    }
-                }
+                handle_charge_volume_for_module(fit_data, item_id);
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -173,17 +163,7 @@ impl SolVast {
                 fit_data.mods_charge_size.remove(&item_id);
                 // Data is added to / removed from this map when charges are added/removed; here,
                 // we just reset validation result when a module is being unloaded
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(item_id) {
-                    match entry.get() {
-                        SolValCache::Pass(charge_volume) => {
-                            entry.insert(SolValCache::Todo(*charge_volume));
-                        }
-                        SolValCache::Fail(fail) => {
-                            entry.insert(SolValCache::Todo(fail.charge_volume));
-                        }
-                        _ => (),
-                    }
-                }
+                handle_charge_volume_for_module(fit_data, item_id);
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -234,6 +214,20 @@ impl SolVast {
                     }
                 }
                 fit_data.mods_charge_volume.remove(&charge.get_cont_id());
+            }
+            _ => (),
+        }
+    }
+}
+
+fn handle_charge_volume_for_module(fit_data: &mut SolVastFitData, module_item_id: SolItemId) {
+    if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(module_item_id) {
+        match entry.get() {
+            SolValCache::Pass(charge_volume) => {
+                entry.insert(SolValCache::Todo(*charge_volume));
+            }
+            SolValCache::Fail(fail) => {
+                entry.insert(SolValCache::Todo(fail.charge_volume));
             }
             _ => (),
         }
