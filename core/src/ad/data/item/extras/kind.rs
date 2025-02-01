@@ -1,3 +1,5 @@
+use smallvec::SmallVec;
+
 use crate::{
     ad::AItemEffectData,
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex, OF},
@@ -58,7 +60,7 @@ pub(super) fn get_item_kind(
     effects: &StMap<EEffectId, AItemEffectData>,
     srqs: &StMap<EItemId, SkillLevel>,
 ) -> Option<AItemKind> {
-    let mut kinds = Vec::new();
+    let mut kinds: SmallVec<AItemKind, 1> = SmallVec::new();
     match cat_id {
         // Ship & structure modules
         ec::itemcats::MODULE => {
@@ -159,7 +161,7 @@ pub(super) fn get_item_kind(
 }
 
 fn process_fighter_kind(
-    kinds: &mut Vec<AItemKind>,
+    kinds: &mut SmallVec<AItemKind, 1>,
     attrs: &StMap<EAttrId, AttrVal>,
     attr_id: &EAttrId,
     kind: AFighterKind,
