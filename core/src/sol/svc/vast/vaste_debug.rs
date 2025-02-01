@@ -129,11 +129,12 @@ impl SolVastFitData {
             }
         }
         for (item_id, item_data) in self.mods_charge_volume.iter() {
-            check_item(uad, item_id, true)?;
+            // This container can store info about non-loaded modules
+            check_item(uad, item_id, false)?;
             if let SolValCache::Fail(item_fail) = item_data {
-                check_item(uad, &item_fail.parent_item_id, true)?;
-                // This container can store info about non-loaded charges
-                check_item(uad, &item_fail.charge_item_id, false)?;
+                // This container can store info about non-loaded modules
+                check_item(uad, &item_fail.parent_item_id, false)?;
+                check_item(uad, &item_fail.charge_item_id, true)?;
             }
         }
         Ok(())

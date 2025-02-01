@@ -1,6 +1,7 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
+    defs::OF,
     ec,
     sol::{
         svc::vast::{SolValCache, SolVast, SolVastSkillReq},
@@ -62,16 +63,18 @@ impl SolVast {
                             .insert(item_id, SolValCache::Pass(*allowed_charge_size)),
                     };
                 }
-                if let Some(max_charge_volume) = module.get_attrs().unwrap().get(&ec::attrs::CAPACITY) {
-                    // If there is a charge, calculate later, otherwise mark as no issue
-                    match module.get_charge_id() {
-                        Some(_) => fit_data
-                            .mods_charge_volume
-                            .insert(item_id, SolValCache::Todo(*max_charge_volume)),
-                        None => fit_data
-                            .mods_charge_volume
-                            .insert(item_id, SolValCache::Pass(*max_charge_volume)),
-                    };
+                // Data is added to / removed from this map when charges are added/removed; here,
+                // we just reset validation result when a module is being loaded
+                if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(item_id) {
+                    match entry.get() {
+                        SolValCache::Pass(charge_volume) => {
+                            entry.insert(SolValCache::Todo(*charge_volume));
+                        }
+                        SolValCache::Fail(fail) => {
+                            entry.insert(SolValCache::Todo(fail.charge_volume));
+                        }
+                        _ => (),
+                    }
                 }
             }
             SolItem::Rig(rig) => {
@@ -126,16 +129,12 @@ impl SolVast {
                         _ => (),
                     }
                 }
-                // Reset result to uncalculated when adding a charge
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(charge.get_cont_id()) {
-                    match entry.get() {
-                        SolValCache::Pass(max_volume) => {
-                            entry.insert(SolValCache::Todo(*max_volume));
-                        }
-                        SolValCache::Fail(fail) => {
-                            entry.insert(SolValCache::Todo(fail.max_volume));
-                        }
-                        _ => (),
+                // Add entry for charges with volume higher than 0
+                if let Some(&charge_volume) = charge.get_attrs().unwrap().get(&ec::attrs::VOLUME) {
+                    if charge_volume > OF(0.0) {
+                        fit_data
+                            .mods_charge_volume
+                            .insert(charge.get_cont_id(), SolValCache::Todo(charge_volume));
                     }
                 }
             }
@@ -172,7 +171,19 @@ impl SolVast {
                     fit_data.mods_charge_group.remove(&item_id);
                 }
                 fit_data.mods_charge_size.remove(&item_id);
-                fit_data.mods_charge_volume.remove(&item_id);
+                // Data is added to / removed from this map when charges are added/removed; here,
+                // we just reset validation result when a module is being unloaded
+                if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(item_id) {
+                    match entry.get() {
+                        SolValCache::Pass(charge_volume) => {
+                            entry.insert(SolValCache::Todo(*charge_volume));
+                        }
+                        SolValCache::Fail(fail) => {
+                            entry.insert(SolValCache::Todo(fail.charge_volume));
+                        }
+                        _ => (),
+                    }
+                }
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -222,18 +233,7 @@ impl SolVast {
                         _ => (),
                     }
                 }
-                if let Entry::Occupied(mut entry) = fit_data.mods_charge_volume.entry(charge.get_cont_id()) {
-                    // No charge - check should pass
-                    match entry.get() {
-                        SolValCache::Todo(max_volume) => {
-                            entry.insert(SolValCache::Pass(*max_volume));
-                        }
-                        SolValCache::Fail(fail) => {
-                            entry.insert(SolValCache::Pass(fail.max_volume));
-                        }
-                        _ => (),
-                    }
-                }
+                fit_data.mods_charge_volume.remove(&charge.get_cont_id());
             }
             _ => (),
         }

@@ -221,7 +221,7 @@ class Item(AttrDict):
             self, *,
             state: ApiState | type[Absent] = Absent,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent] = Absent,
-            charge: int | type[Absent] = Absent,
+            charge: int | None | type[Absent] = Absent,
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
