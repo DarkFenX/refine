@@ -17,6 +17,7 @@ pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData) {
             a_item.cat_id,
             &a_item.attrs,
             &a_item.effect_datas,
+            &a_item.srqs,
             &limited_fitted_grp_ids,
             &limited_online_grp_ids,
             &limited_active_grp_ids,

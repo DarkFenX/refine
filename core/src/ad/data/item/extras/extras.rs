@@ -1,6 +1,6 @@
 use crate::{
     ad::{AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit},
-    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId},
+    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
     util::StMap,
 };
 
@@ -45,7 +45,7 @@ impl AItemExtras {
     // not rely on them
     pub(crate) fn inherit_with_attrs(a_item: &AItem, attrs: &StMap<EAttrId, AttrVal>) -> Self {
         Self {
-            kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
+            kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas, &a_item.srqs),
             volume: get_item_volume(attrs),
             ship_limit: get_item_ship_limit(attrs),
             charge_limit: get_item_charge_limit(attrs),
@@ -60,11 +60,12 @@ impl AItemExtras {
         cat_id: EItemCatId,
         attrs: &StMap<EAttrId, AttrVal>,
         effects: &StMap<EEffectId, AItemEffectData>,
+        srqs: &StMap<EItemId, SkillLevel>,
         fitted_limited_groups: &[EItemGrpId],
         online_limited_groups: &[EItemGrpId],
         active_limited_groups: &[EItemGrpId],
     ) {
-        self.kind = get_item_kind(grp_id, cat_id, attrs, effects);
+        self.kind = get_item_kind(grp_id, cat_id, attrs, effects, srqs);
         self.volume = get_item_volume(attrs);
         self.ship_limit = get_item_ship_limit(attrs);
         self.charge_limit = get_item_charge_limit(attrs);
