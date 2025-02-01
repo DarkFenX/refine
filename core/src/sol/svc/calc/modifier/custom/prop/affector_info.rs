@@ -1,3 +1,5 @@
+use smallvec::SmallVec;
+
 use crate::{
     defs::SolItemId,
     sol::{svc::calc::SolAffectorInfo, uad::SolUad},
@@ -11,8 +13,8 @@ use super::{
 pub(in crate::sol::svc::calc::modifier) fn get_affector_info(
     uad: &SolUad,
     item_id: &SolItemId,
-) -> Vec<SolAffectorInfo> {
-    let mut affectors = Vec::new();
+) -> SmallVec<SolAffectorInfo, 1> {
+    let mut affectors = SmallVec::new();
     if let Some(ship_id) = get_ship_id(uad, item_id) {
         affectors.push(SolAffectorInfo::new(*item_id, Some(PROP_BOOST)));
         affectors.push(SolAffectorInfo::new(*item_id, Some(PROP_THRUST)));

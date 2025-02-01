@@ -1,3 +1,5 @@
+use smallvec::SmallVec;
+
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, SolItemId},
@@ -168,7 +170,7 @@ impl SolRawModifier {
     pub(in crate::sol::svc::calc) fn get_affector_attr_id(&self) -> Option<EAttrId> {
         self.affector_value.get_affector_attr_id()
     }
-    pub(in crate::sol::svc::calc) fn get_affector_info(&self, uad: &SolUad) -> Vec<SolAffectorInfo> {
+    pub(in crate::sol::svc::calc) fn get_affector_info(&self, uad: &SolUad) -> SmallVec<SolAffectorInfo, 1> {
         self.affector_value.get_affector_info(uad, &self.affector_item_id)
     }
     pub(in crate::sol::svc::calc) fn get_mod_val(&self, calc: &mut SolCalc, uad: &SolUad) -> Option<AttrVal> {

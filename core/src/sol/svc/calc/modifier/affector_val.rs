@@ -1,3 +1,5 @@
+use smallvec::{smallvec, SmallVec};
+
 use crate::{
     defs::{AttrVal, EAttrId, EEffectId, SolItemId},
     sol::{
@@ -26,12 +28,12 @@ impl SolAffectorValue {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, uad: &SolUad, item_id: &SolItemId) -> Vec<SolAffectorInfo> {
+    pub(super) fn get_affector_info(&self, uad: &SolUad, item_id: &SolItemId) -> SmallVec<SolAffectorInfo, 1> {
         match self {
-            Self::AttrId(attr_id) => vec![SolAffectorInfo::new(*item_id, Some(*attr_id))],
-            Self::Hardcoded(_) => vec![SolAffectorInfo::new(*item_id, None)],
+            Self::AttrId(attr_id) => smallvec![SolAffectorInfo::new(*item_id, Some(*attr_id))],
+            Self::Hardcoded(_) => smallvec![SolAffectorInfo::new(*item_id, None)],
             Self::PropulsionModule => prop::get_affector_info(uad, item_id),
-            Self::AncillaryArmorRep => vec![SolAffectorInfo::new(*item_id, Some(aar::AAR_AFFECTOR_ATTR_ID))],
+            Self::AncillaryArmorRep => smallvec![SolAffectorInfo::new(*item_id, Some(aar::AAR_AFFECTOR_ATTR_ID))],
         }
     }
     pub(super) fn get_mod_val(

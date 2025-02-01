@@ -3,6 +3,8 @@
 //! Whenever regular calculator changes, those changes have to be carried over here, to keep actual
 //! calculation process and modification info consistent.
 
+use smallvec::SmallVec;
+
 use crate::{
     defs::{AggrKey, AttrVal, EItemCatId, OF},
     sol::svc::calc::{SolAggrMode, SolModificationInfo, SolOp},
@@ -88,7 +90,7 @@ impl SolModAccumInfo {
         attr_pen: bool,
         item_cat: &EItemCatId,
         aggr_mode: &SolAggrMode,
-        affectors: Vec<SolAffectorInfo>,
+        affectors: SmallVec<SolAffectorInfo, 1>,
     ) {
         match op {
             SolOp::PreAssign => self.pre_assign.add_val(
@@ -294,7 +296,7 @@ impl SolAttrStack {
         revert_func: &R,
         penalizable: bool,
         aggr_mode: &SolAggrMode,
-        affectors: Vec<SolAffectorInfo>,
+        affectors: SmallVec<SolAffectorInfo, 1>,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
@@ -358,7 +360,7 @@ impl SolAttrAggr {
         diminish_func: &D,
         revert_func: &R,
         aggr_mode: &SolAggrMode,
-        affectors: Vec<SolAffectorInfo>,
+        affectors: SmallVec<SolAffectorInfo, 1>,
     ) where
         N: Fn(AttrVal) -> Option<AttrVal>,
         D: Fn(AttrVal, Option<AttrVal>, Option<AttrVal>) -> AttrVal,
@@ -376,7 +378,7 @@ impl SolAttrAggr {
             res_mult,
             None,
             revert_func(diminished_val),
-            affectors,
+            affectors.into_vec(),
         );
         let attr_info = SolAttrValInfo::from_effective_info(diminished_val, info);
         self.add_attr_info(attr_info, aggr_mode);

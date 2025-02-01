@@ -2,6 +2,8 @@
 //! info while not bloating calculation part (since calculation is supposed to be used much more
 //! often than modification info fetching).
 
+use smallvec::SmallVec;
+
 use crate::{
     defs::{EAttrId, SolItemId},
     ec,
@@ -25,10 +27,10 @@ const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
 
 struct SolAffection {
     modification: SolModification,
-    affectors: Vec<SolAffectorInfo>,
+    affectors: SmallVec<SolAffectorInfo, 1>,
 }
 impl SolAffection {
-    fn new(modification: SolModification, affectors: Vec<SolAffectorInfo>) -> Self {
+    fn new(modification: SolModification, affectors: SmallVec<SolAffectorInfo, 1>) -> Self {
         Self {
             modification,
             affectors,
