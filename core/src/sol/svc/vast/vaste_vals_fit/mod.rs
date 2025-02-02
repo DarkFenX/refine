@@ -1,4 +1,4 @@
-pub use vaste_capital_item::SolCapitalModValFail;
+pub use vaste_capital_module::SolCapitalModValFail;
 pub use vaste_charge_group::SolChargeGroupValFail;
 pub use vaste_charge_size::SolChargeSizeValFail;
 pub use vaste_charge_volume::SolChargeVolumeValFail;
@@ -10,7 +10,7 @@ pub use vaste_skill_reqs::{SolSrqSkill, SolSrqValFail};
 pub use vaste_slot::SolSlotValFail;
 pub use vaste_slot_index::SolSlotIndexValFail;
 
-mod vaste_capital_item;
+mod vaste_capital_module;
 mod vaste_charge_group;
 mod vaste_charge_size;
 mod vaste_charge_volume;

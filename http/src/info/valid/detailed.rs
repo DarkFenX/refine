@@ -1,6 +1,6 @@
 use crate::info::valid::details::{
-    HChargeGroupValFail, HChargeSizeValFail, HChargeVolumeValFail, HMaxGroupValFail, HResValFail, HRigSizeValFail,
-    HShipLimitValFail, HSlotIndexValFail, HSlotValFail, HSrqValFail,
+    HCapitalModValFail, HChargeGroupValFail, HChargeSizeValFail, HChargeVolumeValFail, HMaxGroupValFail, HResValFail,
+    HRigSizeValFail, HShipLimitValFail, HSlotIndexValFail, HSlotValFail, HSrqValFail,
 };
 
 #[derive(serde::Serialize)]
@@ -84,6 +84,8 @@ struct HValidInfoDetails {
     charge_size: HChargeSizeValFail,
     #[serde(skip_serializing_if = "HChargeVolumeValFail::is_empty")]
     charge_volume: HChargeVolumeValFail,
+    #[serde(skip_serializing_if = "HCapitalModValFail::is_empty")]
+    capital_module: HCapitalModValFail,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -119,6 +121,7 @@ impl HValidInfoDetails {
             && self.charge_group.is_empty()
             && self.charge_size.is_empty()
             && self.charge_volume.is_empty()
+            && self.capital_module.is_empty()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -165,6 +168,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             charge_group: (&core_val_result.charge_group).into(),
             charge_size: (&core_val_result.charge_size).into(),
             charge_volume: (&core_val_result.charge_volume).into(),
+            capital_module: (&core_val_result.capital_module).into(),
         }
     }
 }
