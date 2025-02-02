@@ -1,58 +1,58 @@
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub(in crate::handler_json) enum CItemKind {
-    Booster(rc::SlotIndex),
+    Booster,
     Character,
     Charge,
     Drone,
     EffectBeacon,
     FighterSquad(CFighterKind),
-    Implant(rc::SlotIndex),
+    Implant,
     Module(CModRack, CShipKind),
     Mutator,
     Rig(CShipKind),
     Ship(CShipKind),
     Skill,
     Stance,
-    Subsystem(rc::SlotIndex),
+    Subsystem,
 }
 impl From<&rc::ad::AItemKind> for CItemKind {
     fn from(item_kind: &rc::ad::AItemKind) -> Self {
         match item_kind {
-            rc::ad::AItemKind::Booster(slot) => Self::Booster(*slot),
+            rc::ad::AItemKind::Booster => Self::Booster,
             rc::ad::AItemKind::Character => Self::Character,
             rc::ad::AItemKind::Charge => Self::Charge,
             rc::ad::AItemKind::Drone => Self::Drone,
             rc::ad::AItemKind::EffectBeacon => Self::EffectBeacon,
             rc::ad::AItemKind::FighterSquad(fighter_kind) => Self::FighterSquad(fighter_kind.into()),
-            rc::ad::AItemKind::Implant(slot) => Self::Implant(*slot),
+            rc::ad::AItemKind::Implant => Self::Implant,
             rc::ad::AItemKind::Module(mod_rack, ship_kind) => Self::Module(mod_rack.into(), ship_kind.into()),
             rc::ad::AItemKind::Mutator => Self::Mutator,
             rc::ad::AItemKind::Rig(ship_kind) => Self::Rig(ship_kind.into()),
             rc::ad::AItemKind::Ship(ship_kind) => Self::Ship(ship_kind.into()),
             rc::ad::AItemKind::Skill => Self::Skill,
             rc::ad::AItemKind::Stance => Self::Stance,
-            rc::ad::AItemKind::Subsystem(slot) => Self::Subsystem(*slot),
+            rc::ad::AItemKind::Subsystem => Self::Subsystem,
         }
     }
 }
 impl Into<rc::ad::AItemKind> for &CItemKind {
     fn into(self) -> rc::ad::AItemKind {
         match self {
-            CItemKind::Booster(slot) => rc::ad::AItemKind::Booster(*slot),
+            CItemKind::Booster => rc::ad::AItemKind::Booster,
             CItemKind::Character => rc::ad::AItemKind::Character,
             CItemKind::Charge => rc::ad::AItemKind::Charge,
             CItemKind::Drone => rc::ad::AItemKind::Drone,
             CItemKind::EffectBeacon => rc::ad::AItemKind::EffectBeacon,
             CItemKind::FighterSquad(fighter_kind) => rc::ad::AItemKind::FighterSquad(fighter_kind.into()),
-            CItemKind::Implant(slot) => rc::ad::AItemKind::Implant(*slot),
+            CItemKind::Implant => rc::ad::AItemKind::Implant,
             CItemKind::Module(mod_rack, ship_kind) => rc::ad::AItemKind::Module(mod_rack.into(), ship_kind.into()),
             CItemKind::Mutator => rc::ad::AItemKind::Mutator,
             CItemKind::Rig(ship_kind) => rc::ad::AItemKind::Rig(ship_kind.into()),
             CItemKind::Ship(ship_kind) => rc::ad::AItemKind::Ship(ship_kind.into()),
             CItemKind::Skill => rc::ad::AItemKind::Skill,
             CItemKind::Stance => rc::ad::AItemKind::Stance,
-            CItemKind::Subsystem(slot) => rc::ad::AItemKind::Subsystem(*slot),
+            CItemKind::Subsystem => rc::ad::AItemKind::Subsystem,
         }
     }
 }

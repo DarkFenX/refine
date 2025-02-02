@@ -2,7 +2,7 @@ use smallvec::SmallVec;
 
 use crate::{
     ad::AItemEffectData,
-    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex, OF},
+    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, OF},
     ec,
     util::StMap,
 };
@@ -10,20 +10,20 @@ use crate::{
 /// Adapted item type.
 #[derive(Copy, Clone)]
 pub enum AItemKind {
-    Booster(SlotIndex),
+    Booster,
     Character,
     Charge,
     Drone,
     EffectBeacon,
     FighterSquad(AFighterKind),
-    Implant(SlotIndex),
+    Implant,
     Module(AModRack, AShipKind),
     Mutator,
     Rig(AShipKind),
     Ship(AShipKind),
     Skill,
     Stance,
-    Subsystem(SlotIndex),
+    Subsystem,
 }
 
 /// Adapted ship type.
@@ -106,11 +106,11 @@ pub(super) fn get_item_kind(
         ec::itemcats::STRUCTURE => kinds.push(AItemKind::Ship(AShipKind::Structure)),
         // Implants and boosters
         ec::itemcats::IMPLANT => {
-            if let Some(booster_slot) = attrs.get(&ec::attrs::BOOSTERNESS) {
-                kinds.push(AItemKind::Booster(booster_slot.round() as SlotIndex));
+            if attrs.contains_key(&ec::attrs::BOOSTERNESS) {
+                kinds.push(AItemKind::Booster);
             }
-            if let Some(implant_slot) = attrs.get(&ec::attrs::IMPLANTNESS) {
-                kinds.push(AItemKind::Implant(implant_slot.round() as SlotIndex));
+            if attrs.contains_key(&ec::attrs::IMPLANTNESS) {
+                kinds.push(AItemKind::Implant);
             }
         }
         // Other items
@@ -141,8 +141,8 @@ pub(super) fn get_item_kind(
         }
         ec::itemcats::SKILL => kinds.push(AItemKind::Skill),
         ec::itemcats::SUBSYSTEM => {
-            if let Some(sub_slot) = attrs.get(&ec::attrs::SUBSYSTEM_SLOT) {
-                kinds.push(AItemKind::Subsystem(sub_slot.round() as SlotIndex));
+            if attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT) {
+                kinds.push(AItemKind::Subsystem);
             }
         }
         _ => (),

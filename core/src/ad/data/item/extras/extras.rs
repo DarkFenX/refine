@@ -1,11 +1,15 @@
 use crate::{
     ad::{AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit},
-    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel},
+    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex},
     util::StMap,
 };
 
 use super::{
-    charge_limit::get_item_charge_limit, kind::get_item_kind, ship_limit::get_item_ship_limit, volume::get_item_volume,
+    charge_limit::get_item_charge_limit,
+    kind::get_item_kind,
+    ship_limit::get_item_ship_limit,
+    slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
+    volume::get_item_volume,
 };
 
 /// Holds extra item-specific data.
@@ -28,6 +32,12 @@ pub struct AItemExtras {
     pub val_online_group_id: Option<EItemGrpId>,
     /// Item effectively has this group ID for purposes of "max group active" validation.
     pub val_active_group_id: Option<EItemGrpId>,
+    /// Slot index an implant takes.
+    pub implant_slot: Option<SlotIndex>,
+    /// Slot index a booster takes.
+    pub booster_slot: Option<SlotIndex>,
+    /// Slot index a subsystem takes.
+    pub subsystem_slot: Option<SlotIndex>,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -39,6 +49,9 @@ impl AItemExtras {
             val_fitted_group_id: None,
             val_online_group_id: None,
             val_active_group_id: None,
+            implant_slot: None,
+            booster_slot: None,
+            subsystem_slot: None,
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -52,6 +65,9 @@ impl AItemExtras {
             val_fitted_group_id: a_item.extras.val_fitted_group_id,
             val_online_group_id: a_item.extras.val_online_group_id,
             val_active_group_id: a_item.extras.val_active_group_id,
+            implant_slot: get_implant_slot(attrs),
+            booster_slot: get_booster_slot(attrs),
+            subsystem_slot: get_subsystem_slot(attrs),
         }
     }
     pub(crate) fn fill(
@@ -81,5 +97,8 @@ impl AItemExtras {
             true => Some(grp_id),
             false => None,
         };
+        self.implant_slot = get_implant_slot(attrs);
+        self.booster_slot = get_booster_slot(attrs);
+        self.subsystem_slot = get_subsystem_slot(attrs);
     }
 }

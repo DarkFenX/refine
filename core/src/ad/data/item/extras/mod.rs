@@ -7,4 +7,5 @@ mod charge_limit;
 mod extras;
 mod kind;
 mod ship_limit;
+mod slot_index;
 mod volume;

@@ -73,10 +73,7 @@ impl SolSubsystem {
     }
     pub(in crate::sol) fn get_slot(&self) -> Option<SlotIndex> {
         match self.get_a_extras() {
-            Some(extras) => match extras.kind {
-                Some(ad::AItemKind::Subsystem(slot)) => Some(slot),
-                _ => None,
-            },
+            Some(extras) => extras.subsystem_slot,
             None => None,
         }
     }
