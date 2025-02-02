@@ -6,7 +6,7 @@ pub(in crate::handler_json) enum CItemKind {
     Charge,
     Drone,
     EffectBeacon,
-    FighterSquad(CFighterKind),
+    FighterSquad,
     Implant,
     Module(CModRack, CShipKind),
     Mutator,
@@ -24,7 +24,7 @@ impl From<&rc::ad::AItemKind> for CItemKind {
             rc::ad::AItemKind::Charge => Self::Charge,
             rc::ad::AItemKind::Drone => Self::Drone,
             rc::ad::AItemKind::EffectBeacon => Self::EffectBeacon,
-            rc::ad::AItemKind::FighterSquad(fighter_kind) => Self::FighterSquad(fighter_kind.into()),
+            rc::ad::AItemKind::FighterSquad => Self::FighterSquad,
             rc::ad::AItemKind::Implant => Self::Implant,
             rc::ad::AItemKind::Module(mod_rack, ship_kind) => Self::Module(mod_rack.into(), ship_kind.into()),
             rc::ad::AItemKind::Mutator => Self::Mutator,
@@ -44,7 +44,7 @@ impl Into<rc::ad::AItemKind> for &CItemKind {
             CItemKind::Charge => rc::ad::AItemKind::Charge,
             CItemKind::Drone => rc::ad::AItemKind::Drone,
             CItemKind::EffectBeacon => rc::ad::AItemKind::EffectBeacon,
-            CItemKind::FighterSquad(fighter_kind) => rc::ad::AItemKind::FighterSquad(fighter_kind.into()),
+            CItemKind::FighterSquad => rc::ad::AItemKind::FighterSquad,
             CItemKind::Implant => rc::ad::AItemKind::Implant,
             CItemKind::Module(mod_rack, ship_kind) => rc::ad::AItemKind::Module(mod_rack.into(), ship_kind.into()),
             CItemKind::Mutator => rc::ad::AItemKind::Mutator,
@@ -105,41 +105,6 @@ impl Into<rc::ad::AModRack> for &CModRack {
             CModRack::High => rc::ad::AModRack::High,
             CModRack::Mid => rc::ad::AModRack::Mid,
             CModRack::Low => rc::ad::AModRack::Low,
-        }
-    }
-}
-
-#[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
-#[repr(u8)]
-pub(in crate::handler_json) enum CFighterKind {
-    Support,
-    Light,
-    Heavy,
-    StandupSupport,
-    StandupLight,
-    StandupHeavy,
-}
-impl From<&rc::ad::AFighterKind> for CFighterKind {
-    fn from(fighter_kind: &rc::ad::AFighterKind) -> Self {
-        match fighter_kind {
-            rc::ad::AFighterKind::Support => Self::Support,
-            rc::ad::AFighterKind::Light => Self::Light,
-            rc::ad::AFighterKind::Heavy => Self::Heavy,
-            rc::ad::AFighterKind::StandupSupport => Self::StandupSupport,
-            rc::ad::AFighterKind::StandupLight => Self::StandupLight,
-            rc::ad::AFighterKind::StandupHeavy => Self::StandupHeavy,
-        }
-    }
-}
-impl Into<rc::ad::AFighterKind> for &CFighterKind {
-    fn into(self) -> rc::ad::AFighterKind {
-        match self {
-            CFighterKind::Support => rc::ad::AFighterKind::Support,
-            CFighterKind::Light => rc::ad::AFighterKind::Light,
-            CFighterKind::Heavy => rc::ad::AFighterKind::Heavy,
-            CFighterKind::StandupSupport => rc::ad::AFighterKind::StandupSupport,
-            CFighterKind::StandupLight => rc::ad::AFighterKind::StandupLight,
-            CFighterKind::StandupHeavy => rc::ad::AFighterKind::StandupHeavy,
         }
     }
 }

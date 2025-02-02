@@ -1,10 +1,11 @@
 pub use charge_limit::AItemChargeLimit;
 pub use extras::AItemExtras;
-pub use kind::{AFighterKind, AItemKind, AModRack, AShipKind};
+pub use kind::{AItemKind, AModRack, AShipKind};
 pub use ship_limit::AItemShipLimit;
 
 mod charge_limit;
 mod extras;
+mod fighter_kind;
 mod kind;
 mod ship_limit;
 mod slot_index;

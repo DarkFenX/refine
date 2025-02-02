@@ -1,5 +1,5 @@
 use crate::{
-    ad, ec,
+    ec,
     sol::{
         svc::vast::SolVast,
         uad::item::{SolItem, SolItemState},
@@ -20,22 +20,25 @@ impl SolVast {
                     }
                 }
                 SolItem::Fighter(fighter) => {
-                    if let Some(ad::AItemKind::FighterSquad(fighter_kind)) = fighter.get_a_extras().unwrap().kind {
-                        let fit_data = self.get_fit_data_mut(&fighter.get_fit_id()).unwrap();
-                        match fighter_kind {
-                            ad::AFighterKind::Support => fit_data.support_fighters_online.insert(fighter.get_id()),
-                            ad::AFighterKind::Light => fit_data.light_fighters_online.insert(fighter.get_id()),
-                            ad::AFighterKind::Heavy => fit_data.heavy_fighters_online.insert(fighter.get_id()),
-                            ad::AFighterKind::StandupSupport => {
-                                fit_data.standup_support_fighters_online.insert(fighter.get_id())
-                            }
-                            ad::AFighterKind::StandupLight => {
-                                fit_data.standup_light_fighters_online.insert(fighter.get_id())
-                            }
-                            ad::AFighterKind::StandupHeavy => {
-                                fit_data.standup_heavy_fighters_online.insert(fighter.get_id())
-                            }
-                        };
+                    let extras = fighter.get_a_extras().unwrap();
+                    let fit_data = self.get_fit_data_mut(&fighter.get_fit_id()).unwrap();
+                    if extras.is_light_fighter {
+                        fit_data.light_fighters_online.insert(fighter.get_id());
+                    }
+                    if extras.is_heavy_fighter {
+                        fit_data.heavy_fighters_online.insert(fighter.get_id());
+                    }
+                    if extras.is_support_fighter {
+                        fit_data.support_fighters_online.insert(fighter.get_id());
+                    }
+                    if extras.is_standup_light_fighter {
+                        fit_data.standup_light_fighters_online.insert(fighter.get_id());
+                    }
+                    if extras.is_standup_heavy_fighter {
+                        fit_data.standup_heavy_fighters_online.insert(fighter.get_id());
+                    }
+                    if extras.is_standup_support_fighter {
+                        fit_data.standup_support_fighters_online.insert(fighter.get_id());
                     }
                 }
                 _ => (),
@@ -67,22 +70,25 @@ impl SolVast {
                     }
                 }
                 SolItem::Fighter(fighter) => {
-                    if let Some(ad::AItemKind::FighterSquad(fighter_kind)) = fighter.get_a_extras().unwrap().kind {
-                        let fit_data = self.get_fit_data_mut(&fighter.get_fit_id()).unwrap();
-                        match fighter_kind {
-                            ad::AFighterKind::Support => fit_data.support_fighters_online.remove(&fighter.get_id()),
-                            ad::AFighterKind::Light => fit_data.light_fighters_online.remove(&fighter.get_id()),
-                            ad::AFighterKind::Heavy => fit_data.heavy_fighters_online.remove(&fighter.get_id()),
-                            ad::AFighterKind::StandupSupport => {
-                                fit_data.standup_support_fighters_online.remove(&fighter.get_id())
-                            }
-                            ad::AFighterKind::StandupLight => {
-                                fit_data.standup_light_fighters_online.remove(&fighter.get_id())
-                            }
-                            ad::AFighterKind::StandupHeavy => {
-                                fit_data.standup_heavy_fighters_online.remove(&fighter.get_id())
-                            }
-                        };
+                    let extras = fighter.get_a_extras().unwrap();
+                    let fit_data = self.get_fit_data_mut(&fighter.get_fit_id()).unwrap();
+                    if extras.is_light_fighter {
+                        fit_data.light_fighters_online.remove(&fighter.get_id());
+                    }
+                    if extras.is_heavy_fighter {
+                        fit_data.heavy_fighters_online.remove(&fighter.get_id());
+                    }
+                    if extras.is_support_fighter {
+                        fit_data.support_fighters_online.remove(&fighter.get_id());
+                    }
+                    if extras.is_standup_light_fighter {
+                        fit_data.standup_light_fighters_online.remove(&fighter.get_id());
+                    }
+                    if extras.is_standup_heavy_fighter {
+                        fit_data.standup_heavy_fighters_online.remove(&fighter.get_id());
+                    }
+                    if extras.is_standup_support_fighter {
+                        fit_data.standup_support_fighters_online.remove(&fighter.get_id());
                     }
                 }
                 _ => (),

@@ -12,6 +12,12 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) implant_slot: Option<rc::SlotIndex>,
     pub(in crate::handler_json) booster_slot: Option<rc::SlotIndex>,
     pub(in crate::handler_json) subsystem_slot: Option<rc::SlotIndex>,
+    pub(in crate::handler_json) is_light_fighter: bool,
+    pub(in crate::handler_json) is_heavy_fighter: bool,
+    pub(in crate::handler_json) is_support_fighter: bool,
+    pub(in crate::handler_json) is_standup_light_fighter: bool,
+    pub(in crate::handler_json) is_standup_heavy_fighter: bool,
+    pub(in crate::handler_json) is_standup_support_fighter: bool,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -26,6 +32,12 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             implant_slot: a_item_extras.implant_slot,
             booster_slot: a_item_extras.booster_slot,
             subsystem_slot: a_item_extras.subsystem_slot,
+            is_light_fighter: a_item_extras.is_light_fighter,
+            is_heavy_fighter: a_item_extras.is_heavy_fighter,
+            is_support_fighter: a_item_extras.is_support_fighter,
+            is_standup_light_fighter: a_item_extras.is_standup_light_fighter,
+            is_standup_heavy_fighter: a_item_extras.is_standup_heavy_fighter,
+            is_standup_support_fighter: a_item_extras.is_standup_support_fighter,
         }
     }
 }
@@ -42,6 +54,12 @@ impl Into<rc::ad::AItemExtras> for &CItemExtras {
             implant_slot: self.implant_slot,
             booster_slot: self.booster_slot,
             subsystem_slot: self.subsystem_slot,
+            is_light_fighter: self.is_light_fighter,
+            is_heavy_fighter: self.is_heavy_fighter,
+            is_support_fighter: self.is_support_fighter,
+            is_standup_light_fighter: self.is_standup_light_fighter,
+            is_standup_heavy_fighter: self.is_standup_heavy_fighter,
+            is_standup_support_fighter: self.is_standup_support_fighter,
         }
     }
 }

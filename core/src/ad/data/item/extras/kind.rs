@@ -15,7 +15,7 @@ pub enum AItemKind {
     Charge,
     Drone,
     EffectBeacon,
-    FighterSquad(AFighterKind),
+    FighterSquad,
     Implant,
     Module(AModRack, AShipKind),
     Mutator,
@@ -40,17 +40,6 @@ pub enum AModRack {
     High,
     Mid,
     Low,
-}
-
-/// Adapted fighter squad type.
-#[derive(Copy, Clone)]
-pub enum AFighterKind {
-    Support,
-    Light,
-    Heavy,
-    StandupSupport,
-    StandupLight,
-    StandupHeavy,
 }
 
 pub(super) fn get_item_kind(
@@ -116,29 +105,7 @@ pub(super) fn get_item_kind(
         // Other items
         ec::itemcats::CHARGE => kinds.push(AItemKind::Charge),
         ec::itemcats::DRONE => kinds.push(AItemKind::Drone),
-        ec::itemcats::FIGHTER => {
-            process_fighter_kind(&mut kinds, attrs, &ec::attrs::FTR_SQ_IS_SUPPORT, AFighterKind::Support);
-            process_fighter_kind(&mut kinds, attrs, &ec::attrs::FTR_SQ_IS_LIGHT, AFighterKind::Light);
-            process_fighter_kind(&mut kinds, attrs, &ec::attrs::FTR_SQ_IS_HEAVY, AFighterKind::Heavy);
-            process_fighter_kind(
-                &mut kinds,
-                attrs,
-                &ec::attrs::FTR_SQ_IS_STANDUP_SUPPORT,
-                AFighterKind::StandupSupport,
-            );
-            process_fighter_kind(
-                &mut kinds,
-                attrs,
-                &ec::attrs::FTR_SQ_IS_STANDUP_LIGHT,
-                AFighterKind::StandupLight,
-            );
-            process_fighter_kind(
-                &mut kinds,
-                attrs,
-                &ec::attrs::FTR_SQ_IS_STANDUP_HEAVY,
-                AFighterKind::StandupHeavy,
-            );
-        }
+        ec::itemcats::FIGHTER => kinds.push(AItemKind::FighterSquad),
         ec::itemcats::SKILL => kinds.push(AItemKind::Skill),
         ec::itemcats::SUBSYSTEM => {
             if attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT) {
@@ -157,18 +124,5 @@ pub(super) fn get_item_kind(
     match kinds.len() {
         1 => Some(kinds.pop().unwrap()),
         _ => None,
-    }
-}
-
-fn process_fighter_kind(
-    kinds: &mut SmallVec<AItemKind, 1>,
-    attrs: &StMap<EAttrId, AttrVal>,
-    attr_id: &EAttrId,
-    kind: AFighterKind,
-) {
-    if let Some(&val) = attrs.get(attr_id) {
-        if val != OF(0.0) {
-            kinds.push(AItemKind::FighterSquad(kind));
-        }
     }
 }

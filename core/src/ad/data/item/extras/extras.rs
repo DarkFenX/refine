@@ -6,6 +6,10 @@ use crate::{
 
 use super::{
     charge_limit::get_item_charge_limit,
+    fighter_kind::{
+        get_heavy_fighter_flag, get_light_fighter_flag, get_standup_heavy_fighter_flag, get_standup_light_fighter_flag,
+        get_standup_support_fighter_flag, get_support_fighter_flag,
+    },
     kind::get_item_kind,
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
@@ -38,20 +42,38 @@ pub struct AItemExtras {
     pub booster_slot: Option<SlotIndex>,
     /// Slot index a subsystem takes.
     pub subsystem_slot: Option<SlotIndex>,
+    /// Defines if a fighter take a light fighter slot or not.
+    pub is_light_fighter: bool,
+    /// Defines if a fighter take a heavy fighter slot or not.
+    pub is_heavy_fighter: bool,
+    /// Defines if a fighter take a support fighter slot or not.
+    pub is_support_fighter: bool,
+    /// Defines if a fighter take a standup light fighter slot or not.
+    pub is_standup_light_fighter: bool,
+    /// Defines if a fighter take a standup heavy fighter slot or not.
+    pub is_standup_heavy_fighter: bool,
+    /// Defines if a fighter take a standup support fighter slot or not.
+    pub is_standup_support_fighter: bool,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
         Self {
-            kind: None,
-            volume: None,
-            ship_limit: None,
-            charge_limit: None,
-            val_fitted_group_id: None,
-            val_online_group_id: None,
-            val_active_group_id: None,
-            implant_slot: None,
-            booster_slot: None,
-            subsystem_slot: None,
+            kind: Option::default(),
+            volume: Option::default(),
+            ship_limit: Option::default(),
+            charge_limit: Option::default(),
+            val_fitted_group_id: Option::default(),
+            val_online_group_id: Option::default(),
+            val_active_group_id: Option::default(),
+            implant_slot: Option::default(),
+            booster_slot: Option::default(),
+            subsystem_slot: Option::default(),
+            is_light_fighter: bool::default(),
+            is_heavy_fighter: bool::default(),
+            is_support_fighter: bool::default(),
+            is_standup_light_fighter: bool::default(),
+            is_standup_heavy_fighter: bool::default(),
+            is_standup_support_fighter: bool::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -68,6 +90,12 @@ impl AItemExtras {
             implant_slot: get_implant_slot(attrs),
             booster_slot: get_booster_slot(attrs),
             subsystem_slot: get_subsystem_slot(attrs),
+            is_light_fighter: get_light_fighter_flag(attrs),
+            is_heavy_fighter: get_heavy_fighter_flag(attrs),
+            is_support_fighter: get_support_fighter_flag(attrs),
+            is_standup_light_fighter: get_standup_light_fighter_flag(attrs),
+            is_standup_heavy_fighter: get_standup_heavy_fighter_flag(attrs),
+            is_standup_support_fighter: get_standup_support_fighter_flag(attrs),
         }
     }
     pub(crate) fn fill(
@@ -100,5 +128,11 @@ impl AItemExtras {
         self.implant_slot = get_implant_slot(attrs);
         self.booster_slot = get_booster_slot(attrs);
         self.subsystem_slot = get_subsystem_slot(attrs);
+        self.is_light_fighter = get_light_fighter_flag(attrs);
+        self.is_heavy_fighter = get_heavy_fighter_flag(attrs);
+        self.is_support_fighter = get_support_fighter_flag(attrs);
+        self.is_standup_light_fighter = get_standup_light_fighter_flag(attrs);
+        self.is_standup_heavy_fighter = get_standup_heavy_fighter_flag(attrs);
+        self.is_standup_support_fighter = get_standup_support_fighter_flag(attrs);
     }
 }
