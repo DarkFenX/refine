@@ -6,8 +6,6 @@ from dataclasses import dataclass
 from tests.fw.util import Default
 
 if typing.TYPE_CHECKING:
-    from types import ModuleType
-
     from tests.fw.client import TestClient
     from tests.fw.eve import EveObjects
 
@@ -29,7 +27,7 @@ class RahBasicInfo:
 def setup_rah_basics(
         *,
         client: TestClient,
-        consts: ModuleType,
+        consts,  # noqa: ANN001
         datas: list[EveObjects] | type[Default] = Default,
         attr_res_em: int | None | type[Default] = Default,
         attr_res_therm: int | None | type[Default] = Default,

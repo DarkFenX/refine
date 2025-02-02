@@ -6,6 +6,7 @@ class EveItem(IntEnum):
     missile_launcher_operation = 3319
     high_speed_maneuvering = 3454
     micro_jump_drive_operation = 4385
+    capital_ships = 20533
     nanite_repair_paste = 28668
     stasis_webification_probe = 56748
     capital_micro_jump_drive_operation = 83464
@@ -36,6 +37,9 @@ class EveItemCat(IntEnum):
 
 @unique
 class EveEffect(IntEnum):
+    lo_power = 11
+    hi_power = 12
+    med_power = 13
     online = 16
     launcher_fitted = 40
     turret_fitted = 42
@@ -405,6 +409,7 @@ class ApiValType(StrEnum):
     charge_group = 'charge_group'
     charge_size = 'charge_size'
     charge_volume = 'charge_volume'
+    capital_module = 'capital_module'
 
 
 @unique

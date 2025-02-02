@@ -20,7 +20,7 @@ impl SolCapitalModValFail {
 impl SolVastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
-        is_ship_subcap(uad, fit) && !self.mods_capital.is_empty()
+        !is_ship_subcap(uad, fit) || self.mods_capital.is_empty()
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_verbose(
@@ -28,13 +28,14 @@ impl SolVastFitData {
         uad: &SolUad,
         fit: &SolFit,
     ) -> Vec<SolCapitalModValFail> {
-        if !is_ship_subcap(uad, fit) {
-            return Vec::new();
+        match is_ship_subcap(uad, fit) {
+            true => self
+                .mods_capital
+                .iter()
+                .map(|v| SolCapitalModValFail::new(*v))
+                .collect(),
+            false => Vec::new(),
         }
-        self.mods_capital
-            .iter()
-            .map(|v| SolCapitalModValFail::new(*v))
-            .collect()
     }
 }
 

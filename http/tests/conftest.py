@@ -13,7 +13,6 @@ from tests.fw.util import next_free_port
 
 if typing.TYPE_CHECKING:
     from collections.abc import Iterator
-    from types import ModuleType
 
     import pytest_httpserver
 
@@ -75,7 +74,7 @@ def client(
 
 
 @pytest.fixture
-def consts() -> ModuleType:
+def consts():  # noqa: ANN201
     return eve_consts
 
 
