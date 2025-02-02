@@ -1,5 +1,6 @@
 from tests.fw.consts import ApiValType
 from tests.fw.util import AttrDict, AttrHookDef
+from .capital_module import ValCapModuleDetails
 from .charge_group import ValChargeGroupDetails
 from .charge_size import ValChargeSizeDetails
 from .charge_volume import ValChargeVolumeDetails
@@ -53,4 +54,5 @@ class ValResultDetails(AttrDict):
             ApiValType.skill_reqs: AttrHookDef(func=lambda d: ValSrqDetails(data=d)),
             ApiValType.charge_group: AttrHookDef(func=lambda d: ValChargeGroupDetails(data=d)),
             ApiValType.charge_size: AttrHookDef(func=lambda d: ValChargeSizeDetails(data=d)),
-            ApiValType.charge_volume: AttrHookDef(func=lambda d: ValChargeVolumeDetails(data=d))})
+            ApiValType.charge_volume: AttrHookDef(func=lambda d: ValChargeVolumeDetails(data=d)),
+            ApiValType.capital_module: AttrHookDef(func=lambda d: ValCapModuleDetails(data=d))})
