@@ -1,6 +1,6 @@
 use crate::sol::svc::vast::{
-    SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolMaxGroupValFail, SolResValFail,
-    SolRigSizeValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
+    SolCapitalModValFail, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolMaxGroupValFail,
+    SolResValFail, SolRigSizeValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
 };
 
 #[derive(Copy, Clone)]
@@ -37,6 +37,7 @@ pub struct SolValOptions {
     pub charge_group: bool,
     pub charge_size: bool,
     pub charge_volume: bool,
+    pub capital_module: bool,
 }
 impl SolValOptions {
     pub fn new(
@@ -72,6 +73,7 @@ impl SolValOptions {
         charge_group: bool,
         charge_size: bool,
         charge_volume: bool,
+        capital_module: bool,
     ) -> Self {
         Self {
             cpu,
@@ -106,6 +108,7 @@ impl SolValOptions {
             charge_group,
             charge_size,
             charge_volume,
+            capital_module,
         }
     }
     pub fn new_enabled() -> Self {
@@ -142,6 +145,7 @@ impl SolValOptions {
             charge_group: true,
             charge_size: true,
             charge_volume: true,
+            capital_module: true,
         }
     }
     pub fn new_disabled() -> Self {
@@ -178,6 +182,7 @@ impl SolValOptions {
             charge_group: false,
             charge_size: false,
             charge_volume: false,
+            capital_module: false,
         }
     }
 }
@@ -215,6 +220,7 @@ pub struct SolValResult {
     pub charge_group: Vec<SolChargeGroupValFail>,
     pub charge_size: Vec<SolChargeSizeValFail>,
     pub charge_volume: Vec<SolChargeVolumeValFail>,
+    pub capital_module: Vec<SolCapitalModValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -251,6 +257,7 @@ impl SolValResult {
             charge_group: Vec::new(),
             charge_size: Vec::new(),
             charge_volume: Vec::new(),
+            capital_module: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -286,5 +293,6 @@ impl SolValResult {
             && self.charge_group.is_empty()
             && self.charge_size.is_empty()
             && self.charge_volume.is_empty()
+            && self.capital_module.is_empty()
     }
 }

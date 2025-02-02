@@ -18,6 +18,9 @@ impl<V: Eq + Hash> StSet<V> {
     pub(crate) fn contains(&self, val: &V) -> bool {
         self.data.contains(val)
     }
+    pub(crate) fn is_empty(&self) -> bool {
+        self.data.is_empty()
+    }
     pub(crate) fn len(&self) -> usize {
         self.data.len()
     }
