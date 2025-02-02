@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit},
+    ad::{AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit, AShipKind},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex},
     util::StMap,
 };
@@ -11,6 +11,7 @@ use super::{
         get_standup_support_fighter_flag, get_support_fighter_flag,
     },
     kind::get_item_kind,
+    ship_kind::{get_item_ship_kind, get_ship_kind},
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
     volume::get_item_volume,
@@ -54,6 +55,10 @@ pub struct AItemExtras {
     pub is_standup_heavy_fighter: bool,
     /// Defines if a fighter take a standup support fighter slot or not.
     pub is_standup_support_fighter: bool,
+    /// Ship type.
+    pub ship_kind: Option<AShipKind>,
+    /// Which ship type this item fits to.
+    pub item_ship_kind: Option<AShipKind>,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -74,13 +79,15 @@ impl AItemExtras {
             is_standup_light_fighter: bool::default(),
             is_standup_heavy_fighter: bool::default(),
             is_standup_support_fighter: bool::default(),
+            ship_kind: Option::default(),
+            item_ship_kind: Option::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
     // not rely on them
     pub(crate) fn inherit_with_attrs(a_item: &AItem, attrs: &StMap<EAttrId, AttrVal>) -> Self {
         Self {
-            kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas, &a_item.srqs),
+            kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
             volume: get_item_volume(attrs),
             ship_limit: get_item_ship_limit(attrs),
             charge_limit: get_item_charge_limit(attrs),
@@ -96,6 +103,8 @@ impl AItemExtras {
             is_standup_light_fighter: get_standup_light_fighter_flag(attrs),
             is_standup_heavy_fighter: get_standup_heavy_fighter_flag(attrs),
             is_standup_support_fighter: get_standup_support_fighter_flag(attrs),
+            ship_kind: a_item.extras.ship_kind,
+            item_ship_kind: get_item_ship_kind(a_item.cat_id, attrs),
         }
     }
     pub(crate) fn fill(
@@ -109,7 +118,7 @@ impl AItemExtras {
         online_limited_groups: &[EItemGrpId],
         active_limited_groups: &[EItemGrpId],
     ) {
-        self.kind = get_item_kind(grp_id, cat_id, attrs, effects, srqs);
+        self.kind = get_item_kind(grp_id, cat_id, attrs, effects);
         self.volume = get_item_volume(attrs);
         self.ship_limit = get_item_ship_limit(attrs);
         self.charge_limit = get_item_charge_limit(attrs);
@@ -134,5 +143,7 @@ impl AItemExtras {
         self.is_standup_light_fighter = get_standup_light_fighter_flag(attrs);
         self.is_standup_heavy_fighter = get_standup_heavy_fighter_flag(attrs);
         self.is_standup_support_fighter = get_standup_support_fighter_flag(attrs);
+        self.ship_kind = get_ship_kind(cat_id, srqs);
+        self.item_ship_kind = get_item_ship_kind(cat_id, attrs);
     }
 }

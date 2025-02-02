@@ -1,4 +1,4 @@
-use crate::handler_json::data::{CItemChargeLimit, CItemKind, CItemShipLimit};
+use crate::handler_json::data::{CItemChargeLimit, CItemKind, CItemShipLimit, CShipKind};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CItemExtras {
@@ -18,6 +18,8 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) is_standup_light_fighter: bool,
     pub(in crate::handler_json) is_standup_heavy_fighter: bool,
     pub(in crate::handler_json) is_standup_support_fighter: bool,
+    pub(in crate::handler_json) ship_kind: Option<CShipKind>,
+    pub(in crate::handler_json) item_ship_kind: Option<CShipKind>,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -38,6 +40,8 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             is_standup_light_fighter: a_item_extras.is_standup_light_fighter,
             is_standup_heavy_fighter: a_item_extras.is_standup_heavy_fighter,
             is_standup_support_fighter: a_item_extras.is_standup_support_fighter,
+            ship_kind: a_item_extras.ship_kind.as_ref().map(|v| v.into()),
+            item_ship_kind: a_item_extras.item_ship_kind.as_ref().map(|v| v.into()),
         }
     }
 }
@@ -60,6 +64,8 @@ impl Into<rc::ad::AItemExtras> for &CItemExtras {
             is_standup_light_fighter: self.is_standup_light_fighter,
             is_standup_heavy_fighter: self.is_standup_heavy_fighter,
             is_standup_support_fighter: self.is_standup_support_fighter,
+            ship_kind: self.ship_kind.as_ref().map(|v| v.into()),
+            item_ship_kind: self.item_ship_kind.as_ref().map(|v| v.into()),
         }
     }
 }

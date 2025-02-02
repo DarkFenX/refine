@@ -2,7 +2,7 @@ use smallvec::SmallVec;
 
 use crate::{
     ad::AItemEffectData,
-    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, OF},
+    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId},
     ec,
     util::StMap,
 };
@@ -17,29 +17,15 @@ pub enum AItemKind {
     EffectBeacon,
     FighterSquad,
     Implant,
-    Module(AModRack, AShipKind),
+    ModHigh,
+    ModMid,
+    ModLow,
     Mutator,
-    Rig(AShipKind),
-    Ship(AShipKind),
+    Rig,
+    Ship,
     Skill,
     Stance,
     Subsystem,
-}
-
-/// Adapted ship type.
-#[derive(Copy, Clone)]
-pub enum AShipKind {
-    Ship,
-    CapitalShip,
-    Structure,
-}
-
-/// Adapted module rack.
-#[derive(Copy, Clone)]
-pub enum AModRack {
-    High,
-    Mid,
-    Low,
 }
 
 pub(super) fn get_item_kind(
@@ -47,52 +33,26 @@ pub(super) fn get_item_kind(
     cat_id: EItemCatId,
     attrs: &StMap<EAttrId, AttrVal>,
     effects: &StMap<EEffectId, AItemEffectData>,
-    srqs: &StMap<EItemId, SkillLevel>,
 ) -> Option<AItemKind> {
     let mut kinds: SmallVec<AItemKind, 1> = SmallVec::new();
     match cat_id {
         // Ship & structure modules
-        ec::itemcats::MODULE => {
-            let ship_kind = match attrs.get(&ec::attrs::VOLUME) {
-                Some(&volume) => match volume <= OF(3500.0) {
-                    true => AShipKind::Ship,
-                    false => AShipKind::CapitalShip,
-                },
-                None => AShipKind::Ship,
-            };
+        ec::itemcats::MODULE | ec::itemcats::STRUCTURE_MODULE => {
             if effects.contains_key(&ec::effects::HI_POWER) {
-                kinds.push(AItemKind::Module(AModRack::High, ship_kind));
+                kinds.push(AItemKind::ModHigh);
             }
             if effects.contains_key(&ec::effects::MED_POWER) {
-                kinds.push(AItemKind::Module(AModRack::Mid, ship_kind));
+                kinds.push(AItemKind::ModMid);
             }
             if effects.contains_key(&ec::effects::LO_POWER) {
-                kinds.push(AItemKind::Module(AModRack::Low, ship_kind));
+                kinds.push(AItemKind::ModLow);
             }
             if effects.contains_key(&ec::effects::RIG_SLOT) {
-                kinds.push(AItemKind::Rig(AShipKind::Ship));
-            }
-        }
-        ec::itemcats::STRUCTURE_MODULE => {
-            if effects.contains_key(&ec::effects::HI_POWER) {
-                kinds.push(AItemKind::Module(AModRack::High, AShipKind::Structure));
-            }
-            if effects.contains_key(&ec::effects::MED_POWER) {
-                kinds.push(AItemKind::Module(AModRack::Mid, AShipKind::Structure));
-            }
-            if effects.contains_key(&ec::effects::LO_POWER) {
-                kinds.push(AItemKind::Module(AModRack::Low, AShipKind::Structure));
-            }
-            if effects.contains_key(&ec::effects::RIG_SLOT) {
-                kinds.push(AItemKind::Rig(AShipKind::Structure));
+                kinds.push(AItemKind::Rig);
             }
         }
         // Ships and structures
-        ec::itemcats::SHIP => match srqs.contains_key(&ec::items::CAPITAL_SHIPS) {
-            true => kinds.push(AItemKind::Ship(AShipKind::CapitalShip)),
-            false => kinds.push(AItemKind::Ship(AShipKind::Ship)),
-        },
-        ec::itemcats::STRUCTURE => kinds.push(AItemKind::Ship(AShipKind::Structure)),
+        ec::itemcats::SHIP | ec::itemcats::STRUCTURE => kinds.push(AItemKind::Ship),
         // Implants and boosters
         ec::itemcats::IMPLANT => {
             if attrs.contains_key(&ec::attrs::BOOSTERNESS) {

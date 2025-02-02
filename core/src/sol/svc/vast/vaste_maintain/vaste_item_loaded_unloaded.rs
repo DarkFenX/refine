@@ -67,7 +67,7 @@ impl SolVast {
                 // Data is added to / removed from this map when charges are added/removed; here,
                 // we just reset validation result when a module is being loaded
                 handle_charge_volume_for_module(fit_data, item_id);
-                if let Some(ad::AItemKind::Module(_, ad::AShipKind::CapitalShip)) = extras.kind {
+                if let Some(ad::AShipKind::CapitalShip) = extras.item_ship_kind {
                     fit_data.mods_capital.insert(item_id);
                 }
             }
@@ -168,7 +168,7 @@ impl SolVast {
                 // Data is added to / removed from this map when charges are added/removed; here,
                 // we just reset validation result when a module is being unloaded
                 handle_charge_volume_for_module(fit_data, item_id);
-                if let Some(ad::AItemKind::Module(_, ad::AShipKind::CapitalShip)) = extras.kind {
+                if let Some(ad::AShipKind::CapitalShip) = extras.item_ship_kind {
                     fit_data.mods_capital.remove(&item_id);
                 }
             }

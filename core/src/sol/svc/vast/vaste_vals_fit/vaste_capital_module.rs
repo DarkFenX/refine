@@ -48,5 +48,5 @@ fn is_ship_subcap(uad: &SolUad, fit: &SolFit) -> bool {
         Some(extras) => extras,
         None => return false,
     };
-    matches!(extras.kind, Some(ad::AItemKind::Ship(ad::AShipKind::Ship)))
+    matches!(extras.ship_kind, Some(ad::AShipKind::Ship))
 }
