@@ -32,6 +32,7 @@ class EveItemCat(IntEnum):
     implant = 20
     subsystem = 32
     structure = 65
+    structure_module = 66
     fighter = 87
 
 
