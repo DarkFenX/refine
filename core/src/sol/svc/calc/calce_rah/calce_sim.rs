@@ -177,7 +177,7 @@ impl SolCalc {
         }
         // Raw form of cycle time is defined in milliseconds (we don't really care in RAH sim, just
         // to be more intuitive during debugging)
-        let cycle_ms = self.get_item_effect_id_duration(uad, &item_id, &RAH_EFFECT_ID)? / OF(1000.0);
+        let cycle_ms = self.get_item_effect_id_duration(uad, item_id, &RAH_EFFECT_ID)? / OF(1000.0);
         if cycle_ms <= OF(0.0) {
             return None;
         }

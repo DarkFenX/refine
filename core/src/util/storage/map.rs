@@ -12,12 +12,12 @@ pub struct StMap<K, V> {
 }
 impl<K: Eq + Hash, V> StMap<K, V> {
     // Constructors
-    pub fn new() -> StMap<K, V> {
+    pub fn new() -> Self {
         Self {
             data: FxHashMap::default(),
         }
     }
-    pub fn with_capacity(capacity: usize) -> StMap<K, V> {
+    pub fn with_capacity(capacity: usize) -> Self {
         Self {
             data: FxHashMap::with_capacity_and_hasher(capacity, FxBuildHasher),
         }
@@ -82,6 +82,11 @@ impl<K: Eq + Hash, V> StMap<K, V> {
     // Consumption methods
     pub fn into_values(self) -> impl ExactSizeIterator<Item = V> {
         self.data.into_values()
+    }
+}
+impl<K: Eq + Hash, V> Default for StMap<K, V> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 impl<K, V> IntoIterator for StMap<K, V> {

@@ -18,9 +18,9 @@ impl SolarSystem {
             .uad
             .items
             .get_item(item_id)
-            .map_err(|e| AddFighterProjError::ProjectorNotFound(e))?
+            .map_err(AddFighterProjError::ProjectorNotFound)?
             .get_fighter()
-            .map_err(|e| AddFighterProjError::ProjectorIsNotFighter(e))?;
+            .map_err(AddFighterProjError::ProjectorIsNotFighter)?;
         // Check if projection has already been defined
         if fighter.get_projs().contains(&projectee_item_id) {
             return Err(AddFighterProjError::ProjectionAlreadyExists(ProjNotFoundError::new(
@@ -33,7 +33,7 @@ impl SolarSystem {
             .uad
             .items
             .get_item(&projectee_item_id)
-            .map_err(|e| AddFighterProjError::ProjecteeNotFound(e))?;
+            .map_err(AddFighterProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
             return Err(AddFighterProjError::ProjecteeCantTakeProjs(ItemReceiveProjError::new(
                 projectee_item_id,

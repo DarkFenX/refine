@@ -129,12 +129,10 @@ impl SolModAccumFast {
         let val = apply_mul(val, self.post_mul.get_comb_val(combine_muls, combine_muls_pen, hig));
         let val = apply_mul(val, self.post_div.get_comb_val(combine_muls, combine_muls_pen, hig));
         let val = apply_mul(val, self.post_perc.get_comb_val(combine_muls, combine_muls_pen, hig));
-        let val = apply_assign(val, self.post_assign.get_comb_val(combine_assigns, hig));
-        val
+        apply_assign(val, self.post_assign.get_comb_val(combine_assigns, hig))
     }
     pub(in crate::sol::svc::calc) fn apply_extra_mods(&mut self, val: AttrVal, hig: bool) -> AttrVal {
-        let val = apply_mul(val, self.extra_mul.get_comb_val(combine_muls, hig));
-        val
+        apply_mul(val, self.extra_mul.get_comb_val(combine_muls, hig))
     }
 }
 
@@ -240,7 +238,7 @@ impl SolAttrAggr {
 
 // Application functions
 fn apply_assign(base_val: AttrVal, other_val: Option<AttrVal>) -> AttrVal {
-    other_val.unwrap_or_else(|| base_val)
+    other_val.unwrap_or(base_val)
 }
 fn apply_add(base_val: AttrVal, other_val: Option<AttrVal>) -> AttrVal {
     match other_val {

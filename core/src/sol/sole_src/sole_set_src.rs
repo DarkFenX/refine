@@ -79,7 +79,7 @@ impl SolarSystem {
                             .remove_item_projection(&self.uad, autocharge_item, projectee_item);
                         // Update user data for autocharge - don't touch data on charge itself,
                         // since charge will be removed later anyway
-                        self.proj_tracker.unreg_projectee(&autocharge_id, projectee_item_id);
+                        self.proj_tracker.unreg_projectee(autocharge_id, projectee_item_id);
                     }
                     // Remove from services
                     self.svc.remove_item(&self.uad, autocharge_item);

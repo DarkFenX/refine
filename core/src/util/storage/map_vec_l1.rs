@@ -7,7 +7,7 @@ pub(crate) struct StMapVecL1<K, V> {
     empty: Vec<V>,
 }
 impl<K: Eq + Hash, V> StMapVecL1<K, V> {
-    pub(crate) fn new() -> StMapVecL1<K, V> {
+    pub(crate) fn new() -> Self {
         Self {
             data: FxHashMap::default(),
             empty: Vec::new(),
@@ -36,6 +36,11 @@ impl<K: Eq + Hash, V> StMapVecL1<K, V> {
             .entry(key)
             .or_insert_with(|| Vec::with_capacity(entries.len()));
         values.extend(entries);
+    }
+}
+impl<K: Eq + Hash, V> Default for StMapVecL1<K, V> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 impl<K, V> IntoIterator for StMapVecL1<K, V> {

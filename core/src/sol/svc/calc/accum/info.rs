@@ -255,22 +255,20 @@ impl SolModAccumInfo {
             self.post_perc
                 .get_comb_attr_info(&combine_muls, &combine_muls_pen, &revert_perc, hig),
         );
-        let attr_info = apply_assign(
+        apply_assign(
             attr_info,
             self.post_assign.get_comb_attr_info(&combine_assigns, &revert_noop, hig),
-        );
-        attr_info
+        )
     }
     pub(in crate::sol::svc::calc) fn apply_extra_mods(
         &mut self,
         attr_info: SolAttrValInfo,
         hig: bool,
     ) -> SolAttrValInfo {
-        let attr_info = apply_mul(
+        apply_mul(
             attr_info,
             self.extra_mul.get_comb_attr_info(&combine_muls, &revert_noop, hig),
-        );
-        attr_info
+        )
     }
 }
 

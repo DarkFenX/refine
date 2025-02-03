@@ -45,18 +45,18 @@ impl KeyDb {
     // Foreign keys
     pub(in crate::adg) fn new_fkdb(g_data: &GData, g_supp: &GSupport) -> Self {
         let mut fkdb = Self::new();
-        fkdb.extend_fk_vec(&g_data.items, &g_supp);
-        fkdb.extend_fk_vec(&g_data.groups, &g_supp);
-        fkdb.extend_fk_vec(&g_data.attrs, &g_supp);
-        fkdb.extend_fk_vec(&g_data.item_attrs, &g_supp);
-        fkdb.extend_fk_vec(&g_data.effects, &g_supp);
-        fkdb.extend_fk_vec(&g_data.item_effects, &g_supp);
-        fkdb.extend_fk_vec(&g_data.abils, &g_supp);
-        fkdb.extend_fk_vec(&g_data.item_abils, &g_supp);
-        fkdb.extend_fk_vec(&g_data.buffs, &g_supp);
-        fkdb.extend_fk_vec(&g_data.item_srqs, &g_supp);
-        fkdb.extend_fk_vec(&g_data.muta_items, &g_supp);
-        fkdb.extend_fk_vec(&g_data.muta_attrs, &g_supp);
+        fkdb.extend_fk_vec(&g_data.items, g_supp);
+        fkdb.extend_fk_vec(&g_data.groups, g_supp);
+        fkdb.extend_fk_vec(&g_data.attrs, g_supp);
+        fkdb.extend_fk_vec(&g_data.item_attrs, g_supp);
+        fkdb.extend_fk_vec(&g_data.effects, g_supp);
+        fkdb.extend_fk_vec(&g_data.item_effects, g_supp);
+        fkdb.extend_fk_vec(&g_data.abils, g_supp);
+        fkdb.extend_fk_vec(&g_data.item_abils, g_supp);
+        fkdb.extend_fk_vec(&g_data.buffs, g_supp);
+        fkdb.extend_fk_vec(&g_data.item_srqs, g_supp);
+        fkdb.extend_fk_vec(&g_data.muta_items, g_supp);
+        fkdb.extend_fk_vec(&g_data.muta_attrs, g_supp);
         fkdb
     }
     fn extend_fk_vec<T: Fk>(&mut self, vec: &[T], g_supp: &GSupport) {

@@ -7,7 +7,7 @@ pub(crate) struct StSet<V> {
     data: FxHashSet<V>,
 }
 impl<V: Eq + Hash> StSet<V> {
-    pub(crate) fn new() -> StSet<V> {
+    pub(crate) fn new() -> Self {
         Self {
             data: FxHashSet::default(),
         }
@@ -36,6 +36,11 @@ impl<V: Eq + Hash> StSet<V> {
     }
     pub(crate) fn remove(&mut self, val: &V) -> bool {
         self.data.remove(val)
+    }
+}
+impl<V: Eq + Hash> Default for StSet<V> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 impl<V: Eq + Hash> FromIterator<V> for StSet<V> {

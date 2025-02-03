@@ -8,7 +8,7 @@ pub(crate) struct StMapSetL1<K, V> {
     empty: FxHashSet<V>,
 }
 impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
-    pub(crate) fn new() -> StMapSetL1<K, V> {
+    pub(crate) fn new() -> Self {
         Self {
             data: FxHashMap::default(),
             empty: FxHashSet::default(),
@@ -73,6 +73,11 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
         if need_cleanup {
             self.data.remove(key);
         }
+    }
+}
+impl<K: Eq + Hash, V: Eq + Hash> Default for StMapSetL1<K, V> {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

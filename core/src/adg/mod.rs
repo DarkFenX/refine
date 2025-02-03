@@ -87,8 +87,8 @@ impl GSupport {
         }
     }
     pub(in crate::adg) fn fill(&mut self, g_data: &GData) {
-        self.fill_attr_unit_map(&g_data);
-        self.fill_grp_cat_map(&g_data);
+        self.fill_attr_unit_map(g_data);
+        self.fill_grp_cat_map(g_data);
         self.fill_eff_buff_map();
         self.fill_eff_charge_map();
     }

@@ -15,7 +15,7 @@ const MAX_CYCLES: Count = 100;
 pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> Result<(), StrMsgError> {
     let mut trash = GData::new();
     trash_all(alive, &mut trash);
-    restore_core_items(alive, &mut trash, &g_supp);
+    restore_core_items(alive, &mut trash, g_supp);
     restore_hardcoded_attrs(alive, &mut trash);
     restore_hardcoded_buffs(alive, &mut trash);
 
@@ -28,7 +28,7 @@ pub(in crate::adg) fn clean_unused(alive: &mut GData, g_supp: &GSupport) -> Resu
             tracing::error!("{msg}");
             return Err(StrMsgError::new(msg));
         }
-        changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, &g_supp);
+        changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, g_supp);
     }
     cleanup_report(alive, &trash);
     Ok(())

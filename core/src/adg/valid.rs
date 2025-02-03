@@ -68,7 +68,7 @@ where
     let mut fks = StSet::new();
     rer_vec.iter().for_each(|v| fks.extend(func(v, g_supp)));
     let missing = fks.difference(ree_pks).collect_vec();
-    if missing.len() > 0 {
+    if !missing.is_empty() {
         let msg = format!(
             "{} refers to {} missing {}: {}",
             T::get_name(),
@@ -132,7 +132,7 @@ fn fighter_ability_effect(g_data: &mut GData) {
     for item_eff in g_data.item_effects.iter() {
         item_eff_map
             .entry(item_eff.item_id)
-            .or_insert_with(|| StSet::new())
+            .or_insert_with(StSet::new)
             .insert(item_eff.effect_id);
     }
     let mut invalids = StSet::new();
@@ -148,7 +148,7 @@ fn fighter_ability_effect(g_data: &mut GData) {
         .for_each(|v| {
             invalids.insert((v.item_id, v.abil_id));
         });
-    if invalids.len() > 0 {
+    if !invalids.is_empty() {
         let max_logged = 5;
         let msg = format!(
             "removed {} {} with references to missing effects, showing up to {}: {}",

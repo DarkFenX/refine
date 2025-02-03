@@ -18,3 +18,8 @@ impl<T> EDataCont<T> {
         EDataCont { data, warns }
     }
 }
+impl<T> Default for EDataCont<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}

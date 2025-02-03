@@ -35,8 +35,8 @@ impl SolarSystem {
         projectee_item_id: &SolItemId,
         range: Option<AttrVal>,
     ) {
-        let projector_item = self.uad.items.get_item(&projector_item_id).unwrap();
-        let projectee_item = self.uad.items.get_item(&projectee_item_id).unwrap();
+        let projector_item = self.uad.items.get_item(projector_item_id).unwrap();
+        let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
         self.svc
             .add_item_projection(&self.uad, projector_item, projectee_item, range);
     }
@@ -46,8 +46,8 @@ impl SolarSystem {
         projectee_item_id: &SolItemId,
         range: Option<AttrVal>,
     ) {
-        let projector_item = self.uad.items.get_item(&projector_item_id).unwrap();
-        let projectee_item = self.uad.items.get_item(&projectee_item_id).unwrap();
+        let projector_item = self.uad.items.get_item(projector_item_id).unwrap();
+        let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
         self.svc
             .change_item_proj_range(&self.uad, projector_item, projectee_item, range);
     }
@@ -56,8 +56,8 @@ impl SolarSystem {
         projector_item_id: &SolItemId,
         projectee_item_id: &SolItemId,
     ) {
-        let projector_item = self.uad.items.get_item(&projector_item_id).unwrap();
-        let projectee_item = self.uad.items.get_item(&projectee_item_id).unwrap();
+        let projector_item = self.uad.items.get_item(projector_item_id).unwrap();
+        let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();
         self.svc
             .remove_item_projection(&self.uad, projector_item, projectee_item);
     }

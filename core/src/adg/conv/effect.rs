@@ -292,10 +292,7 @@ where
     for e_abil in g_data.abils.iter() {
         match ec::extras::get_abil_effect(e_abil.id) {
             None => continue,
-            Some(effect_id) => map
-                .entry(effect_id)
-                .or_insert_with(|| StSet::new())
-                .insert(getter(e_abil)),
+            Some(effect_id) => map.entry(effect_id).or_insert_with(StSet::new).insert(getter(e_abil)),
         };
     }
     map

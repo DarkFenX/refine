@@ -10,7 +10,7 @@ pub(crate) struct StMapSetL2<A, B, V> {
     empty: StMapSetL1<B, V>,
 }
 impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> StMapSetL2<A, B, V> {
-    pub(crate) fn new() -> StMapSetL2<A, B, V> {
+    pub(crate) fn new() -> Self {
         Self {
             data: FxHashMap::default(),
             empty: StMapSetL1::new(),
@@ -48,5 +48,10 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> StMapSetL2<A, B, V> {
     }
     pub(crate) fn remove_l1(&mut self, key: &A) -> Option<StMapSetL1<B, V>> {
         self.data.remove(key)
+    }
+}
+impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> Default for StMapSetL2<A, B, V> {
+    fn default() -> Self {
+        Self::new()
     }
 }

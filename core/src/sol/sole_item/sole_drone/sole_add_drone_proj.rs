@@ -16,9 +16,9 @@ impl SolarSystem {
             .uad
             .items
             .get_item(item_id)
-            .map_err(|e| AddDroneProjError::ProjectorNotFound(e))?
+            .map_err(AddDroneProjError::ProjectorNotFound)?
             .get_drone()
-            .map_err(|e| AddDroneProjError::ProjectorIsNotDrone(e))?;
+            .map_err(AddDroneProjError::ProjectorIsNotDrone)?;
         // Check if projection has already been defined
         if drone.get_projs().contains(&projectee_item_id) {
             return Err(AddDroneProjError::ProjectionAlreadyExists(ProjNotFoundError::new(
@@ -31,7 +31,7 @@ impl SolarSystem {
             .uad
             .items
             .get_item(&projectee_item_id)
-            .map_err(|e| AddDroneProjError::ProjecteeNotFound(e))?;
+            .map_err(AddDroneProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
             return Err(AddDroneProjError::ProjecteeCantTakeProjs(ItemReceiveProjError::new(
                 projectee_item_id,
