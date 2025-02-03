@@ -21,7 +21,7 @@ impl SolProjectionRegister {
     ) -> Option<AttrVal> {
         self.ranges
             .get(&(affector_item_id, effect_id, affectee_item_id))
-            .map(|v| *v)
+            .copied()
     }
     // Modification methods
     pub(in crate::sol::svc::calc) fn add_range(

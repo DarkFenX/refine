@@ -37,8 +37,12 @@ impl<K: Eq + Hash, V> StMapVecL1<K, V> {
             .or_insert_with(|| Vec::with_capacity(entries.len()));
         values.extend(entries);
     }
-    // Consumption methods
-    pub(crate) fn into_iter(self) -> impl ExactSizeIterator<Item = (K, Vec<V>)> {
+}
+impl<K, V> IntoIterator for StMapVecL1<K, V> {
+    type Item = (K, Vec<V>);
+    type IntoIter = std::collections::hash_map::IntoIter<K, Vec<V>>;
+
+    fn into_iter(self) -> Self::IntoIter {
         self.data.into_iter()
     }
 }

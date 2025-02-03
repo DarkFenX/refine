@@ -55,7 +55,7 @@ fn get_item_grps_with_attr(
     for a_item in a_items.iter() {
         if a_item.attrs.contains_key(&attr_id) {
             grp_ids.insert(a_item.grp_id);
-            grp_ids.extend(grp_mutations.get(&a_item.grp_id).map(|v| *v))
+            grp_ids.extend(grp_mutations.get(&a_item.grp_id).copied())
         }
     }
     grp_ids.into_iter().collect()

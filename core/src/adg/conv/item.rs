@@ -28,7 +28,7 @@ pub(in crate::adg::conv) fn conv_items(g_data: &GData, g_supp: &GSupport) -> Vec
             }
         };
         // Item default effect
-        let defeff_id = defeff_map.get(&e_item.id).map(|v| *v);
+        let defeff_id = defeff_map.get(&e_item.id).copied();
         // Item construction
         let a_item = ad::AItem::new(
             e_item.id,

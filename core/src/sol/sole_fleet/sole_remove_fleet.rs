@@ -5,7 +5,7 @@ use crate::{defs::SolFleetId, err::basic::FleetFoundError, sol::SolarSystem};
 impl SolarSystem {
     pub fn remove_fleet(&mut self, fleet_id: &SolFleetId) -> Result<(), RemoveFleetError> {
         let fleet = self.uad.fleets.get_fleet(fleet_id)?;
-        let fit_ids = fleet.iter_fits().map(|v| *v).collect_vec();
+        let fit_ids = fleet.iter_fits().copied().collect_vec();
         for fit_id in fit_ids.iter() {
             self.svc.remove_fit_from_fleet(&self.uad, fleet, fit_id);
             let fit = self.uad.fits.get_fit_mut(fit_id).unwrap();

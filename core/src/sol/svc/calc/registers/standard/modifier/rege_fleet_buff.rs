@@ -87,7 +87,7 @@ impl SolStandardRegister {
         let mut raw_modifiers = Vec::new();
         let mut ctx_modifiers = Vec::new();
         // Outgoing fleet boosts
-        raw_modifiers.extend(self.rmods_fleet.get(fit_id).map(|v| *v));
+        raw_modifiers.extend(self.rmods_fleet.get(fit_id).copied());
         for raw_modifier in raw_modifiers.iter() {
             for fleet_fit_id in fleet.iter_fits() {
                 if fleet_fit_id == fit_id {
@@ -104,7 +104,7 @@ impl SolStandardRegister {
                 continue;
             }
             raw_modifiers.clear();
-            raw_modifiers.extend(self.rmods_fleet.get(fleet_fit_id).map(|v| *v));
+            raw_modifiers.extend(self.rmods_fleet.get(fleet_fit_id).copied());
             for raw_modifier in raw_modifiers.iter() {
                 if let Some(ctx_modifier) = self.apply_fleet_mod(*raw_modifier, *fit_id) {
                     ctx_modifiers.push(ctx_modifier);
@@ -121,7 +121,7 @@ impl SolStandardRegister {
         let mut raw_modifiers = Vec::new();
         let mut ctx_modifiers = Vec::new();
         // Outgoing fleet boosts
-        raw_modifiers.extend(self.rmods_fleet.get(fit_id).map(|v| *v));
+        raw_modifiers.extend(self.rmods_fleet.get(fit_id).copied());
         for raw_modifier in raw_modifiers.iter() {
             for fleet_fit_id in fleet.iter_fits() {
                 if fleet_fit_id == fit_id {
@@ -138,7 +138,7 @@ impl SolStandardRegister {
                 continue;
             }
             raw_modifiers.clear();
-            raw_modifiers.extend(self.rmods_fleet.get(fleet_fit_id).map(|v| *v));
+            raw_modifiers.extend(self.rmods_fleet.get(fleet_fit_id).copied());
             for raw_modifier in raw_modifiers.iter() {
                 if let Some(ctx_modifier) = self.unapply_fleet_mod(*raw_modifier, *fit_id) {
                     ctx_modifiers.push(ctx_modifier);

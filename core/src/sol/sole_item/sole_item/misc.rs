@@ -62,7 +62,7 @@ impl SolarSystem {
             .remove_item_projection(&self.uad, projector_item, projectee_item);
     }
     pub(in crate::sol::sole_item) fn remove_incoming_projections(&mut self, item_id: &SolItemId) {
-        let proj_incoming = self.proj_tracker.iter_projectors(item_id).map(|v| *v).collect_vec();
+        let proj_incoming = self.proj_tracker.iter_projectors(item_id).copied().collect_vec();
         for proj_item_id in proj_incoming.iter() {
             let proj_item = self.uad.items.get_item(proj_item_id).unwrap();
             match proj_item {

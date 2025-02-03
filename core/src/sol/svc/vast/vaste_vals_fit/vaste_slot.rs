@@ -165,7 +165,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = fit.rigs.iter().map(|v| *v).collect();
+        let users = fit.rigs.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slots_verbose(
@@ -178,7 +178,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = fit.subsystems.iter().map(|v| *v).collect();
+        let users = fit.subsystems.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_launched_drones_verbose(
@@ -191,7 +191,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.drones_online_bandwidth.keys().map(|v| *v).collect();
+        let users = self.drones_online_bandwidth.keys().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_launched_fighters_verbose(
@@ -204,7 +204,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.fighters_online.iter().map(|v| *v).collect();
+        let users = self.fighters_online.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_launched_support_fighters_verbose(
@@ -217,7 +217,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.support_fighters_online.iter().map(|v| *v).collect();
+        let users = self.support_fighters_online.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_launched_light_fighters_verbose(
@@ -230,7 +230,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.light_fighters_online.iter().map(|v| *v).collect();
+        let users = self.light_fighters_online.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_launched_heavy_fighters_verbose(
@@ -243,7 +243,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.heavy_fighters_online.iter().map(|v| *v).collect();
+        let users = self.heavy_fighters_online.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_support_fighters_verbose(
@@ -256,7 +256,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.standup_support_fighters_online.iter().map(|v| *v).collect();
+        let users = self.standup_support_fighters_online.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_light_fighters_verbose(
@@ -269,7 +269,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.standup_light_fighters_online.iter().map(|v| *v).collect();
+        let users = self.standup_light_fighters_online.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_heavy_fighters_verbose(
@@ -282,7 +282,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.standup_heavy_fighters_online.iter().map(|v| *v).collect();
+        let users = self.standup_heavy_fighters_online.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_turret_slots_verbose(
@@ -295,7 +295,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.mods_turret.iter().map(|v| *v).collect();
+        let users = self.mods_turret.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_launcher_slots_verbose(
@@ -308,7 +308,7 @@ impl SolVastFitData {
         if stats.used <= stats.total.unwrap_or(0) {
             return None;
         }
-        let users = self.mods_launcher.iter().map(|v| *v).collect();
+        let users = self.mods_launcher.iter().copied().collect();
         Some(SolSlotValFail::new(stats.used, stats.total, users))
     }
     pub(in crate::sol::svc::vast) fn validate_high_slots_verbose(

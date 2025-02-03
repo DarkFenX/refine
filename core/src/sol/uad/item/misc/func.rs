@@ -15,8 +15,5 @@ pub(in crate::sol::uad::item) fn bool_to_state_active(bool_state: bool) -> SolIt
 }
 
 pub(in crate::sol::uad::item) fn state_to_bool(state: SolItemState) -> bool {
-    match state {
-        SolItemState::Ghost => false,
-        _ => true,
-    }
+    !matches!(state, SolItemState::Ghost)
 }

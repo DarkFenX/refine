@@ -14,6 +14,6 @@ impl SolFleetInfo {
 }
 impl From<&SolFleet> for SolFleetInfo {
     fn from(fleet: &SolFleet) -> Self {
-        Self::new(fleet.id, fleet.iter_fits().map(|v| *v).collect())
+        Self::new(fleet.id, fleet.iter_fits().copied().collect())
     }
 }

@@ -149,7 +149,7 @@ impl SolCalc {
     }
     // Private methods
     fn clear_fit_rah_results(&mut self, uad: &SolUad, fit_id: &SolFitId) {
-        let other_item_ids = self.rah.by_fit.get(&fit_id).map(|v| *v).collect_vec();
+        let other_item_ids = self.rah.by_fit.get(&fit_id).copied().collect_vec();
         for other_item_id in other_item_ids {
             self.clear_rah_result(uad, &other_item_id);
         }

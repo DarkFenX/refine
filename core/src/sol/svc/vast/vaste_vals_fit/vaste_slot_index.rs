@@ -41,7 +41,7 @@ fn validate_slot_index_verbose(data: &StMapSetL1<SlotIndex, SolItemId>) -> Vec<S
     let mut fails = Vec::new();
     for (slot, users) in data.iter() {
         if users.len() >= 2 {
-            fails.push(SolSlotIndexValFail::new(*slot, users.map(|v| *v).collect()))
+            fails.push(SolSlotIndexValFail::new(*slot, users.copied().collect()))
         }
     }
     fails

@@ -30,7 +30,7 @@ impl SolSvc {
     ) {
         let running_effects = self.running_effects.iter_running(&projector_item.get_id());
         if !running_effects.is_empty() {
-            let effect_ids = running_effects.map(|v| *v).collect_vec();
+            let effect_ids = running_effects.copied().collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = uad.src.get_a_effect(effect_id).unwrap();
                 if is_effect_projectable(effect) {
@@ -51,7 +51,7 @@ impl SolSvc {
     fn remove_item_projection_internal(&mut self, uad: &SolUad, projector_item: &SolItem, projectee_item: &SolItem) {
         let running_effects = self.running_effects.iter_running(&projector_item.get_id());
         if !running_effects.is_empty() {
-            let effect_ids = running_effects.map(|v| *v).collect_vec();
+            let effect_ids = running_effects.copied().collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = uad.src.get_a_effect(effect_id).unwrap();
                 if is_effect_projectable(effect) {
@@ -79,7 +79,7 @@ impl SolSvc {
     ) {
         let running_effects = self.running_effects.iter_running(&projector_item.get_id());
         if !running_effects.is_empty() {
-            let effect_ids = running_effects.map(|v| *v).collect_vec();
+            let effect_ids = running_effects.copied().collect_vec();
             for effect_id in effect_ids.iter() {
                 let effect = uad.src.get_a_effect(effect_id).unwrap();
                 if is_effect_projectable(effect) {

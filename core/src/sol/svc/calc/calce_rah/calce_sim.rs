@@ -140,7 +140,7 @@ impl SolCalc {
     }
     fn get_fit_rah_sim_datas(&mut self, uad: &SolUad, fit_id: &SolFitId) -> BTreeMap<SolItemId, SolRahDataSim> {
         let mut rah_datas = BTreeMap::new();
-        for item_id in self.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
+        for item_id in self.rah.by_fit.get(fit_id).copied().collect_vec() {
             let rah_attrs = match self.get_rah_sim_data(uad, &item_id) {
                 Some(rah_attrs) => rah_attrs,
                 // Whenever a RAH has unacceptable for sim attributes, set unadapted values and
@@ -186,7 +186,7 @@ impl SolCalc {
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
     fn set_fit_rahs_unadapted(&mut self, uad: &SolUad, fit_id: &SolFitId, notify: bool) {
-        for item_id in self.rah.by_fit.get(fit_id).map(|v| *v).collect_vec() {
+        for item_id in self.rah.by_fit.get(fit_id).copied().collect_vec() {
             self.set_rah_unadapted(uad, &item_id, notify);
         }
     }

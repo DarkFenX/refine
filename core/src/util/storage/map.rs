@@ -80,11 +80,16 @@ impl<K: Eq + Hash, V> StMap<K, V> {
         self.data.reserve(additional)
     }
     // Consumption methods
-    pub fn into_iter(self) -> impl ExactSizeIterator<Item = (K, V)> {
-        self.data.into_iter()
-    }
     pub fn into_values(self) -> impl ExactSizeIterator<Item = V> {
         self.data.into_values()
+    }
+}
+impl<K, V> IntoIterator for StMap<K, V> {
+    type Item = (K, V);
+    type IntoIter = std::collections::hash_map::IntoIter<K, V>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
     }
 }
 impl<K: Eq + Hash, V> FromIterator<(K, V)> for StMap<K, V> {

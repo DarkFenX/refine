@@ -30,7 +30,7 @@ impl SolarSystem {
         // Add fighter and autocharges to services
         self.add_item_id_to_svc(&item_id);
         let fighter = self.uad.items.get_item(&item_id).unwrap().get_fighter().unwrap();
-        for autocharge_id in fighter.get_autocharges().values().map(|v| *v).collect_vec() {
+        for autocharge_id in fighter.get_autocharges().values().copied().collect_vec() {
             self.add_item_id_to_svc(&autocharge_id);
         }
         // Make info

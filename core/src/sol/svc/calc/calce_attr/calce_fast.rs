@@ -80,7 +80,7 @@ impl SolCalc {
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
         let item_attr_data = self.attrs.get_item_attr_data(item_id)?;
-        let pp_attr_ids = item_attr_data.postprocs.keys().map(|v| *v).collect_vec();
+        let pp_attr_ids = item_attr_data.postprocs.keys().copied().collect_vec();
         let mut vals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
         // item

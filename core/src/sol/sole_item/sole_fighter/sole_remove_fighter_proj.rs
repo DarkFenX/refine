@@ -17,7 +17,7 @@ impl SolarSystem {
         if !fighter.get_projs().contains(projectee_item_id) {
             return Err(ProjFoundError::new(*item_id, *projectee_item_id).into());
         };
-        let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
+        let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
         for autocharge_id in autocharge_ids {
             // Update services for autocharge
             self.remove_item_id_projection_from_svc(&autocharge_id, projectee_item_id);

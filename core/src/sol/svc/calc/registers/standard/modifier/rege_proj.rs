@@ -22,7 +22,7 @@ impl SolStandardRegister {
         let raw_modifiers = self
             .rmods_proj
             .get(&(*projector_item_id, *effect_id))
-            .map(|v| *v)
+            .copied()
             .collect_vec();
         let mut ctx_modifiers = Vec::with_capacity(raw_modifiers.len());
         for raw_modifier in raw_modifiers.iter() {
@@ -46,7 +46,7 @@ impl SolStandardRegister {
         let raw_modifiers = self
             .rmods_proj
             .get(&(*projector_item_id, *effect_id))
-            .map(|v| *v)
+            .copied()
             .collect_vec();
         let mut ctx_modifiers = Vec::with_capacity(raw_modifiers.len());
         for raw_modifier in raw_modifiers.iter() {

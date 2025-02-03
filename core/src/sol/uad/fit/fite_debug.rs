@@ -65,7 +65,7 @@ impl SolFit {
         // Implants
         for item_id in self.implants.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
@@ -80,7 +80,7 @@ impl SolFit {
         // Boosters
         for item_id in self.boosters.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
@@ -125,7 +125,7 @@ impl SolFit {
         // Subsystems
         for item_id in self.subsystems.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
@@ -141,7 +141,7 @@ impl SolFit {
         self.mods_high.debug_consistency_check()?;
         for item_id in self.mods_high.iter_ids() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
@@ -162,7 +162,7 @@ impl SolFit {
         self.mods_mid.debug_consistency_check()?;
         for item_id in self.mods_mid.iter_ids() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
@@ -183,7 +183,7 @@ impl SolFit {
         self.mods_low.debug_consistency_check()?;
         for item_id in self.mods_low.iter_ids() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
@@ -203,7 +203,7 @@ impl SolFit {
         // Rigs
         for item_id in self.rigs.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
@@ -218,7 +218,7 @@ impl SolFit {
         // Drones
         for item_id in self.drones.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
@@ -233,7 +233,7 @@ impl SolFit {
         // Fighters
         for item_id in self.fighters.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };
@@ -250,7 +250,7 @@ impl SolFit {
         // Fit-wide effects
         for item_id in self.fw_effects.iter() {
             seen_items.push(*item_id);
-            let item = match uad.items.get_item(&item_id) {
+            let item = match uad.items.get_item(item_id) {
                 Ok(item) => item,
                 _ => return Err(SolDebugError::new()),
             };

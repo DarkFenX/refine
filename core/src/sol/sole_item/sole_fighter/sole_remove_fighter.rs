@@ -12,7 +12,7 @@ impl SolarSystem {
         let item = self.uad.items.get_item(item_id)?;
         let fighter = item.get_fighter()?;
         let fit_id = fighter.get_fit_id();
-        let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
+        let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
         // Remove outgoing projections for fighter and its autocharges
         for projectee_item_id in fighter.get_projs().iter_items() {
             let projectee_item = self.uad.items.get_item(projectee_item_id).unwrap();

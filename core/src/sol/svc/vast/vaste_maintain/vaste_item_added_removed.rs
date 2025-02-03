@@ -14,7 +14,7 @@ impl SolVast {
             SolItem::Rig(rig) => {
                 let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                 let rig_size = match rig.get_attrs().map(|a| a) {
-                    Some(attrs) => attrs.get(&ec::attrs::RIG_SIZE).map(|v| *v),
+                    Some(attrs) => attrs.get(&ec::attrs::RIG_SIZE).copied(),
                     None => None,
                 };
                 fit_data.rigs_rig_size.insert(item.get_id(), rig_size);

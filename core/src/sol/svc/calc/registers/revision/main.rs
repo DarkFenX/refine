@@ -15,10 +15,10 @@ impl SolRevisionRegister {
     }
     // Query methods
     pub(in crate::sol::svc::calc) fn get_mods_on_item_add(&self) -> Vec<SolCtxModifier> {
-        self.item_add.iter().map(|v| *v).collect()
+        self.item_add.iter().copied().collect()
     }
     pub(in crate::sol::svc::calc) fn get_mods_on_item_remove(&self) -> Vec<SolCtxModifier> {
-        self.item_remove.iter().map(|v| *v).collect()
+        self.item_remove.iter().copied().collect()
     }
     // Modification methods
     pub(in crate::sol::svc::calc) fn reg_mod(&mut self, modifier: &SolCtxModifier) {

@@ -37,15 +37,19 @@ impl<V: Eq + Hash> StSet<V> {
     pub(crate) fn remove(&mut self, val: &V) -> bool {
         self.data.remove(val)
     }
-    // Consumption methods
-    pub(crate) fn into_iter(self) -> impl ExactSizeIterator<Item = V> {
-        self.data.into_iter()
-    }
 }
 impl<V: Eq + Hash> FromIterator<V> for StSet<V> {
     fn from_iter<I: IntoIterator<Item = V>>(iter: I) -> Self {
         Self {
             data: FxHashSet::from_iter(iter),
         }
+    }
+}
+impl<V> IntoIterator for StSet<V> {
+    type Item = V;
+    type IntoIter = std::collections::hash_set::IntoIter<V>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
     }
 }

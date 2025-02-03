@@ -108,6 +108,6 @@ fn filter_and_extend<K: Eq + Hash>(
         storage
             .get(key)
             .filter(|v| &v.raw.affectee_attr_id == attr_id)
-            .map(|v| *v),
+            .copied(),
     )
 }

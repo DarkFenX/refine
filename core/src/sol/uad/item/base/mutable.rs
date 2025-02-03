@@ -566,15 +566,8 @@ fn normalize_attr_mutation_full_with_unmutated_value(
     match attr_mutation_value {
         SolItemAttrMutationValue::Roll(roll) => Some(limit_roll(roll)),
         SolItemAttrMutationValue::Absolute(absolute) => {
-            let unmutated_value = match unmutated_value {
-                Some(unmutated_value) => unmutated_value,
-                None => return None,
-            };
-            let mutation_range = match a_mutator.attr_mods.get(attr_id) {
-                Some(mutation_range) => mutation_range,
-                None => return None,
-            };
-            normalize_attr_value(absolute, unmutated_value, mutation_range)
+            let mutation_range = a_mutator.attr_mods.get(attr_id)?;
+            normalize_attr_value(absolute, unmutated_value?, mutation_range)
         }
     }
 }
@@ -604,7 +597,7 @@ fn apply_attr_mutations(
     attr_rolls: &StMap<EAttrId, MutaRoll>,
 ) {
     for (attr_id, attr_mutation_range) in a_mutator.attr_mods.iter() {
-        let unmutated_value = match attrs.get(&attr_id) {
+        let unmutated_value = match attrs.get(attr_id) {
             Some(unmutated_value) => *unmutated_value,
             None => continue,
         };
@@ -644,18 +637,18 @@ fn get_combined_attr_value<'a>(
     mutated_a_item: &ad::AItem,
     attr_id: &EAttrId,
 ) -> Option<AttrVal> {
-    match mutated_a_item.attrs.get(&attr_id) {
+    match mutated_a_item.attrs.get(attr_id) {
         Some(unmutated_value) => Some(*unmutated_value),
         None => match base_a_item_cache {
             Some(opt_base_a_item) => match opt_base_a_item {
-                Some(base_a_item) => base_a_item.attrs.get(&attr_id).copied(),
+                Some(base_a_item) => base_a_item.attrs.get(attr_id).copied(),
                 None => None,
             },
             None => {
                 let opt_base_a_item = src.get_a_item(base_type_id);
                 base_a_item_cache.replace(opt_base_a_item);
                 match opt_base_a_item {
-                    Some(base_a_item) => base_a_item.attrs.get(&attr_id).copied(),
+                    Some(base_a_item) => base_a_item.attrs.get(attr_id).copied(),
                     None => None,
                 }
             }

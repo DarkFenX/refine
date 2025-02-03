@@ -10,7 +10,7 @@ impl SolarSystem {
     pub fn set_fighter_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetFighterStateError> {
         // Update user data for fighter
         let fighter = self.uad.items.get_item_mut(item_id)?.get_fighter_mut()?;
-        let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
+        let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
         let old_state = fighter.get_state();
         fighter.set_state(state);
         // Update services for fighter

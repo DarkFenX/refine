@@ -5,5 +5,5 @@ use crate::{
 };
 
 pub(super) fn get_item_volume(attrs: &StMap<EAttrId, AttrVal>) -> Option<AttrVal> {
-    attrs.get(&ec::attrs::VOLUME).map(|v| *v)
+    attrs.get(&ec::attrs::VOLUME).copied()
 }

@@ -25,7 +25,7 @@ impl SolarSystem {
         }
         // Update user data for fighter
         let fighter = self.uad.items.get_item_mut(item_id).unwrap().get_fighter_mut().unwrap();
-        let autocharge_ids = fighter.get_autocharges().values().map(|v| *v).collect_vec();
+        let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
         fighter.get_projs_mut().add(*projectee_item_id, range);
         // Update services for fighter
         self.change_item_id_projection_range_in_svc(item_id, projectee_item_id, range);

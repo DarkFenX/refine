@@ -173,7 +173,7 @@ impl SolCalc {
         let attr_specs = self
             .deps
             .get_affectee_attr_specs(item_id, attr_id)
-            .map(|v| *v)
+            .copied()
             .collect_vec();
         for attr_spec in attr_specs.iter() {
             self.force_attr_value_recalc(uad, &attr_spec.item_id, &attr_spec.attr_id);
@@ -182,7 +182,7 @@ impl SolCalc {
         let ctx_modifiers = self
             .std
             .iter_affector_spec_mods(&SolAttrSpec::new(*item_id, *attr_id))
-            .map(|v| *v)
+            .copied()
             .collect_vec();
         if !ctx_modifiers.is_empty() {
             let mut affectees = Vec::new();
@@ -208,7 +208,7 @@ impl SolCalc {
             // Generate new modifiers using new value and apply them
             let effect_ids = self.buffs.get_effects(item_id);
             if !effect_ids.is_empty() {
-                let effect_ids = effect_ids.map(|v| *v).collect_vec();
+                let effect_ids = effect_ids.copied().collect_vec();
                 let raw_modifiers = self.generate_dependent_buff_mods(uad, item, effect_ids.iter(), attr_id);
                 for raw_modifier in raw_modifiers.iter() {
                     self.buffs.reg_dependent_mod(*item_id, *attr_id, *raw_modifier);

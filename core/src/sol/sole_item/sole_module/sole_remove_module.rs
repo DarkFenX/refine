@@ -16,7 +16,7 @@ impl SolarSystem {
         let rack = module.get_rack();
         let charge_id = module.get_charge_id();
         // Remove outgoing projections for both module and charge
-        let module_projs = module.get_projs().iter_items().map(|v| *v).collect_vec();
+        let module_projs = module.get_projs().iter_items().copied().collect_vec();
         if !module_projs.is_empty() {
             if let Some(charge_id) = charge_id {
                 let charge_item = self.uad.items.get_item(&charge_id).unwrap();

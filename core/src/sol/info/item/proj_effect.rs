@@ -25,7 +25,7 @@ impl From<&SolProjEffect> for SolProjEffectInfo {
             sol_proj_effect.get_id(),
             sol_proj_effect.get_type_id(),
             sol_proj_effect.get_bool_state(),
-            sol_proj_effect.get_projs().iter_items().map(|v| *v).collect(),
+            sol_proj_effect.get_projs().iter_items().copied().collect(),
         )
     }
 }
