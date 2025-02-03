@@ -13,19 +13,11 @@ use crate::{
     util::HExecError,
 };
 
-#[derive(serde::Deserialize)]
+#[derive(Default, serde::Deserialize)]
 pub(crate) struct HCreateSolReq {
     src_alias: Option<String>,
     #[serde(flatten)]
     cmd: HAddSolCmd,
-}
-impl Default for HCreateSolReq {
-    fn default() -> Self {
-        Self {
-            src_alias: None,
-            cmd: Default::default(),
-        }
-    }
 }
 
 pub(crate) async fn create_sol(

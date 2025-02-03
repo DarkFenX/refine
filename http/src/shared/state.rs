@@ -18,14 +18,14 @@ impl From<&rc::SolItemState> for HState {
         }
     }
 }
-impl Into<rc::SolItemState> for &HState {
-    fn into(self) -> rc::SolItemState {
-        match self {
-            HState::Offline => rc::SolItemState::Offline,
-            HState::Online => rc::SolItemState::Online,
-            HState::Active => rc::SolItemState::Active,
-            HState::Ghost => rc::SolItemState::Ghost,
-            HState::Overload => rc::SolItemState::Overload,
+impl From<&HState> for rc::SolItemState {
+    fn from(h_state: &HState) -> Self {
+        match h_state {
+            HState::Offline => Self::Offline,
+            HState::Online => Self::Online,
+            HState::Active => Self::Active,
+            HState::Ghost => Self::Ghost,
+            HState::Overload => Self::Overload,
         }
     }
 }

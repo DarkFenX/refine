@@ -15,13 +15,13 @@ impl From<&rc::SolDmgProfile> for HDmgProfile {
         }
     }
 }
-impl Into<rc::SolDmgProfile> for &HDmgProfile {
-    fn into(self) -> rc::SolDmgProfile {
-        rc::SolDmgProfile {
-            em: self.em,
-            thermal: self.thermal,
-            kinetic: self.kinetic,
-            explosive: self.explosive,
+impl From<&HDmgProfile> for rc::SolDmgProfile {
+    fn from(h_dmg_profile: &HDmgProfile) -> Self {
+        Self {
+            em: h_dmg_profile.em,
+            thermal: h_dmg_profile.thermal,
+            kinetic: h_dmg_profile.kinetic,
+            explosive: h_dmg_profile.explosive,
         }
     }
 }

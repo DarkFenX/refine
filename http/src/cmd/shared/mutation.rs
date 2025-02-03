@@ -6,10 +6,10 @@ pub(in crate::cmd) enum HMutationOnAdd {
     Short(rc::EItemId),
     Full(HItemMutationFull),
 }
-impl Into<rc::SolItemAddMutation> for &HMutationOnAdd {
-    fn into(self) -> rc::SolItemAddMutation {
-        match self {
-            HMutationOnAdd::Short(mutator_id) => rc::SolItemAddMutation::new(*mutator_id),
+impl From<&HMutationOnAdd> for rc::SolItemAddMutation {
+    fn from(h_mutation: &HMutationOnAdd) -> Self {
+        match h_mutation {
+            HMutationOnAdd::Short(mutator_id) => Self::new(*mutator_id),
             HMutationOnAdd::Full(full_mutation) => full_mutation.into(),
         }
     }
@@ -35,11 +35,12 @@ pub(in crate::cmd) struct HItemMutationFull {
     #[serde_as(as = "Option<std::collections::HashMap<serde_with::DisplayFromStr, _>>")]
     pub(in crate::cmd) attrs: Option<HashMap<rc::EAttrId, HItemAttrMutationValue>>,
 }
-impl Into<rc::SolItemAddMutation> for &HItemMutationFull {
-    fn into(self) -> rc::SolItemAddMutation {
-        rc::SolItemAddMutation::new_with_attrs(
-            self.mutator_id,
-            self.attrs
+impl From<&HItemMutationFull> for rc::SolItemAddMutation {
+    fn from(h_item_mutation: &HItemMutationFull) -> Self {
+        Self::new_with_attrs(
+            h_item_mutation.mutator_id,
+            h_item_mutation
+                .attrs
                 .as_ref()
                 .map(|v| {
                     v.iter()
@@ -57,11 +58,11 @@ pub(in crate::cmd) enum HItemAttrMutationValue {
     Roll(rc::MutaRoll),
     Absolute(rc::AttrVal),
 }
-impl Into<rc::SolItemAttrMutationValue> for &HItemAttrMutationValue {
-    fn into(self) -> rc::SolItemAttrMutationValue {
-        match self {
-            HItemAttrMutationValue::Roll(roll) => rc::SolItemAttrMutationValue::Roll(*roll),
-            HItemAttrMutationValue::Absolute(absolute) => rc::SolItemAttrMutationValue::Absolute(*absolute),
+impl From<&HItemAttrMutationValue> for rc::SolItemAttrMutationValue {
+    fn from(h_mutation_value: &HItemAttrMutationValue) -> Self {
+        match h_mutation_value {
+            HItemAttrMutationValue::Roll(roll) => Self::Roll(*roll),
+            HItemAttrMutationValue::Absolute(absolute) => Self::Absolute(*absolute),
         }
     }
 }

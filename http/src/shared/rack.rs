@@ -14,12 +14,12 @@ impl From<&rc::SolModRack> for HModRack {
         }
     }
 }
-impl Into<rc::SolModRack> for &HModRack {
-    fn into(self) -> rc::SolModRack {
-        match self {
-            HModRack::High => rc::SolModRack::High,
-            HModRack::Mid => rc::SolModRack::Mid,
-            HModRack::Low => rc::SolModRack::Low,
+impl From<&HModRack> for rc::SolModRack {
+    fn from(h_rack: &HModRack) -> Self {
+        match h_rack {
+            HModRack::High => Self::High,
+            HModRack::Mid => Self::Mid,
+            HModRack::Low => Self::Low,
         }
     }
 }

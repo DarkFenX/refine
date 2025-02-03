@@ -19,13 +19,13 @@ impl From<&rc::SolEffectMode> for HEffectMode {
         }
     }
 }
-impl Into<rc::SolEffectMode> for &HEffectMode {
-    fn into(self) -> rc::SolEffectMode {
-        match self {
-            HEffectMode::FullCompliance => rc::SolEffectMode::FullCompliance,
-            HEffectMode::StateCompliance => rc::SolEffectMode::StateCompliance,
-            HEffectMode::ForceRun => rc::SolEffectMode::ForceRun,
-            HEffectMode::ForceStop => rc::SolEffectMode::ForceStop,
+impl From<&HEffectMode> for rc::SolEffectMode {
+    fn from(h_effect_mode: &HEffectMode) -> Self {
+        match h_effect_mode {
+            HEffectMode::FullCompliance => Self::FullCompliance,
+            HEffectMode::StateCompliance => Self::StateCompliance,
+            HEffectMode::ForceRun => Self::ForceRun,
+            HEffectMode::ForceStop => Self::ForceStop,
         }
     }
 }

@@ -4,11 +4,11 @@ pub(in crate::cmd) enum HRmMode {
     Remove,
     Free,
 }
-impl Into<rc::SolRmMode> for &HRmMode {
-    fn into(self) -> rc::SolRmMode {
-        match self {
-            HRmMode::Remove => rc::SolRmMode::Remove,
-            HRmMode::Free => rc::SolRmMode::Free,
+impl From<&HRmMode> for rc::SolRmMode {
+    fn from(h_rm_mode: &HRmMode) -> Self {
+        match h_rm_mode {
+            HRmMode::Remove => Self::Remove,
+            HRmMode::Free => Self::Free,
         }
     }
 }

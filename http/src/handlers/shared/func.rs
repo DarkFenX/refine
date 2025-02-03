@@ -15,7 +15,7 @@ pub(in crate::handlers) enum HGSolResult {
 }
 
 pub(in crate::handlers) async fn get_guarded_sol(sol_mgr: &HSolMgr, sol_id: &str) -> HGSolResult {
-    match sol_mgr.get_sol(&sol_id).await {
+    match sol_mgr.get_sol(sol_id).await {
         Ok(sol) => HGSolResult::Sol(sol),
         Err(e) => {
             let code = match e {
