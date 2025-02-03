@@ -19,8 +19,8 @@ pub(in crate::handler_json) enum CItemKind {
     Subsystem,
 }
 impl From<&rc::ad::AItemKind> for CItemKind {
-    fn from(item_kind: &rc::ad::AItemKind) -> Self {
-        match item_kind {
+    fn from(a_item_kind: &rc::ad::AItemKind) -> Self {
+        match a_item_kind {
             rc::ad::AItemKind::Booster => Self::Booster,
             rc::ad::AItemKind::Character => Self::Character,
             rc::ad::AItemKind::Charge => Self::Charge,
@@ -40,25 +40,25 @@ impl From<&rc::ad::AItemKind> for CItemKind {
         }
     }
 }
-impl Into<rc::ad::AItemKind> for &CItemKind {
-    fn into(self) -> rc::ad::AItemKind {
-        match self {
-            CItemKind::Booster => rc::ad::AItemKind::Booster,
-            CItemKind::Character => rc::ad::AItemKind::Character,
-            CItemKind::Charge => rc::ad::AItemKind::Charge,
-            CItemKind::Drone => rc::ad::AItemKind::Drone,
-            CItemKind::EffectBeacon => rc::ad::AItemKind::EffectBeacon,
-            CItemKind::FighterSquad => rc::ad::AItemKind::FighterSquad,
-            CItemKind::Implant => rc::ad::AItemKind::Implant,
-            CItemKind::ModHigh => rc::ad::AItemKind::ModHigh,
-            CItemKind::ModMid => rc::ad::AItemKind::ModMid,
-            CItemKind::ModLow => rc::ad::AItemKind::ModLow,
-            CItemKind::Mutator => rc::ad::AItemKind::Mutator,
-            CItemKind::Rig => rc::ad::AItemKind::Rig,
-            CItemKind::Ship => rc::ad::AItemKind::Ship,
-            CItemKind::Skill => rc::ad::AItemKind::Skill,
-            CItemKind::Stance => rc::ad::AItemKind::Stance,
-            CItemKind::Subsystem => rc::ad::AItemKind::Subsystem,
+impl From<&CItemKind> for rc::ad::AItemKind {
+    fn from(c_item_kind: &CItemKind) -> Self {
+        match c_item_kind {
+            CItemKind::Booster => Self::Booster,
+            CItemKind::Character => Self::Character,
+            CItemKind::Charge => Self::Charge,
+            CItemKind::Drone => Self::Drone,
+            CItemKind::EffectBeacon => Self::EffectBeacon,
+            CItemKind::FighterSquad => Self::FighterSquad,
+            CItemKind::Implant => Self::Implant,
+            CItemKind::ModHigh => Self::ModHigh,
+            CItemKind::ModMid => Self::ModMid,
+            CItemKind::ModLow => Self::ModLow,
+            CItemKind::Mutator => Self::Mutator,
+            CItemKind::Rig => Self::Rig,
+            CItemKind::Ship => Self::Ship,
+            CItemKind::Skill => Self::Skill,
+            CItemKind::Stance => Self::Stance,
+            CItemKind::Subsystem => Self::Subsystem,
         }
     }
 }

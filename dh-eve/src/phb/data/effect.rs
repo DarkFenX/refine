@@ -58,9 +58,9 @@ pub(in crate::phb) struct PEffectMod {
     pub(in crate::phb) func: String,
     pub(in crate::phb) args: HashMap<String, rc::ed::EPrimitive>,
 }
-impl Into<rc::ed::EEffectMod> for PEffectMod {
-    fn into(self) -> rc::ed::EEffectMod {
-        rc::ed::EEffectMod::new(self.func, (&self.args).into())
+impl From<PEffectMod> for rc::ed::EEffectMod {
+    fn from(p_effect_mod: PEffectMod) -> Self {
+        Self::new(p_effect_mod.func, (&p_effect_mod.args).into())
     }
 }
 

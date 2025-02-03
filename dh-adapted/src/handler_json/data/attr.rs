@@ -19,15 +19,15 @@ impl From<&rc::ad::AAttr> for CAttr {
         }
     }
 }
-impl Into<rc::ad::AAttr> for &CAttr {
-    fn into(self) -> rc::ad::AAttr {
-        rc::ad::AAttr {
-            id: self.id,
-            penalizable: self.penalizable,
-            hig: self.hig,
-            def_val: self.def_val,
-            min_attr_id: self.min_attr_id,
-            max_attr_id: self.max_attr_id,
+impl From<&CAttr> for rc::ad::AAttr {
+    fn from(c_attr: &CAttr) -> Self {
+        Self {
+            id: c_attr.id,
+            penalizable: c_attr.penalizable,
+            hig: c_attr.hig,
+            def_val: c_attr.def_val,
+            min_attr_id: c_attr.min_attr_id,
+            max_attr_id: c_attr.max_attr_id,
         }
     }
 }

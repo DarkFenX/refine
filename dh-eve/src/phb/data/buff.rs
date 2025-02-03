@@ -37,9 +37,9 @@ pub(in crate::phb) struct PBuffIM {
     #[serde(rename = "dogmaAttributeID")]
     pub(in crate::phb) attr_id: rc::EAttrId,
 }
-impl Into<rc::ed::EBuffIM> for PBuffIM {
-    fn into(self) -> rc::ed::EBuffIM {
-        rc::ed::EBuffIM::new(self.attr_id)
+impl From<PBuffIM> for rc::ed::EBuffIM {
+    fn from(p_buff_im: PBuffIM) -> Self {
+        Self::new(p_buff_im.attr_id)
     }
 }
 
@@ -48,9 +48,9 @@ pub(in crate::phb) struct PBuffLM {
     #[serde(rename = "dogmaAttributeID")]
     pub(in crate::phb) attr_id: rc::EAttrId,
 }
-impl Into<rc::ed::EBuffLM> for PBuffLM {
-    fn into(self) -> rc::ed::EBuffLM {
-        rc::ed::EBuffLM::new(self.attr_id)
+impl From<PBuffLM> for rc::ed::EBuffLM {
+    fn from(p_buff_lm: PBuffLM) -> Self {
+        Self::new(p_buff_lm.attr_id)
     }
 }
 
@@ -61,9 +61,9 @@ pub(in crate::phb) struct PBuffLGM {
     #[serde(rename = "groupID")]
     pub(in crate::phb) group_id: rc::EItemGrpId,
 }
-impl Into<rc::ed::EBuffLGM> for PBuffLGM {
-    fn into(self) -> rc::ed::EBuffLGM {
-        rc::ed::EBuffLGM::new(self.attr_id, self.group_id)
+impl From<PBuffLGM> for rc::ed::EBuffLGM {
+    fn from(p_buff_lgm: PBuffLGM) -> Self {
+        Self::new(p_buff_lgm.attr_id, p_buff_lgm.group_id)
     }
 }
 
@@ -74,8 +74,8 @@ pub(in crate::phb) struct PBuffLRSM {
     #[serde(rename = "skillID")]
     pub(in crate::phb) skill_id: rc::EItemId,
 }
-impl Into<rc::ed::EBuffLRSM> for PBuffLRSM {
-    fn into(self) -> rc::ed::EBuffLRSM {
-        rc::ed::EBuffLRSM::new(self.attr_id, self.skill_id)
+impl From<PBuffLRSM> for rc::ed::EBuffLRSM {
+    fn from(p_buff_lrsm: PBuffLRSM) -> Self {
+        Self::new(p_buff_lrsm.attr_id, p_buff_lrsm.skill_id)
     }
 }

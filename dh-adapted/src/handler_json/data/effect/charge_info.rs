@@ -12,11 +12,11 @@ impl From<&rc::ad::AEffectChargeInfo> for CEffectChargeInfo {
         }
     }
 }
-impl Into<rc::ad::AEffectChargeInfo> for &CEffectChargeInfo {
-    fn into(self) -> rc::ad::AEffectChargeInfo {
-        match self {
-            CEffectChargeInfo::Loaded => rc::ad::AEffectChargeInfo::Loaded,
-            CEffectChargeInfo::Attr(attr_id) => rc::ad::AEffectChargeInfo::Attr(*attr_id),
+impl From<&CEffectChargeInfo> for rc::ad::AEffectChargeInfo {
+    fn from(c_charge_info: &CEffectChargeInfo) -> Self {
+        match c_charge_info {
+            CEffectChargeInfo::Loaded => Self::Loaded,
+            CEffectChargeInfo::Attr(attr_id) => Self::Attr(*attr_id),
         }
     }
 }

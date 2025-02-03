@@ -1,6 +1,6 @@
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
-pub(in crate::handler_json) enum CModOp {
+pub(in crate::handler_json) enum COp {
     PreAssign,
     PreMul,
     PreDiv,
@@ -12,9 +12,9 @@ pub(in crate::handler_json) enum CModOp {
     PostPerc,
     PostAssign,
 }
-impl From<&rc::ad::AOp> for CModOp {
-    fn from(mod_op: &rc::ad::AOp) -> Self {
-        match mod_op {
+impl From<&rc::ad::AOp> for COp {
+    fn from(a_op: &rc::ad::AOp) -> Self {
+        match a_op {
             rc::ad::AOp::PreAssign => Self::PreAssign,
             rc::ad::AOp::PreMul => Self::PreMul,
             rc::ad::AOp::PreDiv => Self::PreDiv,
@@ -28,19 +28,19 @@ impl From<&rc::ad::AOp> for CModOp {
         }
     }
 }
-impl Into<rc::ad::AOp> for &CModOp {
-    fn into(self) -> rc::ad::AOp {
-        match self {
-            CModOp::PreAssign => rc::ad::AOp::PreAssign,
-            CModOp::PreMul => rc::ad::AOp::PreMul,
-            CModOp::PreDiv => rc::ad::AOp::PreDiv,
-            CModOp::Add => rc::ad::AOp::Add,
-            CModOp::Sub => rc::ad::AOp::Sub,
-            CModOp::PostMul => rc::ad::AOp::PostMul,
-            CModOp::PostMulImmune => rc::ad::AOp::PostMulImmune,
-            CModOp::PostDiv => rc::ad::AOp::PostDiv,
-            CModOp::PostPerc => rc::ad::AOp::PostPerc,
-            CModOp::PostAssign => rc::ad::AOp::PostAssign,
+impl From<&COp> for rc::ad::AOp {
+    fn from(c_op: &COp) -> Self {
+        match c_op {
+            COp::PreAssign => Self::PreAssign,
+            COp::PreMul => Self::PreMul,
+            COp::PreDiv => Self::PreDiv,
+            COp::Add => Self::Add,
+            COp::Sub => Self::Sub,
+            COp::PostMul => Self::PostMul,
+            COp::PostMulImmune => Self::PostMulImmune,
+            COp::PostDiv => Self::PostDiv,
+            COp::PostPerc => Self::PostPerc,
+            COp::PostAssign => Self::PostAssign,
         }
     }
 }

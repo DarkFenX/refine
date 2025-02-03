@@ -5,17 +5,17 @@ pub(in crate::handler_json) struct CItemShipLimit {
 }
 impl From<&rc::ad::AItemShipLimit> for CItemShipLimit {
     fn from(a_item_ship_limit: &rc::ad::AItemShipLimit) -> Self {
-        CItemShipLimit {
+        Self {
             type_ids: a_item_ship_limit.type_ids.clone(),
             group_ids: a_item_ship_limit.group_ids.clone(),
         }
     }
 }
-impl Into<rc::ad::AItemShipLimit> for &CItemShipLimit {
-    fn into(self) -> rc::ad::AItemShipLimit {
-        rc::ad::AItemShipLimit {
-            type_ids: self.type_ids.clone(),
-            group_ids: self.group_ids.clone(),
+impl From<&CItemShipLimit> for rc::ad::AItemShipLimit {
+    fn from(c_item_ship_limit: &CItemShipLimit) -> Self {
+        Self {
+            type_ids: c_item_ship_limit.type_ids.clone(),
+            group_ids: c_item_ship_limit.group_ids.clone(),
         }
     }
 }

@@ -24,7 +24,7 @@ pub(in crate::handler_json) struct CEffect {
 }
 impl From<&rc::ad::AEffect> for CEffect {
     fn from(a_effect: &rc::ad::AEffect) -> Self {
-        CEffect {
+        Self {
             id: a_effect.id,
             category: a_effect.category,
             state: (&a_effect.state).into(),
@@ -47,28 +47,28 @@ impl From<&rc::ad::AEffect> for CEffect {
         }
     }
 }
-impl Into<rc::ad::AEffect> for &CEffect {
-    fn into(self) -> rc::ad::AEffect {
-        rc::ad::AEffect {
-            id: self.id,
-            category: self.category,
-            state: (&self.state).into(),
-            is_assist: self.is_assist,
-            is_offense: self.is_offense,
-            hisec: self.hisec,
-            lowsec: self.lowsec,
-            discharge_attr_id: self.discharge_attr_id,
-            duration_attr_id: self.duration_attr_id,
-            range_attr_id: self.range_attr_id,
-            falloff_attr_id: self.falloff_attr_id,
-            track_attr_id: self.track_attr_id,
-            chance_attr_id: self.chance_attr_id,
-            resist_attr_id: self.resist_attr_id,
-            mod_build_status: (&self.mod_build_status).into(),
-            mods: self.mods.iter().map(|v| v.into()).collect(),
-            stop_ids: self.stop_ids.clone(),
-            buff: self.buff.as_ref().map(|v| v.into()),
-            charge: self.charge.as_ref().map(|v| v.into()),
+impl From<&CEffect> for rc::ad::AEffect {
+    fn from(c_effect: &CEffect) -> Self {
+        Self {
+            id: c_effect.id,
+            category: c_effect.category,
+            state: (&c_effect.state).into(),
+            is_assist: c_effect.is_assist,
+            is_offense: c_effect.is_offense,
+            hisec: c_effect.hisec,
+            lowsec: c_effect.lowsec,
+            discharge_attr_id: c_effect.discharge_attr_id,
+            duration_attr_id: c_effect.duration_attr_id,
+            range_attr_id: c_effect.range_attr_id,
+            falloff_attr_id: c_effect.falloff_attr_id,
+            track_attr_id: c_effect.track_attr_id,
+            chance_attr_id: c_effect.chance_attr_id,
+            resist_attr_id: c_effect.resist_attr_id,
+            mod_build_status: (&c_effect.mod_build_status).into(),
+            mods: c_effect.mods.iter().map(|v| v.into()).collect(),
+            stop_ids: c_effect.stop_ids.clone(),
+            buff: c_effect.buff.as_ref().map(|v| v.into()),
+            charge: c_effect.charge.as_ref().map(|v| v.into()),
         }
     }
 }

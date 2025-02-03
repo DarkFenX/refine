@@ -8,8 +8,8 @@ pub(in crate::handler_json) enum CModBuildStatus {
     Custom,
 }
 impl From<&rc::ad::AEffectModBuildStatus> for CModBuildStatus {
-    fn from(mod_build_status: &rc::ad::AEffectModBuildStatus) -> Self {
-        match mod_build_status {
+    fn from(a_mod_build_status: &rc::ad::AEffectModBuildStatus) -> Self {
+        match a_mod_build_status {
             rc::ad::AEffectModBuildStatus::Unbuilt => Self::Unbuilt,
             rc::ad::AEffectModBuildStatus::Error(fails) => Self::Error(*fails),
             rc::ad::AEffectModBuildStatus::SuccessPartial(fails) => Self::SuccessPartial(*fails),
@@ -18,14 +18,14 @@ impl From<&rc::ad::AEffectModBuildStatus> for CModBuildStatus {
         }
     }
 }
-impl Into<rc::ad::AEffectModBuildStatus> for &CModBuildStatus {
-    fn into(self) -> rc::ad::AEffectModBuildStatus {
-        match self {
-            CModBuildStatus::Unbuilt => rc::ad::AEffectModBuildStatus::Unbuilt,
-            CModBuildStatus::Error(fails) => rc::ad::AEffectModBuildStatus::Error(*fails),
-            CModBuildStatus::SuccessPartial(fails) => rc::ad::AEffectModBuildStatus::SuccessPartial(*fails),
-            CModBuildStatus::Success => rc::ad::AEffectModBuildStatus::Success,
-            CModBuildStatus::Custom => rc::ad::AEffectModBuildStatus::Custom,
+impl From<&CModBuildStatus> for rc::ad::AEffectModBuildStatus {
+    fn from(c_mod_build_status: &CModBuildStatus) -> Self {
+        match c_mod_build_status {
+            CModBuildStatus::Unbuilt => Self::Unbuilt,
+            CModBuildStatus::Error(fails) => Self::Error(*fails),
+            CModBuildStatus::SuccessPartial(fails) => Self::SuccessPartial(*fails),
+            CModBuildStatus::Success => Self::Success,
+            CModBuildStatus::Custom => Self::Custom,
         }
     }
 }

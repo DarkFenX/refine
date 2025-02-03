@@ -1,4 +1,4 @@
-pub(in crate::handler_json) use effect_data::CItemEffData;
+pub(in crate::handler_json) use effect_data::CItemEffectData;
 pub(in crate::handler_json) use extras::{CItemChargeLimit, CItemExtras, CItemKind, CItemShipLimit, CShipKind};
 pub(in crate::handler_json) use item::CItem;
 

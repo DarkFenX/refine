@@ -7,17 +7,17 @@ pub(in crate::handler_json) struct CBuffModifier {
 }
 impl From<&rc::ad::ABuffModifier> for CBuffModifier {
     fn from(a_modifier: &rc::ad::ABuffModifier) -> Self {
-        CBuffModifier {
+        Self {
             affectee_filter: (&a_modifier.affectee_filter).into(),
             affectee_attr_id: a_modifier.affectee_attr_id,
         }
     }
 }
-impl Into<rc::ad::ABuffModifier> for &CBuffModifier {
-    fn into(self) -> rc::ad::ABuffModifier {
-        rc::ad::ABuffModifier {
-            affectee_filter: (&self.affectee_filter).into(),
-            affectee_attr_id: self.affectee_attr_id,
+impl From<&CBuffModifier> for rc::ad::ABuffModifier {
+    fn from(c_modifier: &CBuffModifier) -> Self {
+        Self {
+            affectee_filter: (&c_modifier.affectee_filter).into(),
+            affectee_attr_id: c_modifier.affectee_attr_id,
         }
     }
 }

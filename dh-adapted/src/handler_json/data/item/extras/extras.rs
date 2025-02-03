@@ -23,7 +23,7 @@ pub(in crate::handler_json) struct CItemExtras {
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
-        CItemExtras {
+        Self {
             kind: a_item_extras.kind.as_ref().map(|v| v.into()),
             volume: a_item_extras.volume,
             ship_limit: a_item_extras.ship_limit.as_ref().map(|v| v.into()),
@@ -45,27 +45,27 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
         }
     }
 }
-impl Into<rc::ad::AItemExtras> for &CItemExtras {
-    fn into(self) -> rc::ad::AItemExtras {
-        rc::ad::AItemExtras {
-            kind: self.kind.as_ref().map(|v| v.into()),
-            volume: self.volume,
-            ship_limit: self.ship_limit.as_ref().map(|v| v.into()),
-            charge_limit: self.charge_limit.as_ref().map(|v| v.into()),
-            val_fitted_group_id: self.val_fitted_group_id,
-            val_online_group_id: self.val_online_group_id,
-            val_active_group_id: self.val_active_group_id,
-            implant_slot: self.implant_slot,
-            booster_slot: self.booster_slot,
-            subsystem_slot: self.subsystem_slot,
-            is_light_fighter: self.is_light_fighter,
-            is_heavy_fighter: self.is_heavy_fighter,
-            is_support_fighter: self.is_support_fighter,
-            is_standup_light_fighter: self.is_standup_light_fighter,
-            is_standup_heavy_fighter: self.is_standup_heavy_fighter,
-            is_standup_support_fighter: self.is_standup_support_fighter,
-            ship_kind: self.ship_kind.as_ref().map(|v| v.into()),
-            item_ship_kind: self.item_ship_kind.as_ref().map(|v| v.into()),
+impl From<&CItemExtras> for rc::ad::AItemExtras {
+    fn from(c_item_extras: &CItemExtras) -> Self {
+        Self {
+            kind: c_item_extras.kind.as_ref().map(|v| v.into()),
+            volume: c_item_extras.volume,
+            ship_limit: c_item_extras.ship_limit.as_ref().map(|v| v.into()),
+            charge_limit: c_item_extras.charge_limit.as_ref().map(|v| v.into()),
+            val_fitted_group_id: c_item_extras.val_fitted_group_id,
+            val_online_group_id: c_item_extras.val_online_group_id,
+            val_active_group_id: c_item_extras.val_active_group_id,
+            implant_slot: c_item_extras.implant_slot,
+            booster_slot: c_item_extras.booster_slot,
+            subsystem_slot: c_item_extras.subsystem_slot,
+            is_light_fighter: c_item_extras.is_light_fighter,
+            is_heavy_fighter: c_item_extras.is_heavy_fighter,
+            is_support_fighter: c_item_extras.is_support_fighter,
+            is_standup_light_fighter: c_item_extras.is_standup_light_fighter,
+            is_standup_heavy_fighter: c_item_extras.is_standup_heavy_fighter,
+            is_standup_support_fighter: c_item_extras.is_standup_support_fighter,
+            ship_kind: c_item_extras.ship_kind.as_ref().map(|v| v.into()),
+            item_ship_kind: c_item_extras.item_ship_kind.as_ref().map(|v| v.into()),
         }
     }
 }

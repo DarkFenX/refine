@@ -5,18 +5,18 @@ pub(in crate::handler_json) enum CBuffAggrMode {
     Max,
 }
 impl From<&rc::ad::ABuffAggrMode> for CBuffAggrMode {
-    fn from(mod_aggr_mode: &rc::ad::ABuffAggrMode) -> Self {
-        match mod_aggr_mode {
+    fn from(a_buff_aggr_mode: &rc::ad::ABuffAggrMode) -> Self {
+        match a_buff_aggr_mode {
             rc::ad::ABuffAggrMode::Min => Self::Min,
             rc::ad::ABuffAggrMode::Max => Self::Max,
         }
     }
 }
-impl Into<rc::ad::ABuffAggrMode> for &CBuffAggrMode {
-    fn into(self) -> rc::ad::ABuffAggrMode {
-        match self {
-            CBuffAggrMode::Min => rc::ad::ABuffAggrMode::Min,
-            CBuffAggrMode::Max => rc::ad::ABuffAggrMode::Max,
+impl From<&CBuffAggrMode> for rc::ad::ABuffAggrMode {
+    fn from(c_buff_aggr_mode: &CBuffAggrMode) -> Self {
+        match c_buff_aggr_mode {
+            CBuffAggrMode::Min => Self::Min,
+            CBuffAggrMode::Max => Self::Max,
         }
     }
 }

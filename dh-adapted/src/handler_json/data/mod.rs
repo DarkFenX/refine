@@ -6,8 +6,8 @@ use effect::{
     CEffect, CEffectAffecteeFilter, CEffectBuffInfo, CEffectChargeInfo, CEffectLocation, CEffectModifier,
     CModBuildStatus, CState,
 };
-use item::{CItem, CItemChargeLimit, CItemEffData, CItemExtras, CItemKind, CItemShipLimit, CShipKind};
-use mod_shared::{CModOp, CModSrq};
+use item::{CItem, CItemChargeLimit, CItemEffectData, CItemExtras, CItemKind, CItemShipLimit, CShipKind};
+use mod_shared::{CModifierSrq, COp};
 use muta::{CMuta, CMutaAttrRange};
 
 mod attr;

@@ -7,8 +7,8 @@ pub(in crate::handler_json) enum CState {
     Overload,
 }
 impl From<&rc::ad::AState> for CState {
-    fn from(state: &rc::ad::AState) -> Self {
-        match state {
+    fn from(a_state: &rc::ad::AState) -> Self {
+        match a_state {
             rc::ad::AState::Offline => Self::Offline,
             rc::ad::AState::Online => Self::Online,
             rc::ad::AState::Active => Self::Active,
@@ -16,13 +16,13 @@ impl From<&rc::ad::AState> for CState {
         }
     }
 }
-impl Into<rc::ad::AState> for &CState {
-    fn into(self) -> rc::ad::AState {
-        match self {
-            CState::Offline => rc::ad::AState::Offline,
-            CState::Online => rc::ad::AState::Online,
-            CState::Active => rc::ad::AState::Active,
-            CState::Overload => rc::ad::AState::Overload,
+impl From<&CState> for rc::ad::AState {
+    fn from(c_state: &CState) -> Self {
+        match c_state {
+            CState::Offline => Self::Offline,
+            CState::Online => Self::Online,
+            CState::Active => Self::Active,
+            CState::Overload => Self::Overload,
         }
     }
 }

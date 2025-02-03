@@ -1,4 +1,4 @@
-use crate::handler_json::data::CModSrq;
+use crate::handler_json::data::CModifierSrq;
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -6,11 +6,11 @@ pub(in crate::handler_json) enum CBuffAffecteeFilter {
     Direct,
     Loc,
     LocGrp(rc::EItemGrpId),
-    LocSrq(CModSrq),
+    LocSrq(CModifierSrq),
 }
 impl From<&rc::ad::ABuffAffecteeFilter> for CBuffAffecteeFilter {
-    fn from(buff_affectee_filter: &rc::ad::ABuffAffecteeFilter) -> Self {
-        match buff_affectee_filter {
+    fn from(a_buff_affectee_filter: &rc::ad::ABuffAffecteeFilter) -> Self {
+        match a_buff_affectee_filter {
             rc::ad::ABuffAffecteeFilter::Direct => Self::Direct,
             rc::ad::ABuffAffecteeFilter::Loc => Self::Loc,
             rc::ad::ABuffAffecteeFilter::LocGrp(grp) => Self::LocGrp(*grp),
@@ -18,13 +18,13 @@ impl From<&rc::ad::ABuffAffecteeFilter> for CBuffAffecteeFilter {
         }
     }
 }
-impl Into<rc::ad::ABuffAffecteeFilter> for &CBuffAffecteeFilter {
-    fn into(self) -> rc::ad::ABuffAffecteeFilter {
-        match self {
-            CBuffAffecteeFilter::Direct => rc::ad::ABuffAffecteeFilter::Direct,
-            CBuffAffecteeFilter::Loc => rc::ad::ABuffAffecteeFilter::Loc,
-            CBuffAffecteeFilter::LocGrp(grp) => rc::ad::ABuffAffecteeFilter::LocGrp(*grp),
-            CBuffAffecteeFilter::LocSrq(srq) => rc::ad::ABuffAffecteeFilter::LocSrq(srq.into()),
+impl From<&CBuffAffecteeFilter> for rc::ad::ABuffAffecteeFilter {
+    fn from(c_buff_affectee_filter: &CBuffAffecteeFilter) -> Self {
+        match c_buff_affectee_filter {
+            CBuffAffecteeFilter::Direct => Self::Direct,
+            CBuffAffecteeFilter::Loc => Self::Loc,
+            CBuffAffecteeFilter::LocGrp(grp) => Self::LocGrp(*grp),
+            CBuffAffecteeFilter::LocSrq(srq) => Self::LocSrq(srq.into()),
         }
     }
 }
