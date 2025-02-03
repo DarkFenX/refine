@@ -85,11 +85,9 @@ fn default_effects(g_data: &mut GData) {
     let mut unsets = 0;
     let mut seen_defeffs = StSet::new();
     for e_item_effect in g_data.item_effects.iter_mut() {
-        if e_item_effect.is_default {
-            if !seen_defeffs.insert(e_item_effect.get_pk()) {
-                unsets += 1;
-                e_item_effect.is_default = false
-            }
+        if e_item_effect.is_default && !seen_defeffs.insert(e_item_effect.get_pk()) {
+            unsets += 1;
+            e_item_effect.is_default = false
         }
     }
     if unsets > 0 {

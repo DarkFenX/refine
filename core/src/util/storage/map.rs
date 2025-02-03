@@ -19,7 +19,7 @@ impl<K: Eq + Hash, V> StMap<K, V> {
     }
     pub fn with_capacity(capacity: usize) -> StMap<K, V> {
         Self {
-            data: FxHashMap::with_capacity_and_hasher(capacity, FxBuildHasher::default()),
+            data: FxHashMap::with_capacity_and_hasher(capacity, FxBuildHasher),
         }
     }
     // View methods

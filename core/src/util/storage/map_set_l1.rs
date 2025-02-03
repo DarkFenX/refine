@@ -33,13 +33,13 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     pub(crate) fn add_entry(&mut self, key: K, entry: V) {
         self.data
             .entry(key)
-            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(1, FxBuildHasher::default()))
+            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(1, FxBuildHasher))
             .insert(entry);
     }
     pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
         self.data
             .entry(key)
-            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(entries.len(), FxBuildHasher::default()))
+            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(entries.len(), FxBuildHasher))
             .extend(entries);
     }
     pub(crate) fn remove_entry(&mut self, key: &K, entry: &V) {
@@ -81,5 +81,5 @@ pub(crate) fn extend_vec_from_map_set_l1<K: Eq + Hash, V: Eq + Hash + Copy>(
     storage: &StMapSetL1<K, V>,
     key: &K,
 ) {
-    vec.extend(storage.get(key).map(|v| *v));
+    vec.extend(storage.get(key).copied());
 }

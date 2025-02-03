@@ -33,13 +33,13 @@ impl SolItemState {
 }
 impl PartialEq<ad::AState> for SolItemState {
     fn eq(&self, other: &ad::AState) -> bool {
-        match (self, other) {
-            (Self::Offline, ad::AState::Offline) => true,
-            (Self::Online, ad::AState::Online) => true,
-            (Self::Active, ad::AState::Active) => true,
-            (Self::Overload, ad::AState::Overload) => true,
-            _ => false,
-        }
+        matches!(
+            (self, other),
+            (Self::Offline, ad::AState::Offline)
+                | (Self::Online, ad::AState::Online)
+                | (Self::Active, ad::AState::Active)
+                | (Self::Overload, ad::AState::Overload)
+        )
     }
 }
 impl PartialOrd<ad::AState> for SolItemState {
