@@ -63,7 +63,7 @@ fn trash_all(alive: &mut GData, trash: &mut GData) {
 }
 
 fn restore_core_items(alive: &mut GData, trash: &mut GData, g_supp: &GSupport) {
-    let cats = vec![
+    let cats = [
         ec::itemcats::CHARGE,
         ec::itemcats::DRONE,
         ec::itemcats::FIGHTER,

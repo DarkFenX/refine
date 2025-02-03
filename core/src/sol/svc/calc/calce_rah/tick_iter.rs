@@ -58,37 +58,35 @@ impl Iterator for SolRahSimTickIter {
     type Item = SolRahSimTickData;
 
     fn next(&mut self) -> Option<Self::Item> {
-        loop {
-            if self.tick >= TICK_LIMIT {
-                return None;
-            }
-            self.tick += 1;
-            // Pick time remaining until some RAH finishes its cycle
-            let time_passed = self
-                .rah_iter_data
-                .values()
-                .map(|v| v.cycle_time - v.cycling_time)
-                .min()
-                .unwrap();
-            // Compose list of RAHs which finish their cycle this tick
-            let mut cycled = Vec::new();
-            for (item_id, item_iter_data) in self.rah_iter_data.iter() {
-                // Have time tolerance to cancel float calculation errors. It's needed for multi-RAH
-                // configurations which the engine allows, e.g. when normal RAH does 17 cycles,
-                // heated one does 20, but sum of 20x 0.85 f64's is less than 17.
-                if rah_round(item_iter_data.cycling_time + time_passed) >= item_iter_data.cycle_time_rounded {
-                    cycled.push(*item_id);
-                }
-            }
-            // Update iterator state
-            for (item_id, item_iter_data) in self.rah_iter_data.iter_mut() {
-                match cycled.contains(item_id) {
-                    true => item_iter_data.cycling_time = OF(0.0),
-                    false => item_iter_data.cycling_time += time_passed,
-                }
-            }
-            let cycling_times = self.rah_iter_data.iter().map(|(k, v)| (*k, v.cycling_time)).collect();
-            return Some(SolRahSimTickData::new(time_passed, cycled, cycling_times));
+        if self.tick >= TICK_LIMIT {
+            return None;
         }
+        self.tick += 1;
+        // Pick time remaining until some RAH finishes its cycle
+        let time_passed = self
+            .rah_iter_data
+            .values()
+            .map(|v| v.cycle_time - v.cycling_time)
+            .min()
+            .unwrap();
+        // Compose list of RAHs which finish their cycle this tick
+        let mut cycled = Vec::new();
+        for (item_id, item_iter_data) in self.rah_iter_data.iter() {
+            // Have time tolerance to cancel float calculation errors. It's needed for multi-RAH
+            // configurations which the engine allows, e.g. when normal RAH does 17 cycles,
+            // heated one does 20, but sum of 20x 0.85 f64's is less than 17.
+            if rah_round(item_iter_data.cycling_time + time_passed) >= item_iter_data.cycle_time_rounded {
+                cycled.push(*item_id);
+            }
+        }
+        // Update iterator state
+        for (item_id, item_iter_data) in self.rah_iter_data.iter_mut() {
+            match cycled.contains(item_id) {
+                true => item_iter_data.cycling_time = OF(0.0),
+                false => item_iter_data.cycling_time += time_passed,
+            }
+        }
+        let cycling_times = self.rah_iter_data.iter().map(|(k, v)| (*k, v.cycling_time)).collect();
+        Some(SolRahSimTickData::new(time_passed, cycled, cycling_times))
     }
 }

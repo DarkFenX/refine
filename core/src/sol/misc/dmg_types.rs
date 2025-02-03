@@ -56,15 +56,13 @@ impl<'a, T> Iterator for SolDmgKindsIter<'a, T> {
     type Item = &'a T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        loop {
-            match self.index {
-                0..4 => {
-                    let result = &self.item[self.index];
-                    self.index += 1;
-                    return Some(result);
-                }
-                _ => return None,
-            };
+        match self.index {
+            0..4 => {
+                let result = &self.item[self.index];
+                self.index += 1;
+                Some(result)
+            }
+            _ => None,
         }
     }
 }
