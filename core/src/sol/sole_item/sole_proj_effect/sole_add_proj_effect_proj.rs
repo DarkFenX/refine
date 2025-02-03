@@ -15,9 +15,9 @@ impl SolarSystem {
             .uad
             .items
             .get_item(item_id)
-            .map_err(|e| AddProjEffectProjError::ProjectorNotFound(e))?
+            .map_err(AddProjEffectProjError::ProjectorNotFound)?
             .get_proj_effect()
-            .map_err(|e| AddProjEffectProjError::ProjectorIsNotProjEffect(e))?;
+            .map_err(AddProjEffectProjError::ProjectorIsNotProjEffect)?;
         // Check if projection has already been defined
         if proj_effect.get_projs().contains(&projectee_item_id) {
             return Err(AddProjEffectProjError::ProjectionAlreadyExists(ProjNotFoundError::new(
@@ -30,7 +30,7 @@ impl SolarSystem {
             .uad
             .items
             .get_item(&projectee_item_id)
-            .map_err(|e| AddProjEffectProjError::ProjecteeNotFound(e))?;
+            .map_err(AddProjEffectProjError::ProjecteeNotFound)?;
         if !projectee_item.can_receive_projs() {
             return Err(AddProjEffectProjError::ProjecteeCantTakeProjs(
                 ItemReceiveProjError::new(projectee_item_id, projectee_item.get_name()),

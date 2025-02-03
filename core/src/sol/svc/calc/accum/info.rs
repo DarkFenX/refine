@@ -386,8 +386,8 @@ impl SolAttrAggr {
     fn add_attr_info(&mut self, attr_info: SolAttrValInfo, aggr_mode: &SolAggrMode) {
         match aggr_mode {
             SolAggrMode::Stack => self.stack.push(attr_info),
-            SolAggrMode::Min(key) => self.aggr_min.entry(*key).or_insert_with(|| Vec::new()).push(attr_info),
-            SolAggrMode::Max(key) => self.aggr_max.entry(*key).or_insert_with(|| Vec::new()).push(attr_info),
+            SolAggrMode::Min(key) => self.aggr_min.entry(*key).or_default().push(attr_info),
+            SolAggrMode::Max(key) => self.aggr_max.entry(*key).or_default().push(attr_info),
         }
     }
     fn get_comb_attr_info<C, R>(&mut self, comb_func: &C, revert_func: &R, high_is_good: bool) -> Option<SolAttrValInfo>
@@ -603,10 +603,7 @@ fn extract_min(attr_infos: &mut Vec<SolAttrValInfo>) -> Option<SolAttrValInfo> {
         .enumerate()
         .min_by_key(|(_, v)| v.value)
         .map(|(index, _)| index);
-    match index {
-        Some(index) => Some(attr_infos.remove(index)),
-        None => None,
-    }
+    index.map(|index| attr_infos.remove(index))
 }
 fn extract_max(attr_infos: &mut Vec<SolAttrValInfo>) -> Option<SolAttrValInfo> {
     let index = attr_infos
@@ -614,10 +611,7 @@ fn extract_max(attr_infos: &mut Vec<SolAttrValInfo>) -> Option<SolAttrValInfo> {
         .enumerate()
         .max_by_key(|(_, v)| v.value)
         .map(|(index, _)| index);
-    match index {
-        Some(index) => Some(attr_infos.remove(index)),
-        None => None,
-    }
+    index.map(|index| attr_infos.remove(index))
 }
 fn get_chain_attr_info<R>(attr_infos: Vec<SolAttrValInfo>, revert_func: &R) -> SolAttrValInfo
 where
@@ -628,7 +622,7 @@ where
     // multiplication combination function. We know final chain multiplier is going to be 0, we know
     // other elements are not going to be multipliers by 0 after penalty is applied, so we just
     // expose multiplier by 0 as the only effective modification, and consider others ineffective
-    let first_zero = match attr_infos.get(0) {
+    let first_zero = match attr_infos.first() {
         Some(other_attr_info) => other_attr_info.value == OF(0.0),
         None => false,
     };

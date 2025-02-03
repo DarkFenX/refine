@@ -295,7 +295,7 @@ where
             Some(effect_id) => map
                 .entry(effect_id)
                 .or_insert_with(|| StSet::new())
-                .insert(getter(&e_abil)),
+                .insert(getter(e_abil)),
         };
     }
     map

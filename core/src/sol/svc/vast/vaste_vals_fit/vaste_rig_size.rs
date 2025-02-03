@@ -50,10 +50,7 @@ impl SolVastFitData {
         uad: &SolUad,
         fit: &SolFit,
     ) -> Option<SolRigSizeValFail> {
-        let allowed_size = match get_allowed_size(uad, fit) {
-            Some(allowed_size) => allowed_size,
-            None => return None,
-        };
+        let allowed_size = get_allowed_size(uad, fit)?;
         let mut mismatches = Vec::new();
         for (&item_id, &rig_size) in self.rigs_rig_size.iter() {
             if rig_size != Some(allowed_size) {
@@ -72,12 +69,5 @@ fn get_allowed_size(uad: &SolUad, fit: &SolFit) -> Option<AttrVal> {
         Some(ship_id) => uad.items.get_item(&ship_id).unwrap(),
         None => return None,
     };
-    let ship_attrs = match ship.get_attrs() {
-        Some(attrs) => attrs,
-        None => return None,
-    };
-    match ship_attrs.get(&ec::attrs::RIG_SIZE) {
-        Some(val) => Some(*val),
-        None => None,
-    }
+    ship.get_attrs()?.get(&ec::attrs::RIG_SIZE).copied()
 }

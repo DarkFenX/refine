@@ -56,7 +56,7 @@ impl SolItemBaseMutable {
             }
         };
         // No mutated item ID in mapping or no mutated item itself
-        let mutated_a_item = match a_mutator.item_map.get(&type_id).map(|v| src.get_a_item(v)).flatten() {
+        let mutated_a_item = match a_mutator.item_map.get(&type_id).and_then(|v| src.get_a_item(v)) {
             Some(mutated_a_item) => mutated_a_item,
             None => match src.get_a_item(&type_id) {
                 // If base item is available, return base item, but with all the mutations resolved
@@ -83,7 +83,7 @@ impl SolItemBaseMutable {
         };
         // Make proper mutated item once we have all the data
         let mut attrs = get_combined_attr_values(src.get_a_item(&type_id), mutated_a_item);
-        let extras = ad::AItemExtras::inherit_with_attrs(&mutated_a_item, &attrs);
+        let extras = ad::AItemExtras::inherit_with_attrs(mutated_a_item, &attrs);
         let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         item_mutation.cache = Some(SolItemMutationDataCache::new(type_id, a_mutator.clone(), attrs, extras));
@@ -179,12 +179,7 @@ impl SolItemBaseMutable {
                 }
             },
         };
-        let mutated_a_item = match a_mutator
-            .item_map
-            .get(&base_type_id)
-            .map(|v| src.get_a_item(v))
-            .flatten()
-        {
+        let mutated_a_item = match a_mutator.item_map.get(&base_type_id).and_then(|v| src.get_a_item(v)) {
             Some(mutated_a_item) => mutated_a_item,
             // No mutated item type ID or item itself - invalidate mutated cache and use non-mutated
             // item
@@ -205,7 +200,7 @@ impl SolItemBaseMutable {
         };
         // Compose attribute cache
         let mut attrs = get_combined_attr_values(src.get_a_item(&base_type_id), mutated_a_item);
-        let extras = ad::AItemExtras::inherit_with_attrs(&mutated_a_item, &attrs);
+        let extras = ad::AItemExtras::inherit_with_attrs(mutated_a_item, &attrs);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         // Everything needed is at hand, update item
         self.base.set_type_id(mutated_a_item.id);
@@ -287,12 +282,7 @@ impl SolItemBaseMutable {
                 return Ok(());
             }
         };
-        let mutated_a_item = match a_mutator
-            .item_map
-            .get(&base_type_id)
-            .map(|v| src.get_a_item(v))
-            .flatten()
-        {
+        let mutated_a_item = match a_mutator.item_map.get(&base_type_id).and_then(|v| src.get_a_item(v)) {
             Some(mutated_a_item) => mutated_a_item,
             // No mutated item type ID or mutated item itself
             None => match self.base.get_a_item() {
@@ -315,7 +305,7 @@ impl SolItemBaseMutable {
         };
         // Since we have all the data now, apply mutation properly
         let mut attrs = get_combined_attr_values(self.base.get_a_item(), mutated_a_item);
-        let extras = ad::AItemExtras::inherit_with_attrs(&mutated_a_item, &attrs);
+        let extras = ad::AItemExtras::inherit_with_attrs(mutated_a_item, &attrs);
         let mut item_mutation = convert_item_mutation_full(mutation_request, &attrs, a_mutator);
         apply_attr_mutations(&mut attrs, a_mutator, &item_mutation.attr_rolls);
         item_mutation.cache = Some(SolItemMutationDataCache::new(
@@ -356,7 +346,7 @@ impl SolItemBaseMutable {
             .item_map
             .get(&mutation_cache.base_type_id)
             .unwrap();
-        let mutated_a_item = src.get_a_item(&mutated_type_id).unwrap();
+        let mutated_a_item = src.get_a_item(mutated_type_id).unwrap();
         // Process mutation requests, recording attributes whose values were changed for the item
         let mut base_a_item_cache = None;
         let mut changed_attrs = Vec::new();
@@ -548,10 +538,7 @@ fn normalize_attr_mutation_full_with_unmutated_values(
                 Some(unmutated_value) => *unmutated_value,
                 None => return None,
             };
-            let mutation_range = match a_mutator.attr_mods.get(attr_id) {
-                Some(mutation_range) => mutation_range,
-                None => return None,
-            };
+            let mutation_range = a_mutator.attr_mods.get(attr_id)?;
             normalize_attr_value(absolute, unmutated_value, mutation_range)
         }
     }

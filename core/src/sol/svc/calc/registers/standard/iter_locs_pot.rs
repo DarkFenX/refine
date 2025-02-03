@@ -10,7 +10,7 @@ impl<'a> SolPotentialLocations<'a> {
         Self { item, index: 0 }
     }
 }
-impl<'a> Iterator for SolPotentialLocations<'a> {
+impl Iterator for SolPotentialLocations<'_> {
     type Item = SolLocationKind;
 
     fn next(&mut self) -> Option<Self::Item> {

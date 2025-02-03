@@ -110,7 +110,7 @@ impl SolCalc {
             EM_ATTR_ID | THERM_ATTR_ID | KIN_ATTR_ID | EXPL_ATTR_ID => match uad.items.get_item(item_id).unwrap() {
                 SolItem::Ship(ship) => self.clear_fit_rah_results(uad, &ship.get_fit_id()),
                 SolItem::Module(module) => {
-                    if self.rah.resonances.contains_key(&item_id) {
+                    if self.rah.resonances.contains_key(item_id) {
                         self.clear_fit_rah_results(uad, &module.get_fit_id());
                     }
                 }
@@ -118,7 +118,7 @@ impl SolCalc {
             },
             // RAH shift amount
             SHIFT_ATTR_ID => {
-                if self.rah.resonances.contains_key(&item_id) {
+                if self.rah.resonances.contains_key(item_id) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
                     let fit_id = uad.items.get_item(item_id).unwrap().get_fit_id().unwrap();
@@ -127,7 +127,7 @@ impl SolCalc {
             }
             // RAH cycle time
             a if Some(a) == self.rah.cycle_time_attr_id => {
-                if self.rah.resonances.contains_key(&item_id) {
+                if self.rah.resonances.contains_key(item_id) {
                     // Only modules should be registered in resonances container, and those are
                     // guaranteed to have fit ID
                     let fit_id = uad.items.get_item(item_id).unwrap().get_fit_id().unwrap();
@@ -142,14 +142,14 @@ impl SolCalc {
         }
     }
     pub(in crate::sol::svc::calc) fn rah_src_changed(&mut self, src: &Src) {
-        self.rah.cycle_time_attr_id = src.get_a_effect(&RAH_EFFECT_ID).map(|v| v.duration_attr_id).flatten();
+        self.rah.cycle_time_attr_id = src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.duration_attr_id);
     }
     pub(in crate::sol::svc::calc) fn rah_fit_rah_dmg_profile_changed(&mut self, uad: &SolUad, fit_id: &SolFitId) {
         self.clear_fit_rah_results(uad, fit_id);
     }
     // Private methods
     fn clear_fit_rah_results(&mut self, uad: &SolUad, fit_id: &SolFitId) {
-        let other_item_ids = self.rah.by_fit.get(&fit_id).copied().collect_vec();
+        let other_item_ids = self.rah.by_fit.get(fit_id).copied().collect_vec();
         for other_item_id in other_item_ids {
             self.clear_rah_result(uad, &other_item_id);
         }

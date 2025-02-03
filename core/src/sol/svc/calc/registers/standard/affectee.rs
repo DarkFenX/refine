@@ -36,7 +36,7 @@ impl SolStandardRegister {
     // Modification methods
     pub(in crate::sol::svc::calc) fn reg_affectee(&mut self, uad: &SolUad, item: &SolItem) {
         let item_id = item.get_id();
-        let fit_opt = item.get_fit_id().map(|v| uad.fits.get_fit(&v).ok()).flatten();
+        let fit_opt = item.get_fit_id().and_then(|v| uad.fits.get_fit(&v).ok());
         let root_loc_opt = item.get_root_loc_kind();
         let grp_id_opt = item.get_group_id();
         let srqs_opt = item.get_skill_reqs();
@@ -77,7 +77,7 @@ impl SolStandardRegister {
     }
     pub(in crate::sol::svc::calc) fn unreg_affectee(&mut self, uad: &SolUad, item: &SolItem) {
         let item_id = item.get_id();
-        let fit_opt = item.get_fit_id().map(|v| uad.fits.get_fit(&v).ok()).flatten();
+        let fit_opt = item.get_fit_id().and_then(|v| uad.fits.get_fit(&v).ok());
         let root_loc_opt = item.get_root_loc_kind();
         let grp_id_opt = item.get_group_id();
         let srqs_opt = item.get_skill_reqs();
@@ -565,7 +565,7 @@ impl SolStandardRegister {
 }
 
 fn get_fit_character(uad: &SolUad, fit_id: &SolFitId) -> Option<SolItemId> {
-    uad.fits.get_fit(fit_id).ok().map(|v| v.character).flatten()
+    uad.fits.get_fit(fit_id).ok().and_then(|v| v.character)
 }
 
 fn check_loc_owner(loc: SolLocation, fit: &SolFit) -> bool {
@@ -578,6 +578,6 @@ fn check_loc_owner(loc: SolLocation, fit: &SolFit) -> bool {
 }
 
 fn is_fit_of_ship_kind(uad: &SolUad, fit_id: &SolFitId) -> bool {
-    let fit = uad.fits.get_fit(&fit_id).unwrap();
+    let fit = uad.fits.get_fit(fit_id).unwrap();
     matches!(fit.kind, SolShipKind::Ship)
 }

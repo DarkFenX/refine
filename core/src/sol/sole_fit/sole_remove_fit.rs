@@ -10,7 +10,7 @@ impl SolarSystem {
         for item_id in fit.all_direct_items().iter() {
             self.remove_item(item_id, SolRmMode::Free).unwrap();
         }
-        self.svc.remove_fit(&fit_id);
+        self.svc.remove_fit(fit_id);
         let fit = self.uad.fits.remove_fit(fit_id).unwrap();
         if let Some(fleet_id) = fit.fleet {
             let fleet = self.uad.fleets.get_fleet_mut(&fleet_id).unwrap();

@@ -23,7 +23,7 @@ impl SolBuffRegister {
         &self,
         item_id: &SolItemId,
     ) -> impl ExactSizeIterator<Item = &EEffectId> {
-        self.effects.get(&item_id)
+        self.effects.get(item_id)
     }
     pub(in crate::sol::svc::calc) fn reg_effect(&mut self, item_id: SolItemId, effect: &ad::AEffect) {
         if uses_default_attrs(effect) {
@@ -57,16 +57,13 @@ impl SolBuffRegister {
         buff_type_attr_id: &EAttrId,
         modifier: &SolRawModifier,
     ) {
-        self.modifiers.remove_entry(&(*item_id, *buff_type_attr_id), &modifier)
+        self.modifiers.remove_entry(&(*item_id, *buff_type_attr_id), modifier)
     }
 }
 
 fn uses_default_attrs(effect: &ad::AEffect) -> bool {
     match &effect.buff {
-        Some(buff_info) => match buff_info.source {
-            ad::AEffectBuffSrc::DefaultAttrs => true,
-            _ => false,
-        },
+        Some(buff_info) => matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs),
         _ => false,
     }
 }

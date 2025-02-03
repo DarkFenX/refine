@@ -98,7 +98,7 @@ impl SolItemVec {
     }
     // Private methods
     fn clear_tail(&mut self) {
-        while self.data.last().map_or(false, |last| last.is_none()) {
+        while self.data.last().is_some_and(|last| last.is_none()) {
             self.data.pop();
         }
     }

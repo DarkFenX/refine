@@ -52,7 +52,7 @@ impl SolCalc {
                                 uad,
                                 item,
                                 effect,
-                                &buff_id,
+                                buff_id,
                                 &buff_info.scope,
                                 None,
                                 *buff_val_attr_id,
@@ -62,7 +62,7 @@ impl SolCalc {
                                 uad,
                                 item,
                                 effect,
-                                &buff_id,
+                                buff_id,
                                 &buff_info.scope,
                                 *buff_val,
                             ),
@@ -94,7 +94,7 @@ impl SolCalc {
             let effect = uad.src.get_a_effect(effect_id).unwrap();
             if let Some(buff_info) = effect.buff.as_ref() {
                 if matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs) {
-                    if let Ok(buff_id) = self.get_item_attr_val(uad, &item_id, &buff_type_attr_id) {
+                    if let Ok(buff_id) = self.get_item_attr_val(uad, &item_id, buff_type_attr_id) {
                         add_buff_mods(
                             &mut modifiers,
                             uad,
@@ -128,7 +128,7 @@ fn add_buff_mods(
             let modifier = match SolRawModifier::from_a_buff_regular(
                 item,
                 effect,
-                &buff,
+                buff,
                 buff_mod,
                 buff_val_attr_id,
                 buff_scope.into(),
@@ -153,12 +153,17 @@ fn add_buff_mods_hardcoded(
 ) {
     if let Some(buff) = uad.src.get_a_buff(buff_id) {
         for buff_mod in buff.mods.iter() {
-            let modifier =
-                match SolRawModifier::from_a_buff_hardcoded(item, effect, &buff, buff_mod, buff_val, buff_scope.into())
-                {
-                    Some(modifier) => modifier,
-                    None => continue,
-                };
+            let modifier = match SolRawModifier::from_a_buff_hardcoded(
+                item,
+                effect,
+                buff,
+                buff_mod,
+                buff_val,
+                buff_scope.into(),
+            ) {
+                Some(modifier) => modifier,
+                None => continue,
+            };
             modifiers.push(modifier);
         }
     }

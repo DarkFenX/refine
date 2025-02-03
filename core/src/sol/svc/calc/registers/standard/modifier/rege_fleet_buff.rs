@@ -150,58 +150,46 @@ impl SolStandardRegister {
     // Private methods
     fn apply_fleet_mod(&mut self, raw_modifier: SolRawModifier, fit_id: SolFitId) -> Option<SolCtxModifier> {
         match raw_modifier.affectee_filter {
-            SolAffecteeFilter::Direct(loc) => match loc {
-                SolLocation::Ship => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
-                    add_ctx_modifier(
-                        &mut self.cmods_root,
-                        (fit_id, SolLocationKind::Ship),
-                        ctx_modifier,
-                        &mut self.cmods_by_attr_spec,
-                    );
-                    Some(ctx_modifier)
-                }
-                _ => None,
-            },
-            SolAffecteeFilter::Loc(loc) => match loc {
-                SolLocation::Ship => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
-                    add_ctx_modifier(
-                        &mut self.cmods_loc,
-                        (fit_id, SolLocationKind::Ship),
-                        ctx_modifier,
-                        &mut self.cmods_by_attr_spec,
-                    );
-                    Some(ctx_modifier)
-                }
-                _ => None,
-            },
-            SolAffecteeFilter::LocGrp(loc, grp_id) => match loc {
-                SolLocation::Ship => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
-                    add_ctx_modifier(
-                        &mut self.cmods_loc_grp,
-                        (fit_id, SolLocationKind::Ship, grp_id),
-                        ctx_modifier,
-                        &mut self.cmods_by_attr_spec,
-                    );
-                    Some(ctx_modifier)
-                }
-                _ => None,
-            },
-            SolAffecteeFilter::LocSrq(loc, srq_id) => match loc {
-                SolLocation::Ship => {
-                    let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
-                    add_ctx_modifier(
-                        &mut self.cmods_loc_srq,
-                        (fit_id, SolLocationKind::Ship, srq_id),
-                        ctx_modifier,
-                        &mut self.cmods_by_attr_spec,
-                    );
-                    Some(ctx_modifier)
-                }
-                _ => None,
-            },
+            SolAffecteeFilter::Direct(SolLocation::Ship) => {
+                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+                add_ctx_modifier(
+                    &mut self.cmods_root,
+                    (fit_id, SolLocationKind::Ship),
+                    ctx_modifier,
+                    &mut self.cmods_by_attr_spec,
+                );
+                Some(ctx_modifier)
+            }
+            SolAffecteeFilter::Loc(SolLocation::Ship) => {
+                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+                add_ctx_modifier(
+                    &mut self.cmods_loc,
+                    (fit_id, SolLocationKind::Ship),
+                    ctx_modifier,
+                    &mut self.cmods_by_attr_spec,
+                );
+                Some(ctx_modifier)
+            }
+            SolAffecteeFilter::LocGrp(SolLocation::Ship, grp_id) => {
+                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+                add_ctx_modifier(
+                    &mut self.cmods_loc_grp,
+                    (fit_id, SolLocationKind::Ship, grp_id),
+                    ctx_modifier,
+                    &mut self.cmods_by_attr_spec,
+                );
+                Some(ctx_modifier)
+            }
+            SolAffecteeFilter::LocSrq(SolLocation::Ship, srq_id) => {
+                let ctx_modifier = SolCtxModifier::from_raw_with_fit(raw_modifier, fit_id);
+                add_ctx_modifier(
+                    &mut self.cmods_loc_srq,
+                    (fit_id, SolLocationKind::Ship, srq_id),
+                    ctx_modifier,
+                    &mut self.cmods_by_attr_spec,
+                );
+                Some(ctx_modifier)
+            }
             _ => None,
         }
     }

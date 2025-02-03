@@ -6,29 +6,29 @@
 //! relations between attributes are complex, there are multiple registers which handle it.
 //!
 //! - Standard register - primary register which provides data on modifiers and items affected by
-//! them;
+//!   them;
 //! - Buff register - collects data about buff modifiers which rely on on-item attributes to define
-//! buff type;
+//!   buff type;
 //! - Dependency register - tracks direct dependencies between attribute values, which cannot be
-//! tracked otherwise;
+//!   tracked otherwise;
 //! - Revision register - keeps track of custom modifiers which depend on various events not related
-//! to attribute changes, and whenever significant events happen, forces recalculation of attribute
-//! values it modifies. Custom ancillary armor repairer modifier uses this register.
+//!   to attribute changes, and whenever significant events happen, forces recalculation of
+//!   attribute values it modifies. Custom ancillary armor repairer modifier uses this register.
 //! - Projection register - keeps info about projection range between various projectable items.
 //!
 //! Next, there are a few scenarios on how those registers are used:
 //!
 //! - Effects with regular modifiers: those use standard register to provide info for both
-//! directions: finding modifiers which affect an attr on an item, and finding items which are
-//! affected by a modifier.
+//!   directions: finding modifiers which affect an attr on an item, and finding items which are
+//!   affected by a modifier.
 //! - Attribute value caps/limits: they are using dependency register, and relation between a
-//! limiting attribute and a limited attribute is registered during calculation of the limited
-//! attribute. Relation is removed only when item is unloaded;
+//!   limiting attribute and a limited attribute is registered during calculation of the limited
+//!   attribute. Relation is removed only when item is unloaded;
 //! - Custom ancillary repairer modifier: uses revision register to clear rep amount attribute
-//! whenever it loads/unloads paste as its charge;
+//!   whenever it loads/unloads paste as its charge;
 //! - Custom AB/MWD modifier: uses dependency register to establish relationship between ship speed,
-//! ship mass, prop speed boost, and prop thrust during modifier calculation. This relationship is
-//! removed whenever ship or prop is removed, or when effect/modifier is stopped.
+//!   ship mass, prop speed boost, and prop thrust during modifier calculation. This relationship is
+//!   removed whenever ship or prop is removed, or when effect/modifier is stopped.
 
 use accum::{SolAttrValInfo, SolModAccumFast, SolModAccumInfo};
 pub(in crate::sol::svc) use calc::SolCalc;

@@ -6,7 +6,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_fit_character(&self, fit_id: &SolFitId) -> Result<Option<SolCharacterInfo>, GetFitCharacterError> {
-        let fit = self.uad.fits.get_fit(&fit_id)?;
+        let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(fit
             .character
             .map(|v| SolCharacterInfo::from(self.uad.items.get_item(&v).unwrap().get_character().unwrap())))

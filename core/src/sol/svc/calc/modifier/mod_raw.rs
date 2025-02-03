@@ -66,10 +66,7 @@ impl SolRawModifier {
     ) -> Option<Self> {
         let affectee_filter =
             SolAffecteeFilter::from_a_effect_affectee_filter(&a_modifier.affectee_filter, affector_item);
-        let kind = match get_mod_kind(a_effect, &affectee_filter) {
-            Some(kind) => kind,
-            None => return None,
-        };
+        let kind = get_mod_kind(a_effect, &affectee_filter)?;
         // Targeted effects are affected by both range and resists
         let (resist_attr_id, optimal_attr_id, falloff_attr_id) = match kind {
             SolModifierKind::Targeted => (
@@ -142,10 +139,7 @@ impl SolRawModifier {
     ) -> Option<Self> {
         let affectee_filter =
             SolAffecteeFilter::from_a_buff_affectee_filter(&a_mod.affectee_filter, loc, affector_item);
-        let kind = match get_mod_kind(a_effect, &affectee_filter) {
-            Some(kind) => kind,
-            None => return None,
-        };
+        let kind = get_mod_kind(a_effect, &affectee_filter)?;
         let (resist_attr_id, optimal_attr_id) = match kind {
             SolModifierKind::Buff => (get_resist_attr_id(affector_item, a_effect), a_effect.range_attr_id),
             _ => (None, None),

@@ -10,7 +10,7 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::sol) fn add_item_autocharges(&mut self, item_id: &SolItemId) {
-        let item = self.uad.items.get_item(&item_id).unwrap();
+        let item = self.uad.items.get_item(item_id).unwrap();
         let item_state = item.get_state();
         let projections = match item.iter_projs() {
             Some(projections) => projections.map(|(i, r)| (*i, *r)).collect(),

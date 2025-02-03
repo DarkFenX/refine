@@ -19,7 +19,7 @@ impl SolStandardRegister {
         fits: &SolFits,
     ) -> Vec<SolCtxModifier> {
         let item_id = item.get_id();
-        let fit_opt = item.get_fit_id().map(|v| fits.get_fit(&v).ok()).flatten();
+        let fit_opt = item.get_fit_id().and_then(|v| fits.get_fit(&v).ok());
         let root_loc_opt = item.get_root_loc_kind();
         let grp_id_opt = item.get_group_id();
         let srqs_opt = item.get_skill_reqs();
@@ -87,13 +87,11 @@ impl SolStandardRegister {
         effect_id: EEffectId,
     ) {
         modifiers.clear();
-        match self.rmods_nonproj.remove_key(&(item_id, effect_id)) {
-            Some(effect_mods) => modifiers.extend(effect_mods),
-            None => (),
+        if let Some(effect_mods) = self.rmods_nonproj.remove_key(&(item_id, effect_id)) {
+            modifiers.extend(effect_mods)
         }
-        match self.rmods_proj.remove_key(&(item_id, effect_id)) {
-            Some(effect_mods) => modifiers.extend(effect_mods),
-            None => (),
+        if let Some(effect_mods) = self.rmods_proj.remove_key(&(item_id, effect_id)) {
+            modifiers.extend(effect_mods)
         }
     }
 }
@@ -104,10 +102,5 @@ fn filter_and_extend<K: Eq + Hash>(
     key: &K,
     attr_id: &EAttrId,
 ) {
-    vec.extend(
-        storage
-            .get(key)
-            .filter(|v| &v.raw.affectee_attr_id == attr_id)
-            .copied(),
-    )
+    vec.extend(storage.get(key).filter(|v| &v.raw.affectee_attr_id == attr_id).copied())
 }

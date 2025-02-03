@@ -17,7 +17,7 @@ impl<'a> SolActiveLocations<'a> {
         Self { item, fit, index: 0 }
     }
 }
-impl<'a> Iterator for SolActiveLocations<'a> {
+impl Iterator for SolActiveLocations<'_> {
     type Item = SolLocationKind;
 
     fn next(&mut self) -> Option<Self::Item> {

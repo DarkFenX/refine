@@ -20,7 +20,7 @@ pub(in crate::sol::svc) fn resolve_effect_status(
         return false;
     }
     match item.get_effect_modes().get(&effect.id) {
-        SolEffectMode::FullCompliance => resolve_effect_status_full(item, item_state, &effect, online_running),
+        SolEffectMode::FullCompliance => resolve_effect_status_full(item, item_state, effect, online_running),
         SolEffectMode::StateCompliance => item_state >= effect.state,
         SolEffectMode::ForceRun => true,
         SolEffectMode::ForceStop => false,
@@ -53,11 +53,8 @@ fn resolve_effect_status_full(
                 return false;
             };
             match item.get_defeff_id() {
-                Some(defeff_id_opt) => match defeff_id_opt {
-                    Some(defeff_id) => defeff_id == effect.id,
-                    _ => false,
-                },
-                None => false,
+                Some(Some(defeff_id)) => defeff_id == effect.id,
+                _ => false,
             }
         }
         // No additional restrictions for overload effects except for item being overloaded

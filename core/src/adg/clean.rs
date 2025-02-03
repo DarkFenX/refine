@@ -39,7 +39,7 @@ where
     F: FnMut(&mut T) -> bool,
 {
     let drained = src_vec.extract_if(.., filter).collect_vec();
-    let changes = drained.len() > 0;
+    let changes = !drained.is_empty();
     dst_vec.extend(drained);
     changes
 }

@@ -187,7 +187,7 @@ impl SolCalc {
         if !ctx_modifiers.is_empty() {
             let mut affectees = Vec::new();
             for ctx_modifier in ctx_modifiers.iter() {
-                self.std.fill_affectees(&mut affectees, uad, &ctx_modifier);
+                self.std.fill_affectees(&mut affectees, uad, ctx_modifier);
                 for projectee_item_id in affectees.iter() {
                     self.force_attr_value_recalc(uad, projectee_item_id, &ctx_modifier.raw.affectee_attr_id);
                 }
@@ -284,7 +284,7 @@ impl SolCalc {
             SolModifierKind::FleetBuff => {
                 let registered = self.std.reg_fleet_buff_mod(util_cmods, uad, item, *raw_modifier);
                 for ctx_modifier in util_cmods.iter() {
-                    self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
+                    self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                 }
                 if registered {
                     self.reg_raw_mod_for_buff(item, raw_modifier);
@@ -294,7 +294,7 @@ impl SolCalc {
                 SolItem::SwEffect(_) => {
                     self.std.reg_sw_system_mod(util_cmods, uad, *raw_modifier);
                     for ctx_modifier in util_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
+                        self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                     }
                 }
                 SolItem::FwEffect(fw_effect) => {
@@ -310,14 +310,14 @@ impl SolCalc {
                     SolItem::SwEffect(_) => {
                         let registered = self.std.reg_sw_buff_mod(util_cmods, uad, *raw_modifier);
                         for ctx_modifier in util_cmods.iter() {
-                            self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
+                            self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                         }
                         registered
                     }
                     SolItem::FwEffect(fw_effect) => {
                         let registered = self.std.reg_fw_buff_mod(util_cmods, uad, fw_effect, *raw_modifier);
                         for ctx_modifier in util_cmods.iter() {
-                            self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
+                            self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                         }
                         registered
                     }
@@ -353,7 +353,7 @@ impl SolCalc {
             SolModifierKind::FleetBuff => {
                 self.std.unreg_fleet_buff_mod(util_cmods, uad, item, *raw_modifier);
                 for ctx_modifier in util_cmods.iter() {
-                    self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
+                    self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                 }
                 self.unreg_raw_mod_for_buff(item, raw_modifier);
             }
@@ -361,7 +361,7 @@ impl SolCalc {
                 SolItem::SwEffect(_) => {
                     self.std.unreg_sw_system_mod(util_cmods, uad, *raw_modifier);
                     for ctx_modifier in util_cmods.iter() {
-                        self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
+                        self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                     }
                 }
                 SolItem::FwEffect(fw_effect) => {
@@ -378,13 +378,13 @@ impl SolCalc {
                     SolItem::SwEffect(_) => {
                         self.std.unreg_sw_buff_mod(util_cmods, uad, raw_modifier);
                         for ctx_modifier in util_cmods.iter() {
-                            self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
+                            self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                         }
                     }
                     SolItem::FwEffect(fw_effect) => {
                         self.std.unreg_fw_buff_mod(util_cmods, uad, fw_effect, *raw_modifier);
                         for ctx_modifier in util_cmods.iter() {
-                            self.force_mod_affectee_attr_recalc(util_items, uad, &ctx_modifier);
+                            self.force_mod_affectee_attr_recalc(util_items, uad, ctx_modifier);
                         }
                     }
                     // Don't need to do anything in this case, since projected effects were

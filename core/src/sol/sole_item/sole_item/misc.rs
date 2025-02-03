@@ -11,11 +11,11 @@ use crate::{
 
 impl SolarSystem {
     pub(in crate::sol) fn add_item_id_to_svc(&mut self, item_id: &SolItemId) {
-        let item = self.uad.items.get_item(&item_id).unwrap();
+        let item = self.uad.items.get_item(item_id).unwrap();
         self.svc.add_item(&self.uad, item);
     }
     pub(in crate::sol) fn remove_item_id_from_svc(&mut self, item_id: &SolItemId) {
-        let item = self.uad.items.get_item(&item_id).unwrap();
+        let item = self.uad.items.get_item(item_id).unwrap();
         self.svc.remove_item(&self.uad, item);
     }
     pub(in crate::sol::sole_item) fn change_item_id_state_in_svc(

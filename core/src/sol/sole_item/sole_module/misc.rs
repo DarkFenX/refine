@@ -23,7 +23,7 @@ pub(super) fn get_fit_rack<'a>(
     fit_id: &SolFitId,
     rack: SolModRack,
 ) -> Result<&'a mut SolItemVec, FitFoundError> {
-    let fit = uad_fits.get_fit_mut(&fit_id)?;
+    let fit = uad_fits.get_fit_mut(fit_id)?;
     let fit_rack = match rack {
         SolModRack::High => &mut fit.mods_high,
         SolModRack::Mid => &mut fit.mods_mid,

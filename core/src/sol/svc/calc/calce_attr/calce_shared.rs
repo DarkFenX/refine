@@ -14,10 +14,7 @@ impl SolCalc {
         if !matches!(modifier.raw.kind, SolModifierKind::Buff | SolModifierKind::Targeted) {
             return None;
         }
-        let resist_attr_id = match modifier.raw.resist_attr_id {
-            Some(resist_attr_id) => resist_attr_id,
-            None => return None,
-        };
+        let resist_attr_id = modifier.raw.resist_attr_id?;
         let projectee_item_id = match modifier.ctx {
             SolContext::Item(projectee_item_id) => projectee_item_id,
             _ => return None,
@@ -34,13 +31,8 @@ impl SolCalc {
             _ => return None,
         };
         let proj_range =
-            match self
-                .projs
-                .get_range(modifier.raw.affector_item_id, modifier.raw.effect_id, projectee_item_id)
-            {
-                Some(range) => range,
-                None => return None,
-            };
+            self.projs
+                .get_range(modifier.raw.affector_item_id, modifier.raw.effect_id, projectee_item_id)?;
         match modifier.raw.kind {
             SolModifierKind::Targeted => self.calc_proj_mult_targeted(uad, modifier, proj_range),
             SolModifierKind::Buff => self.calc_proj_mult_buff(uad, modifier, proj_range),

@@ -215,8 +215,8 @@ impl SolAttrAggr {
     fn add_processed_val(&mut self, val: AttrVal, aggr_mode: &SolAggrMode) {
         match aggr_mode {
             SolAggrMode::Stack => self.stack.push(val),
-            SolAggrMode::Min(key) => self.aggr_min.entry(*key).or_insert_with(|| Vec::new()).push(val),
-            SolAggrMode::Max(key) => self.aggr_max.entry(*key).or_insert_with(|| Vec::new()).push(val),
+            SolAggrMode::Min(key) => self.aggr_min.entry(*key).or_default().push(val),
+            SolAggrMode::Max(key) => self.aggr_max.entry(*key).or_default().push(val),
         }
     }
     fn get_comb_val<F>(&mut self, comb_func: F, high_is_good: bool) -> Option<AttrVal>

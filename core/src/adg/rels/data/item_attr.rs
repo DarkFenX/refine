@@ -17,14 +17,14 @@ impl Fk for ed::EItemAttr {
     fn get_item_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         vec.push(self.item_id);
-        if let Some(v) = self.get_fk_from_val(ec::units::ITEM_ID, &g_supp) {
+        if let Some(v) = self.get_fk_from_val(ec::units::ITEM_ID, g_supp) {
             vec.push(v);
         }
         vec
     }
     fn get_group_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
-        if let Some(v) = self.get_fk_from_val(ec::units::GROUP_ID, &g_supp) {
+        if let Some(v) = self.get_fk_from_val(ec::units::GROUP_ID, g_supp) {
             vec.push(v);
         }
         vec
@@ -32,7 +32,7 @@ impl Fk for ed::EItemAttr {
     fn get_attr_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
         let mut vec = Vec::new();
         vec.push(self.attr_id);
-        if let Some(v) = self.get_fk_from_val(ec::units::ATTR_ID, &g_supp) {
+        if let Some(v) = self.get_fk_from_val(ec::units::ATTR_ID, g_supp) {
             vec.push(v);
         }
         vec

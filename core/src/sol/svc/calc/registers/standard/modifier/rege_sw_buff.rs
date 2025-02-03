@@ -57,72 +57,63 @@ impl SolStandardRegister {
                 }
                 _ => false,
             },
-            SolAffecteeFilter::Loc(loc) => match loc {
-                SolLocation::Everything | SolLocation::Ship => {
-                    // Assume all fits are of ship type
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit in uad.fits.iter_fits() {
-                        if matches!(fit.kind, SolShipKind::Ship) {
-                            if let Some(ship_id) = fit.ship {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
-                                add_ctx_modifier(
-                                    &mut self.cmods_loc,
-                                    (fit.id, SolLocationKind::Ship),
-                                    ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                                ctx_modifiers.push(ctx_modifier);
-                            }
+            SolAffecteeFilter::Loc(SolLocation::Everything | SolLocation::Ship) => {
+                // Assume all fits are of ship type
+                ctx_modifiers.reserve(uad.fits.len());
+                for fit in uad.fits.iter_fits() {
+                    if matches!(fit.kind, SolShipKind::Ship) {
+                        if let Some(ship_id) = fit.ship {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
+                            add_ctx_modifier(
+                                &mut self.cmods_loc,
+                                (fit.id, SolLocationKind::Ship),
+                                ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
+                            ctx_modifiers.push(ctx_modifier);
                         }
                     }
-                    true
                 }
-                _ => false,
-            },
-            SolAffecteeFilter::LocGrp(loc, grp_id) => match loc {
-                SolLocation::Everything | SolLocation::Ship => {
-                    // Assume all fits are of ship type
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit in uad.fits.iter_fits() {
-                        if matches!(fit.kind, SolShipKind::Ship) {
-                            if let Some(ship_id) = fit.ship {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
-                                add_ctx_modifier(
-                                    &mut self.cmods_loc_grp,
-                                    (fit.id, SolLocationKind::Ship, grp_id),
-                                    ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                                ctx_modifiers.push(ctx_modifier);
-                            }
+                true
+            }
+            SolAffecteeFilter::LocGrp(SolLocation::Everything | SolLocation::Ship, grp_id) => {
+                // Assume all fits are of ship type
+                ctx_modifiers.reserve(uad.fits.len());
+                for fit in uad.fits.iter_fits() {
+                    if matches!(fit.kind, SolShipKind::Ship) {
+                        if let Some(ship_id) = fit.ship {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
+                            add_ctx_modifier(
+                                &mut self.cmods_loc_grp,
+                                (fit.id, SolLocationKind::Ship, grp_id),
+                                ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
+                            ctx_modifiers.push(ctx_modifier);
                         }
                     }
-                    true
                 }
-                _ => false,
-            },
-            SolAffecteeFilter::LocSrq(loc, srq_id) => match loc {
-                SolLocation::Everything | SolLocation::Ship => {
-                    // Assume all fits are of ship type
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit in uad.fits.iter_fits() {
-                        if matches!(fit.kind, SolShipKind::Ship) {
-                            if let Some(ship_id) = fit.ship {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
-                                add_ctx_modifier(
-                                    &mut self.cmods_loc_srq,
-                                    (fit.id, SolLocationKind::Ship, srq_id),
-                                    ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                                ctx_modifiers.push(ctx_modifier);
-                            }
+                true
+            }
+            SolAffecteeFilter::LocSrq(SolLocation::Everything | SolLocation::Ship, srq_id) => {
+                // Assume all fits are of ship type
+                ctx_modifiers.reserve(uad.fits.len());
+                for fit in uad.fits.iter_fits() {
+                    if matches!(fit.kind, SolShipKind::Ship) {
+                        if let Some(ship_id) = fit.ship {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(raw_modifier, ship_id);
+                            add_ctx_modifier(
+                                &mut self.cmods_loc_srq,
+                                (fit.id, SolLocationKind::Ship, srq_id),
+                                ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
+                            ctx_modifiers.push(ctx_modifier);
                         }
                     }
-                    true
                 }
-                _ => false,
-            },
+                true
+            }
             _ => false,
         };
         if valid {
@@ -176,69 +167,60 @@ impl SolStandardRegister {
                 }
                 _ => (),
             },
-            SolAffecteeFilter::Loc(loc) => match loc {
-                SolLocation::Everything | SolLocation::Ship => {
-                    // Assume all fits are of ship type
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit in uad.fits.iter_fits() {
-                        if matches!(fit.kind, SolShipKind::Ship) {
-                            if let Some(ship_id) = fit.ship {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);
-                                remove_ctx_modifier(
-                                    &mut self.cmods_loc,
-                                    &(fit.id, SolLocationKind::Ship),
-                                    &ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                                ctx_modifiers.push(ctx_modifier);
-                            }
+            SolAffecteeFilter::Loc(SolLocation::Everything | SolLocation::Ship) => {
+                // Assume all fits are of ship type
+                ctx_modifiers.reserve(uad.fits.len());
+                for fit in uad.fits.iter_fits() {
+                    if matches!(fit.kind, SolShipKind::Ship) {
+                        if let Some(ship_id) = fit.ship {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);
+                            remove_ctx_modifier(
+                                &mut self.cmods_loc,
+                                &(fit.id, SolLocationKind::Ship),
+                                &ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
+                            ctx_modifiers.push(ctx_modifier);
                         }
                     }
                 }
-                _ => (),
-            },
-            SolAffecteeFilter::LocGrp(loc, grp_id) => match loc {
-                SolLocation::Everything | SolLocation::Ship => {
-                    // Assume all fits are of ship type
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit in uad.fits.iter_fits() {
-                        if matches!(fit.kind, SolShipKind::Ship) {
-                            if let Some(ship_id) = fit.ship {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);
-                                remove_ctx_modifier(
-                                    &mut self.cmods_loc_grp,
-                                    &(fit.id, SolLocationKind::Ship, grp_id),
-                                    &ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                                ctx_modifiers.push(ctx_modifier);
-                            }
+            }
+            SolAffecteeFilter::LocGrp(SolLocation::Everything | SolLocation::Ship, grp_id) => {
+                // Assume all fits are of ship type
+                ctx_modifiers.reserve(uad.fits.len());
+                for fit in uad.fits.iter_fits() {
+                    if matches!(fit.kind, SolShipKind::Ship) {
+                        if let Some(ship_id) = fit.ship {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);
+                            remove_ctx_modifier(
+                                &mut self.cmods_loc_grp,
+                                &(fit.id, SolLocationKind::Ship, grp_id),
+                                &ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
+                            ctx_modifiers.push(ctx_modifier);
                         }
                     }
                 }
-                _ => (),
-            },
-            SolAffecteeFilter::LocSrq(loc, srq_id) => match loc {
-                SolLocation::Everything | SolLocation::Ship => {
-                    // Assume all fits are of ship type
-                    ctx_modifiers.reserve(uad.fits.len());
-                    for fit in uad.fits.iter_fits() {
-                        if matches!(fit.kind, SolShipKind::Ship) {
-                            if let Some(ship_id) = fit.ship {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);
-                                remove_ctx_modifier(
-                                    &mut self.cmods_loc_srq,
-                                    &(fit.id, SolLocationKind::Ship, srq_id),
-                                    &ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                                ctx_modifiers.push(ctx_modifier);
-                            }
+            }
+            SolAffecteeFilter::LocSrq(SolLocation::Everything | SolLocation::Ship, srq_id) => {
+                // Assume all fits are of ship type
+                ctx_modifiers.reserve(uad.fits.len());
+                for fit in uad.fits.iter_fits() {
+                    if matches!(fit.kind, SolShipKind::Ship) {
+                        if let Some(ship_id) = fit.ship {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship_id);
+                            remove_ctx_modifier(
+                                &mut self.cmods_loc_srq,
+                                &(fit.id, SolLocationKind::Ship, srq_id),
+                                &ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
+                            ctx_modifiers.push(ctx_modifier);
                         }
                     }
                 }
-                _ => (),
-            },
+            }
             _ => (),
         }
         self.rmods_sw_buff.remove(raw_modifier);
@@ -273,54 +255,45 @@ impl SolStandardRegister {
                     }
                     _ => (),
                 },
-                SolAffecteeFilter::Loc(loc) => match loc {
-                    SolLocation::Everything | SolLocation::Ship => {
-                        if let SolItem::Ship(ship) = item {
-                            if matches!(ship.get_kind(), SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
-                                add_ctx_modifier(
-                                    &mut self.cmods_loc,
-                                    (ship.get_fit_id(), SolLocationKind::Ship),
-                                    ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                            }
+                SolAffecteeFilter::Loc(SolLocation::Everything | SolLocation::Ship) => {
+                    if let SolItem::Ship(ship) = item {
+                        if matches!(ship.get_kind(), SolShipKind::Ship) {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
+                            add_ctx_modifier(
+                                &mut self.cmods_loc,
+                                (ship.get_fit_id(), SolLocationKind::Ship),
+                                ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
                         }
                     }
-                    _ => (),
-                },
-                SolAffecteeFilter::LocGrp(loc, grp_id) => match loc {
-                    SolLocation::Everything | SolLocation::Ship => {
-                        if let SolItem::Ship(ship) = item {
-                            if matches!(ship.get_kind(), SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
-                                add_ctx_modifier(
-                                    &mut self.cmods_loc_grp,
-                                    (ship.get_fit_id(), SolLocationKind::Ship, grp_id),
-                                    ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                            }
+                }
+                SolAffecteeFilter::LocGrp(SolLocation::Everything | SolLocation::Ship, grp_id) => {
+                    if let SolItem::Ship(ship) = item {
+                        if matches!(ship.get_kind(), SolShipKind::Ship) {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
+                            add_ctx_modifier(
+                                &mut self.cmods_loc_grp,
+                                (ship.get_fit_id(), SolLocationKind::Ship, grp_id),
+                                ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
                         }
                     }
-                    _ => (),
-                },
-                SolAffecteeFilter::LocSrq(loc, srq_id) => match loc {
-                    SolLocation::Everything | SolLocation::Ship => {
-                        if let SolItem::Ship(ship) = item {
-                            if matches!(ship.get_kind(), SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
-                                add_ctx_modifier(
-                                    &mut self.cmods_loc_srq,
-                                    (ship.get_fit_id(), SolLocationKind::Ship, srq_id),
-                                    ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                            }
+                }
+                SolAffecteeFilter::LocSrq(SolLocation::Everything | SolLocation::Ship, srq_id) => {
+                    if let SolItem::Ship(ship) = item {
+                        if matches!(ship.get_kind(), SolShipKind::Ship) {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
+                            add_ctx_modifier(
+                                &mut self.cmods_loc_srq,
+                                (ship.get_fit_id(), SolLocationKind::Ship, srq_id),
+                                ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
                         }
                     }
-                    _ => (),
-                },
+                }
                 _ => (),
             };
         }
@@ -355,54 +328,45 @@ impl SolStandardRegister {
                     }
                     _ => (),
                 },
-                SolAffecteeFilter::Loc(loc) => match loc {
-                    SolLocation::Everything | SolLocation::Ship => {
-                        if let SolItem::Ship(ship) = item {
-                            if matches!(ship.get_kind(), SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
-                                remove_ctx_modifier(
-                                    &mut self.cmods_loc,
-                                    &(ship.get_fit_id(), SolLocationKind::Ship),
-                                    &ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                            }
+                SolAffecteeFilter::Loc(SolLocation::Everything | SolLocation::Ship) => {
+                    if let SolItem::Ship(ship) = item {
+                        if matches!(ship.get_kind(), SolShipKind::Ship) {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
+                            remove_ctx_modifier(
+                                &mut self.cmods_loc,
+                                &(ship.get_fit_id(), SolLocationKind::Ship),
+                                &ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
                         }
                     }
-                    _ => (),
-                },
-                SolAffecteeFilter::LocGrp(loc, grp_id) => match loc {
-                    SolLocation::Everything | SolLocation::Ship => {
-                        if let SolItem::Ship(ship) = item {
-                            if matches!(ship.get_kind(), SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
-                                remove_ctx_modifier(
-                                    &mut self.cmods_loc_grp,
-                                    &(ship.get_fit_id(), SolLocationKind::Ship, grp_id),
-                                    &ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                            }
+                }
+                SolAffecteeFilter::LocGrp(SolLocation::Everything | SolLocation::Ship, grp_id) => {
+                    if let SolItem::Ship(ship) = item {
+                        if matches!(ship.get_kind(), SolShipKind::Ship) {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
+                            remove_ctx_modifier(
+                                &mut self.cmods_loc_grp,
+                                &(ship.get_fit_id(), SolLocationKind::Ship, grp_id),
+                                &ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
                         }
                     }
-                    _ => (),
-                },
-                SolAffecteeFilter::LocSrq(loc, srq_id) => match loc {
-                    SolLocation::Everything | SolLocation::Ship => {
-                        if let SolItem::Ship(ship) = item {
-                            if matches!(ship.get_kind(), SolShipKind::Ship) {
-                                let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
-                                remove_ctx_modifier(
-                                    &mut self.cmods_loc_srq,
-                                    &(ship.get_fit_id(), SolLocationKind::Ship, srq_id),
-                                    &ctx_modifier,
-                                    &mut self.cmods_by_attr_spec,
-                                );
-                            }
+                }
+                SolAffecteeFilter::LocSrq(SolLocation::Everything | SolLocation::Ship, srq_id) => {
+                    if let SolItem::Ship(ship) = item {
+                        if matches!(ship.get_kind(), SolShipKind::Ship) {
+                            let ctx_modifier = SolCtxModifier::from_raw_with_item(*raw_modifier, ship.get_id());
+                            remove_ctx_modifier(
+                                &mut self.cmods_loc_srq,
+                                &(ship.get_fit_id(), SolLocationKind::Ship, srq_id),
+                                &ctx_modifier,
+                                &mut self.cmods_by_attr_spec,
+                            );
                         }
                     }
-                    _ => (),
-                },
+                }
                 _ => (),
             };
         }

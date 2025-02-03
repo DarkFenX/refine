@@ -19,7 +19,7 @@ impl SolRahSim {
         Self {
             resonances: StMap::new(),
             by_fit: StMapSetL1::new(),
-            cycle_time_attr_id: src.get_a_effect(&RAH_EFFECT_ID).map(|v| v.duration_attr_id).flatten(),
+            cycle_time_attr_id: src.get_a_effect(&RAH_EFFECT_ID).and_then(|v| v.duration_attr_id),
             sim_running: false,
         }
     }
