@@ -18,6 +18,7 @@ impl InnerSrc {
     }
 }
 
+#[allow(clippy::borrowed_box)]
 fn get_ed_version(e_handler: &Box<dyn ed::EveDataHandler>) -> Option<String> {
     match e_handler.get_data_version() {
         Ok(ed_version) => Some(ed_version),
@@ -64,6 +65,7 @@ fn need_to_adapt(ed_version: Option<String>, a_handler: &mut Box<dyn ad::Adapted
     false
 }
 
+#[allow(clippy::borrowed_box)]
 fn adapt_data(e_handler: &Box<dyn ed::EveDataHandler>) -> Result<ad::AData, SrcInitError> {
     tracing::info!("generating adapted data...");
     adg::generate_adapted_data(e_handler.as_ref())
