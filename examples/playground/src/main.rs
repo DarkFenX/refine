@@ -276,7 +276,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         sol_sys.add_drone(fit.id, 2446, SolItemState::Offline, None).unwrap(); // T2 ogre
     }
 
-    let val_options = SolValOptions::new_enabled();
+    let val_options = SolValOptions::new_all_enabled();
 
     let iterations = 1000;
     tracing::error!(

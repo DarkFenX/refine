@@ -1,6 +1,6 @@
 use crate::{cmd::shared::HRmMode, util::HExecError};
 
-#[derive(serde::Deserialize)]
+#[derive(Default, serde::Deserialize)]
 pub(crate) struct HRemoveItemCmd {
     rm_mode: Option<HRmMode>,
 }
@@ -13,10 +13,5 @@ impl HRemoveItemCmd {
                 rc::err::RemoveItemError::UnremovableAutocharge(e) => HExecError::UnremovableAutocharge(e),
             }),
         }
-    }
-}
-impl Default for HRemoveItemCmd {
-    fn default() -> Self {
-        Self { rm_mode: None }
     }
 }

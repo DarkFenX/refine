@@ -18,8 +18,8 @@ impl HValidFitCmd {
     ) -> Result<HValidInfo, HExecError> {
         // Extract options
         let (mut core_options, options, alt_value) = match self {
-            Self::Include(options) => (rc::SolValOptions::new_disabled(), options, true),
-            Self::Exclude(options) => (rc::SolValOptions::new_enabled(), options, false),
+            Self::Include(options) => (rc::SolValOptions::new_all_disabled(), options, true),
+            Self::Exclude(options) => (rc::SolValOptions::new_all_enabled(), options, false),
         };
         for option in options {
             match option.as_str() {

@@ -1,6 +1,6 @@
 use crate::{shared::HDmgProfile, util::HExecError};
 
-#[derive(serde::Deserialize)]
+#[derive(Default, serde::Deserialize)]
 pub(crate) struct HAddSolCmd {
     default_incoming_dmg: Option<HDmgProfile>,
 }
@@ -21,12 +21,5 @@ impl HAddSolCmd {
             }
         }
         Ok(core_sol)
-    }
-}
-impl Default for HAddSolCmd {
-    fn default() -> Self {
-        Self {
-            default_incoming_dmg: None,
-        }
     }
 }

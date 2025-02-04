@@ -99,7 +99,7 @@ mod dgmmod {
         };
         match func {
             Value::String(s) => Ok(s.to_owned()),
-            _ => return Err(Error::custom(format!("unexpected type of {key} value"))),
+            _ => Err(Error::custom(format!("unexpected type of {key} value"))),
         }
     }
 

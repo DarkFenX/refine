@@ -10,6 +10,7 @@ use crate::{
     state::HAppState,
 };
 
+#[allow(clippy::let_and_return)]
 pub(crate) async fn debug_check_sol(State(state): State<HAppState>, Path(sol_id): Path<String>) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,

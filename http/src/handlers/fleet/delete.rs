@@ -12,6 +12,7 @@ use crate::{
     util::HExecError,
 };
 
+#[allow(clippy::let_and_return)]
 pub(crate) async fn delete_fleet(
     State(state): State<HAppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,

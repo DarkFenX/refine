@@ -40,78 +40,7 @@ pub struct SolValOptions {
     pub capital_module: bool,
 }
 impl SolValOptions {
-    pub fn new(
-        cpu: bool,
-        powergrid: bool,
-        calibration: bool,
-        dronebay_volume: bool,
-        drone_bandwidth: bool,
-        rig_slots: bool,
-        subsystem_slots: bool,
-        launched_drones: bool,
-        launched_fighters: bool,
-        launched_support_fighters: bool,
-        launched_light_fighters: bool,
-        launched_heavy_fighters: bool,
-        launched_standup_support_fighters: bool,
-        launched_standup_light_fighters: bool,
-        launched_standup_heavy_fighters: bool,
-        turret_slots: bool,
-        launcher_slots: bool,
-        high_slots: bool,
-        mid_slots: bool,
-        low_slots: bool,
-        implant_slot_index: bool,
-        booster_slot_index: bool,
-        subsystem_slot_index: bool,
-        ship_limit: bool,
-        max_group_fitted: bool,
-        max_group_online: bool,
-        max_group_active: bool,
-        rig_size: bool,
-        skill_reqs: bool,
-        charge_group: bool,
-        charge_size: bool,
-        charge_volume: bool,
-        capital_module: bool,
-    ) -> Self {
-        Self {
-            cpu,
-            powergrid,
-            calibration,
-            dronebay_volume,
-            drone_bandwidth,
-            rig_slots,
-            subsystem_slots,
-            launched_drones,
-            launched_fighters,
-            launched_support_fighters,
-            launched_light_fighters,
-            launched_heavy_fighters,
-            launched_standup_support_fighters,
-            launched_standup_light_fighters,
-            launched_standup_heavy_fighters,
-            turret_slots,
-            launcher_slots,
-            high_slots,
-            mid_slots,
-            low_slots,
-            implant_slot_index,
-            booster_slot_index,
-            subsystem_slot_index,
-            ship_limit,
-            max_group_fitted,
-            max_group_online,
-            max_group_active,
-            rig_size,
-            skill_reqs,
-            charge_group,
-            charge_size,
-            charge_volume,
-            capital_module,
-        }
-    }
-    pub fn new_enabled() -> Self {
+    pub fn new_all_enabled() -> Self {
         Self {
             cpu: true,
             powergrid: true,
@@ -148,7 +77,7 @@ impl SolValOptions {
             capital_module: true,
         }
     }
-    pub fn new_disabled() -> Self {
+    pub fn new_all_disabled() -> Self {
         Self {
             cpu: false,
             powergrid: false,

@@ -23,10 +23,10 @@ impl<K: Eq + Hash, V> StMap<K, V> {
         }
     }
     // View methods
-    pub fn get<Q: ?Sized>(&self, key: &Q) -> Option<&V>
+    pub fn get<Q>(&self, key: &Q) -> Option<&V>
     where
         K: Borrow<Q>,
-        Q: Hash + Eq,
+        Q: Hash + Eq + ?Sized,
     {
         self.data.get(key)
     }

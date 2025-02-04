@@ -13,6 +13,7 @@ use crate::{
     util::HExecError,
 };
 
+#[allow(clippy::let_and_return)]
 pub(crate) async fn create_item(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,

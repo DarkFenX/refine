@@ -12,19 +12,17 @@ pub(in crate::phb) struct PItemFighterAbils {
 impl FsdMerge<rc::ed::EItemFighterAbil> for PItemFighterAbils {
     fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemFighterAbil> {
         let mut vec = Vec::new();
-        for p_abil_data_opt in vec![self.abil0, self.abil1, self.abil2].into_iter() {
-            if let Some(p_abil_data) = p_abil_data_opt {
-                let (charge_count, charge_rearm_time) = p_abil_data
-                    .charges
-                    .map_or((None, None), |v| (Some(v.count), Some(v.rearm_time)));
-                vec.push(rc::ed::EItemFighterAbil::new(
-                    id,
-                    p_abil_data.abil_id,
-                    p_abil_data.cooldown,
-                    charge_count,
-                    charge_rearm_time,
-                ));
-            }
+        for p_abil_data in vec![self.abil0, self.abil1, self.abil2].into_iter().flatten() {
+            let (charge_count, charge_rearm_time) = p_abil_data
+                .charges
+                .map_or((None, None), |v| (Some(v.count), Some(v.rearm_time)));
+            vec.push(rc::ed::EItemFighterAbil::new(
+                id,
+                p_abil_data.abil_id,
+                p_abil_data.cooldown,
+                charge_count,
+                charge_rearm_time,
+            ));
         }
         vec
     }

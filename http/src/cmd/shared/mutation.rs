@@ -47,7 +47,7 @@ impl From<&HItemMutationFull> for rc::SolItemAddMutation {
                         .map(|(k, v)| rc::SolItemAddAttrMutation::new(*k, v.into()))
                         .collect()
                 })
-                .unwrap_or_else(|| Vec::new()),
+                .unwrap_or_default(),
         )
     }
 }

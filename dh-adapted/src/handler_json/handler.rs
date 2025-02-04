@@ -82,8 +82,7 @@ impl RamJsonAdh {
         match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
             Ok(_) => (),
             Err(e) => {
-                tracing::error!("unable to write cache file: {e}");
-                return;
+                tracing::error!("unable to write cache file: {e}")
             }
         };
     }
@@ -100,15 +99,15 @@ impl fmt::Debug for RamJsonAdh {
 impl rc::ad::AdaptedDataHandler for RamJsonAdh {
     /// Get cached item.
     fn get_item(&self, id: &rc::EItemId) -> Option<&rc::ad::ArcItem> {
-        self.storage_items.get(&id)
+        self.storage_items.get(id)
     }
     /// Get cached attribute.
     fn get_attr(&self, id: &rc::EAttrId) -> Option<&rc::ad::ArcAttr> {
-        self.storage_attrs.get(&id)
+        self.storage_attrs.get(id)
     }
     /// Get cached effect.
     fn get_effect(&self, id: &rc::EEffectId) -> Option<&rc::ad::ArcEffect> {
-        self.storage_effects.get(&id)
+        self.storage_effects.get(id)
     }
     /// Get cached mutator.
     fn get_muta(&self, id: &rc::EItemId) -> Option<&rc::ad::ArcMuta> {
@@ -116,7 +115,7 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
     }
     /// Get cached warfare buff.
     fn get_buff(&self, id: &rc::EBuffId) -> Option<&rc::ad::ArcBuff> {
-        self.storage_buffs.get(&id)
+        self.storage_buffs.get(id)
     }
     /// Get cached data fingerprint.
     fn get_data_fingerprint(&self) -> Option<String> {

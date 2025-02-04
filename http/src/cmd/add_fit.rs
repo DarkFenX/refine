@@ -1,6 +1,6 @@
 use crate::{shared::HDmgProfile, util::HExecError};
 
-#[derive(serde::Deserialize)]
+#[derive(Default, serde::Deserialize)]
 pub(crate) struct HAddFitCmd {
     rah_incoming_dmg: Option<HDmgProfile>,
 }
@@ -34,10 +34,5 @@ impl HAddFitCmd {
             None => return Ok(fit_info),
         }
         Ok(core_sol.get_fit(&fit_info.id).unwrap())
-    }
-}
-impl Default for HAddFitCmd {
-    fn default() -> Self {
-        Self { rah_incoming_dmg: None }
     }
 }

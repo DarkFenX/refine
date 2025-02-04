@@ -34,7 +34,7 @@ impl HSolMgr {
         let sync_span = tracing::trace_span!("sync");
         match tokio_rayon::spawn_fifo(move || {
             let _sg = sync_span.enter();
-            let mut core_sol = command.execute(src).map_err(|exec_err| HBrError::from(exec_err))?;
+            let mut core_sol = command.execute(src).map_err(HBrError::from)?;
             let sol_info = HSolInfo::mk_info(id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
             Ok((core_sol, sol_info))
         })

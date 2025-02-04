@@ -63,7 +63,7 @@ impl PhbHttpEdh {
 }
 impl fmt::Debug for PhbHttpEdh {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "PhbHttpEdh(\"{}\")", self.base_url.to_string())
+        write!(f, "PhbHttpEdh(\"{}\")", self.base_url)
     }
 }
 impl rc::ed::EveDataHandler for PhbHttpEdh {
