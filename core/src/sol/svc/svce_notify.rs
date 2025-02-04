@@ -47,10 +47,10 @@ impl SolSvc {
         self.calc.item_removed(uad, item);
         self.vast.item_removed(uad, item);
     }
-    pub(in crate::sol::svc) fn notify_state_activated(&mut self, uad: &SolUad, item: &SolItem, state: &SolItemState) {
+    pub(in crate::sol::svc) fn notify_state_activated(&mut self, item: &SolItem, state: &SolItemState) {
         self.vast.item_state_activated(item, state);
     }
-    pub(in crate::sol::svc) fn notify_state_deactivated(&mut self, uad: &SolUad, item: &SolItem, state: &SolItemState) {
+    pub(in crate::sol::svc) fn notify_state_deactivated(&mut self, item: &SolItem, state: &SolItemState) {
         self.vast.item_state_deactivated(item, state);
     }
     pub(in crate::sol::svc) fn notify_item_loaded(&mut self, uad: &SolUad, item: &SolItem) {
@@ -69,20 +69,10 @@ impl SolSvc {
     ) {
         self.calc.force_attr_value_recalc(uad, item_id, attr_id);
     }
-    pub(in crate::sol::svc) fn notify_item_state_activated_loaded(
-        &mut self,
-        uad: &SolUad,
-        item: &SolItem,
-        state: &SolItemState,
-    ) {
+    pub(in crate::sol::svc) fn notify_item_state_activated_loaded(&mut self, item: &SolItem, state: &SolItemState) {
         self.vast.item_state_activated_loaded(item, state);
     }
-    pub(in crate::sol::svc) fn notify_item_state_deactivated_loaded(
-        &mut self,
-        uad: &SolUad,
-        item: &SolItem,
-        state: &SolItemState,
-    ) {
+    pub(in crate::sol::svc) fn notify_item_state_deactivated_loaded(&mut self, item: &SolItem, state: &SolItemState) {
         self.vast.item_state_deactivated_loaded(item, state);
     }
     pub(in crate::sol::svc) fn notify_effects_started(
@@ -109,23 +99,23 @@ impl SolSvc {
     }
     pub(in crate::sol::svc) fn notify_item_projected(
         &mut self,
-        uad: &SolUad,
-        projector_item: &SolItem,
-        projectee_item: &SolItem,
+        _uad: &SolUad,
+        _projector_item: &SolItem,
+        _projectee_item: &SolItem,
     ) {
     }
     pub(in crate::sol::svc) fn notify_item_unprojected(
         &mut self,
-        uad: &SolUad,
-        projector_item: &SolItem,
-        projectee_item: &SolItem,
+        _uad: &SolUad,
+        _projector_item: &SolItem,
+        _projectee_item: &SolItem,
     ) {
     }
     pub(in crate::sol::svc) fn notify_item_proj_range_changed(
         &mut self,
-        uad: &SolUad,
-        projector_item: &SolItem,
-        projectee_item: &SolItem,
+        _uad: &SolUad,
+        _projector_item: &SolItem,
+        _projectee_item: &SolItem,
     ) {
     }
     pub(in crate::sol::svc) fn notify_effect_projected(

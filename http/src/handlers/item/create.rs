@@ -33,10 +33,7 @@ pub(crate) async fn create_item(
         Ok(item_info) => (StatusCode::CREATED, Json(item_info)).into_response(),
         Err(br_err) => {
             let code = match &br_err {
-                HBrError::ExecFailed(exec_err) => match exec_err {
-                    HExecError::SkillIdCollision(_) => StatusCode::CONFLICT,
-                    _ => StatusCode::INTERNAL_SERVER_ERROR,
-                },
+                HBrError::ExecFailed(HExecError::SkillIdCollision(_)) => StatusCode::CONFLICT,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(HSingleErr::from(br_err))).into_response()

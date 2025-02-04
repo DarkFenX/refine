@@ -26,10 +26,7 @@ pub(crate) async fn delete_fit(
         Err(br_err) => {
             let code = match &br_err {
                 HBrError::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrError::ExecFailed(exec_err) => match exec_err {
-                    HExecError::FitNotFoundPrimary(_) => StatusCode::NOT_FOUND,
-                    _ => StatusCode::INTERNAL_SERVER_ERROR,
-                },
+                HBrError::ExecFailed(HExecError::FitNotFoundPrimary(_)) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(HSingleErr::from(br_err))).into_response()

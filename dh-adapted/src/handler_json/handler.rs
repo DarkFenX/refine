@@ -111,7 +111,7 @@ impl rc::ad::AdaptedDataHandler for RamJsonAdh {
     }
     /// Get cached mutator.
     fn get_muta(&self, id: &rc::EItemId) -> Option<&rc::ad::ArcMuta> {
-        self.storage_mutas.get(&id)
+        self.storage_mutas.get(id)
     }
     /// Get cached warfare buff.
     fn get_buff(&self, id: &rc::EBuffId) -> Option<&rc::ad::ArcBuff> {

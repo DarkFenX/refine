@@ -52,14 +52,13 @@ pub(crate) async fn create_sol(
         Ok(sol_info) => sol_info,
         Err(br_err) => {
             let code = match &br_err {
-                HBrError::ExecFailed(exec_err) => match &exec_err {
+                HBrError::ExecFailed(
                     HExecError::InvalidDmgProfileEm(_)
                     | HExecError::InvalidDmgProfileTherm(_)
                     | HExecError::InvalidDmgProfileKin(_)
                     | HExecError::InvalidDmgProfileExpl(_)
-                    | HExecError::InvalidDmgProfileTotal(_) => StatusCode::BAD_REQUEST,
-                    _ => StatusCode::INTERNAL_SERVER_ERROR,
-                },
+                    | HExecError::InvalidDmgProfileTotal(_),
+                ) => StatusCode::BAD_REQUEST,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             return (code, Json(HSingleErr::from(br_err))).into_response();

@@ -105,14 +105,14 @@ impl<K: Eq + Hash, V> FromIterator<(K, V)> for StMap<K, V> {
     }
 }
 impl<K: Eq + Hash + Clone, V: Clone> From<&HashMap<K, V>> for StMap<K, V> {
-    fn from(hmap: &HashMap<K, V>) -> Self {
+    fn from(h_map: &HashMap<K, V>) -> Self {
         Self {
-            data: FxHashMap::from_iter(hmap.iter().map(|(k, v)| (k.clone(), v.clone()))),
+            data: FxHashMap::from_iter(h_map.iter().map(|(k, v)| (k.clone(), v.clone()))),
         }
     }
 }
-impl<K: Eq + Hash + Clone, V: Clone> Into<HashMap<K, V>> for &StMap<K, V> {
-    fn into(self) -> HashMap<K, V> {
-        HashMap::from_iter(self.iter().map(|(k, v)| (k.clone(), v.clone())))
+impl<K: Eq + Hash + Clone, V: Clone> From<&StMap<K, V>> for HashMap<K, V> {
+    fn from(st_map: &StMap<K, V>) -> HashMap<K, V> {
+        Self::from_iter(st_map.iter().map(|(k, v)| (k.clone(), v.clone())))
     }
 }

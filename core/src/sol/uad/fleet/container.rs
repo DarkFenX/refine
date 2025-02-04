@@ -33,9 +33,6 @@ impl SolFleets {
             None => Err(FleetFoundError::new(*fleet_id)),
         }
     }
-    pub(in crate::sol) fn iter_fleet_ids(&self) -> impl ExactSizeIterator<Item = &SolFleetId> {
-        self.data.keys()
-    }
     pub(in crate::sol) fn iter_fleets(&self) -> impl ExactSizeIterator<Item = &SolFleet> {
         self.data.values()
     }

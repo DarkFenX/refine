@@ -13,7 +13,7 @@ mod id;
 #[serde(untagged)]
 pub(crate) enum HFitInfo {
     Id(HFitInfoId),
-    Full(HFitInfoFull),
+    Full(Box<HFitInfoFull>),
 }
 impl HFitInfo {
     pub(crate) fn mk_info(
@@ -24,7 +24,7 @@ impl HFitInfo {
     ) -> Result<Self, HExecError> {
         let info = match fit_mode {
             HFitInfoMode::Id => Self::Id(HFitInfoId::mk_info(core_sol, fit_id)?),
-            HFitInfoMode::Full => Self::Full(HFitInfoFull::mk_info(core_sol, fit_id, item_mode)?),
+            HFitInfoMode::Full => Self::Full(Box::new(HFitInfoFull::mk_info(core_sol, fit_id, item_mode)?)),
         };
         Ok(info)
     }

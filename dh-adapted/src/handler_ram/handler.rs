@@ -81,3 +81,8 @@ impl rc::ad::AdaptedDataHandler for RamOnlyAdh {
         VERSION.to_string()
     }
 }
+impl Default for RamOnlyAdh {
+    fn default() -> Self {
+        Self::new()
+    }
+}

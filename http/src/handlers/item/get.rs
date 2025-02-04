@@ -32,10 +32,7 @@ pub(crate) async fn get_item(
         Err(br_err) => {
             let code = match &br_err {
                 HBrError::ItemIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrError::ExecFailed(exec_err) => match exec_err {
-                    HExecError::ItemNotFoundPrimary(_) => StatusCode::NOT_FOUND,
-                    _ => StatusCode::INTERNAL_SERVER_ERROR,
-                },
+                HBrError::ExecFailed(HExecError::ItemNotFoundPrimary(_)) => StatusCode::NOT_FOUND,
                 _ => StatusCode::INTERNAL_SERVER_ERROR,
             };
             (code, Json(HSingleErr::from(br_err))).into_response()

@@ -9,7 +9,7 @@ mod simple;
 #[serde(untagged)]
 pub(crate) enum HValidInfo {
     Simple(HValidInfoSimple),
-    Detailed(HValidInfoDetailed),
+    Detailed(Box<HValidInfoDetailed>),
 }
 impl From<bool> for HValidInfo {
     fn from(core_value: bool) -> Self {
@@ -18,6 +18,6 @@ impl From<bool> for HValidInfo {
 }
 impl From<&rc::SolValResult> for HValidInfo {
     fn from(core_value: &rc::SolValResult) -> Self {
-        Self::Detailed(core_value.into())
+        Self::Detailed(Box::new(core_value.into()))
     }
 }
