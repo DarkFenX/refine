@@ -1,10 +1,7 @@
 use crate::{
     ad,
     defs::SolItemId,
-    sol::{
-        svc::vast::SolVastFitData,
-        uad::{fit::SolFit, SolUad},
-    },
+    sol::{svc::vast::SolVastFitData, uad::item::SolShip},
 };
 
 #[derive(Clone)]
@@ -19,16 +16,15 @@ impl SolCapitalModValFail {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_capital_module_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
-        !is_ship_subcap(uad, fit) || self.mods_capital.is_empty()
+    pub(in crate::sol::svc::vast) fn validate_capital_module_fast(&self, ship: Option<&SolShip>) -> bool {
+        !is_ship_subcap(ship) || self.mods_capital.is_empty()
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_verbose(
         &self,
-        uad: &SolUad,
-        fit: &SolFit,
+        ship: Option<&SolShip>,
     ) -> Vec<SolCapitalModValFail> {
-        match is_ship_subcap(uad, fit) {
+        match is_ship_subcap(ship) {
             true => self
                 .mods_capital
                 .iter()
@@ -39,9 +35,9 @@ impl SolVastFitData {
     }
 }
 
-fn is_ship_subcap(uad: &SolUad, fit: &SolFit) -> bool {
-    let ship = match fit.ship {
-        Some(ship_id) => uad.items.get_item(&ship_id).unwrap(),
+fn is_ship_subcap(ship: Option<&SolShip>) -> bool {
+    let ship = match ship {
+        Some(ship) => ship,
         None => return false,
     };
     let extras = match ship.get_a_extras() {

@@ -14,6 +14,7 @@ impl SolVast {
         fit: &SolFit,
         options: SolValOptions,
     ) -> bool {
+        let ship = fit.ship.map(|v| uad.items.get_item(&v).unwrap().get_ship().unwrap());
         // All registered fits should have an entry, so just unwrap
         let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         // Order of validations matters here; the faster validation and the more likely it is to
@@ -93,7 +94,7 @@ impl SolVast {
         if options.subsystem_slot_index && !fit_data.validate_subsystem_slot_index_fast() {
             return false;
         }
-        if options.ship_limit && !fit_data.validate_ship_limit_fast(uad, fit) {
+        if options.ship_limit && !fit_data.validate_ship_limit_fast(ship) {
             return false;
         }
         if options.max_group_fitted && !fit_data.validate_max_group_fitted_fast(uad, calc) {
@@ -105,7 +106,7 @@ impl SolVast {
         if options.max_group_active && !fit_data.validate_max_group_active_fast(uad, calc) {
             return false;
         }
-        if options.rig_size && !fit_data.validate_rig_size_fast(uad, fit) {
+        if options.rig_size && !fit_data.validate_rig_size_fast(ship) {
             return false;
         }
         if options.skill_reqs && !fit_data.validate_skill_reqs_fast() {
@@ -120,7 +121,7 @@ impl SolVast {
         if options.charge_volume && !fit_data.validate_charge_volume_fast(uad) {
             return false;
         }
-        if options.capital_module && !fit_data.validate_capital_module_fast(uad, fit) {
+        if options.capital_module && !fit_data.validate_capital_module_fast(ship) {
             return false;
         }
         true
@@ -132,6 +133,7 @@ impl SolVast {
         fit: &SolFit,
         options: SolValOptions,
     ) -> SolValResult {
+        let ship = fit.ship.map(|v| uad.items.get_item(&v).unwrap().get_ship().unwrap());
         // All registered fits should have an entry, so just unwrap
         let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         let mut result = SolValResult::new();
@@ -208,7 +210,7 @@ impl SolVast {
             result.subsystem_slot_index = fit_data.validate_subsystem_slot_index_verbose();
         }
         if options.ship_limit {
-            result.ship_limit = fit_data.validate_ship_limit_verbose(uad, fit);
+            result.ship_limit = fit_data.validate_ship_limit_verbose(ship);
         }
         if options.max_group_fitted {
             result.max_group_fitted = fit_data.validate_max_group_fitted_verbose(uad, calc);
@@ -220,7 +222,7 @@ impl SolVast {
             result.max_group_active = fit_data.validate_max_group_active_verbose(uad, calc);
         }
         if options.rig_size {
-            result.rig_size = fit_data.validate_rig_size_verbose(uad, fit);
+            result.rig_size = fit_data.validate_rig_size_verbose(ship);
         }
         if options.skill_reqs {
             result.skill_reqs = fit_data.validate_skill_reqs_verbose();
@@ -235,7 +237,7 @@ impl SolVast {
             result.charge_volume = fit_data.validate_charge_volume_verbose(uad);
         }
         if options.capital_module {
-            result.capital_module = fit_data.validate_capital_module_verbose(uad, fit);
+            result.capital_module = fit_data.validate_capital_module_verbose(ship);
         }
         result
     }

@@ -1,10 +1,7 @@
 use crate::{
     ad,
     defs::{EItemGrpId, EItemId, SolItemId},
-    sol::{
-        svc::vast::SolVastFitData,
-        uad::{fit::SolFit, SolUad},
-    },
+    sol::{svc::vast::SolVastFitData, uad::item::SolShip},
 };
 
 pub struct SolShipLimitValFail {
@@ -43,9 +40,9 @@ impl SolShipLimitMismatch {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
-        let ship = match fit.ship {
-            Some(ship_id) => uad.items.get_item(&ship_id).unwrap(),
+    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(&self, ship: Option<&SolShip>) -> bool {
+        let ship = match ship {
+            Some(ship) => ship,
             None => return self.ship_limited_mods_rigs_subs.is_empty(),
         };
         let ship_type_id = ship.get_type_id();
@@ -66,17 +63,13 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_ship_limit_verbose(
         &self,
-        uad: &SolUad,
-        fit: &SolFit,
+        ship: Option<&SolShip>,
     ) -> Option<SolShipLimitValFail> {
         if self.ship_limited_mods_rigs_subs.is_empty() {
             return None;
         }
-        let (ship_type_id, ship_group_id) = match fit.ship {
-            Some(ship_id) => {
-                let ship = uad.items.get_item(&ship_id).unwrap();
-                (Some(ship.get_type_id()), ship.get_group_id())
-            }
+        let (ship_type_id, ship_group_id) = match ship {
+            Some(ship) => (Some(ship.get_type_id()), ship.get_group_id()),
             None => (None, None),
         };
         let mut mismatches = Vec::new();

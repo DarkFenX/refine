@@ -1,10 +1,7 @@
 use crate::{
     defs::{AttrVal, SolItemId},
     ec,
-    sol::{
-        svc::vast::SolVastFitData,
-        uad::{fit::SolFit, SolUad},
-    },
+    sol::{svc::vast::SolVastFitData, uad::item::SolShip},
 };
 
 pub struct SolRigSizeValFail {
@@ -32,8 +29,8 @@ impl SolRigSizeMismatch {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(&self, uad: &SolUad, fit: &SolFit) -> bool {
-        let allowed_size = match get_allowed_size(uad, fit) {
+    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(&self, ship: Option<&SolShip>) -> bool {
+        let allowed_size = match get_allowed_size(ship) {
             Some(allowed_size) => allowed_size,
             None => return true,
         };
@@ -47,10 +44,9 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_size_verbose(
         &self,
-        uad: &SolUad,
-        fit: &SolFit,
+        ship: Option<&SolShip>,
     ) -> Option<SolRigSizeValFail> {
-        let allowed_size = get_allowed_size(uad, fit)?;
+        let allowed_size = get_allowed_size(ship)?;
         let mut mismatches = Vec::new();
         for (&item_id, &rig_size) in self.rigs_rig_size.iter() {
             if rig_size != Some(allowed_size) {
@@ -64,10 +60,6 @@ impl SolVastFitData {
     }
 }
 
-fn get_allowed_size(uad: &SolUad, fit: &SolFit) -> Option<AttrVal> {
-    let ship = match fit.ship {
-        Some(ship_id) => uad.items.get_item(&ship_id).unwrap(),
-        None => return None,
-    };
-    ship.get_attrs()?.get(&ec::attrs::RIG_SIZE).copied()
+fn get_allowed_size(ship: Option<&SolShip>) -> Option<AttrVal> {
+    ship?.get_attrs()?.get(&ec::attrs::RIG_SIZE).copied()
 }
