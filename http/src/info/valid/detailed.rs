@@ -88,6 +88,9 @@ struct HValidInfoDetails {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
     capital_module: Vec<rc::SolItemId>,
+    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    not_loaded_item: Vec<rc::SolItemId>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -124,6 +127,7 @@ impl HValidInfoDetails {
             && self.charge_size.is_empty()
             && self.charge_volume.is_empty()
             && self.capital_module.is_empty()
+            && self.not_loaded_item.is_empty()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -171,6 +175,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             charge_size: (&core_val_result.charge_size).into(),
             charge_volume: (&core_val_result.charge_volume).into(),
             capital_module: core_val_result.capital_module.iter().map(|v| v.item_id).collect(),
+            not_loaded_item: core_val_result.not_loaded_item.iter().map(|v| v.item_id).collect(),
         }
     }
 }
