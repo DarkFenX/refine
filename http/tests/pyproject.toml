@@ -3,14 +3,16 @@ name = "reefast-tests"
 version = "1.0.0"
 description = "Tests for reefast HTTP interface"
 requires-python = ">=3.13"
-dependencies = [
+
+[dependency-groups]
+dev = [
     "pytest",
     "pytest-httpserver",
     "requests",
 ]
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
+[tool.uv]
+package = false
 
 [tool.ruff]
 line-length = 120
@@ -72,3 +74,6 @@ max-complexity = 15
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
