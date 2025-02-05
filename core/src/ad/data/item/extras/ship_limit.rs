@@ -56,16 +56,16 @@ impl AItemShipLimit {
     }
 }
 
-pub(super) fn get_item_ship_limit(attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemShipLimit> {
+pub(super) fn get_item_ship_limit(item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemShipLimit> {
     let type_ids = TYPE_ATTRS
         .iter()
-        .filter_map(|a| attrs.get(a))
+        .filter_map(|a| item_attrs.get(a))
         .map(|v| v.round() as EItemId)
         .unique()
         .collect_vec();
     let group_ids = GROUP_ATTRS
         .iter()
-        .filter_map(|a| attrs.get(a))
+        .filter_map(|a| item_attrs.get(a))
         .map(|v| v.round() as EItemGrpId)
         .unique()
         .collect_vec();

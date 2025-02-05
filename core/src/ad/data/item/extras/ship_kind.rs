@@ -12,9 +12,9 @@ pub enum AShipKind {
     Structure,
 }
 
-pub(super) fn get_ship_kind(cat_id: EItemCatId, srqs: &StMap<EItemId, SkillLevel>) -> Option<AShipKind> {
-    match cat_id {
-        ec::itemcats::SHIP => match srqs.contains_key(&ec::items::CAPITAL_SHIPS) {
+pub(super) fn get_ship_kind(item_cat_id: EItemCatId, item_srqs: &StMap<EItemId, SkillLevel>) -> Option<AShipKind> {
+    match item_cat_id {
+        ec::itemcats::SHIP => match item_srqs.contains_key(&ec::items::CAPITAL_SHIPS) {
             true => Some(AShipKind::CapitalShip),
             false => Some(AShipKind::Ship),
         },
@@ -23,9 +23,9 @@ pub(super) fn get_ship_kind(cat_id: EItemCatId, srqs: &StMap<EItemId, SkillLevel
     }
 }
 
-pub(super) fn get_item_ship_kind(cat_id: EItemCatId, attrs: &StMap<EAttrId, AttrVal>) -> Option<AShipKind> {
-    match cat_id {
-        ec::itemcats::MODULE => match attrs.get(&ec::attrs::VOLUME) {
+pub(super) fn get_item_ship_kind(item_cat_id: EItemCatId, item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AShipKind> {
+    match item_cat_id {
+        ec::itemcats::MODULE => match item_attrs.get(&ec::attrs::VOLUME) {
             Some(&volume) => match volume <= OF(3500.0) {
                 true => Some(AShipKind::Ship),
                 false => Some(AShipKind::CapitalShip),

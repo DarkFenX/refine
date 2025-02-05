@@ -8,6 +8,7 @@ mod charge_limit;
 mod extras;
 mod fighter_kind;
 mod kind;
+mod max_state;
 mod ship_kind;
 mod ship_limit;
 mod slot_index;

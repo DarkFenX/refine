@@ -25,10 +25,10 @@ impl AItemChargeLimit {
     }
 }
 
-pub(super) fn get_item_charge_limit(attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemChargeLimit> {
+pub(super) fn get_item_charge_limit(item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemChargeLimit> {
     let group_ids = GROUP_ATTRS
         .iter()
-        .filter_map(|a| attrs.get(a))
+        .filter_map(|a| item_attrs.get(a))
         .map(|v| v.round() as EItemGrpId)
         .unique()
         .collect_vec();

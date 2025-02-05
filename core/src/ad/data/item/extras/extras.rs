@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit, AShipKind},
+    ad::{AEffect, AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit, AShipKind, AState},
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex},
     util::StMap,
 };
@@ -11,6 +11,7 @@ use super::{
         get_standup_support_fighter_flag, get_support_fighter_flag,
     },
     kind::get_item_kind,
+    max_state::get_max_state,
     ship_kind::{get_item_ship_kind, get_ship_kind},
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
@@ -59,6 +60,8 @@ pub struct AItemExtras {
     pub ship_kind: Option<AShipKind>,
     /// Which ship type this item fits to.
     pub item_ship_kind: Option<AShipKind>,
+    /// Max state item can take.
+    pub max_state: AState,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -81,6 +84,7 @@ impl AItemExtras {
             is_standup_support_fighter: bool::default(),
             ship_kind: Option::default(),
             item_ship_kind: Option::default(),
+            max_state: AState::Offline,
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -105,45 +109,48 @@ impl AItemExtras {
             is_standup_support_fighter: get_standup_support_fighter_flag(attrs),
             ship_kind: a_item.extras.ship_kind,
             item_ship_kind: get_item_ship_kind(a_item.cat_id, attrs),
+            max_state: a_item.extras.max_state,
         }
     }
     pub(crate) fn fill(
         &mut self,
-        grp_id: EItemGrpId,
-        cat_id: EItemCatId,
-        attrs: &StMap<EAttrId, AttrVal>,
-        effects: &StMap<EEffectId, AItemEffectData>,
-        srqs: &StMap<EItemId, SkillLevel>,
+        item_grp_id: EItemGrpId,
+        item_cat_id: EItemCatId,
+        item_attrs: &StMap<EAttrId, AttrVal>,
+        item_effects: &StMap<EEffectId, AItemEffectData>,
+        item_srqs: &StMap<EItemId, SkillLevel>,
+        effects: &StMap<EEffectId, &AEffect>,
         fitted_limited_groups: &[EItemGrpId],
         online_limited_groups: &[EItemGrpId],
         active_limited_groups: &[EItemGrpId],
     ) {
-        self.kind = get_item_kind(grp_id, cat_id, attrs, effects);
-        self.volume = get_item_volume(attrs);
-        self.ship_limit = get_item_ship_limit(attrs);
-        self.charge_limit = get_item_charge_limit(attrs);
-        self.val_fitted_group_id = match fitted_limited_groups.contains(&grp_id) {
-            true => Some(grp_id),
+        self.kind = get_item_kind(item_grp_id, item_cat_id, item_attrs, item_effects);
+        self.volume = get_item_volume(item_attrs);
+        self.ship_limit = get_item_ship_limit(item_attrs);
+        self.charge_limit = get_item_charge_limit(item_attrs);
+        self.val_fitted_group_id = match fitted_limited_groups.contains(&item_grp_id) {
+            true => Some(item_grp_id),
             false => None,
         };
-        self.val_online_group_id = match online_limited_groups.contains(&grp_id) {
-            true => Some(grp_id),
+        self.val_online_group_id = match online_limited_groups.contains(&item_grp_id) {
+            true => Some(item_grp_id),
             false => None,
         };
-        self.val_active_group_id = match active_limited_groups.contains(&grp_id) {
-            true => Some(grp_id),
+        self.val_active_group_id = match active_limited_groups.contains(&item_grp_id) {
+            true => Some(item_grp_id),
             false => None,
         };
-        self.implant_slot = get_implant_slot(attrs);
-        self.booster_slot = get_booster_slot(attrs);
-        self.subsystem_slot = get_subsystem_slot(attrs);
-        self.is_light_fighter = get_light_fighter_flag(attrs);
-        self.is_heavy_fighter = get_heavy_fighter_flag(attrs);
-        self.is_support_fighter = get_support_fighter_flag(attrs);
-        self.is_standup_light_fighter = get_standup_light_fighter_flag(attrs);
-        self.is_standup_heavy_fighter = get_standup_heavy_fighter_flag(attrs);
-        self.is_standup_support_fighter = get_standup_support_fighter_flag(attrs);
-        self.ship_kind = get_ship_kind(cat_id, srqs);
-        self.item_ship_kind = get_item_ship_kind(cat_id, attrs);
+        self.implant_slot = get_implant_slot(item_attrs);
+        self.booster_slot = get_booster_slot(item_attrs);
+        self.subsystem_slot = get_subsystem_slot(item_attrs);
+        self.is_light_fighter = get_light_fighter_flag(item_attrs);
+        self.is_heavy_fighter = get_heavy_fighter_flag(item_attrs);
+        self.is_support_fighter = get_support_fighter_flag(item_attrs);
+        self.is_standup_light_fighter = get_standup_light_fighter_flag(item_attrs);
+        self.is_standup_heavy_fighter = get_standup_heavy_fighter_flag(item_attrs);
+        self.is_standup_support_fighter = get_standup_support_fighter_flag(item_attrs);
+        self.ship_kind = get_ship_kind(item_cat_id, item_srqs);
+        self.item_ship_kind = get_item_ship_kind(item_cat_id, item_attrs);
+        self.max_state = get_max_state(item_effects.keys(), effects);
     }
 }

@@ -11,6 +11,7 @@ pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData) {
     let limited_fitted_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ec::attrs::MAX_GROUP_FITTED);
     let limited_online_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ec::attrs::MAX_GROUP_ONLINE);
     let limited_active_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ec::attrs::MAX_GROUP_ACTIVE);
+    let effects = a_data.effects.iter().map(|v| (v.id, v)).collect();
     for a_item in a_data.items.iter_mut() {
         a_item.extras.fill(
             a_item.grp_id,
@@ -18,6 +19,7 @@ pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData) {
             &a_item.attrs,
             &a_item.effect_datas,
             &a_item.srqs,
+            &effects,
             &limited_fitted_grp_ids,
             &limited_online_grp_ids,
             &limited_active_grp_ids,

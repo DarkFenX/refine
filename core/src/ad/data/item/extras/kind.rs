@@ -29,25 +29,25 @@ pub enum AItemKind {
 }
 
 pub(super) fn get_item_kind(
-    grp_id: EItemGrpId,
-    cat_id: EItemCatId,
-    attrs: &StMap<EAttrId, AttrVal>,
-    effects: &StMap<EEffectId, AItemEffectData>,
+    item_grp_id: EItemGrpId,
+    item_cat_id: EItemCatId,
+    item_attrs: &StMap<EAttrId, AttrVal>,
+    item_effects: &StMap<EEffectId, AItemEffectData>,
 ) -> Option<AItemKind> {
     let mut kinds: SmallVec<AItemKind, 1> = SmallVec::new();
-    match cat_id {
+    match item_cat_id {
         // Ship & structure modules
         ec::itemcats::MODULE | ec::itemcats::STRUCTURE_MODULE => {
-            if effects.contains_key(&ec::effects::HI_POWER) {
+            if item_effects.contains_key(&ec::effects::HI_POWER) {
                 kinds.push(AItemKind::ModHigh);
             }
-            if effects.contains_key(&ec::effects::MED_POWER) {
+            if item_effects.contains_key(&ec::effects::MED_POWER) {
                 kinds.push(AItemKind::ModMid);
             }
-            if effects.contains_key(&ec::effects::LO_POWER) {
+            if item_effects.contains_key(&ec::effects::LO_POWER) {
                 kinds.push(AItemKind::ModLow);
             }
-            if effects.contains_key(&ec::effects::RIG_SLOT) {
+            if item_effects.contains_key(&ec::effects::RIG_SLOT) {
                 kinds.push(AItemKind::Rig);
             }
         }
@@ -55,10 +55,10 @@ pub(super) fn get_item_kind(
         ec::itemcats::SHIP | ec::itemcats::STRUCTURE => kinds.push(AItemKind::Ship),
         // Implants and boosters
         ec::itemcats::IMPLANT => {
-            if attrs.contains_key(&ec::attrs::BOOSTERNESS) {
+            if item_attrs.contains_key(&ec::attrs::BOOSTERNESS) {
                 kinds.push(AItemKind::Booster);
             }
-            if attrs.contains_key(&ec::attrs::IMPLANTNESS) {
+            if item_attrs.contains_key(&ec::attrs::IMPLANTNESS) {
                 kinds.push(AItemKind::Implant);
             }
         }
@@ -68,13 +68,13 @@ pub(super) fn get_item_kind(
         ec::itemcats::FIGHTER => kinds.push(AItemKind::FighterSquad),
         ec::itemcats::SKILL => kinds.push(AItemKind::Skill),
         ec::itemcats::SUBSYSTEM => {
-            if attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT) {
+            if item_attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT) {
                 kinds.push(AItemKind::Subsystem);
             }
         }
         _ => (),
     }
-    match grp_id {
+    match item_grp_id {
         ec::itemgrps::CHARACTER => kinds.push(AItemKind::Character),
         ec::itemgrps::EFFECT_BEACON => kinds.push(AItemKind::EffectBeacon),
         ec::itemgrps::MUTAPLASMID => kinds.push(AItemKind::Mutator),
