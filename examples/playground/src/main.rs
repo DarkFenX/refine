@@ -7,7 +7,10 @@ use chrono::Utc;
 use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
-use rc::{ed::EveDataHandler, SolAddMode, SolItemState, SolModRack, SolValOptions, SolarSystem, Src, VERSION};
+use rc::{
+    ed::EveDataHandler, SolAddMode, SolMinionState, SolModRack, SolModuleState, SolValOptions, SolarSystem, Src,
+    VERSION,
+};
 
 fn setup_logger() -> () {
     let time_format_full = time::macros::format_description!(
@@ -40,8 +43,8 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    test_crusader(dh, ch);
-    // test_nphoon(dh, ch);
+    // test_crusader(dh, ch);
+    test_nphoon(dh, ch);
 }
 
 fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
@@ -59,7 +62,7 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     //     SolModRack::Low,
     //     SolOrdAddMode::Equip,
     //     4403,
-    //     SolItemState::Active,
+    //     SolModuleState::Active,
     //     None,
     //     None,
     // );
@@ -78,7 +81,7 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 SolModRack::Low,
                 SolAddMode::Equip,
                 1306,
-                SolItemState::Online,
+                SolModuleState::Online,
                 None,
                 None,
             )
@@ -133,7 +136,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 SolModRack::High,
                 SolAddMode::Equip,
                 2929,
-                SolItemState::Overload,
+                SolModuleState::Overload,
                 None,
                 Some(12779),
             )
@@ -146,7 +149,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 SolModRack::High,
                 SolAddMode::Equip,
                 2420,
-                SolItemState::Overload,
+                SolModuleState::Overload,
                 None,
                 Some(2811),
             )
@@ -160,7 +163,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             SolModRack::Mid,
             SolAddMode::Equip,
             5945,
-            SolItemState::Active,
+            SolModuleState::Active,
             None,
             None,
         )
@@ -171,7 +174,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             SolModRack::Mid,
             SolAddMode::Equip,
             2024,
-            SolItemState::Active,
+            SolModuleState::Active,
             None,
             Some(32014),
         )
@@ -182,7 +185,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             SolModRack::Mid,
             SolAddMode::Equip,
             2301,
-            SolItemState::Active,
+            SolModuleState::Active,
             None,
             None,
         )
@@ -193,7 +196,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             SolModRack::Mid,
             SolAddMode::Equip,
             448,
-            SolItemState::Active,
+            SolModuleState::Active,
             None,
             None,
         )
@@ -204,7 +207,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             SolModRack::Mid,
             SolAddMode::Equip,
             2281,
-            SolItemState::Active,
+            SolModuleState::Active,
             None,
             None,
         )
@@ -217,7 +220,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
             SolModRack::Low,
             SolAddMode::Equip,
             2048,
-            SolItemState::Online,
+            SolModuleState::Online,
             None,
             None,
         )
@@ -229,7 +232,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 SolModRack::Low,
                 SolAddMode::Equip,
                 519,
-                SolItemState::Online,
+                SolModuleState::Online,
                 None,
                 None,
             )
@@ -242,7 +245,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 SolModRack::Low,
                 SolAddMode::Equip,
                 22291,
-                SolItemState::Online,
+                SolModuleState::Online,
                 None,
                 None,
             )
@@ -255,7 +258,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                 SolModRack::Low,
                 SolAddMode::Equip,
                 4405,
-                SolItemState::Online,
+                SolModuleState::Online,
                 None,
                 None,
             )
@@ -270,10 +273,10 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
 
     // Drones
     for _ in 0..5 {
-        sol_sys.add_drone(fit.id, 2446, SolItemState::Active, None).unwrap(); // T2 ogre
+        sol_sys.add_drone(fit.id, 2446, SolMinionState::Engaging, None).unwrap(); // T2 ogre
     }
     for _ in 0..3 {
-        sol_sys.add_drone(fit.id, 2446, SolItemState::Offline, None).unwrap(); // T2 ogre
+        sol_sys.add_drone(fit.id, 2446, SolMinionState::InBay, None).unwrap(); // T2 ogre
     }
 
     let val_options = SolValOptions::new_all_enabled();
@@ -292,7 +295,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
                     SolModRack::Low,
                     SolAddMode::Equip,
                     low_mod_id,
-                    SolItemState::Online,
+                    SolModuleState::Online,
                     None,
                     None,
                 )

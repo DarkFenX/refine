@@ -25,7 +25,7 @@ impl From<&SolCharacter> for SolCharacterInfo {
             sol_character.get_id(),
             sol_character.get_type_id(),
             sol_character.get_fit_id(),
-            sol_character.get_bool_state(),
+            sol_character.get_character_state(),
         )
     }
 }

@@ -28,7 +28,7 @@ impl From<&SolImplant> for SolImplantInfo {
             sol_implant.get_type_id(),
             sol_implant.get_fit_id(),
             sol_implant.get_slot(),
-            sol_implant.get_bool_state(),
+            sol_implant.get_implant_state(),
         )
     }
 }

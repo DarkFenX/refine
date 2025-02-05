@@ -42,7 +42,8 @@ pub use sol::{
         },
     },
     uad::{
-        SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolItemState,
+        SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation,
+        SolMinionState, SolModuleState,
     },
     SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolarSystem,
 };

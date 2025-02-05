@@ -8,7 +8,7 @@ impl SolarSystem {
     pub fn set_skill_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetSkillStateError> {
         let skill = self.uad.items.get_item_mut(item_id)?.get_skill_mut()?;
         let old_state = skill.get_state();
-        skill.set_bool_state(state);
+        skill.set_skill_state(state);
         let new_state = skill.get_state();
         self.change_item_id_state_in_svc(item_id, old_state, new_state);
         Ok(())

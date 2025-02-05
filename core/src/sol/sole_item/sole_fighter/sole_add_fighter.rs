@@ -5,7 +5,7 @@ use crate::{
     err::basic::FitFoundError,
     sol::{
         info::SolFighterInfo,
-        uad::item::{SolFighter, SolItem, SolItemState},
+        uad::item::{SolFighter, SolItem, SolMinionState},
         SolarSystem,
     },
 };
@@ -15,7 +15,7 @@ impl SolarSystem {
         &mut self,
         fit_id: SolFitId,
         type_id: EItemId,
-        state: SolItemState,
+        state: SolMinionState,
     ) -> Result<SolFighterInfo, AddFighterError> {
         // Do everything needed to reserve ID for fighter itself
         let item_id = self.uad.items.alloc_item_id();

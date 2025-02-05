@@ -5,7 +5,8 @@ use crate::{
     sol::{
         info::SolItemMutationInfo,
         uad::item::{
-            SolEffectModes, SolItemAddMutation, SolItemBaseMutable, SolItemChangeAttrMutation, SolItemState, SolProjs,
+            SolEffectModes, SolItemAddMutation, SolItemBaseMutable, SolItemChangeAttrMutation, SolItemState,
+            SolModuleState, SolProjs,
         },
         SolModRack,
     },
@@ -28,14 +29,14 @@ impl SolModule {
         id: SolItemId,
         type_id: EItemId,
         fit_id: SolFitId,
-        state: SolItemState,
+        state: SolModuleState,
         rack: SolModRack,
         pos: Idx,
         mutation: Option<SolItemAddMutation>,
         charge_id: Option<SolItemId>,
     ) -> Self {
         Self {
-            base: SolItemBaseMutable::new(src, id, type_id, state, mutation),
+            base: SolItemBaseMutable::new(src, id, type_id, state.into(), mutation),
             fit_id,
             rack,
             pos,
@@ -74,9 +75,6 @@ impl SolModule {
     pub(in crate::sol) fn get_state(&self) -> SolItemState {
         self.base.get_state()
     }
-    pub(in crate::sol) fn set_state(&mut self, state: SolItemState) {
-        self.base.set_state(state)
-    }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
         self.base.get_effect_modes()
     }
@@ -114,6 +112,12 @@ impl SolModule {
         self.base.unmutate(src)
     }
     // Item-specific methods
+    pub(in crate::sol) fn get_module_state(&self) -> SolModuleState {
+        self.base.get_state().into()
+    }
+    pub(in crate::sol) fn set_module_state(&mut self, state: SolModuleState) {
+        self.base.set_state(state.into())
+    }
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id
     }

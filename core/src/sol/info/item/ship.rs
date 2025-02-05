@@ -25,7 +25,7 @@ impl From<&SolShip> for SolShipInfo {
             sol_ship.get_id(),
             sol_ship.get_type_id(),
             sol_ship.get_fit_id(),
-            sol_ship.get_bool_state(),
+            sol_ship.get_ship_state(),
         )
     }
 }

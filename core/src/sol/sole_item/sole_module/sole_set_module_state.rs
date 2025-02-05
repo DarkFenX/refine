@@ -1,16 +1,16 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{uad::item::SolItemState, SolarSystem},
+    sol::{uad::item::SolModuleState, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn set_module_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetModuleStateError> {
+    pub fn set_module_state(&mut self, item_id: &SolItemId, state: SolModuleState) -> Result<(), SetModuleStateError> {
         // Update user data for module
         let module = self.uad.items.get_item_mut(item_id)?.get_module_mut()?;
         let charge_id = module.get_charge_id();
         let old_state = module.get_state();
-        module.set_state(state);
+        module.set_module_state(state);
         // Update services for module
         let new_state = module.get_state();
         self.change_item_id_state_in_svc(item_id, old_state, new_state);
@@ -24,7 +24,7 @@ impl SolarSystem {
                 .get_charge_mut()
                 .unwrap();
             let old_state = charge.get_state();
-            charge.set_state(state);
+            charge.set_state(state.into());
             // Update services for charge
             let new_state = charge.get_state();
             self.change_item_id_state_in_svc(&charge_id, old_state, new_state);

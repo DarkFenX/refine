@@ -13,7 +13,7 @@ static STATES: [SolItemState; 5] = [
 /// States which are used by all items internally, and are exposed for some items such as modules
 /// and drones.
 #[derive(Copy, Clone, PartialEq, PartialOrd)]
-pub enum SolItemState {
+pub(in crate::sol) enum SolItemState {
     /// Item will receive modifications (thus its modified attributes can be checked), but will be
     /// considered as absent otherwise.
     Ghost,
@@ -27,7 +27,7 @@ pub enum SolItemState {
     Overload,
 }
 impl SolItemState {
-    pub(crate) fn iter() -> std::slice::Iter<'static, Self> {
+    pub(in crate::sol) fn iter() -> std::slice::Iter<'static, Self> {
         STATES.iter()
     }
 }

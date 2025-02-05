@@ -25,7 +25,7 @@ impl From<&SolRig> for SolRigInfo {
             sol_rig.get_id(),
             sol_rig.get_type_id(),
             sol_rig.get_fit_id(),
-            sol_rig.get_bool_state(),
+            sol_rig.get_rig_state(),
         )
     }
 }

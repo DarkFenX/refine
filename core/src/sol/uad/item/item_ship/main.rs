@@ -68,14 +68,14 @@ impl SolShip {
         self.update_ship_kind();
     }
     // Item-specific methods
-    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
-        self.fit_id
-    }
-    pub(in crate::sol) fn get_bool_state(&self) -> bool {
+    pub(in crate::sol) fn get_ship_state(&self) -> bool {
         state_to_bool(self.base.get_state())
     }
-    pub(in crate::sol) fn set_bool_state(&mut self, state: bool) {
+    pub(in crate::sol) fn set_ship_state(&mut self, state: bool) {
         self.base.set_state(bool_to_state_offline(state))
+    }
+    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
+        self.fit_id
     }
     pub(in crate::sol) fn get_kind(&self) -> SolShipKind {
         self.kind

@@ -5,7 +5,8 @@ use crate::{
     sol::{
         info::SolItemMutationInfo,
         uad::item::{
-            SolEffectModes, SolItemAddMutation, SolItemBaseMutable, SolItemChangeAttrMutation, SolItemState, SolProjs,
+            SolEffectModes, SolItemAddMutation, SolItemBaseMutable, SolItemChangeAttrMutation, SolItemState,
+            SolMinionState, SolProjs,
         },
     },
     src::Src,
@@ -24,11 +25,11 @@ impl SolDrone {
         id: SolItemId,
         type_id: EItemId,
         fit_id: SolFitId,
-        state: SolItemState,
+        state: SolMinionState,
         mutation: Option<SolItemAddMutation>,
     ) -> Self {
         Self {
-            base: SolItemBaseMutable::new(src, id, type_id, state, mutation),
+            base: SolItemBaseMutable::new(src, id, type_id, state.into(), mutation),
             fit_id,
             projs: SolProjs::new(),
         }
@@ -63,9 +64,6 @@ impl SolDrone {
     }
     pub(in crate::sol) fn get_state(&self) -> SolItemState {
         self.base.get_state()
-    }
-    pub(in crate::sol) fn set_state(&mut self, state: SolItemState) {
-        self.base.set_state(state)
     }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
         self.base.get_effect_modes()
@@ -104,6 +102,12 @@ impl SolDrone {
         self.base.unmutate(src)
     }
     // Item-specific methods
+    pub(in crate::sol) fn get_drone_state(&self) -> SolMinionState {
+        self.base.get_state().into()
+    }
+    pub(in crate::sol) fn set_drone_state(&mut self, state: SolMinionState) {
+        self.base.set_state(state.into())
+    }
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id
     }

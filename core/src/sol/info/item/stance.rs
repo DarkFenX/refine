@@ -25,7 +25,7 @@ impl From<&SolStance> for SolStanceInfo {
             sol_stance.get_id(),
             sol_stance.get_type_id(),
             sol_stance.get_fit_id(),
-            sol_stance.get_bool_state(),
+            sol_stance.get_stance_state(),
         )
     }
 }

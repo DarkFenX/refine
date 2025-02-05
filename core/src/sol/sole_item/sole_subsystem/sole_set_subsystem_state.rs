@@ -8,7 +8,7 @@ impl SolarSystem {
     pub fn set_subsystem_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetSubsystemStateError> {
         let subsystem = self.uad.items.get_item_mut(item_id)?.get_subsystem_mut()?;
         let old_state = subsystem.get_state();
-        subsystem.set_bool_state(state);
+        subsystem.set_subsystem_state(state);
         let new_state = subsystem.get_state();
         self.change_item_id_state_in_svc(item_id, old_state, new_state);
         Ok(())

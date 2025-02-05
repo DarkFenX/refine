@@ -28,7 +28,7 @@ impl From<&SolSubsystem> for SolSubsystemInfo {
             sol_subsystem.get_type_id(),
             sol_subsystem.get_fit_id(),
             sol_subsystem.get_slot(),
-            sol_subsystem.get_bool_state(),
+            sol_subsystem.get_subsystem_state(),
         )
     }
 }

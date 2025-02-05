@@ -1,7 +1,8 @@
 //! Solar system user & adapted data.
 
 pub use item::{
-    SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolItemState,
+    SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolMinionState,
+    SolModuleState,
 };
 pub(in crate::sol) use uad::SolUad;
 

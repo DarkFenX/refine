@@ -24,7 +24,7 @@ impl From<&SolProjEffect> for SolProjEffectInfo {
         SolProjEffectInfo::new(
             sol_proj_effect.get_id(),
             sol_proj_effect.get_type_id(),
-            sol_proj_effect.get_bool_state(),
+            sol_proj_effect.get_proj_effect_state(),
             sol_proj_effect.get_projs().iter_items().copied().collect(),
         )
     }

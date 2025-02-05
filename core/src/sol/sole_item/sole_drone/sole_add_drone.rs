@@ -3,7 +3,7 @@ use crate::{
     err::basic::FitFoundError,
     sol::{
         info::SolDroneInfo,
-        uad::item::{SolDrone, SolItem, SolItemAddMutation, SolItemState},
+        uad::item::{SolDrone, SolItem, SolItemAddMutation, SolMinionState},
         SolarSystem,
     },
 };
@@ -13,7 +13,7 @@ impl SolarSystem {
         &mut self,
         fit_id: SolFitId,
         type_id: EItemId,
-        state: SolItemState,
+        state: SolMinionState,
         mutation: Option<SolItemAddMutation>,
     ) -> Result<SolDroneInfo, AddDroneError> {
         let item_id = self.uad.items.alloc_item_id();

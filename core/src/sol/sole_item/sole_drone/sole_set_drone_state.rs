@@ -1,15 +1,15 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{uad::item::SolItemState, SolarSystem},
+    sol::{uad::item::SolMinionState, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn set_drone_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetDroneStateError> {
+    pub fn set_drone_state(&mut self, item_id: &SolItemId, state: SolMinionState) -> Result<(), SetDroneStateError> {
         let drone = self.uad.items.get_item_mut(item_id)?.get_drone_mut()?;
         let old_state = drone.get_state();
-        drone.set_state(state);
-        self.change_item_id_state_in_svc(item_id, old_state, state);
+        drone.set_drone_state(state);
+        self.change_item_id_state_in_svc(item_id, old_state, state.into());
         Ok(())
     }
 }

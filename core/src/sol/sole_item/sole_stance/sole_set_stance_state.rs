@@ -8,7 +8,7 @@ impl SolarSystem {
     pub fn set_stance_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetStanceStateError> {
         let stance = self.uad.items.get_item_mut(item_id)?.get_stance_mut()?;
         let old_state = stance.get_state();
-        stance.set_bool_state(state);
+        stance.set_stance_state(state);
         let new_state = stance.get_state();
         self.change_item_id_state_in_svc(item_id, old_state, new_state);
         Ok(())

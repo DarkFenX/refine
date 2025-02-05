@@ -71,6 +71,12 @@ impl SolSkill {
         self.base.update_a_data(src);
     }
     // Item-specific methods
+    pub(in crate::sol) fn get_skill_state(&self) -> bool {
+        state_to_bool(self.base.get_state())
+    }
+    pub(in crate::sol) fn set_skill_state(&mut self, state: bool) {
+        self.base.set_state(bool_to_state_offline(state))
+    }
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id
     }
@@ -79,12 +85,6 @@ impl SolSkill {
     }
     pub(in crate::sol) fn set_level(&mut self, level: SkillLevel) {
         self.level = level
-    }
-    pub(in crate::sol) fn get_bool_state(&self) -> bool {
-        state_to_bool(self.base.get_state())
-    }
-    pub(in crate::sol) fn set_bool_state(&mut self, state: bool) {
-        self.base.set_state(bool_to_state_offline(state))
     }
 }
 impl Named for SolSkill {

@@ -14,7 +14,7 @@ impl SolarSystem {
         };
         let stance = self.uad.items.get_item_mut(&item_id).unwrap().get_stance_mut().unwrap();
         let old_state = stance.get_state();
-        stance.set_bool_state(state);
+        stance.set_stance_state(state);
         let new_state = stance.get_state();
         self.change_item_id_state_in_svc(&item_id, old_state, new_state);
         Ok(())

@@ -3,7 +3,7 @@ use crate::{
     err::basic::FitFoundError,
     sol::{
         info::{SolChargeInfo, SolModuleInfo},
-        uad::item::{SolCharge, SolItem, SolItemAddMutation, SolItemState, SolModule},
+        uad::item::{SolCharge, SolItem, SolItemAddMutation, SolModule, SolModuleState},
         SolModRack, SolarSystem,
     },
 };
@@ -20,7 +20,7 @@ impl SolarSystem {
         rack: SolModRack,
         pos_mode: SolAddMode,
         type_id: EItemId,
-        state: SolItemState,
+        state: SolModuleState,
         mutation: Option<SolItemAddMutation>,
         charge_type_id: Option<EItemId>,
     ) -> Result<SolModuleInfo, AddModuleError> {
@@ -96,7 +96,7 @@ impl SolarSystem {
                 charge_type_id,
                 fit_id,
                 module_item_id,
-                state,
+                state.into(),
                 false,
             );
             charge_info = Some(SolChargeInfo::from(&charge));

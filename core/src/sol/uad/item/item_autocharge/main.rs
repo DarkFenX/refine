@@ -84,17 +84,17 @@ impl SolAutocharge {
         panic!("autocharges shouldn't be reloaded");
     }
     // Item-specific methods
-    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
-        self.fit_id
-    }
-    pub(in crate::sol) fn get_cont_id(&self) -> SolItemId {
-        self.cont_id
-    }
     pub(in crate::sol) fn get_force_disable(&self) -> bool {
         self.force_disable
     }
     pub(in crate::sol) fn set_force_disable(&mut self, force_disable: bool) {
         self.force_disable = force_disable
+    }
+    pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
+        self.fit_id
+    }
+    pub(in crate::sol) fn get_cont_id(&self) -> SolItemId {
+        self.cont_id
     }
     pub(in crate::sol) fn get_projs(&self) -> &SolProjs {
         &self.projs

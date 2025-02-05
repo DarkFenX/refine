@@ -8,7 +8,7 @@ impl SolarSystem {
     pub fn set_sw_effect_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetSwEffectStateError> {
         let sw_effect = self.uad.items.get_item_mut(item_id)?.get_sw_effect_mut()?;
         let old_state = sw_effect.get_state();
-        sw_effect.set_bool_state(state);
+        sw_effect.set_sw_effect_state(state);
         let new_state = sw_effect.get_state();
         self.change_item_id_state_in_svc(item_id, old_state, new_state);
         Ok(())

@@ -25,7 +25,7 @@ impl From<&SolFwEffect> for SolFwEffectInfo {
             sol_fw_effect.get_id(),
             sol_fw_effect.get_type_id(),
             sol_fw_effect.get_fit_id(),
-            sol_fw_effect.get_bool_state(),
+            sol_fw_effect.get_fw_effect_state(),
         )
     }
 }

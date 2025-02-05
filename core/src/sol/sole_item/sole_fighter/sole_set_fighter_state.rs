@@ -3,18 +3,22 @@ use itertools::Itertools;
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{uad::item::SolItemState, SolarSystem},
+    sol::{uad::item::SolMinionState, SolarSystem},
 };
 
 impl SolarSystem {
-    pub fn set_fighter_state(&mut self, item_id: &SolItemId, state: SolItemState) -> Result<(), SetFighterStateError> {
+    pub fn set_fighter_state(
+        &mut self,
+        item_id: &SolItemId,
+        state: SolMinionState,
+    ) -> Result<(), SetFighterStateError> {
         // Update user data for fighter
         let fighter = self.uad.items.get_item_mut(item_id)?.get_fighter_mut()?;
         let autocharge_ids = fighter.get_autocharges().values().copied().collect_vec();
         let old_state = fighter.get_state();
-        fighter.set_state(state);
+        fighter.set_fighter_state(state);
         // Update services for fighter
-        self.change_item_id_state_in_svc(item_id, old_state, state);
+        self.change_item_id_state_in_svc(item_id, old_state, state.into());
         for autocharge_id in autocharge_ids {
             // Update user data for autocharge
             let autocharge = self
@@ -25,7 +29,7 @@ impl SolarSystem {
                 .get_autocharge_mut()
                 .unwrap();
             let old_state = autocharge.get_state();
-            autocharge.set_state(state);
+            autocharge.set_state(state.into());
             // Update services for autocharge
             let new_state = autocharge.get_state();
             self.change_item_id_state_in_svc(&autocharge_id, old_state, new_state);

@@ -18,7 +18,7 @@ impl From<&SolSwEffect> for SolSwEffectInfo {
         SolSwEffectInfo::new(
             sol_sw_effect.get_id(),
             sol_sw_effect.get_type_id(),
-            sol_sw_effect.get_bool_state(),
+            sol_sw_effect.get_sw_effect_state(),
         )
     }
 }

@@ -2,7 +2,7 @@ use crate::{
     defs::{Count, EEffectId, EItemId, SolFitId, SolItemId},
     sol::{
         info::{SolAutochargeInfo, SolProjInfo},
-        uad::item::{SolFighter, SolItemState},
+        uad::item::{SolFighter, SolMinionState},
     },
     util::StMap,
 };
@@ -11,7 +11,7 @@ pub struct SolFighterInfo {
     pub id: SolItemId,
     pub type_id: EItemId,
     pub fit_id: SolFitId,
-    pub state: SolItemState,
+    pub state: SolMinionState,
     pub count_override: Option<Count>,
     pub autocharges: StMap<EEffectId, SolAutochargeInfo>,
     pub projs: Vec<SolProjInfo>,
@@ -21,7 +21,7 @@ impl SolFighterInfo {
         id: SolItemId,
         type_id: EItemId,
         fit_id: SolFitId,
-        state: SolItemState,
+        state: SolMinionState,
         count_override: Option<Count>,
         autocharges: StMap<EEffectId, SolAutochargeInfo>,
         projs: Vec<SolProjInfo>,
@@ -44,7 +44,7 @@ impl SolFighterInfo {
             sol_fighter.get_id(),
             sol_fighter.get_type_id(),
             sol_fighter.get_fit_id(),
-            sol_fighter.get_state(),
+            sol_fighter.get_fighter_state(),
             sol_fighter.get_count_override(),
             autocharges,
             sol_fighter

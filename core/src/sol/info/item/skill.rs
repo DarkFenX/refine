@@ -28,7 +28,7 @@ impl From<&SolSkill> for SolSkillInfo {
             sol_skill.get_type_id(),
             sol_skill.get_fit_id(),
             sol_skill.get_level(),
-            sol_skill.get_bool_state(),
+            sol_skill.get_skill_state(),
         )
     }
 }

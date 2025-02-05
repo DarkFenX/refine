@@ -8,7 +8,7 @@ impl SolarSystem {
     pub fn set_ship_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetShipStateError> {
         let ship = self.uad.items.get_item_mut(item_id)?.get_ship_mut()?;
         let old_state = ship.get_state();
-        ship.set_bool_state(state);
+        ship.set_ship_state(state);
         let new_state = ship.get_state();
         self.change_item_id_state_in_svc(item_id, old_state, new_state);
         Ok(())

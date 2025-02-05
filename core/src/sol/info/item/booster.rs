@@ -39,7 +39,7 @@ impl SolBoosterInfo {
             sol_booster.get_type_id(),
             sol_booster.get_fit_id(),
             sol_booster.get_slot(),
-            sol_booster.get_bool_state(),
+            sol_booster.get_booster_state(),
             side_effects,
         )
     }

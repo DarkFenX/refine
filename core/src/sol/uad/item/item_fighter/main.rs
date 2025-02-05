@@ -1,7 +1,7 @@
 use crate::{
     ad,
     defs::{AttrVal, Count, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
-    sol::uad::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState, SolProjs},
+    sol::uad::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState, SolMinionState, SolProjs},
     src::Src,
     util::{Named, StMap},
 };
@@ -20,10 +20,10 @@ impl SolFighter {
         id: SolItemId,
         type_id: EItemId,
         fit_id: SolFitId,
-        state: SolItemState,
+        state: SolMinionState,
     ) -> Self {
         Self {
-            base: SolItemBase::new(src, id, type_id, state),
+            base: SolItemBase::new(src, id, type_id, state.into()),
             fit_id,
             count_override: None,
             autocharges: SolAutocharges::new(),
@@ -61,9 +61,6 @@ impl SolFighter {
     pub(in crate::sol) fn get_state(&self) -> SolItemState {
         self.base.get_state()
     }
-    pub(in crate::sol) fn set_state(&mut self, state: SolItemState) {
-        self.base.set_state(state)
-    }
     pub(in crate::sol) fn get_effect_modes(&self) -> &SolEffectModes {
         self.base.get_effect_modes()
     }
@@ -78,6 +75,12 @@ impl SolFighter {
         self.autocharges.clear()
     }
     // Item-specific methods
+    pub(in crate::sol) fn get_fighter_state(&self) -> SolMinionState {
+        self.base.get_state().into()
+    }
+    pub(in crate::sol) fn set_fighter_state(&mut self, state: SolMinionState) {
+        self.base.set_state(state.into())
+    }
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id
     }

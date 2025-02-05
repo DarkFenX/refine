@@ -8,7 +8,7 @@ impl SolarSystem {
     pub fn set_character_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetCharacterStateError> {
         let character = self.uad.items.get_item_mut(item_id)?.get_character_mut()?;
         let old_state = character.get_state();
-        character.set_bool_state(state);
+        character.set_character_state(state);
         let new_state = character.get_state();
         self.change_item_id_state_in_svc(item_id, old_state, new_state);
         Ok(())
