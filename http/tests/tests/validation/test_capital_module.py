@@ -1,4 +1,4 @@
-from tests import check_no_field
+from tests import approx, check_no_field
 
 
 def test_main(client, consts):
@@ -56,6 +56,73 @@ def test_multiple(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
     assert api_val.passed is False
     assert api_val.details.capital_module == sorted([api_module1.id, api_module2.id])
+
+
+def test_modified(client, consts):
+    # Unrealistic scenario, but validation takes unmodified volume value
+    eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_vol_attr_id: 3000})
+    eve_ship_id = client.mk_eve_ship()
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_vol_attr_id)
+    eve_implant_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: 1000}, eff_ids=[eve_implant_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_implant = api_fit.add_implant(type_id=eve_implant_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_mod(type_id=eve_module_id)
+    # Verification
+    assert api_module.update().attrs[eve_vol_attr_id].extra == approx(4000)
+    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_implant.remove()
+    # Verification
+    assert api_module.update().attrs[eve_vol_attr_id].extra == approx(3000)
+    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_mutation(client, consts):
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_base_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_attr_id: 3000})
+    eve_mutated_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_attr_id: 4000})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module = api_fit.add_mod(type_id=eve_base_module_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module.change_mod(mutation=eve_mutator_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    assert api_val.passed is False
+    assert api_val.details.capital_module == [api_module.id]
+    # Action
+    api_module.change_mod(mutation=None)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_no_ship(client, consts):
