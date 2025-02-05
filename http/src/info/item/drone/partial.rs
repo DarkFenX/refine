@@ -1,4 +1,4 @@
-use crate::{info::item::mutation::HItemMutationInfo, shared::HState};
+use crate::{info::item::mutation::HItemMutationInfo, shared::HMinionState};
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
@@ -9,7 +9,7 @@ pub(crate) struct HDroneInfoPartial {
     pub(crate) type_id: rc::EItemId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SolFitId,
-    pub(crate) state: HState,
+    pub(crate) state: HMinionState,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) mutation: Option<HItemMutationInfo>,
     #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]

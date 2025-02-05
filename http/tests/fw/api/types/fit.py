@@ -2,7 +2,16 @@ from __future__ import annotations
 
 import typing
 
-from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiModAddMode, ApiRack, ApiState, ApiValInfoMode
+from tests.fw.consts import (
+    ApiFitInfoMode,
+    ApiItemInfoMode,
+    ApiMinionState,
+    ApiModAddMode,
+    ApiModRmMode,
+    ApiModuleState,
+    ApiRack,
+    ApiValInfoMode,
+)
 from tests.fw.util import Absent, AttrDict, AttrHookDef
 from .dmg_types import DmgTypes
 from .item import Item
@@ -110,8 +119,13 @@ class Fit(AttrDict):
         resp.check(status_code=status_code)
 
     # Item methods
-    def remove_item(self, *, item_id: str, status_code: int = 204) -> None:
-        resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=item_id).send()
+    def remove_item(
+            self, *,
+            item_id: str,
+            mode: ApiModRmMode | type[Absent] = Absent,
+            status_code: int = 204,
+    ) -> None:
+        resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=item_id, mode=mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
@@ -257,7 +271,7 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             rack: ApiRack = ApiRack.high,
-            state: ApiState = ApiState.offline,
+            state: ApiModuleState = ApiModuleState.offline,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
             mode: ApiModAddMode | type[Absent] = ApiModAddMode.equip,
@@ -303,7 +317,7 @@ class Fit(AttrDict):
     def add_drone(
             self, *,
             type_id: int,
-            state: ApiState = ApiState.offline,
+            state: ApiMinionState = ApiMinionState.in_bay,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
@@ -324,7 +338,7 @@ class Fit(AttrDict):
     def add_fighter(
             self, *,
             type_id: int,
-            state: ApiState = ApiState.offline,
+            state: ApiMinionState = ApiMinionState.in_bay,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:

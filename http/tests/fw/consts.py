@@ -306,12 +306,19 @@ class ApiItemKind(StrEnum):
 
 
 @unique
-class ApiState(StrEnum):
+class ApiModuleState(StrEnum):
     ghost = 'ghost'
     offline = 'offline'
     online = 'online'
     active = 'active'
     overload = 'overload'
+
+
+@unique
+class ApiMinionState(StrEnum):
+    in_bay = 'in_bay'
+    in_space = 'in_space'
+    engaging = 'engaging'
 
 
 @unique

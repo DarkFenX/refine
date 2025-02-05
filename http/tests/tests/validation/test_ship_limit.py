@@ -582,7 +582,7 @@ def test_criterion_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.ghost)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.ghost)
     api_rig = api_fit.add_rig(type_id=eve_rig_id, state=False)
     api_subsystem = api_fit.add_subsystem(type_id=eve_rig_id, state=False)
     # Verification

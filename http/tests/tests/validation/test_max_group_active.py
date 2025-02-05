@@ -9,8 +9,8 @@ def test_same(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.active)
-    api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.active)
+    api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is False
@@ -28,9 +28,9 @@ def test_mix(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.active)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.active)
-    api_fit.add_mod(type_id=eve_module3_id, state=consts.ApiState.active)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.active)
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.active)
+    api_fit.add_mod(type_id=eve_module3_id, state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is False
@@ -64,8 +64,8 @@ def test_modified(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.active)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.active)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.active)
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(0.6)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1.4)
@@ -100,8 +100,8 @@ def test_mutation_limit_priority(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiState.active)
-    api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiState.active)
+    api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
+    api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
@@ -136,8 +136,8 @@ def test_mutation_limit_inheritance(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_other_module_id, state=consts.ApiState.active)
-    api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiState.active)
+    api_fit.add_mod(type_id=eve_other_module_id, state=consts.ApiModuleState.active)
+    api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
@@ -169,8 +169,8 @@ def test_not_loaded(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.active)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.active)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is True
@@ -198,8 +198,8 @@ def test_no_attr(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.active)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.active)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.active)
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is False
@@ -219,21 +219,21 @@ def test_criterion_state(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.active)
-    api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.active)
+    api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is False
     assert api_val.details.max_group_active == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
-    api_module2.change_mod(state=consts.ApiState.online)
+    api_module2.change_mod(state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module2.change_mod(state=consts.ApiState.active)
+    api_module2.change_mod(state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is False
@@ -248,8 +248,8 @@ def test_criterion_item_type(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.active)
-    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.active)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.max_group_active])
     assert api_val.passed is True

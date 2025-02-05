@@ -3,14 +3,14 @@ use crate::{
         shared::{apply_effect_modes, HEffectModeMap, HProjDef, HProjDefFull},
         HCmdResp,
     },
-    shared::HState,
+    shared::HMinionState,
     util::HExecError,
 };
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeFighterCmd {
-    state: Option<HState>,
+    state: Option<HMinionState>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]

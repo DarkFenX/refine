@@ -17,7 +17,7 @@ def test_force_stop(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiState.offline)
+    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiModuleState.offline)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(120)

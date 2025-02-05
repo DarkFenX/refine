@@ -10,7 +10,7 @@ def test_fail_single(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -29,8 +29,8 @@ def test_fail_multiple_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiState.online)
-    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiState.online)
+    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
+    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -49,8 +49,8 @@ def test_fail_multiple_struct(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
-    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiState.online)
-    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiState.online)
+    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
+    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -68,7 +68,7 @@ def test_equal(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is True
@@ -99,7 +99,7 @@ def test_modified_use(client, consts):
     api_fit = api_sol.create_fit()
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(75)
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
@@ -136,7 +136,7 @@ def test_modified_output(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_ship.update().attrs[eve_output_attr_id].extra == approx(120)
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
@@ -167,7 +167,7 @@ def test_mutation_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_base_drone_id, state=consts.ApiState.online)
+    api_drone = api_fit.add_drone(type_id=eve_base_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(120)
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
@@ -207,8 +207,8 @@ def test_rounding(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiState.online)
-    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiState.online)
+    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
+    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -226,7 +226,7 @@ def test_no_ship(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -246,7 +246,7 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -267,7 +267,7 @@ def test_not_loaded_user(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is True
@@ -286,9 +286,9 @@ def test_non_positive(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiState.online)
-    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiState.online)
-    api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiState.online)
+    api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
+    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
+    api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_space)
     # Verification - items with negative and 0 use are not exposed
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -307,8 +307,8 @@ def test_no_value_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiState.online)
-    api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiState.online)
+    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_space)
+    api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -328,7 +328,7 @@ def test_no_value_output(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -348,7 +348,7 @@ def test_no_attr_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -368,7 +368,7 @@ def test_no_attr_output(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -386,14 +386,14 @@ def test_criterion_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.offline)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_drone.change_drone(state=consts.ApiState.online)
+    api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is False
@@ -401,7 +401,7 @@ def test_criterion_state(client, consts):
     assert api_val.details.drone_bandwidth.output == approx(125)
     assert api_val.details.drone_bandwidth.users == {api_drone.id: approx(150)}
     # Action
-    api_drone.change_drone(state=consts.ApiState.offline)
+    api_drone.change_drone(state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is True
@@ -419,7 +419,7 @@ def test_criterion_item_type(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_fighter(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_fit.add_fighter(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.drone_bandwidth])
     assert api_val.passed is True

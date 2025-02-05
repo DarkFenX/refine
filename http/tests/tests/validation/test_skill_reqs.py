@@ -267,7 +267,7 @@ def test_item_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_skill(type_id=eve_skill_id, level=3)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.ghost)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.ghost)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is True

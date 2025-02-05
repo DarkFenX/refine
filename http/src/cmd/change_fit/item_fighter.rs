@@ -1,13 +1,13 @@
 use crate::{
     cmd::{change_item, HCmdResp},
-    shared::HState,
+    shared::HMinionState,
     util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddFighterCmd {
     type_id: rc::EItemId,
-    state: HState,
+    state: HMinionState,
 }
 impl HAddFighterCmd {
     pub(in crate::cmd) fn execute(

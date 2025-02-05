@@ -73,7 +73,7 @@ def test_same_item_different_effects_attrs_switching(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiState.offline)
+    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiModuleState.offline)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(120)
@@ -84,7 +84,7 @@ def test_same_item_different_effects_attrs_switching(client, consts):
     assert api_mod.applied_val == approx(20)
     assert api_mod.affectors.one().attr_id == eve_affector_attr1_id
     # Action
-    api_item.change_mod(state=consts.ApiState.active)
+    api_item.change_mod(state=consts.ApiModuleState.active)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(144)
@@ -100,7 +100,7 @@ def test_same_item_different_effects_attrs_switching(client, consts):
     assert api_mod2.stacking_mult is None
     assert api_mod2.applied_val == approx(20)
     # Action
-    api_item.change_mod(state=consts.ApiState.offline)
+    api_item.change_mod(state=consts.ApiModuleState.offline)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(120)
@@ -194,7 +194,7 @@ def test_same_item_attr_different_effects_switch(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_affector_item = api_fit.add_mod(type_id=eve_affector_item_id, state=consts.ApiState.offline)
+    api_affector_item = api_fit.add_mod(type_id=eve_affector_item_id, state=consts.ApiModuleState.offline)
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_item_id)
     # Verification
     api_affectee_item.update()
@@ -206,7 +206,7 @@ def test_same_item_attr_different_effects_switch(client, consts):
     assert api_mod.applied_val == approx(20)
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id
     # Action
-    api_affector_item.change_mod(state=consts.ApiState.active)
+    api_affector_item.change_mod(state=consts.ApiModuleState.active)
     # Verification
     api_affectee_item.update()
     assert api_affectee_item.attrs[eve_affectee_attr_id].dogma == approx(120)
@@ -217,7 +217,7 @@ def test_same_item_attr_different_effects_switch(client, consts):
     assert api_mod.applied_val == approx(20)
     assert api_mod.affectors.one().attr_id == eve_affector_attr_id
     # Action
-    api_affector_item.change_mod(state=consts.ApiState.offline)
+    api_affector_item.change_mod(state=consts.ApiModuleState.offline)
     # Verification
     api_affectee_item.update()
     assert api_affectee_item.attrs[eve_affectee_attr_id].dogma == approx(120)

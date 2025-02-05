@@ -3,14 +3,14 @@ use crate::{
         shared::{apply_effect_modes, HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull},
         HCmdResp,
     },
-    shared::HState,
+    shared::HModuleState,
     util::HExecError,
 };
 
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeModuleCmd {
-    state: Option<HState>,
+    state: Option<HModuleState>,
     #[serde(default, with = "::serde_with::rust::double_option")]
     mutation: Option<Option<HMutationOnChange>>,
     #[serde(default, with = "::serde_with::rust::double_option")]

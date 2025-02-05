@@ -33,7 +33,7 @@ def test_resisted_value_change(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiState.active)
+    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affectee_module = api_affectee_fit.add_mod(type_id=eve_affectee_module_id)
     api_affector_module.change_mod(add_projs=[api_affectee_ship.id])

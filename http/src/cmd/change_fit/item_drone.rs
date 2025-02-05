@@ -1,13 +1,13 @@
 use crate::{
     cmd::{change_item, shared::HMutationOnAdd, HCmdResp},
-    shared::HState,
+    shared::HMinionState,
     util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddDroneCmd {
     type_id: rc::EItemId,
-    state: HState,
+    state: HMinionState,
     mutation: Option<HMutationOnAdd>,
 }
 impl HAddDroneCmd {

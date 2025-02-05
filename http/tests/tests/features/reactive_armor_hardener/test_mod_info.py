@@ -33,7 +33,7 @@ def test_normal(client, consts):
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
@@ -148,7 +148,7 @@ def test_incoming(client, consts):
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.855)
@@ -219,7 +219,7 @@ def test_outgoing_insignificance(client, consts):
     api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 1, 0, 0))
     api_fit.add_implant(type_id=eve_implant_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - only thermal resistance modification is significant, since it multiplies by 0,
     # while other 3 multiply by 1 (even those with base value of 0, and modified value of 0).
     api_rah.update()

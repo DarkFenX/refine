@@ -634,7 +634,7 @@ def test_item_default_effect(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id, state=consts.ApiState.active)
+    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id, state=consts.ApiModuleState.active)
     # Verification - 1st attr would be modified by base item (which has 1st effect is default), 2nd
     # gets modified because mutated item declares 2nd effect as default.
     api_ship.update()

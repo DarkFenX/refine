@@ -29,7 +29,7 @@ def test_to_struct(client, consts):
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
     api_root = api_fit2.set_ship(type_id=eve_root_id)
-    api_module = api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiState.active)
+    api_module = api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_module.change_mod(add_projs=[api_root.id])
     # Verification
     assert api_root.update().attrs[eve_affectee_attr_id].dogma == approx(260)

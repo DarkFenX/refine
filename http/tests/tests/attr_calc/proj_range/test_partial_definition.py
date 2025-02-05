@@ -25,7 +25,7 @@ def test_optimal_undefined(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_affectee_struct_id)
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiState.active)
+    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
@@ -76,7 +76,7 @@ def test_falloff_undefined(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_affectee_struct_id)
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiState.active)
+    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)

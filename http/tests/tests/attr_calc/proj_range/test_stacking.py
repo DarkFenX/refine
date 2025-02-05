@@ -31,9 +31,9 @@ def test_stacking(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
-    api_affector_module1 = api_affector_fit.add_mod(type_id=eve_affector_module1_id, state=consts.ApiState.active)
+    api_affector_module1 = api_affector_fit.add_mod(type_id=eve_affector_module1_id, state=consts.ApiModuleState.active)
     api_affector_module1.change_mod(add_projs=[(api_affectee_ship.id, 18000)])
-    api_affector_module2 = api_affector_fit.add_mod(type_id=eve_affector_module2_id, state=consts.ApiState.active)
+    api_affector_module2 = api_affector_fit.add_mod(type_id=eve_affector_module2_id, state=consts.ApiModuleState.active)
     api_affector_module2.change_mod(add_projs=[(api_affectee_ship.id, 13000)])
     # Second module has stronger effect after range factored in, and thus is penalized less. If it
     # was the other way around, the value would've been ~348.2

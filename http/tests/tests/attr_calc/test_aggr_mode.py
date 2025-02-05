@@ -367,7 +367,10 @@ def test_different_sources(client, consts):
     api_sol.add_sw_effect(type_id=eve_sw_effect_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge_id, state=consts.ApiState.active)
+    api_module = api_fit.add_mod(
+        type_id=eve_module_id,
+        charge_type_id=eve_charge_id,
+        state=consts.ApiModuleState.active)
     # Aggregation mode is set to max, and fleet buff value is higher (1.25*4 = 5 vs 4.7), so only
     # fleet buff is applied
     api_ship.update()

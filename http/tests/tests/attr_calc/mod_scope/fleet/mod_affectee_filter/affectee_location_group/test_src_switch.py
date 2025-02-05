@@ -36,7 +36,7 @@ def test_self_to_struct(client, consts):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_root_id)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.active)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
@@ -58,7 +58,7 @@ def test_fleeted_to_struct(client, consts):
     api_fit2 = api_sol.create_fit()
     api_fleet = api_sol.create_fleet()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
-    api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiState.active)
+    api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fit2.set_ship(type_id=eve_root_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
     # Verification

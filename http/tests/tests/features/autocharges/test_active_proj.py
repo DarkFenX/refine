@@ -34,7 +34,7 @@ def test_proj_unproj(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.active)
+    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
@@ -74,7 +74,7 @@ def test_remove(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.active)
+    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
     api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
@@ -111,17 +111,17 @@ def test_states(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
     api_autocharge = api_affector_fighter.autocharges[eve_autocharge_effect_id]
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_fighter.change_fighter(state=consts.ApiState.active)
+    api_affector_fighter.change_fighter(state=consts.ApiMinionState.engaging)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action
-    api_affector_fighter.change_fighter(state=consts.ApiState.online)
+    api_affector_fighter.change_fighter(state=consts.ApiMinionState.in_space)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
@@ -129,7 +129,7 @@ def test_states(client, consts):
     # Verification - active charge state does not override too low module state
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_fighter.change_fighter(state=consts.ApiState.active)
+    api_affector_fighter.change_fighter(state=consts.ApiMinionState.engaging)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action
@@ -138,11 +138,11 @@ def test_states(client, consts):
     # state
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_fighter.change_fighter(state=consts.ApiState.online)
+    api_affector_fighter.change_fighter(state=consts.ApiMinionState.in_space)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_fighter.change_fighter(state=consts.ApiState.active)
+    api_affector_fighter.change_fighter(state=consts.ApiMinionState.engaging)
     # Verification - re-enabling module does not enable charge, since it was not enabled after
     # getting disabled
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
@@ -182,7 +182,7 @@ def test_range(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.active)
+    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
     api_affector_fighter.change_fighter(add_projs=[(api_affectee_ship.id, 10000)])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
@@ -266,7 +266,7 @@ def test_src_switch(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.active)
+    api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
     api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)

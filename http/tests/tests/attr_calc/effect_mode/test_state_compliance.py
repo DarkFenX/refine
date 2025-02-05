@@ -17,7 +17,7 @@ def test_state_offline(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiState.offline)
+    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiModuleState.offline)
     api_item.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.state_compliance})
     # Verification
     api_item.update()
@@ -25,14 +25,14 @@ def test_state_offline(client, consts):
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
     # Action
-    api_item.change_mod(state=consts.ApiState.ghost)
+    api_item.change_mod(state=consts.ApiModuleState.ghost)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
     # Action
-    api_item.change_mod(state=consts.ApiState.offline)
+    api_item.change_mod(state=consts.ApiModuleState.offline)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(120)
@@ -56,7 +56,7 @@ def test_state_online(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiState.online)
+    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiModuleState.online)
     api_item.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.state_compliance})
     # Verification
     api_item.update()
@@ -64,14 +64,14 @@ def test_state_online(client, consts):
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
     # Action
-    api_item.change_mod(state=consts.ApiState.offline)
+    api_item.change_mod(state=consts.ApiModuleState.offline)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
     # Action
-    api_item.change_mod(state=consts.ApiState.online)
+    api_item.change_mod(state=consts.ApiModuleState.online)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(120)
@@ -95,7 +95,7 @@ def test_state_active(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiState.active)
+    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiModuleState.active)
     api_item.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.state_compliance})
     # Verification
     api_item.update()
@@ -103,14 +103,14 @@ def test_state_active(client, consts):
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
     # Action
-    api_item.change_mod(state=consts.ApiState.online)
+    api_item.change_mod(state=consts.ApiModuleState.online)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
     # Action
-    api_item.change_mod(state=consts.ApiState.active)
+    api_item.change_mod(state=consts.ApiModuleState.active)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(120)
@@ -134,7 +134,7 @@ def test_state_overload(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiState.overload)
+    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiModuleState.overload)
     api_item.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.state_compliance})
     # Verification
     api_item.update()
@@ -142,14 +142,14 @@ def test_state_overload(client, consts):
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
     # Action
-    api_item.change_mod(state=consts.ApiState.active)
+    api_item.change_mod(state=consts.ApiModuleState.active)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
     # Action
-    api_item.change_mod(state=consts.ApiState.overload)
+    api_item.change_mod(state=consts.ApiModuleState.overload)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(120)

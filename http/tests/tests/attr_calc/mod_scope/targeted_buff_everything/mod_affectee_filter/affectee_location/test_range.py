@@ -28,7 +28,7 @@ def test_range(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affectee_module = api_affectee_fit.add_mod(type_id=eve_affectee_module_id)
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiState.active)
+    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
     assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(200)
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 9000)])
     assert api_affectee_module.update().attrs[eve_affectee_attr_id].dogma == approx(90)

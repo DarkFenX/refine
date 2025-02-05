@@ -3,7 +3,7 @@ use crate::{
         item::{charge::HChargeInfo, mutation::HItemMutationInfo},
         HItemInfoMode,
     },
-    shared::{HModRack, HState},
+    shared::{HModRack, HModuleState},
 };
 
 #[serde_with::serde_as]
@@ -15,7 +15,7 @@ pub(crate) struct HModuleInfoPartial {
     pub(crate) type_id: rc::EItemId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SolFitId,
-    pub(crate) state: HState,
+    pub(crate) state: HModuleState,
     pub(crate) rack: HModRack,
     pub(crate) pos: rc::Idx,
     #[serde(skip_serializing_if = "Option::is_none")]

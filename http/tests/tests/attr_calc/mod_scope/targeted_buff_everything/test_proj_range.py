@@ -24,7 +24,7 @@ def test_optimal_unavailable(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiState.active)
+    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)
     api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, None)])
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(90)

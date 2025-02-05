@@ -3,14 +3,14 @@ from __future__ import annotations
 import typing
 from dataclasses import dataclass
 
-from tests.fw.consts import ApiItemInfoMode, ApiModRmMode
+from tests.fw.consts import ApiItemInfoMode, ApiMinionState, ApiModRmMode
 from tests.fw.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
 from .side_effect_info import SideEffectInfo, SideEffectStrInfo
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
-    from tests.fw.consts import ApiEffMode, ApiState
+    from tests.fw.consts import ApiEffMode, ApiModuleState
 
 
 @dataclass(kw_only=True)
@@ -219,7 +219,7 @@ class Item(AttrDict):
 
     def change_mod(
             self, *,
-            state: ApiState | type[Absent] = Absent,
+            state: ApiModuleState | type[Absent] = Absent,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent] = Absent,
             charge: int | None | type[Absent] = Absent,
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
@@ -270,7 +270,7 @@ class Item(AttrDict):
 
     def change_drone(
             self, *,
-            state: ApiState | type[Absent] = Absent,
+            state: ApiMinionState | type[Absent] = Absent,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent] = Absent,
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
@@ -298,7 +298,7 @@ class Item(AttrDict):
 
     def change_fighter(
             self, *,
-            state: ApiState | type[Absent] = Absent,
+            state: ApiMinionState | type[Absent] = Absent,
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,

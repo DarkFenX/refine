@@ -14,7 +14,7 @@ def test_multi(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis
     # ---loop---
     # 0 0.850 0.850 0.850 0.850
@@ -39,7 +39,7 @@ def test_therm_kin_expl(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis with 2 EM hardeners
     # 0 0.850 0.850 0.850 0.850
     # 1 0.910 0.790 0.790 0.910 (kin therm > expl)
@@ -68,7 +68,7 @@ def test_em_kin_expl(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 0, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis with 2 thermal hardeners
     # 0 0.850 0.850 0.850 0.850
     # 1 0.910 0.910 0.790 0.790 (kin expl > em)
@@ -97,7 +97,7 @@ def test_em_therm_expl(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 0, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis with 2 kinetic hardeners
     # 0 0.850 0.850 0.850 0.850
     # 1 0.910 0.790 0.910 0.790 (expl therm > em)
@@ -126,7 +126,7 @@ def test_em_therm_kin(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 0))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - from real tests (2017-02-20), gecko vs gnosis with 2 explosive hardeners
     # 0 0.850 0.850 0.850 0.850
     # 1 0.910 0.790 0.790 0.910 (kin therm > em)

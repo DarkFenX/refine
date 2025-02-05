@@ -4,7 +4,7 @@ use crate::{
         shared::{HAddMode, HMutationOnAdd},
         HCmdResp,
     },
-    shared::{HModRack, HState},
+    shared::{HModRack, HModuleState},
     util::HExecError,
 };
 
@@ -13,7 +13,7 @@ pub(crate) struct HAddModuleCmd {
     rack: HModRack,
     add_mode: HAddMode,
     type_id: rc::EItemId,
-    state: HState,
+    state: HModuleState,
     mutation: Option<HMutationOnAdd>,
     charge_type_id: Option<rc::EItemId>,
 }

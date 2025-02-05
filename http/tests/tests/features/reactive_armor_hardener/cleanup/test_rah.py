@@ -21,7 +21,7 @@ def test_add_remove(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -34,7 +34,7 @@ def test_add_remove(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4484)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4794)
     # Action
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.active)
     # Verification - results for existing RAH should be reset too
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.93)
@@ -85,8 +85,8 @@ def test_state_on_off(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.online)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.online)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -104,7 +104,7 @@ def test_state_on_off(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.4484)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.4794)
     # Action
-    api_rah2.change_mod(state=consts.ApiState.active)
+    api_rah2.change_mod(state=consts.ApiModuleState.active)
     # Verification - results for existing RAH should be reset too
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.93)
@@ -122,7 +122,7 @@ def test_state_on_off(client, consts):
     assert api_ship.attrs[eve_basic_info.res_kin_attr_id].dogma == approx(0.3366673)
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].dogma == approx(0.3382661)
     # Action
-    api_rah1.change_mod(state=consts.ApiState.online)
+    api_rah1.change_mod(state=consts.ApiModuleState.online)
     # Verification - results for remaining RAH should be reset too
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.85000000001, accuracy=11)
@@ -160,8 +160,8 @@ def test_effect_mode_on_off(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.online)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.online)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -247,8 +247,8 @@ def test_attr_changed_res_em(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -334,8 +334,8 @@ def test_attr_changed_res_therm(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -421,8 +421,8 @@ def test_attr_changed_res_kin(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -508,8 +508,8 @@ def test_attr_changed_res_expl(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -595,8 +595,8 @@ def test_attr_changed_shift_amount(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiState.active)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -680,8 +680,8 @@ def test_attr_changed_cycle_time(client, consts):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah1 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_d1_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -699,7 +699,7 @@ def test_attr_changed_cycle_time(client, consts):
     assert api_ship.attrs[eve_d1_basic_info.res_kin_attr_id].dogma == approx(0.4081136)
     assert api_ship.attrs[eve_d1_basic_info.res_expl_attr_id].dogma == approx(0.4019927)
     # Action
-    api_rah2.change_mod(state=consts.ApiState.overload)
+    api_rah2.change_mod(state=consts.ApiModuleState.overload)
     # Verification - results for both RAHs should be reset, despite only one having its attr updated
     api_rah1.update()
     assert api_rah1.attrs[eve_d1_basic_info.res_em_attr_id].dogma == approx(0.9752941)
@@ -737,7 +737,7 @@ def test_attr_changed_cycle_time(client, consts):
     assert api_ship.attrs[eve_d2_basic_info.res_kin_attr_id].dogma == approx(0.5086404)
     assert api_ship.attrs[eve_d2_basic_info.res_expl_attr_id].dogma == approx(0.5092731)
     # Action
-    api_rah1.change_mod(state=consts.ApiState.overload)
+    api_rah1.change_mod(state=consts.ApiModuleState.overload)
     # Verification - on second source it should work as well, if attribute reference was updated
     # during source switch
     api_rah1.update()

@@ -812,7 +812,7 @@ def test_item_default_effect(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, state=consts.ApiState.active)
+    api_item = api_fit.add_mod(type_id=eve_base_item_id, state=consts.ApiModuleState.active)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(120)  # Modified

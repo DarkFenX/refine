@@ -19,7 +19,7 @@ def test_res_changed_em(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -63,7 +63,7 @@ def test_res_changed_therm(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -107,7 +107,7 @@ def test_res_changed_kin(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -151,7 +151,7 @@ def test_res_changed_expl(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -187,7 +187,7 @@ def test_switch(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -228,7 +228,7 @@ def test_not_loaded(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)
@@ -279,7 +279,7 @@ def test_no_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.94)

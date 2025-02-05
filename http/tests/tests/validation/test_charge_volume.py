@@ -350,13 +350,13 @@ def test_state(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge_id, state=consts.ApiState.ghost)
+    api_module = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge_id, state=consts.ApiModuleState.ghost)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.charge_volume])
     assert api_val.passed is False
     assert api_val.details.charge_volume == {api_module.charge.id: (api_module.id, 2.1, 2)}
     # Action
-    api_module.change_mod(state=consts.ApiState.online)
+    api_module.change_mod(state=consts.ApiModuleState.online)
     api_module.charge.change_charge(state=False)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.charge_volume])

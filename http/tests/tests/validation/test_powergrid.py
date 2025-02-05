@@ -11,7 +11,7 @@ def test_fail_single(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -31,8 +31,8 @@ def test_fail_multiple_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -52,8 +52,8 @@ def test_fail_multiple_struct(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -72,7 +72,7 @@ def test_equal(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
@@ -99,7 +99,7 @@ def test_modified_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 150
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
@@ -136,7 +136,7 @@ def test_modified_output(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_ship.update().attrs[eve_output_attr_id].extra == 120
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
@@ -168,7 +168,7 @@ def test_mutation_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].extra == 120
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
@@ -214,8 +214,8 @@ def test_rounding(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -239,7 +239,7 @@ def test_sum_rounding(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     for i in range(1, 21):
         # Action
-        api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+        api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
         if i == 1:
             continue
         # Verification
@@ -260,7 +260,7 @@ def test_no_ship(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -281,7 +281,7 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -304,7 +304,7 @@ def test_not_loaded_user(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
@@ -324,9 +324,9 @@ def test_non_positive(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
-    api_fit.add_mod(type_id=eve_module3_id, state=consts.ApiState.online)
+    api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
+    api_fit.add_mod(type_id=eve_module3_id, state=consts.ApiModuleState.online)
     # Verification - items with negative and 0 use are not exposed
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -346,8 +346,8 @@ def test_no_value_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiState.online)
-    api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiState.online)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -368,7 +368,7 @@ def test_no_value_output(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -389,7 +389,7 @@ def test_no_attr_use(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
@@ -407,7 +407,7 @@ def test_no_attr_output(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -426,14 +426,14 @@ def test_criterion_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.offline)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.offline)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_mod(state=consts.ApiState.online)
+    api_module.change_mod(state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -441,7 +441,7 @@ def test_criterion_state(client, consts):
     assert api_val.details.powergrid.output == 125
     assert api_val.details.powergrid.users == {api_module.id: 150}
     # Action
-    api_module.change_mod(state=consts.ApiState.offline)
+    api_module.change_mod(state=consts.ApiModuleState.offline)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True
@@ -459,7 +459,7 @@ def test_criterion_effect(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -474,7 +474,9 @@ def test_criterion_effect(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module.change_mod(state=consts.ApiState.online, effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
+    api_module.change_mod(
+        state=consts.ApiModuleState.online,
+        effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is False
@@ -501,7 +503,7 @@ def test_criterion_item_type(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.powergrid])
     assert api_val.passed is True

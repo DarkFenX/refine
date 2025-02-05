@@ -7,7 +7,15 @@ from tests.fw.util import conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from tests.fw.consts import ApiEffMode, ApiItemInfoMode, ApiModAddMode, ApiModRmMode, ApiRack, ApiState
+    from tests.fw.consts import (
+        ApiEffMode,
+        ApiItemInfoMode,
+        ApiMinionState,
+        ApiModAddMode,
+        ApiModRmMode,
+        ApiModuleState,
+        ApiRack,
+    )
     from tests.fw.util import Absent
 
 
@@ -291,7 +299,7 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             rack: ApiRack,
-            state: ApiState,
+            state: ApiModuleState,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent],
             charge_type_id: int | type[Absent],
             mode: ApiModAddMode | type[Absent],
@@ -319,7 +327,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
-            state: ApiState | type[Absent],
+            state: ApiModuleState | type[Absent],
             mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
             charge: int | None | type[Absent],
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
@@ -384,15 +392,15 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: ApiState,
+            state: ApiMinionState,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
             'type': 'drone',
             'fit_id': fit_id,
-            'type_id': type_id}
-        conditional_insert(container=body, key='state', value=state)
+            'type_id': type_id,
+            'state': state}
         conditional_insert(container=body, key='mutation', value=mutation)
         params = {}
         conditional_insert(container=params, key='item', value=item_info_mode)
@@ -407,7 +415,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: ApiState | type[Absent],
+            state: ApiMinionState | type[Absent],
             mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict] | None | type[Absent],
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
             change_projs: list[tuple[str, float | None]] | type[Absent],
@@ -437,7 +445,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: ApiState,
+            state: ApiMinionState,
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
@@ -452,7 +460,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: ApiState | type[Absent],
+            state: ApiMinionState | type[Absent],
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
             change_projs: list[tuple[str, float | None]] | type[Absent],
             rm_projs: list[str] | type[Absent],

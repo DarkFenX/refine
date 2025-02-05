@@ -56,8 +56,8 @@ def test_switch_up_single(client, consts):
     value = get_value_after_switch(
         client=client,
         consts=consts,
-        state_from=consts.ApiState.offline,
-        state_to=consts.ApiState.online)
+        state_from=consts.ApiModuleState.offline,
+        state_to=consts.ApiModuleState.online)
     assert value == approx(143)
 
 
@@ -65,8 +65,8 @@ def test_switch_up_multiple(client, consts):
     value = get_value_after_switch(
         client=client,
         consts=consts,
-        state_from=consts.ApiState.online,
-        state_to=consts.ApiState.overload)
+        state_from=consts.ApiModuleState.online,
+        state_to=consts.ApiModuleState.overload)
     assert value == approx(364.65)
 
 
@@ -74,8 +74,8 @@ def test_switch_down_single(client, consts):
     value = get_value_after_switch(
         client=client,
         consts=consts,
-        state_from=consts.ApiState.overload,
-        state_to=consts.ApiState.active)
+        state_from=consts.ApiModuleState.overload,
+        state_to=consts.ApiModuleState.active)
     assert value == approx(214.5)
 
 
@@ -83,6 +83,6 @@ def test_switch_down_multiple(client, consts):
     value = get_value_after_switch(
         client=client,
         consts=consts,
-        state_from=consts.ApiState.active,
-        state_to=consts.ApiState.offline)
+        state_from=consts.ApiModuleState.active,
+        state_to=consts.ApiModuleState.offline)
     assert value == approx(110)

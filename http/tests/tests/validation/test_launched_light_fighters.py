@@ -10,7 +10,7 @@ def test_fail_single(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -28,8 +28,8 @@ def test_fail_multiple_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
-    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
+    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -47,8 +47,8 @@ def test_fail_multiple_struct(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
-    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
-    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
+    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -66,7 +66,7 @@ def test_equal(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is True
@@ -97,7 +97,7 @@ def test_modified_fighter_type(client, consts):
     api_fit = api_sol.create_fit()
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_fighter.update().attrs[eve_ftr_type_attr_id].extra == approx(0)
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
@@ -135,7 +135,7 @@ def test_modified_total(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_ship.update().attrs[eve_total_attr_id].extra == approx(0)
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
@@ -164,9 +164,9 @@ def test_fractional_fighter_type(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id, state=consts.ApiState.online)
-    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, state=consts.ApiState.online)
-    api_fighter3 = api_fit.add_fighter(type_id=eve_fighter3_id, state=consts.ApiState.online)
+    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id, state=consts.ApiMinionState.in_space)
+    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, state=consts.ApiMinionState.in_space)
+    api_fighter3 = api_fit.add_fighter(type_id=eve_fighter3_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -185,7 +185,7 @@ def test_fractional_total(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship1_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -210,7 +210,7 @@ def test_no_ship(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -227,7 +227,7 @@ def test_not_loaded_user(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is True
@@ -246,7 +246,7 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -266,7 +266,7 @@ def test_no_value_total(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -286,7 +286,7 @@ def test_no_attr_fighter_type(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -306,7 +306,7 @@ def test_no_attr_total(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.online)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -324,14 +324,14 @@ def test_criterion_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiState.offline)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_fighter.change_fighter(state=consts.ApiState.online)
+    api_fighter.change_fighter(state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is False
@@ -339,7 +339,7 @@ def test_criterion_state(client, consts):
     assert api_val.details.launched_light_fighters.total == 0
     assert api_val.details.launched_light_fighters.users == [api_fighter.id]
     # Action
-    api_fighter.change_fighter(state=consts.ApiState.offline)
+    api_fighter.change_fighter(state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is True
@@ -359,9 +359,9 @@ def test_criterion_fighter_type(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_fighter(type_id=eve_fighter1_id, state=consts.ApiState.online)
-    api_fit.add_fighter(type_id=eve_fighter2_id, state=consts.ApiState.online)
-    api_fit.add_fighter(type_id=eve_fighter3_id, state=consts.ApiState.online)
+    api_fit.add_fighter(type_id=eve_fighter1_id, state=consts.ApiMinionState.in_space)
+    api_fit.add_fighter(type_id=eve_fighter2_id, state=consts.ApiMinionState.in_space)
+    api_fit.add_fighter(type_id=eve_fighter3_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is True
@@ -378,7 +378,7 @@ def test_criterion_item_type(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiState.online)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.launched_light_fighters])
     assert api_val.passed is True

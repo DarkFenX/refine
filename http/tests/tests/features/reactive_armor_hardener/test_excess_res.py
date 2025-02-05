@@ -14,7 +14,7 @@ def test_full(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 0))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
@@ -40,7 +40,7 @@ def test_excess_slow_stable(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 1, 1, 0))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - purely theoretical, but possible with overrides / custom mods
     # 0 0.3 0.5 0.3 0.5
     # 1 0.4 0.4 0.2 0.6
@@ -76,7 +76,7 @@ def test_excess_slow_loop(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification - purely theoretical, but possible with overrides / custom mods
     # 0 0.3 0.5 0.3 0.5
     # 1 0.4 0.6 0.2 0.4
@@ -116,7 +116,7 @@ def test_excess_max_takers_no_limit(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     # 0 0.0 0.0 0.2 0.4 - EM gives 1, therm gives 1, expl takes 0.4, kin takes 0.2, therm takes 1,
     # EM takes 0.4
@@ -148,7 +148,7 @@ def test_excess_max_takers_limited(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiState.active)
+    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     # 0 0.7 0.5 0.1 0.1 - EM gives 0.3, therm gives 0.5, expl kin take 0.1, therm takes 0.4, EM
     # takes 0.2
