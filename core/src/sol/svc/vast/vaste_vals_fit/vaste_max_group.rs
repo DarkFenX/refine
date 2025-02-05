@@ -24,7 +24,7 @@ pub struct SolMaxGroupItem {
     pub max_allowed_count: Count,
 }
 impl SolMaxGroupItem {
-    pub fn new(item_id: SolItemId, max_allowed_count: Count) -> Self {
+    pub(in crate::sol::svc::vast) fn new(item_id: SolItemId, max_allowed_count: Count) -> Self {
         Self {
             item_id,
             max_allowed_count,

@@ -1,8 +1,8 @@
 use crate::{
-    ec,
+    ad, ec,
     sol::{
-        svc::vast::SolVast,
-        uad::item::{SolItem, SolItemState},
+        svc::vast::{SolModuleStateValFail, SolVast},
+        uad::item::{SolItem, SolItemState, SolModuleState},
     },
 };
 
@@ -11,12 +11,24 @@ impl SolVast {
         match state {
             SolItemState::Online => match item {
                 SolItem::Module(module) => {
-                    if let Some(grp_id) = module.get_a_extras().unwrap().val_online_group_id {
+                    let extras = module.get_a_extras().unwrap();
+                    if let Some(grp_id) = extras.val_online_group_id {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data.mods_max_group_online_all.add_entry(grp_id, module.get_id());
                         if module.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_ONLINE) {
                             fit_data.mods_max_group_online_limited.insert(module.get_id(), grp_id);
                         }
+                    }
+                    if let ad::AState::Offline = extras.max_state {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                        fit_data.mods_state.insert(
+                            module.get_id(),
+                            SolModuleStateValFail::new(
+                                module.get_id(),
+                                SolModuleState::Online,
+                                SolModuleState::Offline,
+                            ),
+                        );
                     }
                 }
                 SolItem::Fighter(fighter) => {
@@ -45,12 +57,53 @@ impl SolVast {
             },
             SolItemState::Active => {
                 if let SolItem::Module(module) = item {
-                    if let Some(grp_id) = module.get_a_extras().unwrap().val_active_group_id {
+                    let extras = module.get_a_extras().unwrap();
+                    if let Some(grp_id) = extras.val_active_group_id {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data.mods_max_group_active_all.add_entry(grp_id, module.get_id());
                         if module.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_ACTIVE) {
                             fit_data.mods_max_group_active_limited.insert(module.get_id(), grp_id);
                         }
+                    }
+                    match extras.max_state {
+                        ad::AState::Offline => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_state.get_mut(&module.get_id()).unwrap().state = SolModuleState::Active;
+                        }
+                        ad::AState::Online => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_state.insert(
+                                module.get_id(),
+                                SolModuleStateValFail::new(
+                                    module.get_id(),
+                                    SolModuleState::Active,
+                                    SolModuleState::Online,
+                                ),
+                            );
+                        }
+                        _ => (),
+                    }
+                }
+            }
+            SolItemState::Overload => {
+                if let SolItem::Module(module) = item {
+                    match module.get_a_extras().unwrap().max_state {
+                        ad::AState::Offline | ad::AState::Online => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_state.get_mut(&module.get_id()).unwrap().state = SolModuleState::Overload;
+                        }
+                        ad::AState::Active => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_state.insert(
+                                module.get_id(),
+                                SolModuleStateValFail::new(
+                                    module.get_id(),
+                                    SolModuleState::Overload,
+                                    SolModuleState::Active,
+                                ),
+                            );
+                        }
+                        _ => (),
                     }
                 }
             }
@@ -61,12 +114,17 @@ impl SolVast {
         match state {
             SolItemState::Online => match item {
                 SolItem::Module(module) => {
-                    if let Some(grp_id) = module.get_a_extras().unwrap().val_online_group_id {
+                    let extras = module.get_a_extras().unwrap();
+                    if let Some(grp_id) = extras.val_online_group_id {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data
                             .mods_max_group_online_all
                             .remove_entry(&grp_id, &module.get_id());
                         fit_data.mods_max_group_online_limited.remove(&module.get_id());
+                    }
+                    if let ad::AState::Offline = extras.max_state {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                        fit_data.mods_state.remove(&module.get_id());
                     }
                 }
                 SolItem::Fighter(fighter) => {
@@ -95,12 +153,39 @@ impl SolVast {
             },
             SolItemState::Active => {
                 if let SolItem::Module(module) = item {
-                    if let Some(grp_id) = module.get_a_extras().unwrap().val_active_group_id {
+                    let extras = module.get_a_extras().unwrap();
+                    if let Some(grp_id) = extras.val_active_group_id {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data
                             .mods_max_group_active_all
                             .remove_entry(&grp_id, &module.get_id());
                         fit_data.mods_max_group_active_limited.remove(&module.get_id());
+                    }
+                    match extras.max_state {
+                        ad::AState::Offline => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_state.get_mut(&module.get_id()).unwrap().state = SolModuleState::Online;
+                        }
+                        ad::AState::Online => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_state.remove(&module.get_id());
+                        }
+                        _ => (),
+                    }
+                }
+            }
+            SolItemState::Overload => {
+                if let SolItem::Module(module) = item {
+                    match module.get_a_extras().unwrap().max_state {
+                        ad::AState::Offline | ad::AState::Online => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_state.get_mut(&module.get_id()).unwrap().state = SolModuleState::Active;
+                        }
+                        ad::AState::Active => {
+                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                            fit_data.mods_state.remove(&module.get_id());
+                        }
+                        _ => (),
                     }
                 }
             }

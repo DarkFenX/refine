@@ -143,6 +143,10 @@ impl SolVastFitData {
         for item_id in self.not_loaded.iter() {
             check_item(uad, item_id, false)?;
         }
+        for (item_id, item_data) in self.mods_state.iter() {
+            check_item(uad, item_id, true)?;
+            check_item(uad, &item_data.item_id, true)?;
+        }
         Ok(())
     }
 }
