@@ -139,7 +139,8 @@ def make_eve_rah(
                 (*resos,
                  shift_amount,
                  cycle_time,
-                 heat_cycle_mod))
+                 heat_cycle_mod),
+                strict=True)
             if k is not None},
         eff_ids=[basic_info.rah_effect_id, basic_info.heat_effect_id],
         defeff_id=basic_info.rah_effect_id)
@@ -159,5 +160,6 @@ def make_eve_ship(
              basic_info.res_therm_attr_id,
              basic_info.res_kin_attr_id,
              basic_info.res_expl_attr_id),
-            resos)
+            resos,
+            strict=True)
         if k is not None})

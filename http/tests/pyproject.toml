@@ -1,7 +1,22 @@
+[project]
+name = "reefast-tests"
+version = "1.0.0"
+description = "Tests for reefast HTTP interface"
+requires-python = ">=3.13"
+dependencies = [
+    "pytest",
+    "pytest-httpserver",
+    "requests",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
 line-length = 120
 indent-width = 4
 
-[lint]
+[tool.ruff.lint]
 select = [
     "F",  # Pyflakes
     "E", "W",  # pycodestyle
@@ -42,18 +57,18 @@ select = [
 ]
 ignore = ["F401", "ANN003", "ANN401", "PLR2004"]
 
-[lint.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/**/test_*.py" = ["ANN"]
 
-[lint.isort]
+[tool.ruff.lint.isort]
 no-lines-before = ["local-folder"]
 
-[lint.pylint]
+[tool.ruff.lint.pylint]
 max-args = 15
 max-statements = 150
 
-[lint.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 15
 
-[lint.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 inline-quotes = "single"
