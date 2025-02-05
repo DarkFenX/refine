@@ -1,6 +1,7 @@
 use crate::sol::svc::vast::{
     SolCapitalModValFail, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolMaxGroupValFail,
-    SolResValFail, SolRigSizeValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
+    SolNotLoadedItemValFail, SolResValFail, SolRigSizeValFail, SolShipLimitValFail, SolSlotIndexValFail,
+    SolSlotValFail, SolSrqValFail,
 };
 
 #[derive(Copy, Clone)]
@@ -38,6 +39,7 @@ pub struct SolValOptions {
     pub charge_size: bool,
     pub charge_volume: bool,
     pub capital_module: bool,
+    pub not_loaded_item: bool,
 }
 impl SolValOptions {
     pub fn new_all_enabled() -> Self {
@@ -75,6 +77,7 @@ impl SolValOptions {
             charge_size: true,
             charge_volume: true,
             capital_module: true,
+            not_loaded_item: true,
         }
     }
     pub fn new_all_disabled() -> Self {
@@ -112,6 +115,7 @@ impl SolValOptions {
             charge_size: false,
             charge_volume: false,
             capital_module: false,
+            not_loaded_item: false,
         }
     }
 }
@@ -150,6 +154,7 @@ pub struct SolValResult {
     pub charge_size: Vec<SolChargeSizeValFail>,
     pub charge_volume: Vec<SolChargeVolumeValFail>,
     pub capital_module: Vec<SolCapitalModValFail>,
+    pub not_loaded_item: Vec<SolNotLoadedItemValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -187,6 +192,7 @@ impl SolValResult {
             charge_size: Vec::new(),
             charge_volume: Vec::new(),
             capital_module: Vec::new(),
+            not_loaded_item: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -223,5 +229,6 @@ impl SolValResult {
             && self.charge_size.is_empty()
             && self.charge_volume.is_empty()
             && self.capital_module.is_empty()
+            && self.not_loaded_item.is_empty()
     }
 }

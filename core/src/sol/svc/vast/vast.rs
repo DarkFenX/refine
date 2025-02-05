@@ -70,6 +70,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) mods_charge_size: StMap<SolItemId, SolValCache<AttrVal, SolChargeSizeValFail>>,
     pub(in crate::sol::svc::vast) mods_charge_volume: StMap<SolItemId, SolValCache<AttrVal, SolChargeVolumeValFail>>,
     pub(in crate::sol::svc::vast) mods_capital: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) not_loaded: StSet<SolItemId>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -104,6 +105,7 @@ impl SolVastFitData {
             mods_charge_size: StMap::new(),
             mods_charge_volume: StMap::new(),
             mods_capital: StSet::new(),
+            not_loaded: StSet::new(),
         }
     }
 }

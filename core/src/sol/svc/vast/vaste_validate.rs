@@ -124,6 +124,9 @@ impl SolVast {
         if options.capital_module && !fit_data.validate_capital_module_fast(ship) {
             return false;
         }
+        if options.not_loaded_item && !fit_data.validate_not_loaded_item_fast() {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -238,6 +241,9 @@ impl SolVast {
         }
         if options.capital_module {
             result.capital_module = fit_data.validate_capital_module_verbose(ship);
+        }
+        if options.not_loaded_item {
+            result.not_loaded_item = fit_data.validate_not_loaded_item_verbose();
         }
         result
     }

@@ -10,6 +10,12 @@ use crate::{
 
 impl SolVast {
     pub(in crate::sol::svc) fn item_added(&mut self, item: &SolItem) {
+        if !item.is_loaded() {
+            if let Some(fit_id) = item.get_fit_id() {
+                let fit_data = self.get_fit_data_mut(&fit_id).unwrap();
+                fit_data.not_loaded.insert(item.get_id());
+            }
+        }
         match item {
             SolItem::Rig(rig) => {
                 let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
@@ -38,6 +44,12 @@ impl SolVast {
         }
     }
     pub(in crate::sol::svc) fn item_removed(&mut self, uad: &SolUad, item: &SolItem) {
+        if !item.is_loaded() {
+            if let Some(fit_id) = item.get_fit_id() {
+                let fit_data = self.get_fit_data_mut(&fit_id).unwrap();
+                fit_data.not_loaded.remove(&item.get_id());
+            }
+        }
         match item {
             SolItem::Rig(rig) => {
                 let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();

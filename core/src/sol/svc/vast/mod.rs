@@ -6,8 +6,8 @@ use vast::SolVastFitData;
 use vaste_stats_fit::{SolStatRes, SolStatSlot};
 pub use vaste_vals_fit::{
     SolCapitalModValFail, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolMaxGroupItem,
-    SolMaxGroupValFail, SolResUser, SolResValFail, SolRigSizeMismatch, SolRigSizeValFail, SolShipLimitMismatch,
-    SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqSkill, SolSrqValFail,
+    SolMaxGroupValFail, SolNotLoadedItemValFail, SolResUser, SolResValFail, SolRigSizeMismatch, SolRigSizeValFail,
+    SolShipLimitMismatch, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqSkill, SolSrqValFail,
 };
 
 mod cache;
