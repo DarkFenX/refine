@@ -418,6 +418,7 @@ class ApiValType(StrEnum):
     charge_size = 'charge_size'
     charge_volume = 'charge_volume'
     capital_module = 'capital_module'
+    not_loaded_item = 'not_loaded_item'
 
 
 @unique

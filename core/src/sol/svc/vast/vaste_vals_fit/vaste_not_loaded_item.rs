@@ -13,7 +13,7 @@ impl SolNotLoadedItemValFail {
 impl SolVastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_not_loaded_item_fast(&self) -> bool {
-        !self.not_loaded.is_empty()
+        self.not_loaded.is_empty()
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_not_loaded_item_verbose(&self) -> Vec<SolNotLoadedItemValFail> {
