@@ -5,6 +5,7 @@ from .charge_group import ValChargeGroupDetails
 from .charge_size import ValChargeSizeDetails
 from .charge_volume import ValChargeVolumeDetails
 from .max_group import ValMaxGroupDetails
+from .module_state import ValModuleStateDetails
 from .not_loaded_item import ValNotLoadedItemDetails
 from .resources import ValResourceDetails
 from .rig_size import ValRigSizeDetails
@@ -57,4 +58,5 @@ class ValResultDetails(AttrDict):
             ApiValType.charge_size: AttrHookDef(func=lambda d: ValChargeSizeDetails(data=d)),
             ApiValType.charge_volume: AttrHookDef(func=lambda d: ValChargeVolumeDetails(data=d)),
             ApiValType.capital_module: AttrHookDef(func=lambda d: ValCapModuleDetails(data=d)),
-            ApiValType.not_loaded_item: AttrHookDef(func=lambda d: ValNotLoadedItemDetails(data=d))})
+            ApiValType.not_loaded_item: AttrHookDef(func=lambda d: ValNotLoadedItemDetails(data=d)),
+            ApiValType.module_state: AttrHookDef(func=lambda d: ValModuleStateDetails(data=d))})
