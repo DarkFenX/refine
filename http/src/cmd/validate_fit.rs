@@ -57,6 +57,7 @@ impl HValidFitCmd {
                 "charge_volume" => core_options.charge_volume = alt_value,
                 "capital_module" => core_options.capital_module = alt_value,
                 "not_loaded_item" => core_options.not_loaded_item = alt_value,
+                "module_state" => core_options.module_state = alt_value,
                 _ => (),
             }
         }
