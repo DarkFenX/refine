@@ -278,6 +278,14 @@ def test_item_state(client, consts):
 def test_item_types(client, consts):
     eve_skill_id = client.mk_eve_item()
     eve_item_id = client.mk_eve_item(srqs={eve_skill_id: 3})
+    eve_ac_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_ac_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        cat_id=consts.EveEffCat.active)
+    eve_fighter_id = client.mk_eve_item(
+        attrs={eve_ac_attr_id: eve_item_id},
+        eff_ids=[eve_ac_effect_id],
+        srqs={eve_skill_id: 3})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -288,14 +296,15 @@ def test_item_types(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_item_id)
     api_fit.set_stance(type_id=eve_item_id)
     api_subsystem = api_fit.add_subsystem(type_id=eve_item_id)
-    api_module_high = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.high)
-    api_module_mid = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.mid)
-    api_module_low = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.low)
+    api_module_high = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.high, charge_type_id=eve_item_id)
+    api_module_mid = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.mid, charge_type_id=eve_item_id)
+    api_module_low = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.low, charge_type_id=eve_item_id)
     api_fit.add_rig(type_id=eve_item_id)
     api_drone = api_fit.add_drone(type_id=eve_item_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_item_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     api_fit.add_fw_effect(type_id=eve_item_id)
     # Verification - characters, stances, rigs and FW effects are ignored
+    assert len(api_fighter.autocharges) == 1
     api_val = api_fit.validate(include=[consts.ApiValType.skill_reqs])
     assert api_val.passed is False
     assert api_val.details.skill_reqs == {
@@ -305,8 +314,11 @@ def test_item_types(client, consts):
         api_ship.id: {eve_skill_id: (None, 3)},
         api_subsystem.id: {eve_skill_id: (None, 3)},
         api_module_high.id: {eve_skill_id: (None, 3)},
+        api_module_high.charge.id: {eve_skill_id: (None, 3)},
         api_module_mid.id: {eve_skill_id: (None, 3)},
+        api_module_mid.charge.id: {eve_skill_id: (None, 3)},
         api_module_low.id: {eve_skill_id: (None, 3)},
+        api_module_low.charge.id: {eve_skill_id: (None, 3)},
         api_drone.id: {eve_skill_id: (None, 3)},
         api_fighter.id: {eve_skill_id: (None, 3)}}
 
