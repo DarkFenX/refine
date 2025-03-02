@@ -22,7 +22,10 @@ impl SolSvc {
                 }
             }
         } else if new_item_state < old_item_state {
-            for state in SolItemState::iter().filter(|v| **v > new_item_state && **v <= old_item_state) {
+            for state in SolItemState::iter()
+                .rev()
+                .filter(|v| **v > new_item_state && **v <= old_item_state)
+            {
                 if item.is_loaded() {
                     self.notify_item_state_deactivated_loaded(item, state);
                 }
