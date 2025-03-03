@@ -21,7 +21,7 @@ pub(in crate::sol) use item_stance::SolStance;
 pub(in crate::sol) use item_subsystem::SolSubsystem;
 pub(in crate::sol) use item_sw_effect::SolSwEffect;
 pub(in crate::sol) use misc::SolItemState;
-use misc::{bool_to_state_active, bool_to_state_offline, state_to_bool, SolAutocharges, SolEffectModes, SolProjs};
+use misc::{SolAutocharges, SolEffectModes, SolProjs, bool_to_state_active, bool_to_state_offline, state_to_bool};
 pub use misc::{
     SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolMinionState,
 };

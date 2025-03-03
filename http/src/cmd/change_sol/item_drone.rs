@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_fit, HCmdResp},
+    cmd::{HCmdResp, change_fit},
     util::HExecError,
 };
 

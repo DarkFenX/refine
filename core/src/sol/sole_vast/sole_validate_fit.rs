@@ -2,8 +2,8 @@ use crate::{
     defs::SolFitId,
     err::basic::FitFoundError,
     sol::{
-        svc::vast::{SolValOptions, SolValResult},
         SolarSystem,
+        svc::vast::{SolValOptions, SolValResult},
     },
 };
 

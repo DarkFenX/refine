@@ -4,7 +4,7 @@ use crate::{
     ec,
     sol::{
         svc::vast::{SolVast, SolVastSkillReq},
-        uad::{item::SolItem, SolUad},
+        uad::{SolUad, item::SolItem},
     },
 };
 

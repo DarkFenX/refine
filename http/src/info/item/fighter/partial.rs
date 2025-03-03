@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    info::{item::autocharge::HAutochargeInfo, HItemInfoMode},
+    info::{HItemInfoMode, item::autocharge::HAutochargeInfo},
     shared::HMinionState,
 };
 

@@ -1,5 +1,5 @@
 use crate::{
-    sol::{info::SolFighterInfo, uad::item::SolFighter, SolarSystem},
+    sol::{SolarSystem, info::SolFighterInfo, uad::item::SolFighter},
     util::StMap,
 };
 

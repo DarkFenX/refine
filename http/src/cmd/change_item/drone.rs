@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
-        shared::{apply_effect_modes, HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull},
         HCmdResp,
+        shared::{HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull, apply_effect_modes},
     },
     shared::HMinionState,
     util::HExecError,
@@ -49,10 +49,10 @@ impl HChangeDroneCmd {
                         if let Err(error) = core_sol.add_drone_mutation(item_id, mutation) {
                             match error {
                                 rc::err::AddDroneMutationError::ItemNotFound(e) => {
-                                    return Err(HExecError::ItemNotFoundPrimary(e))
+                                    return Err(HExecError::ItemNotFoundPrimary(e));
                                 }
                                 rc::err::AddDroneMutationError::ItemIsNotDrone(e) => {
-                                    return Err(HExecError::ItemKindMismatch(e))
+                                    return Err(HExecError::ItemKindMismatch(e));
                                 }
                                 rc::err::AddDroneMutationError::MutationAlreadySet(_) => {
                                     panic!("no mutation should be set")
@@ -66,10 +66,10 @@ impl HChangeDroneCmd {
                         if let Err(error) = core_sol.add_drone_mutation(item_id, mutation.into()) {
                             match error {
                                 rc::err::AddDroneMutationError::ItemNotFound(e) => {
-                                    return Err(HExecError::ItemNotFoundPrimary(e))
+                                    return Err(HExecError::ItemNotFoundPrimary(e));
                                 }
                                 rc::err::AddDroneMutationError::ItemIsNotDrone(e) => {
-                                    return Err(HExecError::ItemKindMismatch(e))
+                                    return Err(HExecError::ItemKindMismatch(e));
                                 }
                                 rc::err::AddDroneMutationError::MutationAlreadySet(_) => {
                                     panic!("no mutation should be set")
@@ -98,10 +98,10 @@ impl HChangeDroneCmd {
                     if let Err(error) = core_sol.remove_drone_mutation(item_id) {
                         match error {
                             rc::err::RemoveDroneMutationError::ItemNotFound(e) => {
-                                return Err(HExecError::ItemNotFoundPrimary(e))
+                                return Err(HExecError::ItemNotFoundPrimary(e));
                             }
                             rc::err::RemoveDroneMutationError::ItemIsNotDrone(e) => {
-                                return Err(HExecError::ItemKindMismatch(e))
+                                return Err(HExecError::ItemKindMismatch(e));
                             }
                             // Do nothing if mutation was not there
                             rc::err::RemoveDroneMutationError::MutationNotSet(_) => (),

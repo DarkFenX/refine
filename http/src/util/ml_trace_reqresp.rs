@@ -2,7 +2,7 @@
 // Might need updates from time to time, due to axum changes
 
 use axum::{
-    body::{to_bytes, Body, Bytes},
+    body::{Body, Bytes, to_bytes},
     extract::Request,
     http::StatusCode,
     middleware::Next,

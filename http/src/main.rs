@@ -1,10 +1,10 @@
 use std::{env, sync::Arc, time::Duration};
 
 use axum::{
+    Router, ServiceExt,
     body::Body,
     extract, http, middleware,
     routing::{delete, get, patch, post},
-    Router, ServiceExt,
 };
 use tower::Layer;
 use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};

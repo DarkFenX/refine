@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_item, HCmdResp},
+    cmd::{HCmdResp, change_item},
     shared::HMinionState,
     util::HExecError,
 };
@@ -20,7 +20,7 @@ impl HAddFighterCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddFighterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         Ok(core_fighter)

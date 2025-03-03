@@ -13,9 +13,9 @@ use crate::{
             AttrCalcError, LoadedItemFoundError, SolAffectorInfo, SolAttrValInfo, SolCalc, SolModAccumInfo,
             SolModification, SolModificationInfo, SolModificationKey, SolOpInfo,
         },
-        uad::{item::SolItem, SolUad},
+        uad::{SolUad, item::SolItem},
     },
-    util::{round, StMap, StMapVecL1, StSet},
+    util::{StMap, StMapVecL1, StSet, round},
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
@@ -65,7 +65,7 @@ impl SolCalc {
         &self,
         uad: &SolUad,
         item_id: &SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = EAttrId>, LoadedItemFoundError> {
+    ) -> Result<impl ExactSizeIterator<Item = EAttrId> + use<>, LoadedItemFoundError> {
         let mut attr_ids = StSet::new();
         for attr_id in uad.items.get_item(item_id)?.get_attrs_err()?.keys() {
             attr_ids.insert(*attr_id);

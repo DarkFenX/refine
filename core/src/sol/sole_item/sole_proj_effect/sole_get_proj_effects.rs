@@ -1,4 +1,4 @@
-use crate::sol::{info::SolProjEffectInfo, SolarSystem};
+use crate::sol::{SolarSystem, info::SolProjEffectInfo};
 
 impl SolarSystem {
     pub fn get_proj_effects(&self) -> Vec<SolProjEffectInfo> {

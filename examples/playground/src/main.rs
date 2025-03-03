@@ -8,8 +8,8 @@ use itertools::Itertools;
 use tracing_subscriber::prelude::*;
 
 use rc::{
-    ed::EveDataHandler, SolAddMode, SolMinionState, SolModRack, SolModuleState, SolValOptions, SolarSystem, Src,
-    VERSION,
+    SolAddMode, SolMinionState, SolModRack, SolModuleState, SolValOptions, SolarSystem, Src, VERSION,
+    ed::EveDataHandler,
 };
 
 fn setup_logger() -> () {
@@ -43,8 +43,8 @@ fn main() {
         PathBuf::from("/home/dfx/Workspace/eve/reefast/examples/playground/cache/"),
         "tq".to_string(),
     ));
-    // test_crusader(dh, ch);
-    test_nphoon(dh, ch);
+    test_crusader(dh, ch);
+    // test_nphoon(dh, ch);
 }
 
 fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {

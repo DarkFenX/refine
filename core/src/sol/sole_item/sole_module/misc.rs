@@ -2,12 +2,12 @@ use crate::{
     defs::SolFitId,
     err::basic::FitFoundError,
     sol::{
+        SolModRack, SolarSystem,
         info::SolModuleInfo,
         uad::{
             fit::{SolFits, SolItemVec},
             item::SolModule,
         },
-        SolModRack, SolarSystem,
     },
 };
 

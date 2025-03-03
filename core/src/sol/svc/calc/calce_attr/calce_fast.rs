@@ -11,9 +11,9 @@ use crate::{
             AttrCalcError, LoadedItemFoundError, SolAttrVal, SolCalc, SolModAccumFast, SolModification,
             SolModificationKey,
         },
-        uad::{item::SolItem, SolUad},
+        uad::{SolUad, item::SolItem},
     },
-    util::{round, StMap},
+    util::{StMap, round},
 };
 
 const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [

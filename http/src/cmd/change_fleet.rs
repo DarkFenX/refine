@@ -21,7 +21,7 @@ impl HChangeFleetCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::GetFleetError::FleetNotFound(e) => HExecError::FleetNotFoundPrimary(e),
-                })
+                });
             }
         };
         for fit_id in self.remove_fits.iter() {

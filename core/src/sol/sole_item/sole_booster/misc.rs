@@ -2,9 +2,9 @@ use itertools::Itertools;
 
 use crate::{
     sol::{
+        SolEffectMode, SolarSystem,
         info::{SolBoosterInfo, SolSideEffectInfo, SolSideEffectStr},
         uad::item::SolBooster,
-        SolEffectMode, SolarSystem,
     },
     util::StMap,
 };

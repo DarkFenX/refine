@@ -1,13 +1,13 @@
 use axum::{
+    Json,
     extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
 };
 
 use crate::{
     cmd::HAddFitCmd,
-    handlers::{fit::HFitInfoParams, get_guarded_sol, HGSolResult, HSingleErr},
+    handlers::{HGSolResult, HSingleErr, fit::HFitInfoParams, get_guarded_sol},
     state::HAppState,
 };
 

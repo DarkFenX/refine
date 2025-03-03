@@ -1,8 +1,8 @@
 use crate::{
+    OF,
     defs::SolFitId,
     err::basic::{EmDmgNonNegError, ExplDmgNonNegError, FitFoundError, KinDmgNonNegError, ThermDmgNonNegError},
     sol::{SolDmgProfile, SolarSystem},
-    OF,
 };
 
 impl SolarSystem {

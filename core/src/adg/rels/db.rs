@@ -1,7 +1,7 @@
 use crate::{
     adg::{
-        rels::{Fk, KeyPart, Pk},
         GData, GSupport,
+        rels::{Fk, KeyPart, Pk},
     },
     defs::{EAbilId, EAttrId, EBuffId, EEffectId, EItemGrpId, EItemId},
     util::StSet,

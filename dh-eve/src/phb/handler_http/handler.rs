@@ -1,6 +1,6 @@
 use std::fmt;
 
-use reqwest::{blocking::get, IntoUrl, Url};
+use reqwest::{IntoUrl, Url, blocking::get};
 
 use crate::{
     phb::{

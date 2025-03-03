@@ -6,7 +6,7 @@ use crate::{
     ec,
     sol::{
         svc::calc::{SolAttrSpec, SolCalc, SolCtxModifier, SolModifierKind, SolRawModifier},
-        uad::{fleet::SolFleet, item::SolItem, SolUad},
+        uad::{SolUad, fleet::SolFleet, item::SolItem},
     },
     src::Src,
 };

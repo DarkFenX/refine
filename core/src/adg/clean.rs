@@ -2,8 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     adg::{
-        rels::{KeyDb, Pk},
         GData, GSupport,
+        rels::{KeyDb, Pk},
     },
     defs::Count,
     ec,

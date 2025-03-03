@@ -1,7 +1,6 @@
 use crate::{
-    ec,
+    EEffectId, ec,
     sol::{svc::calc::modifier::SolRawModifier, uad::item::SolItem},
-    EEffectId,
 };
 
 use super::{aar, prop};

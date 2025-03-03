@@ -2,9 +2,9 @@ use crate::{
     defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
+        SolarSystem,
         info::SolCharacterInfo,
         uad::item::{SolCharacter, SolItem},
-        SolarSystem,
     },
 };
 

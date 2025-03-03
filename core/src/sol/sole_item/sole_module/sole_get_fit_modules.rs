@@ -1,8 +1,8 @@
 use crate::{
+    SolModRack,
     defs::SolFitId,
     err::basic::FitFoundError,
-    sol::{info::SolModuleInfo, SolarSystem},
-    SolModRack,
+    sol::{SolarSystem, info::SolModuleInfo},
 };
 
 impl SolarSystem {

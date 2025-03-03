@@ -2,8 +2,8 @@ use crate::{
     defs::{EAttrId, SolItemId},
     err::basic::{AttrMetaFoundError, ItemFoundError, ItemLoadedError},
     sol::{
-        svc::calc::{AttrCalcError, SolAttrVal},
         SolarSystem,
+        svc::calc::{AttrCalcError, SolAttrVal},
     },
 };
 

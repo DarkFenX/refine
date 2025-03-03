@@ -4,7 +4,7 @@ use crate::{
     defs::AttrVal,
     sol::{
         svc::SolSvc,
-        uad::{item::SolItem, SolUad},
+        uad::{SolUad, item::SolItem},
     },
 };
 

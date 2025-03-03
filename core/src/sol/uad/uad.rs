@@ -1,8 +1,8 @@
 use crate::{
-    defs::{SolItemId, OF},
+    defs::{OF, SolItemId},
     sol::{
-        uad::{fit::SolFits, fleet::SolFleets, item::SolItems},
         SolDmgProfile,
+        uad::{fit::SolFits, fleet::SolFleets, item::SolItems},
     },
     src::Src,
     util::StSet,

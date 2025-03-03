@@ -5,7 +5,7 @@ use crate::ed::{
     EMutaAttrMod, EMutaItemConv,
 };
 
-use super::{cont::EDataCont, EResult};
+use super::{EResult, cont::EDataCont};
 
 /// EVE data handler interface definition.
 ///

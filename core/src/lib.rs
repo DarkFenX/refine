@@ -1,5 +1,3 @@
-#![feature(extract_if)]
-#![feature(hash_extract_if)]
 #![feature(exact_size_is_empty)]
 
 //! # Reefast
@@ -23,9 +21,10 @@
 
 pub use defs::{
     AttrVal, Count, EAbilId, EAttrId, EAttrUnitId, EBuffId, EEffectCatId, EEffectId, EItemCatId, EItemGrpId, EItemId,
-    Idx, MutaRoll, SkillLevel, SlotIndex, SolFitId, SolFleetId, SolItemId, OF, VERSION,
+    Idx, MutaRoll, OF, SkillLevel, SlotIndex, SolFitId, SolFleetId, SolItemId, VERSION,
 };
 pub use sol::{
+    SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolarSystem,
     info::{
         SolAttrMutationInfo, SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo,
         SolFighterInfo, SolFitInfo, SolFleetInfo, SolFwEffectInfo, SolImplantInfo, SolItemInfo, SolItemMutationInfo,
@@ -45,7 +44,6 @@ pub use sol::{
         SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation,
         SolMinionState, SolModuleState,
     },
-    SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolarSystem,
 };
 pub use src::Src;
 

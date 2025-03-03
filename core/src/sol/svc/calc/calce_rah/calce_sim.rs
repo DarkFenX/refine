@@ -4,11 +4,11 @@ use itertools::Itertools;
 use ordered_float::Float;
 
 use crate::{
-    defs::{AttrVal, Count, SolFitId, SolItemId, OF},
+    defs::{AttrVal, Count, OF, SolFitId, SolItemId},
     sol::{
+        SolDmgKinds,
         svc::calc::{SolAttrVal, SolCalc},
         uad::SolUad,
-        SolDmgKinds,
     },
     util::{StMap, StSet},
 };
@@ -17,7 +17,7 @@ use super::{
     rah_data_sim::SolRahDataSim,
     rah_history_entry::SolRahSimHistoryEntry,
     rah_info::SolRahInfo,
-    shared::{rah_round, EM_ATTR_ID, EXPL_ATTR_ID, KIN_ATTR_ID, RAH_EFFECT_ID, SHIFT_ATTR_ID, THERM_ATTR_ID},
+    shared::{EM_ATTR_ID, EXPL_ATTR_ID, KIN_ATTR_ID, RAH_EFFECT_ID, SHIFT_ATTR_ID, THERM_ATTR_ID, rah_round},
     tick_iter::SolRahSimTickIter,
 };
 

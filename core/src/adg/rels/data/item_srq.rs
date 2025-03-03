@@ -1,7 +1,7 @@
 use crate::{
     adg::{
-        rels::{Fk, KeyPart, Pk},
         GSupport,
+        rels::{Fk, KeyPart, Pk},
     },
     ed,
 };

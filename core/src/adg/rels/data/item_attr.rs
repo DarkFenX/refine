@@ -1,7 +1,7 @@
 use crate::{
     adg::{
-        rels::{attrval_to_fk, Fk, KeyPart, Pk},
         GSupport,
+        rels::{Fk, KeyPart, Pk, attrval_to_fk},
     },
     defs::EAttrUnitId,
     ec, ed,

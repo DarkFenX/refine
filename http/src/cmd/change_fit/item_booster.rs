@@ -1,8 +1,7 @@
 use crate::{
     cmd::{
-        change_item,
-        shared::{apply_side_effects, HSideEffectMap},
-        HCmdResp,
+        HCmdResp, change_item,
+        shared::{HSideEffectMap, apply_side_effects},
     },
     util::HExecError,
 };
@@ -27,7 +26,7 @@ impl HAddBoosterCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddBoosterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         if self.side_effects.is_none() {

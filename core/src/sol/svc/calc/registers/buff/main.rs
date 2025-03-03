@@ -40,7 +40,7 @@ impl SolBuffRegister {
         &mut self,
         item_id: &SolItemId,
         buff_type_attr_id: &EAttrId,
-    ) -> Option<impl ExactSizeIterator<Item = SolRawModifier>> {
+    ) -> Option<impl ExactSizeIterator<Item = SolRawModifier> + use<>> {
         self.modifiers.remove_key(&(*item_id, *buff_type_attr_id))
     }
     pub(in crate::sol::svc::calc) fn reg_dependent_mod(

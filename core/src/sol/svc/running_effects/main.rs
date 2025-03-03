@@ -17,7 +17,10 @@ impl SolRunningEffects {
     pub(in crate::sol::svc) fn is_running(&self, item_id: &SolItemId, effect_id: &EEffectId) -> bool {
         self.data.get(item_id).any(|v| v == effect_id)
     }
-    pub(in crate::sol::svc) fn iter_running(&self, item_id: &SolItemId) -> impl ExactSizeIterator<Item = &EEffectId> {
+    pub(in crate::sol::svc) fn iter_running(
+        &self,
+        item_id: &SolItemId,
+    ) -> impl ExactSizeIterator<Item = &EEffectId> + use<'_> {
         self.data.get(item_id)
     }
     // Modification methods

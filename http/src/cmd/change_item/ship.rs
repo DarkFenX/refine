@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
-        shared::{apply_effect_modes, HEffectModeMap},
         HCmdResp,
+        shared::{HEffectModeMap, apply_effect_modes},
     },
     util::HExecError,
 };

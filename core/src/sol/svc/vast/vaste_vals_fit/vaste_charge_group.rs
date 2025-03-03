@@ -94,7 +94,7 @@ fn calculate_item_result(uad: &SolUad, module_item_id: &SolItemId) -> SolValCach
                 charge_item_id,
                 None,
                 allowed_group_ids,
-            ))
+            ));
         }
     };
     match allowed_group_ids.contains(&charge_group_id) {

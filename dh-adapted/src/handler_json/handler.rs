@@ -1,13 +1,13 @@
 use std::{
     fmt,
-    fs::{create_dir_all, OpenOptions},
+    fs::{OpenOptions, create_dir_all},
     io,
     path::PathBuf,
 };
 
 use crate::{
-    util::{move_vec_to_map, Error},
     VERSION,
+    util::{Error, move_vec_to_map},
 };
 
 use super::data;

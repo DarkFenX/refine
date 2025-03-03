@@ -2,7 +2,7 @@ use crate::{
     defs::{EAttrId, SolItemId},
     sol::{
         svc::SolSvc,
-        uad::{item::SolSkill, SolUad},
+        uad::{SolUad, item::SolSkill},
     },
     src::Src,
 };

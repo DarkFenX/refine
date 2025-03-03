@@ -1,4 +1,4 @@
-use crate::sol::{info::SolFleetInfo, SolarSystem};
+use crate::sol::{SolarSystem, info::SolFleetInfo};
 
 impl SolarSystem {
     pub fn get_fleets(&self) -> Vec<SolFleetInfo> {

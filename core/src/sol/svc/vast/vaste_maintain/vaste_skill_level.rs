@@ -2,7 +2,7 @@ use std::collections::hash_map::Entry;
 
 use crate::sol::{
     svc::vast::{SolVast, SolVastSkillReq},
-    uad::{item::SolSkill, SolUad},
+    uad::{SolUad, item::SolSkill},
 };
 
 impl SolVast {

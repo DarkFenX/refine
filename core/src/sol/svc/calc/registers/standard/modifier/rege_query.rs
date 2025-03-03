@@ -3,7 +3,7 @@ use std::hash::Hash;
 use crate::{
     defs::{EAttrId, EEffectId, SolItemId},
     sol::{
-        svc::calc::{registers::SolStandardRegister, SolAttrSpec, SolCtxModifier, SolRawModifier},
+        svc::calc::{SolAttrSpec, SolCtxModifier, SolRawModifier, registers::SolStandardRegister},
         uad::{fit::SolFits, item::SolItem},
     },
     util::StMapSetL1,

@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_item, HCmdResp},
+    cmd::{HCmdResp, change_item},
     util::HExecError,
 };
 
@@ -19,7 +19,7 @@ impl HSetShipCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::SetFitShipError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         Ok(core_ship)
@@ -78,7 +78,7 @@ impl HChangeShipViaFitIdCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::GetFitShipError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         self.item_cmd.execute(core_sol, &item_id)

@@ -6,15 +6,15 @@
 use smallvec::SmallVec;
 
 use crate::{
+    SolAffectorInfo,
     defs::{AggrKey, AttrVal, EItemCatId, OF},
     sol::svc::calc::{SolAggrMode, SolModificationInfo, SolOp},
     util::StMap,
-    SolAffectorInfo,
 };
 
 use super::shared::{
-    diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop, normalize_perc,
-    normalize_sub, PENALTY_BASE,
+    PENALTY_BASE, diminish_basic, diminish_mul, diminish_noop, is_penal, normalize_div, normalize_noop, normalize_perc,
+    normalize_sub,
 };
 
 pub(in crate::sol::svc::calc) struct SolAttrValInfo {

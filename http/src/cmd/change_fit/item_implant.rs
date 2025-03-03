@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_item, HCmdResp},
+    cmd::{HCmdResp, change_item},
     util::HExecError,
 };
 
@@ -19,7 +19,7 @@ impl HAddImplantCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddImplantError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         Ok(core_implant)

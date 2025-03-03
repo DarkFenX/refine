@@ -1,6 +1,6 @@
 use crate::{
     defs::AttrVal,
-    sol::{svc::calc::SolAttrVal, SolDmgKinds},
+    sol::{SolDmgKinds, svc::calc::SolAttrVal},
 };
 
 // Initial values of a RAH, non-rounded

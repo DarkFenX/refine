@@ -1,7 +1,7 @@
 use crate::{
     adg::{
-        rels::{KeyPart, Pk},
         GData,
+        rels::{KeyPart, Pk},
     },
     defs::{AttrVal, EAttrId, EItemId},
     ed::EItemAttr,

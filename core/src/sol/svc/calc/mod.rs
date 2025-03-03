@@ -37,8 +37,8 @@ pub use misc::SolAttrVal;
 use misc::{SolAttrSpec, SolItemAttrPostprocs, SolLocationKind, SolModification, SolModificationKey};
 pub use mod_info::{SolAffectorInfo, SolModificationInfo, SolOpInfo};
 use modifier::{
-    debug, extend_with_custom_mods, SolAffecteeFilter, SolAggrMode, SolContext, SolCtxModifier, SolLocation,
-    SolModifierKind, SolOp, SolRawModifier,
+    SolAffecteeFilter, SolAggrMode, SolContext, SolCtxModifier, SolLocation, SolModifierKind, SolOp, SolRawModifier,
+    debug, extend_with_custom_mods,
 };
 
 mod accum;

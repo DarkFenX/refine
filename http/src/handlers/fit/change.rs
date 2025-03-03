@@ -1,14 +1,14 @@
 use axum::{
+    Json,
     extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
 };
 
 use crate::{
     bridge::HBrError,
     cmd::{HChangeFitCommand, HCmdResp},
-    handlers::{fit::HFitInfoParams, get_guarded_sol, HGSolResult, HSingleErr},
+    handlers::{HGSolResult, HSingleErr, fit::HFitInfoParams, get_guarded_sol},
     info::HFitInfo,
     state::HAppState,
     util::HExecError,

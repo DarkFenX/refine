@@ -1,9 +1,9 @@
 use crate::{
-    defs::{AttrVal, SolItemId, OF},
+    defs::{AttrVal, OF, SolItemId},
     ec,
     sol::{
         svc::calc::SolCalc,
-        uad::{item::SolItem, SolUad},
+        uad::{SolUad, item::SolItem},
     },
 };
 

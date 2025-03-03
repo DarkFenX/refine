@@ -4,9 +4,9 @@ use crate::{
     defs::{EItemId, SolFitId},
     err::basic::FitFoundError,
     sol::{
+        SolarSystem,
         info::SolFighterInfo,
         uad::item::{SolFighter, SolItem, SolMinionState},
-        SolarSystem,
     },
 };
 

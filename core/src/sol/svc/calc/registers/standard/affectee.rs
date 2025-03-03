@@ -3,9 +3,9 @@ use crate::{
     sol::{
         svc::calc::{SolAffecteeFilter, SolContext, SolCtxModifier, SolLocation, SolLocationKind, SolModifierKind},
         uad::{
+            SolUad,
             fit::SolFit,
             item::{SolItem, SolShipKind},
-            SolUad,
         },
     },
     util::extend_vec_from_map_set_l1,

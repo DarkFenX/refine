@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, SolItemId, OF},
+    defs::{AttrVal, OF, SolItemId},
     ec,
     sol::{
         svc::vast::{SolValCache, SolVastFitData},

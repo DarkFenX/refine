@@ -2,11 +2,11 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     ad,
-    defs::{SolItemId, OF},
+    defs::{OF, SolItemId},
     ec,
     sol::{
         svc::vast::{SolValCache, SolVast, SolVastFitData, SolVastSkillReq},
-        uad::{item::SolItem, SolUad},
+        uad::{SolUad, item::SolItem},
     },
     util::StMap,
 };

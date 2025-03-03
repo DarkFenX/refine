@@ -2,8 +2,8 @@ use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindRemoveError},
     sol::{
-        uad::item::{SolAutocharge, SolItem},
         SolRmMode, SolarSystem,
+        uad::item::{SolAutocharge, SolItem},
     },
     util::Named,
 };
@@ -16,7 +16,7 @@ impl SolarSystem {
             SolItem::Autocharge(_) => {
                 return Err(RemoveItemError::UnremovableAutocharge(ItemKindRemoveError::new(
                     SolAutocharge::get_name(),
-                )))
+                )));
             }
             // We unwrap when the only reasons of failure are when item is not found and when item
             // kind mismatches, both of which we already checked

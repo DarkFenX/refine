@@ -14,7 +14,7 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
             empty: FxHashSet::default(),
         }
     }
-    pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> {
+    pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> + use<'_, K, V> {
         match self.data.get(key) {
             Some(v) => v.iter(),
             None => self.empty.iter(),
@@ -54,7 +54,7 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
             self.data.remove(key);
         }
     }
-    pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V>> {
+    pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V> + use<K, V>> {
         self.data.remove(key).map(|v| v.into_iter())
     }
     pub(crate) fn drain_entries<'a>(&mut self, key: &K, entries: impl Iterator<Item = &'a V>)

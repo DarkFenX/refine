@@ -1,11 +1,11 @@
 use crate::{
+    EEffectId,
     defs::SolItemId,
     ec,
     sol::svc::calc::{
-        modifier::{affector_val::SolAffectorValue, SolAffecteeFilter, SolLocation, SolModifierKind, SolRawModifier},
         SolAggrMode, SolOp,
+        modifier::{SolAffecteeFilter, SolLocation, SolModifierKind, SolRawModifier, affector_val::SolAffectorValue},
     },
-    EEffectId,
 };
 
 pub(in crate::sol::svc::calc) fn make_mod(affector_item_id: SolItemId, effect_id: EEffectId) -> SolRawModifier {

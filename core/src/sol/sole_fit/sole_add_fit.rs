@@ -1,4 +1,4 @@
-use crate::sol::{info::SolFitInfo, SolarSystem};
+use crate::sol::{SolarSystem, info::SolFitInfo};
 
 impl SolarSystem {
     pub fn add_fit(&mut self) -> SolFitInfo {

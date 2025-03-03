@@ -2,8 +2,8 @@ use itertools::Itertools;
 
 use crate::{
     sol::{
-        uad::item::{SolItem, SolShipKind},
         SolarSystem,
+        uad::item::{SolItem, SolShipKind},
     },
     src::Src,
     util::StMapVecL1,

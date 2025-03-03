@@ -1,7 +1,7 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::{info::SolModuleInfo, SolarSystem},
+    sol::{SolarSystem, info::SolModuleInfo},
 };
 
 impl SolarSystem {

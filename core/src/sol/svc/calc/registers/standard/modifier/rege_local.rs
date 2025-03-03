@@ -1,5 +1,5 @@
 use crate::sol::{
-    svc::calc::{registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolLocation, SolRawModifier},
+    svc::calc::{SolAffecteeFilter, SolCtxModifier, SolLocation, SolRawModifier, registers::SolStandardRegister},
     uad::item::SolItem,
 };
 

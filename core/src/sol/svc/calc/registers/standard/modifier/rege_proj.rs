@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     defs::{EEffectId, SolItemId},
     sol::{
-        svc::calc::{registers::SolStandardRegister, SolCtxModifier, SolModifierKind, SolRawModifier},
+        svc::calc::{SolCtxModifier, SolModifierKind, SolRawModifier, registers::SolStandardRegister},
         uad::item::SolItem,
     },
 };

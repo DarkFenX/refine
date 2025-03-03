@@ -2,8 +2,8 @@ use crate::{
     ad,
     defs::{EItemId, SolItemId},
     sol::{
-        uad::item::{SolAutocharge, SolItem},
         SolarSystem,
+        uad::item::{SolAutocharge, SolItem},
     },
     util::StMap,
 };

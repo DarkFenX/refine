@@ -3,12 +3,12 @@ use crate::{
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, Idx, SkillLevel, SolFitId, SolItemId},
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
+        SolModRack,
         info::SolItemMutationInfo,
         uad::item::{
             SolEffectModes, SolItemAddMutation, SolItemBaseMutable, SolItemChangeAttrMutation, SolItemState,
             SolModuleState, SolProjs,
         },
-        SolModRack,
     },
     src::Src,
     util::{Named, StMap},

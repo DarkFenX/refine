@@ -1,4 +1,4 @@
-use crate::adg::{rels::KeyPart, GSupport};
+use crate::adg::{GSupport, rels::KeyPart};
 
 pub(in crate::adg) trait Pk {
     fn get_pk(&self) -> Vec<KeyPart>;

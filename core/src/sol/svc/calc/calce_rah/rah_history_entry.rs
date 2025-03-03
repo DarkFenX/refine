@@ -1,6 +1,6 @@
 use crate::{
     defs::{AttrVal, SolItemId},
-    sol::{svc::calc::SolAttrVal, SolDmgKinds},
+    sol::{SolDmgKinds, svc::calc::SolAttrVal},
 };
 
 use super::shared::rah_round;

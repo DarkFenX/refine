@@ -1,12 +1,12 @@
 use itertools::Itertools;
 
 use crate::{
+    AttrVal,
     defs::SolItemId,
     sol::{
-        uad::item::{SolItem, SolItemState},
         SolarSystem,
+        uad::item::{SolItem, SolItemState},
     },
-    AttrVal,
 };
 
 impl SolarSystem {

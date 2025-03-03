@@ -1,6 +1,6 @@
 use crate::sol::{
     debug::{SolDebugError, SolDebugResult},
-    uad::{fleet::SolFleet, SolUad},
+    uad::{SolUad, fleet::SolFleet},
 };
 
 impl SolFleet {

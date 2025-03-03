@@ -6,7 +6,7 @@ use crate::{
     ec,
     sol::{
         svc::calc::{SolAffecteeFilter, SolAffectorInfo, SolAggrMode, SolCalc, SolLocation, SolModifierKind, SolOp},
-        uad::{item::SolItem, SolUad},
+        uad::{SolUad, item::SolItem},
     },
 };
 

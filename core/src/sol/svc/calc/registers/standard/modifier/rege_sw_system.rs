@@ -1,9 +1,9 @@
 use crate::{
+    SolFitId,
     sol::{
-        svc::calc::{registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolRawModifier},
+        svc::calc::{SolAffecteeFilter, SolCtxModifier, SolRawModifier, registers::SolStandardRegister},
         uad::SolUad,
     },
-    SolFitId,
 };
 
 use super::{add_ctx_modifier, remove_ctx_modifier};

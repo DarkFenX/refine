@@ -1,4 +1,4 @@
-use crate::sol::{uad::item::SolItem, SolarSystem};
+use crate::sol::{SolarSystem, uad::item::SolItem};
 
 use super::{
     SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo, SolFwEffectInfo,

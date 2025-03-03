@@ -2,7 +2,7 @@
 name = "reefast-http"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 rc = { package = "reefast-core", path = "../core" }

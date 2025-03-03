@@ -1,8 +1,8 @@
 use std::fmt;
 
 use crate::{
-    util::{move_vec_to_map, Error},
     VERSION,
+    util::{Error, move_vec_to_map},
 };
 
 /// Adapted data handler implementation without persistence.

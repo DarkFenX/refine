@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, EAttrId, EItemCatId, EItemId, SkillLevel, OF},
+    defs::{AttrVal, EAttrId, EItemCatId, EItemId, OF, SkillLevel},
     ec,
     util::StMap,
 };

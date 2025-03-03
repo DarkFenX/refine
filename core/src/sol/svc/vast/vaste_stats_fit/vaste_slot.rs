@@ -3,7 +3,7 @@ use crate::{
     ec,
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
-        uad::{fit::SolFit, SolUad},
+        uad::{SolUad, fit::SolFit},
     },
 };
 

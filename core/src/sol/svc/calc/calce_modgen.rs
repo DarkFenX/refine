@@ -3,8 +3,8 @@ use crate::{
     defs::{AttrVal, EAttrId, EBuffId, EEffectId},
     ec,
     sol::{
-        svc::calc::{extend_with_custom_mods, SolCalc, SolRawModifier},
-        uad::{item::SolItem, SolUad},
+        svc::calc::{SolCalc, SolRawModifier, extend_with_custom_mods},
+        uad::{SolUad, item::SolItem},
     },
 };
 

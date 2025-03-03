@@ -1,6 +1,6 @@
 use crate::{
     ad,
-    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, MutaRoll, SkillLevel, SolItemId, OF},
+    defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, MutaRoll, OF, SkillLevel, SolItemId},
     err::basic::{ItemMutatedError, ItemNotMutatedError},
     sol::{
         info::{SolAttrMutationInfo, SolItemMutationInfo},
@@ -42,7 +42,7 @@ impl SolItemBaseMutable {
                 return Self {
                     base: SolItemBase::new(src, id, type_id, state),
                     mutation: None,
-                }
+                };
             }
         };
         let a_mutator = match src.get_a_muta(&mutation_request.mutator_id) {
@@ -52,7 +52,7 @@ impl SolItemBaseMutable {
                 return Self {
                     base: SolItemBase::new(src, id, type_id, state),
                     mutation: Some(convert_item_mutation_basic(mutation_request)),
-                }
+                };
             }
         };
         // No mutated item ID in mapping or no mutated item itself
@@ -69,7 +69,7 @@ impl SolItemBaseMutable {
                             &base_a_item.attrs,
                             a_mutator,
                         )),
-                    }
+                    };
                 }
                 // No base item - no base attribute values - can't resolve absolute values, accept
                 // just roll values.
@@ -77,7 +77,7 @@ impl SolItemBaseMutable {
                     return Self {
                         base: SolItemBase::new_with_id_not_loaded(id, type_id, state),
                         mutation: Some(convert_item_mutation_basic(mutation_request)),
-                    }
+                    };
                 }
             },
         };

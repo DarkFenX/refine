@@ -2,10 +2,10 @@ use crate::{
     defs::SolFitId,
     sol::{
         svc::calc::{
-            registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolLocation, SolLocationKind,
-            SolRawModifier,
+            SolAffecteeFilter, SolCtxModifier, SolLocation, SolLocationKind, SolRawModifier,
+            registers::SolStandardRegister,
         },
-        uad::{fleet::SolFleet, item::SolItem, SolUad},
+        uad::{SolUad, fleet::SolFleet, item::SolItem},
     },
 };
 

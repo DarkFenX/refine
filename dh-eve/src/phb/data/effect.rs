@@ -67,7 +67,7 @@ impl From<PEffectMod> for rc::ed::EEffectMod {
 mod dgmmod {
     use std::collections::HashMap;
 
-    use serde::{de::Error, Deserialize};
+    use serde::{Deserialize, de::Error};
     use serde_json::{Map, Value};
 
     use super::PEffectMod;

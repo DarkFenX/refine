@@ -91,7 +91,7 @@ fn calculate_item_result(
                 charge_item_id,
                 None,
                 allowed_size,
-            ))
+            ));
         }
     };
     let charge_size = match charge_attrs.get(&ec::attrs::CHARGE_SIZE) {
@@ -102,7 +102,7 @@ fn calculate_item_result(
                 charge_item_id,
                 None,
                 allowed_size,
-            ))
+            ));
         }
     };
     match charge_size == allowed_size {

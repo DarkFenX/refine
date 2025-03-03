@@ -2,7 +2,7 @@ use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     ec,
-    sol::uad::item::{bool_to_state_offline, state_to_bool, SolEffectModes, SolItemBase, SolItemState, SolShipKind},
+    sol::uad::item::{SolEffectModes, SolItemBase, SolItemState, SolShipKind, bool_to_state_offline, state_to_bool},
     src::Src,
     util::{Named, StMap},
 };

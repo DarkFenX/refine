@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_item, shared::HMutationOnAdd, HCmdResp},
+    cmd::{HCmdResp, change_item, shared::HMutationOnAdd},
     shared::HMinionState,
     util::HExecError,
 };
@@ -26,7 +26,7 @@ impl HAddDroneCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddDroneError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         Ok(core_drone)

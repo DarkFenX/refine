@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_item, HCmdResp},
+    cmd::{HCmdResp, change_item},
     util::HExecError,
 };
 
@@ -19,7 +19,7 @@ impl HSetCharacterCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::SetFitCharacterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         Ok(core_character)
@@ -78,7 +78,7 @@ impl HChangeCharacterViaFitIdCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::GetFitCharacterError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         self.item_cmd.execute(core_sol, &item_id)

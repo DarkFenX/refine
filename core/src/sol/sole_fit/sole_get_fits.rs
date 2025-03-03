@@ -1,4 +1,4 @@
-use crate::sol::{info::SolFitInfo, SolarSystem};
+use crate::sol::{SolarSystem, info::SolFitInfo};
 
 impl SolarSystem {
     pub fn get_fits(&self) -> Vec<SolFitInfo> {

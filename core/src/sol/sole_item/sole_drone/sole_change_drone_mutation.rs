@@ -1,7 +1,7 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError, ItemMutatedError},
-    sol::{uad::item::SolItemChangeAttrMutation, SolarSystem},
+    sol::{SolarSystem, uad::item::SolItemChangeAttrMutation},
 };
 
 impl SolarSystem {

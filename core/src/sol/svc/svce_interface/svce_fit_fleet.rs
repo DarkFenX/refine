@@ -2,7 +2,7 @@ use crate::{
     defs::SolFitId,
     sol::{
         svc::SolSvc,
-        uad::{fleet::SolFleet, SolUad},
+        uad::{SolUad, fleet::SolFleet},
     },
 };
 

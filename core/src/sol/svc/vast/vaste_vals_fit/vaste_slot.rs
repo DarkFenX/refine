@@ -2,7 +2,7 @@ use crate::{
     defs::{Count, Idx, SolItemId},
     sol::{
         svc::{calc::SolCalc, vast::SolVastFitData},
-        uad::{fit::SolFit, SolUad},
+        uad::{SolUad, fit::SolFit},
     },
 };
 

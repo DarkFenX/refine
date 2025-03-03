@@ -1,4 +1,4 @@
-use crate::{defs::AttrVal, ec, util::sig_round, EEffectId};
+use crate::{EEffectId, defs::AttrVal, ec, util::sig_round};
 
 pub(super) const TICK_LIMIT: usize = 500;
 

@@ -1,5 +1,5 @@
 use crate::sol::{
-    debug::{check_attr, check_item, SolDebugResult},
+    debug::{SolDebugResult, check_attr, check_item},
     uad::SolUad,
 };
 

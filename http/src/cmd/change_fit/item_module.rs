@@ -1,8 +1,7 @@
 use crate::{
     cmd::{
-        change_item,
+        HCmdResp, change_item,
         shared::{HAddMode, HMutationOnAdd},
-        HCmdResp,
     },
     shared::{HModRack, HModuleState},
     util::HExecError,
@@ -36,7 +35,7 @@ impl HAddModuleCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::AddModuleError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         Ok(core_module)

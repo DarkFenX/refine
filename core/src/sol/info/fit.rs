@@ -1,6 +1,6 @@
 use crate::{
     defs::{SolFitId, SolFleetId, SolItemId},
-    sol::{uad::fit::SolFit, SolDmgProfile},
+    sol::{SolDmgProfile, uad::fit::SolFit},
 };
 
 pub struct SolFitInfo {

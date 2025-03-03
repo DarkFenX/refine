@@ -4,12 +4,12 @@ use crate::{
     defs::{EItemId, SkillLevel, SolFitId},
     err::basic::{FitFoundError, SkillEveTypeError, SkillLevelError},
     sol::{
+        SolarSystem,
         info::SolSkillInfo,
         uad::{
             fit::SolFitSkill,
             item::{SolItem, SolSkill},
         },
-        SolarSystem,
     },
 };
 

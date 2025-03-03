@@ -2,7 +2,7 @@ use crate::{
     defs::SolItemId,
     sol::{
         debug::{SolDebugError, SolDebugResult},
-        uad::{item::SolItem, SolUad},
+        uad::{SolUad, item::SolItem},
     },
     util::StSet,
 };

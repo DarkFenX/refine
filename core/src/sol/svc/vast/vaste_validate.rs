@@ -3,7 +3,7 @@ use crate::sol::{
         calc::SolCalc,
         vast::{SolValOptions, SolValResult, SolVast},
     },
-    uad::{fit::SolFit, SolUad},
+    uad::{SolUad, fit::SolFit},
 };
 
 impl SolVast {

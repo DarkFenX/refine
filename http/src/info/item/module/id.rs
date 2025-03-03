@@ -1,4 +1,4 @@
-use crate::info::{item::charge::HChargeInfo, HItemInfoMode};
+use crate::info::{HItemInfoMode, item::charge::HChargeInfo};
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]

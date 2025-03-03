@@ -1,7 +1,7 @@
 //! Contains facilities which clean up data to ensure no duplicate primary keys exist.
 
 use crate::{
-    adg::{rels::Pk, GData},
+    adg::{GData, rels::Pk},
     util::{Named, StSet},
 };
 

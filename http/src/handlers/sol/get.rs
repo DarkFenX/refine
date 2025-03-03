@@ -1,12 +1,12 @@
 use axum::{
+    Json,
     extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
-    Json,
 };
 
 use crate::{
-    handlers::{get_guarded_sol, sol::HSolInfoParams, HGSolResult, HSingleErr},
+    handlers::{HGSolResult, HSingleErr, get_guarded_sol, sol::HSolInfoParams},
     state::HAppState,
 };
 

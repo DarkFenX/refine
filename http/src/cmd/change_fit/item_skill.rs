@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_item, HCmdResp},
+    cmd::{HCmdResp, change_item},
     util::HExecError,
 };
 
@@ -22,7 +22,7 @@ impl HAddSkillCmd {
                     rc::err::AddSkillError::InvalidSkillLevel(e) => HExecError::InvalidSkillLevel(e),
                     rc::err::AddSkillError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
                     rc::err::AddSkillError::SkillIdCollision(e) => HExecError::SkillIdCollision(e),
-                })
+                });
             }
         };
         Ok(core_skill)

@@ -2,13 +2,13 @@ use crate::{
     defs::SolItemId,
     err::basic::ItemLoadedError,
     sol::{
-        svc::calc::{misc::SolItemAttrValData, SolItemAttrPostprocs},
+        svc::calc::{SolItemAttrPostprocs, misc::SolItemAttrValData},
         uad::item::SolItem,
     },
     util::StMap,
 };
 
-use super::skill::{skill_level_postproc_fast, skill_level_postproc_info, SKILL_LVL_ATTR};
+use super::skill::{SKILL_LVL_ATTR, skill_level_postproc_fast, skill_level_postproc_info};
 
 #[derive(Clone)]
 pub(in crate::sol::svc::calc) struct SolAttrValData {

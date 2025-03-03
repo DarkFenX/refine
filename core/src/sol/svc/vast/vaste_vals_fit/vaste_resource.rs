@@ -1,12 +1,12 @@
 use crate::{
-    defs::{AttrVal, EAttrId, SolItemId, OF},
+    defs::{AttrVal, EAttrId, OF, SolItemId},
     ec,
     sol::{
         svc::{
             calc::SolCalc,
             vast::{SolStatRes, SolVastFitData},
         },
-        uad::{fit::SolFit, SolUad},
+        uad::{SolUad, fit::SolFit},
     },
 };
 

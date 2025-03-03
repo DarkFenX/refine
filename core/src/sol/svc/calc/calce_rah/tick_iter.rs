@@ -1,11 +1,11 @@
 use crate::{
-    defs::{AttrVal, SolItemId, OF},
+    defs::{AttrVal, OF, SolItemId},
     util::StMap,
 };
 
 use super::{
     rah_data_sim::SolRahDataSim,
-    shared::{rah_round, TICK_LIMIT},
+    shared::{TICK_LIMIT, rah_round},
 };
 
 struct SolRahDataIter {

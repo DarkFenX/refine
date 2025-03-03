@@ -28,7 +28,7 @@ impl HSetRahIncomingDmgCmd {
                 if let Err(error) = core_sol.remove_fit_rah_incoming_dmg(fit_id) {
                     match error {
                         rc::err::RemoveFitRahIncomingDmgError::FitNotFound(e) => {
-                            return Err(HExecError::FitNotFoundPrimary(e))
+                            return Err(HExecError::FitNotFoundPrimary(e));
                         }
                         // Do nothing if profile was not set
                         rc::err::RemoveFitRahIncomingDmgError::DmgProfileNotSet(_) => (),

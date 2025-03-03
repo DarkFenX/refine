@@ -1,8 +1,8 @@
 use crate::{
     defs::{EEffectId, SolItemId},
     sol::svc::calc::{
-        modifier::{affector_val::SolAffectorValue, SolAffecteeFilter, SolLocation, SolModifierKind, SolRawModifier},
         SolAggrMode, SolOp,
+        modifier::{SolAffecteeFilter, SolLocation, SolModifierKind, SolRawModifier, affector_val::SolAffectorValue},
     },
 };
 

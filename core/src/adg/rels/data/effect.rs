@@ -1,8 +1,8 @@
 use crate::{
     ad,
     adg::{
-        rels::{Fk, KeyPart, Pk},
         GSupport,
+        rels::{Fk, KeyPart, Pk},
     },
     ed,
     util::vec_push_opt,

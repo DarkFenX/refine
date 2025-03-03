@@ -1,5 +1,5 @@
 use crate::{
-    defs::{EAttrId, SolItemId, OF},
+    defs::{EAttrId, OF, SolItemId},
     ec,
     sol::{
         svc::calc::{SolAttrVal, SolAttrValInfo, SolCalc},

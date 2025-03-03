@@ -1,16 +1,15 @@
 use crate::{
-    ad,
+    EAttrId, ad,
     defs::{AttrVal, SolFitId, SolItemId},
     sol::{
         svc::SolSvc,
         uad::{
+            SolUad,
             fleet::SolFleet,
             item::{SolItem, SolItemState, SolSkill},
-            SolUad,
         },
     },
     src::Src,
-    EAttrId,
 };
 
 impl SolSvc {

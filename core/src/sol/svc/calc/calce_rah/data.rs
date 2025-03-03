@@ -1,6 +1,6 @@
 use crate::{
     defs::{EAttrId, SolFitId, SolItemId},
-    sol::{svc::calc::SolAttrVal, SolDmgKinds},
+    sol::{SolDmgKinds, svc::calc::SolAttrVal},
     src::Src,
     util::{StMap, StMapSetL1},
 };

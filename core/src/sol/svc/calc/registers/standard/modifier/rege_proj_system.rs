@@ -1,6 +1,6 @@
 use crate::sol::{
     svc::calc::{
-        registers::SolStandardRegister, SolAffecteeFilter, SolCtxModifier, SolLocation, SolLocationKind, SolRawModifier,
+        SolAffecteeFilter, SolCtxModifier, SolLocation, SolLocationKind, SolRawModifier, registers::SolStandardRegister,
     },
     uad::item::{SolItem, SolShipKind},
 };

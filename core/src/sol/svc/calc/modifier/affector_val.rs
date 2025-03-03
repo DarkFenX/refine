@@ -1,10 +1,10 @@
-use smallvec::{smallvec, SmallVec};
+use smallvec::{SmallVec, smallvec};
 
 use crate::{
     defs::{AttrVal, EAttrId, EEffectId, SolItemId},
     sol::{
         svc::calc::{SolAffectorInfo, SolCalc},
-        uad::{item::SolItem, SolUad},
+        uad::{SolUad, item::SolItem},
     },
 };
 

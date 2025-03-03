@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{change_item, HCmdResp},
+    cmd::{HCmdResp, change_item},
     util::HExecError,
 };
 
@@ -19,7 +19,7 @@ impl HSetStanceCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::SetFitStanceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         Ok(core_stance)
@@ -78,7 +78,7 @@ impl HChangeStanceViaFitIdCmd {
             Err(error) => {
                 return Err(match error {
                     rc::err::GetFitStanceError::FitNotFound(e) => HExecError::FitNotFoundPrimary(e),
-                })
+                });
             }
         };
         self.item_cmd.execute(core_sol, &item_id)

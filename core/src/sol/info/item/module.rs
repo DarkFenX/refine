@@ -1,9 +1,9 @@
 use crate::{
     defs::{EItemId, Idx, SolFitId, SolItemId},
     sol::{
+        SolModRack,
         info::{SolChargeInfo, SolItemMutationInfo, SolProjInfo},
         uad::item::{SolModule, SolModuleState},
-        SolModRack,
     },
     src::Src,
 };

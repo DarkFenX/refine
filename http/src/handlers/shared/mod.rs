@@ -1,5 +1,5 @@
 pub(in crate::handlers) use error::HSingleErr;
-pub(in crate::handlers) use func::{get_guarded_sol, HGSolResult};
+pub(in crate::handlers) use func::{HGSolResult, get_guarded_sol};
 
 mod error;
 mod func;

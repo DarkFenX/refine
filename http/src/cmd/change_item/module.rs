@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
-        shared::{apply_effect_modes, HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull},
         HCmdResp,
+        shared::{HEffectModeMap, HMutationOnChange, HProjDef, HProjDefFull, apply_effect_modes},
     },
     shared::HModuleState,
     util::HExecError,
@@ -51,10 +51,10 @@ impl HChangeModuleCmd {
                         if let Err(error) = core_sol.add_module_mutation(item_id, mutation) {
                             match error {
                                 rc::err::AddModuleMutationError::ItemNotFound(e) => {
-                                    return Err(HExecError::ItemNotFoundPrimary(e))
+                                    return Err(HExecError::ItemNotFoundPrimary(e));
                                 }
                                 rc::err::AddModuleMutationError::ItemIsNotModule(e) => {
-                                    return Err(HExecError::ItemKindMismatch(e))
+                                    return Err(HExecError::ItemKindMismatch(e));
                                 }
                                 rc::err::AddModuleMutationError::MutationAlreadySet(_) => {
                                     panic!("no mutation should be set")
@@ -68,10 +68,10 @@ impl HChangeModuleCmd {
                         if let Err(error) = core_sol.add_module_mutation(item_id, mutation.into()) {
                             match error {
                                 rc::err::AddModuleMutationError::ItemNotFound(e) => {
-                                    return Err(HExecError::ItemNotFoundPrimary(e))
+                                    return Err(HExecError::ItemNotFoundPrimary(e));
                                 }
                                 rc::err::AddModuleMutationError::ItemIsNotModule(e) => {
-                                    return Err(HExecError::ItemKindMismatch(e))
+                                    return Err(HExecError::ItemKindMismatch(e));
                                 }
                                 rc::err::AddModuleMutationError::MutationAlreadySet(_) => {
                                     panic!("no mutation should be set")
@@ -102,10 +102,10 @@ impl HChangeModuleCmd {
                     if let Err(error) = core_sol.remove_module_mutation(item_id) {
                         match error {
                             rc::err::RemoveModuleMutationError::ItemNotFound(e) => {
-                                return Err(HExecError::ItemNotFoundPrimary(e))
+                                return Err(HExecError::ItemNotFoundPrimary(e));
                             }
                             rc::err::RemoveModuleMutationError::ItemIsNotModule(e) => {
-                                return Err(HExecError::ItemKindMismatch(e))
+                                return Err(HExecError::ItemKindMismatch(e));
                             }
                             // Do nothing if mutation was not there
                             rc::err::RemoveModuleMutationError::MutationNotSet(_) => (),

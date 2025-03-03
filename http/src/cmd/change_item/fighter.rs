@@ -1,7 +1,7 @@
 use crate::{
     cmd::{
-        shared::{apply_effect_modes, HEffectModeMap, HProjDef, HProjDefFull},
         HCmdResp,
+        shared::{HEffectModeMap, HProjDef, HProjDefFull, apply_effect_modes},
     },
     shared::HMinionState,
     util::HExecError,

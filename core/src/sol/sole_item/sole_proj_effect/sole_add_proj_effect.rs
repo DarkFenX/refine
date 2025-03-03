@@ -1,9 +1,9 @@
 use crate::{
     defs::EItemId,
     sol::{
+        SolarSystem,
         info::SolProjEffectInfo,
         uad::item::{SolItem, SolProjEffect},
-        SolarSystem,
     },
 };
 

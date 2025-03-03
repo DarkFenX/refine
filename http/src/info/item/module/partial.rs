@@ -1,7 +1,7 @@
 use crate::{
     info::{
-        item::{charge::HChargeInfo, mutation::HItemMutationInfo},
         HItemInfoMode,
+        item::{charge::HChargeInfo, mutation::HItemMutationInfo},
     },
     shared::{HModRack, HModuleState},
 };
