@@ -13,10 +13,10 @@ ram = []
 
 [dependencies]
 rc = { package = "reefast-core", path = "../core" }
-ordered-float = { version = ">=4.6.0", features = ["serde"], optional = true }
-serde = { version = ">=1.0.217", features = ["derive"], optional = true }
+ordered-float = { version = ">=5.0.0", features = ["serde"], optional = true }
+serde = { version = ">=1.0.218", features = ["derive"], optional = true }
 serde_repr = { version = ">=0.1.19", optional = true }
 serde_tuple = { version = ">=1.1.0", optional = true }
-serde_json = { version = ">=1.0.137", optional = true }
+serde_json = { version = ">=1.0.140", optional = true }
 tracing = { version = ">=0.1.41", optional = true }
-zstd = { version = ">=0.13.2", optional = true }
+zstd = { version = ">=0.13.3", optional = true }
