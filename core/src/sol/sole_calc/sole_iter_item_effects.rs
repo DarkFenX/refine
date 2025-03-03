@@ -5,10 +5,10 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn iter_item_effects<'a>(
-        &'a self,
-        item_id: &'a SolItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (EEffectId, SolEffectInfo)> + 'a, IterItemEffectsError> {
+    pub fn iter_item_effects(
+        &self,
+        item_id: &SolItemId,
+    ) -> Result<impl ExactSizeIterator<Item = (EEffectId, SolEffectInfo)>, IterItemEffectsError> {
         let item = self.uad.items.get_item(item_id)?;
         let a_effect_ids = item.get_effect_datas_err()?.keys();
         let effect_infos = a_effect_ids.map(move |v| {
