@@ -3,8 +3,8 @@ use crate::{
     defs::{AttrVal, EItemGrpId, EItemId, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
     sol::svc::vast::{
-        SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolModuleStateValFail, SolValCache,
-        SolVastSkillReq,
+        SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolItemKindValFail, SolModuleStateValFail,
+        SolValCache, SolVastSkillReq,
     },
     util::{StMap, StMapSetL1, StSet},
 };
@@ -73,6 +73,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) mods_capital: StSet<SolItemId>,
     pub(in crate::sol::svc::vast) not_loaded: StSet<SolItemId>,
     pub(in crate::sol::svc::vast) mods_state: StMap<SolItemId, SolModuleStateValFail>,
+    pub(in crate::sol::svc::vast) item_kind: StMap<SolItemId, SolItemKindValFail>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -109,6 +110,7 @@ impl SolVastFitData {
             mods_capital: StSet::new(),
             not_loaded: StSet::new(),
             mods_state: StMap::new(),
+            item_kind: StMap::new(),
         }
     }
 }

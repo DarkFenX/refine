@@ -1,7 +1,7 @@
 use crate::sol::svc::vast::{
-    SolCapitalModValFail, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolMaxGroupValFail,
-    SolModuleStateValFail, SolNotLoadedItemValFail, SolResValFail, SolRigSizeValFail, SolShipLimitValFail,
-    SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
+    SolCapitalModValFail, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolItemKindValFail,
+    SolMaxGroupValFail, SolModuleStateValFail, SolNotLoadedItemValFail, SolResValFail, SolRigSizeValFail,
+    SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
 };
 
 #[derive(Copy, Clone)]
@@ -41,6 +41,7 @@ pub struct SolValOptions {
     pub capital_module: bool,
     pub not_loaded_item: bool,
     pub module_state: bool,
+    pub item_kind: bool,
 }
 impl SolValOptions {
     pub fn new_all_enabled() -> Self {
@@ -80,6 +81,7 @@ impl SolValOptions {
             capital_module: true,
             not_loaded_item: true,
             module_state: true,
+            item_kind: true,
         }
     }
     pub fn new_all_disabled() -> Self {
@@ -119,6 +121,7 @@ impl SolValOptions {
             capital_module: false,
             not_loaded_item: false,
             module_state: false,
+            item_kind: false,
         }
     }
 }
@@ -159,6 +162,7 @@ pub struct SolValResult {
     pub capital_module: Vec<SolCapitalModValFail>,
     pub not_loaded_item: Vec<SolNotLoadedItemValFail>,
     pub module_state: Vec<SolModuleStateValFail>,
+    pub item_kind: Vec<SolItemKindValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -198,6 +202,7 @@ impl SolValResult {
             capital_module: Vec::new(),
             not_loaded_item: Vec::new(),
             module_state: Vec::new(),
+            item_kind: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -236,5 +241,6 @@ impl SolValResult {
             && self.capital_module.is_empty()
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()
+            && self.item_kind.is_empty()
     }
 }
