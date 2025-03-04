@@ -65,11 +65,7 @@ pub(super) fn get_item_kind(
         ec::itemcats::DRONE => kinds.push(AItemKind::Drone),
         ec::itemcats::FIGHTER => kinds.push(AItemKind::Fighter),
         ec::itemcats::SKILL => kinds.push(AItemKind::Skill),
-        ec::itemcats::SUBSYSTEM => {
-            if item_attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT) {
-                kinds.push(AItemKind::Subsystem);
-            }
-        }
+        ec::itemcats::SUBSYSTEM => kinds.push(AItemKind::Subsystem),
         _ => (),
     }
     match item_grp_id {

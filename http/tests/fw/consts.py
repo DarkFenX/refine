@@ -17,6 +17,7 @@ class EveItemGrp(IntEnum):
     character = 1
     effect_beacon = 920
     strategic_cruiser = 963
+    ship_mod = 1306
     mutaplasmids = 1964
 
 
