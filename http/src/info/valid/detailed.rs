@@ -1,6 +1,6 @@
 use crate::info::valid::details::{
-    HChargeGroupValFail, HChargeSizeValFail, HChargeVolumeValFail, HMaxGroupValFail, HModuleStateValFail, HResValFail,
-    HRigSizeValFail, HShipLimitValFail, HSlotIndexValFail, HSlotValFail, HSrqValFail,
+    HChargeGroupValFail, HChargeSizeValFail, HChargeVolumeValFail, HItemKindValFail, HMaxGroupValFail,
+    HModuleStateValFail, HResValFail, HRigSizeValFail, HShipLimitValFail, HSlotIndexValFail, HSlotValFail, HSrqValFail,
 };
 
 #[derive(serde::Serialize)]
@@ -93,6 +93,8 @@ struct HValidInfoDetails {
     not_loaded_item: Vec<rc::SolItemId>,
     #[serde(skip_serializing_if = "HModuleStateValFail::is_empty")]
     module_state: HModuleStateValFail,
+    #[serde(rename = "item_type", skip_serializing_if = "HItemKindValFail::is_empty")]
+    item_kind: HItemKindValFail,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -131,6 +133,7 @@ impl HValidInfoDetails {
             && self.capital_module.is_empty()
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()
+            && self.item_kind.is_empty()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -180,6 +183,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             capital_module: core_val_result.capital_module.iter().map(|v| v.item_id).collect(),
             not_loaded_item: core_val_result.not_loaded_item.iter().map(|v| v.item_id).collect(),
             module_state: (&core_val_result.module_state).into(),
+            item_kind: (&core_val_result.item_kind).into(),
         }
     }
 }

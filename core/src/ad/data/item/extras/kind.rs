@@ -14,13 +14,11 @@ pub enum AItemKind {
     Character,
     Charge,
     Drone,
-    EffectBeacon,
-    FighterSquad,
+    Fighter,
     Implant,
-    ModHigh,
-    ModMid,
-    ModLow,
-    Mutator,
+    ModuleHigh,
+    ModuleMid,
+    ModuleLow,
     Rig,
     Ship,
     Skill,
@@ -39,13 +37,13 @@ pub(super) fn get_item_kind(
         // Ship & structure modules
         ec::itemcats::MODULE | ec::itemcats::STRUCTURE_MODULE => {
             if item_effects.contains_key(&ec::effects::HI_POWER) {
-                kinds.push(AItemKind::ModHigh);
+                kinds.push(AItemKind::ModuleHigh);
             }
             if item_effects.contains_key(&ec::effects::MED_POWER) {
-                kinds.push(AItemKind::ModMid);
+                kinds.push(AItemKind::ModuleMid);
             }
             if item_effects.contains_key(&ec::effects::LO_POWER) {
-                kinds.push(AItemKind::ModLow);
+                kinds.push(AItemKind::ModuleLow);
             }
             if item_effects.contains_key(&ec::effects::RIG_SLOT) {
                 kinds.push(AItemKind::Rig);
@@ -65,7 +63,7 @@ pub(super) fn get_item_kind(
         // Other items
         ec::itemcats::CHARGE => kinds.push(AItemKind::Charge),
         ec::itemcats::DRONE => kinds.push(AItemKind::Drone),
-        ec::itemcats::FIGHTER => kinds.push(AItemKind::FighterSquad),
+        ec::itemcats::FIGHTER => kinds.push(AItemKind::Fighter),
         ec::itemcats::SKILL => kinds.push(AItemKind::Skill),
         ec::itemcats::SUBSYSTEM => {
             if item_attrs.contains_key(&ec::attrs::SUBSYSTEM_SLOT) {
@@ -76,8 +74,6 @@ pub(super) fn get_item_kind(
     }
     match item_grp_id {
         ec::itemgrps::CHARACTER => kinds.push(AItemKind::Character),
-        ec::itemgrps::EFFECT_BEACON => kinds.push(AItemKind::EffectBeacon),
-        ec::itemgrps::MUTAPLASMID => kinds.push(AItemKind::Mutator),
         ec::itemgrps::SHIP_MOD => kinds.push(AItemKind::Stance),
         _ => (),
     }

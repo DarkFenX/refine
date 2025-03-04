@@ -58,6 +58,7 @@ impl HValidFitCmd {
                 "capital_module" => core_options.capital_module = alt_value,
                 "not_loaded_item" => core_options.not_loaded_item = alt_value,
                 "module_state" => core_options.module_state = alt_value,
+                "item_type" => core_options.item_kind = alt_value,
                 _ => (),
             }
         }

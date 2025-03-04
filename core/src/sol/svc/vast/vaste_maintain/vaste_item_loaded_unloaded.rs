@@ -87,7 +87,7 @@ impl SolVast {
             }
             SolItem::Fighter(fighter) => {
                 let extras = fighter.get_a_extras().unwrap();
-                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::FighterSquad);
+                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Fighter);
             }
             SolItem::Implant(implant) => {
                 let extras = implant.get_a_extras().unwrap();
@@ -227,7 +227,7 @@ impl SolVast {
             }
             SolItem::Fighter(fighter) => {
                 let extras = fighter.get_a_extras().unwrap();
-                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::FighterSquad);
+                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Fighter);
             }
             SolItem::Implant(implant) => {
                 let extras = implant.get_a_extras().unwrap();
@@ -311,9 +311,9 @@ fn handle_charge_volume_for_module(fit_data: &mut SolVastFitData, module_item_id
 
 fn get_module_expected_kind(module: &SolModule) -> ad::AItemKind {
     match module.get_rack() {
-        SolModRack::High => ad::AItemKind::ModHigh,
-        SolModRack::Mid => ad::AItemKind::ModMid,
-        SolModRack::Low => ad::AItemKind::ModLow,
+        SolModRack::High => ad::AItemKind::ModuleHigh,
+        SolModRack::Mid => ad::AItemKind::ModuleMid,
+        SolModRack::Low => ad::AItemKind::ModuleLow,
     }
 }
 fn item_kind_add(
