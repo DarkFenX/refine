@@ -420,7 +420,7 @@ class ApiValType(StrEnum):
     capital_module = 'capital_module'
     not_loaded_item = 'not_loaded_item'
     module_state = 'module_state'
-    item_type = 'item_type'
+    item_kind = 'item_kind'
 
 
 @unique

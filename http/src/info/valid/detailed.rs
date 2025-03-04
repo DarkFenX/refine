@@ -93,7 +93,7 @@ struct HValidInfoDetails {
     not_loaded_item: Vec<rc::SolItemId>,
     #[serde(skip_serializing_if = "HModuleStateValFail::is_empty")]
     module_state: HModuleStateValFail,
-    #[serde(rename = "item_type", skip_serializing_if = "HItemKindValFail::is_empty")]
+    #[serde(skip_serializing_if = "HItemKindValFail::is_empty")]
     item_kind: HItemKindValFail,
 }
 impl HValidInfoDetails {

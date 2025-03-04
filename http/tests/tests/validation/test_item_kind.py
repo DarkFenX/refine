@@ -10,7 +10,7 @@ def test_booster(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_type])
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -18,8 +18,8 @@ def test_booster(client, consts):
     api_other1 = api_fit.add_booster(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_booster_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_type])
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
     assert api_val.passed is False
-    assert api_val.details.item_type == {
+    assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.booster),
         api_other2.id: (consts.ApiValItemType.booster, consts.ApiValItemType.implant)}
