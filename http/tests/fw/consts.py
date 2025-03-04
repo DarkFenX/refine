@@ -420,6 +420,25 @@ class ApiValType(StrEnum):
     capital_module = 'capital_module'
     not_loaded_item = 'not_loaded_item'
     module_state = 'module_state'
+    item_type = 'item_type'
+
+
+@unique
+class ApiValItemType(StrEnum):
+    booster = 'booster'
+    character = 'character'
+    charge = 'charge'
+    drone = 'drone'
+    fighter = 'fighter'
+    implant = 'implant'
+    module_high = 'module_high'
+    module_mid = 'module_mid'
+    module_low = 'module_low'
+    rig = 'rig'
+    ship = 'ship'
+    skill = 'skill'
+    stance = 'stance'
+    subsystem = 'subsystem'
 
 
 @unique
