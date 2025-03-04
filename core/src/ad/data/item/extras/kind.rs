@@ -70,7 +70,7 @@ pub(super) fn get_item_kind(
     }
     match item_grp_id {
         ec::itemgrps::CHARACTER => kinds.push(AItemKind::Character),
-        ec::itemgrps::SHIP_MOD => kinds.push(AItemKind::Stance),
+        ec::itemgrps::SHIP_MODIFIER => kinds.push(AItemKind::Stance),
         _ => (),
     }
     match kinds.len() {
