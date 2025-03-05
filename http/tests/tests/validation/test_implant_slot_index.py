@@ -1,4 +1,4 @@
-from tests import check_no_field
+from tests import approx, check_no_field
 
 
 def test_multiple(client, consts):
@@ -65,6 +65,41 @@ def test_rounding(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.implant_slot_index])
     assert api_val.passed is False
     assert api_val.details.implant_slot_index == {1: sorted([api_implant1.id, api_implant2.id])}
+
+
+def test_modified_index(client, consts):
+    eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.implantness)
+    eve_implant_id = client.mk_eve_item(attrs={eve_slot_attr_id: 2})
+    eve_mod_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        loc=consts.EveModLoc.char,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_slot_attr_id)
+    eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
+    eve_rig_id = client.mk_eve_item(attrs={eve_mod_attr_id: 3}, eff_ids=[eve_mod_effect_id])
+    eve_char_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_char(type_id=eve_char_id)
+    api_implant1 = api_fit.add_implant(type_id=eve_implant_id)
+    api_implant2 = api_fit.add_implant(type_id=eve_implant_id)
+    # Verification
+    assert api_implant1.update().attrs[eve_slot_attr_id].extra == approx(2)
+    assert api_implant2.update().attrs[eve_slot_attr_id].extra == approx(2)
+    api_val = api_fit.validate(include=[consts.ApiValType.implant_slot_index])
+    assert api_val.passed is False
+    assert api_val.details.implant_slot_index == {2: sorted([api_implant1.id, api_implant2.id])}
+    # Action
+    api_fit.add_rig(type_id=eve_rig_id)
+    # Verification - attribute is modified, but not for purposes of validation
+    assert api_implant1.update().attrs[eve_slot_attr_id].extra == approx(3)
+    assert api_implant2.update().attrs[eve_slot_attr_id].extra == approx(3)
+    api_val = api_fit.validate(include=[consts.ApiValType.implant_slot_index])
+    assert api_val.passed is False
+    assert api_val.details.implant_slot_index == {2: sorted([api_implant1.id, api_implant2.id])}
 
 
 def test_no_attr(client, consts):
