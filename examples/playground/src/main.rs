@@ -9,6 +9,7 @@ use tracing_subscriber::prelude::*;
 
 use rc::{
     SolAddMode, SolMinionState, SolModRack, SolModuleState, SolValOptions, SolarSystem, Src, VERSION,
+    ad::{AItemKind, AState, AdaptedDataHandler},
     ed::EveDataHandler,
 };
 
@@ -98,9 +99,10 @@ fn test_crusader(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
 }
 
 fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
-    let low_mod_ids = get_low_slot_mods(&dh);
+    let mut market = Market::new(&dh);
     let skill_ids = get_skill_ids(&dh);
     let src = Src::new(dh, ch).unwrap();
+    market.fill(&src);
 
     let mut sol_sys = SolarSystem::new(src);
     let fit = sol_sys.add_fit();
@@ -283,28 +285,93 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
 
     let iterations = 1000;
     tracing::error!(
-        "starting nphoon test, trying {} modules per iteration",
-        low_mod_ids.len()
+        "starting nphoon test, trying {} items per iteration",
+        market.boosters.len()
+            + market.drones.len()
+            + market.fighters.len()
+            + market.implants.len()
+            + market.modules_high.len()
+            + market.modules_mid.len()
+            + market.modules_low.len()
+            + market.rigs.len()
+            + market.subsystems.len()
     );
     let before = Utc::now();
     for _ in 0..iterations {
-        for &low_mod_id in low_mod_ids.iter() {
+        for &type_id in market.boosters.iter() {
+            let info = sol_sys.add_booster(fit.id, type_id, true).unwrap();
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            sol_sys.remove_booster(&info.id).unwrap();
+        }
+        for &type_id in market.drones.iter() {
+            let info = sol_sys.add_drone(fit.id, type_id, SolMinionState::InBay, None).unwrap();
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            sol_sys.remove_drone(&info.id).unwrap();
+        }
+        for &type_id in market.fighters.iter() {
+            let info = sol_sys.add_fighter(fit.id, type_id, SolMinionState::InBay).unwrap();
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            sol_sys.remove_fighter(&info.id).unwrap();
+        }
+        for &type_id in market.implants.iter() {
+            let info = sol_sys.add_implant(fit.id, type_id, true).unwrap();
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            sol_sys.remove_implant(&info.id).unwrap();
+        }
+        for &(type_id, max_state) in market.modules_high.iter() {
+            let info = sol_sys
+                .add_module(
+                    fit.id,
+                    SolModRack::High,
+                    SolAddMode::Equip,
+                    type_id,
+                    max_state,
+                    None,
+                    None,
+                )
+                .unwrap();
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            sol_sys.remove_item(&info.id, rc::SolRmMode::Free).unwrap();
+        }
+        for &(type_id, max_state) in market.modules_mid.iter() {
+            let info = sol_sys
+                .add_module(
+                    fit.id,
+                    SolModRack::Mid,
+                    SolAddMode::Equip,
+                    type_id,
+                    max_state,
+                    None,
+                    None,
+                )
+                .unwrap();
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            sol_sys.remove_item(&info.id, rc::SolRmMode::Free).unwrap();
+        }
+        for &(type_id, max_state) in market.modules_low.iter() {
             let info = sol_sys
                 .add_module(
                     fit.id,
                     SolModRack::Low,
                     SolAddMode::Equip,
-                    low_mod_id,
-                    SolModuleState::Online,
+                    type_id,
+                    max_state,
                     None,
                     None,
                 )
                 .unwrap();
-            let r = sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
-            // if !r {
-            //     println!("{low_mod_id}");
-            // }
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
             sol_sys.remove_item(&info.id, rc::SolRmMode::Free).unwrap();
+        }
+        for &type_id in market.rigs.iter() {
+            let info = sol_sys.add_rig(fit.id, type_id, true).unwrap();
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            sol_sys.remove_rig(&info.id).unwrap();
+        }
+        for &type_id in market.subsystems.iter() {
+            let info = sol_sys.add_subsystem(fit.id, type_id, true).unwrap();
+            sol_sys.validate_fit_fast(&fit.id, val_options).unwrap();
+            sol_sys.remove_subsystem(&info.id).unwrap();
         }
         // break
     }
@@ -335,30 +402,73 @@ fn get_skill_ids(dh: &Box<rdhe::PhbFileEdh>) -> Vec<rc::EItemId> {
     skill_ids
 }
 
-fn get_low_slot_mods(dh: &Box<rdhe::PhbFileEdh>) -> Vec<rc::EItemId> {
-    let grp_ids = dh
-        .get_item_groups()
-        .unwrap()
-        .data
-        .iter()
-        .filter(|v| v.category_id == 7)
-        .map(|v| v.id)
-        .collect_vec();
-    let low_ids = dh
-        .get_item_effects()
-        .unwrap()
-        .data
-        .iter()
-        .filter(|v| v.effect_id == 11)
-        .map(|v| v.item_id)
-        .collect_vec();
-    let item_ids = dh
-        .get_items()
-        .unwrap()
-        .data
-        .iter()
-        .filter(|v| low_ids.contains(&v.id) && grp_ids.contains(&v.group_id))
-        .map(|v| v.id)
-        .collect_vec();
-    item_ids
+struct Market {
+    all_ids: Vec<rc::EItemId>,
+    boosters: Vec<rc::EItemId>,
+    drones: Vec<rc::EItemId>,
+    fighters: Vec<rc::EItemId>,
+    implants: Vec<rc::EItemId>,
+    modules_high: Vec<(rc::EItemId, SolModuleState)>,
+    modules_mid: Vec<(rc::EItemId, SolModuleState)>,
+    modules_low: Vec<(rc::EItemId, SolModuleState)>,
+    rigs: Vec<rc::EItemId>,
+    // stances: Vec<rc::EItemId>,
+    subsystems: Vec<rc::EItemId>,
+}
+impl Market {
+    fn new(dh: &Box<rdhe::PhbFileEdh>) -> Self {
+        Self {
+            all_ids: dh.get_items().unwrap().data.into_iter().map(|v| v.id).collect(),
+            boosters: Vec::new(),
+            drones: Vec::new(),
+            fighters: Vec::new(),
+            implants: Vec::new(),
+            modules_high: Vec::new(),
+            modules_mid: Vec::new(),
+            modules_low: Vec::new(),
+            rigs: Vec::new(),
+            subsystems: Vec::new(),
+        }
+    }
+    fn fill(&mut self, src: &Src) {
+        for type_id in self.all_ids.iter() {
+            let a_item = match src.get_a_item(&type_id) {
+                Some(a_item) => a_item,
+                None => continue,
+            };
+            match a_item.extras.kind {
+                Some(AItemKind::Booster) => self.boosters.push(*type_id),
+                Some(AItemKind::Drone) => self.drones.push(*type_id),
+                Some(AItemKind::Fighter) => self.fighters.push(*type_id),
+                Some(AItemKind::Implant) => self.implants.push(*type_id),
+                Some(AItemKind::ModuleHigh) => self.modules_high.push((*type_id, conv_state(a_item.extras.max_state))),
+                Some(AItemKind::ModuleMid) => self.modules_mid.push((*type_id, conv_state(a_item.extras.max_state))),
+                Some(AItemKind::ModuleLow) => self.modules_low.push((*type_id, conv_state(a_item.extras.max_state))),
+                Some(AItemKind::Rig) => self.rigs.push(*type_id),
+                Some(AItemKind::Subsystem) => self.subsystems.push(*type_id),
+                _ => continue,
+            }
+        }
+        tracing::error!(
+            "collected: {} boosters, {} drones, {} fighters, {} implants, {} highslot mods, {} midslot mods, {} lowslot mods, {} rigs, {} subsystems",
+            self.boosters.len(),
+            self.drones.len(),
+            self.fighters.len(),
+            self.implants.len(),
+            self.modules_high.len(),
+            self.modules_mid.len(),
+            self.modules_low.len(),
+            self.rigs.len(),
+            self.subsystems.len(),
+        );
+    }
+}
+
+fn conv_state(a_state: AState) -> SolModuleState {
+    match a_state {
+        AState::Offline => SolModuleState::Offline,
+        AState::Online => SolModuleState::Online,
+        AState::Active => SolModuleState::Active,
+        AState::Overload => SolModuleState::Overload,
+    }
 }

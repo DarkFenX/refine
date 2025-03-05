@@ -29,7 +29,8 @@ impl Src {
         };
         Ok(src)
     }
-    pub(crate) fn get_a_item(&self, id: &EItemId) -> Option<&ad::ArcItem> {
+    // TODO: make it private again once "try to fit" method is implemented in core
+    pub fn get_a_item(&self, id: &EItemId) -> Option<&ad::ArcItem> {
         self.inner.a_handler.get_item(id)
     }
     pub(crate) fn get_a_attr(&self, id: &EAttrId) -> Option<&ad::ArcAttr> {
