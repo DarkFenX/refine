@@ -421,3 +421,74 @@ def test_multiple_matches_module(client, consts):
         api_ship_module2.id: (None, consts.ApiValItemType.module_high),
         api_struct_module1.id: (None, consts.ApiValItemType.module_high),
         api_struct_module2.id: (None, consts.ApiValItemType.module_high)}
+
+
+def test_mutation_effect(client, consts):
+    eve_high_effect_id = client.mk_eve_effect(id_=consts.EveEffect.hi_power)
+    eve_mid_effect_id = client.mk_eve_effect(id_=consts.EveEffect.med_power)
+    eve_base_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_high_effect_id])
+    eve_mutated_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, eff_ids=[eve_mid_effect_id])
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_module_id], eve_mutated_module_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_high_module = api_fit.add_mod(type_id=eve_base_module_id, rack=consts.ApiRack.high)
+    api_mid_module = api_fit.add_mod(type_id=eve_base_module_id, rack=consts.ApiRack.mid)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    assert api_val.passed is False
+    assert api_val.details.item_kind == {
+        api_mid_module.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_mid)}
+    # Action
+    api_mid_module.change_mod(mutation=eve_mutator_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_high_module.change_mod(mutation=eve_mutator_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    assert api_val.passed is False
+    assert api_val.details.item_kind == {
+        api_high_module.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.module_high)}
+    # Action
+    api_high_module.change_mod(mutation=None)
+    api_mid_module.change_mod(mutation=None)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    assert api_val.passed is False
+    assert api_val.details.item_kind == {
+        api_mid_module.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_mid)}
+
+
+def test_mutation_attr(client, consts):
+    eve_booster_attr_id = client.mk_eve_attr(id_=consts.EveAttr.boosterness)
+    eve_implant_attr_id = client.mk_eve_attr(id_=consts.EveAttr.implantness)
+    eve_base_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.implant, attrs={eve_booster_attr_id: 1})
+    eve_mutated_item_id = client.mk_eve_item(cat_id=consts.EveItemCat.implant, attrs={eve_implant_attr_id: 1})
+    eve_mutator_id = client.mk_eve_mutator(items=[([eve_base_item_id], eve_mutated_item_id)])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    assert api_val.passed is False
+    assert api_val.details.item_kind == {
+        api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
+    # Action
+    api_item.change_mod(mutation=eve_mutator_id)
+    # Verification - actual type becomes None because attributes are merged, and item is eligible to
+    # be both implant and booster, which isn't considered valid
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    assert api_val.passed is False
+    assert api_val.details.item_kind == {api_item.id: (None, consts.ApiValItemType.module_high)}
+    # Action
+    api_item.change_mod(mutation=None)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    assert api_val.passed is False
+    assert api_val.details.item_kind == {
+        api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
