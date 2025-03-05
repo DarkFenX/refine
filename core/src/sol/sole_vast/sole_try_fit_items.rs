@@ -156,7 +156,7 @@ fn conv_state(a_state: ad::AState) -> SolModuleState {
     match a_state {
         ad::AState::Offline => SolModuleState::Offline,
         ad::AState::Online => SolModuleState::Online,
-        ad::AState::Active => SolModuleState::Active,
-        ad::AState::Overload => SolModuleState::Active,
+        ad::AState::Active => SolModuleState::Online,
+        ad::AState::Overload => SolModuleState::Online,
     }
 }
