@@ -4,6 +4,7 @@ from .capital_module import ValCapModuleDetails
 from .charge_group import ValChargeGroupDetails
 from .charge_size import ValChargeSizeDetails
 from .charge_volume import ValChargeVolumeDetails
+from .drone_group import ValDroneGroupDetails
 from .item_kind import ValItemKindDetails
 from .max_group import ValMaxGroupDetails
 from .module_state import ValModuleStateDetails
@@ -61,4 +62,5 @@ class ValResultDetails(AttrDict):
             ApiValType.capital_module: AttrHookDef(func=lambda d: ValCapModuleDetails(data=d)),
             ApiValType.not_loaded_item: AttrHookDef(func=lambda d: ValNotLoadedItemDetails(data=d)),
             ApiValType.module_state: AttrHookDef(func=lambda d: ValModuleStateDetails(data=d)),
-            ApiValType.item_kind: AttrHookDef(func=lambda d: ValItemKindDetails(data=d))})
+            ApiValType.item_kind: AttrHookDef(func=lambda d: ValItemKindDetails(data=d)),
+            ApiValType.drone_group: AttrHookDef(func=lambda d: ValDroneGroupDetails(data=d))})

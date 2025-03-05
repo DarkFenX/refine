@@ -231,6 +231,8 @@ class EveAttr(IntEnum):
     armor_max_dmg_resonance = 1527
     max_group_fitted = 1544
     rig_size = 1547
+    allowed_drone_group1 = 1782
+    allowed_drone_group2 = 1783
     resist_shift_amount = 1849
     charged_armor_dmg_mult = 1886
     can_fit_ship_type5 = 1944
@@ -422,6 +424,7 @@ class ApiValType(StrEnum):
     not_loaded_item = 'not_loaded_item'
     module_state = 'module_state'
     item_kind = 'item_kind'
+    drone_group = 'drone_group'
 
 
 @unique
