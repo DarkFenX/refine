@@ -375,7 +375,7 @@ def test_no_attr_output(client, consts):
     assert api_val.details.dronebay_volume.users == {api_drone.id: approx(150)}
 
 
-def test_criterion_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     # Validation applies only to drones
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_capacity)

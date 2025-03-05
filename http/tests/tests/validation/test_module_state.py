@@ -343,7 +343,7 @@ def test_mutation(client, consts):
         api_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
 
 
-def test_criterion_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()

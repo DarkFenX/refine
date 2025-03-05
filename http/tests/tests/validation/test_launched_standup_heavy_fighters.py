@@ -370,7 +370,7 @@ def test_criterion_fighter_type(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_criterion_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     eve_ftr_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_is_standup_heavy)
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_standup_heavy_slots)
     eve_drone_id = client.mk_eve_item(attrs={eve_ftr_type_attr_id: 1})

@@ -269,7 +269,7 @@ def test_criterion_item_category(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_criterion_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_rig_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_attr_id: 4000})
     eve_ship_id = client.mk_eve_ship()

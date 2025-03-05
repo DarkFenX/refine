@@ -240,7 +240,7 @@ def test_criterion_state(client, consts):
     assert api_val.details.max_group_online == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
 
-def test_criterion_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     # Validation applies only to modules and rigs
     eve_grp_id = client.mk_eve_item_group()
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_online)

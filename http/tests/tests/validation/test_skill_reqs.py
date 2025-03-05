@@ -275,7 +275,7 @@ def test_item_state(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_item_types(client, consts):
+def test_item_kinds(client, consts):
     eve_skill_id = client.mk_eve_item()
     eve_item_id = client.mk_eve_item(srqs={eve_skill_id: 3})
     eve_ac_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)

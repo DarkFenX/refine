@@ -231,7 +231,7 @@ def test_state(client, consts):
     assert api_val.details.rig_size.mismatches == {api_rig.id: 1}
 
 
-def test_other_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.rig_size)
     eve_module_id = client.mk_eve_item(attrs={eve_attr_id: 1})
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 3})

@@ -236,7 +236,7 @@ def test_criterion_state(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_criterion_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_fighter_id = client.mk_eve_item()
     eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 0})

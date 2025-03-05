@@ -130,7 +130,7 @@ def test_criterion_state(client, consts):
     assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem2.id])}
 
 
-def test_criterion_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.subsystem_slot)
     eve_rig_id = client.mk_eve_item(attrs={eve_slot_attr_id: 1})
     client.create_sources()

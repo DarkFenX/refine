@@ -596,7 +596,7 @@ def test_criterion_state(client, consts):
         api_subsystem.id: ([eve_allowed_ship_id], [])}
 
 
-def test_criterion_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     eve_ship_grp_id = client.mk_eve_ship_group()
     eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
     eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)

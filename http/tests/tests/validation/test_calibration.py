@@ -423,7 +423,7 @@ def test_criterion_effect(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_criterion_item_type(client, consts):
+def test_criterion_item_kind(client, consts):
     # Validation applies only to rigs
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
