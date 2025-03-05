@@ -1,6 +1,6 @@
 use crate::{
     defs::{EItemGrpId, SolItemId},
-    sol::{svc::vast::SolVastFitData, uad::item::SolShip},
+    sol::svc::vast::SolVastFitData,
 };
 
 pub struct SolDroneGroupValFail {

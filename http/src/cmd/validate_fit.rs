@@ -59,6 +59,7 @@ impl HValidFitCmd {
                 "not_loaded_item" => core_options.not_loaded_item = alt_value,
                 "module_state" => core_options.module_state = alt_value,
                 "item_kind" => core_options.item_kind = alt_value,
+                "drone_group" => core_options.drone_group = alt_value,
                 _ => (),
             }
         }

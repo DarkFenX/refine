@@ -1,6 +1,7 @@
 use crate::info::valid::details::{
-    HChargeGroupValFail, HChargeSizeValFail, HChargeVolumeValFail, HItemKindValFail, HMaxGroupValFail,
-    HModuleStateValFail, HResValFail, HRigSizeValFail, HShipLimitValFail, HSlotIndexValFail, HSlotValFail, HSrqValFail,
+    HChargeGroupValFail, HChargeSizeValFail, HChargeVolumeValFail, HDroneGroupValFail, HItemKindValFail,
+    HMaxGroupValFail, HModuleStateValFail, HResValFail, HRigSizeValFail, HShipLimitValFail, HSlotIndexValFail,
+    HSlotValFail, HSrqValFail,
 };
 
 #[derive(serde::Serialize)]
@@ -95,6 +96,8 @@ struct HValidInfoDetails {
     module_state: HModuleStateValFail,
     #[serde(skip_serializing_if = "HItemKindValFail::is_empty")]
     item_kind: HItemKindValFail,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    drone_group: Option<HDroneGroupValFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -134,6 +137,7 @@ impl HValidInfoDetails {
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()
             && self.item_kind.is_empty()
+            && self.drone_group.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -184,6 +188,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             not_loaded_item: core_val_result.not_loaded_item.iter().map(|v| v.item_id).collect(),
             module_state: (&core_val_result.module_state).into(),
             item_kind: (&core_val_result.item_kind).into(),
+            drone_group: core_val_result.drone_group.as_ref().map(|v| v.into()),
         }
     }
 }

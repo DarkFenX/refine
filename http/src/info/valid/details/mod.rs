@@ -1,6 +1,7 @@
 pub(in crate::info::valid) use charge_group::HChargeGroupValFail;
 pub(in crate::info::valid) use charge_size::HChargeSizeValFail;
 pub(in crate::info::valid) use charge_volume::HChargeVolumeValFail;
+pub(in crate::info::valid) use drone_group::HDroneGroupValFail;
 pub(in crate::info::valid) use item_kind::HItemKindValFail;
 pub(in crate::info::valid) use max_group::HMaxGroupValFail;
 pub(in crate::info::valid) use module_state::HModuleStateValFail;
@@ -14,6 +15,7 @@ pub(in crate::info::valid) use slot_index::HSlotIndexValFail;
 mod charge_group;
 mod charge_size;
 mod charge_volume;
+mod drone_group;
 mod item_kind;
 mod max_group;
 mod module_state;
