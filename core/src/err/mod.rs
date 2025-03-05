@@ -34,7 +34,7 @@ pub use crate::{
             SetShipStateError, SetSkillLevelError, SetSkillStateError, SetStanceStateError, SetSubsystemStateError,
             SetSwEffectStateError,
         },
-        sole_vast::ValidateFitError,
+        sole_vast::{TryFitItemsError, ValidateFitError},
     },
     src::SrcInitError,
 };
