@@ -3,8 +3,8 @@ use crate::{
     defs::{AttrVal, EItemGrpId, EItemId, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
     sol::svc::vast::{
-        SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolItemKindValFail, SolModuleStateValFail,
-        SolValCache, SolVastSkillReq,
+        SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolDroneGroupMismatch, SolItemKindValFail,
+        SolModuleStateValFail, SolValCache, SolVastSkillReq,
     },
     util::{StMap, StMapSetL1, StSet},
 };
@@ -74,6 +74,8 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) not_loaded: StSet<SolItemId>,
     pub(in crate::sol::svc::vast) mods_state: StMap<SolItemId, SolModuleStateValFail>,
     pub(in crate::sol::svc::vast) item_kind: StMap<SolItemId, SolItemKindValFail>,
+    pub(in crate::sol::svc::vast) drone_group_limit: Vec<EItemGrpId>,
+    pub(in crate::sol::svc::vast) drone_group_mismatches: StMap<SolItemId, SolDroneGroupMismatch>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -111,6 +113,8 @@ impl SolVastFitData {
             not_loaded: StSet::new(),
             mods_state: StMap::new(),
             item_kind: StMap::new(),
+            drone_group_limit: Vec::new(),
+            drone_group_mismatches: StMap::new(),
         }
     }
 }

@@ -133,6 +133,9 @@ impl SolVast {
         if options.item_kind && !fit_data.validate_item_kind_fast() {
             return false;
         }
+        if options.drone_group && !fit_data.validate_drone_group_fast() {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -256,6 +259,9 @@ impl SolVast {
         }
         if options.item_kind {
             result.item_kind = fit_data.validate_item_kind_verbose();
+        }
+        if options.drone_group {
+            result.drone_group = fit_data.validate_drone_group_verbose();
         }
         result
     }

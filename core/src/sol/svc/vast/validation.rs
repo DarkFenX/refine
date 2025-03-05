@@ -1,7 +1,7 @@
 use crate::sol::svc::vast::{
-    SolCapitalModValFail, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolItemKindValFail,
-    SolMaxGroupValFail, SolModuleStateValFail, SolNotLoadedItemValFail, SolResValFail, SolRigSizeValFail,
-    SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
+    SolCapitalModValFail, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolDroneGroupValFail,
+    SolItemKindValFail, SolMaxGroupValFail, SolModuleStateValFail, SolNotLoadedItemValFail, SolResValFail,
+    SolRigSizeValFail, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqValFail,
 };
 
 #[derive(Copy, Clone)]
@@ -42,6 +42,7 @@ pub struct SolValOptions {
     pub not_loaded_item: bool,
     pub module_state: bool,
     pub item_kind: bool,
+    pub drone_group: bool,
 }
 impl SolValOptions {
     pub fn new_all_enabled() -> Self {
@@ -82,6 +83,7 @@ impl SolValOptions {
             not_loaded_item: true,
             module_state: true,
             item_kind: true,
+            drone_group: true,
         }
     }
     pub fn new_all_disabled() -> Self {
@@ -122,6 +124,7 @@ impl SolValOptions {
             not_loaded_item: false,
             module_state: false,
             item_kind: false,
+            drone_group: false,
         }
     }
 }
@@ -163,6 +166,7 @@ pub struct SolValResult {
     pub not_loaded_item: Vec<SolNotLoadedItemValFail>,
     pub module_state: Vec<SolModuleStateValFail>,
     pub item_kind: Vec<SolItemKindValFail>,
+    pub drone_group: Option<SolDroneGroupValFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -203,6 +207,7 @@ impl SolValResult {
             not_loaded_item: Vec::new(),
             module_state: Vec::new(),
             item_kind: Vec::new(),
+            drone_group: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -242,5 +247,6 @@ impl SolValResult {
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()
             && self.item_kind.is_empty()
+            && self.drone_group.is_none()
     }
 }

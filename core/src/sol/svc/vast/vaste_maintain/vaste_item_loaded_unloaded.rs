@@ -6,7 +6,7 @@ use crate::{
     ec,
     sol::{
         SolModRack,
-        svc::vast::{SolItemKindValFail, SolValCache, SolVast, SolVastFitData, SolVastSkillReq},
+        svc::vast::{SolDroneGroupMismatch, SolItemKindValFail, SolValCache, SolVast, SolVastFitData, SolVastSkillReq},
         uad::{
             SolUad,
             item::{SolItem, SolModule},
@@ -83,6 +83,14 @@ impl SolVast {
                 if let Some(val) = extras.volume {
                     fit_data.drones_volume.insert(item_id, val);
                 }
+                if !fit_data.drone_group_limit.is_empty() {
+                    let drone_group_id = drone.get_group_id().unwrap();
+                    if !fit_data.drone_group_limit.contains(&drone_group_id) {
+                        fit_data
+                            .drone_group_mismatches
+                            .insert(item_id, SolDroneGroupMismatch::new(item_id, drone_group_id));
+                    }
+                }
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Drone);
             }
             SolItem::Fighter(fighter) => {
@@ -148,6 +156,22 @@ impl SolVast {
             }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();
+                // If new ship limits drones which can be used, fill the mismatch data up
+                if let Some(drone_limit) = &extras.drone_limit {
+                    fit_data.drone_group_limit.extend(drone_limit.group_ids.iter());
+                    let fit = uad.fits.get_fit(&fit_id).unwrap();
+                    for drone_item_id in fit.drones.iter() {
+                        let drone_item = uad.items.get_item(drone_item_id).unwrap();
+                        if let Some(drone_group_id) = drone_item.get_group_id() {
+                            if !drone_limit.group_ids.contains(&drone_group_id) {
+                                fit_data.drone_group_mismatches.insert(
+                                    *drone_item_id,
+                                    SolDroneGroupMismatch::new(*drone_item_id, drone_group_id),
+                                );
+                            }
+                        }
+                    }
+                }
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Ship);
             }
             SolItem::Skill(skill) => {
@@ -223,6 +247,9 @@ impl SolVast {
             SolItem::Drone(drone) => {
                 let extras = drone.get_a_extras().unwrap();
                 fit_data.drones_volume.remove(&item_id);
+                if !fit_data.drone_group_limit.is_empty() {
+                    fit_data.drone_group_mismatches.remove(&item_id);
+                }
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Drone);
             }
             SolItem::Fighter(fighter) => {
@@ -270,6 +297,11 @@ impl SolVast {
             }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();
+                // If any drone group limits were defined, clear the mismatch data
+                if !fit_data.drone_group_limit.is_empty() {
+                    fit_data.drone_group_limit.clear();
+                    fit_data.drone_group_mismatches.clear();
+                }
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Ship);
             }
             SolItem::Skill(skill) => {

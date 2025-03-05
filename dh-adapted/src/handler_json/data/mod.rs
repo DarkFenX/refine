@@ -6,7 +6,9 @@ use effect::{
     CEffect, CEffectAffecteeFilter, CEffectBuffInfo, CEffectChargeInfo, CEffectLocation, CEffectModifier,
     CModBuildStatus, CState,
 };
-use item::{CItem, CItemChargeLimit, CItemEffectData, CItemExtras, CItemKind, CItemShipLimit, CShipKind};
+use item::{
+    CItem, CItemChargeLimit, CItemEffectData, CItemExtras, CItemKind, CItemShipLimit, CShipDroneLimit, CShipKind,
+};
 use mod_shared::{CModifierSrq, COp};
 use muta::{CMuta, CMutaAttrRange};
 

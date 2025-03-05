@@ -678,6 +678,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     let before = Utc::now();
     for _ in 0..iterations {
         let result = sol_sys.try_fit_items(&fit.id, &items, val_options).unwrap();
+        // println!("Valid items: {:?}", result);
     }
     let after = Utc::now();
     tracing::error!("done with nphoon test");

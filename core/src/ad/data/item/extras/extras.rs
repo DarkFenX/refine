@@ -1,11 +1,15 @@
 use crate::{
-    ad::{AEffect, AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit, AShipKind, AState},
+    ad::{
+        AEffect, AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind,
+        AState,
+    },
     defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex},
     util::StMap,
 };
 
 use super::{
     charge_limit::get_item_charge_limit,
+    drone_limit::get_ship_drone_limit,
     fighter_kind::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_standup_heavy_fighter_flag, get_standup_light_fighter_flag,
         get_standup_support_fighter_flag, get_support_fighter_flag,
@@ -28,7 +32,7 @@ pub struct AItemExtras {
     pub kind: Option<AItemKind>,
     /// Unmodified and unmutated item volume.
     pub volume: Option<AttrVal>,
-    /// If set, item can be fit to a ship which has a type or group match with the limit.
+    /// If set, item can be fit to a ship which fits into the limit.
     pub ship_limit: Option<AItemShipLimit>,
     /// If set, item can load only charges which fit into limit.
     pub charge_limit: Option<AItemChargeLimit>,
@@ -62,6 +66,8 @@ pub struct AItemExtras {
     pub item_ship_kind: Option<AShipKind>,
     /// Max state item can take.
     pub max_state: AState,
+    /// If set, ship can use drones which fit into the limit.
+    pub drone_limit: Option<AShipDroneLimit>,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -85,6 +91,7 @@ impl AItemExtras {
             ship_kind: Option::default(),
             item_ship_kind: Option::default(),
             max_state: AState::Offline,
+            drone_limit: Option::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -110,6 +117,7 @@ impl AItemExtras {
             ship_kind: a_item.extras.ship_kind,
             item_ship_kind: get_item_ship_kind(a_item.cat_id, attrs),
             max_state: a_item.extras.max_state,
+            drone_limit: get_ship_drone_limit(attrs),
         }
     }
     pub(crate) fn fill(
@@ -152,5 +160,6 @@ impl AItemExtras {
         self.ship_kind = get_ship_kind(item_cat_id, item_srqs);
         self.item_ship_kind = get_item_ship_kind(item_cat_id, item_attrs);
         self.max_state = get_max_state(item_effects.keys(), effects);
+        self.drone_limit = get_ship_drone_limit(item_attrs);
     }
 }

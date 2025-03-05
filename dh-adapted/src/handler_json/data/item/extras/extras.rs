@@ -1,4 +1,4 @@
-use crate::handler_json::data::{CItemChargeLimit, CItemKind, CItemShipLimit, CShipKind, CState};
+use crate::handler_json::data::{CItemChargeLimit, CItemKind, CItemShipLimit, CShipDroneLimit, CShipKind, CState};
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::handler_json) struct CItemExtras {
@@ -21,6 +21,7 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) ship_kind: Option<CShipKind>,
     pub(in crate::handler_json) item_ship_kind: Option<CShipKind>,
     pub(in crate::handler_json) max_state: CState,
+    pub(in crate::handler_json) drone_limit: Option<CShipDroneLimit>,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -44,6 +45,7 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             ship_kind: a_item_extras.ship_kind.as_ref().map(|v| v.into()),
             item_ship_kind: a_item_extras.item_ship_kind.as_ref().map(|v| v.into()),
             max_state: (&a_item_extras.max_state).into(),
+            drone_limit: a_item_extras.drone_limit.as_ref().map(|v| v.into()),
         }
     }
 }
@@ -69,6 +71,7 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             ship_kind: c_item_extras.ship_kind.as_ref().map(|v| v.into()),
             item_ship_kind: c_item_extras.item_ship_kind.as_ref().map(|v| v.into()),
             max_state: (&c_item_extras.max_state).into(),
+            drone_limit: c_item_extras.drone_limit.as_ref().map(|v| v.into()),
         }
     }
 }
