@@ -515,3 +515,17 @@ def test_mutation_attr(client, consts):
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
+
+
+def test_not_loaded(client, consts):
+    # Not loaded items are not subjects for validation
+    eve_item_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_booster(type_id=eve_item_id)
+    # Verification
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
