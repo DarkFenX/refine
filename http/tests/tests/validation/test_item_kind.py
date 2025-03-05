@@ -1,6 +1,29 @@
 from tests import check_no_field
 
 
+def test_kind_autocharge(client, consts):
+    # Autocharges are not subjects for validation
+    eve_autocharge_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_abil_launch_bomb_type)
+    eve_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.fighter_ability_launch_bomb,
+        cat_id=consts.EveEffCat.active)
+    eve_charge_id = client.mk_eve_item(cat_id=consts.EveItemCat.ship)
+    eve_fighter_id = client.mk_eve_item(
+        cat_id=consts.EveItemCat.fighter,
+        attrs={eve_autocharge_attr_id: eve_charge_id},
+        eff_ids=[eve_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
+    # Verification
+    assert len(api_fighter.autocharges) == 1
+    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_kind_booster(client, consts):
     eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.boosterness)
     eve_booster_id = client.mk_eve_item(cat_id=consts.EveItemCat.implant, attrs={eve_slot_attr_id: 1})
