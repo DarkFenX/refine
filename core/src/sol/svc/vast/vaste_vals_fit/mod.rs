@@ -11,7 +11,7 @@ pub use vaste_resource::{SolValResFail, SolValResItemInfo};
 pub use vaste_rig_size::{SolValRigSizeFail, SolValRigSizeItemInfo};
 pub use vaste_ship_limit::{SolValShipLimitFail, SolValShipLimitItemInfo};
 pub use vaste_skill_reqs::{SolValSrqFail, SolValSrqSkillInfo};
-pub use vaste_slot::SolValSlotFail;
+pub use vaste_slot_count::SolValSlotCountFail;
 pub use vaste_slot_index::SolValSlotIndexFail;
 
 mod vaste_capital_module;
@@ -27,5 +27,5 @@ mod vaste_resource;
 mod vaste_rig_size;
 mod vaste_ship_limit;
 mod vaste_skill_reqs;
-mod vaste_slot;
+mod vaste_slot_count;
 mod vaste_slot_index;

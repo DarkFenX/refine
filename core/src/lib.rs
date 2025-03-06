@@ -38,7 +38,7 @@ pub use sol::{
             SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValItemKindFail,
             SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValModuleStateFail, SolValNotLoadedItemFail, SolValOptions,
             SolValResFail, SolValResItemInfo, SolValResult, SolValRigSizeFail, SolValRigSizeItemInfo,
-            SolValShipLimitFail, SolValShipLimitItemInfo, SolValSlotFail, SolValSlotIndexFail, SolValSrqFail,
+            SolValShipLimitFail, SolValShipLimitItemInfo, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
             SolValSrqSkillInfo,
         },
     },

@@ -1,7 +1,7 @@
 use crate::sol::svc::vast::{
     SolValCapitalModFail, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail,
     SolValItemKindFail, SolValMaxGroupFail, SolValModuleStateFail, SolValNotLoadedItemFail, SolValResFail,
-    SolValRigSizeFail, SolValShipLimitFail, SolValSlotFail, SolValSlotIndexFail, SolValSrqFail,
+    SolValRigSizeFail, SolValShipLimitFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
 };
 
 #[derive(Copy, Clone)]
@@ -11,21 +11,21 @@ pub struct SolValOptions {
     pub calibration: bool,
     pub dronebay_volume: bool,
     pub drone_bandwidth: bool,
-    pub rig_slots: bool,
-    pub subsystem_slots: bool,
-    pub launched_drones: bool,
-    pub launched_fighters: bool,
-    pub launched_support_fighters: bool,
-    pub launched_light_fighters: bool,
-    pub launched_heavy_fighters: bool,
-    pub launched_standup_support_fighters: bool,
-    pub launched_standup_light_fighters: bool,
-    pub launched_standup_heavy_fighters: bool,
-    pub turret_slots: bool,
-    pub launcher_slots: bool,
-    pub high_slots: bool,
-    pub mid_slots: bool,
-    pub low_slots: bool,
+    pub rig_slot_count: bool,
+    pub subsystem_slot_count: bool,
+    pub launched_drone_count: bool,
+    pub launched_fighter_count: bool,
+    pub launched_support_fighter_count: bool,
+    pub launched_light_fighter_count: bool,
+    pub launched_heavy_fighter_count: bool,
+    pub launched_standup_support_fighter_count: bool,
+    pub launched_standup_light_fighter_count: bool,
+    pub launched_standup_heavy_fighter_count: bool,
+    pub turret_slot_count: bool,
+    pub launcher_slot_count: bool,
+    pub high_slot_count: bool,
+    pub mid_slot_count: bool,
+    pub low_slot_count: bool,
     pub implant_slot_index: bool,
     pub booster_slot_index: bool,
     pub subsystem_slot_index: bool,
@@ -52,21 +52,21 @@ impl SolValOptions {
             calibration: true,
             dronebay_volume: true,
             drone_bandwidth: true,
-            rig_slots: true,
-            subsystem_slots: true,
-            launched_drones: true,
-            launched_fighters: true,
-            launched_support_fighters: true,
-            launched_light_fighters: true,
-            launched_heavy_fighters: true,
-            launched_standup_support_fighters: true,
-            launched_standup_light_fighters: true,
-            launched_standup_heavy_fighters: true,
-            turret_slots: true,
-            launcher_slots: true,
-            high_slots: true,
-            mid_slots: true,
-            low_slots: true,
+            rig_slot_count: true,
+            subsystem_slot_count: true,
+            launched_drone_count: true,
+            launched_fighter_count: true,
+            launched_support_fighter_count: true,
+            launched_light_fighter_count: true,
+            launched_heavy_fighter_count: true,
+            launched_standup_support_fighter_count: true,
+            launched_standup_light_fighter_count: true,
+            launched_standup_heavy_fighter_count: true,
+            turret_slot_count: true,
+            launcher_slot_count: true,
+            high_slot_count: true,
+            mid_slot_count: true,
+            low_slot_count: true,
             implant_slot_index: true,
             booster_slot_index: true,
             subsystem_slot_index: true,
@@ -93,21 +93,21 @@ impl SolValOptions {
             calibration: false,
             dronebay_volume: false,
             drone_bandwidth: false,
-            rig_slots: false,
-            subsystem_slots: false,
-            launched_drones: false,
-            launched_fighters: false,
-            launched_support_fighters: false,
-            launched_light_fighters: false,
-            launched_heavy_fighters: false,
-            launched_standup_support_fighters: false,
-            launched_standup_light_fighters: false,
-            launched_standup_heavy_fighters: false,
-            turret_slots: false,
-            launcher_slots: false,
-            high_slots: false,
-            mid_slots: false,
-            low_slots: false,
+            rig_slot_count: false,
+            subsystem_slot_count: false,
+            launched_drone_count: false,
+            launched_fighter_count: false,
+            launched_support_fighter_count: false,
+            launched_light_fighter_count: false,
+            launched_heavy_fighter_count: false,
+            launched_standup_support_fighter_count: false,
+            launched_standup_light_fighter_count: false,
+            launched_standup_heavy_fighter_count: false,
+            turret_slot_count: false,
+            launcher_slot_count: false,
+            high_slot_count: false,
+            mid_slot_count: false,
+            low_slot_count: false,
             implant_slot_index: false,
             booster_slot_index: false,
             subsystem_slot_index: false,
@@ -135,21 +135,21 @@ pub struct SolValResult {
     pub calibration: Option<SolValResFail>,
     pub dronebay_volume: Option<SolValResFail>,
     pub drone_bandwidth: Option<SolValResFail>,
-    pub rig_slots: Option<SolValSlotFail>,
-    pub subsystem_slots: Option<SolValSlotFail>,
-    pub launched_drones: Option<SolValSlotFail>,
-    pub launched_fighters: Option<SolValSlotFail>,
-    pub launched_support_fighters: Option<SolValSlotFail>,
-    pub launched_light_fighters: Option<SolValSlotFail>,
-    pub launched_heavy_fighters: Option<SolValSlotFail>,
-    pub launched_standup_support_fighters: Option<SolValSlotFail>,
-    pub launched_standup_light_fighters: Option<SolValSlotFail>,
-    pub launched_standup_heavy_fighters: Option<SolValSlotFail>,
-    pub turret_slots: Option<SolValSlotFail>,
-    pub launcher_slots: Option<SolValSlotFail>,
-    pub high_slots: Option<SolValSlotFail>,
-    pub mid_slots: Option<SolValSlotFail>,
-    pub low_slots: Option<SolValSlotFail>,
+    pub rig_slot_count: Option<SolValSlotCountFail>,
+    pub subsystem_slot_count: Option<SolValSlotCountFail>,
+    pub launched_drone_count: Option<SolValSlotCountFail>,
+    pub launched_fighter_count: Option<SolValSlotCountFail>,
+    pub launched_support_fighter_count: Option<SolValSlotCountFail>,
+    pub launched_light_fighter_count: Option<SolValSlotCountFail>,
+    pub launched_heavy_fighter_count: Option<SolValSlotCountFail>,
+    pub launched_standup_support_fighter_count: Option<SolValSlotCountFail>,
+    pub launched_standup_light_fighter_count: Option<SolValSlotCountFail>,
+    pub launched_standup_heavy_fighter_count: Option<SolValSlotCountFail>,
+    pub turret_slot_count: Option<SolValSlotCountFail>,
+    pub launcher_slot_count: Option<SolValSlotCountFail>,
+    pub high_slot_count: Option<SolValSlotCountFail>,
+    pub mid_slot_count: Option<SolValSlotCountFail>,
+    pub low_slot_count: Option<SolValSlotCountFail>,
     pub implant_slot_index: Vec<SolValSlotIndexFail>,
     pub booster_slot_index: Vec<SolValSlotIndexFail>,
     pub subsystem_slot_index: Vec<SolValSlotIndexFail>,
@@ -176,21 +176,21 @@ impl SolValResult {
             calibration: None,
             dronebay_volume: None,
             drone_bandwidth: None,
-            rig_slots: None,
-            subsystem_slots: None,
-            launched_drones: None,
-            launched_fighters: None,
-            launched_support_fighters: None,
-            launched_light_fighters: None,
-            launched_heavy_fighters: None,
-            launched_standup_support_fighters: None,
-            launched_standup_light_fighters: None,
-            launched_standup_heavy_fighters: None,
-            turret_slots: None,
-            launcher_slots: None,
-            high_slots: None,
-            mid_slots: None,
-            low_slots: None,
+            rig_slot_count: None,
+            subsystem_slot_count: None,
+            launched_drone_count: None,
+            launched_fighter_count: None,
+            launched_support_fighter_count: None,
+            launched_light_fighter_count: None,
+            launched_heavy_fighter_count: None,
+            launched_standup_support_fighter_count: None,
+            launched_standup_light_fighter_count: None,
+            launched_standup_heavy_fighter_count: None,
+            turret_slot_count: None,
+            launcher_slot_count: None,
+            high_slot_count: None,
+            mid_slot_count: None,
+            low_slot_count: None,
             implant_slot_index: Vec::new(),
             booster_slot_index: Vec::new(),
             subsystem_slot_index: Vec::new(),
@@ -216,21 +216,21 @@ impl SolValResult {
             && self.calibration.is_none()
             && self.dronebay_volume.is_none()
             && self.drone_bandwidth.is_none()
-            && self.rig_slots.is_none()
-            && self.subsystem_slots.is_none()
-            && self.launched_drones.is_none()
-            && self.launched_fighters.is_none()
-            && self.launched_support_fighters.is_none()
-            && self.launched_light_fighters.is_none()
-            && self.launched_heavy_fighters.is_none()
-            && self.launched_standup_support_fighters.is_none()
-            && self.launched_standup_light_fighters.is_none()
-            && self.launched_standup_heavy_fighters.is_none()
-            && self.turret_slots.is_none()
-            && self.launcher_slots.is_none()
-            && self.high_slots.is_none()
-            && self.mid_slots.is_none()
-            && self.low_slots.is_none()
+            && self.rig_slot_count.is_none()
+            && self.subsystem_slot_count.is_none()
+            && self.launched_drone_count.is_none()
+            && self.launched_fighter_count.is_none()
+            && self.launched_support_fighter_count.is_none()
+            && self.launched_light_fighter_count.is_none()
+            && self.launched_heavy_fighter_count.is_none()
+            && self.launched_standup_support_fighter_count.is_none()
+            && self.launched_standup_light_fighter_count.is_none()
+            && self.launched_standup_heavy_fighter_count.is_none()
+            && self.turret_slot_count.is_none()
+            && self.launcher_slot_count.is_none()
+            && self.high_slot_count.is_none()
+            && self.mid_slot_count.is_none()
+            && self.low_slot_count.is_none()
             && self.implant_slot_index.is_empty()
             && self.booster_slot_index.is_empty()
             && self.subsystem_slot_index.is_empty()

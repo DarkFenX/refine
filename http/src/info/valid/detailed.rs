@@ -1,7 +1,7 @@
 use crate::info::valid::details::{
     HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail,
     HValItemKindFail, HValMaxGroupFail, HValModuleStateFail, HValResFail, HValRigSizeFail, HValShipLimitFail,
-    HValSlotFail, HValSlotIndexFail, HValSrqFail,
+    HValSlotCountFail, HValSlotIndexFail, HValSrqFail,
 };
 
 #[derive(serde::Serialize)]
@@ -33,35 +33,35 @@ struct HValidInfoDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     drone_bandwidth: Option<HValResFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    rig_slots: Option<HValSlotFail>,
+    rig_slot_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subsystem_slots: Option<HValSlotFail>,
+    subsystem_slot_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_drones: Option<HValSlotFail>,
+    launched_drone_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_fighters: Option<HValSlotFail>,
+    launched_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_support_fighters: Option<HValSlotFail>,
+    launched_support_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_light_fighters: Option<HValSlotFail>,
+    launched_light_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_heavy_fighters: Option<HValSlotFail>,
+    launched_heavy_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_standup_support_fighters: Option<HValSlotFail>,
+    launched_standup_support_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_standup_light_fighters: Option<HValSlotFail>,
+    launched_standup_light_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_standup_heavy_fighters: Option<HValSlotFail>,
+    launched_standup_heavy_fighter_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    turret_slots: Option<HValSlotFail>,
+    turret_slot_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launcher_slots: Option<HValSlotFail>,
+    launcher_slot_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    high_slots: Option<HValSlotFail>,
+    high_slot_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    mid_slots: Option<HValSlotFail>,
+    mid_slot_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    low_slots: Option<HValSlotFail>,
+    low_slot_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "HValSlotIndexFail::is_empty")]
     implant_slot_index: HValSlotIndexFail,
     #[serde(skip_serializing_if = "HValSlotIndexFail::is_empty")]
@@ -105,21 +105,21 @@ impl HValidInfoDetails {
             && self.calibration.is_none()
             && self.dronebay_volume.is_none()
             && self.drone_bandwidth.is_none()
-            && self.rig_slots.is_none()
-            && self.subsystem_slots.is_none()
-            && self.launched_drones.is_none()
-            && self.launched_fighters.is_none()
-            && self.launched_support_fighters.is_none()
-            && self.launched_light_fighters.is_none()
-            && self.launched_heavy_fighters.is_none()
-            && self.launched_standup_support_fighters.is_none()
-            && self.launched_standup_light_fighters.is_none()
-            && self.launched_standup_heavy_fighters.is_none()
-            && self.turret_slots.is_none()
-            && self.launcher_slots.is_none()
-            && self.high_slots.is_none()
-            && self.mid_slots.is_none()
-            && self.low_slots.is_none()
+            && self.rig_slot_count.is_none()
+            && self.subsystem_slot_count.is_none()
+            && self.launched_drone_count.is_none()
+            && self.launched_fighter_count.is_none()
+            && self.launched_support_fighter_count.is_none()
+            && self.launched_light_fighter_count.is_none()
+            && self.launched_heavy_fighter_count.is_none()
+            && self.launched_standup_support_fighter_count.is_none()
+            && self.launched_standup_light_fighter_count.is_none()
+            && self.launched_standup_heavy_fighter_count.is_none()
+            && self.turret_slot_count.is_none()
+            && self.launcher_slot_count.is_none()
+            && self.high_slot_count.is_none()
+            && self.mid_slot_count.is_none()
+            && self.low_slot_count.is_none()
             && self.implant_slot_index.is_empty()
             && self.booster_slot_index.is_empty()
             && self.subsystem_slot_index.is_empty()
@@ -147,30 +147,33 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             calibration: core_val_result.calibration.as_ref().map(|v| v.into()),
             dronebay_volume: core_val_result.dronebay_volume.as_ref().map(|v| v.into()),
             drone_bandwidth: core_val_result.drone_bandwidth.as_ref().map(|v| v.into()),
-            rig_slots: core_val_result.rig_slots.as_ref().map(|v| v.into()),
-            subsystem_slots: core_val_result.subsystem_slots.as_ref().map(|v| v.into()),
-            launched_drones: core_val_result.launched_drones.as_ref().map(|v| v.into()),
-            launched_fighters: core_val_result.launched_fighters.as_ref().map(|v| v.into()),
-            launched_support_fighters: core_val_result.launched_support_fighters.as_ref().map(|v| v.into()),
-            launched_light_fighters: core_val_result.launched_light_fighters.as_ref().map(|v| v.into()),
-            launched_heavy_fighters: core_val_result.launched_heavy_fighters.as_ref().map(|v| v.into()),
-            launched_standup_support_fighters: core_val_result
-                .launched_standup_support_fighters
+            rig_slot_count: core_val_result.rig_slot_count.as_ref().map(|v| v.into()),
+            subsystem_slot_count: core_val_result.subsystem_slot_count.as_ref().map(|v| v.into()),
+            launched_drone_count: core_val_result.launched_drone_count.as_ref().map(|v| v.into()),
+            launched_fighter_count: core_val_result.launched_fighter_count.as_ref().map(|v| v.into()),
+            launched_support_fighter_count: core_val_result
+                .launched_support_fighter_count
                 .as_ref()
                 .map(|v| v.into()),
-            launched_standup_light_fighters: core_val_result
-                .launched_standup_light_fighters
+            launched_light_fighter_count: core_val_result.launched_light_fighter_count.as_ref().map(|v| v.into()),
+            launched_heavy_fighter_count: core_val_result.launched_heavy_fighter_count.as_ref().map(|v| v.into()),
+            launched_standup_support_fighter_count: core_val_result
+                .launched_standup_support_fighter_count
                 .as_ref()
                 .map(|v| v.into()),
-            launched_standup_heavy_fighters: core_val_result
-                .launched_standup_heavy_fighters
+            launched_standup_light_fighter_count: core_val_result
+                .launched_standup_light_fighter_count
                 .as_ref()
                 .map(|v| v.into()),
-            turret_slots: core_val_result.turret_slots.as_ref().map(|v| v.into()),
-            launcher_slots: core_val_result.launcher_slots.as_ref().map(|v| v.into()),
-            high_slots: core_val_result.high_slots.as_ref().map(|v| v.into()),
-            mid_slots: core_val_result.mid_slots.as_ref().map(|v| v.into()),
-            low_slots: core_val_result.low_slots.as_ref().map(|v| v.into()),
+            launched_standup_heavy_fighter_count: core_val_result
+                .launched_standup_heavy_fighter_count
+                .as_ref()
+                .map(|v| v.into()),
+            turret_slot_count: core_val_result.turret_slot_count.as_ref().map(|v| v.into()),
+            launcher_slot_count: core_val_result.launcher_slot_count.as_ref().map(|v| v.into()),
+            high_slot_count: core_val_result.high_slot_count.as_ref().map(|v| v.into()),
+            mid_slot_count: core_val_result.mid_slot_count.as_ref().map(|v| v.into()),
+            low_slot_count: core_val_result.low_slot_count.as_ref().map(|v| v.into()),
             implant_slot_index: (&core_val_result.implant_slot_index).into(),
             booster_slot_index: (&core_val_result.booster_slot_index).into(),
             subsystem_slot_index: (&core_val_result.subsystem_slot_index).into(),

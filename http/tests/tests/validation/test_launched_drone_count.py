@@ -11,11 +11,11 @@ def test_fail_single(client, consts):
     api_fit.set_char(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 1
-    assert api_val.details.launched_drones.total == 0
-    assert api_val.details.launched_drones.users == [api_drone.id]
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.total == 0
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
 
 
 def test_fail_multiple(client, consts):
@@ -29,11 +29,11 @@ def test_fail_multiple(client, consts):
     api_drone1 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     api_drone2 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 2
-    assert api_val.details.launched_drones.total == 1
-    assert api_val.details.launched_drones.users == sorted([api_drone1.id, api_drone2.id])
+    assert api_val.details.launched_drone_count.used == 2
+    assert api_val.details.launched_drone_count.total == 1
+    assert api_val.details.launched_drone_count.users == sorted([api_drone1.id, api_drone2.id])
 
 
 def test_equal(client, consts):
@@ -46,7 +46,7 @@ def test_equal(client, consts):
     api_fit.set_char(type_id=eve_char_id)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -73,16 +73,16 @@ def test_modified_total(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_char.update().attrs[eve_total_attr_id].extra == approx(0)
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 1
-    assert api_val.details.launched_drones.total == 0
-    assert api_val.details.launched_drones.users == [api_drone.id]
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.total == 0
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_char.update().attrs[eve_total_attr_id].extra == approx(1)
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -99,15 +99,15 @@ def test_fractional_total(client, consts):
     api_fit.set_char(type_id=eve_char1_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 1
-    assert api_val.details.launched_drones.total == 0
-    assert api_val.details.launched_drones.users == [api_drone.id]
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.total == 0
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
     # Action
     api_fit.set_char(type_id=eve_char2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -123,11 +123,11 @@ def test_no_char(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 1
-    assert api_val.details.launched_drones.total is None
-    assert api_val.details.launched_drones.users == [api_drone.id]
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.total is None
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
 
 
 def test_not_loaded_user(client, consts):
@@ -141,11 +141,11 @@ def test_not_loaded_user(client, consts):
     api_fit.set_char(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 1
-    assert api_val.details.launched_drones.total == 0
-    assert api_val.details.launched_drones.users == [api_drone.id]
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.total == 0
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
 
 
 def test_not_loaded_char(client, consts):
@@ -160,11 +160,11 @@ def test_not_loaded_char(client, consts):
     api_fit.set_char(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 1
-    assert api_val.details.launched_drones.total is None
-    assert api_val.details.launched_drones.users == [api_drone.id]
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.total is None
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
 
 
 def test_no_value_total(client, consts):
@@ -179,11 +179,11 @@ def test_no_value_total(client, consts):
     api_fit.set_char(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 1
-    assert api_val.details.launched_drones.total == 0
-    assert api_val.details.launched_drones.users == [api_drone.id]
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.total == 0
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
 
 
 def test_no_attr_total(client, consts):
@@ -198,11 +198,11 @@ def test_no_attr_total(client, consts):
     api_fit.set_char(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 1
-    assert api_val.details.launched_drones.total is None
-    assert api_val.details.launched_drones.users == [api_drone.id]
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.total is None
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
 
 
 def test_criterion_state(client, consts):
@@ -215,22 +215,22 @@ def test_criterion_state(client, consts):
     api_fit.set_char(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is False
-    assert api_val.details.launched_drones.used == 1
-    assert api_val.details.launched_drones.total == 0
-    assert api_val.details.launched_drones.users == [api_drone.id]
+    assert api_val.details.launched_drone_count.used == 1
+    assert api_val.details.launched_drone_count.total == 0
+    assert api_val.details.launched_drone_count.users == [api_drone.id]
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -246,7 +246,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.set_char(type_id=eve_char_id)
     api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.launched_drones])
+    api_val = api_fit.validate(include=[consts.ApiValType.launched_drone_count])
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

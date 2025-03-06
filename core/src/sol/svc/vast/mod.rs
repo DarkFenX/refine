@@ -8,7 +8,7 @@ pub use vaste_vals_fit::{
     SolValCapitalModFail, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail,
     SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValItemKindFail, SolValMaxGroupFail,
     SolValMaxGroupItemInfo, SolValModuleStateFail, SolValNotLoadedItemFail, SolValResFail, SolValResItemInfo,
-    SolValRigSizeFail, SolValRigSizeItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo, SolValSlotFail,
+    SolValRigSizeFail, SolValRigSizeItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo, SolValSlotCountFail,
     SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo,
 };
 

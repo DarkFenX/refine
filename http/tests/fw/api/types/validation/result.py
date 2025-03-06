@@ -13,7 +13,7 @@ from .resources import ValResourceFail
 from .rig_size import ValRigSizeFail
 from .ship_limit import ValShipLimitFail
 from .skill_reqs import ValSrqFail
-from .slot_amount import ValSlotAmountFail
+from .slot_count import ValSlotCountFail
 from .slot_index import ValSlotIndexFail
 
 
@@ -32,21 +32,21 @@ class ValResultDetails(AttrDict):
             ApiValType.calibration: AttrHookDef(func=lambda d: ValResourceFail(data=d)),
             ApiValType.dronebay_volume: AttrHookDef(func=lambda d: ValResourceFail(data=d)),
             ApiValType.drone_bandwidth: AttrHookDef(func=lambda d: ValResourceFail(data=d)),
-            ApiValType.rig_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.subsystem_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.launched_drones: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.launched_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.launched_support_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.launched_light_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.launched_heavy_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.launched_standup_support_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.launched_standup_light_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.launched_standup_heavy_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.turret_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.launcher_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.high_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.mid_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
-            ApiValType.low_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.rig_slot_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.subsystem_slot_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.launched_drone_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.launched_fighter_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.launched_support_fighter_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.launched_light_fighter_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.launched_heavy_fighter_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.launched_standup_support_fighter_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.launched_standup_light_fighter_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.launched_standup_heavy_fighter_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.turret_slot_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.launcher_slot_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.high_slot_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.mid_slot_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
+            ApiValType.low_slot_count: AttrHookDef(func=lambda d: ValSlotCountFail(data=d)),
             ApiValType.implant_slot_index: AttrHookDef(func=lambda d: ValSlotIndexFail(data=d)),
             ApiValType.booster_slot_index: AttrHookDef(func=lambda d: ValSlotIndexFail(data=d)),
             ApiValType.subsystem_slot_index: AttrHookDef(func=lambda d: ValSlotIndexFail(data=d)),

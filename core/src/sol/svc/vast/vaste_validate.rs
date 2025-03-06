@@ -34,55 +34,59 @@ impl SolVast {
         if options.drone_bandwidth && !fit_data.validate_drone_bandwidth_fast(uad, calc, fit) {
             return false;
         }
-        if options.rig_slots && !fit_data.validate_rig_slots_fast(uad, calc, fit) {
+        if options.rig_slot_count && !fit_data.validate_rig_slot_count_fast(uad, calc, fit) {
             return false;
         }
-        if options.subsystem_slots && !fit_data.validate_subsystem_slots_fast(uad, calc, fit) {
+        if options.subsystem_slot_count && !fit_data.validate_subsystem_slot_count_fast(uad, calc, fit) {
             return false;
         }
-        if options.launched_drones && !fit_data.validate_launched_drones_fast(uad, calc, fit) {
+        if options.launched_drone_count && !fit_data.validate_launched_drone_count_fast(uad, calc, fit) {
             return false;
         }
-        if options.launched_fighters && !fit_data.validate_launched_fighters_fast(uad, calc, fit) {
+        if options.launched_fighter_count && !fit_data.validate_launched_fighter_count_fast(uad, calc, fit) {
             return false;
         }
-        if options.launched_support_fighters && !fit_data.validate_launched_support_fighters_fast(uad, calc, fit) {
-            return false;
-        }
-        if options.launched_light_fighters && !fit_data.validate_launched_light_fighters_fast(uad, calc, fit) {
-            return false;
-        }
-        if options.launched_heavy_fighters && !fit_data.validate_launched_heavy_fighters_fast(uad, calc, fit) {
-            return false;
-        }
-        if options.launched_standup_support_fighters
-            && !fit_data.validate_launched_standup_support_fighters_fast(uad, calc, fit)
+        if options.launched_support_fighter_count
+            && !fit_data.validate_launched_support_fighter_count_fast(uad, calc, fit)
         {
             return false;
         }
-        if options.launched_standup_light_fighters
-            && !fit_data.validate_launched_standup_light_fighters_fast(uad, calc, fit)
+        if options.launched_light_fighter_count && !fit_data.validate_launched_light_fighter_count_fast(uad, calc, fit)
         {
             return false;
         }
-        if options.launched_standup_heavy_fighters
-            && !fit_data.validate_launched_standup_heavy_fighters_fast(uad, calc, fit)
+        if options.launched_heavy_fighter_count && !fit_data.validate_launched_heavy_fighter_count_fast(uad, calc, fit)
         {
             return false;
         }
-        if options.turret_slots && !fit_data.validate_turret_slots_fast(uad, calc, fit) {
+        if options.launched_standup_support_fighter_count
+            && !fit_data.validate_launched_standup_support_fighter_count_fast(uad, calc, fit)
+        {
             return false;
         }
-        if options.launcher_slots && !fit_data.validate_launcher_slots_fast(uad, calc, fit) {
+        if options.launched_standup_light_fighter_count
+            && !fit_data.validate_launched_standup_light_fighter_count_fast(uad, calc, fit)
+        {
             return false;
         }
-        if options.high_slots && !fit_data.validate_high_slots_fast(uad, calc, fit) {
+        if options.launched_standup_heavy_fighter_count
+            && !fit_data.validate_launched_standup_heavy_fighter_count_fast(uad, calc, fit)
+        {
             return false;
         }
-        if options.mid_slots && !fit_data.validate_mid_slots_fast(uad, calc, fit) {
+        if options.turret_slot_count && !fit_data.validate_turret_slot_count_fast(uad, calc, fit) {
             return false;
         }
-        if options.low_slots && !fit_data.validate_low_slots_fast(uad, calc, fit) {
+        if options.launcher_slot_count && !fit_data.validate_launcher_slot_count_fast(uad, calc, fit) {
+            return false;
+        }
+        if options.high_slot_count && !fit_data.validate_high_slot_count_fast(uad, calc, fit) {
+            return false;
+        }
+        if options.mid_slot_count && !fit_data.validate_mid_slot_count_fast(uad, calc, fit) {
+            return false;
+        }
+        if options.low_slot_count && !fit_data.validate_low_slot_count_fast(uad, calc, fit) {
             return false;
         }
         if options.implant_slot_index && !fit_data.validate_implant_slot_index_fast() {
@@ -164,53 +168,56 @@ impl SolVast {
         if options.drone_bandwidth {
             result.drone_bandwidth = fit_data.validate_drone_bandwidth_verbose(uad, calc, fit);
         }
-        if options.rig_slots {
-            result.rig_slots = fit_data.validate_rig_slots_verbose(uad, calc, fit);
+        if options.rig_slot_count {
+            result.rig_slot_count = fit_data.validate_rig_slot_count_verbose(uad, calc, fit);
         }
-        if options.subsystem_slots {
-            result.subsystem_slots = fit_data.validate_subsystem_slots_verbose(uad, calc, fit);
+        if options.subsystem_slot_count {
+            result.subsystem_slot_count = fit_data.validate_subsystem_slot_count_verbose(uad, calc, fit);
         }
-        if options.launched_drones {
-            result.launched_drones = fit_data.validate_launched_drones_verbose(uad, calc, fit);
+        if options.launched_drone_count {
+            result.launched_drone_count = fit_data.validate_launched_drone_count_verbose(uad, calc, fit);
         }
-        if options.launched_fighters {
-            result.launched_fighters = fit_data.validate_launched_fighters_verbose(uad, calc, fit);
+        if options.launched_fighter_count {
+            result.launched_fighter_count = fit_data.validate_launched_fighter_count_verbose(uad, calc, fit);
         }
-        if options.launched_support_fighters {
-            result.launched_support_fighters = fit_data.validate_launched_support_fighters_verbose(uad, calc, fit);
+        if options.launched_support_fighter_count {
+            result.launched_support_fighter_count =
+                fit_data.validate_launched_support_fighter_count_verbose(uad, calc, fit);
         }
-        if options.launched_light_fighters {
-            result.launched_light_fighters = fit_data.validate_launched_light_fighters_verbose(uad, calc, fit);
+        if options.launched_light_fighter_count {
+            result.launched_light_fighter_count =
+                fit_data.validate_launched_light_fighter_count_verbose(uad, calc, fit);
         }
-        if options.launched_heavy_fighters {
-            result.launched_heavy_fighters = fit_data.validate_launched_heavy_fighters_verbose(uad, calc, fit);
+        if options.launched_heavy_fighter_count {
+            result.launched_heavy_fighter_count =
+                fit_data.validate_launched_heavy_fighter_count_verbose(uad, calc, fit);
         }
-        if options.launched_standup_support_fighters {
-            result.launched_standup_support_fighters =
-                fit_data.validate_launched_standup_support_fighters_verbose(uad, calc, fit);
+        if options.launched_standup_support_fighter_count {
+            result.launched_standup_support_fighter_count =
+                fit_data.validate_launched_standup_support_fighter_count_verbose(uad, calc, fit);
         }
-        if options.launched_standup_light_fighters {
-            result.launched_standup_light_fighters =
-                fit_data.validate_launched_standup_light_fighters_verbose(uad, calc, fit);
+        if options.launched_standup_light_fighter_count {
+            result.launched_standup_light_fighter_count =
+                fit_data.validate_launched_standup_light_fighter_count_verbose(uad, calc, fit);
         }
-        if options.launched_standup_heavy_fighters {
-            result.launched_standup_heavy_fighters =
-                fit_data.validate_launched_standup_heavy_fighters_verbose(uad, calc, fit);
+        if options.launched_standup_heavy_fighter_count {
+            result.launched_standup_heavy_fighter_count =
+                fit_data.validate_launched_standup_heavy_fighter_count_verbose(uad, calc, fit);
         }
-        if options.turret_slots {
-            result.turret_slots = fit_data.validate_turret_slots_verbose(uad, calc, fit);
+        if options.turret_slot_count {
+            result.turret_slot_count = fit_data.validate_turret_slot_count_verbose(uad, calc, fit);
         }
-        if options.launcher_slots {
-            result.launcher_slots = fit_data.validate_launcher_slots_verbose(uad, calc, fit);
+        if options.launcher_slot_count {
+            result.launcher_slot_count = fit_data.validate_launcher_slot_count_verbose(uad, calc, fit);
         }
-        if options.high_slots {
-            result.high_slots = fit_data.validate_high_slots_verbose(uad, calc, fit);
+        if options.high_slot_count {
+            result.high_slot_count = fit_data.validate_high_slot_count_verbose(uad, calc, fit);
         }
-        if options.mid_slots {
-            result.mid_slots = fit_data.validate_mid_slots_verbose(uad, calc, fit);
+        if options.mid_slot_count {
+            result.mid_slot_count = fit_data.validate_mid_slot_count_verbose(uad, calc, fit);
         }
-        if options.low_slots {
-            result.low_slots = fit_data.validate_low_slots_verbose(uad, calc, fit);
+        if options.low_slot_count {
+            result.low_slot_count = fit_data.validate_low_slot_count_verbose(uad, calc, fit);
         }
         if options.implant_slot_index {
             result.implant_slot_index = fit_data.validate_implant_slot_index_verbose();

@@ -10,7 +10,7 @@ pub(in crate::info::valid) use resource::HValResFail;
 pub(in crate::info::valid) use rig_size::HValRigSizeFail;
 pub(in crate::info::valid) use ship_limit::HValShipLimitFail;
 pub(in crate::info::valid) use skill_reqs::HValSrqFail;
-pub(in crate::info::valid) use slot::HValSlotFail;
+pub(in crate::info::valid) use slot_count::HValSlotCountFail;
 pub(in crate::info::valid) use slot_index::HValSlotIndexFail;
 
 mod capital_module;
@@ -25,5 +25,5 @@ mod resource;
 mod rig_size;
 mod ship_limit;
 mod skill_reqs;
-mod slot;
+mod slot_count;
 mod slot_index;

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ValSlotAmountFail:
+class ValSlotCountFail:
 
     used: int
     total: int | None
