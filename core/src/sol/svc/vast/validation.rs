@@ -9,7 +9,7 @@ pub struct SolValOptions {
     pub cpu: bool,
     pub powergrid: bool,
     pub calibration: bool,
-    pub dronebay_volume: bool,
+    pub drone_bay_volume: bool,
     pub drone_bandwidth: bool,
     pub rig_slot_count: bool,
     pub subsystem_slot_count: bool,
@@ -50,7 +50,7 @@ impl SolValOptions {
             cpu: true,
             powergrid: true,
             calibration: true,
-            dronebay_volume: true,
+            drone_bay_volume: true,
             drone_bandwidth: true,
             rig_slot_count: true,
             subsystem_slot_count: true,
@@ -91,7 +91,7 @@ impl SolValOptions {
             cpu: false,
             powergrid: false,
             calibration: false,
-            dronebay_volume: false,
+            drone_bay_volume: false,
             drone_bandwidth: false,
             rig_slot_count: false,
             subsystem_slot_count: false,
@@ -133,7 +133,7 @@ pub struct SolValResult {
     pub cpu: Option<SolValResFail>,
     pub powergrid: Option<SolValResFail>,
     pub calibration: Option<SolValResFail>,
-    pub dronebay_volume: Option<SolValResFail>,
+    pub drone_bay_volume: Option<SolValResFail>,
     pub drone_bandwidth: Option<SolValResFail>,
     pub rig_slot_count: Option<SolValSlotCountFail>,
     pub subsystem_slot_count: Option<SolValSlotCountFail>,
@@ -174,7 +174,7 @@ impl SolValResult {
             cpu: None,
             powergrid: None,
             calibration: None,
-            dronebay_volume: None,
+            drone_bay_volume: None,
             drone_bandwidth: None,
             rig_slot_count: None,
             subsystem_slot_count: None,
@@ -214,7 +214,7 @@ impl SolValResult {
         self.cpu.is_none()
             && self.powergrid.is_none()
             && self.calibration.is_none()
-            && self.dronebay_volume.is_none()
+            && self.drone_bay_volume.is_none()
             && self.drone_bandwidth.is_none()
             && self.rig_slot_count.is_none()
             && self.subsystem_slot_count.is_none()

@@ -391,7 +391,7 @@ class ApiValType(StrEnum):
     cpu = 'cpu'
     powergrid = 'powergrid'
     calibration = 'calibration'
-    dronebay_volume = 'dronebay_volume'
+    drone_bay_volume = 'drone_bay_volume'
     drone_bandwidth = 'drone_bandwidth'
     rig_slot_count = 'rig_slot_count'
     subsystem_slot_count = 'subsystem_slot_count'

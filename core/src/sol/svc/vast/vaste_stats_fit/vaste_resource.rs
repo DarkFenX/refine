@@ -64,7 +64,7 @@ impl SolVastFitData {
             &ec::attrs::UPGRADE_CAPACITY,
         )
     }
-    pub(in crate::sol::svc::vast) fn get_stats_dronebay_volume(
+    pub(in crate::sol::svc::vast) fn get_stats_drone_bay_volume(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,

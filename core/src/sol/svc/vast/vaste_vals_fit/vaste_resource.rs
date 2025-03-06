@@ -45,13 +45,13 @@ impl SolVastFitData {
         let stats = self.get_stats_calibration(uad, calc, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
-    pub(in crate::sol::svc::vast) fn validate_dronebay_volume_fast(
+    pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_fast(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        let stats = self.get_stats_dronebay_volume(uad, calc, fit);
+        let stats = self.get_stats_drone_bay_volume(uad, calc, fit);
         stats.used <= stats.output.unwrap_or(OF(0.0))
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_fast(
@@ -91,13 +91,13 @@ impl SolVastFitData {
         let stats = self.get_stats_calibration(uad, calc, fit);
         validate_verbose_other(stats, self.rigs_rigslot_calibration.iter())
     }
-    pub(in crate::sol::svc::vast) fn validate_dronebay_volume_verbose(
+    pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_verbose(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValResFail> {
-        let stats = self.get_stats_dronebay_volume(uad, calc, fit);
+        let stats = self.get_stats_drone_bay_volume(uad, calc, fit);
         validate_verbose_other(stats, self.drones_volume.iter())
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_verbose(
