@@ -7,7 +7,7 @@ def test_slots(client, consts):
     eve_affector_attr_low_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_modifier)
     eve_affectee_attr_hi_id = client.mk_eve_attr(id_=consts.EveAttr.hi_slots)
     eve_affectee_attr_mid_id = client.mk_eve_attr(id_=consts.EveAttr.med_slots)
-    eve_affectee_attr_low_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_affectee_attr_low_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.slot_modifier)
     eve_subsystem_id = client.mk_eve_item(
         attrs={eve_affector_attr_hi_id: 3, eve_affector_attr_mid_id: 4, eve_affector_attr_low_id: 1},

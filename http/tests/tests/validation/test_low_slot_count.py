@@ -2,7 +2,7 @@ from tests import approx, check_no_field
 
 
 def test_fail_single(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
     client.create_sources()
@@ -20,7 +20,7 @@ def test_fail_single(client, consts):
 
 def test_fail_multiple_ship(client, consts):
     # Unlike other validations, here we expose only users which are outside of total count of slots
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 1})
     client.create_sources()
@@ -40,7 +40,7 @@ def test_fail_multiple_ship(client, consts):
 
 def test_fail_multiple_struct(client, consts):
     # Unlike other validations, here we expose only users which are outside of total count of slots
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     eve_struct_id = client.mk_eve_struct(attrs={eve_total_attr_id: 1})
     client.create_sources()
@@ -60,7 +60,7 @@ def test_fail_multiple_struct(client, consts):
 
 def test_holes(client, consts):
     # Check what happens when not all slots are filled with modules
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 3})
     client.create_sources()
@@ -100,7 +100,7 @@ def test_holes(client, consts):
 
 
 def test_equal(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 1})
     client.create_sources()
@@ -117,7 +117,7 @@ def test_equal(client, consts):
 
 def test_modified_total(client, consts):
     # Unrealistic scenario, but modification of total count is supported
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
@@ -152,7 +152,7 @@ def test_modified_total(client, consts):
 
 
 def test_fractional_total(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship1_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0.4})
     eve_ship2_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0.6})
@@ -177,7 +177,7 @@ def test_fractional_total(client, consts):
 
 
 def test_no_ship(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up
     client.mk_eve_item(attrs={eve_total_attr_id: 5})
@@ -195,7 +195,7 @@ def test_no_ship(client, consts):
 
 def test_not_loaded_user(client, consts):
     # Not loaded modules still take slot
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
     eve_module_id = client.alloc_item_id()
     client.create_sources()
@@ -212,7 +212,7 @@ def test_not_loaded_user(client, consts):
 
 
 def test_not_loaded_ship(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up
     client.mk_eve_item(attrs={eve_total_attr_id: 5})
@@ -231,7 +231,7 @@ def test_not_loaded_ship(client, consts):
 
 
 def test_no_value_total(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship()
     # Make an item to ensure that total attribute is not cleaned up
@@ -252,7 +252,7 @@ def test_no_value_total(client, consts):
 def test_no_attr_total(client, consts):
     # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
     # irrelevant
-    eve_total_attr_id = consts.EveAttr.low_slot_count
+    eve_total_attr_id = consts.EveAttr.low_slots
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
     client.create_sources()
@@ -270,7 +270,7 @@ def test_no_attr_total(client, consts):
 
 def test_criterion_state(client, consts):
     # Slot is taken even when module is in ghost state
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
     client.create_sources()
@@ -296,7 +296,7 @@ def test_criterion_state(client, consts):
 
 def test_criterion_rack(client, consts):
     # Modules from other racks are ignored
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_module_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
     client.create_sources()
@@ -313,7 +313,7 @@ def test_criterion_rack(client, consts):
 
 
 def test_criterion_item_kind(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slot_count)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.low_slots)
     eve_rig_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
     client.create_sources()
