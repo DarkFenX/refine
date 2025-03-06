@@ -34,7 +34,10 @@ use accum::{SolAttrValInfo, SolModAccumFast, SolModAccumInfo};
 pub(in crate::sol::svc) use calc::SolCalc;
 pub(in crate::sol) use err::{AttrCalcError, LoadedItemFoundError};
 pub use misc::SolAttrVal;
-use misc::{SolAttrSpec, SolItemAttrPostprocs, SolLocationKind, SolModification, SolModificationKey};
+use misc::{
+    FTR_COUNT_ATTR, SKILL_LVL_ATTR, SolAttrSpec, SolItemAttrPostprocs, SolLocationKind, SolModification,
+    SolModificationKey,
+};
 pub use mod_info::{SolAffectorInfo, SolModificationInfo, SolOpInfo};
 use modifier::{
     SolAffecteeFilter, SolAggrMode, SolContext, SolCtxModifier, SolLocation, SolModifierKind, SolOp, SolRawModifier,

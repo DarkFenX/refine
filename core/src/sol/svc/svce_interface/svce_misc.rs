@@ -2,7 +2,10 @@ use crate::{
     defs::{EAttrId, SolItemId},
     sol::{
         svc::SolSvc,
-        uad::{SolUad, item::SolSkill},
+        uad::{
+            SolUad,
+            item::{SolFighter, SolSkill},
+        },
     },
     src::Src,
 };
@@ -18,6 +21,9 @@ impl SolSvc {
         attr_id: &EAttrId,
     ) {
         self.notify_base_attr_value_changed(uad, item_id, attr_id);
+    }
+    pub(in crate::sol) fn fighter_count_changed(&mut self, uad: &SolUad, fighter: &SolFighter) {
+        self.notify_fighter_count_changed(uad, fighter);
     }
     pub(in crate::sol) fn skill_level_changed(&mut self, uad: &SolUad, skill: &SolSkill) {
         self.notify_skill_level_changed(uad, skill);

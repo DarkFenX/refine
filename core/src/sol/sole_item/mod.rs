@@ -17,7 +17,8 @@ pub use sole_drone::{
 };
 pub use sole_fighter::{
     AddFighterError, AddFighterProjError, ChangeFighterProjError, GetFighterError, GetFitFightersError,
-    RemoveFighterError, RemoveFighterProjError, SetFighterStateError,
+    RemoveFighterCountOverrideError, RemoveFighterError, RemoveFighterProjError, SetFighterCountOverrideError,
+    SetFighterStateError,
 };
 pub use sole_fw_effect::{
     AddFwEffectError, GetFitFwEffectsError, GetFwEffectError, RemoveFwEffectError, SetFwEffectStateError,

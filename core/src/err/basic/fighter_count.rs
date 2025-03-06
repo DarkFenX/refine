@@ -1,0 +1,17 @@
+use crate::defs::Count;
+
+#[derive(Debug)]
+pub struct FighterCountError {
+    pub count: Count,
+}
+impl FighterCountError {
+    pub(crate) fn new(count: Count) -> Self {
+        Self { count }
+    }
+}
+impl std::error::Error for FighterCountError {}
+impl std::fmt::Display for FighterCountError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "fighter should be 1+, received {}", self.count)
+    }
+}

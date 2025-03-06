@@ -5,7 +5,9 @@ use crate::{
     defs::{AttrVal, EAttrId, SolFitId, SolItemId},
     ec,
     sol::{
-        svc::calc::{SolAttrSpec, SolCalc, SolCtxModifier, SolModifierKind, SolRawModifier},
+        svc::calc::{
+            FTR_COUNT_ATTR, SKILL_LVL_ATTR, SolAttrSpec, SolCalc, SolCtxModifier, SolModifierKind, SolRawModifier,
+        },
         uad::{SolUad, fleet::SolFleet, item::SolItem},
     },
     src::Src,
@@ -261,8 +263,11 @@ impl SolCalc {
             }
         }
     }
+    pub(in crate::sol::svc) fn fighter_count_changed(&mut self, uad: &SolUad, item_id: &SolItemId) {
+        self.force_attr_postproc_recalc(uad, item_id, &FTR_COUNT_ATTR)
+    }
     pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &SolUad, item_id: &SolItemId) {
-        self.force_attr_postproc_recalc(uad, item_id, &ec::attrs::SKILL_LEVEL)
+        self.force_attr_postproc_recalc(uad, item_id, &SKILL_LVL_ATTR)
     }
     // Private methods
     fn reg_raw_mod(

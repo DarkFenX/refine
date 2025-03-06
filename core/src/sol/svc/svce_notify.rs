@@ -6,7 +6,7 @@ use crate::{
         uad::{
             SolUad,
             fleet::SolFleet,
-            item::{SolItem, SolItemState, SolSkill},
+            item::{SolFighter, SolItem, SolItemState, SolSkill},
         },
     },
     src::Src,
@@ -148,6 +148,9 @@ impl SolSvc {
     ) {
         self.calc
             .effect_proj_range_changed(uad, projector_item, effect, projectee_item, range);
+    }
+    pub(in crate::sol::svc) fn notify_fighter_count_changed(&mut self, uad: &SolUad, fighter: &SolFighter) {
+        self.calc.fighter_count_changed(uad, &fighter.get_id());
     }
     pub(in crate::sol::svc) fn notify_skill_level_changed(&mut self, uad: &SolUad, skill: &SolSkill) {
         self.calc.skill_level_changed(uad, &skill.get_id());

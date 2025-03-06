@@ -49,11 +49,6 @@ impl std::fmt::Display for SetSkillLevelError {
         }
     }
 }
-impl From<SkillLevelError> for SetSkillLevelError {
-    fn from(error: SkillLevelError) -> Self {
-        Self::SkillLevelError(error)
-    }
-}
 impl From<ItemFoundError> for SetSkillLevelError {
     fn from(error: ItemFoundError) -> Self {
         Self::ItemNotFound(error)
@@ -62,5 +57,10 @@ impl From<ItemFoundError> for SetSkillLevelError {
 impl From<ItemKindMatchError> for SetSkillLevelError {
     fn from(error: ItemKindMatchError) -> Self {
         Self::ItemIsNotSkill(error)
+    }
+}
+impl From<SkillLevelError> for SetSkillLevelError {
+    fn from(error: SkillLevelError) -> Self {
+        Self::SkillLevelError(error)
     }
 }
