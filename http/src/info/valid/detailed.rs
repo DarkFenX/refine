@@ -1,7 +1,7 @@
 use crate::info::valid::details::{
-    HCapitalModValFail, HChargeGroupValFail, HChargeSizeValFail, HChargeVolumeValFail, HDroneGroupValFail,
-    HItemKindValFail, HMaxGroupValFail, HModuleStateValFail, HResValFail, HRigSizeValFail, HShipLimitValFail,
-    HSlotIndexValFail, HSlotValFail, HSrqValFail,
+    HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail,
+    HValItemKindFail, HValMaxGroupFail, HValModuleStateFail, HValResFail, HValRigSizeFail, HValShipLimitFail,
+    HValSlotFail, HValSlotIndexFail, HValSrqFail,
 };
 
 #[derive(serde::Serialize)]
@@ -23,80 +23,80 @@ impl From<&rc::SolValResult> for HValidInfoDetailed {
 #[derive(serde::Serialize)]
 struct HValidInfoDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
-    cpu: Option<HResValFail>,
+    cpu: Option<HValResFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    powergrid: Option<HResValFail>,
+    powergrid: Option<HValResFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    calibration: Option<HResValFail>,
+    calibration: Option<HValResFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    dronebay_volume: Option<HResValFail>,
+    dronebay_volume: Option<HValResFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    drone_bandwidth: Option<HResValFail>,
+    drone_bandwidth: Option<HValResFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    rig_slots: Option<HSlotValFail>,
+    rig_slots: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    subsystem_slots: Option<HSlotValFail>,
+    subsystem_slots: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_drones: Option<HSlotValFail>,
+    launched_drones: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_fighters: Option<HSlotValFail>,
+    launched_fighters: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_support_fighters: Option<HSlotValFail>,
+    launched_support_fighters: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_light_fighters: Option<HSlotValFail>,
+    launched_light_fighters: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_heavy_fighters: Option<HSlotValFail>,
+    launched_heavy_fighters: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_standup_support_fighters: Option<HSlotValFail>,
+    launched_standup_support_fighters: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_standup_light_fighters: Option<HSlotValFail>,
+    launched_standup_light_fighters: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launched_standup_heavy_fighters: Option<HSlotValFail>,
+    launched_standup_heavy_fighters: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    turret_slots: Option<HSlotValFail>,
+    turret_slots: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    launcher_slots: Option<HSlotValFail>,
+    launcher_slots: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    high_slots: Option<HSlotValFail>,
+    high_slots: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    mid_slots: Option<HSlotValFail>,
+    mid_slots: Option<HValSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    low_slots: Option<HSlotValFail>,
-    #[serde(skip_serializing_if = "HSlotIndexValFail::is_empty")]
-    implant_slot_index: HSlotIndexValFail,
-    #[serde(skip_serializing_if = "HSlotIndexValFail::is_empty")]
-    booster_slot_index: HSlotIndexValFail,
-    #[serde(skip_serializing_if = "HSlotIndexValFail::is_empty")]
-    subsystem_slot_index: HSlotIndexValFail,
+    low_slots: Option<HValSlotFail>,
+    #[serde(skip_serializing_if = "HValSlotIndexFail::is_empty")]
+    implant_slot_index: HValSlotIndexFail,
+    #[serde(skip_serializing_if = "HValSlotIndexFail::is_empty")]
+    booster_slot_index: HValSlotIndexFail,
+    #[serde(skip_serializing_if = "HValSlotIndexFail::is_empty")]
+    subsystem_slot_index: HValSlotIndexFail,
     #[serde(skip_serializing_if = "Option::is_none")]
-    ship_limit: Option<HShipLimitValFail>,
-    #[serde(skip_serializing_if = "HMaxGroupValFail::is_empty")]
-    max_group_fitted: HMaxGroupValFail,
-    #[serde(skip_serializing_if = "HMaxGroupValFail::is_empty")]
-    max_group_online: HMaxGroupValFail,
-    #[serde(skip_serializing_if = "HMaxGroupValFail::is_empty")]
-    max_group_active: HMaxGroupValFail,
+    ship_limit: Option<HValShipLimitFail>,
+    #[serde(skip_serializing_if = "HValMaxGroupFail::is_empty")]
+    max_group_fitted: HValMaxGroupFail,
+    #[serde(skip_serializing_if = "HValMaxGroupFail::is_empty")]
+    max_group_online: HValMaxGroupFail,
+    #[serde(skip_serializing_if = "HValMaxGroupFail::is_empty")]
+    max_group_active: HValMaxGroupFail,
     #[serde(skip_serializing_if = "Option::is_none")]
-    rig_size: Option<HRigSizeValFail>,
-    #[serde(skip_serializing_if = "HSrqValFail::is_empty")]
-    skill_reqs: HSrqValFail,
-    #[serde(skip_serializing_if = "HChargeGroupValFail::is_empty")]
-    charge_group: HChargeGroupValFail,
-    #[serde(skip_serializing_if = "HChargeSizeValFail::is_empty")]
-    charge_size: HChargeSizeValFail,
-    #[serde(skip_serializing_if = "HChargeVolumeValFail::is_empty")]
-    charge_volume: HChargeVolumeValFail,
+    rig_size: Option<HValRigSizeFail>,
+    #[serde(skip_serializing_if = "HValSrqFail::is_empty")]
+    skill_reqs: HValSrqFail,
+    #[serde(skip_serializing_if = "HValChargeGroupFail::is_empty")]
+    charge_group: HValChargeGroupFail,
+    #[serde(skip_serializing_if = "HValChargeSizeFail::is_empty")]
+    charge_size: HValChargeSizeFail,
+    #[serde(skip_serializing_if = "HValChargeVolumeFail::is_empty")]
+    charge_volume: HValChargeVolumeFail,
     #[serde(skip_serializing_if = "Option::is_none")]
-    capital_module: Option<HCapitalModValFail>,
+    capital_module: Option<HValCapitalModFail>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
     not_loaded_item: Vec<rc::SolItemId>,
-    #[serde(skip_serializing_if = "HModuleStateValFail::is_empty")]
-    module_state: HModuleStateValFail,
-    #[serde(skip_serializing_if = "HItemKindValFail::is_empty")]
-    item_kind: HItemKindValFail,
+    #[serde(skip_serializing_if = "HValModuleStateFail::is_empty")]
+    module_state: HValModuleStateFail,
+    #[serde(skip_serializing_if = "HValItemKindFail::is_empty")]
+    item_kind: HValItemKindFail,
     #[serde(skip_serializing_if = "Option::is_none")]
-    drone_group: Option<HDroneGroupValFail>,
+    drone_group: Option<HValDroneGroupFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {

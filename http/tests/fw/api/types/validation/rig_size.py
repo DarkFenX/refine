@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ValRigSizeDetails:
+class ValRigSizeFail:
 
     allowed_size: float
     mismatches: dict[str, float]

@@ -8,13 +8,13 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub struct SolChargeVolumeValFail {
+pub struct SolValChargeVolumeFail {
     pub parent_item_id: SolItemId,
     pub charge_item_id: SolItemId,
     pub charge_volume: AttrVal,
     pub max_volume: AttrVal,
 }
-impl SolChargeVolumeValFail {
+impl SolValChargeVolumeFail {
     fn new(parent_item_id: SolItemId, charge_item_id: SolItemId, charge_volume: AttrVal, max_volume: AttrVal) -> Self {
         Self {
             parent_item_id,
@@ -48,7 +48,7 @@ impl SolVastFitData {
     pub(in crate::sol::svc::vast) fn validate_charge_volume_verbose(
         &mut self,
         uad: &SolUad,
-    ) -> Vec<SolChargeVolumeValFail> {
+    ) -> Vec<SolValChargeVolumeFail> {
         let mut fails = Vec::new();
         for (module_item_id, cache) in self.mods_charge_volume.iter_mut() {
             match cache {
@@ -72,7 +72,7 @@ fn calculate_item_result(
     uad: &SolUad,
     module_item_id: &SolItemId,
     charge_volume: AttrVal,
-) -> SolValCache<AttrVal, SolChargeVolumeValFail> {
+) -> SolValCache<AttrVal, SolValChargeVolumeFail> {
     let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
     let module_capacity = match module.get_attrs() {
         Some(attrs) => match attrs.get(&ec::attrs::CAPACITY) {
@@ -83,7 +83,7 @@ fn calculate_item_result(
     };
     match charge_volume <= module_capacity {
         true => SolValCache::Pass(charge_volume),
-        false => SolValCache::Fail(SolChargeVolumeValFail::new(
+        false => SolValCache::Fail(SolValChargeVolumeFail::new(
             *module_item_id,
             module.get_charge_id().unwrap(),
             charge_volume,

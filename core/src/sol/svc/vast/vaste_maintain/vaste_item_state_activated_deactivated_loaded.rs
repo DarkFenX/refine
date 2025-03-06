@@ -1,7 +1,7 @@
 use crate::{
     ad, ec,
     sol::{
-        svc::vast::{SolModuleStateValFail, SolVast},
+        svc::vast::{SolValModuleStateFail, SolVast},
         uad::item::{SolItem, SolItemState, SolModuleState},
     },
 };
@@ -45,7 +45,7 @@ impl SolVast {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data.mods_state.insert(
                             module.get_id(),
-                            SolModuleStateValFail::new(
+                            SolValModuleStateFail::new(
                                 module.get_id(),
                                 SolModuleState::Online,
                                 SolModuleState::Offline,
@@ -74,7 +74,7 @@ impl SolVast {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                             fit_data.mods_state.insert(
                                 module.get_id(),
-                                SolModuleStateValFail::new(
+                                SolValModuleStateFail::new(
                                     module.get_id(),
                                     SolModuleState::Active,
                                     SolModuleState::Online,
@@ -96,7 +96,7 @@ impl SolVast {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                             fit_data.mods_state.insert(
                                 module.get_id(),
-                                SolModuleStateValFail::new(
+                                SolValModuleStateFail::new(
                                     module.get_id(),
                                     SolModuleState::Overload,
                                     SolModuleState::Active,

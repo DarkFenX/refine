@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-class ValMaxGroupDetails(dict):
+class ValMaxGroupFail(dict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({int(k): ValMaxGroupGroup(data=v) for k, v in data.items()})

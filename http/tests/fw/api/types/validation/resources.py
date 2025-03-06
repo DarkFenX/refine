@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ValResourceDetails:
+class ValResourceFail:
 
     used: int
     output: float | None

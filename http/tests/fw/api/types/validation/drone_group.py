@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ValDroneGroupDetails:
+class ValDroneGroupFail:
 
     allowed_group_ids: list[int]
     drone_groups: dict[str, int]

@@ -7,13 +7,13 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub struct SolChargeGroupValFail {
+pub struct SolValChargeGroupFail {
     pub parent_item_id: SolItemId,
     pub charge_item_id: SolItemId,
     pub charge_group_id: Option<EItemGrpId>,
     pub allowed_group_ids: Vec<EItemGrpId>,
 }
-impl SolChargeGroupValFail {
+impl SolValChargeGroupFail {
     fn new(
         parent_item_id: SolItemId,
         charge_item_id: SolItemId,
@@ -52,7 +52,7 @@ impl SolVastFitData {
     pub(in crate::sol::svc::vast) fn validate_charge_group_verbose(
         &mut self,
         uad: &SolUad,
-    ) -> Vec<SolChargeGroupValFail> {
+    ) -> Vec<SolValChargeGroupFail> {
         let mut fails = Vec::new();
         for (module_item_id, cache) in self.mods_charge_group.iter_mut() {
             match cache {
@@ -72,7 +72,7 @@ impl SolVastFitData {
     }
 }
 
-fn calculate_item_result(uad: &SolUad, module_item_id: &SolItemId) -> SolValCache<(), SolChargeGroupValFail> {
+fn calculate_item_result(uad: &SolUad, module_item_id: &SolItemId) -> SolValCache<(), SolValChargeGroupFail> {
     let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
     let charge_item_id = match module.get_charge_id() {
         Some(charge_item_id) => charge_item_id,
@@ -89,7 +89,7 @@ fn calculate_item_result(uad: &SolUad, module_item_id: &SolItemId) -> SolValCach
     let charge_group_id = match uad.items.get_item(&charge_item_id).unwrap().get_group_id() {
         Some(charge_group_id) => charge_group_id,
         None => {
-            return SolValCache::Fail(SolChargeGroupValFail::new(
+            return SolValCache::Fail(SolValChargeGroupFail::new(
                 *module_item_id,
                 charge_item_id,
                 None,
@@ -99,7 +99,7 @@ fn calculate_item_result(uad: &SolUad, module_item_id: &SolItemId) -> SolValCach
     };
     match allowed_group_ids.contains(&charge_group_id) {
         true => SolValCache::Pass(()),
-        false => SolValCache::Fail(SolChargeGroupValFail::new(
+        false => SolValCache::Fail(SolValChargeGroupFail::new(
             *module_item_id,
             charge_item_id,
             Some(charge_group_id),

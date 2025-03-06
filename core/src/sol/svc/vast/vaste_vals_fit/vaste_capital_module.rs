@@ -5,12 +5,12 @@ use crate::{
     sol::{svc::vast::SolVastFitData, uad::item::SolShip},
 };
 
-pub struct SolCapitalModValFail {
+pub struct SolValCapitalModFail {
     pub max_subcap_volume: AttrVal,
-    pub items: Vec<SolCapitalModItemInfo>,
+    pub items: Vec<SolValCapitalModItemInfo>,
 }
-impl SolCapitalModValFail {
-    fn new(max_subcap_volume: AttrVal, items: Vec<SolCapitalModItemInfo>) -> Self {
+impl SolValCapitalModFail {
+    fn new(max_subcap_volume: AttrVal, items: Vec<SolValCapitalModItemInfo>) -> Self {
         Self {
             max_subcap_volume,
             items,
@@ -19,11 +19,11 @@ impl SolCapitalModValFail {
 }
 
 #[derive(Copy, Clone)]
-pub struct SolCapitalModItemInfo {
+pub struct SolValCapitalModItemInfo {
     pub item_id: SolItemId,
     pub volume: AttrVal,
 }
-impl SolCapitalModItemInfo {
+impl SolValCapitalModItemInfo {
     pub(in crate::sol::svc::vast) fn new(item_id: SolItemId, volume: AttrVal) -> Self {
         Self { item_id, volume }
     }
@@ -38,11 +38,11 @@ impl SolVastFitData {
     pub(in crate::sol::svc::vast) fn validate_capital_module_verbose(
         &self,
         ship: Option<&SolShip>,
-    ) -> Option<SolCapitalModValFail> {
+    ) -> Option<SolValCapitalModFail> {
         if !is_ship_subcap(ship) || self.mods_capital.is_empty() {
             return None;
         }
-        Some(SolCapitalModValFail::new(
+        Some(SolValCapitalModFail::new(
             ec::extras::MAX_SUBCAP_MODULE_VOLUME,
             self.mods_capital.values().copied().collect(),
         ))

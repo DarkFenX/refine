@@ -3,12 +3,12 @@ use crate::{
     sol::svc::vast::SolVastFitData,
 };
 
-pub struct SolDroneGroupValFail {
+pub struct SolValDroneGroupFail {
     pub allowed_group_ids: Vec<EItemGrpId>,
-    pub items: Vec<SolDroneGroupItemInfo>,
+    pub items: Vec<SolValDroneGroupItemInfo>,
 }
-impl SolDroneGroupValFail {
-    fn new(allowed_group_ids: Vec<EItemGrpId>, items: Vec<SolDroneGroupItemInfo>) -> Self {
+impl SolValDroneGroupFail {
+    fn new(allowed_group_ids: Vec<EItemGrpId>, items: Vec<SolValDroneGroupItemInfo>) -> Self {
         Self {
             allowed_group_ids,
             items,
@@ -17,11 +17,11 @@ impl SolDroneGroupValFail {
 }
 
 #[derive(Copy, Clone)]
-pub struct SolDroneGroupItemInfo {
+pub struct SolValDroneGroupItemInfo {
     pub item_id: SolItemId,
     pub group_id: EItemGrpId,
 }
-impl SolDroneGroupItemInfo {
+impl SolValDroneGroupItemInfo {
     pub(in crate::sol::svc::vast) fn new(item_id: SolItemId, group_id: EItemGrpId) -> Self {
         Self { item_id, group_id }
     }
@@ -33,11 +33,11 @@ impl SolVastFitData {
         self.drone_group_mismatches.is_empty()
     }
     // Verbose validations
-    pub(in crate::sol::svc::vast) fn validate_drone_group_verbose(&mut self) -> Option<SolDroneGroupValFail> {
+    pub(in crate::sol::svc::vast) fn validate_drone_group_verbose(&mut self) -> Option<SolValDroneGroupFail> {
         if self.drone_group_mismatches.is_empty() {
             return None;
         }
-        Some(SolDroneGroupValFail::new(
+        Some(SolValDroneGroupFail::new(
             self.drone_group_limit.clone(),
             self.drone_group_mismatches.values().copied().collect(),
         ))

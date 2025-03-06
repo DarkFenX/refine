@@ -8,22 +8,22 @@ use crate::{
     util::{StMap, StMapSetL1},
 };
 
-pub struct SolMaxGroupValFail {
+pub struct SolValMaxGroupFail {
     pub group_id: EItemGrpId,
     pub count: Count,
-    pub items: Vec<SolMaxGroupItem>,
+    pub items: Vec<SolValMaxGroupItemInfo>,
 }
-impl SolMaxGroupValFail {
-    fn new(group_id: EItemGrpId, count: Count, items: Vec<SolMaxGroupItem>) -> Self {
+impl SolValMaxGroupFail {
+    fn new(group_id: EItemGrpId, count: Count, items: Vec<SolValMaxGroupItemInfo>) -> Self {
         Self { group_id, count, items }
     }
 }
 
-pub struct SolMaxGroupItem {
+pub struct SolValMaxGroupItemInfo {
     pub item_id: SolItemId,
     pub max_allowed_count: Count,
 }
-impl SolMaxGroupItem {
+impl SolValMaxGroupItemInfo {
     pub(in crate::sol::svc::vast) fn new(item_id: SolItemId, max_allowed_count: Count) -> Self {
         Self {
             item_id,
@@ -66,7 +66,7 @@ impl SolVastFitData {
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
-    ) -> Vec<SolMaxGroupValFail> {
+    ) -> Vec<SolValMaxGroupFail> {
         validate_verbose(
             uad,
             calc,
@@ -79,7 +79,7 @@ impl SolVastFitData {
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
-    ) -> Vec<SolMaxGroupValFail> {
+    ) -> Vec<SolValMaxGroupFail> {
         validate_verbose(
             uad,
             calc,
@@ -92,7 +92,7 @@ impl SolVastFitData {
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
-    ) -> Vec<SolMaxGroupValFail> {
+    ) -> Vec<SolValMaxGroupFail> {
         validate_verbose(
             uad,
             calc,
@@ -138,7 +138,7 @@ fn validate_verbose(
     max_group_all: &StMapSetL1<EItemGrpId, SolItemId>,
     max_group_limited: &StMap<SolItemId, EItemGrpId>,
     attr_id: EAttrId,
-) -> Vec<SolMaxGroupValFail> {
+) -> Vec<SolValMaxGroupFail> {
     let mut items_by_grp = StMap::new();
     for (item_id, grp_id) in max_group_limited.iter() {
         let allowed = match calc.get_item_attr_val(uad, item_id, &attr_id) {
@@ -159,11 +159,11 @@ fn validate_verbose(
             items_by_grp
                 .entry(*grp_id)
                 .or_insert_with(Vec::new)
-                .push(SolMaxGroupItem::new(*item_id, allowed));
+                .push(SolValMaxGroupItemInfo::new(*item_id, allowed));
         }
     }
     items_by_grp
         .into_iter()
-        .map(|(k, v)| SolMaxGroupValFail::new(k, max_group_all.get(&k).len() as Count, v))
+        .map(|(k, v)| SolValMaxGroupFail::new(k, max_group_all.get(&k).len() as Count, v))
         .collect()
 }

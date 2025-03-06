@@ -4,16 +4,16 @@ use crate::{
     sol::{svc::vast::SolVastFitData, uad::item::SolShip},
 };
 
-pub struct SolShipLimitValFail {
+pub struct SolValShipLimitFail {
     pub ship_type_id: Option<EItemId>,
     pub ship_group_id: Option<EItemGrpId>,
-    pub mismatches: Vec<SolShipLimitMismatch>,
+    pub mismatches: Vec<SolValShipLimitItemInfo>,
 }
-impl SolShipLimitValFail {
+impl SolValShipLimitFail {
     fn new(
         ship_type_id: Option<EItemId>,
         ship_group_id: Option<EItemGrpId>,
-        mismatches: Vec<SolShipLimitMismatch>,
+        mismatches: Vec<SolValShipLimitItemInfo>,
     ) -> Self {
         Self {
             ship_type_id,
@@ -23,12 +23,12 @@ impl SolShipLimitValFail {
     }
 }
 
-pub struct SolShipLimitMismatch {
+pub struct SolValShipLimitItemInfo {
     pub item_id: SolItemId,
     pub allowed_type_ids: Vec<EItemId>,
     pub allowed_group_ids: Vec<EItemGrpId>,
 }
-impl SolShipLimitMismatch {
+impl SolValShipLimitItemInfo {
     fn from_ship_limit(item_id: SolItemId, item_ship_limit: &ad::AItemShipLimit) -> Self {
         Self {
             item_id,
@@ -64,7 +64,7 @@ impl SolVastFitData {
     pub(in crate::sol::svc::vast) fn validate_ship_limit_verbose(
         &self,
         ship: Option<&SolShip>,
-    ) -> Option<SolShipLimitValFail> {
+    ) -> Option<SolValShipLimitFail> {
         if self.ship_limited_mods_rigs_subs.is_empty() {
             return None;
         }
@@ -84,12 +84,12 @@ impl SolVastFitData {
                     continue;
                 }
             }
-            let mismatch = SolShipLimitMismatch::from_ship_limit(*limited_item_id, ship_limit);
+            let mismatch = SolValShipLimitItemInfo::from_ship_limit(*limited_item_id, ship_limit);
             mismatches.push(mismatch);
         }
         match mismatches.is_empty() {
             true => None,
-            false => Some(SolShipLimitValFail::new(ship_type_id, ship_group_id, mismatches)),
+            false => Some(SolValShipLimitFail::new(ship_type_id, ship_group_id, mismatches)),
         }
     }
 }

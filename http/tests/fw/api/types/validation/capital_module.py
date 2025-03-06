@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ValCapModuleDetails:
+class ValCapModuleFail:
 
     max_subcap_volume: float
     module_volumes: dict[str, float]

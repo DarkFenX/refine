@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-class ValModuleStateDetails(dict):
+class ValModuleStateFail(dict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({k: ValModuleStateInfo(data=v) for k, v in data.items()})

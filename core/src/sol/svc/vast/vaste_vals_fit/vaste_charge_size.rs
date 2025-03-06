@@ -8,13 +8,13 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub struct SolChargeSizeValFail {
+pub struct SolValChargeSizeFail {
     pub parent_item_id: SolItemId,
     pub charge_item_id: SolItemId,
     pub charge_size: Option<AttrVal>,
     pub allowed_size: AttrVal,
 }
-impl SolChargeSizeValFail {
+impl SolValChargeSizeFail {
     fn new(
         parent_item_id: SolItemId,
         charge_item_id: SolItemId,
@@ -53,7 +53,7 @@ impl SolVastFitData {
     pub(in crate::sol::svc::vast) fn validate_charge_size_verbose(
         &mut self,
         uad: &SolUad,
-    ) -> Vec<SolChargeSizeValFail> {
+    ) -> Vec<SolValChargeSizeFail> {
         let mut fails = Vec::new();
         for (module_item_id, cache) in self.mods_charge_size.iter_mut() {
             match cache {
@@ -77,7 +77,7 @@ fn calculate_item_result(
     uad: &SolUad,
     module_item_id: &SolItemId,
     allowed_size: AttrVal,
-) -> SolValCache<AttrVal, SolChargeSizeValFail> {
+) -> SolValCache<AttrVal, SolValChargeSizeFail> {
     let module = uad.items.get_item(module_item_id).unwrap().get_module().unwrap();
     let charge_item_id = match module.get_charge_id() {
         Some(charge_item_id) => charge_item_id,
@@ -86,7 +86,7 @@ fn calculate_item_result(
     let charge_attrs = match uad.items.get_item(&charge_item_id).unwrap().get_attrs() {
         Some(charge_attrs) => charge_attrs,
         None => {
-            return SolValCache::Fail(SolChargeSizeValFail::new(
+            return SolValCache::Fail(SolValChargeSizeFail::new(
                 *module_item_id,
                 charge_item_id,
                 None,
@@ -97,7 +97,7 @@ fn calculate_item_result(
     let charge_size = match charge_attrs.get(&ec::attrs::CHARGE_SIZE) {
         Some(charge_size) => *charge_size,
         None => {
-            return SolValCache::Fail(SolChargeSizeValFail::new(
+            return SolValCache::Fail(SolValChargeSizeFail::new(
                 *module_item_id,
                 charge_item_id,
                 None,
@@ -107,7 +107,7 @@ fn calculate_item_result(
     };
     match charge_size == allowed_size {
         true => SolValCache::Pass(allowed_size),
-        false => SolValCache::Fail(SolChargeSizeValFail::new(
+        false => SolValCache::Fail(SolValChargeSizeFail::new(
             *module_item_id,
             charge_item_id,
             Some(charge_size),

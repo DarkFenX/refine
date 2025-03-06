@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-class ValChargeSizeDetails(dict):
+class ValChargeSizeFail(dict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({k: ValChargeSizeInfo(data=v) for k, v in data.items()})

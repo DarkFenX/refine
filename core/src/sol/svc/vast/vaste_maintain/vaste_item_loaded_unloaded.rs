@@ -7,8 +7,8 @@ use crate::{
     sol::{
         SolModRack,
         svc::vast::{
-            SolCapitalModItemInfo, SolDroneGroupItemInfo, SolItemKindValFail, SolValCache, SolVast, SolVastFitData,
-            SolVastSkillReq,
+            SolValCache, SolValCapitalModItemInfo, SolValDroneGroupItemInfo, SolValItemKindFail, SolVast,
+            SolVastFitData, SolVastSkillReq,
         },
         uad::{
             SolUad,
@@ -91,7 +91,7 @@ impl SolVast {
                     if !fit_data.drone_group_limit.contains(&drone_group_id) {
                         fit_data
                             .drone_group_mismatches
-                            .insert(item_id, SolDroneGroupItemInfo::new(item_id, drone_group_id));
+                            .insert(item_id, SolValDroneGroupItemInfo::new(item_id, drone_group_id));
                     }
                 }
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Drone);
@@ -143,7 +143,7 @@ impl SolVast {
                     // Unwrap, since item ship kind is set to capital only when volume is available
                     fit_data
                         .mods_capital
-                        .insert(item_id, SolCapitalModItemInfo::new(item_id, extras.volume.unwrap()));
+                        .insert(item_id, SolValCapitalModItemInfo::new(item_id, extras.volume.unwrap()));
                 }
                 item_kind_add(fit_data, item_id, extras.kind, get_module_expected_kind(module));
             }
@@ -172,7 +172,7 @@ impl SolVast {
                             if !drone_limit.group_ids.contains(&drone_group_id) {
                                 fit_data.drone_group_mismatches.insert(
                                     *drone_item_id,
-                                    SolDroneGroupItemInfo::new(*drone_item_id, drone_group_id),
+                                    SolValDroneGroupItemInfo::new(*drone_item_id, drone_group_id),
                                 );
                             }
                         }
@@ -363,7 +363,7 @@ fn item_kind_add(
     if item_kind != Some(expected_kind) {
         fit_data
             .item_kind
-            .insert(item_id, SolItemKindValFail::new(item_id, item_kind, expected_kind));
+            .insert(item_id, SolValItemKindFail::new(item_id, item_kind, expected_kind));
     }
 }
 fn item_kind_remove(

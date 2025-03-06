@@ -1,20 +1,20 @@
 from tests.fw.consts import ApiValType
 from tests.fw.util import AttrDict, AttrHookDef
-from .capital_module import ValCapModuleDetails
-from .charge_group import ValChargeGroupDetails
-from .charge_size import ValChargeSizeDetails
-from .charge_volume import ValChargeVolumeDetails
-from .drone_group import ValDroneGroupDetails
-from .item_kind import ValItemKindDetails
-from .max_group import ValMaxGroupDetails
-from .module_state import ValModuleStateDetails
-from .not_loaded_item import ValNotLoadedItemDetails
-from .resources import ValResourceDetails
-from .rig_size import ValRigSizeDetails
-from .ship_limit import ValShipLimitDetails
-from .skill_reqs import ValSrqDetails
-from .slot_amount import ValSlotAmountDetails
-from .slot_index import ValSlotIndexDetails
+from .capital_module import ValCapModuleFail
+from .charge_group import ValChargeGroupFail
+from .charge_size import ValChargeSizeFail
+from .charge_volume import ValChargeVolumeFail
+from .drone_group import ValDroneGroupFail
+from .item_kind import ValItemKindFail
+from .max_group import ValMaxGroupFail
+from .module_state import ValModuleStateFail
+from .not_loaded_item import ValNotLoadedItemFail
+from .resources import ValResourceFail
+from .rig_size import ValRigSizeFail
+from .ship_limit import ValShipLimitFail
+from .skill_reqs import ValSrqFail
+from .slot_amount import ValSlotAmountFail
+from .slot_index import ValSlotIndexFail
 
 
 class ValResult(AttrDict):
@@ -27,40 +27,40 @@ class ValResultDetails(AttrDict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__(data=data, hooks={
-            ApiValType.cpu: AttrHookDef(func=lambda d: ValResourceDetails(data=d)),
-            ApiValType.powergrid: AttrHookDef(func=lambda d: ValResourceDetails(data=d)),
-            ApiValType.calibration: AttrHookDef(func=lambda d: ValResourceDetails(data=d)),
-            ApiValType.dronebay_volume: AttrHookDef(func=lambda d: ValResourceDetails(data=d)),
-            ApiValType.drone_bandwidth: AttrHookDef(func=lambda d: ValResourceDetails(data=d)),
-            ApiValType.rig_slots: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.subsystem_slots: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.launched_drones: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.launched_fighters: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.launched_support_fighters: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.launched_light_fighters: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.launched_heavy_fighters: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.launched_standup_support_fighters: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.launched_standup_light_fighters: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.launched_standup_heavy_fighters: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.turret_slots: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.launcher_slots: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.high_slots: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.mid_slots: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.low_slots: AttrHookDef(func=lambda d: ValSlotAmountDetails(data=d)),
-            ApiValType.implant_slot_index: AttrHookDef(func=lambda d: ValSlotIndexDetails(data=d)),
-            ApiValType.booster_slot_index: AttrHookDef(func=lambda d: ValSlotIndexDetails(data=d)),
-            ApiValType.subsystem_slot_index: AttrHookDef(func=lambda d: ValSlotIndexDetails(data=d)),
-            ApiValType.ship_limit: AttrHookDef(func=lambda d: ValShipLimitDetails(data=d)),
-            ApiValType.max_group_fitted: AttrHookDef(func=lambda d: ValMaxGroupDetails(data=d)),
-            ApiValType.max_group_online: AttrHookDef(func=lambda d: ValMaxGroupDetails(data=d)),
-            ApiValType.max_group_active: AttrHookDef(func=lambda d: ValMaxGroupDetails(data=d)),
-            ApiValType.rig_size: AttrHookDef(func=lambda d: ValRigSizeDetails(data=d)),
-            ApiValType.skill_reqs: AttrHookDef(func=lambda d: ValSrqDetails(data=d)),
-            ApiValType.charge_group: AttrHookDef(func=lambda d: ValChargeGroupDetails(data=d)),
-            ApiValType.charge_size: AttrHookDef(func=lambda d: ValChargeSizeDetails(data=d)),
-            ApiValType.charge_volume: AttrHookDef(func=lambda d: ValChargeVolumeDetails(data=d)),
-            ApiValType.capital_module: AttrHookDef(func=lambda d: ValCapModuleDetails(data=d)),
-            ApiValType.not_loaded_item: AttrHookDef(func=lambda d: ValNotLoadedItemDetails(data=d)),
-            ApiValType.module_state: AttrHookDef(func=lambda d: ValModuleStateDetails(data=d)),
-            ApiValType.item_kind: AttrHookDef(func=lambda d: ValItemKindDetails(data=d)),
-            ApiValType.drone_group: AttrHookDef(func=lambda d: ValDroneGroupDetails(data=d))})
+            ApiValType.cpu: AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            ApiValType.powergrid: AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            ApiValType.calibration: AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            ApiValType.dronebay_volume: AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            ApiValType.drone_bandwidth: AttrHookDef(func=lambda d: ValResourceFail(data=d)),
+            ApiValType.rig_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.subsystem_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.launched_drones: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.launched_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.launched_support_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.launched_light_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.launched_heavy_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.launched_standup_support_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.launched_standup_light_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.launched_standup_heavy_fighters: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.turret_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.launcher_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.high_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.mid_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.low_slots: AttrHookDef(func=lambda d: ValSlotAmountFail(data=d)),
+            ApiValType.implant_slot_index: AttrHookDef(func=lambda d: ValSlotIndexFail(data=d)),
+            ApiValType.booster_slot_index: AttrHookDef(func=lambda d: ValSlotIndexFail(data=d)),
+            ApiValType.subsystem_slot_index: AttrHookDef(func=lambda d: ValSlotIndexFail(data=d)),
+            ApiValType.ship_limit: AttrHookDef(func=lambda d: ValShipLimitFail(data=d)),
+            ApiValType.max_group_fitted: AttrHookDef(func=lambda d: ValMaxGroupFail(data=d)),
+            ApiValType.max_group_online: AttrHookDef(func=lambda d: ValMaxGroupFail(data=d)),
+            ApiValType.max_group_active: AttrHookDef(func=lambda d: ValMaxGroupFail(data=d)),
+            ApiValType.rig_size: AttrHookDef(func=lambda d: ValRigSizeFail(data=d)),
+            ApiValType.skill_reqs: AttrHookDef(func=lambda d: ValSrqFail(data=d)),
+            ApiValType.charge_group: AttrHookDef(func=lambda d: ValChargeGroupFail(data=d)),
+            ApiValType.charge_size: AttrHookDef(func=lambda d: ValChargeSizeFail(data=d)),
+            ApiValType.charge_volume: AttrHookDef(func=lambda d: ValChargeVolumeFail(data=d)),
+            ApiValType.capital_module: AttrHookDef(func=lambda d: ValCapModuleFail(data=d)),
+            ApiValType.not_loaded_item: AttrHookDef(func=lambda d: ValNotLoadedItemFail(data=d)),
+            ApiValType.module_state: AttrHookDef(func=lambda d: ValModuleStateFail(data=d)),
+            ApiValType.item_kind: AttrHookDef(func=lambda d: ValItemKindFail(data=d)),
+            ApiValType.drone_group: AttrHookDef(func=lambda d: ValDroneGroupFail(data=d))})

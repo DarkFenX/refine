@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class ValShipLimitDetails:
+class ValShipLimitFail:
 
     ship_type_id: int | None
     ship_group_id: int | None

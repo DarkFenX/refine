@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-class ValChargeGroupDetails(dict):
+class ValChargeGroupFail(dict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({k: ValChargeGroupInfo(data=v) for k, v in data.items()})

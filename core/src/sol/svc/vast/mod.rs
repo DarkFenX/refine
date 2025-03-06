@@ -5,10 +5,11 @@ pub(in crate::sol::svc) use vast::SolVast;
 use vast::SolVastFitData;
 use vaste_stats_fit::SolStatRes;
 pub use vaste_vals_fit::{
-    SolCapitalModItemInfo, SolCapitalModValFail, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail,
-    SolDroneGroupItemInfo, SolDroneGroupValFail, SolItemKindValFail, SolMaxGroupItem, SolMaxGroupValFail,
-    SolModuleStateValFail, SolNotLoadedItemValFail, SolResUser, SolResValFail, SolRigSizeMismatch, SolRigSizeValFail,
-    SolShipLimitMismatch, SolShipLimitValFail, SolSlotIndexValFail, SolSlotValFail, SolSrqSkill, SolSrqValFail,
+    SolValCapitalModFail, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail,
+    SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValItemKindFail, SolValMaxGroupFail,
+    SolValMaxGroupItemInfo, SolValModuleStateFail, SolValNotLoadedItemFail, SolValResFail, SolValResItemInfo,
+    SolValRigSizeFail, SolValRigSizeItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo, SolValSlotFail,
+    SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo,
 };
 
 mod cache;

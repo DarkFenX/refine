@@ -3,8 +3,8 @@ use crate::{
     defs::{AttrVal, EItemGrpId, EItemId, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
     sol::svc::vast::{
-        SolCapitalModItemInfo, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail,
-        SolDroneGroupItemInfo, SolItemKindValFail, SolModuleStateValFail, SolValCache, SolVastSkillReq,
+        SolValCache, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail,
+        SolValDroneGroupItemInfo, SolValItemKindFail, SolValModuleStateFail, SolVastSkillReq,
     },
     util::{StMap, StMapSetL1, StSet},
 };
@@ -67,15 +67,15 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) rigs_rig_size: StMap<SolItemId, Option<AttrVal>>,
     pub(in crate::sol::svc::vast) srqs_skill_item_map: StMapSetL1<EItemId, SolItemId>,
     pub(in crate::sol::svc::vast) srqs_missing: StMap<SolItemId, StMap<EItemId, SolVastSkillReq>>,
-    pub(in crate::sol::svc::vast) mods_charge_group: StMap<SolItemId, SolValCache<(), SolChargeGroupValFail>>,
-    pub(in crate::sol::svc::vast) mods_charge_size: StMap<SolItemId, SolValCache<AttrVal, SolChargeSizeValFail>>,
-    pub(in crate::sol::svc::vast) mods_charge_volume: StMap<SolItemId, SolValCache<AttrVal, SolChargeVolumeValFail>>,
-    pub(in crate::sol::svc::vast) mods_capital: StMap<SolItemId, SolCapitalModItemInfo>,
+    pub(in crate::sol::svc::vast) mods_charge_group: StMap<SolItemId, SolValCache<(), SolValChargeGroupFail>>,
+    pub(in crate::sol::svc::vast) mods_charge_size: StMap<SolItemId, SolValCache<AttrVal, SolValChargeSizeFail>>,
+    pub(in crate::sol::svc::vast) mods_charge_volume: StMap<SolItemId, SolValCache<AttrVal, SolValChargeVolumeFail>>,
+    pub(in crate::sol::svc::vast) mods_capital: StMap<SolItemId, SolValCapitalModItemInfo>,
     pub(in crate::sol::svc::vast) not_loaded: StSet<SolItemId>,
-    pub(in crate::sol::svc::vast) mods_state: StMap<SolItemId, SolModuleStateValFail>,
-    pub(in crate::sol::svc::vast) item_kind: StMap<SolItemId, SolItemKindValFail>,
+    pub(in crate::sol::svc::vast) mods_state: StMap<SolItemId, SolValModuleStateFail>,
+    pub(in crate::sol::svc::vast) item_kind: StMap<SolItemId, SolValItemKindFail>,
     pub(in crate::sol::svc::vast) drone_group_limit: Vec<EItemGrpId>,
-    pub(in crate::sol::svc::vast) drone_group_mismatches: StMap<SolItemId, SolDroneGroupItemInfo>,
+    pub(in crate::sol::svc::vast) drone_group_mismatches: StMap<SolItemId, SolValDroneGroupItemInfo>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {

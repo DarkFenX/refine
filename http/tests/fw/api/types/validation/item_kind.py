@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-class ValItemKindDetails(dict):
+class ValItemKindFail(dict):
 
     def __init__(self, *, data: dict) -> None:
         super().__init__({k: ValItemKindInfo(data=v) for k, v in data.items()})

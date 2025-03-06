@@ -3,22 +3,22 @@ use crate::{
     sol::svc::vast::SolVastFitData,
 };
 
-pub struct SolSrqValFail {
+pub struct SolValSrqFail {
     pub item_id: SolItemId,
-    pub skills: Vec<SolSrqSkill>,
+    pub skills: Vec<SolValSrqSkillInfo>,
 }
-impl SolSrqValFail {
-    fn new(item_id: SolItemId, skills: Vec<SolSrqSkill>) -> Self {
+impl SolValSrqFail {
+    fn new(item_id: SolItemId, skills: Vec<SolValSrqSkillInfo>) -> Self {
         Self { item_id, skills }
     }
 }
 
-pub struct SolSrqSkill {
+pub struct SolValSrqSkillInfo {
     pub skill_type_id: EItemId,
     pub skill_lvl: Option<SkillLevel>,
     pub req_lvl: SkillLevel,
 }
-impl SolSrqSkill {
+impl SolValSrqSkillInfo {
     fn new(skill_type_id: EItemId, skill_lvl: Option<SkillLevel>, req_lvl: SkillLevel) -> Self {
         Self {
             skill_type_id,
@@ -34,15 +34,15 @@ impl SolVastFitData {
         !self.srqs_missing.values().any(|v| !v.is_empty())
     }
     // Verbose validations
-    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self) -> Vec<SolSrqValFail> {
+    pub(in crate::sol::svc::vast) fn validate_skill_reqs_verbose(&self) -> Vec<SolValSrqFail> {
         self.srqs_missing
             .iter()
             .filter(|(_, ms)| !ms.is_empty())
             .map(|(ii, ms)| {
-                SolSrqValFail::new(
+                SolValSrqFail::new(
                     *ii,
                     ms.iter()
-                        .map(|(sid, srq)| SolSrqSkill::new(*sid, srq.current_lvl, srq.required_lvl))
+                        .map(|(sid, srq)| SolValSrqSkillInfo::new(*sid, srq.current_lvl, srq.required_lvl))
                         .collect(),
                 )
             })

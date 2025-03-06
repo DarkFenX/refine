@@ -4,18 +4,18 @@ use crate::shared::HModuleState;
 
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
-pub(in crate::info::valid) struct HModuleStateValFail {
+pub(in crate::info::valid) struct HValModuleStateFail {
     #[serde(flatten)]
     #[serde_as(as = "HashMap<serde_with::DisplayFromStr, _>")]
-    data: HashMap<rc::SolItemId, HModuleStateInfo>,
+    data: HashMap<rc::SolItemId, HValModuleStateItemInfo>,
 }
-impl HModuleStateValFail {
+impl HValModuleStateFail {
     pub(in crate::info::valid) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }
 }
-impl From<&Vec<rc::SolModuleStateValFail>> for HModuleStateValFail {
-    fn from(core_val_fails: &Vec<rc::SolModuleStateValFail>) -> Self {
+impl From<&Vec<rc::SolValModuleStateFail>> for HValModuleStateFail {
+    fn from(core_val_fails: &Vec<rc::SolValModuleStateFail>) -> Self {
         Self {
             data: core_val_fails.iter().map(|v| (v.item_id, v.into())).collect(),
         }
@@ -24,12 +24,12 @@ impl From<&Vec<rc::SolModuleStateValFail>> for HModuleStateValFail {
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HModuleStateInfo {
+pub(in crate::info::valid) struct HValModuleStateItemInfo {
     state: HModuleState,
     max_state: HModuleState,
 }
-impl From<&rc::SolModuleStateValFail> for HModuleStateInfo {
-    fn from(core_val_fail: &rc::SolModuleStateValFail) -> Self {
+impl From<&rc::SolValModuleStateFail> for HValModuleStateItemInfo {
+    fn from(core_val_fail: &rc::SolValModuleStateFail) -> Self {
         Self {
             state: (&core_val_fail.state).into(),
             max_state: (&core_val_fail.max_state).into(),
