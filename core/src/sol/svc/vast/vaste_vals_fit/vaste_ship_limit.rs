@@ -9,19 +9,6 @@ pub struct SolValShipLimitFail {
     pub ship_group_id: Option<EItemGrpId>,
     pub items: Vec<SolValShipLimitItemInfo>,
 }
-impl SolValShipLimitFail {
-    fn new(
-        ship_type_id: Option<EItemId>,
-        ship_group_id: Option<EItemGrpId>,
-        items: Vec<SolValShipLimitItemInfo>,
-    ) -> Self {
-        Self {
-            ship_type_id,
-            ship_group_id,
-            items,
-        }
-    }
-}
 
 pub struct SolValShipLimitItemInfo {
     pub item_id: SolItemId,
@@ -89,7 +76,11 @@ impl SolVastFitData {
         }
         match mismatches.is_empty() {
             true => None,
-            false => Some(SolValShipLimitFail::new(ship_type_id, ship_group_id, mismatches)),
+            false => Some(SolValShipLimitFail {
+                ship_type_id,
+                ship_group_id,
+                items: mismatches,
+            }),
         }
     }
 }

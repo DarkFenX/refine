@@ -9,15 +9,6 @@ pub struct SolValModuleStateFail {
     pub state: SolModuleState,
     pub max_state: SolModuleState,
 }
-impl SolValModuleStateFail {
-    pub(in crate::sol::svc::vast) fn new(item_id: SolItemId, state: SolModuleState, max_state: SolModuleState) -> Self {
-        Self {
-            item_id,
-            state,
-            max_state,
-        }
-    }
-}
 
 impl SolVastFitData {
     // Fast validations

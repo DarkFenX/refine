@@ -89,9 +89,13 @@ impl SolVast {
                 if !fit_data.drone_group_limit.is_empty() {
                     let drone_group_id = drone.get_group_id().unwrap();
                     if !fit_data.drone_group_limit.contains(&drone_group_id) {
-                        fit_data
-                            .drone_group_mismatches
-                            .insert(item_id, SolValDroneGroupItemInfo::new(item_id, drone_group_id));
+                        fit_data.drone_group_mismatches.insert(
+                            item_id,
+                            SolValDroneGroupItemInfo {
+                                item_id,
+                                group_id: drone_group_id,
+                            },
+                        );
                     }
                 }
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Drone);
@@ -141,9 +145,13 @@ impl SolVast {
                 handle_charge_volume_for_module(fit_data, item_id);
                 if let Some(ad::AShipKind::CapitalShip) = extras.item_ship_kind {
                     // Unwrap, since item ship kind is set to capital only when volume is available
-                    fit_data
-                        .mods_capital
-                        .insert(item_id, SolValCapitalModItemInfo::new(item_id, extras.volume.unwrap()));
+                    fit_data.mods_capital.insert(
+                        item_id,
+                        SolValCapitalModItemInfo {
+                            item_id,
+                            volume: extras.volume.unwrap(),
+                        },
+                    );
                 }
                 item_kind_add(fit_data, item_id, extras.kind, get_module_expected_kind(module));
             }
@@ -172,7 +180,10 @@ impl SolVast {
                             if !drone_limit.group_ids.contains(&drone_group_id) {
                                 fit_data.drone_group_mismatches.insert(
                                     *drone_item_id,
-                                    SolValDroneGroupItemInfo::new(*drone_item_id, drone_group_id),
+                                    SolValDroneGroupItemInfo {
+                                        item_id: *drone_item_id,
+                                        group_id: drone_group_id,
+                                    },
                                 );
                             }
                         }
@@ -361,9 +372,14 @@ fn item_kind_add(
     expected_kind: ad::AItemKind,
 ) {
     if item_kind != Some(expected_kind) {
-        fit_data
-            .item_kind
-            .insert(item_id, SolValItemKindFail::new(item_id, item_kind, expected_kind));
+        fit_data.item_kind.insert(
+            item_id,
+            SolValItemKindFail {
+                item_id,
+                kind: item_kind,
+                expected_kind,
+            },
+        );
     }
 }
 fn item_kind_remove(

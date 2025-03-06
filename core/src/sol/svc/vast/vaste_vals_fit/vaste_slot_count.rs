@@ -11,11 +11,6 @@ pub struct SolValSlotCountFail {
     pub total: Option<Count>,
     pub users: Vec<SolItemId>,
 }
-impl SolValSlotCountFail {
-    fn new(used: Count, total: Option<Count>, users: Vec<SolItemId>) -> Self {
-        Self { used, total, users }
-    }
-}
 
 impl SolVastFitData {
     // Fast validations
@@ -166,7 +161,11 @@ impl SolVastFitData {
             return None;
         }
         let users = fit.rigs.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_count_verbose(
         &self,
@@ -179,7 +178,11 @@ impl SolVastFitData {
             return None;
         }
         let users = fit.subsystems.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_launched_drone_count_verbose(
         &self,
@@ -192,7 +195,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.drones_online_bandwidth.keys().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_launched_fighter_count_verbose(
         &self,
@@ -205,7 +212,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.fighters_online.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_launched_support_fighter_count_verbose(
         &self,
@@ -218,7 +229,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.support_fighters_online.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_launched_light_fighter_count_verbose(
         &self,
@@ -231,7 +246,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.light_fighters_online.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_launched_heavy_fighter_count_verbose(
         &self,
@@ -244,7 +263,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.heavy_fighters_online.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_support_fighter_count_verbose(
         &self,
@@ -257,7 +280,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.standup_support_fighters_online.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_light_fighter_count_verbose(
         &self,
@@ -270,7 +297,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.standup_light_fighters_online.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_heavy_fighter_count_verbose(
         &self,
@@ -283,7 +314,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.standup_heavy_fighters_online.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_turret_slot_count_verbose(
         &self,
@@ -296,7 +331,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.mods_turret.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_launcher_slot_count_verbose(
         &self,
@@ -309,7 +348,11 @@ impl SolVastFitData {
             return None;
         }
         let users = self.mods_launcher.iter().copied().collect();
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_high_slot_count_verbose(
         &self,
@@ -329,7 +372,11 @@ impl SolVastFitData {
                 .filter_map(|v| *v)
                 .collect(),
         };
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_mid_slot_count_verbose(
         &self,
@@ -346,7 +393,11 @@ impl SolVastFitData {
             true => Vec::new(),
             false => fit.mods_mid.inner()[total as Idx..].iter().filter_map(|v| *v).collect(),
         };
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_low_slot_count_verbose(
         &self,
@@ -363,6 +414,10 @@ impl SolVastFitData {
             true => Vec::new(),
             false => fit.mods_low.inner()[total as Idx..].iter().filter_map(|v| *v).collect(),
         };
-        Some(SolValSlotCountFail::new(stats.used, stats.total, users))
+        Some(SolValSlotCountFail {
+            used: stats.used,
+            total: stats.total,
+            users,
+        })
     }
 }

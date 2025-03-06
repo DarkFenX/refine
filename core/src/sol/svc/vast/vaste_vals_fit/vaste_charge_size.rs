@@ -14,21 +14,6 @@ pub struct SolValChargeSizeFail {
     pub charge_size: Option<AttrVal>,
     pub allowed_size: AttrVal,
 }
-impl SolValChargeSizeFail {
-    fn new(
-        parent_item_id: SolItemId,
-        charge_item_id: SolItemId,
-        charge_size: Option<AttrVal>,
-        allowed_size: AttrVal,
-    ) -> Self {
-        Self {
-            parent_item_id,
-            charge_item_id,
-            charge_size,
-            allowed_size,
-        }
-    }
-}
 
 impl SolVastFitData {
     // Fast validations
@@ -86,32 +71,32 @@ fn calculate_item_result(
     let charge_attrs = match uad.items.get_item(&charge_item_id).unwrap().get_attrs() {
         Some(charge_attrs) => charge_attrs,
         None => {
-            return SolValCache::Fail(SolValChargeSizeFail::new(
-                *module_item_id,
+            return SolValCache::Fail(SolValChargeSizeFail {
+                parent_item_id: *module_item_id,
                 charge_item_id,
-                None,
+                charge_size: None,
                 allowed_size,
-            ));
+            });
         }
     };
     let charge_size = match charge_attrs.get(&ec::attrs::CHARGE_SIZE) {
         Some(charge_size) => *charge_size,
         None => {
-            return SolValCache::Fail(SolValChargeSizeFail::new(
-                *module_item_id,
+            return SolValCache::Fail(SolValChargeSizeFail {
+                parent_item_id: *module_item_id,
                 charge_item_id,
-                None,
+                charge_size: None,
                 allowed_size,
-            ));
+            });
         }
     };
     match charge_size == allowed_size {
         true => SolValCache::Pass(allowed_size),
-        false => SolValCache::Fail(SolValChargeSizeFail::new(
-            *module_item_id,
+        false => SolValCache::Fail(SolValChargeSizeFail {
+            parent_item_id: *module_item_id,
             charge_item_id,
-            Some(charge_size),
+            charge_size: Some(charge_size),
             allowed_size,
-        )),
+        }),
     }
 }

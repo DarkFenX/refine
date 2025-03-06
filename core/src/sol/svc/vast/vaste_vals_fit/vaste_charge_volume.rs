@@ -14,16 +14,6 @@ pub struct SolValChargeVolumeFail {
     pub charge_volume: AttrVal,
     pub max_volume: AttrVal,
 }
-impl SolValChargeVolumeFail {
-    fn new(parent_item_id: SolItemId, charge_item_id: SolItemId, charge_volume: AttrVal, max_volume: AttrVal) -> Self {
-        Self {
-            parent_item_id,
-            charge_item_id,
-            charge_volume,
-            max_volume,
-        }
-    }
-}
 
 impl SolVastFitData {
     // Fast validations
@@ -83,11 +73,11 @@ fn calculate_item_result(
     };
     match charge_volume <= module_capacity {
         true => SolValCache::Pass(charge_volume),
-        false => SolValCache::Fail(SolValChargeVolumeFail::new(
-            *module_item_id,
-            module.get_charge_id().unwrap(),
+        false => SolValCache::Fail(SolValChargeVolumeFail {
+            parent_item_id: *module_item_id,
+            charge_item_id: module.get_charge_id().unwrap(),
             charge_volume,
-            module_capacity,
-        )),
+            max_volume: module_capacity,
+        }),
     }
 }

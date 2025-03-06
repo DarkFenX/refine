@@ -15,20 +15,10 @@ pub struct SolValResFail {
     pub output: Option<AttrVal>,
     pub users: Vec<SolValResItemInfo>,
 }
-impl SolValResFail {
-    fn new(used: AttrVal, output: Option<AttrVal>, users: Vec<SolValResItemInfo>) -> Self {
-        Self { used, output, users }
-    }
-}
 
 pub struct SolValResItemInfo {
     pub item_id: SolItemId,
     pub used: AttrVal,
-}
-impl SolValResItemInfo {
-    fn new(item_id: SolItemId, used: AttrVal) -> Self {
-        Self { item_id, used }
-    }
 }
 
 impl SolVastFitData {
@@ -134,11 +124,18 @@ fn validate_verbose_fitting<'a>(
     let mut users = Vec::with_capacity(items.len());
     for item_id in items {
         match calc.get_item_attr_val(uad, item_id, use_attr_id) {
-            Ok(sol_val) if sol_val.extra > OF(0.0) => users.push(SolValResItemInfo::new(*item_id, sol_val.extra)),
+            Ok(sol_val) if sol_val.extra > OF(0.0) => users.push(SolValResItemInfo {
+                item_id: *item_id,
+                used: sol_val.extra,
+            }),
             _ => continue,
         };
     }
-    Some(SolValResFail::new(stats.used, stats.output, users))
+    Some(SolValResFail {
+        used: stats.used,
+        output: stats.output,
+        users,
+    })
 }
 
 fn validate_verbose_other<'a>(
@@ -151,8 +148,15 @@ fn validate_verbose_other<'a>(
     let mut users = Vec::with_capacity(items.len());
     for (&item_id, &res_used) in items {
         if res_used > OF(0.0) {
-            users.push(SolValResItemInfo::new(item_id, res_used))
+            users.push(SolValResItemInfo {
+                item_id,
+                used: res_used,
+            })
         }
     }
-    Some(SolValResFail::new(stats.used, stats.output, users))
+    Some(SolValResFail {
+        used: stats.used,
+        output: stats.output,
+        users,
+    })
 }

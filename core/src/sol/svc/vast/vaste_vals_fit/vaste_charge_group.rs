@@ -13,21 +13,6 @@ pub struct SolValChargeGroupFail {
     pub charge_group_id: Option<EItemGrpId>,
     pub allowed_group_ids: Vec<EItemGrpId>,
 }
-impl SolValChargeGroupFail {
-    fn new(
-        parent_item_id: SolItemId,
-        charge_item_id: SolItemId,
-        charge_group_id: Option<EItemGrpId>,
-        allowed_group_ids: Vec<EItemGrpId>,
-    ) -> Self {
-        Self {
-            parent_item_id,
-            charge_item_id,
-            charge_group_id,
-            allowed_group_ids,
-        }
-    }
-}
 
 impl SolVastFitData {
     // Fast validations
@@ -89,21 +74,21 @@ fn calculate_item_result(uad: &SolUad, module_item_id: &SolItemId) -> SolValCach
     let charge_group_id = match uad.items.get_item(&charge_item_id).unwrap().get_group_id() {
         Some(charge_group_id) => charge_group_id,
         None => {
-            return SolValCache::Fail(SolValChargeGroupFail::new(
-                *module_item_id,
+            return SolValCache::Fail(SolValChargeGroupFail {
+                parent_item_id: *module_item_id,
                 charge_item_id,
-                None,
+                charge_group_id: None,
                 allowed_group_ids,
-            ));
+            });
         }
     };
     match allowed_group_ids.contains(&charge_group_id) {
         true => SolValCache::Pass(()),
-        false => SolValCache::Fail(SolValChargeGroupFail::new(
-            *module_item_id,
+        false => SolValCache::Fail(SolValChargeGroupFail {
+            parent_item_id: *module_item_id,
             charge_item_id,
-            Some(charge_group_id),
+            charge_group_id: Some(charge_group_id),
             allowed_group_ids,
-        )),
+        }),
     }
 }

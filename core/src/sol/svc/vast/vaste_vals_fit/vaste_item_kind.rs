@@ -6,19 +6,6 @@ pub struct SolValItemKindFail {
     pub kind: Option<ad::AItemKind>,
     pub expected_kind: ad::AItemKind,
 }
-impl SolValItemKindFail {
-    pub(in crate::sol::svc::vast) fn new(
-        item_id: SolItemId,
-        kind: Option<ad::AItemKind>,
-        expected_kind: ad::AItemKind,
-    ) -> Self {
-        Self {
-            item_id,
-            kind,
-            expected_kind,
-        }
-    }
-}
 
 impl SolVastFitData {
     // Fast validations

@@ -7,25 +7,11 @@ pub struct SolValSrqFail {
     pub item_id: SolItemId,
     pub skills: Vec<SolValSrqSkillInfo>,
 }
-impl SolValSrqFail {
-    fn new(item_id: SolItemId, skills: Vec<SolValSrqSkillInfo>) -> Self {
-        Self { item_id, skills }
-    }
-}
 
 pub struct SolValSrqSkillInfo {
     pub skill_type_id: EItemId,
     pub skill_lvl: Option<SkillLevel>,
     pub req_lvl: SkillLevel,
-}
-impl SolValSrqSkillInfo {
-    fn new(skill_type_id: EItemId, skill_lvl: Option<SkillLevel>, req_lvl: SkillLevel) -> Self {
-        Self {
-            skill_type_id,
-            skill_lvl,
-            req_lvl,
-        }
-    }
 }
 
 impl SolVastFitData {
@@ -38,13 +24,16 @@ impl SolVastFitData {
         self.srqs_missing
             .iter()
             .filter(|(_, ms)| !ms.is_empty())
-            .map(|(ii, ms)| {
-                SolValSrqFail::new(
-                    *ii,
-                    ms.iter()
-                        .map(|(sid, srq)| SolValSrqSkillInfo::new(*sid, srq.current_lvl, srq.required_lvl))
-                        .collect(),
-                )
+            .map(|(ii, ms)| SolValSrqFail {
+                item_id: *ii,
+                skills: ms
+                    .iter()
+                    .map(|(sid, srq)| SolValSrqSkillInfo {
+                        skill_type_id: *sid,
+                        skill_lvl: srq.current_lvl,
+                        req_lvl: srq.required_lvl,
+                    })
+                    .collect(),
             })
             .collect()
     }

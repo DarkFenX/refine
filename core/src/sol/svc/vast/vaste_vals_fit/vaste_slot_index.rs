@@ -8,11 +8,6 @@ pub struct SolValSlotIndexFail {
     pub slot: SlotIndex,
     pub users: Vec<SolItemId>,
 }
-impl SolValSlotIndexFail {
-    fn new(slot: SlotIndex, users: Vec<SolItemId>) -> Self {
-        Self { slot, users }
-    }
-}
 
 impl SolVastFitData {
     // Fast validations
@@ -41,7 +36,10 @@ fn validate_slot_index_verbose(data: &StMapSetL1<SlotIndex, SolItemId>) -> Vec<S
     let mut fails = Vec::new();
     for (slot, users) in data.iter() {
         if users.len() >= 2 {
-            fails.push(SolValSlotIndexFail::new(*slot, users.copied().collect()))
+            fails.push(SolValSlotIndexFail {
+                slot: *slot,
+                users: users.copied().collect(),
+            })
         }
     }
     fails

@@ -8,20 +8,10 @@ pub struct SolValRigSizeFail {
     pub allowed_size: AttrVal,
     pub items: Vec<SolValRigSizeItemInfo>,
 }
-impl SolValRigSizeFail {
-    fn new(allowed_size: AttrVal, items: Vec<SolValRigSizeItemInfo>) -> Self {
-        Self { allowed_size, items }
-    }
-}
 
 pub struct SolValRigSizeItemInfo {
     pub item_id: SolItemId,
     pub rig_size: Option<AttrVal>,
-}
-impl SolValRigSizeItemInfo {
-    fn new(item_id: SolItemId, rig_size: Option<AttrVal>) -> Self {
-        Self { item_id, rig_size }
-    }
 }
 
 impl SolVastFitData {
@@ -47,12 +37,15 @@ impl SolVastFitData {
         let mut mismatches = Vec::new();
         for (&item_id, &rig_size) in self.rigs_rig_size.iter() {
             if rig_size != Some(allowed_size) {
-                mismatches.push(SolValRigSizeItemInfo::new(item_id, rig_size))
+                mismatches.push(SolValRigSizeItemInfo { item_id, rig_size })
             }
         }
         match mismatches.is_empty() {
             true => None,
-            false => Some(SolValRigSizeFail::new(allowed_size, mismatches)),
+            false => Some(SolValRigSizeFail {
+                allowed_size,
+                items: mismatches,
+            }),
         }
     }
 }

@@ -9,24 +9,11 @@ pub struct SolValCapitalModFail {
     pub max_subcap_volume: AttrVal,
     pub items: Vec<SolValCapitalModItemInfo>,
 }
-impl SolValCapitalModFail {
-    fn new(max_subcap_volume: AttrVal, items: Vec<SolValCapitalModItemInfo>) -> Self {
-        Self {
-            max_subcap_volume,
-            items,
-        }
-    }
-}
 
 #[derive(Copy, Clone)]
 pub struct SolValCapitalModItemInfo {
     pub item_id: SolItemId,
     pub volume: AttrVal,
-}
-impl SolValCapitalModItemInfo {
-    pub(in crate::sol::svc::vast) fn new(item_id: SolItemId, volume: AttrVal) -> Self {
-        Self { item_id, volume }
-    }
 }
 
 impl SolVastFitData {
@@ -42,10 +29,10 @@ impl SolVastFitData {
         if !is_ship_subcap(ship) || self.mods_capital.is_empty() {
             return None;
         }
-        Some(SolValCapitalModFail::new(
-            ec::extras::MAX_SUBCAP_MODULE_VOLUME,
-            self.mods_capital.values().copied().collect(),
-        ))
+        Some(SolValCapitalModFail {
+            max_subcap_volume: ec::extras::MAX_SUBCAP_MODULE_VOLUME,
+            items: self.mods_capital.values().copied().collect(),
+        })
     }
 }
 

@@ -13,23 +13,10 @@ pub struct SolValMaxGroupFail {
     pub count: Count,
     pub items: Vec<SolValMaxGroupItemInfo>,
 }
-impl SolValMaxGroupFail {
-    fn new(group_id: EItemGrpId, count: Count, items: Vec<SolValMaxGroupItemInfo>) -> Self {
-        Self { group_id, count, items }
-    }
-}
 
 pub struct SolValMaxGroupItemInfo {
     pub item_id: SolItemId,
     pub max_allowed_count: Count,
-}
-impl SolValMaxGroupItemInfo {
-    pub(in crate::sol::svc::vast) fn new(item_id: SolItemId, max_allowed_count: Count) -> Self {
-        Self {
-            item_id,
-            max_allowed_count,
-        }
-    }
 }
 
 impl SolVastFitData {
@@ -159,11 +146,18 @@ fn validate_verbose(
             items_by_grp
                 .entry(*grp_id)
                 .or_insert_with(Vec::new)
-                .push(SolValMaxGroupItemInfo::new(*item_id, allowed));
+                .push(SolValMaxGroupItemInfo {
+                    item_id: *item_id,
+                    max_allowed_count: allowed,
+                });
         }
     }
     items_by_grp
         .into_iter()
-        .map(|(k, v)| SolValMaxGroupFail::new(k, max_group_all.get(&k).len() as Count, v))
+        .map(|(k, v)| SolValMaxGroupFail {
+            group_id: k,
+            count: max_group_all.get(&k).len() as Count,
+            items: v,
+        })
         .collect()
 }

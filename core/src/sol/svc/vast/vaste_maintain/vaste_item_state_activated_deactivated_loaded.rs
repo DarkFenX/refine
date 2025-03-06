@@ -45,11 +45,11 @@ impl SolVast {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data.mods_state.insert(
                             module.get_id(),
-                            SolValModuleStateFail::new(
-                                module.get_id(),
-                                SolModuleState::Online,
-                                SolModuleState::Offline,
-                            ),
+                            SolValModuleStateFail {
+                                item_id: module.get_id(),
+                                state: SolModuleState::Online,
+                                max_state: SolModuleState::Offline,
+                            },
                         );
                     }
                 }
@@ -74,11 +74,11 @@ impl SolVast {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                             fit_data.mods_state.insert(
                                 module.get_id(),
-                                SolValModuleStateFail::new(
-                                    module.get_id(),
-                                    SolModuleState::Active,
-                                    SolModuleState::Online,
-                                ),
+                                SolValModuleStateFail {
+                                    item_id: module.get_id(),
+                                    state: SolModuleState::Active,
+                                    max_state: SolModuleState::Online,
+                                },
                             );
                         }
                         _ => (),
@@ -96,11 +96,11 @@ impl SolVast {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                             fit_data.mods_state.insert(
                                 module.get_id(),
-                                SolValModuleStateFail::new(
-                                    module.get_id(),
-                                    SolModuleState::Overload,
-                                    SolModuleState::Active,
-                                ),
+                                SolValModuleStateFail {
+                                    item_id: module.get_id(),
+                                    state: SolModuleState::Overload,
+                                    max_state: SolModuleState::Active,
+                                },
                             );
                         }
                         _ => (),
