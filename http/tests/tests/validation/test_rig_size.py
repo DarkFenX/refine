@@ -16,7 +16,7 @@ def test_ship(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
-    assert api_val.details.rig_size.mismatches == {api_rig1.id: 1}
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
     # Action
     api_rig1.remove()
     # Verification
@@ -41,7 +41,7 @@ def test_struct(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
-    assert api_val.details.rig_size.mismatches == {api_rig1.id: 1}
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
     # Action
     api_rig1.remove()
     # Verification
@@ -68,7 +68,7 @@ def test_rounding(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 2.95
-    assert api_val.details.rig_size.mismatches == {api_rig1.id: 1.2, api_rig2.id: 2.9}
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1.2, api_rig2.id: 2.9}
 
 
 def test_modified(client, consts):
@@ -107,7 +107,7 @@ def test_modified(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
-    assert api_val.details.rig_size.mismatches == {api_rig1.id: 1}
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
 
 
 def test_ship_absent(client, consts):
@@ -153,7 +153,7 @@ def test_no_value_rig(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 2
-    assert api_val.details.rig_size.mismatches == {api_rig.id: None}
+    assert api_val.details.rig_size.rig_sizes == {api_rig.id: None}
 
 
 def test_ship_not_loaded(client, consts):
@@ -185,7 +185,7 @@ def test_rig_not_loaded(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
-    assert api_val.details.rig_size.mismatches == {api_rig.id: None}
+    assert api_val.details.rig_size.rig_sizes == {api_rig.id: None}
 
 
 def test_no_attr(client, consts):
@@ -204,7 +204,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
-    assert api_val.details.rig_size.mismatches == {api_rig1.id: 1}
+    assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
     # Action
     api_rig1.remove()
     # Verification
@@ -228,7 +228,7 @@ def test_state(client, consts):
     api_val = api_fit.validate(include=[consts.ApiValType.rig_size])
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
-    assert api_val.details.rig_size.mismatches == {api_rig.id: 1}
+    assert api_val.details.rig_size.rig_sizes == {api_rig.id: 1}
 
 
 def test_criterion_item_kind(client, consts):

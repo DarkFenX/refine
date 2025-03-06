@@ -17,7 +17,7 @@ def test_type_single(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: ([eve_allowed_ship_id], [])}
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
@@ -46,7 +46,7 @@ def test_type_multiple_different(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {
+    assert api_val.details.ship_limit.items == {
         api_module.id: (sorted([eve_allowed_ship1_id, eve_allowed_ship2_id]), [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship2_id)
@@ -79,7 +79,7 @@ def test_type_multiple_same_rounding(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {
+    assert api_val.details.ship_limit.items == {
         api_module.id: (sorted([eve_allowed_ship1_id, eve_allowed_ship2_id]), [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship1_id)
@@ -107,7 +107,7 @@ def test_group_single(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: ([], [eve_allowed_grp_id])}
+    assert api_val.details.ship_limit.items == {api_module.id: ([], [eve_allowed_grp_id])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
@@ -137,7 +137,7 @@ def test_group_multiple_different(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.mismatches == {
+    assert api_val.details.ship_limit.items == {
         api_module.id: ([], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
@@ -171,7 +171,7 @@ def test_group_multiple_same_rounding(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.mismatches == {
+    assert api_val.details.ship_limit.items == {
         api_module.id: ([], sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
@@ -209,7 +209,7 @@ def test_combined(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: (
+    assert api_val.details.ship_limit.items == {api_module.id: (
         sorted([eve_allowed_type_ship_id, eve_allowed_both_ship_id]),
         sorted([eve_allowed_grp1_id, eve_allowed_grp2_id]))}
     # Action
@@ -251,7 +251,7 @@ def test_struct(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_struct_id
     assert api_val.details.ship_limit.ship_group_id == eve_struct_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: ([eve_allowed_struct_id], [])}
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_allowed_struct_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_struct_id)
     # Verification
@@ -278,7 +278,7 @@ def test_subsystem(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_subsystem.id: ([eve_allowed_ship_id], [])}
+    assert api_val.details.ship_limit.items == {api_subsystem.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
@@ -304,7 +304,7 @@ def test_rig(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_rig.id: ([eve_allowed_ship_id], [])}
+    assert api_val.details.ship_limit.items == {api_rig.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
@@ -343,7 +343,7 @@ def test_modified_type(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: ([eve_allowed_ship_id], [])}
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
@@ -384,7 +384,7 @@ def test_modified_group(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_disallowed_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: ([], [eve_allowed_grp_id])}
+    assert api_val.details.ship_limit.items == {api_module.id: ([], [eve_allowed_grp_id])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
@@ -417,7 +417,7 @@ def test_mutation_type(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: (sorted([eve_ship1_id, eve_ship2_id]), [])}
+    assert api_val.details.ship_limit.items == {api_module.id: (sorted([eve_ship1_id, eve_ship2_id]), [])}
     # Action
     api_module.change_mod(mutation=eve_mutator_id)
     # Verification
@@ -439,7 +439,7 @@ def test_mutation_type(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: (sorted([eve_ship2_id, eve_ship3_id]), [])}
+    assert api_val.details.ship_limit.items == {api_module.id: (sorted([eve_ship2_id, eve_ship3_id]), [])}
     # Action
     api_module.change_mod(mutation=None)
     # Verification
@@ -454,7 +454,7 @@ def test_mutation_type(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: (sorted([eve_ship1_id, eve_ship2_id]), [])}
+    assert api_val.details.ship_limit.items == {api_module.id: (sorted([eve_ship1_id, eve_ship2_id]), [])}
 
 
 def test_mutation_group(client, consts):
@@ -482,7 +482,7 @@ def test_mutation_group(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp3_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: ([], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
+    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
     # Action
     api_module.change_mod(mutation=eve_mutator_id)
     # Verification
@@ -504,7 +504,7 @@ def test_mutation_group(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship1_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp1_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: ([], sorted([eve_ship_grp2_id, eve_ship_grp3_id]))}
+    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_ship_grp2_id, eve_ship_grp3_id]))}
     # Action
     api_module.change_mod(mutation=None)
     # Verification
@@ -519,7 +519,7 @@ def test_mutation_group(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship3_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp3_id
-    assert api_val.details.ship_limit.mismatches == {api_module.id: ([], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
+    assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
 
 
 def test_no_ship(client, consts):
@@ -538,7 +538,7 @@ def test_no_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id is None
     assert api_val.details.ship_limit.ship_group_id is None
-    assert api_val.details.ship_limit.mismatches == {api_module.id: ([eve_ship_id], [eve_ship_grp1_id])}
+    assert api_val.details.ship_limit.items == {api_module.id: ([eve_ship_id], [eve_ship_grp1_id])}
 
 
 def test_not_loaded_ship(client, consts):
@@ -560,7 +560,7 @@ def test_not_loaded_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
     assert api_val.details.ship_limit.ship_group_id is None
-    assert api_val.details.ship_limit.mismatches == {api_module1.id: ([eve_ship1_id], [eve_ship_grp_id])}
+    assert api_val.details.ship_limit.items == {api_module1.id: ([eve_ship1_id], [eve_ship_grp_id])}
     # Action
     api_module1.remove()
     # Verification
@@ -590,7 +590,7 @@ def test_criterion_state(client, consts):
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.mismatches == {
+    assert api_val.details.ship_limit.items == {
         api_module.id: ([eve_allowed_ship_id], []),
         api_rig.id: ([eve_allowed_ship_id], []),
         api_subsystem.id: ([eve_allowed_ship_id], [])}

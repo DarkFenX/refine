@@ -7,18 +7,18 @@ use crate::{
 pub struct SolValShipLimitFail {
     pub ship_type_id: Option<EItemId>,
     pub ship_group_id: Option<EItemGrpId>,
-    pub mismatches: Vec<SolValShipLimitItemInfo>,
+    pub items: Vec<SolValShipLimitItemInfo>,
 }
 impl SolValShipLimitFail {
     fn new(
         ship_type_id: Option<EItemId>,
         ship_group_id: Option<EItemGrpId>,
-        mismatches: Vec<SolValShipLimitItemInfo>,
+        items: Vec<SolValShipLimitItemInfo>,
     ) -> Self {
         Self {
             ship_type_id,
             ship_group_id,
-            mismatches,
+            items,
         }
     }
 }

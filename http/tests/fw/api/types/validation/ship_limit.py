@@ -8,16 +8,16 @@ class ValShipLimitFail:
 
     ship_type_id: int | None
     ship_group_id: int | None
-    mismatches: dict[str, ValShipLimitAllowed]
+    items: dict[str, ValShipLimitItemInfo]
 
     def __init__(self, *, data: tuple) -> None:
         self.ship_type_id = data[0]
         self.ship_group_id = data[1]
-        self.mismatches = {k: ValShipLimitAllowed(data=v) for k, v in data[2].items()}
+        self.items = {k: ValShipLimitItemInfo(data=v) for k, v in data[2].items()}
 
 
 @dataclass
-class ValShipLimitAllowed:
+class ValShipLimitItemInfo:
 
     allowed_type_ids: list[int]
     allowed_group_ids: list[int]

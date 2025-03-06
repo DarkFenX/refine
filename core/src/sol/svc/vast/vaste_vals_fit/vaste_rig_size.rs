@@ -6,14 +6,11 @@ use crate::{
 
 pub struct SolValRigSizeFail {
     pub allowed_size: AttrVal,
-    pub mismatches: Vec<SolValRigSizeItemInfo>,
+    pub items: Vec<SolValRigSizeItemInfo>,
 }
 impl SolValRigSizeFail {
-    fn new(allowed_size: AttrVal, mismatches: Vec<SolValRigSizeItemInfo>) -> Self {
-        Self {
-            allowed_size,
-            mismatches,
-        }
+    fn new(allowed_size: AttrVal, items: Vec<SolValRigSizeItemInfo>) -> Self {
+        Self { allowed_size, items }
     }
 }
 
