@@ -93,6 +93,7 @@ pub(crate) const REMOTE_RESISTANCE_ID: EAttrId = 2138;
 pub(crate) const FTR_SQ_IS_LIGHT: EAttrId = 2212;
 pub(crate) const FTR_SQ_IS_SUPPORT: EAttrId = 2213;
 pub(crate) const FTR_SQ_IS_HEAVY: EAttrId = 2214;
+pub(crate) const FTR_SQ_MAX_SIZE: EAttrId = 2215;
 pub(crate) const FTR_TUBES: EAttrId = 2216;
 pub(crate) const FTR_LIGHT_SLOTS: EAttrId = 2217;
 pub(crate) const FTR_SUPPORT_SLOTS: EAttrId = 2218;

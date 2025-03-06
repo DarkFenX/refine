@@ -16,7 +16,7 @@ pub(crate) struct HFighterInfoPartial {
     pub(crate) fit_id: rc::SolFitId,
     pub(crate) state: HMinionState,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) count_override: Option<rc::Count>,
+    pub(crate) count: Option<rc::Count>,
     #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(crate) autocharges: HashMap<rc::EEffectId, HAutochargeInfo>,
     #[serde_as(as = "Vec<(serde_with::DisplayFromStr, _)>")]
@@ -35,7 +35,7 @@ impl HFighterInfoPartial {
             type_id: core_fighter_info.type_id,
             fit_id: core_fighter_info.fit_id,
             state: (&core_fighter_info.state).into(),
-            count_override: core_fighter_info.count_override,
+            count: core_fighter_info.count,
             autocharges: core_fighter_info
                 .autocharges
                 .iter()

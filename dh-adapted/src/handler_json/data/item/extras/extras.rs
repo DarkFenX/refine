@@ -22,6 +22,7 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) item_ship_kind: Option<CShipKind>,
     pub(in crate::handler_json) max_state: CState,
     pub(in crate::handler_json) drone_limit: Option<CShipDroneLimit>,
+    pub(in crate::handler_json) max_fighter_count: rc::Count,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -46,6 +47,7 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             item_ship_kind: a_item_extras.item_ship_kind.as_ref().map(|v| v.into()),
             max_state: (&a_item_extras.max_state).into(),
             drone_limit: a_item_extras.drone_limit.as_ref().map(|v| v.into()),
+            max_fighter_count: a_item_extras.max_fighter_count,
         }
     }
 }
@@ -72,6 +74,7 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             item_ship_kind: c_item_extras.item_ship_kind.as_ref().map(|v| v.into()),
             max_state: (&c_item_extras.max_state).into(),
             drone_limit: c_item_extras.drone_limit.as_ref().map(|v| v.into()),
+            max_fighter_count: c_item_extras.max_fighter_count,
         }
     }
 }

@@ -1,5 +1,6 @@
 use crate::{
     ad,
+    ad::AOp::PreMul,
     defs::{AttrVal, Count, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     sol::uad::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState, SolMinionState, SolProjs},
     src::Src,
@@ -83,6 +84,15 @@ impl SolFighter {
     }
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id
+    }
+    pub(in crate::sol) fn get_count(&self) -> Option<Count> {
+        match self.get_a_extras() {
+            Some(extras) => match self.count_override {
+                Some(count_override) => Some(Count::min(extras.max_fighter_count, count_override)),
+                None => Some(extras.max_fighter_count),
+            },
+            None => None,
+        }
     }
     pub(in crate::sol) fn get_count_override(&self) -> Option<Count> {
         self.count_override

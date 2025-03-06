@@ -12,7 +12,7 @@ pub struct SolFighterInfo {
     pub type_id: EItemId,
     pub fit_id: SolFitId,
     pub state: SolMinionState,
-    pub count_override: Option<Count>,
+    pub count: Option<Count>,
     pub autocharges: StMap<EEffectId, SolAutochargeInfo>,
     pub projs: Vec<SolProjInfo>,
 }
@@ -22,7 +22,7 @@ impl SolFighterInfo {
         type_id: EItemId,
         fit_id: SolFitId,
         state: SolMinionState,
-        count_override: Option<Count>,
+        count: Option<Count>,
         autocharges: StMap<EEffectId, SolAutochargeInfo>,
         projs: Vec<SolProjInfo>,
     ) -> Self {
@@ -31,7 +31,7 @@ impl SolFighterInfo {
             type_id,
             fit_id,
             state,
-            count_override,
+            count,
             autocharges,
             projs,
         }
@@ -45,7 +45,7 @@ impl SolFighterInfo {
             sol_fighter.get_type_id(),
             sol_fighter.get_fit_id(),
             sol_fighter.get_fighter_state(),
-            sol_fighter.get_count_override(),
+            sol_fighter.get_count(),
             autocharges,
             sol_fighter
                 .get_projs()

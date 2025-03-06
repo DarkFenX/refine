@@ -3,13 +3,14 @@ use crate::{
         AEffect, AItem, AItemChargeLimit, AItemEffectData, AItemKind, AItemShipLimit, AShipDroneLimit, AShipKind,
         AState,
     },
-    defs::{AttrVal, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex},
+    defs::{AttrVal, Count, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex},
     util::StMap,
 };
 
 use super::{
     charge_limit::get_item_charge_limit,
     drone_limit::get_ship_drone_limit,
+    fighter_count::get_max_fighter_count,
     fighter_kind::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_standup_heavy_fighter_flag, get_standup_light_fighter_flag,
         get_standup_support_fighter_flag, get_support_fighter_flag,
@@ -68,6 +69,8 @@ pub struct AItemExtras {
     pub max_state: AState,
     /// If set, ship can use drones which fit into the limit.
     pub drone_limit: Option<AShipDroneLimit>,
+    /// By default, a fighter squad will have this count of fighters.
+    pub max_fighter_count: Count,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -92,6 +95,7 @@ impl AItemExtras {
             item_ship_kind: Option::default(),
             max_state: AState::Offline,
             drone_limit: Option::default(),
+            max_fighter_count: 1,
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -118,6 +122,7 @@ impl AItemExtras {
             item_ship_kind: get_item_ship_kind(a_item.cat_id, attrs),
             max_state: a_item.extras.max_state,
             drone_limit: get_ship_drone_limit(attrs),
+            max_fighter_count: get_max_fighter_count(attrs),
         }
     }
     pub(crate) fn fill(
@@ -161,5 +166,6 @@ impl AItemExtras {
         self.item_ship_kind = get_item_ship_kind(item_cat_id, item_attrs);
         self.max_state = get_max_state(item_effects.keys(), effects);
         self.drone_limit = get_ship_drone_limit(item_attrs);
+        self.max_fighter_count = get_max_fighter_count(item_attrs);
     }
 }

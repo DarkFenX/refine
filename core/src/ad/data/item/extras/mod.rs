@@ -8,6 +8,7 @@ pub use ship_limit::AItemShipLimit;
 mod charge_limit;
 mod drone_limit;
 mod extras;
+mod fighter_count;
 mod fighter_kind;
 mod kind;
 mod max_state;
