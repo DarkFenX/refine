@@ -1,8 +1,8 @@
-pub use vaste_capital_module::SolCapitalModValFail;
+pub use vaste_capital_module::{SolCapitalModItemInfo, SolCapitalModValFail};
 pub use vaste_charge_group::SolChargeGroupValFail;
 pub use vaste_charge_size::SolChargeSizeValFail;
 pub use vaste_charge_volume::SolChargeVolumeValFail;
-pub use vaste_drone_group::{SolDroneGroupMismatch, SolDroneGroupValFail};
+pub use vaste_drone_group::{SolDroneGroupItemInfo, SolDroneGroupValFail};
 pub use vaste_item_kind::SolItemKindValFail;
 pub use vaste_max_group::{SolMaxGroupItem, SolMaxGroupValFail};
 pub use vaste_module_state::SolModuleStateValFail;

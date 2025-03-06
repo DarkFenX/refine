@@ -1,5 +1,5 @@
 use crate::{
-    defs::{AttrVal, EAttrId, EItemCatId, EItemId, OF, SkillLevel},
+    defs::{AttrVal, EAttrId, EItemCatId, EItemId, SkillLevel},
     ec,
     util::StMap,
 };
@@ -26,7 +26,7 @@ pub(super) fn get_ship_kind(item_cat_id: EItemCatId, item_srqs: &StMap<EItemId, 
 pub(super) fn get_item_ship_kind(item_cat_id: EItemCatId, item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AShipKind> {
     match item_cat_id {
         ec::itemcats::MODULE => match item_attrs.get(&ec::attrs::VOLUME) {
-            Some(&volume) => match volume <= OF(3500.0) {
+            Some(&volume) => match volume <= ec::extras::MAX_SUBCAP_MODULE_VOLUME {
                 true => Some(AShipKind::Ship),
                 false => Some(AShipKind::CapitalShip),
             },

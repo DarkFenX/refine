@@ -1,7 +1,7 @@
 use crate::info::valid::details::{
-    HChargeGroupValFail, HChargeSizeValFail, HChargeVolumeValFail, HDroneGroupValFail, HItemKindValFail,
-    HMaxGroupValFail, HModuleStateValFail, HResValFail, HRigSizeValFail, HShipLimitValFail, HSlotIndexValFail,
-    HSlotValFail, HSrqValFail,
+    HCapitalModValFail, HChargeGroupValFail, HChargeSizeValFail, HChargeVolumeValFail, HDroneGroupValFail,
+    HItemKindValFail, HMaxGroupValFail, HModuleStateValFail, HResValFail, HRigSizeValFail, HShipLimitValFail,
+    HSlotIndexValFail, HSlotValFail, HSrqValFail,
 };
 
 #[derive(serde::Serialize)]
@@ -86,9 +86,8 @@ struct HValidInfoDetails {
     charge_size: HChargeSizeValFail,
     #[serde(skip_serializing_if = "HChargeVolumeValFail::is_empty")]
     charge_volume: HChargeVolumeValFail,
-    #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    capital_module: Vec<rc::SolItemId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    capital_module: Option<HCapitalModValFail>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
     not_loaded_item: Vec<rc::SolItemId>,
@@ -133,7 +132,7 @@ impl HValidInfoDetails {
             && self.charge_group.is_empty()
             && self.charge_size.is_empty()
             && self.charge_volume.is_empty()
-            && self.capital_module.is_empty()
+            && self.capital_module.is_none()
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()
             && self.item_kind.is_empty()
@@ -184,7 +183,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             charge_group: (&core_val_result.charge_group).into(),
             charge_size: (&core_val_result.charge_size).into(),
             charge_volume: (&core_val_result.charge_volume).into(),
-            capital_module: core_val_result.capital_module.iter().map(|v| v.item_id).collect(),
+            capital_module: core_val_result.capital_module.as_ref().map(|v| v.into()),
             not_loaded_item: core_val_result.not_loaded_item.iter().map(|v| v.item_id).collect(),
             module_state: (&core_val_result.module_state).into(),
             item_kind: (&core_val_result.item_kind).into(),

@@ -19,7 +19,7 @@ def test_main(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
     assert api_val.passed is False
-    assert api_val.details.capital_module == [api_cap_module.id]
+    assert api_val.details.capital_module == (3500, {api_cap_module.id: 4000})
     # Action
     api_fit.set_ship(type_id=eve_cap_ship_id)
     # Verification
@@ -39,7 +39,7 @@ def test_main(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
     assert api_val.passed is False
-    assert api_val.details.capital_module == [api_cap_module.id]
+    assert api_val.details.capital_module == (3500, {api_cap_module.id: 4000})
 
 
 def test_multiple(client, consts):
@@ -55,7 +55,7 @@ def test_multiple(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
     assert api_val.passed is False
-    assert api_val.details.capital_module == sorted([api_module1.id, api_module2.id])
+    assert api_val.details.capital_module == (3500, {api_module1.id: 4000, api_module2.id: 4000})
 
 
 def test_modified(client, consts):
@@ -115,7 +115,7 @@ def test_mutation(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
     assert api_val.passed is False
-    assert api_val.details.capital_module == [api_module.id]
+    assert api_val.details.capital_module == (3500, {api_module.id: 4000})
     # Action
     api_module.change_mod(mutation=None)
     # Verification
@@ -184,7 +184,7 @@ def test_no_attr(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
     assert api_val.passed is False
-    assert api_val.details.capital_module == [api_module.id]
+    assert api_val.details.capital_module == (3500, {api_module.id: 4000})
 
 
 def test_not_loaded_ship(client, consts):
@@ -231,7 +231,7 @@ def test_criterion_state(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
     assert api_val.passed is False
-    assert api_val.details.capital_module == [api_module.id]
+    assert api_val.details.capital_module == (3500, {api_module.id: 4000})
 
 
 def test_criterion_volume(client, consts):
@@ -250,7 +250,7 @@ def test_criterion_volume(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
     assert api_val.passed is False
-    assert api_val.details.capital_module == [api_cap_module.id]
+    assert api_val.details.capital_module == (3500, {api_cap_module.id: 3500.1})
 
 
 def test_criterion_item_category(client, consts):

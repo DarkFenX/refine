@@ -5,23 +5,23 @@ use crate::{
 
 pub struct SolDroneGroupValFail {
     pub allowed_group_ids: Vec<EItemGrpId>,
-    pub mismatches: Vec<SolDroneGroupMismatch>,
+    pub items: Vec<SolDroneGroupItemInfo>,
 }
 impl SolDroneGroupValFail {
-    fn new(allowed_group_ids: Vec<EItemGrpId>, mismatches: Vec<SolDroneGroupMismatch>) -> Self {
+    fn new(allowed_group_ids: Vec<EItemGrpId>, items: Vec<SolDroneGroupItemInfo>) -> Self {
         Self {
             allowed_group_ids,
-            mismatches,
+            items,
         }
     }
 }
 
 #[derive(Copy, Clone)]
-pub struct SolDroneGroupMismatch {
+pub struct SolDroneGroupItemInfo {
     pub item_id: SolItemId,
     pub group_id: EItemGrpId,
 }
-impl SolDroneGroupMismatch {
+impl SolDroneGroupItemInfo {
     pub(in crate::sol::svc::vast) fn new(item_id: SolItemId, group_id: EItemGrpId) -> Self {
         Self { item_id, group_id }
     }

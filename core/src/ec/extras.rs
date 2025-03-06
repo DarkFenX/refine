@@ -1,7 +1,9 @@
 use crate::{
-    defs::{EAbilId, EAttrId, EEffectId},
+    defs::{AttrVal, EAbilId, EAttrId, EEffectId, OF},
     ec::{abils, attrs, effects},
 };
+
+pub(crate) const MAX_SUBCAP_MODULE_VOLUME: AttrVal = OF(3500.0);
 
 pub(crate) const BUFF_STDATTR_IDS: [EAttrId; 4] = [
     attrs::WARFARE_BUFF1_ID,

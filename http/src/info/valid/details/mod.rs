@@ -1,3 +1,4 @@
+pub(in crate::info::valid) use capital_module::HCapitalModValFail;
 pub(in crate::info::valid) use charge_group::HChargeGroupValFail;
 pub(in crate::info::valid) use charge_size::HChargeSizeValFail;
 pub(in crate::info::valid) use charge_volume::HChargeVolumeValFail;
@@ -12,6 +13,7 @@ pub(in crate::info::valid) use skill_reqs::HSrqValFail;
 pub(in crate::info::valid) use slot::HSlotValFail;
 pub(in crate::info::valid) use slot_index::HSlotIndexValFail;
 
+mod capital_module;
 mod charge_group;
 mod charge_size;
 mod charge_volume;

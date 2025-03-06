@@ -162,7 +162,7 @@ pub struct SolValResult {
     pub charge_group: Vec<SolChargeGroupValFail>,
     pub charge_size: Vec<SolChargeSizeValFail>,
     pub charge_volume: Vec<SolChargeVolumeValFail>,
-    pub capital_module: Vec<SolCapitalModValFail>,
+    pub capital_module: Option<SolCapitalModValFail>,
     pub not_loaded_item: Vec<SolNotLoadedItemValFail>,
     pub module_state: Vec<SolModuleStateValFail>,
     pub item_kind: Vec<SolItemKindValFail>,
@@ -203,7 +203,7 @@ impl SolValResult {
             charge_group: Vec::new(),
             charge_size: Vec::new(),
             charge_volume: Vec::new(),
-            capital_module: Vec::new(),
+            capital_module: None,
             not_loaded_item: Vec::new(),
             module_state: Vec::new(),
             item_kind: Vec::new(),
@@ -243,7 +243,7 @@ impl SolValResult {
             && self.charge_group.is_empty()
             && self.charge_size.is_empty()
             && self.charge_volume.is_empty()
-            && self.capital_module.is_empty()
+            && self.capital_module.is_none()
             && self.not_loaded_item.is_empty()
             && self.module_state.is_empty()
             && self.item_kind.is_empty()

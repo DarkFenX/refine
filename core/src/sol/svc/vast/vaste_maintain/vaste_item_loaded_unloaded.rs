@@ -6,7 +6,10 @@ use crate::{
     ec,
     sol::{
         SolModRack,
-        svc::vast::{SolDroneGroupMismatch, SolItemKindValFail, SolValCache, SolVast, SolVastFitData, SolVastSkillReq},
+        svc::vast::{
+            SolCapitalModItemInfo, SolDroneGroupItemInfo, SolItemKindValFail, SolValCache, SolVast, SolVastFitData,
+            SolVastSkillReq,
+        },
         uad::{
             SolUad,
             item::{SolItem, SolModule},
@@ -88,7 +91,7 @@ impl SolVast {
                     if !fit_data.drone_group_limit.contains(&drone_group_id) {
                         fit_data
                             .drone_group_mismatches
-                            .insert(item_id, SolDroneGroupMismatch::new(item_id, drone_group_id));
+                            .insert(item_id, SolDroneGroupItemInfo::new(item_id, drone_group_id));
                     }
                 }
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Drone);
@@ -137,7 +140,10 @@ impl SolVast {
                 // we just reset validation result when a module is being loaded
                 handle_charge_volume_for_module(fit_data, item_id);
                 if let Some(ad::AShipKind::CapitalShip) = extras.item_ship_kind {
-                    fit_data.mods_capital.insert(item_id);
+                    // Unwrap, since item ship kind is set to capital only when volume is available
+                    fit_data
+                        .mods_capital
+                        .insert(item_id, SolCapitalModItemInfo::new(item_id, extras.volume.unwrap()));
                 }
                 item_kind_add(fit_data, item_id, extras.kind, get_module_expected_kind(module));
             }
@@ -166,7 +172,7 @@ impl SolVast {
                             if !drone_limit.group_ids.contains(&drone_group_id) {
                                 fit_data.drone_group_mismatches.insert(
                                     *drone_item_id,
-                                    SolDroneGroupMismatch::new(*drone_item_id, drone_group_id),
+                                    SolDroneGroupItemInfo::new(*drone_item_id, drone_group_id),
                                 );
                             }
                         }

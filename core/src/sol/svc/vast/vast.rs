@@ -3,8 +3,8 @@ use crate::{
     defs::{AttrVal, EItemGrpId, EItemId, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
     sol::svc::vast::{
-        SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail, SolDroneGroupMismatch, SolItemKindValFail,
-        SolModuleStateValFail, SolValCache, SolVastSkillReq,
+        SolCapitalModItemInfo, SolChargeGroupValFail, SolChargeSizeValFail, SolChargeVolumeValFail,
+        SolDroneGroupItemInfo, SolItemKindValFail, SolModuleStateValFail, SolValCache, SolVastSkillReq,
     },
     util::{StMap, StMapSetL1, StSet},
 };
@@ -70,12 +70,12 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) mods_charge_group: StMap<SolItemId, SolValCache<(), SolChargeGroupValFail>>,
     pub(in crate::sol::svc::vast) mods_charge_size: StMap<SolItemId, SolValCache<AttrVal, SolChargeSizeValFail>>,
     pub(in crate::sol::svc::vast) mods_charge_volume: StMap<SolItemId, SolValCache<AttrVal, SolChargeVolumeValFail>>,
-    pub(in crate::sol::svc::vast) mods_capital: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) mods_capital: StMap<SolItemId, SolCapitalModItemInfo>,
     pub(in crate::sol::svc::vast) not_loaded: StSet<SolItemId>,
     pub(in crate::sol::svc::vast) mods_state: StMap<SolItemId, SolModuleStateValFail>,
     pub(in crate::sol::svc::vast) item_kind: StMap<SolItemId, SolItemKindValFail>,
     pub(in crate::sol::svc::vast) drone_group_limit: Vec<EItemGrpId>,
-    pub(in crate::sol::svc::vast) drone_group_mismatches: StMap<SolItemId, SolDroneGroupMismatch>,
+    pub(in crate::sol::svc::vast) drone_group_mismatches: StMap<SolItemId, SolDroneGroupItemInfo>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -109,7 +109,7 @@ impl SolVastFitData {
             mods_charge_group: StMap::new(),
             mods_charge_size: StMap::new(),
             mods_charge_volume: StMap::new(),
-            mods_capital: StSet::new(),
+            mods_capital: StMap::new(),
             not_loaded: StSet::new(),
             mods_state: StMap::new(),
             item_kind: StMap::new(),
