@@ -11,6 +11,7 @@ use crate::{
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeFighterCmd {
     state: Option<HMinionState>,
+    count: Option<rc::Count>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -33,6 +34,15 @@ impl HChangeFighterCmd {
                 return Err(match error {
                     rc::err::SetFighterStateError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
                     rc::err::SetFighterStateError::ItemIsNotFighter(e) => HExecError::ItemKindMismatch(e),
+                });
+            }
+        }
+        if let Some(count) = self.count {
+            if let Err(error) = core_sol.set_fighter_count_override(item_id, count) {
+                return Err(match error {
+                    rc::err::SetFighterCountOverrideError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::SetFighterCountOverrideError::ItemIsNotFighter(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::SetFighterCountOverrideError::FighterCountError(e) => HExecError::InvalidFighterCount(e),
                 });
             }
         }

@@ -8,6 +8,7 @@ use crate::{
 pub(crate) struct HAddFighterCmd {
     type_id: rc::EItemId,
     state: HMinionState,
+    count: Option<rc::Count>,
 }
 impl HAddFighterCmd {
     pub(in crate::cmd) fn execute(
@@ -23,6 +24,16 @@ impl HAddFighterCmd {
                 });
             }
         };
+        if let Some(count) = self.count {
+            if let Err(error) = core_sol.set_fighter_count_override(&core_fighter.id, count) {
+                return Err(match error {
+                    rc::err::SetFighterCountOverrideError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
+                    rc::err::SetFighterCountOverrideError::ItemIsNotFighter(e) => HExecError::ItemKindMismatch(e),
+                    rc::err::SetFighterCountOverrideError::FighterCountError(e) => HExecError::InvalidFighterCount(e),
+                });
+            }
+        }
+        let core_fighter = core_sol.get_fighter(&core_fighter.id).unwrap();
         Ok(core_fighter)
     }
 }
