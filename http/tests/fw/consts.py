@@ -238,6 +238,7 @@ class EveAttr(IntEnum):
     can_fit_ship_type5 = 1944
     gate_scramble_status = 1973
     gate_scramble_strength = 1974
+    ftr_capacity = 2055
     can_fit_ship_group9 = 2065
     can_fit_ship_type6 = 2103
     remote_resistance_id = 2138
@@ -248,6 +249,7 @@ class EveAttr(IntEnum):
     ftr_sq_is_light = 2212
     ftr_sq_is_support = 2213
     ftr_sq_is_heavy = 2214
+    ftr_sq_max_size = 2215
     doomsday_aoe_range = 2279
     ftr_abil_launch_bomb_type = 2324
     can_fit_ship_group10 = 2396
@@ -393,6 +395,7 @@ class ApiValType(StrEnum):
     calibration = 'calibration'
     drone_bay_volume = 'drone_bay_volume'
     drone_bandwidth = 'drone_bandwidth'
+    fighter_bay_volume = 'fighter_bay_volume'
     rig_slot_count = 'rig_slot_count'
     subsystem_slot_count = 'subsystem_slot_count'
     launched_drone_count = 'launched_drone_count'

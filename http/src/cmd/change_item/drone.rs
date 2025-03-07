@@ -10,6 +10,7 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeDroneCmd {
+    #[serde(default)]
     state: Option<HMinionState>,
     #[serde(default, with = "::serde_with::rust::double_option")]
     mutation: Option<Option<HMutationOnChange>>,

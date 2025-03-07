@@ -299,6 +299,7 @@ class Item(AttrDict):
     def change_fighter(
             self, *,
             state: ApiMinionState | type[Absent] = Absent,
+            count: int | None | type[Absent] = Absent,
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,
@@ -310,6 +311,7 @@ class Item(AttrDict):
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,
+            count=count,
             add_projs=add_projs,
             change_projs=change_projs,
             rm_projs=rm_projs,

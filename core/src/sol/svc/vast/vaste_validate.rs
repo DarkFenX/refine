@@ -34,6 +34,9 @@ impl SolVast {
         if options.drone_bandwidth && !fit_data.validate_drone_bandwidth_fast(uad, calc, fit) {
             return false;
         }
+        if options.fighter_bay_volume && !fit_data.validate_fighter_bay_volume_fast(uad, calc, fit) {
+            return false;
+        }
         if options.rig_slot_count && !fit_data.validate_rig_slot_count_fast(uad, calc, fit) {
             return false;
         }
@@ -167,6 +170,9 @@ impl SolVast {
         }
         if options.drone_bandwidth {
             result.drone_bandwidth = fit_data.validate_drone_bandwidth_verbose(uad, calc, fit);
+        }
+        if options.fighter_bay_volume {
+            result.fighter_bay_volume = fit_data.validate_fighter_bay_volume_verbose(uad, calc, fit);
         }
         if options.rig_slot_count {
             result.rig_slot_count = fit_data.validate_rig_slot_count_verbose(uad, calc, fit);

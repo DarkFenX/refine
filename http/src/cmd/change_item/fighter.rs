@@ -10,8 +10,10 @@ use crate::{
 #[serde_with::serde_as]
 #[derive(serde::Deserialize)]
 pub(crate) struct HChangeFighterCmd {
+    #[serde(default)]
     state: Option<HMinionState>,
-    count: Option<rc::Count>,
+    #[serde(default, with = "::serde_with::rust::double_option")]
+    count: Option<Option<rc::Count>>,
     #[serde(default)]
     add_projs: Vec<HProjDef>,
     #[serde(default)]
@@ -38,12 +40,34 @@ impl HChangeFighterCmd {
             }
         }
         if let Some(count) = self.count {
-            if let Err(error) = core_sol.set_fighter_count_override(item_id, count) {
-                return Err(match error {
-                    rc::err::SetFighterCountOverrideError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
-                    rc::err::SetFighterCountOverrideError::ItemIsNotFighter(e) => HExecError::ItemKindMismatch(e),
-                    rc::err::SetFighterCountOverrideError::FighterCountError(e) => HExecError::InvalidFighterCount(e),
-                });
+            match count {
+                Some(count) => {
+                    if let Err(error) = core_sol.set_fighter_count_override(item_id, count) {
+                        return Err(match error {
+                            rc::err::SetFighterCountOverrideError::ItemNotFound(e) => {
+                                HExecError::ItemNotFoundPrimary(e)
+                            }
+                            rc::err::SetFighterCountOverrideError::ItemIsNotFighter(e) => {
+                                HExecError::ItemKindMismatch(e)
+                            }
+                            rc::err::SetFighterCountOverrideError::FighterCountError(e) => {
+                                HExecError::InvalidFighterCount(e)
+                            }
+                        });
+                    }
+                }
+                None => {
+                    if let Err(error) = core_sol.remove_fighter_count_override(item_id) {
+                        return Err(match error {
+                            rc::err::RemoveFighterCountOverrideError::ItemNotFound(e) => {
+                                HExecError::ItemNotFoundPrimary(e)
+                            }
+                            rc::err::RemoveFighterCountOverrideError::ItemIsNotFighter(e) => {
+                                HExecError::ItemKindMismatch(e)
+                            }
+                        });
+                    }
+                }
             }
         }
         for proj_def in self.add_projs.iter() {

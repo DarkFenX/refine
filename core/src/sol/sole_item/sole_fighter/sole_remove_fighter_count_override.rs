@@ -11,9 +11,9 @@ impl SolarSystem {
     ) -> Result<(), RemoveFighterCountOverrideError> {
         // Update user data
         let fighter = self.uad.items.get_item_mut(item_id)?.get_fighter_mut()?;
-        let old_count = fighter.get_count();
+        let old_count = fighter.get_count().map(|v| v.current);
         fighter.set_count_override(None);
-        let new_count = fighter.get_count();
+        let new_count = fighter.get_count().map(|v| v.current);
         // Update services
         if old_count != new_count {
             let fighter = self.uad.items.get_item(item_id).unwrap().get_fighter().unwrap();

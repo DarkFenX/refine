@@ -35,7 +35,7 @@ impl HFighterInfoPartial {
             type_id: core_fighter_info.type_id,
             fit_id: core_fighter_info.fit_id,
             state: (&core_fighter_info.state).into(),
-            count: core_fighter_info.count.map(|v| (v.current, v.max)),
+            count: core_fighter_info.count.as_ref().map(|v| (v.current, v.max)),
             autocharges: core_fighter_info
                 .autocharges
                 .iter()

@@ -446,21 +446,30 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: ApiMinionState,
+            count: int | None | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='fighter',
-            sol_id=sol_id,
-            fit_id=fit_id,
-            type_id=type_id,
-            state=state,
-            item_info_mode=item_info_mode)
+        body = {
+            'type': 'fighter',
+            'fit_id': fit_id,
+            'type_id': type_id,
+            'state': state}
+        conditional_insert(container=body, key='count', value=count)
+        params = {}
+        conditional_insert(container=params, key='item', value=item_info_mode)
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/item',
+            params=params,
+            json=body)
 
     def change_fighter_request(
             self, *,
             sol_id: str,
             item_id: int,
             state: ApiMinionState | type[Absent],
+            count: int | None | type[Absent],
             add_projs: list[tuple[str, float | None] | str] | type[Absent],
             change_projs: list[tuple[str, float | None]] | type[Absent],
             rm_projs: list[str] | type[Absent],
@@ -469,6 +478,7 @@ class ApiClientItem(ApiClientBase):
     ) -> Request:
         body = {'type': 'fighter', 'item_id': item_id}
         conditional_insert(container=body, key='state', value=state)
+        conditional_insert(container=body, key='count', value=count)
         conditional_insert(container=body, key='add_projs', value=add_projs)
         conditional_insert(container=body, key='change_projs', value=change_projs)
         conditional_insert(container=body, key='rm_projs', value=rm_projs)
