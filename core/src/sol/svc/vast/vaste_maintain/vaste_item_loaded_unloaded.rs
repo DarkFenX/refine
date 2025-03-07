@@ -7,8 +7,8 @@ use crate::{
     sol::{
         SolModRack,
         svc::vast::{
-            SolValCache, SolValCapitalModItemInfo, SolValDroneGroupItemInfo, SolValItemKindFail, SolVast,
-            SolVastFitData, SolVastSkillReq,
+            SolValCache, SolValCapitalModItemInfo, SolValDroneGroupItemInfo, SolValFighterCountFail,
+            SolValItemKindFail, SolVast, SolVastFitData, SolVastSkillReq,
         },
         uad::{
             SolUad,
@@ -103,9 +103,21 @@ impl SolVast {
             SolItem::Fighter(fighter) => {
                 let extras = fighter.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Fighter);
+                let count = fighter.get_count().unwrap();
                 if let Some(volume) = extras.volume {
-                    let count = fighter.get_count().unwrap().current;
-                    fit_data.fighters_volume.insert(item_id, volume * AttrVal::from(count));
+                    fit_data
+                        .fighters_volume
+                        .insert(item_id, volume * AttrVal::from(count.current));
+                }
+                if count.current > count.max {
+                    fit_data.fighter_count.insert(
+                        item_id,
+                        SolValFighterCountFail {
+                            item_id,
+                            count: count.current,
+                            max_count: count.max,
+                        },
+                    );
                 }
             }
             SolItem::Implant(implant) => {
@@ -277,6 +289,10 @@ impl SolVast {
                 let extras = fighter.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Fighter);
                 fit_data.fighters_volume.remove(&item_id);
+                let count = fighter.get_count().unwrap();
+                if count.current > count.max {
+                    fit_data.fighter_count.remove(&item_id);
+                }
             }
             SolItem::Implant(implant) => {
                 let extras = implant.get_a_extras().unwrap();

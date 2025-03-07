@@ -159,6 +159,10 @@ impl SolVastFitData {
             check_item(uad, item_id, true)?;
             check_item(uad, &item_data.item_id, true)?;
         }
+        for (item_id, item_data) in self.fighter_count.iter() {
+            check_item(uad, item_id, true)?;
+            check_item(uad, &item_data.item_id, true)?;
+        }
         Ok(())
     }
 }

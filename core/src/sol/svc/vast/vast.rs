@@ -4,7 +4,7 @@ use crate::{
     err::basic::FitFoundError,
     sol::svc::vast::{
         SolValCache, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail,
-        SolValDroneGroupItemInfo, SolValItemKindFail, SolValModuleStateFail, SolVastSkillReq,
+        SolValDroneGroupItemInfo, SolValFighterCountFail, SolValItemKindFail, SolValModuleStateFail, SolVastSkillReq,
     },
     util::{StMap, StMapSetL1, StSet},
 };
@@ -77,6 +77,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) item_kind: StMap<SolItemId, SolValItemKindFail>,
     pub(in crate::sol::svc::vast) drone_group_limit: Vec<EItemGrpId>,
     pub(in crate::sol::svc::vast) drone_group_mismatches: StMap<SolItemId, SolValDroneGroupItemInfo>,
+    pub(in crate::sol::svc::vast) fighter_count: StMap<SolItemId, SolValFighterCountFail>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -117,6 +118,7 @@ impl SolVastFitData {
             item_kind: StMap::new(),
             drone_group_limit: Vec::new(),
             drone_group_mismatches: StMap::new(),
+            fighter_count: StMap::new(),
         }
     }
 }

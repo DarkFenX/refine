@@ -143,6 +143,9 @@ impl SolVast {
         if options.drone_group && !fit_data.validate_drone_group_fast() {
             return false;
         }
+        if options.fighter_count && !fit_data.validate_fighter_count_fast() {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -275,6 +278,9 @@ impl SolVast {
         }
         if options.drone_group {
             result.drone_group = fit_data.validate_drone_group_verbose();
+        }
+        if options.fighter_count {
+            result.fighter_count = fit_data.validate_fighter_count_verbose();
         }
         result
     }

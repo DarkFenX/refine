@@ -6,10 +6,10 @@ use vast::SolVastFitData;
 use vaste_stats_fit::SolStatRes;
 pub use vaste_vals_fit::{
     SolValCapitalModFail, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail,
-    SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValItemKindFail, SolValMaxGroupFail,
-    SolValMaxGroupItemInfo, SolValModuleStateFail, SolValNotLoadedItemFail, SolValResFail, SolValResItemInfo,
-    SolValRigSizeFail, SolValRigSizeItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo, SolValSlotCountFail,
-    SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo,
+    SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValFighterCountFail, SolValItemKindFail,
+    SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValModuleStateFail, SolValNotLoadedItemFail, SolValResFail,
+    SolValResItemInfo, SolValRigSizeFail, SolValRigSizeItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo,
+    SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo,
 };
 
 mod cache;

@@ -1,7 +1,7 @@
 use crate::sol::svc::vast::{
     SolValCapitalModFail, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail,
-    SolValItemKindFail, SolValMaxGroupFail, SolValModuleStateFail, SolValNotLoadedItemFail, SolValResFail,
-    SolValRigSizeFail, SolValShipLimitFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
+    SolValFighterCountFail, SolValItemKindFail, SolValMaxGroupFail, SolValModuleStateFail, SolValNotLoadedItemFail,
+    SolValResFail, SolValRigSizeFail, SolValShipLimitFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
 };
 
 #[derive(Copy, Clone)]
@@ -44,6 +44,7 @@ pub struct SolValOptions {
     pub module_state: bool,
     pub item_kind: bool,
     pub drone_group: bool,
+    pub fighter_count: bool,
 }
 impl SolValOptions {
     pub fn new_all_enabled() -> Self {
@@ -86,6 +87,7 @@ impl SolValOptions {
             module_state: true,
             item_kind: true,
             drone_group: true,
+            fighter_count: true,
         }
     }
     pub fn new_all_disabled() -> Self {
@@ -128,6 +130,7 @@ impl SolValOptions {
             module_state: false,
             item_kind: false,
             drone_group: false,
+            fighter_count: false,
         }
     }
 }
@@ -171,6 +174,7 @@ pub struct SolValResult {
     pub module_state: Vec<SolValModuleStateFail>,
     pub item_kind: Vec<SolValItemKindFail>,
     pub drone_group: Option<SolValDroneGroupFail>,
+    pub fighter_count: Vec<SolValFighterCountFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -213,6 +217,7 @@ impl SolValResult {
             module_state: Vec::new(),
             item_kind: Vec::new(),
             drone_group: None,
+            fighter_count: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -254,5 +259,6 @@ impl SolValResult {
             && self.module_state.is_empty()
             && self.item_kind.is_empty()
             && self.drone_group.is_none()
+            && self.fighter_count.is_empty()
     }
 }
