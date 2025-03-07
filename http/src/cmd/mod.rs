@@ -7,7 +7,7 @@ pub(crate) use change_item::HChangeItemCommand;
 pub(crate) use change_sol::HChangeSolCommand;
 pub(crate) use remove_item::HRemoveItemCmd;
 pub(crate) use shared::HCmdResp;
-pub(crate) use validate_fit::HValidFitCmd;
+pub(crate) use validate_fit::HValidateFitCmd;
 
 mod add_fit;
 mod add_item;

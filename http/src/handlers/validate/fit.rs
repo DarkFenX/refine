@@ -7,7 +7,7 @@ use axum::{
 
 use crate::{
     bridge::HBrError,
-    cmd::HValidFitCmd,
+    cmd::HValidateFitCmd,
     handlers::{HGSolResult, HSingleErr, get_guarded_sol, validate::HValidInfoParams},
     state::HAppState,
     util::HExecError,
@@ -18,7 +18,7 @@ pub(crate) async fn validate_fit(
     State(state): State<HAppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
     Query(params): Query<HValidInfoParams>,
-    payload: Option<Json<HValidFitCmd>>,
+    payload: Option<Json<HValidateFitCmd>>,
 ) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,

@@ -2,7 +2,7 @@ use crate::{
     bridge::HBrError,
     cmd::{
         HAddFitCmd, HAddItemCommand, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand,
-        HCmdResp, HRemoveItemCmd, HValidFitCmd,
+        HCmdResp, HRemoveItemCmd, HValidateFitCmd,
     },
     info::{
         HFitInfo, HFitInfoMode, HFleetInfo, HFleetInfoMode, HItemInfo, HItemInfoMode, HSolInfo, HSolInfoMode,
@@ -306,7 +306,7 @@ impl HSolarSystem {
     pub(crate) async fn validate_fit(
         &mut self,
         fit_id: &str,
-        command: HValidFitCmd,
+        command: HValidateFitCmd,
         valid_mode: HValidInfoMode,
     ) -> Result<HValidInfo, HBrError> {
         let fit_id = self.str_to_fit_id(fit_id)?;

@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 
-use crate::shared::HModuleState;
-
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(in crate::info::valid) struct HValFighterCountFail {

@@ -14,7 +14,7 @@ impl SolarSystem {
         &mut self,
         fit_id: &SolFitId,
         type_ids: &[EItemId],
-        val_options: SolValOptions,
+        val_options: &SolValOptions,
     ) -> Result<Vec<EItemId>, TryFitItemsError> {
         self.uad.fits.get_fit(fit_id)?;
         let mut valid = Vec::new();

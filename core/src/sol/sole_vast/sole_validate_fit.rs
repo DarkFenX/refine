@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn validate_fit_fast(&mut self, fit_id: &SolFitId, options: SolValOptions) -> Result<bool, ValidateFitError> {
+    pub fn validate_fit_fast(&mut self, fit_id: &SolFitId, options: &SolValOptions) -> Result<bool, ValidateFitError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(self
             .svc
@@ -18,7 +18,7 @@ impl SolarSystem {
     pub fn validate_fit_verbose(
         &mut self,
         fit_id: &SolFitId,
-        options: SolValOptions,
+        options: &SolValOptions,
     ) -> Result<SolValResult, ValidateFitError> {
         let fit = self.uad.fits.get_fit(fit_id)?;
         Ok(self

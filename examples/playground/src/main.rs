@@ -279,7 +279,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
         sol_sys.add_drone(fit.id, 2446, SolMinionState::InBay, None).unwrap(); // T2 ogre
     }
 
-    let val_options = SolValOptions::new_all_enabled();
+    let val_options = SolValOptions::all_enabled();
     // Generated from pyfa
     let items = vec![
         178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199,
