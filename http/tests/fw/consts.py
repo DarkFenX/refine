@@ -428,6 +428,7 @@ class ApiValType(StrEnum):
     module_state = 'module_state'
     item_kind = 'item_kind'
     drone_group = 'drone_group'
+    fighter_count = 'fighter_count'
 
 
 @unique

@@ -5,6 +5,7 @@ from .charge_group import ValChargeGroupFail
 from .charge_size import ValChargeSizeFail
 from .charge_volume import ValChargeVolumeFail
 from .drone_group import ValDroneGroupFail
+from .fighter_count import ValFighterCountFail
 from .item_kind import ValItemKindFail
 from .max_group import ValMaxGroupFail
 from .module_state import ValModuleStateFail
@@ -64,4 +65,5 @@ class ValResultDetails(AttrDict):
             ApiValType.not_loaded_item: AttrHookDef(func=lambda d: ValNotLoadedItemFail(data=d)),
             ApiValType.module_state: AttrHookDef(func=lambda d: ValModuleStateFail(data=d)),
             ApiValType.item_kind: AttrHookDef(func=lambda d: ValItemKindFail(data=d)),
-            ApiValType.drone_group: AttrHookDef(func=lambda d: ValDroneGroupFail(data=d))})
+            ApiValType.drone_group: AttrHookDef(func=lambda d: ValDroneGroupFail(data=d)),
+            ApiValType.fighter_count: AttrHookDef(func=lambda d: ValFighterCountFail(data=d))})

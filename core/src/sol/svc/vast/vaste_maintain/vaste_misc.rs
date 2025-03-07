@@ -39,22 +39,22 @@ impl SolVast {
     pub(in crate::sol::svc) fn fighter_count_changed(&mut self, fighter: &SolFighter) {
         let fit_data = self.fit_datas.get_mut(&fighter.get_fit_id()).unwrap();
         let extras = fighter.get_a_extras().unwrap();
+        let count = fighter.get_count().unwrap();
         if let Some(volume) = extras.volume {
-            let count = fighter.get_count().unwrap();
             fit_data
                 .fighters_volume
                 .insert(fighter.get_id(), volume * AttrVal::from(count.current));
-            match count.current > count.max {
-                true => fit_data.fighter_count.insert(
-                    fighter.get_id(),
-                    SolValFighterCountFail {
-                        item_id: fighter.get_id(),
-                        count: count.current,
-                        max_count: count.max,
-                    },
-                ),
-                false => fit_data.fighter_count.remove(&fighter.get_id()),
-            };
         }
+        match count.current > count.max {
+            true => fit_data.fighter_count.insert(
+                fighter.get_id(),
+                SolValFighterCountFail {
+                    item_id: fighter.get_id(),
+                    count: count.current,
+                    max_count: count.max,
+                },
+            ),
+            false => fit_data.fighter_count.remove(&fighter.get_id()),
+        };
     }
 }
