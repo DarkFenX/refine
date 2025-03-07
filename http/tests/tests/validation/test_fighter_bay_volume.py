@@ -109,9 +109,9 @@ def test_modified_count(client, consts):
     # Verification
     api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
     assert api_val.passed is False
-    assert api_val.details.fighter_bay_volume.used == approx(9000)
+    assert api_val.details.fighter_bay_volume.used == approx(20000)
     assert api_val.details.fighter_bay_volume.output == approx(5000)
-    assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
+    assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(20000)}
     # Action
     api_fighter.change_fighter(count=2)
     # Verification

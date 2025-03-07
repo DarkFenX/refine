@@ -88,7 +88,7 @@ impl SolFighter {
         match self.get_a_extras() {
             Some(extras) => match self.count_override {
                 Some(count_override) => Some(AdjustableCount {
-                    current: Count::min(count_override, extras.max_fighter_count),
+                    current: count_override,
                     max: extras.max_fighter_count,
                 }),
                 None => Some(AdjustableCount {
