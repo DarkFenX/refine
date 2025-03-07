@@ -1,7 +1,7 @@
 use crate::info::valid::details::{
     HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail,
-    HValItemKindFail, HValMaxGroupFail, HValModuleStateFail, HValResFail, HValRigSizeFail, HValShipLimitFail,
-    HValSlotCountFail, HValSlotIndexFail, HValSrqFail,
+    HValFighterCountFail, HValItemKindFail, HValMaxGroupFail, HValModuleStateFail, HValResFail, HValRigSizeFail,
+    HValShipLimitFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail,
 };
 
 #[derive(serde::Serialize)]
@@ -99,6 +99,8 @@ struct HValidInfoDetails {
     item_kind: HValItemKindFail,
     #[serde(skip_serializing_if = "Option::is_none")]
     drone_group: Option<HValDroneGroupFail>,
+    #[serde(skip_serializing_if = "HValFighterCountFail::is_empty")]
+    fighter_count: HValFighterCountFail,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -140,6 +142,7 @@ impl HValidInfoDetails {
             && self.module_state.is_empty()
             && self.item_kind.is_empty()
             && self.drone_group.is_none()
+            && self.fighter_count.is_empty()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -195,6 +198,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             module_state: (&core_val_result.module_state).into(),
             item_kind: (&core_val_result.item_kind).into(),
             drone_group: core_val_result.drone_group.as_ref().map(|v| v.into()),
+            fighter_count: (&core_val_result.fighter_count).into(),
         }
     }
 }
