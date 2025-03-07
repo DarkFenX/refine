@@ -151,6 +151,7 @@ impl SolSvc {
     }
     pub(in crate::sol::svc) fn notify_fighter_count_changed(&mut self, uad: &SolUad, fighter: &SolFighter) {
         self.calc.fighter_count_changed(uad, &fighter.get_id());
+        self.vast.fighter_count_changed(fighter);
     }
     pub(in crate::sol::svc) fn notify_skill_level_changed(&mut self, uad: &SolUad, skill: &SolSkill) {
         self.calc.skill_level_changed(uad, &skill.get_id());

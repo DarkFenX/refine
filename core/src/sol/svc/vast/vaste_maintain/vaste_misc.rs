@@ -1,9 +1,14 @@
-use std::collections::hash_map::Entry;
-
-use crate::sol::{
-    svc::vast::{SolVast, SolVastSkillReq},
-    uad::{SolUad, item::SolSkill},
+use crate::{
+    AttrVal,
+    sol::{
+        svc::vast::{SolVast, SolVastSkillReq},
+        uad::{
+            SolUad,
+            item::{SolFighter, SolSkill},
+        },
+    },
 };
+use std::collections::hash_map::Entry;
 
 impl SolVast {
     pub(in crate::sol::svc) fn skill_level_changed(&mut self, uad: &SolUad, skill: &SolSkill) {
@@ -29,6 +34,16 @@ impl SolVast {
                     }
                 }
             }
+        }
+    }
+    pub(in crate::sol::svc) fn fighter_count_changed(&mut self, fighter: &SolFighter) {
+        let fit_data = self.fit_datas.get_mut(&fighter.get_fit_id()).unwrap();
+        let extras = fighter.get_a_extras().unwrap();
+        if let Some(volume) = extras.volume {
+            let count = fighter.get_count().unwrap().current;
+            fit_data
+                .fighters_volume
+                .insert(fighter.get_id(), volume * AttrVal::from(count));
         }
     }
 }

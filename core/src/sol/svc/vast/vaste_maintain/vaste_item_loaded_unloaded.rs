@@ -1,7 +1,7 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    ad,
+    AttrVal, ad,
     defs::{OF, SolItemId},
     ec,
     sol::{
@@ -44,10 +44,10 @@ impl SolVast {
         match item {
             SolItem::Booster(booster) => {
                 let extras = booster.get_a_extras().unwrap();
+                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Booster);
                 if let Some(slot) = booster.get_slot() {
                     fit_data.slotted_boosters.add_entry(slot, item_id);
                 }
-                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Booster);
             }
             SolItem::Character(character) => {
                 let extras = character.get_a_extras().unwrap();
@@ -55,6 +55,7 @@ impl SolVast {
             }
             SolItem::Charge(charge) => {
                 let extras = charge.get_a_extras().unwrap();
+                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Charge);
                 // Reset result to uncalculated when adding a charge
                 if let Entry::Occupied(mut entry) = fit_data.mods_charge_group.entry(charge.get_cont_id()) {
                     entry.insert(SolValCache::Todo(()));
@@ -72,19 +73,19 @@ impl SolVast {
                     }
                 }
                 // Add entry for charges with volume higher than 0
-                if let Some(&charge_volume) = charge.get_attrs().unwrap().get(&ec::attrs::VOLUME) {
-                    if charge_volume > OF(0.0) {
+                if let Some(volume) = extras.volume {
+                    if volume > OF(0.0) {
                         fit_data
                             .mods_charge_volume
-                            .insert(charge.get_cont_id(), SolValCache::Todo(charge_volume));
+                            .insert(charge.get_cont_id(), SolValCache::Todo(volume));
                     }
                 }
-                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Charge);
             }
             SolItem::Drone(drone) => {
                 let extras = drone.get_a_extras().unwrap();
-                if let Some(val) = extras.volume {
-                    fit_data.drones_volume.insert(item_id, val);
+                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Drone);
+                if let Some(volume) = extras.volume {
+                    fit_data.drones_volume.insert(item_id, volume);
                 }
                 if !fit_data.drone_group_limit.is_empty() {
                     let drone_group_id = drone.get_group_id().unwrap();
@@ -98,21 +99,25 @@ impl SolVast {
                         );
                     }
                 }
-                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Drone);
             }
             SolItem::Fighter(fighter) => {
                 let extras = fighter.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Fighter);
+                if let Some(volume) = extras.volume {
+                    let count = fighter.get_count().unwrap().current;
+                    fit_data.fighters_volume.insert(item_id, volume * AttrVal::from(count));
+                }
             }
             SolItem::Implant(implant) => {
                 let extras = implant.get_a_extras().unwrap();
+                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Implant);
                 if let Some(slot) = implant.get_slot() {
                     fit_data.slotted_implants.add_entry(slot, item_id);
                 }
-                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Implant);
             }
             SolItem::Module(module) => {
                 let extras = module.get_a_extras().unwrap();
+                item_kind_add(fit_data, item_id, extras.kind, get_module_expected_kind(module));
                 if let Some(ship_limit) = &extras.ship_limit {
                     fit_data.ship_limited_mods_rigs_subs.insert(item_id, ship_limit.clone());
                 }
@@ -153,10 +158,10 @@ impl SolVast {
                         },
                     );
                 }
-                item_kind_add(fit_data, item_id, extras.kind, get_module_expected_kind(module));
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
+                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Rig);
                 if let Some(ship_limit) = &extras.ship_limit {
                     fit_data.ship_limited_mods_rigs_subs.insert(item_id, ship_limit.clone());
                 }
@@ -166,10 +171,10 @@ impl SolVast {
                         fit_data.mods_rigs_max_group_fitted_limited.insert(item_id, grp_id);
                     }
                 }
-                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Rig);
             }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();
+                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Ship);
                 // If new ship limits drones which can be used, fill the mismatch data up
                 if let Some(drone_limit) = &extras.drone_limit {
                     fit_data.drone_group_limit.extend(drone_limit.group_ids.iter());
@@ -189,7 +194,6 @@ impl SolVast {
                         }
                     }
                 }
-                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Ship);
             }
             SolItem::Skill(skill) => {
                 let extras = skill.get_a_extras().unwrap();
@@ -201,13 +205,13 @@ impl SolVast {
             }
             SolItem::Subsystem(subsystem) => {
                 let extras = subsystem.get_a_extras().unwrap();
+                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Subsystem);
                 if let Some(slot) = subsystem.get_slot() {
                     fit_data.slotted_subsystems.add_entry(slot, item_id);
                 }
                 if let Some(ship_limit) = &extras.ship_limit {
                     fit_data.ship_limited_mods_rigs_subs.insert(item_id, ship_limit.clone());
                 }
-                item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Subsystem);
             }
             _ => (),
         }
@@ -231,10 +235,10 @@ impl SolVast {
         match item {
             SolItem::Booster(booster) => {
                 let extras = booster.get_a_extras().unwrap();
+                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Booster);
                 if let Some(slot) = booster.get_slot() {
                     fit_data.slotted_boosters.remove_entry(&slot, &item_id);
                 }
-                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Booster);
             }
             SolItem::Character(character) => {
                 let extras = character.get_a_extras().unwrap();
@@ -242,6 +246,7 @@ impl SolVast {
             }
             SolItem::Charge(charge) => {
                 let extras = charge.get_a_extras().unwrap();
+                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Charge);
                 if let Entry::Occupied(mut entry) = fit_data.mods_charge_group.entry(charge.get_cont_id()) {
                     // No charge - check should pass
                     entry.insert(SolValCache::Pass(()));
@@ -259,29 +264,30 @@ impl SolVast {
                     }
                 }
                 fit_data.mods_charge_volume.remove(&charge.get_cont_id());
-                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Charge);
             }
             SolItem::Drone(drone) => {
                 let extras = drone.get_a_extras().unwrap();
+                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Drone);
                 fit_data.drones_volume.remove(&item_id);
                 if !fit_data.drone_group_limit.is_empty() {
                     fit_data.drone_group_mismatches.remove(&item_id);
                 }
-                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Drone);
             }
             SolItem::Fighter(fighter) => {
                 let extras = fighter.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Fighter);
+                fit_data.fighters_volume.remove(&item_id);
             }
             SolItem::Implant(implant) => {
                 let extras = implant.get_a_extras().unwrap();
+                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Implant);
                 if let Some(slot) = implant.get_slot() {
                     fit_data.slotted_implants.remove_entry(&slot, &item_id);
                 }
-                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Implant);
             }
             SolItem::Module(module) => {
                 let extras = module.get_a_extras().unwrap();
+                item_kind_remove(fit_data, &item_id, extras.kind, get_module_expected_kind(module));
                 if extras.ship_limit.is_some() {
                     fit_data.ship_limited_mods_rigs_subs.remove(&item_id);
                 }
@@ -299,10 +305,10 @@ impl SolVast {
                 if let Some(ad::AShipKind::CapitalShip) = extras.item_ship_kind {
                     fit_data.mods_capital.remove(&item_id);
                 }
-                item_kind_remove(fit_data, &item_id, extras.kind, get_module_expected_kind(module));
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
+                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Rig);
                 if extras.ship_limit.is_some() {
                     fit_data.ship_limited_mods_rigs_subs.remove(&item_id);
                 }
@@ -310,16 +316,15 @@ impl SolVast {
                     fit_data.mods_rigs_max_group_fitted_all.remove_entry(&grp_id, &item_id);
                     fit_data.mods_rigs_max_group_fitted_limited.remove(&item_id);
                 }
-                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Rig);
             }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();
+                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Ship);
                 // If any drone group limits were defined, clear the mismatch data
                 if !fit_data.drone_group_limit.is_empty() {
                     fit_data.drone_group_limit.clear();
                     fit_data.drone_group_mismatches.clear();
                 }
-                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Ship);
             }
             SolItem::Skill(skill) => {
                 let extras = skill.get_a_extras().unwrap();
@@ -331,13 +336,13 @@ impl SolVast {
             }
             SolItem::Subsystem(subsystem) => {
                 let extras = subsystem.get_a_extras().unwrap();
+                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Subsystem);
                 if let Some(slot) = subsystem.get_slot() {
                     fit_data.slotted_subsystems.remove_entry(&slot, &item_id);
                 }
                 if extras.ship_limit.is_some() {
                     fit_data.ship_limited_mods_rigs_subs.remove(&item_id);
                 }
-                item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Subsystem);
             }
             _ => (),
         }
