@@ -3,7 +3,7 @@ use crate::{
     defs::{AttrVal, Count, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
     sol::uad::item::{SolAutocharges, SolEffectModes, SolItemBase, SolItemState, SolMinionState, SolProjs},
     src::Src,
-    util::{Named, StMap},
+    util::{AdjustableCount, Named, StMap},
 };
 
 #[derive(Clone)]
@@ -84,17 +84,20 @@ impl SolFighter {
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id
     }
-    pub(in crate::sol) fn get_count(&self) -> Option<Count> {
+    pub(in crate::sol) fn get_count(&self) -> Option<AdjustableCount> {
         match self.get_a_extras() {
             Some(extras) => match self.count_override {
-                Some(count_override) => Some(Count::min(extras.max_fighter_count, count_override)),
-                None => Some(extras.max_fighter_count),
+                Some(count_override) => Some(AdjustableCount {
+                    current: Count::min(count_override, extras.max_fighter_count),
+                    max: extras.max_fighter_count,
+                }),
+                None => Some(AdjustableCount {
+                    current: extras.max_fighter_count,
+                    max: extras.max_fighter_count,
+                }),
             },
             None => None,
         }
-    }
-    pub(in crate::sol) fn get_count_override(&self) -> Option<Count> {
-        self.count_override
     }
     pub(in crate::sol) fn set_count_override(&mut self, count_override: Option<Count>) {
         self.count_override = count_override

@@ -1,10 +1,10 @@
 use crate::{
-    defs::{Count, EEffectId, EItemId, SolFitId, SolItemId},
+    defs::{EEffectId, EItemId, SolFitId, SolItemId},
     sol::{
         info::{SolAutochargeInfo, SolProjInfo},
         uad::item::{SolFighter, SolMinionState},
     },
-    util::StMap,
+    util::{AdjustableCount, StMap},
 };
 
 pub struct SolFighterInfo {
@@ -12,7 +12,7 @@ pub struct SolFighterInfo {
     pub type_id: EItemId,
     pub fit_id: SolFitId,
     pub state: SolMinionState,
-    pub count: Option<Count>,
+    pub count: Option<AdjustableCount>,
     pub autocharges: StMap<EEffectId, SolAutochargeInfo>,
     pub projs: Vec<SolProjInfo>,
 }
@@ -22,7 +22,7 @@ impl SolFighterInfo {
         type_id: EItemId,
         fit_id: SolFitId,
         state: SolMinionState,
-        count: Option<Count>,
+        count: Option<AdjustableCount>,
         autocharges: StMap<EEffectId, SolAutochargeInfo>,
         projs: Vec<SolProjInfo>,
     ) -> Self {

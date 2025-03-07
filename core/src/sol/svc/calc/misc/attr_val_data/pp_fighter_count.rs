@@ -23,9 +23,9 @@ pub(super) fn fighter_count_postproc_fast(
         .unwrap()
         .get_count()
         .unwrap();
-    let count = OF::from(count);
-    val.dogma = count;
-    val.extra = count;
+    let current_count = OF::from(count.current);
+    val.dogma = current_count;
+    val.extra = current_count;
     val
 }
 
@@ -43,6 +43,6 @@ pub(super) fn fighter_count_postproc_info(
         .unwrap()
         .get_count()
         .unwrap();
-    let count = OF::from(count);
-    SolAttrValInfo::new(count)
+    let current_count = OF::from(count.current);
+    SolAttrValInfo::new(current_count)
 }
