@@ -86,6 +86,14 @@ impl SolVastFitData {
             &ec::attrs::DRONE_BANDWIDTH,
         )
     }
+    pub(in crate::sol::svc::vast) fn get_stats_fighter_bay_volume(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+    ) -> SolStatRes {
+        get_resource_stats_other(uad, calc, fit, self.fighters_volume.values(), &ec::attrs::FTR_CAPACITY)
+    }
 }
 
 fn get_resource_stats_fitting<'a>(

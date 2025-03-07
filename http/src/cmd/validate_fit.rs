@@ -28,6 +28,7 @@ impl HValidFitCmd {
                 "calibration" => core_options.calibration = alt_value,
                 "drone_bay_volume" => core_options.drone_bay_volume = alt_value,
                 "drone_bandwidth" => core_options.drone_bandwidth = alt_value,
+                "fighter_bay_volume" => core_options.fighter_bay_volume = alt_value,
                 "rig_slot_count" => core_options.rig_slot_count = alt_value,
                 "subsystem_slot_count" => core_options.subsystem_slot_count = alt_value,
                 "launched_drone_count" => core_options.launched_drone_count = alt_value,

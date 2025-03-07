@@ -33,6 +33,8 @@ struct HValidInfoDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     drone_bandwidth: Option<HValResFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    fighter_bay_volume: Option<HValResFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     rig_slot_count: Option<HValSlotCountFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     subsystem_slot_count: Option<HValSlotCountFail>,
@@ -105,6 +107,7 @@ impl HValidInfoDetails {
             && self.calibration.is_none()
             && self.drone_bay_volume.is_none()
             && self.drone_bandwidth.is_none()
+            && self.fighter_bay_volume.is_none()
             && self.rig_slot_count.is_none()
             && self.subsystem_slot_count.is_none()
             && self.launched_drone_count.is_none()
@@ -147,6 +150,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             calibration: core_val_result.calibration.as_ref().map(|v| v.into()),
             drone_bay_volume: core_val_result.drone_bay_volume.as_ref().map(|v| v.into()),
             drone_bandwidth: core_val_result.drone_bandwidth.as_ref().map(|v| v.into()),
+            fighter_bay_volume: core_val_result.fighter_bay_volume.as_ref().map(|v| v.into()),
             rig_slot_count: core_val_result.rig_slot_count.as_ref().map(|v| v.into()),
             subsystem_slot_count: core_val_result.subsystem_slot_count.as_ref().map(|v| v.into()),
             launched_drone_count: core_val_result.launched_drone_count.as_ref().map(|v| v.into()),

@@ -11,6 +11,7 @@ pub struct SolValOptions {
     pub calibration: bool,
     pub drone_bay_volume: bool,
     pub drone_bandwidth: bool,
+    pub fighter_bay_volume: bool,
     pub rig_slot_count: bool,
     pub subsystem_slot_count: bool,
     pub launched_drone_count: bool,
@@ -52,6 +53,7 @@ impl SolValOptions {
             calibration: true,
             drone_bay_volume: true,
             drone_bandwidth: true,
+            fighter_bay_volume: true,
             rig_slot_count: true,
             subsystem_slot_count: true,
             launched_drone_count: true,
@@ -93,6 +95,7 @@ impl SolValOptions {
             calibration: false,
             drone_bay_volume: false,
             drone_bandwidth: false,
+            fighter_bay_volume: false,
             rig_slot_count: false,
             subsystem_slot_count: false,
             launched_drone_count: false,
@@ -135,6 +138,7 @@ pub struct SolValResult {
     pub calibration: Option<SolValResFail>,
     pub drone_bay_volume: Option<SolValResFail>,
     pub drone_bandwidth: Option<SolValResFail>,
+    pub fighter_bay_volume: Option<SolValResFail>,
     pub rig_slot_count: Option<SolValSlotCountFail>,
     pub subsystem_slot_count: Option<SolValSlotCountFail>,
     pub launched_drone_count: Option<SolValSlotCountFail>,
@@ -176,6 +180,7 @@ impl SolValResult {
             calibration: None,
             drone_bay_volume: None,
             drone_bandwidth: None,
+            fighter_bay_volume: None,
             rig_slot_count: None,
             subsystem_slot_count: None,
             launched_drone_count: None,
@@ -216,6 +221,7 @@ impl SolValResult {
             && self.calibration.is_none()
             && self.drone_bay_volume.is_none()
             && self.drone_bandwidth.is_none()
+            && self.fighter_bay_volume.is_none()
             && self.rig_slot_count.is_none()
             && self.subsystem_slot_count.is_none()
             && self.launched_drone_count.is_none()
