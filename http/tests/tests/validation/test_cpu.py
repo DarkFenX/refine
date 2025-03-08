@@ -19,6 +19,11 @@ def test_fail_single(client, consts):
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
+    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module.id])))
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 150
+    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.users == {}
 
 
 def test_fail_multiple_ship(client, consts):

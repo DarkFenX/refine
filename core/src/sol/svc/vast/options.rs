@@ -1,4 +1,4 @@
-use crate::defs::SolItemId;
+use crate::{defs::SolItemId, util::StSet};
 
 #[derive(Clone)]
 pub struct SolValOptions {
@@ -134,19 +134,19 @@ impl SolValOptions {
 #[derive(Clone)]
 pub struct SolValOption {
     pub enabled: bool,
-    pub known_failures: Vec<SolItemId>,
+    pub known_failures: StSet<SolItemId>,
 }
 impl SolValOption {
     pub fn enabled() -> Self {
         Self {
             enabled: true,
-            known_failures: Vec::new(),
+            known_failures: StSet::new(),
         }
     }
     pub fn disabled() -> Self {
         Self {
             enabled: false,
-            known_failures: Vec::new(),
+            known_failures: StSet::new(),
         }
     }
 }

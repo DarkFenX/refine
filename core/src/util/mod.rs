@@ -2,8 +2,8 @@
 
 pub use adj_count::AdjustableCount;
 pub(crate) use funcs::{round, sig_round, vec_push_opt};
-pub use storage::StMap;
-pub(crate) use storage::{StMapSetL1, StMapSetL2, StMapVecL1, StSet, extend_vec_from_map_set_l1};
+pub use storage::{StMap, StSet};
+pub(crate) use storage::{StMapSetL1, StMapSetL2, StMapVecL1, extend_vec_from_map_set_l1};
 pub(crate) use str_err::StrMsgError;
 pub(crate) use traits::Named;
 
