@@ -677,7 +677,7 @@ fn test_nphoon(dh: Box<rdhe::PhbFileEdh>, ch: Box<rdha::RamJsonAdh>) {
     tracing::error!("starting nphoon test, trying {} items per iteration", items.len());
     let before = Utc::now();
     for _ in 0..iterations {
-        let result = sol_sys.try_fit_items(&fit.id, &items, val_options).unwrap();
+        let result = sol_sys.try_fit_items(&fit.id, &items, &val_options).unwrap();
         // println!("Valid items: {:?}", result);
     }
     let after = Utc::now();

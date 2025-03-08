@@ -1,4 +1,5 @@
 from tests import approx, check_no_field
+from tests.fw.api import ValOptions
 
 
 def test_multiple(client, consts):
@@ -9,20 +10,20 @@ def test_multiple(client, consts):
     api_fit = api_sol.create_fit()
     api_subsystem1 = api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_subsystem2 = api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem2.id])}
     # Action
     api_subsystem1.remove()
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -38,14 +39,14 @@ def test_different_slots(client, consts):
     api_subsystem1 = api_fit.add_subsystem(type_id=eve_subsystem1_id)
     api_fit.add_subsystem(type_id=eve_subsystem2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_subsystem3 = api_fit.add_subsystem(type_id=eve_subsystem1_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem3.id])}
 
@@ -62,7 +63,7 @@ def test_rounding(client, consts):
     api_subsystem2 = api_fit.add_subsystem(type_id=eve_subsystem2_id)
     api_fit.add_subsystem(type_id=eve_subsystem3_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem2.id])}
 
@@ -89,7 +90,7 @@ def test_modified_index(client, consts):
     # Verification
     assert api_subsystem1.update().attrs[eve_slot_attr_id].extra == approx(2)
     assert api_subsystem2.update().attrs[eve_slot_attr_id].extra == approx(2)
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {2: sorted([api_subsystem1.id, api_subsystem2.id])}
     # Action
@@ -97,7 +98,7 @@ def test_modified_index(client, consts):
     # Verification - attribute is modified, but not for purposes of validation
     assert api_subsystem1.update().attrs[eve_slot_attr_id].extra == approx(3)
     assert api_subsystem2.update().attrs[eve_slot_attr_id].extra == approx(3)
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {2: sorted([api_subsystem1.id, api_subsystem2.id])}
 
@@ -111,7 +112,7 @@ def test_no_attr(client, consts):
     api_subsystem1 = api_fit.add_subsystem(type_id=eve_subsystem_id)
     api_subsystem2 = api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem2.id])}
 
@@ -127,7 +128,7 @@ def test_no_value(client, consts):
     api_fit.add_subsystem(type_id=eve_subsystem_id)
     api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -144,7 +145,7 @@ def test_not_loaded_user(client, consts):
     api_fit.add_subsystem(type_id=eve_subsystem_id)
     api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -160,7 +161,7 @@ def test_criterion_state(client, consts):
     api_subsystem1 = api_fit.add_subsystem(type_id=eve_subsystem_id, state=False)
     api_subsystem2 = api_fit.add_subsystem(type_id=eve_subsystem_id, state=False)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {1: sorted([api_subsystem1.id, api_subsystem2.id])}
 
@@ -174,7 +175,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_rig(type_id=eve_rig_id)
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.subsystem_slot_index])
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

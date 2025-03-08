@@ -1,4 +1,5 @@
 from tests import approx, check_no_field
+from tests.fw.api import ValOptions
 
 
 def test_fail_single(client, consts):
@@ -13,7 +14,7 @@ def test_fail_single(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -34,7 +35,7 @@ def test_fail_multiple_ship(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -55,7 +56,7 @@ def test_fail_multiple_struct(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -74,7 +75,7 @@ def test_equal(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -105,7 +106,7 @@ def test_modified_use(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     assert api_rig.update().attrs[eve_use_attr_id].extra == approx(75)
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -114,7 +115,7 @@ def test_modified_use(client, consts):
     api_implant.remove()
     # Verification
     assert api_rig.update().attrs[eve_use_attr_id].extra == approx(150)
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -143,7 +144,7 @@ def test_modified_output(client, consts):
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     assert api_ship.update().attrs[eve_output_attr_id].extra == approx(120)
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(120)
@@ -152,7 +153,7 @@ def test_modified_output(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_ship.update().attrs[eve_output_attr_id].extra == approx(180)
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -173,7 +174,7 @@ def test_rounding(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(5.229)
     assert api_val.details.calibration.output == approx(5.223)
@@ -192,7 +193,7 @@ def test_no_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(5)
     assert api_val.details.calibration.output is None
@@ -213,7 +214,7 @@ def test_not_loaded_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(5)
     assert api_val.details.calibration.output is None
@@ -236,7 +237,7 @@ def test_not_loaded_user(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -258,7 +259,7 @@ def test_non_positive(client, consts):
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     api_fit.add_rig(type_id=eve_rig3_id)
     # Verification - items with negative and 0 use are not exposed
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(140)
     assert api_val.details.calibration.output == approx(125)
@@ -279,7 +280,7 @@ def test_no_value_use(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -300,7 +301,7 @@ def test_no_value_output(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(0)
@@ -321,7 +322,7 @@ def test_no_attr_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -342,7 +343,7 @@ def test_no_attr_output(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output is None
@@ -361,14 +362,14 @@ def test_criterion_state(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id, state=False)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_rig.change_rig(state=True)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -376,7 +377,7 @@ def test_criterion_state(client, consts):
     # Action
     api_rig.change_rig(state=False)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -394,7 +395,7 @@ def test_criterion_effect(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -402,14 +403,14 @@ def test_criterion_effect(client, consts):
     # Action
     api_rig.change_rig(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_rig.change_rig(state=True, effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(150)
     assert api_val.details.calibration.output == approx(125)
@@ -417,7 +418,7 @@ def test_criterion_effect(client, consts):
     # Action
     api_rig.change_rig(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -436,7 +437,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_rig_id, state=consts.ApiModuleState.online)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.calibration])
+    api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

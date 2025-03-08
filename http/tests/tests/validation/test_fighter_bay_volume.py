@@ -1,4 +1,5 @@
 from tests import approx, check_no_field
+from tests.fw.api import ValOptions
 
 
 def test_fail_single(client, consts):
@@ -13,7 +14,7 @@ def test_fail_single(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -34,7 +35,7 @@ def test_fail_multiple_ship(client, consts):
     api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id)
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18600)
     assert api_val.details.fighter_bay_volume.output == approx(15000)
@@ -55,7 +56,7 @@ def test_fail_multiple_struct(client, consts):
     api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id)
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18600)
     assert api_val.details.fighter_bay_volume.output == approx(15000)
@@ -74,7 +75,7 @@ def test_equal(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -92,7 +93,7 @@ def test_changed_count(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=6)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(6000)
     assert api_val.details.fighter_bay_volume.output == approx(5000)
@@ -100,14 +101,14 @@ def test_changed_count(client, consts):
     # Action
     api_fighter.change_fighter(count=5)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fighter.change_fighter(count=20)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(20000)
     assert api_val.details.fighter_bay_volume.output == approx(5000)
@@ -115,14 +116,14 @@ def test_changed_count(client, consts):
     # Action
     api_fighter.change_fighter(count=2)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fighter.change_fighter(count=None)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(5000)
@@ -156,7 +157,7 @@ def test_modified_count(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(12)
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -165,7 +166,7 @@ def test_modified_count(client, consts):
     api_implant.remove()
     # Verification
     assert api_fighter.update().attrs[eve_count_attr_id].extra == approx(9)
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -199,7 +200,7 @@ def test_modified_use(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     assert api_fighter.update().attrs[eve_use_attr_id].extra == approx(500)
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -208,7 +209,7 @@ def test_modified_use(client, consts):
     api_implant.remove()
     # Verification
     assert api_fighter.update().attrs[eve_use_attr_id].extra == approx(1000)
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -237,7 +238,7 @@ def test_modified_output(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     assert api_ship.update().attrs[eve_output_attr_id].extra == approx(8000)
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -246,7 +247,7 @@ def test_modified_output(client, consts):
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
     assert api_ship.update().attrs[eve_output_attr_id].extra == approx(12000)
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -267,7 +268,7 @@ def test_rounding(client, consts):
     api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id)
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(5.229)
     assert api_val.details.fighter_bay_volume.output == approx(5.223)
@@ -286,7 +287,7 @@ def test_no_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output is None
@@ -307,7 +308,7 @@ def test_not_loaded_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output is None
@@ -329,7 +330,7 @@ def test_not_loaded_user(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -351,7 +352,7 @@ def test_non_positive(client, consts):
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id)
     api_fit.add_fighter(type_id=eve_fighter3_id)
     # Verification - items with negative and 0 use are not exposed
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(140)
     assert api_val.details.fighter_bay_volume.output == approx(125)
@@ -372,7 +373,7 @@ def test_no_value_use(client, consts):
     api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id)
     api_fit.add_fighter(type_id=eve_fighter2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -393,7 +394,7 @@ def test_no_value_count(client, consts):
     api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id)
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(10000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -414,7 +415,7 @@ def test_no_value_output(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(0)
@@ -435,7 +436,7 @@ def test_no_attr_use(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -456,7 +457,7 @@ def test_no_attr_count(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output == approx(8000)
@@ -477,7 +478,7 @@ def test_no_attr_output(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
     assert api_val.details.fighter_bay_volume.output is None
@@ -497,7 +498,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.fighter_bay_volume])
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

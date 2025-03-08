@@ -1,4 +1,5 @@
 from tests import approx, check_no_field
+from tests.fw.api import ValOptions
 
 
 def test_same_module(client, consts):
@@ -12,7 +13,7 @@ def test_same_module(client, consts):
     api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.offline)
     api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.offline)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
@@ -28,7 +29,7 @@ def test_same_rig(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig_id)
     api_rig2 = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_rig1.id: 1, api_rig2.id: 1}]}
 
@@ -48,13 +49,13 @@ def test_mix(client, consts):
     api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.offline)
     api_fit.add_mod(type_id=eve_module3_id, state=consts.ApiModuleState.offline)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp_id: [3, {api_module2.id: 2}]}
     # Action
     api_module1.remove()
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -85,7 +86,7 @@ def test_modified(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(0.6)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1.4)
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
@@ -93,7 +94,7 @@ def test_modified(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1.6)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2.4)
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -102,7 +103,7 @@ def test_modified(client, consts):
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(0.6)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1.4)
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
@@ -120,7 +121,7 @@ def test_mutation_limit_priority(client, consts):
     api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiModuleState.offline)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -128,14 +129,14 @@ def test_mutation_limit_priority(client, consts):
     api_module2.change_mod(mutation=eve_mutator_id)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_module2.id: 1}]}
     # Action
     api_module2.change_mod(mutation=None)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -156,7 +157,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiModuleState.offline)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -164,14 +165,14 @@ def test_mutation_limit_inheritance(client, consts):
     api_module2.change_mod(mutation=eve_mutator_id)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp2_id: [2, {api_module2.id: 1}]}
     # Action
     api_module2.change_mod(mutation=None)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -188,7 +189,7 @@ def test_not_loaded(client, consts):
     api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.offline)
     api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.offline)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -217,13 +218,13 @@ def test_no_attr(client, consts):
     api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.offline)
     api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.offline)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification - due to no attribute, the lib can't calculate modified value
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
@@ -239,7 +240,7 @@ def test_criterion_state(client, consts):
     api_module = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiModuleState.ghost)
     api_rig = api_fit.add_rig(type_id=eve_item_id, state=False)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is False
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_module.id: 1, api_rig.id: 1}]}
 
@@ -255,7 +256,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_subsystem_id)
     api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.max_group_fitted])
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

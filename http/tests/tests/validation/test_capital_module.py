@@ -1,4 +1,5 @@
 from tests import approx, check_no_field
+from tests.fw.api import ValOptions
 
 
 def test_main(client, consts):
@@ -17,27 +18,27 @@ def test_main(client, consts):
     api_cap_module = api_fit.add_mod(type_id=eve_cap_module_id)
     api_fit.add_mod(type_id=eve_subcap_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
     assert api_val.details.capital_module == (3500, {api_cap_module.id: 4000})
     # Action
     api_fit.set_ship(type_id=eve_cap_ship_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_struct_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_subcap_ship_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
     assert api_val.details.capital_module == (3500, {api_cap_module.id: 4000})
 
@@ -53,7 +54,7 @@ def test_multiple(client, consts):
     api_module1 = api_fit.add_mod(type_id=eve_module_id)
     api_module2 = api_fit.add_mod(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
     assert api_val.details.capital_module == (3500, {api_module1.id: 4000, api_module2.id: 4000})
 
@@ -80,7 +81,7 @@ def test_modified(client, consts):
     api_module = api_fit.add_mod(type_id=eve_module_id)
     # Verification
     assert api_module.update().attrs[eve_vol_attr_id].extra == approx(4000)
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -88,7 +89,7 @@ def test_modified(client, consts):
     api_implant.remove()
     # Verification
     assert api_module.update().attrs[eve_vol_attr_id].extra == approx(3000)
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -106,20 +107,20 @@ def test_mutation(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_base_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_module.change_mod(mutation=eve_mutator_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
     assert api_val.details.capital_module == (3500, {api_module.id: 4000})
     # Action
     api_module.change_mod(mutation=None)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -133,7 +134,7 @@ def test_no_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_mod(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -149,7 +150,7 @@ def test_no_value(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -166,7 +167,7 @@ def test_no_skill(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -182,7 +183,7 @@ def test_no_attr(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
     assert api_val.details.capital_module == (3500, {api_module.id: 4000})
 
@@ -197,7 +198,7 @@ def test_not_loaded_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -213,7 +214,7 @@ def test_not_loaded_module(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -229,7 +230,7 @@ def test_criterion_state(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.ghost)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
     assert api_val.details.capital_module == (3500, {api_module.id: 4000})
 
@@ -248,7 +249,7 @@ def test_criterion_volume(client, consts):
     api_cap_module = api_fit.add_mod(type_id=eve_cap_module_id)
     api_fit.add_mod(type_id=eve_subcap_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is False
     assert api_val.details.capital_module == (3500, {api_cap_module.id: 3500.1})
 
@@ -263,7 +264,7 @@ def test_criterion_item_category(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_mod(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -279,7 +280,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_rig(type_id=eve_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.capital_module])
+    api_val = api_fit.validate(options=ValOptions(capital_module=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

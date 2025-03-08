@@ -19,7 +19,7 @@ from .validation import ValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
-    from tests.fw.consts import ApiValType
+    from .validation import ValOptions
 
 
 class Fit(AttrDict):
@@ -54,18 +54,12 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
-    def validate(
-            self, *,
-            include: list[ApiValType] | type[Absent] = Absent,
-            exclude: list[ApiValType] | type[Absent] = Absent,
-            status_code: int = 200,
-    ) -> ValResult | None:
+    def validate(self, *, options: ValOptions, status_code: int = 200) -> ValResult | None:
         # Simple
         resp_simple = self._client.validate_fit_request(
             sol_id=self._sol_id,
             fit_id=self.id,
-            include=include,
-            exclude=exclude,
+            options=options,
             val_info_mode=ApiValInfoMode.simple).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp_simple.check(status_code=status_code)
@@ -73,8 +67,7 @@ class Fit(AttrDict):
         resp_detailed = self._client.validate_fit_request(
             sol_id=self._sol_id,
             fit_id=self.id,
-            include=include,
-            exclude=exclude,
+            options=options,
             val_info_mode=ApiValInfoMode.detailed).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp_detailed.check(status_code=status_code)

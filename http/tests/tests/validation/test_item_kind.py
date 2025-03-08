@@ -1,4 +1,5 @@
 from tests import check_no_field
+from tests.fw.api import ValOptions
 
 
 def test_kind_autocharge(client, consts):
@@ -18,7 +19,7 @@ def test_kind_autocharge(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -33,7 +34,7 @@ def test_kind_booster(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_booster(type_id=eve_booster_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -41,7 +42,7 @@ def test_kind_booster(client, consts):
     api_other1 = api_fit.add_booster(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_booster_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.booster),
@@ -56,7 +57,7 @@ def test_kind_character(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_char(type_id=eve_character_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -64,7 +65,7 @@ def test_kind_character(client, consts):
     api_other1 = api_fit.set_char(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_character_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.character),
@@ -81,7 +82,7 @@ def test_kind_charge(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.high, charge_type_id=eve_charge_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -89,7 +90,7 @@ def test_kind_charge(client, consts):
     api_module = api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.high, charge_type_id=eve_other_id)
     api_other = api_fit.add_implant(type_id=eve_charge_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_module.charge.id: (consts.ApiValItemType.ship, consts.ApiValItemType.charge),
@@ -104,7 +105,7 @@ def test_kind_drone(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -112,7 +113,7 @@ def test_kind_drone(client, consts):
     api_other1 = api_fit.add_drone(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_drone_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.charge, consts.ApiValItemType.drone),
@@ -127,7 +128,7 @@ def test_kind_fighter(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -135,7 +136,7 @@ def test_kind_fighter(client, consts):
     api_other1 = api_fit.add_fighter(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_fighter_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.charge, consts.ApiValItemType.fighter),
@@ -151,7 +152,7 @@ def test_kind_implant(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -159,7 +160,7 @@ def test_kind_implant(client, consts):
     api_other1 = api_fit.add_implant(type_id=eve_other_id)
     api_other2 = api_fit.add_booster(type_id=eve_implant_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.implant),
@@ -177,7 +178,7 @@ def test_kind_module_high(client, consts):
     api_fit.add_mod(type_id=eve_ship_module_id, rack=consts.ApiRack.high)
     api_fit.add_mod(type_id=eve_struct_module_id, rack=consts.ApiRack.high)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -188,7 +189,7 @@ def test_kind_module_high(client, consts):
     api_other4 = api_fit.add_implant(type_id=eve_ship_module_id)
     api_other5 = api_fit.add_implant(type_id=eve_struct_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.module_high),
@@ -209,7 +210,7 @@ def test_kind_module_mid(client, consts):
     api_fit.add_mod(type_id=eve_ship_module_id, rack=consts.ApiRack.mid)
     api_fit.add_mod(type_id=eve_struct_module_id, rack=consts.ApiRack.mid)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -220,7 +221,7 @@ def test_kind_module_mid(client, consts):
     api_other4 = api_fit.add_implant(type_id=eve_ship_module_id)
     api_other5 = api_fit.add_implant(type_id=eve_struct_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.module_mid),
@@ -241,7 +242,7 @@ def test_kind_module_low(client, consts):
     api_fit.add_mod(type_id=eve_ship_module_id, rack=consts.ApiRack.low)
     api_fit.add_mod(type_id=eve_struct_module_id, rack=consts.ApiRack.low)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -252,7 +253,7 @@ def test_kind_module_low(client, consts):
     api_other4 = api_fit.add_implant(type_id=eve_ship_module_id)
     api_other5 = api_fit.add_implant(type_id=eve_struct_module_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.ship, consts.ApiValItemType.module_low),
@@ -273,7 +274,7 @@ def test_kind_rig(client, consts):
     api_fit.add_rig(type_id=eve_ship_rig_id)
     api_fit.add_rig(type_id=eve_struct_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -282,7 +283,7 @@ def test_kind_rig(client, consts):
     api_other2 = api_fit.add_implant(type_id=eve_ship_rig_id)
     api_other3 = api_fit.add_implant(type_id=eve_struct_rig_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.character, consts.ApiValItemType.rig),
@@ -298,7 +299,7 @@ def test_kind_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -306,7 +307,7 @@ def test_kind_ship(client, consts):
     api_other1 = api_fit.set_ship(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_ship_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.ship),
@@ -321,7 +322,7 @@ def test_kind_skill(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_skill(type_id=eve_skill_id, level=1)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -329,7 +330,7 @@ def test_kind_skill(client, consts):
     api_other1 = api_fit.add_skill(type_id=eve_other_id, level=1)
     api_other2 = api_fit.add_implant(type_id=eve_skill_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.charge, consts.ApiValItemType.skill),
@@ -344,7 +345,7 @@ def test_kind_stance(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_stance(type_id=eve_stance_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -352,7 +353,7 @@ def test_kind_stance(client, consts):
     api_other1 = api_fit.set_stance(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_stance_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.drone, consts.ApiValItemType.stance),
@@ -367,7 +368,7 @@ def test_kind_subsystem(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_subsystem(type_id=eve_subsystem_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -375,7 +376,7 @@ def test_kind_subsystem(client, consts):
     api_other1 = api_fit.add_subsystem(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_subsystem_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_other1.id: (consts.ApiValItemType.character, consts.ApiValItemType.subsystem),
@@ -389,7 +390,7 @@ def test_no_matches(client, consts):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_rig(type_id=eve_item_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {api_item.id: (None, consts.ApiValItemType.rig)}
 
@@ -406,7 +407,7 @@ def test_multiple_matches_implant(client, consts):
     api_booster = api_fit.add_booster(type_id=eve_item_id)
     api_implant = api_fit.add_implant(type_id=eve_item_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_booster.id: (None, consts.ApiValItemType.booster),
@@ -437,7 +438,7 @@ def test_multiple_matches_module(client, consts):
     api_struct_module1 = api_fit.add_mod(type_id=eve_struct_module1_id, rack=consts.ApiRack.high)
     api_struct_module2 = api_fit.add_mod(type_id=eve_struct_module2_id, rack=consts.ApiRack.high)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_ship_module1.id: (None, consts.ApiValItemType.module_high),
@@ -458,21 +459,21 @@ def test_mutation_effect(client, consts):
     api_high_module = api_fit.add_mod(type_id=eve_base_module_id, rack=consts.ApiRack.high)
     api_mid_module = api_fit.add_mod(type_id=eve_base_module_id, rack=consts.ApiRack.mid)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_mid_module.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_mid)}
     # Action
     api_mid_module.change_mod(mutation=eve_mutator_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_high_module.change_mod(mutation=eve_mutator_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_high_module.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.module_high)}
@@ -480,7 +481,7 @@ def test_mutation_effect(client, consts):
     api_high_module.change_mod(mutation=None)
     api_mid_module.change_mod(mutation=None)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_mid_module.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_mid)}
@@ -497,7 +498,7 @@ def test_mutation_attr(client, consts):
     api_fit = api_sol.create_fit()
     api_item = api_fit.add_mod(type_id=eve_base_item_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
@@ -505,19 +506,19 @@ def test_mutation_attr(client, consts):
     api_item.change_mod(mutation=eve_mutator_id)
     # Verification - actual type becomes None because attributes are merged, and item is eligible to
     # be both implant and booster, which isn't considered valid
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {api_item.id: (None, consts.ApiValItemType.module_high)}
     # Action
     api_item.change_mod(mutation=None)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
 
 
-def test_not_loaded(client, consts):
+def test_not_loaded(client):
     # Not loaded items are not subjects for validation
     eve_item_id = client.alloc_item_id()
     client.create_sources()
@@ -525,7 +526,7 @@ def test_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_booster(type_id=eve_item_id)
     # Verification
-    api_val = api_fit.validate(include=[consts.ApiValType.item_kind])
+    api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

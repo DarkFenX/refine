@@ -7,7 +7,8 @@ from tests.fw.util import conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode, ApiValType
+    from tests.fw.api.types.validation import ValOptions
+    from tests.fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
     from tests.fw.util import Absent
 
 
@@ -33,15 +34,12 @@ class ApiClientFit(ApiClientBase):
             self, *,
             sol_id: str,
             fit_id: str,
-            include: list[ApiValType] | type[Absent],
-            exclude: list[ApiValType] | type[Absent],
+            options: ValOptions,
             val_info_mode: ApiValInfoMode | type[Absent],
     ) -> Request:
         params = {}
         conditional_insert(container=params, key='validation', value=val_info_mode)
-        body = {}
-        conditional_insert(container=body, key='include', value=include)
-        conditional_insert(container=body, key='exclude', value=exclude)
+        body = options.to_dict()
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/validate',
