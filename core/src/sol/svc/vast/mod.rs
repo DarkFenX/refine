@@ -4,7 +4,7 @@ pub use result::SolValResult;
 use skill_req::SolVastSkillReq;
 pub(in crate::sol::svc) use vast::SolVast;
 use vast::SolVastFitData;
-use vaste_stats_fit::SolStatRes;
+use vaste_stats_fit::{SolStatRes, SolStatSlot};
 pub use vaste_vals_fit::{
     SolValCapitalModFail, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail,
     SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValFighterCountFail, SolValItemKindFail,

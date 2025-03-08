@@ -26,7 +26,7 @@ impl SolVastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_cpu_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
         let stats = self.get_stats_cpu(uad, calc, fit);
-        stats.used <= stats.output.unwrap_or(OF(0.0))
+        validate_fast(stats)
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_fast(
         &self,
@@ -35,7 +35,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> bool {
         let stats = self.get_stats_powergrid(uad, calc, fit);
-        stats.used <= stats.output.unwrap_or(OF(0.0))
+        validate_fast(stats)
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_fast(
         &self,
@@ -44,7 +44,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> bool {
         let stats = self.get_stats_calibration(uad, calc, fit);
-        stats.used <= stats.output.unwrap_or(OF(0.0))
+        validate_fast(stats)
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_fast(
         &self,
@@ -53,7 +53,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> bool {
         let stats = self.get_stats_drone_bay_volume(uad, calc, fit);
-        stats.used <= stats.output.unwrap_or(OF(0.0))
+        validate_fast(stats)
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_fast(
         &self,
@@ -62,7 +62,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> bool {
         let stats = self.get_stats_drone_bandwidth(uad, calc, fit);
-        stats.used <= stats.output.unwrap_or(OF(0.0))
+        validate_fast(stats)
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_fast(
         &self,
@@ -71,7 +71,7 @@ impl SolVastFitData {
         fit: &SolFit,
     ) -> bool {
         let stats = self.get_stats_fighter_bay_volume(uad, calc, fit);
-        stats.used <= stats.output.unwrap_or(OF(0.0))
+        validate_fast(stats)
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
@@ -136,6 +136,9 @@ impl SolVastFitData {
     }
 }
 
+fn validate_fast(stats: SolStatRes) -> bool {
+    stats.used <= stats.output.unwrap_or(OF(0.0))
+}
 fn validate_verbose_fitting<'a>(
     uad: &SolUad,
     calc: &mut SolCalc,
@@ -166,7 +169,6 @@ fn validate_verbose_fitting<'a>(
         users,
     })
 }
-
 fn validate_verbose_other<'a>(
     kfs: &StSet<SolItemId>,
     stats: SolStatRes,
