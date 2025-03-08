@@ -1,6 +1,7 @@
 use cache::SolValCache;
+pub use options::{SolValOption, SolValOptions};
+pub use result::SolValResult;
 use skill_req::SolVastSkillReq;
-pub use validation::{SolValOption, SolValOptions, SolValResult};
 pub(in crate::sol::svc) use vast::SolVast;
 use vast::SolVastFitData;
 use vaste_stats_fit::SolStatRes;
@@ -13,8 +14,9 @@ pub use vaste_vals_fit::{
 };
 
 mod cache;
+mod options;
+mod result;
 mod skill_req;
-mod validation;
 mod vast;
 mod vaste_debug;
 mod vaste_maintain;

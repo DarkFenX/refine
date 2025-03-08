@@ -229,10 +229,10 @@ impl HValidationOption {
             Self::Extended(enabled, _) => *enabled,
         }
     }
-    fn get_ignored_item_ids(&self) -> Vec<rc::SolItemId> {
+    fn get_known_failures(&self) -> Vec<rc::SolItemId> {
         match self {
             Self::Simple(_) => Vec::new(),
-            Self::Extended(_, ignored_item_ids) => ignored_item_ids.clone(),
+            Self::Extended(_, known_failures) => known_failures.clone(),
         }
     }
 }
@@ -240,6 +240,6 @@ impl HValidationOption {
 fn process_option(option: &Option<HValidationOption>, core_option: &mut rc::SolValOption) {
     if let Some(option) = option {
         core_option.enabled = option.is_enabled();
-        core_option.ignored_item_ids = option.get_ignored_item_ids();
+        core_option.known_failures = option.get_known_failures();
     }
 }
