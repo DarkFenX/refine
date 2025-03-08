@@ -81,6 +81,44 @@ def test_equal(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_known_failures(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_capacity)
+    eve_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_fighter1_id = client.mk_eve_item(attrs={eve_use_attr_id: 1000, eve_count_attr_id: 9})
+    eve_fighter2_id = client.mk_eve_item(attrs={eve_use_attr_id: 800, eve_count_attr_id: 12})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 8000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id])))
+    assert api_val.passed is False
+    assert api_val.details.fighter_bay_volume.used == approx(9000)
+    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.users == {}
+    # Action
+    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id])))
+    assert api_val.passed is False
+    assert api_val.details.fighter_bay_volume.used == approx(18600)
+    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.users == {api_fighter2.id: approx(9600)}
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter2.id])))
+    assert api_val.passed is False
+    assert api_val.details.fighter_bay_volume.used == approx(18600)
+    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.users == {api_fighter1.id: approx(9000)}
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id, api_fighter2.id])))
+    assert api_val.passed is False
+    assert api_val.details.fighter_bay_volume.used == approx(18600)
+    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.users == {}
+
+
 def test_changed_count(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_capacity)

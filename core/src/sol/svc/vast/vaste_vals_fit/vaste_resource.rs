@@ -8,6 +8,7 @@ use crate::{
         },
         uad::{SolUad, fit::SolFit},
     },
+    util::StSet,
 };
 
 pub struct SolValResFail {
@@ -78,60 +79,67 @@ impl SolVastFitData {
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         let stats = self.get_stats_cpu(uad, calc, fit);
-        validate_verbose_fitting(uad, calc, stats, self.mods_online.iter(), &ec::attrs::CPU)
+        validate_verbose_fitting(uad, calc, kfs, stats, self.mods_online.iter(), &ec::attrs::CPU)
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_verbose(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         let stats = self.get_stats_powergrid(uad, calc, fit);
-        validate_verbose_fitting(uad, calc, stats, self.mods_online.iter(), &ec::attrs::POWER)
+        validate_verbose_fitting(uad, calc, kfs, stats, self.mods_online.iter(), &ec::attrs::POWER)
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_verbose(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         let stats = self.get_stats_calibration(uad, calc, fit);
-        validate_verbose_other(stats, self.rigs_rigslot_calibration.iter())
+        validate_verbose_other(kfs, stats, self.rigs_rigslot_calibration.iter())
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_verbose(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         let stats = self.get_stats_drone_bay_volume(uad, calc, fit);
-        validate_verbose_other(stats, self.drones_volume.iter())
+        validate_verbose_other(kfs, stats, self.drones_volume.iter())
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_verbose(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         let stats = self.get_stats_drone_bandwidth(uad, calc, fit);
-        validate_verbose_other(stats, self.drones_online_bandwidth.iter())
+        validate_verbose_other(kfs, stats, self.drones_online_bandwidth.iter())
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_verbose(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         let stats = self.get_stats_fighter_bay_volume(uad, calc, fit);
-        validate_verbose_other(stats, self.fighters_volume.iter())
+        validate_verbose_other(kfs, stats, self.fighters_volume.iter())
     }
 }
 
 fn validate_verbose_fitting<'a>(
     uad: &SolUad,
     calc: &mut SolCalc,
+    kfs: &StSet<SolItemId>,
     stats: SolStatRes,
     items: impl ExactSizeIterator<Item = &'a SolItemId>,
     use_attr_id: &EAttrId,
@@ -141,6 +149,9 @@ fn validate_verbose_fitting<'a>(
     };
     let mut users = Vec::with_capacity(items.len());
     for item_id in items {
+        if kfs.contains(&item_id) {
+            continue;
+        }
         match calc.get_item_attr_val(uad, item_id, use_attr_id) {
             Ok(sol_val) if sol_val.extra > OF(0.0) => users.push(SolValResItemInfo {
                 item_id: *item_id,
@@ -157,6 +168,7 @@ fn validate_verbose_fitting<'a>(
 }
 
 fn validate_verbose_other<'a>(
+    kfs: &StSet<SolItemId>,
     stats: SolStatRes,
     items: impl ExactSizeIterator<Item = (&'a SolItemId, &'a AttrVal)>,
 ) -> Option<SolValResFail> {
@@ -164,10 +176,13 @@ fn validate_verbose_other<'a>(
         return None;
     };
     let mut users = Vec::with_capacity(items.len());
-    for (&item_id, &res_used) in items {
+    for (item_id, &res_used) in items {
+        if kfs.contains(item_id) {
+            continue;
+        }
         if res_used > OF(0.0) {
             users.push(SolValResItemInfo {
-                item_id,
+                item_id: *item_id,
                 used: res_used,
             })
         }

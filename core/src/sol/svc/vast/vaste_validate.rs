@@ -162,22 +162,25 @@ impl SolVast {
         let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         let mut result = SolValResult::new();
         if options.cpu.enabled {
-            result.cpu = fit_data.validate_cpu_verbose(uad, calc, fit);
+            result.cpu = fit_data.validate_cpu_verbose(uad, calc, fit, &options.cpu.kfs);
         }
         if options.powergrid.enabled {
-            result.powergrid = fit_data.validate_powergrid_verbose(uad, calc, fit);
+            result.powergrid = fit_data.validate_powergrid_verbose(uad, calc, fit, &options.powergrid.kfs);
         }
         if options.calibration.enabled {
-            result.calibration = fit_data.validate_calibration_verbose(uad, calc, fit);
+            result.calibration = fit_data.validate_calibration_verbose(uad, calc, fit, &options.calibration.kfs);
         }
         if options.drone_bay_volume.enabled {
-            result.drone_bay_volume = fit_data.validate_drone_bay_volume_verbose(uad, calc, fit);
+            result.drone_bay_volume =
+                fit_data.validate_drone_bay_volume_verbose(uad, calc, fit, &options.drone_bay_volume.kfs);
         }
         if options.drone_bandwidth.enabled {
-            result.drone_bandwidth = fit_data.validate_drone_bandwidth_verbose(uad, calc, fit);
+            result.drone_bandwidth =
+                fit_data.validate_drone_bandwidth_verbose(uad, calc, fit, &options.drone_bandwidth.kfs);
         }
         if options.fighter_bay_volume.enabled {
-            result.fighter_bay_volume = fit_data.validate_fighter_bay_volume_verbose(uad, calc, fit);
+            result.fighter_bay_volume =
+                fit_data.validate_fighter_bay_volume_verbose(uad, calc, fit, &options.fighter_bay_volume.kfs);
         }
         if options.rig_slot_count.enabled {
             result.rig_slot_count = fit_data.validate_rig_slot_count_verbose(uad, calc, fit);

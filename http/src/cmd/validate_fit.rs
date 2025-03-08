@@ -240,6 +240,6 @@ impl HValidationOption {
 fn process_option(option: &Option<HValidationOption>, core_option: &mut rc::SolValOption) {
     if let Some(option) = option {
         core_option.enabled = option.is_enabled();
-        core_option.known_failures = option.get_known_failures().into_iter().collect();
+        core_option.kfs = option.get_known_failures().into_iter().collect();
     }
 }

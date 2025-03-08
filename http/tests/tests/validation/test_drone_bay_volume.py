@@ -17,7 +17,7 @@ def test_fail_single(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(150)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 
 def test_fail_multiple_ship(client, consts):
@@ -37,7 +37,7 @@ def test_fail_multiple_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone1.id: approx(50), api_drone2.id: approx(100)}
+    assert api_val.details.drone_bay_volume.users == {api_drone1.id: 50, api_drone2.id: 100}
 
 
 def test_fail_multiple_struct(client, consts):
@@ -57,7 +57,7 @@ def test_fail_multiple_struct(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone1.id: approx(50), api_drone2.id: approx(100)}
+    assert api_val.details.drone_bay_volume.users == {api_drone1.id: 50, api_drone2.id: 100}
 
 
 def test_equal(client, consts):
@@ -75,6 +75,43 @@ def test_equal(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
+
+
+def test_known_failures(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_capacity)
+    eve_drone1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
+    eve_drone2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_drone1 = api_fit.add_drone(type_id=eve_drone1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id])))
+    assert api_val.passed is False
+    assert api_val.details.drone_bay_volume.used == approx(150)
+    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.users == {}
+    # Action
+    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id])))
+    assert api_val.passed is False
+    assert api_val.details.drone_bay_volume.used == approx(250)
+    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.users == {api_drone2.id: 100}
+    api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone2.id])))
+    assert api_val.passed is False
+    assert api_val.details.drone_bay_volume.used == approx(250)
+    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.users == {api_drone1.id: 150}
+    api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id, api_drone2.id])))
+    assert api_val.passed is False
+    assert api_val.details.drone_bay_volume.used == approx(250)
+    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.users == {}
 
 
 def test_modified_use(client, consts):
@@ -107,7 +144,7 @@ def test_modified_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(150)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
     # Action
     api_implant.remove()
     # Verification
@@ -116,7 +153,7 @@ def test_modified_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(150)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 
 def test_modified_output(client, consts):
@@ -144,7 +181,7 @@ def test_modified_output(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output == approx(120)
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(150)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -183,7 +220,7 @@ def test_mutation_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(130)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(130)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 130}
     # Action
     api_drone.change_drone(mutation={eve_use_attr_id: None})
     # Verification
@@ -192,7 +229,7 @@ def test_mutation_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(130)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(130)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 130}
 
 
 def test_rounding(client, consts):
@@ -213,7 +250,7 @@ def test_rounding(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(5.229)
     assert api_val.details.drone_bay_volume.output == approx(5.223)
-    assert api_val.details.drone_bay_volume.users == {api_drone1.id: approx(0.002), api_drone2.id: approx(5.227)}
+    assert api_val.details.drone_bay_volume.users == {api_drone1.id: 0.002, api_drone2.id: 5.227}
 
 
 def test_no_ship(client, consts):
@@ -231,7 +268,7 @@ def test_no_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(5)
     assert api_val.details.drone_bay_volume.output is None
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(5)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 5}
 
 
 def test_not_loaded_ship(client, consts):
@@ -251,7 +288,7 @@ def test_not_loaded_ship(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(5)
     assert api_val.details.drone_bay_volume.output is None
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(5)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 5}
 
 
 def test_not_loaded_user(client, consts):
@@ -293,7 +330,7 @@ def test_non_positive(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(140)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone2.id: approx(150)}
+    assert api_val.details.drone_bay_volume.users == {api_drone2.id: 150}
 
 
 def test_no_value_use(client, consts):
@@ -313,7 +350,7 @@ def test_no_value_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone1.id: approx(150)}
+    assert api_val.details.drone_bay_volume.users == {api_drone1.id: 150}
 
 
 def test_no_value_output(client, consts):
@@ -333,7 +370,7 @@ def test_no_value_output(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output == approx(0)
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(150)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 
 def test_no_attr_use(client, consts):
@@ -353,7 +390,7 @@ def test_no_attr_use(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(150)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 
 def test_no_attr_output(client, consts):
@@ -373,7 +410,7 @@ def test_no_attr_output(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
     assert api_val.details.drone_bay_volume.output is None
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: approx(150)}
+    assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 
 def test_criterion_item_kind(client, consts):

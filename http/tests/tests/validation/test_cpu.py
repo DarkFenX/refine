@@ -19,11 +19,6 @@ def test_fail_single(client, consts):
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.output == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
-    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module.id])))
-    assert api_val.passed is False
-    assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 125
-    assert api_val.details.cpu.users == {}
 
 
 def test_fail_multiple_ship(client, consts):
@@ -84,6 +79,44 @@ def test_equal(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
+
+
+def test_known_failures(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_effect_id = client.mk_eve_online_effect()
+    eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_module2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id])))
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 150
+    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.users == {}
+    # Action
+    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id])))
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 250
+    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.users == {api_module2.id: 100}
+    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module2.id])))
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 250
+    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.users == {api_module1.id: 150}
+    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
+    assert api_val.passed is False
+    assert api_val.details.cpu.used == 250
+    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.users == {}
 
 
 def test_modified_use(client, consts):

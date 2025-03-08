@@ -81,6 +81,44 @@ def test_equal(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_known_failures(client, consts):
+    eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_cost)
+    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_capacity)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
+    eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
+    eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
+    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id])))
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(150)
+    assert api_val.details.calibration.output == approx(125)
+    assert api_val.details.calibration.users == {}
+    # Action
+    api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id])))
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(250)
+    assert api_val.details.calibration.output == approx(125)
+    assert api_val.details.calibration.users == {api_rig2.id: 100}
+    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig2.id])))
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(250)
+    assert api_val.details.calibration.output == approx(125)
+    assert api_val.details.calibration.users == {api_rig1.id: 150}
+    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_rig2.id])))
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(250)
+    assert api_val.details.calibration.output == approx(125)
+    assert api_val.details.calibration.users == {}
+
+
 def test_modified_use(client, consts):
     # Calibration use is never modified, so the lib just uses unmodified attributes for faster
     # access to the attr value

@@ -134,19 +134,19 @@ impl SolValOptions {
 #[derive(Clone)]
 pub struct SolValOption {
     pub enabled: bool,
-    pub known_failures: StSet<SolItemId>,
+    pub kfs: StSet<SolItemId>,
 }
 impl SolValOption {
     pub fn enabled() -> Self {
         Self {
             enabled: true,
-            known_failures: StSet::new(),
+            kfs: StSet::new(),
         }
     }
     pub fn disabled() -> Self {
         Self {
             enabled: false,
-            known_failures: StSet::new(),
+            kfs: StSet::new(),
         }
     }
 }
