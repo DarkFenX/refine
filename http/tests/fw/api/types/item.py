@@ -11,6 +11,7 @@ from .side_effect_info import SideEffectInfo, SideEffectStrInfo
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
     from tests.fw.consts import ApiEffMode, ApiModuleState
+    from .aliases import MutaAdd, MutaChange
 
 
 @dataclass(kw_only=True)
@@ -220,7 +221,7 @@ class Item(AttrDict):
     def change_mod(
             self, *,
             state: ApiModuleState | type[Absent] = Absent,
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict | None] | None | type[Absent] = Absent,
+            mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
             charge: int | None | type[Absent] = Absent,
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
@@ -271,7 +272,7 @@ class Item(AttrDict):
     def change_drone(
             self, *,
             state: ApiMinionState | type[Absent] = Absent,
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | dict[int, dict | None] | None | type[Absent] = Absent,
+            mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,
             add_projs: list[tuple[str, float | None] | str] | type[Absent] = Absent,
             change_projs: list[tuple[str, float | None]] | type[Absent] = Absent,
             rm_projs: list[str] | type[Absent] = Absent,

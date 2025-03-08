@@ -19,6 +19,7 @@ from .validation import ValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
+    from .aliases import MutaAdd
     from .validation import ValOptions
 
 
@@ -265,7 +266,7 @@ class Fit(AttrDict):
             type_id: int,
             rack: ApiRack = ApiRack.high,
             state: ApiModuleState = ApiModuleState.offline,
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent] = Absent,
+            mutation: MutaAdd | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
             mode: ApiModAddMode | type[Absent] = ApiModAddMode.equip,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -311,7 +312,7 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             state: ApiMinionState = ApiMinionState.in_bay,
-            mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent] = Absent,
+            mutation: MutaAdd | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
