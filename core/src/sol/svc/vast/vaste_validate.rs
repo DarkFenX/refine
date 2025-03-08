@@ -22,7 +22,7 @@ impl SolVast {
         if options.cpu.enabled && !fit_data.validate_cpu_fast(uad, calc, fit, &options.cpu.kfs) {
             return false;
         }
-        if options.powergrid.enabled && !fit_data.validate_powergrid_fast(uad, calc, fit) {
+        if options.powergrid.enabled && !fit_data.validate_powergrid_fast(uad, calc, fit, &options.powergrid.kfs) {
             return false;
         }
         if options.calibration.enabled && !fit_data.validate_calibration_fast(uad, calc, fit) {
