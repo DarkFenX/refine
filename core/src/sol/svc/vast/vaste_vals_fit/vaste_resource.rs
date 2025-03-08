@@ -8,7 +8,7 @@ use crate::{
         },
         uad::{SolUad, fit::SolFit},
     },
-    util::StSet,
+    util::{StSet, round},
 };
 
 pub struct SolValResFail {
@@ -24,9 +24,34 @@ pub struct SolValResItemInfo {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_cpu_fast(&self, uad: &SolUad, calc: &mut SolCalc, fit: &SolFit) -> bool {
-        let stats = self.get_stats_cpu(uad, calc, fit);
-        validate_fast(stats)
+    pub(in crate::sol::svc::vast) fn validate_cpu_fast(
+        &self,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+        fit: &SolFit,
+        kfs: &StSet<SolItemId>,
+    ) -> bool {
+        let output = match fit.ship {
+            Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, &ec::attrs::CPU_OUTPUT) {
+                Ok(attr_val) => attr_val.extra,
+                Err(_) => OF(0.0),
+            },
+            None => OF(0.0),
+        };
+        let mut total_use = OF(0.0);
+        let mut force_pass = true;
+        for item_id in self.mods_online.iter() {
+            let item_use = match calc.get_item_attr_val(uad, item_id, &ec::attrs::CPU) {
+                Ok(attr_val) => attr_val.extra,
+                Err(_) => continue,
+            };
+            if force_pass && item_use > OF(0.0) && !kfs.contains(item_id) {
+                force_pass = false;
+            }
+            total_use += item_use;
+        }
+        let total_use = round(total_use, 2);
+        force_pass || total_use <= output
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_fast(
         &self,
@@ -81,8 +106,37 @@ impl SolVastFitData {
         fit: &SolFit,
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
-        let stats = self.get_stats_cpu(uad, calc, fit);
-        validate_verbose_fitting(uad, calc, kfs, stats, self.mods_online.iter(), &ec::attrs::CPU)
+        let output = match fit.ship {
+            Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, &ec::attrs::CPU_OUTPUT) {
+                Ok(attr_val) => Some(attr_val.extra),
+                Err(_) => None,
+            },
+            None => None,
+        };
+        let mut total_use = OF(0.0);
+        let mut users = Vec::with_capacity(self.mods_online.len());
+        for item_id in self.mods_online.iter() {
+            let item_use = match calc.get_item_attr_val(uad, item_id, &ec::attrs::CPU) {
+                Ok(attr_val) => attr_val.extra,
+                Err(_) => continue,
+            };
+            total_use += item_use;
+            if item_use > OF(0.0) && !kfs.contains(item_id) {
+                users.push(SolValResItemInfo {
+                    item_id: *item_id,
+                    used: item_use,
+                });
+            }
+        }
+        let total_use = round(total_use, 2);
+        if users.is_empty() || total_use <= output.unwrap_or(OF(0.0)) {
+            return None;
+        }
+        Some(SolValResFail {
+            used: total_use,
+            output,
+            users,
+        })
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_verbose(
         &self,

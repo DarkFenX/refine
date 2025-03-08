@@ -19,7 +19,7 @@ impl SolVast {
         let fit_data = self.get_fit_data_mut(&fit.id).unwrap();
         // Order of validations matters here; the faster validation and the more likely it is to
         // fail, the closer to top it should be
-        if options.cpu.enabled && !fit_data.validate_cpu_fast(uad, calc, fit) {
+        if options.cpu.enabled && !fit_data.validate_cpu_fast(uad, calc, fit, &options.cpu.kfs) {
             return false;
         }
         if options.powergrid.enabled && !fit_data.validate_powergrid_fast(uad, calc, fit) {
