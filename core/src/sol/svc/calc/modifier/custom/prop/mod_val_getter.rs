@@ -15,10 +15,10 @@ pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
     item_id: &SolItemId,
     effect_id: &EEffectId,
 ) -> Option<AttrVal> {
-    let speed_boost = calc.get_item_attr_val(uad, item_id, &PROP_BOOST).ok()?;
-    let thrust = calc.get_item_attr_val(uad, item_id, &PROP_THRUST).ok()?;
+    let speed_boost = calc.get_item_attr_val_full(uad, item_id, &PROP_BOOST).ok()?;
+    let thrust = calc.get_item_attr_val_full(uad, item_id, &PROP_THRUST).ok()?;
     let ship_id = get_ship_id(uad, item_id)?;
-    let mass = calc.get_item_attr_val(uad, &ship_id, &SHIP_MASS).ok()?;
+    let mass = calc.get_item_attr_val_full(uad, &ship_id, &SHIP_MASS).ok()?;
     let perc = speed_boost.dogma * thrust.dogma / mass.dogma;
     if perc.is_infinite() {
         return None;

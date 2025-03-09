@@ -21,7 +21,7 @@ impl SolCalc {
         effect: &ad::ArcEffect,
     ) -> Option<AttrVal> {
         let attr_id = effect.duration_attr_id?;
-        let val = self.get_item_attr_val(uad, item_id, &attr_id).ok()?;
+        let val = self.get_item_attr_val_full(uad, item_id, &attr_id).ok()?;
         Some(val.dogma)
     }
 }

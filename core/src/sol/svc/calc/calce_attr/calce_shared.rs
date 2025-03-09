@@ -19,7 +19,7 @@ impl SolCalc {
             SolContext::Item(projectee_item_id) => projectee_item_id,
             _ => return None,
         };
-        let resist = match self.get_item_attr_val(uad, &projectee_item_id, &resist_attr_id) {
+        let resist = match self.get_item_attr_val_full(uad, &projectee_item_id, &resist_attr_id) {
             Ok(val) => val.dogma,
             _ => return None,
         };
@@ -49,7 +49,7 @@ impl SolCalc {
         // Assume optimal range is 0 if it's not available
         let affector_optimal = match modifier.raw.optimal_attr_id {
             Some(optimal_attr_id) => {
-                match self.get_item_attr_val(uad, &modifier.raw.affector_item_id, &optimal_attr_id) {
+                match self.get_item_attr_val_full(uad, &modifier.raw.affector_item_id, &optimal_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -59,7 +59,7 @@ impl SolCalc {
         // Assume falloff range is 0 if it's not available
         let affector_falloff = match modifier.raw.falloff_attr_id {
             Some(falloff_attr_id) => {
-                match self.get_item_attr_val(uad, &modifier.raw.affector_item_id, &falloff_attr_id) {
+                match self.get_item_attr_val_full(uad, &modifier.raw.affector_item_id, &falloff_attr_id) {
                     Ok(val) => val.dogma,
                     _ => OF(0.0),
                 }
@@ -88,7 +88,7 @@ impl SolCalc {
     fn calc_proj_mult_buff(&mut self, uad: &SolUad, modifier: &SolCtxModifier, proj_range: AttrVal) -> Option<AttrVal> {
         let affector_optimal = match modifier.raw.optimal_attr_id {
             Some(optimal_attr_id) => {
-                match self.get_item_attr_val(uad, &modifier.raw.affector_item_id, &optimal_attr_id) {
+                match self.get_item_attr_val_full(uad, &modifier.raw.affector_item_id, &optimal_attr_id) {
                     Ok(val) => val.dogma,
                     // If optimal range attribute ID is defined but value is not available, assume
                     // optimal range of 0

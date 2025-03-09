@@ -25,7 +25,23 @@ const LIMITED_PRECISION_ATTR_IDS: [EAttrId; 4] = [
 
 impl SolCalc {
     // Query methods
-    pub(in crate::sol) fn get_item_attr_val(
+    pub(in crate::sol) fn get_item_attr_val_simple_opt(
+        &mut self,
+        uad: &SolUad,
+        item_id: &Option<SolItemId>,
+        attr_id: &EAttrId,
+    ) -> Option<AttrVal> {
+        item_id.and_then(|item_id| self.get_item_attr_val_simple(uad, &item_id, attr_id))
+    }
+    pub(in crate::sol) fn get_item_attr_val_simple(
+        &mut self,
+        uad: &SolUad,
+        item_id: &SolItemId,
+        attr_id: &EAttrId,
+    ) -> Option<AttrVal> {
+        Some(self.get_item_attr_val_full(uad, item_id, attr_id).ok()?.extra)
+    }
+    pub(in crate::sol) fn get_item_attr_val_full(
         &mut self,
         uad: &SolUad,
         item_id: &SolItemId,
@@ -86,7 +102,7 @@ impl SolCalc {
         // item
         for attr_id in item.get_attrs().unwrap().keys() {
             if let Entry::Vacant(entry) = vals.entry(*attr_id) {
-                match self.get_item_attr_val(uad, &item.get_id(), attr_id) {
+                match self.get_item_attr_val_full(uad, &item.get_id(), attr_id) {
                     Ok(v) => entry.insert(v),
                     _ => continue,
                 };
@@ -168,14 +184,14 @@ impl SolCalc {
         let mut dogma_val = accumulator.apply_dogma_mods(base_val, attr.hig);
         // Lower value limit
         if let Some(limiter_attr_id) = attr.min_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val(uad, item_id, &limiter_attr_id) {
+            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
                 self.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
                 dogma_val = AttrVal::max(dogma_val, limiter_val.dogma);
             }
         }
         // Upper value limit
         if let Some(limiter_attr_id) = attr.max_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val(uad, item_id, &limiter_attr_id) {
+            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
                 self.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
                 dogma_val = AttrVal::min(dogma_val, limiter_val.dogma);
             }

@@ -136,7 +136,7 @@ impl SolCalc {
         let mut dogma_attr_info = accumulator.apply_dogma_mods(base_val, attr.hig);
         // Lower value limit
         if let Some(limiter_attr_id) = attr.min_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val(uad, item_id, &limiter_attr_id) {
+            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
                 self.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
                 if limiter_val.dogma > dogma_attr_info.value {
                     dogma_attr_info.value = limiter_val.dogma;
@@ -154,7 +154,7 @@ impl SolCalc {
         }
         // Upper value limit
         if let Some(limiter_attr_id) = attr.max_attr_id {
-            if let Ok(limiter_val) = self.get_item_attr_val(uad, item_id, &limiter_attr_id) {
+            if let Ok(limiter_val) = self.get_item_attr_val_full(uad, item_id, &limiter_attr_id) {
                 self.deps.add_direct_local(*item_id, limiter_attr_id, *attr_id);
                 if limiter_val.dogma < dogma_attr_info.value {
                     dogma_attr_info.value = limiter_val.dogma;

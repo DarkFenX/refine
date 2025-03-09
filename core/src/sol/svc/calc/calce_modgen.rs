@@ -30,7 +30,7 @@ impl SolCalc {
             match &buff_info.source {
                 ad::AEffectBuffSrc::DefaultAttrs => {
                     for (buff_type_attr_id, buff_val_attr_id) in ec::extras::BUFF_STDATTRS {
-                        if let Ok(buff_id) = self.get_item_attr_val(uad, &item_id, &buff_type_attr_id) {
+                        if let Ok(buff_id) = self.get_item_attr_val_full(uad, &item_id, &buff_type_attr_id) {
                             add_buff_mods(
                                 modifiers,
                                 uad,
@@ -94,7 +94,7 @@ impl SolCalc {
             let effect = uad.src.get_a_effect(effect_id).unwrap();
             if let Some(buff_info) = effect.buff.as_ref() {
                 if matches!(buff_info.source, ad::AEffectBuffSrc::DefaultAttrs) {
-                    if let Ok(buff_id) = self.get_item_attr_val(uad, &item_id, buff_type_attr_id) {
+                    if let Ok(buff_id) = self.get_item_attr_val_full(uad, &item_id, buff_type_attr_id) {
                         add_buff_mods(
                             &mut modifiers,
                             uad,

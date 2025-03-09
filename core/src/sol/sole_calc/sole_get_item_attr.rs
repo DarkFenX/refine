@@ -9,7 +9,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_item_attr(&mut self, item_id: &SolItemId, attr_id: &EAttrId) -> Result<SolAttrVal, GetItemAttrError> {
-        let val = self.svc.calc.get_item_attr_val(&self.uad, item_id, attr_id)?;
+        let val = self.svc.calc.get_item_attr_val_full(&self.uad, item_id, attr_id)?;
         Ok(val)
     }
 }

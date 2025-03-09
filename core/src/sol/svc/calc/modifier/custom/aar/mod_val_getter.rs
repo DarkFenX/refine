@@ -25,7 +25,7 @@ pub(in crate::sol::svc::calc::modifier) fn get_mod_val(
             // If charge is referenced, we're supposed to always be able to fetch it
             let charge = uad.items.get_item(&charge_id).unwrap();
             if charge.get_type_id() == ec::items::NANITE_REPAIR_PASTE {
-                match calc.get_item_attr_val(uad, item_id, &AAR_AFFECTOR_ATTR_ID) {
+                match calc.get_item_attr_val_full(uad, item_id, &AAR_AFFECTOR_ATTR_ID) {
                     Ok(sol_attr) => Some(sol_attr.dogma),
                     // Can't fetch multiplier attr - no extra reps
                     Err(_) => Some(OF(1.0)),

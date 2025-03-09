@@ -98,10 +98,10 @@ fn validate_fast(
     attr_id: EAttrId,
 ) -> bool {
     for (item_id, grp_id) in max_group_limited.iter() {
-        let allowed = match calc.get_item_attr_val(uad, item_id, &attr_id) {
-            Ok(value) => value.extra.round() as Count,
+        let allowed = match calc.get_item_attr_val_simple(uad, item_id, &attr_id) {
+            Some(value) => value.round() as Count,
             // Limited items are guaranteed to have some unmodified limit value
-            Err(_) => uad
+            None => uad
                 .items
                 .get_item(item_id)
                 .unwrap()
@@ -128,10 +128,10 @@ fn validate_verbose(
 ) -> Vec<SolValMaxGroupFail> {
     let mut items_by_grp = StMap::new();
     for (item_id, grp_id) in max_group_limited.iter() {
-        let allowed = match calc.get_item_attr_val(uad, item_id, &attr_id) {
-            Ok(value) => value.extra.round() as Count,
+        let allowed = match calc.get_item_attr_val_simple(uad, item_id, &attr_id) {
+            Some(value) => value.round() as Count,
             // Limited items are guaranteed to have some unmodified limit value
-            Err(_) => uad
+            None => uad
                 .items
                 .get_item(item_id)
                 .unwrap()

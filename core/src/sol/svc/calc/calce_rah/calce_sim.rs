@@ -132,10 +132,10 @@ impl SolCalc {
         self.set_partial_fit_rahs_result(uad, avg_resos, &sim_datas);
     }
     fn get_ship_resonances(&mut self, uad: &SolUad, ship_id: &SolItemId) -> Option<SolDmgKinds<AttrVal>> {
-        let em = self.get_item_attr_val(uad, ship_id, &EM_ATTR_ID).ok()?.dogma;
-        let therm = self.get_item_attr_val(uad, ship_id, &THERM_ATTR_ID).ok()?.dogma;
-        let kin = self.get_item_attr_val(uad, ship_id, &KIN_ATTR_ID).ok()?.dogma;
-        let expl = self.get_item_attr_val(uad, ship_id, &EXPL_ATTR_ID).ok()?.dogma;
+        let em = self.get_item_attr_val_full(uad, ship_id, &EM_ATTR_ID).ok()?.dogma;
+        let therm = self.get_item_attr_val_full(uad, ship_id, &THERM_ATTR_ID).ok()?.dogma;
+        let kin = self.get_item_attr_val_full(uad, ship_id, &KIN_ATTR_ID).ok()?.dogma;
+        let expl = self.get_item_attr_val_full(uad, ship_id, &EXPL_ATTR_ID).ok()?.dogma;
         Some(SolDmgKinds::new(em, therm, kin, expl))
     }
     fn get_fit_rah_sim_datas(&mut self, uad: &SolUad, fit_id: &SolFitId) -> BTreeMap<SolItemId, SolRahDataSim> {
@@ -171,7 +171,7 @@ impl SolCalc {
         // Other attributes using regular getters
         // Divide by 100 for convenience - raw form of shift amount is defined in percentages, while
         // resonances are in absolute form
-        let shift_amount = self.get_item_attr_val(uad, item_id, &SHIFT_ATTR_ID).ok()?.dogma / OF(100.0);
+        let shift_amount = self.get_item_attr_val_full(uad, item_id, &SHIFT_ATTR_ID).ok()?.dogma / OF(100.0);
         if shift_amount <= OF(0.0) {
             return None;
         }

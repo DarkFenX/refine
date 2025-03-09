@@ -104,15 +104,9 @@ fn get_resource_stats_fitting<'a>(
     use_attr_id: &EAttrId,
     output_attr_id: &EAttrId,
 ) -> SolStatRes {
-    let output = match fit.ship {
-        Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
-            Ok(attr_val) => Some(attr_val.extra),
-            Err(_) => None,
-        },
-        None => None,
-    };
+    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id);
     let used = items
-        .filter_map(|i| calc.get_item_attr_val(uad, i, use_attr_id).ok().map(|v| v.extra))
+        .filter_map(|i| calc.get_item_attr_val_simple(uad, i, use_attr_id))
         .sum();
     // Round possible float errors despite individual use values being rounded
     SolStatRes::new(round(used, 2), output)
@@ -124,13 +118,7 @@ fn get_resource_stats_other<'a>(
     items_use: impl Iterator<Item = &'a AttrVal>,
     output_attr_id: &EAttrId,
 ) -> SolStatRes {
-    let output = match fit.ship {
-        Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
-            Ok(attr_val) => Some(attr_val.extra),
-            Err(_) => None,
-        },
-        None => None,
-    };
+    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id);
     let used = items_use.sum();
     SolStatRes::new(used, output)
 }

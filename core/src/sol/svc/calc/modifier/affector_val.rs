@@ -44,7 +44,7 @@ impl SolAffectorValue {
         effect_id: &EEffectId,
     ) -> Option<AttrVal> {
         match self {
-            Self::AttrId(attr_id) => Some(calc.get_item_attr_val(uad, item_id, attr_id).ok()?.dogma),
+            Self::AttrId(attr_id) => Some(calc.get_item_attr_val_full(uad, item_id, attr_id).ok()?.dogma),
             Self::Hardcoded(val) => Some(*val),
             Self::PropulsionModule => prop::get_mod_val(calc, uad, item_id, effect_id),
             Self::AncillaryArmorRep => aar::get_mod_val(calc, uad, item_id),

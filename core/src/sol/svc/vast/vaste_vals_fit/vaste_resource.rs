@@ -2,10 +2,7 @@ use crate::{
     defs::{AttrVal, EAttrId, OF, SolItemId},
     ec,
     sol::{
-        svc::{
-            calc::SolCalc,
-            vast::{SolStatRes, SolVastFitData},
-        },
+        svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
     },
     util::{StSet, round},
@@ -235,9 +232,9 @@ fn validate_fast_fitting<'a>(
     let mut total_use = OF(0.0);
     let mut force_pass = true;
     for item_id in item_ids {
-        let item_use = match calc.get_item_attr_val(uad, item_id, use_attr_id) {
-            Ok(attr_val) => attr_val.extra,
-            Err(_) => continue,
+        let item_use = match calc.get_item_attr_val_simple(uad, item_id, use_attr_id) {
+            Some(item_use) => item_use,
+            None => continue,
         };
         if force_pass && item_use > OF(0.0) && !kfs.contains(item_id) {
             force_pass = false;
@@ -247,7 +244,9 @@ fn validate_fast_fitting<'a>(
     if force_pass {
         return true;
     }
-    let output = get_item_attr(uad, calc, &fit.ship, output_attr_id).unwrap_or(OF(0.0));
+    let output = calc
+        .get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id)
+        .unwrap_or(OF(0.0));
     round(total_use, 2) <= output
 }
 fn validate_fast_other<'a>(
@@ -269,7 +268,9 @@ fn validate_fast_other<'a>(
     if force_pass {
         return true;
     }
-    let output = get_item_attr(uad, calc, &fit.ship, output_attr_id).unwrap_or(OF(0.0));
+    let output = calc
+        .get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id)
+        .unwrap_or(OF(0.0));
     force_pass || total_use <= output
 }
 
@@ -285,9 +286,9 @@ fn validate_verbose_fitting<'a>(
     let mut total_use = OF(0.0);
     let mut users = Vec::with_capacity(item_ids.len());
     for item_id in item_ids {
-        let item_use = match calc.get_item_attr_val(uad, item_id, use_attr_id) {
-            Ok(attr_val) => attr_val.extra,
-            Err(_) => continue,
+        let item_use = match calc.get_item_attr_val_simple(uad, item_id, use_attr_id) {
+            Some(item_use) => item_use,
+            None => continue,
         };
         total_use += item_use;
         if item_use > OF(0.0) && !kfs.contains(item_id) {
@@ -301,7 +302,7 @@ fn validate_verbose_fitting<'a>(
         return None;
     }
     let total_use = round(total_use, 2);
-    let output = get_item_attr(uad, calc, &fit.ship, output_attr_id);
+    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id);
     if total_use <= output.unwrap_or(OF(0.0)) {
         return None;
     }
@@ -333,7 +334,7 @@ fn validate_verbose_other<'a>(
     if users.is_empty() {
         return None;
     }
-    let output = get_item_attr(uad, calc, &fit.ship, output_attr_id);
+    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id);
     if total_use <= output.unwrap_or(OF(0.0)) {
         return None;
     }
@@ -342,14 +343,4 @@ fn validate_verbose_other<'a>(
         output,
         users,
     })
-}
-
-fn get_item_attr(uad: &SolUad, calc: &mut SolCalc, item_id: &Option<SolItemId>, attr_id: &EAttrId) -> Option<AttrVal> {
-    match item_id {
-        Some(item_id) => match calc.get_item_attr_val(uad, item_id, attr_id) {
-            Ok(attr_val) => Some(attr_val.extra),
-            Err(_) => None,
-        },
-        None => None,
-    }
 }
