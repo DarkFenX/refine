@@ -75,6 +75,42 @@ def test_equal(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_known_failures(client, consts):
+    eve_ftr_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_is_light)
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_light_slots)
+    eve_fighter_id = client.mk_eve_item(attrs={eve_ftr_type_attr_id: 1})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 1})
+    eve_other_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
+    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(launched_light_fighter_count=(True, [api_fighter1.id])))
+    assert api_val.passed is False
+    assert api_val.details.launched_light_fighter_count.used == 2
+    assert api_val.details.launched_light_fighter_count.total == 1
+    assert api_val.details.launched_light_fighter_count.users == [api_fighter2.id]
+    api_val = api_fit.validate(options=ValOptions(launched_light_fighter_count=(True, [api_fighter2.id])))
+    assert api_val.passed is False
+    assert api_val.details.launched_light_fighter_count.used == 2
+    assert api_val.details.launched_light_fighter_count.total == 1
+    assert api_val.details.launched_light_fighter_count.users == [api_fighter1.id]
+    api_val = api_fit.validate(options=ValOptions(
+        launched_light_fighter_count=(True, [api_fighter1.id, api_fighter2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(
+        launched_light_fighter_count=(True, [api_fighter1.id, api_other.id, api_fighter2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_modified_fighter_type(client, consts):
     # Fighter type is never modified, so the lib just uses unmodified attributes for access to the
     # attr value
