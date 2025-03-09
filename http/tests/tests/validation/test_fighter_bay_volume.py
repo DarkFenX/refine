@@ -91,9 +91,11 @@ def test_known_failures(client, consts):
     eve_fighter4_id = client.mk_eve_item(attrs={eve_use_attr_id: 0, eve_count_attr_id: 20})
     eve_fighter5_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.5, eve_count_attr_id: 3})
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 8000})
+    eve_other_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
     api_fit.set_ship(type_id=eve_ship_id)
     api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id)
     # Verification
@@ -115,6 +117,11 @@ def test_known_failures(client, consts):
     assert api_val.details.fighter_bay_volume.output == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter1.id: approx(9000)}
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id, api_fighter2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(
+        fighter_bay_volume=(True, [api_fighter1.id, api_other.id, api_fighter2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

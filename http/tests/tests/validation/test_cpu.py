@@ -91,9 +91,11 @@ def test_known_failures(client, consts):
     eve_module4_id = client.mk_eve_item(attrs={eve_use_attr_id: 0}, eff_ids=[eve_effect_id])
     eve_module5_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.5}, eff_ids=[eve_effect_id])
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_other_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
     api_fit.set_ship(type_id=eve_ship_id)
     api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
     # Verification
@@ -115,6 +117,10 @@ def test_known_failures(client, consts):
     assert api_val.details.cpu.output == 125
     assert api_val.details.cpu.users == {api_module1.id: 150}
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_other.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

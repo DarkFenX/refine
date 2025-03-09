@@ -57,9 +57,11 @@ def test_known_failures(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
     eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 1})
+    eve_other_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
     api_fit.set_char(type_id=eve_char_id)
     api_drone1 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     api_drone2 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
@@ -75,6 +77,11 @@ def test_known_failures(client, consts):
     assert api_val.details.launched_drone_count.total == 1
     assert api_val.details.launched_drone_count.users == [api_drone1.id]
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=(True, [api_drone1.id, api_drone2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(
+        launched_drone_count=(True, [api_drone1.id, api_other.id, api_drone2.id])))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
