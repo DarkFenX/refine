@@ -27,6 +27,9 @@ impl<V: Eq + Hash> StSet<V> {
     pub fn difference<'a>(&'a self, other: &'a StSet<V>) -> impl Iterator<Item = &'a V> {
         self.data.difference(&other.data)
     }
+    pub fn is_subset(&self, other: &StSet<V>) -> bool {
+        self.data.is_subset(&other.data)
+    }
     // Modification methods
     pub fn insert(&mut self, val: V) -> bool {
         self.data.insert(val)
