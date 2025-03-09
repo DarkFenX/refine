@@ -63,36 +63,64 @@ impl SolVastFitData {
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> bool {
-        let stats = self.get_stats_calibration(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_other(
+            uad,
+            calc,
+            fit,
+            kfs,
+            self.rigs_rigslot_calibration.iter(),
+            &ec::attrs::UPGRADE_CAPACITY,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_fast(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> bool {
-        let stats = self.get_stats_drone_bay_volume(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_other(
+            uad,
+            calc,
+            fit,
+            kfs,
+            self.drones_volume.iter(),
+            &ec::attrs::DRONE_CAPACITY,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_fast(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> bool {
-        let stats = self.get_stats_drone_bandwidth(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_other(
+            uad,
+            calc,
+            fit,
+            kfs,
+            self.drones_online_bandwidth.iter(),
+            &ec::attrs::DRONE_BANDWIDTH,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_fast(
         &self,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
+        kfs: &StSet<SolItemId>,
     ) -> bool {
-        let stats = self.get_stats_fighter_bay_volume(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_other(
+            uad,
+            calc,
+            fit,
+            kfs,
+            self.fighters_volume.iter(),
+            &ec::attrs::FTR_CAPACITY,
+        )
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
@@ -136,8 +164,14 @@ impl SolVastFitData {
         fit: &SolFit,
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
-        let stats = self.get_stats_calibration(uad, calc, fit);
-        validate_verbose_other(kfs, stats, self.rigs_rigslot_calibration.iter())
+        validate_verbose_other(
+            uad,
+            calc,
+            fit,
+            kfs,
+            self.rigs_rigslot_calibration.iter(),
+            &ec::attrs::UPGRADE_CAPACITY,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_verbose(
         &self,
@@ -146,8 +180,14 @@ impl SolVastFitData {
         fit: &SolFit,
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
-        let stats = self.get_stats_drone_bay_volume(uad, calc, fit);
-        validate_verbose_other(kfs, stats, self.drones_volume.iter())
+        validate_verbose_other(
+            uad,
+            calc,
+            fit,
+            kfs,
+            self.drones_volume.iter(),
+            &ec::attrs::DRONE_CAPACITY,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_verbose(
         &self,
@@ -156,8 +196,14 @@ impl SolVastFitData {
         fit: &SolFit,
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
-        let stats = self.get_stats_drone_bandwidth(uad, calc, fit);
-        validate_verbose_other(kfs, stats, self.drones_online_bandwidth.iter())
+        validate_verbose_other(
+            uad,
+            calc,
+            fit,
+            kfs,
+            self.drones_online_bandwidth.iter(),
+            &ec::attrs::DRONE_BANDWIDTH,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_verbose(
         &self,
@@ -166,8 +212,14 @@ impl SolVastFitData {
         fit: &SolFit,
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
-        let stats = self.get_stats_fighter_bay_volume(uad, calc, fit);
-        validate_verbose_other(kfs, stats, self.fighters_volume.iter())
+        validate_verbose_other(
+            uad,
+            calc,
+            fit,
+            kfs,
+            self.fighters_volume.iter(),
+            &ec::attrs::FTR_CAPACITY,
+        )
     }
 }
 
@@ -180,13 +232,6 @@ fn validate_fast_fitting<'a>(
     use_attr_id: &EAttrId,
     output_attr_id: &EAttrId,
 ) -> bool {
-    let output = match fit.ship {
-        Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
-            Ok(attr_val) => attr_val.extra,
-            Err(_) => OF(0.0),
-        },
-        None => OF(0.0),
-    };
     let mut total_use = OF(0.0);
     let mut force_pass = true;
     for item_id in item_ids {
@@ -199,7 +244,32 @@ fn validate_fast_fitting<'a>(
         }
         total_use += item_use;
     }
-    let total_use = round(total_use, 2);
+    if force_pass {
+        return true;
+    }
+    let output = get_item_attr(uad, calc, &fit.ship, output_attr_id).unwrap_or(OF(0.0));
+    round(total_use, 2) <= output
+}
+fn validate_fast_other<'a>(
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    fit: &SolFit,
+    kfs: &StSet<SolItemId>,
+    items: impl Iterator<Item = (&'a SolItemId, &'a AttrVal)>,
+    output_attr_id: &EAttrId,
+) -> bool {
+    let mut total_use = OF(0.0);
+    let mut force_pass = true;
+    for (item_id, &item_use) in items {
+        if force_pass && item_use > OF(0.0) && !kfs.contains(item_id) {
+            force_pass = false;
+        }
+        total_use += item_use;
+    }
+    if force_pass {
+        return true;
+    }
+    let output = get_item_attr(uad, calc, &fit.ship, output_attr_id).unwrap_or(OF(0.0));
     force_pass || total_use <= output
 }
 
@@ -212,13 +282,6 @@ fn validate_verbose_fitting<'a>(
     use_attr_id: &EAttrId,
     output_attr_id: &EAttrId,
 ) -> Option<SolValResFail> {
-    let output = match fit.ship {
-        Some(ship_id) => match calc.get_item_attr_val(uad, &ship_id, output_attr_id) {
-            Ok(attr_val) => Some(attr_val.extra),
-            Err(_) => None,
-        },
-        None => None,
-    };
     let mut total_use = OF(0.0);
     let mut users = Vec::with_capacity(item_ids.len());
     for item_id in item_ids {
@@ -234,8 +297,44 @@ fn validate_verbose_fitting<'a>(
             });
         }
     }
+    if users.is_empty() {
+        return None;
+    }
     let total_use = round(total_use, 2);
-    if users.is_empty() || total_use <= output.unwrap_or(OF(0.0)) {
+    let output = get_item_attr(uad, calc, &fit.ship, output_attr_id);
+    if total_use <= output.unwrap_or(OF(0.0)) {
+        return None;
+    }
+    Some(SolValResFail {
+        used: total_use,
+        output,
+        users,
+    })
+}
+fn validate_verbose_other<'a>(
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    fit: &SolFit,
+    kfs: &StSet<SolItemId>,
+    items: impl ExactSizeIterator<Item = (&'a SolItemId, &'a AttrVal)>,
+    output_attr_id: &EAttrId,
+) -> Option<SolValResFail> {
+    let mut total_use = OF(0.0);
+    let mut users = Vec::with_capacity(items.len());
+    for (item_id, &item_use) in items {
+        total_use += item_use;
+        if item_use > OF(0.0) && !kfs.contains(item_id) {
+            users.push(SolValResItemInfo {
+                item_id: *item_id,
+                used: item_use,
+            });
+        }
+    }
+    if users.is_empty() {
+        return None;
+    }
+    let output = get_item_attr(uad, calc, &fit.ship, output_attr_id);
+    if total_use <= output.unwrap_or(OF(0.0)) {
         return None;
     }
     Some(SolValResFail {
@@ -245,32 +344,12 @@ fn validate_verbose_fitting<'a>(
     })
 }
 
-fn validate_fast(stats: SolStatRes) -> bool {
-    stats.used <= stats.output.unwrap_or(OF(0.0))
-}
-fn validate_verbose_other<'a>(
-    kfs: &StSet<SolItemId>,
-    stats: SolStatRes,
-    items: impl ExactSizeIterator<Item = (&'a SolItemId, &'a AttrVal)>,
-) -> Option<SolValResFail> {
-    if stats.used <= stats.output.unwrap_or(OF(0.0)) {
-        return None;
-    };
-    let mut users = Vec::with_capacity(items.len());
-    for (item_id, &res_used) in items {
-        if kfs.contains(item_id) {
-            continue;
-        }
-        if res_used > OF(0.0) {
-            users.push(SolValResItemInfo {
-                item_id: *item_id,
-                used: res_used,
-            })
-        }
+fn get_item_attr(uad: &SolUad, calc: &mut SolCalc, item_id: &Option<SolItemId>, attr_id: &EAttrId) -> Option<AttrVal> {
+    match item_id {
+        Some(item_id) => match calc.get_item_attr_val(uad, item_id, attr_id) {
+            Ok(attr_val) => Some(attr_val.extra),
+            Err(_) => None,
+        },
+        None => None,
     }
-    Some(SolValResFail {
-        used: stats.used,
-        output: stats.output,
-        users,
-    })
 }

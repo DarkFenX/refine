@@ -25,16 +25,23 @@ impl SolVast {
         if options.powergrid.enabled && !fit_data.validate_powergrid_fast(uad, calc, fit, &options.powergrid.kfs) {
             return false;
         }
-        if options.calibration.enabled && !fit_data.validate_calibration_fast(uad, calc, fit) {
+        if options.calibration.enabled && !fit_data.validate_calibration_fast(uad, calc, fit, &options.calibration.kfs)
+        {
             return false;
         }
-        if options.drone_bay_volume.enabled && !fit_data.validate_drone_bay_volume_fast(uad, calc, fit) {
+        if options.drone_bay_volume.enabled
+            && !fit_data.validate_drone_bay_volume_fast(uad, calc, fit, &options.drone_bay_volume.kfs)
+        {
             return false;
         }
-        if options.drone_bandwidth.enabled && !fit_data.validate_drone_bandwidth_fast(uad, calc, fit) {
+        if options.drone_bandwidth.enabled
+            && !fit_data.validate_drone_bandwidth_fast(uad, calc, fit, &options.drone_bandwidth.kfs)
+        {
             return false;
         }
-        if options.fighter_bay_volume.enabled && !fit_data.validate_fighter_bay_volume_fast(uad, calc, fit) {
+        if options.fighter_bay_volume.enabled
+            && !fit_data.validate_fighter_bay_volume_fast(uad, calc, fit, &options.fighter_bay_volume.kfs)
+        {
             return false;
         }
         if options.rig_slot_count.enabled && !fit_data.validate_rig_slot_count_fast(uad, calc, fit) {

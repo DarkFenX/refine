@@ -87,6 +87,9 @@ def test_known_failures(client, consts):
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.rig_slot, cat_id=consts.EveEffCat.passive)
     eve_rig1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
     eve_rig2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
+    eve_rig3_id = client.mk_eve_item(attrs={eve_use_attr_id: -10}, eff_ids=[eve_effect_id])
+    eve_rig4_id = client.mk_eve_item(attrs={eve_use_attr_id: 0}, eff_ids=[eve_effect_id])
+    eve_rig5_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.5}, eff_ids=[eve_effect_id])
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -95,10 +98,9 @@ def test_known_failures(client, consts):
     api_rig1 = api_fit.add_rig(type_id=eve_rig1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id])))
-    assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(150)
-    assert api_val.details.calibration.output == approx(125)
-    assert api_val.details.calibration.users == {}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
     # Action
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
@@ -113,10 +115,33 @@ def test_known_failures(client, consts):
     assert api_val.details.calibration.output == approx(125)
     assert api_val.details.calibration.users == {api_rig1.id: 150}
     api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_rig2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_rig3 = api_fit.add_rig(type_id=eve_rig3_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_rig2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_rig3.remove()
+    api_rig4 = api_fit.add_rig(type_id=eve_rig4_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_rig2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_rig4.remove()
+    api_rig5 = api_fit.add_rig(type_id=eve_rig5_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_rig2.id])))
     assert api_val.passed is False
-    assert api_val.details.calibration.used == approx(250)
-    assert api_val.details.calibration.output == approx(125)
-    assert api_val.details.calibration.users == {}
+    assert api_val.details.calibration.used == 250.5
+    assert api_val.details.calibration.output == 125
+    assert api_val.details.calibration.users == {api_rig5.id: 0.5}
 
 
 def test_modified_use(client, consts):

@@ -82,6 +82,9 @@ def test_known_failures(client, consts):
     eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.drone_capacity)
     eve_drone1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150})
     eve_drone2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100})
+    eve_drone3_id = client.mk_eve_item(attrs={eve_use_attr_id: -10})
+    eve_drone4_id = client.mk_eve_item(attrs={eve_use_attr_id: 0})
+    eve_drone5_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.5})
     eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
@@ -90,10 +93,9 @@ def test_known_failures(client, consts):
     api_drone1 = api_fit.add_drone(type_id=eve_drone1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id])))
-    assert api_val.passed is False
-    assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
     # Action
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id)
     # Verification
@@ -108,10 +110,33 @@ def test_known_failures(client, consts):
     assert api_val.details.drone_bay_volume.output == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone1.id: 150}
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id, api_drone2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_drone3 = api_fit.add_drone(type_id=eve_drone3_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id, api_drone2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_drone3.remove()
+    api_drone4 = api_fit.add_drone(type_id=eve_drone4_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id, api_drone2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_drone4.remove()
+    api_drone5 = api_fit.add_drone(type_id=eve_drone5_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id, api_drone2.id])))
     assert api_val.passed is False
-    assert api_val.details.drone_bay_volume.used == approx(250)
-    assert api_val.details.drone_bay_volume.output == approx(125)
-    assert api_val.details.drone_bay_volume.users == {}
+    assert api_val.details.drone_bay_volume.used == 250.5
+    assert api_val.details.drone_bay_volume.output == 125
+    assert api_val.details.drone_bay_volume.users == {api_drone5.id: 0.5}
 
 
 def test_modified_use(client, consts):
