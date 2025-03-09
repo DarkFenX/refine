@@ -43,6 +43,9 @@ impl SolVastFitData {
         fit: &SolFit,
         kfs: &StSet<SolItemId>,
     ) -> bool {
+        if fit.subsystems.is_subset(kfs) {
+            return true;
+        }
         let stats = self.get_stats_subsystem_slots(uad, calc, fit);
         validate_fast(stats)
     }
@@ -195,7 +198,7 @@ impl SolVastFitData {
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValSlotCountFail> {
         let stats = self.get_stats_subsystem_slots(uad, calc, fit);
-        validate_verbose_unordered_old(kfs, stats, fit.subsystems.iter())
+        validate_verbose_unordered(kfs, stats, &fit.subsystems)
     }
     pub(in crate::sol::svc::vast) fn validate_launched_drone_count_verbose(
         &self,

@@ -25,7 +25,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -39,7 +39,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -53,7 +53,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.character,
@@ -67,7 +67,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -81,7 +81,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -95,7 +95,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -109,7 +109,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -123,7 +123,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -137,7 +137,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -151,7 +151,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -165,7 +165,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -179,7 +179,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(
+        get_stats_slots(
             uad,
             calc,
             fit.ship,
@@ -193,7 +193,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::HI_SLOTS, fit.mods_high.len() as Count)
+        get_stats_slots(uad, calc, fit.ship, &ec::attrs::HI_SLOTS, fit.mods_high.len() as Count)
     }
     pub(in crate::sol::svc::vast) fn get_stats_mid_slots(
         &self,
@@ -201,7 +201,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::MED_SLOTS, fit.mods_mid.len() as Count)
+        get_stats_slots(uad, calc, fit.ship, &ec::attrs::MED_SLOTS, fit.mods_mid.len() as Count)
     }
     pub(in crate::sol::svc::vast) fn get_stats_low_slots(
         &self,
@@ -209,24 +209,23 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> SolStatSlot {
-        self.get_stats_slots(uad, calc, fit.ship, &ec::attrs::LOW_SLOTS, fit.mods_low.len() as Count)
+        get_stats_slots(uad, calc, fit.ship, &ec::attrs::LOW_SLOTS, fit.mods_low.len() as Count)
     }
-    // Private methods
-    fn get_stats_slots(
-        &self,
-        uad: &SolUad,
-        calc: &mut SolCalc,
-        output_item_id: Option<SolItemId>,
-        output_attr_id: &EAttrId,
-        user_count: Count,
-    ) -> SolStatSlot {
-        let total = match output_item_id {
-            Some(output_item_id) => match calc.get_item_attr_val(uad, &output_item_id, output_attr_id) {
-                Ok(attr_val) => Some(attr_val.extra.into_inner().round() as Count),
-                Err(_) => None,
-            },
-            None => None,
-        };
-        SolStatSlot::new(user_count, total)
-    }
+}
+
+fn get_stats_slots(
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    output_item_id: Option<SolItemId>,
+    output_attr_id: &EAttrId,
+    user_count: Count,
+) -> SolStatSlot {
+    let total = match output_item_id {
+        Some(output_item_id) => match calc.get_item_attr_val(uad, &output_item_id, output_attr_id) {
+            Ok(attr_val) => Some(attr_val.extra.into_inner().round() as Count),
+            Err(_) => None,
+        },
+        None => None,
+    };
+    SolStatSlot::new(user_count, total)
 }
