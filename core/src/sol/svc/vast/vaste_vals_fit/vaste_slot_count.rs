@@ -12,7 +12,7 @@ use crate::{
             fit::{SolFit, SolItemVec},
         },
     },
-    util::StSet,
+    util::{StMap, StSet},
 };
 
 pub struct SolValSlotCountFail {
@@ -56,6 +56,9 @@ impl SolVastFitData {
         fit: &SolFit,
         kfs: &StSet<SolItemId>,
     ) -> bool {
+        if self.drones_online_bandwidth.is_subset(kfs) {
+            return true;
+        }
         let stats = self.get_stats_launched_drones(uad, calc, fit);
         validate_fast(stats)
     }
@@ -188,7 +191,7 @@ impl SolVastFitData {
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValSlotCountFail> {
         let stats = self.get_stats_rig_slots(uad, calc, fit);
-        validate_verbose_unordered(kfs, stats, &fit.rigs)
+        validate_verbose_unordered_set(kfs, stats, &fit.rigs)
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_count_verbose(
         &self,
@@ -198,7 +201,7 @@ impl SolVastFitData {
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValSlotCountFail> {
         let stats = self.get_stats_subsystem_slots(uad, calc, fit);
-        validate_verbose_unordered(kfs, stats, &fit.subsystems)
+        validate_verbose_unordered_set(kfs, stats, &fit.subsystems)
     }
     pub(in crate::sol::svc::vast) fn validate_launched_drone_count_verbose(
         &self,
@@ -208,7 +211,7 @@ impl SolVastFitData {
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValSlotCountFail> {
         let stats = self.get_stats_launched_drones(uad, calc, fit);
-        validate_verbose_unordered_old(kfs, stats, self.drones_online_bandwidth.keys())
+        validate_verbose_unordered_map(kfs, stats, &self.drones_online_bandwidth)
     }
     pub(in crate::sol::svc::vast) fn validate_launched_fighter_count_verbose(
         &self,
@@ -354,10 +357,28 @@ fn validate_verbose_ordered<'a>(
         users,
     })
 }
-fn validate_verbose_unordered<'a>(
+fn validate_verbose_unordered_set<'a>(
     kfs: &StSet<SolItemId>,
     stats: SolStatSlot,
     users: &StSet<SolItemId>,
+) -> Option<SolValSlotCountFail> {
+    if stats.used <= stats.total.unwrap_or(0) {
+        return None;
+    }
+    let users = users.difference(kfs).copied().collect_vec();
+    if users.is_empty() {
+        return None;
+    }
+    Some(SolValSlotCountFail {
+        used: stats.used,
+        total: stats.total,
+        users,
+    })
+}
+fn validate_verbose_unordered_map<'a, T>(
+    kfs: &StSet<SolItemId>,
+    stats: SolStatSlot,
+    users: &StMap<SolItemId, T>,
 ) -> Option<SolValSlotCountFail> {
     if stats.used <= stats.total.unwrap_or(0) {
         return None;

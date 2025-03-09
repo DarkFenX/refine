@@ -6,6 +6,8 @@ use std::{
 
 use rustc_hash::{FxBuildHasher, FxHashMap};
 
+use crate::util::storage::StSet;
+
 #[derive(Clone)]
 pub struct StMap<K, V> {
     data: FxHashMap<K, V>,
@@ -82,6 +84,17 @@ impl<K: Eq + Hash, V> StMap<K, V> {
     // Consumption methods
     pub fn into_values(self) -> impl ExactSizeIterator<Item = V> {
         self.data.into_values()
+    }
+    // Set methods
+    pub(crate) fn is_subset(&self, other: &StSet<K>) -> bool {
+        // (Almost) copy of std::collections::HashSet::is_subset()
+        match self.len() <= other.len() {
+            true => self.keys().all(|v| other.contains(v)),
+            false => false,
+        }
+    }
+    pub(crate) fn difference(&self, other: &StSet<K>) -> impl Iterator<Item = &K> {
+        self.keys().filter(|v| !other.contains(v))
     }
 }
 impl<K: Eq + Hash, V> Default for StMap<K, V> {

@@ -74,29 +74,23 @@ def test_equal(client, consts):
 def test_known_failures(client, consts):
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.upgrade_slots_left)
     eve_rig_id = client.mk_eve_item()
-    eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
     api_rig1 = api_fit.add_rig(type_id=eve_rig_id)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig1.id])))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
-    # Action
     api_rig2 = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig1.id])))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 2
-    assert api_val.details.rig_slot_count.total == 0
+    assert api_val.details.rig_slot_count.total == 1
     assert api_val.details.rig_slot_count.users == [api_rig2.id]
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig2.id])))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 2
-    assert api_val.details.rig_slot_count.total == 0
+    assert api_val.details.rig_slot_count.total == 1
     assert api_val.details.rig_slot_count.users == [api_rig1.id]
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig1.id, api_rig2.id])))
     assert api_val.passed is True
