@@ -59,6 +59,36 @@ def test_multiple(client, consts):
     assert api_val.details.capital_module == (3500, {api_module1.id: 4000, api_module2.id: 4000})
 
 
+def test_known_failures(client, consts):
+    eve_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
+    eve_module_id = client.mk_eve_item(cat_id=consts.EveItemCat.module, attrs={eve_attr_id: 4000})
+    eve_ship_id = client.mk_eve_ship()
+    eve_other_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module1 = api_fit.add_mod(type_id=eve_module_id)
+    api_module2 = api_fit.add_mod(type_id=eve_module_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(capital_module=(True, [api_module1.id])))
+    assert api_val.passed is False
+    assert api_val.details.capital_module == (3500, {api_module2.id: 4000})
+    api_val = api_fit.validate(options=ValOptions(capital_module=(True, [api_module2.id])))
+    assert api_val.passed is False
+    assert api_val.details.capital_module == (3500, {api_module1.id: 4000})
+    api_val = api_fit.validate(options=ValOptions(capital_module=(True, [api_module1.id, api_module2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(
+        capital_module=(True, [api_module1.id, api_other.id, api_module2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_modified(client, consts):
     # Unrealistic scenario, but validation takes unmodified volume value
     eve_vol_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)

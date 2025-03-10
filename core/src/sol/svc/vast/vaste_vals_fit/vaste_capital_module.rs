@@ -1,8 +1,11 @@
+use itertools::Itertools;
+
 use crate::{
     ad,
     defs::{AttrVal, SolItemId},
     ec,
     sol::{svc::vast::SolVastFitData, uad::item::SolShip},
+    util::StSet,
 };
 
 pub struct SolValCapitalModFail {
@@ -18,20 +21,40 @@ pub struct SolValCapitalModItemInfo {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_capital_module_fast(&self, ship: Option<&SolShip>) -> bool {
-        !is_ship_subcap(ship) || self.mods_capital.is_empty()
+    pub(in crate::sol::svc::vast) fn validate_capital_module_fast(
+        &self,
+        kfs: &StSet<SolItemId>,
+        ship: Option<&SolShip>,
+    ) -> bool {
+        if !is_ship_subcap(ship) {
+            return true;
+        }
+        match kfs.is_empty() {
+            true => self.mods_capital.is_empty(),
+            false => self.mods_capital.difference(kfs).nth(0).is_none(),
+        }
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_capital_module_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         ship: Option<&SolShip>,
     ) -> Option<SolValCapitalModFail> {
-        if !is_ship_subcap(ship) || self.mods_capital.is_empty() {
+        if !is_ship_subcap(ship) {
+            return None;
+        }
+        let items = self
+            .mods_capital
+            .values()
+            .filter(|v| !kfs.contains(&v.item_id))
+            .copied()
+            .collect_vec();
+        if items.is_empty() {
             return None;
         }
         Some(SolValCapitalModFail {
             max_subcap_volume: ec::extras::MAX_SUBCAP_MODULE_VOLUME,
-            items: self.mods_capital.values().copied().collect(),
+            items,
         })
     }
 }
