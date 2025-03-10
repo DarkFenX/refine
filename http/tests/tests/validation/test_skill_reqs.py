@@ -194,6 +194,10 @@ def test_known_failures(client):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=(True, [api_module1.id, api_other.id, api_module2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_mutation(client):

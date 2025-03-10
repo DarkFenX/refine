@@ -19,6 +19,7 @@ from .validation import ValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
+    from tests.fw.response import Response
     from .aliases import MutaAdd
     from .validation import ValOptions
 
@@ -55,23 +56,30 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
-    def validate(self, *, options: ValOptions, status_code: int = 200) -> ValResult | None:
-        # Simple
-        resp_simple = self._client.validate_fit_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            options=options,
-            val_info_mode=ApiValInfoMode.simple).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp_simple.check(status_code=status_code)
-        # Detailed
-        resp_detailed = self._client.validate_fit_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            options=options,
-            val_info_mode=ApiValInfoMode.detailed).send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp_detailed.check(status_code=status_code)
+    def validate(
+            self, *,
+            options: ValOptions,
+            status_code: int = 200,
+            flip_order: bool = False,
+    ) -> ValResult | None:
+        if flip_order:
+            resp_detailed = self.__validate(
+                options=options,
+                val_info_mode=ApiValInfoMode.detailed,
+                status_code=status_code)
+            resp_simple = self.__validate(
+                options=options,
+                val_info_mode=ApiValInfoMode.simple,
+                status_code=status_code)
+        else:
+            resp_simple = self.__validate(
+                options=options,
+                val_info_mode=ApiValInfoMode.simple,
+                status_code=status_code)
+            resp_detailed = self.__validate(
+                options=options,
+                val_info_mode=ApiValInfoMode.detailed,
+                status_code=status_code)
         # Ensure simple results are consistent with full results
         if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
             result_simple = ValResult(data=resp_simple.json())
@@ -79,6 +87,21 @@ class Fit(AttrDict):
             assert result_simple.passed is result_detailed.passed
             return result_detailed
         return None
+
+    def __validate(
+            self, *,
+            options: ValOptions,
+            val_info_mode: ApiValInfoMode | type[Absent],
+            status_code: int,
+    ) -> Response:
+        resp_simple = self._client.validate_fit_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            options=options,
+            val_info_mode=val_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp_simple.check(status_code=status_code)
+        return resp_simple
 
     def set_fleet(
             self, *,

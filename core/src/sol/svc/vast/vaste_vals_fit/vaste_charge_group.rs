@@ -4,6 +4,7 @@ use crate::{
         svc::vast::{SolValCache, SolVastFitData},
         uad::SolUad,
     },
+    util::StSet,
 };
 
 #[derive(Clone)]
@@ -16,19 +17,30 @@ pub struct SolValChargeGroupFail {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_charge_group_fast(&mut self, uad: &SolUad) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_charge_group_fast(
+        &mut self,
+        kfs: &StSet<SolItemId>,
+        uad: &SolUad,
+    ) -> bool {
         for (module_item_id, cache) in self.mods_charge_group.iter_mut() {
             match cache {
                 SolValCache::Todo(_) => match calculate_item_result(uad, module_item_id) {
                     SolValCache::Pass(pass) => cache.pass(pass),
                     SolValCache::Fail(fail) => {
+                        let ret_fail = !kfs.contains(&fail.charge_item_id);
                         cache.fail(fail);
-                        return false;
+                        if ret_fail {
+                            return false;
+                        }
                     }
                     _ => (),
                 },
                 SolValCache::Pass(_) => (),
-                SolValCache::Fail(_) => return false,
+                SolValCache::Fail(fail) => {
+                    if !kfs.contains(&fail.charge_item_id) {
+                        return false;
+                    }
+                }
             }
         }
         true
@@ -36,6 +48,7 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_charge_group_verbose(
         &mut self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
     ) -> Vec<SolValChargeGroupFail> {
         let mut fails = Vec::new();
@@ -44,13 +57,19 @@ impl SolVastFitData {
                 SolValCache::Todo(_) => match calculate_item_result(uad, module_item_id) {
                     SolValCache::Pass(pass) => cache.pass(pass),
                     SolValCache::Fail(fail) => {
-                        fails.push(fail.clone());
+                        if !kfs.contains(&fail.charge_item_id) {
+                            fails.push(fail.clone());
+                        }
                         cache.fail(fail);
                     }
                     _ => (),
                 },
                 SolValCache::Pass(_) => (),
-                SolValCache::Fail(fail) => fails.push(fail.clone()),
+                SolValCache::Fail(fail) => {
+                    if !kfs.contains(&fail.charge_item_id) {
+                        fails.push(fail.clone())
+                    }
+                }
             }
         }
         fails

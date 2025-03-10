@@ -59,7 +59,7 @@ def test_known_failures(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_other = api_fit.add_implant(type_id=eve_other_id)
+    api_other = api_fit.add_rig(type_id=eve_other_id)
     api_implant1 = api_fit.add_implant(type_id=eve_implant1_id)
     api_implant2 = api_fit.add_implant(type_id=eve_implant2_id)
     api_implant3 = api_fit.add_implant(type_id=eve_implant1_id)

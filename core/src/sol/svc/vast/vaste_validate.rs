@@ -188,7 +188,7 @@ impl SolVast {
         if options.skill_reqs.enabled && !fit_data.validate_skill_reqs_fast(&options.skill_reqs.kfs) {
             return false;
         }
-        if options.charge_group.enabled && !fit_data.validate_charge_group_fast(uad) {
+        if options.charge_group.enabled && !fit_data.validate_charge_group_fast(&options.charge_group.kfs, uad) {
             return false;
         }
         if options.charge_size.enabled && !fit_data.validate_charge_size_fast(uad) {
@@ -368,7 +368,7 @@ impl SolVast {
             result.skill_reqs = fit_data.validate_skill_reqs_verbose(&options.skill_reqs.kfs);
         }
         if options.charge_group.enabled {
-            result.charge_group = fit_data.validate_charge_group_verbose(uad);
+            result.charge_group = fit_data.validate_charge_group_verbose(&options.charge_group.kfs, uad);
         }
         if options.charge_size.enabled {
             result.charge_size = fit_data.validate_charge_size_verbose(uad);
