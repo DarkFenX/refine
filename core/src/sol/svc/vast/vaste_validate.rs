@@ -167,13 +167,19 @@ impl SolVast {
         if options.ship_limit.enabled && !fit_data.validate_ship_limit_fast(&options.ship_limit.kfs, ship) {
             return false;
         }
-        if options.max_group_fitted.enabled && !fit_data.validate_max_group_fitted_fast(uad, calc) {
+        if options.max_group_fitted.enabled
+            && !fit_data.validate_max_group_fitted_fast(&options.max_group_fitted.kfs, uad, calc)
+        {
             return false;
         }
-        if options.max_group_online.enabled && !fit_data.validate_max_group_online_fast(uad, calc) {
+        if options.max_group_online.enabled
+            && !fit_data.validate_max_group_online_fast(&options.max_group_online.kfs, uad, calc)
+        {
             return false;
         }
-        if options.max_group_active.enabled && !fit_data.validate_max_group_active_fast(uad, calc) {
+        if options.max_group_active.enabled
+            && !fit_data.validate_max_group_active_fast(&options.max_group_active.kfs, uad, calc)
+        {
             return false;
         }
         if options.rig_size.enabled && !fit_data.validate_rig_size_fast(ship) {
@@ -344,13 +350,16 @@ impl SolVast {
             result.ship_limit = fit_data.validate_ship_limit_verbose(&options.ship_limit.kfs, ship);
         }
         if options.max_group_fitted.enabled {
-            result.max_group_fitted = fit_data.validate_max_group_fitted_verbose(uad, calc);
+            result.max_group_fitted =
+                fit_data.validate_max_group_fitted_verbose(&options.max_group_fitted.kfs, uad, calc);
         }
         if options.max_group_online.enabled {
-            result.max_group_online = fit_data.validate_max_group_online_verbose(uad, calc);
+            result.max_group_online =
+                fit_data.validate_max_group_online_verbose(&options.max_group_online.kfs, uad, calc);
         }
         if options.max_group_active.enabled {
-            result.max_group_active = fit_data.validate_max_group_active_verbose(uad, calc);
+            result.max_group_active =
+                fit_data.validate_max_group_active_verbose(&options.max_group_active.kfs, uad, calc);
         }
         if options.rig_size.enabled {
             result.rig_size = fit_data.validate_rig_size_verbose(ship);

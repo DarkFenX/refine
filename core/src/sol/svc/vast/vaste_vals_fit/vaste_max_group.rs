@@ -5,7 +5,7 @@ use crate::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::SolUad,
     },
-    util::{StMap, StMapSetL1},
+    util::{StMap, StMapSetL1, StSet},
 };
 
 pub struct SolValMaxGroupFail {
@@ -21,97 +21,113 @@ pub struct SolValMaxGroupItemInfo {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_max_group_fitted_fast(&self, uad: &SolUad, calc: &mut SolCalc) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_max_group_fitted_fast(
+        &self,
+        kfs: &StSet<SolItemId>,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+    ) -> bool {
         validate_fast(
+            kfs,
             uad,
             calc,
             &self.mods_rigs_max_group_fitted_all,
             &self.mods_rigs_max_group_fitted_limited,
-            ec::attrs::MAX_GROUP_FITTED,
+            &ec::attrs::MAX_GROUP_FITTED,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_max_group_online_fast(&self, uad: &SolUad, calc: &mut SolCalc) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_max_group_online_fast(
+        &self,
+        kfs: &StSet<SolItemId>,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+    ) -> bool {
         validate_fast(
+            kfs,
             uad,
             calc,
             &self.mods_max_group_online_all,
             &self.mods_max_group_online_limited,
-            ec::attrs::MAX_GROUP_ONLINE,
+            &ec::attrs::MAX_GROUP_ONLINE,
         )
     }
-    pub(in crate::sol::svc::vast) fn validate_max_group_active_fast(&self, uad: &SolUad, calc: &mut SolCalc) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_max_group_active_fast(
+        &self,
+        kfs: &StSet<SolItemId>,
+        uad: &SolUad,
+        calc: &mut SolCalc,
+    ) -> bool {
         validate_fast(
+            kfs,
             uad,
             calc,
             &self.mods_max_group_active_all,
             &self.mods_max_group_active_limited,
-            ec::attrs::MAX_GROUP_ACTIVE,
+            &ec::attrs::MAX_GROUP_ACTIVE,
         )
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_max_group_fitted_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
     ) -> Vec<SolValMaxGroupFail> {
         validate_verbose(
+            kfs,
             uad,
             calc,
             &self.mods_rigs_max_group_fitted_all,
             &self.mods_rigs_max_group_fitted_limited,
-            ec::attrs::MAX_GROUP_FITTED,
+            &ec::attrs::MAX_GROUP_FITTED,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_online_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
     ) -> Vec<SolValMaxGroupFail> {
         validate_verbose(
+            kfs,
             uad,
             calc,
             &self.mods_max_group_online_all,
             &self.mods_max_group_online_limited,
-            ec::attrs::MAX_GROUP_ONLINE,
+            &ec::attrs::MAX_GROUP_ONLINE,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_max_group_active_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
     ) -> Vec<SolValMaxGroupFail> {
         validate_verbose(
+            kfs,
             uad,
             calc,
             &self.mods_max_group_active_all,
             &self.mods_max_group_active_limited,
-            ec::attrs::MAX_GROUP_ACTIVE,
+            &ec::attrs::MAX_GROUP_ACTIVE,
         )
     }
 }
 
 fn validate_fast(
+    kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
     max_group_all: &StMapSetL1<EItemGrpId, SolItemId>,
     max_group_limited: &StMap<SolItemId, EItemGrpId>,
-    attr_id: EAttrId,
+    attr_id: &EAttrId,
 ) -> bool {
     for (item_id, grp_id) in max_group_limited.iter() {
-        let allowed = match calc.get_item_attr_val_simple(uad, item_id, &attr_id) {
-            Some(value) => value.round() as Count,
-            // Limited items are guaranteed to have some unmodified limit value
-            None => uad
-                .items
-                .get_item(item_id)
-                .unwrap()
-                .get_attrs()
-                .unwrap()
-                .get(&attr_id)
-                .unwrap()
-                .round() as Count,
-        };
-        let fitted = max_group_all.get(grp_id).len() as Count;
+        if kfs.contains(item_id) {
+            continue;
+        }
+        let allowed = get_allowed(uad, calc, item_id, attr_id);
+        let fitted = get_fitted(max_group_all, grp_id);
         if fitted > allowed {
             return false;
         }
@@ -120,28 +136,20 @@ fn validate_fast(
 }
 
 fn validate_verbose(
+    kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
     max_group_all: &StMapSetL1<EItemGrpId, SolItemId>,
     max_group_limited: &StMap<SolItemId, EItemGrpId>,
-    attr_id: EAttrId,
+    attr_id: &EAttrId,
 ) -> Vec<SolValMaxGroupFail> {
     let mut items_by_grp = StMap::new();
     for (item_id, grp_id) in max_group_limited.iter() {
-        let allowed = match calc.get_item_attr_val_simple(uad, item_id, &attr_id) {
-            Some(value) => value.round() as Count,
-            // Limited items are guaranteed to have some unmodified limit value
-            None => uad
-                .items
-                .get_item(item_id)
-                .unwrap()
-                .get_attrs()
-                .unwrap()
-                .get(&attr_id)
-                .unwrap()
-                .round() as Count,
-        };
-        let fitted = max_group_all.get(grp_id).len() as Count;
+        if kfs.contains(item_id) {
+            continue;
+        }
+        let allowed = get_allowed(uad, calc, item_id, attr_id);
+        let fitted = get_fitted(max_group_all, grp_id);
         if fitted > allowed {
             items_by_grp
                 .entry(*grp_id)
@@ -156,8 +164,27 @@ fn validate_verbose(
         .into_iter()
         .map(|(k, v)| SolValMaxGroupFail {
             group_id: k,
-            count: max_group_all.get(&k).len() as Count,
+            count: get_fitted(max_group_all, &k),
             items: v,
         })
         .collect()
+}
+
+fn get_allowed(uad: &SolUad, calc: &mut SolCalc, item_id: &SolItemId, attr_id: &EAttrId) -> Count {
+    match calc.get_item_attr_val_simple(uad, item_id, attr_id) {
+        Some(value) => value.round() as Count,
+        // Limited items are guaranteed to have some unmodified limit value
+        None => uad
+            .items
+            .get_item(item_id)
+            .unwrap()
+            .get_attrs()
+            .unwrap()
+            .get(attr_id)
+            .unwrap()
+            .round() as Count,
+    }
+}
+fn get_fitted(max_group_all: &StMapSetL1<EItemGrpId, SolItemId>, grp_id: &EItemGrpId) -> Count {
+    max_group_all.get(grp_id).len() as Count
 }
