@@ -23,16 +23,16 @@ impl SolVastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_cpu_fast(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> bool {
         validate_fast_fitting(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.mods_online.iter(),
             &ec::attrs::CPU,
             &ec::attrs::CPU_OUTPUT,
@@ -40,16 +40,16 @@ impl SolVastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_fast(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> bool {
         validate_fast_fitting(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.mods_online.iter(),
             &ec::attrs::POWER,
             &ec::attrs::POWER_OUTPUT,
@@ -57,64 +57,64 @@ impl SolVastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_fast(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> bool {
         validate_fast_other(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.rigs_rigslot_calibration.iter(),
             &ec::attrs::UPGRADE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_fast(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> bool {
         validate_fast_other(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.drones_volume.iter(),
             &ec::attrs::DRONE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_fast(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> bool {
         validate_fast_other(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.drones_online_bandwidth.iter(),
             &ec::attrs::DRONE_BANDWIDTH,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_fast(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> bool {
         validate_fast_other(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.fighters_volume.iter(),
             &ec::attrs::FTR_CAPACITY,
         )
@@ -122,16 +122,16 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_cpu_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         validate_verbose_fitting(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.mods_online.iter(),
             &ec::attrs::CPU,
             &ec::attrs::CPU_OUTPUT,
@@ -139,16 +139,16 @@ impl SolVastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_powergrid_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         validate_verbose_fitting(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.mods_online.iter(),
             &ec::attrs::POWER,
             &ec::attrs::POWER_OUTPUT,
@@ -156,64 +156,64 @@ impl SolVastFitData {
     }
     pub(in crate::sol::svc::vast) fn validate_calibration_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         validate_verbose_other(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.rigs_rigslot_calibration.iter(),
             &ec::attrs::UPGRADE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bay_volume_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         validate_verbose_other(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.drones_volume.iter(),
             &ec::attrs::DRONE_CAPACITY,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_drone_bandwidth_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         validate_verbose_other(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.drones_online_bandwidth.iter(),
             &ec::attrs::DRONE_BANDWIDTH,
         )
     }
     pub(in crate::sol::svc::vast) fn validate_fighter_bay_volume_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         uad: &SolUad,
         calc: &mut SolCalc,
         fit: &SolFit,
-        kfs: &StSet<SolItemId>,
     ) -> Option<SolValResFail> {
         validate_verbose_other(
+            kfs,
             uad,
             calc,
             fit,
-            kfs,
             self.fighters_volume.iter(),
             &ec::attrs::FTR_CAPACITY,
         )
@@ -221,10 +221,10 @@ impl SolVastFitData {
 }
 
 fn validate_fast_fitting<'a>(
+    kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
     fit: &SolFit,
-    kfs: &StSet<SolItemId>,
     item_ids: impl Iterator<Item = &'a SolItemId>,
     use_attr_id: &EAttrId,
     output_attr_id: &EAttrId,
@@ -250,10 +250,10 @@ fn validate_fast_fitting<'a>(
     round(total_use, 2) <= output
 }
 fn validate_fast_other<'a>(
+    kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
     fit: &SolFit,
-    kfs: &StSet<SolItemId>,
     items: impl Iterator<Item = (&'a SolItemId, &'a AttrVal)>,
     output_attr_id: &EAttrId,
 ) -> bool {
@@ -275,10 +275,10 @@ fn validate_fast_other<'a>(
 }
 
 fn validate_verbose_fitting<'a>(
+    kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
     fit: &SolFit,
-    kfs: &StSet<SolItemId>,
     item_ids: impl ExactSizeIterator<Item = &'a SolItemId>,
     use_attr_id: &EAttrId,
     output_attr_id: &EAttrId,
@@ -313,10 +313,10 @@ fn validate_verbose_fitting<'a>(
     })
 }
 fn validate_verbose_other<'a>(
+    kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
     fit: &SolFit,
-    kfs: &StSet<SolItemId>,
     items: impl ExactSizeIterator<Item = (&'a SolItemId, &'a AttrVal)>,
     output_attr_id: &EAttrId,
 ) -> Option<SolValResFail> {
