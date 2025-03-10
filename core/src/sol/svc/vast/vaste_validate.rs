@@ -203,7 +203,7 @@ impl SolVast {
         if options.not_loaded_item.enabled && !fit_data.validate_not_loaded_item_fast(&options.not_loaded_item.kfs) {
             return false;
         }
-        if options.module_state.enabled && !fit_data.validate_module_state_fast() {
+        if options.module_state.enabled && !fit_data.validate_module_state_fast(&options.module_state.kfs) {
             return false;
         }
         if options.item_kind.enabled && !fit_data.validate_item_kind_fast() {
@@ -383,7 +383,7 @@ impl SolVast {
             result.not_loaded_item = fit_data.validate_not_loaded_item_verbose(&options.not_loaded_item.kfs);
         }
         if options.module_state.enabled {
-            result.module_state = fit_data.validate_module_state_verbose();
+            result.module_state = fit_data.validate_module_state_verbose(&options.module_state.kfs);
         }
         if options.item_kind.enabled {
             result.item_kind = fit_data.validate_item_kind_verbose();

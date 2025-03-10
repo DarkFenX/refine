@@ -1,6 +1,5 @@
 use crate::{defs::SolItemId, sol::svc::vast::SolVastFitData, util::StSet};
 
-#[derive(Clone)]
 pub struct SolValNotLoadedItemFail {
     pub item_id: SolItemId,
 }
