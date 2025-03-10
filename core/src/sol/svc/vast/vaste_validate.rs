@@ -194,7 +194,7 @@ impl SolVast {
         if options.charge_size.enabled && !fit_data.validate_charge_size_fast(&options.charge_size.kfs, uad) {
             return false;
         }
-        if options.charge_volume.enabled && !fit_data.validate_charge_volume_fast(uad) {
+        if options.charge_volume.enabled && !fit_data.validate_charge_volume_fast(&options.charge_volume.kfs, uad) {
             return false;
         }
         if options.capital_module.enabled && !fit_data.validate_capital_module_fast(ship) {
@@ -374,7 +374,7 @@ impl SolVast {
             result.charge_size = fit_data.validate_charge_size_verbose(&options.charge_size.kfs, uad);
         }
         if options.charge_volume.enabled {
-            result.charge_volume = fit_data.validate_charge_volume_verbose(uad);
+            result.charge_volume = fit_data.validate_charge_volume_verbose(&options.charge_volume.kfs, uad);
         }
         if options.capital_module.enabled {
             result.capital_module = fit_data.validate_capital_module_verbose(ship);
