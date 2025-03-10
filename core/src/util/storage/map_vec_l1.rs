@@ -1,15 +1,15 @@
 use std::hash::Hash;
 
-use rustc_hash::FxHashMap;
+use super::StMap;
 
 pub(crate) struct StMapVecL1<K, V> {
-    data: FxHashMap<K, Vec<V>>,
+    data: StMap<K, Vec<V>>,
     empty: Vec<V>,
 }
 impl<K: Eq + Hash, V> StMapVecL1<K, V> {
     pub(crate) fn new() -> Self {
         Self {
-            data: FxHashMap::default(),
+            data: StMap::new(),
             empty: Vec::new(),
         }
     }

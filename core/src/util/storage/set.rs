@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-use rustc_hash::FxHashSet;
+use rustc_hash::{FxBuildHasher, FxHashSet};
 
 #[derive(Clone)]
 pub struct StSet<V> {
@@ -10,6 +10,11 @@ impl<V: Eq + Hash> StSet<V> {
     pub fn new() -> Self {
         Self {
             data: FxHashSet::default(),
+        }
+    }
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self {
+            data: FxHashSet::with_capacity_and_hasher(capacity, FxBuildHasher),
         }
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &V> {

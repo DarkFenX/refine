@@ -149,13 +149,19 @@ impl SolVast {
         {
             return false;
         }
-        if options.implant_slot_index.enabled && !fit_data.validate_implant_slot_index_fast() {
+        if options.implant_slot_index.enabled
+            && !fit_data.validate_implant_slot_index_fast(&options.implant_slot_index.kfs)
+        {
             return false;
         }
-        if options.booster_slot_index.enabled && !fit_data.validate_booster_slot_index_fast() {
+        if options.booster_slot_index.enabled
+            && !fit_data.validate_booster_slot_index_fast(&options.booster_slot_index.kfs)
+        {
             return false;
         }
-        if options.subsystem_slot_index.enabled && !fit_data.validate_subsystem_slot_index_fast() {
+        if options.subsystem_slot_index.enabled
+            && !fit_data.validate_subsystem_slot_index_fast(&options.subsystem_slot_index.kfs)
+        {
             return false;
         }
         if options.ship_limit.enabled && !fit_data.validate_ship_limit_fast(ship) {
@@ -325,13 +331,14 @@ impl SolVast {
                 fit_data.validate_low_slot_count_verbose(uad, calc, fit, &options.low_slot_count.kfs);
         }
         if options.implant_slot_index.enabled {
-            result.implant_slot_index = fit_data.validate_implant_slot_index_verbose();
+            result.implant_slot_index = fit_data.validate_implant_slot_index_verbose(&options.implant_slot_index.kfs);
         }
         if options.booster_slot_index.enabled {
-            result.booster_slot_index = fit_data.validate_booster_slot_index_verbose();
+            result.booster_slot_index = fit_data.validate_booster_slot_index_verbose(&options.booster_slot_index.kfs);
         }
         if options.subsystem_slot_index.enabled {
-            result.subsystem_slot_index = fit_data.validate_subsystem_slot_index_verbose();
+            result.subsystem_slot_index =
+                fit_data.validate_subsystem_slot_index_verbose(&options.subsystem_slot_index.kfs);
         }
         if options.ship_limit.enabled {
             result.ship_limit = fit_data.validate_ship_limit_verbose(ship);

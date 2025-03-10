@@ -1,17 +1,17 @@
 use std::hash::Hash;
 
-use rustc_hash::{FxBuildHasher, FxHashMap, FxHashSet};
+use super::{StMap, StSet};
 
 #[derive(Clone)]
 pub(crate) struct StMapSetL1<K, V> {
-    data: FxHashMap<K, FxHashSet<V>>,
-    empty: FxHashSet<V>,
+    data: StMap<K, StSet<V>>,
+    empty: StSet<V>,
 }
 impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     pub(crate) fn new() -> Self {
         Self {
-            data: FxHashMap::default(),
-            empty: FxHashSet::default(),
+            data: StMap::new(),
+            empty: StSet::new(),
         }
     }
     pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> + use<'_, K, V> {
@@ -33,13 +33,13 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
     pub(crate) fn add_entry(&mut self, key: K, entry: V) {
         self.data
             .entry(key)
-            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(1, FxBuildHasher))
+            .or_insert_with(|| StSet::with_capacity(1))
             .insert(entry);
     }
     pub(crate) fn extend_entries(&mut self, key: K, entries: impl ExactSizeIterator<Item = V>) {
         self.data
             .entry(key)
-            .or_insert_with(|| FxHashSet::with_capacity_and_hasher(entries.len(), FxBuildHasher))
+            .or_insert_with(|| StSet::with_capacity(entries.len()))
             .extend(entries);
     }
     pub(crate) fn remove_entry(&mut self, key: &K, entry: &V) {

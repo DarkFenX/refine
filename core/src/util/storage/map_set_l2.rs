@@ -1,18 +1,16 @@
 use std::hash::Hash;
 
-use rustc_hash::FxHashMap;
-
-use super::StMapSetL1;
+use super::{StMap, StMapSetL1};
 
 #[derive(Clone)]
 pub(crate) struct StMapSetL2<A, B, V> {
-    data: FxHashMap<A, StMapSetL1<B, V>>,
+    data: StMap<A, StMapSetL1<B, V>>,
     empty: StMapSetL1<B, V>,
 }
 impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> StMapSetL2<A, B, V> {
     pub(crate) fn new() -> Self {
         Self {
-            data: FxHashMap::default(),
+            data: StMap::new(),
             empty: StMapSetL1::new(),
         }
     }
