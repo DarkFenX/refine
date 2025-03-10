@@ -2,6 +2,7 @@ use crate::{
     defs::{AttrVal, SolItemId},
     ec,
     sol::{svc::vast::SolVastFitData, uad::item::SolShip},
+    util::StSet,
 };
 
 pub struct SolValRigSizeFail {
@@ -16,13 +17,17 @@ pub struct SolValRigSizeItemInfo {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(&self, ship: Option<&SolShip>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_rig_size_fast(
+        &self,
+        kfs: &StSet<SolItemId>,
+        ship: Option<&SolShip>,
+    ) -> bool {
         let allowed_size = match get_allowed_size(ship) {
             Some(allowed_size) => allowed_size,
             None => return true,
         };
-        for &rig_size in self.rigs_rig_size.values() {
-            if rig_size != Some(allowed_size) {
+        for (item_id, &rig_size) in self.rigs_rig_size.iter() {
+            if rig_size != Some(allowed_size) && !kfs.contains(item_id) {
                 return false;
             }
         }
@@ -31,13 +36,17 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_size_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         ship: Option<&SolShip>,
     ) -> Option<SolValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;
         let mut mismatches = Vec::new();
-        for (&item_id, &rig_size) in self.rigs_rig_size.iter() {
-            if rig_size != Some(allowed_size) {
-                mismatches.push(SolValRigSizeItemInfo { item_id, rig_size })
+        for (item_id, &rig_size) in self.rigs_rig_size.iter() {
+            if rig_size != Some(allowed_size) && !kfs.contains(item_id) {
+                mismatches.push(SolValRigSizeItemInfo {
+                    item_id: *item_id,
+                    rig_size,
+                })
             }
         }
         match mismatches.is_empty() {

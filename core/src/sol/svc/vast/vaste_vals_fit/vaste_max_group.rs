@@ -123,12 +123,9 @@ fn validate_fast(
     attr_id: &EAttrId,
 ) -> bool {
     for (item_id, grp_id) in max_group_limited.iter() {
-        if kfs.contains(item_id) {
-            continue;
-        }
         let allowed = get_allowed(uad, calc, item_id, attr_id);
         let fitted = get_fitted(max_group_all, grp_id);
-        if fitted > allowed {
+        if fitted > allowed && !kfs.contains(item_id) {
             return false;
         }
     }
@@ -145,12 +142,9 @@ fn validate_verbose(
 ) -> Vec<SolValMaxGroupFail> {
     let mut items_by_grp = StMap::new();
     for (item_id, grp_id) in max_group_limited.iter() {
-        if kfs.contains(item_id) {
-            continue;
-        }
         let allowed = get_allowed(uad, calc, item_id, attr_id);
         let fitted = get_fitted(max_group_all, grp_id);
-        if fitted > allowed {
+        if fitted > allowed && !kfs.contains(item_id) {
             items_by_grp
                 .entry(*grp_id)
                 .or_insert_with(Vec::new)
