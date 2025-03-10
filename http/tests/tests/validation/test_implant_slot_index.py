@@ -51,6 +51,42 @@ def test_different_slots(client, consts):
     assert api_val.details.implant_slot_index == {1: sorted([api_implant1.id, api_implant3.id])}
 
 
+def test_known_failures(client, consts):
+    eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.implantness)
+    eve_implant1_id = client.mk_eve_item(attrs={eve_slot_attr_id: 1})
+    eve_implant2_id = client.mk_eve_item(attrs={eve_slot_attr_id: 2})
+    eve_other_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
+    api_implant1 = api_fit.add_implant(type_id=eve_implant1_id)
+    api_implant2 = api_fit.add_implant(type_id=eve_implant2_id)
+    api_implant3 = api_fit.add_implant(type_id=eve_implant1_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(implant_slot_index=(True, [api_implant1.id])))
+    assert api_val.passed is False
+    assert api_val.details.implant_slot_index == {1: [api_implant3.id]}
+    api_val = api_fit.validate(options=ValOptions(implant_slot_index=(True, [api_implant3.id])))
+    assert api_val.passed is False
+    assert api_val.details.implant_slot_index == {1: [api_implant1.id]}
+    api_val = api_fit.validate(options=ValOptions(implant_slot_index=(True, [api_implant1.id, api_implant3.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(
+        implant_slot_index=(True, [api_implant1.id, api_other.id, api_implant3.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_implant4 = api_fit.add_implant(type_id=eve_implant2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(implant_slot_index=(True, [api_implant1.id, api_implant3.id])))
+    assert api_val.passed is False
+    assert api_val.details.implant_slot_index == {2: sorted([api_implant2.id, api_implant4.id])}
+
+
 def test_rounding(client, consts):
     eve_slot_attr_id = client.mk_eve_attr(id_=consts.EveAttr.implantness)
     eve_implant1_id = client.mk_eve_item(attrs={eve_slot_attr_id: 1.2})
