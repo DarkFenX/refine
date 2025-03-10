@@ -153,6 +153,9 @@ def test_multiple_same_rounding(client, consts):
 
 
 def test_known_failures(client, consts):
+    # Since internally this validator uses cache, and test framework's validation method calls both
+    # simple validation and detailed validation under the hood, we have to do lots of extra steps
+    # to drop cache and check both "fast first / detailed cached" and "detailed first / fast cached"
     eve_grp1_id = client.mk_eve_item_group()
     eve_grp2_id = client.mk_eve_item_group()
     eve_grp3_id = client.mk_eve_item_group()
@@ -191,7 +194,7 @@ def test_known_failures(client, consts):
     api_module2.change_mod(charge=eve_charge3_id)
     api_module3.change_mod(charge=eve_charge3_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(charge_group=(True, [api_module3.charge.id])), flip_order=False)
+    api_val = api_fit.validate(options=ValOptions(charge_group=(True, [api_module3.charge.id])), flip_order=True)
     assert api_val.passed is False
     assert api_val.details.charge_group == {api_module2.charge.id: (api_module2.id, eve_grp3_id, [eve_grp1_id])}
     # Action
@@ -230,7 +233,7 @@ def test_known_failures(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(
         charge_group=(True, [api_module2.charge.id, api_other.id, api_module3.charge.id])),
-        flip_order=False)
+        flip_order=True)
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
