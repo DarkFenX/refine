@@ -2,6 +2,7 @@ use crate::{
     ad,
     defs::{EItemGrpId, EItemId, SolItemId},
     sol::{svc::vast::SolVastFitData, uad::item::SolShip},
+    util::StSet,
 };
 
 pub struct SolValShipLimitFail {
@@ -27,14 +28,26 @@ impl SolValShipLimitItemInfo {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(&self, ship: Option<&SolShip>) -> bool {
+    pub(in crate::sol::svc::vast) fn validate_ship_limit_fast(
+        &self,
+        kfs: &StSet<SolItemId>,
+        ship: Option<&SolShip>,
+    ) -> bool {
         let ship = match ship {
             Some(ship) => ship,
-            None => return self.ship_limited_mods_rigs_subs.is_empty(),
+            None => {
+                return match kfs.is_empty() {
+                    true => self.ship_limited_mods_rigs_subs.is_empty(),
+                    false => self.ship_limited_mods_rigs_subs.difference(kfs).nth(0).is_none(),
+                };
+            }
         };
         let ship_type_id = ship.get_type_id();
         let ship_group_id = ship.get_group_id();
-        for ship_limit in self.ship_limited_mods_rigs_subs.values() {
+        for (limited_item_id, ship_limit) in self.ship_limited_mods_rigs_subs.iter() {
+            if kfs.contains(limited_item_id) {
+                continue;
+            }
             if ship_limit.type_ids.contains(&ship_type_id) {
                 continue;
             }
@@ -50,6 +63,7 @@ impl SolVastFitData {
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_ship_limit_verbose(
         &self,
+        kfs: &StSet<SolItemId>,
         ship: Option<&SolShip>,
     ) -> Option<SolValShipLimitFail> {
         if self.ship_limited_mods_rigs_subs.is_empty() {
@@ -61,6 +75,9 @@ impl SolVastFitData {
         };
         let mut mismatches = Vec::new();
         for (limited_item_id, ship_limit) in self.ship_limited_mods_rigs_subs.iter() {
+            if kfs.contains(limited_item_id) {
+                continue;
+            }
             if let Some(ship_type_id) = ship_type_id {
                 if ship_limit.type_ids.contains(&ship_type_id) {
                     continue;

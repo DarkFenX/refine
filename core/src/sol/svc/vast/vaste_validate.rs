@@ -164,7 +164,7 @@ impl SolVast {
         {
             return false;
         }
-        if options.ship_limit.enabled && !fit_data.validate_ship_limit_fast(ship) {
+        if options.ship_limit.enabled && !fit_data.validate_ship_limit_fast(&options.ship_limit.kfs, ship) {
             return false;
         }
         if options.max_group_fitted.enabled && !fit_data.validate_max_group_fitted_fast(uad, calc) {
@@ -341,7 +341,7 @@ impl SolVast {
                 fit_data.validate_subsystem_slot_index_verbose(&options.subsystem_slot_index.kfs);
         }
         if options.ship_limit.enabled {
-            result.ship_limit = fit_data.validate_ship_limit_verbose(ship);
+            result.ship_limit = fit_data.validate_ship_limit_verbose(&options.ship_limit.kfs, ship);
         }
         if options.max_group_fitted.enabled {
             result.max_group_fitted = fit_data.validate_max_group_fitted_verbose(uad, calc);
