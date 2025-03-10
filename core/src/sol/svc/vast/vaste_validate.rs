@@ -206,7 +206,7 @@ impl SolVast {
         if options.module_state.enabled && !fit_data.validate_module_state_fast(&options.module_state.kfs) {
             return false;
         }
-        if options.item_kind.enabled && !fit_data.validate_item_kind_fast() {
+        if options.item_kind.enabled && !fit_data.validate_item_kind_fast(&options.item_kind.kfs) {
             return false;
         }
         if options.drone_group.enabled && !fit_data.validate_drone_group_fast() {
@@ -386,7 +386,7 @@ impl SolVast {
             result.module_state = fit_data.validate_module_state_verbose(&options.module_state.kfs);
         }
         if options.item_kind.enabled {
-            result.item_kind = fit_data.validate_item_kind_verbose();
+            result.item_kind = fit_data.validate_item_kind_verbose(&options.item_kind.kfs);
         }
         if options.drone_group.enabled {
             result.drone_group = fit_data.validate_drone_group_verbose();
