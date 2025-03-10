@@ -173,6 +173,29 @@ def test_skill_level_change(client):
         api_module2.id: {eve_skill1_id: (1, 3), eve_skill2_id: (None, 5)}}
 
 
+def test_known_failures(client):
+    eve_skill_id = client.mk_eve_item()
+    eve_module_id = client.mk_eve_item(srqs={eve_skill_id: 3})
+    eve_other_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
+    api_module1 = api_fit.add_mod(type_id=eve_module_id)
+    api_module2 = api_fit.add_mod(type_id=eve_module_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=(True, [api_module1.id])))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {api_module2.id: {eve_skill_id: (None, 3)}}
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=(True, [api_module2.id])))
+    assert api_val.passed is False
+    assert api_val.details.skill_reqs == {api_module1.id: {eve_skill_id: (None, 3)}}
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=(True, [api_module1.id, api_module2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_mutation(client):
     # Actual use-case, mutated drones switch spec skill
     eve_skill1_id = client.mk_eve_item()

@@ -185,7 +185,7 @@ impl SolVast {
         if options.rig_size.enabled && !fit_data.validate_rig_size_fast(&options.rig_size.kfs, ship) {
             return false;
         }
-        if options.skill_reqs.enabled && !fit_data.validate_skill_reqs_fast() {
+        if options.skill_reqs.enabled && !fit_data.validate_skill_reqs_fast(&options.skill_reqs.kfs) {
             return false;
         }
         if options.charge_group.enabled && !fit_data.validate_charge_group_fast(uad) {
@@ -365,7 +365,7 @@ impl SolVast {
             result.rig_size = fit_data.validate_rig_size_verbose(&options.rig_size.kfs, ship);
         }
         if options.skill_reqs.enabled {
-            result.skill_reqs = fit_data.validate_skill_reqs_verbose();
+            result.skill_reqs = fit_data.validate_skill_reqs_verbose(&options.skill_reqs.kfs);
         }
         if options.charge_group.enabled {
             result.charge_group = fit_data.validate_charge_group_verbose(uad);
