@@ -12,15 +12,15 @@ axum = { version = ">=0.8.2", features = ["query"] }
 chrono = ">=0.4.40"
 config = { version = ">=0.15.9", features = ["toml"] }
 itertools = ">=0.14.0"
-serde = { version = ">=1.0.218", features = ["derive"] }
+serde = { version = ">=1.0.219", features = ["derive"] }
 serde_tuple = ">=1.1.0"
 serde_with = ">=3.12.0"
-tokio = { version = ">=1.43.0", features = ["full"] }
+tokio = { version = ">=1.44.0", features = ["full"] }
 tokio-rayon = ">=2.1.0"
 tower = ">=0.5.2"
 tower-http = { version = ">=0.6.2", features = ["normalize-path", "trace"] }
 tower-request-id = ">=0.3.0"
-time = { version = ">=0.3.37", features = ["macros"] }
+time = { version = ">=0.3.39", features = ["macros"] }
 tracing = ">=0.1.41"
 tracing-subscriber = { version = ">=0.3.19", features = ["time"] }
 tracing-appender = ">=0.2.3"
