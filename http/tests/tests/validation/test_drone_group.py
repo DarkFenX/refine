@@ -37,7 +37,7 @@ def test_drone_add_remove(client, consts):
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
-    assert api_val.details.drone_group == ([eve_group1_id, eve_group2_id], {api_drone.id: eve_group3_id})
+    assert api_val.details.drone_group == (sorted([eve_group1_id, eve_group2_id]), {api_drone.id: eve_group3_id})
     # Action
     api_drone.remove()
     # Verification
@@ -174,6 +174,43 @@ def test_rounding(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group1_id], {api_drone2.id: eve_group2_id})
+
+
+def test_known_failures(client, consts):
+    eve_group1_id = client.mk_eve_item_group()
+    eve_group2_id = client.mk_eve_item_group()
+    eve_group3_id = client.mk_eve_item_group()
+    eve_limit_attr_id = client.mk_eve_attr(
+        id_=consts.EveAttr.allowed_drone_group1,
+        unit_id=consts.EveAttrUnit.group_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_limit_attr_id: eve_group1_id})
+    eve_drone1_id = client.mk_eve_item(grp_id=eve_group1_id)
+    eve_drone2_id = client.mk_eve_item(grp_id=eve_group2_id)
+    eve_drone3_id = client.mk_eve_item(grp_id=eve_group3_id)
+    eve_other_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_bay)
+    api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
+    api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(drone_group=(True, [api_drone2.id])))
+    assert api_val.passed is False
+    assert api_val.details.drone_group == ([eve_group1_id], {api_drone3.id: eve_group3_id})
+    api_val = api_fit.validate(options=ValOptions(drone_group=(True, [api_drone3.id])))
+    assert api_val.passed is False
+    assert api_val.details.drone_group == ([eve_group1_id], {api_drone2.id: eve_group2_id})
+    api_val = api_fit.validate(options=ValOptions(drone_group=(True, [api_drone2.id, api_drone3.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(drone_group=(True, [api_drone2.id, api_other.id, api_drone3.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_no_attr(client, consts):
