@@ -231,6 +231,35 @@ def test_fw_effect(client):
     assert api_val.details.not_loaded_item == [api_not_loaded.id]
 
 
+def test_known_failures(client):
+    eve_loaded_id = client.mk_eve_item()
+    eve_not_loaded_id = client.alloc_item_id()
+    eve_other_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
+    api_fit.add_mod(type_id=eve_loaded_id)
+    api_not_loaded1 = api_fit.add_mod(type_id=eve_not_loaded_id)
+    api_not_loaded2 = api_fit.add_mod(type_id=eve_not_loaded_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(not_loaded_item=(True, [api_not_loaded1.id])))
+    assert api_val.passed is False
+    assert api_val.details.not_loaded_item == [api_not_loaded2.id]
+    api_val = api_fit.validate(options=ValOptions(not_loaded_item=(True, [api_not_loaded2.id])))
+    assert api_val.passed is False
+    assert api_val.details.not_loaded_item == [api_not_loaded1.id]
+    api_val = api_fit.validate(options=ValOptions(not_loaded_item=(True, [api_not_loaded1.id, api_not_loaded2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(
+        not_loaded_item=(True, [api_not_loaded1.id, api_other.id, api_not_loaded2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_state(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
