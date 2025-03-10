@@ -212,7 +212,7 @@ impl SolVast {
         if options.drone_group.enabled && !fit_data.validate_drone_group_fast() {
             return false;
         }
-        if options.fighter_count.enabled && !fit_data.validate_fighter_count_fast() {
+        if options.fighter_count.enabled && !fit_data.validate_fighter_count_fast(&options.fighter_count.kfs) {
             return false;
         }
         true
@@ -392,7 +392,7 @@ impl SolVast {
             result.drone_group = fit_data.validate_drone_group_verbose();
         }
         if options.fighter_count.enabled {
-            result.fighter_count = fit_data.validate_fighter_count_verbose();
+            result.fighter_count = fit_data.validate_fighter_count_verbose(&options.fighter_count.kfs);
         }
         result
     }
