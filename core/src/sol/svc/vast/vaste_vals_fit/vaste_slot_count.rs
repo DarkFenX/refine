@@ -187,7 +187,7 @@ impl SolVastFitData {
         kfs: &StSet<SolItemId>,
     ) -> bool {
         let stats = self.get_stats_high_slots(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_ordered(kfs, stats, &fit.mods_high)
     }
     pub(in crate::sol::svc::vast) fn validate_mid_slot_count_fast(
         &self,
@@ -197,7 +197,7 @@ impl SolVastFitData {
         kfs: &StSet<SolItemId>,
     ) -> bool {
         let stats = self.get_stats_mid_slots(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_ordered(kfs, stats, &fit.mods_mid)
     }
     pub(in crate::sol::svc::vast) fn validate_low_slot_count_fast(
         &self,
@@ -207,7 +207,7 @@ impl SolVastFitData {
         kfs: &StSet<SolItemId>,
     ) -> bool {
         let stats = self.get_stats_low_slots(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_ordered(kfs, stats, &fit.mods_low)
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_slot_count_verbose(
@@ -365,25 +365,20 @@ impl SolVastFitData {
 fn validate_fast(stats: SolStatSlot) -> bool {
     stats.used <= stats.total.unwrap_or(0)
 }
-fn validate_verbose_ordered<'a>(
-    kfs: &StSet<SolItemId>,
-    stats: SolStatSlot,
-    users: &SolItemVec,
-) -> Option<SolValSlotCountFail> {
-    let total = stats.total.unwrap_or(0);
-    if stats.used <= total {
-        return None;
+fn validate_fast_ordered(kfs: &StSet<SolItemId>, stats: SolStatSlot, users: &SolItemVec) -> bool {
+    match kfs.is_empty() {
+        true => validate_fast(stats),
+        false => {
+            if stats.used <= stats.total.unwrap_or(0) {
+                return true;
+            }
+            users
+                .iter_ids_from(stats.total.unwrap_or(0) as Idx)
+                .all(|v| kfs.contains(v))
+        }
     }
-    let users = match total >= users.len() as Count {
-        true => Vec::new(),
-        false => users.inner()[total as Idx..].iter().filter_map(|v| *v).collect(),
-    };
-    Some(SolValSlotCountFail {
-        used: stats.used,
-        total: stats.total,
-        users,
-    })
 }
+
 fn validate_verbose_unordered_set<'a>(
     kfs: &StSet<SolItemId>,
     stats: SolStatSlot,
@@ -411,6 +406,29 @@ fn validate_verbose_unordered_map<'a, T>(
         return None;
     }
     let users = users.difference(kfs).copied().collect_vec();
+    if users.is_empty() {
+        return None;
+    }
+    Some(SolValSlotCountFail {
+        used: stats.used,
+        total: stats.total,
+        users,
+    })
+}
+fn validate_verbose_ordered<'a>(
+    kfs: &StSet<SolItemId>,
+    stats: SolStatSlot,
+    users: &SolItemVec,
+) -> Option<SolValSlotCountFail> {
+    let total = stats.total.unwrap_or(0);
+    if stats.used <= total {
+        return None;
+    }
+    let users = users
+        .iter_ids_from(total as Idx)
+        .filter(|v| !kfs.contains(v))
+        .copied()
+        .collect_vec();
     if users.is_empty() {
         return None;
     }

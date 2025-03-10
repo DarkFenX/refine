@@ -268,7 +268,7 @@ class Fit(AttrDict):
             state: ApiModuleState = ApiModuleState.offline,
             mutation: MutaAdd | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
-            mode: ApiModAddMode | type[Absent] = ApiModAddMode.equip,
+            mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
             text_predicate: str | None = None,

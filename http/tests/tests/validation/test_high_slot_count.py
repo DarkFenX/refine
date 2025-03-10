@@ -116,6 +116,104 @@ def test_equal(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_known_failures(client, consts):
+    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hi_slots)
+    eve_module_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_total_attr_id: 3})
+    eve_other_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_other = api_fit.add_implant(type_id=eve_other_id)
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_module1 = api_fit.add_mod(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.offline,
+        mode={consts.ApiModAddMode.replace: 0})
+    # Verification - check case with KF specified, but used <= total being true
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=(True, [api_module1.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module2 = api_fit.add_mod(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.offline,
+        mode={consts.ApiModAddMode.replace: 2})
+    # Verification - check case with KF specified, but used <= total being true
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=(True, [api_module2.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module3 = api_fit.add_mod(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.offline,
+        mode={consts.ApiModAddMode.replace: 6})
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=(True, [api_module2.id])))
+    assert api_val.passed is False
+    assert api_val.details.high_slot_count.used == 7
+    assert api_val.details.high_slot_count.total == 3
+    assert api_val.details.high_slot_count.users == [api_module3.id]
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=(True, [api_module3.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module4 = api_fit.add_mod(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.offline,
+        mode={consts.ApiModAddMode.replace: 4})
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=(True, [api_module3.id])))
+    assert api_val.passed is False
+    assert api_val.details.high_slot_count.used == 7
+    assert api_val.details.high_slot_count.total == 3
+    assert api_val.details.high_slot_count.users == [api_module4.id]
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=(True, [api_module4.id])))
+    assert api_val.passed is False
+    assert api_val.details.high_slot_count.used == 7
+    assert api_val.details.high_slot_count.total == 3
+    assert api_val.details.high_slot_count.users == [api_module3.id]
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=(True, [api_module3.id, api_module4.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    api_val = api_fit.validate(options=ValOptions(
+        high_slot_count=(True, [api_module3.id, api_other.id, api_module4.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_fit.add_mod(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.offline,
+        mode={consts.ApiModAddMode.replace: 1})
+    # Verification - module has been added within slot limit, so it does not trigger anything
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=(True, [api_module3.id, api_module4.id])))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_module6 = api_fit.add_mod(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        state=consts.ApiModuleState.offline,
+        mode={consts.ApiModAddMode.replace: 3})
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(high_slot_count=(True, [api_module3.id, api_module4.id])))
+    assert api_val.passed is False
+    assert api_val.details.high_slot_count.used == 7
+    assert api_val.details.high_slot_count.total == 3
+    assert api_val.details.high_slot_count.users == [api_module6.id]
+
+
 def test_modified_total(client, consts):
     # Unrealistic scenario, but modification of total count is supported
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hi_slots)

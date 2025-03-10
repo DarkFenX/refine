@@ -18,7 +18,10 @@ impl SolItemVec {
     pub(in crate::sol) fn iter_ids(&self) -> impl Iterator<Item = &SolItemId> {
         self.data.iter().filter_map(|v| v.as_ref())
     }
-
+    pub(in crate::sol) fn iter_ids_from(&self, start: Idx) -> impl Iterator<Item = &SolItemId> {
+        let start = Idx::min(start, self.data.len());
+        self.data[start..].iter().filter_map(|v| v.as_ref())
+    }
     pub(in crate::sol) fn get(&self, index: Idx) -> Option<SolItemId> {
         if index >= self.data.len() {
             return None;

@@ -302,7 +302,7 @@ class ApiClientItem(ApiClientBase):
             state: ApiModuleState,
             mutation: int | tuple[int, dict[int, dict[str, float]]] | type[Absent],
             charge_type_id: int | type[Absent],
-            mode: ApiModAddMode | type[Absent],
+            mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         body = {
