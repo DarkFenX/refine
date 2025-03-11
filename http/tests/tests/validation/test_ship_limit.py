@@ -329,8 +329,7 @@ def test_known_failures(client, consts):
     api_other = api_fit.add_implant(type_id=eve_other_id)
     api_module1 = api_fit.add_mod(type_id=eve_module_id)
     api_module2 = api_fit.add_mod(type_id=eve_module_id)
-    # Verification - no ship case has to be checked as well, since there is no-ship logic in fast
-    # validator
+    # Verification - no ship case has to be checked as well, since there is no-ship logic
     api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id is None
@@ -590,6 +589,12 @@ def test_no_ship(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
     api_module = api_fit.add_mod(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
@@ -605,20 +610,32 @@ def test_not_loaded_ship(client, consts):
     eve_group_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_group1, unit_id=consts.EveAttrUnit.group_id)
     eve_ship1_id = client.alloc_item_id()
     eve_ship2_id = client.alloc_item_id()
-    eve_module1_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship1_id, eve_group_attr_id: eve_ship_grp_id})
-    eve_module2_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship2_id, eve_group_attr_id: eve_ship_grp_id})
+    eve_module1_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship1_id})
+    eve_module2_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship2_id})
+    eve_module3_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship1_id, eve_group_attr_id: eve_ship_grp_id})
+    eve_module4_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_ship2_id, eve_group_attr_id: eve_ship_grp_id})
+    eve_module5_id = client.mk_eve_item(attrs={eve_group_attr_id: eve_ship_grp_id})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship2_id)
     api_module1 = api_fit.add_mod(type_id=eve_module1_id)
     api_fit.add_mod(type_id=eve_module2_id)
-    # Verification
+    api_fit.add_mod(type_id=eve_module3_id)
+    api_fit.add_mod(type_id=eve_module4_id)
+    api_fit.add_mod(type_id=eve_module5_id)
+    # Verification - when ship is not loaded, we fail validation only we 100% know it will fail with
+    # the info we have.
+    # - Mod1 fails because item type is mismatched
+    # - Mod2 passes because item type is matched
+    # - Mod3 passes because group could be matched if ship was loaded, even if type is mismatched
+    # - Mod4 passes because item type is matched / group could be matched if ship was loaded
+    # - Mod5 passes because group could be matched if ship was loaded
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
     assert api_val.details.ship_limit.ship_group_id is None
-    assert api_val.details.ship_limit.items == {api_module1.id: ([eve_ship1_id], [eve_ship_grp_id])}
+    assert api_val.details.ship_limit.items == {api_module1.id: ([eve_ship1_id], [])}
     # Action
     api_module1.remove()
     # Verification
