@@ -1,11 +1,8 @@
 use std::collections::hash_map::Entry;
 
-use crate::{
-    ec,
-    sol::{
-        svc::vast::{SolVast, SolVastSkillReq},
-        uad::{SolUad, item::SolItem},
-    },
+use crate::sol::{
+    svc::vast::{SolVast, SolVastSkillReq},
+    uad::{SolUad, item::SolItem},
 };
 
 impl SolVast {
@@ -17,14 +14,6 @@ impl SolVast {
             }
         }
         match item {
-            SolItem::Rig(rig) => {
-                let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
-                let rig_size = match rig.get_attrs() {
-                    Some(attrs) => attrs.get(&ec::attrs::RIG_SIZE).copied(),
-                    None => None,
-                };
-                fit_data.rigs_rig_size.insert(item.get_id(), rig_size);
-            }
             SolItem::Skill(skill) => {
                 // Go through all items which need this skill and update their missing skills
                 let fit_data = self.get_fit_data_mut(&skill.get_fit_id()).unwrap();
@@ -51,10 +40,6 @@ impl SolVast {
             }
         }
         match item {
-            SolItem::Rig(rig) => {
-                let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
-                fit_data.rigs_rig_size.remove(&rig.get_id());
-            }
             SolItem::Skill(skill) => {
                 // Go through all items which need this skill and update their missing skills
                 let fit_data = self.get_fit_data_mut(&skill.get_fit_id()).unwrap();

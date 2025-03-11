@@ -174,6 +174,8 @@ impl SolVast {
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Rig);
+                let rig_size = rig.get_attrs().unwrap().get(&ec::attrs::RIG_SIZE).copied();
+                fit_data.rigs_rig_size.insert(item.get_id(), rig_size);
                 if let Some(ship_limit) = &extras.ship_limit {
                     fit_data.ship_limited_mods_rigs_subs.insert(item_id, ship_limit.clone());
                 }
@@ -325,6 +327,7 @@ impl SolVast {
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Rig);
+                fit_data.rigs_rig_size.remove(&rig.get_id());
                 if extras.ship_limit.is_some() {
                     fit_data.ship_limited_mods_rigs_subs.remove(&item_id);
                 }

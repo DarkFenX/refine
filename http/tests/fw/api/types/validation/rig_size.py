@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class ValRigSizeFail:
 
     allowed_size: float
-    rig_sizes: dict[str, float]
+    rig_sizes: dict[str, float | None]
 
     def __init__(self, *, data: tuple) -> None:
         self.allowed_size = data[0]
