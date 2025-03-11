@@ -428,11 +428,12 @@ def test_not_loaded_charge(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_size=True))
-    assert api_val.passed is False
-    assert api_val.details.charge_size == {api_module.charge.id: (api_module.id, None, 2)}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_no_attr(client, consts):

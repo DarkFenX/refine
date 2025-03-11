@@ -89,14 +89,8 @@ fn calculate_item_result(
     };
     let charge_attrs = match uad.items.get_item(&charge_item_id).unwrap().get_attrs() {
         Some(charge_attrs) => charge_attrs,
-        None => {
-            return SolValCache::Fail(SolValChargeSizeFail {
-                parent_item_id: *module_item_id,
-                charge_item_id,
-                charge_size: None,
-                allowed_size,
-            });
-        }
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        None => return SolValCache::Pass(allowed_size),
     };
     let charge_size = match charge_attrs.get(&ec::attrs::CHARGE_SIZE) {
         Some(charge_size) => *charge_size,
