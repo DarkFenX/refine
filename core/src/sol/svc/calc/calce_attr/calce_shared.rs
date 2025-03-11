@@ -19,10 +19,10 @@ impl SolCalc {
             SolContext::Item(projectee_item_id) => projectee_item_id,
             _ => return None,
         };
-        let resist = match self.get_item_attr_val_full(uad, &projectee_item_id, &resist_attr_id) {
-            Ok(val) => val.dogma,
-            _ => return None,
-        };
+        let resist = self
+            .get_item_attr_val_full(uad, &projectee_item_id, &resist_attr_id)
+            .ok()?
+            .dogma;
         Some(resist)
     }
     pub(super) fn calc_proj_mult(&mut self, uad: &SolUad, modifier: &SolCtxModifier) -> Option<AttrVal> {

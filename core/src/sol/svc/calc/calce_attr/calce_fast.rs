@@ -5,7 +5,7 @@ use itertools::Itertools;
 use crate::{
     defs::{AttrVal, EAttrId, SolItemId},
     ec,
-    err::basic::AttrMetaFoundError,
+    err::basic::{AttrMetaFoundError, ItemLoadedError},
     sol::{
         svc::calc::{
             AttrCalcError, LoadedItemFoundError, SolAttrVal, SolCalc, SolModAccumFast, SolModification,
@@ -48,7 +48,17 @@ impl SolCalc {
         attr_id: &EAttrId,
     ) -> Result<SolAttrVal, AttrCalcError> {
         // Try accessing cached value
-        let item_attr_data = self.attrs.get_item_attr_data(item_id)?;
+        let item_attr_data = match self.attrs.get_item_attr_data(item_id) {
+            Some(item_attr_data) => item_attr_data,
+            // There can be no data due to one of two reasons: no item, or item is not loaded.
+            // Figure which one is it
+            None => {
+                return Err(match uad.items.get_item(item_id) {
+                    Ok(_) => ItemLoadedError::new(*item_id).into(),
+                    Err(error) => error.into(),
+                });
+            }
+        };
         if let Some(val) = item_attr_data.values.get(attr_id) {
             return Ok(match item_attr_data.postprocs.get(attr_id) {
                 Some(postprocs) => {
@@ -74,7 +84,18 @@ impl SolCalc {
         item_id: &SolItemId,
         attr_id: &EAttrId,
     ) -> Result<SolAttrVal, AttrCalcError> {
-        if let Some(val) = self.attrs.get_item_attr_data(item_id)?.values.get(attr_id) {
+        let item_attr_data = match self.attrs.get_item_attr_data(item_id) {
+            Some(item_attr_data) => item_attr_data,
+            // There can be no data due to one of two reasons: no item, or item is not loaded.
+            // Figure which one is it
+            None => {
+                return Err(match uad.items.get_item(item_id) {
+                    Ok(_) => ItemLoadedError::new(*item_id).into(),
+                    Err(error) => error.into(),
+                });
+            }
+        };
+        if let Some(val) = item_attr_data.values.get(attr_id) {
             return Ok(*val);
         };
         let val = self.calc_item_attr_val(uad, item_id, attr_id)?;
@@ -95,7 +116,10 @@ impl SolCalc {
         // when something requested an attr value, and it was calculated using base attribute value.
         // Here, we get already calculated attributes, which includes attributes absent on the EVE
         // item
-        let item_attr_data = self.attrs.get_item_attr_data(item_id)?;
+        let item_attr_data = match self.attrs.get_item_attr_data(item_id) {
+            Some(item_attr_data) => item_attr_data,
+            None => return Err(ItemLoadedError::new(*item_id).into()),
+        };
         let pp_attr_ids = item_attr_data.postprocs.keys().copied().collect_vec();
         let mut vals = item_attr_data.values.clone();
         // Calculate & store attributes which are not calculated yet, but are defined on the EVE
