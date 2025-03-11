@@ -373,6 +373,22 @@ def test_mutation(client, consts):
         api_module.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
 
 
+def test_not_loaded(client, consts):
+    eve_module_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.offline)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(module_state=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_criterion_item_kind(client, consts):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
