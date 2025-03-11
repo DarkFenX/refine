@@ -13,7 +13,6 @@ pub struct SolValCapitalModFail {
     pub items: Vec<SolValCapitalModItemInfo>,
 }
 
-#[derive(Copy, Clone)]
 pub struct SolValCapitalModItemInfo {
     pub item_id: SolItemId,
     pub volume: AttrVal,
@@ -45,9 +44,12 @@ impl SolVastFitData {
         }
         let items = self
             .mods_capital
-            .values()
-            .filter(|v| !kfs.contains(&v.item_id))
-            .copied()
+            .iter()
+            .filter(|(k, _)| !kfs.contains(k))
+            .map(|(k, v)| SolValCapitalModItemInfo {
+                item_id: *k,
+                volume: *v,
+            })
             .collect_vec();
         if items.is_empty() {
             return None;

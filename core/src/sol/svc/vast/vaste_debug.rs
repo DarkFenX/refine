@@ -140,9 +140,8 @@ impl SolVastFitData {
                 check_item(uad, &item_fail.charge_item_id, true)?;
             }
         }
-        for (item_id, item_data) in self.mods_capital.iter() {
+        for item_id in self.mods_capital.keys() {
             check_item(uad, item_id, true)?;
-            check_item(uad, &item_data.item_id, true)?;
         }
         for item_id in self.not_loaded.iter() {
             check_item(uad, item_id, false)?;
@@ -155,9 +154,8 @@ impl SolVastFitData {
             check_item(uad, item_id, true)?;
             check_item(uad, &item_data.item_id, true)?;
         }
-        for (item_id, item_data) in self.drone_group_mismatches.iter() {
+        for item_id in self.drone_groups.keys() {
             check_item(uad, item_id, true)?;
-            check_item(uad, &item_data.item_id, true)?;
         }
         for (item_id, item_data) in self.fighter_count.iter() {
             check_item(uad, item_id, true)?;

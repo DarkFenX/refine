@@ -7,8 +7,7 @@ use crate::{
     sol::{
         SolModRack,
         svc::vast::{
-            SolValCache, SolValCapitalModItemInfo, SolValDroneGroupItemInfo, SolValFighterCountFail,
-            SolValItemKindFail, SolVast, SolVastFitData, SolVastSkillReq,
+            SolValCache, SolValFighterCountFail, SolValItemKindFail, SolVast, SolVastFitData, SolVastSkillReq,
         },
         uad::{
             SolUad,
@@ -90,13 +89,7 @@ impl SolVast {
                 if !fit_data.drone_group_limit.is_empty() {
                     let drone_group_id = drone.get_group_id().unwrap();
                     if !fit_data.drone_group_limit.contains(&drone_group_id) {
-                        fit_data.drone_group_mismatches.insert(
-                            item_id,
-                            SolValDroneGroupItemInfo {
-                                item_id,
-                                group_id: drone_group_id,
-                            },
-                        );
+                        fit_data.drone_groups.insert(item_id, drone_group_id);
                     }
                 }
             }
@@ -162,13 +155,7 @@ impl SolVast {
                 handle_charge_volume_for_module(fit_data, item_id);
                 if let Some(ad::AShipKind::CapitalShip) = extras.item_ship_kind {
                     // Unwrap, since item ship kind is set to capital only when volume is available
-                    fit_data.mods_capital.insert(
-                        item_id,
-                        SolValCapitalModItemInfo {
-                            item_id,
-                            volume: extras.volume.unwrap(),
-                        },
-                    );
+                    fit_data.mods_capital.insert(item_id, extras.volume.unwrap());
                 }
             }
             SolItem::Rig(rig) => {
@@ -197,13 +184,7 @@ impl SolVast {
                         let drone_item = uad.items.get_item(drone_item_id).unwrap();
                         if let Some(drone_group_id) = drone_item.get_group_id() {
                             if !drone_limit.group_ids.contains(&drone_group_id) {
-                                fit_data.drone_group_mismatches.insert(
-                                    *drone_item_id,
-                                    SolValDroneGroupItemInfo {
-                                        item_id: *drone_item_id,
-                                        group_id: drone_group_id,
-                                    },
-                                );
+                                fit_data.drone_groups.insert(*drone_item_id, drone_group_id);
                             }
                         }
                     }
@@ -284,7 +265,7 @@ impl SolVast {
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Drone);
                 fit_data.drones_volume.remove(&item_id);
                 if !fit_data.drone_group_limit.is_empty() {
-                    fit_data.drone_group_mismatches.remove(&item_id);
+                    fit_data.drone_groups.remove(&item_id);
                 }
             }
             SolItem::Fighter(fighter) => {
@@ -342,7 +323,7 @@ impl SolVast {
                 // If any drone group limits were defined, clear the mismatch data
                 if !fit_data.drone_group_limit.is_empty() {
                     fit_data.drone_group_limit.clear();
-                    fit_data.drone_group_mismatches.clear();
+                    fit_data.drone_groups.clear();
                 }
             }
             SolItem::Skill(skill) => {

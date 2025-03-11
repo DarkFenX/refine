@@ -11,7 +11,6 @@ pub struct SolValDroneGroupFail {
     pub items: Vec<SolValDroneGroupItemInfo>,
 }
 
-#[derive(Copy, Clone)]
 pub struct SolValDroneGroupItemInfo {
     pub item_id: SolItemId,
     pub group_id: EItemGrpId,
@@ -21,8 +20,8 @@ impl SolVastFitData {
     // Fast validations
     pub(in crate::sol::svc::vast) fn validate_drone_group_fast(&mut self, kfs: &StSet<SolItemId>) -> bool {
         match kfs.is_empty() {
-            true => self.drone_group_mismatches.is_empty(),
-            false => self.drone_group_mismatches.difference(kfs).nth(0).is_none(),
+            true => self.drone_groups.is_empty(),
+            false => self.drone_groups.difference(kfs).nth(0).is_none(),
         }
     }
     // Verbose validations
@@ -30,14 +29,17 @@ impl SolVastFitData {
         &mut self,
         kfs: &StSet<SolItemId>,
     ) -> Option<SolValDroneGroupFail> {
-        if self.drone_group_mismatches.is_empty() {
+        if self.drone_groups.is_empty() {
             return None;
         }
         let items = self
-            .drone_group_mismatches
-            .values()
-            .filter(|v| !kfs.contains(&v.item_id))
-            .copied()
+            .drone_groups
+            .iter()
+            .filter(|(k, _)| !kfs.contains(k))
+            .map(|(k, v)| SolValDroneGroupItemInfo {
+                item_id: *k,
+                group_id: *v,
+            })
             .collect_vec();
         if items.is_empty() {
             return None;
