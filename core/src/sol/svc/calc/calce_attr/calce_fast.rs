@@ -181,15 +181,15 @@ impl SolCalc {
         uad: &SolUad,
         item_id: &SolItemId,
         attr_id: &EAttrId,
-    ) -> Result<SolAttrVal, AttrCalcError> {
-        let item = uad.items.get_item(item_id)?;
+    ) -> Result<SolAttrVal, AttrMetaFoundError> {
+        let item = uad.items.get_item(item_id).unwrap();
         let attr = match uad.src.get_a_attr(attr_id) {
             Some(attr) => attr,
-            None => return Err(AttrMetaFoundError::new(*attr_id).into()),
+            None => return Err(AttrMetaFoundError::new(*attr_id)),
         };
         // Get base value; use on-item original attributes, or, if not specified, default attribute value.
         // If both can't be fetched, consider it a failure
-        let base_val = match item.get_attrs_err()?.get(attr_id) {
+        let base_val = match item.get_attrs_err().unwrap().get(attr_id) {
             Some(orig_val) => *orig_val,
             None => attr.def_val,
         };
