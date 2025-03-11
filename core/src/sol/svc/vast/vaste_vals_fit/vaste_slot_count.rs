@@ -1,10 +1,11 @@
 use itertools::Itertools;
 
 use crate::{
-    defs::{Count, Idx, SolItemId},
+    defs::{Count, EAttrId, Idx, SolItemId},
+    ec,
     sol::{
         svc::{
-            calc::SolCalc,
+            calc::{AttrCalcError, SolCalc},
             vast::{SolStatSlot, SolVastFitData},
         },
         uad::{
@@ -12,7 +13,7 @@ use crate::{
             fit::{SolFit, SolItemVec},
         },
     },
-    util::{StMap, StSet},
+    util::{StMap, StSet, TriOption},
 };
 
 pub struct SolValSlotCountFail {
@@ -30,11 +31,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if fit.rigs.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_rig_slots(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_count_fast(
         &self,
@@ -43,11 +40,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if fit.subsystems.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_subsystem_slots(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::MAX_SUBSYSTEMS, &fit.subsystems)
     }
     pub(in crate::sol::svc::vast) fn validate_launched_drone_count_fast(
         &self,
@@ -56,11 +49,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.drones_online_bandwidth.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_launched_drones(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_map(
+            kfs,
+            uad,
+            calc,
+            &fit.character,
+            &ec::attrs::MAX_ACTIVE_DRONES,
+            &self.drones_online_bandwidth,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_fighter_count_fast(
         &self,
@@ -69,11 +65,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.fighters_online.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_launched_fighters(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::FTR_TUBES, &self.fighters_online)
     }
     pub(in crate::sol::svc::vast) fn validate_launched_support_fighter_count_fast(
         &self,
@@ -82,11 +74,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.support_fighters_online.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_launched_support_fighters(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_SUPPORT_SLOTS,
+            &self.support_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_light_fighter_count_fast(
         &self,
@@ -95,11 +90,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.light_fighters_online.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_launched_light_fighters(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_LIGHT_SLOTS,
+            &self.light_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_heavy_fighter_count_fast(
         &self,
@@ -108,11 +106,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.heavy_fighters_online.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_launched_heavy_fighters(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_HEAVY_SLOTS,
+            &self.heavy_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_support_fighter_count_fast(
         &self,
@@ -121,11 +122,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.standup_support_fighters_online.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_launched_standup_support_fighters(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS,
+            &self.standup_support_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_light_fighter_count_fast(
         &self,
@@ -134,11 +138,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.standup_light_fighters_online.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_launched_standup_light_fighters(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_STANDUP_LIGHT_SLOTS,
+            &self.standup_light_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_heavy_fighter_count_fast(
         &self,
@@ -147,11 +154,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.standup_heavy_fighters_online.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_launched_standup_heavy_fighters(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_STANDUP_HEAVY_SLOTS,
+            &self.standup_heavy_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_turret_slot_count_fast(
         &self,
@@ -160,11 +170,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.mods_turret.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_turret_slots(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::TURRET_SLOTS_LEFT,
+            &self.mods_turret,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launcher_slot_count_fast(
         &self,
@@ -173,11 +186,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        if self.mods_launcher.is_subset(kfs) {
-            return true;
-        }
-        let stats = self.get_stats_launcher_slots(uad, calc, fit);
-        validate_fast(stats)
+        validate_fast_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::LAUNCHER_SLOTS_LEFT,
+            &self.mods_launcher,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_high_slot_count_fast(
         &self,
@@ -186,8 +202,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        let stats = self.get_stats_high_slots(uad, calc, fit);
-        validate_fast_ordered(kfs, stats, &fit.mods_high)
+        validate_fast_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::HI_SLOTS, &fit.mods_high)
     }
     pub(in crate::sol::svc::vast) fn validate_mid_slot_count_fast(
         &self,
@@ -196,8 +211,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        let stats = self.get_stats_mid_slots(uad, calc, fit);
-        validate_fast_ordered(kfs, stats, &fit.mods_mid)
+        validate_fast_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::MED_SLOTS, &fit.mods_mid)
     }
     pub(in crate::sol::svc::vast) fn validate_low_slot_count_fast(
         &self,
@@ -206,8 +220,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> bool {
-        let stats = self.get_stats_low_slots(uad, calc, fit);
-        validate_fast_ordered(kfs, stats, &fit.mods_low)
+        validate_fast_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::LOW_SLOTS, &fit.mods_low)
     }
     // Verbose validations
     pub(in crate::sol::svc::vast) fn validate_rig_slot_count_verbose(
@@ -217,8 +230,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_rig_slots(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &fit.rigs)
+        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::UPGRADE_SLOTS_LEFT, &fit.rigs)
     }
     pub(in crate::sol::svc::vast) fn validate_subsystem_slot_count_verbose(
         &self,
@@ -227,8 +239,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_subsystem_slots(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &fit.subsystems)
+        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::MAX_SUBSYSTEMS, &fit.subsystems)
     }
     pub(in crate::sol::svc::vast) fn validate_launched_drone_count_verbose(
         &self,
@@ -237,8 +248,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_launched_drones(uad, calc, fit);
-        validate_verbose_unordered_map(kfs, stats, &self.drones_online_bandwidth)
+        validate_verbose_unordered_map(
+            kfs,
+            uad,
+            calc,
+            &fit.character,
+            &ec::attrs::MAX_ACTIVE_DRONES,
+            &self.drones_online_bandwidth,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_fighter_count_verbose(
         &self,
@@ -247,8 +264,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_launched_fighters(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &self.fighters_online)
+        validate_verbose_unordered_set(kfs, uad, calc, &fit.ship, &ec::attrs::FTR_TUBES, &self.fighters_online)
     }
     pub(in crate::sol::svc::vast) fn validate_launched_support_fighter_count_verbose(
         &self,
@@ -257,8 +273,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_launched_support_fighters(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &self.support_fighters_online)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_SUPPORT_SLOTS,
+            &self.support_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_light_fighter_count_verbose(
         &self,
@@ -267,8 +289,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_launched_light_fighters(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &self.light_fighters_online)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_LIGHT_SLOTS,
+            &self.light_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_heavy_fighter_count_verbose(
         &self,
@@ -277,8 +305,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_launched_heavy_fighters(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &self.heavy_fighters_online)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_HEAVY_SLOTS,
+            &self.heavy_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_support_fighter_count_verbose(
         &self,
@@ -287,8 +321,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_launched_standup_support_fighters(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &self.standup_support_fighters_online)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_STANDUP_SUPPORT_SLOTS,
+            &self.standup_support_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_light_fighter_count_verbose(
         &self,
@@ -297,8 +337,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_launched_standup_light_fighters(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &self.standup_light_fighters_online)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_STANDUP_LIGHT_SLOTS,
+            &self.standup_light_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launched_standup_heavy_fighter_count_verbose(
         &self,
@@ -307,8 +353,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_launched_standup_heavy_fighters(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &self.standup_heavy_fighters_online)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::FTR_STANDUP_HEAVY_SLOTS,
+            &self.standup_heavy_fighters_online,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_turret_slot_count_verbose(
         &self,
@@ -317,8 +369,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_turret_slots(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &self.mods_turret)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::TURRET_SLOTS_LEFT,
+            &self.mods_turret,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_launcher_slot_count_verbose(
         &self,
@@ -327,8 +385,14 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_launcher_slots(uad, calc, fit);
-        validate_verbose_unordered_set(kfs, stats, &self.mods_launcher)
+        validate_verbose_unordered_set(
+            kfs,
+            uad,
+            calc,
+            &fit.ship,
+            &ec::attrs::LAUNCHER_SLOTS_LEFT,
+            &self.mods_launcher,
+        )
     }
     pub(in crate::sol::svc::vast) fn validate_high_slot_count_verbose(
         &self,
@@ -337,8 +401,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_high_slots(uad, calc, fit);
-        validate_verbose_ordered(kfs, stats, &fit.mods_high)
+        validate_verbose_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::HI_SLOTS, &fit.mods_high)
     }
     pub(in crate::sol::svc::vast) fn validate_mid_slot_count_verbose(
         &self,
@@ -347,8 +410,7 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_mid_slots(uad, calc, fit);
-        validate_verbose_ordered(kfs, stats, &fit.mods_mid)
+        validate_verbose_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::MED_SLOTS, &fit.mods_mid)
     }
     pub(in crate::sol::svc::vast) fn validate_low_slot_count_verbose(
         &self,
@@ -357,34 +419,90 @@ impl SolVastFitData {
         calc: &mut SolCalc,
         fit: &SolFit,
     ) -> Option<SolValSlotCountFail> {
-        let stats = self.get_stats_low_slots(uad, calc, fit);
-        validate_verbose_ordered(kfs, stats, &fit.mods_low)
+        validate_verbose_ordered(kfs, uad, calc, &fit.ship, &ec::attrs::LOW_SLOTS, &fit.mods_low)
     }
 }
 
-fn validate_fast(stats: SolStatSlot) -> bool {
-    stats.used <= stats.total.unwrap_or(0)
-}
-fn validate_fast_ordered(kfs: &StSet<SolItemId>, stats: SolStatSlot, users: &SolItemVec) -> bool {
-    match kfs.is_empty() {
-        true => validate_fast(stats),
-        false => {
-            if stats.used <= stats.total.unwrap_or(0) {
-                return true;
-            }
-            users
-                .iter_ids_from(stats.total.unwrap_or(0) as Idx)
-                .all(|v| kfs.contains(v))
-        }
-    }
-}
-
-fn validate_verbose_unordered_set<'a>(
+fn validate_fast_unordered_set(
     kfs: &StSet<SolItemId>,
-    stats: SolStatSlot,
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    output_item_id: &Option<SolItemId>,
+    output_attr_id: &EAttrId,
+    users: &StSet<SolItemId>,
+) -> bool {
+    if users.is_subset(kfs) {
+        return true;
+    }
+    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
+        TriOption::Some(output) => output,
+        TriOption::None => 0,
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::Other => return true,
+    };
+    let used = users.len() as Count;
+    used <= output
+}
+fn validate_fast_unordered_map<T>(
+    kfs: &StSet<SolItemId>,
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    output_item_id: &Option<SolItemId>,
+    output_attr_id: &EAttrId,
+    users: &StMap<SolItemId, T>,
+) -> bool {
+    if users.is_subset(kfs) {
+        return true;
+    }
+    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
+        TriOption::Some(output) => output,
+        TriOption::None => 0,
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::Other => return true,
+    };
+    let used = users.len() as Count;
+    used <= output
+}
+fn validate_fast_ordered(
+    kfs: &StSet<SolItemId>,
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    output_item_id: &Option<SolItemId>,
+    output_attr_id: &EAttrId,
+    users: &SolItemVec,
+) -> bool {
+    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
+        TriOption::Some(output) => output,
+        TriOption::None => 0,
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::Other => return true,
+    };
+    let used = users.len() as Count;
+    match kfs.is_empty() {
+        true => used <= output,
+        false => match used <= output {
+            true => true,
+            false => users.iter_ids_from(output as Idx).all(|v| kfs.contains(v)),
+        },
+    }
+}
+
+fn validate_verbose_unordered_set(
+    kfs: &StSet<SolItemId>,
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    output_item_id: &Option<SolItemId>,
+    output_attr_id: &EAttrId,
     users: &StSet<SolItemId>,
 ) -> Option<SolValSlotCountFail> {
-    if stats.used <= stats.total.unwrap_or(0) {
+    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
+        TriOption::Some(output) => Some(output),
+        TriOption::None => None,
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::Other => return None,
+    };
+    let used = users.len() as Count;
+    if used <= output.unwrap_or(0) {
         return None;
     }
     let users = users.difference(kfs).copied().collect_vec();
@@ -392,17 +510,27 @@ fn validate_verbose_unordered_set<'a>(
         return None;
     }
     Some(SolValSlotCountFail {
-        used: stats.used,
-        total: stats.total,
+        used,
+        total: output,
         users,
     })
 }
-fn validate_verbose_unordered_map<'a, T>(
+fn validate_verbose_unordered_map<T>(
     kfs: &StSet<SolItemId>,
-    stats: SolStatSlot,
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    output_item_id: &Option<SolItemId>,
+    output_attr_id: &EAttrId,
     users: &StMap<SolItemId, T>,
 ) -> Option<SolValSlotCountFail> {
-    if stats.used <= stats.total.unwrap_or(0) {
+    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
+        TriOption::Some(output) => Some(output),
+        TriOption::None => None,
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::Other => return None,
+    };
+    let used = users.len() as Count;
+    if used <= output.unwrap_or(0) {
         return None;
     }
     let users = users.difference(kfs).copied().collect_vec();
@@ -410,22 +538,32 @@ fn validate_verbose_unordered_map<'a, T>(
         return None;
     }
     Some(SolValSlotCountFail {
-        used: stats.used,
-        total: stats.total,
+        used,
+        total: output,
         users,
     })
 }
-fn validate_verbose_ordered<'a>(
+fn validate_verbose_ordered(
     kfs: &StSet<SolItemId>,
-    stats: SolStatSlot,
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    output_item_id: &Option<SolItemId>,
+    output_attr_id: &EAttrId,
     users: &SolItemVec,
 ) -> Option<SolValSlotCountFail> {
-    let total = stats.total.unwrap_or(0);
-    if stats.used <= total {
+    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
+        TriOption::Some(output) => Some(output),
+        TriOption::None => None,
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::Other => return None,
+    };
+    let used = users.len() as Count;
+    let effective_output = output.unwrap_or(0);
+    if used <= effective_output {
         return None;
     }
     let users = users
-        .iter_ids_from(total as Idx)
+        .iter_ids_from(effective_output as Idx)
         .filter(|v| !kfs.contains(v))
         .copied()
         .collect_vec();
@@ -433,8 +571,26 @@ fn validate_verbose_ordered<'a>(
         return None;
     }
     Some(SolValSlotCountFail {
-        used: stats.used,
-        total: stats.total,
+        used,
+        total: output,
         users,
     })
+}
+
+fn get_output(
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    output_item_id: &Option<SolItemId>,
+    output_attr_id: &EAttrId,
+) -> TriOption<Count> {
+    match output_item_id {
+        Some(item_id) => match calc.get_item_attr_val_full(uad, item_id, output_attr_id) {
+            Ok(val) => TriOption::Some(val.extra.into_inner().round() as Count),
+            Err(error) => match error {
+                AttrCalcError::ItemNotLoaded(_) => TriOption::Other,
+                _ => TriOption::None,
+            },
+        },
+        None => TriOption::None,
+    }
 }

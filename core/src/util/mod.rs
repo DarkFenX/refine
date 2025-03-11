@@ -6,9 +6,11 @@ pub use storage::{StMap, StSet};
 pub(crate) use storage::{StMapSetL1, StMapSetL2, StMapVecL1, extend_vec_from_map_set_l1};
 pub(crate) use str_err::StrMsgError;
 pub(crate) use traits::Named;
+pub(crate) use tri_option::TriOption;
 
 mod adj_count;
 mod funcs;
 mod storage;
 mod str_err;
 mod traits;
+mod tri_option;

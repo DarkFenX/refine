@@ -8,7 +8,7 @@ use crate::{
         },
         uad::{SolUad, fit::SolFit},
     },
-    util::{StSet, round},
+    util::{StSet, TriOption, round},
 };
 
 pub struct SolValResFail {
@@ -251,7 +251,7 @@ fn validate_fast_fitting<'a>(
         TriOption::Some(value) => value,
         TriOption::None => OF(0.0),
         // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::NotLoaded => return true,
+        TriOption::Other => return true,
     };
     round(total_use, 2) <= output
 }
@@ -278,7 +278,7 @@ fn validate_fast_other<'a>(
         TriOption::Some(value) => value,
         TriOption::None => OF(0.0),
         // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::NotLoaded => return true,
+        TriOption::Other => return true,
     };
     force_pass || total_use <= output
 }
@@ -315,7 +315,7 @@ fn validate_verbose_fitting<'a>(
         TriOption::Some(value) => Some(value),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::NotLoaded => return None,
+        TriOption::Other => return None,
     };
     if total_use <= output.unwrap_or(OF(0.0)) {
         return None;
@@ -352,7 +352,7 @@ fn validate_verbose_other<'a>(
         TriOption::Some(value) => Some(value),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::NotLoaded => return None,
+        TriOption::Other => return None,
     };
     if total_use <= output.unwrap_or(OF(0.0)) {
         return None;
@@ -364,18 +364,12 @@ fn validate_verbose_other<'a>(
     })
 }
 
-enum TriOption {
-    Some(AttrVal),
-    None,
-    NotLoaded,
-}
-
-fn get_output(uad: &SolUad, calc: &mut SolCalc, fit: &SolFit, output_attr_id: &EAttrId) -> TriOption {
+fn get_output(uad: &SolUad, calc: &mut SolCalc, fit: &SolFit, output_attr_id: &EAttrId) -> TriOption<AttrVal> {
     match fit.ship {
         Some(ship_id) => match calc.get_item_attr_val_full(uad, &ship_id, output_attr_id) {
             Ok(val) => TriOption::Some(val.extra),
             Err(error) => match error {
-                AttrCalcError::ItemNotLoaded(_) => TriOption::NotLoaded,
+                AttrCalcError::ItemNotLoaded(_) => TriOption::Other,
                 _ => TriOption::None,
             },
         },

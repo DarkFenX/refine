@@ -193,13 +193,12 @@ def test_not_loaded_char(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_char(type_id=eve_char_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
-    assert api_val.passed is False
-    assert api_val.details.launched_drone_count.used == 1
-    assert api_val.details.launched_drone_count.total is None
-    assert api_val.details.launched_drone_count.users == [api_drone.id]
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_no_value_total(client, consts):

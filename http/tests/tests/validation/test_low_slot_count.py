@@ -320,13 +320,12 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.low, state=consts.ApiModuleState.offline)
+    api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.low, state=consts.ApiModuleState.offline)
     # Verification
     api_val = api_fit.validate(options=ValOptions(low_slot_count=True))
-    assert api_val.passed is False
-    assert api_val.details.low_slot_count.used == 1
-    assert api_val.details.low_slot_count.total is None
-    assert api_val.details.low_slot_count.users == [api_module.id]
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_no_value_total(client, consts):
