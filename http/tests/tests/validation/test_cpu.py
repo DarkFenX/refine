@@ -351,13 +351,12 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(cpu=True))
-    assert api_val.passed is False
-    assert api_val.details.cpu.used == 5
-    assert api_val.details.cpu.output is None
-    assert api_val.details.cpu.users == {api_module.id: 5}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_not_loaded_user(client, consts):

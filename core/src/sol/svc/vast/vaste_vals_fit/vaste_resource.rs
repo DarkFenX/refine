@@ -2,7 +2,10 @@ use crate::{
     defs::{AttrVal, EAttrId, OF, SolItemId},
     ec,
     sol::{
-        svc::{calc::SolCalc, vast::SolVastFitData},
+        svc::{
+            calc::{AttrCalcError, SolCalc},
+            vast::SolVastFitData,
+        },
         uad::{SolUad, fit::SolFit},
     },
     util::{StSet, round},
@@ -244,9 +247,12 @@ fn validate_fast_fitting<'a>(
     if force_pass {
         return true;
     }
-    let output = calc
-        .get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id)
-        .unwrap_or(OF(0.0));
+    let output = match get_output(uad, calc, fit, output_attr_id) {
+        TriOption::Some(value) => value,
+        TriOption::None => OF(0.0),
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::NotLoaded => return true,
+    };
     round(total_use, 2) <= output
 }
 fn validate_fast_other<'a>(
@@ -268,9 +274,12 @@ fn validate_fast_other<'a>(
     if force_pass {
         return true;
     }
-    let output = calc
-        .get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id)
-        .unwrap_or(OF(0.0));
+    let output = match get_output(uad, calc, fit, output_attr_id) {
+        TriOption::Some(value) => value,
+        TriOption::None => OF(0.0),
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::NotLoaded => return true,
+    };
     force_pass || total_use <= output
 }
 
@@ -302,7 +311,12 @@ fn validate_verbose_fitting<'a>(
         return None;
     }
     let total_use = round(total_use, 2);
-    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id);
+    let output = match get_output(uad, calc, fit, output_attr_id) {
+        TriOption::Some(value) => Some(value),
+        TriOption::None => None,
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::NotLoaded => return None,
+    };
     if total_use <= output.unwrap_or(OF(0.0)) {
         return None;
     }
@@ -334,7 +348,12 @@ fn validate_verbose_other<'a>(
     if users.is_empty() {
         return None;
     }
-    let output = calc.get_item_attr_val_simple_opt(uad, &fit.ship, output_attr_id);
+    let output = match get_output(uad, calc, fit, output_attr_id) {
+        TriOption::Some(value) => Some(value),
+        TriOption::None => None,
+        // Policy is to pass validations if some data is not available due to item being not loaded
+        TriOption::NotLoaded => return None,
+    };
     if total_use <= output.unwrap_or(OF(0.0)) {
         return None;
     }
@@ -343,4 +362,23 @@ fn validate_verbose_other<'a>(
         output,
         users,
     })
+}
+
+enum TriOption {
+    Some(AttrVal),
+    None,
+    NotLoaded,
+}
+
+fn get_output(uad: &SolUad, calc: &mut SolCalc, fit: &SolFit, output_attr_id: &EAttrId) -> TriOption {
+    match fit.ship {
+        Some(ship_id) => match calc.get_item_attr_val_full(uad, &ship_id, output_attr_id) {
+            Ok(val) => TriOption::Some(val.extra),
+            Err(error) => match error {
+                AttrCalcError::ItemNotLoaded(_) => TriOption::NotLoaded,
+                _ => TriOption::None,
+            },
+        },
+        None => TriOption::None,
+    }
 }

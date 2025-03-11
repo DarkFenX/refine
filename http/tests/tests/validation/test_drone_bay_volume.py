@@ -314,13 +314,12 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id)
+    api_fit.add_drone(type_id=eve_drone_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
-    assert api_val.passed is False
-    assert api_val.details.drone_bay_volume.used == approx(5)
-    assert api_val.details.drone_bay_volume.output is None
-    assert api_val.details.drone_bay_volume.users == {api_drone.id: 5}
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
 
 
 def test_not_loaded_user(client, consts):
