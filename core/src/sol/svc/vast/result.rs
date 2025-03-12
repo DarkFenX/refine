@@ -2,6 +2,7 @@ use crate::sol::svc::vast::{
     SolValCapitalModFail, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail,
     SolValFighterCountFail, SolValItemKindFail, SolValMaxGroupFail, SolValModuleStateFail, SolValNotLoadedItemFail,
     SolValResFail, SolValRigSizeFail, SolValShipLimitFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
+    SolValUnusableSlotFail,
 };
 
 pub struct SolValResult {
@@ -44,6 +45,7 @@ pub struct SolValResult {
     pub item_kind: Vec<SolValItemKindFail>,
     pub drone_group: Option<SolValDroneGroupFail>,
     pub fighter_count: Vec<SolValFighterCountFail>,
+    pub unlaunchable_drones_slot: Option<SolValUnusableSlotFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -87,6 +89,7 @@ impl SolValResult {
             item_kind: Vec::new(),
             drone_group: None,
             fighter_count: Vec::new(),
+            unlaunchable_drones_slot: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -129,5 +132,6 @@ impl SolValResult {
             && self.item_kind.is_empty()
             && self.drone_group.is_none()
             && self.fighter_count.is_empty()
+            && self.unlaunchable_drones_slot.is_none()
     }
 }

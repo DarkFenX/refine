@@ -41,6 +41,7 @@ pub struct SolValOptions {
     pub item_kind: SolValOption,
     pub drone_group: SolValOption,
     pub fighter_count: SolValOption,
+    pub unlaunchable_drones_slot: SolValOption,
 }
 impl SolValOptions {
     pub fn all_enabled() -> Self {
@@ -84,6 +85,7 @@ impl SolValOptions {
             item_kind: SolValOption::enabled(),
             drone_group: SolValOption::enabled(),
             fighter_count: SolValOption::enabled(),
+            unlaunchable_drones_slot: SolValOption::enabled(),
         }
     }
     pub fn all_disabled() -> Self {
@@ -127,6 +129,7 @@ impl SolValOptions {
             item_kind: SolValOption::disabled(),
             drone_group: SolValOption::disabled(),
             fighter_count: SolValOption::disabled(),
+            unlaunchable_drones_slot: SolValOption::disabled(),
         }
     }
 }

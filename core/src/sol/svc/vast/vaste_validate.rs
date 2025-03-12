@@ -215,6 +215,11 @@ impl SolVast {
         if options.fighter_count.enabled && !fit_data.validate_fighter_count_fast(&options.fighter_count.kfs) {
             return false;
         }
+        if options.unlaunchable_drones_slot.enabled
+            && !fit_data.validate_unlaunchable_drones_slot_fast(&options.unlaunchable_drones_slot.kfs, uad, calc, fit)
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -393,6 +398,14 @@ impl SolVast {
         }
         if options.fighter_count.enabled {
             result.fighter_count = fit_data.validate_fighter_count_verbose(&options.fighter_count.kfs);
+        }
+        if options.unlaunchable_drones_slot.enabled {
+            result.unlaunchable_drones_slot = fit_data.validate_unlaunchable_drones_slot_verbose(
+                &options.unlaunchable_drones_slot.kfs,
+                uad,
+                calc,
+                fit,
+            );
         }
         result
     }

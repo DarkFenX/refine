@@ -4,10 +4,7 @@ use crate::{
     defs::{Count, EAttrId, Idx, SolItemId},
     ec,
     sol::{
-        svc::{
-            calc::{AttrCalcError, SolCalc},
-            vast::SolVastFitData,
-        },
+        svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{
             SolUad,
             fit::{SolFit, SolItemVec},
@@ -15,6 +12,8 @@ use crate::{
     },
     util::{StMap, StSet, TriOption},
 };
+
+use super::shared::get_max_slots;
 
 pub struct SolValSlotCountFail {
     pub used: Count,
@@ -434,7 +433,7 @@ fn validate_fast_unordered_set(
     if users.is_subset(kfs) {
         return true;
     }
-    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+    let max = match get_max_slots(uad, calc, max_item_id, max_attr_id) {
         TriOption::Some(max) => max,
         TriOption::None => 0,
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -454,7 +453,7 @@ fn validate_fast_unordered_map<T>(
     if users.is_subset(kfs) {
         return true;
     }
-    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+    let max = match get_max_slots(uad, calc, max_item_id, max_attr_id) {
         TriOption::Some(max) => max,
         TriOption::None => 0,
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -471,7 +470,7 @@ fn validate_fast_ordered(
     max_attr_id: &EAttrId,
     users: &SolItemVec,
 ) -> bool {
-    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+    let max = match get_max_slots(uad, calc, max_item_id, max_attr_id) {
         TriOption::Some(max) => max,
         TriOption::None => 0,
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -495,7 +494,7 @@ fn validate_verbose_unordered_set(
     max_attr_id: &EAttrId,
     users: &StSet<SolItemId>,
 ) -> Option<SolValSlotCountFail> {
-    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+    let max = match get_max_slots(uad, calc, max_item_id, max_attr_id) {
         TriOption::Some(max) => Some(max),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -519,7 +518,7 @@ fn validate_verbose_unordered_map<T>(
     max_attr_id: &EAttrId,
     users: &StMap<SolItemId, T>,
 ) -> Option<SolValSlotCountFail> {
-    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+    let max = match get_max_slots(uad, calc, max_item_id, max_attr_id) {
         TriOption::Some(max) => Some(max),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -543,7 +542,7 @@ fn validate_verbose_ordered(
     max_attr_id: &EAttrId,
     users: &SolItemVec,
 ) -> Option<SolValSlotCountFail> {
-    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+    let max = match get_max_slots(uad, calc, max_item_id, max_attr_id) {
         TriOption::Some(max) => Some(max),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -563,22 +562,4 @@ fn validate_verbose_ordered(
         return None;
     }
     Some(SolValSlotCountFail { used, max, users })
-}
-
-fn get_max(
-    uad: &SolUad,
-    calc: &mut SolCalc,
-    max_item_id: &Option<SolItemId>,
-    max_attr_id: &EAttrId,
-) -> TriOption<Count> {
-    match max_item_id {
-        Some(item_id) => match calc.get_item_attr_val_full(uad, item_id, max_attr_id) {
-            Ok(val) => TriOption::Some(val.extra.into_inner().round() as Count),
-            Err(error) => match error {
-                AttrCalcError::ItemNotLoaded(_) => TriOption::Other,
-                _ => TriOption::None,
-            },
-        },
-        None => TriOption::None,
-    }
 }
