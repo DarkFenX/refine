@@ -84,6 +84,8 @@ pub(crate) struct HValidateFitCmd {
     drone_group: Option<HValidationOption>,
     #[serde(default)]
     fighter_count: Option<HValidationOption>,
+    #[serde(default)]
+    unlaunchable_drone_slot: Option<HValidationOption>,
 }
 impl HValidateFitCmd {
     pub(crate) fn execute(
@@ -153,6 +155,7 @@ impl HValidateFitCmd {
         process_option(&self.item_kind, &mut core_options.item_kind);
         process_option(&self.drone_group, &mut core_options.drone_group);
         process_option(&self.fighter_count, &mut core_options.fighter_count);
+        process_option(&self.unlaunchable_drone_slot, &mut core_options.unlaunchable_drone_slot);
         // Run validation
         match valid_mode {
             HValidInfoMode::Simple => core_sol.validate_fit_fast(fit_id, &core_options).map(|v| v.into()),
@@ -208,6 +211,7 @@ impl Default for HValidateFitCmd {
             item_kind: None,
             drone_group: None,
             fighter_count: None,
+            unlaunchable_drone_slot: None,
         }
     }
 }

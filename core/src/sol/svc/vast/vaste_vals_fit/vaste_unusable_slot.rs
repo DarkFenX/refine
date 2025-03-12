@@ -19,7 +19,7 @@ pub struct SolValUnusableSlotFail {
 
 impl SolVastFitData {
     // Fast validations
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_drones_slot_fast(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_drone_slot_fast(
         &self,
         kfs: &StSet<SolItemId>,
         uad: &SolUad,
@@ -38,7 +38,7 @@ impl SolVastFitData {
         fit.drones.is_subset(kfs)
     }
     // Verbose validations
-    pub(in crate::sol::svc::vast) fn validate_unlaunchable_drones_slot_verbose(
+    pub(in crate::sol::svc::vast) fn validate_unlaunchable_drone_slot_verbose(
         &self,
         kfs: &StSet<SolItemId>,
         uad: &SolUad,

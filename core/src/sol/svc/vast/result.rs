@@ -45,7 +45,7 @@ pub struct SolValResult {
     pub item_kind: Vec<SolValItemKindFail>,
     pub drone_group: Option<SolValDroneGroupFail>,
     pub fighter_count: Vec<SolValFighterCountFail>,
-    pub unlaunchable_drones_slot: Option<SolValUnusableSlotFail>,
+    pub unlaunchable_drone_slot: Option<SolValUnusableSlotFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -89,7 +89,7 @@ impl SolValResult {
             item_kind: Vec::new(),
             drone_group: None,
             fighter_count: Vec::new(),
-            unlaunchable_drones_slot: None,
+            unlaunchable_drone_slot: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -132,6 +132,6 @@ impl SolValResult {
             && self.item_kind.is_empty()
             && self.drone_group.is_none()
             && self.fighter_count.is_empty()
-            && self.unlaunchable_drones_slot.is_none()
+            && self.unlaunchable_drone_slot.is_none()
     }
 }
