@@ -4,10 +4,10 @@ from tests.fw.api import ValOptions
 
 def test_fail_single(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -23,11 +23,11 @@ def test_fail_single(client, consts):
 
 def test_fail_multiple_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 50}, eff_ids=[eve_effect_id])
     eve_module2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -44,11 +44,11 @@ def test_fail_multiple_ship(client, consts):
 
 def test_fail_multiple_struct(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 50}, eff_ids=[eve_effect_id])
     eve_module2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
-    eve_struct_id = client.mk_eve_struct(attrs={eve_output_attr_id: 125})
+    eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -65,10 +65,10 @@ def test_fail_multiple_struct(client, consts):
 
 def test_equal(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 150})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 150})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -83,14 +83,14 @@ def test_equal(client, consts):
 
 def test_known_failures(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
     eve_module2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
     eve_module3_id = client.mk_eve_item(attrs={eve_use_attr_id: -10}, eff_ids=[eve_effect_id])
     eve_module4_id = client.mk_eve_item(attrs={eve_use_attr_id: 0}, eff_ids=[eve_effect_id])
     eve_module5_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.5}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     eve_other_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -152,7 +152,7 @@ def test_known_failures(client, consts):
 
 def test_modified_use(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.loc,
@@ -163,7 +163,7 @@ def test_modified_use(client, consts):
     eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_online_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_online_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: -50}, eff_ids=[eve_mod_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
@@ -187,20 +187,20 @@ def test_modified_use(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_modified_output(client, consts):
+def test_modified_max(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.post_percent,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_output_attr_id)
+        affectee_attr_id=eve_max_attr_id)
     eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_online_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_online_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 120})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 120})
     eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: 50}, eff_ids=[eve_mod_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
@@ -208,7 +208,7 @@ def test_modified_output(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
-    assert api_ship.update().attrs[eve_output_attr_id].extra == 120
+    assert api_ship.update().attrs[eve_max_attr_id].extra == 120
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
@@ -217,7 +217,7 @@ def test_modified_output(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_ship.update().attrs[eve_output_attr_id].extra == 180
+    assert api_ship.update().attrs[eve_max_attr_id].extra == 180
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is True
     with check_no_field():
@@ -226,14 +226,14 @@ def test_modified_output(client, consts):
 
 def test_mutation_use(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_base_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 120}, eff_ids=[eve_effect_id])
     eve_mutated_module_id = client.mk_eve_item(eff_ids=[eve_effect_id])
     eve_mutator_id = client.mk_eve_mutator(
         items=[([eve_base_module_id], eve_mutated_module_id)],
         attrs={eve_use_attr_id: (0.8, 1.2)})
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -275,11 +275,11 @@ def test_mutation_use(client, consts):
 
 def test_rounding(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.006}, eff_ids=[eve_effect_id])
     eve_module2_id = client.mk_eve_item(attrs={eve_use_attr_id: 5.227}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 5.234})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 5.234})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -299,10 +299,10 @@ def test_sum_rounding(client, consts):
     # users is rounded; if there would be no rounding, one of sums of 0.1 elements would lead to
     # float inaccuracies
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 0.1}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 0.15})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0.15})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -322,11 +322,11 @@ def test_sum_rounding(client, consts):
 
 def test_no_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_output_attr_id: 5})
+    client.mk_eve_item(attrs={eve_max_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -341,11 +341,11 @@ def test_no_ship(client, consts):
 
 def test_not_loaded_ship(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 5}, eff_ids=[eve_effect_id])
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_output_attr_id: 5})
+    client.mk_eve_item(attrs={eve_max_attr_id: 5})
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -362,8 +362,8 @@ def test_not_loaded_ship(client, consts):
 def test_not_loaded_user(client, consts):
     # Just check that nothing crashes, not loaded items are not supposed to even be registered
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     eve_effect_id = client.mk_eve_online_effect()
     # Create an item which has the attribute and the effect, just to prevent them from being cleaned
     # up
@@ -383,12 +383,12 @@ def test_not_loaded_user(client, consts):
 
 def test_non_positive(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 0}, eff_ids=[eve_effect_id])
     eve_module2_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
     eve_module3_id = client.mk_eve_item(attrs={eve_use_attr_id: -10}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -408,10 +408,10 @@ def test_no_attr_use(client, consts):
     # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
     # irrelevant
     eve_use_attr_id = consts.EveAttr.cpu
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -424,11 +424,11 @@ def test_no_attr_use(client, consts):
 
 def test_no_value_use(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
     eve_module2_id = client.mk_eve_item(eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -443,14 +443,14 @@ def test_no_value_use(client, consts):
     assert api_val.details.cpu.users == {api_module1.id: 150}
 
 
-def test_no_value_output(client, consts):
+def test_no_value_max(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
     eve_ship_id = client.mk_eve_ship()
-    # Make an item to ensure that output attribute is not cleaned up
-    client.mk_eve_item(attrs={eve_output_attr_id: 50})
+    # Make an item to ensure that max attribute is not cleaned up
+    client.mk_eve_item(attrs={eve_max_attr_id: 50})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -464,14 +464,14 @@ def test_no_value_output(client, consts):
     assert api_val.details.cpu.users == {api_module.id: 150}
 
 
-def test_no_attr_output(client, consts):
+def test_no_attr_max(client, consts):
     # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
     # irrelevant
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = consts.EveAttr.cpu_output
+    eve_max_attr_id = consts.EveAttr.cpu_output
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -487,10 +487,10 @@ def test_no_attr_output(client, consts):
 
 def test_criterion_state(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -520,10 +520,10 @@ def test_criterion_state(client, consts):
 
 def test_criterion_effect(client, consts):
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -564,10 +564,10 @@ def test_criterion_effect(client, consts):
 def test_criterion_item_kind(client, consts):
     # Validation applies only to modules
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
-    eve_output_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
     eve_drone_id = client.mk_eve_item(attrs={eve_use_attr_id: 150}, eff_ids=[eve_effect_id])
-    eve_ship_id = client.mk_eve_ship(attrs={eve_output_attr_id: 125})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

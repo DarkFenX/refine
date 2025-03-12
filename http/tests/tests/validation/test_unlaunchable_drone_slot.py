@@ -3,9 +3,9 @@ from tests.fw.api import ValOptions
 
 
 def test_fail_single(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
-    eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 0})
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -19,9 +19,9 @@ def test_fail_single(client, consts):
 
 
 def test_fail_multiple(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
-    eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 0})
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -36,9 +36,9 @@ def test_fail_multiple(client, consts):
 
 
 def test_one(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
-    eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 1})
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -53,9 +53,9 @@ def test_one(client, consts):
 
 
 def test_known_failures(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
-    eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 0})
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
     eve_other_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
@@ -84,26 +84,26 @@ def test_known_failures(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_modified_total(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+def test_modified_max(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.char,
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_mod_attr_id,
-        affectee_attr_id=eve_total_attr_id)
+        affectee_attr_id=eve_max_attr_id)
     eve_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
     eve_implant_id = client.mk_eve_item(attrs={eve_mod_attr_id: 1}, eff_ids=[eve_effect_id])
     eve_drone_id = client.mk_eve_item()
-    eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 0})
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_char = api_fit.set_char(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    assert api_char.update().attrs[eve_total_attr_id].extra == approx(0)
+    assert api_char.update().attrs[eve_max_attr_id].extra == approx(0)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_slot.max == 0
@@ -111,18 +111,18 @@ def test_modified_total(client, consts):
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
     # Verification
-    assert api_char.update().attrs[eve_total_attr_id].extra == approx(1)
+    assert api_char.update().attrs[eve_max_attr_id].extra == approx(1)
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
 
 
-def test_fractional_total(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+def test_fractional_max(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
-    eve_char1_id = client.mk_eve_item(attrs={eve_total_attr_id: 0.4})
-    eve_char2_id = client.mk_eve_item(attrs={eve_total_attr_id: 0.6})
+    eve_char1_id = client.mk_eve_item(attrs={eve_max_attr_id: 0.4})
+    eve_char2_id = client.mk_eve_item(attrs={eve_max_attr_id: 0.6})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -143,10 +143,10 @@ def test_fractional_total(client, consts):
 
 
 def test_no_char(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_total_attr_id: 5})
+    client.mk_eve_item(attrs={eve_max_attr_id: 5})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -160,8 +160,8 @@ def test_no_char(client, consts):
 
 def test_not_loaded_user(client, consts):
     # Not loaded drones still take slot
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
-    eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 0})
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
     eve_drone_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -176,10 +176,10 @@ def test_not_loaded_user(client, consts):
 
 
 def test_not_loaded_char(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
     # Create an item which has the attribute, just to prevent the attribute from being cleaned up
-    client.mk_eve_item(attrs={eve_total_attr_id: 5})
+    client.mk_eve_item(attrs={eve_max_attr_id: 5})
     eve_char_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -193,12 +193,12 @@ def test_not_loaded_char(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_no_value_total(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+def test_no_value_max(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_drone_id = client.mk_eve_item()
     eve_char_id = client.mk_eve_item()
-    # Make an item to ensure that total attribute is not cleaned up
-    client.mk_eve_item(attrs={eve_total_attr_id: 50})
+    # Make an item to ensure that max attribute is not cleaned up
+    client.mk_eve_item(attrs={eve_max_attr_id: 50})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -211,12 +211,12 @@ def test_no_value_total(client, consts):
     assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 
-def test_no_attr_total(client, consts):
+def test_no_attr_max(client, consts):
     # Invalid situation which shouldn't happen; just check that nothing crashes, behavior is
     # irrelevant
-    eve_total_attr_id = consts.EveAttr.max_active_drones
+    eve_max_attr_id = consts.EveAttr.max_active_drones
     eve_drone_id = client.mk_eve_item()
-    eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 0})
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -230,9 +230,9 @@ def test_no_attr_total(client, consts):
 
 
 def test_criterion_item_kind(client, consts):
-    eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
     eve_fighter_id = client.mk_eve_item()
-    eve_char_id = client.mk_eve_item(attrs={eve_total_attr_id: 0})
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
