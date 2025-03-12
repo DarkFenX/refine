@@ -2,7 +2,7 @@ use crate::sol::svc::vast::{
     SolValCapitalModFail, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail,
     SolValFighterCountFail, SolValItemKindFail, SolValMaxGroupFail, SolValModuleStateFail, SolValNotLoadedItemFail,
     SolValResFail, SolValRigSizeFail, SolValShipLimitFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail,
-    SolValUnusableSlotFail,
+    SolValUnusableResFail, SolValUnusableSlotFail,
 };
 
 pub struct SolValResult {
@@ -46,6 +46,7 @@ pub struct SolValResult {
     pub drone_group: Option<SolValDroneGroupFail>,
     pub fighter_count: Vec<SolValFighterCountFail>,
     pub unlaunchable_drone_slot: Option<SolValUnusableSlotFail>,
+    pub unlaunchable_drone_bandwidth: Option<SolValUnusableResFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -90,6 +91,7 @@ impl SolValResult {
             drone_group: None,
             fighter_count: Vec::new(),
             unlaunchable_drone_slot: None,
+            unlaunchable_drone_bandwidth: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -133,5 +135,6 @@ impl SolValResult {
             && self.drone_group.is_none()
             && self.fighter_count.is_empty()
             && self.unlaunchable_drone_slot.is_none()
+            && self.unlaunchable_drone_bandwidth.is_none()
     }
 }

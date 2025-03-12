@@ -39,7 +39,8 @@ pub use sol::{
             SolValItemKindFail, SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValModuleStateFail,
             SolValNotLoadedItemFail, SolValOption, SolValOptions, SolValResFail, SolValResItemInfo, SolValResult,
             SolValRigSizeFail, SolValRigSizeItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo,
-            SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo, SolValUnusableSlotFail,
+            SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo, SolValUnusableResFail,
+            SolValUnusableResItemInfo, SolValUnusableSlotFail,
         },
     },
     uad::{

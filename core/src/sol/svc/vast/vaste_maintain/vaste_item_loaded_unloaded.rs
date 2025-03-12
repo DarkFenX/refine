@@ -86,6 +86,9 @@ impl SolVast {
                 if let Some(volume) = extras.volume {
                     fit_data.drones_volume.insert(item_id, volume);
                 }
+                if let Some(bandwidth) = drone.get_attrs().unwrap().get(&ec::attrs::DRONE_BANDWIDTH_USED) {
+                    fit_data.drones_bandwidth.insert(item_id, *bandwidth);
+                };
                 if !fit_data.drone_group_limit.is_empty() {
                     let drone_group_id = drone.get_group_id().unwrap();
                     if !fit_data.drone_group_limit.contains(&drone_group_id) {
@@ -162,7 +165,7 @@ impl SolVast {
                 let extras = rig.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Rig);
                 let rig_size = rig.get_attrs().unwrap().get(&ec::attrs::RIG_SIZE).copied();
-                fit_data.rigs_rig_size.insert(item.get_id(), rig_size);
+                fit_data.rigs_rig_size.insert(item_id, rig_size);
                 if let Some(ship_limit) = &extras.ship_limit {
                     fit_data.ship_limited_mods_rigs_subs.insert(item_id, ship_limit.clone());
                 }
@@ -264,6 +267,7 @@ impl SolVast {
                 let extras = drone.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Drone);
                 fit_data.drones_volume.remove(&item_id);
+                fit_data.drones_bandwidth.remove(&item_id);
                 if !fit_data.drone_group_limit.is_empty() {
                     fit_data.drone_groups.remove(&item_id);
                 }
@@ -308,7 +312,7 @@ impl SolVast {
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Rig);
-                fit_data.rigs_rig_size.remove(&rig.get_id());
+                fit_data.rigs_rig_size.remove(&item_id);
                 if extras.ship_limit.is_some() {
                     fit_data.ship_limited_mods_rigs_subs.remove(&item_id);
                 }

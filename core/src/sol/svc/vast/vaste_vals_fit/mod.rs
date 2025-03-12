@@ -14,6 +14,7 @@ pub use vaste_ship_limit::{SolValShipLimitFail, SolValShipLimitItemInfo};
 pub use vaste_skill_reqs::{SolValSrqFail, SolValSrqSkillInfo};
 pub use vaste_slot_count::SolValSlotCountFail;
 pub use vaste_slot_index::SolValSlotIndexFail;
+pub use vaste_unusable_resource::{SolValUnusableResFail, SolValUnusableResItemInfo};
 pub use vaste_unusable_slot::SolValUnusableSlotFail;
 
 mod shared;
@@ -33,4 +34,5 @@ mod vaste_ship_limit;
 mod vaste_skill_reqs;
 mod vaste_slot_count;
 mod vaste_slot_index;
+mod vaste_unusable_resource;
 mod vaste_unusable_slot;

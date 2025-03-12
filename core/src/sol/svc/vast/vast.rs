@@ -42,6 +42,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     // Rigs with "rigSlot" effect active, with calibration cost values
     pub(in crate::sol::svc::vast) rigs_rigslot_calibration: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) drones_volume: StMap<SolItemId, AttrVal>,
+    pub(in crate::sol::svc::vast) drones_bandwidth: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) drones_online_bandwidth: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) fighters_volume: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) fighters_online: StSet<SolItemId>,
@@ -85,6 +86,7 @@ impl SolVastFitData {
             mods_online: StSet::new(),
             rigs_rigslot_calibration: StMap::new(),
             drones_volume: StMap::new(),
+            drones_bandwidth: StMap::new(),
             drones_online_bandwidth: StMap::new(),
             fighters_volume: StMap::new(),
             fighters_online: StSet::new(),

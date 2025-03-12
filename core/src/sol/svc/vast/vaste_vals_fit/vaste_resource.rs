@@ -2,14 +2,13 @@ use crate::{
     defs::{AttrVal, EAttrId, OF, SolItemId},
     ec,
     sol::{
-        svc::{
-            calc::{AttrCalcError, SolCalc},
-            vast::SolVastFitData,
-        },
+        svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
     },
     util::{StSet, TriOption, round},
 };
+
+use super::shared::get_max_resource;
 
 pub struct SolValResFail {
     pub used: AttrVal,
@@ -247,7 +246,7 @@ fn validate_fast_fitting<'a>(
     if force_pass {
         return true;
     }
-    let max = match get_max(uad, calc, fit, max_attr_id) {
+    let max = match get_max_resource(uad, calc, &fit.ship, max_attr_id) {
         TriOption::Some(value) => value,
         TriOption::None => OF(0.0),
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -274,7 +273,7 @@ fn validate_fast_other<'a>(
     if force_pass {
         return true;
     }
-    let max = match get_max(uad, calc, fit, max_attr_id) {
+    let max = match get_max_resource(uad, calc, &fit.ship, max_attr_id) {
         TriOption::Some(value) => value,
         TriOption::None => OF(0.0),
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -311,7 +310,7 @@ fn validate_verbose_fitting<'a>(
         return None;
     }
     let total_use = round(total_use, 2);
-    let max = match get_max(uad, calc, fit, max_attr_id) {
+    let max = match get_max_resource(uad, calc, &fit.ship, max_attr_id) {
         TriOption::Some(value) => Some(value),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -348,7 +347,7 @@ fn validate_verbose_other<'a>(
     if users.is_empty() {
         return None;
     }
-    let max = match get_max(uad, calc, fit, max_attr_id) {
+    let max = match get_max_resource(uad, calc, &fit.ship, max_attr_id) {
         TriOption::Some(value) => Some(value),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
@@ -362,17 +361,4 @@ fn validate_verbose_other<'a>(
         max,
         users,
     })
-}
-
-fn get_max(uad: &SolUad, calc: &mut SolCalc, fit: &SolFit, max_attr_id: &EAttrId) -> TriOption<AttrVal> {
-    match fit.ship {
-        Some(ship_id) => match calc.get_item_attr_val_full(uad, &ship_id, max_attr_id) {
-            Ok(val) => TriOption::Some(val.extra),
-            Err(error) => match error {
-                AttrCalcError::ItemNotLoaded(_) => TriOption::Other,
-                _ => TriOption::None,
-            },
-        },
-        None => TriOption::None,
-    }
 }

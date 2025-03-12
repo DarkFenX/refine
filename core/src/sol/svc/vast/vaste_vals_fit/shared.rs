@@ -1,11 +1,29 @@
 use crate::{
-    defs::{Count, EAttrId, SolItemId},
+    defs::{AttrVal, Count, EAttrId, SolItemId},
     sol::{
         svc::calc::{AttrCalcError, SolCalc},
         uad::SolUad,
     },
     util::TriOption,
 };
+
+pub(super) fn get_max_resource(
+    uad: &SolUad,
+    calc: &mut SolCalc,
+    max_item_id: &Option<SolItemId>,
+    max_attr_id: &EAttrId,
+) -> TriOption<AttrVal> {
+    match max_item_id {
+        Some(ship_id) => match calc.get_item_attr_val_full(uad, &ship_id, max_attr_id) {
+            Ok(val) => TriOption::Some(val.extra),
+            Err(error) => match error {
+                AttrCalcError::ItemNotLoaded(_) => TriOption::Other,
+                _ => TriOption::None,
+            },
+        },
+        None => TriOption::None,
+    }
+}
 
 pub(super) fn get_max_slots(
     uad: &SolUad,

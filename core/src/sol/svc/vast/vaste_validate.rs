@@ -220,6 +220,16 @@ impl SolVast {
         {
             return false;
         }
+        if options.unlaunchable_drone_bandwidth.enabled
+            && !fit_data.validate_unlaunchable_drone_bandwidth_fast(
+                &options.unlaunchable_drone_bandwidth.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -402,6 +412,14 @@ impl SolVast {
         if options.unlaunchable_drone_slot.enabled {
             result.unlaunchable_drone_slot =
                 fit_data.validate_unlaunchable_drone_slot_verbose(&options.unlaunchable_drone_slot.kfs, uad, calc, fit);
+        }
+        if options.unlaunchable_drone_bandwidth.enabled {
+            result.unlaunchable_drone_bandwidth = fit_data.validate_unlaunchable_drone_bandwidth_verbose(
+                &options.unlaunchable_drone_bandwidth.kfs,
+                uad,
+                calc,
+                fit,
+            );
         }
         result
     }
