@@ -5,10 +5,10 @@ from dataclasses import dataclass
 class ValSlotCountFail:
 
     used: int
-    total: int | None
+    max: int | None
     users: list[str]
 
     def __init__(self, *, data: tuple) -> None:
         self.used = data[0]
-        self.total = data[1]
+        self.max = data[1]
         self.users = sorted(data[2])

@@ -13,7 +13,7 @@ use crate::{
 
 pub struct SolValResFail {
     pub used: AttrVal,
-    pub output: Option<AttrVal>,
+    pub max: Option<AttrVal>,
     pub users: Vec<SolValResItemInfo>,
 }
 
@@ -230,7 +230,7 @@ fn validate_fast_fitting<'a>(
     fit: &SolFit,
     item_ids: impl Iterator<Item = &'a SolItemId>,
     use_attr_id: &EAttrId,
-    output_attr_id: &EAttrId,
+    max_attr_id: &EAttrId,
 ) -> bool {
     let mut total_use = OF(0.0);
     let mut force_pass = true;
@@ -247,13 +247,13 @@ fn validate_fast_fitting<'a>(
     if force_pass {
         return true;
     }
-    let output = match get_output(uad, calc, fit, output_attr_id) {
+    let max = match get_max(uad, calc, fit, max_attr_id) {
         TriOption::Some(value) => value,
         TriOption::None => OF(0.0),
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return true,
     };
-    round(total_use, 2) <= output
+    round(total_use, 2) <= max
 }
 fn validate_fast_other<'a>(
     kfs: &StSet<SolItemId>,
@@ -261,7 +261,7 @@ fn validate_fast_other<'a>(
     calc: &mut SolCalc,
     fit: &SolFit,
     items: impl Iterator<Item = (&'a SolItemId, &'a AttrVal)>,
-    output_attr_id: &EAttrId,
+    max_attr_id: &EAttrId,
 ) -> bool {
     let mut total_use = OF(0.0);
     let mut force_pass = true;
@@ -274,13 +274,13 @@ fn validate_fast_other<'a>(
     if force_pass {
         return true;
     }
-    let output = match get_output(uad, calc, fit, output_attr_id) {
+    let max = match get_max(uad, calc, fit, max_attr_id) {
         TriOption::Some(value) => value,
         TriOption::None => OF(0.0),
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return true,
     };
-    force_pass || total_use <= output
+    force_pass || total_use <= max
 }
 
 fn validate_verbose_fitting<'a>(
@@ -290,7 +290,7 @@ fn validate_verbose_fitting<'a>(
     fit: &SolFit,
     item_ids: impl ExactSizeIterator<Item = &'a SolItemId>,
     use_attr_id: &EAttrId,
-    output_attr_id: &EAttrId,
+    max_attr_id: &EAttrId,
 ) -> Option<SolValResFail> {
     let mut total_use = OF(0.0);
     let mut users = Vec::with_capacity(item_ids.len());
@@ -311,18 +311,18 @@ fn validate_verbose_fitting<'a>(
         return None;
     }
     let total_use = round(total_use, 2);
-    let output = match get_output(uad, calc, fit, output_attr_id) {
+    let max = match get_max(uad, calc, fit, max_attr_id) {
         TriOption::Some(value) => Some(value),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return None,
     };
-    if total_use <= output.unwrap_or(OF(0.0)) {
+    if total_use <= max.unwrap_or(OF(0.0)) {
         return None;
     }
     Some(SolValResFail {
         used: total_use,
-        output,
+        max,
         users,
     })
 }
@@ -332,7 +332,7 @@ fn validate_verbose_other<'a>(
     calc: &mut SolCalc,
     fit: &SolFit,
     items: impl ExactSizeIterator<Item = (&'a SolItemId, &'a AttrVal)>,
-    output_attr_id: &EAttrId,
+    max_attr_id: &EAttrId,
 ) -> Option<SolValResFail> {
     let mut total_use = OF(0.0);
     let mut users = Vec::with_capacity(items.len());
@@ -348,25 +348,25 @@ fn validate_verbose_other<'a>(
     if users.is_empty() {
         return None;
     }
-    let output = match get_output(uad, calc, fit, output_attr_id) {
+    let max = match get_max(uad, calc, fit, max_attr_id) {
         TriOption::Some(value) => Some(value),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return None,
     };
-    if total_use <= output.unwrap_or(OF(0.0)) {
+    if total_use <= max.unwrap_or(OF(0.0)) {
         return None;
     }
     Some(SolValResFail {
         used: total_use,
-        output,
+        max,
         users,
     })
 }
 
-fn get_output(uad: &SolUad, calc: &mut SolCalc, fit: &SolFit, output_attr_id: &EAttrId) -> TriOption<AttrVal> {
+fn get_max(uad: &SolUad, calc: &mut SolCalc, fit: &SolFit, max_attr_id: &EAttrId) -> TriOption<AttrVal> {
     match fit.ship {
-        Some(ship_id) => match calc.get_item_attr_val_full(uad, &ship_id, output_attr_id) {
+        Some(ship_id) => match calc.get_item_attr_val_full(uad, &ship_id, max_attr_id) {
             Ok(val) => TriOption::Some(val.extra),
             Err(error) => match error {
                 AttrCalcError::ItemNotLoaded(_) => TriOption::Other,

@@ -16,7 +16,7 @@ def test_fail_single(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 
@@ -36,7 +36,7 @@ def test_fail_multiple_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone1.id: 50, api_drone2.id: 100}
 
 
@@ -56,7 +56,7 @@ def test_fail_multiple_struct(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone1.id: 50, api_drone2.id: 100}
 
 
@@ -104,12 +104,12 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id])))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(250)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone2.id: 100}
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone2.id])))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(250)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone1.id: 150}
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id, api_drone2.id])))
     assert api_val.passed is True
@@ -142,7 +142,7 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=(True, [api_drone1.id, api_drone2.id])))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == 250.5
-    assert api_val.details.drone_bay_volume.output == 125
+    assert api_val.details.drone_bay_volume.max == 125
     assert api_val.details.drone_bay_volume.users == {api_drone5.id: 0.5}
 
 
@@ -175,7 +175,7 @@ def test_modified_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
     # Action
     api_implant.remove()
@@ -184,7 +184,7 @@ def test_modified_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 
@@ -212,7 +212,7 @@ def test_modified_output(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(120)
+    assert api_val.details.drone_bay_volume.max == approx(120)
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
@@ -251,7 +251,7 @@ def test_mutation_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(130)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 130}
     # Action
     api_drone.change_drone(mutation={eve_use_attr_id: None})
@@ -260,7 +260,7 @@ def test_mutation_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(130)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 130}
 
 
@@ -281,7 +281,7 @@ def test_rounding(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(5.229)
-    assert api_val.details.drone_bay_volume.output == approx(5.223)
+    assert api_val.details.drone_bay_volume.max == approx(5.223)
     assert api_val.details.drone_bay_volume.users == {api_drone1.id: 0.002, api_drone2.id: 5.227}
 
 
@@ -299,7 +299,7 @@ def test_no_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(5)
-    assert api_val.details.drone_bay_volume.output is None
+    assert api_val.details.drone_bay_volume.max is None
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 5}
 
 
@@ -360,7 +360,7 @@ def test_non_positive(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(140)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone2.id: 150}
 
 
@@ -380,7 +380,7 @@ def test_no_value_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone1.id: 150}
 
 
@@ -400,7 +400,7 @@ def test_no_value_output(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(0)
+    assert api_val.details.drone_bay_volume.max == approx(0)
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 
@@ -420,7 +420,7 @@ def test_no_attr_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output == approx(125)
+    assert api_val.details.drone_bay_volume.max == approx(125)
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 
@@ -440,7 +440,7 @@ def test_no_attr_output(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.drone_bay_volume.used == approx(150)
-    assert api_val.details.drone_bay_volume.output is None
+    assert api_val.details.drone_bay_volume.max is None
     assert api_val.details.drone_bay_volume.users == {api_drone.id: 150}
 
 

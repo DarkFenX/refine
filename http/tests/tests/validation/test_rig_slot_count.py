@@ -15,7 +15,7 @@ def test_fail_single(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 1
-    assert api_val.details.rig_slot_count.total == 0
+    assert api_val.details.rig_slot_count.max == 0
     assert api_val.details.rig_slot_count.users == [api_rig.id]
 
 
@@ -33,7 +33,7 @@ def test_fail_multiple_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 2
-    assert api_val.details.rig_slot_count.total == 1
+    assert api_val.details.rig_slot_count.max == 1
     assert api_val.details.rig_slot_count.users == sorted([api_rig1.id, api_rig2.id])
 
 
@@ -51,7 +51,7 @@ def test_fail_multiple_struct(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 2
-    assert api_val.details.rig_slot_count.total == 1
+    assert api_val.details.rig_slot_count.max == 1
     assert api_val.details.rig_slot_count.users == sorted([api_rig1.id, api_rig2.id])
 
 
@@ -87,12 +87,12 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig1.id])))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 2
-    assert api_val.details.rig_slot_count.total == 1
+    assert api_val.details.rig_slot_count.max == 1
     assert api_val.details.rig_slot_count.users == [api_rig2.id]
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig2.id])))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 2
-    assert api_val.details.rig_slot_count.total == 1
+    assert api_val.details.rig_slot_count.max == 1
     assert api_val.details.rig_slot_count.users == [api_rig1.id]
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig1.id, api_rig2.id])))
     assert api_val.passed is True
@@ -128,7 +128,7 @@ def test_modified_total(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 1
-    assert api_val.details.rig_slot_count.total == 0
+    assert api_val.details.rig_slot_count.max == 0
     assert api_val.details.rig_slot_count.users == [api_rig.id]
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
@@ -154,7 +154,7 @@ def test_fractional_total(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 1
-    assert api_val.details.rig_slot_count.total == 0
+    assert api_val.details.rig_slot_count.max == 0
     assert api_val.details.rig_slot_count.users == [api_rig.id]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
@@ -178,7 +178,7 @@ def test_no_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 1
-    assert api_val.details.rig_slot_count.total is None
+    assert api_val.details.rig_slot_count.max is None
     assert api_val.details.rig_slot_count.users == [api_rig.id]
 
 
@@ -196,7 +196,7 @@ def test_not_loaded_user(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 1
-    assert api_val.details.rig_slot_count.total == 0
+    assert api_val.details.rig_slot_count.max == 0
     assert api_val.details.rig_slot_count.users == [api_rig.id]
 
 
@@ -233,7 +233,7 @@ def test_no_value_total(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 1
-    assert api_val.details.rig_slot_count.total == 0
+    assert api_val.details.rig_slot_count.max == 0
     assert api_val.details.rig_slot_count.users == [api_rig.id]
 
 
@@ -252,7 +252,7 @@ def test_no_attr_total(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 1
-    assert api_val.details.rig_slot_count.total is None
+    assert api_val.details.rig_slot_count.max is None
     assert api_val.details.rig_slot_count.users == [api_rig.id]
 
 
@@ -270,7 +270,7 @@ def test_criterion_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 1
-    assert api_val.details.rig_slot_count.total == 0
+    assert api_val.details.rig_slot_count.max == 0
     assert api_val.details.rig_slot_count.users == [api_rig.id]
     # Action
     api_rig.change_rig(state=False)
@@ -278,7 +278,7 @@ def test_criterion_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 1
-    assert api_val.details.rig_slot_count.total == 0
+    assert api_val.details.rig_slot_count.max == 0
     assert api_val.details.rig_slot_count.users == [api_rig.id]
 
 

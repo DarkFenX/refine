@@ -17,7 +17,7 @@ def test_fail_single(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
@@ -38,7 +38,7 @@ def test_fail_multiple_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18600)
-    assert api_val.details.fighter_bay_volume.output == approx(15000)
+    assert api_val.details.fighter_bay_volume.max == approx(15000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter1.id: approx(9000), api_fighter2.id: approx(9600)}
 
 
@@ -59,7 +59,7 @@ def test_fail_multiple_struct(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18600)
-    assert api_val.details.fighter_bay_volume.output == approx(15000)
+    assert api_val.details.fighter_bay_volume.max == approx(15000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter1.id: approx(9000), api_fighter2.id: approx(9600)}
 
 
@@ -109,12 +109,12 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id])))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18600)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter2.id: approx(9600)}
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter2.id])))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18600)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter1.id: approx(9000)}
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id, api_fighter2.id])))
     assert api_val.passed is True
@@ -147,7 +147,7 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id, api_fighter2.id])))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18601.5)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter5.id: approx(1.5)}
 
 
@@ -166,7 +166,7 @@ def test_changed_count(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(6000)
-    assert api_val.details.fighter_bay_volume.output == approx(5000)
+    assert api_val.details.fighter_bay_volume.max == approx(5000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(6000)}
     # Action
     api_fighter.change_fighter(count=5)
@@ -181,7 +181,7 @@ def test_changed_count(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(20000)
-    assert api_val.details.fighter_bay_volume.output == approx(5000)
+    assert api_val.details.fighter_bay_volume.max == approx(5000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(20000)}
     # Action
     api_fighter.change_fighter(count=2)
@@ -196,7 +196,7 @@ def test_changed_count(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(5000)
+    assert api_val.details.fighter_bay_volume.max == approx(5000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
@@ -230,7 +230,7 @@ def test_modified_count(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
     # Action
     api_implant.remove()
@@ -239,7 +239,7 @@ def test_modified_count(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
@@ -273,7 +273,7 @@ def test_modified_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
     # Action
     api_implant.remove()
@@ -282,7 +282,7 @@ def test_modified_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
@@ -311,7 +311,7 @@ def test_modified_output(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
@@ -341,7 +341,7 @@ def test_rounding(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(5.229)
-    assert api_val.details.fighter_bay_volume.output == approx(5.223)
+    assert api_val.details.fighter_bay_volume.max == approx(5.223)
     assert api_val.details.fighter_bay_volume.users == {api_fighter1.id: approx(0.002), api_fighter2.id: approx(5.227)}
 
 
@@ -360,7 +360,7 @@ def test_no_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output is None
+    assert api_val.details.fighter_bay_volume.max is None
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
@@ -424,7 +424,7 @@ def test_non_positive(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(140)
-    assert api_val.details.fighter_bay_volume.output == approx(125)
+    assert api_val.details.fighter_bay_volume.max == approx(125)
     assert api_val.details.fighter_bay_volume.users == {api_fighter2.id: approx(150)}
 
 
@@ -445,7 +445,7 @@ def test_no_value_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter1.id: approx(9000)}
 
 
@@ -466,7 +466,7 @@ def test_no_value_count(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(10000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter1.id: approx(9000), api_fighter2.id: approx(1000)}
 
 
@@ -487,7 +487,7 @@ def test_no_value_output(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(0)
+    assert api_val.details.fighter_bay_volume.max == approx(0)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
@@ -508,7 +508,7 @@ def test_no_attr_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
@@ -529,7 +529,7 @@ def test_no_attr_count(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output == approx(8000)
+    assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
@@ -550,7 +550,7 @@ def test_no_attr_output(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(9000)
-    assert api_val.details.fighter_bay_volume.output is None
+    assert api_val.details.fighter_bay_volume.max is None
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 

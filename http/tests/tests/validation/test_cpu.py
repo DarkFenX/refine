@@ -17,7 +17,7 @@ def test_fail_single(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
 
 
@@ -38,7 +38,7 @@ def test_fail_multiple_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module1.id: 50, api_module2.id: 100}
 
 
@@ -59,7 +59,7 @@ def test_fail_multiple_struct(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module1.id: 50, api_module2.id: 100}
 
 
@@ -109,12 +109,12 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 250
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module2.id: 100}
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 250
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module1.id: 150}
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
@@ -146,7 +146,7 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 250.5
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module5.id: 0.5}
 
 
@@ -175,7 +175,7 @@ def test_modified_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
@@ -212,7 +212,7 @@ def test_modified_output(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 120
+    assert api_val.details.cpu.max == 120
     assert api_val.details.cpu.users == {api_module.id: 150}
     # Action
     api_fit.add_implant(type_id=eve_implant_id)
@@ -252,7 +252,7 @@ def test_mutation_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 129.6
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 129.6}
     # Action
     api_module.change_mod(mutation={eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}})
@@ -261,7 +261,7 @@ def test_mutation_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 134.4
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 134.4}
     # Action
     api_module.change_mod(mutation=None)
@@ -290,7 +290,7 @@ def test_rounding(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 5.24
-    assert api_val.details.cpu.output == 5.23
+    assert api_val.details.cpu.max == 5.23
     assert api_val.details.cpu.users == {api_module1.id: 0.01, api_module2.id: 5.23}
 
 
@@ -316,7 +316,7 @@ def test_sum_rounding(client, consts):
         api_val = api_fit.validate(options=ValOptions(cpu=True))
         assert api_val.passed is False
         assert api_val.details.cpu.used == round(i / 10, 1)
-        assert api_val.details.cpu.output == 0.15
+        assert api_val.details.cpu.max == 0.15
         assert len(api_val.details.cpu.users) == i
 
 
@@ -335,7 +335,7 @@ def test_no_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 5
-    assert api_val.details.cpu.output is None
+    assert api_val.details.cpu.max is None
     assert api_val.details.cpu.users == {api_module.id: 5}
 
 
@@ -400,7 +400,7 @@ def test_non_positive(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 140
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module2.id: 150}
 
 
@@ -439,7 +439,7 @@ def test_no_value_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module1.id: 150}
 
 
@@ -460,7 +460,7 @@ def test_no_value_output(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 0
+    assert api_val.details.cpu.max == 0
     assert api_val.details.cpu.users == {api_module.id: 150}
 
 
@@ -481,7 +481,7 @@ def test_no_attr_output(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output is None
+    assert api_val.details.cpu.max is None
     assert api_val.details.cpu.users == {api_module.id: 150}
 
 
@@ -507,7 +507,7 @@ def test_criterion_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
     # Action
     api_module.change_mod(state=consts.ApiModuleState.offline)
@@ -533,7 +533,7 @@ def test_criterion_effect(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
     # Action
     api_module.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
@@ -550,7 +550,7 @@ def test_criterion_effect(client, consts):
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
-    assert api_val.details.cpu.output == 125
+    assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module.id: 150}
     # Action
     api_module.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})

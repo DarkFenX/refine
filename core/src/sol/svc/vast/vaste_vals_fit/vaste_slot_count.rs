@@ -6,7 +6,7 @@ use crate::{
     sol::{
         svc::{
             calc::{AttrCalcError, SolCalc},
-            vast::{SolStatSlot, SolVastFitData},
+            vast::SolVastFitData,
         },
         uad::{
             SolUad,
@@ -18,7 +18,7 @@ use crate::{
 
 pub struct SolValSlotCountFail {
     pub used: Count,
-    pub total: Option<Count>,
+    pub max: Option<Count>,
     pub users: Vec<SolItemId>,
 }
 
@@ -427,62 +427,62 @@ fn validate_fast_unordered_set(
     kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
-    output_item_id: &Option<SolItemId>,
-    output_attr_id: &EAttrId,
+    max_item_id: &Option<SolItemId>,
+    max_attr_id: &EAttrId,
     users: &StSet<SolItemId>,
 ) -> bool {
     if users.is_subset(kfs) {
         return true;
     }
-    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
-        TriOption::Some(output) => output,
+    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+        TriOption::Some(max) => max,
         TriOption::None => 0,
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return true,
     };
     let used = users.len() as Count;
-    used <= output
+    used <= max
 }
 fn validate_fast_unordered_map<T>(
     kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
-    output_item_id: &Option<SolItemId>,
-    output_attr_id: &EAttrId,
+    max_item_id: &Option<SolItemId>,
+    max_attr_id: &EAttrId,
     users: &StMap<SolItemId, T>,
 ) -> bool {
     if users.is_subset(kfs) {
         return true;
     }
-    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
-        TriOption::Some(output) => output,
+    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+        TriOption::Some(max) => max,
         TriOption::None => 0,
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return true,
     };
     let used = users.len() as Count;
-    used <= output
+    used <= max
 }
 fn validate_fast_ordered(
     kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
-    output_item_id: &Option<SolItemId>,
-    output_attr_id: &EAttrId,
+    max_item_id: &Option<SolItemId>,
+    max_attr_id: &EAttrId,
     users: &SolItemVec,
 ) -> bool {
-    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
-        TriOption::Some(output) => output,
+    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+        TriOption::Some(max) => max,
         TriOption::None => 0,
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return true,
     };
     let used = users.len() as Count;
     match kfs.is_empty() {
-        true => used <= output,
-        false => match used <= output {
+        true => used <= max,
+        false => match used <= max {
             true => true,
-            false => users.iter_ids_from(output as Idx).all(|v| kfs.contains(v)),
+            false => users.iter_ids_from(max as Idx).all(|v| kfs.contains(v)),
         },
     }
 }
@@ -491,100 +491,88 @@ fn validate_verbose_unordered_set(
     kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
-    output_item_id: &Option<SolItemId>,
-    output_attr_id: &EAttrId,
+    max_item_id: &Option<SolItemId>,
+    max_attr_id: &EAttrId,
     users: &StSet<SolItemId>,
 ) -> Option<SolValSlotCountFail> {
-    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
-        TriOption::Some(output) => Some(output),
+    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+        TriOption::Some(max) => Some(max),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return None,
     };
     let used = users.len() as Count;
-    if used <= output.unwrap_or(0) {
+    if used <= max.unwrap_or(0) {
         return None;
     }
     let users = users.difference(kfs).copied().collect_vec();
     if users.is_empty() {
         return None;
     }
-    Some(SolValSlotCountFail {
-        used,
-        total: output,
-        users,
-    })
+    Some(SolValSlotCountFail { used, max, users })
 }
 fn validate_verbose_unordered_map<T>(
     kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
-    output_item_id: &Option<SolItemId>,
-    output_attr_id: &EAttrId,
+    max_item_id: &Option<SolItemId>,
+    max_attr_id: &EAttrId,
     users: &StMap<SolItemId, T>,
 ) -> Option<SolValSlotCountFail> {
-    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
-        TriOption::Some(output) => Some(output),
+    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+        TriOption::Some(max) => Some(max),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return None,
     };
     let used = users.len() as Count;
-    if used <= output.unwrap_or(0) {
+    if used <= max.unwrap_or(0) {
         return None;
     }
     let users = users.difference(kfs).copied().collect_vec();
     if users.is_empty() {
         return None;
     }
-    Some(SolValSlotCountFail {
-        used,
-        total: output,
-        users,
-    })
+    Some(SolValSlotCountFail { used, max, users })
 }
 fn validate_verbose_ordered(
     kfs: &StSet<SolItemId>,
     uad: &SolUad,
     calc: &mut SolCalc,
-    output_item_id: &Option<SolItemId>,
-    output_attr_id: &EAttrId,
+    max_item_id: &Option<SolItemId>,
+    max_attr_id: &EAttrId,
     users: &SolItemVec,
 ) -> Option<SolValSlotCountFail> {
-    let output = match get_output(uad, calc, output_item_id, output_attr_id) {
-        TriOption::Some(output) => Some(output),
+    let max = match get_max(uad, calc, max_item_id, max_attr_id) {
+        TriOption::Some(max) => Some(max),
         TriOption::None => None,
         // Policy is to pass validations if some data is not available due to item being not loaded
         TriOption::Other => return None,
     };
     let used = users.len() as Count;
-    let effective_output = output.unwrap_or(0);
-    if used <= effective_output {
+    let effective_max = max.unwrap_or(0);
+    if used <= effective_max {
         return None;
     }
     let users = users
-        .iter_ids_from(effective_output as Idx)
+        .iter_ids_from(effective_max as Idx)
         .filter(|v| !kfs.contains(v))
         .copied()
         .collect_vec();
     if users.is_empty() {
         return None;
     }
-    Some(SolValSlotCountFail {
-        used,
-        total: output,
-        users,
-    })
+    Some(SolValSlotCountFail { used, max, users })
 }
 
-fn get_output(
+fn get_max(
     uad: &SolUad,
     calc: &mut SolCalc,
-    output_item_id: &Option<SolItemId>,
-    output_attr_id: &EAttrId,
+    max_item_id: &Option<SolItemId>,
+    max_attr_id: &EAttrId,
 ) -> TriOption<Count> {
-    match output_item_id {
-        Some(item_id) => match calc.get_item_attr_val_full(uad, item_id, output_attr_id) {
+    match max_item_id {
+        Some(item_id) => match calc.get_item_attr_val_full(uad, item_id, max_attr_id) {
             Ok(val) => TriOption::Some(val.extra.into_inner().round() as Count),
             Err(error) => match error {
                 AttrCalcError::ItemNotLoaded(_) => TriOption::Other,
