@@ -1,7 +1,7 @@
 use crate::info::valid::details::{
     HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail,
     HValFighterCountFail, HValItemKindFail, HValMaxGroupFail, HValModuleStateFail, HValResFail, HValRigSizeFail,
-    HValShipLimitFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableSlotFail,
+    HValShipLimitFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
 };
 
 #[derive(serde::Serialize)]
@@ -103,6 +103,8 @@ struct HValidInfoDetails {
     fighter_count: HValFighterCountFail,
     #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_drone_slot: Option<HValUnusableSlotFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unlaunchable_drone_bandwidth: Option<HValUnusableResFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -146,6 +148,7 @@ impl HValidInfoDetails {
             && self.drone_group.is_none()
             && self.fighter_count.is_empty()
             && self.unlaunchable_drone_slot.is_none()
+            && self.unlaunchable_drone_bandwidth.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -203,6 +206,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             drone_group: core_val_result.drone_group.as_ref().map(|v| v.into()),
             fighter_count: (&core_val_result.fighter_count).into(),
             unlaunchable_drone_slot: core_val_result.unlaunchable_drone_slot.as_ref().map(|v| v.into()),
+            unlaunchable_drone_bandwidth: core_val_result.unlaunchable_drone_bandwidth.as_ref().map(|v| v.into()),
         }
     }
 }

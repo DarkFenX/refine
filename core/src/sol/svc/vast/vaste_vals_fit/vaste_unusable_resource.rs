@@ -68,7 +68,7 @@ impl SolVastFitData {
         let users = self
             .drones_bandwidth
             .iter()
-            .filter(|(item_id, &item_use)| item_use > effective_max && !kfs.contains(item_id))
+            .filter(|(item_id, item_use)| **item_use > effective_max && !kfs.contains(item_id))
             .map(|(&item_id, &item_use)| SolValUnusableResItemInfo {
                 item_id,
                 used: item_use,
