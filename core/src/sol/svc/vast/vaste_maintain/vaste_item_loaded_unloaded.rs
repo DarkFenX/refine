@@ -115,6 +115,24 @@ impl SolVast {
                         },
                     );
                 }
+                if extras.is_light_fighter {
+                    fit_data.light_fighters.insert(fighter.get_id());
+                }
+                if extras.is_heavy_fighter {
+                    fit_data.heavy_fighters.insert(fighter.get_id());
+                }
+                if extras.is_support_fighter {
+                    fit_data.support_fighters.insert(fighter.get_id());
+                }
+                if extras.is_standup_light_fighter {
+                    fit_data.standup_light_fighters.insert(fighter.get_id());
+                }
+                if extras.is_standup_heavy_fighter {
+                    fit_data.standup_heavy_fighters.insert(fighter.get_id());
+                }
+                if extras.is_standup_support_fighter {
+                    fit_data.standup_support_fighters.insert(fighter.get_id());
+                }
             }
             SolItem::Implant(implant) => {
                 let extras = implant.get_a_extras().unwrap();
@@ -279,6 +297,24 @@ impl SolVast {
                 let count = fighter.get_count().unwrap();
                 if count.current > count.max {
                     fit_data.fighter_count.remove(&item_id);
+                }
+                if extras.is_light_fighter {
+                    fit_data.light_fighters.remove(&fighter.get_id());
+                }
+                if extras.is_heavy_fighter {
+                    fit_data.heavy_fighters.remove(&fighter.get_id());
+                }
+                if extras.is_support_fighter {
+                    fit_data.support_fighters.remove(&fighter.get_id());
+                }
+                if extras.is_standup_light_fighter {
+                    fit_data.standup_light_fighters.remove(&fighter.get_id());
+                }
+                if extras.is_standup_heavy_fighter {
+                    fit_data.standup_heavy_fighters.remove(&fighter.get_id());
+                }
+                if extras.is_standup_support_fighter {
+                    fit_data.standup_support_fighters.remove(&fighter.get_id());
                 }
             }
             SolItem::Implant(implant) => {

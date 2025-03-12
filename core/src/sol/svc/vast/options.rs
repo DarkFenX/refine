@@ -43,6 +43,13 @@ pub struct SolValOptions {
     pub fighter_count: SolValOption,
     pub unlaunchable_drone_slot: SolValOption,
     pub unlaunchable_drone_bandwidth: SolValOption,
+    pub unlaunchable_fighter: SolValOption,
+    pub unlaunchable_support_fighter: SolValOption,
+    pub unlaunchable_light_fighter: SolValOption,
+    pub unlaunchable_heavy_fighter: SolValOption,
+    pub unlaunchable_standup_support_fighter: SolValOption,
+    pub unlaunchable_standup_light_fighter: SolValOption,
+    pub unlaunchable_standup_heavy_fighter: SolValOption,
 }
 impl SolValOptions {
     pub fn all_enabled() -> Self {
@@ -88,6 +95,13 @@ impl SolValOptions {
             fighter_count: SolValOption::enabled(),
             unlaunchable_drone_slot: SolValOption::enabled(),
             unlaunchable_drone_bandwidth: SolValOption::enabled(),
+            unlaunchable_fighter: SolValOption::enabled(),
+            unlaunchable_support_fighter: SolValOption::enabled(),
+            unlaunchable_light_fighter: SolValOption::enabled(),
+            unlaunchable_heavy_fighter: SolValOption::enabled(),
+            unlaunchable_standup_support_fighter: SolValOption::enabled(),
+            unlaunchable_standup_light_fighter: SolValOption::enabled(),
+            unlaunchable_standup_heavy_fighter: SolValOption::enabled(),
         }
     }
     pub fn all_disabled() -> Self {
@@ -133,6 +147,13 @@ impl SolValOptions {
             fighter_count: SolValOption::disabled(),
             unlaunchable_drone_slot: SolValOption::disabled(),
             unlaunchable_drone_bandwidth: SolValOption::disabled(),
+            unlaunchable_fighter: SolValOption::disabled(),
+            unlaunchable_support_fighter: SolValOption::disabled(),
+            unlaunchable_light_fighter: SolValOption::disabled(),
+            unlaunchable_heavy_fighter: SolValOption::disabled(),
+            unlaunchable_standup_support_fighter: SolValOption::disabled(),
+            unlaunchable_standup_light_fighter: SolValOption::disabled(),
+            unlaunchable_standup_heavy_fighter: SolValOption::disabled(),
         }
     }
 }

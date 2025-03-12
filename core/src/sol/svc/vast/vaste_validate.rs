@@ -230,6 +230,71 @@ impl SolVast {
         {
             return false;
         }
+        if options.unlaunchable_fighter.enabled
+            && !fit_data.validate_unlaunchable_fighter_fast(&options.unlaunchable_fighter.kfs, uad, calc, fit)
+        {
+            return false;
+        }
+        if options.unlaunchable_support_fighter.enabled
+            && !fit_data.validate_unlaunchable_support_fighter_fast(
+                &options.unlaunchable_support_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.unlaunchable_light_fighter.enabled
+            && !fit_data.validate_unlaunchable_light_fighter_fast(
+                &options.unlaunchable_light_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.unlaunchable_heavy_fighter.enabled
+            && !fit_data.validate_unlaunchable_heavy_fighter_fast(
+                &options.unlaunchable_heavy_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.unlaunchable_standup_support_fighter.enabled
+            && !fit_data.validate_unlaunchable_standup_support_fighter_fast(
+                &options.unlaunchable_standup_support_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.unlaunchable_standup_light_fighter.enabled
+            && !fit_data.validate_unlaunchable_standup_light_fighter_fast(
+                &options.unlaunchable_standup_light_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
+        if options.unlaunchable_standup_heavy_fighter.enabled
+            && !fit_data.validate_unlaunchable_standup_heavy_fighter_fast(
+                &options.unlaunchable_standup_heavy_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            )
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -416,6 +481,59 @@ impl SolVast {
         if options.unlaunchable_drone_bandwidth.enabled {
             result.unlaunchable_drone_bandwidth = fit_data.validate_unlaunchable_drone_bandwidth_verbose(
                 &options.unlaunchable_drone_bandwidth.kfs,
+                uad,
+                calc,
+                fit,
+            );
+        }
+        if options.unlaunchable_fighter.enabled {
+            result.unlaunchable_fighter =
+                fit_data.validate_unlaunchable_fighter_verbose(&options.unlaunchable_fighter.kfs, uad, calc, fit);
+        }
+        if options.unlaunchable_support_fighter.enabled {
+            result.unlaunchable_support_fighter = fit_data.validate_unlaunchable_support_fighter_verbose(
+                &options.unlaunchable_support_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            );
+        }
+        if options.unlaunchable_light_fighter.enabled {
+            result.unlaunchable_light_fighter = fit_data.validate_unlaunchable_light_fighter_verbose(
+                &options.unlaunchable_light_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            );
+        }
+        if options.unlaunchable_heavy_fighter.enabled {
+            result.unlaunchable_heavy_fighter = fit_data.validate_unlaunchable_heavy_fighter_verbose(
+                &options.unlaunchable_heavy_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            );
+        }
+        if options.unlaunchable_standup_support_fighter.enabled {
+            result.unlaunchable_standup_support_fighter = fit_data
+                .validate_unlaunchable_standup_support_fighter_verbose(
+                    &options.unlaunchable_standup_support_fighter.kfs,
+                    uad,
+                    calc,
+                    fit,
+                );
+        }
+        if options.unlaunchable_standup_light_fighter.enabled {
+            result.unlaunchable_standup_light_fighter = fit_data.validate_unlaunchable_standup_light_fighter_verbose(
+                &options.unlaunchable_standup_light_fighter.kfs,
+                uad,
+                calc,
+                fit,
+            );
+        }
+        if options.unlaunchable_standup_heavy_fighter.enabled {
+            result.unlaunchable_standup_heavy_fighter = fit_data.validate_unlaunchable_standup_heavy_fighter_verbose(
+                &options.unlaunchable_standup_heavy_fighter.kfs,
                 uad,
                 calc,
                 fit,

@@ -40,19 +40,37 @@ impl SolVastFitData {
         for item_id in self.fighters_online.iter() {
             check_item(uad, item_id, false)?;
         }
+        for item_id in self.support_fighters.iter() {
+            check_item(uad, item_id, true)?;
+        }
         for item_id in self.support_fighters_online.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.light_fighters.iter() {
             check_item(uad, item_id, true)?;
         }
         for item_id in self.light_fighters_online.iter() {
             check_item(uad, item_id, true)?;
         }
+        for item_id in self.heavy_fighters.iter() {
+            check_item(uad, item_id, true)?;
+        }
         for item_id in self.heavy_fighters_online.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.standup_support_fighters.iter() {
             check_item(uad, item_id, true)?;
         }
         for item_id in self.standup_support_fighters_online.iter() {
             check_item(uad, item_id, true)?;
         }
+        for item_id in self.standup_light_fighters.iter() {
+            check_item(uad, item_id, true)?;
+        }
         for item_id in self.standup_light_fighters_online.iter() {
+            check_item(uad, item_id, true)?;
+        }
+        for item_id in self.standup_heavy_fighters.iter() {
             check_item(uad, item_id, true)?;
         }
         for item_id in self.standup_heavy_fighters_online.iter() {

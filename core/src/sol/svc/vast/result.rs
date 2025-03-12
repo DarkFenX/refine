@@ -47,6 +47,13 @@ pub struct SolValResult {
     pub fighter_count: Vec<SolValFighterCountFail>,
     pub unlaunchable_drone_slot: Option<SolValUnusableSlotFail>,
     pub unlaunchable_drone_bandwidth: Option<SolValUnusableResFail>,
+    pub unlaunchable_fighter: Option<SolValUnusableSlotFail>,
+    pub unlaunchable_support_fighter: Option<SolValUnusableSlotFail>,
+    pub unlaunchable_light_fighter: Option<SolValUnusableSlotFail>,
+    pub unlaunchable_heavy_fighter: Option<SolValUnusableSlotFail>,
+    pub unlaunchable_standup_support_fighter: Option<SolValUnusableSlotFail>,
+    pub unlaunchable_standup_light_fighter: Option<SolValUnusableSlotFail>,
+    pub unlaunchable_standup_heavy_fighter: Option<SolValUnusableSlotFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -92,6 +99,13 @@ impl SolValResult {
             fighter_count: Vec::new(),
             unlaunchable_drone_slot: None,
             unlaunchable_drone_bandwidth: None,
+            unlaunchable_fighter: None,
+            unlaunchable_support_fighter: None,
+            unlaunchable_light_fighter: None,
+            unlaunchable_heavy_fighter: None,
+            unlaunchable_standup_support_fighter: None,
+            unlaunchable_standup_light_fighter: None,
+            unlaunchable_standup_heavy_fighter: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -136,5 +150,12 @@ impl SolValResult {
             && self.fighter_count.is_empty()
             && self.unlaunchable_drone_slot.is_none()
             && self.unlaunchable_drone_bandwidth.is_none()
+            && self.unlaunchable_fighter.is_none()
+            && self.unlaunchable_support_fighter.is_none()
+            && self.unlaunchable_light_fighter.is_none()
+            && self.unlaunchable_heavy_fighter.is_none()
+            && self.unlaunchable_standup_support_fighter.is_none()
+            && self.unlaunchable_standup_light_fighter.is_none()
+            && self.unlaunchable_standup_heavy_fighter.is_none()
     }
 }
