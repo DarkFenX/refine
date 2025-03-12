@@ -50,6 +50,13 @@ class ValOptions:
     fighter_count: ValOption = Absent
     unlaunchable_drone_slot: ValOption = Absent
     unlaunchable_drone_bandwidth: ValOption = Absent
+    unlaunchable_fighter: ValOption = Absent
+    unlaunchable_support_fighter: ValOption = Absent
+    unlaunchable_light_fighter: ValOption = Absent
+    unlaunchable_heavy_fighter: ValOption = Absent
+    unlaunchable_standup_support_fighter: ValOption = Absent
+    unlaunchable_standup_light_fighter: ValOption = Absent
+    unlaunchable_standup_heavy_fighter: ValOption = Absent
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})

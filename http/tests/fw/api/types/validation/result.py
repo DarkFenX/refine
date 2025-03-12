@@ -69,4 +69,11 @@ class ValResultDetails(AttrDict):
             'drone_group': AttrHookDef(func=lambda d: ValDroneGroupFail(data=d)),
             'fighter_count': AttrHookDef(func=lambda d: ValFighterCountFail(data=d)),
             'unlaunchable_drone_slot': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
-            'unlaunchable_drone_bandwidth': AttrHookDef(func=lambda d: ValUnusableResFail(data=d))})
+            'unlaunchable_drone_bandwidth': AttrHookDef(func=lambda d: ValUnusableResFail(data=d)),
+            'unlaunchable_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_support_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_light_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_heavy_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_standup_support_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_standup_light_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'unlaunchable_standup_heavy_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d))})
