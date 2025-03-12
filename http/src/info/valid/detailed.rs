@@ -105,6 +105,20 @@ struct HValidInfoDetails {
     unlaunchable_drone_slot: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_drone_bandwidth: Option<HValUnusableResFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unlaunchable_fighter: Option<HValUnusableSlotFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unlaunchable_support_fighter: Option<HValUnusableSlotFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unlaunchable_light_fighter: Option<HValUnusableSlotFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unlaunchable_heavy_fighter: Option<HValUnusableSlotFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unlaunchable_standup_support_fighter: Option<HValUnusableSlotFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unlaunchable_standup_light_fighter: Option<HValUnusableSlotFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    unlaunchable_standup_heavy_fighter: Option<HValUnusableSlotFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -149,6 +163,13 @@ impl HValidInfoDetails {
             && self.fighter_count.is_empty()
             && self.unlaunchable_drone_slot.is_none()
             && self.unlaunchable_drone_bandwidth.is_none()
+            && self.unlaunchable_fighter.is_none()
+            && self.unlaunchable_support_fighter.is_none()
+            && self.unlaunchable_light_fighter.is_none()
+            && self.unlaunchable_heavy_fighter.is_none()
+            && self.unlaunchable_standup_support_fighter.is_none()
+            && self.unlaunchable_standup_light_fighter.is_none()
+            && self.unlaunchable_standup_heavy_fighter.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -207,6 +228,22 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
             fighter_count: (&core_val_result.fighter_count).into(),
             unlaunchable_drone_slot: core_val_result.unlaunchable_drone_slot.as_ref().map(|v| v.into()),
             unlaunchable_drone_bandwidth: core_val_result.unlaunchable_drone_bandwidth.as_ref().map(|v| v.into()),
+            unlaunchable_fighter: core_val_result.unlaunchable_fighter.as_ref().map(|v| v.into()),
+            unlaunchable_support_fighter: core_val_result.unlaunchable_support_fighter.as_ref().map(|v| v.into()),
+            unlaunchable_light_fighter: core_val_result.unlaunchable_light_fighter.as_ref().map(|v| v.into()),
+            unlaunchable_heavy_fighter: core_val_result.unlaunchable_heavy_fighter.as_ref().map(|v| v.into()),
+            unlaunchable_standup_support_fighter: core_val_result
+                .unlaunchable_standup_support_fighter
+                .as_ref()
+                .map(|v| v.into()),
+            unlaunchable_standup_light_fighter: core_val_result
+                .unlaunchable_standup_light_fighter
+                .as_ref()
+                .map(|v| v.into()),
+            unlaunchable_standup_heavy_fighter: core_val_result
+                .unlaunchable_standup_heavy_fighter
+                .as_ref()
+                .map(|v| v.into()),
         }
     }
 }

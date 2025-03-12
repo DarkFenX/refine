@@ -88,6 +88,20 @@ pub(crate) struct HValidateFitCmd {
     unlaunchable_drone_slot: Option<HValidationOption>,
     #[serde(default)]
     unlaunchable_drone_bandwidth: Option<HValidationOption>,
+    #[serde(default)]
+    unlaunchable_fighter: Option<HValidationOption>,
+    #[serde(default)]
+    unlaunchable_support_fighter: Option<HValidationOption>,
+    #[serde(default)]
+    unlaunchable_light_fighter: Option<HValidationOption>,
+    #[serde(default)]
+    unlaunchable_heavy_fighter: Option<HValidationOption>,
+    #[serde(default)]
+    unlaunchable_standup_support_fighter: Option<HValidationOption>,
+    #[serde(default)]
+    unlaunchable_standup_light_fighter: Option<HValidationOption>,
+    #[serde(default)]
+    unlaunchable_standup_heavy_fighter: Option<HValidationOption>,
 }
 impl HValidateFitCmd {
     pub(crate) fn execute(
@@ -162,6 +176,31 @@ impl HValidateFitCmd {
             &self.unlaunchable_drone_bandwidth,
             &mut core_options.unlaunchable_drone_bandwidth,
         );
+        process_option(&self.unlaunchable_fighter, &mut core_options.unlaunchable_fighter);
+        process_option(
+            &self.unlaunchable_support_fighter,
+            &mut core_options.unlaunchable_support_fighter,
+        );
+        process_option(
+            &self.unlaunchable_light_fighter,
+            &mut core_options.unlaunchable_light_fighter,
+        );
+        process_option(
+            &self.unlaunchable_heavy_fighter,
+            &mut core_options.unlaunchable_heavy_fighter,
+        );
+        process_option(
+            &self.unlaunchable_standup_support_fighter,
+            &mut core_options.unlaunchable_standup_support_fighter,
+        );
+        process_option(
+            &self.unlaunchable_standup_light_fighter,
+            &mut core_options.unlaunchable_standup_light_fighter,
+        );
+        process_option(
+            &self.unlaunchable_standup_heavy_fighter,
+            &mut core_options.unlaunchable_standup_heavy_fighter,
+        );
         // Run validation
         match valid_mode {
             HValidInfoMode::Simple => core_sol.validate_fit_fast(fit_id, &core_options).map(|v| v.into()),
@@ -219,6 +258,13 @@ impl Default for HValidateFitCmd {
             fighter_count: None,
             unlaunchable_drone_slot: None,
             unlaunchable_drone_bandwidth: None,
+            unlaunchable_fighter: None,
+            unlaunchable_support_fighter: None,
+            unlaunchable_light_fighter: None,
+            unlaunchable_heavy_fighter: None,
+            unlaunchable_standup_support_fighter: None,
+            unlaunchable_standup_light_fighter: None,
+            unlaunchable_standup_heavy_fighter: None,
         }
     }
 }
