@@ -15,6 +15,7 @@ from .ship_limit import ValShipLimitFail
 from .skill_reqs import ValSrqFail
 from .slot_count import ValSlotCountFail
 from .slot_index import ValSlotIndexFail
+from .unusable_slot import ValUnusableSlotFail
 
 
 class ValResult(AttrDict):
@@ -65,4 +66,5 @@ class ValResultDetails(AttrDict):
             'module_state': AttrHookDef(func=lambda d: ValModuleStateFail(data=d)),
             'item_kind': AttrHookDef(func=lambda d: ValItemKindFail(data=d)),
             'drone_group': AttrHookDef(func=lambda d: ValDroneGroupFail(data=d)),
-            'fighter_count': AttrHookDef(func=lambda d: ValFighterCountFail(data=d))})
+            'fighter_count': AttrHookDef(func=lambda d: ValFighterCountFail(data=d)),
+            'unlaunchable_drone_slot': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d))})

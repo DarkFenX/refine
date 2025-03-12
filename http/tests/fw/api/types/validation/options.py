@@ -48,6 +48,7 @@ class ValOptions:
     item_kind: ValOption = Absent
     drone_group: ValOption = Absent
     fighter_count: ValOption = Absent
+    unlaunchable_drone_slot: ValOption = Absent
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})

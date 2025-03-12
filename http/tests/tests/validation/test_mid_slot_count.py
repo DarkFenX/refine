@@ -215,7 +215,6 @@ def test_known_failures(client, consts):
 
 
 def test_modified_total(client, consts):
-    # Unrealistic scenario, but modification of total count is supported
     eve_total_attr_id = client.mk_eve_attr(id_=consts.EveAttr.med_slots)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
