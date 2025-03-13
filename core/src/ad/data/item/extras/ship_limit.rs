@@ -50,27 +50,40 @@ pub struct AItemShipLimit {
     pub type_ids: Vec<EItemId>,
     pub group_ids: Vec<EItemGrpId>,
 }
-impl AItemShipLimit {
-    pub(crate) fn new(type_ids: Vec<EItemId>, group_ids: Vec<EItemGrpId>) -> Self {
-        Self { type_ids, group_ids }
-    }
-}
 
-pub(super) fn get_item_ship_limit(item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemShipLimit> {
-    let type_ids = TYPE_ATTRS
+pub(super) fn get_item_ship_limit(a_item_id: EItemId, item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemShipLimit> {
+    let mut limit_type_ids = TYPE_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
         .map(|v| v.round() as EItemId)
         .unique()
         .collect_vec();
-    let group_ids = GROUP_ATTRS
+    let limit_group_ids = GROUP_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
         .map(|v| v.round() as EItemGrpId)
         .unique()
         .collect_vec();
-    if type_ids.is_empty() && group_ids.is_empty() {
+    match a_item_id {
+        ec::items::CONFESSOR_DEFENSE_MODE => limit_type_ids.push(ec::items::CONFESSOR),
+        ec::items::CONFESSOR_PROPULSION_MODE => limit_type_ids.push(ec::items::CONFESSOR),
+        ec::items::CONFESSOR_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::CONFESSOR),
+        ec::items::HECATE_DEFENSE_MODE => limit_type_ids.push(ec::items::HECATE),
+        ec::items::HECATE_PROPULSION_MODE => limit_type_ids.push(ec::items::HECATE),
+        ec::items::HECATE_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::HECATE),
+        ec::items::JACKDAW_DEFENSE_MODE => limit_type_ids.push(ec::items::JACKDAW),
+        ec::items::JACKDAW_PROPULSION_MODE => limit_type_ids.push(ec::items::JACKDAW),
+        ec::items::JACKDAW_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::JACKDAW),
+        ec::items::SVIPUL_DEFENSE_MODE => limit_type_ids.push(ec::items::SVIPUL),
+        ec::items::SVIPUL_PROPULSION_MODE => limit_type_ids.push(ec::items::SVIPUL),
+        ec::items::SVIPUL_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::SVIPUL),
+        _ => (),
+    }
+    if limit_type_ids.is_empty() && limit_group_ids.is_empty() {
         return None;
     }
-    Some(AItemShipLimit::new(type_ids, group_ids))
+    Some(AItemShipLimit {
+        type_ids: limit_type_ids,
+        group_ids: limit_group_ids,
+    })
 }
