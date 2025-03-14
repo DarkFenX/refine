@@ -51,7 +51,7 @@ pub struct AItemShipLimit {
     pub group_ids: Vec<EItemGrpId>,
 }
 
-pub(super) fn get_item_ship_limit(a_item_id: EItemId, item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemShipLimit> {
+pub(super) fn get_item_ship_limit(item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemShipLimit> {
     let mut limit_type_ids = TYPE_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
@@ -64,21 +64,6 @@ pub(super) fn get_item_ship_limit(a_item_id: EItemId, item_attrs: &StMap<EAttrId
         .map(|v| v.round() as EItemGrpId)
         .unique()
         .collect_vec();
-    match a_item_id {
-        ec::items::CONFESSOR_DEFENSE_MODE => limit_type_ids.push(ec::items::CONFESSOR),
-        ec::items::CONFESSOR_PROPULSION_MODE => limit_type_ids.push(ec::items::CONFESSOR),
-        ec::items::CONFESSOR_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::CONFESSOR),
-        ec::items::HECATE_DEFENSE_MODE => limit_type_ids.push(ec::items::HECATE),
-        ec::items::HECATE_PROPULSION_MODE => limit_type_ids.push(ec::items::HECATE),
-        ec::items::HECATE_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::HECATE),
-        ec::items::JACKDAW_DEFENSE_MODE => limit_type_ids.push(ec::items::JACKDAW),
-        ec::items::JACKDAW_PROPULSION_MODE => limit_type_ids.push(ec::items::JACKDAW),
-        ec::items::JACKDAW_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::JACKDAW),
-        ec::items::SVIPUL_DEFENSE_MODE => limit_type_ids.push(ec::items::SVIPUL),
-        ec::items::SVIPUL_PROPULSION_MODE => limit_type_ids.push(ec::items::SVIPUL),
-        ec::items::SVIPUL_SHARPSHOOTER_MODE => limit_type_ids.push(ec::items::SVIPUL),
-        _ => (),
-    }
     if limit_type_ids.is_empty() && limit_group_ids.is_empty() {
         return None;
     }

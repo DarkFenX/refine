@@ -104,7 +104,7 @@ impl AItemExtras {
         Self {
             kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
             volume: get_item_volume(attrs),
-            ship_limit: get_item_ship_limit(a_item.id, attrs),
+            ship_limit: get_item_ship_limit(attrs),
             charge_limit: get_item_charge_limit(attrs),
             val_fitted_group_id: a_item.extras.val_fitted_group_id,
             val_online_group_id: a_item.extras.val_online_group_id,
@@ -127,7 +127,6 @@ impl AItemExtras {
     }
     pub(crate) fn fill(
         &mut self,
-        item_id: EItemId,
         item_grp_id: EItemGrpId,
         item_cat_id: EItemCatId,
         item_attrs: &StMap<EAttrId, AttrVal>,
@@ -140,7 +139,7 @@ impl AItemExtras {
     ) {
         self.kind = get_item_kind(item_grp_id, item_cat_id, item_attrs, item_effects);
         self.volume = get_item_volume(item_attrs);
-        self.ship_limit = get_item_ship_limit(item_id, item_attrs);
+        self.ship_limit = get_item_ship_limit(item_attrs);
         self.charge_limit = get_item_charge_limit(item_attrs);
         self.val_fitted_group_id = match fitted_limited_groups.contains(&item_grp_id) {
             true => Some(item_grp_id),
