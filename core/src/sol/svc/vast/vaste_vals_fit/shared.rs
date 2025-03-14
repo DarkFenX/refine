@@ -1,10 +1,6 @@
 use crate::{
     defs::{AttrVal, Count, EAttrId, SolItemId},
-    sol::{
-        svc::calc::{AttrCalcError, SolCalc},
-        uad::SolUad,
-    },
-    util::TriOption,
+    sol::{svc::calc::SolCalc, uad::SolUad},
 };
 
 pub(super) fn get_max_resource(
@@ -12,17 +8,8 @@ pub(super) fn get_max_resource(
     calc: &mut SolCalc,
     max_item_id: &Option<SolItemId>,
     max_attr_id: &EAttrId,
-) -> TriOption<AttrVal> {
-    match max_item_id {
-        Some(ship_id) => match calc.get_item_attr_val_full(uad, &ship_id, max_attr_id) {
-            Ok(val) => TriOption::Some(val.extra),
-            Err(error) => match error {
-                AttrCalcError::ItemNotLoaded(_) => TriOption::Other,
-                _ => TriOption::None,
-            },
-        },
-        None => TriOption::None,
-    }
+) -> Option<AttrVal> {
+    calc.get_item_attr_val_simple_opt(uad, max_item_id, max_attr_id)
 }
 
 pub(super) fn get_max_slots(
@@ -30,15 +17,7 @@ pub(super) fn get_max_slots(
     calc: &mut SolCalc,
     max_item_id: &Option<SolItemId>,
     max_attr_id: &EAttrId,
-) -> TriOption<Count> {
-    match max_item_id {
-        Some(item_id) => match calc.get_item_attr_val_full(uad, item_id, max_attr_id) {
-            Ok(val) => TriOption::Some(val.extra.into_inner().round() as Count),
-            Err(error) => match error {
-                AttrCalcError::ItemNotLoaded(_) => TriOption::Other,
-                _ => TriOption::None,
-            },
-        },
-        None => TriOption::None,
-    }
+) -> Option<Count> {
+    calc.get_item_attr_val_simple_opt(uad, max_item_id, max_attr_id)
+        .map(|v| v.into_inner().round() as Count)
 }

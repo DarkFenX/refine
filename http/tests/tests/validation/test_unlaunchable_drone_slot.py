@@ -185,12 +185,12 @@ def test_not_loaded_char(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_char(type_id=eve_char_id)
-    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
+    assert api_val.passed is False
+    assert api_val.details.unlaunchable_drone_slot.max is None
+    assert api_val.details.unlaunchable_drone_slot.users == [api_drone.id]
 
 
 def test_no_value_max(client, consts):

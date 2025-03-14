@@ -8,7 +8,7 @@ use crate::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
     },
-    util::{StSet, TriOption},
+    util::StSet,
 };
 
 use super::shared::get_max_slots;
@@ -276,12 +276,10 @@ fn validate_fast(
     if users.is_empty() {
         return true;
     }
-    match get_max_slots(uad, calc, max_item_id, max_attr_id) {
-        TriOption::Some(max) if max > 0 => return true,
-        // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::Other => return true,
-        _ => (),
-    };
+    let max = get_max_slots(uad, calc, max_item_id, max_attr_id).unwrap_or(0);
+    if max > 0 {
+        return true;
+    }
     users.is_subset(kfs)
 }
 fn validate_verbose(
@@ -295,15 +293,10 @@ fn validate_verbose(
     if users.is_empty() {
         return None;
     }
-    let max = match get_max_slots(uad, calc, max_item_id, max_attr_id) {
-        TriOption::Some(max) => match max > 0 {
-            true => return None,
-            false => Some(max),
-        },
-        TriOption::None => None,
-        // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::Other => return None,
-    };
+    let max = get_max_slots(uad, calc, max_item_id, max_attr_id);
+    if max.unwrap_or(0) > 0 {
+        return None;
+    }
     let users = users.difference(kfs).copied().collect_vec();
     if users.is_empty() {
         return None;

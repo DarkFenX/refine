@@ -376,12 +376,13 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_fighter(type_id=eve_fighter_id)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
+    assert api_val.passed is False
+    assert api_val.details.fighter_bay_volume.used == approx(9000)
+    assert api_val.details.fighter_bay_volume.max is None
+    assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(9000)}
 
 
 def test_not_loaded_user(client, consts):

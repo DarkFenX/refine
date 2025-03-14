@@ -281,12 +281,13 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_rig(type_id=eve_rig_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(calibration=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
+    assert api_val.passed is False
+    assert api_val.details.calibration.used == approx(5)
+    assert api_val.details.calibration.max is None
+    assert api_val.details.calibration.users == {api_rig.id: approx(5)}
 
 
 def test_not_loaded_user(client, consts):

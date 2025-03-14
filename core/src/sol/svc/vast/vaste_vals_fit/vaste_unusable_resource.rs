@@ -7,7 +7,7 @@ use crate::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
     },
-    util::{StSet, TriOption},
+    util::StSet,
 };
 
 use super::shared::get_max_resource;
@@ -34,12 +34,7 @@ impl SolVastFitData {
         if self.drones_bandwidth.is_empty() {
             return true;
         }
-        let max = match get_max_resource(uad, calc, &fit.ship, &ec::attrs::DRONE_BANDWIDTH) {
-            TriOption::Some(value) => value,
-            TriOption::None => OF(0.0),
-            // Policy is to pass validations if some data is not available due to item being not loaded
-            TriOption::Other => return true,
-        };
+        let max = get_max_resource(uad, calc, &fit.ship, &ec::attrs::DRONE_BANDWIDTH).unwrap_or(OF(0.0));
         for (item_id, &item_use) in self.drones_bandwidth.iter() {
             if item_use > max && !kfs.contains(item_id) {
                 return false;
@@ -58,12 +53,7 @@ impl SolVastFitData {
         if self.drones_bandwidth.is_empty() {
             return None;
         }
-        let max = match get_max_resource(uad, calc, &fit.ship, &ec::attrs::DRONE_BANDWIDTH) {
-            TriOption::Some(value) => Some(value),
-            TriOption::None => None,
-            // Policy is to pass validations if some data is not available due to item being not loaded
-            TriOption::Other => return None,
-        };
+        let max = get_max_resource(uad, calc, &fit.ship, &ec::attrs::DRONE_BANDWIDTH);
         let effective_max = max.unwrap_or(OF(0.0));
         let users = self
             .drones_bandwidth

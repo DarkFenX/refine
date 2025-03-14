@@ -315,12 +315,13 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
+    assert api_val.passed is False
+    assert api_val.details.drone_bandwidth.used == approx(5)
+    assert api_val.details.drone_bandwidth.max is None
+    assert api_val.details.drone_bandwidth.users == {api_drone.id: 5}
 
 
 def test_not_loaded_user(client, consts):

@@ -274,12 +274,12 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(options=ValOptions(unlaunchable_heavy_fighter=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
+    assert api_val.passed is False
+    assert api_val.details.unlaunchable_heavy_fighter.max is None
+    assert api_val.details.unlaunchable_heavy_fighter.users == [api_fighter.id]
 
 
 def test_no_value_max(client, consts):

@@ -8,6 +8,22 @@ class EveItem(IntEnum):
     micro_jump_drive_operation = 4385
     capital_ships = 20533
     nanite_repair_paste = 28668
+    confessor = 34317
+    confessor_defense_mode = 34319
+    confessor_sharpshooter_mode = 34321
+    confessor_propulsion_mode = 34323
+    svipul = 34562
+    svipul_defense_mode = 34564
+    svipul_propulsion_mode = 34566
+    svipul_sharpshooter_mode = 34570
+    jackdaw = 34828
+    jackdaw_defense_mode = 35676
+    jackdaw_propulsion_mode = 35677
+    jackdaw_sharpshooter_mode = 35678
+    hecate = 35683
+    hecate_defense_mode = 35686
+    hecate_propulsion_mode = 35687
+    hecate_sharpshooter_mode = 35688
     stasis_webification_probe = 56748
     capital_micro_jump_drive_operation = 83464
 

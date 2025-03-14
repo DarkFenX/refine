@@ -5,7 +5,7 @@ use crate::{
         svc::{calc::SolCalc, vast::SolVastFitData},
         uad::{SolUad, fit::SolFit},
     },
-    util::{StSet, TriOption, round},
+    util::{StSet, round},
 };
 
 use super::shared::get_max_resource;
@@ -246,12 +246,7 @@ fn validate_fast_fitting<'a>(
     if force_pass {
         return true;
     }
-    let max = match get_max_resource(uad, calc, &fit.ship, max_attr_id) {
-        TriOption::Some(value) => value,
-        TriOption::None => OF(0.0),
-        // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::Other => return true,
-    };
+    let max = get_max_resource(uad, calc, &fit.ship, max_attr_id).unwrap_or(OF(0.0));
     round(total_use, 2) <= max
 }
 fn validate_fast_other<'a>(
@@ -273,13 +268,8 @@ fn validate_fast_other<'a>(
     if force_pass {
         return true;
     }
-    let max = match get_max_resource(uad, calc, &fit.ship, max_attr_id) {
-        TriOption::Some(value) => value,
-        TriOption::None => OF(0.0),
-        // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::Other => return true,
-    };
-    force_pass || total_use <= max
+    let max = get_max_resource(uad, calc, &fit.ship, max_attr_id).unwrap_or(OF(0.0));
+    total_use <= max
 }
 
 fn validate_verbose_fitting<'a>(
@@ -310,12 +300,7 @@ fn validate_verbose_fitting<'a>(
         return None;
     }
     let total_use = round(total_use, 2);
-    let max = match get_max_resource(uad, calc, &fit.ship, max_attr_id) {
-        TriOption::Some(value) => Some(value),
-        TriOption::None => None,
-        // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::Other => return None,
-    };
+    let max = get_max_resource(uad, calc, &fit.ship, max_attr_id);
     if total_use <= max.unwrap_or(OF(0.0)) {
         return None;
     }
@@ -347,12 +332,7 @@ fn validate_verbose_other<'a>(
     if users.is_empty() {
         return None;
     }
-    let max = match get_max_resource(uad, calc, &fit.ship, max_attr_id) {
-        TriOption::Some(value) => Some(value),
-        TriOption::None => None,
-        // Policy is to pass validations if some data is not available due to item being not loaded
-        TriOption::Other => return None,
-    };
+    let max = get_max_resource(uad, calc, &fit.ship, max_attr_id);
     if total_use <= max.unwrap_or(OF(0.0)) {
         return None;
     }
