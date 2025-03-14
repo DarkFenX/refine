@@ -206,6 +206,27 @@ def test_not_loaded(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_no_value(client, consts):
+    eve_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_fighter_id = client.mk_eve_item()
+    # Create an item which has the attribute, just to prevent the attribute from being cleaned up
+    client.mk_eve_item(attrs={eve_count_attr_id: 5})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+    # Action
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
+    # Verification - when not specified, max amount is assumed to be 1
+    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    assert api_val.passed is False
+    assert api_val.details.fighter_count == {api_fighter.id: (10, 1)}
+
+
 def test_no_attr(client, consts):
     eve_count_attr_id = consts.EveAttr.ftr_sq_max_size
     eve_fighter_id = client.mk_eve_item(attrs={eve_count_attr_id: 9})
