@@ -621,23 +621,28 @@ def test_not_loaded_ship(client, consts):
     api_fit.set_ship(type_id=eve_ship2_id)
     api_module1 = api_fit.add_mod(type_id=eve_module1_id)
     api_fit.add_mod(type_id=eve_module2_id)
-    api_fit.add_mod(type_id=eve_module3_id)
+    api_module3 = api_fit.add_mod(type_id=eve_module3_id)
     api_fit.add_mod(type_id=eve_module4_id)
-    api_fit.add_mod(type_id=eve_module5_id)
+    api_module5 = api_fit.add_mod(type_id=eve_module5_id)
     # Verification - when ship is not loaded, we fail validation only we 100% know it will fail with
     # the info we have.
-    # - Mod1 fails because item type is mismatched
-    # - Mod2 passes because item type is matched
-    # - Mod3 passes because group could be matched if ship was loaded, even if type is mismatched
-    # - Mod4 passes because item type is matched / group could be matched if ship was loaded
-    # - Mod5 passes because group could be matched if ship was loaded
+    # - Module 1 fails because item type is mismatched
+    # - Module 2 passes because item type is matched
+    # - Module 3 fails because type is mismatched, and ship group is not available
+    # - Module 4 passes because item type is matched, even if ship group is not available
+    # - Module 5 fails because ship group is not available
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship2_id
     assert api_val.details.ship_limit.ship_group_id is None
-    assert api_val.details.ship_limit.items == {api_module1.id: ([eve_ship1_id], [])}
+    assert api_val.details.ship_limit.items == {
+        api_module1.id: ([eve_ship1_id], []),
+        api_module3.id: ([eve_ship1_id], [eve_ship_grp_id]),
+        api_module5.id: ([], [eve_ship_grp_id])}
     # Action
     api_module1.remove()
+    api_module3.remove()
+    api_module5.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
