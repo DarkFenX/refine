@@ -88,7 +88,6 @@ fn calculate_item_result(
             Some(module_capacity) => *module_capacity,
             None => OF(0.0),
         },
-        // Policy is to pass validations if some data is not available due to item being not loaded
         None => return SolValCache::Pass(charge_volume),
     };
     match charge_volume <= module_capacity {

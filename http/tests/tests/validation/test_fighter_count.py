@@ -124,7 +124,7 @@ def test_known_failures(client, consts):
         api_val.details  # noqa: B018
 
 
-def test_modified_count(client, consts):
+def test_modified_max(client, consts):
     # Max fighter squad size is never modified, so the lib just uses unmodified attributes for
     # faster access to the attr value
     eve_skill_id = client.mk_eve_item()
@@ -188,6 +188,21 @@ def test_rounding(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.fighter_count == {api_fighter2.id: (9, 8)}
+
+
+def test_not_positive_max(client, consts):
+    eve_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
+    eve_fighter1_id = client.mk_eve_item(attrs={eve_count_attr_id: 0})
+    eve_fighter2_id = client.mk_eve_item(attrs={eve_count_attr_id: -2})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id, count=10)
+    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, count=10)
+    # Verification - when not specified, max amount is assumed to be 1
+    api_val = api_fit.validate(options=ValOptions(fighter_count=True))
+    assert api_val.passed is False
+    assert api_val.details.fighter_count == {api_fighter1.id: (10, 1), api_fighter2.id: (10, 1)}
 
 
 def test_not_loaded(client, consts):

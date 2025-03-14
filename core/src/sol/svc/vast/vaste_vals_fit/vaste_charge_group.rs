@@ -92,7 +92,6 @@ fn calculate_item_result(uad: &SolUad, module_item_id: &SolItemId) -> SolValCach
         .clone();
     let charge_group_id = match uad.items.get_item(&charge_item_id).unwrap().get_group_id() {
         Some(charge_group_id) => charge_group_id,
-        // Policy is to pass validations if some data is not available due to item being not loaded
         None => return SolValCache::Pass(()),
     };
     match allowed_group_ids.contains(&charge_group_id) {
