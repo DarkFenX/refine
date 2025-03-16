@@ -14,6 +14,7 @@ pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData) {
     let effects = a_data.effects.iter().map(|v| (v.id, v)).collect();
     for a_item in a_data.items.iter_mut() {
         a_item.extras.fill(
+            a_item.id,
             a_item.grp_id,
             a_item.cat_id,
             &a_item.attrs,

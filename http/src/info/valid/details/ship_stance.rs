@@ -1,29 +1,13 @@
+#[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info::valid) struct HValShipStanceFail {
-    ship: HValShipStanceItemInfo,
-    stance: Option<HValShipStanceItemInfo>,
-    stance_type_ids: Vec<rc::EItemId>,
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    item_id: rc::SolItemId,
 }
 impl From<&rc::SolValShipStanceFail> for HValShipStanceFail {
     fn from(core_val_fail: &rc::SolValShipStanceFail) -> Self {
         Self {
-            ship: (&core_val_fail.ship).into(),
-            stance: core_val_fail.stance.as_ref().map(|v| v.into()),
-            stance_type_ids: core_val_fail.stance_type_ids.clone(),
-        }
-    }
-}
-
-#[derive(serde_tuple::Serialize_tuple)]
-pub(in crate::info::valid) struct HValShipStanceItemInfo {
-    item_id: rc::SolItemId,
-    type_id: rc::EItemId,
-}
-impl From<&rc::SolValShipStanceItemInfo> for HValShipStanceItemInfo {
-    fn from(core_item_info: &rc::SolValShipStanceItemInfo) -> Self {
-        Self {
-            item_id: core_item_info.item_id,
-            type_id: core_item_info.type_id,
+            item_id: core_val_fail.item_id,
         }
     }
 }

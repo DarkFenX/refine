@@ -11,7 +11,7 @@ pub use vaste_not_loaded_item::SolValNotLoadedItemFail;
 pub use vaste_resource::{SolValResFail, SolValResItemInfo};
 pub use vaste_rig_size::{SolValRigSizeFail, SolValRigSizeItemInfo};
 pub use vaste_ship_limit::{SolValShipLimitFail, SolValShipLimitItemInfo};
-pub use vaste_ship_stance::{SolValShipStanceFail, SolValShipStanceItemInfo};
+pub use vaste_ship_stance::SolValShipStanceFail;
 pub use vaste_skill_reqs::{SolValSrqFail, SolValSrqSkillInfo};
 pub use vaste_slot_count::SolValSlotCountFail;
 pub use vaste_slot_index::SolValSlotIndexFail;

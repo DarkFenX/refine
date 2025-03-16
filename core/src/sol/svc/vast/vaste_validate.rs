@@ -295,8 +295,7 @@ impl SolVast {
         {
             return false;
         }
-        if options.ship_stance.enabled && !fit_data.validate_ship_stance_fast(&options.ship_stance.kfs, uad, fit, ship)
-        {
+        if options.ship_stance.enabled && !fit_data.validate_ship_stance_fast(&options.ship_stance.kfs, fit, ship) {
             return false;
         }
         true
@@ -544,7 +543,7 @@ impl SolVast {
             );
         }
         if options.ship_stance.enabled {
-            result.ship_stance = fit_data.validate_ship_stance_verbose(&options.ship_stance.kfs, uad, fit, ship);
+            result.ship_stance = fit_data.validate_ship_stance_verbose(&options.ship_stance.kfs, fit, ship);
         }
         result
     }
