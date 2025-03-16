@@ -50,6 +50,7 @@ pub struct SolValOptions {
     pub unlaunchable_standup_support_fighter: SolValOption,
     pub unlaunchable_standup_light_fighter: SolValOption,
     pub unlaunchable_standup_heavy_fighter: SolValOption,
+    pub ship_stance: SolValOption,
 }
 impl SolValOptions {
     pub fn all_enabled() -> Self {
@@ -102,6 +103,7 @@ impl SolValOptions {
             unlaunchable_standup_support_fighter: SolValOption::enabled(),
             unlaunchable_standup_light_fighter: SolValOption::enabled(),
             unlaunchable_standup_heavy_fighter: SolValOption::enabled(),
+            ship_stance: SolValOption::enabled(),
         }
     }
     pub fn all_disabled() -> Self {
@@ -154,6 +156,7 @@ impl SolValOptions {
             unlaunchable_standup_support_fighter: SolValOption::disabled(),
             unlaunchable_standup_light_fighter: SolValOption::disabled(),
             unlaunchable_standup_heavy_fighter: SolValOption::disabled(),
+            ship_stance: SolValOption::disabled(),
         }
     }
 }

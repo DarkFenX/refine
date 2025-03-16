@@ -52,7 +52,7 @@ pub struct AItemShipLimit {
 }
 
 pub(super) fn get_item_ship_limit(item_attrs: &StMap<EAttrId, AttrVal>) -> Option<AItemShipLimit> {
-    let mut limit_type_ids = TYPE_ATTRS
+    let limit_type_ids = TYPE_ATTRS
         .iter()
         .filter_map(|a| item_attrs.get(a))
         .map(|v| v.round() as EItemId)

@@ -295,6 +295,10 @@ impl SolVast {
         {
             return false;
         }
+        if options.ship_stance.enabled && !fit_data.validate_ship_stance_fast(&options.ship_stance.kfs, uad, fit, ship)
+        {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -538,6 +542,9 @@ impl SolVast {
                 calc,
                 fit,
             );
+        }
+        if options.ship_stance.enabled {
+            result.ship_stance = fit_data.validate_ship_stance_verbose(&options.ship_stance.kfs, uad, fit, ship);
         }
         result
     }
