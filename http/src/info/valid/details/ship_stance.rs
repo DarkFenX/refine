@@ -1,13 +1,13 @@
 #[derive(serde_tuple::Serialize_tuple)]
 pub(in crate::info::valid) struct HValShipStanceFail {
-    ship_id: rc::SolItemId,
+    ship: HValShipStanceItemInfo,
     stance: Option<HValShipStanceItemInfo>,
     stance_type_ids: Vec<rc::EItemId>,
 }
 impl From<&rc::SolValShipStanceFail> for HValShipStanceFail {
     fn from(core_val_fail: &rc::SolValShipStanceFail) -> Self {
         Self {
-            ship_id: core_val_fail.ship_id,
+            ship: (&core_val_fail.ship).into(),
             stance: core_val_fail.stance.as_ref().map(|v| v.into()),
             stance_type_ids: core_val_fail.stance_type_ids.clone(),
         }

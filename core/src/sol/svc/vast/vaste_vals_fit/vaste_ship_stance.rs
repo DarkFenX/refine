@@ -9,7 +9,7 @@ use crate::{
 };
 
 pub struct SolValShipStanceFail {
-    pub ship_id: SolItemId,
+    pub ship: SolValShipStanceItemInfo,
     pub stance: Option<SolValShipStanceItemInfo>,
     pub stance_type_ids: Vec<EItemId>,
 }
@@ -115,7 +115,7 @@ impl SolVastFitData {
             ],
             _ => Vec::new(),
         };
-        match stance_info {
+        match &stance_info {
             Some(stance_info) => {
                 if needed_type_ids.contains(&stance_info.type_id) || kfs.contains(&ship.get_id()) {
                     return None;
@@ -128,8 +128,11 @@ impl SolVastFitData {
             }
         }
         Some(SolValShipStanceFail {
-            ship_id: ship.get_id(),
-            stance: None,
+            ship: SolValShipStanceItemInfo {
+                item_id: ship.get_id(),
+                type_id: ship.get_type_id(),
+            },
+            stance: stance_info,
             stance_type_ids: needed_type_ids,
         })
     }
