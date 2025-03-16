@@ -24,10 +24,10 @@ pub(in crate::info::valid) struct HValShipLimitItemInfo {
     allowed_group_ids: Vec<rc::EItemGrpId>,
 }
 impl From<&rc::SolValShipLimitItemInfo> for HValShipLimitItemInfo {
-    fn from(core_mismatch: &rc::SolValShipLimitItemInfo) -> Self {
+    fn from(core_item_info: &rc::SolValShipLimitItemInfo) -> Self {
         Self {
-            allowed_type_ids: core_mismatch.allowed_type_ids.clone(),
-            allowed_group_ids: core_mismatch.allowed_group_ids.clone(),
+            allowed_type_ids: core_item_info.allowed_type_ids.clone(),
+            allowed_group_ids: core_item_info.allowed_group_ids.clone(),
         }
     }
 }

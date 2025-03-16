@@ -1,7 +1,8 @@
 use crate::info::valid::details::{
     HValCapitalModFail, HValChargeGroupFail, HValChargeSizeFail, HValChargeVolumeFail, HValDroneGroupFail,
     HValFighterCountFail, HValItemKindFail, HValMaxGroupFail, HValModuleStateFail, HValResFail, HValRigSizeFail,
-    HValShipLimitFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail, HValUnusableSlotFail,
+    HValShipLimitFail, HValShipStanceFail, HValSlotCountFail, HValSlotIndexFail, HValSrqFail, HValUnusableResFail,
+    HValUnusableSlotFail,
 };
 
 #[derive(serde::Serialize)]
@@ -119,6 +120,8 @@ struct HValidInfoDetails {
     unlaunchable_standup_light_fighter: Option<HValUnusableSlotFail>,
     #[serde(skip_serializing_if = "Option::is_none")]
     unlaunchable_standup_heavy_fighter: Option<HValUnusableSlotFail>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ship_stance: Option<HValShipStanceFail>,
 }
 impl HValidInfoDetails {
     fn is_empty(&self) -> bool {
@@ -170,6 +173,7 @@ impl HValidInfoDetails {
             && self.unlaunchable_standup_support_fighter.is_none()
             && self.unlaunchable_standup_light_fighter.is_none()
             && self.unlaunchable_standup_heavy_fighter.is_none()
+            && self.ship_stance.is_none()
     }
 }
 impl From<&rc::SolValResult> for HValidInfoDetails {
@@ -244,6 +248,7 @@ impl From<&rc::SolValResult> for HValidInfoDetails {
                 .unlaunchable_standup_heavy_fighter
                 .as_ref()
                 .map(|v| v.into()),
+            ship_stance: core_val_result.ship_stance.as_ref().map(|v| v.into()),
         }
     }
 }
