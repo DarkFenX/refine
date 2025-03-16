@@ -145,7 +145,7 @@ impl SolVast {
                 let extras = module.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, get_module_expected_kind(module));
                 if let Some(ship_limit) = &extras.ship_limit {
-                    fit_data.ship_limited_mods_rigs_subs.insert(item_id, ship_limit.clone());
+                    fit_data.ship_limited_items.insert(item_id, ship_limit.clone());
                 }
                 if let Some(grp_id) = extras.val_fitted_group_id {
                     fit_data.mods_rigs_max_group_fitted_all.add_entry(grp_id, item_id);
@@ -185,7 +185,7 @@ impl SolVast {
                 let rig_size = rig.get_attrs().unwrap().get(&ec::attrs::RIG_SIZE).copied();
                 fit_data.rigs_rig_size.insert(item_id, rig_size);
                 if let Some(ship_limit) = &extras.ship_limit {
-                    fit_data.ship_limited_mods_rigs_subs.insert(item_id, ship_limit.clone());
+                    fit_data.ship_limited_items.insert(item_id, ship_limit.clone());
                 }
                 if let Some(grp_id) = extras.val_fitted_group_id {
                     fit_data.mods_rigs_max_group_fitted_all.add_entry(grp_id, item_id);
@@ -218,6 +218,9 @@ impl SolVast {
             SolItem::Stance(stance) => {
                 let extras = stance.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Stance);
+                if let Some(ship_limit) = &extras.ship_limit {
+                    fit_data.ship_limited_items.insert(item_id, ship_limit.clone());
+                }
             }
             SolItem::Subsystem(subsystem) => {
                 let extras = subsystem.get_a_extras().unwrap();
@@ -226,7 +229,7 @@ impl SolVast {
                     fit_data.slotted_subsystems.add_entry(slot, item_id);
                 }
                 if let Some(ship_limit) = &extras.ship_limit {
-                    fit_data.ship_limited_mods_rigs_subs.insert(item_id, ship_limit.clone());
+                    fit_data.ship_limited_items.insert(item_id, ship_limit.clone());
                 }
             }
             _ => (),
@@ -328,7 +331,7 @@ impl SolVast {
                 let extras = module.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, get_module_expected_kind(module));
                 if extras.ship_limit.is_some() {
-                    fit_data.ship_limited_mods_rigs_subs.remove(&item_id);
+                    fit_data.ship_limited_items.remove(&item_id);
                 }
                 if let Some(grp_id) = extras.val_fitted_group_id {
                     fit_data.mods_rigs_max_group_fitted_all.remove_entry(&grp_id, &item_id);
@@ -350,7 +353,7 @@ impl SolVast {
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Rig);
                 fit_data.rigs_rig_size.remove(&item_id);
                 if extras.ship_limit.is_some() {
-                    fit_data.ship_limited_mods_rigs_subs.remove(&item_id);
+                    fit_data.ship_limited_items.remove(&item_id);
                 }
                 if let Some(grp_id) = extras.val_fitted_group_id {
                     fit_data.mods_rigs_max_group_fitted_all.remove_entry(&grp_id, &item_id);
@@ -373,6 +376,9 @@ impl SolVast {
             SolItem::Stance(stance) => {
                 let extras = stance.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Stance);
+                if extras.ship_limit.is_some() {
+                    fit_data.ship_limited_items.remove(&item_id);
+                }
             }
             SolItem::Subsystem(subsystem) => {
                 let extras = subsystem.get_a_extras().unwrap();
@@ -381,7 +387,7 @@ impl SolVast {
                     fit_data.slotted_subsystems.remove_entry(&slot, &item_id);
                 }
                 if extras.ship_limit.is_some() {
-                    fit_data.ship_limited_mods_rigs_subs.remove(&item_id);
+                    fit_data.ship_limited_items.remove(&item_id);
                 }
             }
             _ => (),

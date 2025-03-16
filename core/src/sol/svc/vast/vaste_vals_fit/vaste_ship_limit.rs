@@ -37,14 +37,14 @@ impl SolVastFitData {
             Some(ship) => ship,
             None => {
                 return match kfs.is_empty() {
-                    true => self.ship_limited_mods_rigs_subs.is_empty(),
-                    false => self.ship_limited_mods_rigs_subs.difference(kfs).nth(0).is_none(),
+                    true => self.ship_limited_items.is_empty(),
+                    false => self.ship_limited_items.difference(kfs).nth(0).is_none(),
                 };
             }
         };
         let ship_type_id = ship.get_type_id();
         let ship_group_id = ship.get_group_id();
-        for (limited_item_id, ship_limit) in self.ship_limited_mods_rigs_subs.iter() {
+        for (limited_item_id, ship_limit) in self.ship_limited_items.iter() {
             if ship_limit.type_ids.contains(&ship_type_id) {
                 continue;
             }
@@ -66,7 +66,7 @@ impl SolVastFitData {
         kfs: &StSet<SolItemId>,
         ship: Option<&SolShip>,
     ) -> Option<SolValShipLimitFail> {
-        if self.ship_limited_mods_rigs_subs.is_empty() {
+        if self.ship_limited_items.is_empty() {
             return None;
         }
         let (ship_type_id, ship_group_id) = match ship {
@@ -74,7 +74,7 @@ impl SolVastFitData {
             None => (None, None),
         };
         let mut mismatches = Vec::new();
-        for (limited_item_id, ship_limit) in self.ship_limited_mods_rigs_subs.iter() {
+        for (limited_item_id, ship_limit) in self.ship_limited_items.iter() {
             if let Some(ship_type_id) = ship_type_id {
                 if ship_limit.type_ids.contains(&ship_type_id) {
                     continue;
