@@ -25,7 +25,7 @@ impl SolVastFitData {
         }
         let td_lvl = match fit.skills.get(&ec::items::THERMODYNAMICS) {
             Some(skill) => skill.level,
-            None => 0,
+            None => return self.overload_td_lvl.is_subset(kfs),
         };
         self.overload_td_lvl
             .iter()
@@ -41,11 +41,13 @@ impl SolVastFitData {
             return None;
         }
         let td_lvl = fit.skills.get(&ec::items::THERMODYNAMICS).map(|v| v.level);
-        let effective_td_lvl = td_lvl.unwrap_or(0);
         let items = self
             .overload_td_lvl
             .iter()
-            .filter(|(item_id, req_lvl)| **req_lvl > effective_td_lvl && !kfs.contains(item_id))
+            .filter(|(item_id, req_lvl)| match td_lvl {
+                Some(td_lvl) => **req_lvl > td_lvl,
+                None => true,
+            } && !kfs.contains(item_id))
             .map(|(&item_id, &req_lvl)| SolValOverloadSkillItemInfo { item_id, req_lvl })
             .collect_vec();
         if items.is_empty() {

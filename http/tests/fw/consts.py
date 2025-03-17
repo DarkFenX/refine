@@ -7,6 +7,7 @@ class EveItem(IntEnum):
     high_speed_maneuvering = 3454
     micro_jump_drive_operation = 4385
     capital_ships = 20533
+    thermodynamics = 28164
     nanite_repair_paste = 28668
     confessor = 34317
     confessor_defense_mode = 34319
@@ -222,6 +223,7 @@ class EveAttr(IntEnum):
     upgrade_cost = 1153
     upgrade_slots_left = 1154
     overload_self_duration_bonus = 1206
+    required_thermodynamics_skill = 1212
     drone_bandwidth = 1271
     drone_bandwidth_used = 1272
     can_fit_ship_group1 = 1298

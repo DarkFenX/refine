@@ -298,7 +298,7 @@ impl SolVast {
         if options.ship_stance.enabled && !fit_data.validate_ship_stance_fast(&options.ship_stance.kfs, fit, ship) {
             return false;
         }
-        if options.overload_skill.enabled && !fit_data.validate_overload_skill_fast(&options.ship_stance.kfs, fit) {
+        if options.overload_skill.enabled && !fit_data.validate_overload_skill_fast(&options.overload_skill.kfs, fit) {
             return false;
         }
         true
