@@ -1,7 +1,7 @@
 use crate::{
     defs::{OF, SolItemId},
     sol::{
-        SolDmgProfile,
+        SolDmgProfile, SolSecZone,
         uad::{fit::SolFits, fleet::SolFleets, item::SolItems},
     },
     src::Src,
@@ -19,6 +19,7 @@ pub(in crate::sol) struct SolUad {
     pub(in crate::sol) proj_effects: StSet<SolItemId>,
     pub(in crate::sol) items: SolItems,
     pub(in crate::sol) default_incoming_dmg: SolDmgProfile,
+    pub(in crate::sol) sec_zone: SolSecZone,
 }
 impl SolUad {
     pub(in crate::sol) fn new(src: Src) -> Self {
@@ -30,6 +31,7 @@ impl SolUad {
             proj_effects: StSet::new(),
             items: SolItems::new(),
             default_incoming_dmg: SolDmgProfile::new(OF(1.0), OF(1.0), OF(1.0), OF(1.0)),
+            sec_zone: SolSecZone::NullSec,
         }
     }
 }

@@ -24,7 +24,7 @@ pub use defs::{
     Idx, MutaRoll, OF, SkillLevel, SlotIndex, SolFitId, SolFleetId, SolItemId, VERSION,
 };
 pub use sol::{
-    SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolarSystem,
+    SolAddMode, SolDmgProfile, SolEffectInfo, SolEffectMode, SolModRack, SolRmMode, SolSecZone, SolarSystem,
     info::{
         SolAttrMutationInfo, SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo,
         SolFighterInfo, SolFitInfo, SolFleetInfo, SolFwEffectInfo, SolImplantInfo, SolItemInfo, SolItemMutationInfo,
