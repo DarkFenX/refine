@@ -20,6 +20,7 @@ pub enum AItemKind {
     ModuleMid,
     ModuleLow,
     Rig,
+    Service,
     Ship,
     Skill,
     Stance,
@@ -47,6 +48,9 @@ pub(super) fn get_item_kind(
             }
             if item_effects.contains_key(&ec::effects::RIG_SLOT) {
                 kinds.push(AItemKind::Rig);
+            }
+            if item_effects.contains_key(&ec::effects::SERVICE_SLOT) {
+                kinds.push(AItemKind::Service);
             }
         }
         // Ships and structures
