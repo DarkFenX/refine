@@ -245,24 +245,22 @@ def test_mutation_use(client, consts):
         api_val.details  # noqa: B018
     # Action
     api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
-    # Verification - unrealistic scenario, but testing here detail of implementation: mutated drone
-    # has different bandwidth, the lib uses bandwidth the drone had upon addition
+    # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(145.6)
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.drone_bandwidth.used == approx(145.6)
+    assert api_val.details.drone_bandwidth.used == approx(130)
     assert api_val.details.drone_bandwidth.max == approx(125)
-    assert api_val.details.drone_bandwidth.users == {api_drone.id: approx(145.6)}
+    assert api_val.details.drone_bandwidth.users == {api_drone.id: approx(130)}
     # Action
     api_drone.change_drone(mutation={eve_use_attr_id: None})
-    # Verification - unrealistic scenario, but testing here detail of implementation: mutated
-    # bandwidth value does not change anything for the validation
+    # Verification
     assert api_drone.update().attrs[eve_use_attr_id].extra == approx(130)
     api_val = api_fit.validate(options=ValOptions(drone_bandwidth=True))
     assert api_val.passed is False
-    assert api_val.details.drone_bandwidth.used == approx(145.6)
+    assert api_val.details.drone_bandwidth.used == approx(130)
     assert api_val.details.drone_bandwidth.max == approx(125)
-    assert api_val.details.drone_bandwidth.users == {api_drone.id: approx(145.6)}
+    assert api_val.details.drone_bandwidth.users == {api_drone.id: approx(130)}
 
 
 def test_rounding(client, consts):
