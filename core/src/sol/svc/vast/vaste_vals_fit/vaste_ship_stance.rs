@@ -26,7 +26,7 @@ impl SolVastFitData {
         };
         let ship = match ship {
             Some(ship) => ship,
-            None => return true,
+            None => return false,
         };
         matches!(
             ship.get_type_id(),
@@ -46,7 +46,7 @@ impl SolVastFitData {
         };
         let ship = match ship {
             Some(ship) => ship,
-            None => return None,
+            None => return Some(SolValShipStanceFail { item_id: stance_id }),
         };
         if matches!(
             ship.get_type_id(),

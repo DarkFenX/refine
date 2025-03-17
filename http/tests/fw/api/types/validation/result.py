@@ -12,6 +12,7 @@ from .not_loaded_item import ValNotLoadedItemFail
 from .resources import ValResourceFail
 from .rig_size import ValRigSizeFail
 from .ship_limit import ValShipLimitFail
+from .ship_stance import ValShipStanceFail
 from .skill_reqs import ValSrqFail
 from .slot_count import ValSlotCountFail
 from .slot_index import ValSlotIndexFail
@@ -76,4 +77,5 @@ class ValResultDetails(AttrDict):
             'unlaunchable_heavy_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
             'unlaunchable_standup_support_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
             'unlaunchable_standup_light_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
-            'unlaunchable_standup_heavy_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d))})
+            'unlaunchable_standup_heavy_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
+            'ship_stance': AttrHookDef(func=lambda d: ValShipStanceFail(data=d))})
