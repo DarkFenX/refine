@@ -23,6 +23,8 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) max_state: CState,
     pub(in crate::handler_json) drone_limit: Option<CShipDroneLimit>,
     pub(in crate::handler_json) max_fighter_count: rc::Count,
+    pub(in crate::handler_json) bandwidth_use: Option<rc::AttrVal>,
+    pub(in crate::handler_json) overload_td_lvl: Option<rc::SkillLevel>,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -48,6 +50,8 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             max_state: (&a_item_extras.max_state).into(),
             drone_limit: a_item_extras.drone_limit.as_ref().map(|v| v.into()),
             max_fighter_count: a_item_extras.max_fighter_count,
+            bandwidth_use: a_item_extras.bandwidth_use,
+            overload_td_lvl: a_item_extras.overload_td_lvl,
         }
     }
 }
@@ -75,6 +79,8 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             max_state: (&c_item_extras.max_state).into(),
             drone_limit: c_item_extras.drone_limit.as_ref().map(|v| v.into()),
             max_fighter_count: c_item_extras.max_fighter_count,
+            bandwidth_use: c_item_extras.bandwidth_use,
+            overload_td_lvl: c_item_extras.overload_td_lvl,
         }
     }
 }

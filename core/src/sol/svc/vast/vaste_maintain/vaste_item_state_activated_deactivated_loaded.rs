@@ -87,13 +87,13 @@ impl SolVast {
             }
             SolItemState::Overload => {
                 if let SolItem::Module(module) = item {
-                    match module.get_a_extras().unwrap().max_state {
+                    let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                    let extras = module.get_a_extras().unwrap();
+                    match extras.max_state {
                         ad::AState::Offline | ad::AState::Online => {
-                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                             fit_data.mods_state.get_mut(&module.get_id()).unwrap().state = SolModuleState::Overload;
                         }
                         ad::AState::Active => {
-                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                             fit_data.mods_state.insert(
                                 module.get_id(),
                                 SolValModuleStateFail {
@@ -104,6 +104,9 @@ impl SolVast {
                             );
                         }
                         _ => (),
+                    }
+                    if let Some(td_lvl) = extras.overload_td_lvl {
+                        fit_data.overload_td_lvl.insert(module.get_id(), td_lvl);
                     }
                 }
             }
@@ -176,16 +179,19 @@ impl SolVast {
             }
             SolItemState::Overload => {
                 if let SolItem::Module(module) = item {
-                    match module.get_a_extras().unwrap().max_state {
+                    let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
+                    let extras = module.get_a_extras().unwrap();
+                    match extras.max_state {
                         ad::AState::Offline | ad::AState::Online => {
-                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                             fit_data.mods_state.get_mut(&module.get_id()).unwrap().state = SolModuleState::Active;
                         }
                         ad::AState::Active => {
-                            let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                             fit_data.mods_state.remove(&module.get_id());
                         }
                         _ => (),
+                    }
+                    if extras.overload_td_lvl.is_some() {
+                        fit_data.overload_td_lvl.remove(&module.get_id());
                     }
                 }
             }

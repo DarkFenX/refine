@@ -1,10 +1,10 @@
 use crate::{
     ad,
-    defs::{AttrVal, EItemGrpId, EItemId, SlotIndex, SolFitId, SolItemId},
+    defs::{AttrVal, EItemGrpId, EItemId, SkillLevel, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
     sol::svc::vast::{
-        SolValCache, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail,
-        SolValFighterCountFail, SolValItemKindFail, SolValModuleStateFail, SolVastSkillReq,
+        SolValCache, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValFighterCountFail,
+        SolValItemKindFail, SolValModuleStateFail, SolVastSkillReq,
     },
     util::{StMap, StMapSetL1, StSet},
 };
@@ -85,6 +85,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) drone_group_limit: Vec<EItemGrpId>,
     pub(in crate::sol::svc::vast) drone_groups: StMap<SolItemId, EItemGrpId>,
     pub(in crate::sol::svc::vast) fighter_count: StMap<SolItemId, SolValFighterCountFail>,
+    pub(in crate::sol::svc::vast) overload_td_lvl: StMap<SolItemId, SkillLevel>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -133,6 +134,7 @@ impl SolVastFitData {
             drone_group_limit: Vec::new(),
             drone_groups: StMap::new(),
             fighter_count: StMap::new(),
+            overload_td_lvl: StMap::new(),
         }
     }
 }

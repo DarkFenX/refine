@@ -1,8 +1,8 @@
 use crate::sol::svc::vast::{
     SolValCapitalModFail, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail,
     SolValFighterCountFail, SolValItemKindFail, SolValMaxGroupFail, SolValModuleStateFail, SolValNotLoadedItemFail,
-    SolValResFail, SolValRigSizeFail, SolValShipLimitFail, SolValShipStanceFail, SolValSlotCountFail,
-    SolValSlotIndexFail, SolValSrqFail, SolValUnusableResFail, SolValUnusableSlotFail,
+    SolValOverloadSkillFail, SolValResFail, SolValRigSizeFail, SolValShipLimitFail, SolValShipStanceFail,
+    SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValUnusableResFail, SolValUnusableSlotFail,
 };
 
 pub struct SolValResult {
@@ -55,6 +55,7 @@ pub struct SolValResult {
     pub unlaunchable_standup_light_fighter: Option<SolValUnusableSlotFail>,
     pub unlaunchable_standup_heavy_fighter: Option<SolValUnusableSlotFail>,
     pub ship_stance: Option<SolValShipStanceFail>,
+    pub overload_skill: Option<SolValOverloadSkillFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -108,6 +109,7 @@ impl SolValResult {
             unlaunchable_standup_light_fighter: None,
             unlaunchable_standup_heavy_fighter: None,
             ship_stance: None,
+            overload_skill: None,
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -160,5 +162,6 @@ impl SolValResult {
             && self.unlaunchable_standup_light_fighter.is_none()
             && self.unlaunchable_standup_heavy_fighter.is_none()
             && self.ship_stance.is_none()
+            && self.overload_skill.is_none()
     }
 }

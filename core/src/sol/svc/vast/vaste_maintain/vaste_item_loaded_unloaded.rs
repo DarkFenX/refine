@@ -86,8 +86,8 @@ impl SolVast {
                 if let Some(volume) = extras.volume {
                     fit_data.drones_volume.insert(item_id, volume);
                 }
-                if let Some(bandwidth) = drone.get_attrs().unwrap().get(&ec::attrs::DRONE_BANDWIDTH_USED) {
-                    fit_data.drones_bandwidth.insert(item_id, *bandwidth);
+                if let Some(bandwidth) = extras.bandwidth_use {
+                    fit_data.drones_bandwidth.insert(item_id, bandwidth);
                 };
                 if !fit_data.drone_group_limit.is_empty() {
                     let drone_group_id = drone.get_group_id().unwrap();
@@ -288,7 +288,9 @@ impl SolVast {
                 let extras = drone.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Drone);
                 fit_data.drones_volume.remove(&item_id);
-                fit_data.drones_bandwidth.remove(&item_id);
+                if extras.bandwidth_use.is_some() {
+                    fit_data.drones_bandwidth.remove(&item_id);
+                }
                 if !fit_data.drone_group_limit.is_empty() {
                     fit_data.drone_groups.remove(&item_id);
                 }

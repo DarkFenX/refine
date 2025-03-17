@@ -8,6 +8,7 @@ use crate::{
 };
 
 use super::{
+    attr_val::{get_bandwidth_use, get_volume},
     charge_limit::get_item_charge_limit,
     drone_limit::get_ship_drone_limit,
     fighter_count::get_max_fighter_count,
@@ -17,10 +18,10 @@ use super::{
     },
     kind::get_item_kind,
     max_state::get_max_state,
+    overload_td_lvl::get_overload_td_lvl,
     ship_kind::{get_item_ship_kind, get_ship_kind},
     ship_limit::get_item_ship_limit,
     slot_index::{get_booster_slot, get_implant_slot, get_subsystem_slot},
-    volume::get_item_volume,
 };
 
 /// Holds extra item-specific data.
@@ -71,6 +72,10 @@ pub struct AItemExtras {
     pub drone_limit: Option<AShipDroneLimit>,
     /// By default, a fighter squad will have this count of fighters.
     pub max_fighter_count: Count,
+    /// Drone bandwidth consumption.
+    pub bandwidth_use: Option<AttrVal>,
+    /// Required thermodynamics skill level.
+    pub overload_td_lvl: Option<SkillLevel>,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -96,6 +101,8 @@ impl AItemExtras {
             max_state: AState::Offline,
             drone_limit: Option::default(),
             max_fighter_count: 1,
+            bandwidth_use: Option::default(),
+            overload_td_lvl: Option::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -103,7 +110,7 @@ impl AItemExtras {
     pub(crate) fn inherit_with_attrs(a_item: &AItem, attrs: &StMap<EAttrId, AttrVal>) -> Self {
         Self {
             kind: get_item_kind(a_item.grp_id, a_item.cat_id, attrs, &a_item.effect_datas),
-            volume: get_item_volume(attrs),
+            volume: get_volume(attrs),
             ship_limit: get_item_ship_limit(a_item.id, attrs),
             charge_limit: get_item_charge_limit(attrs),
             val_fitted_group_id: a_item.extras.val_fitted_group_id,
@@ -123,6 +130,8 @@ impl AItemExtras {
             max_state: a_item.extras.max_state,
             drone_limit: get_ship_drone_limit(attrs),
             max_fighter_count: get_max_fighter_count(attrs),
+            bandwidth_use: get_bandwidth_use(attrs),
+            overload_td_lvl: get_overload_td_lvl(attrs),
         }
     }
     pub(crate) fn fill(
@@ -139,7 +148,7 @@ impl AItemExtras {
         active_limited_groups: &[EItemGrpId],
     ) {
         self.kind = get_item_kind(item_grp_id, item_cat_id, item_attrs, item_effects);
-        self.volume = get_item_volume(item_attrs);
+        self.volume = get_volume(item_attrs);
         self.ship_limit = get_item_ship_limit(item_id, item_attrs);
         self.charge_limit = get_item_charge_limit(item_attrs);
         self.val_fitted_group_id = match fitted_limited_groups.contains(&item_grp_id) {
@@ -168,5 +177,7 @@ impl AItemExtras {
         self.max_state = get_max_state(item_effects.keys(), effects);
         self.drone_limit = get_ship_drone_limit(item_attrs);
         self.max_fighter_count = get_max_fighter_count(item_attrs);
+        self.bandwidth_use = get_bandwidth_use(item_attrs);
+        self.overload_td_lvl = get_overload_td_lvl(item_attrs);
     }
 }

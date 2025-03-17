@@ -182,6 +182,9 @@ impl SolVastFitData {
             check_item(uad, item_id, true)?;
             check_item(uad, &item_data.item_id, true)?;
         }
+        for item_id in self.overload_td_lvl.keys() {
+            check_item(uad, item_id, true)?;
+        }
         Ok(())
     }
 }

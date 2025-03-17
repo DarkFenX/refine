@@ -1,6 +1,5 @@
 use crate::{
     defs::OF,
-    ec,
     sol::{
         svc::vast::SolVast,
         uad::item::{SolItem, SolItemState},
@@ -12,14 +11,11 @@ impl SolVast {
         if let SolItemState::Online = state {
             match item {
                 SolItem::Drone(drone) => {
-                    let val = match drone.get_attrs() {
-                        Some(attrs) => match attrs.get(&ec::attrs::DRONE_BANDWIDTH_USED) {
-                            Some(val) => *val,
-                            None => OF(0.0),
-                        },
+                    let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
+                    let val = match drone.get_a_extras() {
+                        Some(extras) => extras.bandwidth_use.unwrap_or(OF(0.0)),
                         None => OF(0.0),
                     };
-                    let fit_data = self.get_fit_data_mut(&drone.get_fit_id()).unwrap();
                     fit_data.drones_online_bandwidth.insert(drone.get_id(), val);
                 }
                 SolItem::Fighter(fighter) => {

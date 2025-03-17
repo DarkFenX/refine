@@ -298,6 +298,9 @@ impl SolVast {
         if options.ship_stance.enabled && !fit_data.validate_ship_stance_fast(&options.ship_stance.kfs, fit, ship) {
             return false;
         }
+        if options.overload_skill.enabled && !fit_data.validate_overload_skill_fast(&options.ship_stance.kfs, fit) {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -544,6 +547,9 @@ impl SolVast {
         }
         if options.ship_stance.enabled {
             result.ship_stance = fit_data.validate_ship_stance_verbose(&options.ship_stance.kfs, fit, ship);
+        }
+        if options.overload_skill.enabled {
+            result.overload_skill = fit_data.validate_overload_skill_verbose(&options.overload_skill.kfs, fit);
         }
         result
     }
