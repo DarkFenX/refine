@@ -104,6 +104,8 @@ pub(crate) struct HValidateFitCmd {
     unlaunchable_standup_heavy_fighter: Option<HValidationOption>,
     #[serde(default)]
     ship_stance: Option<HValidationOption>,
+    #[serde(default)]
+    overload_skill: Option<HValidationOption>,
 }
 impl HValidateFitCmd {
     pub(crate) fn execute(
@@ -204,6 +206,7 @@ impl HValidateFitCmd {
             &mut core_options.unlaunchable_standup_heavy_fighter,
         );
         process_option(&self.ship_stance, &mut core_options.ship_stance);
+        process_option(&self.overload_skill, &mut core_options.overload_skill);
         // Run validation
         match valid_mode {
             HValidInfoMode::Simple => core_sol.validate_fit_fast(fit_id, &core_options).map(|v| v.into()),
@@ -269,6 +272,7 @@ impl Default for HValidateFitCmd {
             unlaunchable_standup_light_fighter: None,
             unlaunchable_standup_heavy_fighter: None,
             ship_stance: None,
+            overload_skill: None,
         }
     }
 }
