@@ -171,6 +171,11 @@ impl SolVast {
                             .insert(item_id, SolValCache::Pass(*allowed_charge_size)),
                     };
                 }
+                if let Some(max_fitted) = extras.max_type_fitted {
+                    fit_data
+                        .mods_svcs_max_type_fitted
+                        .add_value(module.get_type_id(), item_id, max_fitted);
+                }
                 // Data is added to / removed from this map when charges are added/removed; here,
                 // we just reset validation result when a module is being loaded
                 handle_charge_volume_for_module(fit_data, item_id);
@@ -205,6 +210,11 @@ impl SolVast {
                     if service.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_FITTED) {
                         fit_data.mods_svcs_rigs_max_group_fitted_limited.insert(item_id, grp_id);
                     }
+                }
+                if let Some(max_fitted) = extras.max_type_fitted {
+                    fit_data
+                        .mods_svcs_max_type_fitted
+                        .add_value(service.get_type_id(), item_id, max_fitted);
                 }
             }
             SolItem::Ship(ship) => {
@@ -364,6 +374,11 @@ impl SolVast {
                 if let Some(ad::AShipKind::CapitalShip) = extras.item_ship_kind {
                     fit_data.mods_capital.remove(&item_id);
                 }
+                if extras.max_type_fitted.is_some() {
+                    fit_data
+                        .mods_svcs_max_type_fitted
+                        .remove_l2(&module.get_type_id(), &item_id);
+                }
             }
             SolItem::Rig(rig) => {
                 let extras = rig.get_a_extras().unwrap();
@@ -390,6 +405,11 @@ impl SolVast {
                         .mods_svcs_rigs_max_group_fitted_all
                         .remove_entry(&grp_id, &item_id);
                     fit_data.mods_svcs_rigs_max_group_fitted_limited.remove(&item_id);
+                }
+                if extras.max_type_fitted.is_some() {
+                    fit_data
+                        .mods_svcs_max_type_fitted
+                        .remove_l2(&service.get_type_id(), &item_id);
                 }
             }
             SolItem::Ship(ship) => {

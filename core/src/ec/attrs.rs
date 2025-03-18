@@ -106,6 +106,7 @@ pub(crate) const SPEED_FACTOR_FLOOR: EAttrId = 2266;
 pub(crate) const DOOMSDAY_AOE_RANGE: EAttrId = 2279;
 pub(crate) const FTR_ABIL_BOMB_TYPE: EAttrId = 2324;
 pub(crate) const CAN_FIT_SHIP_GROUP10: EAttrId = 2396;
+pub(crate) const MAX_TYPE_FITTED: EAttrId = 2431;
 pub(crate) const CAN_FIT_SHIP_TYPE7: EAttrId = 2463;
 pub(crate) const WARFARE_BUFF1_ID: EAttrId = 2468;
 pub(crate) const WARFARE_BUFF1_VAL: EAttrId = 2469;

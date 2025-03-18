@@ -185,6 +185,11 @@ impl SolVastFitData {
         for item_id in self.overload_td_lvl.keys() {
             check_item(uad, item_id, true)?;
         }
+        for item_data in self.mods_svcs_max_type_fitted.values() {
+            for item_id in item_data.keys() {
+                check_item(uad, item_id, true)?;
+            }
+        }
         Ok(())
     }
 }

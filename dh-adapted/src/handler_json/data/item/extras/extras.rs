@@ -25,6 +25,7 @@ pub(in crate::handler_json) struct CItemExtras {
     pub(in crate::handler_json) max_fighter_count: rc::Count,
     pub(in crate::handler_json) bandwidth_use: Option<rc::AttrVal>,
     pub(in crate::handler_json) overload_td_lvl: Option<rc::SkillLevel>,
+    pub(in crate::handler_json) max_type_fitted: Option<rc::Count>,
 }
 impl From<&rc::ad::AItemExtras> for CItemExtras {
     fn from(a_item_extras: &rc::ad::AItemExtras) -> Self {
@@ -52,6 +53,7 @@ impl From<&rc::ad::AItemExtras> for CItemExtras {
             max_fighter_count: a_item_extras.max_fighter_count,
             bandwidth_use: a_item_extras.bandwidth_use,
             overload_td_lvl: a_item_extras.overload_td_lvl,
+            max_type_fitted: a_item_extras.max_type_fitted,
         }
     }
 }
@@ -81,6 +83,7 @@ impl From<&CItemExtras> for rc::ad::AItemExtras {
             max_fighter_count: c_item_extras.max_fighter_count,
             bandwidth_use: c_item_extras.bandwidth_use,
             overload_td_lvl: c_item_extras.overload_td_lvl,
+            max_type_fitted: c_item_extras.max_type_fitted,
         }
     }
 }

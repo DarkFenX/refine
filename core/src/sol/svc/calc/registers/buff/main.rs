@@ -57,7 +57,7 @@ impl SolBuffRegister {
         buff_type_attr_id: &EAttrId,
         modifier: &SolRawModifier,
     ) {
-        self.modifiers.remove_entry(&(*item_id, *buff_type_attr_id), modifier)
+        self.modifiers.remove_entry(&(*item_id, *buff_type_attr_id), modifier);
     }
 }
 

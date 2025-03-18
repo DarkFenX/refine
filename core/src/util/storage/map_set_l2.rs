@@ -35,10 +35,7 @@ impl<A: Eq + Hash, B: Eq + Hash, V: Eq + Hash> StMapSetL2<A, B, V> {
     pub(crate) fn remove_entry(&mut self, key1: &A, key2: &B, entry: &V) {
         let need_cleanup = match self.data.get_mut(key1) {
             None => return,
-            Some(v) => {
-                v.remove_entry(key2, entry);
-                v.is_empty()
-            }
+            Some(ks1l) => ks1l.remove_entry(key2, entry) && ks1l.is_empty(),
         };
         if need_cleanup {
             self.data.remove(key1);

@@ -14,7 +14,7 @@ impl SolProjTracker {
         self.data.add_entry(projectee_item_id, projector_item_id)
     }
     pub(in crate::sol) fn unreg_projectee(&mut self, projector_item_id: &SolItemId, projectee_item_id: &SolItemId) {
-        self.data.remove_entry(projectee_item_id, projector_item_id)
+        self.data.remove_entry(projectee_item_id, projector_item_id);
     }
     pub(in crate::sol) fn iter_projectors(
         &self,

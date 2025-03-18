@@ -6,11 +6,13 @@ use crate::{
 };
 
 pub(in crate::adg) fn fill_extra_data(a_data: &mut ad::AData) {
-    // Build data for item count in a group limit
+    // Data for item count in a group limit - need to do it here for efficiency, and to take into
+    // account that mutated item can have the limit even if raw mutated type has no such limit
     let grp_mutations = get_grp_mutations(a_data);
     let limited_fitted_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ec::attrs::MAX_GROUP_FITTED);
     let limited_online_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ec::attrs::MAX_GROUP_ONLINE);
     let limited_active_grp_ids = get_item_grps_with_attr(&a_data.items, &grp_mutations, ec::attrs::MAX_GROUP_ACTIVE);
+    // The rest
     let effects = a_data.effects.iter().map(|v| (v.id, v)).collect();
     for a_item in a_data.items.iter_mut() {
         a_item.extras.fill(
@@ -53,7 +55,7 @@ fn get_item_grps_with_attr(
     a_items: &[ad::AItem],
     grp_mutations: &StMapSetL1<EItemGrpId, EItemGrpId>,
     attr_id: EAttrId,
-) -> Vec<EItemGrpId> {
+) -> StSet<EItemGrpId> {
     let mut grp_ids = StSet::new();
     for a_item in a_items.iter() {
         if a_item.attrs.contains_key(&attr_id) {
@@ -61,5 +63,5 @@ fn get_item_grps_with_attr(
             grp_ids.extend(grp_mutations.get(&a_item.grp_id).copied())
         }
     }
-    grp_ids.into_iter().collect()
+    grp_ids
 }

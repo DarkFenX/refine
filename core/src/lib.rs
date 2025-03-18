@@ -36,12 +36,12 @@ pub use sol::{
         vast::{
             SolValCapitalModFail, SolValCapitalModItemInfo, SolValChargeGroupFail, SolValChargeSizeFail,
             SolValChargeVolumeFail, SolValDroneGroupFail, SolValDroneGroupItemInfo, SolValFighterCountFail,
-            SolValItemKindFail, SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValModuleStateFail,
-            SolValNotLoadedItemFail, SolValOption, SolValOptions, SolValOverloadSkillFail, SolValOverloadSkillItemInfo,
-            SolValResFail, SolValResItemInfo, SolValResult, SolValRigSizeFail, SolValRigSizeItemInfo,
-            SolValShipLimitFail, SolValShipLimitItemInfo, SolValShipStanceFail, SolValSlotCountFail,
-            SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo, SolValUnusableResFail, SolValUnusableResItemInfo,
-            SolValUnusableSlotFail,
+            SolValItemKindFail, SolValMaxGroupFail, SolValMaxGroupItemInfo, SolValMaxTypeFail, SolValMaxTypeItemInfo,
+            SolValModuleStateFail, SolValNotLoadedItemFail, SolValOption, SolValOptions, SolValOverloadSkillFail,
+            SolValOverloadSkillItemInfo, SolValResFail, SolValResItemInfo, SolValResult, SolValRigSizeFail,
+            SolValRigSizeItemInfo, SolValShipLimitFail, SolValShipLimitItemInfo, SolValShipStanceFail,
+            SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValSrqSkillInfo, SolValUnusableResFail,
+            SolValUnusableResItemInfo, SolValUnusableSlotFail,
         },
     },
     uad::{

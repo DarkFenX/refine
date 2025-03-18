@@ -4,11 +4,11 @@ use crate::{
         AState,
     },
     defs::{AttrVal, Count, EAttrId, EEffectId, EItemCatId, EItemGrpId, EItemId, SkillLevel, SlotIndex},
-    util::StMap,
+    util::{StMap, StSet},
 };
 
 use super::{
-    attr_val::{get_bandwidth_use, get_volume},
+    attr_val::{get_bandwidth_use, get_max_type_fitted_count, get_volume},
     charge_limit::get_item_charge_limit,
     drone_limit::get_ship_drone_limit,
     fighter_count::get_max_fighter_count,
@@ -76,6 +76,8 @@ pub struct AItemExtras {
     pub bandwidth_use: Option<AttrVal>,
     /// Required thermodynamics skill level.
     pub overload_td_lvl: Option<SkillLevel>,
+    /// Max amount of items with this type ID a fit can have.
+    pub max_type_fitted: Option<Count>,
 }
 impl AItemExtras {
     pub(crate) fn new() -> Self {
@@ -103,6 +105,7 @@ impl AItemExtras {
             max_fighter_count: 1,
             bandwidth_use: Option::default(),
             overload_td_lvl: Option::default(),
+            max_type_fitted: Option::default(),
         }
     }
     // Build new instance, rebuilding all the data based on new attributes, copying data which does
@@ -132,6 +135,7 @@ impl AItemExtras {
             max_fighter_count: get_max_fighter_count(attrs),
             bandwidth_use: get_bandwidth_use(attrs),
             overload_td_lvl: get_overload_td_lvl(attrs),
+            max_type_fitted: get_max_type_fitted_count(attrs),
         }
     }
     pub(crate) fn fill(
@@ -143,9 +147,9 @@ impl AItemExtras {
         item_effects: &StMap<EEffectId, AItemEffectData>,
         item_srqs: &StMap<EItemId, SkillLevel>,
         effects: &StMap<EEffectId, &AEffect>,
-        fitted_limited_groups: &[EItemGrpId],
-        online_limited_groups: &[EItemGrpId],
-        active_limited_groups: &[EItemGrpId],
+        fitted_limited_groups: &StSet<EItemGrpId>,
+        online_limited_groups: &StSet<EItemGrpId>,
+        active_limited_groups: &StSet<EItemGrpId>,
     ) {
         self.kind = get_item_kind(item_grp_id, item_cat_id, item_attrs, item_effects);
         self.volume = get_volume(item_attrs);
@@ -179,5 +183,6 @@ impl AItemExtras {
         self.max_fighter_count = get_max_fighter_count(item_attrs);
         self.bandwidth_use = get_bandwidth_use(item_attrs);
         self.overload_td_lvl = get_overload_td_lvl(item_attrs);
+        self.max_type_fitted = get_max_type_fitted_count(item_attrs);
     }
 }

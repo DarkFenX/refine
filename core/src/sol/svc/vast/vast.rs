@@ -1,12 +1,12 @@
 use crate::{
     ad,
-    defs::{AttrVal, EItemGrpId, EItemId, SkillLevel, SlotIndex, SolFitId, SolItemId},
+    defs::{AttrVal, Count, EItemGrpId, EItemId, SkillLevel, SlotIndex, SolFitId, SolItemId},
     err::basic::FitFoundError,
     sol::svc::vast::{
         SolValCache, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValFighterCountFail,
         SolValItemKindFail, SolValModuleStateFail, SolVastSkillReq,
     },
-    util::{StMap, StMapSetL1, StSet},
+    util::{StMap, StMapMap, StMapSetL1, StSet},
 };
 
 // Vast stands for VAlidation and STats.
@@ -86,6 +86,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
     pub(in crate::sol::svc::vast) drone_groups: StMap<SolItemId, EItemGrpId>,
     pub(in crate::sol::svc::vast) fighter_count: StMap<SolItemId, SolValFighterCountFail>,
     pub(in crate::sol::svc::vast) overload_td_lvl: StMap<SolItemId, SkillLevel>,
+    pub(in crate::sol::svc::vast) mods_svcs_max_type_fitted: StMapMap<EItemId, SolItemId, Count>,
 }
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
@@ -135,6 +136,7 @@ impl SolVastFitData {
             drone_groups: StMap::new(),
             fighter_count: StMap::new(),
             overload_td_lvl: StMap::new(),
+            mods_svcs_max_type_fitted: StMapMap::new(),
         }
     }
 }

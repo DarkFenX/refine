@@ -123,9 +123,9 @@ fn validate_fast(
     attr_id: &EAttrId,
 ) -> bool {
     for (item_id, grp_id) in max_group_limited.iter() {
-        let allowed = get_allowed(uad, calc, item_id, attr_id);
-        let fitted = get_fitted(max_group_all, grp_id);
-        if fitted > allowed && !kfs.contains(item_id) {
+        let allowed = get_max_allowed_item_count(uad, calc, item_id, attr_id);
+        let actual = get_actual_item_count(max_group_all, grp_id);
+        if actual > allowed && !kfs.contains(item_id) {
             return false;
         }
     }
@@ -142,9 +142,9 @@ fn validate_verbose(
 ) -> Vec<SolValMaxGroupFail> {
     let mut items_by_grp = StMap::new();
     for (item_id, grp_id) in max_group_limited.iter() {
-        let allowed = get_allowed(uad, calc, item_id, attr_id);
-        let fitted = get_fitted(max_group_all, grp_id);
-        if fitted > allowed && !kfs.contains(item_id) {
+        let allowed = get_max_allowed_item_count(uad, calc, item_id, attr_id);
+        let actual = get_actual_item_count(max_group_all, grp_id);
+        if actual > allowed && !kfs.contains(item_id) {
             items_by_grp
                 .entry(*grp_id)
                 .or_insert_with(Vec::new)
@@ -158,13 +158,13 @@ fn validate_verbose(
         .into_iter()
         .map(|(k, v)| SolValMaxGroupFail {
             group_id: k,
-            count: get_fitted(max_group_all, &k),
+            count: get_actual_item_count(max_group_all, &k),
             items: v,
         })
         .collect()
 }
 
-fn get_allowed(uad: &SolUad, calc: &mut SolCalc, item_id: &SolItemId, attr_id: &EAttrId) -> Count {
+fn get_max_allowed_item_count(uad: &SolUad, calc: &mut SolCalc, item_id: &SolItemId, attr_id: &EAttrId) -> Count {
     match calc.get_item_attr_val_simple(uad, item_id, attr_id) {
         Some(value) => value.round() as Count,
         // Limited items are guaranteed to have some unmodified limit value
@@ -179,6 +179,6 @@ fn get_allowed(uad: &SolUad, calc: &mut SolCalc, item_id: &SolItemId, attr_id: &
             .round() as Count,
     }
 }
-fn get_fitted(max_group_all: &StMapSetL1<EItemGrpId, SolItemId>, grp_id: &EItemGrpId) -> Count {
+fn get_actual_item_count(max_group_all: &StMapSetL1<EItemGrpId, SolItemId>, grp_id: &EItemGrpId) -> Count {
     max_group_all.get(grp_id).len() as Count
 }

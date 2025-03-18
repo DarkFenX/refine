@@ -45,16 +45,18 @@ impl<K: Eq + Hash, V: Eq + Hash> StMapSetL1<K, V> {
             .or_insert_with(|| StSet::with_capacity(entries.len()))
             .extend(entries);
     }
-    pub(crate) fn remove_entry(&mut self, key: &K, entry: &V) {
+    pub(crate) fn remove_entry(&mut self, key: &K, entry: &V) -> bool {
+        // Returns true only if key has been removed
         let need_cleanup = match self.data.get_mut(key) {
-            None => return,
-            Some(v) => {
-                v.remove(entry);
-                v.is_empty()
-            }
+            None => return false,
+            Some(v) => v.remove(entry) && v.is_empty(),
         };
-        if need_cleanup {
-            self.data.remove(key);
+        match need_cleanup {
+            true => {
+                self.data.remove(key);
+                true
+            }
+            false => false,
         }
     }
     pub(crate) fn remove_key(&mut self, key: &K) -> Option<impl ExactSizeIterator<Item = V> + use<K, V>> {
