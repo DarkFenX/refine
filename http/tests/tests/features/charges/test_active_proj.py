@@ -27,18 +27,18 @@ def test_bundled_proj_unproj(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_module = api_affector_fit.add_mod(
+    api_affector_module = api_affector_fit.add_module(
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action
-    api_affector_module.change_mod(rm_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
 
@@ -64,11 +64,11 @@ def test_bundled_remove(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_module = api_affector_fit.add_mod(
+    api_affector_module = api_affector_fit.add_module(
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action
@@ -110,20 +110,20 @@ def test_charge_charge_uncharge(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
+    api_affector_module = api_affector_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_module.change_mod(charge=eve_charge1_id)
+    api_affector_module.change_module(charge=eve_charge1_id)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action
-    api_affector_module.change_mod(charge=eve_charge2_id)
+    api_affector_module.change_module(charge=eve_charge2_id)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1500)
     # Action
-    api_affector_module.change_mod(charge=None)
+    api_affector_module.change_module(charge=None)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
 
@@ -149,20 +149,20 @@ def test_states(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_module = api_affector_fit.add_mod(
+    api_affector_module = api_affector_fit.add_module(
         type_id=eve_module_id,
         state=consts.ApiModuleState.online,
         charge_type_id=eve_charge_id)
     api_affector_charge = api_affector_module.charge
-    api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_module.change_mod(state=consts.ApiModuleState.active)
+    api_affector_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action
-    api_affector_module.change_mod(state=consts.ApiModuleState.online)
+    api_affector_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
@@ -170,7 +170,7 @@ def test_states(client, consts):
     # Verification - active charge state does not override too low module state
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_module.change_mod(state=consts.ApiModuleState.active)
+    api_affector_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action
@@ -179,11 +179,11 @@ def test_states(client, consts):
     # state
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_module.change_mod(state=consts.ApiModuleState.online)
+    api_affector_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
     # Action
-    api_affector_module.change_mod(state=consts.ApiModuleState.active)
+    api_affector_module.change_module(state=consts.ApiModuleState.active)
     # Verification - re-enabling module does not enable charge, since it was not enabled after
     # getting disabled
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1000)
@@ -217,19 +217,19 @@ def test_range(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_module = api_affector_fit.add_mod(
+    api_affector_module = api_affector_fit.add_module(
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 10000)])
+    api_affector_module.change_module(add_projs=[(api_affectee_ship.id, 10000)])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action
-    api_affector_module.change_mod(change_projs=[(api_affectee_ship.id, 15000)])
+    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, 15000)])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1100)
     # Action
-    api_affector_module.change_mod(change_projs=[(api_affectee_ship.id, None)])
+    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, None)])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
 
@@ -284,11 +284,11 @@ def test_src_switch(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
-    api_affector_module = api_affector_fit.add_mod(
+    api_affector_module = api_affector_fit.add_module(
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(1200)
     # Action

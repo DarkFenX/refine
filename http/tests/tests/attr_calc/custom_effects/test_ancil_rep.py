@@ -13,7 +13,10 @@ def test_local_aar(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_aar_item = api_fit.add_mod(type_id=eve_aar_item_id, rack=consts.ApiRack.low, charge_type_id=eve_paste_item_id)
+    api_aar_item = api_fit.add_module(
+        type_id=eve_aar_item_id,
+        rack=consts.ApiRack.low,
+        charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
@@ -39,7 +42,10 @@ def test_remote_aar(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_aar_item = api_fit.add_mod(type_id=eve_aar_item_id, rack=consts.ApiRack.high, charge_type_id=eve_paste_item_id)
+    api_aar_item = api_fit.add_module(
+        type_id=eve_aar_item_id,
+        rack=consts.ApiRack.high,
+        charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
@@ -64,7 +70,7 @@ def test_charge_switch(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_aar_item = api_fit.add_mod(type_id=eve_aar_item_id, rack=consts.ApiRack.low)
+    api_aar_item = api_fit.add_module(type_id=eve_aar_item_id, rack=consts.ApiRack.low)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
@@ -72,14 +78,14 @@ def test_charge_switch(client, consts):
     with check_no_field():
         api_aar_item.mods  # noqa: B018
     # Action
-    api_aar_item.change_mod(charge=eve_paste_item_id)
+    api_aar_item.change_module(charge=eve_paste_item_id)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_aar_item.attrs[eve_affectee_attr_id].extra == approx(300)
     assert len(api_aar_item.mods[eve_affectee_attr_id]) == 1
     # Action
-    api_aar_item.change_mod(charge=None)
+    api_aar_item.change_module(charge=None)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].dogma == approx(100)
@@ -110,7 +116,10 @@ def test_mult_change(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_aar_item = api_fit.add_mod(type_id=eve_aar_item_id, rack=consts.ApiRack.low, charge_type_id=eve_paste_item_id)
+    api_aar_item = api_fit.add_module(
+        type_id=eve_aar_item_id,
+        rack=consts.ApiRack.low,
+        charge_type_id=eve_paste_item_id)
     # Verification
     api_aar_item.update()
     assert api_aar_item.attrs[eve_aar_affectee_attr_id].dogma == approx(100)
@@ -152,7 +161,7 @@ def test_penalties(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_aar = api_fit.add_mod(type_id=eve_aar_id, rack=consts.ApiRack.low, charge_type_id=eve_paste_id)
+    api_aar = api_fit.add_module(type_id=eve_aar_id, rack=consts.ApiRack.low, charge_type_id=eve_paste_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_aar.update()

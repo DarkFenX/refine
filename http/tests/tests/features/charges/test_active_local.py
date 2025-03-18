@@ -22,7 +22,7 @@ def test_bundled_remove(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(
+    api_module = api_fit.add_module(
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
@@ -62,19 +62,19 @@ def test_charge_charge_uncharge(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_module.change_mod(charge=eve_charge1_id)
+    api_module.change_module(charge=eve_charge1_id)
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
-    api_module.change_mod(charge=eve_charge2_id)
+    api_module.change_module(charge=eve_charge2_id)
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(150)
     # Action
-    api_module.change_mod(charge=None)
+    api_module.change_module(charge=None)
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
@@ -97,7 +97,7 @@ def test_states(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(
+    api_module = api_fit.add_module(
         type_id=eve_module_id,
         state=consts.ApiModuleState.online,
         charge_type_id=eve_charge_id)
@@ -105,11 +105,11 @@ def test_states(client, consts):
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_module.change_mod(state=consts.ApiModuleState.active)
+    api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
-    api_module.change_mod(state=consts.ApiModuleState.online)
+    api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
@@ -117,7 +117,7 @@ def test_states(client, consts):
     # Verification - active charge state does not override too low module state
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_module.change_mod(state=consts.ApiModuleState.active)
+    api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(120)
     # Action
@@ -126,11 +126,11 @@ def test_states(client, consts):
     # state
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_module.change_mod(state=consts.ApiModuleState.online)
+    api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_module.change_mod(state=consts.ApiModuleState.active)
+    api_module.change_module(state=consts.ApiModuleState.active)
     # Verification - re-enabling module does not enable charge, since it was not enabled after
     # getting disabled
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(100)
@@ -182,7 +182,7 @@ def test_src_switch(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(
+    api_module = api_fit.add_module(
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)

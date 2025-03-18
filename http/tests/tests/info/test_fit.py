@@ -146,7 +146,7 @@ def test_mod_high(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.high)
+    api_item = api_fit.add_module(type_id=eve_item_id, rack=consts.ApiRack.high)
     # Verification
     api_fit.update()
     assert len(api_fit.modules) == 1
@@ -165,7 +165,7 @@ def test_mod_mid(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.mid)
+    api_item = api_fit.add_module(type_id=eve_item_id, rack=consts.ApiRack.mid)
     # Verification
     api_fit.update()
     assert len(api_fit.modules) == 1
@@ -184,7 +184,7 @@ def test_mod_low(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.low)
+    api_item = api_fit.add_module(type_id=eve_item_id, rack=consts.ApiRack.low)
     # Verification
     api_fit.update()
     assert len(api_fit.modules) == 1

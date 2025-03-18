@@ -33,7 +33,7 @@ def test_resisted_value_change(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(19.5)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)

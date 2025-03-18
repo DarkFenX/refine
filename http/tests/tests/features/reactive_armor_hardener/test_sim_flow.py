@@ -12,7 +12,7 @@ def test_complete_single(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].base == approx(0.85)
@@ -43,8 +43,8 @@ def test_complete_double_synced(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah1 = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.97)
@@ -74,8 +74,8 @@ def test_complete_double_unsynced(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.overload)
+    api_rah1 = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.overload)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.9752941)
@@ -115,8 +115,8 @@ def test_no_loop(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.overload)
+    api_rah1 = api_fit.add_module(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_module(type_id=eve_rah2_id, state=consts.ApiModuleState.overload)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.9773899)
@@ -161,8 +161,8 @@ def test_no_loop_history_ignore_limit(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah1 = api_fit.add_mod(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
-    api_rah2 = api_fit.add_mod(type_id=eve_rah2_id, state=consts.ApiModuleState.overload)
+    api_rah1 = api_fit.add_module(type_id=eve_rah1_id, state=consts.ApiModuleState.active)
+    api_rah2 = api_fit.add_module(type_id=eve_rah2_id, state=consts.ApiModuleState.overload)
     # Verification
     api_rah1.update()
     assert api_rah1.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
@@ -191,7 +191,7 @@ def test_already_adapted_accuracy(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(0, 0, 1, 0))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1, accuracy=11)

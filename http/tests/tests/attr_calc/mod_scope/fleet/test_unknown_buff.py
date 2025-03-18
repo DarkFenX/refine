@@ -17,7 +17,7 @@ def test_static(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
     api_module.remove()
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
@@ -66,18 +66,18 @@ def test_switch(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(20)
     # Action
-    api_module.change_mod(charge=eve_charge1_id)
+    api_module.change_module(charge=eve_charge1_id)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     # Action
-    api_module.change_mod(charge=eve_charge2_id)
+    api_module.change_module(charge=eve_charge2_id)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(20)
     # Action
-    api_module.change_mod(charge=None)
+    api_module.change_module(charge=None)
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(20)

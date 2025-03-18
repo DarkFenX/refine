@@ -27,8 +27,8 @@ def test_regular_resist(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
-    api_fit.add_mod(type_id=eve_resmod_id)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_resmod_id)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)
@@ -67,8 +67,8 @@ def test_damage_control(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 1, 1))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
-    api_fit.add_mod(type_id=eve_dc_id)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_dc_id)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(1)

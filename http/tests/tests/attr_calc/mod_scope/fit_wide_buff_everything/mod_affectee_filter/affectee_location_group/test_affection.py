@@ -24,7 +24,7 @@ def test_affected_child_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
 
@@ -53,7 +53,7 @@ def test_unaffected_other_group(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
@@ -78,7 +78,7 @@ def test_unaffected_child_struct(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
@@ -208,5 +208,5 @@ def test_unaffected_other_fit(client, consts):
     api_fit2 = api_sol.create_fit()
     api_fit1.add_fw_effect(type_id=eve_fw_effect_id)
     api_fit2.set_ship(type_id=eve_ship_id)
-    api_module = api_fit2.add_mod(type_id=eve_module_id)
+    api_module = api_fit2.add_module(type_id=eve_module_id)
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)

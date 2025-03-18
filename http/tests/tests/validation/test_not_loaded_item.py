@@ -43,8 +43,8 @@ def test_charge(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_loaded_id)
-    api_not_loaded = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_not_loaded_id)
+    api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_loaded_id)
+    api_not_loaded = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
@@ -113,8 +113,8 @@ def test_module_high(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_loaded_id, rack=consts.ApiRack.high)
-    api_not_loaded = api_fit.add_mod(type_id=eve_not_loaded_id, rack=consts.ApiRack.high)
+    api_fit.add_module(type_id=eve_loaded_id, rack=consts.ApiRack.high)
+    api_not_loaded = api_fit.add_module(type_id=eve_not_loaded_id, rack=consts.ApiRack.high)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
@@ -127,8 +127,8 @@ def test_module_low(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_loaded_id, rack=consts.ApiRack.low)
-    api_not_loaded = api_fit.add_mod(type_id=eve_not_loaded_id, rack=consts.ApiRack.low)
+    api_fit.add_module(type_id=eve_loaded_id, rack=consts.ApiRack.low)
+    api_not_loaded = api_fit.add_module(type_id=eve_not_loaded_id, rack=consts.ApiRack.low)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
@@ -141,8 +141,8 @@ def test_module_mid(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_loaded_id, rack=consts.ApiRack.mid)
-    api_not_loaded = api_fit.add_mod(type_id=eve_not_loaded_id, rack=consts.ApiRack.mid)
+    api_fit.add_module(type_id=eve_loaded_id, rack=consts.ApiRack.mid)
+    api_not_loaded = api_fit.add_module(type_id=eve_not_loaded_id, rack=consts.ApiRack.mid)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
@@ -253,9 +253,9 @@ def test_known_failures(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_other = api_fit.add_implant(type_id=eve_other_id)
-    api_fit.add_mod(type_id=eve_loaded_id)
-    api_not_loaded1 = api_fit.add_mod(type_id=eve_not_loaded_id)
-    api_not_loaded2 = api_fit.add_mod(type_id=eve_not_loaded_id)
+    api_fit.add_module(type_id=eve_loaded_id)
+    api_not_loaded1 = api_fit.add_module(type_id=eve_not_loaded_id)
+    api_not_loaded2 = api_fit.add_module(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=(True, [api_not_loaded1.id])))
     assert api_val.passed is False
@@ -281,7 +281,7 @@ def test_state(client, consts):
     api_fit = api_sol.create_fit()
     api_implant = api_fit.add_implant(type_id=eve_not_loaded_id, state=False)
     api_ship = api_fit.set_ship(type_id=eve_not_loaded_id, state=False)
-    api_module = api_fit.add_mod(
+    api_module = api_fit.add_module(
         type_id=eve_not_loaded_id,
         state=consts.ApiModuleState.ghost,
         charge_type_id=eve_not_loaded_id)

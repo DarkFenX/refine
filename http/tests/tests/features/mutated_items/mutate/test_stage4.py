@@ -19,7 +19,7 @@ def test_overwrite(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator1_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator1_id, {
         eve_first_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_both_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
     # Verification
@@ -34,7 +34,7 @@ def test_overwrite(client, consts):
     assert api_item.attrs[eve_second_attr_id].base == approx(100)
     assert api_item.attrs[eve_both_attr_id].base == approx(82)
     # Action
-    api_item.change_mod(mutation=(eve_mutator2_id, {
+    api_item.change_module(mutation=(eve_mutator2_id, {
         eve_second_attr_id: {consts.ApiAttrMutation.roll: 0.6},
         eve_both_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
     # Verification - first mutation only attribute is back to base value, attribute present on both
@@ -66,7 +66,7 @@ def test_rolls_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -75,7 +75,7 @@ def test_rolls_range(client, consts):
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_lower_attr_id: {consts.ApiAttrMutation.roll: -5},
         eve_within_attr_id: {consts.ApiAttrMutation.roll: 0.3},
         eve_higher_attr_id: {consts.ApiAttrMutation.roll: 128}}))
@@ -106,7 +106,7 @@ def test_absolute_base_attr_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -115,7 +115,7 @@ def test_absolute_base_attr_value(client, consts):
     assert api_item.attrs[eve_base_attr_id].base == approx(50)
     assert api_item.attrs[eve_overlap_attr_id].base == approx(70)
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_base_attr_id: {consts.ApiAttrMutation.absolute: 55},
         eve_overlap_attr_id: {consts.ApiAttrMutation.absolute: 75},
         eve_mutated_attr_id: {consts.ApiAttrMutation.absolute: 115}}))
@@ -149,7 +149,7 @@ def test_absolute_value_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -158,7 +158,7 @@ def test_absolute_value_range(client, consts):
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_lower_attr_id: {consts.ApiAttrMutation.absolute: -53},
         eve_within_attr_id: {consts.ApiAttrMutation.absolute: 92},
         eve_higher_attr_id: {consts.ApiAttrMutation.absolute: 1009}}))
@@ -189,7 +189,7 @@ def test_no_base_item(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -197,7 +197,7 @@ def test_no_base_item(client, consts):
     with check_no_field():
         api_item.attrs  # noqa: B018
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 52}}))
     # Verification
@@ -228,7 +228,7 @@ def test_no_base_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -236,7 +236,7 @@ def test_no_base_value(client, consts):
     with check_no_field():
         api_item.attrs  # noqa: B018
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
     # Verification
@@ -282,7 +282,7 @@ def test_no_mutation_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -290,7 +290,7 @@ def test_no_mutation_range(client, consts):
     assert api_item.attrs[eve_roll_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_attr_id].base == approx(50)
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
     # Verification
@@ -349,7 +349,7 @@ def test_zero_mutation_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -359,7 +359,7 @@ def test_zero_mutation_range(client, consts):
     assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(50)
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(50)
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: 54},
         eve_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 54},
@@ -433,7 +433,7 @@ def test_zero_base_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -443,7 +443,7 @@ def test_zero_base_value(client, consts):
     assert api_item.attrs[eve_absolute_mid_attr_id].base == approx(0)
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(0)
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -3},
         eve_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 0},
@@ -497,7 +497,7 @@ def test_base_out_of_range(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -505,7 +505,7 @@ def test_base_out_of_range(client):
     assert api_item.attrs[eve_attr1_id].base == approx(100)
     assert api_item.attrs[eve_attr2_id].base == approx(100)
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification - all the values are put onto mutation range
     api_item.update()
     assert len(api_item.mutation.attrs) == 2
@@ -536,7 +536,7 @@ def test_modification(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -546,7 +546,7 @@ def test_modification(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].base == approx(200)
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(200)
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_affector_attr_id: {consts.ApiAttrMutation.roll: 0.2},
         eve_affectee_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
@@ -570,12 +570,12 @@ def test_item_type_id(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -617,7 +617,7 @@ def test_item_group(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -627,7 +627,7 @@ def test_item_group(client, consts):
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(100)
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(100)  # Not modified
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_affectee_attr1_id: {consts.ApiAttrMutation.roll: 0.2},
         eve_affectee_attr2_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
@@ -665,15 +665,15 @@ def test_item_category(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_item1 = api_fit.add_mod(type_id=eve_base_item_id)
-    api_item2 = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item1 = api_fit.add_module(type_id=eve_base_item_id)
+    api_item2 = api_fit.add_module(type_id=eve_base_item_id)
     # Verification - base item is not from stacking penalty immune category, so calculation is
     # stacking penalized.
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr_id].dogma == approx(140.85888)
     # Action
-    api_item1.change_mod(mutation=eve_mutator_id)
-    api_item2.change_mod(mutation=eve_mutator_id)
+    api_item1.change_module(mutation=eve_mutator_id)
+    api_item2.change_module(mutation=eve_mutator_id)
     # Verification - value is 144 because change is non-penalized thanks to implant category of
     # mutated item.
     api_ship.update()
@@ -716,7 +716,7 @@ def test_item_skillreqs(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     with check_no_field():
@@ -726,7 +726,7 @@ def test_item_skillreqs(client, consts):
     assert api_item.attrs[eve_affectee_attr2_id].base == approx(100)
     assert api_item.attrs[eve_affectee_attr2_id].dogma == approx(100)  # Not modified
     # Action
-    api_item.change_mod(mutation=(eve_mutator_id, {
+    api_item.change_module(mutation=(eve_mutator_id, {
         eve_affectee_attr1_id: {consts.ApiAttrMutation.roll: 0.2},
         eve_affectee_attr2_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
@@ -769,13 +769,13 @@ def test_item_effects(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(120)  # Modified
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(100)  # Not modified
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)  # Not modified
@@ -812,13 +812,13 @@ def test_item_default_effect(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, state=consts.ApiModuleState.active)
+    api_item = api_fit.add_module(type_id=eve_base_item_id, state=consts.ApiModuleState.active)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(120)  # Modified
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(100)  # Not modified
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)  # Not modified

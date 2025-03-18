@@ -120,7 +120,7 @@ def test_valid_to_valid_different(client, consts):
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
     assert api_ship.update().attrs[eve_d1_affectee_attr_id].extra == approx(100)

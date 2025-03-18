@@ -26,7 +26,7 @@ def test_rah_to_rah(client, consts):
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 0, 0))
     api_fit.add_implant(type_id=eve_implant_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.53)
@@ -81,7 +81,7 @@ def test_rah_to_rah_no_dmg(client, consts):
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 0, 0))
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.53)
@@ -138,7 +138,7 @@ def test_default_to_default(client, consts):
     api_sol = client.create_sol(default_incoming_dmg=(1, 1, 0, 0))
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.7)
@@ -173,7 +173,7 @@ def test_rah_to_default(client, consts):
     api_sol = client.create_sol(default_incoming_dmg=(0, 0, 1, 1))
     api_fit = api_sol.create_fit(rah_incoming_dmg=(1, 1, 0, 0))
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.7)
@@ -208,7 +208,7 @@ def test_default_to_rah(client, consts):
     api_sol = client.create_sol(default_incoming_dmg=(1, 1, 0, 0))
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_rah = api_fit.add_mod(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
     # Verification
     api_rah.update()
     assert api_rah.attrs[eve_basic_info.res_em_attr_id].dogma == approx(0.7)

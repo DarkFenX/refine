@@ -11,7 +11,7 @@ def test_from_stage4(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(
+    api_item = api_fit.add_module(
         type_id=eve_base_item_id,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.6}}))
     # Verification
@@ -23,14 +23,14 @@ def test_from_stage4(client, consts):
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(104)
     assert api_item.attrs[eve_attr_id].base == approx(104)
     # Action
-    api_item.change_mod(mutation=None)
+    api_item.change_module(mutation=None)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
         api_item.mutation  # noqa: B018
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification - after mutating item again, all the old mutations should be gone
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -51,7 +51,7 @@ def test_from_stage3(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(
+    api_item = api_fit.add_module(
         type_id=eve_base_item_id,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.6}}))
     # Verification
@@ -60,14 +60,14 @@ def test_from_stage3(client, consts):
     with check_no_field():
         api_item.mutation  # noqa: B018
     # Action
-    api_item.change_mod(mutation=None)
+    api_item.change_module(mutation=None)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
         api_item.mutation  # noqa: B018
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -85,7 +85,7 @@ def test_from_stage2(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(
+    api_item = api_fit.add_module(
         type_id=eve_base_item_id,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.6}}))
     # Verification
@@ -94,14 +94,14 @@ def test_from_stage2(client, consts):
     with check_no_field():
         api_item.mutation  # noqa: B018
     # Action
-    api_item.change_mod(mutation=None)
+    api_item.change_module(mutation=None)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
         api_item.mutation  # noqa: B018
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -116,7 +116,7 @@ def test_from_stage1(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(
+    api_item = api_fit.add_module(
         type_id=eve_base_item_id,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.6}}))
     # Verification
@@ -125,14 +125,14 @@ def test_from_stage1(client, consts):
     with check_no_field():
         api_item.mutation  # noqa: B018
     # Action
-    api_item.change_mod(mutation=None)
+    api_item.change_module(mutation=None)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
         api_item.mutation  # noqa: B018
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
@@ -150,21 +150,21 @@ def test_from_unmutated(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
         api_item.mutation  # noqa: B018
     # Action
-    api_item.change_mod(mutation=None)
+    api_item.change_module(mutation=None)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
         api_item.mutation  # noqa: B018
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id

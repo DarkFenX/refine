@@ -18,7 +18,7 @@ def test_bubble_sig_local(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_ship.update().attrs[eve_sig_attr_id].dogma == approx(150)
 
@@ -37,9 +37,9 @@ def test_bubble_sig_projected(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_sig_attr_id].dogma == approx(100)
 
@@ -57,7 +57,7 @@ def test_bubble_assist_local(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)
 
@@ -75,9 +75,9 @@ def test_bubble_assist_projected(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(0)
 
@@ -102,17 +102,17 @@ def test_warp_scram_status_dscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
     # Action
-    api_wdfg.change_mod(charge=eve_script_id)
+    api_wdfg.change_module(charge=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
     # Action
-    api_wdfg.change_mod(charge=None)
+    api_wdfg.change_module(charge=None)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
 
@@ -137,17 +137,17 @@ def test_warp_scram_status_sscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
     # Action
-    api_wdfg.change_mod(charge=eve_script_id)
+    api_wdfg.change_module(charge=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
     # Action
-    api_wdfg.change_mod(charge=None)
+    api_wdfg.change_module(charge=None)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
 
@@ -169,17 +169,17 @@ def test_gate_scram_status_dscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
     # Action
-    api_wdfg.change_mod(charge=eve_script_id)
+    api_wdfg.change_module(charge=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(1)
     # Action
-    api_wdfg.change_mod(charge=None)
+    api_wdfg.change_module(charge=None)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
 
@@ -201,17 +201,17 @@ def test_gate_scram_status_sscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
     # Action
-    api_wdfg.change_mod(charge=eve_script_id)
+    api_wdfg.change_module(charge=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(1)
     # Action
-    api_wdfg.change_mod(charge=None)
+    api_wdfg.change_module(charge=None)
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
 
@@ -236,18 +236,18 @@ def test_mwd_block_dscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mwd = api_affectee_fit.add_mod(type_id=eve_mwd_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id)
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
     # Action
-    api_wdfg.change_mod(charge=eve_script_id)
+    api_wdfg.change_module(charge=eve_script_id)
     # Verification
     assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
     # Action
-    api_wdfg.change_mod(charge=None)
+    api_wdfg.change_module(charge=None)
     # Verification
     assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
 
@@ -272,18 +272,18 @@ def test_mwd_block_sscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mwd = api_affectee_fit.add_mod(type_id=eve_mwd_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id)
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
     # Action
-    api_wdfg.change_mod(charge=eve_script_id)
+    api_wdfg.change_module(charge=eve_script_id)
     # Verification
     assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(1)
     # Action
-    api_wdfg.change_mod(charge=None)
+    api_wdfg.change_module(charge=None)
     # Verification
     assert api_mwd.update().attrs[eve_block_attr_id].dogma == approx(0)
 
@@ -311,21 +311,21 @@ def test_mjd_block_dscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mjd_sub = api_affectee_fit.add_mod(type_id=eve_mjd_sub_id)
-    api_mjd_cap = api_affectee_fit.add_mod(type_id=eve_mjd_cap_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_mjd_sub = api_affectee_fit.add_module(type_id=eve_mjd_sub_id)
+    api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id)
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
     assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)
     # Action
-    api_wdfg.change_mod(charge=eve_script_id)
+    api_wdfg.change_module(charge=eve_script_id)
     # Verification
     assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(1)
     assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(1)
     # Action
-    api_wdfg.change_mod(charge=None)
+    api_wdfg.change_module(charge=None)
     # Verification
     assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
     assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)
@@ -354,21 +354,21 @@ def test_mjd_block_sscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_wdfg = api_affector_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_mjd_sub = api_affectee_fit.add_mod(type_id=eve_mjd_sub_id)
-    api_mjd_cap = api_affectee_fit.add_mod(type_id=eve_mjd_cap_id)
-    api_wdfg.change_mod(add_projs=[api_ship.id])
+    api_mjd_sub = api_affectee_fit.add_module(type_id=eve_mjd_sub_id)
+    api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id)
+    api_wdfg.change_module(add_projs=[api_ship.id])
     # Verification
     assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
     assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)
     # Action
-    api_wdfg.change_mod(charge=eve_script_id)
+    api_wdfg.change_module(charge=eve_script_id)
     # Verification
     assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(1)
     assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(1)
     # Action
-    api_wdfg.change_mod(charge=None)
+    api_wdfg.change_module(charge=None)
     # Verification
     assert api_mjd_sub.update().attrs[eve_block_attr_id].dogma == approx(0)
     assert api_mjd_cap.update().attrs[eve_block_attr_id].dogma == approx(0)
@@ -421,16 +421,16 @@ def test_range_dscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(
+    api_wdfg = api_affector_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_mod(add_projs=[(api_ship.id, 30000)])
+    api_wdfg.change_module(add_projs=[(api_ship.id, 30000)])
     # Verification - range should be 30k (20k base from module +50% from script)
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
     # Action
-    api_wdfg.change_mod(change_projs=[(api_ship.id, 30001)])
+    api_wdfg.change_module(change_projs=[(api_ship.id, 30001)])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
 
@@ -482,16 +482,16 @@ def test_range_sscript(client, consts):
     api_sol = client.create_sol()
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
-    api_wdfg = api_affector_fit.add_mod(
+    api_wdfg = api_affector_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_mod(add_projs=[(api_ship.id, 16000)])
+    api_wdfg.change_module(add_projs=[(api_ship.id, 16000)])
     # Verification - range should be 16k (20k base from module -20% from script)
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(100)
     # Action
-    api_wdfg.change_mod(change_projs=[(api_ship.id, 16001)])
+    api_wdfg.change_module(change_projs=[(api_ship.id, 16001)])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].dogma == approx(0)
 
@@ -513,7 +513,7 @@ def test_assist_dscript(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active, charge_type_id=eve_script_id)
+    api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active, charge_type_id=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)
 
@@ -535,6 +535,6 @@ def test_assist_sscript(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_wdfg_id, state=consts.ApiModuleState.active, charge_type_id=eve_script_id)
+    api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active, charge_type_id=eve_script_id)
     # Verification
     assert api_ship.update().attrs[eve_assist_attr_id].dogma == approx(1)

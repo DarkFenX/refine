@@ -38,8 +38,10 @@ def test_resisted_value_change(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affectee_drone = api_affectee_fit.add_drone(type_id=eve_affectee_drone_id)
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
-    api_affector_module.change_mod(add_projs=[api_affectee_ship.id])
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_affector_module_id,
+        state=consts.ApiModuleState.active)
+    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
     assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(380)
     api_affectee_rig = api_affectee_fit.add_rig(type_id=eve_affectee_rig_id)
     assert api_affectee_drone.update().attrs[eve_affectee_attr_id].dogma == approx(410)

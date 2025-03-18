@@ -45,7 +45,7 @@ def test_affected_charge(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     assert api_module.update().charge.attrs[eve_affectee_attr_id].dogma == approx(4800)
 
 

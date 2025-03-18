@@ -22,7 +22,7 @@ def test_replace_root(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(260)
     api_ship.remove()
     assert api_module.update().attrs[eve_affectee_attr_id].dogma == approx(200)

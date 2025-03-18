@@ -25,26 +25,28 @@ def test_optimal_undefined(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_affectee_struct_id)
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_affector_module_id,
+        state=consts.ApiModuleState.active)
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
     with check_no_field():
         api_affectee_struct.mods  # noqa: B018
     # Action
-    api_affector_module.change_mod(add_projs=[(api_affectee_struct.id, None)])
+    api_affector_module.change_module(add_projs=[(api_affectee_struct.id, None)])
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.mods[eve_affectee_attr_id].one().range_mult is None
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(200)
     # Action
-    api_affector_module.change_mod(change_projs=[(api_affectee_struct.id, 5000)])
+    api_affector_module.change_module(change_projs=[(api_affectee_struct.id, 5000)])
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(350)
     assert api_affectee_struct.mods[eve_affectee_attr_id].one().range_mult == approx(0.5)
     # Action
-    api_affector_module.change_mod(rm_projs=[api_affectee_struct.id])
+    api_affector_module.change_module(rm_projs=[api_affectee_struct.id])
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
@@ -76,26 +78,28 @@ def test_falloff_undefined(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
     api_affectee_struct = api_affectee_fit.set_ship(type_id=eve_affectee_struct_id)
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_affector_module_id,
+        state=consts.ApiModuleState.active)
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
     with check_no_field():
         api_affectee_struct.mods  # noqa: B018
     # Action
-    api_affector_module.change_mod(add_projs=[(api_affectee_struct.id, None)])
+    api_affector_module.change_module(add_projs=[(api_affectee_struct.id, None)])
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(200)
     assert api_affectee_struct.mods[eve_affectee_attr_id].one().range_mult is None
     # Action
-    api_affector_module.change_mod(change_projs=[(api_affectee_struct.id, 10000)])
+    api_affector_module.change_module(change_projs=[(api_affectee_struct.id, 10000)])
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(200)
     assert api_affectee_struct.mods[eve_affectee_attr_id].one().range_mult == approx(1)
     # Action
-    api_affector_module.change_mod(change_projs=[(api_affectee_struct.id, 10000.01)])
+    api_affector_module.change_module(change_projs=[(api_affectee_struct.id, 10000.01)])
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)
@@ -103,7 +107,7 @@ def test_falloff_undefined(client, consts):
     with check_no_field():
         api_affectee_struct.mods  # noqa: B018
     # Action
-    api_affector_module.change_mod(rm_projs=[api_affectee_struct.id])
+    api_affector_module.change_module(rm_projs=[api_affectee_struct.id])
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].dogma == approx(500)

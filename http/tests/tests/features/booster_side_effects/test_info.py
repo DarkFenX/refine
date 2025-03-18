@@ -182,8 +182,8 @@ def test_strength_matching(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
     assert api_module1.update().attrs[eve_affectee_attr_id].extra == approx(100)
@@ -236,8 +236,8 @@ def test_strength_mismatch_op(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
     assert api_module1.update().attrs[eve_affectee_attr_id].extra == approx(100)
@@ -289,8 +289,8 @@ def test_strength_mismatch_attr(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
     assert api_module1.update().attrs[eve_affectee_attr_id].extra == approx(100)

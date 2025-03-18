@@ -10,8 +10,8 @@ def test_skill_add_remove_lower(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
@@ -44,8 +44,8 @@ def test_skill_add_remove_equal(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
@@ -76,8 +76,8 @@ def test_skill_add_remove_higher(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
@@ -109,8 +109,8 @@ def test_skill_level_change(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_skill = api_fit.add_skill(type_id=eve_skill1_id, level=2)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
@@ -181,8 +181,8 @@ def test_known_failures(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_other = api_fit.add_implant(type_id=eve_other_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module_id)
-    api_module2 = api_fit.add_mod(type_id=eve_module_id)
+    api_module1 = api_fit.add_module(type_id=eve_module_id)
+    api_module2 = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=(True, [api_module1.id])))
     assert api_val.passed is False
@@ -279,7 +279,7 @@ def test_skill_state(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_skill(type_id=eve_skill_id, level=3, state=False)
-    api_fit.add_mod(type_id=eve_module_id)
+    api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
@@ -295,7 +295,7 @@ def test_item_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_skill(type_id=eve_skill_id, level=3)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.ghost)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.ghost)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
@@ -323,9 +323,9 @@ def test_item_kinds(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     api_fit.add_fw_effect(type_id=eve_item_id)
     api_implant = api_fit.add_implant(type_id=eve_item_id)
-    api_module_high = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.high, charge_type_id=eve_item_id)
-    api_module_low = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.low, charge_type_id=eve_item_id)
-    api_module_mid = api_fit.add_mod(type_id=eve_item_id, rack=consts.ApiRack.mid, charge_type_id=eve_item_id)
+    api_module_high = api_fit.add_module(type_id=eve_item_id, rack=consts.ApiRack.high, charge_type_id=eve_item_id)
+    api_module_low = api_fit.add_module(type_id=eve_item_id, rack=consts.ApiRack.low, charge_type_id=eve_item_id)
+    api_module_mid = api_fit.add_module(type_id=eve_item_id, rack=consts.ApiRack.mid, charge_type_id=eve_item_id)
     api_fit.add_rig(type_id=eve_item_id)
     api_fit.add_service(type_id=eve_item_id)
     api_ship = api_fit.set_ship(type_id=eve_item_id)
@@ -358,7 +358,7 @@ def test_not_loaded_skill(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False
@@ -398,7 +398,7 @@ def test_failed_replacement(client):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=3)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True

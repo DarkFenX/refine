@@ -10,8 +10,8 @@ def test_same_value_modules(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False
@@ -46,9 +46,9 @@ def test_different_values(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
-    api_fit.add_mod(type_id=eve_module3_id, state=consts.ApiModuleState.online)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False
@@ -71,8 +71,8 @@ def test_known_failures(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_other = api_fit.add_implant(type_id=eve_other_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=(True, [api_module1.id])))
     assert api_val.passed is False
@@ -111,8 +111,8 @@ def test_modified(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(0.6)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1.4)
@@ -147,8 +147,8 @@ def test_mutation_limit_priority(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
@@ -156,14 +156,14 @@ def test_mutation_limit_priority(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module2.change_mod(mutation=eve_mutator_id)
+    api_module2.change_module(mutation=eve_mutator_id)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False
     assert api_val.details.max_group_online == {eve_grp_id: [2, {api_module2.id: 1}]}
     # Action
-    api_module2.change_mod(mutation=None)
+    api_module2.change_module(mutation=None)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
@@ -183,8 +183,8 @@ def test_mutation_limit_inheritance(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_other_module_id, state=consts.ApiModuleState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_other_module_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.online)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
@@ -192,14 +192,14 @@ def test_mutation_limit_inheritance(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module2.change_mod(mutation=eve_mutator_id)
+    api_module2.change_module(mutation=eve_mutator_id)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False
     assert api_val.details.max_group_online == {eve_grp2_id: [2, {api_module2.id: 1}]}
     # Action
-    api_module2.change_mod(mutation=None)
+    api_module2.change_module(mutation=None)
     # Verification
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
@@ -216,8 +216,8 @@ def test_not_loaded(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is True
@@ -245,8 +245,8 @@ def test_no_attr(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False
@@ -266,21 +266,21 @@ def test_criterion_state_module(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False
     assert api_val.details.max_group_online == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
-    api_module2.change_mod(state=consts.ApiModuleState.offline)
+    api_module2.change_module(state=consts.ApiModuleState.offline)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module2.change_mod(state=consts.ApiModuleState.online)
+    api_module2.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False

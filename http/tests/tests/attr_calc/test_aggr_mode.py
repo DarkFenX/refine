@@ -367,7 +367,7 @@ def test_different_sources(client, consts):
     api_sol.add_sw_effect(type_id=eve_sw_effect_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(
+    api_module = api_fit.add_module(
         type_id=eve_module_id,
         charge_type_id=eve_charge_id,
         state=consts.ApiModuleState.active)

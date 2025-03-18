@@ -80,14 +80,14 @@ def test_kind_charge(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.high, charge_type_id=eve_charge_id)
+    api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.high, charge_type_id=eve_charge_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module = api_fit.add_mod(type_id=eve_module_id, rack=consts.ApiRack.high, charge_type_id=eve_other_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.high, charge_type_id=eve_other_id)
     api_other = api_fit.add_implant(type_id=eve_charge_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
@@ -175,17 +175,17 @@ def test_kind_module_high(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_ship_module_id, rack=consts.ApiRack.high)
-    api_fit.add_mod(type_id=eve_struct_module_id, rack=consts.ApiRack.high)
+    api_fit.add_module(type_id=eve_ship_module_id, rack=consts.ApiRack.high)
+    api_fit.add_module(type_id=eve_struct_module_id, rack=consts.ApiRack.high)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_other1 = api_fit.add_mod(type_id=eve_other_id, rack=consts.ApiRack.high)
-    api_other2 = api_fit.add_mod(type_id=eve_ship_module_id, rack=consts.ApiRack.low)
-    api_other3 = api_fit.add_mod(type_id=eve_struct_module_id, rack=consts.ApiRack.low)
+    api_other1 = api_fit.add_module(type_id=eve_other_id, rack=consts.ApiRack.high)
+    api_other2 = api_fit.add_module(type_id=eve_ship_module_id, rack=consts.ApiRack.low)
+    api_other3 = api_fit.add_module(type_id=eve_struct_module_id, rack=consts.ApiRack.low)
     api_other4 = api_fit.add_implant(type_id=eve_ship_module_id)
     api_other5 = api_fit.add_implant(type_id=eve_struct_module_id)
     # Verification
@@ -207,17 +207,17 @@ def test_kind_module_mid(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_ship_module_id, rack=consts.ApiRack.mid)
-    api_fit.add_mod(type_id=eve_struct_module_id, rack=consts.ApiRack.mid)
+    api_fit.add_module(type_id=eve_ship_module_id, rack=consts.ApiRack.mid)
+    api_fit.add_module(type_id=eve_struct_module_id, rack=consts.ApiRack.mid)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_other1 = api_fit.add_mod(type_id=eve_other_id, rack=consts.ApiRack.mid)
-    api_other2 = api_fit.add_mod(type_id=eve_ship_module_id, rack=consts.ApiRack.high)
-    api_other3 = api_fit.add_mod(type_id=eve_struct_module_id, rack=consts.ApiRack.high)
+    api_other1 = api_fit.add_module(type_id=eve_other_id, rack=consts.ApiRack.mid)
+    api_other2 = api_fit.add_module(type_id=eve_ship_module_id, rack=consts.ApiRack.high)
+    api_other3 = api_fit.add_module(type_id=eve_struct_module_id, rack=consts.ApiRack.high)
     api_other4 = api_fit.add_implant(type_id=eve_ship_module_id)
     api_other5 = api_fit.add_implant(type_id=eve_struct_module_id)
     # Verification
@@ -239,17 +239,17 @@ def test_kind_module_low(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_ship_module_id, rack=consts.ApiRack.low)
-    api_fit.add_mod(type_id=eve_struct_module_id, rack=consts.ApiRack.low)
+    api_fit.add_module(type_id=eve_ship_module_id, rack=consts.ApiRack.low)
+    api_fit.add_module(type_id=eve_struct_module_id, rack=consts.ApiRack.low)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_other1 = api_fit.add_mod(type_id=eve_other_id, rack=consts.ApiRack.low)
-    api_other2 = api_fit.add_mod(type_id=eve_ship_module_id, rack=consts.ApiRack.mid)
-    api_other3 = api_fit.add_mod(type_id=eve_struct_module_id, rack=consts.ApiRack.mid)
+    api_other1 = api_fit.add_module(type_id=eve_other_id, rack=consts.ApiRack.low)
+    api_other2 = api_fit.add_module(type_id=eve_ship_module_id, rack=consts.ApiRack.mid)
+    api_other3 = api_fit.add_module(type_id=eve_struct_module_id, rack=consts.ApiRack.mid)
     api_other4 = api_fit.add_implant(type_id=eve_ship_module_id)
     api_other5 = api_fit.add_implant(type_id=eve_struct_module_id)
     # Verification
@@ -461,10 +461,10 @@ def test_multiple_matches_module(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_ship_module1 = api_fit.add_mod(type_id=eve_ship_module1_id, rack=consts.ApiRack.high)
-    api_ship_module2 = api_fit.add_mod(type_id=eve_ship_module2_id, rack=consts.ApiRack.high)
-    api_struct_module1 = api_fit.add_mod(type_id=eve_struct_module1_id, rack=consts.ApiRack.high)
-    api_struct_module2 = api_fit.add_mod(type_id=eve_struct_module2_id, rack=consts.ApiRack.high)
+    api_ship_module1 = api_fit.add_module(type_id=eve_ship_module1_id, rack=consts.ApiRack.high)
+    api_ship_module2 = api_fit.add_module(type_id=eve_ship_module2_id, rack=consts.ApiRack.high)
+    api_struct_module1 = api_fit.add_module(type_id=eve_struct_module1_id, rack=consts.ApiRack.high)
+    api_struct_module2 = api_fit.add_module(type_id=eve_struct_module2_id, rack=consts.ApiRack.high)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
@@ -514,30 +514,30 @@ def test_mutation_effect(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_high_module = api_fit.add_mod(type_id=eve_base_module_id, rack=consts.ApiRack.high)
-    api_mid_module = api_fit.add_mod(type_id=eve_base_module_id, rack=consts.ApiRack.mid)
+    api_high_module = api_fit.add_module(type_id=eve_base_module_id, rack=consts.ApiRack.high)
+    api_mid_module = api_fit.add_module(type_id=eve_base_module_id, rack=consts.ApiRack.mid)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_mid_module.id: (consts.ApiValItemType.module_high, consts.ApiValItemType.module_mid)}
     # Action
-    api_mid_module.change_mod(mutation=eve_mutator_id)
+    api_mid_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_high_module.change_mod(mutation=eve_mutator_id)
+    api_high_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_high_module.id: (consts.ApiValItemType.module_mid, consts.ApiValItemType.module_high)}
     # Action
-    api_high_module.change_mod(mutation=None)
-    api_mid_module.change_mod(mutation=None)
+    api_high_module.change_module(mutation=None)
+    api_mid_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
@@ -554,21 +554,21 @@ def test_mutation_attr(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_item.id: (consts.ApiValItemType.booster, consts.ApiValItemType.module_high)}
     # Action
-    api_item.change_mod(mutation=eve_mutator_id)
+    api_item.change_module(mutation=eve_mutator_id)
     # Verification - actual type becomes None because attributes are merged, and item is eligible to
     # be both implant and booster, which isn't considered valid
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False
     assert api_val.details.item_kind == {api_item.id: (None, consts.ApiValItemType.module_high)}
     # Action
-    api_item.change_mod(mutation=None)
+    api_item.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is False

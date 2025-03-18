@@ -26,12 +26,14 @@ def test_range(client, consts):
     api_affector_fit = api_sol.create_fit()
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
-    api_affector_module = api_affector_fit.add_mod(type_id=eve_affector_module_id, state=consts.ApiModuleState.active)
+    api_affector_module = api_affector_fit.add_module(
+        type_id=eve_affector_module_id,
+        state=consts.ApiModuleState.active)
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)
-    api_affector_module.change_mod(add_projs=[(api_affectee_ship.id, 9000)])
+    api_affector_module.change_module(add_projs=[(api_affectee_ship.id, 9000)])
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(90)
-    api_affector_module.change_mod(change_projs=[(api_affectee_ship.id, 11000)])
+    api_affector_module.change_module(change_projs=[(api_affectee_ship.id, 11000)])
     # Falloff attribute is ignored for buffs
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)
-    api_affector_module.change_mod(rm_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].dogma == approx(200)

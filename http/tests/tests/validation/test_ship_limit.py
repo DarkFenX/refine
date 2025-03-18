@@ -12,7 +12,7 @@ def test_type_single(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -41,7 +41,7 @@ def test_type_multiple_different(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -74,7 +74,7 @@ def test_type_multiple_same_rounding(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -102,7 +102,7 @@ def test_group_single(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -132,7 +132,7 @@ def test_group_multiple_different(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -166,7 +166,7 @@ def test_group_multiple_same_rounding(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -204,7 +204,7 @@ def test_combined(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -246,7 +246,7 @@ def test_struct(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_struct_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -585,8 +585,8 @@ def test_known_failures(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_other = api_fit.add_implant(type_id=eve_other_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module_id)
-    api_module2 = api_fit.add_mod(type_id=eve_module_id)
+    api_module1 = api_fit.add_module(type_id=eve_module_id)
+    api_module2 = api_fit.add_module(type_id=eve_module_id)
     # Verification - no ship case has to be checked as well, since there is no-ship logic
     api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id])))
     assert api_val.passed is False
@@ -651,7 +651,7 @@ def test_modified_type(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     assert api_module.update().attrs[eve_type_attr_id].extra == approx(eve_allowed_ship_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
@@ -692,7 +692,7 @@ def test_modified_group(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     assert api_module.update().attrs[eve_group_attr_id].extra == approx(eve_allowed_grp_id)
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
@@ -726,7 +726,7 @@ def test_mutation_type(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship3_id)
-    api_module = api_fit.add_mod(type_id=eve_base_module_id)
+    api_module = api_fit.add_module(type_id=eve_base_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -734,7 +734,7 @@ def test_mutation_type(client, consts):
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
     assert api_val.details.ship_limit.items == {api_module.id: (sorted([eve_ship1_id, eve_ship2_id]), [])}
     # Action
-    api_module.change_mod(mutation=eve_mutator_id)
+    api_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
@@ -756,7 +756,7 @@ def test_mutation_type(client, consts):
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
     assert api_val.details.ship_limit.items == {api_module.id: (sorted([eve_ship2_id, eve_ship3_id]), [])}
     # Action
-    api_module.change_mod(mutation=None)
+    api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
@@ -791,7 +791,7 @@ def test_mutation_group(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship3_id)
-    api_module = api_fit.add_mod(type_id=eve_base_module_id)
+    api_module = api_fit.add_module(type_id=eve_base_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -799,7 +799,7 @@ def test_mutation_group(client, consts):
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp3_id
     assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_ship_grp1_id, eve_ship_grp2_id]))}
     # Action
-    api_module.change_mod(mutation=eve_mutator_id)
+    api_module.change_module(mutation=eve_mutator_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
@@ -821,7 +821,7 @@ def test_mutation_group(client, consts):
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp1_id
     assert api_val.details.ship_limit.items == {api_module.id: ([], sorted([eve_ship_grp2_id, eve_ship_grp3_id]))}
     # Action
-    api_module.change_mod(mutation=None)
+    api_module.change_module(mutation=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is True
@@ -853,7 +853,7 @@ def test_no_ship(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_limit=True))
     assert api_val.passed is False
@@ -877,11 +877,11 @@ def test_not_loaded_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship2_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id)
-    api_fit.add_mod(type_id=eve_module2_id)
-    api_module3 = api_fit.add_mod(type_id=eve_module3_id)
-    api_fit.add_mod(type_id=eve_module4_id)
-    api_module5 = api_fit.add_mod(type_id=eve_module5_id)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id)
+    api_fit.add_module(type_id=eve_module2_id)
+    api_module3 = api_fit.add_module(type_id=eve_module3_id)
+    api_fit.add_module(type_id=eve_module4_id)
+    api_module5 = api_fit.add_module(type_id=eve_module5_id)
     # Verification - when ship is not loaded, we fail validation only we 100% know it will fail with
     # the info we have.
     # - Module 1 fails because item type is mismatched
@@ -920,7 +920,7 @@ def test_criterion_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.ghost)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.ghost)
     api_rig = api_fit.add_rig(type_id=eve_rig_id, state=False)
     api_subsystem = api_fit.add_subsystem(type_id=eve_rig_id, state=False)
     # Verification

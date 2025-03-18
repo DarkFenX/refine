@@ -272,7 +272,7 @@ class Item(AttrDict):
             return self
         return None
 
-    def change_mod(
+    def change_module(
             self, *,
             state: ApiModuleState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | None | type[Absent] = Absent,

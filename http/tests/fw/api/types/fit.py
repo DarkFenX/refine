@@ -267,7 +267,7 @@ class Fit(AttrDict):
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
-    def add_mod(
+    def add_module(
             self, *,
             type_id: int,
             rack: ApiRack = ApiRack.high,

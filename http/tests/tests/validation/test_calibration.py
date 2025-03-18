@@ -504,7 +504,7 @@ def test_criterion_item_kind(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_rig_id, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_rig_id, state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True

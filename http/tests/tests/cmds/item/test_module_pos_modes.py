@@ -11,7 +11,7 @@ def test_add_append(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(
+    api_module1 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode=consts.ApiModAddMode.append)
@@ -19,7 +19,7 @@ def test_add_append(client, consts):
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
-    api_module2 = api_fit.add_mod(
+    api_module2 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode=consts.ApiModAddMode.append)
@@ -28,7 +28,7 @@ def test_add_append(client, consts):
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     # Action
-    api_module3 = api_fit.add_mod(
+    api_module3 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.insert: 3})
@@ -38,7 +38,7 @@ def test_add_append(client, consts):
     assert api_module2.update().pos == 1
     assert api_module3.update().pos == 3
     # Action
-    api_module4 = api_fit.add_mod(
+    api_module4 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode=consts.ApiModAddMode.append)
@@ -56,7 +56,7 @@ def test_add_equip(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(
+    api_module1 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode=consts.ApiModAddMode.equip)
@@ -64,7 +64,7 @@ def test_add_equip(client, consts):
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
-    api_module2 = api_fit.add_mod(
+    api_module2 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode=consts.ApiModAddMode.equip)
@@ -73,7 +73,7 @@ def test_add_equip(client, consts):
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 1
     # Action
-    api_module3 = api_fit.add_mod(
+    api_module3 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.insert: 4})
@@ -83,7 +83,7 @@ def test_add_equip(client, consts):
     assert api_module2.update().pos == 1
     assert api_module3.update().pos == 4
     # Action
-    api_module4 = api_fit.add_mod(
+    api_module4 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode=consts.ApiModAddMode.equip)
@@ -101,7 +101,7 @@ def test_add_insert(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(
+    api_module1 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.insert: 0})
@@ -109,7 +109,7 @@ def test_add_insert(client, consts):
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
-    api_module2 = api_fit.add_mod(
+    api_module2 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.insert: 2})
@@ -118,7 +118,7 @@ def test_add_insert(client, consts):
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
     # Action
-    api_module3 = api_fit.add_mod(
+    api_module3 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.insert: 5})
@@ -129,7 +129,7 @@ def test_add_insert(client, consts):
     assert api_module2.update().pos == 2
     assert api_module3.update().pos == 5
     # Action
-    api_module4 = api_fit.add_mod(
+    api_module4 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.insert: 2})
@@ -147,7 +147,7 @@ def test_add_replace(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(
+    api_module1 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 0})
@@ -155,7 +155,7 @@ def test_add_replace(client, consts):
     assert flatten(rack=api_fit.update().modules.high) == [api_module1.id]
     assert api_module1.update().pos == 0
     # Action
-    api_module2 = api_fit.add_mod(
+    api_module2 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 2})
@@ -164,7 +164,7 @@ def test_add_replace(client, consts):
     assert api_module1.update().pos == 0
     assert api_module2.update().pos == 2
     # Action
-    api_module3 = api_fit.add_mod(
+    api_module3 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 5})
@@ -175,7 +175,7 @@ def test_add_replace(client, consts):
     assert api_module2.update().pos == 2
     assert api_module3.update().pos == 5
     # Action
-    api_module4 = api_fit.add_mod(
+    api_module4 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 3})
@@ -187,7 +187,7 @@ def test_add_replace(client, consts):
     assert api_module3.update().pos == 5
     assert api_module4.update().pos == 3
     # Action
-    api_module5 = api_fit.add_mod(
+    api_module5 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 2})
@@ -206,7 +206,7 @@ def test_add_absent(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_fit.add_mod(
+    api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode=Absent,
@@ -219,15 +219,15 @@ def test_remove_remove(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(
+    api_module1 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 1})
-    api_module2 = api_fit.add_mod(
+    api_module2 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 3})
-    api_module3 = api_fit.add_mod(
+    api_module3 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 5})
@@ -261,15 +261,15 @@ def test_remove_free(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(
+    api_module1 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 1})
-    api_module2 = api_fit.add_mod(
+    api_module2 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 3})
-    api_module3 = api_fit.add_mod(
+    api_module3 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 5})
@@ -304,15 +304,15 @@ def test_remove_absent(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(
+    api_module1 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 1})
-    api_module2 = api_fit.add_mod(
+    api_module2 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 3})
-    api_module3 = api_fit.add_mod(
+    api_module3 = api_fit.add_module(
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         mode={consts.ApiModAddMode.replace: 5})

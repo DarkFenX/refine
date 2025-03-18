@@ -9,7 +9,7 @@ def test_bundled(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Check default upon addition
-    api_module = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     api_charge = api_module.charge
     assert isinstance(api_charge.id, str)
     with check_no_field():
@@ -63,7 +63,7 @@ def test_separate(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Check default upon addition
-    api_module = api_fit.add_mod(type_id=eve_module_id)
+    api_module = api_fit.add_module(type_id=eve_module_id)
     with check_no_field():
         api_module.charge  # noqa: B018
     # ID only
@@ -79,7 +79,7 @@ def test_separate(client, consts):
     with check_no_field():
         api_module.charge  # noqa: B018
     # Set charge and test response
-    api_module.change_mod(charge=eve_charge_id)
+    api_module.change_module(charge=eve_charge_id)
     api_charge = api_module.charge
     assert isinstance(api_charge.id, str)
     with check_no_field():
@@ -132,7 +132,7 @@ def test_not_loaded(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Check default upon addition
-    api_module = api_fit.add_mod(type_id=eve_module_id, charge_type_id=eve_charge_id)
+    api_module = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
     api_charge = api_module.charge
     assert isinstance(api_charge.id, str)
     with check_no_field():

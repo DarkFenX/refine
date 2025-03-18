@@ -9,8 +9,8 @@ def test_same_value_module(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiServiceState.offline)
-    api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiServiceState.offline)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiServiceState.offline)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiServiceState.offline)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))
     assert api_val.passed is False
@@ -143,11 +143,11 @@ def test_mutation_limit_priority(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(
+    api_module1 = api_fit.add_module(
         type_id=eve_base_module_id,
         state=consts.ApiServiceState.offline,
         mutation=eve_mutator_id)
-    api_module2 = api_fit.add_mod(
+    api_module2 = api_fit.add_module(
         type_id=eve_base_module_id,
         state=consts.ApiServiceState.offline,
         mutation=(eve_mutator_id, {eve_limit_attr_id: {consts.ApiAttrMutation.roll: 1}}))
@@ -158,7 +158,7 @@ def test_mutation_limit_priority(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_mutated_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
-    api_module2.change_mod(mutation=None)
+    api_module2.change_module(mutation=None)
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
@@ -167,7 +167,7 @@ def test_mutation_limit_priority(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module1.change_mod(mutation=None)
+    api_module1.change_module(mutation=None)
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(2)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(2)
@@ -187,11 +187,11 @@ def test_mutation_limit_inheritance(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module1 = api_fit.add_mod(
+    api_module1 = api_fit.add_module(
         type_id=eve_base_module_id,
         state=consts.ApiServiceState.offline,
         mutation=eve_mutator_id)
-    api_module2 = api_fit.add_mod(
+    api_module2 = api_fit.add_module(
         type_id=eve_base_module_id,
         state=consts.ApiServiceState.offline,
         mutation=(eve_mutator_id, {eve_limit_attr_id: {consts.ApiAttrMutation.roll: 1}}))
@@ -202,7 +202,7 @@ def test_mutation_limit_inheritance(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_mutated_module_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
     # Action
-    api_module2.change_mod(mutation=None)
+    api_module2.change_module(mutation=None)
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
@@ -211,7 +211,7 @@ def test_mutation_limit_inheritance(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_module1.change_mod(mutation=None)
+    api_module1.change_module(mutation=None)
     # Verification
     assert api_module1.update().attrs[eve_limit_attr_id].extra == approx(1)
     assert api_module2.update().attrs[eve_limit_attr_id].extra == approx(1)
@@ -259,7 +259,7 @@ def test_criterion_state(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiModuleState.ghost)
+    api_module = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.ghost)
     api_service = api_fit.add_service(type_id=eve_item_id, state=consts.ApiServiceState.ghost)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_type_fitted=True))

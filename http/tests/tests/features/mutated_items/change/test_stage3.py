@@ -36,7 +36,7 @@ def test_rolls_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_change_lower_attr_id: {consts.ApiAttrMutation.roll: 111},
         eve_change_within_attr_id: {consts.ApiAttrMutation.roll: 0.6},
         eve_change_higher_attr_id: {consts.ApiAttrMutation.roll: -8},
@@ -53,7 +53,7 @@ def test_rolls_range(client, consts):
     assert api_item.attrs[eve_change_higher_attr_id].base == approx(100)
     assert api_item.attrs[eve_remove_attr_id].base == approx(100)
     # Action
-    api_item.change_mod(mutation={
+    api_item.change_module(mutation={
         eve_add_lower_attr_id: {consts.ApiAttrMutation.roll: -5},
         eve_add_within_attr_id: {consts.ApiAttrMutation.roll: 0.3},
         eve_add_higher_attr_id: {consts.ApiAttrMutation.roll: 128},
@@ -135,7 +135,7 @@ def test_absolute_value_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_change_lower_attr_id: {consts.ApiAttrMutation.absolute: 260},
         eve_change_within_attr_id: {consts.ApiAttrMutation.absolute: 104},
         eve_change_higher_attr_id: {consts.ApiAttrMutation.absolute: 0.5},
@@ -152,7 +152,7 @@ def test_absolute_value_range(client, consts):
     assert api_item.attrs[eve_change_higher_attr_id].base == approx(100)
     assert api_item.attrs[eve_remove_attr_id].base == approx(100)
     # Action
-    api_item.change_mod(mutation={
+    api_item.change_module(mutation={
         eve_add_lower_attr_id: {consts.ApiAttrMutation.absolute: -502},
         eve_add_within_attr_id: {consts.ApiAttrMutation.absolute: 92},
         eve_add_higher_attr_id: {consts.ApiAttrMutation.absolute: 1001},
@@ -231,7 +231,7 @@ def test_no_base_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.3},
         eve_change_absolute_attr_id: {consts.ApiAttrMutation.absolute: 46},
         eve_remove_attr_id: {consts.ApiAttrMutation.roll: 0.2}}))
@@ -242,7 +242,7 @@ def test_no_base_value(client, consts):
     with check_no_field():
         api_item.attrs  # noqa: B018
     # Action
-    api_item.change_mod(mutation={
+    api_item.change_module(mutation={
         eve_add_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_add_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54},
         eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.4},
@@ -313,7 +313,7 @@ def test_no_mutation_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.3},
         eve_change_absolute_attr_id: {consts.ApiAttrMutation.absolute: 46},
         eve_remove_attr_id: {consts.ApiAttrMutation.roll: 0.2}}))
@@ -327,7 +327,7 @@ def test_no_mutation_range(client, consts):
     assert api_item.attrs[eve_change_absolute_attr_id].base == approx(50)
     assert api_item.attrs[eve_remove_attr_id].base == approx(50)
     # Action
-    api_item.change_mod(mutation={
+    api_item.change_module(mutation={
         eve_add_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_add_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54},
         eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.4},
@@ -435,7 +435,7 @@ def test_zero_mutation_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_change_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -54},
         eve_change_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: -54},
@@ -461,7 +461,7 @@ def test_zero_mutation_range(client, consts):
     assert api_item.attrs[eve_remove_absolute_mid_attr_id].base == approx(50)
     assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(50)
     # Action
-    api_item.change_mod(mutation={
+    api_item.change_module(mutation={
         eve_add_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_add_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: 50},
         eve_add_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 50},
@@ -597,7 +597,7 @@ def test_zero_base_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_change_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_change_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: 0},
         eve_change_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 0},
@@ -623,7 +623,7 @@ def test_zero_base_value(client, consts):
     assert api_item.attrs[eve_remove_absolute_mid_attr_id].base == approx(0)
     assert api_item.attrs[eve_remove_absolute_high_attr_id].base == approx(0)
     # Action
-    api_item.change_mod(mutation={
+    api_item.change_module(mutation={
         eve_add_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_add_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -8},
         eve_add_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 0},

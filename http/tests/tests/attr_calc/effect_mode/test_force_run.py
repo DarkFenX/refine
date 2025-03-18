@@ -17,28 +17,28 @@ def test_force_run(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, state=consts.ApiModuleState.offline)
+    api_item = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.offline)
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.full_compliance
     # Action
-    api_item.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
+    api_item.change_module(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.force_run
     # Action
-    api_item.change_mod(effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
+    api_item.change_module(effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.full_compliance
     # Action - ghost state has priority, even force-run effects do not affect anything
-    api_item.change_mod(state=consts.ApiModuleState.ghost, effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
+    api_item.change_module(state=consts.ApiModuleState.ghost, effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
     # Verification
     api_item.update()
     assert api_item.attrs[eve_affectee_attr_id].dogma == approx(100)

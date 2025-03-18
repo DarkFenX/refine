@@ -21,11 +21,11 @@ def test_self_state_switch(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
-    api_module.change_mod(state=consts.ApiModuleState.active)
+    api_module.change_module(state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
-    api_module.change_mod(state=consts.ApiModuleState.online)
+    api_module.change_module(state=consts.ApiModuleState.online)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
@@ -75,25 +75,25 @@ def test_self_buff_switch_no_default(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     # Action
-    api_module.change_mod(charge=eve_charge1_id)
+    api_module.change_module(charge=eve_charge1_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     # Action
-    api_module.change_mod(charge=eve_charge2_id)
+    api_module.change_module(charge=eve_charge2_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(500)
     # Action
-    api_module.change_mod(charge=None)
+    api_module.change_module(charge=None)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
@@ -152,28 +152,28 @@ def test_self_buff_switch_with_default(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     assert api_ship.attrs[eve_affectee_attr3_id].dogma == approx(125)
     # Action
-    api_module.change_mod(charge=eve_charge1_id)
+    api_module.change_module(charge=eve_charge1_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     assert api_ship.attrs[eve_affectee_attr3_id].dogma == approx(100)
     # Action
-    api_module.change_mod(charge=eve_charge2_id)
+    api_module.change_module(charge=eve_charge2_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(500)
     assert api_ship.attrs[eve_affectee_attr3_id].dogma == approx(100)
     # Action
-    api_module.change_mod(charge=None)
+    api_module.change_module(charge=None)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
@@ -203,7 +203,7 @@ def test_self_after_fleet_unassigment(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_fleet(fleet_id=api_fleet.id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
     api_fit.set_fleet(fleet_id=None)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
@@ -231,7 +231,7 @@ def test_self_after_fleet_removal(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.set_fleet(fleet_id=api_fleet.id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
     api_fleet.remove()
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
@@ -260,11 +260,11 @@ def test_fleeted_state_switch(client, consts):
     api_fit2 = api_sol.create_fit()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
-    api_module = api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
-    api_module.change_mod(state=consts.ApiModuleState.active)
+    api_module.change_module(state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
-    api_module.change_mod(state=consts.ApiModuleState.online)
+    api_module.change_module(state=consts.ApiModuleState.online)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
 
 
@@ -316,26 +316,26 @@ def test_fleeted_buff_switch(client, consts):
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
-    api_module = api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     # Action
-    api_module.change_mod(charge=eve_charge1_id)
+    api_module.change_module(charge=eve_charge1_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(50)
     # Action
-    api_module.change_mod(charge=eve_charge2_id)
+    api_module.change_module(charge=eve_charge2_id)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
     assert api_ship.attrs[eve_affectee_attr2_id].dogma == approx(500)
     # Action
-    api_module.change_mod(charge=None)
+    api_module.change_module(charge=None)
     # Verification
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(20)
@@ -365,7 +365,7 @@ def test_fleeted_booster_added_removed(client, consts):
     api_fit2 = api_sol.create_fit()
     api_fit2.set_fleet(fleet_id=api_fleet.id)
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
-    api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
     api_fit1.set_fleet(fleet_id=api_fleet.id)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
@@ -396,7 +396,7 @@ def test_fleeted_boosted_fit_added_removed(client, consts):
     api_fit1.set_fleet(fleet_id=api_fleet.id)
     api_fit2 = api_sol.create_fit()
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
-    api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
     api_fit2.set_fleet(fleet_id=api_fleet.id)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
@@ -428,7 +428,7 @@ def test_fleeted_boosted_item_added_removed(client, consts):
     api_fit2 = api_sol.create_fit()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     api_ship1 = api_fit2.set_ship(type_id=eve_ship1_id)
-    api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     assert api_ship1.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
     api_ship2 = api_fit2.set_ship(type_id=eve_ship2_id)
     assert api_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(75)
@@ -457,7 +457,7 @@ def test_fleeted_fleet_removed(client, consts):
     api_fit2 = api_sol.create_fit()
     api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
-    api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(37.5)
     api_fleet.remove()
     assert api_ship.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
@@ -486,7 +486,7 @@ def test_unaffected_on_fleet_add(client, consts):
     api_fit2 = api_sol.create_fit()
     api_fit1.set_ship(type_id=eve_ship_id)
     api_ship2 = api_fit2.set_ship(type_id=eve_ship_id)
-    api_fit1.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fleet.change(add_fits=[api_fit1.id])
     assert api_ship2.update().attrs[eve_affectee_attr_id].dogma == approx(7.5)
     api_fleet.change(remove_fits=[api_fit1.id])

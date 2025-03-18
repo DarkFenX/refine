@@ -12,9 +12,9 @@ def test_main(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=0)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.overload)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.overload)
-    api_module3 = api_fit.add_mod(type_id=eve_module3_id, state=consts.ApiModuleState.overload)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.overload)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.overload)
+    api_module3 = api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
@@ -46,8 +46,8 @@ def test_known_failures(client, consts):
     api_fit = api_sol.create_fit()
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=0)
     api_other = api_fit.add_implant(type_id=eve_other_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.overload)
-    api_module2 = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    api_module1 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=(True, [api_module1.id])))
     assert api_val.passed is False
@@ -97,8 +97,8 @@ def test_non_positive(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=0)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.overload)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.overload)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.overload)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is True
@@ -123,8 +123,8 @@ def test_rounding(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=0)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.overload)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.overload)
+    api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.overload)
+    api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
@@ -166,7 +166,7 @@ def test_modified_req(client, consts):
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=1)
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
     assert api_module.update().attrs[eve_req_attr_id].extra == approx(3)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
@@ -211,7 +211,7 @@ def test_mutation_req(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=1)
-    api_module = api_fit.add_mod(
+    api_module = api_fit.add_module(
         type_id=eve_base_module_id,
         state=consts.ApiModuleState.overload,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.9}}))
@@ -231,7 +231,7 @@ def test_mutation_req(client, consts):
         api_val.details  # noqa: B018
     # Action
     api_skill.change_skill(level=1)
-    api_module.change_mod(mutation={eve_attr_id: {consts.ApiAttrMutation.roll: 0}})
+    api_module.change_module(mutation={eve_attr_id: {consts.ApiAttrMutation.roll: 0}})
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(1.5)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
@@ -239,7 +239,7 @@ def test_mutation_req(client, consts):
     assert api_val.details.overload_skill.td_lvl == 1
     assert api_val.details.overload_skill.items == {api_module.id: 3}
     # Action
-    api_module.change_mod(mutation=None)
+    api_module.change_module(mutation=None)
     # Verification
     assert api_module.update().attrs[eve_attr_id].extra == approx(2)
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
@@ -254,7 +254,7 @@ def test_no_skill(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
@@ -271,7 +271,7 @@ def test_no_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is True
@@ -287,7 +287,7 @@ def test_no_attr(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_skill(type_id=eve_skill_id, level=0)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
@@ -305,7 +305,7 @@ def test_not_loaded_module(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_skill(type_id=eve_skill_id, level=0)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is True
@@ -321,7 +321,7 @@ def test_not_loaded_skill(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_skill = api_fit.add_skill(type_id=eve_skill_id, level=0)
-    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.overload)
+    api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.overload)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is False
@@ -344,7 +344,7 @@ def test_criterion_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_skill(type_id=eve_skill_id, level=0)
-    api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_val = api_fit.validate(options=ValOptions(overload_skill=True))
     assert api_val.passed is True

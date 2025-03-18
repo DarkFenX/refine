@@ -25,7 +25,7 @@ def test_to_stage4_different_base_values(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_lower_attr_id: {consts.ApiAttrMutation.absolute: 80},
         eve_within_attr_id: {consts.ApiAttrMutation.absolute: 100},
         eve_higher_attr_id: {consts.ApiAttrMutation.absolute: 120}}))
@@ -80,7 +80,7 @@ def test_to_stage4_different_ranges(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_lower_attr_id: {consts.ApiAttrMutation.absolute: 100},
         eve_within_attr_id: {consts.ApiAttrMutation.absolute: 100},
         eve_higher_attr_id: {consts.ApiAttrMutation.absolute: 100}}))
@@ -151,7 +151,7 @@ def test_to_stage4_different_group(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -185,7 +185,7 @@ def test_to_stage4_different_id(client):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_d1_mutated_item_id
@@ -216,7 +216,7 @@ def test_to_stage4_no_base_item(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_attr1_id: {consts.ApiAttrMutation.roll: 0.3},
         eve_attr2_id: {consts.ApiAttrMutation.roll: 0.3}}))
     # Verification
@@ -293,7 +293,7 @@ def test_to_stage3_different_group(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_affectee_attr1_id: {consts.ApiAttrMutation.roll: 0.3},
         eve_affectee_attr2_id: {consts.ApiAttrMutation.roll: 0.3}}))
     # Verification - first attribute is modified because mutated item group ID is used
@@ -386,7 +386,7 @@ def test_to_stage2_different_group(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_affectee_attr1_id: {consts.ApiAttrMutation.roll: 0.3},
         eve_affectee_attr2_id: {consts.ApiAttrMutation.roll: 0.3}}))
     # Verification - first attribute is modified because mutated item group ID is used
@@ -451,7 +451,7 @@ def test_to_stage2_no_base_item(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(
+    api_item = api_fit.add_module(
         type_id=eve_base_item_id,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
     # Verification
@@ -528,7 +528,7 @@ def test_to_stage1_different_group(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_affectee_attr1_id: {consts.ApiAttrMutation.roll: 0.3},
         eve_affectee_attr2_id: {consts.ApiAttrMutation.roll: 0.3}}))
     # Verification - first attribute is modified because mutated item group ID is used
@@ -589,7 +589,7 @@ def test_to_stage1_no_base_item(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(
+    api_item = api_fit.add_module(
         type_id=eve_base_item_id,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.3}}))
     # Verification
@@ -636,7 +636,7 @@ def test_from_stage3(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(
+    api_item = api_fit.add_module(
         type_id=eve_base_item_id,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
@@ -678,7 +678,7 @@ def test_from_stage2(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(
+    api_item = api_fit.add_module(
         type_id=eve_base_item_id,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
@@ -714,7 +714,7 @@ def test_from_stage1(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(
+    api_item = api_fit.add_module(
         type_id=eve_base_item_id,
         mutation=(eve_mutator_id, {eve_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification

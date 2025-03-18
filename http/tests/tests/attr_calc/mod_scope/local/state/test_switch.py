@@ -47,8 +47,8 @@ def get_value_after_switch(*, client, consts, state_from, state_to):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_item_id, state=state_from)
-    api_item.change_mod(state=state_to)
+    api_item = api_fit.add_module(type_id=eve_item_id, state=state_from)
+    api_item.change_module(state=state_to)
     return api_item.update().attrs[eve_affectee_attr_id].dogma
 
 

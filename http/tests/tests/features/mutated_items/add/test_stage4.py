@@ -15,7 +15,7 @@ def test_rolls_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_lower_attr_id: {consts.ApiAttrMutation.roll: -5},
         eve_within_attr_id: {consts.ApiAttrMutation.roll: 0.3},
         eve_higher_attr_id: {consts.ApiAttrMutation.roll: 128}}))
@@ -46,7 +46,7 @@ def test_absolute_base_attr_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_base_attr_id: {consts.ApiAttrMutation.absolute: 55},
         eve_overlap_attr_id: {consts.ApiAttrMutation.absolute: 75},
         eve_mutated_attr_id: {consts.ApiAttrMutation.absolute: 115}}))
@@ -80,7 +80,7 @@ def test_absolute_value_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_lower_attr_id: {consts.ApiAttrMutation.absolute: -53},
         eve_within_attr_id: {consts.ApiAttrMutation.absolute: 92},
         eve_higher_attr_id: {consts.ApiAttrMutation.absolute: 1009}}))
@@ -111,7 +111,7 @@ def test_no_base_item(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 52}}))
     # Verification
@@ -142,7 +142,7 @@ def test_no_base_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
     # Verification
@@ -188,7 +188,7 @@ def test_no_mutation_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_attr_id: {consts.ApiAttrMutation.absolute: 54}}))
     # Verification
@@ -247,7 +247,7 @@ def test_zero_mutation_range(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: 54},
         eve_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 54},
@@ -321,7 +321,7 @@ def test_zero_base_value(client, consts):
     client.create_sources()
     api_sol = client.create_sol(data=eve_d1)
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_roll_attr_id: {consts.ApiAttrMutation.roll: 0.7},
         eve_absolute_low_attr_id: {consts.ApiAttrMutation.absolute: -3},
         eve_absolute_mid_attr_id: {consts.ApiAttrMutation.absolute: 0},
@@ -375,7 +375,7 @@ def test_base_out_of_range(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
     # Verification - all the values are put onto mutation range
     api_item.update()
     assert len(api_item.mutation.attrs) == 2
@@ -406,7 +406,7 @@ def test_modification(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_affector_attr_id: {consts.ApiAttrMutation.roll: 0.2},
         eve_affectee_attr_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
@@ -430,7 +430,7 @@ def test_item_type_id(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
@@ -472,7 +472,7 @@ def test_item_group(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_affectee_attr1_id: {consts.ApiAttrMutation.roll: 0.2},
         eve_affectee_attr2_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
@@ -510,8 +510,8 @@ def test_item_category(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
-    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
     # Verification - value is 144 because change is non-penalized thanks to implant category of
     # mutated item.
     api_ship.update()
@@ -554,7 +554,7 @@ def test_item_skillreqs(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_implant(type_id=eve_implant_id)
     api_fit.set_ship(type_id=eve_ship_id)
-    api_item = api_fit.add_mod(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=(eve_mutator_id, {
         eve_affectee_attr1_id: {consts.ApiAttrMutation.roll: 0.2},
         eve_affectee_attr2_id: {consts.ApiAttrMutation.roll: 0.8}}))
     # Verification
@@ -597,7 +597,7 @@ def test_item_effects(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
     # Verification - 1st attr would be changed by base item effects, 2nd by mutated ones
     api_ship.update()
     assert api_ship.attrs[eve_affectee_attr1_id].dogma == approx(100)
@@ -634,7 +634,7 @@ def test_item_default_effect(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_mod(type_id=eve_base_item_id, mutation=eve_mutator_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id, state=consts.ApiModuleState.active)
     # Verification - 1st attr would be modified by base item (which has 1st effect is default), 2nd
     # gets modified because mutated item declares 2nd effect as default.
     api_ship.update()
