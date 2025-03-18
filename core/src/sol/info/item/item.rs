@@ -2,8 +2,8 @@ use crate::sol::{SolarSystem, uad::item::SolItem};
 
 use super::{
     SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo, SolFighterInfo, SolFwEffectInfo,
-    SolImplantInfo, SolModuleInfo, SolProjEffectInfo, SolRigInfo, SolShipInfo, SolSkillInfo, SolStanceInfo,
-    SolSubsystemInfo, SolSwEffectInfo,
+    SolImplantInfo, SolModuleInfo, SolProjEffectInfo, SolRigInfo, SolServiceInfo, SolShipInfo, SolSkillInfo,
+    SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
 };
 
 pub enum SolItemInfo {
@@ -16,8 +16,9 @@ pub enum SolItemInfo {
     FwEffect(SolFwEffectInfo),
     Implant(SolImplantInfo),
     Module(SolModuleInfo),
-    Rig(SolRigInfo),
     ProjEffect(SolProjEffectInfo),
+    Rig(SolRigInfo),
+    Service(SolServiceInfo),
     Ship(SolShipInfo),
     Skill(SolSkillInfo),
     Stance(SolStanceInfo),
@@ -38,6 +39,7 @@ impl SolItemInfo {
             SolItem::Module(sol_module) => SolItemInfo::Module(sol.make_module_info(sol_module)),
             SolItem::ProjEffect(sol_proj_effect) => SolItemInfo::ProjEffect(sol_proj_effect.into()),
             SolItem::Rig(sol_rig) => SolItemInfo::Rig(sol_rig.into()),
+            SolItem::Service(sol_service) => SolItemInfo::Service(sol_service.into()),
             SolItem::Ship(sol_ship) => SolItemInfo::Ship(sol_ship.into()),
             SolItem::Skill(sol_skill) => SolItemInfo::Skill(sol_skill.into()),
             SolItem::Stance(sol_stance) => SolItemInfo::Stance(sol_stance.into()),

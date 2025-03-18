@@ -1,6 +1,8 @@
 pub(in crate::sol::uad::item) use autocharges::SolAutocharges;
 pub(in crate::sol::uad::item) use effect_modes::SolEffectModes;
-pub(in crate::sol::uad::item) use func::{bool_to_state_active, bool_to_state_offline, state_to_bool};
+pub(in crate::sol::uad::item) use func::{
+    bool_to_state_active, bool_to_state_offline, bool_to_state_online, state_to_bool,
+};
 pub use minion_state::SolMinionState;
 pub use mutation::{SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation};
 pub(in crate::sol::uad::item) use proj::SolProjs;

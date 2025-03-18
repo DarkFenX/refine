@@ -28,8 +28,8 @@ pub use sol::{
     info::{
         SolAttrMutationInfo, SolAutochargeInfo, SolBoosterInfo, SolCharacterInfo, SolChargeInfo, SolDroneInfo,
         SolFighterInfo, SolFitInfo, SolFleetInfo, SolFwEffectInfo, SolImplantInfo, SolItemInfo, SolItemMutationInfo,
-        SolModuleInfo, SolProjEffectInfo, SolProjInfo, SolRigInfo, SolShipInfo, SolSideEffectInfo, SolSideEffectStr,
-        SolSkillInfo, SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
+        SolModuleInfo, SolProjEffectInfo, SolProjInfo, SolRigInfo, SolServiceInfo, SolShipInfo, SolSideEffectInfo,
+        SolSideEffectStr, SolSkillInfo, SolStanceInfo, SolSubsystemInfo, SolSwEffectInfo,
     },
     svc::{
         calc::{SolAffectorInfo, SolAttrVal, SolModificationInfo, SolOpInfo},

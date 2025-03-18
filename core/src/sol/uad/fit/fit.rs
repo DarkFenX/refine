@@ -26,6 +26,7 @@ pub(in crate::sol) struct SolFit {
     pub(in crate::sol) mods_mid: SolItemVec,
     pub(in crate::sol) mods_low: SolItemVec,
     pub(in crate::sol) rigs: StSet<SolItemId>,
+    pub(in crate::sol) services: StSet<SolItemId>,
     pub(in crate::sol) drones: StSet<SolItemId>,
     pub(in crate::sol) fighters: StSet<SolItemId>,
     pub(in crate::sol) fw_effects: StSet<SolItemId>,
@@ -48,6 +49,7 @@ impl SolFit {
             mods_mid: SolItemVec::new(),
             mods_low: SolItemVec::new(),
             rigs: StSet::new(),
+            services: StSet::new(),
             drones: StSet::new(),
             fighters: StSet::new(),
             fw_effects: StSet::new(),
@@ -74,6 +76,7 @@ impl SolFit {
         capacity += self.mods_mid.item_count();
         capacity += self.mods_low.item_count();
         capacity += self.rigs.len();
+        capacity += self.services.len();
         capacity += self.drones.len();
         capacity += self.fighters.len();
         capacity += self.fw_effects.len();
@@ -90,6 +93,7 @@ impl SolFit {
         items.extend(self.mods_mid.iter_ids());
         items.extend(self.mods_low.iter_ids());
         items.extend(self.rigs.iter());
+        items.extend(self.services.iter());
         items.extend(self.drones.iter());
         items.extend(self.fighters.iter());
         items.extend(self.fw_effects.iter());

@@ -15,13 +15,17 @@ pub(in crate::sol) use item_module::SolModule;
 pub use item_module::SolModuleState;
 pub(in crate::sol) use item_proj_effect::SolProjEffect;
 pub(in crate::sol) use item_rig::SolRig;
+pub(in crate::sol) use item_service::SolService;
 pub(in crate::sol) use item_ship::{SolShip, SolShipKind};
 pub(in crate::sol) use item_skill::SolSkill;
 pub(in crate::sol) use item_stance::SolStance;
 pub(in crate::sol) use item_subsystem::SolSubsystem;
 pub(in crate::sol) use item_sw_effect::SolSwEffect;
 pub(in crate::sol) use misc::SolItemState;
-use misc::{SolAutocharges, SolEffectModes, SolProjs, bool_to_state_active, bool_to_state_offline, state_to_bool};
+use misc::{
+    SolAutocharges, SolEffectModes, SolProjs, bool_to_state_active, bool_to_state_offline, bool_to_state_online,
+    state_to_bool,
+};
 pub use misc::{
     SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolMinionState,
 };
@@ -40,6 +44,7 @@ mod item_implant;
 mod item_module;
 mod item_proj_effect;
 mod item_rig;
+mod item_service;
 mod item_ship;
 mod item_skill;
 mod item_stance;

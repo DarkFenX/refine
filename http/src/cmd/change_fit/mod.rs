@@ -11,6 +11,7 @@ pub(in crate::cmd) use item_fw_effect::{HAddFwEffectCmd, HChangeFwEffectCmd};
 pub(in crate::cmd) use item_implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(in crate::cmd) use item_module::{HAddModuleCmd, HChangeModuleCmd};
 pub(in crate::cmd) use item_rig::{HAddRigCmd, HChangeRigCmd};
+pub(in crate::cmd) use item_service::{HAddServiceCmd, HChangeServiceCmd};
 pub(in crate::cmd) use item_ship::{HChangeShipCmd, HChangeShipViaFitIdCmd, HChangeShipViaItemIdCmd, HSetShipCmd};
 pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{
@@ -32,6 +33,7 @@ mod item_fw_effect;
 mod item_implant;
 mod item_module;
 mod item_rig;
+mod item_service;
 mod item_ship;
 mod item_skill;
 mod item_stance;
@@ -44,32 +46,34 @@ pub(crate) enum HChangeFitCommand {
     SetFleet(HSetFleetCmd),
     SetRahIncomingDmg(HSetRahIncomingDmgCmd),
     // Item commands
-    SetCharacter(HSetCharacterCmd),
-    ChangeCharacter(HChangeCharacterCmd),
-    AddSkill(HAddSkillCmd),
-    ChangeSkill(HChangeSkillCmd),
-    AddImplant(HAddImplantCmd),
-    ChangeImplant(HChangeImplantCmd),
+    ChangeAutocharge(HChangeAutochargeCmd),
     AddBooster(HAddBoosterCmd),
     ChangeBooster(HChangeBoosterCmd),
-    SetShip(HSetShipCmd),
-    ChangeShip(HChangeShipCmd),
-    SetStance(HSetStanceCmd),
-    ChangeStance(HChangeStanceCmd),
-    AddSubsystem(HAddSubsystemCmd),
-    ChangeSubsystem(HChangeSubsystemCmd),
-    AddModule(HAddModuleCmd),
-    ChangeModule(HChangeModuleCmd),
-    AddRig(HAddRigCmd),
-    ChangeRig(HChangeRigCmd),
+    SetCharacter(HSetCharacterCmd),
+    ChangeCharacter(HChangeCharacterCmd),
+    ChangeCharge(HChangeChargeCmd),
     AddDrone(HAddDroneCmd),
     ChangeDrone(HChangeDroneCmd),
     AddFighter(HAddFighterCmd),
     ChangeFighter(HChangeFighterCmd),
-    ChangeCharge(HChangeChargeCmd),
-    ChangeAutocharge(HChangeAutochargeCmd),
     AddFwEffect(HAddFwEffectCmd),
     ChangeFwEffect(HChangeFwEffectCmd),
+    AddImplant(HAddImplantCmd),
+    ChangeImplant(HChangeImplantCmd),
+    AddModule(HAddModuleCmd),
+    ChangeModule(HChangeModuleCmd),
+    AddRig(HAddRigCmd),
+    ChangeRig(HChangeRigCmd),
+    AddService(HAddServiceCmd),
+    ChangeService(HChangeServiceCmd),
+    SetShip(HSetShipCmd),
+    ChangeShip(HChangeShipCmd),
+    AddSkill(HAddSkillCmd),
+    ChangeSkill(HChangeSkillCmd),
+    SetStance(HSetStanceCmd),
+    ChangeStance(HChangeStanceCmd),
+    AddSubsystem(HAddSubsystemCmd),
+    ChangeSubsystem(HChangeSubsystemCmd),
 }
 impl HChangeFitCommand {
     pub(crate) fn execute(
@@ -81,32 +85,34 @@ impl HChangeFitCommand {
             Self::SetFleet(cmd) => cmd.execute(core_sol, fit_id),
             Self::SetRahIncomingDmg(cmd) => cmd.execute(core_sol, fit_id),
             // Item commands
-            Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeCharacter(cmd) => cmd.execute(core_sol, fit_id),
-            Self::AddSkill(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeSkill(cmd) => cmd.execute(core_sol),
-            Self::AddImplant(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeImplant(cmd) => cmd.execute(core_sol),
+            Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
             Self::AddBooster(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeBooster(cmd) => cmd.execute(core_sol),
-            Self::SetShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeShip(cmd) => cmd.execute(core_sol, fit_id),
-            Self::SetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeStance(cmd) => cmd.execute(core_sol, fit_id),
-            Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeSubsystem(cmd) => cmd.execute(core_sol),
-            Self::AddModule(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeModule(cmd) => cmd.execute(core_sol),
-            Self::AddRig(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeRig(cmd) => cmd.execute(core_sol),
+            Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeCharacter(cmd) => cmd.execute(core_sol, fit_id),
+            Self::ChangeCharge(cmd) => cmd.execute(core_sol),
             Self::AddDrone(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeDrone(cmd) => cmd.execute(core_sol),
             Self::AddFighter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeFighter(cmd) => cmd.execute(core_sol),
-            Self::ChangeCharge(cmd) => cmd.execute(core_sol),
-            Self::ChangeAutocharge(cmd) => cmd.execute(core_sol),
             Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeFwEffect(cmd) => cmd.execute(core_sol),
+            Self::AddImplant(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeImplant(cmd) => cmd.execute(core_sol),
+            Self::AddModule(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeModule(cmd) => cmd.execute(core_sol),
+            Self::AddRig(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeRig(cmd) => cmd.execute(core_sol),
+            Self::AddService(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeService(cmd) => cmd.execute(core_sol),
+            Self::SetShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeShip(cmd) => cmd.execute(core_sol, fit_id),
+            Self::AddSkill(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeSkill(cmd) => cmd.execute(core_sol),
+            Self::SetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeStance(cmd) => cmd.execute(core_sol, fit_id),
+            Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeSubsystem(cmd) => cmd.execute(core_sol),
         }
     }
 }

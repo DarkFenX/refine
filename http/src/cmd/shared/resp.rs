@@ -21,49 +21,14 @@ impl From<rc::SolFitInfo> for HCmdResp {
         Self::FitId(core_fit.into())
     }
 }
-impl From<rc::SolCharacterInfo> for HCmdResp {
-    fn from(core_char: rc::SolCharacterInfo) -> Self {
-        Self::ItemIds(core_char.into())
-    }
-}
-impl From<rc::SolSkillInfo> for HCmdResp {
-    fn from(core_skill: rc::SolSkillInfo) -> Self {
-        Self::ItemIds(core_skill.into())
-    }
-}
-impl From<rc::SolImplantInfo> for HCmdResp {
-    fn from(core_implant: rc::SolImplantInfo) -> Self {
-        Self::ItemIds(core_implant.into())
-    }
-}
 impl From<rc::SolBoosterInfo> for HCmdResp {
     fn from(core_booster: rc::SolBoosterInfo) -> Self {
         Self::ItemIds(core_booster.into())
     }
 }
-impl From<rc::SolShipInfo> for HCmdResp {
-    fn from(core_ship: rc::SolShipInfo) -> Self {
-        Self::ItemIds(core_ship.into())
-    }
-}
-impl From<rc::SolStanceInfo> for HCmdResp {
-    fn from(core_stance: rc::SolStanceInfo) -> Self {
-        Self::ItemIds(core_stance.into())
-    }
-}
-impl From<rc::SolSubsystemInfo> for HCmdResp {
-    fn from(core_subsystem: rc::SolSubsystemInfo) -> Self {
-        Self::ItemIds(core_subsystem.into())
-    }
-}
-impl From<rc::SolModuleInfo> for HCmdResp {
-    fn from(core_module: rc::SolModuleInfo) -> Self {
-        Self::ItemIds(core_module.into())
-    }
-}
-impl From<rc::SolRigInfo> for HCmdResp {
-    fn from(core_rig: rc::SolRigInfo) -> Self {
-        Self::ItemIds(core_rig.into())
+impl From<rc::SolCharacterInfo> for HCmdResp {
+    fn from(core_char: rc::SolCharacterInfo) -> Self {
+        Self::ItemIds(core_char.into())
     }
 }
 impl From<rc::SolDroneInfo> for HCmdResp {
@@ -76,19 +41,59 @@ impl From<rc::SolFighterInfo> for HCmdResp {
         Self::ItemIds(core_fighter.into())
     }
 }
-impl From<rc::SolSwEffectInfo> for HCmdResp {
-    fn from(core_sw_effect: rc::SolSwEffectInfo) -> Self {
-        Self::ItemIds(core_sw_effect.into())
-    }
-}
 impl From<rc::SolFwEffectInfo> for HCmdResp {
     fn from(core_fw_effect: rc::SolFwEffectInfo) -> Self {
         Self::ItemIds(core_fw_effect.into())
     }
 }
+impl From<rc::SolImplantInfo> for HCmdResp {
+    fn from(core_implant: rc::SolImplantInfo) -> Self {
+        Self::ItemIds(core_implant.into())
+    }
+}
+impl From<rc::SolModuleInfo> for HCmdResp {
+    fn from(core_module: rc::SolModuleInfo) -> Self {
+        Self::ItemIds(core_module.into())
+    }
+}
 impl From<rc::SolProjEffectInfo> for HCmdResp {
     fn from(core_proj_effect: rc::SolProjEffectInfo) -> Self {
         Self::ItemIds(core_proj_effect.into())
+    }
+}
+impl From<rc::SolRigInfo> for HCmdResp {
+    fn from(core_rig: rc::SolRigInfo) -> Self {
+        Self::ItemIds(core_rig.into())
+    }
+}
+impl From<rc::SolServiceInfo> for HCmdResp {
+    fn from(core_service: rc::SolServiceInfo) -> Self {
+        Self::ItemIds(core_service.into())
+    }
+}
+impl From<rc::SolShipInfo> for HCmdResp {
+    fn from(core_ship: rc::SolShipInfo) -> Self {
+        Self::ItemIds(core_ship.into())
+    }
+}
+impl From<rc::SolSkillInfo> for HCmdResp {
+    fn from(core_skill: rc::SolSkillInfo) -> Self {
+        Self::ItemIds(core_skill.into())
+    }
+}
+impl From<rc::SolStanceInfo> for HCmdResp {
+    fn from(core_stance: rc::SolStanceInfo) -> Self {
+        Self::ItemIds(core_stance.into())
+    }
+}
+impl From<rc::SolSubsystemInfo> for HCmdResp {
+    fn from(core_subsystem: rc::SolSubsystemInfo) -> Self {
+        Self::ItemIds(core_subsystem.into())
+    }
+}
+impl From<rc::SolSwEffectInfo> for HCmdResp {
+    fn from(core_sw_effect: rc::SolSwEffectInfo) -> Self {
+        Self::ItemIds(core_sw_effect.into())
     }
 }
 
@@ -143,49 +148,14 @@ impl HItemIdsResp {
         }
     }
 }
-impl From<rc::SolCharacterInfo> for HItemIdsResp {
-    fn from(core_char: rc::SolCharacterInfo) -> Self {
-        Self::new(core_char.id, None)
-    }
-}
-impl From<rc::SolSkillInfo> for HItemIdsResp {
-    fn from(core_skill: rc::SolSkillInfo) -> Self {
-        Self::new(core_skill.id, None)
-    }
-}
-impl From<rc::SolImplantInfo> for HItemIdsResp {
-    fn from(core_implant: rc::SolImplantInfo) -> Self {
-        Self::new(core_implant.id, None)
-    }
-}
 impl From<rc::SolBoosterInfo> for HItemIdsResp {
     fn from(core_booster: rc::SolBoosterInfo) -> Self {
         Self::new(core_booster.id, None)
     }
 }
-impl From<rc::SolShipInfo> for HItemIdsResp {
-    fn from(core_ship: rc::SolShipInfo) -> Self {
-        Self::new(core_ship.id, None)
-    }
-}
-impl From<rc::SolStanceInfo> for HItemIdsResp {
-    fn from(core_stance: rc::SolStanceInfo) -> Self {
-        Self::new(core_stance.id, None)
-    }
-}
-impl From<rc::SolSubsystemInfo> for HItemIdsResp {
-    fn from(core_subsystem: rc::SolSubsystemInfo) -> Self {
-        Self::new(core_subsystem.id, None)
-    }
-}
-impl From<rc::SolModuleInfo> for HItemIdsResp {
-    fn from(core_module: rc::SolModuleInfo) -> Self {
-        Self::new(core_module.id, core_module.charge)
-    }
-}
-impl From<rc::SolRigInfo> for HItemIdsResp {
-    fn from(core_rig: rc::SolRigInfo) -> Self {
-        Self::new(core_rig.id, None)
+impl From<rc::SolCharacterInfo> for HItemIdsResp {
+    fn from(core_char: rc::SolCharacterInfo) -> Self {
+        Self::new(core_char.id, None)
     }
 }
 impl From<rc::SolDroneInfo> for HItemIdsResp {
@@ -198,18 +168,58 @@ impl From<rc::SolFighterInfo> for HItemIdsResp {
         Self::new(core_fighter.id, None)
     }
 }
-impl From<rc::SolSwEffectInfo> for HItemIdsResp {
-    fn from(core_sw_effect: rc::SolSwEffectInfo) -> Self {
-        Self::new(core_sw_effect.id, None)
-    }
-}
 impl From<rc::SolFwEffectInfo> for HItemIdsResp {
     fn from(core_fw_effect: rc::SolFwEffectInfo) -> Self {
         Self::new(core_fw_effect.id, None)
     }
 }
+impl From<rc::SolImplantInfo> for HItemIdsResp {
+    fn from(core_implant: rc::SolImplantInfo) -> Self {
+        Self::new(core_implant.id, None)
+    }
+}
+impl From<rc::SolModuleInfo> for HItemIdsResp {
+    fn from(core_module: rc::SolModuleInfo) -> Self {
+        Self::new(core_module.id, core_module.charge)
+    }
+}
 impl From<rc::SolProjEffectInfo> for HItemIdsResp {
     fn from(core_proj_effect: rc::SolProjEffectInfo) -> Self {
         Self::new(core_proj_effect.id, None)
+    }
+}
+impl From<rc::SolRigInfo> for HItemIdsResp {
+    fn from(core_rig: rc::SolRigInfo) -> Self {
+        Self::new(core_rig.id, None)
+    }
+}
+impl From<rc::SolServiceInfo> for HItemIdsResp {
+    fn from(core_service: rc::SolServiceInfo) -> Self {
+        Self::new(core_service.id, None)
+    }
+}
+impl From<rc::SolShipInfo> for HItemIdsResp {
+    fn from(core_ship: rc::SolShipInfo) -> Self {
+        Self::new(core_ship.id, None)
+    }
+}
+impl From<rc::SolSkillInfo> for HItemIdsResp {
+    fn from(core_skill: rc::SolSkillInfo) -> Self {
+        Self::new(core_skill.id, None)
+    }
+}
+impl From<rc::SolStanceInfo> for HItemIdsResp {
+    fn from(core_stance: rc::SolStanceInfo) -> Self {
+        Self::new(core_stance.id, None)
+    }
+}
+impl From<rc::SolSubsystemInfo> for HItemIdsResp {
+    fn from(core_subsystem: rc::SolSubsystemInfo) -> Self {
+        Self::new(core_subsystem.id, None)
+    }
+}
+impl From<rc::SolSwEffectInfo> for HItemIdsResp {
+    fn from(core_sw_effect: rc::SolSwEffectInfo) -> Self {
+        Self::new(core_sw_effect.id, None)
     }
 }

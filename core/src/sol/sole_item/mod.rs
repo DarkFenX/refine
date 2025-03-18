@@ -37,6 +37,9 @@ pub use sole_proj_effect::{
     SetProjEffectStateError,
 };
 pub use sole_rig::{AddRigError, GetFitRigsError, GetRigError, RemoveRigError, SetRigStateError};
+pub use sole_service::{
+    AddServiceError, GetFitServicesError, GetServiceError, RemoveServiceError, SetServiceStateError,
+};
 pub use sole_ship::{
     GetFitShipError, RemoveFitShipError, RemoveShipError, SetFitShipError, SetFitShipStateError, SetShipStateError,
 };
@@ -64,6 +67,7 @@ mod sole_item;
 mod sole_module;
 mod sole_proj_effect;
 mod sole_rig;
+mod sole_service;
 mod sole_ship;
 mod sole_skill;
 mod sole_stance;

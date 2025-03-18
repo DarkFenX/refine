@@ -30,6 +30,7 @@ impl SolarSystem {
             SolItem::Module(_) => self.remove_module(item_id, pos_mode).unwrap(),
             SolItem::ProjEffect(_) => self.remove_proj_effect(item_id).unwrap(),
             SolItem::Rig(_) => self.remove_rig(item_id).unwrap(),
+            SolItem::Service(_) => self.remove_service(item_id).unwrap(),
             SolItem::Ship(_) => self.remove_ship(item_id).unwrap(),
             SolItem::Skill(_) => self.remove_skill(item_id).unwrap(),
             SolItem::Stance(_) => self.remove_stance(item_id).unwrap(),

@@ -9,6 +9,7 @@ pub(in crate::cmd) use implant::HChangeImplantCmd;
 pub(in crate::cmd) use module::HChangeModuleCmd;
 pub(in crate::cmd) use proj_effect::HChangeProjEffectCmd;
 pub(in crate::cmd) use rig::HChangeRigCmd;
+pub(in crate::cmd) use service::HChangeServiceCmd;
 pub(in crate::cmd) use ship::HChangeShipCmd;
 pub(in crate::cmd) use skill::HChangeSkillCmd;
 pub(in crate::cmd) use stance::HChangeStanceCmd;
@@ -28,6 +29,7 @@ mod implant;
 mod module;
 mod proj_effect;
 mod rig;
+mod service;
 mod ship;
 mod skill;
 mod stance;
@@ -37,22 +39,23 @@ mod sw_effect;
 #[derive(serde::Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeItemCommand {
-    Character(HChangeCharacterCmd),
-    Skill(HChangeSkillCmd),
-    Implant(HChangeImplantCmd),
+    Autocharge(HChangeAutochargeCmd),
     Booster(HChangeBoosterCmd),
-    Ship(HChangeShipCmd),
-    Stance(HChangeStanceCmd),
-    Subsystem(HChangeSubsystemCmd),
-    Module(HChangeModuleCmd),
-    Rig(HChangeRigCmd),
+    Character(HChangeCharacterCmd),
+    Charge(HChangeChargeCmd),
     Drone(HChangeDroneCmd),
     Fighter(HChangeFighterCmd),
-    Charge(HChangeChargeCmd),
-    Autocharge(HChangeAutochargeCmd),
-    SwEffect(HChangeSwEffectCmd),
     FwEffect(HChangeFwEffectCmd),
+    Implant(HChangeImplantCmd),
+    Module(HChangeModuleCmd),
     ProjEffect(HChangeProjEffectCmd),
+    Rig(HChangeRigCmd),
+    Service(HChangeServiceCmd),
+    Ship(HChangeShipCmd),
+    Skill(HChangeSkillCmd),
+    Stance(HChangeStanceCmd),
+    Subsystem(HChangeSubsystemCmd),
+    SwEffect(HChangeSwEffectCmd),
 }
 impl HChangeItemCommand {
     pub(crate) fn execute(
@@ -61,22 +64,23 @@ impl HChangeItemCommand {
         item_id: &rc::SolItemId,
     ) -> Result<HCmdResp, HExecError> {
         match self {
-            Self::Character(cmd) => cmd.execute(core_sol, item_id),
-            Self::Skill(cmd) => cmd.execute(core_sol, item_id),
-            Self::Implant(cmd) => cmd.execute(core_sol, item_id),
+            Self::Autocharge(cmd) => cmd.execute(core_sol, item_id),
             Self::Booster(cmd) => cmd.execute(core_sol, item_id),
-            Self::Ship(cmd) => cmd.execute(core_sol, item_id),
-            Self::Stance(cmd) => cmd.execute(core_sol, item_id),
-            Self::Subsystem(cmd) => cmd.execute(core_sol, item_id),
-            Self::Module(cmd) => cmd.execute(core_sol, item_id),
-            Self::Rig(cmd) => cmd.execute(core_sol, item_id),
+            Self::Character(cmd) => cmd.execute(core_sol, item_id),
+            Self::Charge(cmd) => cmd.execute(core_sol, item_id),
             Self::Drone(cmd) => cmd.execute(core_sol, item_id),
             Self::Fighter(cmd) => cmd.execute(core_sol, item_id),
-            Self::Charge(cmd) => cmd.execute(core_sol, item_id),
-            Self::Autocharge(cmd) => cmd.execute(core_sol, item_id),
-            Self::SwEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::FwEffect(cmd) => cmd.execute(core_sol, item_id),
+            Self::Implant(cmd) => cmd.execute(core_sol, item_id),
+            Self::Module(cmd) => cmd.execute(core_sol, item_id),
             Self::ProjEffect(cmd) => cmd.execute(core_sol, item_id),
+            Self::Rig(cmd) => cmd.execute(core_sol, item_id),
+            Self::Service(cmd) => cmd.execute(core_sol, item_id),
+            Self::Ship(cmd) => cmd.execute(core_sol, item_id),
+            Self::Skill(cmd) => cmd.execute(core_sol, item_id),
+            Self::Stance(cmd) => cmd.execute(core_sol, item_id),
+            Self::Subsystem(cmd) => cmd.execute(core_sol, item_id),
+            Self::SwEffect(cmd) => cmd.execute(core_sol, item_id),
         }
     }
 }

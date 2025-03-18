@@ -13,6 +13,7 @@ pub use misc::{SolAttrMutationInfo, SolItemMutationInfo, SolProjInfo, SolSideEff
 pub use module::SolModuleInfo;
 pub use proj_effect::SolProjEffectInfo;
 pub use rig::SolRigInfo;
+pub use service::SolServiceInfo;
 pub use ship::SolShipInfo;
 pub use skill::SolSkillInfo;
 pub use stance::SolStanceInfo;
@@ -32,6 +33,7 @@ mod misc;
 mod module;
 mod proj_effect;
 mod rig;
+mod service;
 mod ship;
 mod skill;
 mod stance;
