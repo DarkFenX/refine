@@ -43,24 +43,25 @@ def test_fail_multiple_ship(client, consts):
 
 
 def test_fail_multiple_struct(client, consts):
+    # Test service CPU use as well
     eve_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu)
     eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.cpu_output)
     eve_effect_id = client.mk_eve_online_effect()
-    eve_module1_id = client.mk_eve_item(attrs={eve_use_attr_id: 50}, eff_ids=[eve_effect_id])
-    eve_module2_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
+    eve_module_id = client.mk_eve_item(attrs={eve_use_attr_id: 50}, eff_ids=[eve_effect_id])
+    eve_service_id = client.mk_eve_item(attrs={eve_use_attr_id: 100}, eff_ids=[eve_effect_id])
     eve_struct_id = client.mk_eve_struct(attrs={eve_max_attr_id: 125})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_struct_id)
-    api_module1 = api_fit.add_mod(type_id=eve_module1_id, state=consts.ApiModuleState.online)
-    api_module2 = api_fit.add_mod(type_id=eve_module2_id, state=consts.ApiModuleState.online)
+    api_module = api_fit.add_mod(type_id=eve_module_id, state=consts.ApiModuleState.online)
+    api_service = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(cpu=True))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 150
     assert api_val.details.cpu.max == 125
-    assert api_val.details.cpu.users == {api_module1.id: 50, api_module2.id: 100}
+    assert api_val.details.cpu.users == {api_module.id: 50, api_service.id: 100}
 
 
 def test_equal(client, consts):

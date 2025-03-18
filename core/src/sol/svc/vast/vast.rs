@@ -38,7 +38,7 @@ impl SolVast {
 #[derive(Clone)]
 pub(in crate::sol::svc::vast) struct SolVastFitData {
     // Modules with "online" effect active
-    pub(in crate::sol::svc::vast) mods_online: StSet<SolItemId>,
+    pub(in crate::sol::svc::vast) mods_svcs_online: StSet<SolItemId>,
     // Rigs with "rigSlot" effect active, with calibration cost values
     pub(in crate::sol::svc::vast) rigs_rigslot_calibration: StMap<SolItemId, AttrVal>,
     pub(in crate::sol::svc::vast) drones_volume: StMap<SolItemId, AttrVal>,
@@ -90,7 +90,7 @@ pub(in crate::sol::svc::vast) struct SolVastFitData {
 impl SolVastFitData {
     pub(in crate::sol::svc) fn new() -> Self {
         Self {
-            mods_online: StSet::new(),
+            mods_svcs_online: StSet::new(),
             rigs_rigslot_calibration: StMap::new(),
             drones_volume: StMap::new(),
             drones_bandwidth: StMap::new(),

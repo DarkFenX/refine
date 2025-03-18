@@ -18,7 +18,7 @@ impl SolVast {
 
 impl SolVastFitData {
     pub(in crate::sol::svc) fn debug_consistency_check(&self, uad: &SolUad) -> SolDebugResult {
-        for item_id in self.mods_online.iter() {
+        for item_id in self.mods_svcs_online.iter() {
             check_item(uad, item_id, true)?;
         }
         for item_id in self.rigs_rigslot_calibration.keys() {

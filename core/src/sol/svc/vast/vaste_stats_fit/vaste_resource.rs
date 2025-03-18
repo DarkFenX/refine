@@ -30,7 +30,7 @@ impl SolVastFitData {
             uad,
             calc,
             fit,
-            self.mods_online.iter(),
+            self.mods_svcs_online.iter(),
             &ec::attrs::CPU,
             &ec::attrs::CPU_OUTPUT,
         )
@@ -45,7 +45,7 @@ impl SolVastFitData {
             uad,
             calc,
             fit,
-            self.mods_online.iter(),
+            self.mods_svcs_online.iter(),
             &ec::attrs::POWER,
             &ec::attrs::POWER_OUTPUT,
         )

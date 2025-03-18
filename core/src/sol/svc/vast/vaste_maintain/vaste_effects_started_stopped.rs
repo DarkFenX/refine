@@ -11,7 +11,7 @@ impl SolVast {
                     match effect.id {
                         ec::effects::ONLINE => {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
-                            fit_data.mods_online.insert(module.get_id());
+                            fit_data.mods_svcs_online.insert(module.get_id());
                         }
                         ec::effects::TURRET_FITTED => {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
@@ -35,6 +35,14 @@ impl SolVast {
                     }
                 }
             }
+            SolItem::Service(service) => {
+                for effect in effects {
+                    if effect.id == ec::effects::ONLINE {
+                        let fit_data = self.get_fit_data_mut(&service.get_fit_id()).unwrap();
+                        fit_data.mods_svcs_online.insert(service.get_id());
+                    }
+                }
+            }
             _ => (),
         }
     }
@@ -45,7 +53,7 @@ impl SolVast {
                     match effect.id {
                         ec::effects::ONLINE => {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
-                            fit_data.mods_online.remove(&module.get_id());
+                            fit_data.mods_svcs_online.remove(&module.get_id());
                         }
                         ec::effects::TURRET_FITTED => {
                             let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
@@ -64,6 +72,14 @@ impl SolVast {
                     if effect.id == ec::effects::RIG_SLOT {
                         let fit_data = self.get_fit_data_mut(&rig.get_fit_id()).unwrap();
                         fit_data.rigs_rigslot_calibration.remove(&rig.get_id());
+                    }
+                }
+            }
+            SolItem::Service(service) => {
+                for effect in effects {
+                    if effect.id == ec::effects::ONLINE {
+                        let fit_data = self.get_fit_data_mut(&service.get_fit_id()).unwrap();
+                        fit_data.mods_svcs_online.remove(&service.get_id());
                     }
                 }
             }
