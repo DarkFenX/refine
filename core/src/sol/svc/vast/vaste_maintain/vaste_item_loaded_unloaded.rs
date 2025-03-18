@@ -197,6 +197,9 @@ impl SolVast {
             SolItem::Service(service) => {
                 let extras = service.get_a_extras().unwrap();
                 item_kind_add(fit_data, item_id, extras.kind, ad::AItemKind::Service);
+                if let Some(ship_limit) = &extras.ship_limit {
+                    fit_data.ship_limited_items.insert(item_id, ship_limit.clone());
+                }
             }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();
@@ -369,6 +372,9 @@ impl SolVast {
             SolItem::Service(service) => {
                 let extras = service.get_a_extras().unwrap();
                 item_kind_remove(fit_data, &item_id, extras.kind, ad::AItemKind::Service);
+                if extras.ship_limit.is_some() {
+                    fit_data.ship_limited_items.remove(&item_id);
+                }
             }
             SolItem::Ship(ship) => {
                 let extras = ship.get_a_extras().unwrap();

@@ -262,6 +262,58 @@ def test_struct(client, consts):
         api_val.details  # noqa: B018
 
 
+def test_rig(client, consts):
+    eve_ship_grp_id = client.mk_eve_ship_group()
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
+    eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
+    eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
+    eve_rig_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_allowed_ship_id})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_disallowed_ship_id)
+    api_rig = api_fit.add_rig(type_id=eve_rig_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
+    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
+    assert api_val.details.ship_limit.items == {api_rig.id: ([eve_allowed_ship_id], [])}
+    # Action
+    api_fit.set_ship(type_id=eve_allowed_ship_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
+def test_service(client, consts):
+    eve_struct_grp_id = client.mk_eve_struct_group()
+    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
+    eve_allowed_struct_id = client.mk_eve_struct(grp_id=eve_struct_grp_id)
+    eve_disallowed_struct_id = client.mk_eve_struct(grp_id=eve_struct_grp_id)
+    eve_service_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_allowed_struct_id})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_disallowed_struct_id)
+    api_service = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is False
+    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_struct_id
+    assert api_val.details.ship_limit.ship_group_id == eve_struct_grp_id
+    assert api_val.details.ship_limit.items == {api_service.id: ([eve_allowed_struct_id], [])}
+    # Action
+    api_fit.set_ship(type_id=eve_allowed_struct_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # noqa: B018
+
+
 def test_subsystem(client, consts):
     # Subsystems have their special limit attribute
     eve_ship_grp_id = client.mk_eve_ship_group()
@@ -280,32 +332,6 @@ def test_subsystem(client, consts):
     assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
     assert api_val.details.ship_limit.items == {api_subsystem.id: ([eve_allowed_ship_id], [])}
-    # Action
-    api_fit.set_ship(type_id=eve_allowed_ship_id)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
-    assert api_val.passed is True
-    with check_no_field():
-        api_val.details  # noqa: B018
-
-
-def test_rig(client, consts):
-    eve_ship_grp_id = client.mk_eve_ship_group()
-    eve_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_fit_ship_type1, unit_id=consts.EveAttrUnit.item_id)
-    eve_allowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
-    eve_disallowed_ship_id = client.mk_eve_ship(grp_id=eve_ship_grp_id)
-    eve_rig_id = client.mk_eve_item(attrs={eve_type_attr_id: eve_allowed_ship_id})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_fit.set_ship(type_id=eve_disallowed_ship_id)
-    api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=True))
-    assert api_val.passed is False
-    assert api_val.details.ship_limit.ship_type_id == eve_disallowed_ship_id
-    assert api_val.details.ship_limit.ship_group_id == eve_ship_grp_id
-    assert api_val.details.ship_limit.items == {api_rig.id: ([eve_allowed_ship_id], [])}
     # Action
     api_fit.set_ship(type_id=eve_allowed_ship_id)
     # Verification
