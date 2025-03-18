@@ -340,6 +340,13 @@ class ApiModuleState(StrEnum):
 
 
 @unique
+class ApiServiceState(StrEnum):
+    ghost = 'ghost'
+    offline = 'offline'
+    online = 'online'
+
+
+@unique
 class ApiMinionState(StrEnum):
     in_bay = 'in_bay'
     in_space = 'in_space'

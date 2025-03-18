@@ -46,7 +46,7 @@ pub use sol::{
     },
     uad::{
         SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation,
-        SolMinionState, SolModuleState,
+        SolMinionState, SolModuleState, SolServiceState,
     },
 };
 pub use src::Src;

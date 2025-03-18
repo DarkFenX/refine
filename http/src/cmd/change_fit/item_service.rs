@@ -1,12 +1,13 @@
 use crate::{
     cmd::{HCmdResp, change_item},
+    shared::HServiceState,
     util::HExecError,
 };
 
 #[derive(serde::Deserialize)]
 pub(crate) struct HAddServiceCmd {
     type_id: rc::EItemId,
-    state: Option<bool>,
+    state: Option<HServiceState>,
 }
 impl HAddServiceCmd {
     pub(in crate::cmd) fn execute(
@@ -14,7 +15,11 @@ impl HAddServiceCmd {
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::SolFitId,
     ) -> Result<rc::SolServiceInfo, HExecError> {
-        let core_service = match core_sol.add_service(*fit_id, self.type_id, self.state.unwrap_or(true)) {
+        let core_service = match core_sol.add_service(
+            *fit_id,
+            self.type_id,
+            self.state.as_ref().unwrap_or(&HServiceState::Online).into(),
+        ) {
             Ok(core_service) => core_service,
             Err(error) => {
                 return Err(match error {

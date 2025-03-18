@@ -5,7 +5,7 @@ use crate::{
     sol::{
         SolAddMode, SolModRack, SolRmMode, SolarSystem,
         svc::vast::SolValOptions,
-        uad::{SolMinionState, SolModuleState},
+        uad::{SolMinionState, SolModuleState, SolServiceState},
     },
 };
 
@@ -115,7 +115,7 @@ impl SolarSystem {
                     self.remove_rig(&rig_info.id).unwrap();
                 }
                 ad::AItemKind::Service => {
-                    let service_info = self.add_service(*fit_id, *type_id, true).unwrap();
+                    let service_info = self.add_service(*fit_id, *type_id, SolServiceState::Online).unwrap();
                     if self.validate_fit_fast(fit_id, val_options).unwrap() {
                         valid.push(*type_id)
                     }

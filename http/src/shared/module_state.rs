@@ -10,10 +10,10 @@ pub(crate) enum HModuleState {
 impl From<&rc::SolModuleState> for HModuleState {
     fn from(core_module_state: &rc::SolModuleState) -> Self {
         match core_module_state {
+            rc::SolModuleState::Ghost => Self::Ghost,
             rc::SolModuleState::Offline => Self::Offline,
             rc::SolModuleState::Online => Self::Online,
             rc::SolModuleState::Active => Self::Active,
-            rc::SolModuleState::Ghost => Self::Ghost,
             rc::SolModuleState::Overload => Self::Overload,
         }
     }
@@ -21,10 +21,10 @@ impl From<&rc::SolModuleState> for HModuleState {
 impl From<&HModuleState> for rc::SolModuleState {
     fn from(h_module_state: &HModuleState) -> Self {
         match h_module_state {
+            HModuleState::Ghost => Self::Ghost,
             HModuleState::Offline => Self::Offline,
             HModuleState::Online => Self::Online,
             HModuleState::Active => Self::Active,
-            HModuleState::Ghost => Self::Ghost,
             HModuleState::Overload => Self::Overload,
         }
     }

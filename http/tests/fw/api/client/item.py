@@ -15,6 +15,7 @@ if typing.TYPE_CHECKING:
         ApiModRmMode,
         ApiModuleState,
         ApiRack,
+        ApiServiceState,
     )
     from tests.fw.util import Absent
 
@@ -476,7 +477,7 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_id: int,
-            state: bool | type[Absent],
+            state: ApiServiceState | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         return self.__add_simple_item_request(
@@ -491,7 +492,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: int,
-            state: bool | type[Absent],
+            state: ApiServiceState | type[Absent],
             effect_modes: dict[int, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:

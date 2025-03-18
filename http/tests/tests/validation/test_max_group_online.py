@@ -301,14 +301,14 @@ def test_criterion_state_service(client, consts):
     assert api_val.passed is False
     assert api_val.details.max_group_online == {eve_grp_id: [2, {api_service1.id: 1, api_service2.id: 1}]}
     # Action
-    api_service2.change_service(state=False)
+    api_service2.change_service(state=consts.ApiServiceState.offline)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_service2.change_service(state=True)
+    api_service2.change_service(state=consts.ApiServiceState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(max_group_online=True))
     assert api_val.passed is False

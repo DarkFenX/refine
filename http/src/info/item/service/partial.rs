@@ -1,3 +1,5 @@
+use crate::shared::HServiceState;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize)]
 pub(crate) struct HServiceInfoPartial {
@@ -7,7 +9,7 @@ pub(crate) struct HServiceInfoPartial {
     pub(crate) type_id: rc::EItemId,
     #[serde_as(as = "serde_with::DisplayFromStr")]
     pub(crate) fit_id: rc::SolFitId,
-    pub(crate) enabled: bool,
+    pub(crate) enabled: HServiceState,
 }
 impl From<&rc::SolServiceInfo> for HServiceInfoPartial {
     fn from(core_service_info: &rc::SolServiceInfo) -> Self {
@@ -16,7 +18,7 @@ impl From<&rc::SolServiceInfo> for HServiceInfoPartial {
             kind: "service",
             type_id: core_service_info.type_id,
             fit_id: core_service_info.fit_id,
-            enabled: core_service_info.enabled,
+            enabled: (&core_service_info.state).into(),
         }
     }
 }

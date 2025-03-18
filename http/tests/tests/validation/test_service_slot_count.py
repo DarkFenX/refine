@@ -275,7 +275,7 @@ def test_criterion_state(client, consts):
     assert api_val.details.service_slot_count.max == 0
     assert api_val.details.service_slot_count.users == [api_service.id]
     # Action
-    api_service.change_service(state=False)
+    api_service.change_service(state=consts.ApiServiceState.ghost)
     # Verification
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False

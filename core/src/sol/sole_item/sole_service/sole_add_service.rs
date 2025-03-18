@@ -4,7 +4,7 @@ use crate::{
     sol::{
         SolarSystem,
         info::SolServiceInfo,
-        uad::item::{SolItem, SolService},
+        uad::item::{SolItem, SolService, SolServiceState},
     },
 };
 
@@ -13,7 +13,7 @@ impl SolarSystem {
         &mut self,
         fit_id: SolFitId,
         type_id: EItemId,
-        state: bool,
+        state: SolServiceState,
     ) -> Result<SolServiceInfo, AddServiceError> {
         let item_id = self.uad.items.alloc_item_id();
         let service = SolService::new(&self.uad.src, item_id, type_id, fit_id, state);

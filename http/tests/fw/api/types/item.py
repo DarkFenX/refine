@@ -3,14 +3,14 @@ from __future__ import annotations
 import typing
 from dataclasses import dataclass
 
-from tests.fw.consts import ApiItemInfoMode, ApiMinionState, ApiModRmMode
+from tests.fw.consts import ApiItemInfoMode
 from tests.fw.util import Absent, AttrDict, AttrHookDef
 from .mod_info import AttrModInfoMap
 from .side_effect_info import SideEffectInfo, SideEffectStrInfo
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
-    from tests.fw.consts import ApiEffMode, ApiModuleState
+    from tests.fw.consts import ApiEffMode, ApiMinionState, ApiModRmMode, ApiModuleState, ApiServiceState
     from .aliases import MutaAdd, MutaChange
 
 
@@ -347,7 +347,7 @@ class Item(AttrDict):
 
     def change_service(
             self, *,
-            state: bool | type[Absent] = Absent,
+            state: ApiServiceState | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,

@@ -1,21 +1,21 @@
 use crate::{
     defs::{EItemId, SolFitId, SolItemId},
-    sol::uad::item::SolService,
+    sol::uad::item::{SolService, SolServiceState},
 };
 
 pub struct SolServiceInfo {
     pub id: SolItemId,
     pub type_id: EItemId,
     pub fit_id: SolFitId,
-    pub enabled: bool,
+    pub state: SolServiceState,
 }
 impl SolServiceInfo {
-    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, enabled: bool) -> Self {
+    fn new(id: SolItemId, type_id: EItemId, fit_id: SolFitId, state: SolServiceState) -> Self {
         Self {
             id,
             type_id,
             fit_id,
-            enabled,
+            state,
         }
     }
 }

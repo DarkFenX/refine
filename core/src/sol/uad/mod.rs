@@ -2,7 +2,7 @@
 
 pub use item::{
     SolItemAddAttrMutation, SolItemAddMutation, SolItemAttrMutationValue, SolItemChangeAttrMutation, SolMinionState,
-    SolModuleState,
+    SolModuleState, SolServiceState,
 };
 pub(in crate::sol) use uad::SolUad;
 

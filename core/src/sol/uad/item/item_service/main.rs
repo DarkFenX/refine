@@ -1,7 +1,7 @@
 use crate::{
     ad,
     defs::{AttrVal, EAttrId, EEffectId, EItemGrpId, EItemId, SkillLevel, SolFitId, SolItemId},
-    sol::uad::item::{SolEffectModes, SolItemBase, SolItemState, bool_to_state_online, state_to_bool},
+    sol::uad::item::{SolEffectModes, SolItemBase, SolItemState, SolServiceState},
     src::Src,
     util::{Named, StMap},
 };
@@ -12,9 +12,15 @@ pub(in crate::sol) struct SolService {
     fit_id: SolFitId,
 }
 impl SolService {
-    pub(in crate::sol) fn new(src: &Src, id: SolItemId, type_id: EItemId, fit_id: SolFitId, state: bool) -> Self {
+    pub(in crate::sol) fn new(
+        src: &Src,
+        id: SolItemId,
+        type_id: EItemId,
+        fit_id: SolFitId,
+        state: SolServiceState,
+    ) -> Self {
         Self {
-            base: SolItemBase::new(src, id, type_id, bool_to_state_online(state)),
+            base: SolItemBase::new(src, id, type_id, state.into()),
             fit_id,
         }
     }
@@ -62,11 +68,11 @@ impl SolService {
         self.base.update_a_data(src);
     }
     // Item-specific methods
-    pub(in crate::sol) fn get_service_state(&self) -> bool {
-        state_to_bool(self.base.get_state())
+    pub(in crate::sol) fn get_service_state(&self) -> SolServiceState {
+        self.base.get_state().into()
     }
-    pub(in crate::sol) fn set_service_state(&mut self, state: bool) {
-        self.base.set_state(bool_to_state_online(state))
+    pub(in crate::sol) fn set_service_state(&mut self, state: SolServiceState) {
+        self.base.set_state(state.into())
     }
     pub(in crate::sol) fn get_fit_id(&self) -> SolFitId {
         self.fit_id

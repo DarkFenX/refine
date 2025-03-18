@@ -1,11 +1,15 @@
 use crate::{
     defs::SolItemId,
     err::basic::{ItemFoundError, ItemKindMatchError},
-    sol::SolarSystem,
+    sol::{SolarSystem, uad::item::SolServiceState},
 };
 
 impl SolarSystem {
-    pub fn set_service_state(&mut self, item_id: &SolItemId, state: bool) -> Result<(), SetServiceStateError> {
+    pub fn set_service_state(
+        &mut self,
+        item_id: &SolItemId,
+        state: SolServiceState,
+    ) -> Result<(), SetServiceStateError> {
         let service = self.uad.items.get_item_mut(item_id)?.get_service_mut()?;
         let old_state = service.get_state();
         service.set_service_state(state);

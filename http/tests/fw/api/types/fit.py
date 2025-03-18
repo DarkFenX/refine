@@ -19,6 +19,7 @@ from .validation import ValResult
 
 if typing.TYPE_CHECKING:
     from tests.fw.api import ApiClient
+    from tests.fw.consts import ApiServiceState
     from tests.fw.response import Response
     from .aliases import MutaAdd
     from .validation import ValOptions
@@ -316,7 +317,7 @@ class Fit(AttrDict):
     def add_service(
             self, *,
             type_id: int,
-            state: bool | type[Absent] = Absent,
+            state: ApiServiceState | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
