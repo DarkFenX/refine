@@ -48,7 +48,7 @@ def test_add_fit_sw_item_remove_item_sw_fit(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect_id)
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     assert api_implant.update().attrs[eve_affectee_attr_id].dogma == approx(120)

@@ -46,7 +46,7 @@ def test_unaffected_location_owner(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_rig(type_id=eve_affector_item_id)
-    api_affectee_item = api_fit.set_char(type_id=eve_affectee_item_id)
+    api_affectee_item = api_fit.set_character(type_id=eve_affectee_item_id)
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
 

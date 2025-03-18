@@ -22,14 +22,14 @@ def test_character(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_loaded_id)
+    api_fit.set_character(type_id=eve_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_char = api_fit.set_char(type_id=eve_not_loaded_id)
+    api_char = api_fit.set_character(type_id=eve_not_loaded_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False

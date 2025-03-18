@@ -39,7 +39,7 @@ def test_filter(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_item_char_id)
+    api_fit.set_character(type_id=eve_item_char_id)
     api_fit.add_module(type_id=eve_item_bcs_id, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)
     api_launcher1 = api_fit.add_module(
         type_id=eve_item_launcher_id,
@@ -120,7 +120,7 @@ def test_penalization(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_char = api_fit.set_char(type_id=eve_item_char_id)
+    api_char = api_fit.set_character(type_id=eve_item_char_id)
     api_magnetar = api_sol.add_sw_effect(type_id=eve_item_magnetar_id)
     api_launcher = api_fit.add_module(
         type_id=eve_item_launcher_id,

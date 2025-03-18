@@ -9,7 +9,7 @@ def test_fail_single(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
@@ -26,7 +26,7 @@ def test_fail_multiple(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_drone1 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     api_drone2 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
@@ -44,7 +44,7 @@ def test_equal(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
@@ -62,7 +62,7 @@ def test_known_failures(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_other = api_fit.add_implant(type_id=eve_other_id)
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_drone1 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     api_drone2 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
@@ -103,7 +103,7 @@ def test_modified_max(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_char = api_fit.set_char(type_id=eve_char_id)
+    api_char = api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     assert api_char.update().attrs[eve_max_attr_id].extra == approx(0)
@@ -130,7 +130,7 @@ def test_fractional_max(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char1_id)
+    api_fit.set_character(type_id=eve_char1_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
@@ -139,7 +139,7 @@ def test_fractional_max(client, consts):
     assert api_val.details.launched_drone_count.max == 0
     assert api_val.details.launched_drone_count.users == [api_drone.id]
     # Action
-    api_fit.set_char(type_id=eve_char2_id)
+    api_fit.set_character(type_id=eve_char2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
     assert api_val.passed is True
@@ -172,7 +172,7 @@ def test_not_loaded_user(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
@@ -191,7 +191,7 @@ def test_not_loaded_char(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
@@ -210,7 +210,7 @@ def test_no_value_max(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
@@ -229,7 +229,7 @@ def test_no_attr_max(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
@@ -246,7 +246,7 @@ def test_criterion_state(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))
@@ -277,7 +277,7 @@ def test_criterion_item_kind(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_val = api_fit.validate(options=ValOptions(launched_drone_count=True))

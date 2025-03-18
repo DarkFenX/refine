@@ -136,14 +136,14 @@ class Item(AttrDict):
             return self
         return None
 
-    def change_char(
+    def change_character(
             self, *,
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_char_request(
+        resp = self._client.change_character_request(
             sol_id=self._sol_id,
             item_id=self.id,
             state=state,

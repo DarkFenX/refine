@@ -18,7 +18,7 @@ def test_affected_root(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.set_char(type_id=eve_item_id)
+    api_item = api_fit.set_character(type_id=eve_item_id)
     assert api_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
 
@@ -62,7 +62,7 @@ def test_unaffected_root(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_affecting_item_id)
+    api_fit.set_character(type_id=eve_affecting_item_id)
     api_unaffected_root = api_fit.set_ship(type_id=eve_unaffected_item_id)
     assert api_unaffected_root.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     api_unaffected_child = api_fit.add_implant(type_id=eve_unaffected_item_id)

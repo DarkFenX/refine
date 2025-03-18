@@ -53,7 +53,7 @@ def test_add_item_pe_proj_state_remove_pe_item(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     assert api_implant.update().attrs[eve_affectee_attr_id].dogma == approx(100)

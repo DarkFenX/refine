@@ -318,7 +318,7 @@ def test_item_kinds(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_booster = api_fit.add_booster(type_id=eve_item_id)
-    api_fit.set_char(type_id=eve_item_id)
+    api_fit.set_character(type_id=eve_item_id)
     api_drone = api_fit.add_drone(type_id=eve_item_id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     api_fit.add_fw_effect(type_id=eve_item_id)

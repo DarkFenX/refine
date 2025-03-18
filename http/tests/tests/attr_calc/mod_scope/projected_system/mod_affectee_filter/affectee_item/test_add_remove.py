@@ -46,7 +46,7 @@ def test_add_item_pe_proj_state_remove_pe_item(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_char = api_fit.set_char(type_id=eve_char_id)
+    api_char = api_fit.set_character(type_id=eve_char_id)
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     assert api_char.update().attrs[eve_affectee_attr_id].dogma == approx(100)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id, state=False)

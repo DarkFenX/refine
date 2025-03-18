@@ -93,7 +93,7 @@ def test_unaffected_root_char(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_char = api_fit2.set_char(type_id=eve_char_id)
+    api_char = api_fit2.set_character(type_id=eve_char_id)
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_module.change_module(add_projs=[api_ship.id])

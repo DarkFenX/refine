@@ -338,7 +338,7 @@ def test_modded_chance(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification
@@ -381,7 +381,7 @@ def test_modded_strength(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_fit.set_ship(type_id=eve_ship_id)
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     # Verification

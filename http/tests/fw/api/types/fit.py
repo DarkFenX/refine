@@ -168,14 +168,14 @@ class Fit(AttrDict):
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
-    def set_char(
+    def set_character(
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
-        resp = self._client.set_char_request(
+        resp = self._client.set_character_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             type_id=type_id,

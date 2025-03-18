@@ -27,7 +27,7 @@ def test_char(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_item = api_fit.set_char(type_id=eve_item_id)
+    api_item = api_fit.set_character(type_id=eve_item_id)
     # Verification
     assert api_fit.update().character.id == api_item.id
     # Action

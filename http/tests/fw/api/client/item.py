@@ -132,7 +132,7 @@ class ApiClientItem(ApiClientBase):
             item_info_mode=item_info_mode)
 
     # Character methods
-    def set_char_request(
+    def set_character_request(
             self, *,
             sol_id: str,
             fit_id: str,
@@ -148,7 +148,7 @@ class ApiClientItem(ApiClientBase):
             state=state,
             item_info_mode=item_info_mode)
 
-    def change_char_request(
+    def change_character_request(
             self, *,
             sol_id: str,
             item_id: int,

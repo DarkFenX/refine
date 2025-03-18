@@ -96,7 +96,7 @@ def test_unaffected_root_char(client, consts):
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_sw_effect_id)
     api_fit = api_sol.create_fit()
-    api_char = api_fit.set_char(type_id=eve_char_id)
+    api_char = api_fit.set_character(type_id=eve_char_id)
     assert api_char.update().attrs[eve_affectee_attr_id].dogma == approx(200)
 
 

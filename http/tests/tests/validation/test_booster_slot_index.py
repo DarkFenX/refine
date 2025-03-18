@@ -120,7 +120,7 @@ def test_modified_index(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_booster1 = api_fit.add_booster(type_id=eve_booster_id)
     api_booster2 = api_fit.add_booster(type_id=eve_booster_id)
     # Verification

@@ -120,7 +120,7 @@ def test_modified_index(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_char_id)
+    api_fit.set_character(type_id=eve_char_id)
     api_implant1 = api_fit.add_implant(type_id=eve_implant_id)
     api_implant2 = api_fit.add_implant(type_id=eve_implant_id)
     # Verification

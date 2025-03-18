@@ -16,7 +16,7 @@ def test_affected(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_affectee_item = api_fit.set_char(type_id=eve_affectee_item_id)
+    api_affectee_item = api_fit.set_character(type_id=eve_affectee_item_id)
     api_fit.add_fw_effect(type_id=eve_affector_item_id)
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(120)
 
@@ -82,7 +82,7 @@ def test_unaffected_other_fit(client, consts):
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
     api_fit1.add_fw_effect(type_id=eve_affector_item_id)
-    api_affectee_item = api_fit2.set_char(type_id=eve_affectee_item_id)
+    api_affectee_item = api_fit2.set_character(type_id=eve_affectee_item_id)
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].dogma == approx(100)
 
 
@@ -102,8 +102,8 @@ def test_replace_root(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_affectee_item1 = api_fit.set_char(type_id=eve_affectee_item1_id)
+    api_affectee_item1 = api_fit.set_character(type_id=eve_affectee_item1_id)
     api_fit.add_fw_effect(type_id=eve_affector_item_id)
     assert api_affectee_item1.update().attrs[eve_affectee_attr_id].dogma == approx(120)
-    api_affectee_item2 = api_fit.set_char(type_id=eve_affectee_item2_id)
+    api_affectee_item2 = api_fit.set_character(type_id=eve_affectee_item2_id)
     assert api_affectee_item2.update().attrs[eve_affectee_attr_id].dogma == approx(60)

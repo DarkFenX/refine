@@ -55,14 +55,14 @@ def test_kind_character(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.set_char(type_id=eve_character_id)
+    api_fit.set_character(type_id=eve_character_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_other1 = api_fit.set_char(type_id=eve_other_id)
+    api_other1 = api_fit.set_character(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_character_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
