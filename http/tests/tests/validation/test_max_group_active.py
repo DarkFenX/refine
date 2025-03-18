@@ -2,7 +2,7 @@ from tests import approx, check_no_field
 from tests.fw.api import ValOptions
 
 
-def test_same(client, consts):
+def test_same_value_module(client, consts):
     # Simple but realistic scenario
     eve_grp_id = client.mk_eve_item_group()
     eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_active)
@@ -18,7 +18,7 @@ def test_same(client, consts):
     assert api_val.details.max_group_active == {eve_grp_id: [2, {api_module1.id: 1, api_module2.id: 1}]}
 
 
-def test_mix(client, consts):
+def test_different_values(client, consts):
     # Checks in details how validation works, but uses unrealistic scenario, since modules in the
     # same EVE group have the same value of the attribute
     eve_grp_id = client.mk_eve_item_group()

@@ -60,6 +60,7 @@ class ValOptions:
     unlaunchable_standup_heavy_fighter: ValOption = Absent
     ship_stance: ValOption = Absent
     overload_skill: ValOption = Absent
+    max_type_fitted: ValOption = Absent
 
     def to_dict(self) -> dict:
         return asdict(self, dict_factory=lambda d: {k: v for k, v in d if v is not Absent})

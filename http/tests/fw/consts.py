@@ -273,6 +273,7 @@ class EveAttr(IntEnum):
     doomsday_aoe_range = 2279
     ftr_abil_launch_bomb_type = 2324
     can_fit_ship_group10 = 2396
+    max_type_fitted = 2431
     can_fit_ship_type7 = 2463
     warfare_buff_1_id = 2468
     warfare_buff_1_value = 2469

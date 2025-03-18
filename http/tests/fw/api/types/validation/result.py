@@ -7,6 +7,7 @@ from .drone_group import ValDroneGroupFail
 from .fighter_count import ValFighterCountFail
 from .item_kind import ValItemKindFail
 from .max_group import ValMaxGroupFail
+from .max_type import ValMaxTypeFail
 from .module_state import ValModuleStateFail
 from .not_loaded_item import ValNotLoadedItemFail
 from .overload_skill import ValOverloadSkillFail
@@ -81,4 +82,5 @@ class ValResultDetails(AttrDict):
             'unlaunchable_standup_light_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
             'unlaunchable_standup_heavy_fighter': AttrHookDef(func=lambda d: ValUnusableSlotFail(data=d)),
             'ship_stance': AttrHookDef(func=lambda d: ValShipStanceFail(data=d)),
-            'overload_skill': AttrHookDef(func=lambda d: ValOverloadSkillFail(data=d))})
+            'overload_skill': AttrHookDef(func=lambda d: ValOverloadSkillFail(data=d)),
+            'max_type_fitted': AttrHookDef(func=lambda d: ValMaxTypeFail(data=d))})
