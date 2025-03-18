@@ -306,6 +306,9 @@ impl SolVast {
         if options.overload_skill.enabled && !fit_data.validate_overload_skill_fast(&options.overload_skill.kfs, fit) {
             return false;
         }
+        if options.max_type_fitted.enabled && !fit_data.validate_max_type_fitted_fast(&options.max_type_fitted.kfs) {
+            return false;
+        }
         true
     }
     pub(in crate::sol) fn validate_fit_verbose(
@@ -559,6 +562,9 @@ impl SolVast {
         }
         if options.overload_skill.enabled {
             result.overload_skill = fit_data.validate_overload_skill_verbose(&options.overload_skill.kfs, fit);
+        }
+        if options.max_type_fitted.enabled {
+            result.max_type_fitted = fit_data.validate_max_type_fitted_verbose(&options.max_type_fitted.kfs);
         }
         result
     }

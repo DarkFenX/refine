@@ -1,8 +1,9 @@
 use crate::sol::svc::vast::{
     SolValCapitalModFail, SolValChargeGroupFail, SolValChargeSizeFail, SolValChargeVolumeFail, SolValDroneGroupFail,
-    SolValFighterCountFail, SolValItemKindFail, SolValMaxGroupFail, SolValModuleStateFail, SolValNotLoadedItemFail,
-    SolValOverloadSkillFail, SolValResFail, SolValRigSizeFail, SolValShipLimitFail, SolValShipStanceFail,
-    SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValUnusableResFail, SolValUnusableSlotFail,
+    SolValFighterCountFail, SolValItemKindFail, SolValMaxGroupFail, SolValMaxTypeFail, SolValModuleStateFail,
+    SolValNotLoadedItemFail, SolValOverloadSkillFail, SolValResFail, SolValRigSizeFail, SolValShipLimitFail,
+    SolValShipStanceFail, SolValSlotCountFail, SolValSlotIndexFail, SolValSrqFail, SolValUnusableResFail,
+    SolValUnusableSlotFail,
 };
 
 pub struct SolValResult {
@@ -57,6 +58,7 @@ pub struct SolValResult {
     pub unlaunchable_standup_heavy_fighter: Option<SolValUnusableSlotFail>,
     pub ship_stance: Option<SolValShipStanceFail>,
     pub overload_skill: Option<SolValOverloadSkillFail>,
+    pub max_type_fitted: Vec<SolValMaxTypeFail>,
 }
 impl SolValResult {
     pub(in crate::sol::svc::vast) fn new() -> Self {
@@ -112,6 +114,7 @@ impl SolValResult {
             unlaunchable_standup_heavy_fighter: None,
             ship_stance: None,
             overload_skill: None,
+            max_type_fitted: Vec::new(),
         }
     }
     pub fn all_passed(&self) -> bool {
@@ -166,5 +169,6 @@ impl SolValResult {
             && self.unlaunchable_standup_heavy_fighter.is_none()
             && self.ship_stance.is_none()
             && self.overload_skill.is_none()
+            && self.max_type_fitted.is_empty()
     }
 }
