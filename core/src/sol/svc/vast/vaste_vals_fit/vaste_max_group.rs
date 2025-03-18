@@ -31,8 +31,8 @@ impl SolVastFitData {
             kfs,
             uad,
             calc,
-            &self.mods_rigs_max_group_fitted_all,
-            &self.mods_rigs_max_group_fitted_limited,
+            &self.mods_svcs_rigs_max_group_fitted_all,
+            &self.mods_svcs_rigs_max_group_fitted_limited,
             &ec::attrs::MAX_GROUP_FITTED,
         )
     }
@@ -46,8 +46,8 @@ impl SolVastFitData {
             kfs,
             uad,
             calc,
-            &self.mods_max_group_online_all,
-            &self.mods_max_group_online_limited,
+            &self.mods_svcs_max_group_online_all,
+            &self.mods_svcs_max_group_online_limited,
             &ec::attrs::MAX_GROUP_ONLINE,
         )
     }
@@ -77,8 +77,8 @@ impl SolVastFitData {
             kfs,
             uad,
             calc,
-            &self.mods_rigs_max_group_fitted_all,
-            &self.mods_rigs_max_group_fitted_limited,
+            &self.mods_svcs_rigs_max_group_fitted_all,
+            &self.mods_svcs_rigs_max_group_fitted_limited,
             &ec::attrs::MAX_GROUP_FITTED,
         )
     }
@@ -92,8 +92,8 @@ impl SolVastFitData {
             kfs,
             uad,
             calc,
-            &self.mods_max_group_online_all,
-            &self.mods_max_group_online_limited,
+            &self.mods_svcs_max_group_online_all,
+            &self.mods_svcs_max_group_online_limited,
             &ec::attrs::MAX_GROUP_ONLINE,
         )
     }

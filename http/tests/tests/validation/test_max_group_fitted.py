@@ -34,6 +34,23 @@ def test_same_rig(client, consts):
     assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_rig1.id: 1, api_rig2.id: 1}]}
 
 
+def test_same_services(client, consts):
+    # As of 2025-03-18, services do not seem to have this limit in EVE, but they are in many ways
+    # are similar to modules, so we subject them to this limit just in case
+    eve_grp_id = client.mk_eve_item_group()
+    eve_limit_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_group_fitted)
+    eve_service_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_limit_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_service1 = api_fit.add_service(type_id=eve_service_id)
+    api_service2 = api_fit.add_service(type_id=eve_service_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
+    assert api_val.passed is False
+    assert api_val.details.max_group_fitted == {eve_grp_id: [2, {api_service1.id: 1, api_service2.id: 1}]}
+
+
 def test_mix(client, consts):
     # Checks in details how validation works, but uses unrealistic scenario, since modules in the
     # same EVE group have the same value of the attribute

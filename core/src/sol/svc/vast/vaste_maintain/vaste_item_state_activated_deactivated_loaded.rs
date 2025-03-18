@@ -36,9 +36,13 @@ impl SolVast {
                     let extras = module.get_a_extras().unwrap();
                     if let Some(grp_id) = extras.val_online_group_id {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
-                        fit_data.mods_max_group_online_all.add_entry(grp_id, module.get_id());
+                        fit_data
+                            .mods_svcs_max_group_online_all
+                            .add_entry(grp_id, module.get_id());
                         if module.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_ONLINE) {
-                            fit_data.mods_max_group_online_limited.insert(module.get_id(), grp_id);
+                            fit_data
+                                .mods_svcs_max_group_online_limited
+                                .insert(module.get_id(), grp_id);
                         }
                     }
                     if let ad::AState::Offline = extras.max_state {
@@ -51,6 +55,20 @@ impl SolVast {
                                 max_state: SolModuleState::Offline,
                             },
                         );
+                    }
+                }
+                SolItem::Service(service) => {
+                    let extras = service.get_a_extras().unwrap();
+                    if let Some(grp_id) = extras.val_online_group_id {
+                        let fit_data = self.get_fit_data_mut(&service.get_fit_id()).unwrap();
+                        fit_data
+                            .mods_svcs_max_group_online_all
+                            .add_entry(grp_id, service.get_id());
+                        if service.get_attrs().unwrap().contains_key(&ec::attrs::MAX_GROUP_ONLINE) {
+                            fit_data
+                                .mods_svcs_max_group_online_limited
+                                .insert(service.get_id(), grp_id);
+                        }
                     }
                 }
                 _ => (),
@@ -143,13 +161,23 @@ impl SolVast {
                     if let Some(grp_id) = extras.val_online_group_id {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data
-                            .mods_max_group_online_all
+                            .mods_svcs_max_group_online_all
                             .remove_entry(&grp_id, &module.get_id());
-                        fit_data.mods_max_group_online_limited.remove(&module.get_id());
+                        fit_data.mods_svcs_max_group_online_limited.remove(&module.get_id());
                     }
                     if let ad::AState::Offline = extras.max_state {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_id()).unwrap();
                         fit_data.mods_state.remove(&module.get_id());
+                    }
+                }
+                SolItem::Service(service) => {
+                    let extras = service.get_a_extras().unwrap();
+                    if let Some(grp_id) = extras.val_online_group_id {
+                        let fit_data = self.get_fit_data_mut(&service.get_fit_id()).unwrap();
+                        fit_data
+                            .mods_svcs_max_group_online_all
+                            .remove_entry(&grp_id, &service.get_id());
+                        fit_data.mods_svcs_max_group_online_limited.remove(&service.get_id());
                     }
                 }
                 _ => (),
